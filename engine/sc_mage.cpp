@@ -58,6 +58,8 @@ struct mage_t : public player_t
   };
   _cooldowns_t _cooldowns;
 
+  cooldown_t* cooldowns_fire_blast;
+
   // Events
   event_t* ignite_delay_event;
 
@@ -131,7 +133,9 @@ struct mage_t : public player_t
   rng_t* rng_arcane_missiles;
   rng_t* rng_empowered_fire;
   rng_t* rng_enduring_winter;
+  rng_t* rng_fire_power;
   rng_t* rng_ghost_charge;
+  rng_t* rng_impact;
   rng_t* rng_nether_vortex;
 
   // Rotation (DPS vs DPM)
@@ -238,6 +242,9 @@ struct mage_t : public player_t
     // Active
     active_ignite          = 0;
     active_water_elemental = 0;
+
+    // Cooldowns
+    cooldowns_fire_blast = get_cooldown( "fire_blast" );
 
     armor_type_str   = "molten"; // Valid values: molten|mage
     distance         = 40;
@@ -983,6 +990,11 @@ void mage_spell_t::execute()
   {
     clear_fingers_of_frost( this );
     
+    if ( p -> rng_impact -> roll( p -> talents.impact -> proc_chance() ) )
+    {
+      p -> cooldowns_fire_blast -> reset();
+    }
+
     if ( ! dual )
     {
      p -> buffs_clearcasting -> trigger();
@@ -1309,10 +1321,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
     mage_spell_t::execute();
     tick_dmg = direct_dmg;
     update_stats( DMG_OVER_TIME );
-    if ( result == RESULT_CRIT )
-    {
-      trigger_master_of_elements( this, 1.0 / num_ticks ); // FIXME: Does this change w/ the num of ticks or always 3 (base # of ticks)?
-    }
   }
 };
 
@@ -1535,10 +1543,6 @@ struct deep_freeze_strike_t : public mage_spell_t
   {
     mage_spell_t::execute();
     update_stats( DMG_DIRECT );
-    if ( result == RESULT_CRIT )
-    {
-      trigger_master_of_elements( this, 1.0 );
-    }
   }
 };
 
@@ -1749,9 +1753,13 @@ struct flame_orb_strike_t : public mage_spell_t
   flame_orb_strike_t( mage_t* player ) :
     mage_spell_t( "flame_orb", 82739, player )
   {
-    dual        = true;
-    background  = true;
-    may_crit    = true;
+    mage_t* p = player -> cast_mage();
+
+    aoe              = true; // While not a true aoe, it should hit most adds
+    dual             = true;
+    background       = true;
+    may_crit         = true;
+    base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
 
   virtual void execute()
@@ -1759,11 +1767,6 @@ struct flame_orb_strike_t : public mage_spell_t
     mage_spell_t::execute();
     tick_dmg = direct_dmg;
     update_stats( DMG_DIRECT );
-    if ( result == RESULT_CRIT )
-    {
-      trigger_master_of_elements( this, 1.0 );
-    }
-    trigger_hot_streak( this );
   }
 };
 
@@ -1774,6 +1777,8 @@ struct flame_orb_t : public mage_spell_t
   flame_orb_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "flame_orb", 82731, player )
   {
+    check_min_level( 81 );
+
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
@@ -1790,6 +1795,13 @@ struct flame_orb_t : public mage_spell_t
     mage_spell_t::execute();
 
     flame_orb_strike -> execute();
+
+    mage_t* p = player -> cast_mage();
+
+    if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> rank() / 3 ) )
+    {
+      // FIXME: Trigger Flame Orb Explode (No idea what this is based on )
+    }
   }
 };
 
@@ -2122,7 +2134,8 @@ struct living_bomb_explosion_t : public mage_spell_t
     dual             = true;
     background       = true;
     may_crit         = true;
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03;
+    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03
+                           + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
 
   virtual void execute()
@@ -2133,9 +2146,7 @@ struct living_bomb_explosion_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         trigger_ignite( this, direct_dmg );
-        trigger_master_of_elements( this, 1.0 );
       }
-      trigger_hot_streak( this );
     }
     update_result( DMG_DIRECT );
   }
@@ -2158,7 +2169,8 @@ struct living_bomb_t : public mage_spell_t
     parse_options( options, options_str );
 
     may_crit         = true;
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03;
+    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03
+                           + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
 
     living_bomb_explosion = new living_bomb_explosion_t( p );
   }
@@ -2412,6 +2424,15 @@ struct pyroblast_t : public mage_spell_t
       p -> buffs_hot_streak -> expire();
       p -> buffs_tier10_2pc -> trigger();
     }
+    else
+    {
+      trigger_hot_streak( this );
+    }
+
+    if ( result_is_hit() ) 
+    {
+      sim -> target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
+    }
 
     // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
     if ( p -> buffs_hot_streak -> check() )
@@ -2451,6 +2472,9 @@ struct scorch_t : public mage_spell_t
 
     if ( debuff )
       check_talent( p -> talents.critical_mass -> rank() );
+
+    if ( p -> talents.firestarter -> rank() )
+      usable_moving = true;
   }
 
   virtual void execute()
@@ -2484,7 +2508,7 @@ struct scorch_t : public mage_spell_t
   }
 };
 
-// Slow Spell ================================================================
+// Slow Spell ===============================================================
 
 struct slow_t : public mage_spell_t
 {
@@ -2518,6 +2542,8 @@ struct time_warp_t : public mage_spell_t
   time_warp_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "time_warp", 80353, player )
   {
+    check_min_level( 85 );
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2549,7 +2575,7 @@ struct time_warp_t : public mage_spell_t
   }
 };
 
-// Water Elemental Spell ================================================
+// Water Elemental Spell ====================================================
 
 struct water_elemental_spell_t : public mage_spell_t
 {
@@ -2695,7 +2721,7 @@ struct choose_rotation_t : public action_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Mage Character Definition
@@ -2744,7 +2770,7 @@ action_t* mage_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// mage_t::create_pet ======================================================
+// mage_t::create_pet =======================================================
 
 pet_t* mage_t::create_pet( const std::string& pet_name )
 {
@@ -2758,7 +2784,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
   return 0;
 }
 
-// mage_t::create_pets =====================================================
+// mage_t::create_pets ======================================================
 
 void mage_t::create_pets()
 {
@@ -2766,7 +2792,7 @@ void mage_t::create_pets()
   create_pet( "water_elemental" );  
 }
 
-// mage_t::init_glyphs ====================================================
+// mage_t::init_glyphs ======================================================
 
 void mage_t::init_glyphs()
 {
@@ -2820,7 +2846,7 @@ void mage_t::init_glyphs()
   }
 }
 
-// mage_t::init_talents ===================================================
+// mage_t::init_talents =====================================================
 
 void mage_t::init_talents()
 {
@@ -2894,7 +2920,7 @@ void mage_t::init_talents()
   player_t::init_talents();
 }
 
-// mage_t::init_spells ====================================================
+// mage_t::init_spells ======================================================
 
 void mage_t::init_spells()
 {
@@ -2911,7 +2937,7 @@ void mage_t::init_spells()
   passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization",  MAGE_FROST );
 }
 
-// mage_t::init_race ======================================================
+// mage_t::init_race ========================================================
 
 void mage_t::init_race()
 {
@@ -2939,7 +2965,7 @@ void mage_t::init_race()
 }
 
 
-// mage_t::init_base =======================================================
+// mage_t::init_base ========================================================
 
 void mage_t::init_base()
 {
@@ -2958,7 +2984,7 @@ void mage_t::init_base()
   diminished_parry_capi = 0.006650;
 }
 
-// mage_t::init_buffs ======================================================
+// mage_t::init_buffs =======================================================
 
 void mage_t::init_buffs()
 {
@@ -2990,7 +3016,7 @@ void mage_t::init_buffs()
   buffs_molten_armor = new buff_t( this, "molten_armor" );
 }
 
-// mage_t::init_gains ======================================================
+// mage_t::init_gains =======================================================
 
 void mage_t::init_gains()
 {
@@ -3003,7 +3029,7 @@ void mage_t::init_gains()
   gains_master_of_elements = get_gain( "master_of_elements" );
 }
 
-// mage_t::init_procs ======================================================
+// mage_t::init_procs =======================================================
 
 void mage_t::init_procs()
 {
@@ -3015,7 +3041,7 @@ void mage_t::init_procs()
   procs_mana_gem        = get_proc( "mana_gem"        );
 }
 
-// mage_t::init_uptimes ====================================================
+// mage_t::init_uptimes =====================================================
 
 void mage_t::init_uptimes()
 {
@@ -3031,7 +3057,7 @@ void mage_t::init_uptimes()
   uptimes_water_elemental      = get_uptime( "water_elemental" );
 }
 
-// mage_t::init_rng ========================================================
+// mage_t::init_rng =========================================================
 
 void mage_t::init_rng()
 {
@@ -3041,10 +3067,11 @@ void mage_t::init_rng()
   rng_empowered_fire  = get_rng( "empowered_fire"  );
   rng_ghost_charge    = get_rng( "ghost_charge"    );
   rng_enduring_winter = get_rng( "enduring_winter" );
+  rng_impact          = get_rng( "impact"          );
   rng_nether_vortex   = get_rng( "nether_vortex"   );
 }
 
-// mage_t::init_actions ======================================================
+// mage_t::init_actions =====================================================
 
 void mage_t::init_actions()
 {
@@ -3136,7 +3163,7 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::composite_spell_power ===========================================
+// mage_t::composite_spell_power ============================================
 
 double mage_t::composite_spell_power( const school_type school ) SC_CONST
 {
@@ -3155,7 +3182,7 @@ double mage_t::composite_spell_power( const school_type school ) SC_CONST
   return sp;
 }
 
-// mage_t::composite_spell_crit ============================================
+// mage_t::composite_spell_crit =============================================
 
 double mage_t::composite_spell_crit() SC_CONST
 {
@@ -3180,7 +3207,7 @@ void mage_t::interrupt()
   buffs_invocation -> trigger();
 }
 
-// mage_t::matching_gear_multiplier =====================================
+// mage_t::matching_gear_multiplier =========================================
 
 double mage_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
@@ -3190,7 +3217,7 @@ double mage_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   return 0.0;
 }
 
-// mage_t::combat_begin ====================================================
+// mage_t::combat_begin =====================================================
 
 void mage_t::combat_begin()
 {
@@ -3218,7 +3245,7 @@ void mage_t::combat_begin()
   }
 }
 
-// mage_t::reset ===========================================================
+// mage_t::reset ============================================================
 
 void mage_t::reset()
 {
@@ -3229,7 +3256,7 @@ void mage_t::reset()
   _cooldowns.reset();
 }
 
-// mage_t::regen  ==========================================================
+// mage_t::regen  ===========================================================
 
 void mage_t::regen( double periodicity )
 {
@@ -3253,7 +3280,7 @@ void mage_t::regen( double periodicity )
   }
 }
 
-// mage_t::resource_gain ===================================================
+// mage_t::resource_gain ====================================================
 
 double mage_t::resource_gain( int       resource,
                               double    amount,
@@ -3274,7 +3301,7 @@ double mage_t::resource_gain( int       resource,
   return actual_amount;
 }
 
-// mage_t::resource_loss ===================================================
+// mage_t::resource_loss ====================================================
 
 double mage_t::resource_loss( int       resource,
                               double    amount,
@@ -3297,7 +3324,7 @@ double mage_t::resource_loss( int       resource,
   return actual_amount;
 }
 
-// mage_t::create_expression ===============================================
+// mage_t::create_expression ================================================
 
 action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 {
@@ -3323,7 +3350,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   return player_t::create_expression( a, name_str );
 }
 
-// mage_t::get_talent_trees ================================================
+// mage_t::get_talent_trees =================================================
 
 std::vector<talent_translation_t>& mage_t::get_talent_list()
 {
@@ -3332,7 +3359,7 @@ std::vector<talent_translation_t>& mage_t::get_talent_list()
   return talent_list;
 }
 
-// mage_t::get_options ====================================================
+// mage_t::get_options ======================================================
 
 std::vector<option_t>& mage_t::get_options()
 {
