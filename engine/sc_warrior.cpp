@@ -600,6 +600,27 @@ static void trigger_sword_and_board( attack_t* a )
   }
 }
 
+// trigger_enrage ===========================================================
+static void trigger_enrage( attack_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if ( ! p -> talents.enrage -> ok() )
+    return;
+
+  // FIXME - Needs a generic check for other enrage effects
+  if ( p -> buffs_death_wish -> up() )
+    return;
+
+  double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
+
+  if ( p -> mastery.unshackled_fury -> ok() ) {
+    enrage_value *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+  }
+
+  p -> buffs_enrage -> trigger( 1, enrage_value);
+}
+
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
@@ -682,6 +703,8 @@ void warrior_attack_t::execute()
   if ( result_is_hit() )
   {
     trigger_sudden_death( this );
+
+    trigger_enrage( this );
 
     if( result == RESULT_CRIT )
     {
@@ -880,13 +903,6 @@ struct melee_t : public warrior_attack_t
       {
         p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect_base_value( 3 ), p -> gains_blood_frenzy );
       }
-
-      double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
-      if ( p -> mastery.unshackled_fury -> ok() )
-      {
-        enrage_value *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
-      }
-      p -> buffs_enrage -> trigger( 1, enrage_value);
     }
   }
 };
