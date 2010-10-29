@@ -110,6 +110,7 @@ struct cooldown_t;
 struct death_knight_t;
 struct druid_t;
 struct dot_t;
+struct effect_t;
 struct enchant_t;
 struct event_t;
 struct gain_t;
@@ -3391,8 +3392,6 @@ struct base_stats_t
 
 
 
-
-
 // Action ====================================================================
 
 struct action_t : public active_spell_t
@@ -3401,6 +3400,7 @@ struct action_t : public active_spell_t
   int type;
   std::string name_str;
   player_t* player;
+  target_t* target;
   uint32_t id;
   int effect_nr;
   school_type school;
@@ -3545,8 +3545,6 @@ struct action_t : public active_spell_t
 
   virtual double ppm_proc_chance( double PPM ) SC_CONST;
 };
-
-// Attack ====================================================================
 
 struct attack_t : public action_t
 {

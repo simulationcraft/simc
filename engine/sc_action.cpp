@@ -16,6 +16,7 @@ void action_t::_init_action_t()
   sim                            = pp->sim;
   name_str                       = token_name;
   player                         = pp;
+  target                         = pp -> sim -> target;
   id                             = 0;
   effect_nr                      = 1;
   heal                           = false;
@@ -175,7 +176,7 @@ action_t::action_t( int               ty,
                     bool              sp ) :
   active_spell_t( p, n ),
   sim( pp->sim ), type( ty ), name_str( token_name ), 
-  player( pp ), school( s ), resource( r ), 
+  player( pp ), target( pp -> sim -> target ), school( s ), resource( r ),
   tree( tr ), special( sp )
 {
   _init_action_t();
@@ -184,7 +185,7 @@ action_t::action_t( int               ty,
 action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
   active_spell_t( p, name, sname ),
   sim( pp->sim ), type( ty ), name_str( token_name ), 
-  player( pp ), school( get_school_type() ), resource( power_type() ), 
+  player( pp ), target( pp -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
   _init_action_t();
@@ -193,7 +194,7 @@ action_t::action_t( int ty, const char* name, const char* sname, player_t* p, in
 action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
   active_spell_t( s ), 
   sim( pp->sim ), type( ty ), name_str( token_name ), 
-  player( pp ), school( get_school_type() ), resource( power_type() ), 
+  player( pp ), target( pp -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
   _init_action_t();
@@ -202,7 +203,7 @@ action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
   active_spell_t( p, name, id ),
   sim( pp->sim ), type( type ), name_str( token_name ), 
-  player( pp ), school( get_school_type() ), resource( power_type() ), 
+  player( pp ), target( pp -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
   _init_action_t();
@@ -549,7 +550,7 @@ void action_t::target_debuff( int dmg_type )
   target_dd_adder              = 0;
 
   player_t* p = player;
-  target_t* t = sim -> target;
+  target_t* t = target;
 
   if ( dmg_type == DMG_OVER_TIME && p -> buffs.dark_intent_feedback -> up() )
   {
@@ -639,7 +640,7 @@ bool action_t::result_is_miss() SC_CONST
 
 double action_t::armor() SC_CONST
 {
-  target_t* t = sim -> target;
+  target_t* t = target;
 
   double adjusted_armor =  t -> base_armor();
   double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
@@ -660,7 +661,7 @@ double action_t::resistance() SC_CONST
 {
   if ( ! may_resist ) return 0;
   
-  target_t* t = sim -> target;
+  target_t* t = target;
   double resist=0;
 
   double penetration = base_penetration + player_penetration + target_penetration;
@@ -854,7 +855,7 @@ double action_t::calculate_direct_damage()
 
   if ( result == RESULT_GLANCE )
   {
-    double delta_skill = ( sim -> target -> level - player -> level ) * 5.0;
+    double delta_skill = ( target -> level - player -> level ) * 5.0;
 
     if ( delta_skill < 0.0 )
       delta_skill = 0.0;
@@ -895,7 +896,7 @@ double action_t::calculate_direct_damage()
 
   if ( result == RESULT_BLOCK )
   {
-    blocked_dmg = sim -> target -> block_value;
+    blocked_dmg = target -> block_value;
     direct_dmg -= blocked_dmg;
     if ( direct_dmg < 0 ) direct_dmg = 0;
   }
@@ -954,7 +955,7 @@ void action_t::execute()
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+      log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
       log_t::miss_event( this );
     }
   }
@@ -986,7 +987,7 @@ void action_t::tick()
 
   if ( tick_may_crit )
   {
-    int delta_level = sim -> target -> level - player -> level;
+    int delta_level = target -> level - player -> level;
     
     if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
     {
@@ -1012,12 +1013,12 @@ void action_t::tick()
 
 void action_t::last_tick()
 {
-  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), sim -> target -> name() );
+  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), target -> name() );
 
   ticking = 0;
   time_to_tick = 0;
 
-  if ( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding -> decrement();
+  if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 
   if ( observer ) *observer = 0;
 }
@@ -1057,7 +1058,7 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
 void action_t::assess_damage( double amount,
                               int    dmg_type )
 {
-  sim -> target -> assess_damage( amount, school, dmg_type );
+  target -> assess_damage( amount, school, dmg_type );
 
   if ( dmg_type == DMG_DIRECT )
   {
@@ -1065,7 +1066,7 @@ void action_t::assess_damage( double amount,
     {
       log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
-                     sim -> target -> name(), amount,
+                     target -> name(), amount,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
@@ -1080,7 +1081,7 @@ void action_t::assess_damage( double amount,
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      current_tick, number_ticks,
-                     sim -> target -> name(), amount,
+                     target -> name(), amount,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
@@ -1089,9 +1090,9 @@ void action_t::assess_damage( double amount,
     action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
 
-  if ( aoe && sim -> target -> adds_nearby )
+  if ( aoe && target -> adds_nearby )
   {
-    for ( int i=0; i < sim -> target -> adds_nearby && i < 9; i++ )
+    for ( int i=0; i < target -> adds_nearby && i < 9; i++ )
     {
       additional_damage( amount, dmg_type );
     }
@@ -1104,7 +1105,7 @@ void action_t::additional_damage( double amount,
                                   int    dmg_type )
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  sim -> target -> assess_damage( amount, school, dmg_type );
+  target -> assess_damage( amount, school, dmg_type );
   stats -> add_result( amount, dmg_type, result );
 }
 
@@ -1165,7 +1166,7 @@ void action_t::schedule_tick()
 
   if ( current_tick == 0 )
   {
-    if ( school == SCHOOL_BLEED ) sim -> target -> debuffs.bleeding -> increment();
+    if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> increment();
 
     if ( tick_zero )
     {
@@ -1387,7 +1388,7 @@ void action_t::update_time( int type )
 
 bool action_t::ready()
 {
-  target_t* t = sim -> target;
+  target_t* t = target;
 
   if ( player -> skill < 1.0 )
     if ( ! sim -> roll( player -> skill ) )
@@ -1436,19 +1437,19 @@ bool action_t::ready()
       return false;
 
   if ( min_time_to_die > 0 )
-    if ( sim -> target -> time_to_die() < min_time_to_die )
+    if ( target -> time_to_die() < min_time_to_die )
       return false;
 
   if ( max_time_to_die > 0 )
-    if ( sim -> target -> time_to_die() > max_time_to_die )
+    if ( target -> time_to_die() > max_time_to_die )
       return false;
 
   if ( min_health_percentage > 0 )
-    if ( sim -> target -> health_percentage() < min_health_percentage )
+    if ( target -> health_percentage() < min_health_percentage )
       return false;
 
   if ( max_health_percentage > 0 )
-    if ( sim -> target -> health_percentage() > max_health_percentage )
+    if ( target -> health_percentage() > max_health_percentage )
       return false;
 
   if ( max_haste > 0 )
@@ -1466,7 +1467,7 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
-  if ( sim -> target -> debuffs.invulnerable -> check() )
+  if ( target -> debuffs.invulnerable -> check() )
     if ( harmful )
       return false;
 
