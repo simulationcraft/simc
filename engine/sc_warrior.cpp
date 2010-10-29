@@ -758,15 +758,15 @@ void warrior_attack_t::player_buff()
 
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
-    player_multiplier *= 1.05;
+    player_multiplier *= ( 1 + p -> buffs_battle_stance -> effect_base_value (1) / 100.0 );
   }
   else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
   {
-    player_multiplier *= 1.10;
+    player_multiplier *= ( 1 + p -> buffs_berserker_stance -> effect_base_value (1) / 100.0 );
   }
   else if ( p -> active_stance == STANCE_DEFENSE && p -> buffs_defensive_stance -> up() )
   {
-    player_multiplier *= 0.95;
+    // No penalty for defensive stance at the moment.
   }
   
   player_multiplier *= 1.0 + p -> buffs_death_wish    -> value();
@@ -2877,15 +2877,15 @@ void warrior_t::init_buffs()
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, 12.0,   0, talents.bastion_of_defense -> proc_chance() );
-  buffs_battle_stance             = new buff_t( this, "battle_stance"    );
+  buffs_battle_stance             = new buff_t( this, 21156, "battle_stance" );
   buffs_battle_trance             = new buff_t( this, "battle_trance",             1, 15.0,   0, talents.battle_trance -> proc_chance() );
   buffs_berserker_rage            = new buff_t( this, "berserker_rage",            1, 10.0 );
-  buffs_berserker_stance          = new buff_t( this, "berserker_stance" );
+  buffs_berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
   buffs_bloodsurge                = new buff_t( this, "bloodsurge",                1, 10.0,   0, talents.bloodsurge -> proc_chance() );
   buffs_colossus_smash            = new buff_t( this, "colossus_smash",            1,  6.0 );
   buffs_deadly_calm               = new buff_t( this, "deadly_calm",               1, 10.0 );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0 );
-  buffs_defensive_stance          = new buff_t( this, "defensive_stance" );
+  buffs_defensive_stance          = new buff_t( this, 7376, "defensive_stance" );
   buffs_enrage                    = new buff_t( this, "enrage",                    1,  9.0,   0, talents.enrage -> proc_chance() );
   buffs_executioner_talent        = new buff_t( this, "executioner_talent",        5,  9.0 );
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry -> proc_chance() );
