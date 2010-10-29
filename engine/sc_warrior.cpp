@@ -674,6 +674,7 @@ void warrior_attack_t::execute()
   attack_t::execute();
 
   warrior_t* p = player -> cast_warrior();
+
   // Battle Trance only is effective+consumed if action cost was >=5
   if ( attack_t::cost() >= 50 ) 
     p -> buffs_battle_trance -> expire();
@@ -1558,7 +1559,7 @@ struct raging_blow_t : public warrior_attack_t
 
   // We run this attack again for off-hand but we don't re-consume
   // so we do the consume() call once in execute.
-  virtual void consume_resource { }
+  virtual void consume_resource() { }
 
   virtual void execute()
   {
@@ -1915,7 +1916,7 @@ struct slam_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     weapon                      = &( p -> main_hand_weapon );
-    normalize_weapon_speed      = false;
+    normalize_weapon_speed      = true;
     may_crit                    = true;
     base_crit                  += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> effect_base_value( 1 ) / 100.0;
@@ -1935,6 +1936,7 @@ struct slam_t : public warrior_attack_t
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_bloodsurge -> check() )
       return 0;
 
@@ -1944,10 +1946,11 @@ struct slam_t : public warrior_attack_t
   virtual double execute_time() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_bloodsurge -> check() )
       return 0.0;
-    else
-      return warrior_attack_t::execute_time();
+
+    return warrior_attack_t::execute_time();
   }
 
   // We don't want to re-consume for off-hand hits with SMF.
@@ -1957,8 +1960,6 @@ struct slam_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     
-    p -> buffs_bloodsurge -> decrement();
-
     // MH hit
     weapon = &( player -> main_hand_weapon );
     warrior_attack_t::execute();
@@ -1970,6 +1971,8 @@ struct slam_t : public warrior_attack_t
     }
 
     warrior_attack_t::consume_resource();
+    p -> buffs_bloodsurge -> decrement();
+
   }
 
   virtual bool ready()
