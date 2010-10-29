@@ -1422,7 +1422,7 @@ struct evocation_t : public mage_spell_t
     parse_options( options, options_str );
 
     base_tick_time        = 2.0;
-    num_ticks             = ( int ) base_execute_time / base_tick_time;
+    num_ticks             = ( int ) ( base_execute_time / base_tick_time );
     channeled             = true;
     harmful               = false;
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
@@ -1532,7 +1532,7 @@ struct fireball_t : public mage_spell_t
         return false;
 
     if ( frozen != -1 )
-      if ( frozen != p -> buffs_fingers_of_frost -> may_react() )
+      if ( frozen != (int) p -> buffs_fingers_of_frost -> may_react() )
         return false;
 
     return true;
@@ -1729,7 +1729,7 @@ struct frostbolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( frozen != -1 )
-      if ( frozen != p -> buffs_fingers_of_frost -> may_react() )
+      if ( frozen != (int) p -> buffs_fingers_of_frost -> may_react() )
         return false;
 
     return mage_spell_t::ready();
@@ -1806,7 +1806,7 @@ struct frostfire_bolt_t : public mage_spell_t
         return false;
 
     if ( frozen != -1 )
-      if ( frozen != p -> buffs_fingers_of_frost -> may_react() )
+      if ( frozen != (int) p -> buffs_fingers_of_frost -> may_react() )
         return false;
 
     return mage_spell_t::ready();
@@ -1868,7 +1868,7 @@ struct ice_lance_t : public mage_spell_t
         return false;
 
     if ( frozen != -1 )
-      if ( frozen != p -> buffs_fingers_of_frost -> may_react() )
+      if ( frozen != (int) p -> buffs_fingers_of_frost -> may_react() )
         return false;
 
     return true;
