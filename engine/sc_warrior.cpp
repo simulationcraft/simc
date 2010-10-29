@@ -2379,6 +2379,9 @@ struct inner_rage_t : public warrior_spell_t
 
     id = 1134;
     parse_data( p -> player_data );
+
+    harmful = false;
+    cooldown -> duration = 1.5;
   }
 
   virtual void execute()
@@ -2391,11 +2394,14 @@ struct inner_rage_t : public warrior_spell_t
 
   virtual bool ready()
   {
+    if ( ! warrior_spell_t::ready() )
+      return false;
+
     warrior_t* p = player -> cast_warrior();
     if ( p -> resource_current[ RESOURCE_RAGE ] < 75.0 )
       return false;
 
-    return warrior_spell_t::ready();
+    return true;
   }
 };
 
