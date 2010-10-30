@@ -1,0 +1,10 @@
+#!simc
+
+patch=4.0.3
+optimal_raid=1
+target_level=88
+
+Warlock_403_Affliction_Drain.simc
+Warlock_403_Affliction.simc
+Warlock_403_Demonology.simc
+Warlock_403_Destruction.simc
