@@ -43,7 +43,7 @@ void action_t::_init_action_t()
   may_crit                       = false;
   tick_may_crit                  = false;
   tick_zero                      = false;
-  scale_with_haste               = true;
+  scale_with_haste               = false;
   usable_moving                  = false;
   dot_behavior                   = DOT_WAIT;
   min_gcd                        = 0.0;
@@ -1709,3 +1709,25 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
   }
 }
 
+double action_t::tick_time() SC_CONST
+{
+  double t = base_tick_time;
+  if ( channeled || ( scale_with_haste ) )
+  {
+    assert( snapshot_haste > 0.0 );
+    t *= snapshot_haste;
+  }
+  return t;
+}
+
+int action_t::hasted_num_ticks() SC_CONST
+{
+  int n = num_ticks;
+  if ( scale_with_haste )
+  {
+    assert ( snapshot_haste > 0.0 );
+    double t = num_ticks / snapshot_haste;
+    n = int ( floor ( t + 0.5 ) );
+  }
+  return n;
+}

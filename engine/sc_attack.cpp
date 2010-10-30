@@ -35,6 +35,7 @@ void attack_t::_init_attack_t()
 
   trigger_gcd = player -> base_gcd;
   min_gcd = 1.0;
+  scale_with_haste = false;
 
   range = 0; // Prevent action from being scheduled when player_t::moving!=0  
 }
