@@ -461,7 +461,10 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
   if ( state == STATE_FULL )
   {
-    log_rune_status( o );
+    if ( p -> sim -> log )
+    {
+      log_rune_status(p);
+    }
     if ( is_death() )
       o -> buffs_tier11_4pc_melee -> trigger();
 
