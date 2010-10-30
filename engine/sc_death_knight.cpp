@@ -3819,6 +3819,9 @@ struct unholy_frenzy_t : public spell_t
       unholy_frenzy_target = sim -> find_player( target_str );
       assert ( unholy_frenzy_target != 0 );
     }
+
+    harmful = false;
+    trigger_gcd = 0;
   }
 
   virtual void execute()
