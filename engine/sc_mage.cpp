@@ -216,6 +216,8 @@ struct mage_t : public player_t
   uptime_t* uptimes_dpm_rotation;
   uptime_t* uptimes_water_elemental;
 
+  int mana_gem_charges;
+
   mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r )
   {
     tree_type[ MAGE_ARCANE ] = TREE_ARCANE;
@@ -231,6 +233,7 @@ struct mage_t : public player_t
     cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
 
     distance         = 40;
+    mana_gem_charges =  3;
   }
 
   // Character Definition
@@ -426,23 +429,24 @@ struct mirror_image_pet_t : public pet_t
   int num_rotations;
   std::vector<action_t*> sequences;
   int sequence_finished;
+  double snapshot_arcane_sp;
+  double snapshot_fire_sp;
+  double snapshot_frost_sp;
+
+  mirror_image_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "mirror_image_3", true /*guardian*/ ),
+    num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
+  {}
 
   struct arcane_blast_t : public spell_t
   {
     action_t* next_in_sequence;
 
     arcane_blast_t( mirror_image_pet_t* mirror_image, action_t* nis ):
-      spell_t( "arcane_blast", 88084, mirror_image ), next_in_sequence( nis )
+      spell_t( "mirror_arcane_blast", 88084, mirror_image ), next_in_sequence( nis )
     {
       may_crit          = true;
       background        = true;
-
-      // FIXME: This can be removed once it's whitelisted
-      base_cost         = 0;
-      base_execute_time = 3.0;
-      base_dd_min       = 201 / 2;
-      base_dd_max       = 233 / 2;
-      direct_power_mod  = 0.30;
     }
 
     virtual void execute()
@@ -459,13 +463,6 @@ struct mirror_image_pet_t : public pet_t
         if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
     }
-
-    virtual void player_buff()
-    {
-      mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
-      spell_t::player_buff();
-      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
-    }
   };
 
   struct fire_blast_t : public spell_t
@@ -473,24 +470,10 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     fire_blast_t( mirror_image_pet_t* mirror_image, action_t* nis ):
-      spell_t( "fire_blast", 59637, mirror_image ), next_in_sequence( nis )
+      spell_t( "mirror_fire_blast", 59637, mirror_image ), next_in_sequence( nis )
     {
       background        = true;
       may_crit          = true;
-
-      // FIXME: This can be removed once 59637 is whitelisted
-      base_cost         = 0;
-      base_execute_time = 0;
-      base_dd_min       = 88;
-      base_dd_max       = 98;
-      direct_power_mod  = 0.15;
-    }
-
-    virtual void player_buff()
-    {
-      mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
-      spell_t::player_buff();
-      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
     }
 
     virtual void execute()
@@ -514,17 +497,10 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     fireball_t( mirror_image_pet_t* mirror_image, action_t* nis ):
-      spell_t( "fireball", 88082, mirror_image ), next_in_sequence( nis )
+      spell_t( "mirror_fireball", 88082, mirror_image ), next_in_sequence( nis )
     {
       may_crit          = true;
       background        = true;
-
-      // FIXME: This can be removed once it's whitelisted
-      base_cost         = 0;
-      base_execute_time = 3.0;
-      base_dd_min       = 242 / 2;
-      base_dd_max       = 308 / 2;
-      direct_power_mod  = 0.30;
     }
 
     virtual void execute()
@@ -540,13 +516,6 @@ struct mirror_image_pet_t : public pet_t
         mi -> sequence_finished++;
         if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
-    }
-
-    virtual void player_buff()
-    {
-      mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
-      spell_t::player_buff();
-      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FIRE ) / p -> num_images;
     }
   };
 
@@ -555,17 +524,10 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     frostbolt_t( mirror_image_pet_t* mirror_image, action_t* nis ):
-      spell_t( "frost_bolt", 59638, mirror_image ), next_in_sequence( nis )
+      spell_t( "mirror_frost_bolt", 59638, mirror_image ), next_in_sequence( nis )
     {
       may_crit          = true;
       background        = true;
-
-      // FIXME: This can be removed once it's whitelisted
-      base_cost         = 0;
-      base_execute_time = 3.0;
-      base_dd_min       = 163;
-      base_dd_max       = 169;
-      direct_power_mod  = 0.30;
     }
 
     virtual void execute()
@@ -582,18 +544,8 @@ struct mirror_image_pet_t : public pet_t
         if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
       }
     }
-
-    virtual void player_buff()
-    {
-      mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
-      spell_t::player_buff();
-      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / p -> num_images;
-    }
   };
 
-  mirror_image_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "mirror_image", true /*guardian*/ ), num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
-  {}
   virtual void init_base()
   {
     pet_t::init_base();
@@ -649,9 +601,33 @@ struct mirror_image_pet_t : public pet_t
     }
   }
 
+  virtual double composite_spell_power( const school_type school ) SC_CONST
+  {
+    if( school == SCHOOL_ARCANE )
+    {
+      return snapshot_arcane_sp * 0.75;
+    }
+    else if ( school == SCHOOL_FIRE )
+    {
+      return snapshot_fire_sp * 0.75;
+    }
+    else if ( school == SCHOOL_FROST )
+    {
+      return snapshot_frost_sp * 0.75;
+    }
+
+    return 0;
+  }
+
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
+
+    mage_t* o = owner -> cast_mage();
+
+    snapshot_arcane_sp = o -> composite_spell_power( SCHOOL_ARCANE );
+    snapshot_fire_sp   = o -> composite_spell_power( SCHOOL_FIRE   );
+    snapshot_frost_sp  = o -> composite_spell_power( SCHOOL_FROST  );
 
     sequence_finished = 0;
 
@@ -2242,39 +2218,31 @@ struct mage_armor_t : public mage_spell_t
 
 struct mana_gem_t : public action_t
 {
-  // FIXME: Anyway to derive the value of this?
-  double trigger;
   double min;
   double max;
-  int charges;
-  int used;
 
   mana_gem_t( player_t* player, const std::string& options_str ) :
-      action_t( ACTION_USE, "mana_gem", player ),
-      trigger( 0 ), min( 3330 ), max( 3500 ), charges( 3 ), used( 0 )
+      action_t( ACTION_USE, "mana_gem", player )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
     {
-      { "min",     OPT_FLT, &min     },
-      { "max",     OPT_FLT, &max     },
-      { "trigger", OPT_FLT, &trigger },
-      { "charges", OPT_FLT, &charges },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    
+    min = p -> player_data.effect_min( 1936, p -> type, p -> level );
+    max = p -> player_data.effect_max( 1936, p -> type, p -> level );
+    
+    if ( p -> level <= 80 )
+    {
+      min = 3330.0;
+      max = 3500.0;
+    }
 
-    if ( min == 0 && max == 0 ) min = max = trigger;
-
-    if ( min > max ) std::swap( min, max );
-
-    if ( max == 0 ) max = trigger;
-    if ( trigger == 0 ) trigger = max;
-    assert( max > 0 && trigger > 0 );
-
-    cooldown = p -> get_cooldown( "rune" );
-    cooldown -> duration = 120.0;
+    cooldown = p -> get_cooldown( "mana_gem" );
+    cooldown -> duration = 60.0;
     trigger_gcd = 0;
     harmful = false;
   }
@@ -2286,7 +2254,7 @@ struct mana_gem_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s uses Mana Gem", p -> name() );
 
     p -> procs_mana_gem -> occur();
-    used++;
+    p -> mana_gem_charges--;
 
     double gain = sim -> rng -> range( min, max );
 
@@ -2302,17 +2270,13 @@ struct mana_gem_t : public action_t
     if ( cooldown -> remains() > 0 )
       return false;
 
-    if ( used >= charges )
+    mage_t* p = player -> cast_mage();
+
+    if ( p -> mana_gem_charges <= 0 )
       return false;
 
     return( ( player -> resource_max    [ RESOURCE_MANA ] -
-              player -> resource_current[ RESOURCE_MANA ] ) > trigger );
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-    used = 0;
+              player -> resource_current[ RESOURCE_MANA ] ) > max );
   }
 };
 
@@ -2337,7 +2301,7 @@ struct mirror_image_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     consume_resource();
     update_ready();
-    p -> summon_pet( "mirror_image" );
+    p -> summon_pet( "mirror_image_3" );
     p -> buffs_tier10_4pc -> trigger();
   }
 };
@@ -2589,7 +2553,7 @@ struct time_warp_t : public mage_spell_t
     
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping ) 
+      if ( p -> sleeping || p -> buffs.exhaustion -> check() ) 
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
@@ -2598,7 +2562,7 @@ struct time_warp_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if ( player -> buffs.bloodlust -> check() )
+    if ( player -> buffs.exhaustion -> check() )
       return false;
 
     return mage_spell_t::ready();
@@ -2683,8 +2647,9 @@ struct choose_rotation_t : public action_t
     // Evocation
     regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows -> rank() * 60.0 );
 
-    // Mana Gem
-    regen_rate += 3400 / 120.0; // FIXME: Possible to derive mana gem value?
+    // Mana Gem, if we have uses left
+    if ( p -> mana_gem_charges > 0 )
+      regen_rate += p ->player_data.effect_max( 1936, p ->type, p ->level ) / 60.0;
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -2809,7 +2774,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
 
   if ( p ) return p;
 
-  if ( pet_name == "mirror_image"    ) return new mirror_image_pet_t   ( sim, this );
+  if ( pet_name == "mirror_image_3"    ) return new mirror_image_pet_t   ( sim, this );
   if ( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
 
   return 0;
@@ -2819,7 +2784,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name )
 
 void mage_t::create_pets()
 {
-  create_pet( "mirror_image"    );
+  create_pet( "mirror_image_3"  );
   create_pet( "water_elemental" );  
 }
 
@@ -3253,6 +3218,7 @@ void mage_t::reset()
   ignite_delay_event = 0;
   rotation.reset();
   _cooldowns.reset();
+  mana_gem_charges = 3;
 }
 
 // mage_t::regen  ===========================================================

@@ -5,10 +5,9 @@ level=80
 race=undead
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=00300000000000000000021233001112012111323102
-glyphs=living_bomb/ice_lance/pyroblast/dragons_breath/fireball/molten_armor/arcane_brilliance
+glyphs=living_bomb/ice_lance/pyroblast/mirror_image/fireball/molten_armor/arcane_brilliance
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
-actions+=/focus_magic
 actions+=/arcane_brilliance
 actions+=/speed_potion
 actions+=/snapshot_stats

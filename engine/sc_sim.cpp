@@ -736,11 +736,13 @@ void sim_t::combat_begin()
              ( t -> health_percentage() < 25 ) ||
              ( t -> time_to_die()       < 60 ) )
         {
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+          for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
-      if ( p -> sleeping ) continue;
-      p -> buffs.bloodlust -> trigger();
-    }
+            if ( p -> sleeping || p -> buffs.exhaustion -> check() )
+              continue;
+
+            p -> buffs.bloodlust -> trigger();
+          }
         }
         else
         {

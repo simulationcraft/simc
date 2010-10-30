@@ -2265,6 +2265,7 @@ struct sim_t
     int earth_and_moon;
     int ebon_plaguebringer;
     int elemental_oath;
+    int exhaustion;
     int expose_armor;
     int faerie_fire;
     int ferocious_inspiration;
@@ -2899,6 +2900,7 @@ struct player_t
     buff_t* destruction_potion;
     buff_t* focus_magic;
     buff_t* dark_intent;
+    buff_t* exhaustion;
     buff_t* fortitude;
     buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
