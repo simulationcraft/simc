@@ -217,7 +217,7 @@ struct death_knight_t : public player_t
       {
         slot[i].type = RUNE_TYPE_BLOOD + ( i >> 1 );
         slot[i].paired_rune = &( slot[i ^ 1] ); // xor!
-	slot[i].slot_number = i;
+        slot[i].slot_number = i;
       }
 
     }
@@ -428,10 +428,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   {
     runes_per_second *= 1.0 + ( o -> talents.improved_blood_presence -> effect_base_value( 3 ) / 100.0 );
   }
-  if ( o -> buffs_unholy_presence -> check() )
-  {
-    runes_per_second *= 1.1;
-  }
+  // Unholy Presence's 10% (or, talented, 15%) increase is factored in elsewhere as melee haste.
   if ( o -> buffs_runic_corruption -> check() )
   {
     runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
@@ -443,7 +440,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   else
     state = STATE_REGENERATING;
 
-  if (p -> sim -> debug)
+  if ( p -> sim -> debug )
     log_t::output( p -> sim, "rune %d regen rate %.3f with haste %.2f percent", slot_number, runes_per_second, 100.0 / p -> composite_attack_haste() );
 
   if ( state == STATE_FULL )
@@ -470,7 +467,7 @@ struct army_ghoul_pet_t : public pet_t
   double snapshot_haste, snapshot_hit, snapshot_crit, snapshot_expertise;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "army_of_the_dead_ghoul" )
+    pet_t( sim, owner, "army_of_the_dead_ghoul_8" )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
@@ -596,7 +593,7 @@ struct army_ghoul_pet_t : public pet_t
     // to divide by 0.25 to get an expertise value of the equivalentb
     // percents, as percent-equivalent is apparently how the game
     // functions.
-    return std::max(snapshot_hit / 0.25, snapshot_expertise); // Hit gains equal to expertise
+    return std::max( snapshot_hit / 0.25, snapshot_expertise ); // Hit gains equal to expertise
   }
 
   virtual double composite_attack_haste() SC_CONST
@@ -1365,7 +1362,7 @@ struct ghoul_pet_t : public pet_t
     o -> active_ghoul = 0;
   }
 
-  
+
   virtual double composite_attack_crit() SC_CONST
   {
     // Ghouls recieve 100% of their master's crit
@@ -1381,7 +1378,7 @@ struct ghoul_pet_t : public pet_t
       return snapshot_crit;
     }
   }
-  
+
   virtual double composite_attack_expertise() SC_CONST
   {
     death_knight_t* o = owner -> cast_death_knight();
@@ -1390,7 +1387,7 @@ struct ghoul_pet_t : public pet_t
     if ( o -> passives.master_of_ghouls -> ok() )
     {
       // See comment above about expertise and pets.
-      return std::max(o -> composite_attack_hit() / 0.25, o -> composite_attack_expertise());
+      return std::max( o -> composite_attack_hit() / 0.25, o -> composite_attack_expertise() );
     }
     else
     {
@@ -1579,10 +1576,10 @@ static int count_runes( player_t* player )
   int count_by_type[RUNE_SLOT_MAX / 2] = { 0, 0, 0 }; // blood, frost, unholy
 
   for ( int i = 0; i < RUNE_SLOT_MAX / 2; ++i )
-    count_by_type[i] = ((int)p -> _runes.slot[2 * i].is_ready() +
-			(int)p -> _runes.slot[2 * i + 1].is_ready());
+    count_by_type[i] = ( ( int )p -> _runes.slot[2 * i].is_ready() +
+                         ( int )p -> _runes.slot[2 * i + 1].is_ready() );
 
-  return count_by_type[0] + (count_by_type[1] << 8) + (count_by_type[2] << 16);
+  return count_by_type[0] + ( count_by_type[1] << 8 ) + ( count_by_type[2] << 16 );
 }
 
 // Count Death Runes ========================================================
@@ -1796,8 +1793,8 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 
       parse_data( p -> player_data );
 
-      base_tick_time    = 2.0;
-      num_ticks         = 5;
+      base_tick_time    = 1.0;
+      num_ticks         = 10;
       background        = true;
       proc              = true;
       may_crit          = false;
@@ -2220,17 +2217,29 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( ! p -> in_combat )
     {
       // Pre-casting it before the fight
-      double pre_cast = p -> sim -> range( 8.0, 16.0 );
-      cooldown -> duration -= pre_cast;
+      channeled = false;
       death_knight_spell_t::execute();
-      player -> summon_pet( "army_of_the_dead_ghoul", 40.0 );
-      cooldown -> duration += pre_cast;
+      channeled = true;
+      // Because of the new rune regen system in 4.0, it only makes
+      // sense to cast ghouls 7-10s before a fight begins so you don't
+      // waste rune regen and enter the fight depleted.  So, the time
+      // you get for ghouls is 4-6 seconds less.
+      player -> summon_pet( "army_of_the_dead_ghoul_8", 35.0 );
     }
     else
     {
       death_knight_spell_t::execute();
-      player -> summon_pet( "army_of_the_dead_ghoul", 40.0 );
+      player -> summon_pet( "army_of_the_dead_ghoul_8", 40.0 );
     }
+  }
+  virtual void consume_resource()
+  {
+    if ( ! player -> in_combat ) death_knight_spell_t::consume_resource();
+  }
+
+  virtual double gcd() SC_CONST
+  {
+    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
   }
   virtual bool ready()
   {
@@ -3545,7 +3554,7 @@ struct presence_t : public death_knight_spell_t
     }
     break;
     case PRESENCE_UNHOLY:
-      p -> buffs_unholy_presence -> trigger( 1, 0.15 );
+      p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect_base_value( 2 ) / 100.0 );
       p -> base_gcd = 1.0;
       break;
     }
@@ -3590,6 +3599,11 @@ struct raise_dead_t : public death_knight_spell_t
     consume_resource();
     update_ready();
     player -> summon_pet( "ghoul", p -> passives.master_of_ghouls -> ok() ? 0.0 : 60.0 );
+  }
+
+  virtual double gcd() SC_CONST
+  {
+    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
   }
 
   virtual bool ready()
@@ -3902,7 +3916,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
 
 void death_knight_t::create_pets()
 {
-  create_pet( "army_of_the_dead_ghoul" );
+  create_pet( "army_of_the_dead_ghoul_8" );
   create_pet( "bloodworms" );
   create_pet( "dancing_rune_weapon" );
   create_pet( "gargoyle" );
@@ -3917,11 +3931,11 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name )
 
   if ( p ) return p;
 
-  if ( pet_name == "army_of_the_dead_ghoul" ) return new army_ghoul_pet_t          ( sim, this );
-  if ( pet_name == "bloodworms"             ) return new bloodworms_pet_t          ( sim, this );
-  if ( pet_name == "dancing_rune_weapon"    ) return new dancing_rune_weapon_pet_t ( sim, this );
-  if ( pet_name == "gargoyle"               ) return new gargoyle_pet_t            ( sim, this );
-  if ( pet_name == "ghoul"                  ) return new ghoul_pet_t               ( sim, this );
+  if ( pet_name == "army_of_the_dead_ghoul_8" ) return new army_ghoul_pet_t          ( sim, this );
+  if ( pet_name == "bloodworms"               ) return new bloodworms_pet_t          ( sim, this );
+  if ( pet_name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_pet_t ( sim, this );
+  if ( pet_name == "gargoyle"                 ) return new gargoyle_pet_t            ( sim, this );
+  if ( pet_name == "ghoul"                    ) return new ghoul_pet_t               ( sim, this );
 
   return 0;
 }
@@ -3937,8 +3951,6 @@ double death_knight_t::composite_attack_haste() SC_CONST
     haste *= 1.0 / ( 1.0 + passives.icy_talons -> effect_base_value( 1 ) / 100.0 );
   if ( talents.improved_icy_talons -> rank() )
     haste *= 1.0 / ( 1.0 + talents.improved_icy_talons -> effect_base_value( 3 ) / 100.0 );
-  if ( active_presence == PRESENCE_UNHOLY && talents.improved_unholy_presence -> rank() )
-    haste *= 1.0 / ( 1.0 + talents.improved_unholy_presence -> effect_base_value( 2 ) / 100.0 );
 
   return haste;
 }
@@ -4580,7 +4592,8 @@ int death_knight_t::target_swing()
 
 // death_knight_t::composite_pet_attack_crit ===============================
 
-double death_knight_t::composite_pet_attack_crit() {
+double death_knight_t::composite_pet_attack_crit()
+{
   // XXX: this is what I observe.  My ghoul absolutely doesn't get my
   // crit rating.  He crits on average ~10% of the time across
   // multiple nights of raiding and thousands of hits.  I would expect
