@@ -432,6 +432,9 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   // If the other rune is already regening, we don't.
   if ( state == STATE_DEPLETED && paired_rune->state == STATE_REGENERATING ) return;
 
+  // We only regenerate if our pair is full or depleted.
+  assert( paired_rune -> state != STATE_REGENERATING );
+
   death_knight_t* o = p -> cast_death_knight();
   // Base rune regen rate is 10 seconds; we want the per-second regen
   // rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
@@ -450,11 +453,29 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
     runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
   }
 
-  value = std::min( 1.0, value + periodicity * runes_per_second );
+  // Chances are, we will overflow by a small amount.  Toss extra
+  // overflow into our paired rune if it is regenerating or depleted.
+  value += periodicity * runes_per_second;
+  double overflow = 0.0;
+  if ( value > 1.0 ) {
+    overflow = value - 1.0;
+    value = 1.0;
+  }
+
+  assert ( value <= 1.0 );
+
   if ( value >= 1.0 )
     state = STATE_FULL;
   else
     state = STATE_REGENERATING;
+
+  if ( overflow > 0.0 && (paired_rune->state == STATE_REGENERATING || paired_rune->state == STATE_DEPLETED) ) {
+    paired_rune -> value = std::min( 1.0, paired_rune -> value + overflow );
+    if ( paired_rune -> value >= 1.0 )
+      paired_rune -> state = STATE_FULL;
+    else
+      paired_rune -> state = STATE_REGENERATING;
+  }
 
   if ( p -> sim -> debug )
     log_t::output( p -> sim, "rune %d regen rate %.3f with haste %.2f percent", slot_number, runes_per_second, 100.0 / p -> composite_attack_haste() );
