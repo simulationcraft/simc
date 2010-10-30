@@ -2042,7 +2042,7 @@ struct shadow_bolt_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
-    base_cost  *= 1.0 - ( p -> glyphs.shadow_bolt -> value() / 100.0 );
+    base_cost  *= 1.0 + ( p -> glyphs.shadow_bolt -> value() / 100.0 );
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0 );
 
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
