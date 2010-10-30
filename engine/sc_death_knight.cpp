@@ -409,6 +409,22 @@ struct death_knight_t : public player_t
   }
 };
 
+static void log_rune_status( death_knight_t* p )
+{
+  std::string rune_str;
+  for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
+  {
+    char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
+    if ( p -> _runes.slot[j].is_death() )
+      rune_letter = 'd';
+
+    if ( p -> _runes.slot[j].is_ready() )
+      rune_letter = toupper( rune_letter );
+    rune_str += rune_letter;
+  }
+  log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str() );
+}
+
 void dk_rune_t::regen_rune( player_t* p, double periodicity )
 {
   // Full runes don't regen.
@@ -445,6 +461,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
   if ( state == STATE_FULL )
   {
+    log_rune_status( o );
     if ( is_death() )
       o -> buffs_tier11_4pc_melee -> trigger();
 
@@ -1620,18 +1637,7 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
 
   if ( p -> sim -> log )
   {
-    std::string rune_str;
-    for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
-    {
-      char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
-      if ( p -> _runes.slot[j].is_death() )
-        rune_letter = 'd';
-
-      if ( p -> _runes.slot[j].is_ready() )
-        rune_letter = toupper( rune_letter );
-      rune_str += rune_letter;
-    }
-    log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str() );
+    log_rune_status( p );
   }
 
   if ( count_runes( p ) == 0 )
