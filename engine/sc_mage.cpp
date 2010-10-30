@@ -58,6 +58,7 @@ struct mage_t : public player_t
   };
   _cooldowns_t _cooldowns;
 
+  cooldown_t* cooldowns_deep_freeze;
   cooldown_t* cooldowns_fire_blast;
 
   // Events
@@ -110,7 +111,6 @@ struct mage_t : public player_t
 
   // Options
   std::string focus_magic_target_str;
-  std::string armor_type_str;
 
   // Passive Spells
   struct passive_spells_t
@@ -227,9 +227,9 @@ struct mage_t : public player_t
     active_water_elemental = 0;
 
     // Cooldowns
-    cooldowns_fire_blast = get_cooldown( "fire_blast" );
+    cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
+    cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
 
-    armor_type_str   = "molten"; // Valid values: molten|mage
     distance         = 40;
   }
 
@@ -320,26 +320,41 @@ struct water_elemental_pet_t : public pet_t
   {
     freeze_t( player_t* player):
       spell_t( "freeze", 33395, player )
+    {
+      aoe = true;
+    }
+
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
+    }
+
+    virtual void execute()
+    {
+      spell_t::execute();
+      mage_t* o = player -> cast_pet() -> owner -> cast_mage();
+
+      if ( o -> rng_improved_freeze -> roll( o -> talents.improved_freeze -> rank() ) )
       {
-        aoe = true;
+        o -> buffs_fingers_of_frost -> trigger();
       }
+    }
 
-      virtual void player_buff()
+    virtual bool ready()
+    {
+      mage_t* o = player -> cast_pet() -> owner -> cast_mage();
+
+      if ( o -> talents.improved_freeze -> rank() )
       {
-        spell_t::player_buff();
-        player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
-      }
-
-      virtual void execute()
-      {
-        spell_t::execute();
-        mage_t* o = player -> cast_pet() -> owner -> cast_mage();
-
-        if ( o -> rng_improved_freeze -> roll( o -> talents.improved_freeze -> rank() ) )
+        if ( o -> buffs_fingers_of_frost -> stack() && o -> cooldowns_deep_freeze -> remains() == 0 )
         {
-          o -> buffs_fingers_of_frost -> trigger();
+          return true;
         }
       }
+
+      return spell_t::ready();
+    }
   };
 
   struct water_bolt_t : public spell_t
@@ -2768,6 +2783,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "focus_magic"       ) return new             focus_magic_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
+  if ( name == "frostfire_orb"     ) return new           frostfire_orb_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
@@ -2964,7 +2980,6 @@ void mage_t::init_race()
   player_t::init_race();
 }
 
-
 // mage_t::init_base ========================================================
 
 void mage_t::init_base()
@@ -3074,11 +3089,19 @@ void mage_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=frost_wyrm/food,type=fish_feast";
+    if ( talents.focus_magic -> rank() ) action_list_str += "/focus_magic";
     action_list_str += "/arcane_brilliance";
-    if ( talents.focus_magic ) action_list_str += "/focus_magic";
     action_list_str += "/speed_potion";
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
+    if ( primary_tree() == TREE_ARCANE )
+    {
+      action_list_str += "/mage_armor";
+    }
+    else
+    {
+      action_list_str += "/molten_armor";
+    }
     if ( talents.critical_mass -> rank() ) action_list_str += "/scorch,debuff=1";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -3102,22 +3125,27 @@ void mage_t::init_actions()
     {
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power";
       action_list_str += "/mana_gem";
-      action_list_str += "/evocation,if=!buff.arcane_blast.up";
-      action_list_str += "/choose_rotation";
-      action_list_str += "/arcane_missiles,if=buff.missile_barrage.react";
       if ( talents.presence_of_mind -> rank() )
       {
-        action_list_str += "/presence_of_mind,arcane_blast,if=dps";
+        action_list_str += "/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>=3"; // PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
       }
-      action_list_str += "/arcane_blast,if=dpm&buff.arcane_blast.stack<3";
-      action_list_str += "/arcane_blast,if=dps";
+      action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
+      action_list_str += "/arcane_blast,if=cooldown.evocation.remains=0&mana_pct>=40";
+      action_list_str += "/evocation";
+      // action_list_str += "/choose_rotation";
+      action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3";
       action_list_str += "/arcane_missiles";
-      if ( primary_tree() == TREE_ARCANE ) action_list_str += "/arcane_barrage,moving=1"; // when moving
+      if ( primary_tree() == TREE_ARCANE ) action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
+      action_list_str += "/ice_lance,moving=1"; // when moving
     }
     else if ( primary_tree() == TREE_FIRE )
     {
-      if ( talents.combustion -> rank()   ) action_list_str += "/combustion";
+      if ( talents.combustion -> rank()   )
+       {
+         action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
+      }
+      if ( level >= 81 ) action_list_str += "/flame_orb";
       action_list_str += "/mana_gem";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb";
@@ -3125,27 +3153,33 @@ void mage_t::init_actions()
       action_list_str += "/evocation";
       action_list_str += "/fire_blast,moving=1"; // when moving
       action_list_str += "/ice_lance,moving=1";  // when moving
+      action_list_str += "/scorch"; // This can be free, so cast it last
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      if ( talents.icy_veins -> rank()    ) action_list_str += "/icy_veins";
-      action_list_str += "/water_elemental";
-      action_list_str += "/mana_gem";
-      action_list_str += "/deep_freeze";
-      action_list_str += "/frostbolt";
-      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15";
+      if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins";
+      if ( talents.frostfire_orb -> rank() && level >= 81 )
+      {
+        action_list_str += "/frostfire_orb";
+      }
+      if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() )
       {
-	      action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
+        action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
       }
+      else
+      {
+        action_list_str += "/arcane_missiles";
+      }
+      action_list_str += "/ice_lance,if=buff.fingers_of_frost.react";
+      action_list_str += "/water_elemental"; // This will cast freeze then immediately to generate FoF charges
+      action_list_str += "/mana_gem";
+      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15";
       action_list_str += "/frostbolt";
       action_list_str += "/evocation";
       action_list_str += "/ice_lance,moving=1"; // when moving
-      action_list_str += "/fire_blast,moving=1";         // when moving
-      action_list_str += "/ice_lance,moving=1";          // when moving
+      action_list_str += "/fire_blast,moving=1"; // when moving
     }
-    else action_list_str = "/arcane_missiles/evocation";
-
     action_list_default = 1;
   }
 
@@ -3208,25 +3242,6 @@ void mage_t::combat_begin()
   player_t::combat_begin();
 
   sim -> auras.arcane_tactics -> trigger();
-
-  if ( ! armor_type_str.empty() )
-  {
-    if ( sim -> log ) log_t::output( sim, "%s equips %s armor", name(), armor_type_str.c_str() );
-
-    if ( armor_type_str == "mage" )
-    {
-      buffs_mage_armor -> trigger();
-    }
-    else if ( armor_type_str == "molten" )
-    {
-      buffs_molten_armor -> trigger();
-    }
-    else
-    {
-      sim -> errorf( "Unknown armor type '%s' for player %s\n", armor_type_str.c_str(), name() );
-      armor_type_str.clear();
-    }
-  }
 }
 
 // mage_t::reset ============================================================
@@ -3355,7 +3370,6 @@ std::vector<option_t>& mage_t::get_options()
     {
 
       // @option_doc loc=player/mage/misc title="Misc"
-      { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
       { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -3371,11 +3385,6 @@ std::vector<option_t>& mage_t::get_options()
 bool mage_t::create_profile( std::string& profile_str, int save_type )
 {
   player_t::create_profile( profile_str, save_type );
-
-  if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
-  {
-    if ( ! armor_type_str.empty() ) profile_str += "armor_type=" + armor_type_str + "\n";
-  }
 
   if ( save_type == SAVE_ALL )
   {
