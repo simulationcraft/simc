@@ -480,7 +480,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       48265, // Unholy Presence
           0,
     },
-    // Pet tree, 5 abilities
+    // Pet tree, 4 abilities
     {
       47468, // Claw
       47481, // Gnaw
@@ -609,7 +609,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        2948, // Scorch
           0,
     },
-    // Frost tree, 13 abilities
+    // Frost tree, 14 abilities
     {
          10, // Blizzard
       11958, // Cold Snap
@@ -618,6 +618,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        7302, // Frost Armor
         122, // Frost Nova
         116, // Frostbolt
+      92283, // Frostfire Orb
       11426, // Ice Barrier
       45438, // Ice Block
       30455, // Ice Lance
@@ -626,9 +627,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       31687, // Summon Water Elemental
           0,
     },
-    // Pet tree, 3 abilities
+    // Pet tree, 6 abilities
     {
+      88084, // Arcane Blast
+      59637, // Fire Blast
+      88082, // Fireball
       33395, // Freeze
+      59638, // Frostbolt
       31707, // Waterbolt
           0,
     },
