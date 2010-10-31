@@ -1517,6 +1517,7 @@ struct exorcism_t : public paladin_spell_t
 {
   int art_of_war;
   int undead_demon;
+  double saved_multiplier;
 
   exorcism_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "exorcism", p ), art_of_war(0), undead_demon(0)
@@ -1542,12 +1543,15 @@ struct exorcism_t : public paladin_spell_t
 	  
     may_crit = true;
     tick_may_crit = true;
+    dot_behavior = DOT_REFRESH;
+    scale_with_haste = false;
 
     direct_power_mod = 1.0;
     tick_power_mod = 0.2/3; // glyph of exorcism is 20% of damage over three ticks ... FIXME: or just base damage?
     base_spell_power_multiplier = 0.344;
     base_attack_power_multiplier = 0.344;
-    base_td = p->glyphs.exorcism ? 1 : 0;
+    if ( ! p -> glyphs.exorcism )
+      num_ticks = 0;
   }
   
   virtual double cost() SC_CONST
@@ -1568,6 +1572,7 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_spell_t::player_buff();
     paladin_t* p = player->cast_paladin();
+    saved_multiplier = player_multiplier;
     if ( p->buffs_the_art_of_war->up() )
     {
       player_multiplier *= 2.0;
@@ -1609,6 +1614,14 @@ struct exorcism_t : public paladin_spell_t
     }
 
     return paladin_spell_t::ready();
+  }
+
+  virtual void tick()
+  {
+    // Since the glyph DoT doesn't benefit from the AoW multiplier, we save it in player_buff()
+    // and restore it here. Rather hackish.
+    player_multiplier = saved_multiplier;
+    paladin_spell_t::tick();
   }
 };
 
