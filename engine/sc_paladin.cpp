@@ -807,9 +807,6 @@ struct seals_of_command_proc_t : public paladin_attack_t
   {
     background  = true;
     proc        = true;
-    may_miss    = false; // assuming same as for seal of truth for now
-    may_dodge   = false; // ditto
-    may_parry   = false; // ditto
     trigger_gcd = 0;
 
     weapon            = &( p -> main_hand_weapon );
@@ -1045,10 +1042,11 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     base_tick_time = 3;
     scale_with_haste = true;
     spell_haste = true;
+    tick_may_crit = true;
     
     tick_power_mod = 1.0;
-    base_spell_power_multiplier = 0.05*0.2;  // Determined experimentally by Redcape
-    base_attack_power_multiplier = 0.096*0.2; // Determined experimentally by Redcape
+    base_spell_power_multiplier  = 0.05*0.2;   // Determined experimentally by Redcape
+    base_attack_power_multiplier = 0.0966*0.2; // Determined experimentally by Redcape
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.06 +
