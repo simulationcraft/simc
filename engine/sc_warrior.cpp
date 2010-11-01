@@ -610,7 +610,7 @@ static void trigger_enrage( attack_t* a )
     return;
 
   // FIXME - Needs a generic check for other enrage effects
-  if ( p -> buffs_death_wish -> up() )
+  if ( p -> buffs_death_wish -> up() || p -> buffs.unholy_frenzy -> up() )
     return;
 
   double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
