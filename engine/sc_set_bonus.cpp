@@ -239,6 +239,69 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N
   default_value = new spell_id_t( p, 0 );
 }
 
+set_bonus_array_t::set_bonus_array_t( player_t* p ) : p( p )
+{
+  memset( set_bonuses, 0, sizeof( set_bonuses ) );
+
+  // Deduce the array from the const data.
+  uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ];
+  memset( a_bonus, 0, sizeof( uint32_t ) * N_TIER * N_TIER_BONUS );
+  
+  uint32_t id = p -> player_data.get_class_id( p -> type );
+  if ( id == 0 )
+    return;
+
+  for ( uint32_t j = 0; j < N_TIER; j++ )
+  {
+    for ( uint32_t i = 0; i < N_TIER_BONUS; i++ )
+    {
+      uint32_t& r = p -> player_data.m_set_bonus_spells.ref( i, j, id );
+      a_bonus[ j ][ i ] = r;
+    }
+  }
+
+  // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
+  // array, based on set_type enum
+  for ( int i = 0; i < N_TIER; i++ )
+  {
+    for ( int j = 0; j < N_TIER_BONUS; j++ )
+    {
+      int b = 0;
+
+      switch( j )
+      {
+        // 2pc/4pc caster
+        case 0:
+        case 1:
+          b = j + 1;
+          break;
+        // 2pc/4pc melee
+        case 2:
+        case 3:
+          b = j + 2;
+          break;
+        case 4:
+        case 5:
+          b = j + 3;
+          break;
+        default:
+          break;
+      }
+      
+      set_bonuses[ 1 + i * 9 + b ] = create_set_bonus( p, a_bonus[ i ][ j ] );
+      
+      // if ( set_bonuses[ 1 + i * 9 + b ] )
+      //  log_t::output( p -> sim, "Initializing set bonus %u to slot %d", a_bonus[ i ][ j ], 1 + i * 9 + b );
+    }
+  }
+  
+  // Dummy default value that returns 0 always to everything, so missing 
+  // set bonuses will never give out a value nor crash, even if you dont 
+  // if ( p -> set_bonus.tierX_Ypc_caster() ), which isnt even necessary
+  // in this system
+  default_value = new spell_id_t( p, 0 );
+}
+
 set_bonus_array_t::~set_bonus_array_t()
 {
   for ( int i = 0; i < SET_MAX; i++ )

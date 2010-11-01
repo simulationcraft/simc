@@ -630,26 +630,15 @@ void priest_spell_t::player_buff()
 
   player_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
 
-#if 0
-  for ( int i=0; i < 4; i++ )
-  {
-    p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs_mind_spike -> stack() );
-  }
-#endif
   for ( int i=0; i < 6; i++ )
   {
     p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
     p -> uptimes_holy_evangelism[ i ] -> update( i == p -> buffs_holy_evangelism -> stack() );
   }
-#if 0
-  for ( int i=0; i < 4; i++ )
-  {
-    p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
-  }
-#endif
 
   if ( heal == true )
   {
+    // TO-DO: What is this? Is this meant to be the Holy passive? What about Disc then?
     player_multiplier *= 1.15;
   }
 }
@@ -1271,7 +1260,7 @@ struct mind_flay_t : public priest_spell_t
   int    cut_for_mb;
 
   mind_flay_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "mind_flay", player, SCHOOL_SHADOW, TREE_SHADOW ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
+      priest_spell_t( "mind_flay", player, "Mind Flay" ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
     check_talent( p -> active_spells.mind_flay -> ok() );
@@ -1285,12 +1274,7 @@ struct mind_flay_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    id = p -> active_spells.mind_flay -> spell_id();
-    parse_data( p -> player_data );
-
     channeled        = true;
-    num_ticks        = 3;
-    base_tick_time   = 1.0;
     scale_with_haste = false;
 
     if ( p -> set_bonus.tier10_4pc_caster() )
