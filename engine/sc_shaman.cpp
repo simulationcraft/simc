@@ -285,15 +285,6 @@ struct shaman_attack_t : public attack_t
   virtual void player_buff();
   virtual void assess_damage( double amount, int dmg_type );
   virtual double cost_reduction() SC_CONST;
-  virtual void   log_debug() SC_CONST 
-  {
-    if ( sim -> debug )
-    {
-      log_t::output( sim, "Initializing Shaman Attack %s id=%d school=%d power=%d cost=%.2f gcd=%.2f base_cast=%.2f cooldown=%.2f min_dd=%.2f max_dd=%.2f coeff_dd=%.5f weapon_multiplier=%.2f",
-        name_str.c_str(), id, school, resource, base_cost, trigger_gcd, base_execute_time, cooldown -> duration,
-        base_dd_min, base_dd_max, direct_power_mod, weapon_multiplier );
-    }
-  }
 };
 
 // ==========================================================================
@@ -334,16 +325,6 @@ struct shaman_spell_t : public spell_t
   virtual void   schedule_execute();
   virtual void   assess_damage( double amount, int dmg_type );
   virtual double haste() SC_CONST;
-  virtual void   log_debug() SC_CONST 
-  {
-    if ( sim -> debug )
-    {
-      log_t::output( sim, "Initializing Shaman Spell %s id=%d school=%d power=%d cost=%.2f gcd=%.2f base_cast=%.2f cooldown=%.2f m_base=%.3f m_crit=%.3f m_crit_bonus=%.3f min_dd=%.2f max_dd=%.2f coeff_dd=%.5f m_base_dd=%.3f td=%.2f n_ticks=%d amplitude=%.2f td_coeff=%.5f m_base_td=%.3f",
-        name_str.c_str(), id, school, resource, base_cost, trigger_gcd, base_execute_time, cooldown -> duration, base_multiplier, base_crit_multiplier, base_crit_bonus_multiplier,
-        base_dd_min, base_dd_max, direct_power_mod, base_dd_multiplier,
-        base_td, num_ticks, base_tick_time, tick_power_mod, base_td_multiplier );
-    }
-  }
 };
 
 // ==========================================================================
@@ -452,15 +433,43 @@ struct fire_elemental_pet_t : public pet_t
     virtual bool ready() { return ( player -> distance > 1 ); }
   };
 
-  struct fire_shield_t : public spell_t
+  struct fire_elemental_spell_t : public spell_t
   {
     double int_multiplier;
     double sp_multiplier;
     
-    fire_shield_t( player_t* player ) :
-      spell_t( "fire_shield", player, RESOURCE_MANA, SCHOOL_FIRE ), 
+    fire_elemental_spell_t( player_t* player, const char* n ) :
+      spell_t( n, player, RESOURCE_MANA, SCHOOL_FIRE ),
       int_multiplier( ( player -> sim -> P403 ) ? 0.8003 : 0.805 ), 
       sp_multiplier ( ( player -> sim -> P403 ) ? 0.501  : 0.475 )
+    {
+      
+    }
+    
+    virtual double total_spell_power() SC_CONST
+    {
+      double sp  = 0.0;
+      pet_t* pet = player -> cast_pet();
+      
+      sp += pet -> intellect() * int_multiplier;
+      sp += pet -> composite_spell_power( school ) * sp_multiplier;
+      return sp;
+    }
+    
+    virtual void player_buff() 
+    {
+      spell_t::player_buff();
+      // Fire elemental has approx 3% crit
+      player_crit = 0.03;
+    }
+    
+    virtual void target_debuff( int dmg_type ) { }
+  };
+
+  struct fire_shield_t : public fire_elemental_spell_t
+  {
+    fire_shield_t( player_t* player ) :
+      fire_elemental_spell_t( player, "fire_shield" )
     {
       aoe                       = true;
       background                = true;
@@ -475,27 +484,12 @@ struct fire_elemental_pet_t : public pet_t
     { 
       return ( player -> distance > 1 ) ? 0.0 : spell_t::total_multiplier();
     }
-    
-    virtual double total_spell_power() SC_CONST
-    {
-      double sp  = 0.0;
-      pet_t* pet = player -> cast_pet();
-      
-      sp += pet -> intellect() * int_multiplier;
-      sp += pet -> composite_spell_power( school ) * sp_multiplier;
-      return sp;
-    }
   };
 
-  struct fire_nova_t : public spell_t
+  struct fire_nova_t : public fire_elemental_spell_t
   {
-    double int_multiplier;
-    double sp_multiplier;
-    
     fire_nova_t( player_t* player ) :
-      spell_t( "fire_nova", player, RESOURCE_MANA, SCHOOL_FIRE ), 
-      int_multiplier( ( player -> sim -> P403 ) ? 0.8003 : 0.805 ), 
-      sp_multiplier ( ( player -> sim -> P403 ) ? 0.501  : 0.475 )
+      fire_elemental_spell_t( player, "fire_nova" )
     {
       aoe                  = true;
       may_crit             = true;
@@ -518,27 +512,12 @@ struct fire_elemental_pet_t : public pet_t
         base_dd_max        = ( player -> level ) * 17.300;
       }
     };
-    
-    virtual double total_spell_power() SC_CONST
-    {
-      double sp  = 0.0;
-      pet_t* pet = player -> cast_pet();
-      
-      sp += pet ->  intellect() * int_multiplier;
-      sp += pet -> composite_spell_power( school ) * sp_multiplier;
-      return sp;
-    }
   };
 
-  struct fire_blast_t : public spell_t
+  struct fire_blast_t : public fire_elemental_spell_t
   {
-    double int_multiplier;
-    double sp_multiplier;
-    
     fire_blast_t( player_t* player ) :
-      spell_t( "fire_blast", player, RESOURCE_MANA, SCHOOL_FIRE ), 
-      int_multiplier( ( player -> sim -> P403 ) ? 0.8003 : 0.805 ), 
-      sp_multiplier ( ( player -> sim -> P403 ) ? 0.501  : 0.475 )
+      fire_elemental_spell_t( player, "fire_blast" )
     {
       may_crit             = true;
       base_cost            = ( player -> level ) * 3.554;
@@ -556,16 +535,6 @@ struct fire_elemental_pet_t : public pet_t
         base_dd_max        = ( player -> level ) * 12.637;
       }
     };
-    
-    virtual double total_spell_power() SC_CONST
-    {
-      double sp  = 0.0;
-      pet_t* pet = player -> cast_pet();
-      
-      sp += pet ->  intellect() * int_multiplier;
-      sp += pet -> composite_spell_power( school ) * sp_multiplier;
-      return sp;
-    }
   };
 
   struct fire_melee_t : public attack_t
@@ -1297,19 +1266,15 @@ struct melee_t : public shaman_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double haste() SC_CONST
+  virtual double swing_haste() SC_CONST
   {
     shaman_t* p = player -> cast_shaman();
-    double h = shaman_attack_t::haste();
+    double h = attack_t::swing_haste();
     if ( p -> buffs_flurry -> up() )
-    {
       h *= 1.0 / ( 1.0 + ( p -> buffs_flurry -> base_value() + p -> sets -> set( SET_T7_4PC_MELEE ) -> mod_additive( P_UNKNOWN_1 ) / 100.0 ) );
-    }
     
     if ( p -> buffs_unleash_wind -> up() )
-    {
       h *= 1.0 / ( 1.0 + ( p -> buffs_unleash_wind -> base_value( E_APPLY_AURA, A_319 ) ) );
-    }
     
     return h;
   }
@@ -1682,7 +1647,8 @@ void shaman_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
     
   // Removed school check here, all our spells are nature/fire/frost so there's no need to do it
-  if ( harmful && p -> primary_tree() == TREE_ENHANCEMENT )
+  // Flametongue weapon bugs with mastery, so disable it completely for now
+  if ( ! proc && harmful && p -> primary_tree() == TREE_ENHANCEMENT )
     player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY ) / 10000.0;
     
   if ( p -> buffs_elemental_rage -> up() )
@@ -1760,6 +1726,7 @@ struct bloodlust_t : public shaman_spell_t
       if ( p -> sleeping || p -> buffs.exhaustion -> check() ) 
         continue;
       p -> buffs.bloodlust -> trigger();
+      p -> buffs.exhaustion -> trigger();
     }
   }
 

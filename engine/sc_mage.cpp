@@ -2557,6 +2557,7 @@ struct time_warp_t : public mage_spell_t
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
+      p -> buffs.exhaustion -> trigger();
     }
   }
 
