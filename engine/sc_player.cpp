@@ -1200,10 +1200,7 @@ void player_t::init_talents()
 
 void player_t::init_spells()
 {
-  if ( ! sets )
-  {
-    sets = new set_bonus_array_t( this );
-  }
+
 }
 
 

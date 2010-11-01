@@ -2666,7 +2666,6 @@ struct set_bonus_array_t
   player_t*         p;
 
   set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
-  set_bonus_array_t( player_t* p );
   virtual ~set_bonus_array_t();
 
   virtual bool              has_set_bonus( set_type s ) SC_CONST;

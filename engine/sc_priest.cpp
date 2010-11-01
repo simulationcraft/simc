@@ -1277,10 +1277,7 @@ struct mind_flay_t : public priest_spell_t
     channeled        = true;
     scale_with_haste = false;
 
-    if ( p -> set_bonus.tier10_4pc_caster() )
-    {
-      base_tick_time -= 0.51 / num_ticks;
-    }
+    base_tick_time += p -> sets -> set( SET_T10_4PC_CASTER ) -> mod_additive( P_TICK_TIME );
 
     base_cost  = 0.09 * p -> resource_base[ RESOURCE_MANA ];
     base_cost  *= 1.0 - p -> buffs_inner_will -> stack() * p -> constants.inner_will_value;
@@ -2733,6 +2730,20 @@ void priest_t::init_spells()
   active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
   active_spells.holy_archangel        = new active_spell_t( this, "holy_archangel", 87152 );
   active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
+
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    { 38413, 38412,     0,     0,     0,     0 }, // Tier6
+    { 60156, 60157,     0,     0,     0,     0 }, // Tier7
+    { 64906, 64908,     0,     0,     0,     0 }, // Tier8
+    { 67193, 67198,     0,     0,     0,     0 }, // Tier9
+    { 70800, 70801,     0,     0,     0,     0 }, // Tier10
+    { 89915, 89922,     0,     0,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
+
+  sets = new set_bonus_array_t( this, set_bonuses );
 }
 
 // priest_t::init_buffs ======================================================

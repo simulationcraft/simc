@@ -1307,7 +1307,7 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
     1.0,    // P_RANGE
     1.0,    // P_RADIUS
     100.0,  // P_CRIT
-    1.0,    // P_UNKNOWN
+    1.0,    // P_UNKNOWN_1
     1.0,    // P_PUSHBACK
     1000.0, // P_CAST_TIME
     1000.0, // P_COOLDOWN
@@ -1318,7 +1318,7 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
     1.0,    // P_PENETRATION
     1.0,    // P_TARGET
     100.0,  // P_PROC_CHANCE
-    1.0,    // P_UNKNOWN
+    1000.0, // P_TICK_TIME
     1.0,    // P_TARGET_BONUS
     1000.0, // P_GCD
     1.0,    // P_TICK_DAMAGE
