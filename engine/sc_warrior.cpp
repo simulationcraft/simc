@@ -1604,7 +1604,8 @@ struct raging_blow_t : public warrior_attack_t
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( ! ( p -> buffs_death_wish -> check() || p -> buffs_enrage -> check() || p -> buffs_berserker_rage -> check() ) )
+    if ( ! ( p -> buffs_death_wish     -> check() || p -> buffs_enrage        -> check()
+          || p -> buffs_berserker_rage -> check() || p -> buffs.unholy_frenzy -> check() ) )
       return false;
 
     return warrior_attack_t::ready();
