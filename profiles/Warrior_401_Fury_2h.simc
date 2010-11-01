@@ -1,8 +1,6 @@
 #!./simc 
 
 warrior=Warrior_401_Fury_2h
-#origin="http://profiler.wowhead.com/profile=20969288"
-#Source Talents/Glyphs: http://wowtal.com/#k=mFbu_15.a5o.warrior.RDgUP0
 level=80
 race=tauren
 use_pre_potion=-1
@@ -14,67 +12,68 @@ actions+=/stance,choose=berserker,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/death_wish
-actions+=/heroic_strike
-actions+=/raging_blow
 actions+=/whirlwind,if=target.adds>0
+actions+=/cleave,if=target.adds>0
+actions+=/execute
+actions+=/heroic_strike,if=target.adds=0
 actions+=/bloodthirst
-actions+=/berserker_rage,if=!(buff.enrage.react&buff.death_wish.react)
+actions+=/raging_blow
+actions+=/berserker_rage,if=!(buff.enrage.react&buff.death_wish.react)&cooldown.raging_blow.remains<1.5
 actions+=/recklessness
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute
-actions+=/battle_shout
-actions+=/berserker_rage
+actions+=/battle_shout,if=rage<50
 
-#Reforge haste -> hit
-head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_64haste_42hit_114crit_275sta_159str,gems=relentless_earthsiege_34str_8str,enchant=50ap_20crit
-#Reforge crit -> hit
-neck=penumbra_pendant,heroic=1,stats=101str_163sta_45crit_28hit_65haste,gems=10str_10hit_4str
-#Reforge haste -> hit
-shoulders=sanctified_ymirjar_lords_shoulderplates,heroic=1,stats=2067armor_49haste_33hit_90crit_204sta_128str,gems=20str_4str,enchant=40ap_15crit
-#Reforge haste -> hit
-chest=sanctified_ymirjar_lords_battleplate,heroic=1,stats=2756armor_62haste_42hit_122crit_275sta_167str,gems=20str_10str_10hit_6str,enchant=10str_10agi_10sta_10int_10spi
-#Reforge crit -> hit
-waist=coldwraith_links,heroic=1,stats=1550armor_78haste_51crit_34hit_204sta_120str,gems=10crit_10str_20str_34str_6str
-#Reforge crit -> hit
-legs=legplates_of_aetheric_strife,heroic=1,stats=2311armor_108haste_50crit_34hit_243sta_138str,gems=10str_10hit_34str_10str_10crit_8crit,enchant=75ap_22crit
-#Reforge crit -> hit
-feet=bloodsoaked_saronite_stompers,heroic=1,stats=1895armor_74haste_54crit_36hit_204sta_120str,gems=10crit_10str_10str_10hit_6str,enchant=15sta
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_78crit_60hit_153sta_94str,gems=10crit_10str_20str_4str,enchant=50ap
-hands=sanctified_ymirjar_lords_gauntlets,heroic=1,stats=1723armor_90crit_82hit_204sta_128str,gems=10crit_10str_20str_4str,enchant=44ap
-#Reforge 16crit to exp
-finger1=ashen_band_of_endless_might,stats=85str_43crit_16exp_79hit_144sta,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
-#Reforge crit -> exp
-finger2=might_of_blight,heroic=1,stats=94str_153sta_41crit_27exp_60haste,gems=10crit_10str_4str
-#Reforge crit -> hit
-trinket1=deathbringers_will,heroic=1,stats=101crit_66hit
-trinket2=deaths_verdict,heroic=1,stats=288ap
-#Reforge crit-> exp
-back=winding_sheet,heroic=1,stats=94str_153sta_41crit_27exp_60haste,gems=10str_10crit_4str,enchant=22agi
-#Reforge crit-> hit
-main_hand=shadowmourne,stats=68crit_46hit_114haste_268sta_196str,gems=20str_20str_20str_8str,enchant=berserking,weapon=axe2h_3.70speed_965min_1609max
-#Reforge crit -> exp
-ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33haste_25crit_16exp_80sta,gems=20str_4agi,weapon=crossbow_3.00speed_834min_1252max
-#Reforge crit -> hit
-off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,stats=73crit_49hit_114exp_292sta_171str,gems=20str_20str_20str_8str,enchant=berserking,weapon=sword2h_3.60speed_1001min_1503max
+head=sanctified_ymirjar_lords_helmet,heroic=1,type=plate,stats=2239armor_114crit_106haste_275sta_159str,gems=chaotic_skyflare_20str_8str,enchant=50ap_20crit,reforge=crit_hit
+
+neck=penumbra_pendant,heroic=1,stats=101str_163sta_73crit_65haste,gems=10str_10haste_4str,reforge=crit_hit
+
+shoulders=sanctified_ymirjar_lords_shoulderplates,heroic=1,stats=2067armor_82haste_90crit_204sta_128str,gems=20str_4str,enchant=40ap_15crit,reforge=crit_hit
+
+chest=sanctified_ymirjar_lords_battleplate,heroic=1,stats=2756armor_106haste_122crit_275sta_167str,gems=20str_10str_10hit_6str,enchant=10str_10agi_10sta_10int_10spi,reforge=crit_hit
+
+waist=coldwraith_links,heroic=1,type=plate,stats=1550armor_85crit_78haste_204sta_120str,gems=10crit_10str_20str_20str_6str,reforge=crit_hit
+
+legs=sanctified_ymirjar_lords_legplates,heroic=1,type=plate,stats=2412armor_122crit_106exp_274sta_167str,gems=10crit_10str_10hit_10str_6str,enchant=75ap_22crit,reforge=crit_hit
+
+feet=bloodsoaked_saronite_stompers,heroic=1,type=plate,stats=1895armor_90crit_74haste_204sta_120str,gems=10crit_10str_10hit_10str_6str,enchant=12crit_12hit,reforge=crit_hit
+
+wrists=polar_bear_claw_bracers,heroic=1,type=plate,stats=1206armor_68crit_60hit_153sta_94str,gems=10crit_10str_20str_4str,enchant=50ap
+
+hands=sanctified_ymirjar_lords_gauntlets,heroic=1,stats=1723armor_90crit_82hit_204sta_128str,gems=10haste_10str_20str_4str,enchant=44ap
+
+finger1=might_of_blight,heroic=1,stats=68crit_60haste_153sta_94str,gems=10haste_10str_4str,reforge=crit_hit
+
+finger2=ashen_band_of_endless_might,stats=59crit_59hit_144sta_85str,gems=10crit_10str_4str,equip=onattackhit_480ap_1ppm_10dur_60cd
+
+trinket1=deathbringers_will,heroic=1,stats=167crit,reforge=crit_hit
+trinket2=sharpened_twilight_scale,heroic=1,stats=184crit
+
+back=winding_sheet,heroic=1,stats=94str_153sta_68crit_60haste,gems=10str_10haste_4str,enchant=22agi,reforge=crit_hit
+
+main_hand=shadowmourne,stats=114crit_114haste_268sta_196str,gems=20str_20str_20str_8str,enchant=berserking,weapon=axe2h_3.70speed_965min_1609max,reforge=crit_hit
+
+off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,stats=122crit_114exp_292sta_171str,gems=20str_20str_20str_8str,enchant=berserking,weapon=sword2h_3.60speed_1001min_1503max,reforge=crit_hit
+
+ranged=falinrush_defender_of_quelthalas,heroic=1,stats=62agi_33haste_41crit_80sta,gems=20str_4agi,weapon=crossbow_3.00speed_834min_1252max
 
 # Gear Summary
-# gear_strength=2337
-# gear_agility=119
-# gear_stamina=3040
+# gear_strength=2310
+# gear_agility=98
+# gear_stamina=3056
 # gear_intellect=10
 # gear_spirit=10
-# gear_attack_power=547
-# gear_hit_rating=671
-# gear_crit_rating=1231
-# gear_haste_rating=767
-# gear_mastery_rating=0
-# gear_armor=15747
-# meta_gem=relentless_earthsiege
+# gear_attack_power=259
+# gear_expertise_rating=220
+# gear_hit_rating=732
+# gear_crit_rating=1328
+# gear_haste_rating=818
+# gear_armor=15848
+# meta_gem=chaotic_skyflare
 # tier10_2pc_melee=1
 # tier10_4pc_melee=1
 # trinket1=deathbringers_will,heroic=1
-# trinket2=deaths_verdict,heroic=1
-# main_hand=shadowmourne,weapon=axe2h_3.70speed_965min_1609max
-# off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,weapon=sword2h_3.60speed_1001min_1503max
+# main_hand=shadowmourne,weapon=axe2h_3.70speed_965min_1609max,enchant=berserking
+# off_hand=glorenzelg_highblade_of_the_silver_hand,heroic=1,weapon=sword2h_3.60speed_1001min_1503max,enchant=berserking
 # ranged=falinrush_defender_of_quelthalas,heroic=1,weapon=crossbow_3.00speed_834min_1252max
 
