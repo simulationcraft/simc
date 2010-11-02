@@ -106,7 +106,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& name,
                                              int cache )
 {
-  std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
+  std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?locale=en_us&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
   if ( ! node )

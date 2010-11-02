@@ -1193,7 +1193,7 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   std::string day   = splits[ 1 ];
   std::string year  = splits[ 2 ];
 
-  for ( int i=0; month[ i ]; i++ ) month[ i ] = tolower( month[ i ] );
+  std::transform(month.begin(), month.end(), month.begin(), (int(*)(int)) std::tolower );  
 
   if ( month.find( "jan" ) != std::string::npos ) month = "01";
   if ( month.find( "feb" ) != std::string::npos ) month = "02";
@@ -1206,7 +1206,7 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   if ( month.find( "sep" ) != std::string::npos ) month = "09";
   if ( month.find( "oct" ) != std::string::npos ) month = "10";
   if ( month.find( "nov" ) != std::string::npos ) month = "11";
-  if ( month.find( "ded" ) != std::string::npos ) month = "12";
+  if ( month.find( "dec" ) != std::string::npos ) month = "12";
 
   if ( month.size() == 1 ) month.insert( month.begin(), '0'  );
   if ( day  .size() == 1 ) day  .insert( day  .begin(), '0'  );
@@ -1518,6 +1518,47 @@ void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_l
 			}
 		}
 	}
+}
+
+spell_id_t* util_t::find_spell_in_list( const std::vector<spell_id_t *>* spell_list, const char* t_name )
+{
+  uint32_t i            = 0;
+  std::string str_tname = t_name;
+
+  if ( ! spell_list )
+    return 0;
+
+  while ( i < spell_list -> size() )
+  {
+    spell_id_t* p = ( *spell_list )[ i ];
+
+    if ( p && ! str_compare_ci( p -> s_token, str_tname ) )
+      return p;
+
+    i++;
+  }
+  
+  return 0;
+}
+
+spell_id_t* util_t::find_spell_in_list( const std::vector<spell_id_t *>* spell_list, const uint32_t id )
+{
+  uint32_t i = 0;
+  
+  if ( ! spell_list )
+    return 0;
+
+  while ( i < spell_list -> size() )
+  {
+    spell_id_t* p = ( *spell_list )[ i ];
+
+    if ( p && p -> s_id == id )
+      return p;
+
+    i++;
+  }
+  
+  return 0;
 }
 
 //-------------------------------
