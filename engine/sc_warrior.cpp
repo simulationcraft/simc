@@ -5,6 +5,40 @@
 
 #include "simulationcraft.h"
 
+
+// ==========================================================================
+//
+// TODO:
+//   * Simultaneous MH+OH shuold only consume 1 flurry charge.
+//   * If Flurry drops due to an MH attack with an OH attack at the same
+//     time, the next OH attack should still benefit from Flurry.
+//   * Get Heroic Strike to trigger properly "off gcd" using priority.
+//   * Go through all of Deep Wounds and figure out what's going on.
+//     * Is it working right?
+//     * Why is the stats output fubar?
+//     * Test when exactly the ticks occur?
+//   * Reconsider the use of the mined client spell data which gets stale fast.
+//   * Find and implement the formula for rage from damage taken.
+//   * Watch Raging Blow and see if Blizzard fix the bug where it's
+//     not refunding 80% of the rage cost if it misses.
+//   * Consider testing the rest of the abilities for that too.
+//   * Double check the application of mastery to damage.
+//   * Test some multi-target fights and see if WW/cleave are right.
+//   * Check normalize_weapon_speed for correctness everywhere.
+//   * Check that the way Colossus Smash is decreasing armor is right;
+//     Armor stuff has been pretty funky before, don't trust it.
+//   * Is the Recklessness decrement in the right place?  Could it be
+//     consumed by a shout or other non-harmful special?
+//   * Can you cancel Inner Rage?
+//   * Put check_spec() into other spec abilities same as Bloodthirst has?
+//   * Sanity check init_buffs() wrt durations and chances.
+//   * Fix the default action lists to be more realistic.
+//   * Arms.
+//   * Prot? O_O
+//
+// ==========================================================================
+
+
 // ==========================================================================
 // Warrior
 // ==========================================================================
@@ -18,7 +52,7 @@ struct warrior_t : public player_t
   int       active_stance;
 
   // Active Spells
-   struct active_spells_t
+  struct active_spells_t
   {
     active_spell_t* battle_shout;
     active_spell_t* berserker_rage;
