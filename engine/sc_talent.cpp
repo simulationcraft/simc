@@ -318,6 +318,7 @@ bool spell_id_t::initialize( const char* s_name )
               s_player -> player_data.spell_is_level( s_id, s_player -> level );
    
   // Warn if the player is enabling a spell that the player has no level for
+  /*
   if ( ! s_player -> player_data.spell_is_level( s_id, s_player -> level ) )
   {
     s_player -> sim -> errorf( "Warning: Player %s level (%d) too low for spell %s, requires level %d",
@@ -326,6 +327,7 @@ bool spell_id_t::initialize( const char* s_name )
       s_data -> name,
       s_data -> spell_level );
   }
+  */
   if ( s_type == T_MASTERY )
   {
     if ( s_player -> level < 75 )
@@ -394,6 +396,7 @@ std::string spell_id_t::to_str() SC_CONST
   std::ostringstream s;
   
   s << "enabled=" << ( s_enabled ? "true" : "false" );
+  s << " (ok=" << ( ok() ? "true" : "false" ) << ")";
   if ( s_overridden ) s << " (forced)";
   s << " token=" << s_token;
   s << " type=" << s_type;
