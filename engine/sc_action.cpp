@@ -965,9 +965,9 @@ void action_t::execute()
 
   if ( ! dual ) update_stats( DMG_DIRECT );
 
-  if ( repeating && ! proc ) schedule_execute();
-
   if ( harmful ) player -> in_combat = true;
+
+  if ( repeating && ! proc ) schedule_execute();
 }
 
 // action_t::tick ===========================================================
