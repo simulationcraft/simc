@@ -845,6 +845,22 @@ double spell_id_t::effect_max( const uint32_t effect_num ) SC_CONST
     s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
+double spell_id_t::effect_min( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  if ( ! ok() )
+    return 0.0;
+
+  return s_player -> player_data.effect_min( s_id, s_player -> level, type, sub_type, misc_value );
+}
+
+double spell_id_t::effect_max( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+{
+  if ( ! ok() )
+    return 0.0;
+
+  return s_player -> player_data.effect_max( s_id, s_player -> level, type, sub_type, misc_value );
+}
+
 double spell_id_t::effect_coeff( const uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
@@ -1118,3 +1134,4 @@ std::string mastery_t::to_str() SC_CONST
   
   return s.str();
 }
+
