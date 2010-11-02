@@ -1972,7 +1972,7 @@ void death_knight_attack_t::player_buff()
 
   if ( p -> mastery.frozen_heart -> ok() && school == SCHOOL_FROST )
   {
-    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
   }
 }
 
@@ -2066,7 +2066,7 @@ void death_knight_spell_t::player_buff()
 
   if ( p -> mastery.frozen_heart -> ok() && school == SCHOOL_FROST )
   {
-    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+    player_multiplier *= 1.0 + p -> mastery.frozen_heart -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
   }
 
   if ( sim -> debug )
@@ -2357,7 +2357,7 @@ struct blood_plague_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> mastery.blightcaller -> ok() )
     {
-      player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+      player_multiplier *= 1.0 + p -> mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
     }
   }
 
@@ -2899,7 +2899,7 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> mastery.blightcaller -> ok() )
     {
-      player_multiplier *= 1.0 + p -> mastery.blightcaller -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+      player_multiplier *= 1.0 + p -> mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
     }
   }
 };
@@ -4150,7 +4150,7 @@ void death_knight_t::init_spells()
 
   // Mastery
   mastery.blightcaller               = new mastery_t( this, "blightcaller", 77515, TREE_UNHOLY );
-  mastery.frozen_heart               = new mastery_t( this, "frozen_heart", 77514, TREE_BLOOD );
+  mastery.frozen_heart               = new mastery_t( this, "frozen_heart", 77514, TREE_FROST );
 
   // Passives
   passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North" );
