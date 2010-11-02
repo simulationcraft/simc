@@ -1654,9 +1654,6 @@ struct util_t
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
 
   static void translate_talent_trees( std::vector<talent_translation_t>& talent_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size );
-  
-  static spell_id_t* find_spell_in_list( const std::vector<spell_id_t *>* spell_list, const char* t_name );
-  static spell_id_t* find_spell_in_list( const std::vector<spell_id_t *>* spell_list, const uint32_t id );
 };
 
 // Event =====================================================================

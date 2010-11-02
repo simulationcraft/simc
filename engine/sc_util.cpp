@@ -1520,47 +1520,6 @@ void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_l
 	}
 }
 
-spell_id_t* util_t::find_spell_in_list( const std::vector<spell_id_t *>* spell_list, const char* t_name )
-{
-  uint32_t i            = 0;
-  std::string str_tname = t_name;
-
-  if ( ! spell_list )
-    return 0;
-
-  while ( i < spell_list -> size() )
-  {
-    spell_id_t* p = ( *spell_list )[ i ];
-
-    if ( p && ! str_compare_ci( p -> s_token, str_tname ) )
-      return p;
-
-    i++;
-  }
-  
-  return 0;
-}
-
-spell_id_t* util_t::find_spell_in_list( const std::vector<spell_id_t *>* spell_list, const uint32_t id )
-{
-  uint32_t i = 0;
-  
-  if ( ! spell_list )
-    return 0;
-
-  while ( i < spell_list -> size() )
-  {
-    spell_id_t* p = ( *spell_list )[ i ];
-
-    if ( p && p -> s_id == id )
-      return p;
-
-    i++;
-  }
-  
-  return 0;
-}
-
 //-------------------------------
 // std::STRING   utils
 //-------------------------------
