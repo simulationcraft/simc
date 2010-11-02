@@ -3346,12 +3346,16 @@ struct obliterate_t : public death_knight_attack_t
         }
       }
     }
+
+    p -> buffs_killing_machine -> expire();
   }
 
   virtual void player_buff()
   {
     death_knight_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
+
+    player_crit += p -> buffs_killing_machine -> value();
 
     if ( sim -> target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
