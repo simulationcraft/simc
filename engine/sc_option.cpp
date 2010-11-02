@@ -177,9 +177,9 @@ bool option_t::parse( sim_t*             sim,
     case OPT_TALENT_RANK: 
       return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ) );
     case OPT_TALENT_RANK_FORCED: 
-      return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ), false );
+      return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ), true );
     case OPT_SPELL_ENABLED: 
-      return ( ( struct spell_id_t *) address)->init_enabled( true, atoi( v.c_str() ) != 0 );
+      return ( ( struct spell_id_t *) address)->enable( atoi( v.c_str() ) != 0 );
     case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
     case OPT_DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );

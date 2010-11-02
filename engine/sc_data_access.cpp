@@ -1270,13 +1270,37 @@ double sc_data_access_t::race_stats( const pet_type_t r, const stat_type s ) SC_
 }
 
 
-uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* name, const int32_t tree ) SC_CONST
+bool sc_data_access_t::is_class_spell( uint32_t spell_id ) SC_CONST
+{
+  uint32_t s   = m_class_spells.rows;
+  uint32_t k   = m_class_spells.depth;
+  uint32_t i   = 0;
+  uint32_t* p  = 0;
+
+  for ( unsigned int cls = 0; cls < k; cls++ )
+  {
+    for ( uint32_t j = 0; j < s; j++ )
+    {
+      i = 0;
+      while ( ( ( p = m_class_spells.ptr( i, j, cls ) ) != NULL ) && *p )
+      {
+        if ( *p == spell_id )
+          return true;
+        i++;
+      }
+    }
+  }
+
+  return false;
+}
+
+uint32_t sc_data_access_t::find_class_spell( player_type c, const char* spell_name, int tree ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
 
   uint32_t s = m_class_spells.rows;
 
-  assert( name && name[ 0 ] && ( tree < ( int32_t ) s ) && ( tree >= -1 ) );
+  assert( spell_name && spell_name[ 0 ] && ( tree < ( int32_t ) s ) && ( tree >= -1 ) );
 
   uint32_t i = 0;
   uint32_t* p = NULL;
@@ -1288,7 +1312,7 @@ uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* na
       i = 0;
       while ( ( ( p = m_class_spells.ptr( i, j, cid ) ) != NULL ) && *p )
       {
-        if ( check_spell_name( *p, name ) )
+        if ( check_spell_name( *p, spell_name ) )
           return *p;
         i++;
       };
@@ -1298,23 +1322,19 @@ uint32_t sc_data_access_t::find_class_spell( const player_type c, const char* na
   {
     while ( ( ( p = m_class_spells.ptr( i, tree, cid ) ) != NULL ) && *p )
     {
-      if ( check_spell_name( *p, name ) )
+      if ( check_spell_name( *p, spell_name ) )
         return *p;
       i++;
-    };
+    }
   }
 
   return 0;
 }
 
-int sc_data_access_t::find_class_spell_tree( const player_type c, const char* name ) SC_CONST
+int sc_data_access_t::find_class_spell_tree( player_type c, uint32_t spell_id ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
-
   uint32_t s = m_class_spells.rows;
-
-  assert( name && name[ 0 ] );
-
   uint32_t i = 0;
   uint32_t* p = NULL;
 
@@ -1323,71 +1343,160 @@ int sc_data_access_t::find_class_spell_tree( const player_type c, const char* na
     i = 0;
     while ( ( ( p = m_class_spells.ptr( i, j, cid ) ) != NULL ) && *p )
     {
-      if ( check_spell_name( *p, name ) )
+      if ( *p == spell_id )
         return j;
       i++;
-    };
+    }
   }
 
   return -1;
 }
 
-uint32_t sc_data_access_t::find_talent_spec_spell( const player_type c, const talent_tab_name tab_name, const char* name ) SC_CONST
+uint32_t sc_data_access_t::find_talent_spec_spell( player_type c, const char* spell_name, int tab_name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
-
-  assert( name && name[ 0 ] && ( ( const uint32_t )( tab_name ) < 3 ) );
-
   uint32_t i = 0;
   uint32_t* p = NULL;
-  while ( ( ( p = m_talent_spec_spells.ptr( i, tab_name, cid ) ) != NULL ) && *p )
+  uint32_t s = m_talent_spec_spells.rows;
+
+  assert( spell_name && spell_name[ 0 ] && ( tab_name < 3 ) );
+
+  if ( tab_name < 0 )
   {
-    if ( check_spell_name( *p, name ) )
-      return *p;
-    i++;
-  };
+    for ( uint32_t j = 0; j < s; j++ )
+    {
+      i = 0;
+      while ( ( ( p = m_talent_spec_spells.ptr( i, j, cid ) ) != NULL ) && *p )
+      {
+        if ( check_spell_name( *p, spell_name ) )
+          return *p;
+        i++;
+      };
+    }
+  }
+  else
+  {
+    while ( ( ( p = m_talent_spec_spells.ptr( i, tab_name, cid ) ) != NULL ) && *p )
+    {
+      if ( check_spell_name( *p, spell_name ) )
+        return *p;
+      i++;
+    }
+  }
+  
   return 0;
 }
 
-uint32_t sc_data_access_t::find_racial_spell( const player_type c, const race_type r, const char* name ) SC_CONST
+int sc_data_access_t::find_talent_spec_spell_tree( player_type c, uint32_t spell_id ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  uint32_t s = m_talent_spec_spells.rows;
+  uint32_t i = 0;
+  uint32_t* p = NULL;
+
+  for ( uint32_t j = 0; j < s; j++ )
+  {
+    i = 0;
+    while ( ( ( p = m_talent_spec_spells.ptr( i, j, cid ) ) != NULL ) && *p )
+    {
+      if ( *p == spell_id )
+        return j;
+      i++;
+    }
+  }
+
+  return -1;
+}
+
+bool sc_data_access_t::is_talent_spec_spell( uint32_t spell_id ) SC_CONST
+{
+  uint32_t s   = m_talent_spec_spells.rows;
+  uint32_t k   = m_talent_spec_spells.depth;
+  uint32_t i   = 0;
+  uint32_t* p  = 0;
+
+  for ( unsigned int cls = 0; cls < k; cls++ )
+  {
+    for ( uint32_t j = 0; j < s; j++ )
+    {
+      i = 0;
+      while ( ( ( p = m_talent_spec_spells.ptr( i, j, cls ) ) != NULL ) && *p )
+      {
+        if ( *p == spell_id )
+          return true;
+        i++;
+      }
+    }
+  }
+
+  return false;
+}
+
+uint32_t sc_data_access_t::find_racial_spell( player_type c, race_type r, const char* spell_name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
 
-  assert( name && name[ 0 ] );
+  assert( spell_name && spell_name[ 0 ] );
 
   uint32_t i = 0;
   uint32_t* p = NULL;
   while ( ( ( p = m_class_spells.ptr( i, cid ) ) != NULL ) && *p )
   {
-    if ( check_spell_name( *p, name ) )
+    if ( check_spell_name( *p, spell_name ) )
       return *p;
     i++;
-  };
+  }
+  
   return 0;
 }
 
-uint32_t sc_data_access_t::find_mastery_spell( const player_type c, const char* name ) SC_CONST
+bool sc_data_access_t::is_racial_spell( uint32_t spell_id ) SC_CONST
+{
+  return false; 
+}
+
+uint32_t sc_data_access_t::find_mastery_spell( player_type c, const char* spell_name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
   
-  assert( name && name[ 0 ] );
+  assert( spell_name && spell_name[ 0 ] );
 
   uint32_t i = 0;
   uint32_t* p = NULL;
   while ( ( ( p = m_mastery_spells.ptr( i, cid ) ) != NULL ) && *p )
   {
-    if ( check_spell_name( *p, name ) )
+    if ( check_spell_name( *p, spell_name ) )
       return *p;
     i++;
   };
   return 0;
 }
 
-uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const char* name ) SC_CONST
+bool sc_data_access_t::is_mastery_spell( uint32_t spell_id ) SC_CONST
+{
+  uint32_t s   = m_mastery_spells.rows;
+  uint32_t i   = 0;
+  uint32_t* p  = 0;
+
+  for ( unsigned int cls = 0; cls < s; cls++ )
+  {
+    i = 0;
+    while ( ( ( p = m_mastery_spells.ptr( i, cls ) ) != NULL ) && *p )
+    {
+      if ( *p == spell_id )
+        return true;
+      i++;
+    }
+  }
+
+  return false;
+}
+
+uint32_t sc_data_access_t::find_glyph_spell( player_type c, const char* spell_name ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
   
-  assert( name && name[ 0 ] );
+  assert( spell_name && spell_name[ 0 ] );
 
   uint32_t i = 0;
   uint32_t* p = NULL;
@@ -1396,7 +1505,7 @@ uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const char* na
     i = 0;
     while ( ( ( p = m_glyph_spells.ptr( i, j, cid ) ) != NULL ) && *p )
     {
-      if ( check_spell_name( *p, name ) )
+      if ( check_spell_name( *p, spell_name ) )
         return *p;
       i++;
     };
@@ -1404,7 +1513,41 @@ uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const char* na
   return 0;
 }
 
-uint32_t sc_data_access_t::find_set_bonus_spell( const player_type c, const char* name, const int tier ) SC_CONST
+uint32_t sc_data_access_t::find_glyph_spell( player_type c, glyph_type type, uint32_t num ) SC_CONST
+{
+  uint32_t cid = get_class_id( c );
+  
+  uint32_t* p = NULL;
+
+  p = m_glyph_spells.ptr( num, type, cid );
+
+  if ( !p )
+    return 0;
+
+  return *p;
+}
+
+bool sc_data_access_t::is_glyph_spell( uint32_t spell_id ) SC_CONST
+{
+  uint32_t s   = m_glyph_spells.rows;
+  uint32_t i   = 0;
+  uint32_t* p  = 0;
+
+  for ( unsigned int cls = 0; cls < s; cls++ )
+  {
+    i = 0;
+    while ( ( ( p = m_glyph_spells.ptr( i, cls ) ) != NULL ) && *p )
+    {
+      if ( *p == spell_id )
+        return true;
+      i++;
+    }
+  }
+
+  return false;
+}
+
+uint32_t sc_data_access_t::find_set_bonus_spell( player_type c, const char* name, int tier ) SC_CONST
 {
   uint32_t cid = get_class_id( c );
   
@@ -1433,18 +1576,28 @@ uint32_t sc_data_access_t::find_set_bonus_spell( const player_type c, const char
   return 0;
 }
 
-uint32_t sc_data_access_t::find_glyph_spell( const player_type c, const glyph_type type, uint32_t num ) SC_CONST
+bool sc_data_access_t::is_set_bonus_spell( uint32_t spell_id ) SC_CONST
 {
-  uint32_t cid = get_class_id( c );
-  
-  uint32_t* p = NULL;
+  uint32_t s   = m_set_bonus_spells.rows;
+  uint32_t k   = m_set_bonus_spells.depth;
+  uint32_t i   = 0;
+  uint32_t* p  = 0;
 
-  p = m_glyph_spells.ptr( num, type, cid );
+  for ( unsigned int cls = 0; cls < k; cls++ )
+  {
+    for ( uint32_t j = 0; j < s; j++ )
+    {
+      i = 0;
+      while ( ( ( p = m_set_bonus_spells.ptr( i, j, cls ) ) != NULL ) && *p )
+      {
+        if ( *p == spell_id )
+          return true;
+        i++;
+      }
+    }
+  }
 
-  if ( !p )
-    return 0;
-
-  return *p;
+  return false;
 }
 
 bool sc_data_access_t::check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST
@@ -1514,7 +1667,7 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
   return v;
 }
 
-/***************************** local functions *************************************/
+/***************************** static functions *************************************/
 
 player_type sc_data_access_t::get_class_type( const int c )
 {

@@ -13,10 +13,10 @@
 
 void action_t::_init_action_t()
 {
-  sim                            = pp->sim;
-  name_str                       = token_name;
-  player                         = pp;
-  target                         = pp -> sim -> target;
+  sim                            = s_player->sim;
+  name_str                       = s_token;
+  player                         = s_player;
+  target                         = s_player -> sim -> target;
   id                             = 0;
   effect_nr                      = 1;
   heal                           = false;
@@ -46,6 +46,7 @@ void action_t::_init_action_t()
   scale_with_haste               = false;
   usable_moving                  = false;
   dot_behavior                   = DOT_WAIT;
+  rp_gain                        = 0.0;
   min_gcd                        = 0.0;
   trigger_gcd                    = 0.0;
   range                          = -1.0;
@@ -161,7 +162,7 @@ void action_t::_init_action_t()
   stats = player -> get_stats( name_str );
   stats -> school = school;
   stats -> resource = resource;
-
+  
   id = spell_id();
 
   parse_data ( player -> player_data );
@@ -174,36 +175,36 @@ action_t::action_t( int               ty,
                     const school_type s,
                     int               tr,
                     bool              sp ) :
-  active_spell_t( p, n ),
-  sim( pp->sim ), type( ty ), name_str( token_name ), 
-  player( pp ), target( pp -> sim -> target ), school( s ), resource( r ),
+  spell_id_t( p, n ),
+  sim( s_player->sim ), type( ty ), name_str( s_token ), 
+  player( s_player ), target( s_player -> sim -> target ), school( s ), resource( r ), 
   tree( tr ), special( sp )
 {
   _init_action_t();
 }
 
 action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
-  active_spell_t( p, name, sname ),
-  sim( pp->sim ), type( ty ), name_str( token_name ), 
-  player( pp ), target( pp -> sim -> target ), school( get_school_type() ), resource( power_type() ),
+  spell_id_t( p, name, sname ),
+  sim( s_player->sim ), type( ty ), name_str( s_token ), 
+  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ), 
   tree( t ), special( sp )
 {
   _init_action_t();
 }
 
 action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
-  active_spell_t( s ), 
-  sim( pp->sim ), type( ty ), name_str( token_name ), 
-  player( pp ), target( pp -> sim -> target ), school( get_school_type() ), resource( power_type() ),
+  spell_id_t( s ), 
+  sim( s_player->sim ), type( ty ), name_str( s_token ), 
+  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ), 
   tree( t ), special( sp )
 {
   _init_action_t();
 }
 
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
-  active_spell_t( p, name, id ),
-  sim( pp->sim ), type( type ), name_str( token_name ), 
-  player( pp ), target( pp -> sim -> target ), school( get_school_type() ), resource( power_type() ),
+  spell_id_t( p, name, id ),
+  sim( s_player->sim ), type( type ), name_str( s_token ), 
+  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ), 
   tree( t ), special( sp )
 {
   _init_action_t();
@@ -228,6 +229,7 @@ void action_t::parse_data( sc_data_access_t& pData )
     travel_speed         = pData.spell_missile_speed ( id );
     trigger_gcd          = pData.spell_gcd ( id );
     school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
+    stats -> school      = school;
     resource             = pData.spell_power_type( id );
     rp_gain              = pData.spell_runic_power_gain( id );
 

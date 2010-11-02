@@ -112,7 +112,7 @@ struct priest_t : public player_t
     passive_spell_t* meditation_holy;
     passive_spell_t* meditation_disc;
     
-    passive_spell_t* shadow_orbs;
+    mastery_t*       shadow_orbs;
     passive_spell_t* dark_evangelism_1;
     passive_spell_t* dark_evangelism_2;
     passive_spell_t* holy_evangelism_1;
@@ -2696,18 +2696,18 @@ void priest_t::init_spells()
   passive_spells.holy_evangelism_1    = new passive_spell_t( this, "holy_evangelism_1", 81660 );
   passive_spells.holy_evangelism_2    = new passive_spell_t( this, "holy_evangelism_2", 81661 );
 
-  passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment", PRIEST_DISCIPLINE );
-  passive_spells.spiritual_healing    = new passive_spell_t( this, "spiritual_healing", "Enlightenment", PRIEST_HOLY );
-  passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power", PRIEST_SHADOW ); //             done: talent function 12803          incomplete: link with main talent tree
-  passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", "Meditation", PRIEST_HOLY ); //           done: talent function 12803
-  passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation", PRIEST_DISCIPLINE ); //           done: talent function 12803
+  passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment" );
+  passive_spells.spiritual_healing    = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
+  passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power" ); //             done: talent function 12803          incomplete: link with main talent tree
+  passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", "Meditation" ); //           done: talent function 12803
+  passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation" ); //           done: talent function 12803
 
   // Shadow Mastery
-  passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs", PRIEST_SHADOW, true );
+  passive_spells.shadow_orbs          = new mastery_t( this, "shadow_orbs", "Shadow Orbs", TREE_SHADOW );
 
-  active_spells.penance               = new active_spell_t( this, "penance", "Penance", PRIEST_DISCIPLINE );
-  active_spells.chastise              = new active_spell_t( this, "holy_word_chastise", "Holy Word: Chastise", PRIEST_HOLY );     // incomplete
-  active_spells.mind_flay             = new active_spell_t( this, "mind_flay", "Mind Flay", PRIEST_SHADOW );
+  active_spells.penance               = new active_spell_t( this, "penance", "Penance" );
+  active_spells.chastise              = new active_spell_t( this, "holy_word_chastise", "Holy Word: Chastise" );     // incomplete
+  active_spells.mind_flay             = new active_spell_t( this, "mind_flay", "Mind Flay" );
   active_spells.mind_spike            = new active_spell_t( this, "mind_spike", "Mind Spike" );
   active_spells.shadow_fiend          = new active_spell_t( this, "shadow_fiend", "Shadowfiend" );
   active_spells.inner_will            = new active_spell_t( this, "inner_will", "Inner Will" );
@@ -2800,55 +2800,55 @@ void priest_t::init_actions()
     case TREE_SHADOW:
                                                      action_list_str += "/wild_magic_potion,if=!in_combat";
                                                      action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
-      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name;
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking|dot." +
-                                                                              active_spells.shadow_word_pain->token_name + ".remains<gcd+0.5";
+      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->s_token;
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->s_token + ",if=!ticking|dot." +
+                                                                              active_spells.shadow_word_pain->s_token + ".remains<gcd+0.5";
       if ( active_spells.mind_flay -> ok() &&
-           active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.mind_flay->token_name + ",if=dot." +
-                                                                              active_spells.shadow_word_pain->token_name + ".remains<cast_time";
+           active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.mind_flay->s_token + ",if=dot." +
+                                                                              active_spells.shadow_word_pain->s_token + ".remains<cast_time";
       if ( race == RACE_TROLL )                      action_list_str += "/berserking";
-      if ( active_spells.vampiric_touch -> ok() )    action_list_str += "/" + active_spells.vampiric_touch->token_name + ",if=!ticking|dot." +
-                                                                              active_spells.vampiric_touch->token_name + ".remains<cast_time+0.5";
-      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->token_name + ",if=!ticking|dot." +
-                                                                              active_spells.devouring_plague->token_name + ".remains<gcd+0.5";
+      if ( active_spells.vampiric_touch -> ok() )    action_list_str += "/" + active_spells.vampiric_touch->s_token + ",if=!ticking|dot." +
+                                                                              active_spells.vampiric_touch->s_token + ".remains<cast_time+0.5";
+      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->s_token + ",if=!ticking|dot." +
+                                                                              active_spells.devouring_plague->s_token + ".remains<gcd+0.5";
 
-      if ( talents.archangel -> ok() )               action_list_str += "/" + talents.archangel->token_name + ",if=buff.dark_evangelism.stack>=5";
-       if ( active_spells.vampiric_touch -> ok() )   action_list_str += "&dot." + active_spells.vampiric_touch->token_name + ".remains>5";
-       if ( active_spells.devouring_plague -> ok() ) action_list_str += "&dot." + active_spells.devouring_plague->token_name + ".remains>5";
+      if ( talents.archangel -> ok() )               action_list_str += "/" + talents.archangel->s_token + ",if=buff.dark_evangelism.stack>=5";
+       if ( active_spells.vampiric_touch -> ok() )   action_list_str += "&dot." + active_spells.vampiric_touch->s_token + ".remains>5";
+       if ( active_spells.devouring_plague -> ok() ) action_list_str += "&dot." + active_spells.devouring_plague->s_token + ".remains>5";
 
 
 
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name;
-      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->s_token;
+      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->s_token;
       if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
-      if ( active_spells.mind_flay -> ok() )         action_list_str += "/" + active_spells.mind_flay->token_name;
-      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->token_name + ",moving=1";
-      if ( active_spells.dispersion -> ok() )        action_list_str += "/" + active_spells.dispersion->token_name;
+      if ( active_spells.mind_flay -> ok() )         action_list_str += "/" + active_spells.mind_flay->s_token;
+      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->s_token + ",moving=1";
+      if ( active_spells.dispersion -> ok() )        action_list_str += "/" + active_spells.dispersion->s_token;
       break;
     case TREE_DISCIPLINE:
                                                      action_list_str += "/mana_potion";
-      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name + ",trigger=10000";
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking";
-      if ( active_spells.power_infusion -> ok() )    action_list_str += "/" + active_spells.power_infusion->token_name;
-      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->token_name;
-      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
-      if ( active_spells.penance -> ok() )           action_list_str += "/" + active_spells.penance->token_name;
+      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->s_token + ",trigger=10000";
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->s_token + ",if=!ticking";
+      if ( active_spells.power_infusion -> ok() )    action_list_str += "/" + active_spells.power_infusion->s_token;
+      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->s_token;
+      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->s_token;
+      if ( active_spells.penance -> ok() )           action_list_str += "/" + active_spells.penance->s_token;
       if ( race == RACE_TROLL )                      action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
-      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->token_name;
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name + ",moving=1"; // when moving
+      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->s_token;
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->s_token + ",moving=1"; // when moving
       break;
     case TREE_HOLY:
     default:
       action_list_str += "/mana_potion";
-      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->token_name + ",trigger=10000";
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->token_name + ",if=!ticking";
-      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->token_name;
-      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->token_name;
+      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->s_token + ",trigger=10000";
+      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->s_token + ",if=!ticking";
+      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->s_token;
+      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->s_token;
       if ( race == RACE_TROLL     )                  action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
-      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->token_name;
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->token_name + ",moving=1"; // when moving
+      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->s_token;
+      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->s_token + ",moving=1"; // when moving
       break;
     }
 

@@ -1879,7 +1879,7 @@ static void print_html2_player( FILE* file, player_t* p )
                            "<br>duration: %.2f"
                            "<br>cooldown: %.2f"
                            "<br>default_chance: %.2f",
-                           b -> spell_id_t_id,
+                           b -> s_id,
                            b -> cooldown -> name_str.c_str(),
                            b -> tooltip(),
                            b -> max_stack,

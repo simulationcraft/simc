@@ -83,15 +83,15 @@ struct druid_t : public player_t
   // Tree specialization passives
   // Balance
   passive_spell_t* spec_moonfury;
-  passive_spell_t* mastery_total_eclipse; // Mastery
+  mastery_t* mastery_total_eclipse; // Mastery
   double eclipse_bar_value; // Tracking the current value of the eclipse bar
   int    eclipse_bar_direction; // Tracking the current direction of the eclipse bar
   
   // Feral
   passive_spell_t* spec_aggression;
   passive_spell_t* spec_vengeance;
-  passive_spell_t* mastery_razor_claws; // Mastery
-  passive_spell_t* mastery_savage_defender; // Mastery
+  mastery_t* mastery_razor_claws; // Mastery
+  mastery_t* mastery_savage_defender; // Mastery
 
   // Up-Times
   uptime_t* uptimes_energy_cap;
@@ -3383,13 +3383,13 @@ void druid_t::init_spells()
 
   // Balance
   spec_moonfury         = new passive_spell_t( this, "moonfury",      16913 );
-  mastery_total_eclipse = new passive_spell_t( this, "total_eclipse", 77492 );
+  mastery_total_eclipse = new mastery_t      ( this, "total_eclipse", 77492, TREE_BALANCE );
 
   // Feral
   spec_aggression         = new passive_spell_t( this, "aggression",      84735 );
   spec_vengeance          = new passive_spell_t( this, "vengeance",       84840 );
-  mastery_razor_claws     = new passive_spell_t( this, "razor_claws",     77493 );
-  mastery_savage_defender = new passive_spell_t( this, "savage_defender", 77494 );
+  mastery_razor_claws     = new mastery_t      ( this, "razor_claws",     77493, TREE_FERAL );
+  mastery_savage_defender = new mastery_t      ( this, "savage_defender", 77494, TREE_FERAL );
 }
 
 // druid_t::init_glyphs =====================================================

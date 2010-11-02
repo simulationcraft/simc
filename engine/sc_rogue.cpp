@@ -6,39 +6,6 @@
 #include "simulationcraft.h"
 
 // ==========================================================================
-// New Glyph
-// ==========================================================================
-static std::string str_tokenize( const std::string& src )
-{
-  std::string token = tolower( src );
-  replace_char( token, ' ', '_' );
-  return token;
-}
-
-struct glyph_t : spell_id_t
-{
-  uint32_t id;
-  
-  glyph_t( player_t *p, const std::string& s_name ) :
-    spell_id_t( p ), id( 0 )
-  {
-    token_name = str_tokenize( s_name + "_glyph" );
-
-    std::string real_name = "Glyph of " + s_name;
-    
-    id = p -> player_data.find_glyph_spell( p -> type, real_name.c_str() );
-  }
-
-  void enable()
-  {
-    if ( ! id )
-      return;
-    
-    int_init( id );
-  }
-};
-
-// ==========================================================================
 // Custom Combo Point Impl.
 // ==========================================================================
 
@@ -261,9 +228,9 @@ struct rogue_t : public player_t
   active_spell_t* spec_shadowstep;
 
   // Masteries
-  passive_spell_t* mastery_potent_poisons; // XXX done as additive
-  passive_spell_t* mastery_main_gauche;    // done. though haven't looked how it interacts with combat potency
-  passive_spell_t* mastery_executioner;    // XXX done as additive
+  mastery_t* mastery_potent_poisons; // XXX done as additive
+  mastery_t* mastery_main_gauche;    // done. though haven't looked how it interacts with combat potency
+  mastery_t* mastery_executioner;    // XXX done as additive
 
   // Talents
   struct talents_list_t
@@ -794,7 +761,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
   if ( a -> proc || a -> special ) 
     return;
 
-  double chance = p -> composite_mastery() * p -> mastery_main_gauche -> base_value( E_APPLY_AURA, A_DUMMY, 0 ) / 10000.0;
+  double chance = p -> composite_mastery() * p -> mastery_main_gauche -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
 
   if ( p -> rng_main_gauche -> roll( chance ) )
   {
@@ -1135,7 +1102,7 @@ double rogue_attack_t::total_multiplier() SC_CONST
   double add_mult = 0.0;
   
   if ( requires_combo_points && p -> mastery_executioner -> ok() )
-    add_mult = p -> composite_mastery() * p -> mastery_executioner -> base_value( E_APPLY_AURA, A_DUMMY ) / 10000.0;
+    add_mult = p -> composite_mastery() * p -> mastery_executioner -> base_value( E_APPLY_AURA, A_DUMMY );
   
   return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier; 
 }
@@ -2518,7 +2485,7 @@ double rogue_poison_t::total_multiplier() SC_CONST
   double add_mult = 0.0;
   
   if ( p -> mastery_potent_poisons -> ok() )
-    add_mult = p -> composite_mastery() * p -> mastery_potent_poisons -> base_value( E_APPLY_AURA, A_DUMMY ) / 10000.0;
+    add_mult = p -> composite_mastery() * p -> mastery_potent_poisons -> base_value( E_APPLY_AURA, A_DUMMY );
   
   return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier; 
 }
@@ -3239,25 +3206,25 @@ action_t* rogue_t::create_action( const std::string& name,
 
 void rogue_t::init_glyphs()
 {
-  glyphs.adrenaline_rush     = new glyph_t( this, "Adrenaline Rush"     );
-  glyphs.ambush              = new glyph_t( this, "Ambush"              );
-  glyphs.backstab            = new glyph_t( this, "Backstab"            );
-  glyphs.blade_flurry        = new glyph_t( this, "Blade Flurry"        );
-  glyphs.eviscerate          = new glyph_t( this, "Eviscerate"          );
-  glyphs.expose_armor        = new glyph_t( this, "Expose Armor"        );
-  glyphs.feint               = new glyph_t( this, "Feint"               );
-  glyphs.hemorrhage          = new glyph_t( this, "Hemorrhage"          );
-  glyphs.kick                = new glyph_t( this, "Kick"                );
-  glyphs.killing_spree       = new glyph_t( this, "Killing Spree"       );
-  glyphs.mutilate            = new glyph_t( this, "Mutilate"            );
-  glyphs.preparation         = new glyph_t( this, "Preparation"         );
-  glyphs.revealing_strike    = new glyph_t( this, "Revealing Strike"    );
-  glyphs.rupture             = new glyph_t( this, "Rupture"             );
-  glyphs.shadow_dance        = new glyph_t( this, "Shadow Dance"        );
-  glyphs.sinister_strike     = new glyph_t( this, "Sinister Strike"     );
-  glyphs.slice_and_dice      = new glyph_t( this, "Slice and Dice"      );
-  glyphs.tricks_of_the_trade = new glyph_t( this, "Tricks of the Trade" );
-  glyphs.vendetta            = new glyph_t( this, "Vendetta"            );
+  glyphs.adrenaline_rush     = new glyph_t( this, "Glyph of Adrenaline Rush"     );
+  glyphs.ambush              = new glyph_t( this, "Glyph of Ambush"              );
+  glyphs.backstab            = new glyph_t( this, "Glyph of Backstab"            );
+  glyphs.blade_flurry        = new glyph_t( this, "Glyph of Blade Flurry"        );
+  glyphs.eviscerate          = new glyph_t( this, "Glyph of Eviscerate"          );
+  glyphs.expose_armor        = new glyph_t( this, "Glyph of Expose Armor"        );
+  glyphs.feint               = new glyph_t( this, "Glyph of Feint"               );
+  glyphs.hemorrhage          = new glyph_t( this, "Glyph of Hemorrhage"          );
+  glyphs.kick                = new glyph_t( this, "Glyph of Kick"                );
+  glyphs.killing_spree       = new glyph_t( this, "Glyph of Killing Spree"       );
+  glyphs.mutilate            = new glyph_t( this, "Glyph of Mutilate"            );
+  glyphs.preparation         = new glyph_t( this, "Glyph of Preparation"         );
+  glyphs.revealing_strike    = new glyph_t( this, "Glyph of Revealing Strike"    );
+  glyphs.rupture             = new glyph_t( this, "Glyph of Rupture"             );
+  glyphs.shadow_dance        = new glyph_t( this, "Glyph of Shadow Dance"        );
+  glyphs.sinister_strike     = new glyph_t( this, "Glyph of Sinister Strike"     );
+  glyphs.slice_and_dice      = new glyph_t( this, "Glyph of Slice and Dice"      );
+  glyphs.tricks_of_the_trade = new glyph_t( this, "Glyph of Tricks of the Trade" );
+  glyphs.vendetta            = new glyph_t( this, "Glyph of Vendetta"            );
   
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
@@ -3415,22 +3382,22 @@ void rogue_t::init_spells()
   player_t::init_spells();
 
   // Spec passives
-  spec_improved_poisons   = new passive_spell_t( this, "improved_poisons",   14117, ROGUE_ASSASSINATION );
-  spec_assassins_resolve  = new passive_spell_t( this, "assassins_resolve",  84601, ROGUE_ASSASSINATION );
-  spec_vitality           = new passive_spell_t( this, "vitality",           61329, ROGUE_COMBAT );
-  spec_ambidexterity      = new passive_spell_t( this, "ambidexterity",      13852, ROGUE_COMBAT );
-  spec_master_of_subtlety = new passive_spell_t( this, "master_of_subtlety", 31223, ROGUE_SUBTLETY );
-  spec_sinister_calling   = new passive_spell_t( this, "sinister_calling",   31220, ROGUE_SUBTLETY );
+  spec_improved_poisons   = new passive_spell_t( this, "improved_poisons",   14117 );
+  spec_assassins_resolve  = new passive_spell_t( this, "assassins_resolve",  84601 );
+  spec_vitality           = new passive_spell_t( this, "vitality",           61329 );
+  spec_ambidexterity      = new passive_spell_t( this, "ambidexterity",      13852 );
+  spec_master_of_subtlety = new passive_spell_t( this, "master_of_subtlety", 31223 );
+  spec_sinister_calling   = new passive_spell_t( this, "sinister_calling",   31220 );
 
   // Spec Actives
-  spec_mutilate           = new active_spell_t( this, "mutilate",            1329,  ROGUE_ASSASSINATION );
-  spec_blade_flurry       = new active_spell_t( this, "blade_flurry",        13877, ROGUE_COMBAT );
-  spec_shadowstep         = new active_spell_t( this, "shadowstep",          36554, ROGUE_SUBTLETY );
+  spec_mutilate           = new active_spell_t( this, "mutilate",            1329 );
+  spec_blade_flurry       = new active_spell_t( this, "blade_flurry",        13877 );
+  spec_shadowstep         = new active_spell_t( this, "shadowstep",          36554 );
 
   // Masteries
-  mastery_potent_poisons  = new passive_spell_t( this, "potent_poisons",     76803, ROGUE_ASSASSINATION, true );
-  mastery_main_gauche     = new passive_spell_t( this, "main_gauche",        76806, ROGUE_COMBAT,        true );
-  mastery_executioner     = new passive_spell_t( this, "executioner",        76808, ROGUE_SUBTLETY,      true );
+  mastery_potent_poisons  = new mastery_t( this, "potent_poisons",     76803, TREE_ASSASSINATION );
+  mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
+  mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
 }
 
 // rogue_t::init_gains =======================================================

@@ -171,30 +171,6 @@ struct warlock_guardian_pet_t;
 
 struct warlock_t : public player_t
 {
-
-  struct warlock_glyph_t : public spell_id_t
-  {
-    warlock_glyph_t( player_t* player, const char* n ) :
-      spell_id_t( player, n, n, false )
-      {
-      init_enabled( true, false );
-      }
-
-    void enable()
-    {
-      init_enabled( true, true );
-    }
-
-    double value( int effect_nr=1) SC_CONST
-    {
-      if ( ! ok() )
-        return 0.0;
-
-      return effect_base_value ( effect_nr );
-    }
-
-  };
-
   // Active
   warlock_main_pet_t* active_pet;
 
@@ -304,9 +280,9 @@ struct warlock_t : public player_t
 
   struct mastery_spells_t
   {
-    passive_spell_t* potent_afflictions;
-    passive_spell_t* master_demonologist;
-    passive_spell_t* fiery_apocalypse;
+    mastery_t* potent_afflictions;
+    mastery_t* master_demonologist;
+    mastery_t* fiery_apocalypse;
   };
   mastery_spells_t mastery_spells;
 
@@ -342,24 +318,24 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
-    warlock_glyph_t* metamorphosis;
+    glyph_t* metamorphosis;
     // Prime
-    warlock_glyph_t* life_tap;
-    warlock_glyph_t* shadow_bolt;
+    glyph_t* life_tap;
+    glyph_t* shadow_bolt;
 
     // Major
-    warlock_glyph_t* chaos_bolt;
-    warlock_glyph_t* conflagrate;
-    warlock_glyph_t* corruption;
-    warlock_glyph_t* bane_of_agony;
-    warlock_glyph_t* felguard;
-    warlock_glyph_t* haunt;
-    warlock_glyph_t* immolate;
-    warlock_glyph_t* imp;
-    warlock_glyph_t* incinerate;
-    warlock_glyph_t* lash_of_pain;
-    warlock_glyph_t* shadowburn;
-    warlock_glyph_t* unstable_affliction;
+    glyph_t* chaos_bolt;
+    glyph_t* conflagrate;
+    glyph_t* corruption;
+    glyph_t* bane_of_agony;
+    glyph_t* felguard;
+    glyph_t* haunt;
+    glyph_t* immolate;
+    glyph_t* imp;
+    glyph_t* incinerate;
+    glyph_t* lash_of_pain;
+    glyph_t* shadowburn;
+    glyph_t* unstable_affliction;
   };
   glyphs_t glyphs;
 
@@ -1301,7 +1277,7 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_pet_spell_t( "firebolt", player, "Firebolt" )
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      base_multiplier *= 1.0 + ( o -> glyphs.imp -> value() / 100.0 );
+      base_multiplier *= 1.0 + ( o -> glyphs.imp -> base_value() );
       direct_power_mod = 0.690;  // From live testing 2010/10/15
 	  base_execute_time -= o -> talent_dark_arts -> rank() * 0.25;
       if ( o -> bugs ) min_gcd = 1.5;
@@ -1361,7 +1337,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
-      if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> value() / 100.0;
+      if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> base_value();
     }
 
     virtual void execute()
@@ -1545,7 +1521,7 @@ struct succubus_pet_t : public warlock_main_pet_t
         warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
-      base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> value() / 100.0 );
+      base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> base_value() );
       direct_power_mod  = 0.612; // from the tooltip - tests show the 0.5 factor is not used
       if ( o -> bugs ) min_gcd = 1.5;
     }
@@ -1883,7 +1859,7 @@ struct bane_of_agony_t : public warlock_spell_t
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
-    int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> value() / 1000.0 / base_tick_time );
+    int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
     // after patch 3.0.8, the added ticks are double the base damage
     base_td = ( base_td * num_ticks + base_td * a_extra_ticks * 2 ) / (num_ticks + a_extra_ticks);
     num_ticks += a_extra_ticks;
@@ -2042,7 +2018,7 @@ struct shadow_bolt_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
-    base_cost  *= 1.0 + ( p -> glyphs.shadow_bolt -> value() / 100.0 );
+    base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0 );
 
     base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
@@ -2207,7 +2183,7 @@ struct chaos_bolt_t : public warlock_spell_t
     may_resist        = false;
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
     base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
-    cooldown -> duration += ( p -> glyphs.chaos_bolt -> value() / 1000.0 );
+    cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
   }
 
   virtual double execute_time() SC_CONST
@@ -2599,7 +2575,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_td = effect_base_value( 2 );
-    base_execute_time += p -> glyphs.unstable_affliction -> value() / 1000.0;
+    base_execute_time += p -> glyphs.unstable_affliction -> base_value() / 1000.0;
   }
 
   virtual void execute()
@@ -2679,7 +2655,7 @@ struct immolate_t : public warlock_spell_t
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
-    base_td_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0 + p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
+    base_td_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() + p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
   }
 
   virtual void execute()
@@ -2766,8 +2742,8 @@ struct conflagrate_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
-    cooldown -> duration += ( p -> glyphs.conflagrate -> value() / 1000.0 );
-    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> value() / 100.0 ) + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration += ( p -> glyphs.conflagrate -> base_value() / 1000.0 );
+    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() ) + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
   }
 
   virtual void execute()
@@ -2815,7 +2791,7 @@ struct incinerate_t : public warlock_spell_t
 
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
-    base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> value() / 100.0 );
+    base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
 	base_crit		  += p -> set_bonus.tier10_2pc_caster() * 0.05;
   }
 
@@ -4038,38 +4014,37 @@ void warlock_t::init_spells()
   // passive_spells =======================================================================================
 
   // Core
-  passive_spells.shadow_mastery       = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery", WARLOCK_AFFLICTION );
-  passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge", WARLOCK_DEMONOLOGY );
-  passive_spells.cataclysm            = new passive_spell_t( this, "cataclysm", "Cataclysm", WARLOCK_DESTRUCTION );
+  passive_spells.shadow_mastery       = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery" );
+  passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge" );
+  passive_spells.cataclysm            = new passive_spell_t( this, "cataclysm", "Cataclysm" );
   passive_spells.nethermancy          = new passive_spell_t( this, "nethermancy", 86091 );
-  passive_spells.nethermancy -> init_enabled (true, true );
   //Affliction
   passive_spells.doom_and_gloom       = new passive_spell_t(this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
   passive_spells.pandemic             = new passive_spell_t(this, "pandemic", "Pandemic", talent_pandemic );
 
-  mastery_spells.fiery_apocalypse     = new passive_spell_t( this, "fiery_apocalypse", "Fiery Apocalypse", WARLOCK_DESTRUCTION, true );
-  mastery_spells.potent_afflictions   = new passive_spell_t(this, "potent_afflictions", "Potent Afflictions", WARLOCK_AFFLICTION, true );
-  mastery_spells.master_demonologist  = new passive_spell_t( this, "master_demonologist", "Master Demonologist", WARLOCK_DEMONOLOGY, true );
+  mastery_spells.fiery_apocalypse     = new mastery_t( this, "fiery_apocalypse", "Fiery Apocalypse", TREE_DESTRUCTION );
+  mastery_spells.potent_afflictions   = new mastery_t(this, "potent_afflictions", "Potent Afflictions", TREE_AFFLICTION );
+  mastery_spells.master_demonologist  = new mastery_t( this, "master_demonologist", "Master Demonologist", TREE_DEMONOLOGY );
 
   constants_pandemic_gcd              = 0.25;
 
-  glyphs.metamorphosis        = new warlock_glyph_t(this, "Glyph of Metamorphosis");
-  glyphs.life_tap             = new warlock_glyph_t(this, "Glyph of Life Tap");
-  glyphs.shadow_bolt          = new warlock_glyph_t(this, "Glyph of Shadow Bolt");
+  glyphs.metamorphosis        = new glyph_t(this, "Glyph of Metamorphosis");
+  glyphs.life_tap             = new glyph_t(this, "Glyph of Life Tap");
+  glyphs.shadow_bolt          = new glyph_t(this, "Glyph of Shadow Bolt");
 
   // Major
-  glyphs.chaos_bolt           = new warlock_glyph_t(this, "Glyph of Chaos Bolt");
-  glyphs.conflagrate          = new warlock_glyph_t(this, "Glyph of Conflagrate");
-  glyphs.corruption           = new warlock_glyph_t(this, "Glyph of Corruption");
-  glyphs.bane_of_agony        = new warlock_glyph_t(this, "Glyph of Bane of Agony");
-  glyphs.felguard             = new warlock_glyph_t(this, "Glyph of Felguard");
-  glyphs.haunt                = new warlock_glyph_t(this, "Glyph of Haunt");
-  glyphs.immolate             = new warlock_glyph_t(this, "Glyph of Immolate");
-  glyphs.imp                  = new warlock_glyph_t(this, "Glyph of Imp");
-  glyphs.incinerate           = new warlock_glyph_t(this, "Glyph of Incinerate");
-  glyphs.lash_of_pain         = new warlock_glyph_t(this, "Glyph of Lash of Pain");
-  glyphs.shadowburn           = new warlock_glyph_t(this, "Glyph of Shadowburn");
-  glyphs.unstable_affliction  = new warlock_glyph_t(this, "Glyph of Unstable Affliction");
+  glyphs.chaos_bolt           = new glyph_t(this, "Glyph of Chaos Bolt");
+  glyphs.conflagrate          = new glyph_t(this, "Glyph of Conflagrate");
+  glyphs.corruption           = new glyph_t(this, "Glyph of Corruption");
+  glyphs.bane_of_agony        = new glyph_t(this, "Glyph of Bane of Agony");
+  glyphs.felguard             = new glyph_t(this, "Glyph of Felguard");
+  glyphs.haunt                = new glyph_t(this, "Glyph of Haunt");
+  glyphs.immolate             = new glyph_t(this, "Glyph of Immolate");
+  glyphs.imp                  = new glyph_t(this, "Glyph of Imp");
+  glyphs.incinerate           = new glyph_t(this, "Glyph of Incinerate");
+  glyphs.lash_of_pain         = new glyph_t(this, "Glyph of Lash of Pain");
+  glyphs.shadowburn           = new glyph_t(this, "Glyph of Shadowburn");
+  glyphs.unstable_affliction  = new glyph_t(this, "Glyph of Unstable Affliction");
 }
 
 // warlock_t::init_glyphs =====================================================
@@ -4193,11 +4168,12 @@ void warlock_t::init_buffs()
   buffs_eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
   buffs_haunted               = new buff_t( this, talent_haunt -> spell_id(), "haunted", talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
-  buffs_metamorphosis -> buff_duration += glyphs.metamorphosis -> value() / 1000.0;
+  buffs_metamorphosis -> buff_duration += glyphs.metamorphosis -> base_value() / 1000.0;
   buffs_metamorphosis -> cooldown -> duration = 0;
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_shadow_embrace        = new buff_t( this, talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", talent_shadow_embrace -> rank() );
-  buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> value() / 100.0 );
+  buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );
+  
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
   buffs_improved_soul_fire -> cooldown -> duration  = player_data.effect_base_value( player_data.spell_effect_id( 85113, 3 ) );

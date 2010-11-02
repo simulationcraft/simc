@@ -167,14 +167,14 @@ struct death_knight_t : public player_t
   glyphs_t glyphs;
 
   // Mastery
-  struct mastery_t
+  struct dk_mastery_t
   {
-    passive_spell_t* blightcaller;
-    passive_spell_t* frozen_heart;
+    mastery_t* blightcaller;
+    mastery_t* frozen_heart;
 
-    mastery_t() { memset( ( void* ) this, 0x0, sizeof( mastery_t ) ); }
+    dk_mastery_t() { memset( ( void* ) this, 0x0, sizeof( dk_mastery_t ) ); }
   };
-  mastery_t mastery;
+  dk_mastery_t mastery;
 
   // Options
   std::string unholy_frenzy_target_str;
@@ -4145,18 +4145,18 @@ void death_knight_t::init_spells()
   plate_specialization               = new passive_spell_t( this, "plate_specialization", 86524 );
 
   // Mastery
-  mastery.blightcaller               = new passive_spell_t( this, "blightcaller", 77515, DEATH_KNIGHT_UNHOLY, true );
-  mastery.frozen_heart               = new passive_spell_t( this, "frozen_heart", 77514, DEATH_KNIGHT_FROST,  true );
+  mastery.blightcaller               = new mastery_t( this, "blightcaller", 77515, TREE_UNHOLY );
+  mastery.frozen_heart               = new mastery_t( this, "frozen_heart", 77514, TREE_BLOOD );
 
   // Passives
-  passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North", DEATH_KNIGHT_FROST );
-  passives.blood_rites               = new passive_spell_t( this, "blood_rites", "Blood Rites", DEATH_KNIGHT_BLOOD );
-  passives.icy_talons                = new passive_spell_t( this, "icy_talons", "Icy Talons", DEATH_KNIGHT_FROST );
-  passives.master_of_ghouls          = new passive_spell_t( this, "master_of_ghouls", "Master of Ghouls", DEATH_KNIGHT_UNHOLY );
+  passives.blood_of_the_north        = new passive_spell_t( this, "blood_of_the_north", "Blood of the North" );
+  passives.blood_rites               = new passive_spell_t( this, "blood_rites", "Blood Rites" );
+  passives.icy_talons                = new passive_spell_t( this, "icy_talons", "Icy Talons" );
+  passives.master_of_ghouls          = new passive_spell_t( this, "master_of_ghouls", "Master of Ghouls" );
   passives.reaping                   = new passive_spell_t( this, "reaping", 56835 );
   passives.runic_empowerment         = new passive_spell_t( this, "runic_empowerment", 81229 );
-  passives.unholy_might              = new passive_spell_t( this, "unholy_might", "Unholy Might", DEATH_KNIGHT_UNHOLY );
-  passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War", DEATH_KNIGHT_BLOOD );
+  passives.unholy_might              = new passive_spell_t( this, "unholy_might", "Unholy Might" );
+  passives.veteran_of_the_third_war  = new passive_spell_t( this, "veteran_of_the_third_war", "Veteran of the Third War" );
 
   // Spells
   spells.army_of_the_dead            = new active_spell_t( this, "army_of_the_dead", 42650 );
@@ -4170,8 +4170,8 @@ void death_knight_t::init_spells()
   spells.empower_rune_weapon         = new active_spell_t( this, "empower_rune_weapon", 47568 );
   spells.festering_strike            = new active_spell_t( this, "festering_strike", 85948 );
   spells.frost_fever                 = new active_spell_t( this, "frost_fever", 59921 );
-  spells.frost_strike                = new active_spell_t( this, "frost_strike", 49143, DEATH_KNIGHT_FROST );
-  spells.heart_strike                = new active_spell_t( this, "heart_strike", 55050, DEATH_KNIGHT_BLOOD );
+  spells.frost_strike                = new active_spell_t( this, "frost_strike", 49143 );
+  spells.heart_strike                = new active_spell_t( this, "heart_strike", 55050 );
   spells.horn_of_winter              = new active_spell_t( this, "horn_of_winter", 57330 );
   spells.icy_touch                   = new active_spell_t( this, "icy_touch", 45477 );
   spells.mind_freeze                 = new active_spell_t( this, "mind_freeze", 47528 );
@@ -4182,9 +4182,9 @@ void death_knight_t::init_spells()
   spells.plague_strike               = new active_spell_t( this, "plague_strike", 45462 );
   spells.raise_dead                  = new active_spell_t( this, "raise_dead", 46584 );
   spells.rune_strike                 = new active_spell_t( this, "rune_strike", "Rune Strike" );
-  spells.scourge_strike              = new active_spell_t( this, "scourge_strike", 55090, DEATH_KNIGHT_UNHOLY );
-  spells.scourge_strike_shadow       = new active_spell_t( this, "scourge_strike_shadow", "Scourge Strike (Shadow)", DEATH_KNIGHT_UNHOLY );
-  spells.unholy_frenzy               = new active_spell_t( this, "unholy_frenzy", "Unholy Frenzy", DEATH_KNIGHT_UNHOLY );
+  spells.scourge_strike              = new active_spell_t( this, "scourge_strike", 55090 );
+  spells.scourge_strike_shadow       = new active_spell_t( this, "scourge_strike_shadow", "Scourge Strike (Shadow)" );
+  spells.unholy_frenzy               = new active_spell_t( this, "unholy_frenzy", "Unholy Frenzy" );
 }
 
 // death_knight_t::init_actions =============================================

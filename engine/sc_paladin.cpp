@@ -66,10 +66,10 @@ struct paladin_t : public player_t
   {
     passive_spell_t* touched_by_the_light;
     passive_spell_t* vengeance;
-    passive_spell_t* divine_bulwark;
+    mastery_t* divine_bulwark;
     passive_spell_t* sheath_of_light;
     passive_spell_t* two_handed_weapon_spec;
-    passive_spell_t* hand_of_light;
+    mastery_t* hand_of_light;
     passive_spell_t* judgements_of_the_bold; // passive stuff is hidden here because spells
     passive_spell_t* judgements_of_the_wise; // can only have three effects
     passive_spell_t* plate_specialization;
@@ -350,13 +350,13 @@ struct paladin_attack_t : public attack_t
     }
     if ( p -> buffs_avenging_wrath -> up() ) 
     {
-      player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.avenging_wrath->get_effect_id(1));
+      player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.avenging_wrath->effect_id(1));
     }
     if ( school == SCHOOL_HOLY )
     {
       if ( p -> buffs_inquisition -> up() )
       {
-        player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.inquisition->get_effect_id(1));
+        player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.inquisition->effect_id(1));
       }
     }
   }
@@ -1297,7 +1297,7 @@ struct paladin_spell_t : public spell_t
 
     if ( p -> buffs_avenging_wrath -> up() ) 
     {
-      player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.avenging_wrath->get_effect_id(1));
+      player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.avenging_wrath->effect_id(1));
     }
     if ( school == SCHOOL_HOLY )
     {
@@ -2200,7 +2200,7 @@ void paladin_t::init_spells()
 {
   player_t::init_spells();
 
-  spells.avengers_shield           = new active_spell_t( this, "avengers_shield", "Avenger's Shield", PALADIN_PROTECTION );
+  spells.avengers_shield           = new active_spell_t( this, "avengers_shield", "Avenger's Shield" );
   spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
   spells.consecration              = new active_spell_t( this, "consecration", "Consecration" );
   spells.crusader_strike           = new active_spell_t( this, "crusader_strike", "Crusader Strike" );
@@ -2212,46 +2212,25 @@ void paladin_t::init_spells()
   spells.hammer_of_justice         = new active_spell_t( this, "hammer_of_justice", "Hammer of Justice" );
   spells.hammer_of_the_righteous   = new active_spell_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
   spells.hammer_of_wrath           = new active_spell_t( this, "hammer_of_wrath", "Hammer of Wrath" );
-  spells.holy_shock                = new active_spell_t( this, "holy_shock", "Holy Shock", PALADIN_HOLY );
+  spells.holy_shock                = new active_spell_t( this, "holy_shock", "Holy Shock" );
   spells.holy_wrath                = new active_spell_t( this, "holy_wrath", "Holy Wrath" );
   spells.inquisition               = new active_spell_t( this, "inquisition", "Inquisition" );
   spells.judgement                 = new active_spell_t( this, "judgement", "Judgement" );
   spells.shield_of_the_righteous   = new active_spell_t( this, "shield_of_the_righteous", "Shield of the Righteous", talents.shield_of_the_righteous );
-  spells.templars_verdict          = new active_spell_t( this, "templars_verdict", "Templar's Verdict", PALADIN_RETRIBUTION );
+  spells.templars_verdict          = new active_spell_t( this, "templars_verdict", "Templar's Verdict" );
   spells.zealotry                  = new active_spell_t( this, "zealotry", "Zealotry", talents.zealotry );
-  spells.judgements_of_the_wise    = new active_spell_t( this, "judgements_of_the_wise", 31930, PALADIN_PROTECTION );
-  spells.judgements_of_the_bold    = new active_spell_t( this, "judgements_of_the_bold", 89906, PALADIN_RETRIBUTION );
+  spells.judgements_of_the_wise    = new active_spell_t( this, "judgements_of_the_wise", 31930 );
+  spells.judgements_of_the_bold    = new active_spell_t( this, "judgements_of_the_bold", 89906 );
 
-  passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light", PALADIN_PROTECTION );
-  passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance", PALADIN_PROTECTION );
-  passives.divine_bulwark         = new passive_spell_t( this, "divine_bulwark", "Divine Bulwark", PALADIN_PROTECTION, true );
-  passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light", PALADIN_RETRIBUTION );
-  passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization", PALADIN_RETRIBUTION );
-  passives.hand_of_light          = new passive_spell_t( this, "hand_of_light", "Hand of Light", PALADIN_RETRIBUTION, true );
+  passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light" );
+  passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance" );
+  passives.divine_bulwark         = new mastery_t( this, "divine_bulwark", "Divine Bulwark", TREE_PROTECTION );
+  passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light" );
+  passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization" );
+  passives.hand_of_light          = new mastery_t( this, "hand_of_light", "Hand of Light", TREE_RETRIBUTION );
   passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
-  passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold", PALADIN_RETRIBUTION );
-  passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise", PALADIN_PROTECTION );
-
-  // talented spells
-  spells.avengers_shield->init_enabled();
-  spells.divine_favor->init_enabled();
-  spells.divine_storm->init_enabled();
-  spells.hammer_of_the_righteous->init_enabled();
-  spells.holy_shock->init_enabled();
-  spells.shield_of_the_righteous->init_enabled();
-  spells.templars_verdict->init_enabled();
-  spells.zealotry->init_enabled();
-  spells.judgements_of_the_wise->init_enabled();
-  spells.judgements_of_the_bold->init_enabled();
-  spells.inquisition->init_enabled();
-
-  // spec passives
-  passives.divine_bulwark->init_enabled();
-  passives.sheath_of_light->init_enabled();
-  passives.touched_by_the_light->init_enabled();
-  passives.two_handed_weapon_spec->init_enabled();
-  passives.vengeance->init_enabled();
-  passives.hand_of_light->init_enabled();
+  passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold" );
+  passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise" );
 }
 
 // paladin_t::primary_tab ====================================================
@@ -2261,7 +2240,7 @@ talent_tab_name paladin_t::primary_tab() SC_CONST
   int num_ranks[3] = { 0, 0, 0 };
   for (size_t i = 0; i < talent_list2.size(); ++i)
   {
-    unsigned page = talent_list2.at(i)->talent_t_data->tab_page;
+    unsigned page = talent_list2.at(i)->t_data->tab_page;
     assert(page < 3);
     num_ranks[page] += talent_list2.at(i)->rank();
   }

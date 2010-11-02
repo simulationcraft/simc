@@ -48,127 +48,100 @@ static talent_tab_name tree_to_tab_name( const player_type c, const talent_tree_
 // talent_t::talent_t =======================================================
 
 talent_t::talent_t( player_t* player, const char* t_name, const char* name ) : 
-  spell_id_t( player, t_name, name, true ), talent_t_data( NULL ), talent_t_rank( 0 ),
-  talent_t_enabled( false ), talent_t_forced_override( false ), talent_t_forced_value( false )
+  spell_id_t( player, t_name, name ), t_data( 0 ), t_rank( 0 ), t_overridden( false )
 {
-  assert( pp && name && pp -> sim );
+  assert( s_player && name && s_player -> sim );
 
   uint32_t id = find_talent_id( name );
-  if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Initializing talent %s", name );
-
+  
   if ( id != 0 )
   {
-    talent_t_data = pp->player_data.m_talents_index[ id ];
+    t_data = s_player->player_data.m_talents_index[ id ];
+    t_enabled = s_player -> player_data.talent_is_enabled( t_data -> id );
 
-    pp -> talent_list2.push_back( const_cast<talent_t *>( this ) );
+    s_player -> talent_list2.push_back( const_cast<talent_t*>( this ) );
+    s_player -> player_data.talent_set_used( id, true );
 
-    pp -> player_data.talent_set_used( id, true );
-
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Talent %s initialized", name );
-  }
-
-  talent_init_enabled( false, false );
-
-  if ( !check_unknown_options( OPT_TALENT_RANK_FORCED ) )
-  {
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Talent %s unknown option", name );
+    check_unknown_options( OPT_TALENT_RANK_FORCED );
   }
 }
 
 talent_t::talent_t( const talent_t& copy ) :
-  spell_id_t( copy ), talent_t_data( copy.talent_t_data ), talent_t_rank( copy.talent_t_rank ),
-  talent_t_enabled( copy.talent_t_enabled ), talent_t_forced_override( copy.talent_t_forced_override ), 
-  talent_t_forced_value( copy.talent_t_forced_value )
+  spell_id_t( copy ), t_data( copy.t_data ), t_rank( copy.t_rank ),
+  t_enabled( copy.t_enabled ), t_overridden( copy.t_overridden )
 {
 // Not sure if I should push back or not yet.
 /*
-  pp -> talent_list2.push_back( const_cast<talent_t *>( this ) );
+  s_player -> talent_list2.push_back( const_cast<talent_t *>( this ) );
 */
-}
-
-// talent_t::get_effect_id ===================================================
-
-uint32_t talent_t::get_effect_id( const uint32_t effect_num ) SC_CONST
-{
-  assert( ( talent_t_rank <= 3 ) && ( effect_num >= 1 ) && ( effect_num <= 3 ) );
-  
-  if ( !talent_t_enabled || !talent_t_rank || !talent_t_data )
-    return 0;
-
-  if ( !spell_id_t_id )
-  {
-    return 0;
-  }
-
-  return pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
 }
 
 bool talent_t::ok() SC_CONST
 {
-  if ( !pp || !talent_t_data )
+  if ( ! s_player || ! t_data )
     return false;
 
-  return ( ( talent_t_rank > 0 ) && spell_id_t::ok() && ( talent_t_enabled ) );
+  return ( ( t_rank > 0 ) && spell_id_t::ok() && ( t_enabled ) );
+}
+
+std::string talent_t::to_str() SC_CONST
+{
+  std::ostringstream s;
+  
+  s << spell_id_t::to_str();
+  s << " talent_enabled=" << ( t_enabled ? "true" : "false" );
+  if ( t_overridden ) s << " (forced)";
+  s << " talent_rank=" << t_rank;
+  
+  return s.str();
 }
 
 // talent_t::get_spell_id ===================================================
 
-uint32_t talent_t::get_spell_id( ) SC_CONST
+uint32_t talent_t::spell_id( ) SC_CONST
 {
-  assert( pp -> sim && ( talent_t_rank <= 3 ) );
+  assert( s_player -> sim && ( t_rank <= 3 ) );
   
-  if ( !ok() )
+  if ( ! ok() )
     return 0;
 
-  return pp -> player_data.talent_rank_spell_id( talent_t_data -> id, talent_t_rank );
+  return s_player -> player_data.talent_rank_spell_id( t_data -> id, t_rank );
 }
 
-bool talent_t::set_rank( uint32_t value, bool no_force )
+bool talent_t::set_rank( uint32_t value, bool overridden )
 {
-  if ( !talent_t_data )
+  if ( ! t_data || ! t_enabled )
+  {
+    if ( s_player -> sim -> debug ) 
+      log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
     return false;
+  }
 
-  if ( value > pp -> player_data.talent_max_rank( talent_t_data -> id ) )
+  if ( value > s_player -> player_data.talent_max_rank( t_data -> id ) )
   {
+    if ( s_player -> sim -> debug ) 
+      log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
     return false;
   }
-
-  if ( no_force && talent_t_forced_override )
+  
+  // We cannot allow non-overridden set_rank to take effect, if 
+  // we have already overridden the talent rank once
+  if ( ! t_overridden || overridden )
   {
-    return true;
-  }
-  else if ( ! no_force )
-  {
-    talent_t_forced_override = true;
-  }
+    t_overridden = overridden;
+    t_rank       = value;
+    s_id         = rank_spell_id( t_rank );
 
-  talent_t_rank = value;
-
-  int_init( rank_spell_id( talent_t_rank ) );
-
-  return true;
-}
-
-bool talent_t::talent_init_enabled( bool override_enabled, bool override_value )
-{
-  assert( pp && pp -> sim );
-
-  talent_t_forced_override = override_enabled;
-  talent_t_forced_value = override_value;
-
-  if ( talent_t_forced_override )
-  {
-    talent_t_enabled = talent_t_forced_value;
-  }
-  else
-  {
-    if ( !talent_t_data )
+    if ( t_enabled && t_rank > 0 && ! initialize() )
     {
-      pp -> sim -> errorf( "Error: Unable to init talent \"%s\".\n", token_name.c_str() );
-      assert( 0 );
+      if ( s_player -> sim -> debug ) 
+        log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
+      return false;
     }
-    talent_t_enabled = pp -> player_data.talent_is_enabled( talent_t_data -> id );
   }
+   
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
   return true;
 }
 
@@ -178,74 +151,46 @@ uint32_t talent_t::find_talent_id( const char* name )
 {
   uint32_t i_tab, talent_num, talent_id;
 
-  assert( pp && name && name[0] );
+  assert( s_player && name && name[ 0 ] );
 
   for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
   {
     talent_num = 0;
-    while ( ( talent_id = pp->player_data.talent_player_get_id_by_num( pp -> type, i_tab, talent_num ) ) != 0 )
+    while ( ( talent_id = s_player->player_data.talent_player_get_id_by_num( s_player -> type, i_tab, talent_num ) ) != 0 )
     {
-      if ( !_stricmp( pp -> player_data.talent_name_str( talent_id ), name ) )
+      if ( !_stricmp( s_player -> player_data.talent_name_str( talent_id ), name ) )
       {
         return talent_id;
       }
       talent_num++;
     }
   }
+  
   return 0; 
 }
 
-talent_t* talent_t::find_talent_in_list( const char* t_name )
-{
-  if ( !pp )
-    return NULL;
-
-  return ( talent_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( pp -> talent_list2 ), t_name );
-}
-
-talent_t* talent_t::find_talent_in_list( const uint32_t id )
-{
-  if ( !pp )
-    return NULL;
-
-  return ( talent_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( pp -> talent_list2 ), id );
-}
-
-void talent_t::add_options( player_t* player, std::vector<option_t>& opt_vector )
-{
-  if ( !player )
-    return;
-
-  spell_id_t::add_options( player, ( std::vector<spell_id_t *> * ) &( player -> talent_list2 ), opt_vector, OPT_TALENT_RANK );
-}
-
-
 uint32_t talent_t::max_rank() SC_CONST
 {
-  if ( !pp || !talent_t_data || !talent_t_data->id )
-  {
+  if ( ! s_player || ! t_data || ! t_data->id )
     return 0;
-  }
 
-  return pp -> player_data.talent_max_rank( talent_t_data -> id );
+  return s_player -> player_data.talent_max_rank( t_data -> id );
 }
 
 uint32_t talent_t::rank_spell_id( const uint32_t r ) SC_CONST
 {
-  if ( !pp || !talent_t_data || !talent_t_data->id )
-  {
+  if ( ! s_player || ! t_data || ! t_data->id )
     return 0;
-  }
 
-  return pp -> player_data.talent_rank_spell_id( talent_t_data -> id, r );
+  return s_player -> player_data.talent_rank_spell_id( t_data -> id, r );
 }
 
 uint32_t talent_t::rank() SC_CONST
 {
-  if ( !ok() )
+  if ( ! ok() )
     return 0;
 
-  return talent_t_rank;
+  return t_rank;
 }
 
 // ==========================================================================
@@ -255,505 +200,276 @@ uint32_t talent_t::rank() SC_CONST
 // spell_id_t::spell_id_t =======================================================
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
-    spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
+    s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),
+    s_overridden( false ), s_required_talent( 0 ), s_single( 0 ), s_tree( -1 )
 {
-  if ( !t_name )
-    token_name = "";
+  if ( ! t_name )
+    s_token = "";
   else
-    token_name = t_name;
+    s_token = t_name;
+  
   // Dummy constructor for old-style
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-}
-
-spell_id_t::spell_id_t( player_t* player, const bool run_init, const char* t_name ) :
-    spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
-{
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-  if ( run_init )
-    int_init( t_name );
-}
-
-
-spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id ) :
-    spell_id_t_id( id ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),    
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ), spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
-{
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-
-  int_init( );
+  memset( s_effects, 0, sizeof( s_effects ) );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
-    spell_id_t_id( id ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ),
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( talent ),
-    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
+    s_type( T_SPELL ), s_id( id ), s_data( 0 ), s_enabled( false ), s_player( player ),
+    s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 )
 {
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-  int_init( );
-}
-
-spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
-    spell_id_t_id( id ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( mastery ), spell_id_t_req_tree( true ), 
-    spell_id_t_tab( tree ), spell_id_t_req_talent( NULL ),
-    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
-{
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-  int_init( );
-}
-
-spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, const bool is_talent ) :
-    spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ),
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ), 
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( NULL ),
-    spell_id_t_m_is_talent( is_talent ), spell_id_t_tree( -1 )
-{
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-
-  int_init( s_name );
+  initialize();
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
-    spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ), 
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( false ), spell_id_t_req_tree( false ),
-    spell_id_t_tab( TALENT_TAB_NONE ), spell_id_t_req_talent( talent ),
-    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
+    s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ), 
+    s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 )
 {
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-  int_init( s_name );
-}
-
-spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
-    spell_id_t_id( 0 ), spell_id_t_data( NULL ), spell_id_t_enabled( false ), pp( player ), 
-    spell_id_t_forced_override( false ), spell_id_t_forced_value ( false ),
-    token_name( t_name ), spell_id_t_is_mastery( mastery ), spell_id_t_req_tree( true ), 
-    spell_id_t_tab( tree ), spell_id_t_req_talent( NULL ),
-    spell_id_t_m_is_talent( false ), spell_id_t_tree( -1 )
-{
-  memset(effects, 0, sizeof(effects));
-  single = 0;
-  int_init( s_name );
+  initialize( s_name );
 }
 
 spell_id_t::spell_id_t( const spell_id_t& copy ) :
-    spell_id_t_id( copy.spell_id_t_id ), spell_id_t_data( copy.spell_id_t_data ), spell_id_t_enabled( copy.spell_id_t_enabled ),
-    pp( copy.pp ), 
-    spell_id_t_forced_override( copy.spell_id_t_forced_override ), spell_id_t_forced_value( copy.spell_id_t_forced_value ),
-    token_name( copy.token_name ), spell_id_t_is_mastery( copy.spell_id_t_is_mastery ), spell_id_t_req_tree( copy.spell_id_t_req_tree ),
-    spell_id_t_tab( copy.spell_id_t_tab ), spell_id_t_req_talent( copy.spell_id_t_req_talent ), spell_id_t_m_is_talent( copy.spell_id_t_m_is_talent ),
-    spell_id_t_tree( copy.spell_id_t_tree )
+    s_type( copy.s_type ), s_id( copy.s_id ), s_data( copy.s_data ), s_enabled( copy.s_enabled ),
+    s_player( copy.s_player ), s_overridden( copy.s_overridden ),
+    s_token( copy.s_token ), s_required_talent( copy.s_required_talent ), s_single( copy.s_single ),
+    s_tree( copy.s_tree )
 {
-  memcpy(effects,copy.effects,sizeof(effects));
-  single = copy.single;
+  memcpy( s_effects, copy.s_effects, sizeof( s_effects ) );
 }
 
-nvpair_t *spell_id_t::find_spell_option()
-{
-  assert( pp && pp -> sim );
- 
-  nvpair_t* t = NULL;
-
-  for ( int32_t i = pp -> unknown_options.size() - 1; i >= 0; i-- )
-  {
-    t = pp -> unknown_options[ i ];
-    if ( t -> name == token_name )
-    {
-      return t;
-    }
-  }
-
-  return NULL;
-}
-
-bool spell_id_t::int_init( const uint32_t id, int t )
-{
-  assert( pp && pp -> sim );
-
-  if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Initializing spell %s", token_name.c_str() );
-
-  spell_id_t_id = id;
-  spell_id_t_data = NULL;
-
-  if ( t < -1 )
-    t = -1;
-  if ( t > 3 )
-    t = 3;
-
-  spell_id_t_tree = t;
-
-  if ( spell_id_t_id && pp -> player_data.spell_exists( spell_id_t_id ) )
-  {
-    spell_id_t_data = pp -> player_data.m_spells_index[ spell_id_t_id ];
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s initialized", token_name.c_str() );
-
-    pp -> player_data.spell_set_used( spell_id_t_id, true );
-  }
-  else if ( !spell_id_t_m_is_talent )
-  {
-    spell_id_t_id = 0;
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
-    return false;
-  }
-
-  init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
-
-  struct nvpair_t* nvp = NULL;
-
-  if ( ( nvp = find_spell_option() ) != NULL )
-  {
-    option_t opt[ 2 ];
-    std::vector<option_t> opt_vector;
-
-    opt[ 1 ].name = NULL;
-    opt[ 1 ].type = OPT_UNKNOWN;
-    opt[ 1 ].address = NULL;
-    opt[ 0 ].name = token_name.c_str();
-    opt[ 0 ].type = OPT_SPELL_ENABLED;
-    opt[ 0 ].address = this;
-    option_t::copy( opt_vector, opt );
-
-    if ( !option_t::parse( pp -> sim, opt_vector, nvp -> name, nvp -> value ) )
-    {
-      spell_id_t_id = 0;
-      if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
-      return false;
-    }
-  }
-
-  uint32_t n_effects = 0;
-  
-  // Map effects, figure out if this is a single-effect spell
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ( effects[ i ] = pp -> player_data.m_effects_index[ get_effect_id( i + 1 ) ] ) )
-      n_effects++;
-  }
-  
-  if ( n_effects == 1 )
-  {
-    for ( int i = 0; i < MAX_EFFECTS; i++ )
-    {
-      if ( ! effects[ i ] )
-        continue;
-        
-      single = effects[ i ];
-      break;
-    }
-  }
-  else
-    single = 0;
-
-  return true;  
-}
-
-bool spell_id_t::int_init( const char* s_name )
+bool spell_id_t::initialize( const char* s_name )
 {
   player_type player_class;
-  assert( pp && pp -> sim );
+  uint32_t n_effects       = 0;
 
-  if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Initializing spell %s", token_name.c_str() );
+  assert( s_player && s_player -> sim );
+
+  memset( s_effects, 0, sizeof(s_effects) );
+
+  player_class = s_player -> type;
   
-  player_class = pp -> type;
-  
-  if ( pp -> is_pet() )
+  // For pets, find stuff based on owner class, as that's how our spell lists
+  // are structured
+  if ( s_player -> is_pet() )
   {
-    const pet_t* pet = pp -> cast_pet();
-    
+    const pet_t* pet = s_player -> cast_pet();
     player_class = pet -> owner -> type;
   }
 
-  if ( !spell_id_t_id && !spell_id_t_m_is_talent )
+  // Search using spell name to find the spell type
+  if ( ! s_id )
   {
-    if ( !s_name || !*s_name )
+    if ( ! s_name || ! *s_name )
       return false;
 
-    if ( spell_id_t_is_mastery )
-    {
-      spell_id_t_id = pp -> player_data.find_mastery_spell( player_class, s_name );
-    }
-    else if ( spell_id_t_req_tree )
-    {
-      spell_id_t_id = pp -> player_data.find_talent_spec_spell( player_class, spell_id_t_tab, s_name );
-    }
-    else
-    {
-      spell_id_t_id = pp -> player_data.find_class_spell( player_class, s_name );
-      if ( spell_id_t_id )
-      {
-        spell_id_t_tree = pp -> player_data.find_class_spell_tree( player_class, s_name );
-      }
-      if ( !spell_id_t_id )
-      {
-        spell_id_t_id = pp -> player_data.find_racial_spell( player_class, pp -> race, s_name );
-      }
-      if ( !spell_id_t_id )
-      {
-        spell_id_t_id = pp -> player_data.find_glyph_spell( player_class, s_name );
-      }
-      if ( !spell_id_t_id )
-      {
-        spell_id_t_id = pp -> player_data.find_set_bonus_spell( player_class, s_name );
-      }
-    }
+    if ( ( s_id = s_player -> player_data.find_mastery_spell( player_class, s_name ) ) )
+      s_type      = T_MASTERY;
+    else if ( ! s_id && ( s_id = s_player -> player_data.find_talent_spec_spell( player_class, s_name ) ) )
+      s_type      = T_SPEC;
+    else if ( ! s_id && ( s_id = s_player -> player_data.find_class_spell( player_class, s_name ) ) )
+      s_type      = T_CLASS;
+    else if ( ! s_id && ( s_id = s_player -> player_data.find_racial_spell( player_class, s_player -> race, s_name ) ) )
+      s_type      = T_RACE;
+    else if ( ! s_id && ( s_id = s_player -> player_data.find_glyph_spell( player_class, s_name ) ) )
+      s_type      = T_GLYPH;
+    else if ( ! s_id && ( s_id = s_player -> player_data.find_set_bonus_spell( player_class, s_name ) ) )
+      s_type      = T_ITEM;
   }
-
-  if ( spell_id_t_id && pp -> player_data.spell_exists( spell_id_t_id ) )
+  // Search using spell id to find the spell type
+  else
   {
-    spell_id_t_data = pp -> player_data.m_spells_index[ spell_id_t_id ];
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s initialized", token_name.c_str() );
-
-    pp -> player_data.spell_set_used( spell_id_t_id, true );
-
-    push_back();
+    if ( s_player -> player_data.is_mastery_spell( s_id ) )
+      s_type      = T_MASTERY;
+    else if ( s_player -> player_data.is_talent_spec_spell( s_id ) )
+      s_type      = T_SPEC;
+    else if ( s_player -> player_data.is_class_spell( s_id ) )
+      s_type      = T_CLASS;
+    else if ( s_player -> player_data.is_racial_spell( s_id ) )
+      s_type      = T_RACE;
+    else if ( s_player -> player_data.is_glyph_spell( s_id ) )
+      s_type      = T_GLYPH;
+    else if ( s_player -> player_data.is_set_bonus_spell( s_id ) )
+      s_type      = T_ITEM;
   }
-  else if ( !spell_id_t_m_is_talent )
-  {
-    spell_id_t_id = 0;
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
-    return false;
-  }
-
-  init_enabled( spell_id_t_forced_override, spell_id_t_forced_value );
-
-  if ( !spell_id_t_m_is_talent && !check_unknown_options() )
-  {
-    spell_id_t_id = 0;
-    if ( pp -> sim -> debug ) log_t::output( pp -> sim, "Spell %s NOT initialized", token_name.c_str() );
-    return false;
-  }
-
-  uint32_t n_effects = 0;
   
-  // Map effects, figure out if this is a single-effect spell
+  // At this point, our spell must exist or we are in trouble
+  if ( ! s_id || ! s_player -> player_data.spell_exists( s_id ) )
+    return false;
+  
+  // Do second phase of spell initialization
+  s_data = s_player -> player_data.m_spells_index[ s_id ];
+
+  s_player -> player_data.spell_set_used( s_id, true );
+
+  // Some spells, namely specialization and class spells
+  // can specify a tree for the spell
+  switch ( s_type )
+  {
+    case T_SPEC:
+      s_tree = s_player -> player_data.find_talent_spec_spell_tree( player_class, s_id );
+      break;
+    case T_CLASS:
+      s_tree = s_player -> player_data.find_class_spell_tree( player_class, s_id );
+      break;
+    default:
+      s_tree = -1;
+      break;
+  }
+
+  s_enabled = s_player -> player_data.spell_is_enabled( s_id ) & 
+              s_player -> player_data.spell_is_level( s_id, s_player -> level );
+   
+  // Warn if the player is enabling a spell that the player has no level for
+  if ( ! s_player -> player_data.spell_is_level( s_id, s_player -> level ) )
+  {
+    s_player -> sim -> errorf( "Warning: Player %s level (%d) too low for spell %s, requires level %d",
+      s_player -> name_str.c_str(),
+      s_player -> level,
+      s_data -> name,
+      s_data -> spell_level );
+  }
+  if ( s_type == T_MASTERY )
+  {
+    if ( s_player -> level < 75 )
+      s_enabled = false;
+  }
+
+  // Map s_effects, figure out if this is a s_single-effect spell
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
-    if ( ( effects[ i ] = pp -> player_data.m_effects_index[ get_effect_id( i + 1 ) ] ) )
-      n_effects++;
+    if ( ! s_data -> effect[ i ] )
+      continue;
+      
+    if ( ! s_player -> player_data.m_effects_index[ s_data -> effect[ i ] ] )
+      continue;
+    
+    s_effects[ i ] = s_player -> player_data.m_effects_index[ s_data -> effect[ i ] ];
+    n_effects++;
   }
   
   if ( n_effects == 1 )
   {
     for ( int i = 0; i < MAX_EFFECTS; i++ )
     {
-      if ( ! effects[ i ] )
+      if ( ! s_effects[ i ] )
         continue;
         
-      single = effects[ i ];
+      s_single = s_effects[ i ];
       break;
     }
   }
   else
-    single = 0;
+    s_single = 0;
 
   return true;  
 }
 
 
-// spell_id_t::get_effect_id ===================================================
-
-uint32_t spell_id_t::get_effect_id( const uint32_t effect_num ) SC_CONST
+bool spell_id_t::enable( bool override_value )
 {
-  assert( ( effect_num >= 1 ) && ( effect_num <= 3 ) );
+  assert( s_player && s_player -> sim );
+
+  s_overridden = true;
+  s_enabled    = override_value;
   
-  if ( !ok() )
-    return 0;
-
-  return pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
-}
-
-bool spell_id_t::init_enabled( bool override_enabled, bool override_value )
-{
-  assert( pp && pp -> sim );
-
-  spell_id_t_forced_override = override_enabled;
-  spell_id_t_forced_value = override_value;
-
-  if ( spell_id_t_forced_override )
-  {
-    spell_id_t_enabled = spell_id_t_forced_value;
-  }
-  else if ( spell_id_t_m_is_talent )
-  {
-    spell_id_t_enabled = pp -> player_data.spell_is_enabled( spell_id_t_id );
-  }
-  else
-  {
-    spell_id_t_enabled = pp -> player_data.spell_is_enabled( spell_id_t_id ) & 
-                         ( pp -> player_data.spell_is_level( spell_id_t_id, pp -> level ) );
-    
-    if ( spell_id_t_is_mastery )
-    {
-      if ( pp -> level < 75 )
-        spell_id_t_enabled = false;
-    }
-  }
   return true;
-}
-
-spell_id_t* spell_id_t::find_spell_in_list( std::vector<spell_id_t *> *spell_list, const char* t_name )
-{
-  if ( !spell_list )
-    return NULL;
-
-  uint32_t i = 0;
-  while ( i < spell_list->size() )
-  {
-    spell_id_t *p = (*spell_list)[ 0 ];
-
-    if ( p && !_stricmp( p->token_name.c_str(), t_name ) )
-      return p;
-
-    i++;
-  }
-  return NULL;
-}
-
-spell_id_t* spell_id_t::find_spell_in_list( std::vector<spell_id_t *> *spell_list, const uint32_t id )
-{
-  if ( !spell_list )
-    return NULL;
-
-  uint32_t i = 0;
-  while ( i < spell_list->size() )
-  {
-    spell_id_t *p = (*spell_list)[ 0 ];
-
-    if ( p && p -> spell_id_t_id == id )
-      return p;
-
-    i++;
-  }
-  return NULL;
 }
 
 bool spell_id_t::ok() SC_CONST
 {
-  bool res = spell_id_t_enabled;
+  bool res = s_enabled;
 
-  if ( ! pp || !spell_id_t_data || !spell_id_t_id )
+  if ( ! s_player || ! s_data || ! s_id )
     return false;
 
-  if ( spell_id_t_req_talent )
-    res = res & spell_id_t_req_talent -> ok();
+  if ( s_required_talent )
+    res = res & s_required_talent -> ok();
 
-  if ( spell_id_t_req_tree )
-  {
-    res = res & ( spell_id_t_tab == pp -> pri_tree );
-  }
+  if ( s_type == T_SPEC )
+    res = res & ( s_tree == s_player -> pri_tree );
 
   return res;
 }
 
-void spell_id_t::add_options( player_t* p, std::vector<spell_id_t *> *spell_list, std::vector<option_t>& opt_vector, int opt_type )
+std::string spell_id_t::to_str() SC_CONST
 {
-  if ( !p || !spell_list )
-    return;
-
-  option_t opt[ 2 ];
-  opt[ 1 ].name = NULL;
-  opt[ 1 ].type = OPT_UNKNOWN;
-  opt[ 1 ].address = NULL;
-  uint32_t i = 0;
-
-  while ( i < spell_list->size() )
-  {
-    spell_id_t *t = (*spell_list)[ i ];
-
-    opt[ 0 ].name = t -> token_name.c_str();
-    opt[ 0 ].type = opt_type;
-    opt[ 0 ].address = t;
-
-    option_t::copy( opt_vector, opt );
-
-    i++;
-  }
+  std::ostringstream s;
+  
+  s << "enabled=" << ( s_enabled ? "true" : "false" );
+  if ( s_overridden ) s << " (forced)";
+  s << " token=" << s_token;
+  s << " type=" << s_type;
+  s << " tree=" << s_tree;
+  s << " id=" << s_id;
+  s << " player=" << s_player -> name_str;
+  if ( s_required_talent )
+    s << " req_talent=" << s_required_talent -> s_token;
+  
+  return s.str();
 }
+
 
 bool spell_id_t::check_unknown_options( int opt_type )
 {
-  struct nvpair_t* nvp = NULL;
+  nvpair_t* t = 0;
 
-  assert( pp && pp -> sim );
+  assert( s_player && s_player -> sim );
 
-  if ( ( nvp = find_spell_option() ) != NULL )
+  for ( int32_t i = s_player -> unknown_options.size() - 1; i >= 0; i-- )
   {
-    option_t opt[ 2 ];
-    std::vector<option_t> opt_vector;
-
-    opt[ 1 ].name = NULL;
-    opt[ 1 ].type = OPT_UNKNOWN;
-    opt[ 1 ].address = NULL;
-    opt[ 0 ].name = token_name.c_str();
-    opt[ 0 ].type = opt_type;
-    opt[ 0 ].address = this;
-    option_t::copy( opt_vector, opt );
-
-    if ( !option_t::parse( pp -> sim, opt_vector, nvp -> name, nvp -> value ) )
+    t = s_player -> unknown_options[ i ];
+    
+    if ( t -> name == s_token )
     {
-      return false;
+      option_t opt[ 2 ];
+      std::vector<option_t> opt_vector;
+
+      opt[ 1 ].name = 0;
+      opt[ 1 ].type = OPT_UNKNOWN;
+      opt[ 1 ].address = 0;
+      opt[ 0 ].name = s_token.c_str();
+      opt[ 0 ].type = opt_type;
+      opt[ 0 ].address = this;
+      option_t::copy( opt_vector, opt );
+
+      if ( ! option_t::parse( s_player -> sim, opt_vector, t -> name, t -> value ) )
+        return false;
+
+      return true;
     }
-  }  
-  return true;
+  }
+
+  return false;
 }
 
 const char* spell_id_t::real_name() SC_CONST
 {
-  if ( !pp || !spell_id_t_data || !spell_id_t_id )
-  {
-    return NULL;
-  }
+  if ( ! s_player || ! s_data || ! s_id )
+    return 0;
 
-  return pp -> player_data.spell_name_str( spell_id_t_id );
+  return s_player -> player_data.spell_name_str( s_id );
 }
 
 const std::string spell_id_t::token() SC_CONST
 {
-  if ( !pp || !spell_id_t_data || !spell_id_t_id )
-  {
-    return NULL;
-  }
+  if ( ! s_player || ! s_data || ! s_id )
+    return 0;
 
-  return token_name;
+  return s_token;
 }
 
 double spell_id_t::missile_speed() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_missile_speed( spell_id_t_id );
+  return s_player -> player_data.spell_missile_speed( s_id );
 }
 
 uint32_t spell_id_t::school_mask() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  return pp -> player_data.spell_school_mask( spell_id_t_id );
+  return s_player -> player_data.spell_school_mask( s_id );
 }
 
 uint32_t spell_id_t::get_school_mask( const school_type s )
@@ -846,450 +562,377 @@ school_type spell_id_t::get_school_type( const uint32_t mask )
 
 school_type spell_id_t::get_school_type() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return SCHOOL_NONE;
-  }
 
   return get_school_type( school_mask() );
 }
 
 resource_type spell_id_t::power_type() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return RESOURCE_NONE;
-  }
 
-  return pp -> player_data.spell_power_type( spell_id_t_id );
+  return s_player -> player_data.spell_power_type( s_id );
 }
 
 double spell_id_t::min_range() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_min_range( spell_id_t_id );
+  return s_player -> player_data.spell_min_range( s_id );
 }
 
 double spell_id_t::max_range() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_max_range( spell_id_t_id );
+  return s_player -> player_data.spell_max_range( s_id );
 }
 
 bool spell_id_t::in_range() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return false;
-  }
 
-  return pp -> player_data.spell_in_range( spell_id_t_id, pp -> distance );
+  return s_player -> player_data.spell_in_range( s_id, s_player -> distance );
 }
 
 double spell_id_t::cooldown() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  double d = pp -> player_data.spell_cooldown( spell_id_t_id );
+  double d = s_player -> player_data.spell_cooldown( s_id );
 
-  if ( d > ( pp -> sim -> wheel_seconds - 2.0 ) )
-    d = pp -> sim -> wheel_seconds - 2.0;
+  if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
+    d = s_player -> sim -> wheel_seconds - 2.0;
 
   return d;
 }
 
 double spell_id_t::gcd() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_gcd( spell_id_t_id );
+  return s_player -> player_data.spell_gcd( s_id );
 }
 
 uint32_t spell_id_t::category() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  return pp -> player_data.spell_category( spell_id_t_id );
+  return s_player -> player_data.spell_category( s_id );
 }
 
 double spell_id_t::duration() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
   
-  double d = pp -> player_data.spell_duration( spell_id_t_id );
+  double d = s_player -> player_data.spell_duration( s_id );
 
-  if ( d > ( pp -> sim -> wheel_seconds - 2.0 ) )
-    d = pp -> sim -> wheel_seconds - 2.0;
+  if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
+    d = s_player -> sim -> wheel_seconds - 2.0;
 
   return d;
 }
 
 double spell_id_t::cost() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_cost( spell_id_t_id );
+  return s_player -> player_data.spell_cost( s_id );
 }
 
 uint32_t spell_id_t::rune_cost() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  return pp -> player_data.spell_rune_cost( spell_id_t_id );
+  return s_player -> player_data.spell_rune_cost( s_id );
 }
 
 double spell_id_t::runic_power_gain() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_runic_power_gain( spell_id_t_id );
+  return s_player -> player_data.spell_runic_power_gain( s_id );
 }
 
 uint32_t spell_id_t::max_stacks() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  return pp -> player_data.spell_max_stacks( spell_id_t_id );
+  return s_player -> player_data.spell_max_stacks( s_id );
 }
 
 uint32_t spell_id_t::initial_stacks() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  return pp -> player_data.spell_initial_stacks( spell_id_t_id );
+  return s_player -> player_data.spell_initial_stacks( s_id );
 }
 
 double spell_id_t::proc_chance() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_proc_chance( spell_id_t_id );
+  return s_player -> player_data.spell_proc_chance( s_id );
 }
 
 double spell_id_t::cast_time() SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  return pp -> player_data.spell_cast_time( spell_id_t_id, pp -> level );
+  return s_player -> player_data.spell_cast_time( s_id, s_player -> level );
 }
 
 uint32_t spell_id_t::effect_id( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  return pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  return s_player -> player_data.spell_effect_id( s_id, effect_num );
 }
 
 bool spell_id_t::flags( const spell_attribute_t f ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return false;
-  }
 
-  return pp -> player_data.spell_flags( spell_id_t_id, f );
+  return s_player -> player_data.spell_flags( s_id, f );
 }
 
 const char* spell_id_t::desc() SC_CONST
 {
-  if ( !ok() )
-  {
-    return NULL;
-  }
+  if ( ! ok() )
+    return 0;
 
-  return pp -> player_data.spell_desc( spell_id_t_id );
+  return s_player -> player_data.spell_desc( s_id );
 }
 
 const char* spell_id_t::tooltip() SC_CONST
 {
-  if ( !ok() )
-  {
-    return NULL;
-  }
+  if ( ! ok() )
+    return 0;
 
-  return pp -> player_data.spell_tooltip( spell_id_t_id );
+  return s_player -> player_data.spell_tooltip( s_id );
 }
 
 int32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_type( effect_id );
+  return s_player -> player_data.effect_type( effect_id );
 }
 
 int32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_subtype( effect_id );
+  return s_player -> player_data.effect_subtype( effect_id );
 }
 
 int32_t spell_id_t::effect_base_value( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_base_value( effect_id );
+  return s_player -> player_data.effect_base_value( effect_id );
 }
 
 int32_t spell_id_t::effect_misc_value1( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_misc_value1( effect_id );
+  return s_player -> player_data.effect_misc_value1( effect_id );
 }
 
 int32_t spell_id_t::effect_misc_value2( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_misc_value2( effect_id );
+  return s_player -> player_data.effect_misc_value2( effect_id );
 }
 
 uint32_t spell_id_t::effect_trigger_spell( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_trigger_spell_id( effect_id );
+  return s_player -> player_data.effect_trigger_spell_id( effect_id );
 }
 
 double spell_id_t::effect_average( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_average( effect_id, 
-    pp -> player_data.spell_scaling_class( spell_id_t_id ), pp -> level );
+  return s_player -> player_data.effect_average( effect_id, 
+    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
 double spell_id_t::effect_delta( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_delta( effect_id, 
-    pp -> player_data.spell_scaling_class( spell_id_t_id ), pp -> level );
+  return s_player -> player_data.effect_delta( effect_id, 
+    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
 double spell_id_t::effect_unk( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_unk( effect_id, 
-    pp -> player_data.spell_scaling_class( spell_id_t_id ), pp -> level );
+  return s_player -> player_data.effect_unk( effect_id, 
+    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
 double spell_id_t::effect_min( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_min( effect_id, 
-    pp -> player_data.spell_scaling_class( spell_id_t_id ), pp -> level );
+  return s_player -> player_data.effect_min( effect_id, 
+    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
 double spell_id_t::effect_max( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_max( effect_id, 
-    pp -> player_data.spell_scaling_class( spell_id_t_id ), pp -> level );
+  return s_player -> player_data.effect_max( effect_id, 
+    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
 double spell_id_t::effect_coeff( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_coeff( effect_id );
+  return s_player -> player_data.effect_coeff( effect_id );
 }
 
 double spell_id_t::effect_period( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_period( effect_id );
+  return s_player -> player_data.effect_period( effect_id );
 }
 
 double spell_id_t::effect_radius( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_radius( effect_id );
+  return s_player -> player_data.effect_radius( effect_id );
 }
 
 double spell_id_t::effect_radius_max( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_radius_max( effect_id );
+  return s_player -> player_data.effect_radius_max( effect_id );
 }
 
 double spell_id_t::effect_pp_combo_points( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_pp_combo_points( effect_id );
+  return s_player -> player_data.effect_pp_combo_points( effect_id );
 }
 
 double spell_id_t::effect_real_ppl( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0.0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_real_ppl( effect_id );
+  return s_player -> player_data.effect_real_ppl( effect_id );
 }
 
 int spell_id_t::effect_die_sides( const uint32_t effect_num ) SC_CONST
 {
-  if ( !ok() )
-  {
+  if ( ! ok() )
     return 0;
-  }
 
-  uint32_t effect_id = pp -> player_data.spell_effect_id( spell_id_t_id, effect_num );
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return pp -> player_data.effect_die_sides( effect_id );
+  return s_player -> player_data.effect_die_sides( effect_id );
 }
 
 double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
-  if ( single )
-    return sc_data_access_t::fmt_value( single -> base_value, single -> type, single -> subtype );
+  if ( ! ok() )
+    return 0.0;
+
+  if ( s_single )
+    return sc_data_access_t::fmt_value( s_single -> base_value, s_single -> type, s_single -> subtype );
 
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
-    if ( ! effects[ i ] )
+    if ( ! s_effects[ i ] )
       continue;
 
-    if ( ( type == E_MAX || effects[ i ] -> type == type ) && 
-         ( sub_type == A_MAX || effects[ i ] -> subtype == sub_type ) && 
-         ( misc_value == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value == misc_value ) &&
-         ( misc_value2 == DEFAULT_MISC_VALUE || effects[ i ] -> misc_value_2 == misc_value2 ) )
-      return sc_data_access_t::fmt_value( effects[ i ] -> base_value, type, sub_type );
+    if ( ( type == E_MAX || s_effects[ i ] -> type == type ) && 
+         ( sub_type == A_MAX || s_effects[ i ] -> subtype == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || s_effects[ i ] -> misc_value == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || s_effects[ i ] -> misc_value_2 == misc_value2 ) )
+      return sc_data_access_t::fmt_value( s_effects[ i ] -> base_value, type, sub_type );
   }
   
   return 0.0;
@@ -1329,16 +972,19 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
     1.0,    // P_DAMAGE_TAKEN
     100.0,  // P_DISPEL_CHANCE
   };
+  
+  if ( ! ok() )
+    return 0.0;
 
-  if ( single )
+  if ( s_single )
   {
-    if ( ( p_type == P_MAX ) || ( single -> subtype == A_ADD_FLAT_MODIFIER ) || ( single -> subtype == A_ADD_PCT_MODIFIER ) )
+    if ( ( p_type == P_MAX ) || ( s_single -> subtype == A_ADD_FLAT_MODIFIER ) || ( s_single -> subtype == A_ADD_PCT_MODIFIER ) )
     {
-      if ( single -> subtype == (int) A_ADD_PCT_MODIFIER )
-        return single -> base_value / 100.0;
+      if ( s_single -> subtype == (int) A_ADD_PCT_MODIFIER )
+        return s_single -> base_value / 100.0;
       // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
       else
-        return single -> base_value / property_flat_divisor[ single -> misc_value ];
+        return s_single -> base_value / property_flat_divisor[ s_single -> misc_value ];
     }
     else
       return 0.0;
@@ -1346,20 +992,20 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
 
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
-    if ( ! effects[ i ] )
+    if ( ! s_effects[ i ] )
       continue;
 
-    if ( effects[ i ] -> subtype != A_ADD_FLAT_MODIFIER && effects[ i ] -> subtype != A_ADD_PCT_MODIFIER )
+    if ( s_effects[ i ] -> subtype != A_ADD_FLAT_MODIFIER && s_effects[ i ] -> subtype != A_ADD_PCT_MODIFIER )
       continue;
 
-    if ( p_type == P_MAX || effects[ i ] -> misc_value == p_type )
+    if ( p_type == P_MAX || s_effects[ i ] -> misc_value == p_type )
     {
       // Divide by 100 for every A_ADD_PCT_MODIFIER
-      if ( effects[ i ] -> subtype == (int) A_ADD_PCT_MODIFIER )
-        return effects[ i ] -> base_value / 100.0;
+      if ( s_effects[ i ] -> subtype == (int) A_ADD_PCT_MODIFIER )
+        return s_effects[ i ] -> base_value / 100.0;
       // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
       else
-        return effects[ i ] -> base_value / property_flat_divisor[ effects[ i ] -> misc_value ];
+        return s_effects[ i ] -> base_value / property_flat_divisor[ s_effects[ i ] -> misc_value ];
     }
   }
   
@@ -1371,169 +1017,104 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
 // Active Spell ID
 // ==========================================================================
 
-active_spell_t::active_spell_t( player_t* player, const char* t_name ) :
-  spell_id_t( player, t_name )
-{
-  
-}
-
-active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id ) :
-  spell_id_t( player, t_name, id )
-{
-
-}
-
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   spell_id_t( player, t_name, id, talent )
 {
-  push_back();
-}
-
-active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
-  spell_id_t( player, t_name, id, tree, mastery )
-{
-  push_back();
-}
-
-active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name ) :
-  spell_id_t( player, t_name, s_name, false )
-{
-
+  s_player -> spell_list.push_back( this );
+  
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Active Spell status: %s", to_str().c_str() );
 }
 
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   spell_id_t( player, t_name, s_name, talent )
 {
-  push_back();
-}
-
-active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
-  spell_id_t( player, t_name, s_name, tree, mastery )
-{
-  push_back();
-}
-
-active_spell_t::active_spell_t( const active_spell_t& copy ) :
-  spell_id_t( copy )
-{
+  s_player -> spell_list.push_back( this );
   
-}
-
-active_spell_t* active_spell_t::find_spell_in_list( const char* t_name )
-{
-  if ( !pp )
-    return NULL;
-
-  return ( active_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( pp -> active_spell_list ), t_name );
-}
-
-active_spell_t* active_spell_t::find_spell_in_list( const uint32_t id )
-{
-  if ( !pp )
-    return NULL;
-
-  return ( active_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( pp -> active_spell_list ), id );
-}
-
-void active_spell_t::add_options( player_t* player, std::vector<option_t>& opt_vector )
-{
-  if ( !player )
-    return;
-
-  spell_id_t::add_options( player, ( std::vector<spell_id_t *> * ) &( player -> active_spell_list ), opt_vector );
-}
-
-void active_spell_t::push_back()
-{
-  if ( pp && spell_id_t_id )
-    pp -> active_spell_list.push_back( this );
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Active Spell status: %s", to_str().c_str() );
 }
 
 // ==========================================================================
 // Passive Spell ID
 // ==========================================================================
 
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name ) :
-  spell_id_t( player, t_name )
-{
-  
-}
-
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id ) :
-  spell_id_t( player, t_name, id )
-{
-  push_back();
-}
-
-passive_spell_t::passive_spell_t( player_t* player, const bool run_init, const char* t_name ) :
-  spell_id_t( player, run_init, t_name )
-{
-  push_back();
-}
-
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   spell_id_t( player, t_name, id, talent )
 {
-  push_back();
-}
-
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, const talent_tab_name tree, bool mastery ) :
-  spell_id_t( player, t_name, id, tree, mastery )
-{
-  push_back();
-}
-
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name ) :
-  spell_id_t( player, t_name, s_name, false )
-{
-  push_back();
+  s_player -> spell_list.push_back( this );
+  
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Passive Spell status: %s", to_str().c_str() );
 }
 
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   spell_id_t( player, t_name, s_name, talent )
 {
-  push_back();
+  s_player -> spell_list.push_back( this );
+  
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Passive Spell status: %s", to_str().c_str() );
 }
 
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, const talent_tab_name tree, bool mastery ) :
-  spell_id_t( player, t_name, s_name, tree, mastery )
+// Glyph basic object
+
+glyph_t::glyph_t( player_t* player, const char* t_name ) :
+  spell_id_t( player, t_name )
 {
-  push_back();
+  std::string name = t_name;
+  s_token = armory_t::format( name, FORMAT_ASCII_MASK );
+  
+  initialize( t_name );
+  s_enabled = false;
+  
+  s_player -> spell_list.push_back( this );
 }
 
-passive_spell_t::passive_spell_t( const passive_spell_t& copy ) :
-  spell_id_t( copy )
+bool glyph_t::enable( bool override_value ) 
 {
+  spell_id_t::enable( override_value );
+  
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Glyph Spell status: %s", to_str().c_str() );
 
+  return s_enabled;
 }
 
-passive_spell_t* passive_spell_t::find_spell_in_list( const char* t_name )
+mastery_t::mastery_t( player_t* player, const char* t_name, const uint32_t id, talent_tree_type tree ) :
+  spell_id_t( player, t_name, id ), m_tree( tree )
 {
-  if ( !pp )
-    return NULL;
-
-  return ( passive_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( pp -> passive_spell_list ), t_name );
+  s_player -> spell_list.push_back( this );
+  
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Mastery status: %s", to_str().c_str() );
 }
 
-passive_spell_t* passive_spell_t::find_spell_in_list( const uint32_t id )
+mastery_t::mastery_t( player_t* player, const char* t_name, const char* s_name, talent_tree_type tree ) :
+  spell_id_t( player, t_name, s_name ), m_tree( tree )
 {
-  if ( !pp )
-    return NULL;
-
-  return ( passive_spell_t* ) spell_id_t::find_spell_in_list( ( std::vector<spell_id_t *> * ) &( pp -> passive_spell_list ), id );
+  s_player -> spell_list.push_back( this );
+  
+  if ( s_player -> sim -> debug ) 
+    log_t::output( s_player -> sim, "Mastery status: %s", to_str().c_str() );
 }
 
-void passive_spell_t::add_options( player_t* player, std::vector<option_t>& opt_vector )
+bool mastery_t::ok() SC_CONST
 {
-  if ( !player )
-    return;
-
-  spell_id_t::add_options( player, ( std::vector<spell_id_t *> * ) &( player -> passive_spell_list ), opt_vector );
+  return spell_id_t::ok() && ( s_player -> primary_tree() == m_tree );
 }
 
-void passive_spell_t::push_back()
+double mastery_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
-  if ( pp && spell_id_t_id )
-    pp -> passive_spell_list.push_back( this );
+  return spell_id_t::base_value( type, sub_type, misc_value, misc_value2 ) / 10000.0;
 }
 
+std::string mastery_t::to_str() SC_CONST
+{
+  std::ostringstream s;
+  
+  s << spell_id_t::to_str();
+  s << " mastery_tree=" << m_tree;
+  
+  return s.str();
+}

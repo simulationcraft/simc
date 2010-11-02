@@ -103,9 +103,9 @@ struct mage_t : public player_t
   // Mastery
   struct mastery_spells_t
   {
-    passive_spell_t* flashburn;
-    passive_spell_t* frostburn;
-    passive_spell_t* mana_adept;
+    mastery_t* flashburn;
+    mastery_t* frostburn;
+    mastery_t* mana_adept;
   };
   mastery_spells_t mastery;
 
@@ -2909,14 +2909,14 @@ void mage_t::init_spells()
   player_t::init_spells();
 
   // Mastery
-  mastery.flashburn                   = new passive_spell_t( this, "flashburn",  76595, MAGE_FIRE,   true );
-  mastery.frostburn                   = new passive_spell_t( this, "frostburn",  76613, MAGE_FROST,  true );
-  mastery.mana_adept                  = new passive_spell_t( this, "mana_adept", 76547, MAGE_ARCANE, true );
+  mastery.flashburn                   = new mastery_t( this, "flashburn",  76595, TREE_FIRE );
+  mastery.frostburn                   = new mastery_t( this, "frostburn",  76613, TREE_FROST );
+  mastery.mana_adept                  = new mastery_t( this, "mana_adept", 76547, TREE_ARCANE );
 
   // Passives
-  passive_spells.arcane_specialization = new passive_spell_t( this, "arcane_specialization", "Arcane Specialization", MAGE_ARCANE );
-  passive_spells.fire_specialization   = new passive_spell_t( this, "fire_specialization",   "Fire Specialization",   MAGE_FIRE );
-  passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization",  MAGE_FROST );
+  passive_spells.arcane_specialization = new passive_spell_t( this, "arcane_specialization", "Arcane Specialization" );
+  passive_spells.fire_specialization   = new passive_spell_t( this, "fire_specialization",   "Fire Specialization" );
+  passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization" );
 }
 
 // mage_t::init_race ========================================================

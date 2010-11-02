@@ -93,7 +93,7 @@ buff_t::buff_t( player_t*          p,
                 bool               q,
                 bool               r,
                 int                rng_type ) :
-  spell_id_t( p, n.c_str(), sname, false ),
+  spell_id_t( p, n.c_str(), sname, 0 ),
   sim( p -> sim ), player( p ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : (initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
@@ -117,6 +117,9 @@ buff_t::buff_t( player_t*          p,
   }
   next = *tail;
   *tail = this;
+  
+  if ( sim -> debug )
+    log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
 }
 
 // buff_t::buff_t ===========================================================
@@ -138,7 +141,7 @@ buff_t::buff_t( player_t*          p,
   _init_buff_t();
 
   cooldown = player -> get_cooldown( "buff_" + name_str );
-  cooldown -> duration = player -> player_data.spell_cooldown( spell_id());
+  cooldown -> duration = player -> player_data.spell_cooldown( spell_id() );
   if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
     cooldown -> duration = sim -> wheel_seconds - 2.0;
 
@@ -151,6 +154,9 @@ buff_t::buff_t( player_t*          p,
   }
   next = *tail;
   *tail = this;
+  
+  if ( sim -> debug )
+    log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
 }
 
 // buff_t::init =============================================================
@@ -615,6 +621,20 @@ buff_t* buff_t::find( player_t* p,
       return b;
 
   return 0;
+}
+
+std::string buff_t::to_str() SC_CONST
+{
+  std::ostringstream s;
+  
+  s << spell_id_t::to_str();
+  s << " max_stack=" << max_stack;
+  s << " initial_stack=" << initial_stacks();
+  s << " cooldown=" << cooldown -> duration;
+  s << " duration=" << buff_duration;
+  s << " default_chance=" << default_chance;
+  
+  return s.str();
 }
 
 // buff_t::create_expression ================================================

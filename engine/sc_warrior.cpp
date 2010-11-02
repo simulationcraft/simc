@@ -167,15 +167,15 @@ struct warrior_t : public player_t
   glyphs_t glyphs;
 
   // Mastery
-  struct mastery_t
+  struct war_mastery_t
   {
-    passive_spell_t* critical_block;
-    passive_spell_t* strikes_of_opportunity;
-    passive_spell_t* unshackled_fury;
+    mastery_t* critical_block;
+    mastery_t* strikes_of_opportunity;
+    mastery_t* unshackled_fury;
 
-    mastery_t() { memset( ( void* ) this, 0x0, sizeof( mastery_t ) ); }
+    war_mastery_t() { memset( ( void* ) this, 0x0, sizeof( war_mastery_t ) ); }
   };
-  mastery_t mastery;
+  war_mastery_t mastery;
 
   // Procs
   proc_t* procs_deferred_deep_wounds;
@@ -2741,48 +2741,48 @@ void warrior_t::init_spells()
   player_t::init_spells();
 
   // Active Spells
-  active_spells.battle_shout      = new active_spell_t( this, "battle_shout", "Battle Shout", WARRIOR_FURY );
-  active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage", WARRIOR_FURY );
-  active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm", WARRIOR_ARMS );
-  active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst", WARRIOR_FURY );
-  active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave", WARRIOR_FURY );
-  active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash", WARRIOR_ARMS );
-  active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow", WARRIOR_PROTECTION );
-  active_spells.deadly_calm       = new active_spell_t( this, "deadly_calm", "Deadly Calm", WARRIOR_ARMS );
-  active_spells.death_wish        = new active_spell_t( this, "death_wish", "Death Wish", WARRIOR_FURY );
-  active_spells.devastate         = new active_spell_t( this, "devastate", "Devastate", WARRIOR_PROTECTION );
-  active_spells.execute           = new active_spell_t( this, "execute", "Execute", WARRIOR_FURY );
-  active_spells.heroic_strike     = new active_spell_t( this, "heroic_strike", "Heroic Strike", WARRIOR_ARMS );
-  active_spells.inner_rage        = new active_spell_t( this, "inner_rage", "Inner Rage", WARRIOR_FURY );
-  active_spells.mortal_strike     = new active_spell_t( this, "mortal_strike", "Mortal Strike", WARRIOR_ARMS );
-  active_spells.overpower         = new active_spell_t( this, "overpower", "Overpower", WARRIOR_ARMS );
-  active_spells.pummel            = new active_spell_t( this, "pummel", "Pummel", WARRIOR_FURY );
-  active_spells.raging_blow       = new active_spell_t( this, "raging_blow", "Raging Blow", WARRIOR_FURY );
-  active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness", WARRIOR_FURY );
-  active_spells.rend              = new active_spell_t( this, "rend", "Rend", WARRIOR_ARMS );
-  active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge", WARRIOR_PROTECTION );
-  active_spells.shattering_throw  = new active_spell_t( this, "shattering_throw", "Shattering Throw", WARRIOR_ARMS );
-  active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash", WARRIOR_PROTECTION );
-  active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block", WARRIOR_PROTECTION );
-  active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam", WARRIOR_PROTECTION );
-  active_spells.shockwave         = new active_spell_t( this, "shockwave", "Shockwave", WARRIOR_PROTECTION );
-  active_spells.slam              = new active_spell_t( this, "slam", "Slam", WARRIOR_FURY );
-  active_spells.sweeping_strikes  = new active_spell_t( this, "sweeping_strikes", "Sweeping Strikes", WARRIOR_ARMS );
-  active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap", WARRIOR_ARMS );
-  active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush", WARRIOR_FURY );
-  active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind", WARRIOR_FURY );
+  active_spells.battle_shout      = new active_spell_t( this, "battle_shout", "Battle Shout" );
+  active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage" );
+  active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm" );
+  active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst" );
+  active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave" );
+  active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash" );
+  active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow" );
+  active_spells.deadly_calm       = new active_spell_t( this, "deadly_calm", "Deadly Calm" );
+  active_spells.death_wish        = new active_spell_t( this, "death_wish", "Death Wish" );
+  active_spells.devastate         = new active_spell_t( this, "devastate", "Devastate" );
+  active_spells.execute           = new active_spell_t( this, "execute", "Execute" );
+  active_spells.heroic_strike     = new active_spell_t( this, "heroic_strike", "Heroic Strike" );
+  active_spells.inner_rage        = new active_spell_t( this, "inner_rage", "Inner Rage" );
+  active_spells.mortal_strike     = new active_spell_t( this, "mortal_strike", "Mortal Strike" );
+  active_spells.overpower         = new active_spell_t( this, "overpower", "Overpower" );
+  active_spells.pummel            = new active_spell_t( this, "pummel", "Pummel" );
+  active_spells.raging_blow       = new active_spell_t( this, "raging_blow", "Raging Blow" );
+  active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness" );
+  active_spells.rend              = new active_spell_t( this, "rend", "Rend" );
+  active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge" );
+  active_spells.shattering_throw  = new active_spell_t( this, "shattering_throw", "Shattering Throw" );
+  active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash" );
+  active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block" );
+  active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam" );
+  active_spells.shockwave         = new active_spell_t( this, "shockwave", "Shockwave" );
+  active_spells.slam              = new active_spell_t( this, "slam", "Slam" );
+  active_spells.sweeping_strikes  = new active_spell_t( this, "sweeping_strikes", "Sweeping Strikes" );
+  active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap" );
+  active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush" );
+  active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind" );
 
   // Mastery
-  mastery.critical_block         = new passive_spell_t( this, "critical_block",         76857, WARRIOR_PROTECTION );
-  mastery.strikes_of_opportunity = new passive_spell_t( this, "strikes_of_opportunity", 76838, WARRIOR_ARMS );
-  mastery.unshackled_fury        = new passive_spell_t( this, "unshackled_fury",        76856, WARRIOR_FURY );
+  mastery.critical_block         = new mastery_t( this, "critical_block",         76857, TREE_PROTECTION );
+  mastery.strikes_of_opportunity = new mastery_t( this, "strikes_of_opportunity", 76838, TREE_ARMS );
+  mastery.unshackled_fury        = new mastery_t( this, "unshackled_fury",        76856, TREE_FURY );
 
   // Spec Passives
-  spec.anger_management                 = new passive_spell_t( this, "anger_management",                 12296, WARRIOR_ARMS );
-  spec.dual_wield_specialization        = new passive_spell_t( this, "dual_wield_specialization",        23588, WARRIOR_FURY );
-  spec.precision                        = new passive_spell_t( this, "precision",                        29592, WARRIOR_FURY );
-  spec.sentinel                         = new passive_spell_t( this, "sentinel",                         29144, WARRIOR_PROTECTION );
-  spec.two_handed_weapon_specialization = new passive_spell_t( this, "two_handed_weapon_specialization", 12712, WARRIOR_ARMS );
+  spec.anger_management                 = new passive_spell_t( this, "anger_management",                 12296 );
+  spec.dual_wield_specialization        = new passive_spell_t( this, "dual_wield_specialization",        23588 );
+  spec.precision                        = new passive_spell_t( this, "precision",                        29592 );
+  spec.sentinel                         = new passive_spell_t( this, "sentinel",                         29144 );
+  spec.two_handed_weapon_specialization = new passive_spell_t( this, "two_handed_weapon_specialization", 12712 );
 }
 
 // warrior_t::init_glyphs ===================================================

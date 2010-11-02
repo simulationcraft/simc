@@ -359,8 +359,7 @@ player_t::player_t( sim_t*             s,
     tree_type[ i ] = TREE_NONE;
   }
   talent_list2.clear();
-  passive_spell_list.clear();
-  active_spell_list.clear();
+  spell_list.clear();
   talent_str.clear();
 }
 
@@ -444,16 +443,10 @@ player_t::~player_t()
     delete a;
   }
 
-  while ( passive_spell_list.size() )
+  while ( spell_list.size() )
   {
-    passive_spell_t* s = passive_spell_list.back();
-    passive_spell_list.pop_back();
-    delete s;
-  }
-  while ( active_spell_list.size() )
-  {
-    active_spell_t* s = active_spell_list.back();
-    active_spell_list.pop_back();
+    spell_id_t* s = spell_list.back();
+    spell_list.pop_back();
     delete s;
   }
   while ( talent_list2.size() )
@@ -1174,7 +1167,7 @@ void player_t::init_talents()
     {
       for ( j = 0; j < num_talents; j++ )
       {
-        if ( talent_list2[ j ] && talent_list2[ j ] -> talent_t_data && talent_list2[ j ] -> talent_t_data-> id == talent_id )
+        if ( talent_list2[ j ] && talent_list2[ j ] -> t_data && talent_list2[ j ] -> t_data-> id == talent_id )
         {
           talent_str.begin();
           
@@ -1189,11 +1182,6 @@ void player_t::init_talents()
   }
 
   pri_tree = primary_tab();
-
-  for ( j = 0; j < num_talents; j++ )
-  {
-    talent_list2[ j ] -> init();
-  }
 }
 
 // player_t::init_spells =================================================
@@ -4566,10 +4554,6 @@ std::vector<option_t>& player_t::get_options()
     };
 
     option_t::copy( options, player_options );
-
-    talent_t::add_options              ( this, options );
-    active_spell_t::add_options        ( this, options );
-    passive_spell_t::add_options       ( this, options );
   }
 
   return options;
