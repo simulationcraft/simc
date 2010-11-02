@@ -3067,7 +3067,7 @@ void rogue_t::init_actions()
     }
     if ( primary_tree() == TREE_ASSASSINATION )
     {
-      if ( use_rupture = -1 )
+      if ( use_rupture == -1 )
       {
 	use_rupture = ( ! talents.blood_spatter   &&
 			! talents.serrated_blades &&
