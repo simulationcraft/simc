@@ -427,7 +427,7 @@ static void trigger_deep_wounds( action_t* a )
 
   double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
                              p -> active_deep_wounds -> weapon_multiplier *
-	                           p -> active_deep_wounds -> player_multiplier );
+                             p -> active_deep_wounds -> player_multiplier );
 
   if ( a -> weapon -> slot == SLOT_OFF_HAND )
     deep_wounds_dmg *= 0.5;
@@ -476,9 +476,9 @@ static void trigger_deep_wounds( action_t* a )
 
       if ( p -> active_deep_wounds -> ticking )
       {
-	      if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
-	      p -> procs_deferred_deep_wounds -> occur();
-	      p -> active_deep_wounds -> cancel();
+        if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
+        p -> procs_deferred_deep_wounds -> occur();
+        p -> active_deep_wounds -> cancel();
       }
 
       p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
@@ -501,7 +501,7 @@ static void trigger_deep_wounds( action_t* a )
   if ( p -> active_deep_wounds -> ticking )
   {
     if ( p -> active_deep_wounds -> tick_event -> occurs() <
-	 p -> deep_wounds_delay_event -> occurs() )
+   p -> deep_wounds_delay_event -> occurs() )
     {
       // Deep Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep Wounds will
       // both tick -and- get rolled into the next Deep Wounds.
@@ -615,7 +615,8 @@ static void trigger_enrage( attack_t* a )
 
   double enrage_value = util_t::talent_rank( p -> talents.enrage -> rank(), 3, 3, 7, 10 ) * 0.01;
 
-  if ( p -> mastery.unshackled_fury -> ok() ) {
+  if ( p -> mastery.unshackled_fury -> ok() )
+  {
     enrage_value *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
   }
 
@@ -776,7 +777,7 @@ void warrior_attack_t::player_buff()
   if ( p -> talents.single_minded_fury -> rank() && p -> dual_wield() )
   {
     if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H ||
-	       p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
+         p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
     {
       player_multiplier *= 1 + p -> talents.single_minded_fury -> effect_base_value( 1 ) / 100.0;
     }
@@ -882,11 +883,18 @@ struct melee_t : public warrior_attack_t
   virtual double execute_time() SC_CONST
   {
     double t = warrior_attack_t::execute_time();
-    if ( ! player -> in_combat )
-    {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
-    }
-    return t;
+
+    if ( player -> in_combat )
+      return t;
+
+    if ( weapon -> slot == SLOT_MAIN_HAND || sync_weapons )
+      return 0.02;
+
+    // Before combat begins, unless we are under sync_weapons the OH is
+    // delayed by half its swing time.
+
+    return t / 2;
+
   }
 
   virtual void execute()
@@ -3230,8 +3238,8 @@ int warrior_t::target_swing()
 
       if ( max_reschedule > 0 )
       {
-	      main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
-	      procs_parry_haste -> occur();
+        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+        procs_parry_haste -> occur();
       }
     }
   }
@@ -3282,16 +3290,16 @@ int warrior_t::decode_set( item_t& item )
   const char* s = item.name();
 
   bool is_melee = ( strstr( s, "helmet"         ) ||
-		                strstr( s, "shoulderplates" ) ||
-		                strstr( s, "battleplate"    ) ||
-		                strstr( s, "legplates"      ) ||
-		                strstr( s, "gauntlets"      ) );
+                    strstr( s, "shoulderplates" ) ||
+                    strstr( s, "battleplate"    ) ||
+                    strstr( s, "legplates"      ) ||
+                    strstr( s, "gauntlets"      ) );
 
   bool is_tank = ( strstr( s, "greathelm"   ) ||
-		               strstr( s, "pauldrons"   ) ||
-		               strstr( s, "breastplate" ) ||
-		               strstr( s, "legguards"   ) ||
-		               strstr( s, "handguards"  ) );
+                   strstr( s, "pauldrons"   ) ||
+                   strstr( s, "breastplate" ) ||
+                   strstr( s, "legguards"   ) ||
+                   strstr( s, "handguards"  ) );
 
   if ( strstr( s, "ymirjar" ) )
   {
@@ -3301,16 +3309,16 @@ int warrior_t::decode_set( item_t& item )
   if ( strstr( s, "earthen" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
-		                  strstr( s, "pauldrons"     ) ||
-		                  strstr( s, "battleplate"   ) ||
-		                  strstr( s, "legplates"     ) ||
-		                  strstr( s, "gauntlets"     ) );
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
 
     bool is_tank = ( strstr( s, "faceguard"      ) ||
-		                 strstr( s, "shoulderguards" ) ||
-		                 strstr( s, "chestguard"     ) ||
-		                 strstr( s, "legguards"      ) ||
-		                 strstr( s, "handguards"     ) );
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
 
     if ( is_melee ) return SET_T11_MELEE;
     if ( is_tank  ) return SET_T11_TANK;
