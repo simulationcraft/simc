@@ -73,7 +73,7 @@ double attack_t::swing_haste() SC_CONST
 {
   double h = 1.0;
   h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
-  return h * player -> composite_attack_haste();
+  return h * haste();
 }
 
 // attack_t::haste ==========================================================
