@@ -1955,7 +1955,7 @@ void death_knight_attack_t::player_buff()
   {
     std::vector<double> sum_factors;
 
-    sum_factors.push_back( p -> buffs_blood_presence -> value() );
+    sum_factors.push_back( p -> buffs_frost_presence -> value() );
     sum_factors.push_back( p -> buffs_bone_shield -> value() );
 
     double sum = 0;
@@ -3667,7 +3667,7 @@ struct rune_strike_t : public death_knight_attack_t
     parse_data( p -> player_data );
 
     base_crit       += p -> glyphs.rune_strike * 0.10;
-    direct_power_mod = 0.2; // 2 * 10 / 100
+    direct_power_mod = sim -> P403 ? 0.15 : 0.2;
     may_dodge = may_block = may_parry = false;
   }
 

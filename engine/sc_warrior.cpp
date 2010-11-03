@@ -597,7 +597,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
 
     p -> procs_strikes_of_opportunity -> occur();
     
-    double proc_value = ( a -> sim -> P403 ) ? 1.15 : 0.75;
+    double proc_value = ( a -> sim -> P403 ) ? 1.00 : 0.75;
     p -> main_hand_attack -> proc = true;
     p -> main_hand_attack -> player_multiplier *= proc_value;
     p -> main_hand_attack -> execute();
@@ -1124,7 +1124,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
     player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
-    direct_power_mod   = 0.75;
+    direct_power_mod   = sim -> P403 ? 0.33 : 0.75;
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1165,7 +1165,7 @@ struct cleave_t : public warrior_attack_t
     may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-    direct_power_mod = 0.675;
+    direct_power_mod = sim -> P403 ? 0.562 : 0.675;
     base_dd_min      = 6;
     base_dd_max      = 6;
   }
@@ -1418,7 +1418,7 @@ struct heroic_strike_t : public warrior_attack_t
     base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
     base_dd_max       = 8;
-    direct_power_mod  = 0.9;
+    direct_power_mod  = sim -> P403 ? 0.42 : 0.9;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
   }
@@ -2162,7 +2162,7 @@ struct victory_rush_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     weapon           = &( p -> main_hand_weapon );
-    direct_power_mod = 0.45;
+    direct_power_mod = sim -> P403 ? 0.56 : 0.45;
     may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
   }
