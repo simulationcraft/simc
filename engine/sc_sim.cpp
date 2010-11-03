@@ -1206,7 +1206,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.abominations_might     = optimal_raid;
   overrides.arcane_brilliance      = optimal_raid;
-  overrides.arcane_empowerment     = optimal_raid;
+  overrides.arcane_tactics         = optimal_raid;
   overrides.battle_shout           = optimal_raid;
   overrides.bleeding               = optimal_raid;
   overrides.blessing_of_kings      = optimal_raid;
@@ -1492,7 +1492,7 @@ std::vector<option_t>& sim_t::get_options()
       // @option_doc loc=global/overrides title="Buff/Debuff Overrides"
       { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
       { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },
-      { "override.arcane_empowerment",      OPT_BOOL,   &( overrides.arcane_empowerment             ) },
+      { "override.arcane_tactics",          OPT_BOOL,   &( overrides.arcane_tactics                 ) },
       { "override.battle_shout",            OPT_BOOL,   &( overrides.battle_shout                   ) },
       { "override.bleeding",                OPT_BOOL,   &( overrides.bleeding                       ) },
       { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },

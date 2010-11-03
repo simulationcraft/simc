@@ -977,7 +977,7 @@ struct sim_t
   {
     int abominations_might;
     int arcane_brilliance;
-    int arcane_empowerment;
+    int arcane_tactics;
     int battle_shout;
     int bleeding;
     int blessing_of_kings;
@@ -1049,7 +1049,7 @@ struct sim_t
   struct auras_t
   {
     aura_t* abominations_might;
-    aura_t* arcane_empowerment;
+    aura_t* arcane_tactics;
     aura_t* battle_shout;
     aura_t* celerity;
     aura_t* devotion_aura;

@@ -1751,7 +1751,7 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
 
     double ferocious_inspiration_value = 0.0;
     double sanctified_retribution_value = 0.0;
-    double arcane_empowerment_value = 0.0;
+    double arcane_tactics_value = 0.0;
     double max_value = 0.0;
 
     if ( sim -> auras.ferocious_inspiration -> up() )
@@ -1764,16 +1764,16 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
       sanctified_retribution_value = 3;
     }
 
-    if ( sim -> auras.arcane_empowerment -> up() )
+    if ( sim -> auras.arcane_tactics -> up() )
     {
-      arcane_empowerment_value = sim -> auras.arcane_empowerment -> value();
+      arcane_tactics_value = sim -> auras.arcane_tactics -> value();
     }
 
     max_value = sanctified_retribution_value;
     if ( ferocious_inspiration_value > max_value )
       max_value = ferocious_inspiration_value;
-    if ( arcane_empowerment_value > max_value )
-      max_value = arcane_empowerment_value;
+    if ( arcane_tactics_value > max_value )
+      max_value = arcane_tactics_value;
 
     m *= 1.00 + 0.01 * max_value;
   }

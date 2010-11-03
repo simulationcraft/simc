@@ -28,7 +28,6 @@ struct mage_t : public player_t
   buff_t* buffs_combustion;
   buff_t* buffs_fingers_of_frost;
   buff_t* buffs_focus_magic_feedback;
-  buff_t* buffs_ghost_charge;
   buff_t* buffs_hot_streak;
   buff_t* buffs_hot_streak_crits;
   buff_t* buffs_icy_veins;
@@ -43,7 +42,6 @@ struct mage_t : public player_t
 
   // Gains
   gain_t* gains_clearcasting;
-  gain_t* gains_empowered_fire;
   gain_t* gains_evocation;
   gain_t* gains_mana_gem;
   gain_t* gains_master_of_elements;
@@ -62,9 +60,7 @@ struct mage_t : public player_t
   uptime_t* uptimes_water_elemental;
 
   // Random Number Generation
-  rng_t* rng_empowered_fire;
   rng_t* rng_enduring_winter;
-  rng_t* rng_ghost_charge;
   rng_t* rng_tier8_4pc;
 
   // Cooldowns
@@ -79,7 +75,6 @@ struct mage_t : public player_t
   // Options
   std::string focus_magic_target_str;
   std::string armor_type_str;
-  double      ghost_charge_pct;
   int         fof_on_cast;
 
   // Rotation (DPS vs DPM)
@@ -99,72 +94,70 @@ struct mage_t : public player_t
 
   struct talents_t
   {
-    int  arcane_barrage;
+  	// Arcane tree
     int  arcane_concentration;
-    int  arcane_empowerment;
+    int  improved_counterspell;
+    int  netherwind_presence;
+    int  torment_the_weak;
+    int  invocation;
+    int  improved_arcane_missiles;
+    int  improved_blink;
     int  arcane_flows;
-    int  arcane_focus;
-    int  arcane_fortitude;
-    int  arcane_impact;
-    int  arcane_instability;
-    int  arcane_meditation;
-    int  arcane_mind;
+    int  presence_of_mind;
+    int  missile_barrage;
+    int  prismatic_cloak;
+    int  improved_polymorph;
+    int  arcane_tactics;
+    int  incanters_absorption;
+    int  improved_arcane_explosion;
     int  arcane_potency;
-    int  arcane_power;
-    int  arcane_subtlety;
-    int  arctic_winds;
-    int  brain_freeze;
-    int  burning_soul;
-    int  burnout;
-    int  chilled_to_the_bone;
-    int  cold_as_ice;
-    int  cold_snap;
-    int  combustion;
-    int  critical_mass;
-    int  deep_freeze;
-    int  empowered_arcane_missiles;
-    int  empowered_fire;
-    int  empowered_frost_bolt;
-    int  enduring_winter;
-    int  fingers_of_frost;
-    int  fire_power;
+    int  slow;
+    int  nether_vortex;
     int  focus_magic;
-    int  frost_channeling;
-    int  frostbite;
-    int  frozen_core;
+    int  improved_mana_gem;
+    int  arcane_power;
+    // Fire tree
+    int  master_of_elements;
+    int  burning_soul;
+    int  improved_fire_blast;
+    int  ignite;
+    int  fire_power;
+    int  blazing_speed;
+    int  impact;
+    int  cauterize;
+    int  blast_wave;
     int  hot_streak;
+    int  improved_scorch;
+    int  molten_shields;
+    int  combustion;
+    int  improved_hot_streak;
+    int  firestarter;
+    int  improved_flamestrike;
+    int  dragons_breath;
+    int  molten_fury;
+    int  pyromaniac;
+    int  critical_mass;
+    int  living_bomb;
+    // Frost tree
+    int  early_frost;
+    int  piercing_ice;
+    int  shatter;
     int  ice_floes;
+    int  improved_cone_of_cold;
+    int  piercing_chill;
+    int  permafrost;
     int  ice_shards;
     int  icy_veins;
-    int  ignite;
-    int  improved_fire_ball;
-    int  improved_fire_blast;
-    int  improved_frost_bolt;
-    int  improved_scorch;
-    int  incanters_absorption;
-    int  incineration;
-    int  living_bomb;
-    int  master_of_elements;
-    int  mind_mastery;
-    int  missile_barrage;
-    int  molten_fury;
-    int  netherwind_presence;
-    int  piercing_ice;
-    int  playing_with_fire;
-    int  precision;
-    int  presence_of_mind;
-    int  pyroblast;
-    int  pyromaniac;
-    int  shatter;
-    int  slow;
-    int  spell_impact;
-    int  spell_power;
-    int  student_of_the_mind;
-    int  summon_water_elemental;
-    int  torment_the_weak;
-    int  winters_chill;
-    int  winters_grasp;
-    int  world_in_flames;
+    int  fingers_of_frost;
+    int  improved_freeze;
+    int  enduring_winter;
+    int  cold_snap;
+    int  brain_freeze;
+    int  shattered_barrier;
+    int  ice_barrier;
+    int  reactive_barrier;
+    int  frostfire_orb;
+    int  deep_freeze;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -199,7 +192,6 @@ struct mage_t : public player_t
     active_water_elemental = 0;
 
     armor_type_str = "molten"; // Valid values: molten|mage
-    ghost_charge_pct = 1.0;
     distance = 30;
     fof_on_cast = 0;
   }
@@ -252,7 +244,6 @@ struct mage_spell_t : public spell_t
   int icy_veins;
   int min_ab_stack;
   int max_ab_stack;
-  bool spell_impact;
 
   mage_spell_t( const char* n, player_t* player, int s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t ),
@@ -262,11 +253,9 @@ struct mage_spell_t : public spell_t
       arcane_power( 0 ),
       icy_veins( 0 ),
       min_ab_stack( 0 ),
-      max_ab_stack( 0 ),
-      spell_impact( false )
+      max_ab_stack( 0 )
   {
     mage_t* p = player -> cast_mage();
-    base_hit += p -> talents.precision * 0.01;
   }
 
   virtual void   parse_options( option_t*, const std::string& );
@@ -383,10 +372,6 @@ struct mirror_image_pet_t : public pet_t
       mirror_image_pet_t* p = ( mirror_image_pet_t* ) player;
       mage_t* o = p -> owner -> cast_mage();
       spell_t::execute();
-      if ( o -> glyphs.mirror_image && result_is_hit() )
-      {
-        sim -> target -> debuffs.winters_chill -> trigger();
-      }
       if ( next_in_sequence )
       {
         next_in_sequence -> schedule_execute();
@@ -488,19 +473,6 @@ struct mirror_image_pet_t : public pet_t
   }
 };
 
-// stack_winters_chill =====================================================
-
-static void stack_winters_chill( spell_t* s )
-{
-  if ( s -> school != SCHOOL_FROST &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
-
-  mage_t*   p = s -> player -> cast_mage();
-  target_t* t = s -> sim -> target;
-
-  t -> debuffs.winters_chill -> trigger( 1, 1.0, p -> talents.winters_chill / 3.0 );
-}
-
 // trigger_tier8_4pc ========================================================
 
 static bool trigger_tier8_4pc( spell_t* s )
@@ -546,18 +518,6 @@ static void trigger_ignite( spell_t* s,
     }
     virtual void target_debuff( int dmg_type ) {}
     virtual void player_buff() {}
-    virtual void tick()
-    {
-      mage_t* p = player -> cast_mage();
-      mage_spell_t::tick();
-      if ( p -> talents.empowered_fire )
-      {
-        if ( p -> rng_empowered_fire -> roll( p -> talents.empowered_fire / 3.0 ) )
-        {
-          p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.02, p -> gains_empowered_fire );
-        }
-      }
-    }
   };
 
   double ignite_dmg = dmg * p -> talents.ignite * 0.08;
@@ -649,21 +609,6 @@ static void trigger_ignite( spell_t* s,
   }
 }
 
-// trigger_burnout ==========================================================
-
-static void trigger_burnout( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( ! p -> talents.burnout )
-    return;
-
-  if ( ! s -> resource_consumed )
-    return;
-
-  p -> resource_loss( RESOURCE_MANA, s -> resource_consumed * p -> talents.burnout * 0.01 );
-}
-
 // trigger_master_of_elements ===============================================
 
 static void trigger_master_of_elements( spell_t* s, double adjust )
@@ -715,58 +660,15 @@ static void trigger_arcane_concentration( spell_t* s )
   p -> buffs_clearcasting -> trigger();
 }
 
-// trigger_frostbite ========================================================
-
-static void trigger_frostbite( spell_t* s )
-{
-  if ( s -> school != SCHOOL_FROST &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
-
-  mage_t*   p = s -> player -> cast_mage();
-  target_t* t = s -> sim -> target;
-
-  int level_diff = t -> level - p -> level;
-
-  if ( level_diff <= 1 )
-  {
-    t -> debuffs.frostbite -> trigger( 1, 1.0, p -> talents.frostbite * 0.05 );
-  }
-}
-
-// trigger_winters_grasp ========================================================
-
-static void trigger_winters_grasp( spell_t* s )
-{
-  if ( s -> school != SCHOOL_FROST &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
-
-  target_t* t = s -> sim -> target;
-  mage_t*   p = s -> player -> cast_mage();
-
-  t -> debuffs.winters_grasp -> trigger( 1, 1.0, p -> talents.winters_grasp * 0.05 );
-}
-
 // clear_fingers_of_frost =========================================================
 
 static void clear_fingers_of_frost( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  p -> buffs_ghost_charge -> expire();
-
   if ( s -> may_crit && p -> buffs_fingers_of_frost -> check() )
   {
     p -> buffs_fingers_of_frost -> decrement();
-
-    if ( ! p -> buffs_fingers_of_frost -> check() )
-    {
-      if ( p -> gcd_ready < p -> sim -> current_time )
-      {
-        double value = p -> rng_ghost_charge -> roll( p -> ghost_charge_pct ) ? +1.0 : -1.0;
-
-        p -> buffs_ghost_charge -> start( 1, value );
-      }
-    }
   }
 }
 
@@ -896,11 +798,6 @@ static int target_is_frozen( mage_t* p )
 
   target_t* t = p -> sim -> target;
 
-  if ( t -> debuffs.frozen() )
-    if ( t -> debuffs.frostbite     -> may_react() ||
-         t -> debuffs.winters_grasp -> may_react() )
-    return 1;
-
   return 0;
 }
 
@@ -1001,13 +898,9 @@ void mage_spell_t::execute()
   {
     clear_fingers_of_frost( this );
     trigger_arcane_concentration( this );
-    trigger_frostbite( this );
-    trigger_winters_grasp( this );
-    stack_winters_chill( this );
 
     if ( result == RESULT_CRIT )
     {
-      trigger_burnout( this );
       trigger_master_of_elements( this, 1.0 );
 
       if ( time_to_travel == 0 )
@@ -1115,26 +1008,12 @@ void mage_spell_t::player_buff()
       {
         player_crit += p -> talents.shatter * 0.5/3;
       }
-      else if ( time_to_execute == 0 )
-      {
-        if ( p -> buffs_ghost_charge -> value() > 0 )
-        {
-          player_crit += p -> talents.shatter * 0.5/3;
-        }
-      }
     }
   }
 
   double arcane_power_multiplier = p -> buffs_arcane_power -> up() ? 0.20 : 0.0;
 
-  double spell_impact_multiplier = spell_impact ? p -> talents.spell_impact * 0.02 : 0.0;
-
-  player_multiplier *= 1.0 + arcane_blast_multiplier + arcane_power_multiplier + fire_power_multiplier + spell_impact_multiplier;
-
-  if ( p -> talents.playing_with_fire )
-  {
-    player_multiplier *= 1.0 + p -> talents.playing_with_fire * 0.01;
-  }
+  player_multiplier *= 1.0 + arcane_blast_multiplier + arcane_power_multiplier + fire_power_multiplier;
 
   if ( p -> buffs_clearcasting -> up() && ! dual )
   {
@@ -1158,7 +1037,6 @@ struct arcane_barrage_t : public mage_spell_t
       mage_spell_t( "arcane_barrage", player, SCHOOL_ARCANE, TREE_ARCANE )
   {
     mage_t* p = player -> cast_mage();
-    check_talent( p -> talents.arcane_barrage );
 
     option_t options[] =
     {
@@ -1178,17 +1056,10 @@ struct arcane_barrage_t : public mage_spell_t
     base_execute_time = 0;
     may_crit          = true;
     direct_power_mod  = ( 2.5/3.5 );
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
     base_cost        *= 1.0 - p -> glyphs.arcane_barrage * 0.20;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
-    base_hit         += p -> talents.arcane_focus * 0.01;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     cooldown -> duration = 3.0;
 
@@ -1240,24 +1111,13 @@ struct arcane_blast_t : public mage_spell_t
     base_execute_time = 2.5;
     may_crit          = true;
     direct_power_mod  = ( 2.5/3.5 );
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - p -> talents.arcane_focus  * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_impact * 0.02;
-    base_crit        += p -> talents.incineration * 0.02;
-    base_hit         += p -> talents.arcane_focus * 0.01;
-    direct_power_mod += p -> talents.arcane_empowerment * 0.03;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25   ) +
-                                          ( p -> talents.burnout     * 0.10   ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     if ( p -> set_bonus.tier9_4pc_caster() ) base_crit += 0.05;
 
     may_torment  = true;
-    spell_impact = true;
   }
 
   virtual double cost() SC_CONST
@@ -1328,14 +1188,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
     direct_power_mod  = 1.0 / 3.5; // bonus per missle
 
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
-    base_hit         += p -> talents.arcane_focus * 0.01;
-    direct_power_mod += p -> talents.arcane_empowerment * 0.03;        // bonus per missle
-
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> glyphs.arcane_missiles ? 0.25 : 0.00 ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.05;
@@ -1392,9 +1245,7 @@ struct arcane_missiles_t : public mage_spell_t
     base_tick_time = 1.0;
 
     base_cost  = 0.31 * p -> resource_base[ RESOURCE_MANA ];
-    base_cost *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost *= 1.0 - p -> talents.arcane_focus  * 0.01;
-    base_cost *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    base_cost *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
 
     arcane_missiles_tick = new arcane_missiles_tick_t( p );
 
@@ -1715,11 +1566,10 @@ struct presence_of_mind_t : public mage_spell_t
 struct fire_ball_t : public mage_spell_t
 {
   int frozen;
-  int ghost_charge;
 
   fire_ball_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "fire_ball", player, SCHOOL_FIRE, TREE_FIRE ),
-      frozen( -1 ), ghost_charge( -1 )
+      frozen( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -1729,7 +1579,6 @@ struct fire_ball_t : public mage_spell_t
     {
       { "brain_freeze", OPT_DEPRECATED, NULL },
       { "frozen",       OPT_BOOL, &frozen       },
-      { "ghost_charge", OPT_BOOL, &ghost_charge },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1753,16 +1602,9 @@ struct fire_ball_t : public mage_spell_t
     base_tick_time    = 2.0;
     num_ticks         = 4;
     tick_power_mod    = 0;
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_execute_time -= p -> talents.improved_fire_ball * 0.1;
-    base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit         += p -> talents.critical_mass * 0.02;
-    direct_power_mod  += p -> talents.empowered_fire * 0.05;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
 
@@ -1775,7 +1617,6 @@ struct fire_ball_t : public mage_spell_t
     }
 
     may_torment  = true;
-    spell_impact = true;
   }
 
   virtual double cost() SC_CONST
@@ -1812,10 +1653,6 @@ struct fire_ball_t : public mage_spell_t
 
     if ( ! mage_spell_t::ready() )
       return false;
-
-    if ( ghost_charge != -1 )
-      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
-        return false;
 
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
@@ -1854,20 +1691,13 @@ struct fire_blast_t : public mage_spell_t
     base_execute_time = 0;
     may_crit          = true;
     direct_power_mod  = ( 1.5/3.5 );
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
     cooldown -> duration         -= p -> talents.improved_fire_blast * 0.5;
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.incineration * 0.02;
-    base_crit        += p -> talents.critical_mass * 0.02;
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     cooldown -> duration = 8.0;
 
-    spell_impact = true;
   }
   virtual void execute()
   {
@@ -1910,28 +1740,13 @@ struct living_bomb_t : public mage_spell_t
     tick_power_mod    = 0.20;
     may_crit          = true;
     tick_may_crit     = p -> glyphs.living_bomb != 0;
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
     base_crit        += p -> talents.critical_mass * 0.02;
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
   }
 
   // Odd thing to handle: The direct-damage comes at the last tick instead of the beginning of the spell.
-
-  // Hack! Only the explosion benefits from World-in-Flames
-  virtual void target_debuff( int dmg_type )
-  {
-    mage_spell_t::target_debuff( dmg_type );
-    if( dmg_type == DMG_DIRECT )
-    {
-      mage_t* p = player -> cast_mage();
-      target_crit += p -> talents.world_in_flames * 0.02;
-    }
-  }
 
   virtual void last_tick()
   {
@@ -1946,7 +1761,6 @@ struct living_bomb_t : public mage_spell_t
         assess_damage( direct_dmg, DMG_DIRECT );
         if ( result == RESULT_CRIT )
         {
-          trigger_burnout( this );
           trigger_ignite( this, direct_dmg );
           trigger_master_of_elements( this, 1.0 );
         }
@@ -1976,7 +1790,6 @@ struct pyroblast_t : public mage_spell_t
       mage_spell_t( "pyroblast", player, SCHOOL_FIRE, TREE_FIRE ), hot_streak( 0 )
   {
     mage_t* p = player -> cast_mage();
-    check_talent( p -> talents.pyroblast );
 
     travel_speed = 21.0; // set before options to allow override
 
@@ -2005,18 +1818,10 @@ struct pyroblast_t : public mage_spell_t
     may_crit          = true;
     direct_power_mod  = 1.15;
     tick_power_mod    = 0.20 / num_ticks;
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_crit        += p -> talents.critical_mass * 0.02;
-    base_crit        += p -> talents.world_in_flames * 0.02;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
 
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
-    direct_power_mod += p -> talents.empowered_fire * 0.05;
-    tick_power_mod   += p -> talents.empowered_fire * 0.05;
     may_torment = true;
   }
 
@@ -2094,21 +1899,10 @@ struct scorch_t : public mage_spell_t
     base_execute_time = 1.5;
     may_crit          = true;
     direct_power_mod  = ( 1.5/3.5 );
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + ( p -> talents.arcane_instability * 0.01 ) +
-                              ( p -> glyphs.improved_scorch * 0.20 );
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
+    base_multiplier  *= 1.0 + ( p -> glyphs.improved_scorch * 0.20 );
 
-    base_crit        += p -> talents.incineration       * 0.02;
-    base_crit        += p -> talents.critical_mass      * 0.02;
-
-    base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.spell_power * 0.25 ) +
-                                          ( p -> talents.burnout     * 0.10 ) +
-                                          ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
-
-    base_crit += p -> talents.improved_scorch * 0.01;
-
-    spell_impact = true;
+    base_crit_bonus_multiplier *= 1.0 + ( ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     if ( debuff ) check_talent( p -> talents.improved_scorch );
   }
@@ -2134,9 +1928,6 @@ struct scorch_t : public mage_spell_t
       target_t* t = sim -> target;
 
       if ( t -> debuffs.improved_shadow_bolt -> check() )
-        return false;
-
-      if ( t -> debuffs.winters_chill -> check() )
         return false;
 
       if ( t -> debuffs.improved_scorch -> remains_gt( 6.0 ) )
@@ -2209,24 +2000,11 @@ struct frost_bolt_t : public mage_spell_t
     base_execute_time = 3.0;
     may_crit          = true;
     direct_power_mod  = base_execute_time / 3.5;
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_execute_time -= p -> talents.improved_frost_bolt * 0.1;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
     base_multiplier   *= 1.0 + p -> talents.piercing_ice * 0.02;
-    base_multiplier   *= 1.0 + p -> talents.arctic_winds * 0.01;
-    base_multiplier   *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier   *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
-    base_crit         += p -> talents.arcane_instability * 0.01;
-    direct_power_mod  += p -> talents.empowered_frost_bolt * 0.05;
-
-    base_execute_time -= p -> talents.empowered_frost_bolt * 0.1;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
-                                          ( p -> talents.spell_power * 0.25  ) +
-                                          ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
-
-    base_crit += p -> talents.winters_chill * 0.01;
 
     if ( p -> set_bonus.tier6_4pc_caster() ) base_multiplier *= 1.05;
     if ( p -> set_bonus.tier9_4pc_caster() ) base_crit       += 0.05;
@@ -2275,18 +2053,16 @@ struct frost_bolt_t : public mage_spell_t
 struct ice_lance_t : public mage_spell_t
 {
   int frozen;
-  int ghost_charge;
 
   ice_lance_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "ice_lance", player, SCHOOL_FROST, TREE_FROST ),
-      frozen( -1 ), ghost_charge( -1 )
+      frozen( -1 )
   {
     mage_t* p = player -> cast_mage();
 
     option_t options[] =
     {
       { "frozen",       OPT_BOOL, &frozen       },
-      { "ghost_charge", OPT_BOOL, &ghost_charge },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2304,20 +2080,11 @@ struct ice_lance_t : public mage_spell_t
     base_execute_time = 0.0;
     may_crit          = true;
     direct_power_mod  = ( 0.5/3.5 );
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
-                                          ( p -> talents.spell_power * 0.25  ) +
-                                          ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
-
-    spell_impact = true;
   }
 
   virtual void player_buff()
@@ -2327,7 +2094,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::player_buff();
 
-    if ( p -> buffs_ghost_charge -> value() > 0 || p -> buffs_fingers_of_frost -> up() || t -> debuffs.frozen() )
+    if ( p -> buffs_fingers_of_frost -> up() || t -> debuffs.frozen() )
     {
       if ( p -> glyphs.ice_lance && t -> level > p -> level )
       {
@@ -2347,10 +2114,6 @@ struct ice_lance_t : public mage_spell_t
     if ( ! mage_spell_t::ready() )
       return false;
 
-    if ( ghost_charge != -1 )
-      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
-        return false;
-
     if ( frozen != -1 )
       if ( frozen != target_is_frozen( p ) )
         return false;
@@ -2363,18 +2126,14 @@ struct ice_lance_t : public mage_spell_t
 
 struct deep_freeze_t : public mage_spell_t
 {
-  int ghost_charge;
-
   deep_freeze_t( player_t* player, const std::string& options_str ) :
-      mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST ),
-      ghost_charge( -1 )
+      mage_spell_t( "deep_freeze", player, SCHOOL_FROST, TREE_FROST )
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.deep_freeze );
 
     option_t options[] =
     {
-      { "ghost_charge", OPT_BOOL, &ghost_charge },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2392,21 +2151,13 @@ struct deep_freeze_t : public mage_spell_t
     base_execute_time = 0.0;
     may_crit          = true;
     direct_power_mod  = ( 7.5/3.5 );
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
-    base_crit        += p -> talents.arcane_instability * 0.01;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
-                                          ( p -> talents.spell_power * 0.25  ) +
-                                          ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
-    cooldown -> duration = 30.0;
-
-    spell_impact = false;
+    cooldown -> duration = 0.0;
   }
 
   virtual void execute()
@@ -2420,10 +2171,6 @@ struct deep_freeze_t : public mage_spell_t
 
     if ( ! mage_spell_t::ready() )
       return false;
-
-    if ( ghost_charge != -1 )
-      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
-        return false;
 
     if ( ! target_is_frozen( p ) )
       return false;
@@ -2439,11 +2186,10 @@ struct frostfire_bolt_t : public mage_spell_t
   int brain_freeze;
   int dot_wait;
   int frozen;
-  int ghost_charge;
 
   frostfire_bolt_t( player_t* player, const std::string& options_str ) :
       mage_spell_t( "frostfire_bolt", player, SCHOOL_FROSTFIRE, TREE_FROST ),
-      brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 ), ghost_charge( -1 )
+      brain_freeze( 0 ), dot_wait( 0 ), frozen( -1 )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2454,7 +2200,6 @@ struct frostfire_bolt_t : public mage_spell_t
       { "brain_freeze", OPT_BOOL, &brain_freeze },
       { "dot_wait",     OPT_BOOL, &dot_wait     },
       { "frozen",       OPT_BOOL, &frozen       },
-      { "ghost_charge", OPT_BOOL, &ghost_charge },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2475,18 +2220,10 @@ struct frostfire_bolt_t : public mage_spell_t
     num_ticks         = 3;
     tick_power_mod    = 0;
 
-    base_cost        *= 1.0 - p -> talents.precision     * 0.01;
-    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.frost_channeling, 3, 0.04, 0.07, 0.10 );
-    base_multiplier  *= 1.0 + p -> talents.arcane_instability * 0.01;
+    base_cost        *= 1.0 - util_t::talent_rank( p -> talents.enduring_winter, 3, 0.04, 0.07, 0.10 );
     base_multiplier  *= 1.0 + p -> talents.piercing_ice * 0.02;
-    base_multiplier  *= 1.0 + p -> talents.arctic_winds * 0.01;
-    base_multiplier  *= 1.0 + p -> talents.chilled_to_the_bone * 0.01;
-    base_crit        += p -> talents.critical_mass * 0.02;
-    direct_power_mod += p -> talents.empowered_fire * 0.05;
 
     base_crit_bonus_multiplier *= 1.0 + ( ( p -> talents.ice_shards  * 1.0/3 ) +
-                                          ( p -> talents.spell_power * 0.25  ) +
-                                          ( p -> talents.burnout     * 0.10  ) +
                                           ( p -> set_bonus.tier7_4pc_caster() ? 0.05 : 0.00 ) );
 
     base_crit += p -> talents.improved_scorch * 0.01;
@@ -2545,10 +2282,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( brain_freeze )
       if ( ! p -> buffs_brain_freeze -> may_react() )
-        return false;
-
-    if ( ghost_charge != -1 )
-      if ( ghost_charge != ( p -> buffs_ghost_charge -> check() ? 1 : 0 ) )
         return false;
 
     if ( frozen != -1 )
@@ -2620,7 +2353,7 @@ struct cold_snap_t : public mage_spell_t
     parse_options( options, options_str );
 
     cooldown -> duration  = 600;
-    cooldown -> duration *= 1.0 - p -> talents.cold_as_ice * 0.10;
+    cooldown -> duration *= 1.0 - p -> talents.ice_floes * ( 0.20 / 3.0 );
 
     cooldown_list.push_back( p -> get_cooldown( "deep_freeze"     ) );
     cooldown_list.push_back( p -> get_cooldown( "icy_veins"       ) );
@@ -2771,7 +2504,6 @@ struct water_elemental_spell_t : public mage_spell_t
       mage_spell_t( "water_elemental", player, SCHOOL_FROST, TREE_FROST )
   {
     mage_t* p = player -> cast_mage();
-    check_talent( p -> talents.summon_water_elemental );
 
     option_t options[] =
     {
@@ -2788,9 +2520,9 @@ struct water_elemental_spell_t : public mage_spell_t
     else
     {
       cooldown -> duration  = p -> glyphs.water_elemental ? 150 : 180;
-      cooldown -> duration *= 1.0 - p -> talents.cold_as_ice * 0.10;
+      cooldown -> duration *= 1.0 - p -> talents.ice_floes * ( 0.20 / 3.0 );
       base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.16;
-      base_cost *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
+      base_cost *= 1.0 - p -> talents.enduring_winter * ( 0.1/3 );
     }
 
     harmful = false;
@@ -2834,7 +2566,7 @@ struct mirror_image_spell_t : public mage_spell_t
     parse_options( options, options_str );
 
     base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.10;
-    base_cost *= 1.0 - p -> talents.frost_channeling * ( 0.1/3 );
+    base_cost *= 1.0 - p -> talents.enduring_winter * ( 0.1/3 );
     cooldown -> duration = 180;
     trigger_gcd = 1;
     harmful = false;
@@ -3211,13 +2943,7 @@ void mage_t::init_base()
   initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, level, MAGE, race, BASE_STAT_SPELL_CRIT_PER_INT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, level, MAGE, race, BASE_STAT_MELEE_CRIT_PER_AGI );
 
-  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.arcane_mind * 0.03;
-  attribute_multiplier_initial[ ATTR_SPIRIT    ] *= 1.0 + util_t::talent_rank( talents.student_of_the_mind, 3, 0.04, 0.07, 0.10 );
-
   base_spell_crit += talents.pyromaniac * 0.01;
-  base_spell_crit += talents.arcane_instability * 0.01;
-
-  initial_spell_power_per_intellect = talents.mind_mastery * 0.03;
 
   base_attack_power = -10;
   initial_attack_power_per_strength = 1.0;
@@ -3249,7 +2975,6 @@ void mage_t::init_buffs()
   buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
   buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );
 
-  buffs_ghost_charge = new buff_t( this, "ghost_charge" );
   buffs_mage_armor   = new buff_t( this, "mage_armor" );
   buffs_molten_armor = new buff_t( this, "molten_armor" );
 
@@ -3264,7 +2989,6 @@ void mage_t::init_gains()
   player_t::init_gains();
 
   gains_clearcasting       = get_gain( "clearcasting" );
-  gains_empowered_fire     = get_gain( "empowered_fire" );
   gains_evocation          = get_gain( "evocation" );
   gains_mana_gem           = get_gain( "mana_gem" );
   gains_master_of_elements = get_gain( "master_of_elements" );
@@ -3305,8 +3029,6 @@ void mage_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_empowered_fire  = get_rng( "empowered_fire"  );
-  rng_ghost_charge    = get_rng( "ghost_charge"    );
   rng_enduring_winter = get_rng( "enduring_winter" );
   rng_tier8_4pc       = get_rng( "tier8_4pc"       );
 }
@@ -3318,7 +3040,7 @@ void mage_t::init_actions()
   if ( action_list_str.empty() )
   {
     action_list_str = "flask,type=frost_wyrm/food,type=fish_feast";
-    if ( talents.summon_water_elemental ) action_list_str += "/water_elemental";
+    action_list_str += "/water_elemental";
     action_list_str += "/arcane_brilliance";
     if ( talents.focus_magic ) action_list_str += "/focus_magic";
     action_list_str += "/speed_potion";
@@ -3346,7 +3068,7 @@ void mage_t::init_actions()
     if ( talents.arcane_power ) action_list_str += "/arcane_power";
     if ( talents.icy_veins    ) action_list_str += "/icy_veins";
     action_list_str += "/mirror_image";
-    if ( talents.presence_of_mind && talents.pyroblast )
+    if ( talents.presence_of_mind )
     {
       action_list_str += "/presence_of_mind,pyroblast,if=dps&!buff.arcane_blast.up";
     }
@@ -3356,14 +3078,14 @@ void mage_t::init_actions()
       action_list_str += "/evocation,if=!buff.arcane_blast.up";
       action_list_str += "/choose_rotation";
       action_list_str += "/arcane_missiles,if=buff.missile_barrage.react";
-      if ( talents.presence_of_mind && talents.pyroblast )
+      if ( talents.presence_of_mind )
       {
         action_list_str += "/presence_of_mind,arcane_blast,if=dps";
       }
       action_list_str += "/arcane_blast,if=dpm&buff.arcane_blast.stack<3";
       action_list_str += "/arcane_blast,if=dps";
       action_list_str += "/arcane_missiles";
-      if ( talents.arcane_barrage ) action_list_str += "/arcane_barrage,moving=1"; // when moving
+      action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
     else if ( primary_tree() == TREE_FIRE )
@@ -3411,9 +3133,9 @@ void mage_t::init_actions()
 
 int mage_t::primary_tree() SC_CONST
 {
-  if ( talents.arcane_empowerment   ) return TREE_ARCANE;
-  if ( talents.empowered_fire       ) return TREE_FIRE;
-  if ( talents.empowered_frost_bolt ) return TREE_FROST;
+  if ( talents.arcane_power ) return TREE_ARCANE;
+  if ( talents.living_bomb  ) return TREE_FIRE;
+  if ( talents.deep_freeze  ) return TREE_FROST;
 
   return TALENT_TREE_MAX;
 }
@@ -3423,8 +3145,6 @@ int mage_t::primary_tree() SC_CONST
 double mage_t::composite_armor() SC_CONST
 {
   double a = player_t::composite_armor();
-
-  a += floor( talents.arcane_fortitude * 0.5 * intellect() );
 
   return a;
 }
@@ -3469,9 +3189,9 @@ void mage_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( sim -> auras.arcane_empowerment -> current_value < talents.arcane_empowerment )
+  if ( sim -> auras.arcane_tactics -> current_value < talents.arcane_tactics )
   {
-    sim -> auras.arcane_empowerment -> trigger( 1, talents.arcane_empowerment );
+    sim -> auras.arcane_tactics -> trigger( 1, talents.arcane_tactics );
   }
 
   if ( ! armor_type_str.empty() )
@@ -3510,8 +3230,6 @@ void mage_t::reset()
 void mage_t::regen( double periodicity )
 {
   mana_regen_while_casting  = 0;
-  mana_regen_while_casting += util_t::talent_rank( talents.arcane_meditation, 3, 0.17, 0.33, 0.50 );
-  mana_regen_while_casting += util_t::talent_rank( talents.pyromaniac,        3, 0.17, 0.33, 0.50 );
 
   if ( buffs_mage_armor -> up() )
   {
@@ -3601,37 +3319,34 @@ std::vector<talent_translation_t>& mage_t::get_talent_list()
   {
           talent_translation_t translation_table[][MAX_TALENT_TREES] =
           {
-    { {  1, 2, &( talents.arcane_subtlety      ) }, {  1, 2, &( talents.improved_fire_blast ) }, {  1, 3, &( talents.frostbite                ) } },
-    { {  2, 3, &( talents.arcane_focus         ) }, {  2, 3, &( talents.incineration        ) }, {  2, 5, &( talents.improved_frost_bolt      ) } },
-    { {  3, 0, NULL                              }, {  3, 5, &( talents.improved_fire_ball  ) }, {  3, 3, &( talents.ice_floes                ) } },
-    { {  4, 3, &( talents.arcane_fortitude     ) }, {  4, 5, &( talents.ignite              ) }, {  4, 3, &( talents.ice_shards               ) } },
-    { {  5, 0, NULL                              }, {  5, 0, NULL                             }, {  5, 0, NULL                                  } },
-    { {  6, 5, &( talents.arcane_concentration ) }, {  6, 3, &( talents.world_in_flames     ) }, {  6, 3, &( talents.precision                ) } },
-    { {  7, 0, NULL                              }, {  7, 0, NULL                             }, {  7, 0, NULL                                  } },
-    { {  8, 3, &( talents.spell_impact         ) }, {  8, 0, NULL                             }, {  8, 3, &( talents.piercing_ice             ) } },
-    { {  9, 3, &( talents.student_of_the_mind  ) }, {  9, 1, &( talents.pyroblast           ) }, {  9, 1, &( talents.icy_veins                ) } },
-    { { 10, 1, &( talents.focus_magic          ) }, { 10, 2, &( talents.burning_soul        ) }, { 10, 0, NULL                                  } },
-    { { 11, 0, NULL                              }, { 11, 3, &( talents.improved_scorch     ) }, { 11, 0, NULL                                  } },
-    { { 12, 0, NULL                              }, { 12, 0, NULL                             }, { 12, 3, &( talents.frost_channeling         ) } },
-    { { 13, 3, &( talents.arcane_meditation    ) }, { 13, 3, &( talents.master_of_elements  ) }, { 13, 3, &( talents.shatter                  ) } },
-    { { 14, 3, &( talents.torment_the_weak     ) }, { 14, 3, &( talents.playing_with_fire   ) }, { 14, 1, &( talents.cold_snap                ) } },
-    { { 15, 0, NULL                              }, { 15, 3, &( talents.critical_mass       ) }, { 15, 0, NULL                                  } },
-    { { 16, 1, &( talents.presence_of_mind     ) }, { 16, 0, NULL                             }, { 16, 3, &( talents.frozen_core              ) } },
-    { { 17, 5, &( talents.arcane_mind          ) }, { 17, 0, NULL                             }, { 17, 2, &( talents.cold_as_ice              ) } },
-    { { 18, 0, NULL                              }, { 18, 5, &( talents.fire_power          ) }, { 18, 3, &( talents.winters_chill            ) } },
-    { { 19, 3, &( talents.arcane_instability   ) }, { 19, 3, &( talents.pyromaniac          ) }, { 19, 0, NULL                                  } },
-    { { 20, 2, &( talents.arcane_potency       ) }, { 20, 1, &( talents.combustion          ) }, { 20, 0, NULL                                  } },
-    { { 21, 3, &( talents.arcane_empowerment   ) }, { 21, 2, &( talents.molten_fury         ) }, { 21, 5, &( talents.arctic_winds             ) } },
-    { { 22, 1, &( talents.arcane_power         ) }, { 22, 0, NULL                             }, { 22, 2, &( talents.empowered_frost_bolt     ) } },
-    { { 23, 3, &( talents.incanters_absorption ) }, { 23, 3, &( talents.empowered_fire      ) }, { 23, 2, &( talents.fingers_of_frost         ) } },
-    { { 24, 2, &( talents.arcane_flows         ) }, { 24, 0, NULL                             }, { 24, 3, &( talents.brain_freeze             ) } },
-    { { 25, 5, &( talents.mind_mastery         ) }, { 25, 0, NULL                             }, { 25, 1, &( talents.summon_water_elemental   ) } },
-    { { 26, 1, &( talents.slow                 ) }, { 26, 3, &( talents.hot_streak          ) }, { 26, 3, &( talents.enduring_winter          ) } },
-    { { 27, 5, &( talents.missile_barrage      ) }, { 27, 5, &( talents.burnout             ) }, { 27, 5, &( talents.chilled_to_the_bone      ) } },
-    { { 28, 3, &( talents.netherwind_presence  ) }, { 28, 1, &( talents.living_bomb         ) }, { 28, 1, &( talents.deep_freeze              ) } },
-    { { 29, 2, &( talents.spell_power          ) }, {  0, 0, NULL                             }, { 29, 0, NULL                                  } },
-    { { 30, 1, &( talents.arcane_barrage       ) }, {  0, 0, NULL                             }, { 30, 0, NULL                                  } },
-    { {  0, 0, NULL                              }, {  0, 0, NULL                             }, { 31, 0, NULL                                  } }
+    { {  1, 3, &( talents.arcane_concentration     ) }, {  1, 2, &( talents.master_of_elements  ) }, {  1, 2, &( talents.early_frost              ) } },
+    { {  2, 2, &( talents.improved_counterspell    ) }, {  2, 3, &( talents.burning_soul        ) }, {  2, 3, &( talents.piercing_ice             ) } },
+    { {  3, 3, &( talents.netherwind_presence      ) }, {  3, 2, &( talents.improved_fire_blast ) }, {  3, 2, &( talents.shatter                  ) } },
+    { {  4, 0, NULL                                  }, {  4, 0, NULL                             }, {  4, 0, NULL                                  } },
+    { {  5, 3, &( talents.torment_the_weak         ) }, {  5, 3, &( talents.ignite              ) }, {  5, 3, &( talents.ice_floes                ) } },
+    { {  6, 2, &( talents.invocation               ) }, {  6, 3, &( talents.fire_power          ) }, {  6, 2, &( talents.improved_cone_of_cold    ) } },
+    { {  7, 2, &( talents.improved_arcane_missiles ) }, {  7, 2, &( talents.blazing_speed       ) }, {  7, 2, &( talents.piercing_chill           ) } },
+    { {  8, 2, &( talents.improved_blink           ) }, {  8, 2, &( talents.impact              ) }, {  8, 3, &( talents.permafrost               ) } },
+    { {  9, 2, &( talents.arcane_flows             ) }, {  9, 2, &( talents.cauterize           ) }, {  9, 2, &( talents.ice_shards               ) } },
+    { { 10, 1, &( talents.presence_of_mind         ) }, { 10, 1, &( talents.blast_wave          ) }, { 10, 1, &( talents.icy_veins                ) } },
+    { { 11, 0, &( talents.missile_barrage          ) }, { 11, 1, &( talents.hot_streak          ) }, { 11, 3, &( talents.fingers_of_frost         ) } },
+    { { 12, 3, &( talents.prismatic_cloak          ) }, { 12, 2, &( talents.improved_scorch     ) }, { 12, 3, &( talents.improved_freeze          ) } },
+    { { 13, 2, &( talents.improved_polymorph       ) }, { 13, 1, &( talents.molten_shields      ) }, { 13, 3, &( talents.enduring_winter          ) } },
+    { { 14, 1, &( talents.arcane_tactics           ) }, { 14, 1, &( talents.combustion          ) }, { 14, 1, &( talents.cold_snap                ) } },
+    { { 15, 2, &( talents.incanters_absorption     ) }, { 15, 2, &( talents.improved_hot_streak ) }, { 15, 3, &( talents.brain_freeze             ) } },
+    { { 16, 2, &( talents.improved_arcane_explosion) }, { 16, 1, &( talents.firestarter         ) }, { 16, 0, NULL                                  } },
+    { { 17, 2, &( talents.arcane_potency           ) }, { 17, 2, &( talents.improved_flamestrike) }, { 17, 2, &( talents.shattered_barrier        ) } },
+    { { 18, 1, &( talents.slow                     ) }, { 18, 1, &( talents.dragons_breath      ) }, { 18, 1, &( talents.ice_barrier              ) } },
+    { { 19, 2, &( talents.nether_vortex            ) }, { 19, 3, &( talents.molten_fury         ) }, { 19, 2, &( talents.reactive_barrier         ) } },
+    { { 20, 0, NULL                                  }, { 20, 0, NULL                             }, { 20, 0, NULL                                  } },
+    { { 21, 1, &( talents.focus_magic              ) }, { 21, 2, &( talents.pyromaniac          ) }, { 21, 0, NULL                                  } },
+    { { 22, 0, NULL                                  }, { 22, 0, NULL                             }, { 22, 0, NULL                                  } },
+    { { 23, 2, &( talents.improved_mana_gem        ) }, { 23, 3, &( talents.critical_mass       ) }, { 23, 2, &( talents.frostfire_orb            ) } },
+    { { 24, 0, NULL                                  }, { 24, 0, NULL                             }, { 24, 0, NULL                                  } },
+    { { 25, 0, NULL                                  }, { 25, 0, NULL                             }, { 25, 0, NULL                                  } },
+    { { 26, 1, &( talents.arcane_power             ) }, { 26, 1, &( talents.living_bomb         ) }, { 26, 1, &( talents.deep_freeze              ) } },
+    { { 27, 0, NULL                                  }, { 27, 0, NULL                             }, { 27, 0, NULL                                  } },
+    { { 28, 0, NULL                                  }, { 28, 0, NULL                             }, { 28, 0, NULL                                  } },
   };
 
     util_t::translate_talent_trees( talent_translation_list, translation_table, sizeof( translation_table) );
@@ -3646,75 +3361,40 @@ void mage_t::create_options()
 
   option_t mage_options[] =
   {
-    { "arcane_barrage",            OPT_INT,   &( talents.arcane_barrage            ) },
     { "arcane_concentration",      OPT_INT,   &( talents.arcane_concentration      ) },
-    { "arcane_empowerment",        OPT_INT,   &( talents.arcane_empowerment        ) },
     { "arcane_flows",              OPT_INT,   &( talents.arcane_flows              ) },
-    { "arcane_focus",              OPT_INT,   &( talents.arcane_focus              ) },
-    { "arcane_fortitude",          OPT_INT,   &( talents.arcane_fortitude          ) },
-    { "arcane_impact",             OPT_INT,   &( talents.arcane_impact             ) },
-    { "arcane_instability",        OPT_INT,   &( talents.arcane_instability        ) },
-    { "arcane_meditation",         OPT_INT,   &( talents.arcane_meditation         ) },
-    { "arcane_mind",               OPT_INT,   &( talents.arcane_mind               ) },
     { "arcane_potency",            OPT_INT,   &( talents.arcane_potency            ) },
     { "arcane_power",              OPT_INT,   &( talents.arcane_power              ) },
-    { "arcane_subtlety",           OPT_INT,   &( talents.arcane_subtlety           ) },
-    { "arctic_winds",              OPT_INT,   &( talents.arctic_winds              ) },
     { "brain_freeze",              OPT_INT,   &( talents.brain_freeze              ) },
     { "burning_soul",              OPT_INT,   &( talents.burning_soul              ) },
-    { "burnout",                   OPT_INT,   &( talents.burnout                   ) },
-    { "chilled_to_the_bone",       OPT_INT,   &( talents.chilled_to_the_bone       ) },
-    { "cold_as_ice",               OPT_INT,   &( talents.cold_as_ice               ) },
     { "cold_snap",                 OPT_INT,   &( talents.cold_snap                 ) },
     { "combustion",                OPT_INT,   &( talents.combustion                ) },
     { "critical_mass",             OPT_INT,   &( talents.critical_mass             ) },
     { "deep_freeze",               OPT_INT,   &( talents.deep_freeze               ) },
-    { "empowered_arcane_missiles", OPT_INT,   &( talents.empowered_arcane_missiles ) },
-    { "empowered_fire",            OPT_INT,   &( talents.empowered_fire            ) },
-    { "empowered_frost_bolt",      OPT_INT,   &( talents.empowered_frost_bolt      ) },
     { "enduring_winter",           OPT_INT,   &( talents.enduring_winter           ) },
     { "fingers_of_frost",          OPT_INT,   &( talents.fingers_of_frost          ) },
     { "fire_power",                OPT_INT,   &( talents.fire_power                ) },
     { "focus_magic",               OPT_INT,   &( talents.focus_magic               ) },
-    { "frost_channeling",          OPT_INT,   &( talents.frost_channeling          ) },
-    { "frostbite",                 OPT_INT,   &( talents.frostbite                 ) },
-    { "frozen_core",               OPT_INT,   &( talents.frozen_core               ) },
     { "hot_streak",                OPT_INT,   &( talents.hot_streak                ) },
     { "ice_floes",                 OPT_INT,   &( talents.ice_floes                 ) },
     { "ice_shards",                OPT_INT,   &( talents.ice_shards                ) },
     { "ignite",                    OPT_INT,   &( talents.ignite                    ) },
-    { "improved_fire_ball",        OPT_INT,   &( talents.improved_fire_ball        ) },
     { "improved_fire_blast",       OPT_INT,   &( talents.improved_fire_blast       ) },
-    { "improved_frost_bolt",       OPT_INT,   &( talents.improved_frost_bolt       ) },
     { "improved_scorch",           OPT_INT,   &( talents.improved_scorch           ) },
     { "incanters_absorption",      OPT_INT,   &( talents.incanters_absorption      ) },
-    { "incineration",              OPT_INT,   &( talents.incineration              ) },
     { "living_bomb",               OPT_INT,   &( talents.living_bomb               ) },
     { "master_of_elements",        OPT_INT,   &( talents.master_of_elements        ) },
-    { "mind_mastery",              OPT_INT,   &( talents.mind_mastery              ) },
     { "missile_barrage",           OPT_INT,   &( talents.missile_barrage           ) },
     { "molten_fury",               OPT_INT,   &( talents.molten_fury               ) },
     { "netherwind_presence",       OPT_INT,   &( talents.netherwind_presence       ) },
     { "piercing_ice",              OPT_INT,   &( talents.piercing_ice              ) },
-    { "playing_with_fire",         OPT_INT,   &( talents.playing_with_fire         ) },
-    { "precision",                 OPT_INT,   &( talents.precision                 ) },
     { "presence_of_mind",          OPT_INT,   &( talents.presence_of_mind          ) },
-    { "pyroblast",                 OPT_INT,   &( talents.pyroblast                 ) },
     { "pyromaniac",                OPT_INT,   &( talents.pyromaniac                ) },
     { "shatter",                   OPT_INT,   &( talents.shatter                   ) },
     { "slow",                      OPT_INT,   &( talents.slow                      ) },
-    { "spell_impact",              OPT_INT,   &( talents.spell_impact              ) },
-    { "spell_power",               OPT_INT,   &( talents.spell_power               ) },
-    { "student_of_the_mind",       OPT_INT,   &( talents.student_of_the_mind       ) },
     { "torment_the_weak",          OPT_INT,   &( talents.torment_the_weak          ) },
-    { "water_elemental",           OPT_INT,   &( talents.summon_water_elemental    ) },
-    { "winters_chill",             OPT_INT,   &( talents.winters_chill             ) },
-    { "winters_grasp",             OPT_INT,   &( talents.winters_grasp             ) },
-    { "world_in_flames",           OPT_INT,   &( talents.world_in_flames           ) },
     { "armor_type",                OPT_STRING, &( armor_type_str                   ) },
     { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
-    { "ghost_charge_pct",          OPT_FLT,    &( ghost_charge_pct                 ) },
-    { "fof_on_cast",               OPT_BOOL,   &( fof_on_cast                      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3779,7 +3459,7 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, int race_t
 
 void player_t::mage_init( sim_t* sim )
 {
-  sim -> auras.arcane_empowerment = new aura_t( sim, "arcane_empowerment", 1, 0.0 );
+  sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, 0.0 );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -3788,11 +3468,8 @@ void player_t::mage_init( sim_t* sim )
   }
 
   target_t* t = sim -> target;
-  t -> debuffs.frostbite       = new debuff_t( sim, "frostbite",       1,  5.0 );
   t -> debuffs.improved_scorch = new debuff_t( sim, "improved_scorch", 1, 30.0 );
   t -> debuffs.slow            = new debuff_t( sim, "slow",            1, 15.0 );
-  t -> debuffs.winters_chill   = new debuff_t( sim, "winters_chill",   5, 15.0 );
-  t -> debuffs.winters_grasp   = new debuff_t( sim, "winters_grasp",   1,  5.0 );
 }
 
 // player_t::mage_combat_begin ==============================================
@@ -3810,8 +3487,7 @@ void player_t::mage_combat_begin( sim_t* sim )
 
   target_t* t = sim -> target;
   if ( sim -> overrides.improved_scorch ) t -> debuffs.improved_scorch -> override( 1 );
-  if ( sim -> overrides.winters_chill   ) t -> debuffs.winters_chill   -> override( 5 );
 
-  if ( sim -> overrides.arcane_empowerment ) sim -> auras.arcane_empowerment -> override( 1, 3 );
+  if ( sim -> overrides.arcane_tactics ) sim -> auras.arcane_tactics -> override( 1, 3 );
 }
 
