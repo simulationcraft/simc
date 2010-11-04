@@ -1124,7 +1124,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
     player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
-    direct_power_mod   = sim -> P403 ? 0.33 : 0.75;
+    direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1418,7 +1418,7 @@ struct heroic_strike_t : public warrior_attack_t
     base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
     base_dd_max       = 8;
-    direct_power_mod  = sim -> P403 ? 0.42 : 0.9;
+    direct_power_mod  = sim -> P403 ? 0.75 : 0.9;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
   }
