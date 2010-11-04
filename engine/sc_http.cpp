@@ -436,6 +436,65 @@ bool http_t::download( std::string& result,
     else break;
   }
 
+  // Moved, redo query
+  if ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
+  {
+    std::string::size_type pos_location = result.find( "Location: " );
+    if ( pos_location == result.npos ) return false;
+    
+    std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
+    std::string new_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
+    
+    if ( ! parse_url( host, path, port, new_url.c_str() ) ) return false;
+
+    h = gethostbyname( host.c_str() );
+    if ( ! h ) return false;
+
+    a.sin_family = AF_INET;
+    a.sin_addr = *( in_addr * )h->h_addr_list[0];
+    a.sin_port = htons( port );
+
+    s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
+    if ( s == 0xffffffffU ) return false;
+  
+    r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
+    if ( r < 0 )
+    {
+      return false;
+    }
+
+    sprintf( buffer,
+             "GET %s HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n"
+             "Host: %s\r\n"
+             "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             "Connection: close\r\n"
+             "\r\n",
+             path.c_str(),
+             host.c_str() );
+
+    r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
+    if ( r != ( int ) strlen( buffer ) )
+    {
+      return false;
+    }
+
+    result = "";
+
+    while ( 1 )
+    {
+      r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
+      if ( r > 0 )
+      {
+        buffer[ r ] = '\0';
+        result += buffer;
+      }
+      else break;
+    }
+  }
+
   std::string::size_type pos = result.find( "\r\n\r\n" );
   if ( pos == result.npos )
   {
@@ -575,6 +634,69 @@ bool http_t::download( std::string& result,
 
   ::close( s );
 
+  // Moved, redo query
+  if ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
+  {
+    std::string::size_type pos_location = result.find( "Location: " );
+    if ( pos_location == result.npos ) return false;
+    
+    std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
+    std::string new_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
+    
+    if ( ! parse_url( host, path, port, new_url.c_str() ) ) return false;
+
+    h = gethostbyname( host.c_str() );
+    if ( ! h ) return false;
+
+    a.sin_family = AF_INET;
+    a.sin_addr = *( in_addr * )h->h_addr_list[0];
+    a.sin_port = htons( port );
+
+    s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    if ( s < 0 ) return false;
+
+    r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
+    if ( r < 0 )
+    {
+      close( s );
+      return false;
+    }
+
+    sprintf( buffer,
+             "GET %s HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n"
+             "Host: %s\r\n"
+             "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             "Connection: close\r\n"
+             "\r\n",
+             path.c_str(),
+             host.c_str() );
+
+    r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
+    if ( r != ( int ) strlen( buffer ) )
+    {
+      close( s );
+      return false;
+    }
+
+    result = "";
+
+    while ( 1 )
+    {
+      r = ::recv( s, buffer, sizeof( buffer )-1, MSG_WAITALL );
+      if ( r > 0 )
+      {
+        buffer[ r ] = '\0';
+        result += buffer;
+      }
+      else break;
+    }
+
+    ::close( s );
+  }
+  
   std::string::size_type pos = result.find( "\r\n\r\n" );
   if ( pos == result.npos )
   {
