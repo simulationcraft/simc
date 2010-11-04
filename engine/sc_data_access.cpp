@@ -1300,6 +1300,8 @@ uint32_t sc_data_access_t::find_class_spell( player_type c, const char* spell_na
 
   uint32_t s = m_class_spells.rows;
 
+  if ( ( c == PLAYER_PET ) || ( c == PLAYER_GUARDIAN ) ) tree = 3;
+
   assert( spell_name && spell_name[ 0 ] && ( tree < ( int32_t ) s ) && ( tree >= -1 ) );
 
   uint32_t i = 0;
