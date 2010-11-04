@@ -17,6 +17,7 @@ struct spell_data_t {
   int          scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
   // SpellLevels.dbc
   unsigned     spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
+  unsigned     max_level;          // Maximum level for scaling
   // SpellRange.dbc
   double       min_range;          // Minimum range in yards
   double       max_range;          // Maximum range in yards

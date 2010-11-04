@@ -23,20 +23,20 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
        2457, // Battle Stance
       46924, // Bladestorm
-        100, // Charge
-      86346, // Colossus Smash
-       1715, // Hamstring
+        100, // Charge (Battle Stance)
+      86346, // Colossus Smash (Battle, Berserker Stance)
+       1715, // Hamstring (Battle, Berserker Stance)
          78, // Heroic Strike
       57755, // Heroic Throw
       12294, // Mortal Strike
-       7384, // Overpower
-        772, // Rend
-      20230, // Retaliation
-      64382, // Shattering Throw
+       7384, // Overpower (Battle Stance)
+        772, // Rend (Battle, Defensive Stance)
+      20230, // Retaliation (Battle Stance)
+      64382, // Shattering Throw (Battle Stance)
       88161, // Strike
-      12328, // Sweeping Strikes
-      85388, // Throwdown
-       6343, // Thunder Clap
+      12328, // Sweeping Strikes (Battle, Berserker Stance)
+      85388, // Throwdown (Battle Stance)
+       6343, // Thunder Clap (Battle, Defensive Stance)
           0,
     },
     // Fury tree, 23 abilities
@@ -51,19 +51,19 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       12292, // Death Wish
        1160, // Demoralizing Shout
       55694, // Enraged Regeneration
-       5308, // Execute
+       5308, // Execute (Battle, Berserker Stance)
       60970, // Heroic Fury
        6544, // Heroic Leap
        1134, // Inner Rage
-      20252, // Intercept
+      20252, // Intercept (Berserker Stance)
        5246, // Intimidating Shout
       12323, // Piercing Howl
-       6552, // Pummel
-      85288, // Raging Blow
-       1719, // Recklessness
+       6552, // Pummel (Battle, Berserker Stance)
+      85288, // Raging Blow (Berserker Stance)
+       1719, // Recklessness (Berserker Stance)
        1464, // Slam
       34428, // Victory Rush
-       1680, // Whirlwind
+       1680, // Whirlwind (Berserker Stance)
           0,
     },
     // Protection tree, 16 abilities
@@ -71,18 +71,18 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       12809, // Concussion Blow
          71, // Defensive Stance
       20243, // Devastate
-        676, // Disarm
-       3411, // Intervene
+        676, // Disarm (Defensive Stance)
+       3411, // Intervene (Defensive Stance)
       12975, // Last Stand
-       6572, // Revenge
-         72, // Shield Bash
-       2565, // Shield Block
+       6572, // Revenge (Defensive Stance)
+         72, // Shield Bash (Battle, Defensive Stance)
+       2565, // Shield Block (Defensive Stance)
       23922, // Shield Slam
-        871, // Shield Wall
+        871, // Shield Wall (Defensive Stance)
       46968, // Shockwave
-      23920, // Spell Reflection
+      23920, // Spell Reflection (Battle, Defensive Stance)
        7386, // Sunder Armor
-        355, // Taunt
+        355, // Taunt (Defensive Stance)
       50720, // Vigilance
           0,
     },
@@ -212,15 +212,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19306, // Counterattack
       19263, // Deterrence
       53301, // Explosive Shot
-      13813, // Explosive Trap
-       1499, // Freezing Trap
-      13809, // Ice Trap
-      13795, // Immolation Trap
+      13813, // Explosive Trap (Fire)
+       1499, // Freezing Trap (Frost)
+      13809, // Ice Trap (Frost)
+      13795, // Immolation Trap (Fire)
       34477, // Misdirection
        2973, // Raptor Strike
       19503, // Scatter Shot
        1978, // Serpent Sting
-      34600, // Snake Trap
+      34600, // Snake Trap (Nature)
       77769, // Trap Launcher
        2974, // Wing Clip
       19386, // Wyvern Sting
@@ -228,67 +228,67 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Pet tree, 62 abilities
     {
-      55749, // Acid Spit
+      55749, // Acid Spit (Special Ability)
       90355, // Ancient Hysteria
-      50433, // Ankle Crack
+      50433, // Ankle Crack (Special Ability)
       90337, // Bad Manner
-      17253, // Bite
-      93433, // Burrow Attack
+      17253, // Bite (Basic Attack)
+      93433, // Burrow Attack (Exotic Ability)
       53434, // Call of the Wild
       61685, // Charge
-      16827, // Claw
-      50541, // Clench
-      35387, // Corrosive Spit
+      16827, // Claw (Basic Attack)
+      50541, // Clench (Special Ability)
+      35387, // Corrosive Spit (Special Ability)
        1742, // Cower
-      50256, // Demoralizing Roar
+      50256, // Demoralizing Roar (Special Ability)
       24423, // Demoralizing Screech
-      50285, // Dust Cloud
-      90363, // Embrace of the Shale Spider
+      50285, // Dust Cloud (Special Ability)
+      90363, // Embrace of the Shale Spider (Exotic Ability)
       75447, // Ferocious Inspiration
-      34889, // Fire Breath
-      54644, // Frost Breath
-      92380, // Froststorm Breath
-      24604, // Furious Howl
-      35290, // Gore
+      34889, // Fire Breath (Special Ability)
+      54644, // Frost Breath (Special Ability)
+      92380, // Froststorm Breath (Exotic Ability)
+      24604, // Furious Howl (Special Ability)
+      35290, // Gore (Special Ability)
        2649, // Growl
-      55709, // Heart of the Phoenix
-      93434, // Horn Toss
+      55709, // Heart of the Phoenix (Talent)
+      93434, // Horn Toss (Exotic Ability)
       53476, // Intervene
-      58604, // Lava Breath
+      58604, // Lava Breath (Special Ability)
       53426, // Lick Your Wounds
-      24844, // Lightning Breath
-      54680, // Monstrous Bite
-      50479, // Nether Shock
-      50245, // Pin
-      90347, // Play
-      24450, // Prowl
-      26090, // Pummel
-      90364, // Qiraji Fortitude
-      50518, // Ravage
-      94019, // Rest
-      93435, // Roar of Courage
+      24844, // Lightning Breath (Special Ability)
+      54680, // Monstrous Bite (Exotic Ability)
+      50479, // Nether Shock (Special Ability)
+      50245, // Pin (Special Ability)
+      90347, // Play (Bonus Ability)
+      24450, // Prowl (Bonus Ability)
+      26090, // Pummel (Special Ability)
+      90364, // Qiraji Fortitude (Exotic Ability)
+      50518, // Ravage (Special Ability)
+      94019, // Rest (Bonus Ability)
+      93435, // Roar of Courage (Special Ability)
       53517, // Roar of Recovery
       53480, // Roar of Sacrifice
-      50318, // Serenity Dust
-      49966, // Smack
-      91644, // Snatch
-      50519, // Sonic Blast
-      90361, // Spirit Mend
-      90328, // Spirit Walk
-      50274, // Spore Cloud
-      57386, // Stampede
-      56626, // Sting
+      50318, // Serenity Dust (Special Ability)
+      49966, // Smack (Basic Attack)
+      91644, // Snatch (Special Ability)
+      50519, // Sonic Blast (Special Ability)
+      90361, // Spirit Mend (Exotic Ability)
+      90328, // Spirit Walk (Bonus Ability)
+      50274, // Spore Cloud (Special Ability)
+      57386, // Stampede (Special Ability)
+      56626, // Sting (Special Ability)
       52825, // Swoop
-      90314, // Tailspin
+      90314, // Tailspin (Special Ability)
       53477, // Taunt
       50498, // Tear Armor
-      50271, // Tendon Rip
-      90309, // Terrifying Roar
+      50271, // Tendon Rip (Special Ability)
+      90309, // Terrifying Roar (Special Ability)
       63900, // Thunderstomp
-      35346, // Time Warp
-      94022, // Trick
-      54706, // Venom Web Spray
-       4167, // Web
+      35346, // Time Warp (Special Ability)
+      94022, // Trick (Bonus Ability)
+      54706, // Venom Web Spray (Special Ability)
+       4167, // Web (Special Ability)
       53508, // Wolverine Bite
     },
   },
@@ -515,8 +515,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       57994, // Wind Shear
           0,
     },
-    // Enhancement tree, 20 abilities
+    // Enhancement tree, 22 abilities
     {
+       2825, // Bloodlust
        2062, // Earth Elemental Totem
        8184, // Elemental Resistance Totem
       51533, // Feral Spirit
@@ -525,6 +526,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        8033, // Frostbrand Weapon
        2645, // Ghost Wolf
        8177, // Grounding Totem
+      32182, // Heroism
       60103, // Lava Lash
         324, // Lightning Shield
       73899, // Primal Strike
@@ -668,7 +670,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        6201, // Create Healthstone
         693, // Create Soulstone
         687, // Demon Armor
-      54785, // Demon Leap
+      54785, // Demon Leap (Metamorphosis)
       77801, // Demon Soul
       47193, // Demonic Empowerment
       88448, // Demonic Rebirth
@@ -677,20 +679,20 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       71521, // Hand of Gul'dan
         755, // Health Funnel
       85403, // Hellfire
-      50589, // Immolation Aura
+      50589, // Immolation Aura (Metamorphosis)
       47241, // Metamorphosis
        6229, // Shadow Ward
       79268, // Soul Harvest
       19028, // Soul Link
       74434, // Soulburn
       29858, // Soulshatter
-      18540, // Summon Doomguard
-      30146, // Summon Felguard
-        691, // Summon Felhunter
-        688, // Summon Imp
-       1122, // Summon Infernal
-        712, // Summon Succubus
-        697, // Summon Voidwalker
+      18540, // Summon Doomguard (Guardian)
+      30146, // Summon Felguard (Summon)
+        691, // Summon Felhunter (Summon)
+        688, // Summon Imp (Summon)
+       1122, // Summon Infernal (Guardian)
+        712, // Summon Succubus (Summon)
+        697, // Summon Voidwalker (Summon)
           0,
     },
     // Destruction tree, 14 abilities
@@ -713,26 +715,26 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Pet tree, 20 abilities
     {
-      89766, // Axe Toss
-       6307, // Blood Pact
-      17767, // Consume Shadows
-      19505, // Devour Magic
+      89766, // Axe Toss (Special Ability)
+       6307, // Blood Pact (Special Ability)
+      17767, // Consume Shadows (Special Ability)
+      19505, // Devour Magic (Special Ability)
       85692, // Doom Bolt
-      54424, // Fel Intelligence
-      89751, // Felstorm
-       3110, // Firebolt
-      89792, // Flee
-       7814, // Lash of Pain
-      30213, // Legion Strike
-       7870, // Lesser Invisibility
-      30151, // Pursuit
-       6358, // Seduction
-      54049, // Shadow Bite
-      89808, // Singe Magic
-      19647, // Spell Lock
-      17735, // Suffering
-       3716, // Torment
-       6360, // Whiplash
+      54424, // Fel Intelligence (Special Ability)
+      89751, // Felstorm (Special Ability)
+       3110, // Firebolt (Basic Attack)
+      89792, // Flee (Special Ability)
+       7814, // Lash of Pain (Basic Attack)
+      30213, // Legion Strike (Basic Attack)
+       7870, // Lesser Invisibility (Special Ability)
+      30151, // Pursuit (Special Ability)
+       6358, // Seduction (Special Ability)
+      54049, // Shadow Bite (Basic Attack)
+      89808, // Singe Magic (Special Ability)
+      19647, // Spell Lock (Special Ability)
+      17735, // Suffering (Special Ability)
+       3716, // Torment (Basic Attack)
+       6360, // Whiplash (Special Ability)
           0,
     },
   },
@@ -764,7 +766,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       29166, // Innervate
        5570, // Insect Swarm
        8921, // Moonfire
-      24858, // Moonkin Form
+      24858, // Moonkin Form (Shapeshift)
       16689, // Nature's Grasp
       78675, // Solar Beam
        2908, // Soothe
@@ -780,43 +782,43 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Feral tree, 37 abilities
     {
-       1066, // Aquatic Form
-       5211, // Bash
-       5487, // Bear Form
-      50334, // Berserk
-        768, // Cat Form
-       5209, // Challenging Roar
-       1082, // Claw
-       8998, // Cower
-         99, // Demoralizing Roar
-       5229, // Enrage
-      16857, // Faerie Fire (Feral)
-      49376, // Feral Charge
-      16979, // Feral Charge
-      22568, // Ferocious Bite
-      33943, // Flight Form
-      22842, // Frenzied Regeneration
-       6795, // Growl
-      33745, // Lacerate
-      22570, // Maim
-       6807, // Maul
-       9005, // Pounce
-       5215, // Prowl
-      80313, // Pulverize
-       1822, // Rake
-       6785, // Ravage
-       1079, // Rip
-      52610, // Savage Roar
-       5221, // Shred
-      80965, // Skull Bash
-      80964, // Skull Bash
-      61336, // Survival Instincts
-      40120, // Swift Flight Form
-      62078, // Swipe
-        779, // Swipe
-      77758, // Thrash
-       5217, // Tiger's Fury
-        783, // Travel Form
+       1066, // Aquatic Form (Shapeshift)
+       5211, // Bash (Bear Form)
+       5487, // Bear Form (Shapeshift)
+      50334, // Berserk (Cat or Bear Form)
+        768, // Cat Form (Shapeshift)
+       5209, // Challenging Roar (Bear Form)
+       1082, // Claw (Cat Form)
+       8998, // Cower (Cat Form)
+         99, // Demoralizing Roar (Bear Form)
+       5229, // Enrage (Bear Form)
+      16857, // Faerie Fire (Feral) (Feral)
+      49376, // Feral Charge (Cat Form)
+      16979, // Feral Charge (Bear Form)
+      22568, // Ferocious Bite (Cat Form)
+      33943, // Flight Form (Shapeshift)
+      22842, // Frenzied Regeneration (Bear Form)
+       6795, // Growl (Bear Form)
+      33745, // Lacerate (Bear Form)
+      22570, // Maim (Cat Form)
+       6807, // Maul (Bear Form)
+       9005, // Pounce (Cat Form)
+       5215, // Prowl (Cat Form)
+      80313, // Pulverize (Bear Form)
+       1822, // Rake (Cat Form)
+       6785, // Ravage (Cat Form)
+       1079, // Rip (Cat Form)
+      52610, // Savage Roar (Cat Form)
+       5221, // Shred (Cat Form)
+      80965, // Skull Bash (Cat Form)
+      80964, // Skull Bash (Bear Form)
+      61336, // Survival Instincts (Cat or Bear Form)
+      40120, // Swift Flight Form (Shapeshift)
+      62078, // Swipe (Cat Form)
+        779, // Swipe (Bear Form)
+      77758, // Thrash (Bear Form)
+       5217, // Tiger's Fury (Cat Form)
+        783, // Travel Form (Shapeshift)
           0,
     },
     // Restoration tree, 12 abilities
@@ -831,7 +833,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        2782, // Remove Corruption
       18562, // Swiftmend
         740, // Tranquility
-      33891, // Tree of Life
+      33891, // Tree of Life (Shapeshift)
       48438, // Wild Growth
           0,
     },

@@ -44,6 +44,7 @@ static sdata_field_t _spell_data_fields[] = {
   { SD_TYPE_UNSIGNED, ""              }, // Race (spell_race_expr_t)
   { SD_TYPE_INT,      "scaling"       },
   { SD_TYPE_UNSIGNED, "level"         },
+  { SD_TYPE_UNSIGNED, "max_level"     },
   { SD_TYPE_DOUBLE,   "min_range"     },
   { SD_TYPE_DOUBLE,   "max_range"     },
   { SD_TYPE_UNSIGNED, "cooldown"      },
@@ -115,7 +116,7 @@ static std::string _pet_class_strings[] = {
   "tenacity",
 };
 
-bool pred ( char a, char b ) {
+static bool pred ( char a, char b ) {
     return tolower( a ) == tolower( b );
 }
 

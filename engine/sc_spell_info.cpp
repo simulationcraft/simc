@@ -413,7 +413,11 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   
   if ( spell -> spell_level > 0 )
   {
-    s << "Spell Level  : " << ( int ) spell -> spell_level << std::endl;
+    s << "Spell Level  : " << ( int ) spell -> spell_level;
+    if ( spell -> max_level > 0 )
+      s << " (max " << ( int ) spell -> max_level << ")";
+      
+    s << std::endl;
   }
   
   if ( spell -> min_range || spell -> max_range )
