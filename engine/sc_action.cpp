@@ -18,7 +18,6 @@ void action_t::_init_action_t()
   player                         = s_player;
   target                         = s_player -> sim -> target;
   id                             = 0;
-  effect_nr                      = 1;
   heal                           = false;
   result                         = RESULT_NONE;
   dual                           = false;
@@ -241,97 +240,74 @@ void action_t::parse_data( sc_data_access_t& pData )
 
     for ( int i=1; i <= MAX_EFFECTS; i++)
     {
-      int effect = pData.spell_effect_id ( id, i );
-      if (pData.effect_exists ( effect ) )
-      {
-        switch ( pData.effect_type ( effect) )
-        {
-        // Direct Damage
-        case E_HEAL:
-          heal = true;
-        case E_SCHOOL_DAMAGE:
-          direct_power_mod = pData.effect_coeff( effect );
-          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
-          break;
-
-        case E_NORMALIZED_WEAPON_DMG:
-          normalize_weapon_speed = true;
-        case E_WEAPON_DAMAGE:         
-          base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-          base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
-          weapon = &( player -> main_hand_weapon );
-          break;
-
-        case E_WEAPON_PERCENT_DAMAGE:
-          weapon = &( player -> main_hand_weapon );
-          weapon_multiplier = pData.effect_base_value( effect ) / 100.0;
-          break;
-
-        // Dot
-        case E_APPLY_AURA:
-          switch ( pData.effect_subtype ( effect) )
-          {
-            case A_PERIODIC_DAMAGE:
-              tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-              base_tick_time   = pData.effect_period ( effect );
-              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-              if ( school == SCHOOL_PHYSICAL )
-                school = stats -> school = SCHOOL_BLEED;
-              break;
-            case A_PERIODIC_LEECH:
-              tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-              base_tick_time   = pData.effect_period ( effect );
-              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-              break;
-            case A_PERIODIC_TRIGGER_SPELL:
-              base_tick_time   = pData.effect_period ( effect );
-              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-              break;
-            case A_PERIODIC_HEAL:
-              heal = true;
-              tick_power_mod   = pData.effect_coeff( effect );
-              base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-              base_tick_time   = pData.effect_period ( effect );
-              num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
-              break;
-          }
-          break;
-        }
-      }
+      parse_effect_data(pData, i);
     }
-
   }
 }
 
 // action_t::parse_effect_data ==============================================
-void action_t::parse_effect_data( sc_data_access_t& pData )
+void action_t::parse_effect_data( sc_data_access_t& pData, int effect_nr )
 {
-  if ( pData.spell_exists(id) )
+  assert(pData.spell_exists(id));
+
+  int effect = pData.spell_effect_id ( id, effect_nr );
+  if (pData.effect_exists ( effect ) )
   {
-    if (effect_nr != 0 )
+    switch ( pData.effect_type ( effect) )
     {
-    	int effect = pData.spell_effect_id ( id, effect_nr );
-    	if (pData.effect_exists ( effect ) )
-    	{
-    		// Direct Damage
-    		if ( !pData.effect_period ( effect ) )
-    		{
-    			direct_power_mod = pData.effect_coeff( effect );
-    			base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-    			base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
-    		}
-    		// Dot
-    		else
-    		{
-    			tick_power_mod   = pData.effect_coeff( effect );
-    			base_td          = pData.effect_average ( effect, pData.spell_scaling_class( id ), player -> level );
-    			base_tick_time   = pData.effect_period ( effect );
-    			num_ticks        = int ( pData.spell_duration ( id ) / pData.effect_period ( effect ) );
-    		}
-    	}
+      // Direct Damage
+    case E_HEAL:
+      heal = true;
+    case E_SCHOOL_DAMAGE:
+      direct_power_mod = pData.effect_coeff( effect );
+      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
+      break;
+
+    case E_NORMALIZED_WEAPON_DMG:
+      normalize_weapon_speed = true;
+    case E_WEAPON_DAMAGE:         
+      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
+      weapon = &( player -> main_hand_weapon );
+      break;
+
+    case E_WEAPON_PERCENT_DAMAGE:
+      weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = pData.effect_base_value( effect ) / 100.0;
+      break;
+
+      // Dot
+    case E_APPLY_AURA:
+      switch ( pData.effect_subtype ( effect) )
+      {
+      case A_PERIODIC_DAMAGE:
+        tick_power_mod   = pData.effect_coeff( effect );
+        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+        base_tick_time   = pData.effect_period ( effect );
+        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        if ( school == SCHOOL_PHYSICAL )
+          school = stats -> school = SCHOOL_BLEED;
+        break;
+      case A_PERIODIC_LEECH:
+        tick_power_mod   = pData.effect_coeff( effect );
+        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+        base_tick_time   = pData.effect_period ( effect );
+        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        break;
+      case A_PERIODIC_TRIGGER_SPELL:
+        base_tick_time   = pData.effect_period ( effect );
+        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        break;
+      case A_PERIODIC_HEAL:
+        heal = true;
+        tick_power_mod   = pData.effect_coeff( effect );
+        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+        base_tick_time   = pData.effect_period ( effect );
+        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        break;
+      }
+      break;
     }
   }
 }

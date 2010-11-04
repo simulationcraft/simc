@@ -1933,7 +1933,6 @@ struct vampiric_touch_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    effect_nr = 2;
     parse_data( p -> player_data );
 
 

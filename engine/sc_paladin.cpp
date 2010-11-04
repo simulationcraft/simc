@@ -459,7 +459,6 @@ struct avengers_shield_t : public paladin_attack_t
       paladin_attack_t( "avengers_shield", p, SCHOOL_HOLY, TREE_PROTECTION, true, false )
   {
     id = p->spells.avengers_shield->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -500,7 +499,6 @@ struct crusader_strike_t : public paladin_attack_t
       paladin_attack_t( "crusader_strike", p )
   {
     id = p->spells.crusader_strike->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -518,7 +516,9 @@ struct crusader_strike_t : public paladin_attack_t
     base_cooldown = cooldown->duration;
 
     base_crit       +=       0.01 * p->talents.rule_of_law->effect_base_value(1);
-    base_multiplier *= 1.0 + 0.01 * p->talents.crusade->effect_base_value(1)
+    assert(p->talents.crusade->effect_type(2) == E_APPLY_AURA);
+    assert(p->talents.crusade->effect_subtype(2) == A_ADD_PCT_MODIFIER);
+    base_multiplier *= 1.0 + 0.01 * p->talents.crusade->effect_base_value(2)
                            + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1); // TODO how do they stack?
 
     if (p->glyphs.ascetic_crusader) base_cost *= 0.70;
@@ -548,13 +548,13 @@ struct crusader_strike_t : public paladin_attack_t
 
 struct divine_storm_t : public paladin_attack_t
 {
+  double base_cooldown;
   divine_storm_t( paladin_t* p, const std::string& options_str ) :
       paladin_attack_t( "divine_storm", p )
   {
     check_talent( p -> talents.divine_storm->rank() );
 
     id = p->spells.divine_storm->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -562,26 +562,24 @@ struct divine_storm_t : public paladin_attack_t
     parse_options( options, options_str );
 
     trigger_seal = false;
-    uses_holy_power = true;
+    spell_haste = true;
+    aoe = true;
     holy_power_chance = p->talents.divine_purpose->proc_chance();
 
-    weapon                 = &( p -> main_hand_weapon );
-    weapon_multiplier     *= 0.20;
-    normalize_weapon_speed = true;
-
     parse_data(p->player_data);
+
+    base_cooldown = cooldown->duration;
   }
 
-  virtual void execute()
+  virtual void update_ready()
   {
-    paladin_t* p = player -> cast_paladin();
-    weapon_multiplier = 0.2;
-    int hp = p -> holy_power_stacks();
-    if ( hp > 0 )
+    paladin_t* p = player->cast_paladin();
+    if ( p->talents.sanctity_of_battle->rank() > 0 )
     {
-      weapon_multiplier += util_t::talent_rank( hp, 3, 0.22, 0.74, 1.50 );
+      cooldown->duration = base_cooldown * haste();
     }
-    paladin_attack_t::execute();
+
+    paladin_attack_t::update_ready();
   }
 };
 
@@ -593,7 +591,6 @@ struct hammer_of_justice_t : public paladin_attack_t
       paladin_attack_t( "hammer_of_justice", p, SCHOOL_HOLY )
   {
     id = p->spells.hammer_of_justice->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -623,7 +620,6 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     check_talent( p -> talents.hammer_of_the_righteous->rank() );
 
     id = p->spells.hammer_of_the_righteous->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -665,7 +661,6 @@ struct hammer_of_wrath_t : public paladin_attack_t
       paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY, TREE_RETRIBUTION, true, false/*TODO:check 2hspec*/ )
   {
     id = p->spells.hammer_of_wrath->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -714,7 +709,6 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     check_talent( p->talents.shield_of_the_righteous->rank() );
 
     id = p->spells.shield_of_the_righteous->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -762,7 +756,6 @@ struct templars_verdict_t : public paladin_attack_t
     assert( p -> primary_tree() == TREE_RETRIBUTION );
 
     id = p->spells.templars_verdict->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1100,6 +1093,7 @@ struct seal_of_truth_proc_t : public paladin_attack_t
   seal_of_truth_proc_t( paladin_t* p ) :
     paladin_attack_t( "seal_of_truth", p, SCHOOL_HOLY )
   {
+    id = 42463;
     background  = true;
     proc        = true;
     may_miss    = false;
@@ -1107,8 +1101,7 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     may_parry   = false;
     trigger_gcd = 0;
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.18;
+    parse_data(p->player_data);
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
     base_multiplier *= ( 1.0 + p -> talents.seals_of_the_pure->rank() * 0.06 )
@@ -1185,7 +1178,6 @@ struct judgement_t : public paladin_attack_t
       paladin_attack_t( "judgement", p, SCHOOL_HOLY )
   {
     id = p->spells.judgement->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1339,7 +1331,6 @@ struct avenging_wrath_t : public paladin_spell_t
       paladin_spell_t( "avenging_wrath", p )
   {
     id = p->spells.avenging_wrath->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1411,7 +1402,6 @@ struct consecration_t : public paladin_spell_t
       paladin_spell_t( "consecration", p )
   {
     id = p->spells.consecration->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1453,7 +1443,6 @@ struct divine_favor_t : public paladin_spell_t
     check_talent( p -> talents.divine_favor->rank() );
 
     id = p->spells.divine_favor->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1484,7 +1473,6 @@ struct divine_plea_t : public paladin_spell_t
       paladin_spell_t( "divine_plea", p )
   {
     id = p->spells.divine_plea->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1523,7 +1511,6 @@ struct exorcism_t : public paladin_spell_t
     paladin_spell_t( "exorcism", p ), art_of_war(0), undead_demon(0)
   {
     id        = p -> spells.exorcism->spell_id();
-    effect_nr = 1;
     option_t options[] =
     {
       { "art_of_war",   OPT_BOOL, &art_of_war   },
@@ -1634,7 +1621,6 @@ struct holy_shock_t : public paladin_spell_t
       paladin_spell_t( "holy_shock", p )
   {
     id = p->spells.holy_shock->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1645,13 +1631,11 @@ struct holy_shock_t : public paladin_spell_t
     // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
     // to do damage is 25912
     id = 25912;
-    effect_nr = 1;
-    parse_effect_data(p->player_data);
+    parse_effect_data(p->player_data, 1);
     id = p->spells.holy_shock->spell_id();
-    effect_nr = 0;
 
     base_multiplier *= 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1)
-                           + 0.01 * p->talents.crusade->effect_base_value(1); // TODO how do they stack?
+                           + 0.01 * p->talents.crusade->effect_base_value(2); // TODO how do they stack?
     base_crit       +=       0.01 * p->talents.rule_of_law->effect_base_value(1);
 
     if ( p -> glyphs.holy_shock ) base_crit += 0.05;
@@ -1676,7 +1660,6 @@ struct holy_wrath_t : public paladin_spell_t
       paladin_spell_t( "holy_wrath", p )
   {
     id = p->spells.holy_wrath->spell_id();
-    effect_nr = 1;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1704,7 +1687,6 @@ struct inquisition_t : public paladin_spell_t
   {
     assert(p->spells.inquisition->ok());
     id = p->spells.inquisition->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1749,7 +1731,6 @@ struct zealotry_t : public paladin_spell_t
     check_talent( p -> talents.zealotry->rank() );
 
     id = p->spells.zealotry->spell_id();
-    effect_nr = 0;
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1834,6 +1815,7 @@ void paladin_t::init_race()
   case RACE_DWARF:
   case RACE_DRAENEI:
   case RACE_BLOOD_ELF:
+  case RACE_TAUREN:
     break;
   default:
     race = RACE_DWARF;
@@ -1852,8 +1834,9 @@ void paladin_t::init_base()
   initial_attack_power_per_strength = 2.0;
   initial_attack_power_per_agility  = 0.0;
 
-  initial_spell_power_per_intellect = 0; // TODO
+  initial_spell_power_per_intellect = 1;
   
+  base_spell_power  = 0;
   base_attack_power = ( level * 3 ) - 20;
 
   // FIXME! Level-specific!
@@ -1869,25 +1852,20 @@ void paladin_t::init_base()
   health_per_stamina = 10;
   mana_per_intellect = 15;
 
-  double plate_spec = 1.0 + 0.01 * passives.plate_specialization->effect_base_value(1);
-
   switch ( primary_tree() )
   {
   case TREE_HOLY:
     base_attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
     base_spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= plate_spec; // assume plate spec active
     break;
 
   case TREE_PROTECTION:
     tank = 1;
-    attribute_multiplier_initial[ ATTR_STAMINA   ] *= plate_spec; // assume plate spec active
     attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + 0.01 * passives.touched_by_the_light->effect_base_value(3);
     base_spell_hit += 0.01 * passives.judgements_of_the_wise->effect_base_value(3);
     break;
 
   case TREE_RETRIBUTION:
-    attribute_multiplier_initial[ ATTR_STRENGTH  ] *= plate_spec; // assume plate spec active
     base_spell_hit += 0.01 * passives.sheath_of_light->effect_base_value(3);
     break;
   default: break;
@@ -2288,19 +2266,20 @@ double paladin_t::composite_tank_block() SC_CONST
 
 double paladin_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
+  double mult = 0.01 * passives.plate_specialization->effect_base_value(1);
   switch ( primary_tree() )
   {
   case TREE_PROTECTION:
     if ( attr == ATTR_STAMINA )
-      return 0.05;
+      return mult;
     break;
   case TREE_RETRIBUTION:
     if ( attr == ATTR_STRENGTH )
-      return 0.05;
+      return mult;
     break;
   case TREE_HOLY:
     if ( attr == ATTR_INTELLECT )
-      return 0.05;
+      return mult;
     break;
   default: 
     break;
@@ -2493,8 +2472,8 @@ double paladin_t::get_divine_bulwark() SC_CONST
 {
   if ( primary_tree() != TREE_PROTECTION ) return 0.0;
 
-  // block rating, 2% per point of mastery
-  return composite_mastery() * 0.02;
+  // block rating, 2.25% per point of mastery
+  return composite_mastery() * 0.0225;
 }
 
 // paladin_t::get_hand_of_light ==============================================
