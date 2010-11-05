@@ -437,7 +437,7 @@ bool http_t::download( std::string& result,
   }
 
   // Moved, redo query
-  if ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
+  while ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
   {
     std::string::size_type pos_location = result.find( "Location: " );
     if ( pos_location == result.npos ) return false;
@@ -635,7 +635,7 @@ bool http_t::download( std::string& result,
   ::close( s );
 
   // Moved, redo query
-  if ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
+  while ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
   {
     std::string::size_type pos_location = result.find( "Location: " );
     if ( pos_location == result.npos ) return false;
