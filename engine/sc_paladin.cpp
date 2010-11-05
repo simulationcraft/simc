@@ -2301,6 +2301,7 @@ double paladin_t::composite_attribute_multiplier( int attr ) SC_CONST
   {
     m *= 1.0 + 0.01 * buffs_ancient_power->stack();
   }
+  return m;
 }
 
 // paladin_t::composite_spell_power ==========================================
