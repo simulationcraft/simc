@@ -9,14 +9,12 @@
 // ==========================================================================
 //
 // TODO:
-//   * Simultaneous MH+OH should only consume 1 flurry charge.
-//   * If Flurry drops due to an MH attack with an OH attack at the same
-//     time, the next OH attack should still benefit from Flurry.
+//   * Flurry haste should be applied to swings in progress. Other haste
+//     gains?  Probably not significant as they don't come and go.
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
 //   * Go through all of Deep Wounds and figure out what's going on.
 //     * Is it working right?
 //     * Why is the stats output fubar?
-//     * Test when exactly the ticks occur?
 //   * Recheck overrides of mined spell data.
 //   * Measure and implement the formula for rage from damage taken 
 //     (n.b., based on percentage of HP for unmitigated hit size).
