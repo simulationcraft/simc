@@ -577,6 +577,7 @@ bool http_t::download( std::string& result,
   std::string host;
   std::string path;
   short port;
+  int redirect = 0, redirect_max = 5;
 
   if ( ! parse_url( host, path, port, url.c_str() ) ) return false;
 
@@ -635,7 +636,7 @@ bool http_t::download( std::string& result,
   ::close( s );
 
   // Moved, redo query
-  while ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
+  while ( ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos ) && ( redirect < redirect_max ) )
   {
     std::string::size_type pos_location = result.find( "Location: " );
     if ( pos_location == result.npos ) return false;
@@ -695,6 +696,8 @@ bool http_t::download( std::string& result,
     }
 
     ::close( s );
+    
+    redirect++;
   }
   
   std::string::size_type pos = result.find( "\r\n\r\n" );
