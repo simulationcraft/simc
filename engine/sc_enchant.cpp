@@ -129,7 +129,7 @@ static enchant_data_t enchant_db[] =
   { "3608",  "+40 Ranged Critical Strike",                                "40Crit"                         },
   { "3607",  "+40 Ranged Haste Rating",                                   "40Haste"                        },
   { "3606",  "Nitro Boosts",                                              "24Crit"                         },
-  { "3605",  "Flexweave Underlay",                                        "23Agi"                          },
+  { "3605",  "Flexweave Underlay",                                        ""                               },
   { "3604",  "Hyperspeed Accelerators",                                   "hyperspeed_accelerators"        },
   { "3603",  "Hand-Mounted Pyro Rocket",                                  "hand_mounted_pyro_rocket"       },
   { "3601",  "Belt-Clipped Spynoculars",                                  ""                               },

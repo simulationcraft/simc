@@ -41,9 +41,12 @@
 // Priest
 // ==========================================================================
 
+struct shadow_orb_buff_t;
+
 struct priest_t : public player_t
 {
   // Buffs
+  buff_t* buffs_empowered_shadow;
   buff_t* buffs_inner_fire;
   buff_t* buffs_inner_fire_armor;
   buff_t* buffs_inner_will;
@@ -52,7 +55,7 @@ struct priest_t : public player_t
   buff_t* buffs_mind_melt;
   buff_t* buffs_dark_evangelism;
   buff_t* buffs_holy_evangelism;
-  buff_t* buffs_shadow_orb;
+  shadow_orb_buff_t* buffs_shadow_orb;
   buff_t* buffs_dark_archangel;
   buff_t* buffs_holy_archangel;
   buff_t* buffs_chakra_pre;
@@ -112,7 +115,9 @@ struct priest_t : public player_t
     passive_spell_t* meditation_holy;
     passive_spell_t* meditation_disc;
     
-    mastery_t*       shadow_orbs;
+    mastery_t*       shadow_orb_power;
+    passive_spell_t* empowered_shadow;
+    passive_spell_t* shadow_orbs;
     passive_spell_t* dark_evangelism_1;
     passive_spell_t* dark_evangelism_2;
     passive_spell_t* holy_evangelism_1;
@@ -353,6 +358,34 @@ struct priest_t : public player_t
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
+};
+
+struct shadow_orb_buff_t : public buff_t
+{
+  double value;
+
+  shadow_orb_buff_t( player_t* p, const std::string& name,
+          int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+          double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 ) :
+    buff_t( p, name, max_stack, buff_duration, buff_cooldown, chance, quiet, reverse, rng_type, aura_id ), value( 0.0 )
+  {
+    priest_t* pp = player -> cast_priest();
+
+    value = pp -> passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
+  }
+
+  virtual void aura_loss()
+  {
+    buff_t::aura_loss();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> sim -> P403 )
+    {
+      p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() * value );
+    }
+  }
+
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -865,6 +898,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     if ( ! p -> bugs )
     {
       m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+      m += p -> buffs_empowered_shadow -> value();
     }
 
     player_multiplier *= m;
@@ -931,7 +965,8 @@ struct devouring_plague_t : public priest_spell_t
 
     priest_spell_t::player_buff();
     
-    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
+                               p -> buffs_empowered_shadow -> value();
   }
 
   virtual void tick()
@@ -1297,6 +1332,7 @@ struct mind_flay_t : public priest_spell_t
 
     m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     m += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+    m += p -> buffs_empowered_shadow -> value();
 
     player_multiplier *= m;
 
@@ -1752,6 +1788,7 @@ struct shadow_word_pain_t : public priest_spell_t
     m += p -> constants.improved_shadow_word_pain_value;
     m += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
     m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+    m += p -> buffs_empowered_shadow -> value();
 
     player_multiplier *= m;
   }
@@ -1957,7 +1994,8 @@ struct vampiric_touch_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
+                               p -> buffs_empowered_shadow -> value();
   }
 };
 
@@ -2649,7 +2687,16 @@ void priest_t::init_spells()
   passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation" ); //           done: talent function 12803
 
   // Shadow Mastery
-  passive_spells.shadow_orbs          = new mastery_t( this, "shadow_orbs", "Shadow Orbs", TREE_SHADOW );
+  if ( sim -> P403 )
+  {
+    passive_spells.shadow_orb_power   = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
+    passive_spells.shadow_orbs        = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
+    passive_spells.empowered_shadow   = new passive_spell_t( this, "empowered_shadow", 95799 );
+  }
+  else
+  {
+    passive_spells.shadow_orb_power   = new mastery_t( this, "shadow_orbs", "Shadow Orbs", TREE_SHADOW );
+  }
 
   active_spells.penance               = new active_spell_t( this, "penance", "Penance" );
   active_spells.chastise              = new active_spell_t( this, "holy_word_chastise", "Holy Word: Chastise" );     // incomplete
@@ -2699,6 +2746,14 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  if ( sim -> P403 )
+  {
+    buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
+  }
+  else
+  {
+    buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1                           );
+  }
   buffs_inner_fire                 = new buff_t( this, "inner_fire"                                              );
   buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
   buffs_inner_will                 = new buff_t( this, "inner_will"                                              );
@@ -2706,7 +2761,6 @@ void priest_t::init_buffs()
   buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
   buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 15.0, 0, 1.0             );
   buffs_holy_evangelism            = new buff_t( this, "holy_evangelism",            5, 15.0, 0, 1.0             );
-  buffs_shadow_orb                 = new buff_t( this, "shadow_orb",                 3, 60.0                     );
   buffs_dark_archangel             = new buff_t( this, "dark_archangel",             5, 18.0                     );
   buffs_holy_archangel             = new buff_t( this, "holy_archangel",             5, 18.0                     );
   buffs_chakra_pre                 = new buff_t( this, "chakra_pre",                 1                           );
@@ -2716,6 +2770,8 @@ void priest_t::init_buffs()
   buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
   buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
   buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
+
+  buffs_shadow_orb                 = new shadow_orb_buff_t( this, "shadow_orb",      3, 60.0                     );
 }
 
 // priest_t::init_actions =====================================================
@@ -2889,9 +2945,15 @@ void priest_t::init_values()
   // Shadow Core
   constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
   constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
-  constants.shadow_orb_proc_value           = passive_spells.shadow_orbs        -> proc_chance();
-  constants.shadow_orb_damage_value         = passive_spells.shadow_orbs        -> effect_coeff( 1 ) / 12.5;
-  constants.shadow_orb_mastery_value        = passive_spells.shadow_orbs        -> effect_base_value( 2 )/ 10000.0;
+  constants.shadow_orb_proc_value           = passive_spells.shadow_orb_power   -> proc_chance();
+  if ( sim -> P403 )
+  {
+    constants.shadow_orb_mastery_value        = passive_spells.shadow_orbs       -> effect_base_value( 2 )/ 10000.0;
+  }
+  else
+  {
+    constants.shadow_orb_mastery_value        = passive_spells.shadow_orb_power  -> effect_base_value( 2 )/ 10000.0;
+  }
 
   // Shadow
   constants.darkness_value                  = 1.0 / ( 1.0 + talents.darkness    -> effect_base_value( 1 ) / 100.0 );
