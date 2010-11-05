@@ -9,7 +9,7 @@
 // ==========================================================================
 //
 // TODO:
-//   * Simultaneous MH+OH shuold only consume 1 flurry charge.
+//   * Simultaneous MH+OH should only consume 1 flurry charge.
 //   * If Flurry drops due to an MH attack with an OH attack at the same
 //     time, the next OH attack should still benefit from Flurry.
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
@@ -17,8 +17,9 @@
 //     * Is it working right?
 //     * Why is the stats output fubar?
 //     * Test when exactly the ticks occur?
-//   * Reconsider the use of the mined client spell data which gets stale fast.
-//   * Find and implement the formula for rage from damage taken.
+//   * Recheck overrides of mined spell data.
+//   * Measure and implement the formula for rage from damage taken 
+//     (n.b., based on percentage of HP for unmitigated hit size).
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
@@ -27,10 +28,7 @@
 //   * Check normalize_weapon_speed for correctness everywhere.
 //   * Check that the way Colossus Smash is decreasing armor is right;
 //     Armor stuff has been pretty funky before, don't trust it.
-//   * Is the Recklessness decrement in the right place?  Could it be
-//     consumed by a shout or other non-harmful special?
 //   * Can you cancel Inner Rage?
-//   * Put check_spec() into other spec abilities same as Bloodthirst has?
 //   * Sanity check init_buffs() wrt durations and chances.
 //   * Fix the default action lists to be more realistic.
 //   * Arms.
@@ -710,7 +708,7 @@ void warrior_attack_t::consume_resource()
 
   attack_t::consume_resource();
 
-  if ( special && p -> buffs_recklessness -> check() )
+  if ( special && ! background && p -> buffs_recklessness -> check() )
   {
     p -> buffs_recklessness -> decrement();
   }
