@@ -49,6 +49,7 @@ struct paladin_t : public player_t
   buff_t* buffs_judgements_of_the_wise; // cataclysm
   buff_t* buffs_judgements_of_the_bold; // cataclysm
   buff_t* buffs_hand_of_light; // cataclysm
+  buff_t* buffs_ancient_power;
 
   // Gains
   gain_t* gains_divine_plea;
@@ -87,6 +88,7 @@ struct paladin_t : public player_t
     active_spell_t* divine_storm;
     active_spell_t* exorcism;
     active_spell_t* guardian_of_ancient_kings;
+    active_spell_t* guardian_of_ancient_kings_ret;
     active_spell_t* hammer_of_justice;
     active_spell_t* hammer_of_the_righteous;
     active_spell_t* hammer_of_wrath;
@@ -221,6 +223,7 @@ struct paladin_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual void      interrupt();
+  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -234,6 +237,8 @@ struct paladin_t : public player_t
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
+  virtual pet_t*    create_pet    ( const std::string& name );
+  virtual void      create_pets   ();
 
   bool              has_holy_power(int power_needed=1) SC_CONST;
   int               holy_power_stacks() SC_CONST;
@@ -274,6 +279,23 @@ static void trigger_hand_of_light( action_t* a )
     p -> buffs_hand_of_light -> trigger();
   }
 }
+
+// Retribution guardian of ancient kings pet
+// TODO: melee attack
+struct guardian_of_ancient_kings_ret_t : public pet_t
+{
+  guardian_of_ancient_kings_ret_t(sim_t *sim, paladin_t *p)
+    : pet_t( sim, p, "guardian_of_ancient_kings", true )
+  {
+  }
+
+  virtual void dismiss()
+  {
+    pet_t::dismiss();
+    owner->cast_paladin()->buffs_ancient_power->expire();
+    // TODO: explosion damage
+  }
+};
 
 // =========================================================================
 // Paladin Attacks
@@ -1506,6 +1528,7 @@ struct exorcism_t : public paladin_spell_t
   int art_of_war;
   int undead_demon;
   double saved_multiplier;
+  double blazing_light_multiplier;
 
   exorcism_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "exorcism", p ), art_of_war(0), undead_demon(0)
@@ -1524,7 +1547,7 @@ struct exorcism_t : public paladin_spell_t
     weapon            = &p->main_hand_weapon;
     weapon_multiplier = 0.0;
 
-    base_multiplier *= 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1);
+    blazing_light_multiplier = 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1);
 
     holy_power_chance = p->talents.divine_purpose->proc_chance();
 	  
@@ -1560,9 +1583,15 @@ struct exorcism_t : public paladin_spell_t
     paladin_spell_t::player_buff();
     paladin_t* p = player->cast_paladin();
     saved_multiplier = player_multiplier;
+    // blazing light should really be a base_multiplier, but since the DoT doesn't benefit from it
+    // and art of war and blazing light stack additively, we're doing it here instead. Hooray.
     if ( p->buffs_the_art_of_war->up() )
     {
-      player_multiplier *= 2.0;
+      player_multiplier *= (blazing_light_multiplier + 1);
+    }
+    else
+    {
+      player_multiplier *= blazing_light_multiplier;
     }
     int target_race = sim -> target -> race;
     if ( target_race == RACE_UNDEAD ||
@@ -1605,8 +1634,8 @@ struct exorcism_t : public paladin_spell_t
 
   virtual void tick()
   {
-    // Since the glyph DoT doesn't benefit from the AoW multiplier, we save it in player_buff()
-    // and restore it here. Rather hackish.
+    // Since the glyph DoT doesn't benefit from the AoW and blazing light multipliers,
+    // we save it in player_buff() and restore it here. Rather hackish.
     player_multiplier = saved_multiplier;
     paladin_spell_t::tick();
   }
@@ -1759,6 +1788,31 @@ struct zealotry_t : public paladin_spell_t
   }
 };
 
+struct guardian_of_ancient_kings_t : public paladin_spell_t
+{
+  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str ) :
+      paladin_spell_t( "guardian_of_ancient_kings", p )
+  {
+    assert(p->primary_tree() == TREE_RETRIBUTION);
+    id = p->spells.guardian_of_ancient_kings->spell_id();
+    option_t options[] = 
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    parse_data(p->player_data);
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    p->summon_pet("guardian_of_ancient_kings", p->spells.guardian_of_ancient_kings_ret->duration());
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1794,6 +1848,8 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "inquisition"             ) return new inquisition_t( this, options_str );
   if ( name == "zealotry"                ) return new zealotry_t( this, options_str );
   if ( name == "templars_verdict"        ) return new templars_verdict_t( this, options_str );
+
+  if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
 
 //if ( name == "aura_mastery"            ) return new aura_mastery_t           ( this, options_str );
 //if ( name == "blessings"               ) return new blessings_t              ( this, options_str );
@@ -2089,6 +2145,7 @@ void paladin_t::init_buffs()
   buffs_judgements_of_the_wise = new buff_t( this, "judgements_of_the_wise", 1, spells.judgements_of_the_wise->duration() );
   buffs_judgements_of_the_bold = new buff_t( this, "judgements_of_the_bold", 1, spells.judgements_of_the_bold->duration() );
   buffs_hand_of_light          = new buff_t( this, "hand_of_light", 1, player_data.spell_duration( passives.hand_of_light->effect_trigger_spell(1) ) );
+  buffs_ancient_power          = new buff_t( this, "ancient_power", -1 );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2186,7 +2243,8 @@ void paladin_t::init_spells()
   spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
   spells.divine_storm              = new active_spell_t( this, "divine_storm", "Divine Storm", talents.divine_storm );
   spells.exorcism                  = new active_spell_t( this, "exorcism", "Exorcism" );
-  spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", "Guardian of Ancient Kings" );
+  spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", 86150 );
+  spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
   spells.hammer_of_justice         = new active_spell_t( this, "hammer_of_justice", "Hammer of Justice" );
   spells.hammer_of_the_righteous   = new active_spell_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
   spells.hammer_of_wrath           = new active_spell_t( this, "hammer_of_wrath", "Hammer of Wrath" );
@@ -2232,6 +2290,17 @@ talent_tab_name paladin_t::primary_tab() SC_CONST
     return PALADIN_RETRIBUTION;
   else
     return TALENT_TAB_NONE;
+}
+
+// paladin_t::composite_attribute_multiplier =================================
+
+double paladin_t::composite_attribute_multiplier( int attr ) SC_CONST
+{
+  double m = player_t::composite_attribute_multiplier(attr);
+  if ( attr == ATTR_STRENGTH && buffs_ancient_power->check() )
+  {
+    m *= 1.0 + 0.01 * buffs_ancient_power->stack();
+  }
 }
 
 // paladin_t::composite_spell_power ==========================================
@@ -2441,10 +2510,33 @@ std::vector<option_t>& paladin_t::get_options()
 
 cooldown_t* paladin_t::get_cooldown( const std::string& name )
 {
-  if ( name == "crusader_strike"         ) return player_t::get_cooldown( "cs_hotr" );
-  if ( name == "hammer_of_the_righteous" ) return player_t::get_cooldown( "cs_hotr" );
+  if ( name == "hammer_of_the_righteous" ) return player_t::get_cooldown( "crusader_strike" );
+  if ( name == "divine_storm"            ) return player_t::get_cooldown( "crusader_strike" );
 
   return player_t::get_cooldown( name );
+}
+
+// paladin_t::create_pet =====================================================
+
+pet_t* paladin_t::create_pet( const std::string& name )
+{
+  pet_t* p = find_pet(name);
+  if (p) return p;
+  if (name == "guardian_of_ancient_kings_ret")
+  {
+    return new guardian_of_ancient_kings_ret_t(sim, this);
+  }
+  return 0;
+}
+
+// paladin_t::create_pets ====================================================
+
+// FIXME: Not possible to check spec at this point, but in the future when all
+// three versions of the guardian are implemented, it would be fugly to have to
+// give them different names just for the lookup
+void paladin_t::create_pets()
+{
+  create_pet("guardian_of_ancient_kings_ret");
 }
 
 // paladin_t::has_holy_power =================================================
