@@ -32,6 +32,7 @@ struct paladin_t : public player_t
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
   action_t* active_seal_of_truth_dot;
+  action_t* ancient_fury_explosion;
 
   // Buffs
   buff_t* buffs_avenging_wrath;
@@ -61,7 +62,7 @@ struct paladin_t : public player_t
   // Procs
   proc_t* procs_parry_haste;
 
-  // Random Number Generation
+  pet_t* guardian_of_ancient_kings;
 
   struct passives_t
   {
@@ -89,6 +90,7 @@ struct paladin_t : public player_t
     active_spell_t* exorcism;
     active_spell_t* guardian_of_ancient_kings;
     active_spell_t* guardian_of_ancient_kings_ret;
+    active_spell_t* ancient_fury;
     active_spell_t* hammer_of_justice;
     active_spell_t* hammer_of_the_righteous;
     active_spell_t* hammer_of_wrath;
@@ -284,16 +286,61 @@ static void trigger_hand_of_light( action_t* a )
 // TODO: melee attack
 struct guardian_of_ancient_kings_ret_t : public pet_t
 {
+  attack_t* melee;
+
+  struct melee_t : public attack_t
+  {
+    paladin_t* owner;
+
+    melee_t(player_t *p)
+      : attack_t("melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL)
+    {
+      weapon = &(p->main_hand_weapon);
+      base_execute_time = weapon -> swing_time;
+      weapon_multiplier = 1.0;
+      background = true;
+      repeating  = true;
+      trigger_gcd = 0;
+      base_cost   = 0;
+
+      owner = p->cast_pet()->owner->cast_paladin();
+    }
+
+    virtual void execute()
+    {
+      attack_t::execute();
+      if (result_is_hit())
+      {
+        owner->buffs_ancient_power->trigger();
+      }
+    }
+  };
+
   guardian_of_ancient_kings_ret_t(sim_t *sim, paladin_t *p)
     : pet_t( sim, p, "guardian_of_ancient_kings", true )
   {
+    main_hand_weapon.type = WEAPON_BEAST;
+    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.min_dmg = 5500; // TODO
+    main_hand_weapon.max_dmg = 7000; // TODO
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+    melee = new melee_t(this);
   }
 
   virtual void dismiss()
   {
     pet_t::dismiss();
-    owner->cast_paladin()->buffs_ancient_power->expire();
-    // TODO: explosion damage
+    owner->cast_paladin()->ancient_fury_explosion->execute();
+  }
+
+  virtual void schedule_ready( double delta_time=0, bool waiting=false )
+  {
+    pet_t::schedule_ready( delta_time, waiting );
+    if ( ! melee -> execute_event ) melee -> execute();
   }
 };
 
@@ -357,6 +404,12 @@ struct paladin_attack_t : public attack_t
         if ( p -> talents.seals_of_command->rank() )
         {
           p -> active_seals_of_command_proc -> execute();
+        }
+
+        // It seems like it's the seal-triggering attacks that stack up ancient power
+        if (!p->guardian_of_ancient_kings->sleeping)
+        {
+          p->buffs_ancient_power->trigger();
         }
       }
     }
@@ -826,6 +879,32 @@ struct seals_of_command_proc_t : public paladin_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.01 * p->talents.seals_of_command->effect_base_value(1);
+  }
+};
+
+// Ancient Fury =============================================================
+
+struct ancient_fury_t : public paladin_attack_t
+{
+  ancient_fury_t( paladin_t* p ) :
+    paladin_attack_t( "ancient_fury", p, SCHOOL_HOLY, TREE_RETRIBUTION, true, false )
+  {
+    // TODO meteor stuff
+    id = p->spells.ancient_fury->spell_id();
+    parse_data(p->player_data);
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    paladin_attack_t::execute();
+    player->cast_paladin()->buffs_ancient_power->expire();
+  }
+
+  virtual void player_buff()
+  {
+    paladin_attack_t::player_buff();
+    player_multiplier *= player->cast_paladin()->buffs_ancient_power->stack();
   }
 };
 
@@ -1926,6 +2005,8 @@ void paladin_t::init_base()
     break;
   default: break;
   }
+
+  ancient_fury_explosion = new ancient_fury_t(this);
 }
 
 // paladin_t::reset =========================================================
@@ -2245,6 +2326,7 @@ void paladin_t::init_spells()
   spells.exorcism                  = new active_spell_t( this, "exorcism", "Exorcism" );
   spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", 86150 );
   spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
+  spells.ancient_fury              = new active_spell_t( this, "ancient_fury", 86704 );
   spells.hammer_of_justice         = new active_spell_t( this, "hammer_of_justice", "Hammer of Justice" );
   spells.hammer_of_the_righteous   = new active_spell_t( this, "hammer_of_the_righteous", "Hammer of the Righteous", talents.hammer_of_the_righteous );
   spells.hammer_of_wrath           = new active_spell_t( this, "hammer_of_wrath", "Hammer of Wrath" );
@@ -2537,7 +2619,7 @@ pet_t* paladin_t::create_pet( const std::string& name )
 // give them different names just for the lookup
 void paladin_t::create_pets()
 {
-  create_pet("guardian_of_ancient_kings_ret");
+  guardian_of_ancient_kings = create_pet("guardian_of_ancient_kings_ret");
 }
 
 // paladin_t::has_holy_power =================================================
