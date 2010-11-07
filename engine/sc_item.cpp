@@ -484,10 +484,16 @@ bool item_t::decode_enchant()
 {
   if ( encoded_enchant_str == "none" ) return true;
 
-  if( encoded_enchant_str == "berserking"  ||
-      encoded_enchant_str == "executioner" ||
-      encoded_enchant_str == "mongoose"    ||
-      encoded_enchant_str == "spellsurge"  ) 
+  if( encoded_enchant_str == "berserking"       ||
+      encoded_enchant_str == "executioner"      ||
+      encoded_enchant_str == "mongoose"         ||
+      encoded_enchant_str == "avalanche"        ||
+      encoded_enchant_str == "elemental_slayer" ||
+      encoded_enchant_str == "hurricane"        ||
+      encoded_enchant_str == "landslide"        ||
+      encoded_enchant_str == "power_torrent"    ||
+      encoded_enchant_str == "windwalk"         ||
+      encoded_enchant_str == "spellsurge"        )
   {
     unique_enchant = true;
     return true;

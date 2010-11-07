@@ -158,7 +158,7 @@ void target_t::init()
     case 85: initial_armor = 11161; break; // Need real value
     case 86: initial_armor = 11441; break; // Need real value
     case 87: initial_armor = 11682; break;
-    case 88: initial_armor = 12016; break;
+    case 88: initial_armor = 11977; break;
     default: if ( level < 80 )
                initial_armor = (int) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
              break;

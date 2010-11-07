@@ -16,6 +16,7 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4227",  "+130 Agility",                                              "130agi"                         },
   { "4209",  "+60 Agility and 35 Haste rating",                           "60agi_35haste"                  },
   { "4208",  "+60 Strength and 35 Mastery rating",                        "60str_35mastery"                },
   { "4207",  "+60 Intellect and 35 Critical Strike rating",               "60int_35crit"                   },
@@ -48,6 +49,54 @@ static enchant_data_t enchant_db[] =
   { "4111",  "+55 Intellect and +65 Stamina",                             "55int_65sta"                    },
   { "4110",  "+95 Intellect and +55 Spirit",                              "95int_55spi"                    },
   { "4109",  "+55 Intellect and +45 Spirit",                              "55int_45spi"                    },
+  { "4108",  "+65 Haste Rating",                                          "65haste"                        },
+  { "4107",  "+65 Mastery Rating",                                        "65mastery"                      },
+  { "4106",  "+50 Strength",                                              "50str"                          },
+  { "4105",  "+25 Agility and Minor Movement Speed",                      "25agi"                          },
+  { "4104",  "+35 Mastery Rating and Minor Movement Speed",               "35mastery"                      },
+  { "4103",  "+75 Stamina",                                               "75sta"                          },
+  { "4102",  "+20 All Stats",                                             "20str_20agi_20sta_20int_20spi"  },
+  { "4101",  "+65 Critical Strike Rating",                                "65crit"                         },
+  { "4100",  "+65 Critical Strike Rating",                                "65crit"                         },
+  { "4099",  "Landslide",                                                 "landslide"                      },
+  { "4098",  "Windwalk",                                                  "windwalk"                       },
+  { "4097",  "Power Torrent",                                             "power_torrent"                  },
+  { "4096",  "+50 Intellect",                                             "50int"                          },
+  { "4095",  "+50 Expertise Rating",                                      "50exp"                          },
+  { "4094",  "+50 Mastery Rating",                                        "50mastery"                      },
+  { "4093",  "+50 Spirit",                                                "50spi"                          },
+  { "4092",  "+50 Hit Rating",                                            "50hit"                          },
+  { "4091",  "+100 Intellect",                                            "100int"                         },
+  { "4090",  "+250 Armor",                                                "250Barmor"                      },
+  { "4089",  "+50 Hit Rating",                                            "50hit"                          },
+  { "4088",  "+40 Spirit",                                                "40spi"                          },
+  { "4087",  "+50 Critical Strike Rating",                                "50crit"                         },
+  { "4086",  "+50 Dodge Rating",                                          "50dodge"                        },
+  { "4085",  "+40 Block Rating",                                          ""                               },
+  { "4084",  "Heartsong",                                                 "heartsong"                      },
+  { "4083",  "Hurricane",                                                 "hurricane"                      },
+  { "4082",  "+50 Expertise Rating",                                      "50exp"                          },
+  { "4081",  "+60 Stamina",                                               "60sta"                          },
+  { "4080",  "+40 Intellect",                                             "40int"                          },
+  { "4079",  "+40 Agility",                                               "40agi"                          },
+  { "4078",  "+40 Strength",                                              "40str"                          },
+  { "4077",  "+40 Resilience Rating",                                     "40resil"                        },
+  { "4076",  "+35 Agility",                                               "35agi"                          },
+  { "4075",  "+35 Strength",                                              "35str"                          },
+  { "4074",  "Elemental Slayer",                                          "elemental_slayer"               },
+  { "4073",  "+160 Armor",                                                "160Barmor"                      },
+  { "4072",  "+30 Intellect",                                             "30int"                          },
+  { "4071",  "+50 Critical Strike Rating",                                "50crit"                         },
+  { "4070",  "+55 Stamina",                                               "55sta"                          },
+  { "4069",  "+50 Haste Rating",                                          "50haste"                        },
+  { "4068",  "+50 Haste Rating",                                          "50haste"                        },
+  { "4067",  "Avalanche",                                                 "avalanche"                      },
+  { "4066",  "Mending",                                                   ""                               },
+  { "4065",  "+50 Haste Rating",                                          "50haste"                        },
+  { "4064",  "+70 Spell Penetration",                                     "70spen"                         },
+  { "4063",  "+15 All Stats",                                             "15str_15agi_15sta_15int_15spi"  },
+  { "4062",  "+30 Stamina and Minor Movement Speed",                      "30sta"                          },
+  { "4061",  "+50 Mastery",                                               "50mastery"                      },
   { "3878",  "Mind Amplification Dish",                                   ""                               },
   { "3876",  "Inscription of the Pinnacle",                               "15Dodge_10Def"                  },
   { "3875",  "+30 Attack Power and +10 Crit Rating",                      "30AP_10Crit"                    },
@@ -605,6 +654,107 @@ struct executioner_callback_t : public action_callback_t
   }
 };
 
+
+// Hurricane Enchant =========================================================
+
+struct hurricane_callback_t : public action_callback_t
+{
+  int slot;
+  buff_t* buff;
+
+  hurricane_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+
+  virtual void trigger( action_t* a )
+  {
+    if ( ! a -> weapon ) 
+      return;
+
+    if ( a -> weapon -> slot != slot ) 
+      return;
+
+    // TO-DO: Verify proc chance and ICD.
+    double chance = 0.15;
+
+    buff -> trigger( 1, 0, chance );
+    buff -> up();  // track uptime info
+  }
+};
+
+// Landslide Enchant =========================================================
+
+struct landslide_callback_t : public action_callback_t
+{
+  int slot;
+  buff_t* buff;
+
+  landslide_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+
+  virtual void trigger( action_t* a )
+  {
+    if ( ! a -> weapon ) 
+      return;
+
+    if ( a -> weapon -> slot != slot ) 
+      return;
+
+    // TO-DO: Verify proc chance and ICD.
+    double chance = 0.15;
+
+    buff -> trigger( 1, 0, chance );
+    buff -> up();  // track uptime info
+  }
+};
+
+// Power Torrent Enchant =========================================================
+
+struct power_torrent_callback_t : public action_callback_t
+{
+  int slot;
+  buff_t* buff;
+
+  power_torrent_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+
+  virtual void trigger( action_t* a )
+  {
+    if ( ! a -> weapon ) 
+      return;
+
+    if ( a -> weapon -> slot != slot ) 
+      return;
+
+    // TO-DO: Verify proc chance and ICD.
+    double chance = 0.35;
+
+    buff -> trigger( 1, 0, chance );
+    buff -> up();  // track uptime info
+  }
+};
+
+// Windwalk Enchant =========================================================
+
+struct windwalk_callback_t : public action_callback_t
+{
+  int slot;
+  buff_t* buff;
+
+  windwalk_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+
+  virtual void trigger( action_t* a )
+  {
+    if ( ! a -> weapon ) 
+      return;
+
+    if ( a -> weapon -> slot != slot ) 
+      return;
+
+    // TO-DO: Verify proc chance and ICD.
+    double chance = 0.15;
+
+    buff -> trigger( 1, 0, chance );
+    buff -> up();  // track uptime info
+  }
+};
+
 // ==========================================================================
 // Enchant
 // ==========================================================================
@@ -634,6 +784,14 @@ void enchant_t::init( player_t* p )
 
     p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_OFF_HAND, buff ) );
   }
+  if ( mh_enchant == "elemental_slayer" )
+  {
+    // TO-DO
+  }
+  if ( oh_enchant == "elemental_slayer" )
+  {
+    // TO-DO
+  }
   if ( mh_enchant == "executioner" || oh_enchant == "executioner" )
   {
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
@@ -649,6 +807,28 @@ void enchant_t::init( player_t* p )
       p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p, SLOT_OFF_HAND, buff ) );
     }
   }
+  if ( mh_enchant == "hurricane" )
+  {
+    buff_t* buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_MAIN_HAND, buff ) );
+  }
+  if ( oh_enchant == "hurricane" )
+  {
+    buff_t* buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_OFF_HAND, buff ) );
+    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_OFF_HAND, buff ) );
+  }
+  if ( mh_enchant == "landslide" )
+  {
+    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new landslide_callback_t( p, SLOT_MAIN_HAND, buff ) );
+  }
+  if ( oh_enchant == "landslide" )
+  {
+    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new landslide_callback_t( p, SLOT_OFF_HAND, buff ) );
+  }
   if ( mh_enchant == "mongoose" )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p, SLOT_MAIN_HAND, p -> buffs.mongoose_mh ) );
@@ -657,10 +837,30 @@ void enchant_t::init( player_t* p )
   {
     p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p, SLOT_OFF_HAND, p -> buffs.mongoose_oh ) );
   }
+  if ( mh_enchant == "power_torrent" )
+  {
+    buff_t* buff = new stat_buff_t( p, "power_torrent_mh", STAT_INTELLECT, 500, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_MAIN_HAND, buff ) );
+  }
+  if ( oh_enchant == "power_torrent" )
+  {
+    buff_t* buff = new stat_buff_t( p, "power_torrent_oh", STAT_INTELLECT, 500, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_OFF_HAND, buff ) );
+  }
   if ( mh_enchant == "spellsurge" || 
        oh_enchant == "spellsurge" )
   {
     p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
+  }
+  if ( mh_enchant == "windwalk" )
+  {
+    buff_t* buff = new stat_buff_t( p, "windwalk_mh", STAT_DODGE_RATING, 600, 1, 10, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new windwalk_callback_t( p, SLOT_MAIN_HAND, buff ) );
+  }
+  if ( oh_enchant == "windwalk" )
+  {
+    buff_t* buff = new stat_buff_t( p, "windwalk_oh", STAT_DODGE_RATING, 600, 1, 10, 45, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new windwalk_callback_t( p, SLOT_OFF_HAND, buff ) );
   }
 
   int num_items = ( int ) p -> items.size();

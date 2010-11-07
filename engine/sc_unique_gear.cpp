@@ -674,6 +674,17 @@ static void register_tiny_abom( item_t* item )
   p -> register_direct_damage_callback( -1, new tiny_abom_trigger_t( p, buff ) );
 }
 
+#if 0
+// register_heart_of_ignacious =========================================
+
+static void register_heart_of_ignacious( item_t* item )
+{
+// TO-DO
+}
+#endif
+
+
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -707,6 +718,9 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar" ) ) register_tiny_abom              ( &item );
+
+// TO-DO
+//    if ( ! strcmp( item.name(), "heart_of_ignacious"        ) ) register_heart_of_ignacious     ( &item );
   }
 
   if ( p -> set_bonus.spellstrike() )
@@ -896,6 +910,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "fury_of_the_five_flights"            ) e = "OnAttackHit_16AP_20Stack_10Dur";
   else if ( name == "gale_of_shadows"                     ) e = "OnSpellTickDamage_15SP_20Stack_15Dur";
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
+
+  // TO-DO: Implement the On Use part, remove the passive haste..
+  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "302.5haste_OnSpellDirectHit_87SP_5Stack_15Dur" : "267.5haste_OnSpellDirectHit_77SP_5Stack_15Dur" );
   else if ( name == "herkuml_war_token"                   ) e = "OnAttackHit_17AP_20Stack_10Dur";
   else if ( name == "illustration_of_the_dragon_soul"     ) e = "OnSpellCast_20SP_10Stack_10Dur";
   else if ( name == "mark_of_defiance"                    ) e = "OnSpellCastHit_150Mana_15%_15Cd";
@@ -912,6 +929,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "shiffars_nexus_horn"                 ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
   else if ( name == "stump_of_time"                       ) e = "OnSpellCast_1926SP_10%_15Dur_45Cd";
   else if ( name == "sundial_of_the_exiled"               ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
+  else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellDirectHit_2178Mastery_10%_45Cd" : "OnSpellDirectHit_1926Mastery_10%_45Cd" ); // TO-DO: Verify ICD
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellCastHit_132SP_5%_10Dur";
 
   // Some Normal/Heroic items have same name
@@ -938,6 +956,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 
   // Enchants
+  else if ( name == "avalanche"                           ) e = "OnAttackHit_500Nature_15%";
   else if ( name == "lightweave"                          ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
   else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
   else if ( name == "lightweave_2"                        ) e = "OnSpellCast_580Int_20%_15Dur_60Cd";  // TO-DO: Check ICD.

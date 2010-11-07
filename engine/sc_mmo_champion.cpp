@@ -359,15 +359,16 @@ static bool parse_item_name( item_t&            item,
 static bool parse_item_heroic( item_t&     item,
                                xml_node_t* node )
 {
-  std::string heroic_str;
   item.armory_heroic_str = "";
 
-  if ( xml_t::get_value( heroic_str, node, "tti-heroic" ) )
+  std::vector<std::string> descriptions;
+  get_tti_value( descriptions, node, "tti-heroic"  );
+
+  if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_heroic_str = "1";
+    armory_t::format( item.armory_heroic_str );
   }
-
-  armory_t::format( item.armory_heroic_str );
 
   return true;
 }
@@ -379,18 +380,14 @@ static bool parse_item_armor_type( item_t&     item,
 {
   item.armory_armor_type_str = "";
 
-  xml_node_t* subclass_node = xml_t::get_node( node, "tti-subclass" );
+  std::vector<std::string> descriptions;
+  get_tti_value( descriptions, node, "tti-subclass"  );
 
-  if ( subclass_node )
+  if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
-    std::string armor_str;
-    if ( xml_t::get_value( armor_str, subclass_node, "a/." ) )
-    {
-      item.armory_armor_type_str = armor_str;
-    }
+    item.armory_armor_type_str = descriptions[ 0 ];
+    armory_t::format( item.armory_armor_type_str );
   }
-
-  armory_t::format( item.armory_heroic_str );
 
   return true;
 }

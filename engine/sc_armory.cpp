@@ -430,7 +430,13 @@ static bool parse_item_enchant( item_t& item,
 
     if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave_embroidery_2";   }
     else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow_embroidery_2";     }
-    else if ( enchant == "Swordguard Embroidery"      ) { s += "_swordguard_embroidery_2"; }
+    else if ( enchant == "Swordguard Embroidery"    ) { s += "_swordguard_embroidery_2"; }
+    else if ( enchant == "Avalanche"                ) { s += "_avalanche";   }
+    else if ( enchant == "Elemental Slayer"         ) { s += "_elemental_slayer"; }
+    else if ( enchant == "Hurricane"                ) { s += "_hurricane";   }
+    else if ( enchant == "Landslide"                ) { s += "_landslide";   }
+    else if ( enchant == "Power Torrent"            ) { s += "_power_torrent"; }
+    else if ( enchant == "Windwalk"                 ) { s += "_windwalk";    }
     else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_hand_mounted_pyro_rocket";  }
     else if ( enchant == "Berserking"               ) { s += "_berserking";  }
     else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
@@ -472,6 +478,12 @@ static bool parse_item_addon( item_t& item,
     if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave_embroidery_2";   }
     else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow_embroidery_2";     }
     else if ( enchant == "Swordguard Embroidery"    ) { s += "_swordguard_embroidery_2"; }
+    else if ( enchant == "Avalanche"                ) { s += "_avalanche";   }
+    else if ( enchant == "Elemental Slayer"         ) { s += "_elemental_slayer"; }
+    else if ( enchant == "Hurricane"                ) { s += "_hurricane";   }
+    else if ( enchant == "Landslide"                ) { s += "_landslide";   }
+    else if ( enchant == "Power Torrent"            ) { s += "_power_torrent"; }
+    else if ( enchant == "Windwalk"                 ) { s += "_windwalk";    }
     else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_hand_mounted_pyro_rocket";  }
     else if ( enchant == "Berserking"               ) { s += "_berserking";  }
     else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }

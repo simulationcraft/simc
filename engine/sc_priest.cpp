@@ -2780,7 +2780,16 @@ void priest_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=frost_wyrm/food,type=fish_feast/fortitude/inner_fire";
+    if ( sim -> P403 )
+    {
+      action_list_str  = "flask,type=draconic_mind/food,type=basilisk_liverdog";
+    }
+    else
+    {
+      action_list_str  = "flask,type=frost_wyrm/food,type=fish_feast";
+    }
+    
+    action_list_str += "/fortitude/inner_fire";
 
     if ( talents.shadow_form -> rank() ) action_list_str += "/shadow_form";
 
@@ -2800,57 +2809,66 @@ void priest_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_SHADOW:
-                                                     action_list_str += "/wild_magic_potion,if=!in_combat";
-                                                     action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
-      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->s_token;
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->s_token + ",if=!ticking|dot." +
-                                                                              active_spells.shadow_word_pain->s_token + ".remains<gcd+0.5";
-      if ( active_spells.mind_flay -> ok() &&
-           active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.mind_flay->s_token + ",if=dot." +
-                                                                              active_spells.shadow_word_pain->s_token + ".remains<cast_time";
-      if ( race == RACE_TROLL )                      action_list_str += "/berserking";
-      if ( active_spells.vampiric_touch -> ok() )    action_list_str += "/" + active_spells.vampiric_touch->s_token + ",if=!ticking|dot." +
-                                                                              active_spells.vampiric_touch->s_token + ".remains<cast_time+0.5";
-      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->s_token + ",if=!ticking|dot." +
-                                                                              active_spells.devouring_plague->s_token + ".remains<gcd+0.5";
+      if ( sim -> P403 )
+      {
+                                                         action_list_str += "/volcanic_potion,if=!in_combat";
+                                                         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      }
+      else
+      {
+                                                         action_list_str += "/wild_magic_potion,if=!in_combat";
+                                                         action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
+      }
 
-      if ( talents.archangel -> ok() )               action_list_str += "/" + talents.archangel->s_token + ",if=buff.dark_evangelism.stack>=5";
-       if ( active_spells.vampiric_touch -> ok() )   action_list_str += "&dot." + active_spells.vampiric_touch->s_token + ".remains>5";
-       if ( active_spells.devouring_plague -> ok() ) action_list_str += "&dot." + active_spells.devouring_plague->s_token + ".remains>5";
+                                                         action_list_str += "/shadow_fiend";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5";
 
+      if ( race == RACE_TROLL )                          action_list_str += "/berserking";
 
+                                                         action_list_str += "/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd+0.5";
+      if ( talents.vampiric_touch -> rank() )            action_list_str += "/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time+0.5";
+                                                         action_list_str += "/devouring_plague,if=!ticking|dot.devouring_plague.remains<gcd+0.5";
 
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->s_token;
-      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->s_token;
-      if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
-      if ( active_spells.mind_flay -> ok() )         action_list_str += "/" + active_spells.mind_flay->s_token;
-      if ( active_spells.devouring_plague -> ok() )  action_list_str += "/" + active_spells.devouring_plague->s_token + ",moving=1";
-      if ( active_spells.dispersion -> ok() )        action_list_str += "/" + active_spells.dispersion->s_token;
+      if ( talents.archangel -> ok() ) 
+      {              
+                                                         action_list_str += "/dark_archangel,if=buff.dark_evangelism.stack>=5";
+        if ( talents.vampiric_touch -> rank() )          action_list_str += "&dot.vampiric_touch.remains>5";
+                                                         action_list_str += "&dot.devouring_plague.remains>5";
+      }
+
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=3";
+                                                         action_list_str += "/shadow_word_death,health_percentage<=25";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack<=0";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=2";
+      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/mind_flay";
+      if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1";
+                                                         action_list_str += "/shadow_word_death,moving=1";
+      if ( talents.dispersion -> rank() )                action_list_str += "/dispersion";
       break;
     case TREE_DISCIPLINE:
-                                                     action_list_str += "/mana_potion";
-      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->s_token + ",trigger=10000";
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->s_token + ",if=!ticking";
-      if ( active_spells.power_infusion -> ok() )    action_list_str += "/" + active_spells.power_infusion->s_token;
-      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->s_token;
-      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->s_token;
-      if ( active_spells.penance -> ok() )           action_list_str += "/" + active_spells.penance->s_token;
-      if ( race == RACE_TROLL )                      action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
-      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->s_token;
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->s_token + ",moving=1"; // when moving
+                                                         action_list_str += "/mana_potion";
+                                                         action_list_str += "/shadow_fiend,trigger=10000";
+      if ( race == RACE_TROLL )                          action_list_str += "/berserking";
+                                                         action_list_str += "/shadow_word_pain,if=!ticking";
+      if ( talents.power_infusion -> rank() )            action_list_str += "/power_infusion";
+                                                         action_list_str += "/holy_fire";
+                                                         action_list_str += "/penance";
+      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/smite";
+                                                         action_list_str += "/shadow_word_death,moving=1"; // when moving
       break;
     case TREE_HOLY:
     default:
-      action_list_str += "/mana_potion";
-      if ( active_spells.shadow_fiend -> ok() )      action_list_str += "/" + active_spells.shadow_fiend->s_token + ",trigger=10000";
-      if ( active_spells.shadow_word_pain -> ok() )  action_list_str += "/" + active_spells.shadow_word_pain->s_token + ",if=!ticking";
-      if ( active_spells.holy_fire -> ok() )         action_list_str += "/" + active_spells.holy_fire->s_token;
-      if ( active_spells.mind_blast -> ok() )        action_list_str += "/" + active_spells.mind_blast->s_token;
-      if ( race == RACE_TROLL     )                  action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                  action_list_str += "/arcane_torrent";
-      if ( active_spells.smite -> ok() )             action_list_str += "/" + active_spells.smite->s_token;
-      if ( active_spells.shadow_word_death -> ok() ) action_list_str += "/" + active_spells.shadow_word_death->s_token + ",moving=1"; // when moving
+                                                         action_list_str += "/mana_potion";
+                                                         action_list_str += "/shadow_fiend,trigger=10000";
+      if ( race == RACE_TROLL     )                      action_list_str += "/berserking";
+                                                         action_list_str += "/shadow_word_pain,if=!ticking";
+                                                         action_list_str += "/holy_fire";
+      
+      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/smite";
+                                                         action_list_str += "/shadow_word_death,moving=1"; // when moving
       break;
     }
 
