@@ -2247,13 +2247,16 @@ void paladin_t::init_actions()
   active_seal_of_truth_proc         = new seal_of_truth_proc_t        ( this );
   active_seal_of_truth_dot          = new seal_of_truth_dot_t         ( this );
 
-  if ( action_list_str.empty() )
+  if ( action_list_str.empty() && primary_tree() == TREE_RETRIBUTION )
   {
-    action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60/auto_attack";
+    // TODO: new food
+    action_list_str = "flask,type=titanic_strength/food,type=dragonfin_filet/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     action_list_str += "/seal_of_truth";
     action_list_str += "/snapshot_stats";
-    action_list_str += "/hammer_of_justice";
-    if ( talents.holy_shield && tank > 0 ) action_list_str += "/holy_shield";
+    // TODO: action_list_str += "/rebuke";
+
+    // This should<tm> get Censure up before the auto attack lands
+    action_list_str += "/auto_attack/judgement,if=buff.judgements_of_the_pure.down";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -2264,19 +2267,22 @@ void paladin_t::init_actions()
       }
     }
     if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
-    action_list_str += "/avenging_wrath";
-    // action_list_str += "/avengers_shield";
-
-    if ( talents.hammer_of_the_righteous ) action_list_str += "/hammer_of_the_righteous";
-    action_list_str += "/judgement";
-    action_list_str += "/crusader_strike";
-    if ( talents.divine_storm->rank() ) action_list_str += "/divine_storm";
-    action_list_str += "/consecration,if=target.time_to_die>=6";
+    action_list_str += "/guardian_of_ancient_kings";
+    action_list_str += "avenging_wrath,if=buff.zealotry.down";
+    action_list_str += "zealotry,if=buff.avenging_wrath.down";
+    action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<1)&(buff.holy_power.react==3|buff.hand_of_light.react)";
+    action_list_str += "/exorcism,recast=1,if=buff.the_art_of_war.react";
     action_list_str += "/hammer_of_wrath";
-    action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-    // action_list_str += "/holy_shock";
-    if ( main_hand_weapon.group() == WEAPON_1H ) action_list_str += "/shield_of_righteousness";
-    action_list_str += "/divine_plea";
+    // CS before TV if <3 power, even with HoL up
+    action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
+    action_list_str += "/crusader_strike,if=buff.hand_of_light.react&(buff.hand_of_light.remains>2)&(buff.holy_power.react<3)";
+    action_list_str += "/templars_verdict,if=buff.hand_of_light.react";
+    action_list_str += "/crusader_strike";
+    // fillers (todo: consecration)
+    action_list_str += "/judgement";
+    action_list_str += "/holy_wrath";
+    // only divine plea if we're so mana constrained we can't even CS
+    action_list_str += "/divine_plea,if=cooldown.crusader_strike.remains<0";
 
     action_list_default = 1;
   }
@@ -2409,7 +2415,6 @@ double paladin_t::composite_spell_power( const school_type school ) SC_CONST
 double paladin_t::composite_tank_block() SC_CONST
 {
   double b = player_t::composite_tank_block();
-  if ( buffs_holy_shield -> up() ) b += 0.15;
   b += get_divine_bulwark();
   return b;
 }
@@ -2497,37 +2502,6 @@ int paladin_t::target_swing()
 
 std::vector<talent_translation_t>& paladin_t::get_talent_list()
 {
-  /*
-  if(talent_list.empty())
-  {
-	  talent_translation_t translation_table[][MAX_TALENT_TREES] =
-	  {
-    { {  1, 2, &( talent_arbiter_of_the_light->rank()   ) }, {  1, 3, &( talents.protector_of_the_innocent    ) }, {  1, 2, &( talents.eye_for_an_eye             ) } },
-    { {  2, 3, &( talents.divinity                    ) }, {  2, 3, &( talents.seals_of_the_pure            ) }, {  2, 3, &( talents.crusade                    ) } },
-    { {  3, 3, &( talents.judgements_of_the_pure      ) }, {  3, 2, &( talents.improved_hammer_of_justice   ) }, {  3, 2, &( talents.improved_judgement         ) } },
-    { {  4, 3, &( talents.clarity_of_purpose          ) }, {  4, 2, &( talents.judgements_of_the_just       ) }, {  4, 2, &( talents.eternal_glory              ) } },
-    { {  5, 2, &( talents.last_word                   ) }, {  5, 3, &( talents.toughness                    ) }, {  5, 3, &( talents.rule_of_law                ) } },
-    { {  6, 3, &( talents.healing_light               ) }, {  6, 2, &( talents.guardians_favor              ) }, {  6, 2, &( talents.pursuit_of_justice         ) } },
-    { {  7, 3, &( talents.illumination                ) }, {  7, 2, &( talents.hallowed_ground              ) }, {  7, 1, &( talents.communion                  ) } },
-    { {  8, 1, &( talents.divine_favor                ) }, {  8, 3, &( talents.sanctuary                    ) }, {  8, 3, &( talents.the_art_of_war             ) } },
-    { {  9, 2, &( talents.infusion_of_light           ) }, {  9, 1, &( talents.hammer_of_the_righteous      ) }, {  9, 2, &( talents.long_arm_of_the_law        ) } },
-    { { 10, 2, &( talents.enlightened_judgements      ) }, { 10, 2, &( talents.wrath_of_the_lightbringer    ) }, { 10, 1, &( talents.divine_storm               ) } },
-    { { 11, 1, &( talents.beacon_of_light             ) }, { 11, 3, &( talents.reckoning                    ) }, { 11, 1, &( talents.rebuke                     ) } },
-    { { 12, 3, &( talents.speed_of_light              ) }, { 12, 1, &( talents.shield_of_the_righteous      ) }, { 12, 2, &( talents.sanctity_of_battle         ) } },
-    { { 13, 1, &( talents.sacred_cleansing            ) }, { 13, 2, &( talents.grand_crusader               ) }, { 13, 1, &( talents.seals_of_command           ) } },
-    { { 14, 1, &( talents.aura_mastery                ) }, { 14, 1, &( talents.divine_guardian              ) }, { 14, 2, &( talents.divine_purpose             ) } },
-    { { 15, 2, &( talents.denounce                    ) }, { 15, 2, &( talents.vindication                  ) }, { 15, 2, &( talents.selfless_healer            ) } },
-    { { 16, 3, &( talents.improved_concentration_aura ) }, { 16, 1, &( talents.holy_shield                  ) }, { 16, 1, &( talents.repentance                 ) } },
-    { { 17, 3, &( talents.tower_of_radiance           ) }, { 17, 2, &( talents.guarded_by_the_light         ) }, { 17, 2, &( talents.sanctified_wrath           ) } },
-    { { 18, 2, &( talents.blessed_life                ) }, { 18, 3, &( talents.shield_of_the_templar        ) }, { 18, 3, &( talents.inquiry_of_faith           ) } },
-    { { 19, 1, &( talents.light_of_dawn               ) }, { 19, 2, &( talents.sacred_duty                  ) }, { 19, 2, &( talents.acts_of_sacrifice          ) } },
-    { { 20, 0, NULL                                     }, { 20, 1, &( talents.ardent_defender              ) }, { 20, 1, &( talents.zealotry                   ) } },
-    { {  0, 0, NULL                                     }, {  0, 0, NULL                                      }, {  0, 0, NULL                                    } }
-  };
-
-    util_t::translate_talent_trees( talent_list, translation_table, sizeof( translation_table) );
-  }
-  */
   talent_list.clear();
   return talent_list;
 }
@@ -2543,42 +2517,24 @@ std::vector<option_t>& paladin_t::get_options()
     option_t paladin_options[] =
     {
       // @option_doc loc=player/paladin/talents title="Talents"
-      //{ "arbiter_of_the_light",        OPT_TALENT_RANK,    talents.arbiter_of_the_light          },
       { "ardent_defender",             OPT_INT,         &( talents.ardent_defender             ) },
       { "aura_mastery",                OPT_INT,         &( talents.aura_mastery                ) },
-      //{ "blazing_light",               OPT_TALENT_RANK,    talents.blazing_light                 },
       { "blessed_life",                OPT_INT,         &( talents.blessed_life                ) },
-      //{ "communion",                   OPT_TALENT_RANK,    talents.communion                     },
-      //{ "crusade",                     OPT_TALENT_RANK,    talents.crusade                       },
-      //{ "divine_favor",                OPT_TALENT_RANK,    talents.divine_favor                  },
-      //{ "divine_purpose",              OPT_TALENT_RANK,    talents.divine_purpose                },
-      //{ "divine_storm",                OPT_TALENT_RANK,    talents.divine_storm                  },
       { "enlightened_judgements",      OPT_INT,         &( talents.enlightened_judgements      ) },
       { "eternal_glory",               OPT_INT,         &( talents.eternal_glory               ) },
       { "eye_for_an_eye",              OPT_INT,         &( talents.eye_for_an_eye              ) },
       { "guarded_by_the_light",        OPT_INT,         &( talents.guarded_by_the_light        ) },
-      //{ "hammer_of_the_righteous",     OPT_TALENT_RANK,    talents.hammer_of_the_righteous       },
       { "holy_shield",                 OPT_INT,         &( talents.holy_shield                 ) },
       { "improved_hammer_of_justice",  OPT_INT,         &( talents.improved_hammer_of_justice  ) },
       { "improved_judgement",          OPT_INT,         &( talents.improved_judgement          ) },
-      //{ "inquiry_of_faith",            OPT_TALENT_RANK,    talents.inquiry_of_faith              },
       { "judgements_of_the_just",      OPT_INT,         &( talents.judgements_of_the_just      ) },
-      //{ "judgements_of_the_pure",      OPT_TALENT_RANK,    talents.judgements_of_the_pure        },
       { "long_arm_of_the_law",         OPT_INT,         &( talents.long_arm_of_the_law         ) },
       { "rebuke",                      OPT_INT,         &( talents.rebuke                      ) },
       { "reckoning",                   OPT_INT,         &( talents.reckoning                   ) },
-      //{ "rule_of_law",                 OPT_TALENT_RANK,    talents.rule_of_law                   },
       { "sacred_duty",                 OPT_INT,         &( talents.sacred_duty                 ) },
-      //{ "sanctified_wrath",            OPT_TALENT_RANK,    talents.sanctified_wrath              },
-      //{ "sanctity_of_battle",          OPT_TALENT_RANK,    talents.sanctity_of_battle            },
-      //{ "seals_of_command",            OPT_TALENT_RANK,    talents.seals_of_command              },
-      //{ "seals_of_the_pure",           OPT_TALENT_RANK,    talents.seals_of_the_pure             },
       { "shield_of_the_templar",       OPT_INT,         &( talents.shield_of_the_templar       ) },
-      //{ "the_art_of_war",              OPT_TALENT_RANK,    talents.the_art_of_war                },
       { "toughness",                   OPT_INT,         &( talents.toughness                   ) },
       { "vindication",                 OPT_INT,         &( talents.vindication                 ) },
-      //{ "zealotry",                    OPT_TALENT_RANK,    talents.zealotry                      },
-      //{ "wrath_of_the_lightbringer",   OPT_TALENT_RANK,    talents.wrath_of_the_lightbringer     },
       // @option_doc loc=player/paladin/misc title="Misc"
       { "tier10_2pc_procs_from_strikes", OPT_DEPRECATED, NULL },
       { NULL, OPT_UNKNOWN, NULL }
