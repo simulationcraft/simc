@@ -204,6 +204,7 @@ struct warlock_t : public player_t
   buff_t* buffs_bane_of_havoc;
   buff_t* buffs_searing_pain_soulburn;
   buff_t* buffs_tier10_4pc_caster;
+  buff_t* buffs_tier11_4pc_caster;
 
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
@@ -2613,6 +2614,10 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       p -> buffs_tier10_4pc_caster -> trigger();
     }
+    if ( p -> set_bonus.tier11_4pc_caster() && tick_dmg > 0 )
+    {
+      p -> buffs_tier11_4pc_caster -> trigger();
+    }
   }
 
 };
@@ -2693,6 +2698,10 @@ struct immolate_t : public warlock_spell_t
     if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
     {
       p -> buffs_tier10_4pc_caster -> trigger();
+    }
+    if ( p -> set_bonus.tier11_4pc_caster() && tick_dmg > 0 )
+    {
+      p -> buffs_tier11_4pc_caster -> trigger();
     }
   }
 
@@ -3534,6 +3543,20 @@ struct fel_flame_t : public warlock_spell_t
     }
   }
 
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+
+  	if ( p -> buffs_tier10_4pc_caster -> up() )
+	{
+      player_crit += 1.00;
+	  p -> buffs_tier10_4pc_caster -> expire();
+	}
+
+  }
+
 };
 
 // Dark Intent Spell =========================================================
@@ -4200,6 +4223,7 @@ void warlock_t::init_buffs()
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
 
   buffs_tier10_4pc_caster     = new buff_t( this, 70840, "tier10_4pc_caster", 0.15 );
+  buffs_tier10_4pc_caster     = new buff_t( this, 89937, "tier11_4pc_caster", 0.02 );
 
 }
 
