@@ -4223,7 +4223,7 @@ void warlock_t::init_buffs()
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
 
   buffs_tier10_4pc_caster     = new buff_t( this, 70840, "tier10_4pc_caster", 0.15 );
-  buffs_tier10_4pc_caster     = new buff_t( this, 89937, "tier11_4pc_caster", 0.02 );
+  buffs_tier11_4pc_caster     = new buff_t( this, 89937, "tier11_4pc_caster", 0.02 );
 
 }
 
