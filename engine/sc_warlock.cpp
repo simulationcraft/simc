@@ -2182,7 +2182,7 @@ struct chaos_bolt_t : public warlock_spell_t
 
     may_resist        = false;
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
-    base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
+    base_execute_time *= 1 - p -> set_bonus.tier11_2pc_caster() * 0.10;
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
   }
 
@@ -2370,11 +2370,13 @@ struct corruption_t : public warlock_spell_t
 
 struct drain_life_t : public warlock_spell_t
 {
+  int interrupt;
   drain_life_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "drain_life", player, "Drain Life" )
   {
     option_t options[] =
     {
+      { "interrupt",  OPT_BOOL, &interrupt },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2450,6 +2452,20 @@ struct drain_life_t : public warlock_spell_t
     warlock_spell_t::tick();
     if ( p -> buffs_shadow_trance -> trigger() )
       p -> procs_shadow_trance -> occur();
+
+    if ( interrupt && ( current_tick != num_ticks ) )
+    {
+      // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
+      for ( action_t* action = p -> action_list; action != this; action = action -> next )
+      {
+        if ( action -> background ) continue;
+        if ( action -> ready() )
+        {
+          current_tick = number_ticks;
+          break;
+        }
+      }
+    }
   }
 };
 
@@ -2619,7 +2635,7 @@ struct haunt_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
+    base_execute_time *= 1 - p -> set_bonus.tier11_2pc_caster() * 0.10;
 	direct_power_mod = 2 / 3.5;
   }
 
@@ -3468,7 +3484,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time -= p -> set_bonus.tier11_2pc_caster() * 0.10;
+    base_execute_time *= 1 - p -> set_bonus.tier11_2pc_caster() * 0.10;
   }
 
   virtual void execute()
