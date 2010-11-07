@@ -21,7 +21,7 @@ actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/soulburn
 actions+=/life_tap,trigger=6900,if=target.health_pct>25
-actions+=/drain_life
+actions+=/drain_life,interrupt=1
 actions+=/life_tap
 head=sanctified_dark_coven_hood,heroic=1,stats=973armor_114crit_106haste_159int_261sta,gems=chaotic_skyflare_20hit_9sp,enchant=30sp_20crit,reforge=crit_mastery
 neck=amulet_of_the_silent_eulogy,heroic=1,stats=68haste_60hit_94int_146sta,gems=20haste_5sp

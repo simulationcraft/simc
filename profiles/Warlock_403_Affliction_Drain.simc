@@ -25,7 +25,7 @@ actions+=/summon_doomguard,if=buff.bloodlust.react
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/life_tap,trigger=6900,if=target.health_pct>25
-actions+=/drain_life
+actions+=/drain_life,interrupt=1
 actions+=/life_tap
 head=crown_of_the_twilight_queen,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=chaotic_shadowspirit_40hit_30int,enchant=60sp_35crit
 neck=valionas_medallion,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit
