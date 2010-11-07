@@ -456,7 +456,8 @@ struct shadow_fiend_pet_t : public pet_t
   {
     shadowcrawl_t( player_t* player ) :
         spell_t( *( ( ( shadow_fiend_pet_t* ) ( player -> cast_pet() ) ) -> shadowcrawl ) )
-    {   
+    {
+      may_miss = false;
     }
       
     virtual void execute()
@@ -897,7 +898,7 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     if ( ! p -> bugs )
     {
-      m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+      m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
       m += p -> buffs_empowered_shadow -> value();
     }
 
@@ -965,7 +966,7 @@ struct devouring_plague_t : public priest_spell_t
 
     priest_spell_t::player_buff();
     
-    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
+    player_multiplier *= 1.0 + p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
                                p -> buffs_empowered_shadow -> value();
   }
 
@@ -1358,6 +1359,11 @@ struct mind_flay_t : public priest_spell_t
     }
     priest_spell_t::execute();
 
+    if ( result_is_hit() )
+    {
+      // Evangelism procs off both the initial cast and each tick.
+      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
+    }
   }
 
   virtual void player_buff()
@@ -1367,7 +1373,7 @@ struct mind_flay_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+    m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     m += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
     m += p -> buffs_empowered_shadow -> value();
 
@@ -1392,7 +1398,7 @@ struct mind_flay_t : public priest_spell_t
     priest_spell_t::tick();
     if ( result_is_hit() )
     {
-      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 0.4 : 0.0 );
+      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
 
       if ( p -> dots_shadow_word_pain -> ticking() )
@@ -1824,7 +1830,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     m += p -> constants.improved_shadow_word_pain_value;
     m += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
-    m += p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+    m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     m += p -> buffs_empowered_shadow -> value();
 
     player_multiplier *= m;
@@ -2031,7 +2037,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> talents.evangelism -> rank() * p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
+    player_multiplier *= 1.0 + p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
                                p -> buffs_empowered_shadow -> value();
   }
 };
@@ -2859,7 +2865,6 @@ void priest_t::init_actions()
       }
 
                                                          action_list_str += "/shadow_fiend";
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=3&buff.empowered_shadow.remains<=gcd+0.5";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
 
@@ -2881,7 +2886,6 @@ void priest_t::init_actions()
                                                          action_list_str += "&dot.devouring_plague.remains>5";
       }
 
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=3";
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
                                                          action_list_str += "/mind_flay";
@@ -2990,12 +2994,10 @@ void priest_t::init_values()
   else
   {
     constants.dark_archangel_damage_value   = 0.02;
-    constants.dark_archangel_mana_value     = 0.03;
+    constants.dark_archangel_mana_value     = 0.05;
     constants.holy_archangel_value          = 0.04;
-    constants.archangel_mana_value          = 0.05;
+    constants.archangel_mana_value          = 0.01;
   }
-  constants.holy_archangel_value            = 0.03;
-  constants.archangel_mana_value            = 0.03;
   
   constants.inner_fire_spellpower_value     = util_t::ability_rank( level, 425,85,  360,83,  324,82,  120,80, 0,0 );
   constants.inner_fire_armor_mult           = active_spells.inner_fire          -> effect_base_value( 1 ) / 100.0;
