@@ -83,6 +83,7 @@ struct paladin_t : public player_t
     active_spell_t* avengers_shield;
     active_spell_t* avenging_wrath;
     active_spell_t* consecration;
+    active_spell_t* consecration_tick;
     active_spell_t* crusader_strike;
     active_spell_t* divine_favor;
     active_spell_t* divine_plea;
@@ -189,6 +190,7 @@ struct paladin_t : public player_t
     int templars_verdict;
     // major
     int ascetic_crusader;
+    int consecration;
     int focused_shield;
     int hammer_of_wrath;
     // minor
@@ -1461,24 +1463,16 @@ struct consecration_tick_t : public paladin_spell_t
   consecration_tick_t( paladin_t* p ) :
       paladin_spell_t( "consecration", p )
   {
-    static rank_t ranks[] =
-    {
-      { 80, 8, 113, 113, 0, 0 },
-      { 75, 7,  87,  87, 0, 0 },
-      { 70, 6,  72,  72, 0, 0 },
-      { 60, 5,  56,  56, 0, 0 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
+    id = p->spells.consecration_tick->spell_id();
     aoe        = true;
     dual       = true;
     background = true;
-    may_crit   = false;
+    may_crit   = true;
     may_miss   = true;
-    direct_power_mod = 1.0;
-    base_spell_power_multiplier  = 0.04;
-    base_attack_power_multiplier = 0.04;
+
+    parse_data(p->player_data);
+
+    base_spell_power_multiplier = base_attack_power_multiplier = 1.0;
 
     base_multiplier *= 1.0 + 0.20 * p -> talents.hallowed_ground;
   }
@@ -1509,17 +1503,19 @@ struct consecration_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
+    parse_data(p->player_data);
+
     may_miss       = false;
-    base_cost      = p -> resource_base[ RESOURCE_MANA ] * 0.22 * (1 - 0.40 * p -> talents.hallowed_ground);
     num_ticks      = 10;
     base_tick_time = 1;
-    cooldown -> duration = 30;
+    
+    base_cost *= (1 - 0.40 * p->talents.hallowed_ground);
 
-    //if ( p -> glyphs.consecration ) should be +20%
-    //{
-    //  num_ticks += 2;
-    //  cooldown -> duration += 2;
-    //}
+    if ( p -> glyphs.consecration )
+    {
+      num_ticks += 2;
+      cooldown -> duration *= 1.2;
+    }
 
     consecration_tick = new consecration_tick_t( p );
   }
@@ -2085,7 +2081,7 @@ void paladin_t::init_glyphs()
     else if ( n == "ascetic_crusader"        ) glyphs.ascetic_crusader = 1;
     else if ( n == "beacon_of_light"         ) ;
     else if ( n == "cleansing"               ) ;
-    else if ( n == "consecration"            ) ;
+    else if ( n == "consecration"            ) glyphs.consecration = 1;
     else if ( n == "dazing_shield"           ) ;
     else if ( n == "divine_plea"             ) ;
     else if ( n == "divine_protection"       ) ;
@@ -2281,8 +2277,10 @@ void paladin_t::init_actions()
     // fillers (todo: consecration)
     action_list_str += "/judgement";
     action_list_str += "/holy_wrath";
-    // only divine plea if we're so mana constrained we can't even CS
-    action_list_str += "/divine_plea,if=cooldown.crusader_strike.remains<0";
+    // Don't delay CS for consecration or divine plea
+    action_list_str += "/wait,sec=0.1,if=(cooldown.crusader_strike.remains>0)&(cooldown.crusader_strike.remains<1)";
+    action_list_str += "/consecration";
+    action_list_str += "/divine_plea";
 
     action_list_default = 1;
   }
@@ -2325,6 +2323,7 @@ void paladin_t::init_spells()
   spells.avengers_shield           = new active_spell_t( this, "avengers_shield", "Avenger's Shield" );
   spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
   spells.consecration              = new active_spell_t( this, "consecration", "Consecration" );
+  spells.consecration_tick         = new active_spell_t( this, "consecration_tick", 81297 );
   spells.crusader_strike           = new active_spell_t( this, "crusader_strike", "Crusader Strike" );
   spells.divine_favor              = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
   spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
