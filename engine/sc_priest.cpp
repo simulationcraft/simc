@@ -1196,6 +1196,43 @@ struct inner_will_t : public priest_spell_t
   }
 };
 
+// Cancelaura Shadow Orbs pseudo-spell ============================================================
+
+struct cancelaura_shadow_orbs_t : public priest_spell_t
+{
+  cancelaura_shadow_orbs_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "cancelaura_shadow_orbs", player, SCHOOL_SHADOW, TREE_NONE )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd       = 0;
+    harmful           = false;
+  }
+
+
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+    p -> buffs_shadow_orb -> expire();
+
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( ! p -> buffs_shadow_orb -> check() )
+      return false;
+
+    return priest_spell_t::ready();
+  }
+};
+
 // Mind Blast Spell ============================================================
 
 struct mind_blast_t : public priest_spell_t
@@ -2403,33 +2440,34 @@ double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "devouring_plague"  ) return new devouring_plague_t  ( this, options_str );
-  if ( name == "dispersion"        ) return new dispersion_t        ( this, options_str );
-  if ( name == "fortitude"         ) return new fortitude_t         ( this, options_str );
-  if ( name == "holy_fire"         ) return new holy_fire_t         ( this, options_str );
-  if ( name == "inner_fire"        ) return new inner_fire_t        ( this, options_str );
-  if ( name == "mind_blast"        ) return new mind_blast_t        ( this, options_str );
-  if ( name == "mind_flay"         ) return new mind_flay_t         ( this, options_str );
-  if ( name == "mind_spike"        ) return new mind_spike_t        ( this, options_str );
-  if ( name == "penance"           ) return new penance_t           ( this, options_str );
-  if ( name == "power_infusion"    ) return new power_infusion_t    ( this, options_str );
-  if ( name == "shadow_word_death" ) return new shadow_word_death_t ( this, options_str );
-  if ( name == "shadow_word_pain"  ) return new shadow_word_pain_t  ( this, options_str );
-  if ( name == "shadow_form"       ) return new shadow_form_t       ( this, options_str );
-  if ( name == "smite"             ) return new smite_t             ( this, options_str );
-  if ( name == "shadow_fiend"      ) return new shadow_fiend_spell_t( this, options_str );
-  if ( name == "vampiric_embrace"  ) return new vampiric_embrace_t  ( this, options_str );
-  if ( name == "vampiric_touch"    ) return new vampiric_touch_t    ( this, options_str );
-  if ( name == "archangel"         ) return new archangel_t         ( this, options_str );
-  if ( name == "dark_archangel"    ) return new dark_archangel_t    ( this, options_str );
-  if ( name == "chakra"            ) return new chakra_t            ( this, options_str );
-  if ( name == "inner_will"        ) return new inner_will_t        ( this, options_str );
-  if ( name == "renew"        ) return new renew_t        ( this, options_str );
-  if ( name == "heal"        ) return new heal_t        ( this, options_str );
-  if ( name == "flash_heal"        ) return new flash_heal_t        ( this, options_str );
-  if ( name == "greater_heal"        ) return new greater_heal_t        ( this, options_str );
-  if ( name == "circle_of_healing"        ) return new circle_of_healing_t        ( this, options_str );
-  if ( name == "prayer_of_mending"        ) return new prayer_of_mending_t        ( this, options_str );
+  if ( name == "cancelaura_shadow_orbs" ) return new cancelaura_shadow_orbs_t( this, options_str );
+  if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
+  if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
+  if ( name == "fortitude"              ) return new fortitude_t             ( this, options_str );
+  if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
+  if ( name == "inner_fire"             ) return new inner_fire_t            ( this, options_str );
+  if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
+  if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
+  if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
+  if ( name == "penance"                ) return new penance_t               ( this, options_str );
+  if ( name == "power_infusion"         ) return new power_infusion_t        ( this, options_str );
+  if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
+  if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
+  if ( name == "shadow_form"            ) return new shadow_form_t           ( this, options_str );
+  if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
+  if ( name == "shadow_fiend"           ) return new shadow_fiend_spell_t    ( this, options_str );
+  if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
+  if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
+  if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
+  if ( name == "dark_archangel"         ) return new dark_archangel_t        ( this, options_str );
+  if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
+  if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
+  if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
+  if ( name == "heal"                   ) return new heal_t                  ( this, options_str );
+  if ( name == "flash_heal"             ) return new flash_heal_t            ( this, options_str );
+  if ( name == "greater_heal"           ) return new greater_heal_t          ( this, options_str );
+  if ( name == "circle_of_healing"      ) return new circle_of_healing_t     ( this, options_str );
+  if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2821,12 +2859,19 @@ void priest_t::init_actions()
       }
 
                                                          action_list_str += "/shadow_fiend";
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=3&buff.empowered_shadow.remains<=gcd+0.5";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
 
                                                          action_list_str += "/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd+0.5";
-      if ( talents.vampiric_touch -> rank() )            action_list_str += "/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time+0.5";
+                                                         action_list_str += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
+      if ( talents.vampiric_touch -> rank() )
+      {
+                                                         action_list_str += "|dot.vampiric_touch.remains<cast_time+0.5";
+                                                         action_list_str += "/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time+0.5";
+      }
+
+                                                         action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
                                                          action_list_str += "/devouring_plague,if=!ticking|dot.devouring_plague.remains<gcd+0.5";
 
       if ( talents.archangel -> ok() ) 
@@ -2838,8 +2883,6 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=3";
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack<=0";
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=2";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
                                                          action_list_str += "/mind_flay";
       if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1";
