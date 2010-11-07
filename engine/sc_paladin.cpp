@@ -753,14 +753,17 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
 
+    holy_power_chance = p->talents.divine_purpose->proc_chance();
+
     base_cooldown = cooldown->duration;
 
     base_crit += 0.15 * p -> talents.wrath_of_the_lightbringer->rank()
                + 0.25 * p -> talents.sanctified_wrath->rank();
 
+    // The coefficient in the data file seems to be the SP modifier, the AP modifier is ~39% (determined experimentally)
+    base_spell_power_multiplier = direct_power_mod;
     direct_power_mod = 1.0;
-    base_spell_power_multiplier  = 0.15;
-    base_attack_power_multiplier = 0.15;
+    base_attack_power_multiplier = 0.39;
 
     if ( p -> glyphs.hammer_of_wrath ) base_cost = 0;
   }
@@ -1457,7 +1460,6 @@ struct avenging_wrath_t : public paladin_spell_t
 
 // Consecration ============================================================
 
-// TODO
 struct consecration_tick_t : public paladin_spell_t
 {
   consecration_tick_t( paladin_t* p ) :
@@ -1488,7 +1490,6 @@ struct consecration_tick_t : public paladin_spell_t
   }
 };
 
-// TODO
 struct consecration_t : public paladin_spell_t
 {
   action_t* consecration_tick;
