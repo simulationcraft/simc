@@ -2620,6 +2620,16 @@ struct unstable_affliction_t : public warlock_spell_t
     }
   }
 
+  virtual void extend_duration( int extra_ticks )
+  {
+	// Can't extend beyond initial duration. Assuming this limit is calculated based on current haste, not haste at previous application/extension/refresh.
+	int remaining_ticks = number_ticks - current_tick + extra_ticks;
+	int hasted_ticks = hasted_num_ticks();
+    if ( remaining_ticks > hasted_ticks ) extra_ticks -= ( remaining_ticks - hasted_ticks );
+	if ( extra_ticks < 0 ) extra_ticks = 0;
+	warlock_spell_t::extend_duration( extra_ticks );
+  }
+
 };
 
 // Haunt Spell ==============================================================
@@ -2703,6 +2713,16 @@ struct immolate_t : public warlock_spell_t
     {
       p -> buffs_tier11_4pc_caster -> trigger();
     }
+  }
+
+  virtual void extend_duration( int extra_ticks )
+  {
+	// Can't extend beyond initial duration. Assuming this limit is calculated based on current haste, not haste at previous application/extension/refresh.
+	int remaining_ticks = number_ticks - current_tick + extra_ticks;
+	int hasted_ticks = hasted_num_ticks();
+    if ( remaining_ticks > hasted_ticks ) extra_ticks -= ( remaining_ticks - hasted_ticks );
+	if ( extra_ticks < 0 ) extra_ticks = 0;
+	warlock_spell_t::extend_duration( extra_ticks );
   }
 
 };
