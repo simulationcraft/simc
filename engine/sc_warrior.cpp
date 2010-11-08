@@ -931,9 +931,12 @@ struct melee_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
+    warrior_attack_t::execute();
+
+    // Because we can't proc flurry until after execute we are always
+    // one hit behind and shouldn't decrement it until after either.
     p -> buffs_flurry -> decrement();
 
-    warrior_attack_t::execute();
     if ( result_is_hit() )
     {
       trigger_rage_gain( this );
