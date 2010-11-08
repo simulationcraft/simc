@@ -1028,8 +1028,6 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
       }
     }
   }
-
-
 }
 
 // action_t::assess_damage ==================================================
@@ -1223,16 +1221,11 @@ void action_t::refresh_duration()
   // Make sure this DoT is still ticking......
   assert( tick_event );
 
-  // Recalculate player power
-  if ( base_attack_power_multiplier > 0 )
+  player_buff();
+
+  if ( sim -> P403 )
   {
-    player_attack_power            = player -> composite_attack_power();
-    player_attack_power_multiplier = player -> composite_attack_power_multiplier();
-  }
-  if ( base_spell_power_multiplier > 0 )
-  {
-    player_spell_power            = player -> composite_spell_power( school );
-    player_spell_power_multiplier = player -> composite_spell_power_multiplier();
+    snapshot_haste = haste();
   }
 
   if ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) )
@@ -1261,18 +1254,11 @@ void action_t::extend_duration( int extra_ticks )
   }
   if ( dot_behavior == DOT_REFRESH )
   {
-
-	  // Not sure which stats are exactly updated when extending a dot. Power surely is
-	   if ( base_attack_power_multiplier > 0 )
-	   {
-	     player_attack_power            = player -> composite_attack_power();
-	     player_attack_power_multiplier = player -> composite_attack_power_multiplier();
-	   }
-	   if ( base_spell_power_multiplier > 0 )
-	   {
-	     player_spell_power            = player -> composite_spell_power( school );
-	     player_spell_power_multiplier = player -> composite_spell_power_multiplier();
-	   }
+    player_buff();
+    if ( sim -> P403 )
+    {
+      snapshot_haste = haste();
+    }
     dot -> ready += tick_time() * extra_ticks;
   }
 
