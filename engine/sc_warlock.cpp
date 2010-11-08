@@ -2797,7 +2797,7 @@ struct conflagrate_t : public warlock_spell_t
 
     double t = ( p -> dots_immolate -> action -> base_td + p -> dots_immolate -> action -> total_power() * p -> dots_immolate -> action -> tick_power_mod );
 
-    base_dd_min  = t * p -> dots_immolate -> action -> number_ticks *  effect_base_value( 2 ) / 100.0 ;
+    base_dd_min  = t * ( p -> dots_immolate -> action -> number_ticks - p -> dots_immolate -> action -> added_ticks ) * effect_base_value( 2 ) / 100.0 ;
     base_dd_max  = base_dd_min;
 
     warlock_spell_t::execute();
@@ -3552,15 +3552,20 @@ struct fel_flame_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+    warlock_t* p = player -> cast_warlock();
     if ( result_is_hit() )
     {
-      warlock_t* p = player -> cast_warlock();
       if ( p -> dots_immolate -> ticking() )
         p -> dots_immolate -> action -> extend_duration( 2 );
 
       if ( p -> dots_unstable_affliction -> ticking() )
         p -> dots_unstable_affliction -> action -> extend_duration( 2 );
     }
+
+  	if ( p -> buffs_tier11_4pc_caster -> check() )
+	{
+	  p -> buffs_tier11_4pc_caster -> expire();
+	}
   }
 
 
@@ -3569,10 +3574,9 @@ struct fel_flame_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
 
-  	if ( p -> buffs_tier10_4pc_caster -> up() )
+  	if ( p -> buffs_tier11_4pc_caster -> up() )
 	{
       player_crit += 1.00;
-	  p -> buffs_tier10_4pc_caster -> expire();
 	}
 
   }
