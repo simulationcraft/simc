@@ -750,12 +750,11 @@ struct shadowy_apparition_t : public priest_spell_t
     trigger_gcd       = 0;
     travel_speed      = 2.6; // estimated
     base_execute_time = 0;
-    direct_power_mod  = 1.5 / 3.5;
     base_cost         = 0.0;
-    base_crit         = player -> set_bonus.tier11_4pc_caster() * 0.3;
+
     if ( sim -> P403 )
     {
-      base_crit += 0.01;
+      base_crit += 0.06;
     }
     else
     {
@@ -791,6 +790,8 @@ struct shadowy_apparition_t : public priest_spell_t
 
   virtual void player_buff()
   {
+    priest_t* p = player -> cast_priest();
+
     priest_spell_t::player_buff();
   
     player_crit_bonus_multiplier = 1.0;
@@ -806,6 +807,8 @@ struct shadowy_apparition_t : public priest_spell_t
         player_spell_power += 54.0;
       }
     }
+    
+    player_multiplier += 1.0 * p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
   }
 };
 
