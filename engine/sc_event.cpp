@@ -140,6 +140,7 @@ action_tick_event_t::action_tick_event_t( sim_t*    sim,
 
 void action_tick_event_t::execute()
 {
+  action -> number_ticks = action -> hasted_num_ticks() + action -> added_ticks;
   if ( action -> current_tick >= action -> number_ticks )
   {
     sim -> errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
