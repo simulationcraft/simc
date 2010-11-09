@@ -143,8 +143,20 @@ struct food_t : public action_t
     player -> food = type;
     switch ( type )
     {
+    case FOOD_BAKED_ROCKFISH:
+      player -> stat_gain( STAT_CRIT_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
     case FOOD_BASILISK_LIVERDOG:
       player -> stat_gain( STAT_HASTE_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
+    case FOOD_BEER_BASTED_CROCOLISK:
+      player -> stat_gain( STAT_STRENGTH, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
+    case FOOD_BLACKBELLY_SUSHI:
+      player -> stat_gain( STAT_PARRY_RATING, 90 );
       player -> stat_gain( STAT_STAMINA, 90 );
       break;
     case FOOD_BLACKENED_BASILISK:
@@ -155,9 +167,17 @@ struct food_t : public action_t
       player -> stat_gain( STAT_AGILITY, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
+    case FOOD_CROCOLISK_AU_GRATIN:
+      player -> stat_gain( STAT_EXPERTISE_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
     case FOOD_CRUNCHY_SERPENT:
       player -> stat_gain( STAT_SPELL_POWER, 23 );
       player -> stat_gain( STAT_SPIRIT, 20 );
+      break;
+    case FOOD_DELICIOUS_SAGEFISH_TAIL:
+      player -> stat_gain( STAT_SPIRIT, 90 );
+      player -> stat_gain( STAT_SPIRIT, 90 );
       break;
     case FOOD_DRAGONFIN_FILET:
       player -> stat_gain( STAT_STRENGTH, 40 );
@@ -168,6 +188,32 @@ struct food_t : public action_t
       player -> stat_gain( STAT_SPELL_POWER,  46 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
+    case FOOD_FORTUNE_COOKIE:
+      if ( player -> stats.dodge_rating > 0 )
+      {
+        player -> stat_gain( STAT_DODGE_RATING, 90 );
+      }
+      else if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_INTELLECT ] )
+      {
+        if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+        {
+          player -> stat_gain( STAT_STRENGTH, 90 );
+        }
+        else
+        {
+          player -> stat_gain( STAT_AGILITY, 90 );
+        }
+      }
+      else if ( player -> stats.attribute[ ATTR_INTELLECT ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+      {
+        player -> stat_gain( STAT_INTELLECT, 90 );
+      }
+      else
+      {
+        player -> stat_gain( STAT_AGILITY, 90 );
+      }
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
     case FOOD_GOLDEN_FISHSTICKS:
       player -> stat_gain( STAT_SPELL_POWER, 23 );
       player -> stat_gain( STAT_SPIRIT, 20 );
@@ -176,6 +222,10 @@ struct food_t : public action_t
       player -> stat_gain( STAT_ATTACK_POWER, 60 );
       player -> stat_gain( STAT_SPELL_POWER,  35 );
       player -> stat_gain( STAT_STAMINA, 30 );
+      break;
+    case FOOD_GRILLED_DRAGON:
+      player -> stat_gain( STAT_HIT_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
       break;
     case FOOD_HEARTY_RHINO:
       player -> stat_gain( STAT_CRIT_RATING, 40 );
@@ -186,10 +236,18 @@ struct food_t : public action_t
       player -> stat_gain( STAT_HASTE_RATING, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
       break;
+    case FOOD_LAVASCALE_FILLET:
+      player -> stat_gain( STAT_MASTERY_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
     case FOOD_MEGA_MAMMOTH_MEAL:
     case FOOD_POACHED_NORTHERN_SCULPIN:
       player -> stat_gain( STAT_ATTACK_POWER, 80 );
       player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_MUSHROOM_SAUCE_MUDFISH:
+      player -> stat_gain( STAT_DODGE_RATING, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
       break;
     case FOOD_POACHED_BLUEFISH:
       player -> stat_gain( STAT_SPELL_POWER, 23 );
@@ -198,6 +256,40 @@ struct food_t : public action_t
     case FOOD_RHINOLICIOUS_WORMSTEAK:
       player -> stat_gain( STAT_EXPERTISE_RATING, 40 );
       player -> stat_gain( STAT_STAMINA, 40 );
+      break;
+    case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
+      if ( player -> stats.dodge_rating > 0 )
+      {
+        player -> stat_gain( STAT_DODGE_RATING, 90 );
+      }
+      else if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_INTELLECT ] )
+      {
+        if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+        {
+          player -> stat_gain( STAT_STRENGTH, 90 );
+        }
+        else
+        {
+          player -> stat_gain( STAT_AGILITY, 90 );
+        }
+      }
+      else if ( player -> stats.attribute[ ATTR_INTELLECT ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+      {
+        player -> stat_gain( STAT_INTELLECT, 90 );
+      }
+      else
+      {
+        player -> stat_gain( STAT_AGILITY, 90 );
+      }
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
+    case FOOD_SEVERED_SAGEFISH_HEAD:
+      player -> stat_gain( STAT_INTELLECT, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
+      break;
+    case FOOD_SKEWERED_EEL:
+      player -> stat_gain( STAT_AGILITY, 90 );
+      player -> stat_gain( STAT_STAMINA, 90 );
       break;
     case FOOD_SMOKED_SALMON:
       player -> stat_gain( STAT_SPELL_POWER, 35 );

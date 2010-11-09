@@ -620,20 +620,32 @@ const char* util_t::food_type_string( int food )
   switch ( food )
   {
   case FOOD_NONE:                     return "none";
+  case FOOD_BAKED_ROCKFISH:           return "baked_rockfish";
   case FOOD_BASILISK_LIVERDOG:        return "basilisk_liverdog";
+  case FOOD_BEER_BASTED_CROCOLISK:    return "beer_basted_crocolisk";
+  case FOOD_BLACKBELLY_SUSHI:         return "blackbelly_sushi";
   case FOOD_BLACKENED_BASILISK:       return "blackened_basilisk";
-  case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin";
+  case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin"; 
+  case FOOD_CROCOLISK_AU_GRATIN:      return "crocolisk_au_gratin";
   case FOOD_CRUNCHY_SERPENT:          return "crunchy_serpent";
+  case FOOD_DELICIOUS_SAGEFISH_TAIL:  return "delicious_sagefish_tail";
   case FOOD_DRAGONFIN_FILET:          return "dragonfin_filet";
   case FOOD_FISH_FEAST:               return "fish_feast";
+  case FOOD_FORTUNE_COOKIE:           return "fortune_cookie";
   case FOOD_GOLDEN_FISHSTICKS:        return "golden_fishsticks";
   case FOOD_GREAT_FEAST:              return "great_feast";
+  case FOOD_GRILLED_DRAGON:           return "grilled_dragon";
   case FOOD_HEARTY_RHINO:             return "hearty_rhino";
   case FOOD_IMPERIAL_MANTA_STEAK:     return "imperial_manta_steak";
+  case FOOD_LAVASCALE_FILLET:         return "lavascale_fillet";
   case FOOD_MEGA_MAMMOTH_MEAL:        return "mega_mammoth_meal";
+  case FOOD_MUSHROOM_SAUCE_MUDFISH:   return "mushroom_sauce_mudfish";
   case FOOD_POACHED_NORTHERN_SCULPIN: return "poached_northern_sculpin";
   case FOOD_POACHED_BLUEFISH:         return "poached_bluefish";
   case FOOD_RHINOLICIOUS_WORMSTEAK:   return "rhinolicious_wormsteak";
+  case FOOD_SEAFOOD_MAGNIFIQUE_FEAST: return "seafood_magnifique_feast";
+  case FOOD_SEVERED_SAGEFISH_HEAD:    return "severed_sagefish_head";
+  case FOOD_SKEWERED_EEL:             return "skewered_eel";
   case FOOD_SMOKED_SALMON:            return "smoked_salmon";
   case FOOD_SNAPPER_EXTREME:          return "snapper_extreme";
   case FOOD_TENDER_SHOVELTUSK_STEAK:  return "tender_shoveltusk_steak";
