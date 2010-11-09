@@ -271,6 +271,7 @@ struct shaman_attack_t : public attack_t
   virtual void player_buff();
   virtual void assess_damage( double amount, int dmg_type );
   virtual double cost_reduction() SC_CONST;
+  virtual void consume_resource();
 };
 
 // ==========================================================================
@@ -1141,32 +1142,33 @@ void shaman_attack_t::execute()
 
   attack_t::execute();
 
-  if ( result_is_hit() )
+  if ( result_is_hit() && ! proc )
   {
-    if ( result == RESULT_CRIT )
-    {
-      p -> buffs_flurry -> trigger();
-    }
+    if ( p -> buffs_maelstrom_weapon -> trigger( 1, -1, 
+      weapon -> proc_chance_on_swing( p -> talent_maelstrom_weapon -> rank() * 2.0 ) ) )
+      p -> procs_maelstrom_weapon -> occur();
 
-    if ( ! proc )
-    {
-      if ( p -> buffs_maelstrom_weapon -> trigger( 1, 
-        -1, 
-        weapon -> proc_chance_on_swing( p -> talent_maelstrom_weapon -> rank() * 2.0 ) ) )
-        p -> procs_maelstrom_weapon -> occur();
+    if ( weapon -> buff_type == WINDFURY_IMBUE )
+      trigger_windfury_weapon( this );
 
-      if ( weapon -> buff_type == WINDFURY_IMBUE )
-        trigger_windfury_weapon( this );
+    if ( weapon -> buff_type == FLAMETONGUE_IMBUE )
+      trigger_flametongue_weapon( this );
 
-      if ( weapon -> buff_type == FLAMETONGUE_IMBUE )
-        trigger_flametongue_weapon( this );
-
-      if ( p -> primary_tree() == TREE_ENHANCEMENT && p -> rng_primal_wisdom -> roll( p -> spec_primal_wisdom -> proc_chance() ) )
-        p -> resource_gain( RESOURCE_MANA, 
-          p -> player_data.effect_base_value( 63375, E_ENERGIZE ) * p -> resource_base[ RESOURCE_MANA ], 
-          p -> gains_primal_wisdom );
-    }
+    if ( p -> rng_primal_wisdom -> roll( p -> spec_primal_wisdom -> proc_chance() ) )
+      p -> resource_gain( RESOURCE_MANA, 
+      p -> player_data.effect_base_value( 63375, E_ENERGIZE ) * p -> resource_base[ RESOURCE_MANA ], 
+      p -> gains_primal_wisdom );
   }
+}
+
+void shaman_attack_t::consume_resource()
+{
+  attack_t::consume_resource();
+  
+  shaman_t* p = player -> cast_shaman();
+
+  if ( result == RESULT_CRIT )
+    p -> buffs_flurry -> trigger();
 }
 
 // shaman_attack_t::player_buff ============================================
@@ -1274,6 +1276,9 @@ struct melee_t : public shaman_attack_t
     }
     else
     {
+      // Kludge of the century to avoid manifest anger eating flurry procs
+      if ( name_str != "manifest_anger" )
+        p -> buffs_flurry -> decrement();
       shaman_attack_t::execute();
     }
   }
@@ -1282,7 +1287,6 @@ struct melee_t : public shaman_attack_t
   {
     shaman_attack_t::schedule_execute();
     shaman_t* p = player -> cast_shaman();
-    p -> buffs_flurry -> decrement();
     p -> buffs_unleash_wind -> decrement();
   }
 };
