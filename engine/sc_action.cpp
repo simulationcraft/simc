@@ -247,17 +247,20 @@ void action_t::parse_data( sc_data_access_t& pData )
 
     for ( int i=1; i <= MAX_EFFECTS; i++)
     {
-      parse_effect_data(pData, i);
+      parse_effect_data(pData, id, i);
     }
   }
 }
 
 // action_t::parse_effect_data ==============================================
-void action_t::parse_effect_data( sc_data_access_t& pData, int effect_nr )
+void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int effect_nr )
 {
-  assert(pData.spell_exists(id));
+  if (!spell_id)
+    return;
 
-  int effect = pData.spell_effect_id ( id, effect_nr );
+  assert(pData.spell_exists(spell_id));
+
+  int effect = pData.spell_effect_id ( spell_id, effect_nr );
   if (pData.effect_exists ( effect ) )
   {
     switch ( pData.effect_type ( effect) )
@@ -266,15 +269,15 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int effect_nr )
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
       direct_power_mod = pData.effect_coeff( effect );
-      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
+      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
     case E_WEAPON_DAMAGE:         
-      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
+      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
       weapon = &( player -> main_hand_weapon );
       break;
 
@@ -289,32 +292,51 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int effect_nr )
       {
       case A_PERIODIC_DAMAGE:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
         base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         if ( school == SCHOOL_PHYSICAL )
           school = stats -> school = SCHOOL_BLEED;
         break;
       case A_PERIODIC_LEECH:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
         base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
       case A_PERIODIC_TRIGGER_SPELL:
         base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
       case A_SCHOOL_ABSORB:
-           direct_power_mod   = pData.effect_coeff( effect );
-           base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
-           base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( id ), player -> level );
-           break;
+        direct_power_mod   = pData.effect_coeff( effect );
+        base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        break;
       case A_PERIODIC_HEAL:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( id ), player -> level );
+        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
         base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( id ) / base_tick_time );
+        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
+        break;
+      case A_ADD_FLAT_MODIFIER:
+        switch (pData.effect_misc_value1(effect))
+        {
+        case P_CRIT:
+          base_crit += 0.01 * pData.effect_base_value(effect);
+          break;
+        case P_COOLDOWN:
+          cooldown->duration += 0.001 * pData.effect_base_value(effect);
+          break;
+        }
+        break;
+      case A_ADD_PCT_MODIFIER:
+        switch (pData.effect_misc_value1(effect))
+        {
+        case P_RESOURCE_COST:
+          base_cost *= 1 + 0.01 * pData.effect_base_value(effect);
+          break;
+        }
         break;
       }
       break;

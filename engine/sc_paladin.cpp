@@ -44,12 +44,12 @@ struct paladin_t : public player_t
   buff_t* buffs_censure;
   buff_t* buffs_the_art_of_war;
 
-  buff_t* buffs_holy_power; // cataclysm
-  buff_t* buffs_inquisition; // cataclysm
-  buff_t* buffs_zealotry; // cataclysm
-  buff_t* buffs_judgements_of_the_wise; // cataclysm
-  buff_t* buffs_judgements_of_the_bold; // cataclysm
-  buff_t* buffs_hand_of_light; // cataclysm
+  buff_t* buffs_holy_power;
+  buff_t* buffs_inquisition;
+  buff_t* buffs_zealotry;
+  buff_t* buffs_judgements_of_the_wise;
+  buff_t* buffs_judgements_of_the_bold;
+  buff_t* buffs_hand_of_light;
   buff_t* buffs_ancient_power;
 
   // Gains
@@ -136,8 +136,8 @@ struct paladin_t : public player_t
     int eternal_glory;
     int judgements_of_the_just;
     int toughness;
-    int improved_hammer_of_justice;
-    int hallowed_ground;
+    talent_t* improved_hammer_of_justice;
+    talent_t* hallowed_ground;
     int sanctuary;
     talent_t* hammer_of_the_righteous;
     talent_t* wrath_of_the_lightbringer;
@@ -588,7 +588,7 @@ struct crusader_strike_t : public paladin_attack_t
     parse_data(p->player_data);
     if (p->primary_tree() == TREE_PROTECTION)
     {
-      cooldown->duration -= p->passives.judgements_of_the_wise->effect_base_value(2) * 0.001;
+      cooldown->duration += 0.001 * p->passives.judgements_of_the_wise->effect_base_value(2);
     }
     base_cooldown = cooldown->duration;
 
@@ -676,7 +676,7 @@ struct hammer_of_justice_t : public paladin_attack_t
 
     parse_data(p->player_data);
 
-    cooldown -> duration -= p -> talents.improved_hammer_of_justice * 10;
+    cooldown -> duration += 0.001 * p->talents.improved_hammer_of_justice->effect_base_value(1);
   }
 
   virtual bool ready()
@@ -708,7 +708,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
     parse_data(p->player_data);
 
-    base_multiplier *= 1.0 + 0.1 * p -> talents.crusade->rank();
+    base_multiplier *= 1.0 + 0.01 * p->talents.crusade->effect_base_value(2);
 
     if ( p -> glyphs.hammer_of_the_righteous ) base_multiplier *= 1.10;
   }
@@ -757,8 +757,10 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
     base_cooldown = cooldown->duration;
 
-    base_crit += 0.15 * p -> talents.wrath_of_the_lightbringer->rank()
-               + 0.25 * p -> talents.sanctified_wrath->rank();
+    // base_crit += 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(2)
+    //            + 0.01 * p->talents.sanctified_wrath->effect_base_value(2);
+    parse_effect_data(p->player_data, p->talents.wrath_of_the_lightbringer->spell_id(), 2);
+    parse_effect_data(p->player_data, p->talents.sanctified_wrath->spell_id(), 2);
 
     // The coefficient in the data file seems to be the SP modifier, the AP modifier is ~39% (determined experimentally)
     base_spell_power_multiplier = direct_power_mod;
@@ -1015,8 +1017,7 @@ struct seal_of_insight_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
-    base_multiplier *= 1.0 + ( p -> talents.judgements_of_the_pure->rank() * 0.05 +
-                               p -> set_bonus.tier10_4pc_melee()   * 0.10 );
+    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee();
 
     base_spell_power_multiplier = 0.15;
     base_attack_power_multiplier = 0.15;
@@ -1077,8 +1078,8 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     trigger_gcd = 0;
 
     base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
-    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.06 + 
-                               p -> set_bonus.tier10_4pc_melee()   * 0.10 );
+    base_multiplier *= 1.0 + ( 0.01 * p->talents.seals_of_the_pure->effect_base_value(1) + 
+                               0.10 * p->set_bonus.tier10_4pc_melee() );
 
     direct_power_mod = 1.0;
     base_attack_power_multiplier = 0.011;
@@ -1148,9 +1149,9 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     base_attack_power_multiplier = 0.0966*0.2; // Determined experimentally by Redcape
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
-    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure->rank() * 0.06 +
-                               p -> talents.inquiry_of_faith->rank()  * 0.10 +
-                               p -> set_bonus.tier10_4pc_melee()      * 0.10 );
+    base_multiplier *= 1.0 + ( 0.01 * p->talents.seals_of_the_pure->effect_base_value(1) +
+                               0.01 * p->talents.inquiry_of_faith->effect_base_value(1) +
+                               0.10 * p->set_bonus.tier10_4pc_melee() );
   }
 
   virtual void player_buff()
@@ -1210,8 +1211,8 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     parse_data(p->player_data);
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
-    base_multiplier *= ( 1.0 + p -> talents.seals_of_the_pure->rank() * 0.06 )
-                    *  ( 1.0 + p -> set_bonus.tier10_4pc_melee()      * 0.10 );
+    base_multiplier *= ( 1.0 + 0.01 * p -> talents.seals_of_the_pure->effect_base_value(1) )
+                    *  ( 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee() );
   }
   virtual void player_buff()
   {
@@ -1445,7 +1446,8 @@ struct avenging_wrath_t : public paladin_spell_t
 
     parse_data(p->player_data);
     harmful = false;
-    cooldown -> duration -= p -> talents.sanctified_wrath->effect_base_value(2);
+    parse_effect_data(p->player_data, p->talents.sanctified_wrath->spell_id(), 1);
+    //cooldown -> duration += 0.001 * p -> talents.sanctified_wrath->effect_base_value(1);
   }
 
   virtual void execute()
@@ -1476,7 +1478,7 @@ struct consecration_tick_t : public paladin_spell_t
 
     base_spell_power_multiplier = base_attack_power_multiplier = 1.0;
 
-    base_multiplier *= 1.0 + 0.20 * p -> talents.hallowed_ground;
+    base_multiplier *= 1.0 + 0.01 * p->talents.hallowed_ground->effect_base_value(1);
   }
 
   virtual void execute()
@@ -1510,7 +1512,8 @@ struct consecration_t : public paladin_spell_t
     num_ticks      = 10;
     base_tick_time = 1;
     
-    base_cost *= (1 - 0.40 * p->talents.hallowed_ground);
+    //base_cost *= 1.0 + 0.01 * p->talents.hallowed_ground->effect_base_value(2);
+    parse_effect_data(p->player_data, p->talents.hallowed_ground->spell_id(), 2);
 
     if ( p -> glyphs.consecration )
     {
@@ -1735,9 +1738,7 @@ struct holy_shock_t : public paladin_spell_t
     parse_data(p->player_data);
     // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
     // to do damage is 25912
-    id = 25912;
-    parse_effect_data(p->player_data, 1);
-    id = p->spells.holy_shock->spell_id();
+    parse_effect_data(p->player_data, 25912, 1);
 
     base_multiplier *= 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1)
                            + 0.01 * p->talents.crusade->effect_base_value(2); // TODO how do they stack?
@@ -2298,6 +2299,8 @@ void paladin_t::init_talents()
   talents.divine_favor           = new talent_t( this, "divine_favor", "Divine Favor" );
   // Prot
   talents.seals_of_the_pure         = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
+  talents.improved_hammer_of_justice= new talent_t( this, "improved_hammer_of_justice", "Improved Hammer of Justice" );
+  talents.hallowed_ground           = new talent_t( this, "hallowed_ground", "Hallowed Ground" );
   talents.hammer_of_the_righteous   = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
   talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
   talents.wrath_of_the_lightbringer = new talent_t( this, "wrath_of_the_lightbringer", "Wrath of the Lightbringer" );
@@ -2525,7 +2528,6 @@ std::vector<option_t>& paladin_t::get_options()
       { "eye_for_an_eye",              OPT_INT,         &( talents.eye_for_an_eye              ) },
       { "guarded_by_the_light",        OPT_INT,         &( talents.guarded_by_the_light        ) },
       { "holy_shield",                 OPT_INT,         &( talents.holy_shield                 ) },
-      { "improved_hammer_of_justice",  OPT_INT,         &( talents.improved_hammer_of_justice  ) },
       { "improved_judgement",          OPT_INT,         &( talents.improved_judgement          ) },
       { "judgements_of_the_just",      OPT_INT,         &( talents.judgements_of_the_just      ) },
       { "long_arm_of_the_law",         OPT_INT,         &( talents.long_arm_of_the_law         ) },
