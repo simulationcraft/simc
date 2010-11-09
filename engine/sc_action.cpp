@@ -165,6 +165,14 @@ void action_t::_init_action_t()
   id = spell_id();
 
   parse_data ( player -> player_data );
+
+  if ( player -> player_data.spell_exists(id) && ! player -> player_data.spell_is_level( id, player -> level ) )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );
+    background = true; // prevent action from being executed
+  }
+
+
 }
 
 action_t::action_t( int               ty,

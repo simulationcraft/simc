@@ -171,9 +171,10 @@ struct warlock_guardian_pet_t;
 
 struct warlock_t : public player_t
 {
-  // Active
+  // Active Pet
   warlock_main_pet_t* active_pet;
 
+  // Dots
   dot_t*  dots_corruption;
   dot_t*  dots_unstable_affliction;
   dot_t*  dots_bane_of_agony;
@@ -185,6 +186,7 @@ struct warlock_t : public player_t
   dot_t*  dots_curse_of_elements;
   dot_t*  dots_burning_embers;
 
+  // Buffs
   buff_t* buffs_backdraft;
   buff_t* buffs_decimation;
   buff_t* buffs_demonic_empowerment;
@@ -206,16 +208,16 @@ struct warlock_t : public player_t
   buff_t* buffs_tier10_4pc_caster;
   buff_t* buffs_tier11_4pc_caster;
 
+  // Cooldowns
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
   cooldown_t* cooldowns_shadowflame_dot;
 
-  passive_spell_t* talent_unstable_affliction;
-  passive_spell_t* talent_summon_felguard;
-  passive_spell_t* talent_conflagrate;
+  // Talents
 
   // Affliction
+  passive_spell_t* talent_unstable_affliction;
   talent_t* talent_doom_and_gloom; // done
   talent_t* talent_improved_life_tap; // done
   talent_t* talent_improved_corruption; // done
@@ -233,6 +235,7 @@ struct warlock_t : public player_t
   talent_t* talent_haunt; // done
 
   // Demonology
+  passive_spell_t* talent_summon_felguard;
   talent_t* talent_demonic_embrace; // done
   talent_t* talent_dark_arts; // done
   talent_t* talent_mana_feed; // done
@@ -251,6 +254,7 @@ struct warlock_t : public player_t
   talent_t* talent_metamorphosis; // done
 
   // Destruction
+  passive_spell_t* talent_conflagrate;
   talent_t* talent_bane; // done
   talent_t* talent_shadow_and_flame; // done
   talent_t* talent_improved_immolate;
@@ -354,6 +358,7 @@ struct warlock_t : public player_t
     distance = 40;
 
     active_pet                  = 0;
+    spells_burning_embers       = 0;
 
     dots_corruption             = get_dot( "corruption" );
     dots_unstable_affliction    = get_dot( "unstable_affliction" );
@@ -367,14 +372,11 @@ struct warlock_t : public player_t
     dots_burning_embers         = get_dot( "burning_embers" );
 
     cooldowns_metamorphosis                   = get_cooldown ( "metamorphosis" );
-
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
 
     use_pre_soulburn = 0;
-
-    spells_burning_embers         = 0;
   }
 
   // Character Definition
@@ -460,14 +462,14 @@ struct warlock_pet_t : public pet_t
 
       base_list = pet_stats::pet_base_stats;
 
-        if      ( pet_type == PET_IMP          ) pet_list = pet_stats::imp_base_stats;
-        else if ( pet_type == PET_FELGUARD         ) pet_list = pet_stats::felguard_base_stats;
-        else if ( pet_type == PET_FELHUNTER         ) pet_list = pet_stats::felhunter_base_stats;
-        else if ( pet_type == PET_SUCCUBUS         ) pet_list = pet_stats::succubus_base_stats;
-        else if ( pet_type == PET_INFERNAL         ) pet_list = pet_stats::infernal_base_stats;
-        else if ( pet_type == PET_DOOMGUARD         ) pet_list = pet_stats::doomguard_base_stats;
-        else if ( pet_type == PET_EBON_IMP         ) pet_list = pet_stats::ebon_imp_base_stats;
-        else if ( pet_type == PET_VOIDWALKER         ) pet_list = pet_stats::voidwalker_base_stats;
+        if      ( pet_type == PET_IMP        ) pet_list = pet_stats::imp_base_stats;
+        else if ( pet_type == PET_FELGUARD   ) pet_list = pet_stats::felguard_base_stats;
+        else if ( pet_type == PET_FELHUNTER  ) pet_list = pet_stats::felhunter_base_stats;
+        else if ( pet_type == PET_SUCCUBUS   ) pet_list = pet_stats::succubus_base_stats;
+        else if ( pet_type == PET_INFERNAL   ) pet_list = pet_stats::infernal_base_stats;
+        else if ( pet_type == PET_DOOMGUARD  ) pet_list = pet_stats::doomguard_base_stats;
+        else if ( pet_type == PET_EBON_IMP   ) pet_list = pet_stats::ebon_imp_base_stats;
+        else if ( pet_type == PET_VOIDWALKER ) pet_list = pet_stats::voidwalker_base_stats;
 
       if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
       {
@@ -1679,7 +1681,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     damage_modifier = 1.16;
 
     action_list_str += "/snapshot_stats";
-    action_list_str += "/immolation,if=!ticking";
+    if ( level >= 50) action_list_str += "/immolation,if=!ticking";
   }
 
   virtual void init_base()
@@ -4008,12 +4010,9 @@ void warlock_t::create_pets()
 
 void warlock_t::init_talents()
 {
-  // Talents
-  talent_unstable_affliction          = new passive_spell_t ( this, "unstable_affliction", "Unstable Affliction" );
-  talent_summon_felguard              = new passive_spell_t ( this, "summon_felguard", "Summon Felguard" );
-  talent_conflagrate                  = new passive_spell_t ( this, "conflagrate", "Conflagrate" );
 
   // Affliction
+  talent_unstable_affliction          = new passive_spell_t ( this, "unstable_affliction", "Unstable Affliction" );
   talent_doom_and_gloom               = new talent_t ( this, "doom_and_gloom", "Doom and Gloom" );
   talent_improved_life_tap            = new talent_t ( this, "improved_life_tap", "Improved Life Tap" );
   talent_improved_corruption          = new talent_t ( this, "improved_corruption", "Improved Corruption" );
@@ -4031,6 +4030,7 @@ void warlock_t::init_talents()
   talent_haunt                        = new talent_t ( this, "haunt", "Haunt" );
 
   // Demonology
+  talent_summon_felguard      = new passive_spell_t ( this, "summon_felguard", "Summon Felguard" );
   talent_demonic_embrace      = new talent_t ( this, "demonic_embrace", "Demonic Embrace" );
   talent_dark_arts            = new talent_t ( this, "dark_arts", "Dark Arts" );
   talent_mana_feed            = new talent_t ( this, "mana_feed", "Mana Feed" );
@@ -4048,7 +4048,8 @@ void warlock_t::init_talents()
   talent_demonic_pact         = new talent_t ( this, "demonic_pact", "Demonic Pact" );
   talent_metamorphosis        = new talent_t ( this, "metamorphosis", "Metamorphosis" );
 
-      // Destruction
+  // Destruction
+  talent_conflagrate            = new passive_spell_t ( this, "conflagrate", "Conflagrate" );
   talent_bane                   = new talent_t ( this, "bane", "Bane" );
   talent_shadow_and_flame       = new talent_t ( this, "shadow_and_flame", "Shadow and Flame" );
   talent_improved_immolate      = new talent_t ( this, "improved_immolate", "Improved Immolate" );
@@ -4243,7 +4244,7 @@ void warlock_t::init_buffs()
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul            = new buff_t( this, 77801, "demon_soul" );
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
-  buffs_searing_pain_soulburn = new buff_t( this, "searing_pain_soulburn", 1, 6.0 );
+  buffs_searing_pain_soulburn = new buff_t( this, 79440, "searing_pain_soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
 
   buffs_tier10_4pc_caster     = new buff_t( this, 70840, "tier10_4pc_caster", 0.15 );
@@ -4317,7 +4318,7 @@ void warlock_t::init_actions()
     action_list_str += "/food,type=fish_feast";
 
     // Armor
-    action_list_str += "/fel_armor";
+    if ( level >= 62 ) action_list_str += "/fel_armor";
 
     // Choose Pet
     if ( primary_tree() == TREE_DEMONOLOGY )
@@ -4366,7 +4367,7 @@ void warlock_t::init_actions()
       action_list_str += "/bane_of_agony,if=(!ticking|dot.bane_of_agony.remains<tick_time)&target.time_to_die>=20";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+gcd))&target.time_to_die>=5";
-      action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
@@ -4377,34 +4378,34 @@ void warlock_t::init_actions()
 
     case TREE_DESTRUCTION:
       action_list_str += "/soulburn";
-      if ( talent_improved_soul_fire -> ok() )
+      if ( talent_improved_soul_fire -> ok() && level >= 54)
         action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<cast_time&buff.bloodlust.down";
       action_list_str += "/bane_of_doom,if=!ticking";
       action_list_str += "/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time|!ticking";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
       action_list_str += "/chaos_bolt";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
-      action_list_str += "/shadowflame";
-      action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
-      action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
-      action_list_str += "/incinerate";
+      if ( level >= 75) action_list_str += "/shadowflame";
+      if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
+      if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
 
     break;
 
     case TREE_DEMONOLOGY:
       action_list_str += "/hand_of_guldan,if=dot.immolate.remains>0";
-      action_list_str += "/summon_infernal,if=buff.metamorphosis.react";
-      action_list_str += "/metamorphosis";
+      if ( level >= 50) action_list_str += "/summon_infernal,if=buff.metamorphosis.react";
+      if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
       action_list_str += "/soulburn,if=buff.metamorphosis.react";
-      action_list_str += "/soul_fire,if=buff.soulburn.react";
+      if ( level >= 54) action_list_str += "/soul_fire,if=buff.soulburn.react";
       action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time|!ticking";
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       action_list_str += "/hand_of_guldan";
-      action_list_str += "/immolation,if=(buff.tier10_4pc_caster.react|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10";
+      if ( level >= 60) action_list_str += "/immolation,if=(buff.tier10_4pc_caster.react|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
-      action_list_str += "/shadowflame";
-      action_list_str += "/incinerate,if=buff.molten_core.react";
-      action_list_str += "/soul_fire,if=buff.decimation.react";
+      if ( level >= 75) action_list_str += "/shadowflame";
+      if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
+      if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
       action_list_str += "/shadow_bolt";
 
     break;
@@ -4413,8 +4414,8 @@ void warlock_t::init_actions()
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/immolate,if=!ticking|dot.immolate.remains<(cast_time+tick_time)";
-      action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
-      action_list_str += "/incinerate";
+      if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
   }

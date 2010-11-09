@@ -1898,7 +1898,25 @@ static void print_html2_player( FILE* file, player_t* p )
     if ( b -> quiet || ! b -> start_count || ! b -> constant )
       continue;
 
-    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
+    util_t::fprintf( file, "  <tr> <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-buff');\">%s</a></td> </tr>\n", b -> name(), b -> player -> name(), b -> name() );
+
+    util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
+    util_t::fprintf( file, "<br>id: %.i"
+                           "<br>cooldown name: %s"
+                           "<br>tooltip: %s"
+                           "<br>max_stacks: %.i"
+                           "<br>duration: %.2f"
+                           "<br>cooldown: %.2f"
+                           "<br>default_chance: %.2f",
+                           b -> s_id,
+                           b -> cooldown -> name_str.c_str(),
+                           b -> tooltip(),
+                           b -> max_stack,
+                           b -> buff_duration,
+                           b -> cooldown -> duration,
+                           b -> default_chance );
+
+    util_t::fprintf( file, "</tr>\n" );
   }
   util_t::fprintf( file, "</tbody></table> <br />\n" );
 
