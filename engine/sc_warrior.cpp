@@ -706,6 +706,9 @@ void warrior_attack_t::consume_resource()
 
   attack_t::consume_resource();
 
+  if ( result == RESULT_CRIT )
+    p -> buffs_flurry -> trigger( 3 );
+
   if ( special && ! background && p -> buffs_recklessness -> check() )
   {
     p -> buffs_recklessness -> decrement();
@@ -738,10 +741,9 @@ void warrior_attack_t::execute()
 
     trigger_enrage( this );
 
-    if( result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
       trigger_deep_wounds( this );
-      p -> buffs_flurry -> trigger( 3 );
     }
   }
   else if ( result == RESULT_DODGE  )
@@ -931,11 +933,12 @@ struct melee_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    warrior_attack_t::execute();
-
-    // Because we can't proc flurry until after execute we are always
-    // one hit behind and shouldn't decrement it until after either.
+    // Be careful changing where this is done.  Flurry that procs from melee
+    // must be applied before the (repeating) event schedule, and the decrement
+    // here must be done before it.
     p -> buffs_flurry -> decrement();
+
+    warrior_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -1131,7 +1134,7 @@ struct bloodthirst_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       warrior_t* p = player -> cast_warrior();
       p -> buffs_battle_trance -> trigger();
@@ -1226,7 +1229,7 @@ struct colossus_smash_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    if( result_is_hit() )
+    if ( result_is_hit() )
       p -> buffs_colossus_smash -> trigger( 1, 1.0 );
   }
 };
