@@ -8,36 +8,38 @@ use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=03221200000000000000000000000000000000000322032210201222100231
 glyphs=shadow_word_death/mind_flay/shadow_word_pain/inner_fire/spirit_tap/fortitude/fading/levitate
 actions=flask,type=draconic_mind
-actions+=/food,type=basilisk_liverdog
+actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
 actions+=/inner_fire
 actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
-actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=25
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/shadow_fiend
+actions+=/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5
 actions+=/cancelaura_shadow_orbs,if=buff.empowered_shadow.remains<=gcd+0.5
 actions+=/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd+0.5
-actions+=/stop_moving,health_percentage<=25,if=dot.vampiric_touch.remains<cast_time+0.5|cooldown.shadow_word_death.remains>=0.2
+actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+0.5
 actions+=/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time+0.5
 actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
 actions+=/devouring_plague,if=!ticking|dot.devouring_plague.remains<gcd+0.5
 actions+=/dark_archangel,if=buff.dark_evangelism.stack>=5&dot.vampiric_touch.remains>5&dot.devouring_plague.remains>5
 actions+=/shadow_word_death,health_percentage<=25
+actions+=/mind_blast
 actions+=/mind_flay
 actions+=/devouring_plague,moving=1
-actions+=/shadow_word_death
+actions+=/shadow_word_death,moving=1
 actions+=/dispersion
 head=mercurial_hood,type=cloth,stats=281int_512sta_208mastery_188haste_1016armor,reforge=mastery_spirit,gems=ember_shadowspirit_20int_20spi_30crit,enchant=60int_35crit
 neck=wyrmbreakers_amulet,stats=190int_286sta_127spi_127crit
-shoulders=mercurial_shoulderwraps,type=cloth,stats=233int_380sta_149spi_169haste_938armor,gems=40int_10haste,enchant=50int_25haste
-chest=mercurial_robes,type=cloth,stats=301int_512sta_198spi_218crit_1251armor,gems=40int_20int_20haste_20spi,enchant=20all
+shoulders=mercurial_shoulderwraps,type=cloth,stats=233int_380sta_149spi_169haste_938armor,gems=67int_10haste,enchant=50int_25haste
+chest=mercurial_robes,type=cloth,stats=301int_512sta_198spi_218crit_1251armor,gems=67int_20int_20haste_20spi,enchant=20all
 waist=belt_of_arcane_storms,type=cloth,stats=233int_380sta_169haste_149crit_704armor,gems=20int_20haste_40int_20haste
 legs=mercurial_leggings,type=cloth,stats=301int_512sta_188spi_228haste_1094armor,gems=20int_20haste_40int_20int,enchant=95int_55spi
 feet=slippers_of_moving_waters,type=cloth,stats=233int_380sta_169spi_149haste_860armor,gems=40int,enchant=50hit
 wrists=bracers_of_the_burningeye,type=cloth,stats=190int_286sta_127spi_127haste_547armor,enchant=65haste
-hands=mercurial_gloves,type=cloth,stats=233int_380sta_149crit_169mastery_782armor,reforge=mastery_spi,gems=40int,enchant=65mastery
+hands=mercurial_gloves,type=cloth,stats=233int_380sta_149crit_169mastery_782armor,reforge=mastery_spi,gems=67int,enchant=65mastery
 finger1=signet_of_the_fifth_circle,stats=190int_286sta_127mastery_127haste,reforge=mastery_spi,enchant=40int
 finger2=security_measure_alpha,stats=190int_286sta_127spi_127crit,reforge=crit_hit,enchant=40int
 trinket1=theralions_mirror,stats=321int,equip=onspelldirecthit_1926mastery_10%_45cd
@@ -50,7 +52,7 @@ ranged=finkles_mixer_upper,stats=107int_161sta_72spi_72mastery,reforge=mastery_h
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5172
-# gear_intellect=4378
+# gear_intellect=4459
 # gear_spirit=1510
 # gear_spell_power=1954
 # gear_hit_rating=255

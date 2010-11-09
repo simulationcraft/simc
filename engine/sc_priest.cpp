@@ -3374,7 +3374,7 @@ void priest_t::init_actions()
   {
     if ( sim -> P403 )
     {
-      action_list_str  = "flask,type=draconic_mind/food,type=basilisk_liverdog";
+      action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
     }
     else
     {
@@ -3414,6 +3414,9 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/shadow_fiend";
 
+                                                         action_list_str +="/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5";
+                                                         action_list_str +="/cancelaura_shadow_orbs,if=buff.empowered_shadow.remains<=gcd+0.5";
+
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
 
                                                          action_list_str += "/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd+0.5";
@@ -3436,6 +3439,7 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/mind_blast";
                                                          action_list_str += "/mind_flay";
       if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1";
                                                          action_list_str += "/shadow_word_death,moving=1";
