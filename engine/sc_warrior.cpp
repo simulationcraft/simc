@@ -2845,6 +2845,7 @@ void warrior_t::init_glyphs()
     else if ( n == "spell_reflection"   ) ;
     else if ( n == "sunder_armor"       ) ;
     else if ( n == "thunder_clap"       ) ;
+    else if ( n == "victory_rush"       ) ;
     else if ( ! sim -> parent ) 
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
@@ -3046,12 +3047,30 @@ void warrior_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage/food,type=fish_feast";
-    if      ( primary_tree() == TREE_ARMS       ) action_list_str += "/stance,choose=battle,if=in_combat=0";
-    else if ( primary_tree() == TREE_FURY       ) action_list_str += "/stance,choose=berserker,if=in_combat=0";
-    else if ( primary_tree() == TREE_PROTECTION ) action_list_str += "/stance,choose=defensive,if=in_combat=0";
+    // Flask
+    if ( level >= 80 && sim -> P403 )
+      action_list_str += "/flask,type=titanic_strength";
+    else
+      action_list_str += "/flask,type=endless_rage";
+    
+    // Food
+    if ( level >= 85 )
+      action_list_str += "/food,type=beer_basted_crocolisk";
+    else
+      action_list_str += "/food,type=dragonfin_filet";
+
+    // Stance
+    if ( primary_tree() == TREE_ARMS )
+      action_list_str += "/stance,choose=battle,if=in_combat=0";
+    else if ( primary_tree() == TREE_FURY )
+      action_list_str += "/stance,choose=berserker,if=in_combat=0";
+    else if ( primary_tree() == TREE_PROTECTION )
+      action_list_str += "/stance,choose=defensive,if=in_combat=0";
+
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
+
+    // Usable Item
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
@@ -3061,14 +3080,13 @@ void warrior_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    // Race Skills
     if ( race == RACE_ORC )
-    {
       action_list_str += "/blood_fury";
-    }
     else if ( race == RACE_TROLL )
-    {
       action_list_str += "/berserking";
-    }
+
     if ( primary_tree() == TREE_ARMS )
     {
       if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
@@ -3091,17 +3109,16 @@ void warrior_t::init_actions()
     {
       action_list_str += "/recklessness";
       if ( talents.death_wish -> rank() ) action_list_str += "/death_wish";
-      action_list_str += "/inner_rage,rage>=90";
-      action_list_str += "/heroic_strike,rage>=75,if=target.adds=0";
-      action_list_str += "/cleave,rage>=75,if=target.adds>0";
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.incite.up)";
+      action_list_str += "/cleave,if=target.adds>0";
       action_list_str += "/whirlwind,if=target.adds>0";      
-      action_list_str += "/bloodthirst";
-      action_list_str += "/colossus_smash";
-      action_list_str += "/raging_blow";
-      action_list_str += "/slam,if=buff.bloodsurge.react";
+      if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/execute";
-      action_list_str += "/battle_shout";
-      if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
+      action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+      if ( talents.raging_blow -> rank() ) action_list_str += "/raging_blow";
+      action_list_str += "/bloodthirst";
+      action_list_str += "/slam,if=buff.bloodsurge.react";
+      action_list_str += "/battle_shout,if=rage<30";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
