@@ -937,14 +937,10 @@ struct shadowy_apparition_t : public priest_spell_t
   shadowy_apparition_t( player_t* player ) :
       priest_spell_t( "shadowy_apparition", player, 87532 )
   {
-    priest_t* p = player -> cast_priest();
-
     background        = true;
     proc              = true;
     trigger_gcd       = 0;
     travel_speed      = 3.5;
-    base_execute_time = 0;
-    base_cost         = 0.0;
 
     if ( sim -> P403 )
     {
