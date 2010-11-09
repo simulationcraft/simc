@@ -4,7 +4,7 @@ warlock=Warlock_403_Affliction_Drain
 level=85
 race=undead
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=22322200301332032100000000000000000003302200000000000000
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=22322200301332032103000000000000000002302000000000000000
 glyphs=unstable_affliction/haunt/life_tap/bane_of_agony/shadow_bolt
 actions=flask,type=draconic_mind
 actions+=/food,type=fish_feast
@@ -15,10 +15,9 @@ actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=!in_combat
 actions+=/speed_potion,if=buff.bloodlust.react
 actions+=/demon_soul
-actions+=/soulburn
-actions+=/soul_fire,if=buff.soulburn.up&buff.bloodlust.down
+actions+=/soulburn,if=buff.bloodlust.down
+actions+=/soul_fire,if=buff.soulburn.up
 actions+=/haunt
-actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down
 actions+=/bane_of_agony,time_to_die>=20,if=!ticking|dot.bane_of_agony.remains<tick_time
 actions+=/corruption,if=!ticking|dot.corruption.remains<tick_time
 actions+=/unstable_affliction,time_to_die>=5,if=!ticking|dot.unstable_affliction.remains<(cast_time+tick_time)
