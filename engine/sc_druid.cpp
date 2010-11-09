@@ -4145,11 +4145,13 @@ void player_t::druid_init( sim_t* sim )
     p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
   }
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
   t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          3, 300.0 );
   t -> debuffs.infected_wounds      = new debuff_t( sim, "infected_wounds",      1,  12.0 );
   t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  60.0 );
+  }
 }
 
 // player_t::druid_combat_begin =============================================
@@ -4167,10 +4169,12 @@ void player_t::druid_combat_begin( sim_t* sim )
     }
   }
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
   if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3, 0.04 );
   if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
   if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
+  }
 }
 

@@ -4899,9 +4899,11 @@ void player_t::death_knight_init( sim_t* sim )
     p -> buffs.unholy_frenzy = new buff_t( p, "unholy_frenzy", 1, 30.0 );
   }
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   t -> debuffs.brittle_bones      = new debuff_t( sim, "brittle_bones",      1, 15.0 );
   t -> debuffs.ebon_plaguebringer = new debuff_t( sim, "ebon_plaguebringer", 1, 15.0 );
+  }
 }
 
 // player_t::death_knight_combat_begin ======================================
@@ -4914,7 +4916,9 @@ void player_t::death_knight_combat_begin( sim_t* sim )
 
   if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.10 );
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   if ( sim -> overrides.brittle_bones      ) t -> debuffs.brittle_bones      -> override( 1, 0.04 );
   if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
+  }
 }

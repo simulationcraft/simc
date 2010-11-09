@@ -3844,12 +3844,14 @@ void player_t::rogue_init( sim_t* sim )
     p -> buffs.tricks_of_the_trade = new buff_t( p, "tricks_of_the_trade", 1, 6.0 );
   }
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   t -> debuffs.expose_armor    = new debuff_t( sim, "expose_armor",     1 );
   t -> debuffs.hemorrhage      = new debuff_t( sim, "hemorrhage",       1, 60.0 );
   t -> debuffs.master_poisoner = new debuff_t( sim, "master_poisoner", -1 );
   t -> debuffs.poisoned        = new debuff_t( sim, "poisoned",        -1 );
   t -> debuffs.savage_combat   = new debuff_t( sim, "savage_combat",   -1 );
+  }
 }
 
 // player_t::rogue_combat_begin =============================================
@@ -3859,10 +3861,12 @@ void player_t::rogue_combat_begin( sim_t* sim )
   if ( sim -> overrides.honor_among_thieves ) 
     sim -> auras.honor_among_thieves -> override();
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
   if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
   if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
   if ( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
   if ( sim -> overrides.savage_combat   ) t -> debuffs.savage_combat   -> override();
+  }
 }

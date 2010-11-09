@@ -1569,7 +1569,6 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
       // Diplay of action infos
       util_t::fprintf( file,
            "<b>Static Values:</b>"
-           "<br> heal: %s"
            "<br> id: %i"
            "<br> school: %s<br> resource: %s"
            "<br> tree: %s"
@@ -1599,7 +1598,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> <b> weapon</b>"
            "<br> weapon_power_mod: %.6f"
            "</div>",
-           a -> heal?"true":"false", a -> id, util_t::school_type_string( a-> school ),
+           a -> id, util_t::school_type_string( a-> school ),
            util_t::resource_type_string( a -> resource ), util_t::talent_tree_string( a -> tree ),
            a -> range, a -> travel_speed, a -> trigger_gcd, a -> base_cost, a -> cooldown -> duration,
            a -> base_execute_time,

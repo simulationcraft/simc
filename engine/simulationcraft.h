@@ -3423,7 +3423,6 @@ struct action_t : public spell_id_t
   target_t* target;
   uint32_t id;
   school_type school;
-  bool heal;
   int resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;

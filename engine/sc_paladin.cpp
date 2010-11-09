@@ -2640,9 +2640,10 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_wisdom = new buff_t( p, "blessing_of_wisdom", !p -> is_pet() );
   }
 
-  target_t* t = sim -> target;
-
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   t -> debuffs.judgements_of_the_just = new debuff_t( sim, "judgements_of_the_just", 1, 20.0 );
+  }
 }
 
 // player_t::paladin_combat_begin ============================================
@@ -2662,6 +2663,8 @@ void player_t::paladin_combat_begin( sim_t* sim )
     }
   }
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
+  }
 }

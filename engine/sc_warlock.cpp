@@ -403,6 +403,7 @@ struct warlock_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
+  virtual double    composite_spell_haste() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
 
   // Event Tracking
@@ -863,13 +864,7 @@ struct warlock_spell_t : public spell_t
       h *= 1.0 / ( 1.0 + ranks[ p -> talent_eradication -> rank() ] );
     }
 
-    if ( p -> buffs_improved_soul_fire -> up())
-    {
-      if ( p -> buffs.bloodlust -> up() )
-        p -> buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
-      else
-        h /= ( 1.0 + util_t::talent_rank( p -> talent_improved_soul_fire -> rank(), 2, 0.07, 0.15 ) );
-    }
+
     if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 )
     {
       h *= 1.0 / ( 1.0 + 0.15 );
@@ -3914,6 +3909,23 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
   return sp;
 }
 
+// warlock_t::composite_spell_haste ==========================================
+
+double warlock_t::composite_spell_haste() SC_CONST
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( buffs_improved_soul_fire -> up())
+  {
+    if ( buffs.bloodlust -> up() )
+      buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
+    else
+      h /= ( 1.0 + util_t::talent_rank( talent_improved_soul_fire -> rank(), 2, 0.07, 0.15 ) );
+  }
+
+  return h;
+}
+
 // warlock_t::matching_gear_multiplier =============================================
 
 double warlock_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
@@ -4524,9 +4536,11 @@ void player_t::warlock_init( sim_t* sim )
   sim -> auras.demonic_pact         = new aura_t( sim, "Demonic Pact", 1 );
   sim -> auras.fel_intelligence     = new aura_t( sim, "Fel Intelligence", 1 );
 
-  target_t* t = sim -> target;
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
   t -> debuffs.improved_shadow_bolt = new     debuff_t( sim, "Improved Shadow Bolt", 1, 30.0 );
   t -> debuffs.curse_of_elements    = new coe_debuff_t( sim );
+  }
 }
 
 // player_t::warlock_combat_begin ===========================================
@@ -4535,8 +4549,11 @@ void player_t::warlock_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.demonic_pact ) sim -> auras.demonic_pact -> override();
 
-  target_t* t = sim -> target;
-  if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();
-  if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 8 );
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();
+    if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 8 );
+  }
+
 }
 
