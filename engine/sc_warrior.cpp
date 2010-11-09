@@ -940,9 +940,11 @@ struct melee_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
+    if ( result != RESULT_MISS )
+      trigger_rage_gain( this );
+
     if ( result_is_hit() )
     {
-      trigger_rage_gain( this );
       trigger_strikes_of_opportunity( this );
 
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
