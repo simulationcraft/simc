@@ -23,7 +23,7 @@ actions+=/corruption,if=!ticking|dot.corruption.remains<tick_time
 actions+=/unstable_affliction,time_to_die>=5,if=!ticking|dot.unstable_affliction.remains<(cast_time+tick_time)
 actions+=/summon_doomguard,if=buff.bloodlust.react
 actions+=/drain_soul,health_percentage<=25,interrupt=1
-actions+=/life_tap,trigger=6900,if=target.health_pct>25
+actions+=/life_tap,trigger=20000
 actions+=/shadow_bolt
 actions+=/life_tap
 head=crown_of_the_twilight_queen,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=chaotic_shadowspirit_40hit_30int,enchant=60sp_35crit
