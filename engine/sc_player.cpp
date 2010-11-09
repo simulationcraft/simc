@@ -1845,7 +1845,7 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
   }
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
-  sp += spell_power_per_intellect * intellect() - 10; // The spellpower is always lower by 10, cata beta build 12803
+  sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
   sp += spell_power_per_spirit    * spirit();
 
   return floor( sp );
@@ -2001,7 +2001,7 @@ double player_t::strength() SC_CONST
                            sim -> auras.horn_of_winter -> value() ),
                            sim -> auras.battle_shout -> value() );
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
-  return floor( a );
+  return floor( a ); // TO-DO: Should this be floored?
 }
 
 // player_t::agility() =====================================================
@@ -2013,7 +2013,7 @@ double player_t::agility() SC_CONST
                            sim -> auras.horn_of_winter -> value() ),
                            sim -> auras.battle_shout -> value() );
   a *= composite_attribute_multiplier( ATTR_AGILITY );
-  return floor( a );
+  return floor( a ); // TO-DO: Should this be floored?
 }
 
 // player_t::stamina() =====================================================
@@ -2022,7 +2022,7 @@ double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
   a *= composite_attribute_multiplier( ATTR_STAMINA );
-  return floor( a );
+  return floor( a ); // TO-DO: Should this be floored?
 }
 
 // player_t::intellect() ===================================================
@@ -2031,7 +2031,7 @@ double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
   a *= composite_attribute_multiplier( ATTR_INTELLECT );
-  return floor( a );
+  return floor( a );  // TO-DO: Should this be floored?
 }
 
 // player_t::spirit() ======================================================
@@ -2044,7 +2044,7 @@ double player_t::spirit() SC_CONST
     a += floor( ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03 );
   }
   a *= composite_attribute_multiplier( ATTR_SPIRIT );
-  return floor( a );
+  return floor( a ); // TO-DO: Should this be floored?
 }
 
 // player_t::combat_begin ==================================================
@@ -3585,7 +3585,7 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed_spell_haste  = p -> composite_spell_haste();
     p -> buffed_attack_haste = p -> composite_attack_haste();
-    p -> buffed_mastery		 = p -> composite_mastery();
+    p -> buffed_mastery      = p -> composite_mastery();
 
     p -> attribute_buffed[ ATTR_STRENGTH  ] = p -> strength();
     p -> attribute_buffed[ ATTR_AGILITY   ] = p -> agility();

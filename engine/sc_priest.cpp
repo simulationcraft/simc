@@ -144,6 +144,8 @@ struct priest_t : public player_t
     passive_spell_t* dark_evangelism_2;
     passive_spell_t* holy_evangelism_1;
     passive_spell_t* holy_evangelism_2;
+
+    passive_spell_t* shadowy_apparition_num;
   };
 
   passive_spells_t passive_spells;
@@ -296,6 +298,8 @@ struct priest_t : public player_t
 
     double mind_spike_crit_value;
     double devouring_plague_health_mod;
+
+    uint32_t max_shadowy_apparitions;
 
     constants_t() { memset( ( void * ) this, 0x0, sizeof( constants_t ) ); }
   };
@@ -523,7 +527,6 @@ struct priest_absorb_t : public spell_t
     spell_t::player_buff();
     priest_t* p = player -> cast_priest();
     player_multiplier *= 1.0 + (  p -> composite_mastery() * p -> passive_spells.shield_discipline -> ok() * 2.5 / 100.0 );
-
   }
 
   virtual double haste() SC_CONST
@@ -932,32 +935,14 @@ void priest_spell_t::assess_damage( double amount,
 struct shadowy_apparition_t : public priest_spell_t
 {
   shadowy_apparition_t( player_t* player ) :
-      priest_spell_t( "shadowy_apparition", player, SCHOOL_SHADOW, TREE_SHADOW )
+      priest_spell_t( "shadowy_apparition", player, 87532 )
   {
     priest_t* p = player -> cast_priest();
-
-    if ( sim -> P403 )
-    {
-      static rank_t ranks[] =
-      {
-        { 85, 2, 399, 422, 0, 0.0 },
-        { 80, 1, 390, 400, 0, 0.0 }, // estimated +-20 on cataclysm beta, 22082010
-        { 0, 0, 0, 0, 0, 0 }
-      };
-      init_rank( ranks );
-      direct_power_mod = 1.5 / 3.5;
-    }
-    else
-    {
-      direct_power_mod  = p -> player_data.effect_coeff( 87532, E_SCHOOL_DAMAGE );
-      base_dd_min       = p -> player_data.effect_min  ( 87532, p -> level, E_SCHOOL_DAMAGE );
-      base_dd_max       = p -> player_data.effect_max  ( 87532, p -> level, E_SCHOOL_DAMAGE );
-    }
 
     background        = true;
     proc              = true;
     trigger_gcd       = 0;
-    travel_speed      = 2.6; // estimated
+    travel_speed      = 3.5;
     base_execute_time = 0;
     base_cost         = 0.0;
 
@@ -1003,18 +988,10 @@ struct shadowy_apparition_t : public priest_spell_t
 
     priest_spell_t::player_buff();
   
-    player_crit_bonus_multiplier = 1.0;
-    player_multiplier = 1.0;
-    if ( sim -> P403 )
+    if ( player -> bugs )
     {
-      player_crit = 0.0;
-    }
-    else
-    {
-      if ( player -> bugs )
-      {
-        player_spell_power += 54.0;
-      }
+      player_spell_power += 54.0; // Will probably need adjusting for level.
+      player_multiplier /= 1.0 + p -> constants.twisted_faith_static_value;
     }
     
     player_multiplier += 1.0 * p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
@@ -1024,25 +1001,24 @@ struct shadowy_apparition_t : public priest_spell_t
 void priest_spell_t::trigger_shadowy_apparition( player_t* player )
 {
   priest_t* p = player -> cast_priest();
+  spell_t* s = NULL;
 
   if ( p -> talents.shadowy_apparition -> rank() )
   {
     double h = p -> talents.shadowy_apparition -> rank() * ( p -> buffs.moving -> up() ? 0.2 : 0.04 );
-    if (  p -> sim -> roll( h ) )
+    if ( p -> sim -> roll( h ) && ( !p -> shadowy_apparition_free_list.empty() ) )
     {
-      add_more_shadowy_apparitions( p );
+      s = p -> shadowy_apparition_free_list.front();
 
-      spell_t* s = p -> shadowy_apparition_free_list.front();
-      
       p -> shadowy_apparition_free_list.pop();
 
-      p ->shadowy_apparition_active_list.push_back( s );
+      p -> shadowy_apparition_active_list.push_back( s );
 
       p -> procs_shadowy_apparation -> occur();
 
       s -> execute();
     }
-  }    
+  }
 }
 
 void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
@@ -1052,7 +1028,7 @@ void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
   spell_t* s = NULL;
   if ( ! p -> shadowy_apparition_free_list.size() )
   {
-     for ( uint32_t i = 0; i < 50; i++ )
+     for ( uint32_t i = 0; i < p -> constants.max_shadowy_apparitions; i++ )
      {
        s = new shadowy_apparition_t( p );
        p -> shadowy_apparition_free_list.push( s );
@@ -1931,7 +1907,6 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( result_is_hit() && p -> was_sub_25 && ( sim -> target -> health_percentage() > 0 ) )
     {
-      // Tested to confirm that it won't reset if it Misses.
       cooldown -> reset();
       p -> buffs_glyph_of_shadow_word_death -> trigger();
     }
@@ -3296,6 +3271,12 @@ void priest_t::init_spells()
 
   passive_spells.shield_discipline    = new passive_spell_t( this, "shield_discipline", "Shield Discipline" );
 
+  if ( sim -> P403 )
+  {
+    passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
+  }
+
+
   // Shadow Mastery
   if ( sim -> P403 )
   {
@@ -3580,14 +3561,7 @@ void priest_t::init_values()
   constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
   constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
   constants.shadow_orb_proc_value           = passive_spells.shadow_orb_power   -> proc_chance();
-  if ( sim -> P403 )
-  {
-    constants.shadow_orb_mastery_value        = passive_spells.shadow_orbs       -> effect_base_value( 2 )/ 10000.0;
-  }
-  else
-  {
-    constants.shadow_orb_mastery_value        = passive_spells.shadow_orb_power  -> effect_base_value( 2 )/ 10000.0;
-  }
+  constants.shadow_orb_mastery_value        = passive_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
 
   // Shadow
   constants.darkness_value                  = 1.0 / ( 1.0 + talents.darkness    -> effect_base_value( 1 ) / 100.0 );
@@ -3607,7 +3581,10 @@ void priest_t::init_values()
   cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
   cooldowns_dark_archangel -> duration      = active_spells.dark_archangel      -> cooldown();
 
-  
+  if ( sim ->P403 )
+  {
+    constants.max_shadowy_apparitions       = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
+  }
 }
 
 
