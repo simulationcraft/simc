@@ -24,11 +24,11 @@
 //   * Double check the application of mastery to damage.
 //   * Test some multi-target fights and see if WW/cleave are right.
 //   * Check normalize_weapon_speed for correctness everywhere.
-//   * Check that the way Colossus Smash is decreasing armor is right;
-//     Armor stuff has been pretty funky before, don't trust it.
+//   * Does Colossus Smash itself ignore armor?
 //   * Can you cancel Inner Rage?
 //   * Sanity check init_buffs() wrt durations and chances.
 //   * Fix the default action lists to be more realistic.
+//   * Sanitise use of buff up() vs check() for stats.
 //   * Arms.
 //   * Prot? O_O
 //
@@ -114,6 +114,7 @@ struct warrior_t : public player_t
   buff_t* buffs_victory_rush;
   buff_t* buffs_wrecking_crew;
   buff_t* buffs_tier10_2pc_melee;
+  buff_t* buffs_tier11_4pc_melee;
 
   // Cooldowns
   cooldown_t* cooldowns_colossus_smash;
@@ -663,7 +664,7 @@ double warrior_attack_t::armor() SC_CONST
 
   double a = attack_t::armor();
 
-  if ( p -> buffs_colossus_smash -> check() )
+  if ( p -> buffs_colossus_smash -> up() )
   {
     a *= 1.0 - p -> buffs_colossus_smash -> value();
   }
@@ -840,7 +841,6 @@ void warrior_attack_t::player_buff()
 
   if ( p -> set_bonus.tier10_4pc_melee() )
     player_multiplier *= 1.05;
-
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
                    name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
@@ -1127,7 +1127,9 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
-    player_multiplier *= 1.0 + p -> glyphs.bloodthirst * 0.10;
+    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10 +
+                               p -> set_bonus.tier11_2pc_melee() * 0.05;
+      base_multiplier *= 1.05;
     direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
@@ -1226,6 +1228,9 @@ struct colossus_smash_t : public warrior_attack_t
     base_dd_max = 120;
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
   }
+
+  // Does CS benefit from its own effect?
+  // virtual double armor() SC_CONST { return 0.0; }
 
   virtual void execute()
   {
@@ -1467,7 +1472,8 @@ struct mortal_strike_t : public warrior_attack_t
     parse_data( p -> player_data );
     
     may_crit                    = true;
-    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
+    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10
+                                      + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1520,10 +1526,11 @@ struct overpower_t : public warrior_attack_t
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
     base_crit += p -> talents.taste_for_blood -> effect_base_value( 2 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
-    player_multiplier          *= 1.0 + p -> glyphs.overpower * 0.10;
+    base_multiplier            *= 1.0 + p -> glyphs.overpower * 0.10;
 
     stancemask = STANCE_BATTLE;    
   }
+
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
@@ -1535,6 +1542,9 @@ struct overpower_t : public warrior_attack_t
     p -> buffs_overpower -> expire();
     p -> buffs_lambs_to_the_slaughter -> expire();
     p -> buffs_taste_for_blood -> expire();
+
+    // The wording indicates it triggers even if you miss.
+    p -> buffs_tier11_4pc_melee -> trigger();
   }
 
   virtual void player_buff()
@@ -1633,6 +1643,9 @@ struct raging_blow_t : public warrior_attack_t
       weapon = &( player -> off_hand_weapon );
       warrior_attack_t::execute();
     }
+
+    // The wording indicates it triggers even if you miss.
+    p -> buffs_tier11_4pc_melee -> trigger();
 
     warrior_attack_t::consume_resource();
   }
@@ -2959,6 +2972,8 @@ void warrior_t::init_buffs()
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 + glyphs.enduring_victory * 5.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
+  buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0 );
+  // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
 }
 
 // warrior_t::init_gains ====================================================
@@ -3157,6 +3172,8 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 
   if ( buffs_tier10_2pc_melee -> up() )
     mult *= 1.16;
+  if ( buffs_tier11_4pc_melee -> up() )
+    mult *= 1 + 0.01 * buffs_tier11_4pc_melee -> stack();
   return mult;
 }
 
