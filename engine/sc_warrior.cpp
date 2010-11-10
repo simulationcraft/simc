@@ -9,8 +9,6 @@
 // ==========================================================================
 //
 // TODO:
-//   * Flurry haste should be applied to swings in progress. Other haste
-//     gains?  Probably not significant as they don't come and go.
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
 //   * Go through all of Deep Wounds and figure out what's going on.
 //     * Is it working right?
@@ -21,7 +19,6 @@
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
-//   * Double check the application of mastery to damage.
 //   * Test some multi-target fights and see if WW/cleave are right.
 //   * Check normalize_weapon_speed for correctness everywhere.
 //   * Does Colossus Smash itself ignore armor?
@@ -970,6 +967,9 @@ struct melee_t : public warrior_attack_t
     {
       h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() * 0.05 );
     }
+
+    // FIXME: does unholy_frenzy benefit from mastery.unshackled_fury?
+
     return h;
   }
 
@@ -2394,8 +2394,12 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );  
-    if ( p -> glyphs.berserker_rage )
-      p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_berserker_rage );
+    if ( p -> glyphs.berserker_rage ) {
+      double ragegain = 5.0;
+      if ( p -> mastery.unshackled_fury -> ok() )
+        ragegain *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+      p -> resource_gain( RESOURCE_RAGE, ragegain, p -> gains_berserker_rage );
+    }
     p -> buffs_berserker_rage -> trigger();
   }
 };
@@ -3168,16 +3172,21 @@ void warrior_t::init_actions()
     {
       action_list_str += "/recklessness";
       if ( talents.death_wish -> rank() ) action_list_str += "/death_wish";
-      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.incite.up)";
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)";
       action_list_str += "/cleave,if=target.adds>0";
       action_list_str += "/whirlwind,if=target.adds>0";      
       if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/execute";
-      action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-      if ( talents.raging_blow -> rank() ) action_list_str += "/raging_blow";
+      if ( talents.raging_blow -> rank() )
+      {
+        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+        action_list_str += "/raging_blow";
+      }
       action_list_str += "/bloodthirst";
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/battle_shout,if=rage<30";
+      if (! talents.raging_blow -> rank() ) 
+        action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
