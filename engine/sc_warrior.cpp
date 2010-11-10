@@ -664,7 +664,7 @@ static void trigger_flurry( attack_t* a, int stacks )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  bool up_before = p -> buffs_flurry -> check();
+  bool up_before = p -> buffs_flurry -> check() != 0;
 
   if ( stacks >= 0 )
     p -> buffs_flurry -> trigger( stacks );
@@ -677,7 +677,7 @@ static void trigger_flurry( attack_t* a, int stacks )
   // Flurry needs to haste the in-progress attacks, and flurry dropping
   // needs to de-haste them.
 
-  bool up_after = p -> buffs_flurry -> check();
+  bool up_after = p -> buffs_flurry -> check() != 0;
 
   if ( up_before == up_after )
     return;
