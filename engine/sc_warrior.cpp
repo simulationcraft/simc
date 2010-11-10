@@ -43,6 +43,8 @@ enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
 struct warrior_t : public player_t
 {
+  bool instant_flurry_haste;
+
   // Active
   action_t* active_deep_wounds;
   int       active_stance;
@@ -282,6 +284,8 @@ struct warrior_t : public player_t
     // Dots
     dots_deep_wounds = get_dot( "deep_wounds" );
     dots_rend        = get_dot( "rend"        );
+
+    instant_flurry_haste = false;
   }
 
   // Character Definition
@@ -654,6 +658,60 @@ static void trigger_enrage( attack_t* a )
   p -> buffs_enrage -> trigger( 1, enrage_value);
 }
 
+// trigger_flurry ===========================================================
+
+static void trigger_flurry( attack_t* a, int stacks )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  bool up_before = p -> buffs_flurry -> check();
+
+  if ( stacks >= 0 )
+    p -> buffs_flurry -> trigger( stacks );
+  else
+    p -> buffs_flurry -> decrement();
+
+  if ( ! p -> instant_flurry_haste )
+    return;
+
+  // Flurry needs to haste the in-progress attacks, and flurry dropping
+  // needs to de-haste them.
+
+  bool up_after = p -> buffs_flurry -> check();
+
+  if ( up_before == up_after )
+    return;
+
+  sim_t *sim = p -> sim;
+
+  // Default mult is the up -> down case
+  double mult = 1 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
+
+  // down -> up case
+  if ( ! up_before && up_after )
+    mult = 1 / mult;
+
+  event_t* mhe = p -> main_hand_attack -> execute_event;
+  event_t* ohe = p -> off_hand_attack -> execute_event;
+
+  if ( mhe ) {
+    double delta;
+    if ( mhe -> reschedule_time )
+      delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
+    else 
+      delta = ( mhe -> time - sim -> current_time ) * mult;
+    p -> main_hand_attack -> reschedule_execute( delta );
+  }
+  if ( ohe ) {
+    double delta;
+    if ( ohe -> reschedule_time )
+      delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
+    else 
+      delta = ( ohe -> time - sim -> current_time ) * mult;
+    p -> off_hand_attack -> reschedule_execute( delta );
+  }
+}
+
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
@@ -708,7 +766,10 @@ void warrior_attack_t::consume_resource()
   attack_t::consume_resource();
 
   if ( result == RESULT_CRIT )
-    p -> buffs_flurry -> trigger( 3 );
+  {
+    // p -> buffs_flurry -> trigger( 3 );
+    trigger_flurry( this, 3 );
+  }
 
   if ( special && ! background && p -> buffs_recklessness -> check() )
   {
@@ -925,7 +986,7 @@ struct melee_t : public warrior_attack_t
     // Before combat begins, unless we are under sync_weapons the OH is
     // delayed by half its swing time.
 
-    return t / 2;
+    return 0.02 + t / 2;
 
   }
 
@@ -936,7 +997,7 @@ struct melee_t : public warrior_attack_t
     // Be careful changing where this is done.  Flurry that procs from melee
     // must be applied before the (repeating) event schedule, and the decrement
     // here must be done before it.
-    p -> buffs_flurry -> decrement();
+    trigger_flurry( this, -1 );
 
     warrior_attack_t::execute();
 
@@ -1129,7 +1190,6 @@ struct bloodthirst_t : public warrior_attack_t
     weapon_multiplier  = 0;
     base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10 +
                                p -> set_bonus.tier11_2pc_melee() * 0.05;
-      base_multiplier *= 1.05;
     direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
@@ -1988,7 +2048,6 @@ struct slam_t : public warrior_attack_t
 
     id = 1464;
     parse_data( p -> player_data );
-
     weapon                      = &( p -> main_hand_weapon );
     normalize_weapon_speed      = true;
     may_crit                    = true;
@@ -3337,6 +3396,7 @@ std::vector<option_t>& warrior_t::get_options()
     option_t warrior_options[] =
     {
       // @option_doc loc=player/warrior/talents title="Talents"
+      { "instant_flurry_haste", OPT_BOOL, &instant_flurry_haste },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
