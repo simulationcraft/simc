@@ -894,6 +894,16 @@ struct warlock_spell_t : public spell_t
       player_multiplier *= 1.10;
 	}
 
+    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
+    {
+	  player_multiplier *= 1.10;
+    }
+
+    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && s_tree == 2 )
+    {
+      player_crit_multiplier *= 1.0 + 0.20 * p -> buffs_demon_soul -> stack();
+    }
+
   }
 
   // warlock_spell_t::target_debuff ============================================
@@ -907,18 +917,6 @@ struct warlock_spell_t : public spell_t
     double fire_multiplier=1.0;
     double shadow_multiplier=1.0;
     double shadow_td_multiplier=1.0;
-
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 )
-    {
-      fire_multiplier *= 1.0 + 0.10;
-      shadow_multiplier *= 1.0 + 0.10;
-    }
-
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && tree == TREE_DESTRUCTION )
-    {
-      target_crit += 0.20 * p -> buffs_demon_soul -> stack();
-
-    }
 
     if ( p -> buffs_bane_of_havoc -> up() )
       target_multiplier *= 1.15;
@@ -975,12 +973,11 @@ struct warlock_spell_t : public spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && tree == TREE_DESTRUCTION )
+    spell_t::execute();
+    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && s_tree == 2 )
     {
       p -> buffs_demon_soul -> decrement();
     }
-    spell_t::execute();
 
   }
 
