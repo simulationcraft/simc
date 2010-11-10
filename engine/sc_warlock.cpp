@@ -700,7 +700,7 @@ struct warlock_main_pet_t : public warlock_pet_t
   {
     double sp = pet_t::composite_spell_power( school );
     sp += owner -> composite_spell_power( school ) * ( level / 80) * 0.5;
-    return floor( sp );
+    return sp;
   }
 
   virtual double composite_attack_power() SC_CONST

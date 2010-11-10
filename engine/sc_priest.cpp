@@ -2907,7 +2907,7 @@ double priest_t::composite_spell_power( const school_type school ) SC_CONST
 
   sp += buffs_inner_fire -> value();
 
-  return floor( sp );
+  return sp;
 }
 
 // priest_t::composite_spell_hit =============================================

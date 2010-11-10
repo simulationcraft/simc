@@ -3562,8 +3562,8 @@ struct action_t : public spell_id_t
   virtual double total_crit() SC_CONST       { return   base_crit       + player_crit       + target_crit;       }
   virtual double total_crit_bonus() SC_CONST;
 
-  virtual double total_spell_power() SC_CONST  { return ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier;  }
-  virtual double total_attack_power() SC_CONST { return ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier; }
+  virtual double total_spell_power() SC_CONST  { return floor( ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier  ); }
+  virtual double total_attack_power() SC_CONST { return floor( ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier ); }
   virtual double total_power() SC_CONST;
 
   // Some actions require different multipliers for the "direct" and "tick" portions.

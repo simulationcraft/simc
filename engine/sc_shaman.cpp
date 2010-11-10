@@ -439,7 +439,7 @@ struct fire_elemental_pet_t : public pet_t
       
       sp += pet -> intellect() * int_multiplier;
       sp += pet -> composite_spell_power( school ) * sp_multiplier;
-      return sp;
+      return floor( sp );
     }
     
     virtual void player_buff() 
@@ -561,7 +561,7 @@ struct fire_elemental_pet_t : public pet_t
       sp += pet -> intellect() * int_multiplier;
       sp += pet -> composite_spell_power( school ) * sp_multiplier;
       
-      return sp;
+      return floor( sp );
     }
   };
 

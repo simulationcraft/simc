@@ -3595,7 +3595,7 @@ struct snapshot_stats_t : public action_t
 
     for( int i=0; i < RESOURCE_MAX; i++ ) p -> resource_buffed[ i ] = p -> resource_max[ i ];
 
-    p -> buffed_spell_power       = p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier();
+    p -> buffed_spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed_spell_hit         = p -> composite_spell_hit();
     p -> buffed_spell_crit        = p -> composite_spell_crit();
     p -> buffed_spell_penetration = p -> composite_spell_penetration();
