@@ -2054,6 +2054,7 @@ struct slam_t : public warrior_attack_t
     base_crit                  += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam     -> effect_base_value( 1 ) / 1000.0;
+    // FIXME: is there any reason to believe this is additive?  Ask swbusche.
     base_multiplier            *= 1 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
                                     + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
     if ( sim -> P403 )
@@ -3031,7 +3032,7 @@ void warrior_t::init_buffs()
   buffs_shield_block              = new buff_t( this, "shield_block",              1, 10.0 );
   buffs_sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, 10.0 );
   buffs_sword_and_board           = new buff_t( this, "sword_and_board",           1,  5.0,   0, talents.sword_and_board -> proc_chance() );
-  buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1,  9.0, 6.0, talents.taste_for_blood -> proc_chance() );
+  buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1,  9.0, 5.0, talents.taste_for_blood -> proc_chance() );
   buffs_thunderstruck             = new buff_t( this, "thunderstruck",             3, 20.0,   0, talents.thunderstruck -> proc_chance() );
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 + glyphs.enduring_victory * 5.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
