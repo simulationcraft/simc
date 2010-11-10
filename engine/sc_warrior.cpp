@@ -1767,7 +1767,7 @@ struct rend_t : public warrior_attack_t
 
   virtual void execute()
   {
-    base_td = base_td_init + calculate_weapon_damage() / 5.0;
+    base_td = base_td_init + calculate_weapon_damage() * 0.25;
     warrior_attack_t::execute();
     if ( result_is_hit() )
       trigger_blood_frenzy( this );
@@ -2345,6 +2345,12 @@ struct battle_shout_t : public warrior_spell_t
       shout_base_bonus( 0 )
   {
     warrior_t* p = player -> cast_warrior();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
 
     id = 6673;
     parse_data( p -> player_data );
@@ -3154,19 +3160,19 @@ void warrior_t::init_actions()
     if ( primary_tree() == TREE_ARMS )
     {
       if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
-      if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,rage<10";
+      if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,if=rage<10";
       action_list_str += "/inner_rage,rage>=90";
-      action_list_str += "/heroic_strike,rage>=75,if=target.adds=0";
-      action_list_str += "/cleave,rage>=75,if=target.adds>0";
+      action_list_str += "/heroic_strike,if=rage>=75&target.adds=0";
+      action_list_str += "/cleave,if=rage>=75&target.adds>0";
       action_list_str += "/rend,if=!ticking";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
       action_list_str += "/bladestorm";
       action_list_str += "/mortal_strike";
-      action_list_str += "/colossus_smash";
+      if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/overpower,if=buff.taste_for_blood.react";
       action_list_str += "/execute,health_percentage<=20";
       action_list_str += "/slam";
-      action_list_str += "/battle_shout";
+      action_list_str += "/battle_shout,if=rage<30";
       if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_FURY )
@@ -3186,7 +3192,7 @@ void warrior_t::init_actions()
       action_list_str += "/bloodthirst";
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/battle_shout,if=rage<30";
-      if (! talents.raging_blow -> rank() ) 
+      if (! talents.raging_blow -> rank() && glyphs.berserker_rage ) 
         action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
