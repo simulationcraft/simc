@@ -1188,8 +1188,8 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
-    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10 +
-                               p -> set_bonus.tier11_2pc_melee() * 0.05;
+    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10;
+    base_multiplier   *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
     direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
     may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
@@ -1532,8 +1532,8 @@ struct mortal_strike_t : public warrior_attack_t
     parse_data( p -> player_data );
     
     may_crit                    = true;
-    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10
-                                      + p -> set_bonus.tier11_2pc_melee() * 0.05;
+    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
+    base_multiplier            *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
