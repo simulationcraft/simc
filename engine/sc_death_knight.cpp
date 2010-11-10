@@ -605,7 +605,7 @@ struct army_ghoul_pet_t : public pet_t
   {
     double a = attribute[ ATTR_STRENGTH ];
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
-    return floor( a );
+    return a;
   }
 
   virtual void summon( double duration=0 )
@@ -1381,7 +1381,7 @@ struct ghoul_pet_t : public pet_t
       a += snapshot_strength * strength_scaling;
     }
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
-    return floor( a );
+    return a;
   }
 
   virtual void summon( double duration=0 )

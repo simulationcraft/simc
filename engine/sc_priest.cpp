@@ -2918,7 +2918,7 @@ double priest_t::composite_spell_hit() SC_CONST
 
   hit += ( ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * constants.twisted_faith_dynamic_value ) / rating.spell_hit;
 
-  return floor( hit * 10000.0 ) / 10000.0;
+  return hit;
 }
 // priest_t::composite_player_multiplier =========================================
 

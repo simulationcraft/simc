@@ -3822,7 +3822,7 @@ double druid_t::composite_attack_power() SC_CONST
     ap += weapon_ap;
   }
 
-  if ( buffs_cat_form  -> check() ) ap += floor( 1.0 * agility() );
+  if ( buffs_cat_form  -> check() ) ap += 1.0 * ( agility() - 10.0 );
 
   return floor( ap );
 }
@@ -3869,7 +3869,7 @@ double druid_t::composite_spell_hit() SC_CONST
   // BoP does not convert base spirit into hit!
   hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * ( 0.01 * talents.balance_of_power -> effect_base_value( 2 ) ) / rating.spell_hit;
 
-  return floor( hit * 10000.0 ) / 10000.0;
+  return hit;
 }
 
 // druid_t::composite_spell_crit ============================================
@@ -3878,7 +3878,7 @@ double druid_t::composite_spell_crit() SC_CONST
 {
   double crit = player_t::composite_spell_crit();
   crit += talents.natures_majesty -> rank() * 0.02;
-  return floor( crit * 10000.0 ) / 10000.0;
+  return crit;
 }
 
 // druid_t::composite_attribute_multiplier ==================================

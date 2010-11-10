@@ -972,11 +972,11 @@ void player_t::init_resources( bool force )
         {
           resource_initial[ i ] *= 1.02;
         }
-        resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
+        resource_initial[ i ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
       }
       if ( i == RESOURCE_HEALTH ) 
       {
-        resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
+        resource_initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
 
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
         {
@@ -1505,8 +1505,8 @@ double player_t::composite_attack_power() SC_CONST
 {
   double ap = attack_power;
 
-  ap += floor( attack_power_per_strength * strength() );
-  ap += floor( attack_power_per_agility  * agility() );
+  ap += attack_power_per_strength * strength();
+  ap += attack_power_per_agility  * agility();
 
   return ap;
 }
@@ -1557,7 +1557,7 @@ double player_t::composite_armor() SC_CONST
 
   a += bonus_armor;
 
-  a += floor( armor_per_agility * agility() );
+  a += armor_per_agility * floor( agility() );
 
   if ( sim -> auras.devotion_aura -> check() )
     a += sim -> auras.devotion_aura -> value();
@@ -1848,7 +1848,7 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
   sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
   sp += spell_power_per_spirit    * spirit();
 
-  return floor( sp );
+  return sp;
 }
 
 // player_t::composite_spell_power_multiplier =============================
@@ -1916,7 +1916,7 @@ double player_t::composite_spell_hit() SC_CONST
 
 double player_t::composite_mp5() SC_CONST
 {
-  return mp5 + mp5_per_intellect * intellect();
+  return mp5 + mp5_per_intellect * floor( intellect() );
 }
 
 // player_t::composite_attack_power_multiplier =============================
@@ -2001,7 +2001,7 @@ double player_t::strength() SC_CONST
                            sim -> auras.horn_of_winter -> value() ),
                            sim -> auras.battle_shout -> value() );
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
-  return floor( a ); // TO-DO: Should this be floored?
+  return a;
 }
 
 // player_t::agility() =====================================================
@@ -2013,7 +2013,7 @@ double player_t::agility() SC_CONST
                            sim -> auras.horn_of_winter -> value() ),
                            sim -> auras.battle_shout -> value() );
   a *= composite_attribute_multiplier( ATTR_AGILITY );
-  return floor( a ); // TO-DO: Should this be floored?
+  return a;
 }
 
 // player_t::stamina() =====================================================
@@ -2022,7 +2022,7 @@ double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
   a *= composite_attribute_multiplier( ATTR_STAMINA );
-  return floor( a ); // TO-DO: Should this be floored?
+  return a;
 }
 
 // player_t::intellect() ===================================================
@@ -2031,7 +2031,7 @@ double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
   a *= composite_attribute_multiplier( ATTR_INTELLECT );
-  return floor( a );  // TO-DO: Should this be floored?
+  return a;
 }
 
 // player_t::spirit() ======================================================
@@ -2041,10 +2041,10 @@ double player_t::spirit() SC_CONST
   double a = attribute[ ATTR_SPIRIT ];
   if ( race == RACE_HUMAN )
   {
-    a += floor( ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03 );
+    a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
   }
   a *= composite_attribute_multiplier( ATTR_SPIRIT );
-  return floor( a ); // TO-DO: Should this be floored?
+  return a;
 }
 
 // player_t::combat_begin ==================================================
@@ -2429,7 +2429,7 @@ void player_t::regen( double periodicity )
         resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
       }
 
-      double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
+      double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
 
       if ( mana_regen_while_casting < 1.0 )
       {
@@ -3587,11 +3587,11 @@ struct snapshot_stats_t : public action_t
     p -> buffed_attack_haste = p -> composite_attack_haste();
     p -> buffed_mastery      = p -> composite_mastery();
 
-    p -> attribute_buffed[ ATTR_STRENGTH  ] = p -> strength();
-    p -> attribute_buffed[ ATTR_AGILITY   ] = p -> agility();
-    p -> attribute_buffed[ ATTR_STAMINA   ] = p -> stamina();
-    p -> attribute_buffed[ ATTR_INTELLECT ] = p -> intellect();
-    p -> attribute_buffed[ ATTR_SPIRIT    ] = p -> spirit();
+    p -> attribute_buffed[ ATTR_STRENGTH  ] = floor( p -> strength()  );
+    p -> attribute_buffed[ ATTR_AGILITY   ] = floor( p -> agility()   );
+    p -> attribute_buffed[ ATTR_STAMINA   ] = floor( p -> stamina()   );
+    p -> attribute_buffed[ ATTR_INTELLECT ] = floor( p -> intellect() );
+    p -> attribute_buffed[ ATTR_SPIRIT    ] = floor( p -> spirit()    );
 
     for( int i=0; i < RESOURCE_MAX; i++ ) p -> resource_buffed[ i ] = p -> resource_max[ i ];
 
