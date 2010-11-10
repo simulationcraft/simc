@@ -335,6 +335,17 @@ bool item_t::decode_heroic()
 
 bool item_t::decode_armor_type()
 {
+  // Cloth classes don't actually check the gear. They just get their bonus even if naked.
+  switch ( player -> type )
+  {
+    case MAGE:
+    case PRIEST:
+    case WARLOCK:
+      is_matching_type = true;
+      return true;
+    default:
+      break;
+  }
   if( encoded_name_str == "empty" ||
       encoded_name_str == "none" )
   {
