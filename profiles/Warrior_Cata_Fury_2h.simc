@@ -1,61 +1,66 @@
 #!./simc 
+
 warrior=Warrior_Cata_Fury2h
 optimal_raid=1
 level=85
 race=tauren
 use_pre_potion=-1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=320002000000000000000322220313011012232103
-glyphs=bloodthirst/raging_blow/slam/berserker_rage
-actions=flask,type=endless_rage
-actions+=/food,type=fish_feast
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=320003000000000000000322220313011012232102
+glyphs=bloodthirst/raging_blow/slam/cleaving/berserker_rage
+actions=flask,type=titanic_strength
+actions+=/food,type=beer_basted_crocolisk
 actions+=/stance,choose=berserker,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/recklessness
 actions+=/death_wish
-actions+=/inner_rage,rage>=90
-actions+=/heroic_strike,rage>=75
+# Off-GCD actions need to be first with sufficient restrictions
+actions+=/cleave,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
 actions+=/whirlwind,if=target.adds>0
-actions+=/bloodthirst
 actions+=/colossus_smash
-actions+=/raging_blow
-actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute
-actions+=/battle_shout
-actions+=/berserker_rage
+actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
+actions+=/raging_blow
+actions+=/bloodthirst
+actions+=/slam,if=buff.bloodsurge.react
+actions+=/battle_shout,if=rage<30
 
-shoulders=earthen_pauldrons,stats=233str_380sta_169haste_149hit,gems=40str_10haste
-legs=earthen_legplates,stats=301str_512sta_228mastery_188hit,gems=20str_20crit_20haste
-head=earthen_helmet,stats=281str_512sta_228haste_168exp,gems=relentless_earthsiege_30str
-hands=earthen_gauntlets,stats=233str_380sta_169haste_149mastery,gems=40hit_10str
-chest=earthen_battleplate,stats=301str_512sta_228crit_188haste,gems=40str_20str
-neck=gift_of_nadun,stats=190str_286sta_127haste_127crit
-waist=elementium_girdle_of_pain,stats=253str_380sta_169hit_169haste,gems=40str
-feet=woe_breeders_boots,stats=233str_380sta_169crit_149haste,gems=20str_20crit_10crit
-finger1=band_of_bees,stats=190str_286sta_127haste_127mastery
-finger2=band_of_bees,stats=190str_286sta_127haste_127mastery
-trinket1=deathbringers_will,heroic=1,stats=167crit
-trinket2=deaths_verdict,heroic=1,stats=288ap
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10crit_10str_20str_4str,enchant=50ap
-
-# Ring is actually unique
-back=floating_web,stats=190str_286sta_127mastery_127exp
-ranged=finely_tuned_throat_needler,stats=107agi_161sta_77haste_63crit
-main_hand=zinrokh_destroyer_of_worlds,stats=374str_512sta_228hit_228crit,weapon=sword2h_3.80speed_1894min_2843max
-off_hand=zinrokh_destroyer_of_worlds,stats=374str_512sta_228hit_228crit,weapon=sword2h_3.80speed_1894min_2843max
+head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,reforge=haste_hit,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery
+neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=mastery_crit
+#neck=gift_of_nadun,stats=190str_286sta_127haste_127crit,reforge=haste_hit
+shoulders=earthen_pauldrons,heroic=1,type=,stats=2669armor_266str_429sta_191haste_171hit,reforge=haste_crit,gems=40str_10haste,enchant=50str_25crit
+chest=earthen_battleplate,heroic=1,type=,stats=3559armor_345str_578sta_257crit_217haste,gems=40str_20str_20hit_20str,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_absolute_zero,heroic=1,type=,stats=2002armor_266str_429sta_171hit_191crit,gems=40str_40str_10hit
+legs=earthen_legplates,heroic=1,type=,stats=3114armor_345str_578sta_257mastery_217hit,reforge=mastery_crit,gems=20str_20crit_20str_20crit_20haste
+feet=treads_of_savage_beatings,heroic=1,type=,stats=2447armor_226str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit
+wrists=bracers_of_the_matredor,type=,stats=1589armor_229str_344sta_113haste_153crit,reforge=haste_hit,gems=20str_20crit_10str,enchant=50exp
+hands=plated_fists_of_provocation,heroic=1,type=,stats=2224armor_266str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit,enchant=50str
+#hands=earthen_gauntlets,heroic=1,stats=2224armor_266str_429sta_191haste_171mastery,gems=20str_20hit_10str,enchant=50str
+finger1=band_of_bees,stats=190str_286sta_127haste_127mastery,reforge=mastery_exp
+finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_hit
+trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_35%_15dur_45cd
+trinket2=darkmoon_card_hurricane,stats=321str,equip=onattackhit_5000nature_35%_45cd
+back=glittering_epidermis,heroic=1,stats=673armor_215str_322sta_143crit_143haste,reforge=haste_hit,enchant=65crit
+main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=mace2h_3.80speed_1872min_3476max
+off_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=mace2h_3.80speed_1872min_3476max
+#off_hand=shalugdoom_the_axe_of_unmaking,heroic=1,stats=385str_578sta_257crit_257exp,weapon=axe2h_3.60speed_1773min_3293max,enchant=landslide
+ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste,reforge=haste_hit
 
 # Gear Summary
-# gear_strength=3705
-# gear_agility=107
-# gear_stamina=5501
-# gear_attack_power=338
-# gear_hit_rating=1062
-# gear_crit_rating=1338
-# gear_haste_rating=1560
-# gear_expertise_rating=295
-# gear_mastery_rating=758
-# meta_gem=relentless_earthsiege
+# gear_strength=5087
+# gear_agility=131
+# gear_stamina=6393
+# gear_intellect=10
+# gear_spirit=10
+# gear_expertise_rating=297
+# gear_hit_rating=1675
+# gear_crit_rating=2240
+# gear_haste_rating=1196
+# gear_mastery_rating=439
+# gear_armor=21168
+# meta_gem=enigmatic_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# trinket1=deathbringers_will,heroic=1
-# trinket2=deaths_verdict,heroic=1
+# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=mace2h_3.80speed_1872min_3476max,enchant=landslide
+# off_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=mace2h_3.80speed_1872min_3476max,enchant=landslide
