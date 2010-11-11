@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (63)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13241
+// Class based active abilities, wow build 13277
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -822,13 +822,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         783, // Travel Form (Shapeshift)
           0,
     },
-    // Restoration tree, 12 abilities
+    // Restoration tree, 13 abilities
     {
        5185, // Healing Touch
       33763, // Lifebloom
        1126, // Mark of the Wild
       17116, // Nature's Swiftness
       50464, // Nourish
+      20484, // Rebirth
        8936, // Regrowth
         774, // Rejuvenation
        2782, // Remove Corruption
@@ -846,7 +847,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13241
+// Talent tree specialization abilities, wow build 13277
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -888,7 +889,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
     // Specialization abilities for Holy tree
     {
       20473, // Holy Shock
-      85101, // Meditation
+      95859, // Meditation
       85102, // Walk in the Light
           0,
     },
@@ -957,14 +958,14 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
     // Specialization abilities for Discipline tree
     {
       84732, // Enlightenment
-      85101, // Meditation
+      95860, // Meditation
       47540, // Penance
           0,
     },
     // Specialization abilities for Holy tree
     {
       88625, // Holy Word: Chastise
-      85101, // Meditation
+      95861, // Meditation
       87336, // Spiritual Healing
           0,
     },
@@ -1019,7 +1020,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
     // Specialization abilities for Restoration tree
     {
         974, // Earth Shield
-      85101, // Meditation
+      95862, // Meditation
       16213, // Purification
           0,
     },
@@ -1104,7 +1105,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13241
+// Class mastery abilities, wow build 13277
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1189,7 +1190,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13241
+// Racial abilities, wow build 13277
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1822,7 +1823,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13241
+// Glyph spells for classes, wow build 13277
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2336,7 +2337,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13241
+// Tier item set bonuses for class, wow build 13277
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {

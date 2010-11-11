@@ -563,6 +563,7 @@ enum effect_subtype_t {
     A_350 = 350,
     A_351 = 351,
     A_352 = 352,
+    A_353 = 353,
     A_MAX
 };
 
