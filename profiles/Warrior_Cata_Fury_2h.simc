@@ -15,8 +15,8 @@ actions+=/snapshot_stats
 actions+=/recklessness
 actions+=/death_wish
 # Off-GCD actions need to be first with sufficient restrictions
-actions+=/cleave,if=target.adds>0
 actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
+actions+=/cleave,if=target.adds>0
 actions+=/whirlwind,if=target.adds>0
 actions+=/colossus_smash
 actions+=/execute
@@ -28,34 +28,31 @@ actions+=/battle_shout,if=rage<30
 
 head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,reforge=haste_hit,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery
 neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=mastery_crit
-#neck=gift_of_nadun,stats=190str_286sta_127haste_127crit,reforge=haste_hit
 shoulders=earthen_pauldrons,heroic=1,type=,stats=2669armor_266str_429sta_191haste_171hit,reforge=haste_crit,gems=40str_10haste,enchant=50str_25crit
 chest=earthen_battleplate,heroic=1,type=,stats=3559armor_345str_578sta_257crit_217haste,gems=40str_20str_20hit_20str,enchant=10str_10agi_10sta_10int_10spi
 waist=belt_of_absolute_zero,heroic=1,type=,stats=2002armor_266str_429sta_171hit_191crit,gems=40str_40str_10hit
-legs=earthen_legplates,heroic=1,type=,stats=3114armor_345str_578sta_257mastery_217hit,reforge=mastery_crit,gems=20str_20crit_20str_20crit_20haste
-feet=treads_of_savage_beatings,heroic=1,type=,stats=2447armor_226str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit
-wrists=bracers_of_the_matredor,type=,stats=1589armor_229str_344sta_113haste_153crit,reforge=haste_hit,gems=20str_20crit_10str,enchant=50exp
-hands=plated_fists_of_provocation,heroic=1,type=,stats=2224armor_266str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit,enchant=50str
-#hands=earthen_gauntlets,heroic=1,stats=2224armor_266str_429sta_191haste_171mastery,gems=20str_20hit_10str,enchant=50str
-finger1=band_of_bees,stats=190str_286sta_127haste_127mastery,reforge=mastery_exp
-finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_hit
+legs=earthen_legplates,heroic=1,type=,stats=3114armor_345str_578sta_257mastery_217hit,reforge=mastery_crit,gems=20str_20crit_20str_20crit_20haste,enchant=190ap_55crit
+feet=treads_of_savage_beatings,heroic=1,type=,stats=2447armor_226str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit,enchant=25agi
+wrists=bracers_of_the_matredor,type=,stats=1589armor_229str_344sta_113haste_153crit,reforge=haste_hit,gems=20str_20crit_10str_40str,enchant=50exp
+hands=plated_fists_of_provocation,heroic=1,type=,stats=2224armor_266str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit_40str,enchant=50str
+finger1=band_of_bees,stats=190str_286sta_127haste_127mastery,reforge=mastery_exp,enchant=40str
+finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_hit,enchant=40str
 trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_35%_15dur_45cd
 trinket2=darkmoon_card_hurricane,stats=321str,equip=onattackhit_5000nature_35%_45cd
 back=glittering_epidermis,heroic=1,stats=673armor_215str_322sta_143crit_143haste,reforge=haste_hit,enchant=65crit
 main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=mace2h_3.80speed_1872min_3476max
 off_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=mace2h_3.80speed_1872min_3476max
-#off_hand=shalugdoom_the_axe_of_unmaking,heroic=1,stats=385str_578sta_257crit_257exp,weapon=axe2h_3.60speed_1773min_3293max,enchant=landslide
 ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste,reforge=haste_hit
 
 # Gear Summary
-# gear_strength=5087
-# gear_agility=131
+# gear_strength=5247
+# gear_agility=156
 # gear_stamina=6393
 # gear_intellect=10
 # gear_spirit=10
 # gear_expertise_rating=297
 # gear_hit_rating=1675
-# gear_crit_rating=2240
+# gear_crit_rating=2295
 # gear_haste_rating=1196
 # gear_mastery_rating=439
 # gear_armor=21168

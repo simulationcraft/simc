@@ -1312,8 +1312,8 @@ struct arcane_missiles_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    //mage_t* p = player -> cast_mage();
-    // Decrease Arcane Missiles! buff
+    mage_t* p = player -> cast_mage();
+    p -> buffs_arcane_missiles -> expire();
   }
 
   virtual void last_tick()

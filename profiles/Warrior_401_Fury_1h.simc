@@ -13,16 +13,15 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/recklessness
 actions+=/death_wish
-actions+=/heroic_strike
-actions+=/raging_blow
+actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
+actions+=/cleave,if=target.adds>0
 actions+=/whirlwind,if=target.adds>0
-actions+=/bloodthirst
-actions+=/berserker_rage,if=!(buff.enrage.react&buff.death_wish.react)
-actions+=/recklessness
-actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute
-actions+=/battle_shout
-actions+=/berserker_rage
+actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
+actions+=/raging_blow
+actions+=/bloodthirst
+actions+=/slam,if=buff.bloodsurge.react
+actions+=/battle_shout,if=rage<30
 
 #Reforge haste -> hit
 head=sanctified_ymirjar_lords_helmet,heroic=1,stats=2239armor_64haste_42hit_114crit_275sta_159str,gems=relentless_earthsiege_34str_8str,enchant=50ap_20crit

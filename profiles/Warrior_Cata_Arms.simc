@@ -1,4 +1,5 @@
 #!./simc 
+
 warrior=Warrior_Cata_Arms
 optimal_raid=1
 level=85
@@ -12,11 +13,11 @@ actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/deadly_calm,rage<=10
-actions+=/inner_rage,rage>=90
-actions+=/heroic_strike,rage>=75,if=target.adds=0/cleave,rage>=75,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.incite.up)
+actions+=/cleave,if=target.adds>0
 actions+=/rend,if=!ticking
 actions+=/overpower,if=buff.taste_for_blood.remains<1.5
-actions+=/bladestorm
+actions+=/bladestorm,if=target.adds>0
 actions+=/mortal_strike
 actions+=/colossus_smash
 actions+=/overpower
@@ -25,37 +26,33 @@ actions+=/slam
 actions+=/battle_shout
 actions+=/berserker_rage
 
-shoulders=earthen_pauldrons,stats=233str_380sta_169haste_149hit,gems=40str_10haste
-legs=earthen_legplates,stats=301str_512sta_228mastery_188hit,gems=20str_20crit_20haste
-head=earthen_helmet,stats=281str_512sta_228haste_168exp,gems=relentless_earthsiege_30str
-hands=earthen_gauntlets,stats=233str_380sta_169haste_149mastery,gems=40hit_10str
-chest=earthen_battleplate,stats=301str_512sta_228crit_188haste,gems=40str_20str
-neck=gift_of_nadun,stats=190str_286sta_127haste_127crit
-waist=elementium_girdle_of_pain,stats=253str_380sta_169hit_169haste,gems=40str
-feet=woe_breeders_boots,stats=233str_380sta_169crit_149haste,gems=20str_20crit_10crit
-finger1=band_of_bees,stats=190str_286sta_127haste_127mastery
-finger2=band_of_bees,stats=190str_286sta_127haste_127mastery
-# Ring is actually unique
-back=floating_web,stats=190str_286sta_127mastery_127exp
-ranged=finely_tuned_throat_needler,stats=107agi_161sta_77haste_63crit
-main_hand=zinrokh_destroyer_of_worlds,stats=374str_512sta_228hit_228crit,weapon=sword2h_3.80speed_1894min_2843max
-
-trinket1=deathbringers_will,heroic=1,stats=167crit
-trinket2=deaths_verdict,heroic=1,stats=288ap
-wrists=polar_bear_claw_bracers,heroic=1,stats=1206armor_68crit_60hit_116sta_108str,gems=10crit_10str_20str_4str,enchant=50ap
+head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery,reforge=exp_crit
+neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=hit_crit
+shoulders=earthen_pauldrons,heroic=1,type=,stats=2669armor_266str_429sta_191haste_171hit,gems=40str_10haste,enchant=50str_25crit,reforge=hit_crit
+chest=earthen_battleplate,heroic=1,type=,stats=3559armor_345str_578sta_257crit_217haste,gems=40str_20str_20hit_20str,enchant=10str_10agi_10sta_10int_10spi,reforge=haste_hit
+waist=belt_of_absolute_zero,heroic=1,type=,stats=2002armor_266str_429sta_171hit_191crit,gems=40str_40str_10hit
+legs=earthen_legplates,heroic=1,type=,stats=3114armor_345str_578sta_257mastery_217hit,gems=20str_20crit_20str_20crit_20haste,enchant=190ap_55crit,reforge=mastery_crit
+feet=treads_of_savage_beatings,heroic=1,type=,stats=2447armor_226str_429sta_191crit_171haste,gems=20str_20crit_10crit,enchant=25agi
+wrists=bracers_of_the_matredor,type=,stats=1589armor_229str_344sta_113haste_153crit,gems=20str_20crit_10str_40str,enchant=65crit
+hands=plated_fists_of_provocation,heroic=1,type=,stats=2224armor_266str_429sta_191crit_171haste,gems=20str_20crit_10crit_40str,enchant=50str
+finger1=band_of_bees,stats=190str_286sta_127haste_127mastery,enchant=40str,reforge=mastery_crit
+finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,enchant=40str,reforge=mastery_crit
+trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_35%_15dur_45cd
+trinket2=darkmoon_card_hurricane,stats=321str,equip=onattackhit_5000nature_35%_45cd
+back=glittering_epidermis,heroic=1,stats=673armor_215str_322sta_143crit_143haste,enchant=65crit
+main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=mace2h_3.80speed_1872min_3476max
+ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste
 
 # Gear Summary
-# gear_strength=3331
-# gear_agility=107
-# gear_stamina=4989
-# gear_attack_power=338
-# gear_hit_rating=834
-# gear_crit_rating=1110
-# gear_haste_rating=1560
-# gear_expertise_rating=295
-# gear_mastery_rating=758
+# gear_strength=4862
+# gear_agility=156
+# gear_stamina=5815
+# gear_attack_power=190
+# gear_hit_rating=950
+# gear_crit_rating=2215
+# gear_haste_rating=1558
+# gear_expertise_rating=169
+# gear_mastery_rating=496
 # meta_gem=relentless_earthsiege
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# trinket1=deathbringers_will,heroic=1
-# trinket2=deaths_verdict,heroic=1
