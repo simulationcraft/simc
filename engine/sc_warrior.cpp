@@ -1072,7 +1072,7 @@ struct auto_attack_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( player_t* player ) :
-      warrior_attack_t( "bladestorm", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
+      warrior_attack_t( "bladestorm_ww", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -1745,10 +1745,16 @@ struct rend_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    id = 94009; // The action is 772, but the damage is stored in 94009
+    // The action is 772, but the damage is stored in 94009
+    id = 94009;
     parse_data( p -> player_data );
 
-    base_cost              = 100.0; // Cost is stored in 772
+    // Fill in things that should have come from 772.
+    base_cost              = 100.0;
+    trigger_gcd            = 1.5;
+
+    // FIXME: wtf, at the moment ticks can be dodged/blocked/parried
+
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = true;
     tick_may_crit          = true;
