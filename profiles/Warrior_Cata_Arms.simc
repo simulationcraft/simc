@@ -6,25 +6,25 @@ level=85
 race=tauren
 use_pre_potion=-1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=320003231202123122110322000000000000000003
-glyphs=mortal_strike/overpower/slam/sweeping_strikes/berserker_rage
-actions=flask,type=endless_rage
-actions+=/food,type=fish_feast
+glyphs=mortal_strike/overpower/slam/sweeping_strikes/berserker_rage/cleaving
+actions=flask,type=titanic_strength
+actions+=/food,type=beer_basted_crocolisk
 actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
-actions+=/deadly_calm,rage<=10
-actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.incite.up)
-actions+=/cleave,if=target.adds>0
-actions+=/rend,if=!ticking
-actions+=/overpower,if=buff.taste_for_blood.remains<1.5
-actions+=/bladestorm,if=target.adds>0
-actions+=/mortal_strike
-actions+=/colossus_smash
-actions+=/overpower
-actions+=/execute
-actions+=/slam
-actions+=/battle_shout
+actions+=/deadly_calm,if=rage<=10
 actions+=/berserker_rage
+actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up
+actions+=/cleave,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0&rage>50
+actions+=/overpower,if=buff.taste_for_blood.remains<1.5
+actions+=/rend,if=!ticking&target.health_pct>=20
+actions+=/colossus_smash,if=!buff.colossus_smash.up
+actions+=/mortal_strike
+actions+=/execute
+actions+=/overpower
+actions+=/slam
+actions+=/battle_shout,if=rage<30
 
 head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery,reforge=exp_crit
 neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=hit_crit
@@ -56,3 +56,7 @@ ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste
 # meta_gem=relentless_earthsiege
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
+
+#neck=gift_of_nadun,stats=190str_286sta_127haste_127crit,reforge=haste_hit
+#hands=earthen_gauntlets,heroic=1,stats=2224armor_266str_429sta_191haste_171mastery,gems=20str_20hit_10str,enchant=50str
+#off_hand=shalugdoom_the_axe_of_unmaking,heroic=1,stats=385str_578sta_257crit_257exp,weapon=axe2h_3.60speed_1773min_3293max,enchant=landslide
