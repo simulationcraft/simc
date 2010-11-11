@@ -899,10 +899,6 @@ void warrior_attack_t::player_buff()
 
   if ( p -> set_bonus.tier10_4pc_melee() )
     player_multiplier *= 1.05;
-  if ( sim -> debug )
-    log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
-                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
-  
 }
 
 // warrior_attack_t::ready() ================================================
@@ -1286,6 +1282,8 @@ struct colossus_smash_t : public warrior_attack_t
     may_crit    = true;
     base_dd_min = 120;
     base_dd_max = 120;
+    weapon_multiplier = 1.5;
+
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
   }
 
@@ -1444,7 +1442,10 @@ struct execute_t : public warrior_attack_t
     double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + base_consumed );
     
     // Damage scales directly with AP per rage since 4.0.1.
-    direct_power_mod = 0.0525 * max_consumed;
+    if ( sim -> P403 )
+      direct_power_mod = 0.0437 * max_consumed;
+    else
+      direct_power_mod = 0.0525 * max_consumed;
 
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
@@ -1530,7 +1531,10 @@ struct mortal_strike_t : public warrior_attack_t
 
     id = 12294;
     parse_data( p -> player_data );
-    
+
+    if ( sim -> P403 )
+      weapon_multiplier           = 1.5;
+
     may_crit                    = true;
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_multiplier            *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
@@ -1579,6 +1583,9 @@ struct overpower_t : public warrior_attack_t
 
     id = 7384;
     parse_data( p -> player_data );
+
+    if ( sim -> P403 )
+      weapon_multiplier = 1.25;
 
     may_crit   = true;
     may_dodge  = false;
@@ -1684,7 +1691,7 @@ struct raging_blow_t : public warrior_attack_t
     base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
 
-    weapon_multiplier *= 1.875;
+    weapon_multiplier *= sim -> P403 ? 1.1 : 1.875;
   }
 
   // We run this attack again for off-hand but we don't re-consume
@@ -2041,16 +2048,18 @@ struct slam_t : public warrior_attack_t
 
     static rank_t ranks[] =
     {
-      { 85, 85, 277, 277, 0, 200 },
-      { 84, 84, 272, 272, 0, 200 },
-      { 83, 83, 266, 266, 0, 200 },
-      { 82, 82, 261, 261, 0, 200 },
-      { 81, 81, 255, 255, 0, 200 },
-      { 80, 80, 250, 250, 0, 200 },
+      { 85, 85, 430, 430, 0, 200 },
+      { 84, 84, 422, 422, 0, 200 },
+      { 83, 83, 413, 413, 0, 200 },
+      { 82, 82, 404, 404, 0, 200 },
+      { 81, 81, 396, 396, 0, 200 },
+      { 80, 80, 387, 387, 0, 200 },
       { 0, 0, 0, 0, 0, 0 },
     };
     init_rank( ranks );
-    // FIXME: Scaling data is stored in effect 462, but not parsed automatically
+    // FIXME: the level scaling data is in the DBC files now, hopefully we
+    // will automatically get it some day via parse_data().  This is now
+    // the 4.0.3 data.
 
     id = 1464;
     parse_data( p -> player_data );
@@ -2064,7 +2073,7 @@ struct slam_t : public warrior_attack_t
     base_multiplier            *= 1 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
                                     + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
     if ( sim -> P403 )
-      weapon_multiplier *= 1.50;
+      weapon_multiplier *= 1.25;
   }
 
   virtual double haste() SC_CONST
@@ -2189,6 +2198,9 @@ struct whirlwind_t : public warrior_attack_t
 
     id = 1680;
     parse_data( p -> player_data );
+
+    if ( sim -> P403 )
+      weapon_multiplier = 0.65;
 
     aoe               = true;
     may_crit          = true;
