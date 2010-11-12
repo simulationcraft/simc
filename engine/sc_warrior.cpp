@@ -349,6 +349,7 @@ struct warrior_attack_t : public attack_t
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( double amount, int dmg_type );
+  virtual void   parse_options( option_t* options, const std::string& options_str );
 };
 
 
@@ -837,6 +838,18 @@ void warrior_attack_t::execute()
   {
     p -> buffs_overpower -> trigger();
   }
+}
+
+// warrior_attack_t::parse_options ==========================================
+
+void warrior_attack_t::parse_options( option_t* options, const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+  std::vector<option_t> merged_options;
+  attack_t::parse_options( merge_options( merged_options, base_options, options ), options_str );
 }
 
 // warrior_attack_t::calculate_weapon_damage ================================
@@ -2210,6 +2223,7 @@ struct warrior_spell_t : public spell_t
   virtual double cost() SC_CONST;
   virtual double gcd() SC_CONST;
   virtual bool   ready();
+  virtual void   parse_options( option_t* options, const std::string& options_str );
 };
 
 // warrior_spell_t::cost ====================================================
@@ -2250,6 +2264,18 @@ bool warrior_spell_t::ready()
     return false;
 
   return true;
+}
+
+// warrior_spell_t::parse_options() =========================================
+
+void warrior_spell_t::parse_options( option_t* options, const std::string& options_str )
+{
+  option_t base_options[] =
+  {
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+  std::vector<option_t> merged_options;
+  spell_t::parse_options( merge_options( merged_options, base_options, options ), options_str );
 }
 
 // Battle Shout =============================================================
