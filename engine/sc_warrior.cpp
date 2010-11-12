@@ -606,6 +606,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
         id = 76858;
         parse_data( p -> player_data );
         background = proc = true;
+        may_crit   = true;
 
         // FIXME: weapon_modifer should be 1.0 not 0.75.
         reset();
