@@ -45,6 +45,7 @@ struct warrior_t : public player_t
 
   // Active
   action_t* active_deep_wounds;
+  action_t* active_opportunity_strike;
   int       active_stance;
 
   // Active Spells
@@ -272,8 +273,9 @@ struct warrior_t : public player_t
     tree_type[ WARRIOR_PROTECTION ] = TREE_PROTECTION;
 
     // Active
-    active_deep_wounds = 0;
-    active_stance      = STANCE_BATTLE;
+    active_deep_wounds        = 0;
+    active_opportunity_strike = 0;
+    active_stance             = STANCE_BATTLE;
 
     // Cooldowns
     cooldowns_colossus_smash = get_cooldown( "colossus_smash" );
@@ -573,9 +575,6 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( a -> proc )
     return;
 
-  if ( a -> result_is_miss() )
-    return;
-
   weapon_t* w = a -> weapon;
 
   if ( ! w )
@@ -585,22 +584,41 @@ static void trigger_strikes_of_opportunity( attack_t* a )
 
   if ( ! p -> mastery.strikes_of_opportunity -> ok() )
     return;
-  
-  if ( p -> rng_strikes_of_opportunity -> roll( p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect_base_value( 2 ) / 10000.0 ) )
-  {
-    if ( a -> sim -> log )
-      log_t::output( a -> sim, "%s gains one extra attack through %s",
-                     p -> name(), p -> procs_strikes_of_opportunity -> name() );
 
-    p -> procs_strikes_of_opportunity -> occur();
-    
-    double proc_value = ( a -> sim -> P403 ) ? 1.00 : 0.75;
-    p -> main_hand_attack -> proc = true;
-    p -> main_hand_attack -> player_multiplier *= proc_value;
-    p -> main_hand_attack -> execute();
-    p -> main_hand_attack -> proc = false;
-    p -> main_hand_attack -> player_multiplier /= proc_value;
+  double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect_base_value( 2 ) / 10000.0;
+
+  if ( ! p -> rng_strikes_of_opportunity -> roll( chance ) )
+    return;
+
+  if ( p -> sim -> debug )
+    log_t::output( p -> sim, "Opportunity Strike procced from %s", a -> name() );
+
+  if ( ! p -> active_opportunity_strike )
+  {
+    struct opportunity_strike_t : public warrior_attack_t
+    {
+      opportunity_strike_t( warrior_t* p ) :
+          warrior_attack_t( "opportunity_strike", p, SCHOOL_PHYSICAL, TREE_ARMS )
+      {
+        weapon = &( p -> main_hand_weapon );
+
+        id = 76858;
+        parse_data( p -> player_data );
+        background = proc = true;
+
+        // FIXME: weapon_modifer should be 1.0 not 0.75.
+        reset();
+      }
+
+      // It's not a real warrior_attack_t but it needs player_buff.
+      void execute() { attack_t::execute(); }
+      void consume_resource() { }
+    };
+    p -> active_opportunity_strike = new opportunity_strike_t( p );
   }
+
+  p -> active_opportunity_strike -> execute();
+  p -> procs_strikes_of_opportunity -> occur();
 }
 
 // trigger_sudden_death =====================================================
@@ -793,9 +811,14 @@ void warrior_attack_t::execute()
   if ( attack_t::cost() >= 50 ) 
     p -> buffs_battle_trance -> expire();
 
+  if ( proc )
+    return;
+
   if ( result_is_hit() )
   {
     trigger_sudden_death( this );
+
+    trigger_strikes_of_opportunity( this );
 
     trigger_enrage( this );
 
@@ -1009,8 +1032,6 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      trigger_strikes_of_opportunity( this );
-
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
         p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect_base_value( 3 ), p -> gains_blood_frenzy );
