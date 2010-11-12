@@ -285,7 +285,7 @@ struct warrior_t : public player_t
     dots_deep_wounds = get_dot( "deep_wounds" );
     dots_rend        = get_dot( "rend"        );
 
-    instant_flurry_haste = false;
+    instant_flurry_haste = true;
   }
 
   // Character Definition
@@ -710,6 +710,8 @@ static void trigger_flurry( attack_t* a, int stacks )
   event_t* mhe = p -> main_hand_attack -> execute_event;
   event_t* ohe = p -> off_hand_attack -> execute_event;
 
+  // This mess would be a lot easier if we could give a time instead of
+  // a delta to reschedule_execute().
   if ( mhe ) {
     double delta;
     if ( mhe -> reschedule_time )
@@ -841,9 +843,9 @@ void warrior_attack_t::execute()
 
 // warrior_attack_t::parse_options ==========================================
 
-void warrior_attack_t::parse_options( option_t*          options,
-                                      const std::string& options_str )
+void warrior_attack_t::parse_options( option_t* options, const std::string& options_str )
 {
+  // FIXME: can we remove these since the base provides rage in if=
   option_t base_options[] =
   {
     { "min_rage", OPT_FLT, &min_rage },
@@ -1147,11 +1149,8 @@ struct bladestorm_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.bladestorm -> rank() );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 46924;
     parse_data( p -> player_data );
@@ -1207,11 +1206,7 @@ struct bloodthirst_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_spec( TREE_FURY );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 23881;
     parse_data( p -> player_data );
@@ -1246,11 +1241,7 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
 
@@ -1304,11 +1295,8 @@ struct colossus_smash_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     check_min_level( 81 );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 86346;
     parse_data( p -> player_data );
@@ -1340,11 +1328,8 @@ struct concussion_blow_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.concussion_blow -> rank() );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 12809;
     parse_data( p -> player_data );
@@ -1365,11 +1350,8 @@ struct devastate_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.devastate -> rank() );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 20243;
     parse_data( p -> player_data );
@@ -1402,11 +1384,8 @@ struct execute_t : public warrior_attack_t
       warrior_attack_t( "execute",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 5308;
     parse_data( p -> player_data );
@@ -1506,11 +1485,7 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 78;
     parse_data( p -> player_data );
@@ -1555,11 +1530,8 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     check_spec( TREE_ARMS );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 12294;
     parse_data( p -> player_data );
@@ -1607,11 +1579,8 @@ struct overpower_t : public warrior_attack_t
       warrior_attack_t( "overpower",  player, SCHOOL_PHYSICAL, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 7384;
     parse_data( p -> player_data );
@@ -1681,11 +1650,7 @@ struct pummel_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 6552;
     parse_data( p -> player_data );
@@ -1712,11 +1677,7 @@ struct raging_blow_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.raging_blow -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 85288;
     parse_data( p -> player_data );
@@ -1780,11 +1741,8 @@ struct rend_t : public warrior_attack_t
       warrior_attack_t( "rend",  player, SCHOOL_BLEED, TREE_ARMS )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 772;
     parse_data( p -> player_data );
@@ -1835,11 +1793,8 @@ struct revenge_t : public warrior_attack_t
       warrior_attack_t( "revenge",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 6572;
     parse_data( p -> player_data );
@@ -1891,11 +1846,7 @@ struct shattering_throw_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 64382;
     parse_data( p -> player_data );
@@ -1927,11 +1878,7 @@ struct shield_bash_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 72;
     parse_data( p -> player_data );
@@ -1960,6 +1907,7 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_spec( TREE_PROTECTION );
 
+    // FIXME: delete, can be if=buffs.sword_and_board.react
     option_t options[] =
     {
       { "sword_and_board", OPT_BOOL, &sword_and_board },
@@ -2026,11 +1974,8 @@ struct shockwave_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.shockwave -> rank() );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 46968;
     parse_data( p -> player_data );
@@ -2071,6 +2016,7 @@ struct slam_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
+    // FIXME: delete, can be if=buffs.bloodsurge.react
     option_t options[] =
     {
       { "bloodsurge", OPT_BOOL, &bloodsurge },
@@ -2168,11 +2114,8 @@ struct thunder_clap_t : public warrior_attack_t
       warrior_attack_t( "thunder_clap",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 6343;
     parse_data( p -> player_data );
@@ -2208,11 +2151,7 @@ struct whirlwind_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 1680;
     parse_data( p -> player_data );
@@ -2265,11 +2204,8 @@ struct victory_rush_t : public warrior_attack_t
       warrior_attack_t( "victory_rush",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 34428;
     parse_data( p -> player_data );
@@ -2355,6 +2291,7 @@ bool warrior_spell_t::ready()
 void warrior_spell_t::parse_options( option_t*          options,
                                      const std::string& options_str )
 {
+  // FIXME: delete these too in favor of the base if=
   option_t base_options[] =
   {
     { "min_rage",       OPT_FLT, &min_rage       },
