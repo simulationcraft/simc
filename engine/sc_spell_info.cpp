@@ -102,21 +102,21 @@ static const char * _effect_type_strings[] = {
 };
 
 static const char * _effect_subtype_strings[] = {
-  "None",                       0,                          "Possess",              "Periodic Damage",          "Dummy",                 // 0
-  "Confuse",                    "Charm",                    "Fear",                 "Periodic Heal",            "Attack Speed",          // 5
-  "Threat",                     "Taunt",                    "Stun",                 "Damage Done",              "Damage Taken",          // 10
-  "Damage Shield",              "Stealth",                  0,                      "Invisibility",             0,                       // 15
-  0,                            0,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power", // 20
-  "Pacify",                     "Root",                     "Silence",              "Spell Reflection",         "Attribute",             // 25
-  "Skill",                      0,                          0,                      "Decrease Movement Speed%", 0,                       // 30
-  0,                            "Shapeshift",               0,                      0,                          0,                       // 35
-  0,                            0,                          "Proc Trigger Spell",   "Proc Trigger Damage",      "Track Creatures",       // 40
-  0,                            0,                          "Modify Parry%",        0,                          "Modify Dodge%",         // 45
-  "Modify Critical Heal Bonus", "Modify Block%",            "Modify Crit%",         "Periodic Health Leech",    "Modify Hit%",           // 50
-  "Modify Spell Hit%",          0,                          "Modify Spell Crit%",   0,                          0,                       // 55 
-  0,                            0,                          0,                      0,                          0,                       // 60 
-  "Modify Cast Speed%",         0,                          0,                      0,                          "Absorb Damage",         // 65 
-  0,                            0,                          0,                      0,                          0,                       // 70 
+  "None",                       0,                          "Possess",              "Periodic Damage",          "Dummy",                              // 0
+  "Confuse",                    "Charm",                    "Fear",                 "Periodic Heal",            "Attack Speed",                       // 5
+  "Threat",                     "Taunt",                    "Stun",                 "Damage Done",              "Damage Taken",                       // 10
+  "Damage Shield",              "Stealth",                  "Stealth Detection",    "Invisibility",             "Invisibility Detection",             // 15
+  0,                            0,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power",            // 20
+  "Pacify",                     "Root",                     "Silence",              "Spell Reflection",         "Attribute",                          // 25
+  "Skill",                      "Increase Speed%",          "Increase Mounted Speed%", "Decrease Movement Speed%", "Increase Health",                 // 30
+  "Increase Energy",            "Shapeshift",               "Immunity Against External Movement", 0,            "School Immunity",                    // 35
+  0,                            0,                          "Proc Trigger Spell",   "Proc Trigger Damage",      "Track Creatures",                    // 40
+  0,                            0,                          "Modify Parry%",        0,                          "Modify Dodge%",                      // 45
+  "Modify Critical Heal Bonus", "Modify Block%",            "Modify Crit%",         "Periodic Health Leech",    "Modify Hit%",                        // 50
+  "Modify Spell Hit%",          0,                          "Modify Spell Crit%",   0,                          0,                                    // 55
+  "Pacify Silence",             "Scale%",                   0,                      0,                          "Periodic Mana Leech",                // 60
+  "Modify Cast Speed%",         "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
+  0,                            0,                          "Modify Power Cost%",   "Modify Power Cost",        "Reflect Spells",                     // 70
   0,                            0,                          "Mechanic Immunity",    0,                          "Modify Damage Done%",   // 75 
   "Modify Attribute%",          0,                          0,                      0,                          0,                       // 80 
   "Modify Power Regeneration",  0,                          "Modify Damage Taken%", 0,                          0,                       // 85 
