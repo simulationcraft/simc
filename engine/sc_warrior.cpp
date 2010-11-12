@@ -1280,9 +1280,7 @@ struct colossus_smash_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     may_crit    = true;
-    base_dd_min = 120;
-    base_dd_max = 120;
-    weapon_multiplier = 1.5;
+    base_dd_min = base_dd_max = p -> player_data.effect_base_value( 87876 );
 
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
   }
@@ -1587,6 +1585,8 @@ struct overpower_t : public warrior_attack_t
     if ( sim -> P403 )
       weapon_multiplier = 1.25;
 
+    // To Do: Is this still normalized in 403?
+
     may_crit   = true;
     may_dodge  = false;
     may_parry  = false;
@@ -1752,18 +1752,14 @@ struct rend_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    // The action is 772, but the damage is stored in 94009
-    id = 94009;
+    id = 772;
     parse_data( p -> player_data );
-
-    // Fill in things that should have come from 772.
-    base_cost              = 100.0;
-    trigger_gcd            = 1.5;
 
     // FIXME: wtf, at the moment ticks can be dodged/blocked/parried
 
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = true;
+    base_td                = p -> player_data.effect_min( 98699, p -> type, p -> level );
     tick_may_crit          = true;
     tick_zero              = true;
     normalize_weapon_speed = false;
@@ -2046,30 +2042,16 @@ struct slam_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 85, 85, 430, 430, 0, 200 },
-      { 84, 84, 422, 422, 0, 200 },
-      { 83, 83, 413, 413, 0, 200 },
-      { 82, 82, 404, 404, 0, 200 },
-      { 81, 81, 396, 396, 0, 200 },
-      { 80, 80, 387, 387, 0, 200 },
-      { 0, 0, 0, 0, 0, 0 },
-    };
-    init_rank( ranks );
-    // FIXME: the level scaling data is in the DBC files now, hopefully we
-    // will automatically get it some day via parse_data().  This is now
-    // the 4.0.3 data.
-
     id = 1464;
     parse_data( p -> player_data );
     weapon                      = &( p -> main_hand_weapon );
-    normalize_weapon_speed      = true;
+    base_dd_min                 = p -> player_data.effect_min( 462, p -> type, p -> level );
+    base_dd_max                 = p -> player_data.effect_max( 462, p -> type, p -> level );
     may_crit                    = true;
     base_crit                  += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam     -> effect_base_value( 1 ) / 1000.0;
-    // FIXME: is there any reason to believe this is additive?  Ask swbusche.
+    // FIXME: Confirm this is additive and not multiplicative
     base_multiplier            *= 1 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
                                     + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
     if ( sim -> P403 )

@@ -1597,6 +1597,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> dot_behavior: %s<br>"
            "<br> <b> weapon</b>"
            "<br> weapon_power_mod: %.6f"
+           "<br> weapon_multiplier: %.2f"
            "</div>",
            a -> id, util_t::school_type_string( a-> school ),
            util_t::resource_type_string( a -> resource ), util_t::talent_tree_string( a -> tree ),
@@ -1609,7 +1610,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            a -> tick_zero?"true":"false", a -> tick_power_mod, a -> base_td, a -> num_ticks, a -> base_tick_time,
            a -> scale_with_haste?"true":"false",
            a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
-           a -> weapon_power_mod);
+           a -> weapon_power_mod, a -> weapon_multiplier);
       i++;
     }
   }
