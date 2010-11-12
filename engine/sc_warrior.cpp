@@ -1747,8 +1747,6 @@ struct rend_t : public warrior_attack_t
     id = 772;
     parse_data( p -> player_data );
 
-    // FIXME: wtf, at the moment ticks can be dodged/blocked/parried
-
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = true;
     base_td                = p -> player_data.effect_min( 98699, p -> type, p -> level );
