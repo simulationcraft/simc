@@ -1788,12 +1788,15 @@ struct rend_t : public warrior_attack_t
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = true;
     base_td                = p -> player_data.effect_min( 98699, p -> type, p -> level );
+    base_tick_time         = p -> player_data.effect_period ( 98699 );
+    num_ticks              = (int) ( p -> player_data.spell_duration ( 94009 ) / base_tick_time );
     tick_may_crit          = true;
     tick_zero              = true;
     normalize_weapon_speed = false;
     scale_with_haste       = false;
     base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
     stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
+    school                 = stats -> school = SCHOOL_BLEED;
   }
 
   virtual double calculate_direct_damage()
