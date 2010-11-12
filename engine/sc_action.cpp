@@ -793,7 +793,13 @@ double action_t::calculate_weapon_damage()
 
   double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
 
-  return ( weapon_damage + power_damage );
+  double total_dmg = weapon_damage + power_damage;
+    
+  // OH penalty
+  if ( weapon -> slot == SLOT_OFF_HAND )
+    total_dmg *= 0.5;
+
+  return total_dmg;
 }
 
 // action_t::calculate_tick_damage ===========================================
@@ -851,10 +857,6 @@ double action_t::calculate_direct_damage()
     // e.g. Obliterate, Shred, Backstab
     direct_dmg += calculate_weapon_damage();
     direct_dmg *= weapon_multiplier;
-    
-    // OH penalty
-    if ( weapon && weapon -> slot == SLOT_OFF_HAND )
-      direct_dmg *= 0.5;
   }
   direct_dmg += direct_power_mod * total_power();
   direct_dmg  = ceil( direct_dmg ); // Needs verifying. Seems okay for SW: Death

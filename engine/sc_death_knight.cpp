@@ -1533,6 +1533,7 @@ struct death_knight_attack_t : public attack_t
   virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
+  virtual double calculate_weapon_damage();
   virtual void   target_debuff( int school );
   virtual bool   ready();
 };
@@ -1926,6 +1927,22 @@ void death_knight_attack_t::execute()
   }
 }
 
+// death_knight_attack_t::calculate_weapon_damage() =========================
+
+double death_knight_attack_t::calculate_weapon_damage()
+{
+  double dmg = attack_t::calculate_weapon_damage();
+
+  death_knight_t* p = player -> cast_death_knight();
+
+  if ( weapon -> slot == SLOT_OFF_HAND && p -> talents.nerves_of_cold_steel -> rank() )
+  {
+    dmg *= 1.0 + p -> talents.nerves_of_cold_steel -> effect_base_value( 2 ) / 100.0;
+  }
+
+  return dmg;
+}
+
 // death_knight_attack_t::player_buff() =====================================
 
 void death_knight_attack_t::player_buff()
@@ -1938,8 +1955,6 @@ void death_knight_attack_t::player_buff()
   {
     if ( p -> talents.nerves_of_cold_steel -> rank() )
     {
-      if ( weapon -> slot == SLOT_OFF_HAND )
-        player_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect_base_value( 2 ) / 100.0;
       if ( weapon -> group() == WEAPON_1H )
         player_hit += p -> talents.nerves_of_cold_steel -> effect_base_value( 1 ) / 100.0;
     }

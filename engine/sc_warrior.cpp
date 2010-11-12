@@ -10,6 +10,8 @@
 //
 // TODO:
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
+//   * Move the bleeds out of being warrior_attack_t to stop them
+//     triggering effects or having special cases in the class.
 //   * Go through all of Deep Wounds and figure out what's going on.
 //     * Is it working right?
 //     * Why is the stats output fubar?
@@ -19,12 +21,11 @@
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
-//   * Test some multi-target fights and see if WW/cleave are right.
 //   * Check normalize_weapon_speed for correctness everywhere.
 //   * Does Colossus Smash itself ignore armor?
 //   * Can you cancel Inner Rage?
 //   * Sanity check init_buffs() wrt durations and chances.
-//   * Fix the default action lists to be more realistic.
+//   * Fix the arms action list to match the profiles.
 //   * Sanitise use of buff up() vs check() for stats.
 //   * Arms.
 //   * Prot? O_O
@@ -343,6 +344,7 @@ struct warrior_attack_t : public attack_t
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual void   execute();
+  virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( double amount, int dmg_type );
@@ -460,9 +462,6 @@ static void trigger_deep_wounds( action_t* a )
   double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
-
-  if ( a -> weapon -> slot == SLOT_OFF_HAND )
-    deep_wounds_dmg *= 0.5;
 
   if ( p -> active_deep_wounds -> ticking )
   {
@@ -828,6 +827,27 @@ void warrior_attack_t::parse_options( option_t*          options,
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
+// warrior_attack_t::calculate_weapon_damage ================================
+
+double warrior_attack_t::calculate_weapon_damage()
+{
+  double dmg = attack_t::calculate_weapon_damage();
+
+  warrior_t* p = player -> cast_warrior();
+
+  if ( weapon -> slot == SLOT_OFF_HAND && p -> spec.dual_wield_specialization -> ok() && weapon -> slot == SLOT_OFF_HAND )
+  {
+    dmg *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 2 ) / 100.0;
+  }
+
+  if ( p -> spec.two_handed_weapon_specialization -> ok() && weapon -> group() == WEAPON_2H)
+  {
+    dmg *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
+  }
+
+  return dmg;
+}
+
 // warrior_attack_t::player_buff ============================================
 
 void warrior_attack_t::player_buff()
@@ -835,18 +855,6 @@ void warrior_attack_t::player_buff()
   attack_t::player_buff();
 
   warrior_t* p = player -> cast_warrior();
-
-  if ( weapon )
-  {
-    if ( p -> spec.dual_wield_specialization -> ok() && weapon -> slot == SLOT_OFF_HAND )
-    {
-      player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 2 ) / 100.0;
-    }
-    if ( p -> spec.two_handed_weapon_specialization -> ok() && weapon -> group() == WEAPON_2H)
-    {
-      player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
-    }
-  }
 
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
@@ -862,8 +870,9 @@ void warrior_attack_t::player_buff()
   }
   
   player_multiplier *= 1.0 + p -> buffs_death_wish    -> value();
-  player_multiplier *= 1.0 + p -> buffs_enrage        -> value();
   player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
+  if ( school == SCHOOL_PHYSICAL )
+    player_multiplier *= 1.0 + p -> buffs_enrage -> value();
   
   if ( p -> talents.single_minded_fury -> rank() && p -> dual_wield() )
   {

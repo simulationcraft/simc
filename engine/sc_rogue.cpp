@@ -440,6 +440,7 @@ struct rogue_attack_t : public attack_t
   virtual double cost() SC_CONST;
   virtual void   consume_resource();
   virtual void   execute();
+  virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( double amount, int dmg_type );
@@ -1074,6 +1075,20 @@ void rogue_attack_t::execute()
   }
 }
 
+// rogue_attack_t::calculate_weapon_damage ================================
+
+double rogue_attack_t::calculate_weapon_damage()
+{
+  double dmg = attack_t::calculate_weapon_damage();
+
+  rogue_t* p = player -> cast_rogue();
+
+  if ( weapon -> slot == SLOT_OFF_HAND )
+    dmg *= 1.0 + p -> spec_ambidexterity -> base_value( E_APPLY_AURA, A_MOD_OFFHAND_DAMAGE_PCT );
+
+  return dmg;
+}
+
 // rogue_attack_t::player_buff ============================================
 
 void rogue_attack_t::player_buff()
@@ -1081,9 +1096,6 @@ void rogue_attack_t::player_buff()
   attack_t::player_buff();
   
   rogue_t* p = player -> cast_rogue();
-
-  if ( weapon && weapon -> slot == SLOT_OFF_HAND )
-    player_multiplier *= 1.0 + p -> spec_ambidexterity -> base_value( E_APPLY_AURA, A_MOD_OFFHAND_DAMAGE_PCT );
 
   if ( school == SCHOOL_PHYSICAL )
     player_multiplier *= 1.0 + p -> spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
