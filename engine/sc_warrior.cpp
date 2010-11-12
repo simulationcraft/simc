@@ -840,11 +840,6 @@ double warrior_attack_t::calculate_weapon_damage()
     dmg *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 2 ) / 100.0;
   }
 
-  if ( p -> spec.two_handed_weapon_specialization -> ok() && weapon -> group() == WEAPON_2H)
-  {
-    dmg *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
-  }
-
   return dmg;
 }
 
@@ -855,6 +850,11 @@ void warrior_attack_t::player_buff()
   attack_t::player_buff();
 
   warrior_t* p = player -> cast_warrior();
+
+  if ( weapon && weapon -> group() == WEAPON_2H && p -> spec.two_handed_weapon_specialization -> ok() )
+  {
+    player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
+  }
 
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
@@ -944,8 +944,6 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     warrior_t* p = player -> cast_warrior();
-
-    base_dd_min = base_dd_max = 1;
 
     may_glance      = true;
     may_crit        = true;
