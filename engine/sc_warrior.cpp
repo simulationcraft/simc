@@ -456,7 +456,8 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
-  if ( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
+  if ( ! p -> active_deep_wounds )
+    p -> active_deep_wounds = new deep_wounds_t( p );
 
   p -> active_deep_wounds -> weapon = a -> weapon;
   p -> active_deep_wounds -> player_buff();
@@ -746,10 +747,11 @@ double warrior_attack_t::armor() SC_CONST
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( double amount,
-                                    int    dmg_type )
+void warrior_attack_t::assess_damage( double amount, int dmg_type )
 {
   attack_t::assess_damage( amount, dmg_type );
+
+  // FIXME: does Opportunity Strike (proc) spread via SS?
 
   warrior_t* p = player -> cast_warrior();
 
@@ -778,6 +780,9 @@ void warrior_attack_t::consume_resource()
   warrior_t* p = player -> cast_warrior();
 
   attack_t::consume_resource();
+
+  if ( proc ) 
+    return;
 
   if ( result == RESULT_CRIT )
   {
@@ -1809,8 +1814,6 @@ struct rend_t : public warrior_attack_t
   {
     base_td = base_td_init + calculate_weapon_damage() * 0.25;
     warrior_attack_t::execute();
-    if ( result_is_hit() )
-      trigger_blood_frenzy( this );
   }
 
   virtual void tick()
@@ -1819,6 +1822,7 @@ struct rend_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
+    trigger_blood_frenzy( this );
   }
 };
 
@@ -3525,8 +3529,8 @@ void player_t::warrior_init( sim_t* sim )
   sim -> auras.rampage      = new aura_t( sim, "rampage",      1, 0.0 );
 
   target_t* t = sim -> target;
-  t -> debuffs.blood_frenzy_bleed    = new debuff_t( sim, "blood_frenzy_bleed",    1, 15.0 );
-  t -> debuffs.blood_frenzy_physical = new debuff_t( sim, "blood_frenzy_physical", 1, 15.0 );
+  t -> debuffs.blood_frenzy_bleed    = new debuff_t( sim, "blood_frenzy_bleed",    1, 60.0 );
+  t -> debuffs.blood_frenzy_physical = new debuff_t( sim, "blood_frenzy_physical", 1, 60.0 );
   t -> debuffs.sunder_armor          = new debuff_t( sim, "sunder_armor",          1, 30.0 );
   t -> debuffs.thunder_clap          = new debuff_t( sim, "thunder_clap",          1, 30.0 );
   t -> debuffs.shattering_throw      = new debuff_t( sim, "shattering_throw",      1 );
