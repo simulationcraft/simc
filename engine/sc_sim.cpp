@@ -1973,7 +1973,10 @@ int sim_t::main( int argc, char** argv )
   // Spell query, dont simulate anything
   else if ( sd )
   {
-    init();
+    P403 = patch.after( 4, 0, 3 );
+
+    if ( P403 )
+      sim_data.set_parent( &sim_t::ptr_data );
 
     sd -> evaluate();
 
