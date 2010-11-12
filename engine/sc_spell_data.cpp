@@ -33,6 +33,29 @@ static sdata_field_t _talent_data_fields[] = {
   { SD_TYPE_UNSIGNED, ""              },
 };
 
+static sdata_field_t _effect_data_fields[] = {
+  { SD_TYPE_UNSIGNED, "id"             },
+  { SD_TYPE_UNSIGNED, "flags"          },
+  { SD_TYPE_UNSIGNED, "spell_id"       },
+  { SD_TYPE_UNSIGNED, "index"          },
+  { SD_TYPE_INT,      "type"           },
+  { SD_TYPE_INT,      "sub_type"       },
+  { SD_TYPE_DOUBLE,   "m_average"      },
+  { SD_TYPE_DOUBLE,   "m_delta"        },
+  { SD_TYPE_DOUBLE,   "m_bonus"        },
+  { SD_TYPE_DOUBLE,   "coefficient"    },
+  { SD_TYPE_DOUBLE,   "amplitude"      },
+  { SD_TYPE_DOUBLE,   "radius"         },
+  { SD_TYPE_DOUBLE,   "max_radius"     },
+  { SD_TYPE_INT,      "base_value"     },
+  { SD_TYPE_INT,      "misc_value"     },
+  { SD_TYPE_INT,      "misc_value2"    },
+  { SD_TYPE_INT,      "trigger_spell"  },
+  { SD_TYPE_DOUBLE,   "p_combo_points" },
+  { SD_TYPE_DOUBLE,   "p_level"        },
+  { SD_TYPE_INT,      "damage_range"   },
+};
+
 static sdata_field_t _spell_data_fields[] = {
   { SD_TYPE_STR,      "name"          },
   { SD_TYPE_UNSIGNED, "id",           },
@@ -121,7 +144,7 @@ static bool pred ( char a, char b ) {
 }
 
 static bool str_compare_ci( const std::string& l,
-			                const std::string& r )
+                            const std::string& r )
 {
     if ( l.size() != r.size() || l.size() == 0 )
         return false;
@@ -228,8 +251,8 @@ static unsigned school_str_to_mask( const std::string& str )
 // For these expression types, you can only use two spell lists as parameters
 struct spell_list_expr_t : public spell_data_expr_t
 {
-  spell_list_expr_t( sim_t* sim, const std::string& name, expr_data_type_t type = DATA_SPELL ) : 
-    spell_data_expr_t( sim, name, type, TOK_SPELL_LIST ) { }
+  spell_list_expr_t( sim_t* sim, const std::string& name, expr_data_type_t type = DATA_SPELL, bool eq = false ) : 
+    spell_data_expr_t( sim, name, type, eq, TOK_SPELL_LIST ) { }
   
   virtual int evaluate()
   {
@@ -257,6 +280,17 @@ struct spell_list_expr_t : public spell_data_expr_t
             continue;
       
           result_spell_list.push_back( sim -> sim_data.m_talents_index[ i ] -> id );
+        }
+        break;
+      }
+      case DATA_EFFECT:
+      {
+        for ( unsigned int i = 0; i < sim -> sim_data.m_effects_index_size; i++ )
+        {
+          if ( ! sim -> sim_data.m_effects_index[ i ] )
+            continue;
+      
+          result_spell_list.push_back( sim -> sim_data.m_effects_index[ i ] -> id );
         }
         break;
       }
@@ -444,8 +478,8 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   int                offset;
   sdata_field_type_t field_type;
   
-  spell_data_filter_expr_t( sim_t* sim, expr_data_type_t type, const std::string& f_name ) :
-    spell_list_expr_t( sim, f_name, type ), offset( 0 ), field_type( SD_TYPE_INT )
+  spell_data_filter_expr_t( sim_t* sim, expr_data_type_t type, const std::string& f_name, bool eq = false ) :
+    spell_list_expr_t( sim, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
     sdata_field_t      * fields = 0;
     unsigned             fsize;
@@ -453,6 +487,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     {
       fields = _talent_data_fields;
       fsize  = sizeof( _talent_data_fields );
+    }
+    else if ( effect_query || type == DATA_EFFECT )
+    {
+      fields = _effect_data_fields;
+      fsize  = sizeof( _effect_data_fields );
     }
     else
     {
@@ -492,96 +531,123 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     }
   }
   
-  virtual std::vector<uint32_t>& build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_type_t t ) SC_CONST
+  virtual bool compare( char* data, const spell_data_expr_t& other, token_type_t t ) SC_CONST
   {
     const int      *int_v;
     int             oint_v;
     const double   *double_v;
     const unsigned *unsigned_v;
     unsigned        ounsigned_v;
-    char           *p_spell_data;
     std::string     string_v,
                     ostring_v;
+                    
+    switch ( field_type )
+    {
+      case SD_TYPE_INT:
+      {
+        int_v  = reinterpret_cast< const int* >( data + offset );
+        oint_v = ( int ) other.result_num;
+        switch ( t )
+        {
+          case TOK_LT:     if ( *int_v < oint_v  ) return true; break;
+          case TOK_LTEQ:   if ( *int_v <= oint_v ) return true; break;
+          case TOK_GT:     if ( *int_v > oint_v  ) return true; break;
+          case TOK_GTEQ:   if ( *int_v >= oint_v ) return true; break;
+          case TOK_EQ:     if ( *int_v == oint_v ) return true; break;
+          case TOK_NOTEQ:  if ( *int_v != oint_v ) return true; break;
+          default:         return false;
+        }
+        break;
+      }
+      case SD_TYPE_UNSIGNED:
+      {
+        unsigned_v  = reinterpret_cast< const unsigned* >( data + offset );
+        ounsigned_v = ( unsigned ) other.result_num;
+        switch ( t )
+        {
+          case TOK_LT:     if ( *unsigned_v < ounsigned_v ) return true; break;
+          case TOK_LTEQ:   if ( *unsigned_v <= ounsigned_v ) return true; break;
+          case TOK_GT:     if ( *unsigned_v > ounsigned_v ) return true; break;
+          case TOK_GTEQ:   if ( *unsigned_v >= ounsigned_v ) return true; break;
+          case TOK_EQ:     if ( *unsigned_v == ounsigned_v ) return true; break;
+          case TOK_NOTEQ:  if ( *unsigned_v != ounsigned_v ) return true; break;
+          default:         return false;
+        }
+        break;
+      }
+      case SD_TYPE_DOUBLE:
+      {
+        double_v  = reinterpret_cast< const double* >( data + offset );
+        switch ( t )
+        {
+          case TOK_LT:     if ( *double_v < other.result_num ) return true; break;
+          case TOK_LTEQ:   if ( *double_v <= other.result_num ) return true; break;
+          case TOK_GT:     if ( *double_v > other.result_num ) return true; break;
+          case TOK_GTEQ:   if ( *double_v >= other.result_num ) return true; break;
+          case TOK_EQ:     if ( *double_v == other.result_num ) return true; break;
+          case TOK_NOTEQ:  if ( *double_v != other.result_num ) return true; break;
+          default:         return false;
+        }
+        break;
+      }
+      case SD_TYPE_STR:
+      {
+        if ( *reinterpret_cast<const char**>( data + offset ) )
+          string_v = std::string( *reinterpret_cast<const char**>( data + offset ) );
+        else
+          string_v = "";
+        armory_t::format( string_v );
+        ostring_v = other.result_str;
+
+        switch ( t )
+        {
+          case TOK_EQ:    if ( str_compare_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_NOTEQ: if ( ! str_compare_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_IN:    if ( ! string_v.empty() && str_in_str_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_NOTIN: if ( ! string_v.empty() && ! str_in_str_ci( string_v, ostring_v ) ) return true; break;
+          default:        return false;
+        }
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    }
+    return false;
+  }
+  
+  virtual std::vector<uint32_t>& build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_type_t t ) SC_CONST
+  {
+    char* p_data = 0;
 
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( data_type == DATA_TALENT )
-        p_spell_data = reinterpret_cast< char*> ( sim -> sim_data.m_talents_index[ *i ] );
-      else
-        p_spell_data = reinterpret_cast< char* >( sim -> sim_data.m_spells_index[ *i ] );
-      
-      switch ( field_type )
+      if ( effect_query )
       {
-        case SD_TYPE_INT:
+        for ( int j = 0; j < MAX_EFFECTS; j++ )
         {
-          int_v  = reinterpret_cast< const int* >( p_spell_data + offset );
-          oint_v = ( int ) other.result_num;
-          switch ( t )
-          {
-            case TOK_LT:     if ( *int_v < oint_v  ) res.push_back( *i ); break;
-            case TOK_LTEQ:   if ( *int_v <= oint_v ) res.push_back( *i ); break;
-            case TOK_GT:     if ( *int_v > oint_v  ) res.push_back( *i ); break;
-            case TOK_GTEQ:   if ( *int_v >= oint_v ) res.push_back( *i ); break;
-            case TOK_EQ:     if ( *int_v == oint_v ) res.push_back( *i ); break;
-            case TOK_NOTEQ:  if ( *int_v != oint_v ) res.push_back( *i ); break;
-            default:         continue;
-          }
-          break;
-        }
-        case SD_TYPE_UNSIGNED:
-        {
-          unsigned_v  = reinterpret_cast< const unsigned* >( p_spell_data + offset );
-          ounsigned_v = ( unsigned ) other.result_num;
-          switch ( t )
-          {
-            case TOK_LT:     if ( *unsigned_v < ounsigned_v ) res.push_back( *i ); break;
-            case TOK_LTEQ:   if ( *unsigned_v <= ounsigned_v ) res.push_back( *i ); break;
-            case TOK_GT:     if ( *unsigned_v > ounsigned_v ) res.push_back( *i ); break;
-            case TOK_GTEQ:   if ( *unsigned_v >= ounsigned_v ) res.push_back( *i ); break;
-            case TOK_EQ:     if ( *unsigned_v == ounsigned_v ) res.push_back( *i ); break;
-            case TOK_NOTEQ:  if ( *unsigned_v != ounsigned_v ) res.push_back( *i ); break;
-            default: continue;
-          }
-          break;
-        }
-        case SD_TYPE_DOUBLE:
-        {
-          double_v  = reinterpret_cast< const double* >( p_spell_data + offset );
-          switch ( t )
-          {
-            case TOK_LT:     if ( *double_v < other.result_num ) res.push_back( *i ); break;
-            case TOK_LTEQ:   if ( *double_v <= other.result_num ) res.push_back( *i ); break;
-            case TOK_GT:     if ( *double_v > other.result_num ) res.push_back( *i ); break;
-            case TOK_GTEQ:   if ( *double_v >= other.result_num ) res.push_back( *i ); break;
-            case TOK_EQ:     if ( *double_v == other.result_num ) res.push_back( *i ); break;
-            case TOK_NOTEQ:  if ( *double_v != other.result_num ) res.push_back( *i ); break;
-            default: continue;
-          }
-          break;
-        }
-        case SD_TYPE_STR:
-        {
-          if ( *reinterpret_cast<const char**>( p_spell_data + offset ) )
-            string_v = std::string( *reinterpret_cast<const char**>( p_spell_data + offset ) );
+          if ( sim -> sim_data.m_spells_index[ *i ] && sim -> sim_data.m_spells_index[ *i ] -> effect[ j ] &&
+               sim -> sim_data.m_effects_index[ sim -> sim_data.m_spells_index[ *i ] -> effect[ j ] ] )
+            p_data = reinterpret_cast< char* > ( sim -> sim_data.m_effects_index[ sim -> sim_data.m_spells_index[ *i ] -> effect[ j ] ] );
           else
-            string_v = "";
-          armory_t::format( string_v );
-          ostring_v = other.result_str;
+            p_data = 0;
+          
+          if ( p_data && std::find( res.begin(), res.end(), *i ) == res.end() && compare( p_data, other, t ) )
+            res.push_back( *i );
+        }
+      }
+      else 
+      {
+        if ( data_type == DATA_TALENT )
+          p_data = reinterpret_cast< char* > ( sim -> sim_data.m_talents_index[ *i ] );
+        else if ( data_type == DATA_EFFECT )
+          p_data = reinterpret_cast< char* > ( sim -> sim_data.m_effects_index[ *i ] );
+        else
+          p_data = reinterpret_cast< char* > ( sim -> sim_data.m_spells_index[ *i ] );
 
-          switch ( t )
-          {
-            case TOK_EQ:    if ( str_compare_ci( string_v, ostring_v ) ) res.push_back( *i ); break;
-            case TOK_NOTEQ: if ( ! str_compare_ci( string_v, ostring_v ) ) res.push_back( *i ); break;
-            case TOK_IN:    if ( ! string_v.empty() && str_in_str_ci( string_v, ostring_v ) ) res.push_back( *i ); break;
-            case TOK_NOTIN: if ( ! string_v.empty() && ! str_in_str_ci( string_v, ostring_v ) ) res.push_back( *i ); break;
-            default: continue;
-          }
-          break;
-        }
-        default:
-        {
-          break;
-        }
+        if ( p_data && std::find( res.begin(), res.end(), *i ) == res.end() && compare( p_data, other, t ) )
+          res.push_back( *i );
       }
     }
     
@@ -1097,10 +1163,11 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
 {
   std::vector<std::string> splits;
   std::string              v;
+  bool                     effect_query = false;
   int                      num_splits = util_t::string_split( splits, name_str, "." );
   expr_data_type_t         data_type = DATA_SPELL;
   
-  if ( num_splits > 2 )
+  if ( num_splits < 1 || num_splits > 3 )
     return 0;
   
   // No split, access raw list or create a normal expression
@@ -1110,6 +1177,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_SPELL );
     else if ( str_compare_ci( splits[ 0 ], "talent" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_TALENT );
+    else if ( str_compare_ci( splits[ 0 ], "effect" ) )
+      return new spell_list_expr_t( sim, splits[ 0 ], DATA_EFFECT );
     else if ( str_compare_ci( splits[ 0 ], "talent_spell" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_TALENT_SPELL );
     else if ( str_compare_ci( splits[ 0 ], "class_spell" ) )
@@ -1136,6 +1205,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       data_type = DATA_SPELL;
     else if ( str_compare_ci( splits[ 0 ], "talent" ) )
       data_type = DATA_TALENT;
+    else if ( str_compare_ci( splits[ 0 ], "effect" ) )
+      data_type = DATA_EFFECT;
     else if ( str_compare_ci( splits[ 0 ], "talent_spell" ) )
       data_type = DATA_TALENT_SPELL;
     else if ( str_compare_ci( splits[ 0 ], "class_spell" ) )
@@ -1150,16 +1221,26 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       data_type = DATA_GLYPH_SPELL;
     else if ( str_compare_ci( splits[ 0 ], "set_bonus" ) )
       data_type = DATA_SET_BONUS_SPELL;
+      
+    if ( str_compare_ci( splits[ 1 ], "effect" ) && data_type == DATA_EFFECT )
+      return 0;
     
-    if ( str_compare_ci( splits[ 1 ], "class" ) )
+    // Effect handling, set flag and remove effect keyword from tokens
+    if ( str_compare_ci( splits[ 1 ], "effect" ) )
+    {
+      effect_query = true;
+      splits.erase( splits.begin() + 1 );
+    }
+    
+    if ( ! effect_query && str_compare_ci( splits[ 1 ], "class" ) )
       return new spell_class_expr_t( sim, data_type );
-    else if ( str_compare_ci( splits[ 1 ], "race" ) )
+    else if ( ! effect_query && str_compare_ci( splits[ 1 ], "race" ) )
       return new spell_race_expr_t( sim, data_type );
-    else if ( data_type == DATA_TALENT && str_compare_ci( splits[ 1 ], "pet_class" ) )
+    else if ( ! effect_query && data_type == DATA_TALENT && str_compare_ci( splits[ 1 ], "pet_class" ) )
       return new spell_pet_class_expr_t( sim, data_type );
-    else if ( data_type != DATA_TALENT && str_compare_ci( splits[ 1 ], "school" ) )
+    else if ( ! effect_query && data_type != DATA_TALENT && str_compare_ci( splits[ 1 ], "school" ) )
       return new spell_school_expr_t( sim, data_type );
-    else if ( data_type != DATA_TALENT && str_compare_ci( splits[ 1 ], "rune" ) )
+    else if ( ! effect_query && data_type != DATA_TALENT && str_compare_ci( splits[ 1 ], "rune" ) )
       return new spell_rune_expr_t( sim, data_type );
     else
     {
@@ -1170,6 +1251,11 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       {
         fields = _talent_data_fields;
         fsize  = sizeof( _talent_data_fields );
+      }
+      else if ( effect_query || data_type == DATA_EFFECT )
+      {
+        fields = _effect_data_fields;
+        fsize  = sizeof( _effect_data_fields );
       }
       else
       {
@@ -1187,7 +1273,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       }
       
       if ( s )
-        return new spell_data_filter_expr_t( sim, data_type, s -> name );
+        return new spell_data_filter_expr_t( sim, data_type, s -> name, effect_query );
       else
         return 0;
     }

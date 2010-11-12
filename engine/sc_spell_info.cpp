@@ -202,8 +202,7 @@ static std::string spell_flags( sim_t* sim, const spell_data_t* spell )
 std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim, 
                                                  const spell_data_t*       spell, 
                                                  const spelleffect_data_t* e, 
-                                                 std::ostringstream&       s, 
-                                                 int                       indent )
+                                                 std::ostringstream&       s )
 {
   char tmp_buffer[512],
        tmp_buffer2[64];
@@ -297,18 +296,15 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   else
     s << e -> base_value;
   
-  if ( spell -> scaling_type == 0 )
+  if ( e -> real_ppl != 0 )
   {
-    if ( e -> real_ppl != 0 )
-    {
-      snprintf( tmp_buffer, sizeof(tmp_buffer), "%f", e -> real_ppl );
-      s << " | Points Per Level: " << e -> real_ppl;
-    }
+    snprintf( tmp_buffer, sizeof(tmp_buffer), "%f", e -> real_ppl );
+    s << " | Points Per Level: " << e -> real_ppl;
+  }
 
-    if ( e -> die_sides != 0 )
-    {
-      s << " | Value Range: " << e -> die_sides;
-    }
+  if ( e -> die_sides != 0 )
+  {
+    s << " | Value Range: " << e -> die_sides;
   }
   
   if ( e -> coeff != 0 )
@@ -319,7 +315,13 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   
   if ( e -> misc_value != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value );
+    if ( e -> subtype == A_MOD_DAMAGE_DONE || 
+         e -> subtype == A_MOD_DAMAGE_TAKEN || 
+         e -> subtype == A_MOD_DAMAGE_PERCENT_DONE || 
+         e -> subtype == A_MOD_DAMAGE_PERCENT_TAKEN )
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value );
+    else
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value );
     s << " | Misc Value: " << tmp_buffer;
   }
   

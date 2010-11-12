@@ -1981,6 +1981,18 @@ int sim_t::main( int argc, char** argv )
     {
       if ( sd -> data_type == DATA_TALENT )
         util_t::fprintf( output_file, "%s", spell_info_t::talent_to_str( this, sim_data.m_talents_index[ *i ] ).c_str() );
+      else if ( sd -> data_type == DATA_EFFECT )
+      {
+        std::ostringstream sds;
+        if ( sim_data.m_spells_index[ sim_data.m_effects_index[ *i ] -> spell_id ] )
+        {
+          spell_info_t::effect_to_str( this, 
+            sim_data.m_spells_index[ sim_data.m_effects_index[ *i ] -> spell_id ], 
+            sim_data.m_effects_index[ *i ],
+            sds );
+        }
+        util_t::fprintf( output_file, "%s", sds.str().c_str() );
+      }
       else
         util_t::fprintf( output_file, "%s", spell_info_t::to_str( this, sim_data.m_spells_index[ *i ] ).c_str() );
     }

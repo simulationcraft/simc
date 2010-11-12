@@ -1713,7 +1713,7 @@ struct spell_info_t
   static std::string to_str( sim_t* sim, const spell_data_t* spell );
   static std::string to_str( sim_t* sim, uint32_t spell_id );
   static std::string talent_to_str( sim_t* sim, const talent_data_t* talent );
-  static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int indent = 6 );
+  static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s );
 };
 
 // Spell ID class
@@ -2135,6 +2135,7 @@ struct expr_token_t
 enum expr_data_type_t {
   DATA_SPELL = 0,
   DATA_TALENT,
+  DATA_EFFECT,
   DATA_TALENT_SPELL,
   DATA_CLASS_SPELL,
   DATA_RACIAL_SPELL,
@@ -2180,13 +2181,14 @@ struct spell_data_expr_t
   std::string name_str;
   sim_t* sim;
   expr_data_type_t data_type;
+  bool effect_query;
   
   int result_type;
   double result_num;
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_type_t dt = DATA_SPELL, int t=TOK_UNKNOWN ) : name_str(n), sim(sim), data_type( dt ), result_type(t), result_num(0), result_spell_list() {}
+  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_type_t dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN ) : name_str(n), sim(sim), data_type( dt ), effect_query( eq ), result_type(t), result_num(0), result_spell_list() {}
   spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value ) : name_str(n), sim(sim), data_type( DATA_SPELL) { result_type = TOK_NUM; result_num = constant_value; }
   spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value ) : name_str(n), sim(sim), data_type( DATA_SPELL) { result_type = TOK_STR; result_str = constant_value; }
   spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value ) : name_str(n), sim(sim), data_type( DATA_SPELL) { result_type = TOK_SPELL_LIST; result_spell_list = constant_value; }
