@@ -342,7 +342,6 @@ struct warrior_attack_t : public attack_t
 
   virtual double armor() SC_CONST;
 
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual void   execute();
@@ -608,7 +607,6 @@ static void trigger_strikes_of_opportunity( attack_t* a )
         background = proc = true;
         may_crit   = true;
 
-        // FIXME: weapon_modifer should be 1.0 not 0.75.
         reset();
       }
 
@@ -839,23 +837,6 @@ void warrior_attack_t::execute()
   {
     p -> buffs_overpower -> trigger();
   }
-}
-
-// warrior_attack_t::parse_options ==========================================
-
-void warrior_attack_t::parse_options( option_t* options, const std::string& options_str )
-{
-  // FIXME: can we remove these since the base provides rage in if=
-  option_t base_options[] =
-  {
-    { "min_rage", OPT_FLT, &min_rage },
-    { "max_rage", OPT_FLT, &max_rage },
-    { "rage>",    OPT_FLT, &min_rage },
-    { "rage<",    OPT_FLT, &max_rage },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
 // warrior_attack_t::calculate_weapon_damage ================================
@@ -1905,13 +1886,7 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     check_spec( TREE_PROTECTION );
 
-    // FIXME: delete, can be if=buffs.sword_and_board.react
-    option_t options[] =
-    {
-      { "sword_and_board", OPT_BOOL, &sword_and_board },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 23922;
     parse_data( p -> player_data );
@@ -2014,13 +1989,7 @@ struct slam_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    // FIXME: delete, can be if=buffs.bloodsurge.react
-    option_t options[] =
-    {
-      { "bloodsurge", OPT_BOOL, &bloodsurge },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 1464;
     parse_data( p -> player_data );
@@ -2240,7 +2209,6 @@ struct warrior_spell_t : public spell_t
 
   virtual double cost() SC_CONST;
   virtual double gcd() SC_CONST;
-  virtual void   parse_options( option_t*, const std::string& options_str );
   virtual bool   ready();
 };
 
@@ -2284,24 +2252,6 @@ bool warrior_spell_t::ready()
   return true;
 }
 
-// warrior_spell_t::parse_options ===========================================
-
-void warrior_spell_t::parse_options( option_t*          options,
-                                     const std::string& options_str )
-{
-  // FIXME: delete these too in favor of the base if=
-  option_t base_options[] =
-  {
-    { "min_rage",       OPT_FLT, &min_rage       },
-    { "max_rage",       OPT_FLT, &max_rage       },
-    { "rage>",          OPT_FLT, &min_rage       },
-    { "rage<",          OPT_FLT, &max_rage       },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
-}
-
 // Battle Shout =============================================================
 
 struct battle_shout_t : public warrior_spell_t
@@ -2317,11 +2267,7 @@ struct battle_shout_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 6673;
     parse_data( p -> player_data );
@@ -2353,11 +2299,7 @@ struct berserker_rage_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 18499;
     parse_data( p -> player_data );
@@ -2392,11 +2334,7 @@ struct deadly_calm_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.deadly_calm -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 85730;
     parse_data( p -> player_data );
@@ -2435,11 +2373,7 @@ struct death_wish_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.death_wish -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 12292;
     parse_data( p -> player_data );
@@ -2472,11 +2406,7 @@ struct inner_rage_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     check_min_level( 83 );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 1134;
     parse_data( p -> player_data );
@@ -2514,11 +2444,8 @@ struct recklessness_t : public warrior_spell_t
       warrior_spell_t( "recklessness", player )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 1719;
     parse_data( p -> player_data );
@@ -2546,11 +2473,8 @@ struct shield_block_t : public warrior_spell_t
       warrior_spell_t( "shield_block", player )
   {
     warrior_t* p = player -> cast_warrior();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+
+    parse_options( NULL, options_str );
 
     id = 2565;
     parse_data( p -> player_data );
@@ -2662,11 +2586,7 @@ struct sweeping_strikes_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     check_talent( p -> talents.sweeping_strikes -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     id = 12328;
     parse_data( p -> player_data );
