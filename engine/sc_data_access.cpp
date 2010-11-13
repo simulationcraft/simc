@@ -376,6 +376,36 @@ const char* sc_data_access_t::spell_tooltip( const uint32_t spell_id ) SC_CONST
   return m_spells_index[ spell_id ]->tooltip;
 }
 
+double sc_data_access_t::spell_scaling_multiplier( uint32_t spell_id ) SC_CONST
+{
+ if ( ! spell_id ) 
+   return 0.0;
+   
+ assert( spell_exists( spell_id ) );
+ 
+ return m_spells_index[ spell_id ] -> c_scaling;
+}
+
+double sc_data_access_t::spell_extra_coeff( uint32_t spell_id ) SC_CONST
+{
+ if ( ! spell_id ) 
+   return 0.0;
+   
+ assert( spell_exists( spell_id ) );
+ 
+ return m_spells_index[ spell_id ] -> extra_coeff;
+}
+
+unsigned sc_data_access_t::spell_scaling_threshold( uint32_t spell_id ) SC_CONST
+{
+  if ( ! spell_id )
+    return 0;
+    
+  assert( spell_exists( spell_id ) );
+  
+  return m_spells_index[ spell_id ] -> c_scaling_level;
+}
+
 /************ Effects ******************/
 
 bool sc_data_access_t::effect_exists( const uint32_t effect_id ) SC_CONST
@@ -501,6 +531,16 @@ uint32_t sc_data_access_t::effect_trigger_spell_id( const uint32_t effect_id ) S
     return 0;
 
   return ( uint32_t ) m_effects_index[ effect_id ]->trigger_spell;
+}
+
+double sc_data_access_t::effect_chain_multiplier( uint32_t effect_id ) SC_CONST
+{
+  if ( !effect_id )
+    return 0;
+
+  assert( effect_exists( effect_id ) );
+
+  return ( uint32_t ) m_effects_index[ effect_id ]->m_chain;
 }
 
 double sc_data_access_t::effect_m_average( const uint32_t effect_id ) SC_CONST
@@ -637,7 +677,7 @@ double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_ty
   return effect_m_average( effect_id ) * effect_m_delta( effect_id ) * *p_scale_ref;
 }
 
-double sc_data_access_t::effect_unk( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
+double sc_data_access_t::effect_bonus( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
 {
   if ( !effect_id )
     return 0.0;

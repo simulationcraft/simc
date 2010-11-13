@@ -51,6 +51,7 @@ static sdata_field_t _effect_data_fields[] = {
   { SD_TYPE_INT,      "misc_value"     },
   { SD_TYPE_INT,      "misc_value2"    },
   { SD_TYPE_INT,      "trigger_spell"  },
+  { SD_TYPE_INT,      "m_chain"        },
   { SD_TYPE_DOUBLE,   "p_combo_points" },
   { SD_TYPE_DOUBLE,   "p_level"        },
   { SD_TYPE_INT,      "damage_range"   },
@@ -66,6 +67,7 @@ static sdata_field_t _spell_data_fields[] = {
   { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
   { SD_TYPE_UNSIGNED, ""              }, // Race (spell_race_expr_t)
   { SD_TYPE_INT,      "scaling"       },
+  { SD_TYPE_DOUBLE,   "extra_coeff"   },
   { SD_TYPE_UNSIGNED, "level"         },
   { SD_TYPE_UNSIGNED, "max_level"     },
   { SD_TYPE_DOUBLE,   "min_range"     },
@@ -83,6 +85,8 @@ static sdata_field_t _spell_data_fields[] = {
   { SD_TYPE_INT,      "cast_min"      },
   { SD_TYPE_INT,      "cast_max"      },
   { SD_TYPE_INT,      "cast_div"      },
+  { SD_TYPE_DOUBLE,   "m_scaling"     },
+  { SD_TYPE_UNSIGNED, "scaling_level" },
   { SD_TYPE_UNSIGNED, ""              }, // Effects, 0..2, not done for now
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
@@ -98,6 +102,7 @@ static sdata_field_t _spell_data_fields[] = {
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_STR,      "desc"          },
   { SD_TYPE_STR,      "tooltip"       },
+  { SD_TYPE_STR,      ""              },
 };
 
 static std::string _class_strings[] = {

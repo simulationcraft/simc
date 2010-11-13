@@ -296,6 +296,13 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   else
     s << e -> base_value;
   
+  if ( e -> m_unk )
+  {
+    s << " | Bonus Value: " << sim -> sim_data.effect_bonus( e -> id,
+      sim -> sim_data.spell_scaling_class( spell -> id ),
+      sim -> P403 ? 85 : 80 );
+  }
+  
   if ( e -> real_ppl != 0 )
   {
     snprintf( tmp_buffer, sizeof(tmp_buffer), "%f", e -> real_ppl );
@@ -312,6 +319,9 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     snprintf( tmp_buffer, sizeof(tmp_buffer), "%.3f", e -> coeff );
     s << " | Coefficient: " << tmp_buffer;
   }
+  
+  if ( e -> m_chain != 0 && e -> m_chain != 1.0 )
+    s << " | Chain Multiplier: " << e -> m_chain;
   
   if ( e -> misc_value != 0 )
   {
@@ -488,6 +498,9 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   
   if ( spell -> proc_chance > 0 )
     s << "Proc Chance  : " << spell -> proc_chance << "%" << std::endl;
+    
+  if ( spell -> extra_coeff > 0 )
+    s << "Coefficient  : " << spell -> extra_coeff << std::endl;
   
   s << "Effects      :" << std::endl;
   
@@ -508,6 +521,9 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   
   if ( spell -> tooltip )
     s << "Tooltip      : " << spell -> tooltip << std::endl;
+    
+  if ( spell -> desc_vars )
+    s << "Variables    : " << spell -> desc_vars << std::endl;
   
   s << std::endl;
   

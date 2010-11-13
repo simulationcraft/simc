@@ -595,6 +595,14 @@ double spell_id_t::max_range() SC_CONST
   return s_player -> player_data.spell_max_range( s_id );
 }
 
+double spell_id_t::extra_coeff() SC_CONST
+{
+  if ( ! ok() )
+    return 0.0;
+
+  return s_player -> player_data.spell_extra_coeff( s_id );
+}
+
 bool spell_id_t::in_range() SC_CONST
 {
   if ( ! ok() )
@@ -793,6 +801,16 @@ uint32_t spell_id_t::effect_trigger_spell( const uint32_t effect_num ) SC_CONST
   return s_player -> player_data.effect_trigger_spell_id( effect_id );
 }
 
+double spell_id_t::effect_chain_multiplier( uint32_t effect_num ) SC_CONST
+{
+  if ( ! ok() )
+    return 0;
+
+  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+
+  return s_player -> player_data.effect_chain_multiplier( effect_id );
+}
+
 double spell_id_t::effect_average( const uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
@@ -815,14 +833,14 @@ double spell_id_t::effect_delta( const uint32_t effect_num ) SC_CONST
     s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 
-double spell_id_t::effect_unk( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_bonus( const uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
   uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
 
-  return s_player -> player_data.effect_unk( effect_id, 
+  return s_player -> player_data.effect_bonus( effect_id, 
     s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
 }
 

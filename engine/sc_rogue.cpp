@@ -1563,7 +1563,7 @@ struct eviscerate_t : public rogue_attack_t
 
     double _min     = effect_min( 1 );
     double _max     = effect_max( 1 );
-    double cp_bonus = effect_unk( 1 );
+    double cp_bonus = effect_bonus( 1 );
 
     for (int i = 0; i < COMBO_POINTS_MAX; i++)
     {
@@ -2104,7 +2104,7 @@ struct rupture_t : public rogue_attack_t
     requires_combo_points = true;
     
     double base     = effect_average( 1 );
-    double cp_bonus = effect_unk( 1 );
+    double cp_bonus = effect_bonus( 1 );
 
     for (int i = 0; i < COMBO_POINTS_MAX; i++)
       combo_point_dmg[ i ] = base + cp_bonus * ( i + 1 );

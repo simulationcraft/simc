@@ -1373,6 +1373,9 @@ public:
   virtual bool          spell_flags( const uint32_t spell_id, const spell_attribute_t f ) SC_CONST;
   virtual const char*   spell_desc( const uint32_t spell_id ) SC_CONST;
   virtual const char*   spell_tooltip( const uint32_t spell_id ) SC_CONST;
+  virtual double        spell_scaling_multiplier( uint32_t spell_id ) SC_CONST;
+  virtual unsigned      spell_scaling_threshold( uint32_t spell_id ) SC_CONST;
+  virtual double        spell_extra_coeff( uint32_t spell_id ) SC_CONST;
 
   // Effect methods
   virtual bool          effect_exists( const uint32_t effect_id ) SC_CONST;
@@ -1390,6 +1393,7 @@ public:
   virtual int32_t       effect_misc_value1( const uint32_t effect_id ) SC_CONST;
   virtual int32_t       effect_misc_value2( const uint32_t effect_id ) SC_CONST;
   virtual uint32_t      effect_trigger_spell_id( const uint32_t effect_id ) SC_CONST;
+  virtual double        effect_chain_multiplier( uint32_t effect_id ) SC_CONST;
 
   virtual double        effect_m_average( const uint32_t effect_id ) SC_CONST;
   virtual double        effect_m_delta( const uint32_t effect_id ) SC_CONST;
@@ -1404,10 +1408,10 @@ public:
 
   virtual double        effect_average( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
   virtual double        effect_delta( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
-  virtual double        effect_unk( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
 
   virtual double        effect_min( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
   virtual double        effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST; 
+  virtual double        effect_bonus( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST;
 
   // Aand more generic stuff
   virtual const spelleffect_data_t * effect( uint32_t, effect_type_t, effect_subtype_t, int, int = DEFAULT_MISC_VALUE ) SC_CONST;
@@ -1774,6 +1778,7 @@ struct spell_id_t
   virtual resource_type power_type() SC_CONST;
   virtual double min_range() SC_CONST;
   virtual double max_range() SC_CONST;
+  virtual double extra_coeff() SC_CONST;
   virtual bool in_range() SC_CONST;
   virtual double cooldown() SC_CONST;
   virtual double gcd() SC_CONST;
@@ -1796,9 +1801,10 @@ struct spell_id_t
   virtual int32_t effect_misc_value1( const uint32_t effect_num ) SC_CONST;
   virtual int32_t effect_misc_value2( const uint32_t effect_num ) SC_CONST;
   virtual uint32_t effect_trigger_spell( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_chain_multiplier( uint32_t effect_num ) SC_CONST;
   virtual double effect_average( const uint32_t effect_num ) SC_CONST;
   virtual double effect_delta( const uint32_t effect_num ) SC_CONST;
-  virtual double effect_unk( const uint32_t effect_num ) SC_CONST;
+  virtual double effect_bonus( const uint32_t effect_num ) SC_CONST;
   virtual double effect_min( const uint32_t effect_num ) SC_CONST;
   virtual double effect_max( const uint32_t effect_num ) SC_CONST;
   virtual double effect_min( effect_type_t, effect_subtype_t = A_MAX, int = DEFAULT_MISC_VALUE ) SC_CONST;
