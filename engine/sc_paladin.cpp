@@ -766,7 +766,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     // The coefficient in the data file seems to be the SP modifier, the AP modifier is ~39% (determined experimentally)
     base_spell_power_multiplier = direct_power_mod;
     direct_power_mod = 1.0;
-    base_attack_power_multiplier = 0.39;
+    base_attack_power_multiplier = p->player_data.spell_extra_coeff(id);
 
     if ( p -> glyphs.hammer_of_wrath ) base_cost = 0;
   }
@@ -1128,6 +1128,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
   seal_of_truth_dot_t( paladin_t* p ) :
     paladin_attack_t( "censure", p, SCHOOL_HOLY, TREE_RETRIBUTION, true, false/*TODO: check 2hspec*/ )
   {
+    id          = 31803;
     background  = true;
     proc        = true;
     trigger_gcd = 0;
@@ -1144,8 +1145,8 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     tick_may_crit = true;
     
     tick_power_mod = 1.0;
-    base_spell_power_multiplier  = 0.05*0.2;   // Determined experimentally by Redcape
-    base_attack_power_multiplier = 0.0966*0.2; // Determined experimentally by Redcape
+    base_spell_power_multiplier  = p->player_data.effect_coeff(p->player_data.spell_effect_id(id, 1));
+    base_attack_power_multiplier = p->player_data.spell_extra_coeff(id);
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
     base_multiplier *= 1.0 + ( 0.01 * p->talents.seals_of_the_pure->effect_base_value(1) +
@@ -1239,28 +1240,25 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
   seal_of_truth_judgement_t( paladin_t* p ) :
     paladin_attack_t( "judgement_of_truth", p, SCHOOL_HOLY )
   {
+    id         = 31804;
     background = true;
 
     may_parry = false;
     may_dodge = false;
     may_block = false;
 
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
+    parse_data(p->player_data);
+    
+    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05; // TODO move to judgement_t
 
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
-                           + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1);
+                           + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1)
+                           + (p->glyphs.judgement ? 0.10 : 0.0);
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-	  
+    base_spell_power_multiplier = direct_power_mod;
+    base_attack_power_multiplier = p->player_data.spell_extra_coeff(id);
     direct_power_mod = 1.0;
-    base_spell_power_multiplier = 0.223;
-    base_attack_power_multiplier = base_spell_power_multiplier / 1.57;
-
-    cooldown -> duration = 8;
-
-    if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
   }
 
   virtual void player_buff()
