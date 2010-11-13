@@ -753,8 +753,6 @@ void warrior_attack_t::assess_damage( double amount, int dmg_type )
 {
   attack_t::assess_damage( amount, dmg_type );
 
-  // FIXME: does Opportunity Strike (proc) spread via SS?
-
   warrior_t* p = player -> cast_warrior();
 
   if ( p -> buffs_sweeping_strikes -> up() && sim -> target -> adds_nearby )
@@ -1765,6 +1763,8 @@ struct rend_t : public warrior_attack_t
   {
     base_td = base_td_init + calculate_weapon_damage() * 0.25;
     warrior_attack_t::execute();
+    if ( result_is_hit() )
+      trigger_blood_frenzy( this );
   }
 
   virtual void tick()
@@ -1773,7 +1773,6 @@ struct rend_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
-    trigger_blood_frenzy( this );
   }
 };
 
