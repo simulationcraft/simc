@@ -615,6 +615,7 @@ struct crusader_strike_t : public paladin_attack_t
     if ( p->talents.sanctity_of_battle->rank() > 0 )
     {
       cooldown->duration = base_cooldown * haste();
+      if ( sim -> log ) log_t::output( sim, "%s %s cooldown is %.2f", p -> name(), name(),  cooldown->duration );
     }
 
     paladin_attack_t::update_ready();
@@ -735,7 +736,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
   double base_cooldown;
 
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
-      paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY, TREE_RETRIBUTION, true, false/*TODO:check 2hspec*/ )
+      paladin_attack_t( "hammer_of_wrath", p, SCHOOL_HOLY, TREE_RETRIBUTION, true, false )
   {
     id = p->spells.hammer_of_wrath->spell_id();
     option_t options[] =
@@ -851,11 +852,10 @@ struct templars_verdict_t : public paladin_attack_t
     holy_power_chance = p->talents.divine_purpose->proc_chance();
 
     base_crit       +=     0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
-    base_multiplier *= 1 + 0.01 * p->talents.crusade->effect_base_value(2);
+    base_multiplier *= 1 + 0.01 * p->talents.crusade->effect_base_value(2)
+                         + (p->glyphs.templars_verdict ? 0.15 : 0.0);
     if (p->set_bonus.tier11_2pc_melee())
       base_multiplier *= 1.10;
-
-    if (p->glyphs.templars_verdict) base_multiplier *= 1.15;
   }
 
   virtual void execute()
