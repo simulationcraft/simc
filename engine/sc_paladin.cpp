@@ -853,9 +853,8 @@ struct templars_verdict_t : public paladin_attack_t
 
     base_crit       +=     0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1 + 0.01 * p->talents.crusade->effect_base_value(2)
-                         + (p->glyphs.templars_verdict ? 0.15 : 0.0);
-    if (p->set_bonus.tier11_2pc_melee())
-      base_multiplier *= 1.10;
+                         + (p->glyphs.templars_verdict      ? 0.15 : 0.0)
+                         + (p->set_bonus.tier11_2pc_melee() ? 0.10 : 0.0);
   }
 
   virtual void execute()
