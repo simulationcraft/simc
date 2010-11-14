@@ -480,8 +480,7 @@ struct melee_t : public paladin_attack_t
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
-      if ( p -> get_cooldown( "exorcism" ) -> remains() <= 0 )
-        p -> buffs_the_art_of_war -> trigger();
+      p -> buffs_the_art_of_war -> trigger();
 
       if ( p -> active_seal == SEAL_OF_TRUTH )
       {
