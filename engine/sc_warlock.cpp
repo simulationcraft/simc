@@ -818,6 +818,7 @@ struct warlock_spell_t : public spell_t
     tick_may_crit = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
+	base_crit_bonus = 1.0;
   }
 
   warlock_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
@@ -827,6 +828,7 @@ struct warlock_spell_t : public spell_t
     tick_may_crit = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
+	base_crit_bonus = 1.0;
   }
 
   warlock_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
@@ -836,6 +838,7 @@ struct warlock_spell_t : public spell_t
     tick_may_crit = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
+	base_crit_bonus = 1.0;
   }
 
   warlock_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
@@ -845,6 +848,7 @@ struct warlock_spell_t : public spell_t
     tick_may_crit = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
+	base_crit_bonus = 1.0;
   }
 
   // ==========================================================================
@@ -881,7 +885,6 @@ struct warlock_spell_t : public spell_t
     warlock_t* p = player -> cast_warlock();
 
     spell_t::player_buff();
-    base_crit_bonus_multiplier = 2;
 
     if ( p -> buffs_metamorphosis -> up() )
     {
