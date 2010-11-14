@@ -4312,7 +4312,7 @@ void warlock_t::init_actions()
       action_list_str += "/flask,type=frost_wyrm";
 
     // Food
-    action_list_str += "/food,type=fish_feast";
+    if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
 
     // Armor
     if ( level >= 62 ) action_list_str += "/fel_armor";
@@ -4325,7 +4325,11 @@ void warlock_t::init_actions()
     else if ( primary_tree() == TREE_AFFLICTION )
       action_list_str += "/summon_imp";
     else
-      action_list_str += "/summon_voidwalker";
+      action_list_str += "/summon_imp";
+
+    // Dark Intent
+    if ( level >= 83 )
+      action_list_str += "/dark_intent";
 
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
@@ -4353,7 +4357,7 @@ void warlock_t::init_actions()
 
     // Choose Potion
     if ( level >= 80 && sim -> P403 )
-    action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
     else if ( level >= 70 )
     {
       if ( primary_tree() == TREE_AFFLICTION )
@@ -4362,6 +4366,9 @@ void warlock_t::init_actions()
         action_list_str += "/wild_magic_potion,if=buff.bloodlust.react|!in_combat";
     }
 
+    // Demon Soul
+    if ( level >= 85 )
+      action_list_str += "/demon_soul";
 
     switch ( primary_tree() )
     {
@@ -4369,7 +4376,7 @@ void warlock_t::init_actions()
     case TREE_AFFLICTION:
 
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
-      action_list_str += "/bane_of_agony,if=(!ticking|dot.bane_of_agony.remains<tick_time)&target.time_to_die>=20";
+      if ( level >= 12 ) action_list_str += "/bane_of_agony,if=(!ticking|dot.bane_of_agony.remains<tick_time)&target.time_to_die>=20";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+gcd))&target.time_to_die>=5";
       if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
@@ -4385,10 +4392,10 @@ void warlock_t::init_actions()
       action_list_str += "/soulburn";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
         action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<cast_time&buff.bloodlust.down";
-      action_list_str += "/bane_of_doom,if=!ticking";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking";
       action_list_str += "/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time|!ticking";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
-      action_list_str += "/chaos_bolt";
+      if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
@@ -4398,14 +4405,14 @@ void warlock_t::init_actions()
     break;
 
     case TREE_DEMONOLOGY:
-      action_list_str += "/hand_of_guldan,if=dot.immolate.remains>0";
+      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan,if=dot.immolate.remains>0";
       if ( level >= 50) action_list_str += "/summon_infernal,if=buff.metamorphosis.react";
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
       action_list_str += "/soulburn,if=buff.metamorphosis.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.soulburn.react";
       action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time|!ticking";
-      action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
-      action_list_str += "/hand_of_guldan";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
+      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
       if ( level >= 60) action_list_str += "/immolation,if=(buff.tier10_4pc_caster.react|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       if ( level >= 75) action_list_str += "/shadowflame";
