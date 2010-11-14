@@ -1949,10 +1949,6 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
   if ( attr == ATTR_SPIRIT ) 
     if ( buffs.mana_tide -> check() ) m *= 1.0 + buffs.mana_tide -> value();
 
-  // Matched gear. i.e. Mysticism etc.
-  if ( ( level >= 50 ) && matching_gear )
-    m *= 1.0 + matching_gear_multiplier( (const attribute_type) attr );
-
   return m;
 }
 
@@ -2163,6 +2159,9 @@ void player_t::reset()
   {
     attribute           [ i ] = attribute_initial           [ i ];
     attribute_multiplier[ i ] = attribute_multiplier_initial[ i ];
+    // Matched gear. i.e. Mysticism etc.
+    if ( ( level >= 50 ) && matching_gear )
+      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( (const attribute_type) i );
   }
 
   for ( int i=0; i <= SCHOOL_MAX; i++ )
