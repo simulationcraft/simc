@@ -229,7 +229,7 @@ player_t::player_t( sim_t*             s,
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), bugs( true ), pri_tree( -1 ), invert_spirit_scaling( 0 ),
+    pet_list( 0 ), last_modified( 0 ), bugs( true ), pri_tree( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
     // Haste
@@ -2604,12 +2604,10 @@ talent_tab_name player_t::primary_tab() SC_CONST
 // player_t::primary_tree ===================================================
 talent_tree_type player_t::primary_tree() SC_CONST
 {
-  talent_tab_name t = primary_tab();
-
-  if ( t == TALENT_TAB_NONE )
+  if ( pri_tree == TALENT_TAB_NONE )
     return TREE_NONE;
 
-  return tree_type[ t ];
+  return tree_type[ pri_tree ];
 }
 
 // player_t::normalize_by ===================================================

@@ -2729,7 +2729,7 @@ struct player_t
   pet_t*      pet_list;
   int64_t     last_modified;
   int         bugs;
-  int         pri_tree;
+  talent_tab_name pri_tree;
   int         invert_spirit_scaling;
 
   // Data access
