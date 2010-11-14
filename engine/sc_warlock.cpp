@@ -4355,7 +4355,12 @@ void warlock_t::init_actions()
     if ( level >= 80 && sim -> P403 )
     action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
     else if ( level >= 70 )
-    action_list_str += "/speed_potion,if=buff.bloodlust.react|!in_combat";
+    {
+      if ( primary_tree() == TREE_AFFLICTION )
+        action_list_str += "/speed_potion,if=buff.bloodlust.react|!in_combat";
+      else
+        action_list_str += "/wild_magic_potion,if=buff.bloodlust.react|!in_combat";
+    }
 
 
     switch ( primary_tree() )

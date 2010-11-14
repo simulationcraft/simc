@@ -4,7 +4,7 @@ level=80
 race=undead
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=223022103113320321030000000000000000002
 glyphs=imp/haunt/life_tap/bane_of_agony/shadow_bolt
-use_pre_potion=-1
+use_pre_potion=1
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
