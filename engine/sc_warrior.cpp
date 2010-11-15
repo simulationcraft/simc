@@ -5,7 +5,6 @@
 
 #include "simulationcraft.h"
 
-
 // ==========================================================================
 //
 // TODO:
@@ -34,6 +33,42 @@
 //     triggering effects or having special cases in the class.
 //   * Prot? O_O
 //
+// NOTES:
+//  Damage increase types per spell:
+//
+//   * battle_stance                    = 21156 = mod_damage_done% (0x7f)
+//   * berserker_stance                 =  7381 = mod_damage_done% (0x7f)
+//   * death_wish                       = 12292 = mod_damage_done% (0x1)
+//   * dual_wield_specialization        = 23588 = mod_damage_done% (0x7f)
+//   * enrage (bastion_of_defense)      = 57516 = mod_damage_done% (0x1)
+//   * enrage (fury)                    = 14202 = mod_damage_done% (0x1)
+//   * enrage (wrecking_crew)           = 57519 = mod_damage_done% (0x1)
+//   * heavy_repercussions              = 86896 = add_flat_mod_spell_effect2 (12)
+//   * hold_the_line                    = 84620 = mod_crit% (127)
+//   * incite                           = 50687 = add_flat_mod (7)
+//                                      = 86627 = add_flat_mod (7)
+//   * inner_rage                       =  1134 = mod_damage_done% (0x7f)
+//   * lambs_to_the_slaughter           = 84586 = add_percent_mod_generic
+//   * meat_cleaver                     = 85739 = add_percent_mod_generic
+//   * rampage                          = 29801 = mod_crit% (7)
+//   * recklessness                     =  1719 = add_flat_mod (7)
+//   * rude_interruption                = 86663 = mod_damage_done% (0x7f)
+//   * singleminded_fury                = 81099 = mod_damage_done% (0x7f)
+//   * thunderstruck                    = 87096 = add_percent_mod_generic
+//   * warrior_tier11_dps_2pc_bonus     = 90293 = add_percent_mod_generic
+//   * warrior_tier11_dps_4pc_bonus     = 90294 = mod_melee_attack_power%
+//   * twohanded_weapon_specialization  = 12712 = mod_damage_done% (0x1)
+//   * unshackled_fury                  = 76856 = add_percent_mod_spell_effect1/2
+//
+//   * glyph_of_bloodthirst             = 58367 = add_percent_mod
+//   * glyph_of_devastate               = 58388 = add_flat_mod_spell_crit_chance (7)
+//   * glyph_of_mortal_strike           = 58368 = add_percent_mod_generic
+//   * glyph_of_overpower               = 58386 = add_percent_mod_generic
+//   * glyph_of_raging_blow             = 58370 = add_flat_mod_spell_crit_chance (7)
+//   * glyph_of_revenge                 = 58364 = add_percent_mod_generic
+//   * glyph_of_shield_slam             = 58375 = add_percent_mod_generic
+//   * glyph_of_slam                    = 58385 = add_flat_mod_spell_crit_chance (7)
+// 
 // ==========================================================================
 
 
