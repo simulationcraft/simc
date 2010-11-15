@@ -3374,6 +3374,8 @@ struct target_t
   int get_options( std::vector<option_t>& );
   const char* name() SC_CONST { return name_str.c_str(); }
   const char* id();
+  static target_t* find(    sim_t*, const std::string& name );
+  action_expr_t* create_expression( action_t*, const std::string& type );
 };
 
 // Stats =====================================================================

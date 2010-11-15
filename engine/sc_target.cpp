@@ -264,5 +264,80 @@ int target_t::get_options( std::vector<option_t>& options )
 
   return ( int ) options.size();
 }
-// target_t::init_base =========================================================
 
+// target_t::find =========================================================
+
+target_t* target_t::find( sim_t* sim,
+                      const std::string& name_str )
+{
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+    if ( name_str == t -> name() )
+      return t;
+
+  return 0;
+}
+
+
+// target_t::create_expression ================================================
+
+action_expr_t* target_t::create_expression( action_t* action,
+                                          const std::string& type )
+{
+   if ( type == "time_to_die" )
+   {
+     struct target_time_to_die_expr_t : public action_expr_t
+     {
+       target_t* target;
+       target_time_to_die_expr_t( action_t* a, target_t* t ) :
+         action_expr_t( a, "target_time_to_die", TOK_NUM ), target(t) {}
+       virtual int evaluate() { result_num = target -> time_to_die();  return TOK_NUM; }
+     };
+     return new target_time_to_die_expr_t( action, this );
+   }
+
+   else if ( type == "health_pct" )
+   {
+     struct target_health_pct_expr_t : public action_expr_t
+     {
+       target_t* target;
+       target_health_pct_expr_t( action_t* a, target_t* t ) :
+         action_expr_t( a, "target_health_pct", TOK_NUM ), target(t) {}
+       virtual int evaluate() { result_num = target -> health_percentage();  return TOK_NUM; }
+     };
+     return new target_health_pct_expr_t( action, this );
+   }
+
+   else if ( type == "adds" )
+   {
+     struct target_adds_expr_t : public action_expr_t
+     {
+       target_t* target;
+       target_adds_expr_t( action_t* a, target_t* t ) :
+         action_expr_t( a, "target_adds", TOK_NUM ), target(t) {}
+       virtual int evaluate() { result_num = target -> adds_nearby;  return TOK_NUM; }
+     };
+     return new target_adds_expr_t( action, this );
+   }
+
+   else if ( type == "adds_never" )
+   {
+     struct target_adds_never_expr_t : public action_expr_t
+     {
+       target_t* target;
+       target_adds_never_expr_t( action_t* a, target_t* t ) :
+         action_expr_t( a, "target_adds_never", TOK_NUM ), target(t)
+       {
+         bool adds = target -> initial_adds_nearby > 0;
+         int num_events = ( int ) a -> sim -> raid_events.size();
+         for ( int i=0; i < num_events; i++ )
+           if ( a -> sim -> raid_events[ i ] -> name_str == "adds" )
+         adds = true;
+         result_num = adds ? 0.0 : 1.0;
+       }
+     };
+     return new target_adds_never_expr_t( action, this );
+   }
+
+
+   return 0;
+}

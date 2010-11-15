@@ -21,7 +21,7 @@ actions+=/elemental_mastery,time_to_die<=17
 actions+=/elemental_mastery,if=!buff.bloodlust.react
 actions+=/flame_shock,if=!ticking
 actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0
-actions+=/fire_nova,if=target.adds>2
+actions+=/fire_nova,if=target.Fluffy_Pillow.adds>2
 actions+=/fire_elemental_totem
 actions+=/searing_totem
 actions+=/lightning_bolt

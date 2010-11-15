@@ -421,7 +421,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   }
   infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  target = get_target( "Fluffy Pillow" );
+  target = get_target( "Fluffy_Pillow" );
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
 
@@ -1531,54 +1531,11 @@ action_expr_t* sim_t::create_expression( action_t* a,
       if ( ! buff ) return 0;
       return buff -> create_expression( a, splits[ 2 ] );
     }
-  }
-  else if ( num_splits == 2 )
-  {
     if ( splits[ 0 ] == "target" )
     {
-      if ( splits[ 1 ] == "time_to_die" )
-      {
-	struct target_time_to_die_expr_t : public action_expr_t
-        {
-	  target_time_to_die_expr_t( action_t* a ) : action_expr_t( a, "target_time_to_die", TOK_NUM ) {}
-	  virtual int evaluate() { result_num = action -> sim -> target -> time_to_die();  return TOK_NUM; }
-	};
-	return new target_time_to_die_expr_t( a );
-      }
-      else if ( splits[ 1 ] == "health_pct" )
-      {
-	struct target_health_pct_expr_t : public action_expr_t
-        {
-	  target_health_pct_expr_t( action_t* a ) : action_expr_t( a, "target_health_pct", TOK_NUM ) {}
-	  virtual int evaluate() { result_num = action -> sim -> target -> health_percentage();  return TOK_NUM; }
-	};
-	return new target_health_pct_expr_t( a );
-      }
-      else if ( splits[ 1 ] == "adds" )
-      {
-	struct target_adds_expr_t : public action_expr_t
-        {
-	  target_adds_expr_t( action_t* a ) : action_expr_t( a, "target_adds", TOK_NUM ) {}
-	  virtual int evaluate() { result_num = action -> sim -> target -> adds_nearby;  return TOK_NUM; }
-	};
-	return new target_adds_expr_t( a );
-      }
-      else if ( splits[ 1 ] == "adds_never" )
-      {
-	struct target_adds_never_expr_t : public action_expr_t
-        {
-	  target_adds_never_expr_t( action_t* a ) : action_expr_t( a, "target_adds_never", TOK_NUM )
-	  {
-	    bool adds = a -> sim -> target -> initial_adds_nearby > 0;
-	    int num_events = ( int ) a -> sim -> raid_events.size();
-	    for ( int i=0; i < num_events; i++ )
-	      if ( a -> sim -> raid_events[ i ] -> name_str == "adds" )
-		adds = true;
-	    result_num = adds ? 0.0 : 1.0;
-	  }
-	};
-	return new target_adds_never_expr_t( a );
-      }
+      target_t* target =target_t::find( this, splits[ 1 ] );
+      if ( ! target ) return 0;
+      return target -> create_expression( a, splits[ 2 ] );
     }
   }
 

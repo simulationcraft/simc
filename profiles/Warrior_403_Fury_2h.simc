@@ -16,9 +16,9 @@ actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
 actions+=/recklessness
 actions+=/death_wish
 # Off-GCD actions need to be first with sufficient restrictions
-actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
-actions+=/cleave,if=target.adds>0
-actions+=/whirlwind,if=target.adds>0
+actions+=/heroic_strike,if=target.Fluffy_Pillow.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
+actions+=/cleave,if=target.Fluffy_Pillow.adds>0
+actions+=/whirlwind,if=target.Fluffy_Pillow.adds>0
 actions+=/colossus_smash
 actions+=/execute
 actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1

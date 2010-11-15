@@ -15,7 +15,7 @@ actions+=/shadow_form
 actions+=/vampiric_embrace
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
-actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.Fluffy_Pillow.time_to_die<=40
 actions+=/shadow_fiend
 actions+=/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5
 actions+=/cancelaura_shadow_orbs,if=buff.empowered_shadow.remains<=gcd+0.5

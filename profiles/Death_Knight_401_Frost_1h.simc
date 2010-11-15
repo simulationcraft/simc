@@ -11,7 +11,7 @@ actions+=/food,type=dragonfin_filet
 actions+=/presence,choose=frost
 actions+=/army_of_the_dead
 actions+=/snapshot_stats
-actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.Fluffy_Pillow.time_to_die<=60
 actions+=/auto_attack
 actions+=/pillar_of_frost
 actions+=/howling_blast,if=buff.rime.react

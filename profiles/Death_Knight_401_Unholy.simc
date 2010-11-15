@@ -13,9 +13,9 @@ actions+=/army_of_the_dead
 actions+=/snapshot_stats
 actions+=/raise_dead
 actions+=/indestructible_potion,if=!in_combat
-actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/speed_potion,if=buff.bloodlust.react|target.Fluffy_Pillow.time_to_die<=60
 actions+=/auto_attack
-actions+=/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45
+actions+=/unholy_frenzy,if=!buff.bloodlust.react|target.Fluffy_Pillow.time_to_die<=45
 actions+=/icy_touch,if=dot.frost_fever.remains<3
 actions+=/plague_strike,if=dot.blood_plague.remains<3
 actions+=/dark_transformation
