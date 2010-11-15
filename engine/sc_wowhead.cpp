@@ -599,8 +599,9 @@ bool wowhead_t::download_item( item_t&            item,
 bool wowhead_t::download_slot( item_t&            item,
                                const std::string& item_id,
                                const std::string& enchant_id,
-                               const std::string  gem_ids[ 3 ],
                                const std::string& addon_id,
+                               const std::string& reforge_id,
+                               const std::string  gem_ids[ 3 ],
                                int cache_only )
 {
   player_t* p = item.player;
@@ -664,6 +665,12 @@ bool wowhead_t::download_slot( item_t&            item,
   if ( ! enchant_t::download_addon( item, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
+    //return false;
+  }
+
+  if ( ! enchant_t::download_reforge( item, reforge_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n", p -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
@@ -929,9 +936,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 1 ] = inventory_data[ 5 ];
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
-      std::string addon_id = ""; // TO-DO
+      std::string addon_id, reforge_id;
 
-      if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, gem_ids, addon_id ) )
+      if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, gem_ids ) )
       {
         return 0;
       }

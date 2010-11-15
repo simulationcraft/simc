@@ -240,6 +240,7 @@ void item_t::encode_options()
   if ( ! encoded_gems_str.empty()    ) { o += ",gems=";    o += encoded_gems_str;       }
   if ( ! encoded_enchant_str.empty() ) { o += ",enchant="; o += encoded_enchant_str;    }
   if ( ! encoded_addon_str.empty()   ) { o += ",addon=";   o += encoded_addon_str;      }
+  if ( ! encoded_reforge_str.empty() ) { o += ",reforge="; o += encoded_addon_str;      }
   if ( ! encoded_equip_str.empty()   ) { o += ",equip=";   o += encoded_equip_str;      }
   if ( ! encoded_use_str.empty()     ) { o += ",use=";     o += encoded_use_str;        }
   if ( ! encoded_weapon_str.empty()  ) { o += ",weapon=";  o += encoded_weapon_str;     }
@@ -1031,27 +1032,32 @@ bool item_t::decode_weapon()
 
 // item_t::download_slot =============================================================
 
-bool item_t::download_slot( item_t& item, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id )
+bool item_t::download_slot( item_t& item, 
+			    const std::string& item_id, 
+			    const std::string& enchant_id, 
+			    const std::string& addon_id, 
+			    const std::string& reforge_id, 
+			    const std::string gem_ids[ 3 ] )
 {
   player_t* p = item.player;
   bool success = false;
 
   // Check URL caches
-  success =      wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, addon_id, 1 ) ||
-            mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, addon_id, 1 ) ||
+  success =      wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, gem_ids, 1 ) ||
+            mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, gem_ids, 1 ) ||
                   armory_t::download_slot( item, item_id, 1 );
 
   if ( success )
     return true;
 
-  success = wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, addon_id, 0 );
+  success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, gem_ids, 0 );
 
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", 
 			p -> name(), item.slot_name() );
 
-    success = mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, addon_id, 0 );
+    success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, gem_ids, 0 );
   }
 
   if ( ! success )

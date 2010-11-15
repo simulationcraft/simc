@@ -252,6 +252,8 @@ static int create_children( sim_t*                  sim,
 static xml_node_t* search_tree( xml_node_t*        root,
                                 const std::string& name_str )
 {
+  if( ! root ) return 0;
+
   if ( name_str.empty() || name_str.size() == 0 || name_str == root -> name() )
     return root;
 
@@ -259,6 +261,31 @@ static xml_node_t* search_tree( xml_node_t*        root,
   for ( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = search_tree( root -> children[ i ], name_str );
+    if ( node ) return node;
+  }
+
+  return 0;
+}
+
+// search_tree =============================================================
+
+static xml_node_t* search_tree( xml_node_t*        root,
+                                const std::string& name_str,
+                                const std::string& parm_name,
+                                const std::string& parm_value )
+{
+  if( ! root ) return 0;
+
+  if ( name_str.empty() || name_str.size() == 0 || name_str == root -> name() )
+  {
+    xml_parm_t* parm = root -> get_parm( parm_name );
+    if ( parm && parm -> value_str == parm_value ) return root;
+  }
+
+  int num_children = ( int ) root -> children.size();
+  for ( int i=0; i < num_children; i++ )
+  {
+    xml_node_t* node = search_tree( root -> children[ i ], name_str, parm_name, parm_value );
     if ( node ) return node;
   }
 
@@ -408,6 +435,7 @@ xml_node_t* xml_t::create( sim_t* sim, FILE* input )
 xml_node_t* xml_t::get_child( xml_node_t*        root,
                               const std::string& name_str )
 {
+  if( ! root ) return 0;
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
@@ -424,6 +452,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
                          xml_node_t*               root,
                          const std::string&        name_str )
 {
+  if( ! root ) return 0;
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
@@ -442,6 +471,8 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
 xml_node_t* xml_t::get_node( xml_node_t*        root,
                              const std::string& path )
 {
+  if( ! root ) return 0;
+
   if ( path.empty() || path.size() == 0 || path == root -> name() )
     return root;
 
@@ -453,15 +484,67 @@ xml_node_t* xml_t::get_node( xml_node_t*        root,
   return node;
 }
 
+// xml_t::get_node =========================================================
+
+xml_node_t* xml_t::get_node( xml_node_t*        root,
+                             const std::string& path,
+			     const std::string& parm_name,
+			     const std::string& parm_value )
+{
+  if( ! root ) return 0;
+
+  std::string name_str;
+  xml_node_t* node = split_path( root, name_str, path );
+
+  if ( node ) node = search_tree( node, name_str, parm_name, parm_value );
+
+  return node;
+}
+
 // xml_t::get_nodes ========================================================
 
 int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
                       xml_node_t*               root,
                       const std::string&        path )
 {
+  if( ! root ) return 0;
+
   if ( path.empty() || path.size() == 0 || path == root -> name() )
   {
     nodes.push_back( root );
+  }
+  else
+  {
+    std::string name_str;
+    xml_node_t* node = split_path( root, name_str, path );
+
+    int num_children = ( int ) node -> children.size();
+    for ( int i=0; i < num_children; i++ )
+    {
+      get_nodes( nodes, node -> children[ i ], name_str );
+    }
+  }
+
+  return ( int ) nodes.size();
+}
+
+// xml_t::get_nodes ========================================================
+
+int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
+                      xml_node_t*               root,
+                      const std::string&        path,
+		      const std::string& parm_name,
+		      const std::string& parm_value )
+{
+  if( ! root ) return 0;
+
+  if ( path.empty() || path.size() == 0 || path == root -> name() )
+  {
+    xml_parm_t* parm = root -> get_parm( parm_name );
+    if ( parm && parm -> value_str == parm_value ) 
+    {
+      nodes.push_back( root );
+    }
   }
   else
   {

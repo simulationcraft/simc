@@ -106,6 +106,9 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& name,
                                              int cache )
 {
+  std::string new_url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
+  return xml_t::download( sim, new_url );
+
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?locale=en_US&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
@@ -131,6 +134,9 @@ static xml_node_t* download_character_talents( sim_t* sim,
                                                const std::string& name,
                                                int   cache )
 {
+  std::string new_url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/talent/primary";
+  return xml_t::download( sim, new_url );
+
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?locale=en_US&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
@@ -794,6 +800,12 @@ player_t* armory_t::download_player( sim_t* sim,
   xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, temp_name, cache );
   xml_node_t* talents_xml = download_character_talents( sim, region, server, temp_name, cache );
 
+  printf( "\n\n\n\n\n\n\n\n\nSHEET HERE!\n" );
+  if(   sheet_xml ) xml_t::print(   sheet_xml );
+  printf( "\n\n\n\n\n\n\n\n\nTALENTS HERE!\n" );
+  if( talents_xml ) xml_t::print( talents_xml );
+  exit(0);
+
   if ( ! sheet_xml || ! talents_xml )
   {
     sim -> errorf( "Unable to download character %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
@@ -971,15 +983,13 @@ player_t* armory_t::download_player( sim_t* sim,
 
       bool success = false;
 
-      std::string enchant_id, addon_id, gem_ids[ 3 ];
+      std::string enchant_id, addon_id, reforge_id, gem_ids[ 3 ];
       if ( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
-// TO-DO
-//         xml_t::get_value( addon_id,   item_nodes[ i ], "permanentenchant2" ) &&    
            xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
            xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
            xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = item_t::download_slot( item, id_str, enchant_id, gem_ids, addon_id );
+        success = item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, gem_ids );
       }
 
       if ( ! success )
@@ -991,8 +1001,6 @@ player_t* armory_t::download_player( sim_t* sim,
     }
     else return 0;
   }
-
-  if ( p ) p -> armory( sheet_xml, talents_xml );
 
   return p;
 }

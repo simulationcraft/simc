@@ -197,6 +197,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_battle_net.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_buff.cpp"
 			>
 		</File>

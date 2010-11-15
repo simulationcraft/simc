@@ -98,7 +98,7 @@ static enchant_data_t enchant_db[] =
   { "4062",  "+30 Stamina and Minor Movement Speed",                      "30sta"                          },
   { "4061",  "+50 Mastery",                                               "50mastery"                      },
   { "3878",  "Mind Amplification Dish",                                   ""                               },
-  { "3876",  "Inscription of the Pinnacle",                               "15Dodge_10Def"                  },
+  { "3876",  "Inscription of the Pinnacle",                               "15Dodge_15Sta"                  },
   { "3875",  "+30 Attack Power and +10 Crit Rating",                      "30AP_10Crit"                    },
   { "3873",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta"                     },
   { "3872",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi"                     },
@@ -118,11 +118,11 @@ static enchant_data_t enchant_db[] =
   { "3845",  "+50 Attack Power",                                          "50AP"                           },
   { "3844",  "+45 Spirit",                                                "45Spi"                          },
   { "3843",  "Scope (+15 Damage)",                                        ""                               },
-  { "3842",  "+37 Stamina and +20 Defense",                               "37Sta_20Def"                    },
+  { "3842",  "+37 Stamina and +20 Dodge",                                 "37Sta_20Dodge"                  },
   { "3840",  "+23 Spell Power",                                           "23SP"                           },
   { "3839",  "+40 Attack Power",                                          "40AP"                           },
   { "3838",  "+70 Spell Power and +15 Crit Rating",                       "70SP_15Crit"                    },
-  { "3837",  "+60 Dodge Rating and +15 Defense Rating",                   "60Dodge_15Def"                  },
+  { "3837",  "+60 Dodge Rating and +22 Stamina"       ,                   "60Dodge_22Sta"                  },
   { "3836",  "+70 Spell Power and +6 Mana/5 seconds",                     "70SP_6MP5"                      },
   { "3835",  "+120 Attack Power and +15 Crit Rating",                     "120AP_15Crit"                   },
   { "3834",  "+63 Spell Power",                                           "63SP"                           },
@@ -140,14 +140,14 @@ static enchant_data_t enchant_db[] =
   { "3822",  "+55 Stamina and +22 Agility",                               "55Sta_22Agi"                    },
   { "3820",  "+30 Spell Power and 20 Critical strike rating.",            "30SP_20Crit"                    },
   { "3819",  "+30 Spell Power and 8 mana per 5 seconds.",                 "30SP_8MP5"                      },
-  { "3818",  "+37 Stamina and +20 Defense",                               "37Sta_20Def"                    },
+  { "3818",  "+37 Stamina and +20 Dodge",                                 "37Sta_20Dodge"                  },
   { "3817",  "+50 Attack Power and +20 Critical Strike Rating",           "50AP_20Crit"                    },
   { "3816",  "+25 Fire Resistance and 30 Stamina",                        "30Sta"                          },
   { "3815",  "+25 Arcane Resistance and 30 Stamina",                      "30Sta"                          },
   { "3814",  "+25 Shadow Resistance and 30 Stamina",                      "30Sta"                          },
   { "3813",  "+25 Nature Resistance and 30 Stamina",                      "30Sta"                          },
   { "3812",  "+25 Frost Resistance and 30 Stamina",                       "30Sta"                          },
-  { "3811",  "+20 Dodge Rating and +15 Defense Rating",                   "20Dodge_15Def"                  },
+  { "3811",  "+20 Dodge Rating and +22 Stamina",                          "20Dodge_22Sta"                  },
   { "3810",  "+24 Spell Power and +15 Critical Strike Rating",            "24SP_15Crit"                    },
   { "3809",  "+24 Spell Power and +6 Mana/5 seconds",                     "24SP_6MP5"                      },
   { "3808",  "+40 Attack Power and +15 Crit Rating",                      "40AP_15Crit"                    },
@@ -240,7 +240,7 @@ static enchant_data_t enchant_db[] =
   { "3003",  "+34 Attack Power and +16 Hit Rating",                       "34AP_16Hit"                     },
   { "3002",  "+22 Spell Power and +14 Hit Rating",                        "22SP_14Hit"                     },
   { "3001",  "+19 Spell Power and +7 Mana every 5 seconds",               "19SP_7MP5"                      },
-  { "2999",  "+16 Defense Rating and +17 Dodge Rating",                   "16Def_17Dodge"                  },
+  { "2999",  "+8 Stamina and +17 Dodge Rating",                           "8Sta_17Dodge"                   },
   { "2998",  "+7 All Resistances",                                        ""                               },
   { "2997",  "+15 Critical Strike Rating and +20 Attack Power",           "15Crit_20AP"                    },
   { "2996",  "+13 Critical Strike Rating",                                "13Crit"                         },
@@ -248,8 +248,8 @@ static enchant_data_t enchant_db[] =
   { "2994",  "+13 Critical Strike Rating",                                "13Crit"                         },
   { "2993",  "+12 Spell Power and 6 Mana every 5 seconds",                "12SP_6MP5"                      },
   { "2992",  "+5 Mana Regen",                                             "5MP5"                           },
-  { "2991",  "+15 Defense Rating and +10 Dodge Rating",                   "15Def_10Dodge"                  },
-  { "2990",  "+13 Defense Rating",                                        "13Def"                          },
+  { "2991",  "+22 Stamina and +10 Dodge Rating",                          "22Sta_10Dodge"                  },
+  { "2990",  "+13 Dodge Rating",                                          "13Dodge"                        },
   { "2989",  "+8 Arcane Resist",                                          ""                               },
   { "2988",  "+48 Stamina",                                               "48Sta"                          },
   { "2987",  "+8 Frost Resist",                                           ""                               },
@@ -260,7 +260,7 @@ static enchant_data_t enchant_db[] =
   { "2981",  "+15 Spell Power",                                           "15SP"                           },
   { "2980",  "+18 Spell Power and +4 Mana every 5 seconds",               "18SP_4MP5"                      },
   { "2979",  "+15 Spell Power",                                           "15SP"                           },
-  { "2978",  "+15 Dodge Rating and +10 Defense Rating",                   "15Dodge_10Def"                  },
+  { "2978",  "+15 Dodge Rating and +15 Stamina",                          "15Dodge_15Sta"                  },
   { "2977",  "+13 Dodge Rating",                                          "13Dodge"                        },
   { "2940",  "Minor Speed and +9 Stamina",                                "9Sta"                           },
   { "2939",  "Minor Speed and +6 Agility",                                "6Agi"                           },
@@ -314,7 +314,7 @@ static enchant_data_t enchant_db[] =
   { "2653",  "+18 Block Value",                                           "18BlockV"                       },
   { "2650",  "+15 Spell Power",                                           "15SP"                           },
   { "2649",  "+12 Stamina",                                               "12Sta"                          },
-  { "2648",  "+12 Defense Rating",                                        "12Def"                          },
+  { "2648",  "+12 Dodge Rating",                                          "12Dodge"                        },
   { "2647",  "+12 Strength",                                              "12Str"                          },
   { "2646",  "+25 Agility",                                               "25Agi"                          },
   { "2622",  "+12 Dodge Rating",                                          "12Dodge"                        },
@@ -337,8 +337,8 @@ static enchant_data_t enchant_db[] =
   { "2587",  "+13 Spell Power and +15 Intellect",                         "13SP_15Int"                     },
   { "2586",  "+24 Ranged Attack Power/+10 Stamina/+10 Hit Rating",        "_10Sta_10Hit"                   },
   { "2585",  "+28 Attack Power/+12 Dodge Rating",                         "28AP"                           },
-  { "2584",  "+10 Defense +10 Stamina and +12 Spell Power",               "10Def_10Sta_12SP"               },
-  { "2583",  "+10 Defense Rating/+10 Stamina/+15 Block Value",            "10Def_10Sta"                    },
+  { "2584",  "+15 Dodge +10 Stamina and +12 Spell Power",                 "10Dodge_10Sta_12SP"             },
+  { "2583",  "+10 Dodge Rating/+10 Stamina/+15 Block Value",              "10Dodge_10Sta"                  },
   { "2568",  "+22 Intellect",                                             "22Int"                          },
   { "2567",  "+20 Spirit",                                                "20Spi"                          },
   { "2566",  "+13 Spell Power",                                           "13SP"                           },
@@ -351,7 +351,7 @@ static enchant_data_t enchant_db[] =
   { "2523",  "+30 Ranged Hit Rating",                                     ""                               },
   { "2505",  "+29 Spell Power",                                           "29SP"                           },
   { "2504",  "+30 Spell Power",                                           "30SP"                           },
-  { "2503",  "+5 Defense Rating",                                         "5Def"                           },
+  { "2503",  "+5 Dodge Rating",                                           "5Dodge"                         },
   { "2488",  "+5 All Resistances",                                        ""                               },
   { "2487",  "+5 Shadow Resistance",                                      ""                               },
   { "2486",  "+5 Nature Resistance",                                      ""                               },
@@ -366,10 +366,10 @@ static enchant_data_t enchant_db[] =
   { "2332",  "+30 Spell Power",                                           "30SP"                           },
   { "2326",  "+23 Spell Power",                                           "23SP"                           },
   { "2322",  "+19 Spell Power",                                           "19SP"                           },
-  { "1953",  "+22 Defense Rating",                                        "22Def"                          },
-  { "1952",  "+20 Defense Rating",                                        "20Def"                          },
-  { "1951",  "+16 Defense Rating",                                        "16Def"                          },
-  { "1950",  "+15 Defense Rating",                                        "15Def"                          },
+  { "1953",  "+22 Dodge Rating",                                          "22Dodge"                        },
+  { "1952",  "+20 Dodge Rating",                                          "20Dodge"                        },
+  { "1951",  "+16 Dodge Rating",                                          "16Dodge"                        },
+  { "1950",  "+15 Dodge Rating",                                          "15Dodge"                        },
   { "1904",  "+9 Intellect",                                              "9Int"                           },
   { "1903",  "+9 Spirit",                                                 "9Spi"                           },
   { "1900",  "Crusader",                                                  ""                               },
@@ -427,8 +427,8 @@ static enchant_data_t enchant_db[] =
   {  "928",  "+3 All Stats",                                              "3Str_3Agi_3Sta_3Int_3Spi"       },
   {  "927",  "+7 Strength",                                               "7Str"                           },
   {  "925",  "+6 Intellect",                                              "6Int"                           },
-  {  "924",  "+2 Defense Rating",                                         "2Def"                           },
-  {  "923",  "+5 Defense Rating",                                         "5Def"                           },
+  {  "924",  "+2 Dodge Rating",                                           "2Dodge"                         },
+  {  "923",  "+5 Dodge Rating",                                           "5Dodge"                         },
   {  "913",  "+65 Mana",                                                  "65Mana"                         },
   {  "912",  "Demonslaying",                                              ""                               },
   {  "911",  "Minor Speed Increase",                                      ""                               },
@@ -501,6 +501,15 @@ static enchant_data_t enchant_db[] =
   {   "17",  "Reinforced (+24 Armor)",                                    "24BArmor"                       },
   {   "16",  "Reinforced (+16 Armor)",                                    "16BArmor"                       },
   {   "15",  "Reinforced (+8 Armor)",                                     "8BArmor"                        },
+  { NULL, NULL, NULL }
+};
+
+// Add-Ons use the same enchant data-base for now
+static enchant_data_t* addon_db = enchant_db;
+
+static enchant_data_t reforge_db[] =
+{
+  { "86", "Reforge Dodge to Mastery", "dodge_mastery" },
   { NULL, NULL, NULL }
 };
 
@@ -899,6 +908,46 @@ bool enchant_t::get_encoding( std::string& name,
   return false;
 }
 
+// enchant_t::get_addon_encoding ============================================
+
+bool enchant_t::get_addon_encoding( std::string& name,
+				    std::string& encoding,
+				    const std::string& addon_id )
+{
+  for ( int i=0; addon_db[ i ].id; i++ )
+  {
+    enchant_data_t& addon = addon_db[ i ];
+
+    if ( addon_id == addon.id )
+    {
+      name     = addon.name;
+      encoding = addon.encoding;
+      return true;
+    }
+  }
+  return false;
+}
+
+// enchant_t::get_reforge_encoding ==========================================
+
+bool enchant_t::get_reforge_encoding( std::string& name,
+				      std::string& encoding,
+				      const std::string& reforge_id )
+{
+  for ( int i=0; reforge_db[ i ].id; i++ )
+  {
+    enchant_data_t& reforge = reforge_db[ i ];
+
+    if ( reforge_id == reforge.id )
+    {
+      name     = reforge.name;
+      encoding = reforge.encoding;
+      return true;
+    }
+  }
+  return false;
+}
+
 // enchant_t::download ======================================================
 
 bool enchant_t::download( item_t&            item,
@@ -909,8 +958,8 @@ bool enchant_t::download( item_t&            item,
   if ( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
     return true;
 
-  std::string enchant_name;
-  if ( get_encoding( enchant_name, item.armory_enchant_str, enchant_id ) )
+  std::string description;
+  if ( get_encoding( description, item.armory_enchant_str, enchant_id ) )
   {
     armory_t::format( item.armory_enchant_str );
     return true;
@@ -919,20 +968,40 @@ bool enchant_t::download( item_t&            item,
   return false;
 }
 
-// enchant_t::download ======================================================
+// enchant_t::download_addon ================================================
 
 bool enchant_t::download_addon( item_t&            item,
-                                const std::string& enchant_id )
+                                const std::string& addon_id )
 {
   item.armory_addon_str.clear();
 
-  if ( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
+  if ( addon_id.empty() || addon_id == "" || addon_id == "0" )
     return true;
 
-  std::string enchant_name;
-  if ( get_encoding( enchant_name, item.armory_addon_str, enchant_id ) )
+  std::string description;
+  if ( get_addon_encoding( description, item.armory_addon_str, addon_id ) )
   {
     armory_t::format( item.armory_addon_str );
+    return true;
+  }
+
+  return false;
+}
+
+// enchant_t::download_reforge ===============================================
+
+bool enchant_t::download_reforge( item_t&            item,
+				  const std::string& reforge_id )
+{
+  item.armory_reforge_str.clear();
+
+  if ( reforge_id.empty() || reforge_id == "" || reforge_id == "0" )
+    return true;
+
+  std::string description;
+  if ( get_reforge_encoding( description, item.armory_reforge_str, reforge_id ) )
+  {
+    armory_t::format( item.armory_reforge_str );
     return true;
   }
 

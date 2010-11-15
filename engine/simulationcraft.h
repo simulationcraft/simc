@@ -1667,6 +1667,8 @@ struct util_t
   static std::string& utf8_hex_to_ascii( std::string& name );
   static std::string& format_name( std::string& name );
 
+  static bool compare_ci( const std::string& l, const std::string& r );
+
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
 
   static void translate_talent_trees( std::vector<talent_translation_t>& talent_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size );
@@ -2667,7 +2669,12 @@ struct item_t
   bool decode_armor_type();
   bool decode_reforge();
 
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id );
+  static bool download_slot( item_t&, 
+			     const std::string& item_id, 
+			     const std::string& enchant_id, 
+			     const std::string& addon_id, 
+			     const std::string& reforge_id, 
+			     const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
   static int  parse_gem( item_t&            item,
@@ -3156,8 +3163,7 @@ struct player_t
 
   virtual void trigger_replenishment();
 
-  virtual void armory( xml_node_t* sheet_xml, xml_node_t* talents_xml ) { assert( sheet_xml ); assert( talents_xml ); }
-  virtual int  decode_set( item_t& item ) { assert( item.name() ); return SET_NONE; }
+  virtual int decode_set( item_t& item ) { assert( item.name() ); return SET_NONE; }
 
   virtual void recalculate_haste();
 
@@ -3846,9 +3852,12 @@ struct unique_gear_t
 struct enchant_t
 {
   static void init( player_t* );
-  static bool get_encoding( std::string& name, std::string& encoding, const std::string& enchant_id );
-  static bool download( item_t&, const std::string& enchant_id );
-  static bool download_addon( item_t&, const std::string& enchant_id );
+  static bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id );
+  static bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id   );
+  static bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
+  static bool download        ( item_t&, const std::string& enchant_id );
+  static bool download_addon  ( item_t&, const std::string& addon_id   );
+  static bool download_reforge( item_t&, const std::string& reforge_id );
 };
 
 // Consumable ================================================================
@@ -4059,6 +4068,18 @@ struct armory_t
   static std::string& format( std::string& name, int format_type = FORMAT_DEFAULT );
 };
 
+// Battle Net ================================================================
+
+struct battle_net_t
+{
+  static player_t* download_player( sim_t* sim,
+                                    const std::string& region,
+                                    const std::string& server,
+                                    const std::string& name,
+                                    const std::string& talents,
+                                    int cache=0 );
+};
+
 // Wowhead  ==================================================================
 
 struct wowhead_t
@@ -4069,7 +4090,13 @@ struct wowhead_t
                                     const std::string& name,
                                     int active=1 );
   static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id, int cache_only=0 );
+  static bool download_slot( item_t&, 
+			     const std::string& item_id, 
+			     const std::string& enchant_id, 
+			     const std::string& addon_id, 
+			     const std::string& reforge_id, 
+			     const std::string gem_ids[ 3 ], 
+			     int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
@@ -4079,7 +4106,13 @@ struct wowhead_t
 
 struct mmo_champion_t
 {
-  static bool download_slot( item_t&, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ], const std::string& addon_id, int cache_only=0 );
+  static bool download_slot( item_t&, 
+			     const std::string& item_id, 
+			     const std::string& enchant_id, 
+			     const std::string& addon_id, 
+			     const std::string& reforge_id, 
+			     const std::string gem_ids[ 3 ], 
+			     int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
@@ -4118,8 +4151,10 @@ struct xml_t
   static const char* get_name( xml_node_t* node );
   static xml_node_t* get_child( xml_node_t* root, const std::string& name );
   static xml_node_t* get_node ( xml_node_t* root, const std::string& path );
+  static xml_node_t* get_node ( xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
   static int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
   static int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
+  static int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );

@@ -533,8 +533,9 @@ bool mmo_champion_t::download_item( item_t&            item,
 bool mmo_champion_t::download_slot( item_t&            item,
                                     const std::string& item_id,
                                     const std::string& enchant_id,
-                                    const std::string  gem_ids[ 3 ],
                                     const std::string& addon_id,
+                                    const std::string& reforge_id,
+                                    const std::string  gem_ids[ 3 ],
                                     int cache_only )
 {
   player_t* p = item.player;
@@ -598,6 +599,12 @@ bool mmo_champion_t::download_slot( item_t&            item,
   if ( ! enchant_t::download_addon( item, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
+    //return false;
+  }
+
+  if ( ! enchant_t::download_reforge( item, addon_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n", p -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
