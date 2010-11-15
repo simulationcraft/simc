@@ -1,6 +1,8 @@
 #!simc
 
-Globals_Cata_80.simc
+patch=4.0.1
+optimal_raid=1
+target_level=83
 
 Warrior_401_Arms.simc
 Warrior_401_Fury_1h.simc

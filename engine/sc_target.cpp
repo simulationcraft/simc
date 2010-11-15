@@ -188,10 +188,10 @@ void target_t::init()
   }
 
   // Infinite-Stacking De-Buffs
-  debuffs.bleeding     = new debuff_t( sim, "bleeding",     -1 );
-  debuffs.casting      = new debuff_t( sim, "casting",      -1 );
-  debuffs.invulnerable = new debuff_t( sim, "invulnerable", -1 );
-  debuffs.vulnerable   = new debuff_t( sim, "vulnerable",   -1 );
+  debuffs.bleeding     = new debuff_t( this, "bleeding",     -1 );
+  debuffs.casting      = new debuff_t( this, "casting",      -1 );
+  debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
+  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
 }
 
 // target_t::reset ===========================================================
@@ -264,4 +264,5 @@ int target_t::get_options( std::vector<option_t>& options )
 
   return ( int ) options.size();
 }
+// target_t::init_base =========================================================
 

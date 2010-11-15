@@ -1988,6 +1988,7 @@ struct buff_t : public spell_id_t
 {
   sim_t* sim;
   player_t* player;
+  player_t* source;
   std::string name_str;
   std::vector<std::string> aura_str;
   std::vector<double> stack_occurrence;
@@ -2073,6 +2074,9 @@ struct stat_buff_t : public buff_t
                int stat, double amount,
                int max_stack=1, double buff_duration=0, double buff_cooldown=0,
                double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+  stat_buff_t( player_t*, const uint32_t id, const std::string& name,
+                 int stat, double amount,
+                 double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
   virtual ~stat_buff_t() { };
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -2081,7 +2085,8 @@ struct stat_buff_t : public buff_t
 
 struct debuff_t : public buff_t
 {
-  debuff_t( sim_t*, const std::string& name,
+  target_t* target;
+  debuff_t( target_t*, const std::string& name,
             int max_stack=1, double buff_duration=0, double buff_cooldown=0,
             double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   virtual void aura_gain();

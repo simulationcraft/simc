@@ -1772,7 +1772,7 @@ static void trigger_brittle_bones( spell_t* s )
   if ( ! p -> talents.brittle_bones -> rank() )
     return;
 
-  target_t* t = s -> sim -> target;
+  target_t* t = s -> target;
 
   // Don't set duration if it's set to 0
   if ( t -> debuffs.brittle_bones -> buff_duration > 0 )
@@ -1784,6 +1784,7 @@ static void trigger_brittle_bones( spell_t* s )
   if ( bb_value >= t -> debuffs.brittle_bones -> current_value )
   {
     t -> debuffs.brittle_bones -> trigger( 1, bb_value );
+    t -> debuffs.brittle_bones -> source = p;
   }
 }
 
@@ -1799,10 +1800,11 @@ static void trigger_ebon_plaguebringer( action_t* a )
     return;
 
   double disease_duration = a -> dot -> ready - a -> sim -> current_time;
-  if ( a -> sim -> target -> debuffs.ebon_plaguebringer -> remains_lt( disease_duration ) )
+  if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( disease_duration ) )
   {
-    a -> sim -> target -> debuffs.ebon_plaguebringer -> buff_duration = disease_duration;
-    a -> sim -> target -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
+    a -> target -> debuffs.ebon_plaguebringer -> buff_duration = disease_duration;
+    a -> target -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
+    a -> target -> debuffs.ebon_plaguebringer -> source = p;
   }
 }
 
@@ -4916,8 +4918,8 @@ void player_t::death_knight_init( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  t -> debuffs.brittle_bones      = new debuff_t( sim, "brittle_bones",      1, 15.0 );
-  t -> debuffs.ebon_plaguebringer = new debuff_t( sim, "ebon_plaguebringer", 1, 15.0 );
+    t -> debuffs.brittle_bones      = new debuff_t( t, "brittle_bones",      1, 15.0 );
+    t -> debuffs.ebon_plaguebringer = new debuff_t( t, "ebon_plaguebringer", 1, 15.0 );
   }
 }
 
@@ -4933,7 +4935,7 @@ void player_t::death_knight_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  if ( sim -> overrides.brittle_bones      ) t -> debuffs.brittle_bones      -> override( 1, 0.04 );
-  if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
+    if ( sim -> overrides.brittle_bones      ) t -> debuffs.brittle_bones      -> override( 1, 0.04 );
+    if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
   }
 }

@@ -1647,8 +1647,6 @@ struct expose_armor_t : public rogue_attack_t
 
     if ( result_is_hit() )
     {
-      target_t* t = sim -> target;
-
       double duration = 10 * combo_points_spent;
       
       duration += p -> glyphs.expose_armor -> mod_additive( P_DURATION );
@@ -1656,10 +1654,11 @@ struct expose_armor_t : public rogue_attack_t
       if ( p -> buffs_revealing_strike -> up() )
         duration *= 1.0 + p -> buffs_revealing_strike -> value();
 
-      if ( t -> debuffs.expose_armor -> remains_lt( duration ) )
+      if ( target -> debuffs.expose_armor -> remains_lt( duration ) )
       {
-        t -> debuffs.expose_armor -> buff_duration = duration;
-        t -> debuffs.expose_armor -> trigger( 1, 0.12 );
+        target -> debuffs.expose_armor -> buff_duration = duration;
+        target -> debuffs.expose_armor -> trigger( 1, 0.12 );
+        target -> debuffs.expose_armor -> source = p;
       }
 
       if ( p -> talents.improved_expose_armor -> rank() )
@@ -1802,7 +1801,8 @@ struct hemorrhage_t : public rogue_attack_t
     
     if ( result_is_hit() )
     {
-      sim -> target -> debuffs.hemorrhage -> trigger();
+      target -> debuffs.hemorrhage -> trigger();
+      target -> debuffs.hemorrhage -> source = p;
 
       if ( p -> glyphs.hemorrhage -> ok() )
       {
@@ -3858,11 +3858,11 @@ void player_t::rogue_init( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  t -> debuffs.expose_armor    = new debuff_t( sim, "expose_armor",     1 );
-  t -> debuffs.hemorrhage      = new debuff_t( sim, "hemorrhage",       1, 60.0 );
-  t -> debuffs.master_poisoner = new debuff_t( sim, "master_poisoner", -1 );
-  t -> debuffs.poisoned        = new debuff_t( sim, "poisoned",        -1 );
-  t -> debuffs.savage_combat   = new debuff_t( sim, "savage_combat",   -1 );
+    t -> debuffs.expose_armor    = new debuff_t( t, "expose_armor",     1 );
+    t -> debuffs.hemorrhage      = new debuff_t( t, "hemorrhage",       1, 60.0 );
+    t -> debuffs.master_poisoner = new debuff_t( t, "master_poisoner", -1 );
+    t -> debuffs.poisoned        = new debuff_t( t, "poisoned",        -1 );
+    t -> debuffs.savage_combat   = new debuff_t( t, "savage_combat",   -1 );
   }
 }
 
@@ -3875,10 +3875,10 @@ void player_t::rogue_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
-  if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
-  if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
-  if ( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
-  if ( sim -> overrides.savage_combat   ) t -> debuffs.savage_combat   -> override();
+    if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
+    if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
+    if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
+    if ( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
+    if ( sim -> overrides.savage_combat   ) t -> debuffs.savage_combat   -> override();
   }
 }

@@ -472,7 +472,12 @@ void buff_t::override( int    stacks,
                        double value )
 {
   if( max_stack == 0 ) return;
-  assert( current_stack == 0 );
+  if ( current_stack != 0 )
+  {
+    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s.\n", name() );
+    assert( 0 );
+  }
+  //assert( current_stack == 0 );
   buff_duration = 0;
   start( stacks, value );
 }
@@ -749,6 +754,21 @@ stat_buff_t::stat_buff_t( player_t*          p,
 {
 }
 
+// stat_buff_t::stat_buff_t =================================================
+
+stat_buff_t::stat_buff_t( player_t*          p,
+                          const uint32_t     id,
+                          const std::string& n,
+                          int                st,
+                          double             a,
+                          double             ch,
+                          bool               q,
+                          bool               r,
+                          int                rng_type ) :
+  buff_t( p, id, n, ch, q, r, rng_type ), stat(st), amount(a)
+{
+}
+
 // stat_buff_t::bump ========================================================
 
 void stat_buff_t::bump( int    stacks,
@@ -806,7 +826,7 @@ void stat_buff_t::expire()
 
 // debuff_t::debuff_t =======================================================
 
-debuff_t::debuff_t( sim_t*             s,
+debuff_t::debuff_t( target_t*          t,
                     const std::string& n,
                     int                ms,
                     double             d,
@@ -816,7 +836,8 @@ debuff_t::debuff_t( sim_t*             s,
                     bool               r,
                     int                rng_type,
                     int                id ) :
-  buff_t( s, n, ms, d, cd, ch, q, r, rng_type, id )
+  buff_t( t -> sim, n, ms, d, cd, ch, q, r, rng_type, id ), target( t )
+
 {
 }
 

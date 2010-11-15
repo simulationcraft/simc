@@ -1,0 +1,8 @@
+#!simc
+
+patch=4.0.3
+optimal_raid=1
+target_level=88
+
+Shaman_403_Elemental.simc
+Shaman_403_Enhancement.simc

@@ -1162,7 +1162,8 @@ struct arcane_blast_t : public mage_spell_t
     {
       if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> rank() / 2 ) )
       {
-        sim -> target -> debuffs.slow -> trigger();
+        target -> debuffs.slow -> trigger();
+        target -> debuffs.slow -> source = p;
       }
     }
   }
@@ -2438,7 +2439,8 @@ struct pyroblast_t : public mage_spell_t
 
     if ( result_is_hit() ) 
     {
-      sim -> target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
+      target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
+      target -> debuffs.critical_mass -> source = p;
     }
 
     // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
@@ -2490,7 +2492,8 @@ struct scorch_t : public mage_spell_t
     mage_spell_t::execute();
     if ( result_is_hit() ) 
     {
-      sim -> target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
+      target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
+      target -> debuffs.critical_mass -> source = p;
     }
     trigger_hot_streak( this );
   }
@@ -3422,9 +3425,11 @@ void player_t::mage_init( sim_t* sim )
     p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
   }
 
-  target_t* t = sim -> target;
-  t -> debuffs.critical_mass = new debuff_t( sim, "critical_mass", 1, 30.0 );
-  t -> debuffs.slow          = new debuff_t( sim, "slow",          1, 15.0 );
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    t -> debuffs.critical_mass = new debuff_t( t, "critical_mass", 1, 30.0 );
+    t -> debuffs.slow          = new debuff_t( t, "slow",          1, 15.0 );
+  }
 }
 
 // player_t::mage_combat_begin ==============================================
@@ -3440,8 +3445,10 @@ void player_t::mage_combat_begin( sim_t* sim )
     }
   }
 
-  target_t* t = sim -> target;
-  if ( sim -> overrides.critical_mass ) t -> debuffs.critical_mass -> override( 1 );
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    if ( sim -> overrides.critical_mass ) t -> debuffs.critical_mass -> override( 1 );
+  }
 
   if ( sim -> overrides.arcane_tactics ) sim -> auras.arcane_tactics -> override( 1 );
 }

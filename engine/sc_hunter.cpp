@@ -2410,8 +2410,10 @@ struct hunters_mark_t : public hunter_spell_t
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
     consume_resource();
-    target_t* t = sim -> target;
-    t -> debuffs.hunters_mark -> trigger( 1, ap_bonus );
+
+    hunter_t* p = player -> cast_hunter();
+    target -> debuffs.hunters_mark -> trigger( 1, ap_bonus );
+    target -> debuffs.hunters_mark -> source = p;
   }
 
   virtual bool ready()
@@ -3446,9 +3448,11 @@ void player_t::hunter_init( sim_t* sim )
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
 
-  target_t* t = sim -> target;
-  t -> debuffs.hunters_mark  = new debuff_t( sim, "hunters_mark",  1, 300.0 );
-  t -> debuffs.scorpid_sting = new debuff_t( sim, "scorpid_sting", 1, 20.0  );
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    t -> debuffs.hunters_mark  = new debuff_t( t, "hunters_mark",  1, 300.0 );
+    t -> debuffs.scorpid_sting = new debuff_t( t, "scorpid_sting", 1, 20.0  );
+  }
 }
 
 // player_t::hunter_combat_begin ============================================
@@ -3458,7 +3462,9 @@ void player_t::hunter_combat_begin( sim_t* sim )
   if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
 
-  target_t* t = sim -> target;
-  if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, 500 * 1.5 );
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, 500 * 1.5 );
+  }
 }
 

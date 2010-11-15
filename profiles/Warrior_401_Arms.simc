@@ -10,7 +10,7 @@ actions+=/food,type=dragonfin_filet
 actions+=/stance,choose=battle,if=in_combat=0
 actions+=/auto_attack
 actions+=/snapshot_stats
-actions+=/deadly_calm,rage<=10
+actions+=/deadly_calm,if=rage<=10
 actions+=/sweeping_strikes,if=target.adds>0
 actions+=/heroic_strike,if=target.adds=0
 actions+=/cleave,if=target.adds>0

@@ -1318,7 +1318,6 @@ struct judgement_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    target_t* t = sim -> target;
     action_t* seal = active_seal();
 
     if ( ! seal )
@@ -1336,7 +1335,8 @@ struct judgement_t : public paladin_attack_t
       }
       if ( p -> talents.judgements_of_the_just ) 
       {
-        t -> debuffs.judgements_of_the_just -> trigger();
+        target -> debuffs.judgements_of_the_just -> trigger();
+        target -> debuffs.judgements_of_the_just -> source = p;
       }
     }
     trigger_judgements_of_the_wise( seal );
@@ -2640,7 +2640,7 @@ void player_t::paladin_init( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  t -> debuffs.judgements_of_the_just = new debuff_t( sim, "judgements_of_the_just", 1, 20.0 );
+    t -> debuffs.judgements_of_the_just = new debuff_t( t, "judgements_of_the_just", 1, 20.0 );
   }
 }
 
@@ -2663,6 +2663,6 @@ void player_t::paladin_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
+    if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
   }
 }

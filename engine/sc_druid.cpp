@@ -519,7 +519,8 @@ static void trigger_infected_wounds( action_t* a )
 
   if ( p -> talents.infected_wounds -> rank() )
   {
-    p -> sim -> target -> debuffs.infected_wounds -> trigger();
+    a -> target -> debuffs.infected_wounds -> trigger();
+    a -> target -> debuffs.infected_wounds -> source = p;
   }
 }
 
@@ -531,9 +532,10 @@ static void trigger_earth_and_moon( spell_t* s )
 
   if ( p -> talents.earth_and_moon -> rank() == 0 ) return;
 
-  target_t* t = s -> sim -> target;
+  target_t* t = s -> target;
 
   t -> debuffs.earth_and_moon -> trigger( 1, 8 );
+  t -> debuffs.earth_and_moon -> source = p;
 }
 
 // trigger_eclipse_proc ====================================================
@@ -1103,8 +1105,9 @@ struct mangle_cat_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
     if ( result_is_hit() )
     {
-      target_t* t = sim -> target;
-      t -> debuffs.mangle -> trigger();
+      druid_t* p = player -> cast_druid();
+      target -> debuffs.mangle -> trigger();
+      target -> debuffs.mangle -> source = p;
       trigger_infected_wounds( this );
     }
   }
@@ -2260,10 +2263,10 @@ struct faerie_fire_t : public druid_spell_t
   virtual void execute()
   {
     druid_t*  p = player -> cast_druid();
-    target_t* t = sim -> target;
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
-    t -> debuffs.faerie_fire -> trigger( 1, 0.04 );
+    target -> debuffs.faerie_fire -> trigger( 1, 0.04 );
+    target -> debuffs.faerie_fire -> source = p;
   }
 
   virtual bool ready()
@@ -4135,10 +4138,10 @@ void player_t::druid_init( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  t -> debuffs.earth_and_moon       = new debuff_t( sim, "earth_and_moon",       1,  12.0 );
-  t -> debuffs.faerie_fire          = new debuff_t( sim, "faerie_fire",          3, 300.0 );
-  t -> debuffs.infected_wounds      = new debuff_t( sim, "infected_wounds",      1,  12.0 );
-  t -> debuffs.mangle               = new debuff_t( sim, "mangle",               1,  60.0 );
+    t -> debuffs.earth_and_moon       = new debuff_t( t, "earth_and_moon",       1,  12.0 );
+    t -> debuffs.faerie_fire          = new debuff_t( t, "faerie_fire",          3, 300.0 );
+    t -> debuffs.infected_wounds      = new debuff_t( t, "infected_wounds",      1,  12.0 );
+    t -> debuffs.mangle               = new debuff_t( t, "mangle",               1,  60.0 );
   }
 }
 
@@ -4159,10 +4162,10 @@ void player_t::druid_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-  if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
-  if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3, 0.04 );
-  if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
-  if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
+    if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
+    if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3, 0.04 );
+    if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
+    if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
   }
 }
 

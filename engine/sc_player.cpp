@@ -1198,11 +1198,11 @@ void player_t::init_buffs()
 {
   buffs.berserking           = new buff_t( this, "berserking",          1, 10.0 );
   buffs.heroic_presence      = new buff_t( this, "heroic_presence",     1       );
-  buffs.replenishment        = new buff_t( this, "replenishment",       1, 15.0 );
+  buffs.replenishment        = new buff_t( this, 57669, "replenishment" );
   buffs.stoneform            = new buff_t( this, "stoneform",           1,  8.0 );
   buffs.hellscreams_warsong  = new buff_t( this, "hellscreams_warsong", 1       );
   buffs.strength_of_wrynn    = new buff_t( this, "strength_of_wrynn",   1       );
-  buffs.dark_intent          = new buff_t( this, "dark_intent",         1       );
+  buffs.dark_intent          = new buff_t( this, 85767, "dark_intent" );
   buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
 
 

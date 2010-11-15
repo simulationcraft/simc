@@ -405,7 +405,7 @@ static void trigger_blood_frenzy( action_t* a )
   if ( p -> talents.blood_frenzy -> rank() == 0 )
     return;
 
-  target_t* t = a -> sim -> target;
+  target_t* t = a -> target;
 
   // Don't alter the duration if it is set to 0 (override/optimal_raid)
   if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > 0 )
@@ -422,10 +422,12 @@ static void trigger_blood_frenzy( action_t* a )
   if ( rank * 2 >= t -> debuffs.blood_frenzy_bleed -> current_value )
   {
     t -> debuffs.blood_frenzy_bleed -> trigger( 1, rank * 2 );
+    t -> debuffs.blood_frenzy_bleed -> source = p;
   }
   if ( rank * 15 >= t -> debuffs.blood_frenzy_physical -> current_value )
   {
     t -> debuffs.blood_frenzy_physical -> trigger( 1, rank * 15 );
+    t -> debuffs.blood_frenzy_physical -> source = p;
   }
 }
 
@@ -3447,12 +3449,14 @@ void player_t::warrior_init( sim_t* sim )
   sim -> auras.battle_shout = new aura_t( sim, "battle_shout", 1, 120.0 );
   sim -> auras.rampage      = new aura_t( sim, "rampage",      1, 0.0 );
 
-  target_t* t = sim -> target;
-  t -> debuffs.blood_frenzy_bleed    = new debuff_t( sim, "blood_frenzy_bleed",    1, 60.0 );
-  t -> debuffs.blood_frenzy_physical = new debuff_t( sim, "blood_frenzy_physical", 1, 60.0 );
-  t -> debuffs.sunder_armor          = new debuff_t( sim, "sunder_armor",          1, 30.0 );
-  t -> debuffs.thunder_clap          = new debuff_t( sim, "thunder_clap",          1, 30.0 );
-  t -> debuffs.shattering_throw      = new debuff_t( sim, "shattering_throw",      1 );
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    t -> debuffs.blood_frenzy_bleed    = new debuff_t( t, "blood_frenzy_bleed",    1, 60.0 );
+    t -> debuffs.blood_frenzy_physical = new debuff_t( t, "blood_frenzy_physical", 1, 60.0 );
+    t -> debuffs.sunder_armor          = new debuff_t( t, "sunder_armor",          1, 30.0 );
+    t -> debuffs.thunder_clap          = new debuff_t( t, "thunder_clap",          1, 30.0 );
+    t -> debuffs.shattering_throw      = new debuff_t( t, "shattering_throw",      1 );
+  }
 }
 
 // player_t::warrior_combat_begin ===========================================
@@ -3464,9 +3468,11 @@ void player_t::warrior_combat_begin( sim_t* sim )
 
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
-  target_t* t = sim -> target;
-  if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
-  if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );
-  if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override( 3 );
-  if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
+    if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );
+    if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override( 3 );
+    if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();
+  }
 }

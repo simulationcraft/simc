@@ -1,0 +1,9 @@
+#!simc
+
+patch=4.0.3
+optimal_raid=1
+target_level=88
+
+Warrior_403_Arms.simc
+Warrior_403_Fury_1h.simc
+Warrior_403_Fury_2h.simc

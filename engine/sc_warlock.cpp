@@ -1753,7 +1753,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
 
 struct coe_debuff_t : public debuff_t
 {
-  coe_debuff_t( sim_t* s ) : debuff_t( s, "curse_of_elements", 1, 300.0 )
+  coe_debuff_t( target_t* t ) : debuff_t( t, "curse_of_elements", 1, 300.0 )
     {}
 
   virtual void expire()
@@ -1788,11 +1788,10 @@ struct curse_of_elements_t : public warlock_spell_t
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
-      target_t*  t = sim -> target;
       warlock_t* p = player -> cast_warlock();
-      t -> debuffs.curse_of_elements -> expire();
-      t -> debuffs.curse_of_elements -> trigger( 1, effect_base_value( 2 ) );
-      t -> debuffs.curse_of_elements -> player = p;
+      target -> debuffs.curse_of_elements -> expire();
+      target -> debuffs.curse_of_elements -> trigger( 1, effect_base_value( 2 ) );
+      target -> debuffs.curse_of_elements -> source = p;
     }
   }
 
@@ -2064,8 +2063,8 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_shadow_embrace -> trigger();
-      target_t*  t = sim -> target;
-      t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
+      target -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
+      target -> debuffs.curse_of_elements -> source = p;
       trigger_everlasting_affliction( this );
     }
   }
@@ -4541,8 +4540,8 @@ void player_t::warlock_init( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    t -> debuffs.improved_shadow_bolt = new     debuff_t( sim, "Improved Shadow Bolt", 1, 30.0 );
-    t -> debuffs.curse_of_elements    = new coe_debuff_t( sim );
+    t -> debuffs.improved_shadow_bolt = new     debuff_t( t, "Shadow Mastery", 1, 30.0 );
+    t -> debuffs.curse_of_elements    = new coe_debuff_t( t );
   }
 }
 

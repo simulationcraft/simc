@@ -1,6 +1,6 @@
 #!./simc 
 
-rogue=Rogue_Cata_Muti
+rogue=Rogue_403_Muti
 level=85
 race=undead
 use_pre_potion=-1
