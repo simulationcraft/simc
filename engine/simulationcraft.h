@@ -2959,7 +2959,10 @@ struct player_t
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
+    buff_t* earthen_potion;
+    buff_t* golemblood_potion;
     buff_t* volcanic_potion;
+    buff_t* tolvir_potion;
     buff_t* wild_magic_potion_sp;
     buff_t* wild_magic_potion_crit;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }

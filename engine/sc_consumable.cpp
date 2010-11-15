@@ -479,6 +479,165 @@ struct wild_magic_potion_t : public action_t
 };
 
 // ==========================================================================
+// Earthen Potion
+// ==========================================================================
+
+struct earthen_potion_t : public action_t
+{
+  earthen_potion_t( player_t* p, const std::string& options_str ) :
+      action_t( ACTION_USE, "earthen_potion", p )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+    cooldown = p -> get_cooldown( "potion" );
+    cooldown -> duration = 60.0;
+  }
+
+  virtual void execute()
+  {
+    if ( player -> in_combat )
+    {
+      player -> buffs.earthen_potion   -> trigger();
+    }
+    else
+    {
+      cooldown -> duration -= 5.0;
+      player -> buffs.earthen_potion   -> buff_duration -= 5.0;
+      player -> buffs.earthen_potion   -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.earthen_potion   -> buff_duration += 5.0;
+    }
+
+    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    if ( player -> in_combat ) player -> potion_used = 1;
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
+
+    if ( player -> potion_used )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+// ==========================================================================
+// Golemblood Potion
+// ==========================================================================
+
+struct golemblood_potion_t : public action_t
+{
+  golemblood_potion_t( player_t* p, const std::string& options_str ) :
+      action_t( ACTION_USE, "golemblood_potion", p )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+    cooldown = p -> get_cooldown( "potion" );
+    cooldown -> duration = 60.0;
+  }
+
+  virtual void execute()
+  {
+    if ( player -> in_combat )
+    {
+      player -> buffs.golemblood_potion   -> trigger();
+    }
+    else
+    {
+      cooldown -> duration -= 5.0;
+      player -> buffs.golemblood_potion   -> buff_duration -= 5.0;
+      player -> buffs.golemblood_potion   -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.golemblood_potion   -> buff_duration += 5.0;
+    }
+
+    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    if ( player -> in_combat ) player -> potion_used = 1;
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
+
+    if ( player -> potion_used )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+// ==========================================================================
+// Potion of the Tol'vir 
+// ==========================================================================
+
+struct tolvir_potion_t : public action_t
+{
+  tolvir_potion_t( player_t* p, const std::string& options_str ) :
+      action_t( ACTION_USE, "tolvir_potion", p )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = 0;
+    harmful = false;
+    cooldown = p -> get_cooldown( "potion" );
+    cooldown -> duration = 60.0;
+  }
+
+  virtual void execute()
+  {
+    if ( player -> in_combat )
+    {
+      player -> buffs.tolvir_potion   -> trigger();
+    }
+    else
+    {
+      cooldown -> duration -= 5.0;
+      player -> buffs.tolvir_potion   -> buff_duration -= 5.0;
+      player -> buffs.tolvir_potion   -> trigger();
+      cooldown -> duration += 5.0;
+      player -> buffs.tolvir_potion   -> buff_duration += 5.0;
+    }
+
+    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    if ( player -> in_combat ) player -> potion_used = 1;
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
+
+    if ( player -> potion_used )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+// ==========================================================================
 // Volcanic Potion
 // ==========================================================================
 
@@ -788,6 +947,9 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "indestructible_potion" ) return new indestructible_potion_t( p, options_str );
   if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
   if ( name == "speed_potion"          ) return new          speed_potion_t( p, options_str );
+  if ( name == "earthen_potion"        ) return new        earthen_potion_t( p, options_str );
+  if ( name == "golemblood_potion"     ) return new     golemblood_potion_t( p, options_str );
+  if ( name == "tolvir_potion"         ) return new         tolvir_potion_t( p, options_str );
   if ( name == "volcanic_potion"       ) return new       volcanic_potion_t( p, options_str );
   if ( name == "wild_magic_potion"     ) return new     wild_magic_potion_t( p, options_str );
 

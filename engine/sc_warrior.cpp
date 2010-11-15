@@ -936,6 +936,10 @@ void warrior_attack_t::player_buff()
 
   if ( p -> set_bonus.tier10_4pc_melee() )
     player_multiplier *= 1.05;
+
+  if ( sim -> debug )
+    log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
+                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
 }
 
 // warrior_attack_t::ready() ================================================
@@ -3033,14 +3037,27 @@ void warrior_t::init_actions()
 
     // Stance
     if ( primary_tree() == TREE_ARMS )
-      action_list_str += "/stance,choose=battle,if=in_combat=0";
+      action_list_str += "/stance,choose=battle,if=!in_combat";
     else if ( primary_tree() == TREE_FURY )
-      action_list_str += "/stance,choose=berserker,if=in_combat=0";
+      action_list_str += "/stance,choose=berserker,if=!in_combat";
     else if ( primary_tree() == TREE_PROTECTION )
-      action_list_str += "/stance,choose=defensive,if=in_combat=0";
+      action_list_str += "/stance,choose=defensive,if=!in_combat";
 
     action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
+
+    // Potion
+    if ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY )
+    {
+      if (level >= 80 && sim -> P403 )
+        action_list_str += "/golemblood_potion,if=!in_combat|buffs.bloodlust.react";
+      else
+        action_list_str += "/speed_potion,if=!in_combat|buffs.bloodlust.react";
+    }
+    else
+    {
+      // FIXME: earthen potion, but when to use?
+    }
 
     // Usable Item
     int num_items = ( int ) items.size();
