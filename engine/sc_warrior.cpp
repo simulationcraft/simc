@@ -9,9 +9,9 @@
 // ==========================================================================
 //
 // TODO:
-//   * Get Heroic Strike to trigger properly "off gcd" using priority.
-//   * Move the bleeds out of being warrior_attack_t to stop them
-//     triggering effects or having special cases in the class.
+//  Before 4.0.3 release:
+//   * Check (if possible) all the ordering of the multipliers and adders
+//     to make sure they are interacting correctly.
 //   * Go through all of Deep Wounds and figure out what's going on.
 //     * Is it working right?
 //     * Why is the stats output fubar?
@@ -28,6 +28,10 @@
 //   * Fix the arms action list to match the profiles.
 //   * Sanitise use of buff up() vs check() for stats.
 //   * Arms.
+//  Later:
+//   * Get Heroic Strike to trigger properly "off gcd" using priority.
+//   * Move the bleeds out of being warrior_attack_t to stop them
+//     triggering effects or having special cases in the class.
 //   * Prot? O_O
 //
 // ==========================================================================
@@ -336,7 +340,8 @@ struct warrior_attack_t : public attack_t
       min_rage( 0 ), max_rage( 0 ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
-    may_glance   = false;
+    may_crit               = true;
+    may_glance             = false;
     normalize_weapon_speed = true;
   }
 
@@ -422,6 +427,7 @@ static void trigger_deep_wounds( action_t* a )
       background = true;
       trigger_gcd = 0;
       weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
+      may_crit = false;
       base_tick_time = 1.0;
       num_ticks = 6;
       number_ticks = num_ticks;
@@ -606,7 +612,6 @@ static void trigger_strikes_of_opportunity( attack_t* a )
         id = 76858;
         parse_data( p -> player_data );
         background = proc = true;
-        may_crit   = true;
 
         reset();
       }
@@ -969,7 +974,6 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     may_glance      = true;
-    may_crit        = true;
     background      = true;
     repeating       = true;
     trigger_gcd     = 0;
@@ -1108,7 +1112,6 @@ struct bladestorm_tick_t : public warrior_attack_t
 
     dual        = true;
     background  = true;
-    may_crit    = true;
     aoe         = true;
     direct_tick = true;
   }
@@ -1208,7 +1211,6 @@ struct bloodthirst_t : public warrior_attack_t
     base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10;
     base_multiplier   *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
     direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
-    may_crit           = true;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
 
@@ -1241,7 +1243,6 @@ struct cleave_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     aoe              = true;
-    may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
     direct_power_mod = sim -> P403 ? 0.562 : 0.675;
@@ -1293,7 +1294,6 @@ struct colossus_smash_t : public warrior_attack_t
     id = 86346;
     parse_data( p -> player_data );
 
-    may_crit    = true;
     base_dd_min = base_dd_max = p -> player_data.effect_base_value( 87876 );
 
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
@@ -1329,7 +1329,6 @@ struct concussion_blow_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
     direct_power_mod  = effect_base_value( 3 ) / 100.0;
-    may_crit          = true;
   }
 };
 
@@ -1348,7 +1347,6 @@ struct devastate_t : public warrior_attack_t
     id = 20243;
     parse_data( p -> player_data );
 
-    may_crit   = true;
     base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0
                + p -> glyphs.devastate * 0.05;
   }
@@ -1384,7 +1382,6 @@ struct execute_t : public warrior_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-    may_crit          = true;
     base_dd_min       = 10;
     base_dd_max       = 10;
     
@@ -1482,7 +1479,6 @@ struct heroic_strike_t : public warrior_attack_t
     id = 78;
     parse_data( p -> player_data );
 
-    may_crit          = true;
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
     base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
@@ -1531,7 +1527,6 @@ struct mortal_strike_t : public warrior_attack_t
     if ( sim -> P403 )
       weapon_multiplier           = 1.5;
 
-    may_crit                    = true;
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_multiplier            *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
@@ -1582,7 +1577,6 @@ struct overpower_t : public warrior_attack_t
 
     // To Do: Is this still normalized in 403?
 
-    may_crit   = true;
     may_dodge  = false;
     may_parry  = false;
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
@@ -1674,7 +1668,6 @@ struct raging_blow_t : public warrior_attack_t
     id = 85288;
     parse_data( p -> player_data );
 
-    may_crit   = true;
     base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
 
@@ -1740,7 +1733,7 @@ struct rend_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     weapon                 = &( p -> main_hand_weapon );
-    may_crit               = true;
+    may_crit               = false;
     base_td                = p -> player_data.effect_min( 98699, p -> type, p -> level );
     base_tick_time         = p -> player_data.effect_period ( 98699 );
     num_ticks              = (int) ( p -> player_data.spell_duration ( 94009 ) / base_tick_time );
@@ -1793,7 +1786,6 @@ struct revenge_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
     direct_power_mod  = 0.31; // Assumption from 3.3.5
-    may_crit          = true;
     base_multiplier  *= 1 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
                           + p -> glyphs.revenge * 0.1;
     stancemask = STANCE_DEFENSE;
@@ -1906,7 +1898,6 @@ struct shield_slam_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
     direct_power_mod  = 0; // FIXME: What is this?
-    may_crit          = true;
     base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
     base_multiplier  *= 1.0  + ( 0.10 * p -> glyphs.shield_slam );
   }
@@ -1968,7 +1959,6 @@ struct shockwave_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
     direct_power_mod  = 0.75;
-    may_crit          = true;
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -2008,7 +1998,6 @@ struct slam_t : public warrior_attack_t
     weapon                      = &( p -> main_hand_weapon );
     base_dd_min                 = p -> player_data.effect_min( 462, p -> type, p -> level );
     base_dd_max                 = p -> player_data.effect_max( 462, p -> type, p -> level );
-    may_crit                    = true;
     base_crit                  += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam     -> effect_base_value( 1 ) / 1000.0;
@@ -2103,7 +2092,6 @@ struct thunder_clap_t : public warrior_attack_t
     weapon_multiplier = 0;
 
     aoe               = true;
-    may_crit          = true;
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -2139,7 +2127,6 @@ struct whirlwind_t : public warrior_attack_t
       weapon_multiplier = 0.65;
 
     aoe               = true;
-    may_crit          = true;
     stancemask        = STANCE_BERSERKER;
   }
 
@@ -2191,7 +2178,6 @@ struct victory_rush_t : public warrior_attack_t
 
     weapon           = &( p -> main_hand_weapon );
     direct_power_mod = sim -> P403 ? 0.56 : 0.45;
-    may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
   }
 
