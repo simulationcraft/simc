@@ -681,7 +681,7 @@ struct hammer_of_justice_t : public paladin_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() ) return false;
     return paladin_attack_t::ready();
   }
 };
@@ -773,7 +773,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( sim -> target -> health_percentage() > 20 && !( p -> talents.sanctified_wrath->rank() && p -> buffs_avenging_wrath -> up() ) )
+    if ( target -> health_percentage() > 20 && !( p -> talents.sanctified_wrath->rank() && p -> buffs_avenging_wrath -> up() ) )
       return false;
 
     return paladin_attack_t::ready();
@@ -1668,7 +1668,7 @@ struct exorcism_t : public paladin_spell_t
     {
       player_multiplier *= blazing_light_multiplier;
     }
-    int target_race = sim -> target -> race;
+    int target_race = target -> race;
     if ( target_race == RACE_UNDEAD ||
          target_race == RACE_DEMON  )
     {
@@ -1698,7 +1698,7 @@ struct exorcism_t : public paladin_spell_t
 
     if ( undead_demon )
     {
-      int target_race = sim -> target -> race;
+      int target_race = target -> race;
       if ( target_race != RACE_UNDEAD &&
            target_race != RACE_DEMON  )
         return false;

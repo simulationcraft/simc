@@ -944,7 +944,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     {
       attack_t::assess_damage( amount, dmg_type );
 
-      for ( int i=0; i < sim -> target -> adds_nearby && i < 2; i ++ )
+      for ( int i=0; i < target -> adds_nearby && i < 2; i ++ )
       {
         amount *= 0.75;
         attack_t::additional_damage( amount, dmg_type );
@@ -1328,7 +1328,7 @@ struct ghoul_pet_t : public pet_t
     {
       ghoul_pet_attack_t::assess_damage( amount, dmg_type );
 
-      for ( int i=0; i < sim -> target -> adds_nearby && i < 2; i ++ )
+      for ( int i=0; i < target -> adds_nearby && i < 2; i ++ )
       {
         ghoul_pet_attack_t::additional_damage( amount, dmg_type );
       }
@@ -2973,7 +2973,7 @@ struct frost_strike_t : public death_knight_attack_t
 
     player_crit += p -> buffs_killing_machine -> value();
 
-    if ( sim -> target -> health_percentage() < 35 )
+    if ( target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 };
@@ -3006,7 +3006,7 @@ struct heart_strike_t : public death_knight_attack_t
   {
     death_knight_attack_t::assess_damage( amount, dmg_type );
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < 2; i ++ )
+    for ( int i=0; i < target -> adds_nearby && i < 2; i ++ )
     {
       amount *= 0.75;
       death_knight_attack_t::additional_damage( amount, dmg_type );
@@ -3143,7 +3143,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( sim -> target -> health_percentage() < 35 )
+    if ( target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -3227,7 +3227,7 @@ struct icy_touch_t : public death_knight_spell_t
 
     player_crit += p -> buffs_killing_machine -> value();
 
-    if ( sim -> target -> health_percentage() < 35 )
+    if ( target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -3272,7 +3272,7 @@ struct mind_freeze_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting -> check() )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3374,7 +3374,7 @@ struct obliterate_t : public death_knight_attack_t
 
     player_crit += p -> buffs_killing_machine -> value();
 
-    if ( sim -> target -> health_percentage() < 35 )
+    if ( target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 

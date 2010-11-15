@@ -880,7 +880,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
   {
     shaman_spell_t::assess_damage( amount, dmg_type );
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 2 + glyph_targets ); i ++ )
+    for ( int i=0; i < target -> adds_nearby && i < ( 2 + glyph_targets ); i ++ )
     {
       amount *= 0.70;
       shaman_spell_t::additional_damage( amount, dmg_type );
@@ -1807,7 +1807,7 @@ struct chain_lightning_t : public shaman_spell_t
     if ( conserve > 0 )
     {
       double mana_pct = 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max [ RESOURCE_MANA ];
-      if ( ( mana_pct - 5.0 ) < sim -> target -> health_percentage() )
+      if ( ( mana_pct - 5.0 ) < target -> health_percentage() )
         return false;
     }
 
@@ -1838,7 +1838,7 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_spell_t::assess_damage( amount, dmg_type );
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 2 + glyph_targets ); i ++ )
+    for ( int i=0; i < target -> adds_nearby && i < ( 2 + glyph_targets ); i ++ )
     {
       amount *= 0.70;
       shaman_spell_t::additional_damage( amount, dmg_type );
@@ -2614,7 +2614,7 @@ struct wind_shear_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
   }
 };
@@ -2679,7 +2679,7 @@ struct shaman_totem_t : public shaman_spell_t
     else
     {
       if ( sim -> log ) 
-        log_t::output( sim, "%s avoids %s (%s)", sim -> target -> name(), name(), util_t::result_type_string( result ) );
+        log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
     }
     
     update_stats( DMG_OVER_TIME );

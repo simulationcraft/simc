@@ -1897,11 +1897,11 @@ struct shadow_word_death_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     p -> was_sub_25 = p -> glyphs.shadow_word_death && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) && 
-                     ( sim -> target -> health_percentage() <= 25 );
+                     ( target -> health_percentage() <= 25 );
 
     priest_spell_t::execute();
 
-    if ( result_is_hit() && p -> was_sub_25 && ( sim -> target -> health_percentage() > 0 ) )
+    if ( result_is_hit() && p -> was_sub_25 && ( target -> health_percentage() > 0 ) )
     {
       cooldown -> reset();
       p -> buffs_glyph_of_shadow_word_death -> trigger();
@@ -1931,17 +1931,17 @@ struct shadow_word_death_t : public priest_spell_t
 
     double m = 1.0;
 
-    if ( p -> bugs && p -> glyphs.shadow_word_death && ( sim -> target -> health_percentage() < 35 ) )
+    if ( p -> bugs && p -> glyphs.shadow_word_death && ( target -> health_percentage() < 35 ) )
     {
       m += 0.1;
     }
-    if ( p -> talents.mind_melt -> rank() && ( sim -> target -> health_percentage() <= 25 ) )
+    if ( p -> talents.mind_melt -> rank() && ( target -> health_percentage() <= 25 ) )
     {
       m += p -> talents.mind_melt -> rank() * 0.15;
     }
     player_multiplier *= m;
 
-    if ( p -> glyphs.shadow_word_death && ( sim -> target -> health_percentage() <= 25 ) )
+    if ( p -> glyphs.shadow_word_death && ( target -> health_percentage() <= 25 ) )
     {
       player_multiplier *= 3.0; // TO-DO: Need to check how this stacks properly.
     }

@@ -1163,7 +1163,7 @@ void rogue_attack_t::assess_damage( double amount,
 
   // XXX: review, as not all of the damage is 'flurried' to an additional target
   // dots for example don't as far as I remember
-  if ( p -> buffs_blade_flurry -> up() && sim -> target -> adds_nearby )
+  if ( p -> buffs_blade_flurry -> up() && target -> adds_nearby )
     attack_t::additional_damage( amount, dmg_type );
 }
 
@@ -1412,7 +1412,7 @@ struct backstab_t : public rogue_attack_t
         // the first effect of the talent is the amount energy gained
         // and the second one is target health percent apparently
         double health_pct = p -> talents.murderous_intent -> effect_base_value( 2 );
-        if ( p -> sim -> target -> health_percentage() < health_pct )
+        if ( target -> health_percentage() < health_pct )
         {
           double amount = p -> talents.murderous_intent -> effect_base_value( 1 );
           p -> resource_gain( RESOURCE_ENERGY, amount, p -> gains_murderous_intent );
@@ -1674,15 +1674,14 @@ struct expose_armor_t : public rogue_attack_t
 
   virtual bool ready()
   {
-    target_t* t = sim -> target;
 
-    if ( t -> debuffs.expose_armor -> check() )
+    if ( target -> debuffs.expose_armor -> check() )
       return false;
 
     if ( ! override_sunder )
     {
-      if ( t -> debuffs.sunder_armor -> check() || 
-           t -> debuffs.faerie_fire -> check() )
+      if ( target -> debuffs.sunder_armor -> check() ||
+           target -> debuffs.faerie_fire -> check() )
       {
         return false;
       }
@@ -1828,7 +1827,7 @@ struct kick_t : public rogue_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) 
+    if ( ! target -> debuffs.casting -> check() )
       return false;
 
     return rogue_attack_t::ready();
@@ -1933,10 +1932,10 @@ struct mutilate_strike_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    if ( sim -> target -> debuffs.poisoned ) 
+    if ( target -> debuffs.poisoned )
       player_multiplier *= 1.20; // XXX: I'm sure it's there somehwere; or not
 
-    p -> uptimes_poisoned -> update( sim -> target -> debuffs.poisoned > 0 );
+    p -> uptimes_poisoned -> update( target -> debuffs.poisoned > 0 );
   }
 };
 

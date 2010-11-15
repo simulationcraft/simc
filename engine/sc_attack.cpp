@@ -282,14 +282,14 @@ int attack_t::build_table( double* chances,
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0, crit=0;
 
-  int delta_level = sim -> target -> level - player -> level;
+  int delta_level = target -> level - player -> level;
 
   if ( may_miss   )   miss =   miss_chance( delta_level );
-  if ( may_dodge  )  dodge =  dodge_chance( player -> level, sim -> target -> level );
-  if ( may_parry  )  parry =  parry_chance( player -> level, sim -> target -> level );
+  if ( may_dodge  )  dodge =  dodge_chance( player -> level, target -> level );
+  if ( may_parry  )  parry =  parry_chance( player -> level, target -> level );
   if ( may_glance ) glance = glance_chance( delta_level );
 
-  if ( may_block && sim -> target -> block_value > 0 )
+  if ( may_block && target -> block_value > 0 )
   {
     block = block_chance( delta_level );
   }
@@ -429,7 +429,7 @@ void attack_t::calculate_result()
     }
     else if ( special && may_crit ) // Specials are 2-roll calculations
     {
-      int delta_level = sim -> target -> level - player -> level;
+      int delta_level = target -> level - player -> level;
 
       if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
       {

@@ -849,7 +849,7 @@ void debuff_t::aura_gain()
   {
     const char* s = ( max_stack < 0 ) ? name() : aura_str[ current_stack ].c_str();
 
-    sim -> target -> aura_gain( s, aura_id );
+    target -> aura_gain( s, aura_id );
   }
 }
 
@@ -857,7 +857,7 @@ void debuff_t::aura_gain()
 
 void debuff_t::aura_loss()
 {
-  sim -> target -> aura_loss( name(), aura_id );
+  target -> aura_loss( name(), aura_id );
 }
 
 

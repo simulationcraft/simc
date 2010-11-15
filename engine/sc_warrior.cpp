@@ -475,12 +475,11 @@ static void trigger_deep_wounds( action_t* a )
 
     virtual void target_debuff( int dmg_type )
     {
-      target_t* t = sim -> target;
       warrior_attack_t::target_debuff( dmg_type );
 
       // Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
-      if ( t -> debuffs.blood_frenzy_bleed  -> up() ||
-           t -> debuffs.savage_combat       -> up() )
+      if ( target -> debuffs.blood_frenzy_bleed  -> up() ||
+           target -> debuffs.savage_combat       -> up() )
       {
         target_multiplier /= 1.04;
       }
@@ -797,7 +796,7 @@ void warrior_attack_t::assess_damage( double amount, int dmg_type )
 
   warrior_t* p = player -> cast_warrior();
 
-  if ( p -> buffs_sweeping_strikes -> up() && sim -> target -> adds_nearby )
+  if ( p -> buffs_sweeping_strikes -> up() && target -> adds_nearby )
   {
     attack_t::additional_damage( amount, dmg_type );
   }
@@ -1162,7 +1161,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     warrior_attack_t::assess_damage( amount, dmg_type );
 
     // Assume it hits all nearby targets
-    for ( int i=0; i < sim -> target -> adds_nearby && i < 4; i ++ )
+    for ( int i=0; i < target -> adds_nearby && i < 4; i ++ )
     {
       warrior_attack_t::additional_damage( amount, dmg_type );
     }
@@ -1296,7 +1295,7 @@ struct cleave_t : public warrior_attack_t
     warrior_attack_t::assess_damage( amount, dmg_type );
     warrior_t* p = player -> cast_warrior();
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < ( 1 + p -> glyphs.cleaving ); i ++ )
+    for ( int i=0; i < target -> adds_nearby && i < ( 1 + p -> glyphs.cleaving ); i ++ )
     {
       warrior_attack_t::additional_damage( amount, dmg_type );
     }
@@ -1399,7 +1398,7 @@ struct devastate_t : public warrior_attack_t
 
     if ( result_is_hit() ) trigger_sword_and_board( this );
 
-    if ( sim -> target -> health_percentage() <= 20 )
+    if ( target -> health_percentage() <= 20 )
     {
       if ( p -> rng_impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
         p -> buffs_victory_rush -> trigger();
@@ -1499,7 +1498,7 @@ struct execute_t : public warrior_attack_t
     if ( ! warrior_attack_t::ready() )
       return false;
 
-    if ( sim -> target -> health_percentage() > 20 )
+    if ( target -> health_percentage() > 20 )
       return false;
 
     return true;
@@ -1689,7 +1688,7 @@ struct pummel_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() ) return false;
     return warrior_attack_t::ready();
   }
 };
@@ -1880,15 +1879,14 @@ struct shattering_throw_t : public warrior_attack_t
 
   virtual void execute()
   {
-    warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
     if ( result_is_hit() )
-      p -> sim -> target -> debuffs.shattering_throw -> trigger();
+      target -> debuffs.shattering_throw -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( sim -> target -> debuffs.shattering_throw -> check() ) return false;
+    if ( target -> debuffs.shattering_throw -> check() ) return false;
     return warrior_attack_t::ready();
   }
 };
@@ -1914,7 +1912,7 @@ struct shield_bash_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() ) return false;
     return warrior_attack_t::ready();
   }
 };

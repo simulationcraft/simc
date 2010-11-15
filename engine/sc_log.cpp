@@ -171,14 +171,14 @@ void log_t::damage_event( action_t* a,
 
   if ( is_swing( a ) )
   {
-    util_t::fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> sim -> target -> id() );
+    util_t::fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> target -> id() );
   }
   else
   {
     util_t::fprintf( a -> sim -> log_file, "%s,%s,%s,%d,\"%s\",0x%X",
                      ( ( dmg_type == DMG_DIRECT ) ? "SPELL_DAMAGE" : "SPELL_PERIODIC_DAMAGE" ),
                      a -> player -> id(),
-                     a -> sim -> target -> id(),
+                     a -> target -> id(),
                      ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
                      a -> name(),
                      school_id( a -> school ) );

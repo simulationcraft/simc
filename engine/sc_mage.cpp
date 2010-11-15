@@ -1021,7 +1021,7 @@ void mage_spell_t::player_buff()
 
   if ( p -> talents.molten_fury -> rank() )
   {
-    if ( sim -> target -> health_percentage() < 35 )
+    if ( target -> health_percentage() < 35 )
     {
       player_multiplier *= 1.0 + p -> talents.molten_fury -> effect_base_value( 1 ) / 100.0;
     }
@@ -1054,7 +1054,7 @@ void mage_spell_t::player_buff()
 
   if ( school == SCHOOL_ARCANE )
   {
-    if ( sim -> target -> debuffs.snared() )
+    if ( target -> debuffs.snared() )
     {
       player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect_base_value( 1 ) / 100.0;
     }
@@ -1158,7 +1158,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     p -> buffs_arcane_blast -> trigger();
-    if ( ! sim -> target -> debuffs.snared() )
+    if ( ! target -> debuffs.snared() )
     {
       if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> rank() / 2 ) )
       {
@@ -1499,7 +1499,7 @@ struct counterspell_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting -> check() )
       return false;
 
     return mage_spell_t::ready();
@@ -2505,7 +2505,7 @@ struct scorch_t : public mage_spell_t
 
     if ( debuff )
     {
-      target_t* t = sim -> target;
+      target_t* t = target;
 
       if ( t -> debuffs.improved_shadow_bolt -> check() )
         return false;
@@ -2533,12 +2533,12 @@ struct slow_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    sim -> target -> debuffs.slow -> trigger();
+    target -> debuffs.slow -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( sim -> target -> debuffs.snared() )
+    if ( target -> debuffs.snared() )
       return false;
 
     return mage_spell_t::ready();
@@ -2678,7 +2678,7 @@ struct choose_rotation_t : public action_t
       {
         double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
 
-        if ( oom_time < sim -> target -> time_to_die() )
+        if ( oom_time < target -> time_to_die() )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
@@ -2696,7 +2696,7 @@ struct choose_rotation_t : public action_t
       {
         double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
 
-        if ( oom_time > sim -> target -> time_to_die() )
+        if ( oom_time > target -> time_to_die() )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
 

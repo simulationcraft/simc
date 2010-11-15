@@ -1056,7 +1056,7 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = s -> player -> cast_warlock();
     if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
-    if ( s -> sim -> target -> health_percentage() > p -> talent_decimation -> effect_base_value( 2 ) ) return;
+    if ( s -> target -> health_percentage() > p -> talent_decimation -> effect_base_value( 2 ) ) return;
     p -> buffs_decimation -> trigger();
   }
 
@@ -1068,7 +1068,7 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( s -> sim -> target -> health_percentage() < 25 )
+    if ( s -> target -> health_percentage() < 25 )
     {
       return p -> talent_deaths_embrace -> rank() * 4;
     }
@@ -1797,8 +1797,7 @@ struct curse_of_elements_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    target_t*  t = sim -> target;
-    if ( t -> debuffs.curse_of_elements -> check() )
+    if ( target -> debuffs.curse_of_elements -> check() )
       return false;
 
     return warlock_spell_t::ready();
@@ -2274,7 +2273,7 @@ struct shadowburn_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if ( p -> glyphs.shadowburn -> ok() )
     {
-      if ( sim -> target -> health_percentage() < p -> glyphs.shadowburn -> effect_base_value( 1 ) )
+      if ( target -> health_percentage() < p -> glyphs.shadowburn -> effect_base_value( 1 ) )
       {
         cooldown -> reset();
       }
@@ -2283,7 +2282,7 @@ struct shadowburn_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( sim -> target -> health_percentage() >= 20 )
+    if ( target -> health_percentage() >= 20 )
       return false;
 
     return warlock_spell_t::ready();
@@ -2487,7 +2486,7 @@ struct drain_soul_t : public warlock_spell_t
       trigger_everlasting_affliction( this );
       if ( p -> talent_pandemic -> rank() )
       {
-        if ( (sim -> target -> health_percentage() < effect_base_value( 3 ) ) && (p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
+        if ( (target -> health_percentage() < effect_base_value( 3 ) ) && (p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
         {
             if ( p -> dots_unstable_affliction -> ticking() )
             {
@@ -2553,7 +2552,7 @@ struct drain_soul_t : public warlock_spell_t
     if ( de_bonus ) player_multiplier /= 1.0 + de_bonus * 0.01;
 
 
-      if ( sim -> target -> health_percentage() < effect_base_value( 3 ) )
+      if ( target -> health_percentage() < effect_base_value( 3 ) )
       {
         player_multiplier *= 2.0 + de_bonus * 0.01;
       }
@@ -2915,7 +2914,7 @@ struct searing_pain_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
 
-    if ( sim -> target -> health_percentage() <= 25 && p -> talent_improved_searing_pain -> rank() )
+    if ( target -> health_percentage() <= 25 && p -> talent_improved_searing_pain -> rank() )
     {
       player_crit += p -> talent_improved_searing_pain -> effect_base_value( 1 ) / 100.0;
     }
@@ -3001,7 +3000,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( ( sim -> P403 || sim -> target -> health_percentage() >= 80 ) )
+      if ( ( sim -> P403 || target -> health_percentage() >= 80 ) )
       {
         if ( !p -> buffs.bloodlust -> up() )
           p -> buffs_improved_soul_fire -> trigger();
@@ -3841,8 +3840,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    target_t* t = sim -> target;
-    dot_damage_done = t -> total_dmg;
+    dot_damage_done = target -> total_dmg;
     if ( p -> dots_corruption -> ticking() )
     {
       p -> dots_corruption -> action -> cancel();
@@ -3853,8 +3851,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick();
 
-    target_t* t = sim -> target;
-    if ( t -> total_dmg - dot_damage_done > effect_base_value ( 2 ) )
+    if ( target -> total_dmg - dot_damage_done > effect_base_value ( 2 ) )
     {
       dot_damage_done=0.0;
       seed_of_corruption_aoe -> execute();

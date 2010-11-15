@@ -729,7 +729,7 @@ static void trigger_piercing_shots( action_t* a )
     void player_buff() {}
     void target_debuff( int dmg_type )
     {
-      target_t* t = sim -> target;
+      target_t* t = target;
       if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() )
       {
         target_multiplier = 1.30;
@@ -934,7 +934,7 @@ struct hunter_pet_attack_t : public attack_t
     if ( p -> buffs_culling_the_herd -> up() )
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 
-    if ( p -> sim -> target -> health_percentage() < 35 )
+    if (target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
 
     if ( ! special )
@@ -1242,7 +1242,7 @@ struct hunter_pet_spell_t : public spell_t
     if ( p -> buffs_culling_the_herd -> up() )
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
 
-    if ( p -> sim -> target -> health_percentage() < 35 )
+    if ( target -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy * 0.06;
 
     if ( o -> buffs_tier10_2pc -> up() )
@@ -1517,7 +1517,7 @@ double hunter_attack_t::execute_time() SC_CONST
 void hunter_attack_t::player_buff()
 {
   hunter_t* p = player -> cast_hunter();
-  //target_t* t = sim -> target;
+  //target_t* t = target;
 
   attack_t::player_buff();
 
@@ -1655,7 +1655,7 @@ struct aimed_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
     if ( p -> buffs_trueshot_aura -> check() && p -> glyphs.trueshot_aura ) player_crit += 0.10;
-    if ( p -> talents.careful_aim && p -> sim -> target -> health_percentage() > 60 )
+    if ( p -> talents.careful_aim && target -> health_percentage() > 60 )
     {
       player_crit += util_t::talent_rank( p -> talents.careful_aim, 2, 0.20, 0.60 );
     }
@@ -1857,7 +1857,7 @@ struct cobra_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if ( p -> talents.careful_aim && p -> sim -> target -> health_percentage() > 60 )
+    if ( p -> talents.careful_aim && target -> health_percentage() > 60 )
     {
       player_crit += util_t::talent_rank( p -> talents.careful_aim, 2, 0.20, 0.60 );
     }
@@ -2009,7 +2009,7 @@ struct kill_shot_t : public hunter_attack_t
 
   virtual bool ready()
   {
-    if ( sim -> target -> health_percentage() > 20 )
+    if ( target -> health_percentage() > 20 )
       return false;
 
     return hunter_attack_t::ready();
@@ -2110,13 +2110,13 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     p -> cancel_sting();
     hunter_attack_t::execute();
-    if ( result_is_hit() ) sim -> target -> debuffs.poisoned -> increment();
+    if ( result_is_hit() ) target -> debuffs.poisoned -> increment();
   }
 
   virtual void last_tick()
   {
     hunter_attack_t::last_tick();
-    sim -> target -> debuffs.poisoned -> decrement();
+    target -> debuffs.poisoned -> decrement();
   }
 
   virtual bool ready()
@@ -2226,7 +2226,7 @@ struct steady_shot_t : public hunter_attack_t
     {
       player_multiplier *= 1.10;
     }
-    if ( p -> talents.careful_aim && p -> sim -> target -> health_percentage() > 60 )
+    if ( p -> talents.careful_aim && target -> health_percentage() > 60 )
     {
       player_crit += util_t::talent_rank( p -> talents.careful_aim, 2, 0.20, 0.60 );
     }
@@ -2421,7 +2421,7 @@ struct hunters_mark_t : public hunter_spell_t
     if ( ! hunter_spell_t::ready() )
       return false;
 
-    return ap_bonus > sim -> target -> debuffs.hunters_mark -> current_value;
+    return ap_bonus > target -> debuffs.hunters_mark -> current_value;
   }
 };
 

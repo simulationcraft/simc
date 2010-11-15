@@ -105,11 +105,9 @@ void spell_t::target_debuff( int dmg_type )
 {
   action_t::target_debuff( dmg_type );
 
-  target_t* t = sim -> target;
 
-
-  int crit_debuff = std::max( t -> debuffs.critical_mass        -> stack() * 5,
-                              t -> debuffs.improved_shadow_bolt -> stack() * 5 );
+  int crit_debuff = std::max( target -> debuffs.critical_mass        -> stack() * 5,
+                              target -> debuffs.improved_shadow_bolt -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 
   if ( sim -> debug )
@@ -158,7 +156,7 @@ double spell_t::crit_chance( int delta_level ) SC_CONST
 
 void spell_t::calculate_result()
 {
-  int delta_level = sim -> target -> level - player -> level;
+  int delta_level = target -> level - player -> level;
 
   direct_dmg = 0;
   result = RESULT_NONE;

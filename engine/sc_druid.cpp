@@ -859,7 +859,7 @@ bool druid_cat_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
-  target_t* t = sim -> target;
+  target_t* t = target;
 
   if ( ! p -> buffs_cat_form -> check() )
     return false;
@@ -1065,7 +1065,7 @@ struct maim_t : public druid_cat_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() ) return false;
     return druid_cat_attack_t::ready();
   }
 };
@@ -1300,7 +1300,7 @@ struct shred_t : public druid_cat_attack_t
   virtual void player_buff()
   {
     druid_t*  p = player -> cast_druid();
-    target_t* t = sim -> target;
+    target_t* t = target;
 
     druid_cat_attack_t::player_buff();
 
@@ -1493,7 +1493,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     player_multiplier *= 1.0 + excess_energy / 35.0;
 
-    if ( sim -> target -> debuffs.bleeding -> check() )
+    if ( target -> debuffs.bleeding -> check() )
     {
       player_crit += 0.01 * p -> talents.rend_and_tear -> effect_base_value( 2 );
     }
@@ -1593,7 +1593,7 @@ bool druid_bear_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
-  target_t* t = sim -> target;
+  target_t* t = target;
 
   if ( ! p -> buffs_bear_form -> check() )
     return false;
@@ -1690,7 +1690,7 @@ struct bash_t : public druid_bear_attack_t
 
   virtual bool ready()
   {
-    if ( ! sim -> target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() ) return false;
     return druid_bear_attack_t::ready();
   }
 };
@@ -1830,8 +1830,7 @@ struct mangle_bear_t : public druid_bear_attack_t
     if ( p -> buffs_berserk -> up() ) cooldown -> reset();
     if ( result_is_hit() )
     {
-      target_t* t = sim -> target;
-      t -> debuffs.mangle -> trigger();
+      target -> debuffs.mangle -> trigger();
       trigger_infected_wounds( this );
     }
   }
@@ -1885,7 +1884,7 @@ struct maul_t : public druid_bear_attack_t
   virtual void player_buff()
   {
     druid_t*  p = player -> cast_druid();
-    target_t* t = sim -> target;
+    target_t* t = target;
 
     druid_bear_attack_t::player_buff();
 
@@ -1939,7 +1938,7 @@ struct swipe_bear_t : public druid_bear_attack_t
   {
     druid_bear_attack_t::assess_damage( amount, dmg_type );
 
-    for ( int i=0; i < sim -> target -> adds_nearby && i < 10; i ++ )
+    for ( int i=0; i < target -> adds_nearby && i < 10; i ++ )
     {
       druid_bear_attack_t::additional_damage( amount, dmg_type );
     }
@@ -2118,7 +2117,7 @@ void druid_spell_t::player_buff()
 void druid_spell_t::target_debuff( int dmg_type )
 {
   //druid_t*  p = player -> cast_druid();
-  //target_t* t = sim -> target;
+  //target_t* t = target;
   spell_t::target_debuff( dmg_type );
 }
 
@@ -2227,13 +2226,13 @@ struct faerie_fire_feral_t : public druid_spell_t
     {
       update_ready();
     }
-    sim -> target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank(), 0.04 );
+    target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank(), 0.04 );
   }
 
   virtual bool ready()
   {
     if ( debuff_only )
-      if ( sim -> target -> debuffs.faerie_fire -> up() )
+      if ( target -> debuffs.faerie_fire -> up() )
         return false;
 
     return druid_spell_t::ready();
@@ -2272,7 +2271,7 @@ struct faerie_fire_t : public druid_spell_t
   virtual bool ready()
   {
     // druid_t*  p = player -> cast_druid();
-    // target_t* t = sim -> target;
+    // target_t* t = target;
 
     return druid_spell_t::ready();
   }
