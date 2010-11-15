@@ -22,8 +22,7 @@ static OptionEntry* getBuffOptions()
   static OptionEntry options[] =
     {
       { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
-      { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                                                },
-      { "Heroic Presence",       "override.heroic_presence",        "Draenei Heroic Presence Racial"                                             },
+      { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                             },
       { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
       { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
       { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
@@ -102,19 +101,20 @@ static OptionEntry* getPlotOptions()
 {
   static OptionEntry options[] =
     {
-      { "Plot DPS per Strength",                 "str",   "Generate DPS curve for Strength"                 },
-      { "Plot DPS per Agility",                  "agi",   "Generate DPS curve for Agility"                  },
-      { "Plot DPS per Stamina",                  "sta",   "Generate DPS curve for Stamina"                  },
-      { "Plot DPS per Intellect",                "int",   "Generate DPS curve for Intellect"                },
-      { "Plot DPS per Spirit",                   "spi",   "Generate DPS curve for Spirit"                   },
-      { "Plot DPS per Spell Power",              "sp",    "Generate DPS curve for Spell Power"              },
-      { "Plot DPS per Attack Power",             "ap",    "Generate DPS curve for Attack Power"             },
-      { "Plot DPS per Expertise Rating",         "exp",   "Generate DPS curve for Expertise Rating"         },
-      { "Plot DPS per Armor Penetration Rating", "arpen", "Generate DPS curve for Armor Penetration Rating" },
-      { "Plot DPS per Hit Rating",               "hit",   "Generate DPS curve for Hit Rating"               },
-      { "Plot DPS per Crit Rating",              "crit",  "Generate DPS curve for Crit Rating"              },
-      { "Plot DPS per Haste Rating",             "haste", "Generate DPS curve for Haste Rating"             },
-      { "Plot DPS per Weapon DPS",               "wdps",  "Generate DPS curve for Weapon DPS"               },
+      { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
+      { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
+      { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
+      { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
+      { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
+      { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
+      { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
+      { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
+      { "Plot DPS per Armor Penetration Rating", "arpen",   "Generate DPS curve for Armor Penetration Rating" },
+      { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
+      { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
+      { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
+      { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
+      { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
       { NULL, NULL, NULL }
     };
   return options;
@@ -613,8 +613,8 @@ void SimulationCraftWindow::createBestInSlotTab()
   bisTree->setHeaderLabels( headerLabels );
   importTab->addTab( bisTree, "BiS" );
 
-  const int T9=0, T10=1, TMAX=2;
-  const char* TNAMES[] = { "T9", "T10" };
+  const int T10=0, T11=1, TMAX=2;
+  const char* TNAMES[] = { "T10", "T11" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TMAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
@@ -632,92 +632,55 @@ void SimulationCraftWindow::createBestInSlotTab()
 
   bis_entry_t bisList[] = 
     {
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_51_00_20",      TAB_WOWHEAD, "18101892" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_53_18",      TAB_WOWHEAD, "18133139" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_03_51_17",      TAB_WOWHEAD, "18133075" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_17_54",      TAB_WOWHEAD, "20992958" },
+      /*
       { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20",     TAB_WOWHEAD, "21203256" },
       { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20_GoD", TAB_WOWHEAD, "21203314" },
       { DEATH_KNIGHT, T10, "Death_Knight_T10_00_53_18",     TAB_WOWHEAD, "21203260" },
       { DEATH_KNIGHT, T10, "Death_Knight_T10_14_00_57",     TAB_WOWHEAD, "21203277" },
       { DEATH_KNIGHT, T10, "Death_Knight_T10_00_17_54",     TAB_WOWHEAD, "21203280" },
 
-      { DRUID,      T9, "Druid_T9_00_55_16",                TAB_WOWHEAD, "14717965" },
-      { DRUID,      T9, "Druid_T9_00_55_16_M",              TAB_WOWHEAD, "14726081" },
-      { DRUID,      T9, "Druid_T9_58_00_13",                TAB_WOWHEAD, "14187592" },
       { DRUID,     T10, "Druid_T10_00_55_16",               TAB_WOWHEAD, "21284121" },
       { DRUID,     T10, "Druid_T10_00_55_16_M",             TAB_WOWHEAD, "21284118" },
       { DRUID,     T10, "Druid_T10_58_00_13",               TAB_WOWHEAD, "21284122" },
 
-      { HUNTER,     T9, "Hunter_T9_02_18_51",               TAB_WOWHEAD, "14649679" },
-      { HUNTER,     T9, "Hunter_T9_01_18_52_HP",            TAB_WOWHEAD, "21156704" },
-      { HUNTER,     T9, "Hunter_T9_07_57_07",               TAB_WOWHEAD, "14189960" },
-      { HUNTER,     T9, "Hunter_T9_07_57_07_HM",            TAB_WOWHEAD, "14651857" },
-      { HUNTER,     T9, "Hunter_T9_53_14_04",               TAB_WOWHEAD, "14663160" },
       { HUNTER,    T10, "Hunter_T10_53_14_04",              TAB_WOWHEAD, "21284132" },
       { HUNTER,    T10, "Hunter_T10_07_57_07",              TAB_WOWHEAD, "21284133" },
       { HUNTER,    T10, "Hunter_T10_07_57_07_HM",           TAB_WOWHEAD, "21284135" },
       { HUNTER,    T10, "Hunter_T10_06_14_51",              TAB_WOWHEAD, "21284137" },
       { HUNTER,    T10, "Hunter_T10_03_15_53_HP",           TAB_WOWHEAD, "21284138" },
 
-      { MAGE,       T9, "Mage_T9_00_53_18",                 TAB_WOWHEAD, "14306487" },
-      { MAGE,       T9, "Mage_T9_18_00_53",                 TAB_WOWHEAD, "14306485" },
-      { MAGE,       T9, "Mage_T9_20_51_00",                 TAB_WOWHEAD, "14306481" },
-      { MAGE,       T9, "Mage_T9_57_03_11",                 TAB_WOWHEAD, "14306468" },
       { MAGE,      T10, "Mage_T10_00_53_18",                TAB_WOWHEAD, "21284296" },
       { MAGE,      T10, "Mage_T10_18_00_53",                TAB_WOWHEAD, "21284292" },
       { MAGE,      T10, "Mage_T10_20_51_00",                TAB_WOWHEAD, "21284285" },
       { MAGE,      T10, "Mage_T10_57_03_11",                TAB_WOWHEAD, "21284284" },
 
-      { PALADIN,    T9, "Paladin_T9_05_11_55",              TAB_WOWHEAD, "16421920" },
       { PALADIN,   T10, "Paladin_T10_05_11_55",             TAB_WOWHEAD, "16266770" },
       { PALADIN,   T10, "Paladin_T10_09_05_57_H",           TAB_WOWHEAD, "20977380" },
       { PALADIN,   T10, "Paladin_T10_09_05_57_N",           TAB_WOWHEAD, "20966865" },
       { PALADIN,   T10, "Paladin_T10_09_05_57_HA",          TAB_WOWHEAD, "20980773" },
       { PALADIN,   T10, "Paladin_T10_09_05_57_HAA",         TAB_WOWHEAD, "20983668" },
 
-      { PRIEST,     T9, "Priest_T9_13_00_58_232",           TAB_WOWHEAD, "13043846" },
-      { PRIEST,     T9, "Priest_T9_13_00_58_245",           TAB_WOWHEAD, "13043847" },
-      { PRIEST,     T9, "Priest_T9_13_00_58_258",           TAB_WOWHEAD, "13043848" },
-      { PRIEST,     T9, "Priest_T9_13_00_58_258",           TAB_WOWHEAD, "13043848" },
       { PRIEST,    T10, "Priest_T10_13_00_58_264",          TAB_WOWHEAD, "18052647" },
       { PRIEST,    T10, "Priest_T10_13_00_58_277",          TAB_WOWHEAD, "20704178" },
 
-      { ROGUE,      T9, "Rogue_T9_08_20_43",                TAB_WOWHEAD, "14562456" },
-      { ROGUE,      T9, "Rogue_T9_20_51_00",                TAB_WOWHEAD, "20631652" },
-      { ROGUE,      T9, "Rogue_T9_51_18_02",                TAB_WOWHEAD, "18612609" },
-      { ROGUE,      T9, "Rogue_T9_51_18_02_R",              TAB_WOWHEAD, "21162157" },
       { ROGUE,     T10, "Rogue_T10_20_51_00",               TAB_WOWHEAD, "21162773" },
       { ROGUE,     T10, "Rogue_T10_51_18_02",               TAB_WOWHEAD, "21162321" },
       { ROGUE,     T10, "Rogue_T10_51_18_02_R",             TAB_WOWHEAD, "21162335" },
 
-      { SHAMAN,     T9, "Shaman_T9_16_55_00_258",           TAB_WOWHEAD, "14635667" },
-      { SHAMAN,     T9, "Shaman_T9_20_51_00_258",           TAB_WOWHEAD, "14635698" },
-      { SHAMAN,     T9, "Shaman_T9_57_14_00_245",           TAB_WOWHEAD, "14636463" },
-      { SHAMAN,     T9, "Shaman_T9_57_14_00_258",           TAB_WOWHEAD, "14636542" },
-      { SHAMAN,     T9, "Shaman_T9_57_14_00_258_ToW",       TAB_WOWHEAD, "14731192" },
       { SHAMAN,    T10, "Shaman_T10_19_52_00",              TAB_WOWHEAD, "20837779" },
       { SHAMAN,    T10, "Shaman_T10_57_14_00",              TAB_WOWHEAD, "20837754" },
       { SHAMAN,    T10, "Shaman_T10_57_14_00_ToW",          TAB_WOWHEAD, "20837752" },
 
-      { WARLOCK,    T9, "Warlock_T9_00_13_58",              TAB_WOWHEAD, "13808359" },
-      { WARLOCK,    T9, "Warlock_T9_00_18_53",              TAB_WOWHEAD, "18859553" },
-      { WARLOCK,    T9, "Warlock_T9_55_00_16",              TAB_WOWHEAD, "15214160" },
-      { WARLOCK,    T9, "Warlock_T9_56_00_15",              TAB_WOWHEAD, "20850306" },
-      { WARLOCK,    T9, "Warlock_T9_00_56_15",              TAB_WOWHEAD, "18859247" },
       { WARLOCK,   T10, "Warlock_T10_00_13_58",             TAB_WOWHEAD, "20850049" },
       { WARLOCK,   T10, "Warlock_T10_00_18_53",             TAB_WOWHEAD, "20983226" },
       { WARLOCK,   T10, "Warlock_T10_55_00_16",             TAB_WOWHEAD, "20850045" },
       { WARLOCK,   T10, "Warlock_T10_56_00_15",             TAB_WOWHEAD, "20983156" },
       { WARLOCK,   T10, "Warlock_T10_00_56_15",             TAB_WOWHEAD, "20983242" },
 
-      { WARRIOR,    T9, "Warrior_T9_19_52_00",              TAB_WOWHEAD, "13110966" },
-      { WARRIOR,    T9, "Warrior_T9_54_17_00_A",            TAB_WOWHEAD, "13111680" },
-      { WARRIOR,    T9, "Warrior_T9_54_17_00_M",            TAB_WOWHEAD, "13112110" },
-      { WARRIOR,    T9, "Warrior_T9_54_17_00_S",            TAB_WOWHEAD, "13112036" },
       { WARRIOR,   T10, "Warrior_T10_19_52_00_277",         TAB_WOWHEAD, "21169162" },
       { WARRIOR,   T10, "Warrior_T10_55_08_08_277",         TAB_WOWHEAD, "21169165" },
       { WARRIOR,   T10, "Warrior_T10_19_52_00_264",         TAB_WOWHEAD, "21169160" },
+      */
 
       { PLAYER_NONE, TMAX, NULL, -1, NULL }
     };
@@ -819,8 +782,8 @@ void SimulationCraftWindow::createResultsTab()
 
 void SimulationCraftWindow::createToolTips()
 {
-  patchChoice->setToolTip( "3.3.3: Live\n"
-			   "unknown: PTR" );
+  patchChoice->setToolTip( "4.0.1: Live\n"
+			   "4.0.3: Beta" );
 
   latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
 			     "High: queue=0.150  gcd=0.300  channel=0.500" );
