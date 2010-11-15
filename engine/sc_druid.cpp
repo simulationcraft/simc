@@ -307,8 +307,7 @@ struct druid_cat_attack_t : public attack_t
       min_rip_expire( 0 ), max_rip_expire( 0 ),
       min_rake_expire( 0 ), max_rake_expire( 0 )
   {
-    //druid_t* p = player -> cast_druid();
-
+    tick_may_crit = true;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -843,6 +842,8 @@ void druid_cat_attack_t::player_buff()
   attack_t::player_buff();
 
   player_multiplier *= 1.0 + p -> buffs_tigers_fury -> value();
+  if (school == SCHOOL_BLEED)
+    player_multiplier *= 1.0 + 0.0313 * p->composite_mastery();
 
   p -> uptimes_rip  -> update( p -> dots_rip  -> ticking() );
   p -> uptimes_rake -> update( p -> dots_rake -> ticking() );
@@ -1144,7 +1145,8 @@ struct rake_t : public druid_cat_attack_t
 
 struct rip_t : public druid_cat_attack_t
 {
-  double* combo_point_dmg;
+  double base_dmg_per_point;
+  double ap_per_point;
 
   rip_t( player_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "rip", player, SCHOOL_BLEED, TREE_FERAL )
@@ -1159,6 +1161,9 @@ struct rip_t : public druid_cat_attack_t
 
     id = 1079;
     parse_data( p -> player_data );
+    base_td_init       = base_td;
+    base_dmg_per_point = p->player_data.effect_bonus(p->player_data.spell_effect_id(id, 1), p->player_data.spell_scaling_class(id), p->level);
+    ap_per_point       = 0.023;
 
     may_crit              = false;
     requires_combo_points = true;
@@ -1169,17 +1174,6 @@ struct rip_t : public druid_cat_attack_t
     num_ticks += ( p -> set_bonus.tier7_2pc_melee() * 2 );
     if ( p -> glyphs.rip )
       base_multiplier *= 1.15;
-
-    static double dmg_80[] = { 36+93*1, 36+93*2, 36+93*3, 36+93*4, 36+93*5 };
-    static double dmg_71[] = { 30+67*1, 30+67*2, 30+67*3, 30+67*4, 30+67*5 };
-    static double dmg_67[] = { 24+48*1, 24+48*2, 24+48*3, 24+48*4, 24+48*5 };
-    static double dmg_60[] = { 17+28*1, 17+28*2, 17+28*3, 17+28*4, 17+28*5 };
-
-
-    combo_point_dmg = ( p -> level >= 80 ? dmg_80 :
-                        p -> level >= 71 ? dmg_71 :
-                        p -> level >= 67 ? dmg_67 :
-                        dmg_60 );
 
     if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
   }
@@ -1205,8 +1199,8 @@ struct rip_t : public druid_cat_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-    tick_power_mod = p -> buffs_combo_points -> stack() * 0.01;
-    base_td_init   = p -> combo_point_rank( combo_point_dmg );
+    base_td = base_td_init + p->buffs_combo_points->stack() * base_dmg_per_point;
+    tick_power_mod = p->buffs_combo_points->stack() * ap_per_point;
     druid_cat_attack_t::player_buff();
   }
 };
@@ -2614,10 +2608,11 @@ struct cat_form_t : public druid_spell_t
 
     if ( w -> type != WEAPON_BEAST )
     {
+      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
       w -> type = WEAPON_BEAST;
       w -> school = SCHOOL_PHYSICAL;
-      w -> min_dmg = 54.8; // FIX-ME: find the correct min and max values.
-      w -> max_dmg = 54.8;
+      w -> min_dmg /= w -> swing_time;
+      w -> max_dmg /= w -> swing_time;
       w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
       w -> swing_time = 1.0;
     }
@@ -3463,6 +3458,7 @@ void druid_t::init_race()
   case RACE_NIGHT_ELF:
   case RACE_TAUREN:
   case RACE_WORGEN:
+  case RACE_TROLL:
     break;
   default:
     race = RACE_NIGHT_ELF;
@@ -3480,7 +3476,7 @@ void druid_t::init_base()
 
   initial_spell_power_per_spirit = 0.0;
 
-  base_attack_power = -20 + level * 2.0;
+  base_attack_power = -20 + level * (level > 80 ? 3.0 : 2.0);
 
   attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
   initial_attack_power_per_agility  = 0.0;
@@ -3808,21 +3804,10 @@ double druid_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
 
-  if ( buffs_cat_form  -> check() ||
-       buffs_bear_form -> check() )
+  if ( buffs_cat_form  -> check() )
   {
-    double weapon_ap = ( equipped_weapon_dps - 54.8 ) * 14;
-
-    if ( talents.predatory_strikes -> rank() )
-    {
-      ap += level * talents.predatory_strikes -> rank() * 0.5;
-      weapon_ap *= 1 + util_t::talent_rank( talents.predatory_strikes -> rank(), 3, 0.07, 0.14, 0.20 );
-    }
-
-    ap += weapon_ap;
+      ap += 2.0 * ( agility() - 10.0 );
   }
-
-  if ( buffs_cat_form  -> check() ) ap += 1.0 * ( agility() - 10.0 );
 
   return floor( ap );
 }
@@ -3842,7 +3827,6 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
     // Aggression
     // Increases your attack power by 25%.
     multiplier *= 1.25;
-    
   }
   return multiplier;
 }
@@ -3887,9 +3871,19 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STAMINA )
-    if ( buffs_bear_form -> check() )
-      m *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 2 ) * 0.01;
+  // The matching_gear_multiplier is done statically for performance reasons,
+  // unfortunately that's before we're in cat form or bear form, so let's compensate here
+  if ( attr == ATTR_STAMINA && buffs_bear_form -> check() )
+  {
+    m *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 2 ) * 0.01;
+    if (primary_tree() == TREE_FERAL)
+      m *= 1.05;
+  }
+  else if ( attr == ATTR_AGILITY && buffs_cat_form -> check() )
+  {
+    if (primary_tree() == TREE_FERAL)
+      m *= 1.05;
+  }
 
   return m;
 }
@@ -3903,12 +3897,6 @@ double druid_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   case TREE_BALANCE:
   case TREE_RESTORATION:
     if ( attr == ATTR_INTELLECT )
-      return 0.05;
-    break;
-  case TREE_FERAL:
-    if ( ( attr == ATTR_STAMINA ) && ( buffs_bear_form -> check() ) )
-      return 0.05;
-    if ( ( attr == ATTR_AGILITY ) && ( buffs_cat_form -> check() ) )
       return 0.05;
     break;
   default:
