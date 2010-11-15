@@ -4,14 +4,15 @@ warrior=Warrior_Cata_Fury1h
 optimal_raid=1
 level=85
 race=tauren
-use_pre_potion=-1
+use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=320003000000000000000322220313011012232012
 glyphs=bloodthirst/raging_blow/slam/cleaving/berserker_rage
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
-actions+=/stance,choose=berserker,if=in_combat=0
+actions+=/stance,choose=berserker,if=!in_combat
 actions+=/auto_attack
 actions+=/snapshot_stats
+actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
 actions+=/recklessness
 actions+=/death_wish
 actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
@@ -19,10 +20,10 @@ actions+=/cleave,if=target.adds>0
 actions+=/whirlwind,if=target.adds>0
 actions+=/colossus_smash
 actions+=/execute
-actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
-actions+=/raging_blow
 actions+=/bloodthirst
 actions+=/slam,if=buff.bloodsurge.react
+actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
+actions+=/raging_blow
 actions+=/battle_shout,if=rage<30
 
 head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,reforge=haste_hit,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery

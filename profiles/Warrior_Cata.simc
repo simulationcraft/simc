@@ -1,4 +1,9 @@
 #!simc
+
+patch=4.0.3
+optimal_raid=1
+target_level=88
+
 Warrior_Cata_Arms.simc
 Warrior_Cata_Fury_1h.simc
 Warrior_Cata_Fury_2h.simc
