@@ -45,8 +45,8 @@
 //   * enrage (wrecking_crew)           = 57519 = mod_damage_done% (0x1)
 //   * heavy_repercussions              = 86896 = add_flat_mod_spell_effect2 (12)
 //   * hold_the_line                    = 84620 = mod_crit% (127)
-//   * incite                           = 50687 = add_flat_mod (7)
-//                                      = 86627 = add_flat_mod (7)
+//   * incite                           = 50687 = add_flat_mod_spell_crit_chance (7)
+//                                      = 86627 = add_flat_mod_spell_crit_chance (7)
 //   * inner_rage                       =  1134 = mod_damage_done% (0x7f)
 //   * lambs_to_the_slaughter           = 84586 = add_percent_mod_generic
 //   * meat_cleaver                     = 85739 = add_percent_mod_generic
