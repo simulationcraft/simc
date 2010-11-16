@@ -1091,9 +1091,6 @@ struct mangle_cat_t : public druid_cat_attack_t
     id = 33876;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 2.0;
-
     adds_combo_points = true;
     may_crit          = true;
 
@@ -1272,13 +1269,10 @@ struct shred_t : public druid_cat_attack_t
     id = 5221;
     parse_data( p -> player_data );
 
-    weapon_multiplier *= 2.25;
-
     weapon = &( p -> main_hand_weapon );
     requires_position  = POSITION_BACK;
     adds_combo_points  = true;
     may_crit           = true;
-
   }
 
   virtual void execute()
