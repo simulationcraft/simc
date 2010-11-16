@@ -3593,7 +3593,7 @@ struct action_t : public spell_id_t
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
   virtual double total_dd_multiplier() SC_CONST { return total_multiplier() * base_dd_multiplier; }
-  virtual double total_td_multiplier() SC_CONST { return total_multiplier() * base_td_multiplier; }
+  virtual double total_td_multiplier() SC_CONST;
 
   virtual action_expr_t* create_expression( const std::string& name );
 

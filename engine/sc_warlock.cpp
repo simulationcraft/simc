@@ -887,19 +887,45 @@ struct warlock_spell_t : public spell_t
 
     player_multiplier *= 1.0 + ( p -> talent_demonic_pact -> effect_base_value( 3 ) / 100.0 );
 
-	if ( p -> buffs_tier10_4pc_caster -> up() )
-	{
+	  if ( p -> buffs_tier10_4pc_caster -> up() )
+	  {
       player_multiplier *= 1.10;
-	}
+	  }
 
     if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
     {
-	  player_multiplier *= 1.10;
+	    player_multiplier *= 1.10;
     }
 
     if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && s_tree == 2 )
     {
       player_crit_multiplier *= 1.0 + 0.20 * p -> buffs_demon_soul -> stack();
+    }
+
+    double fire_multiplier=1.0;
+    double shadow_multiplier=1.0;
+
+    // Fire
+    fire_multiplier *= 1.0 + ( p -> passive_spells.cataclysm -> ok() * 0.25 );
+    if ( p -> mastery_spells.fiery_apocalypse -> ok() )
+      fire_multiplier *= 1.0 + ( p -> mastery_spells.fiery_apocalypse -> ok() * p -> composite_mastery() * 0.0125 );
+    fire_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.15 );
+
+    // Shadow
+    shadow_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.15 );
+    shadow_multiplier *= 1.0 + ( p -> passive_spells.shadow_mastery -> ok() * 0.25 );
+    shadow_multiplier *= 1.0 + trigger_deaths_embrace( this ) * 0.01;
+
+    if ( school == SCHOOL_FIRE )
+      player_multiplier *= fire_multiplier;
+    if ( school == SCHOOL_SHADOW )
+      player_multiplier *= shadow_multiplier;
+    if ( school == SCHOOL_SHADOWFLAME )
+    {
+      if ( fire_multiplier > shadow_multiplier )
+        player_multiplier *= fire_multiplier;
+      else
+        player_multiplier *= shadow_multiplier;
     }
 
   }
@@ -912,24 +938,18 @@ struct warlock_spell_t : public spell_t
 
     spell_t::target_debuff( dmg_type );
 
-    double fire_multiplier=1.0;
-    double shadow_multiplier=1.0;
-    double shadow_td_multiplier=1.0;
-
     if ( p -> buffs_bane_of_havoc -> up() )
       target_multiplier *= 1.15;
 
-      // Fire
-      fire_multiplier *= 1.0 + ( p -> passive_spells.cataclysm -> ok() * 0.25 );
-      if ( p -> mastery_spells.fiery_apocalypse -> ok() )
-        fire_multiplier *= 1.0 + ( p -> mastery_spells.fiery_apocalypse -> ok() * p -> composite_mastery() * 0.0125 );
-      fire_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.15 );
+  }
 
-      // Shadow
-      shadow_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.15 );
-      shadow_multiplier *= 1.0 + ( p -> passive_spells.shadow_mastery -> ok() * 0.25 );
-      shadow_multiplier *= 1.0 + trigger_deaths_embrace( this ) * 0.01;
+  virtual double total_td_multiplier() SC_CONST
+  {
+    double shadow_td_multiplier = 1.0;
+    warlock_t* p = player -> cast_warlock();
 
+    if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME )
+    {
       // Shadow TD
       if ( p -> mastery_spells.potent_afflictions -> ok() )
       {
@@ -945,25 +965,11 @@ struct warlock_spell_t : public spell_t
       }
       if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 4.0 )
       {
-        shadow_td_multiplier *=  1.0 + 0.20 ;
+        shadow_td_multiplier *=  1.0 + 0.20;
       }
+    }
 
-      if ( school == SCHOOL_FIRE )
-        target_multiplier *= fire_multiplier;
-      if ( school == SCHOOL_SHADOW )
-        target_multiplier *= shadow_multiplier;
-      if ( school == SCHOOL_SHADOW && dmg_type == DMG_OVER_TIME)
-        target_multiplier *= shadow_td_multiplier;
-      if ( school == SCHOOL_SHADOWFLAME )
-      {
-        if ( dmg_type == DMG_OVER_TIME )
-          shadow_multiplier *= shadow_td_multiplier;
-        if ( fire_multiplier > shadow_multiplier )
-          target_multiplier *= fire_multiplier;
-        else
-          target_multiplier *= shadow_multiplier;
-      }
-
+    return spell_t::total_td_multiplier() * shadow_td_multiplier;
   }
 
   // warlock_spell_t::execute ==================================================
@@ -1919,6 +1925,11 @@ struct bane_of_doom_t : public warlock_spell_t
     {
       target_multiplier *=  1.0 + 0.20 ;
     }
+  }
+
+  virtual double total_td_multiplier() SC_CONST
+  {
+    return warlock_spell_t::total_dd_multiplier();
   }
 
   virtual void tick()

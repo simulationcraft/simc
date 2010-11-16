@@ -563,10 +563,6 @@ void action_t::target_debuff( int dmg_type )
   player_t* p = player;
   target_t* t = target;
 
-  if ( dmg_type == DMG_OVER_TIME && p -> buffs.dark_intent_feedback -> up() )
-  {
-    target_multiplier *= 1.0 + 0.03 * p -> buffs.dark_intent_feedback -> stack();
-  }
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
   {
@@ -778,6 +774,17 @@ double action_t::total_power() SC_CONST
   if ( base_attack_power_multiplier > 0 ) power += total_attack_power();
 
   return power;
+}
+
+double action_t::total_td_multiplier() SC_CONST
+{
+    double mult = total_multiplier() * base_td_multiplier;
+    
+    if ( player -> buffs.dark_intent_feedback -> up() )
+    {
+      mult *= 1.0 + 0.03 * player -> buffs.dark_intent_feedback -> stack();
+    }
+    return mult;
 }
 
 // action_t::calculate_weapon_damage =========================================
