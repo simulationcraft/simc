@@ -268,7 +268,7 @@ int target_t::get_options( std::vector<option_t>& options )
 // target_t::find =========================================================
 
 target_t* target_t::find( sim_t* sim,
-                      const std::string& name_str )
+			  const std::string& name_str )
 {
   for ( target_t* t = sim -> target_list; t; t = t -> next )
     if ( name_str == t -> name() )

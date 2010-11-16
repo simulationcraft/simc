@@ -3082,11 +3082,11 @@ void warrior_t::init_actions()
 
     if ( primary_tree() == TREE_ARMS )
     {
-      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.Fluffy_Pillow.adds>0";
+      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
       if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,if=rage<10";
       action_list_str += "/inner_rage,rage>=90";
-      action_list_str += "/heroic_strike,if=rage>=75&target.Fluffy_Pillow.adds=0";
-      action_list_str += "/cleave,if=rage>=75&target.Fluffy_Pillow.adds>0";
+      action_list_str += "/heroic_strike,if=rage>=75&target.adds=0";
+      action_list_str += "/cleave,if=rage>=75&target.adds>0";
       action_list_str += "/rend,if=!ticking";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
       action_list_str += "/bladestorm";
@@ -3102,9 +3102,9 @@ void warrior_t::init_actions()
     {
       action_list_str += "/recklessness";
       if ( talents.death_wish -> rank() ) action_list_str += "/death_wish";
-      action_list_str += "/heroic_strike,if=target.Fluffy_Pillow.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)";
-      action_list_str += "/cleave,if=target.Fluffy_Pillow.adds>0";
-      action_list_str += "/whirlwind,if=target.Fluffy_Pillow.adds>0";      
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)";
+      action_list_str += "/cleave,if=target.adds>0";
+      action_list_str += "/whirlwind,if=target.adds>0";      
       if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/execute";
       if ( talents.raging_blow -> rank() )
@@ -3120,7 +3120,7 @@ void warrior_t::init_actions()
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
-      action_list_str += "/heroic_strike,rage>=15";
+      action_list_str += "/heroic_strike,if=rage>=15";
       action_list_str += "/revenge";
       if ( talents.shockwave -> rank() ) action_list_str += "/shockwave";
       action_list_str += "/shield_block,sync=shield_slam";

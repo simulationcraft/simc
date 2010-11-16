@@ -1557,7 +1557,14 @@ action_expr_t* sim_t::create_expression( action_t* a,
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( num_splits == 3 )
+  if ( num_splits == 2 )
+  {
+    if ( splits[ 0 ] == "target" )
+    {
+      return target -> create_expression( a, splits[ 1 ] );
+    }
+  }
+  else if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "aura" || splits[ 0 ] == "debuff" )
     {
