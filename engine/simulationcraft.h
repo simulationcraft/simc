@@ -3836,11 +3836,6 @@ struct unique_gear_t
                                   const bool         item_heroic,
                                   const std::string& item_id=std::string() );
 
-  static bool get_hidden_encoding( std::string&       encoding,
-                                   const std::string& item_name,
-                                   const bool         item_heroic,
-                                   const std::string& item_id=std::string() );
-
   static bool get_use_encoding  ( std::string& encoding,
                                   const std::string& item_name,
                                   const bool         item_heroic,

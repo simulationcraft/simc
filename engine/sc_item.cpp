@@ -510,31 +510,6 @@ bool item_t::decode_enchant()
     return true;
   }
 
-  std::string hidden_str;
-  if( unique_gear_t::get_hidden_encoding( hidden_str, encoded_enchant_str, heroic() ) )
-  {
-    std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, hidden_str );
-
-    for ( int i=0; i < num_tokens; i++ )
-    {
-      token_t& t = tokens[ i ];
-      int s;
-
-      if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
-      {
-        stats.add_stat( s, t.value );
-      }
-      else
-      {
-        sim -> errorf( "Player %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-        return false;
-      }
-    }
-    unique_enchant = true;
-    enchant.name_str = encoded_enchant_str;
-  }
-
   std::string use_str;
   if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic() ) )
   {
@@ -578,31 +553,6 @@ bool item_t::decode_enchant()
 bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
-
-  std::string hidden_str;
-  if( unique_gear_t::get_hidden_encoding( hidden_str, encoded_addon_str, heroic() ) )
-  {
-    std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, hidden_str );
-
-    for ( int i=0; i < num_tokens; i++ )
-    {
-      token_t& t = tokens[ i ];
-      int s;
-
-      if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
-      {
-        stats.add_stat( s, t.value );
-      }
-      else
-      {
-        sim -> errorf( "Player %s has unknown 'addon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-        return false;
-      }
-    }
-    unique_addon = true;
-    addon.name_str = encoded_addon_str;
-  }
 
   std::string use_str;
   if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic() ) )

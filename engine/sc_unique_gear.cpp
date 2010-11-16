@@ -1002,28 +1002,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 }
 
 // ==========================================================================
-// unique_gear_t::get_hidden_encoding
-// ==========================================================================
-
-bool unique_gear_t::get_hidden_encoding( std::string&       encoding,
-    const std::string& name,
-    const bool         heroic,
-    const std::string& id )
-{
-  std::string e;
-  if      ( name == "lightweave"                 ) e = "1spi";
-  else if ( name == "lightweave_embroidery"      ) e = "1spi";
-  else if ( name == "darkglow_embroidery"        ) e = "1spi";
-
-  if ( e.empty() ) return false;
-
-  armory_t::format( e );
-  encoding = e;
-
-  return true;
-}
-
-// ==========================================================================
 // unique_gear_t::get_use_encoding
 // ==========================================================================
 
