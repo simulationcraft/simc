@@ -178,7 +178,7 @@ static bool parse_player( sim_t*             sim,
 
     if ( wowhead.empty() )
     {
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, talents, cache );
+      sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, talents );
     }
     else
     {
@@ -213,40 +213,6 @@ static bool parse_armory( sim_t*             sim,
     if ( num_splits < 3 )
     {
       sim -> errorf( "Expected format is: armory=region,server,player1,player2,...\n" );
-      return false;
-    }
-
-    std::string region = splits[ 0 ];
-    std::string server = splits[ 1 ];
-
-    for ( int i=2; i < num_splits; i++ )
-    {
-      std::string player_name = splits[ i ];
-      std::string description = "active";
-      if ( player_name[ 0 ] == '!' )
-      {
-        player_name.erase( 0, 1 );
-        description = "inactive";
-      }
-      std::vector<std::string> encoding;
-      if ( util_t::string_split( encoding, player_name, "|" ) > 1 )
-      {
-	player_name = encoding[ 0 ];
-	description = encoding[ 1 ];
-      }
-      sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
-      if ( ! sim -> active_player ) return false;
-    }
-    return true;
-  }
-  else if ( name == "battle_net" ) // temporary
-  {
-    std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, value, "," );
-
-    if ( num_splits < 3 )
-    {
-      sim -> errorf( "Expected format is: battle_net=region,server,player1,player2,...\n" );
       return false;
     }
 
@@ -1749,7 +1715,6 @@ std::vector<option_t>& sim_t::get_options()
       { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
       { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
       { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
-      { "battle_net",                       OPT_FUNC,   ( void* ) ::parse_armory                      },
       { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
       { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
       { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
