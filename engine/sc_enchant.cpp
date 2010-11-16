@@ -843,12 +843,14 @@ void enchant_t::init( player_t* p )
   if ( mh_enchant == "power_torrent" )
   {
     buff_t* buff = new stat_buff_t( p, "power_torrent_mh", STAT_INTELLECT, 500, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    p -> register_tick_damage_callback  ( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    p -> register_direct_damage_callback( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_MAIN_HAND, buff ) );
   }
   if ( oh_enchant == "power_torrent" )
   {
     buff_t* buff = new stat_buff_t( p, "power_torrent_oh", STAT_INTELLECT, 500, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_OFF_HAND, buff ) );
+    p -> register_tick_damage_callback  ( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_OFF_HAND, buff ) );
+    p -> register_direct_damage_callback( RESULT_HIT_MASK, new power_torrent_callback_t( p, SLOT_OFF_HAND, buff ) );
   }
   if ( mh_enchant == "spellsurge" || 
        oh_enchant == "spellsurge" )

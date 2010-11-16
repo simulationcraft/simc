@@ -886,6 +886,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Stat Procs
   if      ( name == "abyssal_rune"                        ) e = "OnSpellCast_590SP_25%_10Dur_45Cd";
+  else if ( name == "anhuurs_hymnal"                      ) e = ( heroic ? "OnSpellCast_1710SP_10%_10Dur_45Cd" : "OnSpellCast_1512SP_10%_10Dur_45Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "ashen_band_of_endless_destruction"   ) e = "OnSpellCastHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_destruction" ) e = "OnSpellCastHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
@@ -893,28 +894,40 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "ashen_band_of_endless_might"         ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_might"       ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "banner_of_victory"                   ) e = "OnAttackHit_1008AP_20%_10Dur_50Cd";
+  else if ( name == "bell_of_enraging_resonance"          ) e = ( heroic ? "OnSpellCrit_2178SP_30%_20Dur_60Cd" : "OnSpellCrit_1926SP_30%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "black_magic"                         ) e = "OnSpellDirectHit_250Haste_35%_10Dur_35Cd";
   else if ( name == "blood_of_the_old_god"                ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if ( name == "chuchus_tiny_box_of_horrors"         ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
   else if ( name == "comets_trail"                        ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
   else if ( name == "corens_chromium_coaster"             ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
+  else if ( name == "crushing_weight"                     ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_60Cd" : "OnAttackHit_1926Haste_10%_15Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "dark_matter"                         ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "darkmoon_card_crusade"               ) e = "OnDamage_8SP_10Stack_10Dur";
   else if ( name == "dying_curse"                         ) e = "OnSpellCast_765SP_15%_10Dur_45Cd";
   else if ( name == "elemental_focus_stone"               ) e = "OnSpellCast_522Haste_10%_10Dur_45Cd";
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellCast_505Haste_10%_10Dur_45Cd";
+  else if ( name == "essence_of_the_cyclone"              ) e = ( heroic ? "OnAttackHit_2178Crit_10%_10Dur_45Cd" : "OnAttackHit_1926Crit_10%_10Dur_45Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "eye_of_magtheridon"                  ) e = "OnSpellCastMiss_170SP_10Dur";
   else if ( name == "eye_of_the_broodmother"              ) e = "OnSpellDamage_25SP_5Stack_10Dur";
   else if ( name == "flare_of_the_heavens"                ) e = "OnSpellCast_850SP_10%_10Dur_45Cd";
+  else if ( name == "fluid_death"                         ) e = "OnAttackHit_38Agi_10Stack_15Dur";
   else if ( name == "forge_ember"                         ) e = "OnSpellCastHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"            ) e = "OnAttackHit_16AP_20Stack_10Dur";
-  else if ( name == "gale_of_shadows"                     ) e = "OnSpellTickDamage_15SP_20Stack_15Dur";
+  else if ( name == "gale_of_shadows"                     ) e = ( heroic ? "OnSpellTickDamage_17SP_20Stack_15Dur" : "OnSpellTickDamage_15SP_20Stack_15Dur" ); 
+  else if ( name == "grace_of_the_herald"                 ) e = ( heroic ? "OnAttackHit_1710Crit_10%_10Dur_45Cd" : "OnAttackHit_924Crit_10%_10Dur_45Cd" ); // TO-DO: Confirm ICD
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
+  else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD
 
   // TO-DO: Implement the On Use part, remove the passive haste..
-  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "302.5haste_OnSpellDirectHit_87SP_5Stack_15Dur" : "267.5haste_OnSpellDirectHit_77SP_5Stack_15Dur" );
+  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "302.5haste_OnSpellDamage_87SP_5Stack_15Dur" : "267.5haste_OnSpellDamage_77SP_5Stack_15Dur" );
+  else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_60Cd" : "OnAttackHit_1926Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_60Cd" : "OnAttackHit_1512Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_45Cd"; // TO-DO: Confirm ICD.
   else if ( name == "herkuml_war_token"                   ) e = "OnAttackHit_17AP_20Stack_10Dur";
   else if ( name == "illustration_of_the_dragon_soul"     ) e = "OnSpellCast_20SP_10Stack_10Dur";
+  else if ( name == "key_to_the_endless_chamber"          ) e = ( heroic ? "OnAttackHit_1710Agi_10%_15Dur_45Cd" : "OnAttackHit_1290Agi_10%_15Dur_45Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "left_eye_of_rajh"                    ) e = ( heroic ? "OnAttackHit_1710Agi_30%_10Dur_45Cd" : "OnAttackHit_1512Agi_30%_10Dur_45Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "license_to_slay"                     ) e = "OnAttackHit_38Str_10Stack_15Dur";
   else if ( name == "mark_of_defiance"                    ) e = "OnSpellCastHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                     ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "mithril_pocketwatch"                 ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
@@ -922,14 +935,22 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
   else if ( name == "needleencrusted_scorpion"            ) e = "OnAttackCrit_678crit_10%_10Dur_50Cd";
   else if ( name == "pandoras_plea"                       ) e = "OnSpellCast_751SP_10%_10Dur_45Cd";
+  else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_60Cd" : "OnAttackHit_918Mastery_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "prestors_talisman_of_machination"    ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_60Cd" : "OnAttackHit_1926Haste_10%_15Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "purified_lunar_dust"                 ) e = "OnSpellCast_304MP5_10%_15Dur_45Cd";
   else if ( name == "pyrite_infuser"                      ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if ( name == "quagmirrans_eye"                     ) e = "OnSpellCast_320Haste_10%_6Dur_45Cd";
+  else if ( name == "right_eye_of_rajh"                   ) e = ( heroic ? "OnAttackHit_1710Str_30%_10Dur_45Cd" : "OnAttackHit_1512Str_30%_10Dur_45Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "schnotzzs_medallion_of_command"      ) e = "OnAttackHit_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD.
   else if ( name == "sextant_of_unstable_currents"        ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
   else if ( name == "shiffars_nexus_horn"                 ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
-  else if ( name == "stump_of_time"                       ) e = "OnSpellCast_1926SP_10%_15Dur_45Cd";
+  else if ( name == "stump_of_time"                       ) e = "OnSpellCast_1926SP_10%_15Dur_75Cd";
   else if ( name == "sundial_of_the_exiled"               ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
-  else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellDirectHit_2178Mastery_10%_45Cd" : "OnSpellDirectHit_1926Mastery_10%_45Cd" ); // TO-DO: Verify ICD
+  else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD.
+  else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_60Cd" : "OnSpellCast_1290SP_10%_15Dur_60Cd" ); // TO-DO: Verify ICD
+  else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnSpellCast_1926Mastery_10%_20Dur_100Cd" ); // TO-DO: Verify ICD
+  else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_34Agi_10Stack_15Dur" );
+  else if ( name == "witching_hourglass"                  ) e = ( heroic ? "OnSpellCast_1710Haste_10%_15Dur_60Cd" : "OnSpellCast_918Haste_10%_15Dur_60Cd" ); // TO-DO: Verify ICD
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellCastHit_132SP_5%_10Dur";
 
   // Some Normal/Heroic items have same name
@@ -943,6 +964,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   
   // Discharge Procs
   else if ( name == "bandits_insignia"                    ) e = "OnAttackHit_1880Arcane_15%_45Cd";
+  else if ( name == "darkmoon_card_hurricane"             ) e = "OnAttackHit_5000Nature_100%_60Cd"; // TO-DO: Confirm ICD.
+  else if ( name == "darkmoon_card_volcano"               ) e = "OnSpellDamage_1200Fire_1600Int_30%_12Dur_60Cd"; // TO-DO: Confirm ICD.
   else if ( name == "extract_of_necromantic_power"        ) e = "OnSpellTickDamage_1050Shadow_10%_15Cd";
   else if ( name == "lightning_capacitor"                 ) e = "OnSpellDirectCrit_750Nature_3Stack_2.5Cd";
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
@@ -1012,20 +1035,35 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   std::string e;
 
   // Simple
-  if      ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
+  if      ( name == "core_of_ripeness"            ) e = "1926Spi_20Dur_120Cd";
+  else if ( name == "electrospark_heartstarter"   ) e = "567Int_20Dur_120Cd";
+  else if ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
   else if ( name == "ephemeral_snowflake"         ) e = "464Haste_20Dur_120Cd";
+  else if ( name == "figurine_demon_panther"      ) e = "1425Agi_20Dur_120Cd";
+  else if ( name == "figurine_dream_owl"          ) e = "1425Spi_20Dur_120Cd";
+  else if ( name == "figurine_jeweled_serpent"    ) e = "1425Int_20Dur_120Cd";
+  else if ( name == "figurine_king_of_boars"      ) e = "1425Str_20Dur_120Cd";
+  else if ( name == "impatience_of_youth"         ) e = "1605Str_20Dur_120Cd";
   else if ( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
   else if ( name == "maghias_misguided_quill"     ) e = "716SP_20Dur_120Cd";
+  else if ( name == "magnetite_mirror"            ) e = ( heroic ? "1425Str_15Dur_90Cd" : "1075Str_15Dur_90Cd" );
+  else if ( name == "mark_of_khardros"            ) e = ( heroic ? "1425Mastery_15Dur_90Cd" : "1260Mastery_15Dur_90Cd" );
   else if ( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
   else if ( name == "mark_of_supremacy"           ) e = "1024AP_20Dur_120Cd";
+  else if ( name == "might_of_the_ocean"          ) e = ( heroic ? "1425Str_15Dur_90Cd" : "765Str_15Dur_90Cd" );
   else if ( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
   else if ( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
+  else if ( name == "sea_star"                    ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
   else if ( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
+  else if ( name == "skardyns_grace"              ) e = ( heroic ? "1425Mastery_20Dur_120Cd" : "1260Mastery_20Dur_120Cd" );
   else if ( name == "sliver_of_pure_ice"          ) e = "1625Mana_120Cd";
+  else if ( name == "soul_casket"                 ) e = "1926Sp_20Dur_120Cd";
+  else if ( name == "souls_anguish"               ) e = "765Str_15Dur_90Cd";
   else if ( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
   else if ( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
+  else if ( name == "unsolvable_riddle"           ) e = "1605Agi_20Dur_120Cd";
   else if ( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
 
   // Hybrid
