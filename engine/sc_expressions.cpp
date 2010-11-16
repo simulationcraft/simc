@@ -7,92 +7,109 @@
 
 // Unary Operators ===========================================================
 
+struct unary_minus
+{
+  inline static double evaluate(double input) { return -input; }
+};
+
+struct unary_plus
+{
+  inline static double evaluate(double input) { return input; }
+};
+
+struct unary_not
+{
+  inline static double evaluate(double input) { return input ? 0 : 1; }
+};
+
+template <typename Op>
 struct expr_unary_t : public action_expr_t
 {
-  int operation;
   action_expr_t* input;
-  expr_unary_t( action_t* a, const std::string& n, int o, action_expr_t* i ) : action_expr_t(a,n), operation(o), input(i) {}
+  expr_unary_t( action_t* a, const std::string& n, action_expr_t* i ) : action_expr_t(a, n, TOK_NUM), input(i) {}
   virtual int evaluate()
   {
-    result_type = TOK_UNKNOWN;
-    int input_result = input -> evaluate();
-    if ( input_result == TOK_NUM )
-    {
-      result_type = TOK_NUM;
-      switch( operation )
-      {
-      case TOK_PLUS:  result_num =   input -> result_num; break;
-      case TOK_MINUS: result_num = - input -> result_num; break;
-      case TOK_NOT:   result_num = ( input -> result_num != 0 ) ? 0 : 1; break;
-      }
-    }
-    else
-    {
-      action -> sim -> errorf( "%s-%s: Unexpected input type (%s) for unary operator '%s'\n", 
-			       action -> player -> name(), action -> name(), input -> name(), name() );
-    }
-    return result_type;
+    input -> evaluate();
+    result_num = Op::evaluate(input -> result_num);
+    return TOK_NUM;
   }
 };
 
+
 // Binary Operators ==========================================================
 
-struct expr_binary_t : public action_expr_t
+struct binary_add
 {
-  int operation;
+  inline static double evaluate(double left, double right) { return left + right; }
+};
+
+struct binary_sub
+{
+  inline static double evaluate(double left, double right) { return left - right; }
+};
+
+struct binary_mult
+{
+  inline static double evaluate(double left, double right) { return left * right; }
+};
+
+struct binary_div
+{
+  inline static double evaluate(double left, double right) { return left / right; }
+};
+
+struct binary_eq
+{
+  inline static double evaluate(double left, double right) { return left == right ? 1 : 0; }
+};
+
+struct binary_noteq
+{
+  inline static double evaluate(double left, double right) { return left != right ? 1 : 0; }
+};
+
+struct binary_lt
+{
+  inline static double evaluate(double left, double right) { return left < right ? 1 : 0; }
+};
+
+struct binary_lteq
+{
+  inline static double evaluate(double left, double right) { return left <= right ? 1 : 0; }
+};
+
+struct binary_gt
+{
+  inline static double evaluate(double left, double right) { return left > right ? 1 : 0; }
+};
+
+struct binary_gteq
+{
+  inline static double evaluate(double left, double right) { return left >= right ? 1 : 0; }
+};
+
+struct binary_and
+{
+  inline static double evaluate(double left, double right) { return (left != 0 && right != 0) ? 1 : 0; }
+};
+
+struct binary_or
+{
+  inline static double evaluate(double left, double right) { return (left != 0 || right != 0 )? 1 : 0; }
+};
+
+template <typename Op>
+struct expr_num_binary_t : public action_expr_t
+{
   action_expr_t* left;
   action_expr_t* right;
-  expr_binary_t( action_t* a, const std::string& n, int o, action_expr_t* l, action_expr_t* r ) : action_expr_t(a,n), operation(o), left(l), right(r) {}
+  expr_num_binary_t( action_t* a, const std::string& n, action_expr_t* l, action_expr_t* r ) : action_expr_t(a,n,TOK_NUM), left(l), right(r) {}
   virtual int evaluate()
   {
-    result_type = TOK_UNKNOWN;
-    int  left_result =  left -> evaluate();
-    int right_result = right -> evaluate();
-    if ( left_result != right_result )
-    {
-      action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n", 
-			       action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
-      action -> sim -> cancel();
-    }
-    else if ( left_result == TOK_NUM )
-    {
-      result_type = TOK_NUM;
-      switch( operation )
-      {
-      case TOK_ADD:  result_num = left -> result_num + right -> result_num; break;
-      case TOK_SUB:  result_num = left -> result_num - right -> result_num; break;
-      case TOK_MULT: result_num = left -> result_num * right -> result_num; break;
-      case TOK_DIV:  result_num = left -> result_num / right -> result_num; break;
-
-      case TOK_EQ:    result_num = ( left -> result_num == right -> result_num ) ? 1 : 0; break;
-      case TOK_NOTEQ: result_num = ( left -> result_num != right -> result_num ) ? 1 : 0; break;
-      case TOK_LT:    result_num = ( left -> result_num <  right -> result_num ) ? 1 : 0; break;
-      case TOK_LTEQ:  result_num = ( left -> result_num <= right -> result_num ) ? 1 : 0; break;
-      case TOK_GT:    result_num = ( left -> result_num >  right -> result_num ) ? 1 : 0; break;
-      case TOK_GTEQ:  result_num = ( left -> result_num >= right -> result_num ) ? 1 : 0; break;
-
-      case TOK_AND: result_num = ( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) ) ? 1 : 0; break;
-      case TOK_OR:  result_num = ( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) ) ? 1 : 0; break;
-
-      default: assert(0);
-      }
-    }
-    else if ( left_result == TOK_STR )
-    {
-      result_type = TOK_NUM;
-      switch( operation )
-      {
-      case TOK_EQ:    result_num = ( left -> result_str == right -> result_str ) ? 1 : 0; break;
-      case TOK_NOTEQ: result_num = ( left -> result_str != right -> result_str ) ? 1 : 0; break;
-      case TOK_LT:    result_num = ( left -> result_str <  right -> result_str ) ? 1 : 0; break;
-      case TOK_LTEQ:  result_num = ( left -> result_str <= right -> result_str ) ? 1 : 0; break;
-      case TOK_GT:    result_num = ( left -> result_str >  right -> result_str ) ? 1 : 0; break;
-      case TOK_GTEQ:  result_num = ( left -> result_str >= right -> result_str ) ? 1 : 0; break;
-
-      default: assert(0);
-      }
-    }
-    return result_type;
+    left -> evaluate();
+    right -> evaluate();
+    result_num = Op::evaluate(left -> result_num, right -> result_num);
+    return TOK_NUM;
   }
 };
 
@@ -382,7 +399,7 @@ bool expression_t::convert_to_rpn( action_t* action, std::vector<expr_token_t>& 
 // build_expression_tree =====================================================
 
 static action_expr_t* build_expression_tree( action_t* action,
-                                             std::vector<expr_token_t>& tokens )
+                                             const std::vector<expr_token_t>& tokens )
 {
   std::vector<action_expr_t*> stack;
   action_expr_t* res = 0;
@@ -390,9 +407,9 @@ static action_expr_t* build_expression_tree( action_t* action,
   int num_tokens = tokens.size();
   for( int i=0; i < num_tokens; i++ )
   {
-    expr_token_t& t= tokens[ i ];
+    const expr_token_t& t= tokens.at(i);
     
-    if ( t.type == TOK_NUM ) 
+    if ( t.type == TOK_NUM )
     {
       stack.push_back( new action_expr_t( action, t.label, atof( t.label.c_str() ) ) );
     }
@@ -414,7 +431,14 @@ static action_expr_t* build_expression_tree( action_t* action,
       action_expr_t* input = stack.back(); stack.pop_back();
       if ( ! input ) 
         goto exit_label;
-      stack.push_back( new expr_unary_t( action, t.label, t.type, input ) );
+      action_expr_t* e = 0;
+      switch (t.type)
+      {
+      case TOK_PLUS:  e = input; break;
+      case TOK_MINUS: e = new expr_unary_t<unary_minus>( action, t.label, input ); break;
+      case TOK_NOT:   e = new expr_unary_t<unary_not>  ( action, t.label, input ); break;
+      }
+      stack.push_back(e);
     }
     else if ( expression_t::is_binary( t.type ) )
     {
@@ -424,7 +448,28 @@ static action_expr_t* build_expression_tree( action_t* action,
       action_expr_t* left  = stack.back(); stack.pop_back();
       if ( ! left || ! right ) 
         goto exit_label;
-      stack.push_back( new expr_binary_t( action, t.label, t.type, left, right ) );
+      action_expr_t* e = 0;
+      switch (t.type)
+      {
+      case TOK_ADD:   e = new expr_num_binary_t<binary_add>  ( action, t.label, left, right ); break;
+      case TOK_SUB:   e = new expr_num_binary_t<binary_sub>  ( action, t.label, left, right ); break;
+      case TOK_MULT:  e = new expr_num_binary_t<binary_mult> ( action, t.label, left, right ); break;
+      case TOK_DIV:   e = new expr_num_binary_t<binary_div>  ( action, t.label, left, right ); break;
+
+      case TOK_EQ:    e = new expr_num_binary_t<binary_eq   >( action, t.label, left, right ); break;
+      case TOK_NOTEQ: e = new expr_num_binary_t<binary_noteq>( action, t.label, left, right ); break;
+      case TOK_LT:    e = new expr_num_binary_t<binary_lt   >( action, t.label, left, right ); break;
+      case TOK_LTEQ:  e = new expr_num_binary_t<binary_lteq >( action, t.label, left, right ); break;
+      case TOK_GT:    e = new expr_num_binary_t<binary_gt   >( action, t.label, left, right ); break;
+      case TOK_GTEQ:  e = new expr_num_binary_t<binary_gteq >( action, t.label, left, right ); break;
+
+      case TOK_AND:   e = new expr_num_binary_t<binary_and>  ( action, t.label, left, right ); break;
+      case TOK_OR:    e = new expr_num_binary_t<binary_or >  ( action, t.label, left, right ); break;
+
+      default:
+        abort();
+      }
+      stack.push_back(e);
     }
   }
 

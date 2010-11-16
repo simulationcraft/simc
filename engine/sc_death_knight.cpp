@@ -3914,7 +3914,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
   {
     struct blood_expr_t : public action_expr_t
     {
-      blood_expr_t( action_t* a ) : action_expr_t( a, "blood" ) { result_type = TOK_NUM; }
+      blood_expr_t( action_t* a ) : action_expr_t( a, "blood", TOK_NUM ) {}
       virtual int evaluate()
       {
         result_num = GET_BLOOD_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
@@ -3927,7 +3927,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
   {
     struct frost_expr_t : public action_expr_t
     {
-      frost_expr_t( action_t* a ) : action_expr_t( a, "frost" ) { result_type = TOK_NUM; }
+      frost_expr_t( action_t* a ) : action_expr_t( a, "frost", TOK_NUM ) {}
       virtual int evaluate()
       {
         result_num = GET_FROST_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
@@ -3940,7 +3940,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
   {
     struct unholy_expr_t : public action_expr_t
     {
-      unholy_expr_t( action_t* a ) : action_expr_t( a, "unholy" ) { result_type = TOK_NUM; }
+      unholy_expr_t( action_t* a ) : action_expr_t( a, "unholy", TOK_NUM ) {}
       virtual int evaluate()
       {
         result_num = GET_UNHOLY_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
@@ -3954,7 +3954,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
     struct death_expr_t : public action_expr_t
     {
       std::string name;
-      death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in ), name( name_in ) { result_type = TOK_NUM; }
+      death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in, TOK_NUM ), name( name_in ) {}
       virtual int evaluate()
       {
         result_num = count_death_runes( action -> player -> cast_death_knight(), name == "inactive_death" ); return TOK_NUM;

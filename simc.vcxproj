@@ -102,6 +102,7 @@
     <ClCompile Include="engine\sc_action.cpp" />
     <ClCompile Include="engine\sc_armory.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
+    <ClCompile Include="engine\sc_battle_net.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
     <ClCompile Include="engine\sc_chart.cpp" />
     <ClCompile Include="engine\sc_const_data.cpp" />

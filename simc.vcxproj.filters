@@ -55,6 +55,7 @@
     <ClCompile Include="engine\sc_xml.cpp" />
     <ClCompile Include="engine\sc_spell_data.cpp" />
     <ClCompile Include="engine\sc_spell_info.cpp" />
+    <ClCompile Include="engine\sc_battle_net.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.h" />
