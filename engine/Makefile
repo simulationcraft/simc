@@ -61,6 +61,7 @@ SRC =\
 	sc_action.cpp		\
 	sc_armory.cpp		\
 	sc_attack.cpp		\
+	sc_battle_net.cpp	\
 	sc_buff.cpp		\
 	sc_chart.cpp		\
 	sc_const_data.cpp	\
