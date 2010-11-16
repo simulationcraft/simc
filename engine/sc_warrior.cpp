@@ -375,18 +375,28 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 struct warrior_attack_t : public attack_t
 {
-  double min_rage, max_rage;
   int stancemask;
 
   warrior_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
       attack_t( n, player, RESOURCE_RAGE, s, t, special ),
-      min_rage( 0 ), max_rage( 0 ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
-    may_crit               = true;
-    may_glance             = false;
-    normalize_weapon_speed = true;
+    _init_warrior_attack_t();
   }
+
+  warrior_attack_t( const char* n, uint32_t id, warrior_t* p, int t=TREE_NONE, bool special = true ) :
+      attack_t( n, id, p, t, special ),
+      stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+  {
+    _init_warrior_attack_t();
+  }
+
+  void _init_warrior_attack_t()
+  {
+     may_crit               = true;
+     may_glance             = false;
+     normalize_weapon_speed = true;
+   }
 
   virtual double armor() SC_CONST;
 
@@ -649,7 +659,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
     struct opportunity_strike_t : public warrior_attack_t
     {
       opportunity_strike_t( warrior_t* p ) :
-          warrior_attack_t( "opportunity_strike", p, SCHOOL_PHYSICAL, TREE_ARMS )
+          warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
       {
         weapon = &( p -> main_hand_weapon );
 
@@ -865,6 +875,7 @@ void warrior_attack_t::execute()
   if ( attack_t::cost() >= 50 ) 
     p -> buffs_battle_trance -> expire();
 
+  // FIXME: does Opportunity Strike proc Deep Wounds?
   if ( proc )
     return;
 
@@ -994,14 +1005,6 @@ bool warrior_attack_t::ready()
     return false;
 
   warrior_t* p = player -> cast_warrior();
-
-  if ( min_rage > 0 )
-    if ( p -> resource_current[ RESOURCE_RAGE ] < min_rage )
-      return false;
-
-  if ( max_rage > 0 )
-    if ( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
-      return false;
 
   // Attack vailable in current stance?
   if ( ( stancemask & p -> active_stance ) == 0 )
@@ -2212,11 +2215,9 @@ struct victory_rush_t : public warrior_attack_t
 
 struct warrior_spell_t : public spell_t
 {
-  double min_rage, max_rage;
   int stancemask;
   warrior_spell_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
       spell_t( n, player, RESOURCE_RAGE, s, t ),
-      min_rage( 0 ), max_rage( 0 ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {}
 
@@ -2250,14 +2251,6 @@ bool warrior_spell_t::ready()
     return false;
 
   warrior_t* p = player -> cast_warrior();
-
-  if ( min_rage > 0 )
-    if ( p -> resource_current[ RESOURCE_RAGE ] < min_rage )
-      return false;
-
-  if ( max_rage > 0 )
-    if ( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
-      return false;
 
   // Attack vailable in current stance?
   if ( ( stancemask & p -> active_stance ) == 0 )
