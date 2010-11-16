@@ -265,7 +265,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       if     ( name == "i"  ) id_str       = value;
       else if( name == "e"  ) enchant_id   = value;
       else if( name == "ee" ) addon_id     = value;
-      else if( name == "d"  ) reforge_id   = value;
+      else if( name == "re" ) reforge_id   = value;
     }
 
     xml_node_t* sockets_root_node = xml_t::get_node( slot_node, "span", "class", "sockets" );

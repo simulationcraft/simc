@@ -507,12 +507,6 @@ static enchant_data_t enchant_db[] =
 // Add-Ons use the same enchant data-base for now
 static enchant_data_t* addon_db = enchant_db;
 
-static enchant_data_t reforge_db[] =
-{
-  { "86", "Reforge Dodge to Mastery", "dodge_mastery" },
-  { NULL, NULL, NULL }
-};
-
 // Spellsurge Enchant =======================================================
 
 struct spellsurge_callback_t : public action_callback_t
@@ -934,17 +928,32 @@ bool enchant_t::get_reforge_encoding( std::string& name,
 				      std::string& encoding,
 				      const std::string& reforge_id )
 {
-  for ( int i=0; reforge_db[ i ].id; i++ )
-  {
-    enchant_data_t& reforge = reforge_db[ i ];
+  name = encoding = "";
 
-    if ( reforge_id == reforge.id )
+  int start = 56;
+  int target = atoi( reforge_id.c_str() );
+  if( target <= start ) return false;
+
+  const char* stats[] = { "spirit", "dodge", "parry", "hit", "crit", "haste", "expertise", "mastery", NULL };
+
+  for( int i=0; stats[ i ]; i++ )
+  {
+    for( int j=0; stats[ j ]; j++ )
     {
-      name     = reforge.name;
-      encoding = reforge.encoding;
-      return true;
+      if( i == j ) continue;
+      if( ++start == target )
+      {
+	std::string source_stat = stats[ i ];
+	std::string target_stat = stats[ j ];
+	
+	name += "Reforge " + source_stat + " to " + target_stat;
+	encoding = source_stat + "_" + target_stat;
+
+	return true;
+      }
     }
   }
+
   return false;
 }
 
