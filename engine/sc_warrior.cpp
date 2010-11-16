@@ -3113,7 +3113,7 @@ void warrior_t::init_actions()
 
     if ( primary_tree() == TREE_ARMS )
     {
-      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
+      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.Fluffy_Pillow.adds>0";
       if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,if=rage<10";
       action_list_str += "/inner_rage,rage>=90";
       action_list_str += "/heroic_strike,if=rage>=75&target.Fluffy_Pillow.adds=0";
