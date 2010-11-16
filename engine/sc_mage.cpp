@@ -1062,7 +1062,7 @@ void mage_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> passive_spells.arcane_specialization -> effect_base_value( 1 ) / 100.0;
       
     double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
-    player_multiplier *= 1.0 + p -> mastery.mana_adept -> effect_base_value( 2 ) / 10000.0 * mana_pct;  
+    player_multiplier *= 1.0 + p -> mastery.mana_adept -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery() * mana_pct;  
   }
   else if ( school == SCHOOL_FIRE || school == SCHOOL_FROSTFIRE )
   {
