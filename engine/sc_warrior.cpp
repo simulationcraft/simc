@@ -38,6 +38,9 @@
 //
 //   * battle_stance                    = 21156 = mod_damage_done% (0x7f)
 //   * berserker_stance                 =  7381 = mod_damage_done% (0x7f)
+//   * blood_frenzy                     = 30070 = mod_damage_taken% (0x1)
+//                                      = 46857 = ???
+//   * cruelty                          = 12582 = add_flat_mod_spell_crit_chance (7)
 //   * death_wish                       = 12292 = mod_damage_done% (0x1)
 //   * dual_wield_specialization        = 23588 = mod_damage_done% (0x7f)
 //   * enrage (bastion_of_defense)      = 57516 = mod_damage_done% (0x1)
@@ -45,6 +48,7 @@
 //   * enrage (wrecking_crew)           = 57519 = mod_damage_done% (0x1)
 //   * heavy_repercussions              = 86896 = add_flat_mod_spell_effect2 (12)
 //   * hold_the_line                    = 84620 = mod_crit% (127)
+//   * improved_revenge                 = 12799 = add_percent_mod_generic
 //   * incite                           = 50687 = add_flat_mod_spell_crit_chance (7)
 //                                      = 86627 = add_flat_mod_spell_crit_chance (7)
 //   * inner_rage                       =  1134 = mod_damage_done% (0x7f)
@@ -54,7 +58,11 @@
 //   * recklessness                     =  1719 = add_flat_mod (7)
 //   * rude_interruption                = 86663 = mod_damage_done% (0x7f)
 //   * singleminded_fury                = 81099 = mod_damage_done% (0x7f)
+//   * sword_and_board                  = 46953 = add_flat_mod_spell_crit_chance (7)
 //   * thunderstruck                    = 87096 = add_percent_mod_generic
+//   * war_acacdemy                     = 84572 = add_percent_mod_generic
+//   * warrior_t10_melee_2pc_bonus      = 70854 = mod_damage_done% (0x1)
+//   * warrior_t10_melee_4pc_bonus      = 70847 = mod_damage_done% (0x7f)
 //   * warrior_tier11_dps_2pc_bonus     = 90293 = add_percent_mod_generic
 //   * warrior_tier11_dps_4pc_bonus     = 90294 = mod_melee_attack_power%
 //   * twohanded_weapon_specialization  = 12712 = mod_damage_done% (0x1)
@@ -827,7 +835,7 @@ void warrior_attack_t::consume_resource()
 
   if ( result == RESULT_CRIT )
   {
-    // p -> buffs_flurry -> trigger( 3 );
+    // Triggered here so it's applied between melee hits and next schedule.
     trigger_flurry( this, 3 );
   }
 
@@ -1639,7 +1647,7 @@ struct overpower_t : public warrior_attack_t
     p -> buffs_lambs_to_the_slaughter -> expire();
     p -> buffs_taste_for_blood -> expire();
 
-    // The wording indicates it triggers even if you miss.
+    // FIXME: The wording indicates it triggers even if you miss.
     p -> buffs_tier11_4pc_melee -> trigger();
   }
 
@@ -1731,7 +1739,7 @@ struct raging_blow_t : public warrior_attack_t
       warrior_attack_t::execute();
     }
 
-    // The wording indicates it triggers even if you miss.
+    // FIXME: The wording indicates it triggers even if you miss.
     p -> buffs_tier11_4pc_melee -> trigger();
 
     warrior_attack_t::consume_resource();
@@ -1921,10 +1929,8 @@ struct shield_bash_t : public warrior_attack_t
 
 struct shield_slam_t : public warrior_attack_t
 {
-  int sword_and_board;
   shield_slam_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "shield_slam",  player, SCHOOL_PHYSICAL, TREE_PROTECTION ),
-      sword_and_board( 0 )
+      warrior_attack_t( "shield_slam",  player, SCHOOL_PHYSICAL, TREE_PROTECTION )
   {
     warrior_t* p = player -> cast_warrior();
     check_spec( TREE_PROTECTION );
@@ -1966,17 +1972,6 @@ struct shield_slam_t : public warrior_attack_t
     if ( p -> buffs_sword_and_board -> check() ) return 0;
     double c = warrior_attack_t::cost();
     return c;
-  }
-
-  virtual bool ready()
-  {
-    warrior_t* p = player -> cast_warrior();
-
-    if ( sword_and_board )
-      if ( ! p -> buffs_sword_and_board -> check() )
-        return false;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -2023,10 +2018,8 @@ struct shockwave_t : public warrior_attack_t
 
 struct slam_t : public warrior_attack_t
 {
-  int bloodsurge;
   slam_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "slam",  player, SCHOOL_PHYSICAL, TREE_FURY ),
-      bloodsurge( 0 )
+      warrior_attack_t( "slam",  player, SCHOOL_PHYSICAL, TREE_FURY )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -2093,23 +2086,6 @@ struct slam_t : public warrior_attack_t
     warrior_attack_t::consume_resource();
     p -> buffs_bloodsurge -> decrement();
 
-  }
-
-  virtual bool ready()
-  {
-    if ( ! warrior_attack_t::ready() )
-      return false;
-
-    warrior_t* p = player -> cast_warrior();
-
-    if ( bloodsurge )
-    {
-      // Player does not instantaneous become aware of the proc
-      if ( ! p -> buffs_bloodsurge -> may_react() )
-        return false;
-    }
-
-    return true;
   }
 };
 
