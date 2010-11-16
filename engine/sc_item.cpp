@@ -240,7 +240,6 @@ void item_t::encode_options()
   if ( ! encoded_gems_str.empty()    ) { o += ",gems=";    o += encoded_gems_str;       }
   if ( ! encoded_enchant_str.empty() ) { o += ",enchant="; o += encoded_enchant_str;    }
   if ( ! encoded_addon_str.empty()   ) { o += ",addon=";   o += encoded_addon_str;      }
-  if ( ! encoded_reforge_str.empty() ) { o += ",reforge="; o += encoded_addon_str;      }
   if ( ! encoded_equip_str.empty()   ) { o += ",equip=";   o += encoded_equip_str;      }
   if ( ! encoded_use_str.empty()     ) { o += ",use=";     o += encoded_use_str;        }
   if ( ! encoded_weapon_str.empty()  ) { o += ",weapon=";  o += encoded_weapon_str;     }
