@@ -283,11 +283,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
 
     case E_WEAPON_PERCENT_DAMAGE:
       weapon = &( player -> main_hand_weapon );
-      {
-        int spell_level = pData.m_spells_index[id] -> spell_level;
-        int max_level   = pData.m_spells_index[id] -> max_level;
-        weapon_multiplier = (pData.effect_base_value(effect) + pData.effect_real_ppl(effect) * ((std::min)(player->level, max_level) - spell_level )) / 100.0;
-      }
+      weapon_multiplier = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
       break;
 
       // Dot
