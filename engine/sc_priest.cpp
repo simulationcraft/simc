@@ -2525,7 +2525,7 @@ struct renew_t : public priest_heal_t
   {
     current_tick = 0;
     snapshot_haste = haste();
-    if ( ! ticking ) schedule_tick();
+    schedule_tick();
   }
 };
 
@@ -2739,7 +2739,7 @@ struct prayer_of_mending_t : public priest_heal_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    //base_multiplier *= 5;
+    base_multiplier *= 5;
     direct_power_mod = effect_coeff(1);
     base_dd_min = base_dd_max = effect_min(1);
 
@@ -3446,16 +3446,32 @@ void priest_t::init_actions()
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion";
       break;
     case TREE_DISCIPLINE:
+      if ( !healer )
+      {
                                                          action_list_str += "/mana_potion";
                                                          action_list_str += "/shadow_fiend,trigger=10000";
-      if ( race == RACE_TROLL )                          action_list_str += "/berserking";
+        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
                                                          action_list_str += "/shadow_word_pain,if=!ticking";
-      if ( talents.power_infusion -> rank() )            action_list_str += "/power_infusion";
+        if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
                                                          action_list_str += "/holy_fire";
                                                          action_list_str += "/penance";
-      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent";
                                                          action_list_str += "/smite";
                                                          action_list_str += "/shadow_word_death,moving=1"; // when moving
+      }
+      else
+      {
+                                                         action_list_str += "/mana_potion";
+                                                         action_list_str += "/shadow_fiend,trigger=10000";
+        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+        if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
+                                                         action_list_str += "/renew,if=!ticking";
+                                                         action_list_str += "/prayer_of_mending";
+                                                         action_list_str += "/inner_focus";
+                                                         action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
+                                                         action_list_str += "/penance_heal";
+                                                         action_list_str += "/greater_heal";
+      }
       break;
     case TREE_HOLY:
     default:
@@ -3776,6 +3792,10 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
     { 
       temp_str = util_t::to_string( use_mind_blast );
       profile_str += "use_mind_blast=" + temp_str + "\n"; 
+    }
+    if ( healer )
+    {
+      profile_str += "healer=1\n";
     }
   }
 
