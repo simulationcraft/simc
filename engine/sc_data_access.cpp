@@ -653,12 +653,24 @@ double sc_data_access_t::effect_average( const uint32_t effect_id, const player_
 
   uint32_t c_id = get_class_id( c );
 
-  double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
+  if ( effect_m_average( effect_id ) != 0 && c_id != 0 )
+  {
+    double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
 
-  assert( p_scale_ref != NULL );
+    assert( p_scale_ref != NULL );
 
-  return effect_m_average( effect_id ) * *p_scale_ref;
+    return effect_m_average( effect_id ) * *p_scale_ref;
+  }
+  else if ( effect_real_ppl( effect_id ) != 0 )
+  {
+    assert( m_spells_index[ effect_spell_id( effect_id ) ] );
+    const spell_data_t* spell = m_spells_index[ effect_spell_id( effect_id ) ];
 
+    return effect_base_value( effect_id ) + 
+      ( ( spell -> max_level > 0 ? std::min( level, spell -> max_level ) : level ) - spell -> spell_level ) * effect_real_ppl( effect_id );
+  }
+  else
+    return effect_base_value( effect_id );
 }
 
 double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
@@ -670,11 +682,19 @@ double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_ty
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   uint32_t c_id = get_class_id( c );
-  double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
+  
+  if ( effect_m_delta( effect_id ) != 0 && c_id != 0 )
+  {
+    double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
 
-  assert( p_scale_ref != NULL );
+    assert( p_scale_ref != NULL );
 
-  return effect_m_average( effect_id ) * effect_m_delta( effect_id ) * *p_scale_ref;
+    return effect_m_average( effect_id ) * effect_m_delta( effect_id ) * *p_scale_ref;
+  }
+  else if ( effect_die_sides( effect_id ) != 0 )
+    return effect_die_sides( effect_id );
+  
+  return 0;
 }
 
 double sc_data_access_t::effect_bonus( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
@@ -686,11 +706,19 @@ double sc_data_access_t::effect_bonus( const uint32_t effect_id, const player_ty
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
   uint32_t c_id = get_class_id( c );
-  double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
+  
+  if ( effect_m_unk( effect_id ) != 0 && c_id != 0 )
+  {
+    double* p_scale_ref = m_spell_scaling.ptr( level - 1, c_id );
 
-  assert( p_scale_ref != NULL );
+    assert( p_scale_ref != NULL );
 
-  return effect_m_unk( effect_id ) * *p_scale_ref;
+    return effect_m_unk( effect_id ) * *p_scale_ref;
+  }
+  else
+    return effect_pp_combo_points( effect_id );
+  
+  return 0;
 }
 
 double sc_data_access_t::effect_min( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
@@ -704,9 +732,22 @@ double sc_data_access_t::effect_min( const uint32_t effect_id, const player_type
   double avg, delta;
 
   avg = effect_average( effect_id, c, level );
-  delta = effect_delta( effect_id, c, level );
 
-  return avg - ( delta / 2 );
+  if ( get_class_id( c ) != 0 )
+  {
+    delta = effect_delta( effect_id, c, level );
+    return avg - ( delta / 2 );
+  }
+  else
+  {
+    int die_sides = effect_die_sides( effect_id );
+    if ( die_sides == 0 )
+      return avg;
+    else if ( die_sides == 1 )
+      return avg + die_sides;
+    else
+      return avg + ( die_sides > 1  ? 1 : die_sides );
+  }
 }
 
 double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
@@ -720,9 +761,23 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
   double avg, delta;
 
   avg = effect_average( effect_id, c, level );
-  delta = effect_delta( effect_id, c, level );
 
-  return avg + ( delta / 2 );
+  if ( get_class_id( c ) )
+  {
+    delta = effect_delta( effect_id, c, level );
+
+    return avg + ( delta / 2 );
+  }
+  else
+  {
+    int die_sides = effect_die_sides( effect_id );
+    if ( die_sides == 0 )
+      return avg;
+    else if ( die_sides == 1 )
+      return avg + die_sides;
+    else
+      return avg + ( die_sides > 1  ? die_sides : -1 );
+  }
 }
 
 /*************** Effect type based searching of spell id *************************/

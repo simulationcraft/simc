@@ -275,26 +275,22 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   s << std::endl;
   
   s << "               Base Value: ";
-  if ( spell -> scaling_type != 0 && e -> m_avg > 0 )
-  {
-    double v_min = 0, v_max = 0;
+  double v_min = 0, v_max = 0;
 
-    v_min = sim -> sim_data.effect_min( e -> id, 
-      sim -> sim_data.spell_scaling_class( spell -> id ),
-      sim -> P403 ? 85 : 80 );
+  v_min = sim -> sim_data.effect_min( e -> id, 
+    sim -> sim_data.spell_scaling_class( spell -> id ),
+    sim -> P403 ? 85 : 80 );
 
-    v_max = sim -> sim_data.effect_max( e -> id, 
-      sim -> sim_data.spell_scaling_class( spell -> id ),
-      sim -> P403 ? 85 : 80 );
+  v_max = sim -> sim_data.effect_max( e -> id, 
+    sim -> sim_data.spell_scaling_class( spell -> id ),
+    sim -> P403 ? 85 : 80 );
 
-    s << floor( v_min );
-    if ( v_min != v_max )
-      s << " - " << ceil( v_max );
+  s << floor( v_min );
+  if ( v_min != v_max )
+    s << " - " << ceil( v_max );
 
+  if ( v_min != e -> base_value && v_max != e -> base_value )
     s << " (" << e -> base_value << ")";
-  }
-  else
-    s << e -> base_value;
   
   if ( e -> m_unk )
   {
