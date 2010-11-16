@@ -16,6 +16,7 @@
  * - Investigate pet mp5 - probably needs to scale with owner int
  * - Dismissing a pet drops aura -> demonic_pact. Either don't let it dropt if there is another pet alive, or recheck application when dropping it.
  * - Figure out how to calculate Immolation Aura Tick Damage
+ * - Why does UA use base_td = effect_base_value(2); ?
  */
 
 // ==========================================================================
@@ -393,7 +394,7 @@ struct warlock_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual void		init_resources( bool force );
+  virtual void		  init_resources( bool force );
   virtual void      reset();
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
@@ -811,44 +812,37 @@ struct warlock_spell_t : public spell_t
 {
   bool usable_pre_combat;
 
-  warlock_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t ), usable_pre_combat( false)
+  void _init_warlock_spell_t()
   {
     may_crit      = true;
     tick_may_crit = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
-	base_crit_multiplier = 1.33;
+    base_crit_multiplier = 1.33;
+  }
+
+  warlock_spell_t( const char* n, player_t* player, const school_type s, int t ) :
+      spell_t( n, player, RESOURCE_MANA, s, t ), usable_pre_combat( false)
+  {
+    _init_warlock_spell_t();
   }
 
   warlock_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
       spell_t( s, t ), usable_pre_combat( false)
   {
-    may_crit      = true;
-    tick_may_crit = true;
-    dot_behavior  = DOT_REFRESH;
-    weapon_multiplier = 0.0;
-	base_crit_multiplier = 1.33;
+    _init_warlock_spell_t();
   }
 
   warlock_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
       spell_t( n, sname, player, t ), usable_pre_combat( false)
   {
-    may_crit      = true;
-    tick_may_crit = true;
-    dot_behavior  = DOT_REFRESH;
-    weapon_multiplier = 0.0;
-	base_crit_multiplier = 1.33;
+    _init_warlock_spell_t();
   }
 
   warlock_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
       spell_t( n, id, player, t ), usable_pre_combat( false)
   {
-    may_crit      = true;
-    tick_may_crit = true;
-    dot_behavior  = DOT_REFRESH;
-    weapon_multiplier = 0.0;
-	base_crit_multiplier = 1.33;
+    _init_warlock_spell_t();
   }
 
   // ==========================================================================
@@ -1123,7 +1117,6 @@ struct warlock_pet_melee_t : public attack_t
 
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
-    base_dd_min = base_dd_max = 1;
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -1344,11 +1337,9 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct felstorm_tick_t : public warlock_pet_attack_t
   {
     felstorm_tick_t( player_t* player ) :
-        warlock_pet_attack_t( "felstorm", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+        warlock_pet_attack_t( "felstorm", 89753, player )
     {
-      felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
-      base_dd_min=base_dd_max=p -> player_data.effect_misc_value1( p -> player_data.spell_effect_id( 89753, 1) );
-      direct_power_mod = 0.33;
+      direct_power_mod = 0.33; // hardcoded from the tooltip
       dual        = true;
       background  = true;
       aoe         = true;
@@ -1365,7 +1356,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
   struct felstorm_t : public warlock_pet_attack_t
   {
-    attack_t* felstorm_tick;
+    felstorm_tick_t* felstorm_tick;
 
     felstorm_t( player_t* player ) :
       warlock_pet_attack_t( "felstorm", 89751, player )
@@ -1615,13 +1606,11 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     immolation_damage_t( player_t* player ) :
       warlock_pet_spell_t( "immolation_dmg", 20153, player )
     {
-      warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
       dual        = true;
       background  = true;
       aoe         = true;
       direct_tick = true;
       stats = player -> get_stats( "infernal_immolation" );
-      base_dd_min = base_dd_max = effect_real_ppl ( 1 ) * p -> level;
       direct_power_mod  = 0.4;
     }
 
@@ -2904,9 +2893,14 @@ struct searing_pain_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    direct_power_mod = 1.5 / 3.5;
-    base_dd_min = 288;
-    base_dd_max = 341;
+    // Searing Pain Hotfix Nerf.
+    warlock_t* p = player -> cast_warlock();
+    if ( ! sim -> P403 && p -> level == 80 )
+    {
+      direct_power_mod = 1.5 / 3.5;
+      base_dd_min = 288;
+      base_dd_max = 341;
+    }
   }
 
   virtual void player_buff()
@@ -3347,14 +3341,6 @@ struct immolation_damage_t : public warlock_spell_t
     aoe         = true;
     direct_tick = true;
     may_crit    = false;
-
-    warlock_t* p = player -> cast_warlock();
-    if ( p -> level == 85 )
-      base_dd_min = base_dd_max = 526; // hardcoded
-    else if ( p -> level == 80 )
-      base_dd_min = base_dd_max = 491; // hardcoded
-    else
-      sim -> errorf( "Action %s for Player %s has no base damage values avaiable on level %i.\n", name(), player -> name(), player -> level );
 
     stats = player -> get_stats( "immolation_aura" );
   }
