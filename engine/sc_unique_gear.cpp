@@ -919,7 +919,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD
 
   // TO-DO: Implement the On Use part, remove the passive haste..
-  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "302.5haste_OnSpellDamage_87SP_5Stack_15Dur" : "267.5haste_OnSpellDamage_77SP_5Stack_15Dur" );
+  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "303haste_OnSpellDamage_87SP_5Stack_15Dur" : "268haste_OnSpellDamage_77SP_5Stack_15Dur" );
   else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_60Cd" : "OnAttackHit_1926Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_60Cd" : "OnAttackHit_1512Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_45Cd"; // TO-DO: Confirm ICD.
