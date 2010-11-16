@@ -158,7 +158,7 @@ uint32_t talent_t::find_talent_id( const char* name )
     talent_num = 0;
     while ( ( talent_id = s_player->player_data.talent_player_get_id_by_num( s_player -> type, i_tab, talent_num ) ) != 0 )
     {
-      if ( !_stricmp( s_player -> player_data.talent_name_str( talent_id ), name ) )
+      if ( util_t::str_compare_ci( s_player -> player_data.talent_name_str( talent_id ), name ) )
       {
         return talent_id;
       }

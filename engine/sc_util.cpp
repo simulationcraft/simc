@@ -7,23 +7,29 @@
 
 bool my_isdigit( char c );
 
+// pred_ci =================================================================
+
+static bool pred_ci ( char a, char b ) {
+    return tolower( a ) == tolower( b );
+}
+
 // compare_ci ==============================================================
 
-bool util_t::compare_ci( const std::string& l,
-			 const std::string& r )
+bool util_t::str_compare_ci( const std::string& l,
+			     const std::string& r )
 {
-  int l_size = ( int ) l.size();
-  int r_size = ( int ) r.size();
+  if ( l.size() != r.size() || l.size() == 0 )
+    return false;
 
-  if( l_size != r_size ) return false;
+  return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
+}
 
-  if( l_size == 0 ) return true;
+// compare_ci ==============================================================
 
-  for( int i=0; i < l_size; i++ )
-    if( tolower( l[ i ] ) != tolower( r[ i ] ) )
-      return false;
-
-  return true;
+bool util_t::str_in_str_ci( const std::string& l,
+			    const std::string& r )
+{
+  return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
 // util_t::talent_rank =====================================================
@@ -191,7 +197,7 @@ const char* util_t::race_type_string( int type )
 race_type util_t::parse_race_type( const std::string& name )
 {
   for ( int i=(int) RACE_NONE; i < (int)RACE_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::race_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::race_type_string( i ) ) )
       return (race_type) i;
 
   return RACE_NONE;
@@ -224,7 +230,7 @@ const char* util_t::profession_type_string( int type )
 int util_t::parse_profession_type( const std::string& name )
 {
   for ( int i=0; i < PROFESSION_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::profession_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::profession_type_string( i ) ) )
       return i;
 
   return PROFESSION_NONE;
@@ -258,7 +264,7 @@ const char* util_t::player_type_string( int type )
 player_type util_t::parse_player_type( const std::string& name )
 {
   for ( int i=(int) PLAYER_NONE; i < (int) PLAYER_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::player_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
       return (player_type) i;
 
   return PLAYER_NONE;
@@ -284,7 +290,7 @@ const char* util_t::attribute_type_string( int type )
 int util_t::parse_attribute_type( const std::string& name )
 {
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::attribute_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::attribute_type_string( i ) ) )
       return i;
 
   return ATTRIBUTE_NONE;
@@ -325,7 +331,7 @@ const char* util_t::gem_type_string( int type )
 int util_t::parse_gem_type( const std::string& name )
 {
   for ( int i=0; i < GEM_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::gem_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::gem_type_string( i ) ) )
       return i;
 
   return GEM_NONE;
@@ -394,7 +400,7 @@ const char* util_t::meta_gem_type_string( int type )
 int util_t::parse_meta_gem_type( const std::string& name )
 {
   for ( int i=0; i < META_GEM_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::meta_gem_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::meta_gem_type_string( i ) ) )
       return i;
 
   return META_GEM_NONE;
@@ -424,7 +430,7 @@ const char* util_t::result_type_string( int type )
 int util_t::parse_result_type( const std::string& name )
 {
   for ( int i=0; i < RESULT_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::result_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::result_type_string( i ) ) )
       return i;
 
   return RESULT_NONE;
@@ -452,7 +458,7 @@ const char* util_t::resource_type_string( int type )
 int util_t::parse_resource_type( const std::string& name )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::resource_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::resource_type_string( i ) ) )
       return i;
 
   return RESOURCE_NONE;
@@ -487,7 +493,7 @@ const char* util_t::school_type_string( int school )
 school_type util_t::parse_school_type( const std::string& name )
 {
   for ( int i=SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::school_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::school_type_string( i ) ) )
       return ( school_type )( i );
 
   return SCHOOL_NONE;
@@ -534,7 +540,7 @@ const char* util_t::talent_tree_string( int tree )
 int util_t::parse_talent_tree( const std::string& name )
 {
   for ( int i=0; i < TALENT_TREE_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::talent_tree_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::talent_tree_string( i ) ) )
       return i;
 
   return TREE_NONE;
@@ -572,7 +578,7 @@ const char* util_t::weapon_type_string( int weapon )
 int util_t::parse_weapon_type( const std::string& name )
 {
   for ( int i=0; i < WEAPON_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::weapon_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::weapon_type_string( i ) ) )
       return i;
 
   return WEAPON_NONE;
@@ -607,7 +613,7 @@ const char* util_t::flask_type_string( int flask )
 int util_t::parse_flask_type( const std::string& name )
 {
   for ( int i=0; i < FLASK_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::flask_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::flask_type_string( i ) ) )
       return i;
 
   return FLASK_NONE;
@@ -659,7 +665,7 @@ const char* util_t::food_type_string( int food )
 int util_t::parse_food_type( const std::string& name )
 {
   for ( int i=0; i < FOOD_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::food_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::food_type_string( i ) ) )
       return i;
 
   return FOOD_NONE;
@@ -741,7 +747,7 @@ const char* util_t::armor_type_string( player_type ptype, int slot_type )
 int util_t::parse_slot_type( const std::string& name )
 {
   for ( int i=0; i < SLOT_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::slot_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::slot_type_string( i ) ) )
       return i;
 
   return SLOT_NONE;
@@ -902,15 +908,15 @@ const char* util_t::stat_type_wowhead( int stat )
 stat_type util_t::parse_stat_type( const std::string& name )
 {
   for ( int i=0; i <= STAT_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::stat_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::stat_type_string( i ) ) )
       return (stat_type) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::stat_type_abbrev( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::stat_type_abbrev( i ) ) )
       return (stat_type) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
-    if ( util_t::compare_ci( name, util_t::stat_type_wowhead( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
       return (stat_type) i;
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;

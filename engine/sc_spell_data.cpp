@@ -144,25 +144,6 @@ static std::string _pet_class_strings[] = {
   "tenacity",
 };
 
-static bool pred ( char a, char b ) {
-    return tolower( a ) == tolower( b );
-}
-
-static bool str_compare_ci( const std::string& l,
-                            const std::string& r )
-{
-    if ( l.size() != r.size() || l.size() == 0 )
-        return false;
-
-    return std::equal( l.begin(), l.end(), r.begin(), pred );
-}
-
-static bool str_in_str_ci( const std::string& l,
-                           const std::string& r )
-{
-    return std::search( l.begin(), l.end(), r.begin(), r.end(), pred ) != l.end();
-}
-
 static unsigned class_str_to_mask( const std::string& str )
 {
   int cls_id = -1;
@@ -172,7 +153,7 @@ static unsigned class_str_to_mask( const std::string& str )
     if ( _class_strings[ i ].empty() )
       continue;
       
-    if ( ! str_compare_ci( _class_strings[ i ], str ) )
+    if ( ! util_t::str_compare_ci( _class_strings[ i ], str ) )
       continue;
       
     cls_id = i;
@@ -191,7 +172,7 @@ static unsigned race_str_to_mask( const std::string& str )
     if ( _race_strings[ i ].empty() )
       continue;
 
-    if ( ! str_compare_ci( _race_strings[ i ], str ) )
+    if ( ! util_t::str_compare_ci( _race_strings[ i ], str ) )
       continue;
 
     race_id = i;
@@ -210,7 +191,7 @@ static unsigned pet_class_str_to_mask( const std::string& str )
     if ( _pet_class_strings[ i ].empty() )
       continue;
       
-    if ( ! str_compare_ci( _pet_class_strings[ i ], str ) )
+    if ( ! util_t::str_compare_ci( _pet_class_strings[ i ], str ) )
       continue;
       
     cls_id = i;
@@ -224,29 +205,29 @@ static unsigned school_str_to_mask( const std::string& str )
 {
   unsigned mask = 0;
   
-  if ( str_in_str_ci( str, "physical" ) || str_in_str_ci( str, "strike" ) )
+  if ( util_t::str_in_str_ci( str, "physical" ) || util_t::str_in_str_ci( str, "strike" ) )
     mask |= 0x1;
     
-  if ( str_in_str_ci( str, "holy" ) || str_in_str_ci( str, "light" ) )
+  if ( util_t::str_in_str_ci( str, "holy" ) || util_t::str_in_str_ci( str, "light" ) )
     mask |= 0x2;
   
-  if ( str_in_str_ci( str, "fire" ) || str_in_str_ci( str, "flame" ) )
+  if ( util_t::str_in_str_ci( str, "fire" ) || util_t::str_in_str_ci( str, "flame" ) )
     mask |= 0x4;
     
-  if ( str_in_str_ci( str, "nature" ) || str_in_str_ci( str, "storm" ) ) 
+  if ( util_t::str_in_str_ci( str, "nature" ) || util_t::str_in_str_ci( str, "storm" ) ) 
     mask |= 0x8;
   
-  if ( str_in_str_ci( str, "frost" ) )
+  if ( util_t::str_in_str_ci( str, "frost" ) )
     mask |= 0x10;
   
-  if ( str_in_str_ci( str, "shadow" ) )
+  if ( util_t::str_in_str_ci( str, "shadow" ) )
     mask |= 0x20;
     
-  if ( str_in_str_ci( str, "arcane" ) || str_in_str_ci( str, "spell" ) )
+  if ( util_t::str_in_str_ci( str, "arcane" ) || util_t::str_in_str_ci( str, "spell" ) )
     mask |= 0x40;
     
   // Special case: Arcane + Holy
-  if ( str_compare_ci( "divine", str ) )
+  if ( util_t::str_compare_ci( "divine", str ) )
     mask = 0x42;
 
   return mask;
@@ -507,7 +488,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     // Figure out our offset then
     for ( unsigned int i = 0; i < fsize / sizeof( sdata_field_t ); i++ )
     {
-      if ( fields[ i ].name.empty() || ! str_compare_ci( f_name, fields[ i ].name ) )
+      if ( fields[ i ].name.empty() || ! util_t::str_compare_ci( f_name, fields[ i ].name ) )
       {
         switch ( fields[ i ].type )
         {
@@ -606,10 +587,10 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
         switch ( t )
         {
-          case TOK_EQ:    if ( str_compare_ci( string_v, ostring_v ) ) return true; break;
-          case TOK_NOTEQ: if ( ! str_compare_ci( string_v, ostring_v ) ) return true; break;
-          case TOK_IN:    if ( ! string_v.empty() && str_in_str_ci( string_v, ostring_v ) ) return true; break;
-          case TOK_NOTIN: if ( ! string_v.empty() && ! str_in_str_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_EQ:    if ( util_t::str_compare_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_NOTEQ: if ( ! util_t::str_compare_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_IN:    if ( ! string_v.empty() && util_t::str_in_str_ci( string_v, ostring_v ) ) return true; break;
+          case TOK_NOTIN: if ( ! string_v.empty() && ! util_t::str_in_str_ci( string_v, ostring_v ) ) return true; break;
           default:        return false;
         }
         break;
@@ -1178,25 +1159,25 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   // No split, access raw list or create a normal expression
   if ( num_splits == 1 )
   {
-    if ( str_compare_ci( splits[ 0 ], "spell" ) )
+    if ( util_t::str_compare_ci( splits[ 0 ], "spell" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "talent" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "talent" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_TALENT );
-    else if ( str_compare_ci( splits[ 0 ], "effect" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "effect" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_EFFECT );
-    else if ( str_compare_ci( splits[ 0 ], "talent_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "talent_spell" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_TALENT_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "class_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "class_spell" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_CLASS_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "race_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "race_spell" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_RACIAL_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "mastery" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "mastery" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_MASTERY_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "spec_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "spec_spell" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_SPECIALIZATION_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "glyph" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "glyph" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_GLYPH_SPELL );
-    else if ( str_compare_ci( splits[ 0 ], "set_bonus" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "set_bonus" ) )
       return new spell_list_expr_t( sim, splits[ 0 ], DATA_SET_BONUS_SPELL );
     else
     {
@@ -1206,46 +1187,46 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   }
   else // Define data type
   {
-    if ( str_compare_ci( splits[ 0 ], "spell" ) )
+    if ( util_t::str_compare_ci( splits[ 0 ], "spell" ) )
       data_type = DATA_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "talent" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "talent" ) )
       data_type = DATA_TALENT;
-    else if ( str_compare_ci( splits[ 0 ], "effect" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "effect" ) )
       data_type = DATA_EFFECT;
-    else if ( str_compare_ci( splits[ 0 ], "talent_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "talent_spell" ) )
       data_type = DATA_TALENT_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "class_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "class_spell" ) )
       data_type = DATA_CLASS_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "race_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "race_spell" ) )
       data_type = DATA_RACIAL_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "mastery" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "mastery" ) )
       data_type = DATA_MASTERY_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "spec_spell" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "spec_spell" ) )
       data_type = DATA_SPECIALIZATION_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "glyph" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "glyph" ) )
       data_type = DATA_GLYPH_SPELL;
-    else if ( str_compare_ci( splits[ 0 ], "set_bonus" ) )
+    else if ( util_t::str_compare_ci( splits[ 0 ], "set_bonus" ) )
       data_type = DATA_SET_BONUS_SPELL;
       
-    if ( str_compare_ci( splits[ 1 ], "effect" ) && data_type == DATA_EFFECT )
+    if ( util_t::str_compare_ci( splits[ 1 ], "effect" ) && data_type == DATA_EFFECT )
       return 0;
     
     // Effect handling, set flag and remove effect keyword from tokens
-    if ( str_compare_ci( splits[ 1 ], "effect" ) )
+    if ( util_t::str_compare_ci( splits[ 1 ], "effect" ) )
     {
       effect_query = true;
       splits.erase( splits.begin() + 1 );
     }
     
-    if ( ! effect_query && str_compare_ci( splits[ 1 ], "class" ) )
+    if ( ! effect_query && util_t::str_compare_ci( splits[ 1 ], "class" ) )
       return new spell_class_expr_t( sim, data_type );
-    else if ( ! effect_query && str_compare_ci( splits[ 1 ], "race" ) )
+    else if ( ! effect_query && util_t::str_compare_ci( splits[ 1 ], "race" ) )
       return new spell_race_expr_t( sim, data_type );
-    else if ( ! effect_query && data_type == DATA_TALENT && str_compare_ci( splits[ 1 ], "pet_class" ) )
+    else if ( ! effect_query && data_type == DATA_TALENT && util_t::str_compare_ci( splits[ 1 ], "pet_class" ) )
       return new spell_pet_class_expr_t( sim, data_type );
-    else if ( ! effect_query && data_type != DATA_TALENT && str_compare_ci( splits[ 1 ], "school" ) )
+    else if ( ! effect_query && data_type != DATA_TALENT && util_t::str_compare_ci( splits[ 1 ], "school" ) )
       return new spell_school_expr_t( sim, data_type );
-    else if ( ! effect_query && data_type != DATA_TALENT && str_compare_ci( splits[ 1 ], "rune" ) )
+    else if ( ! effect_query && data_type != DATA_TALENT && util_t::str_compare_ci( splits[ 1 ], "rune" ) )
       return new spell_rune_expr_t( sim, data_type );
     else
     {
@@ -1270,7 +1251,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       
       for ( unsigned int i = 0; i < fsize / sizeof( sdata_field_t ); i++ )
       {
-        if ( ! fields[ i ].name.empty() && str_compare_ci( splits[ 1 ], fields[ i ].name ) )
+        if ( ! fields[ i ].name.empty() && util_t::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
         {
           s = &fields[ i ];
           break;

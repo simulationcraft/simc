@@ -138,8 +138,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   xml_node_t* talents_xml = 0;
 
-  if( util_t::compare_ci( talents_description, "primary"   ) ) talents_xml = p_talents_xml;
-  if( util_t::compare_ci( talents_description, "secondary" ) ) talents_xml = s_talents_xml;
+  if( util_t::str_compare_ci( talents_description, "primary"   ) ) talents_xml = p_talents_xml;
+  if( util_t::str_compare_ci( talents_description, "secondary" ) ) talents_xml = s_talents_xml;
 
   if( ! talents_xml )
   {
@@ -158,8 +158,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
       std::string active_str;
       bool active = ( xml_t::get_value( active_str, anchor_node, "class" ) && active_str == "active" );
 
-      if( ( util_t::compare_ci( talents_description,   "active" ) &&   active ) ||
-	  ( util_t::compare_ci( talents_description, "inactive" ) && ! active ) )
+      if( ( util_t::str_compare_ci( talents_description,   "active" ) &&   active ) ||
+	  ( util_t::str_compare_ci( talents_description, "inactive" ) && ! active ) )
       {
 	talents_xml = ( primary ? p_talents_xml : s_talents_xml );
 	break;
@@ -168,7 +168,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       std::string build_str;
       if( xml_t::get_value( build_str, xml_t::get_node( anchor_node, "span", "class", "name" ), "." ) )
       {
-	if( util_t::compare_ci( talents_description, build_str ) )
+	if( util_t::str_compare_ci( talents_description, build_str ) )
 	{
 	  talents_xml = ( primary ? p_talents_xml : s_talents_xml );
 	  break;

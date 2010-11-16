@@ -1667,7 +1667,8 @@ struct util_t
   static std::string& utf8_hex_to_ascii( std::string& name );
   static std::string& format_name( std::string& name );
 
-  static bool compare_ci( const std::string& l, const std::string& r );
+  static bool str_compare_ci( const std::string& l, const std::string& r );
+  static bool str_in_str_ci ( const std::string& l, const std::string& r );
 
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
 

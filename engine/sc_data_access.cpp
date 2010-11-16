@@ -1704,7 +1704,7 @@ bool sc_data_access_t::check_spell_name( const uint32_t spell_id, const char* na
   if ( !spell_exists( spell_id ) )
     return false;
 
-  return !_stricmp( spell_name_str( spell_id ), name );
+  return util_t::str_compare_ci( spell_name_str( spell_id ), name );
 }
 
 bool sc_data_access_t::check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST
@@ -1714,7 +1714,7 @@ bool sc_data_access_t::check_talent_name( const uint32_t talent_id, const char* 
   if ( !talent_exists( talent_id ) )
     return false;
 
-  return !_stricmp( talent_name_str( talent_id ), name );
+  return util_t::str_compare_ci( talent_name_str( talent_id ), name );
 }
 
 
