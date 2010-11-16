@@ -106,9 +106,6 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& name,
                                              int cache )
 {
-  std::string new_url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
-  return xml_t::download( sim, new_url );
-
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?locale=en_US&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
@@ -134,9 +131,6 @@ static xml_node_t* download_character_talents( sim_t* sim,
                                                const std::string& name,
                                                int   cache )
 {
-  std::string new_url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/talent/primary";
-  return xml_t::download( sim, new_url );
-
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?locale=en_US&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
@@ -799,12 +793,6 @@ player_t* armory_t::download_player( sim_t* sim,
 
   xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, temp_name, cache );
   xml_node_t* talents_xml = download_character_talents( sim, region, server, temp_name, cache );
-
-  printf( "\n\n\n\n\n\n\n\n\nSHEET HERE!\n" );
-  if(   sheet_xml ) xml_t::print(   sheet_xml );
-  printf( "\n\n\n\n\n\n\n\n\nTALENTS HERE!\n" );
-  if( talents_xml ) xml_t::print( talents_xml );
-  exit(0);
 
   if ( ! sheet_xml || ! talents_xml )
   {
