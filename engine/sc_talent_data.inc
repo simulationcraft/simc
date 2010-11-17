@@ -1,6 +1,6 @@
-#define TALENT_SIZE (658)
+#define TALENT_SIZE (657)
 
-// 658 talents, wow build 13205
+// 657 talents, wow build 13286
 static struct talent_data_t __talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 } },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 } },
@@ -248,7 +248,7 @@ static struct talent_data_t __talent_data[] = {
   { "Pulverize"                         ,  8319, 0x00,  1, 0x400, 0x0,     0,  0,  2,  5, { 80313,     0,     0 } },
   { "King of the Jungle"                ,  8323, 0x00,  1, 0x400, 0x0,     0,  0,  0,  2, { 48492, 48494, 48495 } },
   { "Leader of the Pack"                ,  8325, 0x00,  1, 0x400, 0x0,     0,  0,  1,  3, { 17007,     0,     0 } },
-  { "Primal Madness"                    ,  8335, 0x00,  1, 0x400, 0x0,  8323,  2,  0,  4, { 80316, 80317,     0 } },
+  { "Primal Madness <NNF>"              ,  8335, 0x00,  1, 0x400, 0x0,  8323,  2,  0,  4, { 80316, 80317,     0 } },
   { "Blood in the Water"                ,  8341, 0x00,  1, 0x400, 0x0,     0,  0,  0,  5, { 80318, 80319,     0 } },
   { "Rend and Tear"                     ,  8343, 0x00,  1, 0x400, 0x0,     0,  0,  1,  5, { 48432, 48433, 48434 } },
   { "Berserk"                           ,  8347, 0x00,  1, 0x400, 0x0,     0,  0,  1,  6, { 50334,     0,     0 } },
@@ -644,7 +644,6 @@ static struct talent_data_t __talent_data[] = {
   { "Atonement"                         , 11812, 0x00,  0, 0x010, 0x0,     0,  0,  2,  2, { 14523, 81749,     0 } },
   { "Strength of Soul"                  , 11813, 0x00,  0, 0x010, 0x0, 11224,  1,  0,  4, { 89488, 89489,     0 } },
   { "Aura of Foreboding"                , 11814, 0x00,  1, 0x100, 0x0,     0,  0,  2,  3, { 89604, 89605,     0 } },
-  { ""                                  , 11824, 0x00,  0, 0x080, 0x0,     0,  0,  3,  3, { 90724, 90731,     0 } },
   { "Improved Arcane Explosion"         , 11825, 0x00,  0, 0x080, 0x0,     0,  0,  3,  3, { 90787, 90788,     0 } },
   { "Contagion"                         , 12119, 0x00,  2, 0x020, 0x0,  1963,  2,  2,  2, { 91316, 91319,     0 } },
   { "Nether Ward"                       , 12120, 0x00,  2, 0x100, 0x0,     0,  0,  3,  3, { 91713,     0,     0 } },
