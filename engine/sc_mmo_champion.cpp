@@ -230,7 +230,7 @@ static bool parse_weapon( item_t&     item,
        ! get_tti_value( slot_str,     node, "tti-slot"     ) )
     return false;
 
-  if( slot_str == "Main Hand" ) slot_str = "One-Hand";
+  if( ( slot_str == "Main Hand" ) || ( slot_str == "Off-Hand" ) ) slot_str = "One-Hand";
 
   int weapon_type = WEAPON_NONE;
   if      ( subclass_str == "Axe" && slot_str == "One-Hand"   ) weapon_type = WEAPON_AXE;
