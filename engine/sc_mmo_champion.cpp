@@ -212,7 +212,7 @@ static bool parse_weapon( item_t&     item,
 
   tokens.clear();
   num_tokens = util_t::string_split( tokens, tti_dmg, " " );
-  if ( num_tokens == 4 )
+  if ( ( num_tokens == 4 ) || ( num_tokens == 5 ) )
   {
     dmg_min_str = tokens[ 0 ];
     dmg_max_str = tokens[ 2 ];

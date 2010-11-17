@@ -45,7 +45,7 @@ finger2=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143ha
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
 trinket2=heart_of_ignacious,heroic=1
 back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_spi,gems=67int,enchant=50int
-main_hand=twilights_hammer,heroic=1,stats=165int_248sta_110crit_110haste_2207sp,enchant=power_torrent
+main_hand=twilights_hammer,heroic=1,stats=165int_248sta_110crit_110haste_2207sp,enchant=power_torrent,weapon=mace_2.30speed_840min_1560max
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,reforge=hit_spi,enchant=100int
 ranged=finkles_mixer_upper,heroic=1,stats=121int_181sta_81spi_81mastery,reforge=mastery_haste
 # Gear Summary
@@ -64,4 +64,4 @@ ranged=finkles_mixer_upper,heroic=1,stats=121int_181sta_81spi_81mastery,reforge=
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # trinket2=heart_of_ignacious,heroic=1
-# main_hand=twilights_hammer,heroic=1,enchant=power_torrent
+# main_hand=twilights_hammer,heroic=1,weapon=mace_2.30speed_840min_1560max,enchant=power_torrent

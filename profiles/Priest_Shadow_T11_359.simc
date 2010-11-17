@@ -45,7 +45,7 @@ finger2=security_measure_alpha,stats=190int_286sta_127spi_127crit,reforge=crit_h
 trinket1=theralions_mirror,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
 trinket2=heart_of_ignacious
 back=haunt_of_flies,stats=190int_286sta_127crit_127haste_625armor,enchant=50int
-main_hand=incineratus,stats=146int_219sta_97mastery_97haste_1954sp,reforge=mastery_spi,enchant=power_torrent
+main_hand=incineratus,stats=146int_219sta_97mastery_97haste_1954sp,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_583min_1082max
 off_hand=book_of_binding_will,stats=190int_286sta_127haste_127hit,enchant=100int
 ranged=finkles_mixer_upper,stats=107int_161sta_72spi_72mastery,reforge=mastery_hit
 # Gear Summary
@@ -64,4 +64,4 @@ ranged=finkles_mixer_upper,stats=107int_161sta_72spi_72mastery,reforge=mastery_h
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # trinket2=heart_of_ignacious
-# main_hand=incineratus,enchant=power_torrent
+# main_hand=incineratus,weapon=dagger_1.80speed_583min_1082max,enchant=power_torrent
