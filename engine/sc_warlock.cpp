@@ -204,7 +204,11 @@ struct warlock_t : public player_t
   buff_t* buffs_improved_soul_fire;
   buff_t* buffs_dark_intent_feedback;
   buff_t* buffs_soulburn;
-  buff_t* buffs_demon_soul;
+  buff_t* buffs_demon_soul_imp;
+  buff_t* buffs_demon_soul_felguard;
+  buff_t* buffs_demon_soul_felhunter;
+  buff_t* buffs_demon_soul_succubus;
+  buff_t* buffs_demon_soul_voidwalker;
   buff_t* buffs_bane_of_havoc;
   buff_t* buffs_searing_pain_soulburn;
   buff_t* buffs_tier10_4pc_caster;
@@ -862,9 +866,9 @@ struct warlock_spell_t : public spell_t
     }
 
 
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 )
+    if ( p -> buffs_demon_soul_felguard -> up() )
     {
-      h *= 1.0 / ( 1.0 + 0.15 );
+      h *= 1.0 / ( 1.0 + p -> buffs_demon_soul_felguard -> effect_base_value( 1 ) / 100.0 );
     }
 
     return h;
@@ -890,14 +894,14 @@ struct warlock_spell_t : public spell_t
       player_multiplier *= 1.10;
 	  }
 
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 5.0 && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
+    if ( p -> buffs_demon_soul_felguard -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
     {
-	    player_multiplier *= 1.10;
+	    player_multiplier *= 1.0 + p -> buffs_demon_soul_felguard -> effect_base_value( 2 ) / 100.0;
     }
 
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && s_tree == 2 )
+    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == 2 )
     {
-      player_crit_multiplier *= 1.0 + 0.20 * p -> buffs_demon_soul -> stack();
+      player_crit_multiplier *= 1.0 + p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
     }
 
     double fire_multiplier=1.0;
@@ -961,9 +965,9 @@ struct warlock_spell_t : public spell_t
       {
         shadow_td_multiplier *= 1.20 + ( p -> glyphs.haunt -> ok() ? 0.03 : 0.00 );
       }
-      if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 4.0 )
+      if ( p -> buffs_demon_soul_felhunter -> up() )
       {
-        shadow_td_multiplier *=  1.0 + 0.20;
+        shadow_td_multiplier *=  1.0 + p -> buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
       }
     }
 
@@ -976,9 +980,9 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = player -> cast_warlock();
     spell_t::execute();
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 1.0 && execute_time() > 0 && s_tree == 2 )
+    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == 2 )
     {
-      p -> buffs_demon_soul -> decrement();
+      p -> buffs_demon_soul_imp -> decrement();
     }
 
   }
@@ -1906,9 +1910,9 @@ struct bane_of_doom_t : public warlock_spell_t
     action_t::target_debuff( DMG_DIRECT );
 
     warlock_t* p = player -> cast_warlock();
-    if ( p -> bugs && p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 4.0 )
+    if ( p -> bugs && p -> buffs_demon_soul_felhunter -> up() )
     {
-      target_multiplier *=  1.0 + 0.20 ;
+      target_multiplier *=  1.0 + p -> buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
     }
   }
 
@@ -2039,9 +2043,9 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
-    if ( p -> buffs_demon_soul -> up() && p -> buffs_demon_soul -> current_value == 3.0 )
+    if ( p -> buffs_demon_soul_succubus -> up() )
     {
-      target_multiplier *= 1.0 + 0.10;
+      target_multiplier *= 1.0 + p -> buffs_demon_soul_succubus -> effect_base_value( 1 ) / 100.0;
     }
   }
 
@@ -3673,23 +3677,23 @@ struct demon_soul_t : public warlock_spell_t
 
     if ( p -> active_pet -> pet_type == PET_IMP )
     {
-      p -> buffs_demon_soul -> buff_duration = 30.0;
-      p -> buffs_demon_soul -> trigger( 3, 1.0 );
-    }
-    if ( p -> active_pet -> pet_type == PET_SUCCUBUS )
-    {
-      p -> buffs_demon_soul -> buff_duration = 20.0;
-      p -> buffs_demon_soul -> trigger( 1, 3.0 );
-    }
-    if ( p -> active_pet -> pet_type == PET_FELHUNTER )
-    {
-      p -> buffs_demon_soul -> buff_duration = 20.0;
-      p -> buffs_demon_soul -> trigger( 1, 4.0 );
+      p -> buffs_demon_soul_imp -> trigger();
     }
     if ( p -> active_pet -> pet_type == PET_FELGUARD )
     {
-      p -> buffs_demon_soul -> buff_duration = 20.0;
-      p -> buffs_demon_soul -> trigger( 1, 5.0 );
+      p -> buffs_demon_soul_felguard -> trigger();
+    }
+    if ( p -> active_pet -> pet_type == PET_FELHUNTER )
+    {
+      p -> buffs_demon_soul_felhunter -> trigger();
+    }
+    if ( p -> active_pet -> pet_type == PET_SUCCUBUS )
+    {
+      p -> buffs_demon_soul_succubus -> trigger();
+    }
+    if ( p -> active_pet -> pet_type == PET_VOIDWALKER )
+    {
+      p -> buffs_demon_soul_voidwalker -> trigger();
     }
   }
 
@@ -4239,7 +4243,11 @@ void warlock_t::init_buffs()
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
   buffs_improved_soul_fire -> cooldown -> duration  = player_data.effect_base_value( player_data.spell_effect_id( 85113, 3 ) );
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
-  buffs_demon_soul            = new buff_t( this, 77801, "demon_soul" );
+  buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );
+  buffs_demon_soul_felguard   = new buff_t( this, 79462, "demon_soul_felguard" );
+  buffs_demon_soul_felhunter  = new buff_t( this, 79460, "demon_soul_felhunter" );
+  buffs_demon_soul_succubus   = new buff_t( this, 79463, "demon_soul_succubus" );
+  buffs_demon_soul_voidwalker = new buff_t( this, 79464, "demon_soul_voidwalker" );
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
   buffs_searing_pain_soulburn = new buff_t( this, 79440, "searing_pain_soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
