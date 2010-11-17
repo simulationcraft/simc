@@ -489,7 +489,7 @@ struct melee_t : public paladin_attack_t
 
       trigger_hand_of_light( this );
     }
-    if ( p -> buffs_reckoning -> up() )
+    if ( !proc && p -> buffs_reckoning -> up() )
     {
       p -> buffs_reckoning -> decrement();
       proc = true;
@@ -2243,8 +2243,11 @@ void paladin_t::init_actions()
 
   if ( action_list_str.empty() && primary_tree() == TREE_RETRIBUTION )
   {
-    // TODO: new food
-    action_list_str = "flask,type=titanic_strength/food,type=dragonfin_filet/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+    if (sim->P403)
+      action_list_str = "flask,type=titanic_strength/food,type=beer_basted_crocolisk";
+    else
+      action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
+    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     action_list_str += "/seal_of_truth";
     action_list_str += "/snapshot_stats";
     // TODO: action_list_str += "/rebuke";
@@ -2261,10 +2264,12 @@ void paladin_t::init_actions()
       }
     }
     if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
-    action_list_str += "/guardian_of_ancient_kings";
-    action_list_str += "avenging_wrath,if=buff.zealotry.down";
-    action_list_str += "zealotry,if=buff.avenging_wrath.down";
-    action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<1)&(buff.holy_power.react==3|buff.hand_of_light.react)";
+    if (spells.guardian_of_ancient_kings->ok())
+      action_list_str += "/guardian_of_ancient_kings";
+    action_list_str += "/avenging_wrath,if=buff.zealotry.down";
+    action_list_str += "/zealotry,if=buff.avenging_wrath.down";
+    if (spells.inquisition->ok())
+      action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff.hand_of_light.react)";
     action_list_str += "/exorcism,recast=1,if=buff.the_art_of_war.react";
     action_list_str += "/hammer_of_wrath";
     // CS before TV if <3 power, even with HoL up
@@ -2272,7 +2277,6 @@ void paladin_t::init_actions()
     action_list_str += "/crusader_strike,if=buff.hand_of_light.react&(buff.hand_of_light.remains>2)&(buff.holy_power.react<3)";
     action_list_str += "/templars_verdict,if=buff.hand_of_light.react";
     action_list_str += "/crusader_strike";
-    // fillers (todo: consecration)
     action_list_str += "/judgement";
     action_list_str += "/holy_wrath";
     // Don't delay CS for consecration or divine plea
