@@ -733,7 +733,8 @@ double sc_data_access_t::effect_min( const uint32_t effect_id, const player_type
 
   avg = effect_average( effect_id, c, level );
 
-  if ( get_class_id( c ) != 0 )
+  if ( get_class_id( c ) != 0 && 
+     ( effect_m_average( effect_id ) != 0 || effect_m_delta( effect_id ) != 0 ) )
   {
     delta = effect_delta( effect_id, c, level );
     result = avg - ( delta / 2 );
@@ -773,7 +774,8 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
 
   avg = effect_average( effect_id, c, level );
 
-  if ( get_class_id( c ) )
+  if ( get_class_id( c ) != 0 && 
+     ( effect_m_average( effect_id ) != 0 || effect_m_delta( effect_id ) != 0 ) )
   {
     delta = effect_delta( effect_id, c, level );
 
