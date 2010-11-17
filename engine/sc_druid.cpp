@@ -3380,7 +3380,6 @@ void druid_t::init_actions()
         action_list_str+="/treants,time>=5";
       if ( talents.starfall -> rank() ) 
         action_list_str+="/starfall,if=!eclipse";
-      action_list_str += "/starfire,if=buff.t8_4pc_caster.up";
       action_list_str += "/moonfire,if=!ticking";
       action_list_str += "/insect_swarm,if=!ticking";
       action_list_str += "/starsurge";
