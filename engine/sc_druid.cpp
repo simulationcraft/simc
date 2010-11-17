@@ -931,6 +931,103 @@ struct claw_t : public druid_cat_attack_t
   }
 };
 
+// Ferocious Bite ============================================================
+
+struct ferocious_bite_t : public druid_cat_attack_t
+{
+  double base_dmg_per_point;
+  double excess_energy;
+
+  ferocious_bite_t( druid_t* player, const std::string& options_str ) :
+      druid_cat_attack_t( "ferocious_bite", 22568, player )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
+    base_multiplier      *= 1.0 + ( p -> talents.feral_aggression -> rank() * 0.05 );
+    requires_combo_points = true;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    base_dd_min      = base_dmg_per_point * p -> buffs_combo_points -> stack();
+    base_dd_max      = base_dmg_per_point * p -> buffs_combo_points -> stack();
+    direct_power_mod = 0.109 * p -> buffs_combo_points -> stack();
+
+    // consumes up to 35 additional energy to increase damage by up to 100%.
+    // Assume 100/35 = 2.857% per additional energy consumed
+    
+    // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
+    if ( p -> glyphs.ferocious_bite )
+    {
+      excess_energy     = 0;
+    }
+    else
+    {
+      excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
+  
+      if ( excess_energy > 35 )
+      {
+        excess_energy     = 35;
+      }
+      else if ( excess_energy < 0 )
+      {
+        excess_energy     = 0;
+      }
+    }
+
+    druid_cat_attack_t::execute();
+
+    if ( result_is_hit() && target -> health_percentage() <= p -> talents.blood_in_the_water -> base_value() )
+    {
+      if ( p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> proc_chance() ) )
+      {
+        p -> dots_rip -> action -> refresh_duration();
+      }
+    }
+  }
+
+  virtual void consume_resource()
+  {
+    // Ferocious Bite consumes 35+x energy, with 0 <= x <= 35.
+    // Consumes the base_cost and handles Omen of Clarity
+    druid_cat_attack_t::consume_resource();
+
+    if ( result_is_hit() )
+    {
+      // Let the additional energy consumption create it's own debug log entries.
+      if ( sim -> debug )
+        log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
+                       excess_energy, util_t::resource_type_string( resource ), name() );
+
+      player -> resource_loss( resource, excess_energy );
+      stats -> consume_resource( excess_energy );
+    }
+  }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_cat_attack_t::player_buff();
+
+    player_multiplier *= 1.0 + excess_energy / 35.0;
+
+    if ( target -> debuffs.bleeding -> check() )
+    {
+      player_crit += 0.01 * p -> talents.rend_and_tear -> effect_base_value( 2 );
+    }
+  }
+};
+
 // Maim ======================================================================
 
 struct maim_t : public druid_cat_attack_t
@@ -1027,7 +1124,7 @@ struct rip_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     base_td_init          = base_td;
-    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p->level);
+    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     ap_per_point          = 0.023; // Tooltip shows this * 8, but doesn't match combat logs
     requires_combo_points = true;
 
@@ -1103,7 +1200,6 @@ struct shred_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     requires_position  = POSITION_BACK;
-    // FIXME: Tooltip shows an increase in base_dd_min/max by 3.5, is this correct?
   }
 
   virtual void execute()
@@ -1156,8 +1252,8 @@ struct shred_t : public druid_cat_attack_t
 
 struct tigers_fury_t : public druid_cat_attack_t
 {
-  tigers_fury_t( player_t* player, const std::string& options_str ) :
-      druid_cat_attack_t( "tigers_fury", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  tigers_fury_t( druid_t* player, const std::string& options_str ) :
+      druid_cat_attack_t( "tigers_fury", 5217, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1167,30 +1263,22 @@ struct tigers_fury_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    id = 5217;
-    parse_data( p -> player_data );
-
-    if ( p -> set_bonus.tier7_4pc_melee() ) 
-      cooldown -> duration -= 3.0;
     if ( p -> glyphs.tigers_fury ) 
       cooldown -> duration -= 3.0;
-
-    trigger_gcd = 0;
   }
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-
     druid_t* p = player -> cast_druid();
+
+    druid_cat_attack_t::execute();
 
     if ( p -> talents.king_of_the_jungle -> rank() )
     {
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect_base_value( 2 ), p -> gains_tigers_fury );
-    }
+    }    
 
-    p -> buffs_tigers_fury -> trigger( 1, 0.15 );
-    update_ready();
+    p -> buffs_tigers_fury -> trigger( 1, effect_base_value( 1 ) / 100.0 );
   }
 
   virtual bool ready()
@@ -1201,123 +1289,6 @@ struct tigers_fury_t : public druid_cat_attack_t
       return false;
 
     return druid_cat_attack_t::ready();
-  }
-};
-
-// Ferocious Bite ============================================================
-
-struct ferocious_bite_t : public druid_cat_attack_t
-{
-  struct double_pair { double min, max; };
-  double excess_energy;
-  double_pair* combo_point_dmg;
-
-  ferocious_bite_t( player_t* player, const std::string& options_str ) :
-      druid_cat_attack_t( "ferocious_bite", player, SCHOOL_PHYSICAL, TREE_FERAL ),
-      excess_energy( 0.0 )
-  {
-    druid_t* p = player -> cast_druid();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    id = 48577;
-
-    requires_combo_points = true;
-    may_crit  = true;
-    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
-
-    base_cost = 35;
-
-    base_multiplier *= 1.0 + ( p -> talents.feral_aggression -> rank() * 0.05 );
-
-    static double_pair dmg_78[] = { { 410, 550 }, { 700, 840 }, { 990, 1130 }, { 1280, 1420 }, { 1570, 1710 } };
-    static double_pair dmg_72[] = { { 334, 682 }, { 570, 682 }, { 806,  918 }, { 1042, 1154 }, { 1278, 1390 } };
-    static double_pair dmg_63[] = { { 226, 292 }, { 395, 461 }, { 564,  630 }, {  733,  799 }, {  902,  968 } };
-    static double_pair dmg_60[] = { { 199, 259 }, { 346, 406 }, { 493,  533 }, {  640,  700 }, {  787,  847 } };
-
-    combo_point_dmg   = ( p -> level >= 78 ? dmg_78 :
-                          p -> level >= 72 ? dmg_72 :
-                          p -> level >= 63 ? dmg_63 :
-                          dmg_60 );
-    
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-
-    base_dd_min = combo_point_dmg[ p -> buffs_combo_points -> current_stack - 1 ].min;
-    base_dd_max = combo_point_dmg[ p -> buffs_combo_points -> current_stack - 1 ].max;
-
-    direct_power_mod = 0.07 * p -> buffs_combo_points -> stack();
-    // consumes up to 35 additional energy to increase damage by up to 100%.
-    // Assume 100/35 = 2.857% per additional energy consumed
-    
-    // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
-    if ( p -> glyphs.ferocious_bite )
-    {
-      excess_energy     = 0;
-    }
-    else
-    {
-      excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
-  
-      if ( excess_energy > 35 )
-      {
-        excess_energy     = 35;
-      }
-      else if ( excess_energy < 0 )
-      {
-        excess_energy     = 0;
-      }
-    }
-
-    druid_cat_attack_t::execute();
-
-    if ( result_is_hit() )
-    {
-      if ( p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.5 ) )
-      {
-        p -> dots_rip -> action -> refresh_duration();
-      }
-    }
-  }
-
-  virtual void consume_resource()
-  {
-    // Ferocious Bite consumes 35+x energy, with 0 <= x <= 35.
-    // Consumes the base_cost and handles Omen of Clarity
-    druid_cat_attack_t::consume_resource();
-
-    if ( result_is_hit() )
-    {
-      // Let the additional energy consumption create it's own debug log entries.
-      if ( sim -> debug )
-        log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                       excess_energy, util_t::resource_type_string( resource ), name() );
-
-      player -> resource_loss( resource, excess_energy );
-      stats -> consume_resource( excess_energy );
-    }
-
-  }
-
-  virtual void player_buff()
-  {
-    druid_t* p = player -> cast_druid();
-
-    druid_cat_attack_t::player_buff();
-
-    player_multiplier *= 1.0 + excess_energy / 35.0;
-
-    if ( target -> debuffs.bleeding -> check() )
-    {
-      player_crit += 0.01 * p -> talents.rend_and_tear -> effect_base_value( 2 );
-    }
   }
 };
 
