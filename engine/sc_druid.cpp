@@ -302,7 +302,6 @@ struct druid_cat_attack_t : public attack_t
     adds_combo_points( 0 )
   {
     adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
-    log_t::output( sim, "%n adds %u CPs", name(), adds_combo_points );
     may_crit              = true;
     tick_may_crit         = true;
     requires_combo_points = false;
@@ -960,8 +959,8 @@ struct maim_t : public druid_cat_attack_t
 
 struct mangle_cat_t : public druid_cat_attack_t
 {
-  mangle_cat_t( player_t* player, const std::string& options_str ) :
-      druid_cat_attack_t( "mangle_cat", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  mangle_cat_t( druid_t* player, const std::string& options_str ) :
+      druid_cat_attack_t( "mangle_cat", 33876, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -971,11 +970,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    id = 33876;
-    parse_data( p -> player_data );
-
-    adds_combo_points = true;
-    may_crit          = true;
+    adds_combo_points = 1; // Not in the DBC
 
     base_multiplier  *= 1.0 + p -> glyphs.mangle * 0.1;
   }
@@ -997,30 +992,18 @@ struct mangle_cat_t : public druid_cat_attack_t
 
 struct rake_t : public druid_cat_attack_t
 {
-  rake_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "rake", player, SCHOOL_BLEED, TREE_FERAL )
+  rake_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "rake", 1822, player )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    id = 1822;
-    parse_data( p -> player_data );
-
     adds_combo_points = true;
-    may_crit          = true;
-
-    if ( p -> set_bonus.tier9_2pc_melee() ) num_ticks++;
-
-  }
-  virtual void tick()
-  {
-    druid_cat_attack_t::tick();
-    trigger_t8_2pc_melee( this );
+    direct_power_mod  = 0.23;
+    tick_power_mod    = 0.42;
   }
 };
 
@@ -1031,8 +1014,8 @@ struct rip_t : public druid_cat_attack_t
   double base_dmg_per_point;
   double ap_per_point;
 
-  rip_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "rip", player, SCHOOL_BLEED, TREE_FERAL )
+  rip_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "rip", 1079, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1042,48 +1025,23 @@ struct rip_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    id = 1079;
-    parse_data( p -> player_data );
-    base_td_init       = base_td;
-    base_dmg_per_point = p->player_data.effect_bonus(p->player_data.spell_effect_id(id, 1), p->player_data.spell_scaling_class(id), p->level);
-    ap_per_point       = 0.023;
-
-    may_crit              = false;
+    base_td_init          = base_td;
+    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p->level);
+    ap_per_point          = 0.023; // Tooltip shows this * 8, but doesn't match combat logs
     requires_combo_points = true;
 
     if ( p -> set_bonus.tier10_2pc_melee() )
       base_cost -= 10;
 
-    num_ticks += ( p -> set_bonus.tier7_2pc_melee() * 2 );
     if ( p -> glyphs.rip )
       base_multiplier *= 1.15;
-
-    if ( p -> set_bonus.tier9_4pc_melee() ) base_crit += 0.05;
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-    druid_cat_attack_t::execute();
-    if ( result_is_hit() )
-    {
-      added_ticks = 0;
-      num_ticks = 8 + ( p -> set_bonus.tier7_2pc_melee() * 2 );
-      update_ready();
-    }
-  }
-
-  virtual void tick()
-  {
-    druid_cat_attack_t::tick();
-    trigger_t8_2pc_melee( this );
   }
 
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-    base_td = base_td_init + p->buffs_combo_points->stack() * base_dmg_per_point;
-    tick_power_mod = p->buffs_combo_points->stack() * ap_per_point;
+    base_td        = base_td_init + p -> buffs_combo_points -> stack() * base_dmg_per_point;
+    tick_power_mod = p -> buffs_combo_points -> stack() * ap_per_point;
     druid_cat_attack_t::player_buff();
   }
 };
