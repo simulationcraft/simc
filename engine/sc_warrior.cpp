@@ -765,26 +765,31 @@ static void trigger_flurry( attack_t* a, int stacks )
   if ( ! up_before && up_after )
     mult = 1 / mult;
 
-  event_t* mhe = p -> main_hand_attack -> execute_event;
-  event_t* ohe = p -> off_hand_attack -> execute_event;
-
   // This mess would be a lot easier if we could give a time instead of
   // a delta to reschedule_execute().
-  if ( mhe ) {
-    double delta;
-    if ( mhe -> reschedule_time )
-      delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
-    else 
-      delta = ( mhe -> time - sim -> current_time ) * mult;
-    p -> main_hand_attack -> reschedule_execute( delta );
+  if( p -> main_hand_attack )
+  {
+    event_t* mhe = p -> main_hand_attack -> execute_event;
+    if ( mhe ) {
+      double delta;
+      if ( mhe -> reschedule_time )
+	delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
+      else 
+	delta = ( mhe -> time - sim -> current_time ) * mult;
+      p -> main_hand_attack -> reschedule_execute( delta );
+    }
   }
-  if ( ohe ) {
-    double delta;
-    if ( ohe -> reschedule_time )
-      delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
-    else 
-      delta = ( ohe -> time - sim -> current_time ) * mult;
-    p -> off_hand_attack -> reschedule_execute( delta );
+  if( p -> off_hand_attack )
+  {
+    event_t* ohe = p -> off_hand_attack -> execute_event;
+    if ( ohe ) {
+      double delta;
+      if ( ohe -> reschedule_time )
+	delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
+      else 
+	delta = ( ohe -> time - sim -> current_time ) * mult;
+      p -> off_hand_attack -> reschedule_execute( delta );
+    }
   }
 }
 
