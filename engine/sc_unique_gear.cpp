@@ -1051,7 +1051,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "sundial_of_the_exiled"               ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD.
   else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_60Cd" : "OnSpellCast_1290SP_10%_15Dur_60Cd" ); // TO-DO: Verify ICD
-  else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnSpellCast_1926Mastery_10%_20Dur_100Cd" ); // TO-DO: Verify ICD
+  else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnHarmfulCast_2178Mastery_10%_20Dur_100Cd" : "OnHarmfulCast_1926Mastery_10%_20Dur_100Cd" ); // TO-DO: Verify ICD
   else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_34Agi_10Stack_15Dur" );
   else if ( name == "witching_hourglass"                  ) e = ( heroic ? "OnSpellCast_1710Haste_10%_15Dur_60Cd" : "OnSpellCast_918Haste_10%_15Dur_60Cd" ); // TO-DO: Verify ICD
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellCastHit_132SP_5%_10Dur";

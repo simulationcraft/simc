@@ -42,7 +42,7 @@ wrists=bracers_of_the_dark_mother,type=cloth,stats=209int_344sta_133spi_153maste
 hands=mercurial_gloves,heroic=1,type=cloth,stats=266int_429sta_171crit_191mastery_841armor,reforge=mastery_spi,gems=40int,enchant=65mastery
 finger1=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_hit,enchant=40int
 finger2=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_spi,enchant=40int
-trinket1=theralions_mirror,heroic=1,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
+trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
 trinket2=heart_of_ignacious,heroic=1
 back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_spi,gems=67int,enchant=50int
 main_hand=twilights_hammer,heroic=1,stats=165int_248sta_110crit_110haste_2207sp,enchant=power_torrent,weapon=mace_2.30speed_840min_1560max
