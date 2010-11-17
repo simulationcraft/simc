@@ -729,25 +729,36 @@ double sc_data_access_t::effect_min( const uint32_t effect_id, const player_type
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  double avg, delta;
+  double avg, delta, result;
 
   avg = effect_average( effect_id, c, level );
 
   if ( get_class_id( c ) != 0 )
   {
     delta = effect_delta( effect_id, c, level );
-    return avg - ( delta / 2 );
+    result = avg - ( delta / 2 );
   }
   else
   {
     int die_sides = effect_die_sides( effect_id );
     if ( die_sides == 0 )
-      return avg;
+      result = avg;
     else if ( die_sides == 1 )
-      return avg + die_sides;
+      result =  avg + die_sides;
     else
-      return avg + ( die_sides > 1  ? 1 : die_sides );
+      result = avg + ( die_sides > 1  ? 1 : die_sides );
+
+    switch ( effect_type( effect_id ) )
+    {
+      case E_WEAPON_PERCENT_DAMAGE :
+        result *= 0.01;
+        break;
+      default:
+        break;
+    }
   }
+
+  return result;
 }
 
 double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type c, const uint32_t level ) SC_CONST
@@ -758,7 +769,7 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
   assert( effect_exists( effect_id ) &&
          ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  double avg, delta;
+  double avg, delta, result;
 
   avg = effect_average( effect_id, c, level );
 
@@ -766,18 +777,29 @@ double sc_data_access_t::effect_max( const uint32_t effect_id, const player_type
   {
     delta = effect_delta( effect_id, c, level );
 
-    return avg + ( delta / 2 );
+    result = avg + ( delta / 2 );
   }
   else
   {
     int die_sides = effect_die_sides( effect_id );
     if ( die_sides == 0 )
-      return avg;
+      result = avg;
     else if ( die_sides == 1 )
-      return avg + die_sides;
+      result = avg + die_sides;
     else
-      return avg + ( die_sides > 1  ? die_sides : -1 );
+      result = avg + ( die_sides > 1  ? die_sides : -1 );
+
+    switch ( effect_type( effect_id ) )
+    {
+      case E_WEAPON_PERCENT_DAMAGE :
+        result *= 0.01;
+        break;
+      default:
+        break;
+    }
   }
+
+  return result;
 }
 
 /*************** Effect type based searching of spell id *************************/
