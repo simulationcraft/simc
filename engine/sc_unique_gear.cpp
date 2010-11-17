@@ -642,9 +642,9 @@ static void register_tiny_abom( item_t* item )
         direct_dmg        = attack -> direct_dmg;
         resisted_dmg      = attack -> resisted_dmg;
         blocked_dmg       = attack -> blocked_dmg;
-	time_to_execute   = attack -> time_to_execute;
+        time_to_execute   = attack -> time_to_execute;
 
-	attack -> time_to_execute = 0;
+        attack -> time_to_execute = 0;
         attack -> base_hit += ( attack -> player -> dual_wield() ) ? 0.19 : 0;
         attack -> repeating = false;
         attack -> may_glance = false;
@@ -919,7 +919,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD
 
   // TO-DO: Implement the On Use part, remove the passive haste..
-  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "303haste_OnSpellDamage_87SP_5Stack_15Dur" : "268haste_OnSpellDamage_77SP_5Stack_15Dur" );
+  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "OnSpellDamage_87SP_5Stack_15Dur" : "OnSpellDamage_77SP_5Stack_15Dur" );
   else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_60Cd" : "OnAttackHit_1926Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_60Cd" : "OnAttackHit_1512Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_45Cd"; // TO-DO: Confirm ICD.
