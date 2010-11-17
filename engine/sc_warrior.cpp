@@ -918,7 +918,7 @@ double warrior_attack_t::calculate_weapon_damage()
 
   warrior_t* p = player -> cast_warrior();
 
-  if ( weapon -> slot == SLOT_OFF_HAND && p -> spec.dual_wield_specialization -> ok() && weapon -> slot == SLOT_OFF_HAND )
+  if ( weapon -> slot == SLOT_OFF_HAND && p -> spec.dual_wield_specialization -> ok() )
   {
     dmg *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 2 ) / 100.0;
   }
@@ -1151,7 +1151,7 @@ struct auto_attack_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( player_t* player ) :
-      warrior_attack_t( "bladestorm_ww", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
+      warrior_attack_t( "bladestorm_tick", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -1165,6 +1165,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     aoe         = true;
     direct_tick = true;
+    stats       = player -> get_stats( "bladestorm" );
   }
 
   virtual void assess_damage( double amount, int dmg_type )
@@ -1205,12 +1206,19 @@ struct bladestorm_t : public warrior_attack_t
     harmful   = false;
     channeled = true;
     tick_zero = true;
+    weapon    = &( player -> main_hand_weapon ); // Needed or it'll bomb
 
     if ( p -> glyphs.bladestorm ) cooldown -> duration -= 15;
 
     bladestorm_tick = new bladestorm_tick_t( p );
   }
   
+  virtual double calculate_direct_damage()
+  {
+    // Bladestorm activation doesn't hit with the weapon
+    return 0.0;
+  }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
