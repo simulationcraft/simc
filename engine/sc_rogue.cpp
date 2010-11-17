@@ -2087,6 +2087,11 @@ struct rupture_t : public rogue_attack_t
 
   virtual void execute()
   {
+    // We have to save these values for refreshes by Serrated Baldes, so
+    // we simply reset them to zeroes on each execute and check them in ::player_buff.
+    tick_power_mod = 0.0;
+    base_td        = 0.0;
+    
     rogue_attack_t::execute();
     
     rogue_t* p = player -> cast_rogue();
@@ -2107,8 +2112,14 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    tick_power_mod = p -> combo_points -> rank( 0.015, 0.024, 0.030, 0.03428571, 0.0375 );
-    base_td_init   = p -> combo_points -> rank( combo_point_dmg );
+    // If the values are zeroes, we are called from ::execute and we must update.
+    // If the values are initialized, we are called from ::refresh_duration and we don't
+    // need to update.
+    if ( tick_power_mod == 0.0 && base_td == 0.0 )
+    {
+      tick_power_mod = p -> combo_points -> rank( 0.015, 0.024, 0.030, 0.03428571, 0.0375 );
+      base_td = p -> combo_points -> rank( combo_point_dmg );
+    }
 
     rogue_attack_t::player_buff();
 
