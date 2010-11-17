@@ -285,29 +285,29 @@ struct druid_cat_attack_t : public attack_t
   int requires_stealth;
   int requires_position;
   bool requires_combo_points;
-  bool adds_combo_points;
-  int berserk, min_combo_points, max_combo_points;
-  double min_energy, max_energy;
-  double min_mangle_expire, max_mangle_expire;
-  double min_savage_roar_expire, max_savage_roar_expire;
-  double min_rip_expire, max_rip_expire;
-  double min_rake_expire, max_rake_expire;
+  int adds_combo_points;
 
   druid_cat_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
       requires_stealth( 0 ),
       requires_position( POSITION_NONE ),
       requires_combo_points( false ),
-      adds_combo_points( false ),
-      berserk( 0 ),
-      min_combo_points( 0 ), max_combo_points( 0 ),
-      min_energy( 0 ), max_energy( 0 ),
-      min_mangle_expire( 0 ), max_mangle_expire( 0 ),
-      min_savage_roar_expire( 0 ), max_savage_roar_expire( 0 ),
-      min_rip_expire( 0 ), max_rip_expire( 0 ),
-      min_rake_expire( 0 ), max_rake_expire( 0 )
+      adds_combo_points( 0 )
   {
     tick_may_crit = true;
+  }
+
+  druid_cat_attack_t( const char* n, uint32_t id, druid_t* p ) :
+    attack_t( n, id, p, 0 ), 
+    adds_combo_points( 0 )
+  {
+    adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
+    log_t::output( sim, "%n adds %u CPs", name(), adds_combo_points );
+    may_crit              = true;
+    tick_may_crit         = true;
+    requires_combo_points = false;
+    requires_position     = POSITION_NONE;
+    requires_stealth      = false;
   }
 
   virtual void   parse_options( option_t*, const std::string& options_str );
@@ -324,19 +324,8 @@ struct druid_cat_attack_t : public attack_t
 
 struct druid_bear_attack_t : public attack_t
 {
-  int berserk;
-  double min_rage, max_rage;
-  double min_mangle_expire, max_mangle_expire;
-  double min_lacerate_expire, max_lacerate_expire;
-  int    min_lacerate_stack, max_lacerate_stack;
-
   druid_bear_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, RESOURCE_RAGE, s, t, true ),
-      berserk( 0 ),
-      min_rage( 0 ), max_rage( 0 ),
-      min_mangle_expire( 0 ), max_mangle_expire( 0 ),
-      min_lacerate_expire( 0 ), max_lacerate_expire( 0 ),
-      min_lacerate_stack( 0 ), max_lacerate_stack( 0 )
+      attack_t( n, player, RESOURCE_RAGE, s, t, true )
   {
   }
 
@@ -345,7 +334,6 @@ struct druid_bear_attack_t : public attack_t
   virtual void   execute();
   virtual void   consume_resource();
   virtual void   player_buff();
-  virtual bool   ready();
 };
 
 // ==========================================================================
@@ -756,23 +744,6 @@ void druid_cat_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "berserk",          OPT_INT,  &berserk                },
-    { "min_combo_points", OPT_INT,  &min_combo_points       },
-    { "max_combo_points", OPT_INT,  &max_combo_points       },
-    { "cp>",              OPT_INT,  &min_combo_points       },
-    { "cp<",              OPT_INT,  &max_combo_points       },
-    { "min_energy",       OPT_FLT,  &min_energy             },
-    { "max_energy",       OPT_FLT,  &max_energy             },
-    { "energy>",          OPT_FLT,  &min_energy             },
-    { "energy<",          OPT_FLT,  &max_energy             },
-    { "rip>",             OPT_FLT,  &min_rip_expire         },
-    { "rip<",             OPT_FLT,  &max_rip_expire         },
-    { "rake>",            OPT_FLT,  &min_rake_expire        },
-    { "rake<",            OPT_FLT,  &max_rake_expire        },
-    { "mangle>",          OPT_FLT,  &min_mangle_expire      },
-    { "mangle<",          OPT_FLT,  &max_mangle_expire      },
-    { "savage_roar>",     OPT_FLT,  &min_savage_roar_expire },
-    { "savage_roar<",     OPT_FLT,  &max_savage_roar_expire },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -859,7 +830,6 @@ bool druid_cat_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
-  target_t* t = target;
 
   if ( ! p -> buffs_cat_form -> check() )
     return false;
@@ -875,59 +845,6 @@ bool druid_cat_attack_t::ready()
   if ( requires_combo_points && ! p -> buffs_combo_points -> check() )
     return false;
 
-  if ( berserk && ! p -> buffs_berserk -> check() )
-    return false;
-
-  if ( min_combo_points > 0 )
-    if ( p -> buffs_combo_points -> current_stack < min_combo_points )
-      return false;
-
-  if ( max_combo_points > 0 )
-    if ( p -> buffs_combo_points -> current_stack > max_combo_points )
-      return false;
-
-  if ( min_energy > 0 )
-    if ( p -> resource_current[ RESOURCE_ENERGY ] < min_energy )
-      return false;
-
-  if ( max_energy > 0 )
-    if ( p -> resource_current[ RESOURCE_ENERGY ] > max_energy )
-      return false;
-
-  double ct = sim -> current_time;
-
-  if ( min_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
-      return false;
-
-  if ( max_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_gt( max_mangle_expire ) )
-      return false;
-
-  if ( min_savage_roar_expire > 0 )
-    if ( p -> buffs_savage_roar -> remains_lt( min_savage_roar_expire ) )
-      return false;
-
-  if ( max_savage_roar_expire > 0 )
-    if ( p -> buffs_savage_roar -> remains_gt( max_savage_roar_expire ) )
-      return false;
-
-  if ( min_rip_expire > 0 )
-    if ( ! p -> dots_rip -> ticking() || ( ( p -> dots_rip -> ready - ct ) < min_rip_expire ) )
-      return false;
-
-  if ( max_rip_expire > 0 )
-    if ( p -> dots_rip -> ticking() && ( ( p -> dots_rip -> ready - ct ) > max_rip_expire ) )
-      return false;
-
-  if ( min_rake_expire > 0 )
-    if ( ! p -> dots_rake -> ticking() || ( ( p -> dots_rake -> ready - ct ) < min_rake_expire ) )
-      return false;
-
-  if ( max_rake_expire > 0 )
-    if ( p -> dots_rake -> ticking() && ( ( p -> dots_rake -> ready - ct ) > max_rake_expire ) )
-      return false;
-
   return true;
 }
 
@@ -938,7 +855,6 @@ struct cat_melee_t : public druid_cat_attack_t
   cat_melee_t( player_t* player ) :
     druid_cat_attack_t( "cat_melee", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
-    base_dd_min = base_dd_max = 1;
     background  = true;
     repeating   = true;
     trigger_gcd = 0;
@@ -969,30 +885,24 @@ struct cat_melee_t : public druid_cat_attack_t
   }
 };
 
-// Berserk =================================================================
+// Berserk ==================================================================
 
 struct berserk_cat_t : public druid_cat_attack_t
 {
-  int tigers_fury;
-
-  berserk_cat_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "berserk_cat", player ),
-    tigers_fury( 0 )
+  berserk_cat_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "berserk_cat", 50334, player )
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.berserk -> rank() );
 
     option_t options[] =
     {
-      { "tigers_fury", OPT_BOOL, &tigers_fury },
       { NULL, OPT_UNKNOWN, NULL }
     };
 
     parse_options( options, options_str );
 
     cooldown = p -> get_cooldown( "berserk" );
-    cooldown -> duration = 180;
-    id = 50334;
   }
 
   virtual void execute()
@@ -1001,16 +911,8 @@ struct berserk_cat_t : public druid_cat_attack_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     // Berserk cancels TF
     p -> buffs_tigers_fury -> expire();
+    druid_cat_attack_t::execute();
     p -> buffs_berserk -> trigger();
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    druid_t* p = player -> cast_druid();
-    if ( tigers_fury && ! p -> buffs_tigers_fury -> check() )
-      return false;
-    return druid_cat_attack_t::ready();
   }
 };
 
@@ -1018,23 +920,14 @@ struct berserk_cat_t : public druid_cat_attack_t
 
 struct claw_t : public druid_cat_attack_t
 {
-  claw_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "claw", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  claw_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "claw", 1082, player )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    id = 1082;
-    parse_data( p -> player_data );
-
-    weapon = &( p -> main_hand_weapon );
-    adds_combo_points = true;
-    may_crit          = true;
   }
 };
 
@@ -1042,30 +935,23 @@ struct claw_t : public druid_cat_attack_t
 
 struct maim_t : public druid_cat_attack_t
 {
-  maim_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "maim", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  maim_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "maim", 22570, player )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    id = 22570;
-    parse_data( p -> player_data );
     
-    weapon = &( p -> main_hand_weapon );
-    weapon_power_mod = 0;
-
-    may_crit = true;
     requires_combo_points = true;
   }
 
   virtual bool ready()
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
     return druid_cat_attack_t::ready();
   }
 };
@@ -1078,9 +964,6 @@ struct mangle_cat_t : public druid_cat_attack_t
       druid_cat_attack_t( "mangle_cat", player, SCHOOL_PHYSICAL, TREE_FERAL )
   {
     druid_t* p = player -> cast_druid();
-
-    // By default, do not overwrite Mangle
-    max_mangle_expire = 0.001;
 
     option_t options[] =
     {
@@ -1505,15 +1388,6 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "berserk",         OPT_INT,  &berserk             },
-    { "rage>",           OPT_FLT,  &min_rage            },
-    { "rage<",           OPT_FLT,  &max_rage            },
-    { "mangle>",         OPT_FLT,  &min_mangle_expire   },
-    { "mangle<",         OPT_FLT,  &max_mangle_expire   },
-    { "lacerate>",       OPT_FLT,  &min_lacerate_expire },
-    { "lacerate<",       OPT_FLT,  &max_lacerate_expire },
-    { "lacerate_stack>", OPT_INT,  &min_lacerate_stack  },
-    { "lacerate_stack<", OPT_INT,  &max_lacerate_stack  },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -1577,57 +1451,6 @@ void druid_bear_attack_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.king_of_the_jungle -> rank() * 0.05;
   }
-}
-
-// druid_bear_attack_t::ready ==============================================
-
-bool druid_bear_attack_t::ready()
-{
-  if ( ! attack_t::ready() )
-    return false;
-
-  druid_t*  p = player -> cast_druid();
-  target_t* t = target;
-
-  if ( ! p -> buffs_bear_form -> check() )
-    return false;
-
-  if ( berserk && ! p -> buffs_berserk -> check() )
-    return false;
-
-  if ( min_rage > 0 )
-    if ( p -> resource_current[ RESOURCE_RAGE ] < min_rage )
-      return false;
-
-  if ( max_rage > 0 )
-    if ( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
-      return false;
-
-  if ( min_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
-      return false;
-
-  if ( max_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_gt( max_mangle_expire ) )
-      return false;
-
-  if ( min_lacerate_expire > 0 )
-    if ( p -> buffs_lacerate -> remains_lt( min_lacerate_expire ) )
-      return false;
-
-  if ( max_lacerate_expire > 0 )
-    if ( p -> buffs_lacerate -> remains_gt( max_lacerate_expire ) )
-      return false;
-
-  if ( min_lacerate_stack > 0 )
-    if ( p -> buffs_lacerate -> current_stack < min_lacerate_stack )
-      return false;
-
-  if ( max_lacerate_stack > 0 )
-    if ( p -> buffs_lacerate -> current_stack > max_lacerate_stack )
-      return false;
-
-  return true;
 }
 
 // Bear Melee Attack =======================================================
@@ -2981,7 +2804,6 @@ struct starfall_t : public druid_spell_t
         if ( p -> primary_tree() == TREE_BALANCE )
           base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-
         if ( p -> glyphs.focus )
           base_multiplier *= 1.1;
 
@@ -3024,8 +2846,6 @@ struct starfall_t : public druid_spell_t
 
     may_miss = may_crit = false; // The spell only triggers the buff
 
-
-
     starfall_star = new starfall_star_t( p );
     starfall_star -> base_dd_max = base_dd_max;
     starfall_star -> base_dd_min = base_dd_min;
@@ -3039,7 +2859,6 @@ struct starfall_t : public druid_spell_t
     update_time( DMG_OVER_TIME );
   }
 };
-
 
 // Starsurge Spell ==========================================================
 
@@ -3105,8 +2924,6 @@ struct starsurge_t : public druid_spell_t
     return druid_spell_t::execute_time();
   }  
 };
-
-
 
 // Typhoon Spell ============================================================
 
