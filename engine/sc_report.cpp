@@ -277,7 +277,7 @@ static void print_buffs( FILE* file, player_t* p )
     {
       if ( ! b -> quiet && b -> start_count && ! b -> constant )
       {
-        int length = ( int ) strlen( b -> name() );
+        int length = ( int ) strlen( b -> name() ) + ( int ) pet -> name_str.size() + 1;
         if ( length > max_length ) max_length = length;
       }
     }
@@ -313,8 +313,10 @@ static void print_buffs( FILE* file, player_t* p )
 
       if ( ! b -> constant )
       {
+	std::string full_name = pet -> name_str + "-" + b -> name_str;
+
         util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
-                         max_length, b -> name(), b -> avg_start, b -> avg_refresh,
+                         max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
                          b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
 
         if( b -> benefit_pct > 0 &&

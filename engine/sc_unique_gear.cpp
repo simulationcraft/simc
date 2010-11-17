@@ -429,6 +429,57 @@ static void register_raging_deathbringer( item_t* item )
   p -> register_attack_result_callback( RESULT_HIT_MASK, new deathbringer_callback_t( p, new deathbringer_spell_t( p ) ) );
 }
 
+// register_fury_of_angerforge =========================================
+
+static void register_fury_of_angerforge( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  // TODO!
+}
+
+// register_heart_of_ignacious =========================================
+
+static void register_heart_of_ignacious( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct heart_of_ignacious_callback_t : public stat_proc_callback_t
+  {
+    stat_buff_t* haste_buff;
+
+    heart_of_ignacious_callback_t( player_t* p ) :
+      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, 77, 1.0, 15.0, 0.0 )
+    {
+      haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, 321, 5, 20.0, 120.0 );
+    }
+
+    virtual void deactivate()
+    {
+      stat_proc_callback_t::deactivate();
+      haste_buff -> expire();
+    }
+
+    virtual void trigger( action_t* a )
+    {
+      buff -> trigger();
+      if( buff -> stack() == buff -> max_stack )
+      {
+	if( haste_buff -> trigger( buff -> max_stack ) )
+	{
+	  buff -> expire();
+	}
+      }
+    }
+  };
+
+  p -> register_spell_cast_result_callback( RESULT_ALL_MASK, new heart_of_ignacious_callback_t( p ) );
+}
+
 // register_nibelung ========================================================
 
 static void register_nibelung( item_t* item )
@@ -568,6 +619,17 @@ static void register_shadowmourne( item_t* item )
   p -> register_attack_result_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff_stacks, buff_final, new shadowmourne_spell_t( p ), item -> slot ) );
 }
 
+// register_shard_of_woe ===============================================
+
+static void register_shard_of_woe( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  // TODO!
+}
+
 // register_tiny_abom ====================================================
 
 static void register_tiny_abom( item_t* item )
@@ -674,16 +736,27 @@ static void register_tiny_abom( item_t* item )
   p -> register_direct_damage_callback( -1, new tiny_abom_trigger_t( p, buff ) );
 }
 
-#if 0
-// register_heart_of_ignacious =========================================
+// register_tyrandes_favorite_doll =====================================
 
-static void register_heart_of_ignacious( item_t* item )
+static void register_tyrandes_favorite_doll( item_t* item )
 {
-// TO-DO
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  // TODO!
 }
-#endif
 
+// register_unheeded_warning ===========================================
 
+static void register_unheeded_warning( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  // TODO!
+}
 
 // ==========================================================================
 // unique_gear_t::init
@@ -715,12 +788,13 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "deaths_verdict"            ) ) register_deaths_choice          ( &item );
     if ( ! strcmp( item.name(), "empowered_deathbringer"    ) ) register_empowered_deathbringer ( &item );
     if ( ! strcmp( item.name(), "raging_deathbringer"       ) ) register_raging_deathbringer    ( &item );
+    if ( ! strcmp( item.name(), "fury_of_angerforge"        ) ) register_fury_of_angerforge     ( &item );
+    if ( ! strcmp( item.name(), "heart_of_ignacious"        ) ) register_heart_of_ignacious     ( &item );
     if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar" ) ) register_tiny_abom              ( &item );
-
-// TO-DO
-//    if ( ! strcmp( item.name(), "heart_of_ignacious"        ) ) register_heart_of_ignacious     ( &item );
+    if ( ! strcmp( item.name(), "tyrandes_favorite_doll"    ) ) register_tyrandes_favorite_doll ( &item );
+    if ( ! strcmp( item.name(), "unheeded_warning"          ) ) register_unheeded_warning       ( &item );
   }
 
   if ( p -> set_bonus.spellstrike() )
@@ -918,8 +992,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_60Cd"; // TO-DO: Confirm ICD
 
-  // TO-DO: Implement the On Use part, remove the passive haste..
-  else if ( name == "heart_of_ignacious"                  ) e = ( heroic ? "OnSpellDamage_87SP_5Stack_15Dur" : "OnSpellDamage_77SP_5Stack_15Dur" );
   else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_60Cd" : "OnAttackHit_1926Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_60Cd" : "OnAttackHit_1512Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_45Cd"; // TO-DO: Confirm ICD.
