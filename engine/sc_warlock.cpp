@@ -214,7 +214,6 @@ struct warlock_t : public player_t
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
-  cooldown_t* cooldowns_shadowflame_dot;
 
   // Talents
 
@@ -376,7 +375,6 @@ struct warlock_t : public player_t
     cooldowns_metamorphosis                   = get_cooldown ( "metamorphosis" );
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
-    cooldowns_shadowflame_dot                 = get_cooldown ( "shadowflame_dot" );
 
     use_pre_soulburn = 0;
   }
@@ -2015,7 +2013,7 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p -> buffs_shadow_trance -> up() ) h = 0;
     if ( p -> buffs_backdraft -> up() )
     {
-      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+      h *= 1.0 + p -> buffs_backdraft -> effect_base_value( 1 ) / 100.0;
     }
     return h;
   }
@@ -2069,17 +2067,6 @@ struct shadow_bolt_t : public warlock_spell_t
         return false;
 
     return warlock_spell_t::ready();
-  }
-
-  virtual double haste() SC_CONST
-  {
-    warlock_t* p = player -> cast_warlock();
-    double h = warlock_spell_t::haste();
-    if ( p -> buffs_backdraft -> up() )
-    {
-      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
-    }
-	return h;
   }
 };
 
@@ -2709,16 +2696,12 @@ struct immolate_t : public warlock_spell_t
 struct shadowflame_dot_t : public warlock_spell_t
 {
   shadowflame_dot_t( player_t* player ) :
-    warlock_spell_t( "shadowflame", player, 47960 )
+    warlock_spell_t( "shadowflame_dot", player, 47960 )
   {
-    warlock_t* p = player -> cast_warlock();
     dual       = true;
     proc       = true;
     background = true;
-    name_str   = "shadowflame_dot";
-    // decouple cooldown
-    cooldown   = p -> cooldowns_shadowflame_dot;
-    cooldown -> duration = spell_id_t::cooldown ();
+    stats = player -> get_stats( "shadowflame" );
   }
 };
 // Shadowflame Spell =============================================================
@@ -2738,7 +2721,6 @@ struct shadowflame_t : public warlock_spell_t
     parse_options( options, options_str );
 
     sf_dot = new shadowflame_dot_t( p );
-    cooldown -> duration = spell_id_t::cooldown ();
   }
 
   virtual void execute()
@@ -2874,11 +2856,11 @@ struct incinerate_t : public warlock_spell_t
 
     if ( p -> buffs_molten_core -> up() )
     {
-      h *= 1.0 - p -> talent_molten_core -> rank() * 0.10;
+      h *= 1.0 + p -> buffs_molten_core -> effect_base_value( 3 ) / 100.0;
     }
     if ( p -> buffs_backdraft -> up() )
     {
-      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+      h *= 1.0 + p -> buffs_backdraft -> effect_base_value( 1 ) / 100.0;
     }
 
     return h;
