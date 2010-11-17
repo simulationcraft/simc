@@ -503,8 +503,8 @@ static void register_heart_of_ignacious( item_t* item )
   };
 
   stat_proc_callback_t* cb = new heart_of_ignacious_callback_t( p, item -> heroic() );
-  p -> register_tick_damage_callback( RESULT_HIT_MASK, cb );
-  p -> register_direct_damage_callback( RESULT_HIT_MASK, cb  );
+  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
+  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
 }
 
 // register_nibelung ========================================================
