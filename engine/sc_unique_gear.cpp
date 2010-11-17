@@ -458,11 +458,11 @@ static void register_fury_of_angerforge( item_t* item )
 
       if( raw_fury -> trigger() )
       {
-	if( raw_fury -> check() == 5 )
-	{
-	  raw_fury -> expire();
-	  blackwing_dragonkin -> trigger();
-	}
+        if( raw_fury -> check() == 5 )
+        {
+          raw_fury -> expire();
+          blackwing_dragonkin -> trigger();
+        }
       }
     }
   };
@@ -481,11 +481,12 @@ static void register_heart_of_ignacious( item_t* item )
   struct heart_of_ignacious_callback_t : public stat_proc_callback_t
   {
     stat_buff_t* haste_buff;
+    bool heroic;
 
-    heart_of_ignacious_callback_t( player_t* p ) :
-      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, 77, 1.0, 15.0, 0.0 )
+    heart_of_ignacious_callback_t( player_t* p, bool h ) :
+      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, 15.0, 0.0 ), heroic( h )
     {
-      haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, 321, 5, 20.0, 120.0 );
+      haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, 20.0, 120.0 );
     }
 
     virtual void trigger( action_t* a )
@@ -493,15 +494,17 @@ static void register_heart_of_ignacious( item_t* item )
       buff -> trigger();
       if( buff -> stack() == buff -> max_stack )
       {
-	if( haste_buff -> trigger( buff -> max_stack ) )
-	{
-	  buff -> expire();
-	}
+        if( haste_buff -> trigger( buff -> max_stack ) )
+        {
+          buff -> expire();
+        }
       }
     }
   };
 
-  p -> register_spell_cast_result_callback( RESULT_ALL_MASK, new heart_of_ignacious_callback_t( p ) );
+  stat_proc_callback_t* cb = new heart_of_ignacious_callback_t( p, item -> heroic() );
+  p -> register_tick_damage_callback( RESULT_HIT_MASK, cb );
+  p -> register_direct_damage_callback( RESULT_HIT_MASK, cb  );
 }
 
 // register_nibelung ========================================================
