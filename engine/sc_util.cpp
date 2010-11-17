@@ -509,30 +509,30 @@ int util_t::talent_tree( int tree, player_type ptype )
   case DEATH_KNIGHT:
   switch ( tree )
   {
-  case DEATH_KNIGHT_BLOOD:         return TREE_BLOOD;
-  case DEATH_KNIGHT_FROST:        return TREE_FROST;
-  case DEATH_KNIGHT_UNHOLY:       return TREE_UNHOLY;
+  case DEATH_KNIGHT_BLOOD:    return TREE_BLOOD;
+  case DEATH_KNIGHT_FROST:    return TREE_FROST;
+  case DEATH_KNIGHT_UNHOLY:   return TREE_UNHOLY;
   }
   case DRUID:
   switch ( tree )
   {
-  case DRUID_BALANCE:   return TREE_BALANCE;
-  case DRUID_FERAL:         return TREE_FERAL;
-  case DRUID_RESTORATION:   return TREE_RESTORATION;
+  case DRUID_BALANCE:         return TREE_BALANCE;
+  case DRUID_FERAL:           return TREE_FERAL;
+  case DRUID_RESTORATION:     return TREE_RESTORATION;
   }
   case HUNTER:
   switch ( tree )
   {
-  case HUNTER_BEAST_MASTERY: return TREE_BEAST_MASTERY;
-  case HUNTER_MARKSMANSHIP:  return TREE_MARKSMANSHIP;
-  case HUNTER_SURVIVAL:      return TREE_SURVIVAL;
+  case HUNTER_BEAST_MASTERY:  return TREE_BEAST_MASTERY;
+  case HUNTER_MARKSMANSHIP:   return TREE_MARKSMANSHIP;
+  case HUNTER_SURVIVAL:       return TREE_SURVIVAL;
   }
   case MAGE:
   switch ( tree )
   {
-  case MAGE_ARCANE:        return TREE_ARCANE;
-  case MAGE_FIRE:          return TREE_FIRE;
-  case MAGE_FROST:         return TREE_FROST;
+  case MAGE_ARCANE:           return TREE_ARCANE;
+  case MAGE_FIRE:             return TREE_FIRE;
+  case MAGE_FROST:            return TREE_FROST;
   }
   case PALADIN:
   switch ( tree )
@@ -542,22 +542,22 @@ int util_t::talent_tree( int tree, player_type ptype )
   case PRIEST:
   switch ( tree )
   {
-  case PRIEST_DISCIPLINE:    return TREE_DISCIPLINE;
-  case PRIEST_HOLY:          return TREE_HOLY;
-  case PRIEST_SHADOW:        return TREE_SHADOW;
+  case PRIEST_DISCIPLINE:     return TREE_DISCIPLINE;
+  case PRIEST_HOLY:           return TREE_HOLY;
+  case PRIEST_SHADOW:         return TREE_SHADOW;
   }
   case ROGUE:
   switch ( tree )
   {
-  case ROGUE_ASSASSINATION: return TREE_ASSASSINATION;
-  case ROGUE_COMBAT:        return TREE_COMBAT;
-  case ROGUE_SUBTLETY:      return TREE_SUBTLETY;
+  case ROGUE_ASSASSINATION:   return TREE_ASSASSINATION;
+  case ROGUE_COMBAT:          return TREE_COMBAT;
+  case ROGUE_SUBTLETY:        return TREE_SUBTLETY;
   }
   case SHAMAN:
   switch ( tree )
   {
-  case SHAMAN_ELEMENTAL:     return TREE_ELEMENTAL;
-  case SHAMAN_ENHANCEMENT:   return TREE_ENHANCEMENT;
+  case SHAMAN_ELEMENTAL:      return TREE_ELEMENTAL;
+  case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
   }
   case WARLOCK:
   switch ( tree )
