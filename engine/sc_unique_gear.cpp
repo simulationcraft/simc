@@ -437,7 +437,37 @@ static void register_fury_of_angerforge( item_t* item )
 
   item -> unique = true;
 
-  // TODO!
+  struct fury_of_angerforge_callback_t : public action_callback_t
+  {
+    buff_t* raw_fury;
+    stat_buff_t* blackwing_dragonkin;
+
+    fury_of_angerforge_callback_t( player_t* p ) : 
+      action_callback_t( p -> sim, p )
+    {
+      raw_fury = new buff_t( p, "raw_fury", 5, 0.0, 0.0, 0.5, true );
+      blackwing_dragonkin = new stat_buff_t( p, "blackwing_dragonkin", STAT_STRENGTH, 1926, 1, 20.0, 120.0 );
+    }
+
+    virtual void trigger( action_t* a )
+    {
+      if( ! a -> weapon ) return;
+      if( a -> proc ) return;
+
+      if( blackwing_dragonkin -> cooldown -> remains() > 0 ) return;
+
+      if( raw_fury -> trigger() )
+      {
+	if( raw_fury -> check() == 5 )
+	{
+	  raw_fury -> expire();
+	  blackwing_dragonkin -> trigger();
+	}
+      }
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new fury_of_angerforge_callback_t( p ) );
 }
 
 // register_heart_of_ignacious =========================================
@@ -456,12 +486,6 @@ static void register_heart_of_ignacious( item_t* item )
       stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, 77, 1.0, 15.0, 0.0 )
     {
       haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, 321, 5, 20.0, 120.0 );
-    }
-
-    virtual void deactivate()
-    {
-      stat_proc_callback_t::deactivate();
-      haste_buff -> expire();
     }
 
     virtual void trigger( action_t* a )
