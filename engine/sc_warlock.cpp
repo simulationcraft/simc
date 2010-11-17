@@ -746,7 +746,7 @@ struct warlock_main_pet_t : public warlock_pet_t
       m  *= 1.05;
     }
 
-    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * 0.015 );
+    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
 
     return m;
   }
@@ -860,9 +860,7 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> buffs_eradication -> up() )
     {
-      double ranks[] = { 0.0, 0.06, 0.12, 0.20 };
-      assert( p -> talent_eradication -> rank() <= 3 );
-      h *= 1.0 / ( 1.0 + ranks[ p -> talent_eradication -> rank() ] );
+      h *= 1.0 / ( 1.0 + p -> buffs_eradication -> effect_base_value( 1 ) / 100.0 );
     }
 
 
@@ -884,14 +882,14 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> buffs_metamorphosis -> up() )
     {
-      player_multiplier *= 1.0 + 0.20 + ( p -> mastery_spells.master_demonologist -> ok() * p -> composite_mastery() * 0.015 );
+      player_multiplier *= 1.0 + p -> buffs_metamorphosis -> effect_base_value( 3 ) / 100.0 + ( p -> mastery_spells.master_demonologist -> ok() * p -> composite_mastery() * p -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
     }
 
     player_multiplier *= 1.0 + ( p -> talent_demonic_pact -> effect_base_value( 3 ) / 100.0 );
 
 	  if ( p -> buffs_tier10_4pc_caster -> up() )
 	  {
-      player_multiplier *= 1.10;
+      player_multiplier *= ( 1.0 + p -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0 );
 	  }
 
     if ( p -> buffs_demon_soul_felguard -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
@@ -908,14 +906,14 @@ struct warlock_spell_t : public spell_t
     double shadow_multiplier=1.0;
 
     // Fire
-    fire_multiplier *= 1.0 + ( p -> passive_spells.cataclysm -> ok() * 0.25 );
+    fire_multiplier *= 1.0 + ( p -> passive_spells.cataclysm -> effect_base_value( 1 ) / 100.0 );
     if ( p -> mastery_spells.fiery_apocalypse -> ok() )
-      fire_multiplier *= 1.0 + ( p -> mastery_spells.fiery_apocalypse -> ok() * p -> composite_mastery() * 0.0125 );
-    fire_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.15 );
+      fire_multiplier *= 1.0 + ( p -> mastery_spells.fiery_apocalypse -> ok() * p -> composite_mastery() * p -> mastery_spells.fiery_apocalypse -> effect_base_value( 2 ) / 10000.0 );
+    fire_multiplier *= 1.0 +  p -> passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 ;
 
     // Shadow
-    shadow_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> ok() * 0.15 );
-    shadow_multiplier *= 1.0 + ( p -> passive_spells.shadow_mastery -> ok() * 0.25 );
+    shadow_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 );
+    shadow_multiplier *= 1.0 + ( p -> passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
     shadow_multiplier *= 1.0 + trigger_deaths_embrace( this ) * 0.01;
 
     if ( school == SCHOOL_FIRE )
@@ -941,7 +939,7 @@ struct warlock_spell_t : public spell_t
     spell_t::target_debuff( dmg_type );
 
     if ( p -> buffs_bane_of_havoc -> up() )
-      target_multiplier *= 1.15;
+      target_multiplier *= ( 1.0 + p -> buffs_bane_of_havoc -> effect_base_value( 1 ) / 100.0 );
 
   }
 
@@ -955,15 +953,15 @@ struct warlock_spell_t : public spell_t
       // Shadow TD
       if ( p -> mastery_spells.potent_afflictions -> ok() )
       {
-        shadow_td_multiplier *= 1.0 + ( p -> mastery_spells.potent_afflictions -> ok() *  p -> composite_mastery()  * 0.0163 );
+        shadow_td_multiplier *= 1.0 + ( p -> mastery_spells.potent_afflictions -> ok() *  p -> composite_mastery()  * p -> mastery_spells.potent_afflictions -> effect_base_value( 2 ) / 10000.0 );
       }
-      if ( p -> talent_shadow_embrace -> rank() )
+      if ( p -> buffs_shadow_embrace -> up() )
       {
-        shadow_td_multiplier *= 1.0 + p -> buffs_shadow_embrace -> stack() * util_t::talent_rank( p -> talent_shadow_embrace -> rank(), 3, 0.03, 0.04, 0.05 );
+        shadow_td_multiplier *= 1.0 + p -> buffs_shadow_embrace ->  check() * p -> buffs_shadow_embrace -> effect_base_value( 1 ) / 100.0;
       }
       if ( p -> buffs_haunted -> up() )
       {
-        shadow_td_multiplier *= 1.20 + ( p -> glyphs.haunt -> ok() ? 0.03 : 0.00 );
+        shadow_td_multiplier *= 1.0 + p -> buffs_haunted -> effect_base_value( 3 ) / 100.0 + ( p -> glyphs.haunt -> effect_base_value( 1 ) / 100.0 );
       }
       if ( p -> buffs_demon_soul_felhunter -> up() )
       {
