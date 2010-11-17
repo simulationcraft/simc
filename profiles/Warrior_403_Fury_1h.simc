@@ -35,7 +35,7 @@ legs=earthen_legplates,heroic=1,type=,stats=3114armor_345str_578sta_257mastery_2
 feet=treads_of_savage_beatings,heroic=1,type=,stats=2447armor_226str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit,enchant=25agi
 wrists=bracers_of_the_matredor,type=,stats=1589armor_229str_344sta_113haste_153crit,reforge=haste_hit,gems=20str_20crit_10str_40str,enchant=50exp
 hands=plated_fists_of_provocation,heroic=1,type=,stats=2224armor_266str_429sta_191crit_171haste,reforge=haste_hit,gems=20str_20crit_10crit_40str,enchant=50str
-finger1=band_of_bees,stats=190str_286sta_127haste_127mastery,reforge=mastery_exp,enchant=40str
+finger1=dargonaxs_signet,heroic=1,stats=229str_344sta_113crit_153mastery,reforge=mastery_hit,gems=20str_20crit_10str,enchant=40str
 finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_hit,enchant=40str
 trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_35%_15dur_45cd
 trinket2=darkmoon_card_hurricane,stats=321str,equip=onattackhit_5000nature_35%_45cd
