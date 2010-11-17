@@ -294,6 +294,7 @@ enum proc_type
   PROC_TICK_DAMAGE,
   PROC_DIRECT_DAMAGE,
   PROC_SPELL_CAST,
+  PROC_HARMFUL_CAST,
   PROC_MAX
 };
 
@@ -2882,6 +2883,7 @@ struct player_t
   std::vector<action_callback_t*> tick_damage_callbacks         [ SCHOOL_MAX ];
   std::vector<action_callback_t*> direct_damage_callbacks       [ SCHOOL_MAX ];
   std::vector<action_callback_t*> spell_cast_result_callbacks   [ RESULT_MAX ];
+  std::vector<action_callback_t*> harmful_cast_result_callbacks [ RESULT_MAX ];
 
   // Action Priority List
   action_t*   action_list;
@@ -3145,6 +3147,7 @@ struct player_t
   virtual void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
   virtual void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
   virtual void register_spell_cast_result_callback   ( int64_t result_mask, action_callback_t* );
+  virtual void register_harmful_cast_result_callback ( int64_t result_mask, action_callback_t* );
 
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual bool parse_talent_trees( int talents[], const uint32_t size );

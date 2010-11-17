@@ -887,6 +887,10 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
   {
     player -> register_spell_cast_result_callback( mask, cb );
   }
+  else if ( type == PROC_HARMFUL_CAST )
+  {
+    player -> register_harmful_cast_result_callback( mask, cb );
+  }
 
   return cb;
 }

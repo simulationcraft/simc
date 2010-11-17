@@ -206,6 +206,10 @@ void spell_t::execute()
     if ( ! direct_tick )
     {
       action_callback_t::trigger( player -> spell_cast_result_callbacks[ result ], this );
+      if ( harmful )
+      {
+        action_callback_t::trigger( player -> harmful_cast_result_callbacks[ result ], this );
+      }
     }
 
     if ( direct_tick || ( !proc && ( base_dd_max > 0.0 ) ) )

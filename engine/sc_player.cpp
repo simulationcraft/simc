@@ -428,6 +428,7 @@ player_t::~player_t()
     attack_direct_result_callbacks[ i ].clear();
     spell_direct_result_callbacks[ i ].clear();
     spell_cast_result_callbacks[ i ].clear();
+    harmful_cast_result_callbacks[ i ].clear();
   }
   for ( int i=0; i < SCHOOL_MAX; i++ )
   {
@@ -2243,6 +2244,7 @@ void player_t::reset()
     action_callback_t::reset( attack_direct_result_callbacks[ i ] );
     action_callback_t::reset( spell_direct_result_callbacks [ i ] );
     action_callback_t::reset( spell_cast_result_callbacks   [ i ] );
+    action_callback_t::reset( harmful_cast_result_callbacks [ i ] );
   }
   for ( int i=0; i < SCHOOL_MAX; i++ )
   {
@@ -2914,6 +2916,20 @@ void player_t::register_spell_cast_result_callback( int64_t             mask,
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_cast_result_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_harmful_cast_result_callback =================================
+
+void player_t::register_harmful_cast_result_callback( int64_t             mask,
+                                                      action_callback_t* cb )
+{
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      harmful_cast_result_callbacks[ i ].push_back( cb );
     }
   }
 }
