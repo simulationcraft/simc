@@ -775,8 +775,10 @@ void SimulationCraftWindow::createResultsTab()
   legendBanner->moveCursor( QTextCursor::Start );
 
   resultsTab = new QTabWidget();
+  resultsTab->setTabsClosable( true );
   resultsTab->addTab( legendBanner, "Legend" );
-  connect( resultsTab, SIGNAL(currentChanged(int)), this, SLOT(resultsTabChanged(int)) );
+  connect( resultsTab, SIGNAL(currentChanged(int)),    this, SLOT(resultsTabChanged(int))      );
+  connect( resultsTab, SIGNAL(tabCloseRequested(int)), this, SLOT(resultsTabCloseRequest(int)) );
   mainTab->addTab( resultsTab, "Results" );
 }
 
@@ -1464,6 +1466,19 @@ void SimulationCraftWindow::resultsTabChanged( int index )
     QString s = visibleWebView->url().toString();
     if( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
+  }
+}
+
+void SimulationCraftWindow::resultsTabCloseRequest( int index )
+{
+  if( index <= 0 )
+  {
+    // Ignore attempts to close Legend
+  }
+  else
+  {
+    resultsTab->removeTab( index );
+    resultsHtml.removeAt( index-1 );
   }
 }
 

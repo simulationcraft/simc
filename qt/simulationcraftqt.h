@@ -187,6 +187,7 @@ private slots:
     void mainTabChanged( int index );
     void importTabChanged( int index );
     void resultsTabChanged( int index );
+    void resultsTabCloseRequest( int index );
     void rawrButtonClicked( bool checked=false );
     void rawrDoubleClicked( QListWidgetItem* item );
     void historyDoubleClicked( QListWidgetItem* item );
