@@ -14,12 +14,13 @@ actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
 actions+=/deadly_calm,if=rage<=10
+actions+=/sweeping_strikes,if=target.adds>0
 actions+=/berserker_rage
-actions+=/bladestorm,if=target.Fluffy_Pillow.adds>0&!buff.deadly_calm.up
-actions+=/cleave,if=target.Fluffy_Pillow.adds>0
-actions+=/heroic_strike,if=target.Fluffy_Pillow.adds=0&rage>50
+actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up
+actions+=/cleave,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up)
 actions+=/overpower,if=buff.taste_for_blood.remains<1.5
-actions+=/rend,if=!ticking&target.Fluffy_Pillow.health_pct>=20
+actions+=/rend,if=!ticking&target.health_pct>=20
 actions+=/colossus_smash,if=!buff.colossus_smash.up
 actions+=/mortal_strike
 actions+=/execute

@@ -661,12 +661,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
       opportunity_strike_t( warrior_t* p ) :
           warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
       {
-        weapon = &( p -> main_hand_weapon );
-
-        id = 76858;
-        parse_data( p -> player_data );
         background = proc = true;
-
         reset();
       }
 
@@ -3098,21 +3093,21 @@ void warrior_t::init_actions()
 
     if ( primary_tree() == TREE_ARMS )
     {
-      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
       if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,if=rage<10";
-      if ( level >= 83 ) action_list_str += "/inner_rage,,if=rage>=90";
-      action_list_str += "/heroic_strike,if=rage>=75&target.adds=0";
-      action_list_str += "/cleave,if=rage>=75&target.adds>0";
-      action_list_str += "/rend,if=!ticking";
+      if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
+      if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
+      // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
+      action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
+      action_list_str += "/cleave,if=target.adds>0";
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up)";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
-      action_list_str += "/bladestorm";
+      action_list_str += "/rend,if=!ticking&target.health_pct>=20";
+      if ( level >= 81 ) action_list_str += "/colossus_smash,if=!buff.colossus_smash.up";
       action_list_str += "/mortal_strike";
-      if ( level >= 81 ) action_list_str += "/colossus_smash";
-      action_list_str += "/overpower,if=buff.taste_for_blood.react";
-      action_list_str += "/execute,health_percentage<=20";
+      action_list_str += "/execute";
+      action_list_str += "/overpower";
       action_list_str += "/slam";
       action_list_str += "/battle_shout,if=rage<30";
-      if ( glyphs.berserker_rage ) action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_FURY )
     {
@@ -3125,6 +3120,7 @@ void warrior_t::init_actions()
       action_list_str += "/execute";
       if ( talents.raging_blow -> rank() )
       {
+        // This should be after BT and Slam for SMF... probably.
         action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
         action_list_str += "/raging_blow";
       }
