@@ -1094,20 +1094,6 @@ struct warlock_spell_t : public spell_t
       }
     }
   }
-
-  // trigger_ebon_imp =======================================================
-
-  static void trigger_ebon_imp( spell_t* s )
-  {
-    warlock_t* p = s -> player -> cast_warlock();
-    double x = 0.25 + p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0;
-    if ( p -> rng_ebon_imp -> roll ( x ) )
-    {
-      p -> procs_ebon_imp -> occur();
-      p -> summon_pet( "ebon_imp", 15.0 );
-    }
-
-  }
 };
 
 // ==========================================================================
@@ -1143,7 +1129,7 @@ struct warlock_pet_melee_t : public attack_t
 
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
-      player_multiplier *= 1.10;
+      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
     }
 
   }
@@ -1191,7 +1177,7 @@ struct warlock_pet_attack_t : public attack_t
 
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
-      player_multiplier *= 1.10;
+      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
     }
 
   }
@@ -1936,7 +1922,14 @@ struct bane_of_doom_t : public warlock_spell_t
   virtual void tick()
   {
     warlock_spell_t::tick();
-    trigger_ebon_imp( this );
+
+    warlock_t* p = player -> cast_warlock();
+    double x = effect_base_value( 2 ) / 100.0 + 0.05+ p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0;
+    if ( p -> rng_ebon_imp -> roll ( x ) )
+    {
+      p -> procs_ebon_imp -> occur();
+      p -> summon_pet( "ebon_imp", 15.0 );
+    }
   }
 
   virtual void assess_damage( double amount,
@@ -2179,7 +2172,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( p -> buffs_backdraft -> up() )
     {
-      h *= 1.0 - p -> talent_backdraft -> rank() * 0.10;
+      h *= 1.0 + p -> buffs_backdraft -> effect_base_value( 1 ) / 100.0;
     }
     return h;
   }
@@ -2333,7 +2326,7 @@ struct corruption_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0 + p -> set_bonus.tier10_2pc_caster() * 0.05;
-    base_multiplier *= 1.0 + ( p -> talent_improved_corruption -> rank()  * 0.04 );
+    base_multiplier *= 1.0 + ( p -> talent_improved_corruption -> effect_base_value( 1 ) ) / 100.0;
   }
 
   virtual void tick()
@@ -2864,7 +2857,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::player_buff();
 
     if ( p -> buffs_molten_core -> up() ) {
-      player_multiplier *= 1 + p -> talent_molten_core -> rank() * 0.06;
+      player_multiplier *= 1 + p -> buffs_molten_core -> effect_base_value( 1 ) / 100.0;
       p -> buffs_molten_core -> decrement();
     }
 
@@ -3039,7 +3032,7 @@ struct life_tap_t : public warlock_spell_t
     harmful = false;
 
     if ( p -> glyphs.life_tap -> ok() )
-      trigger_gcd -= 0.5;
+      trigger_gcd += p -> glyphs.life_tap -> effect_base_value( 1 ) / 1000.0;
   }
 
   virtual void execute()
@@ -3047,12 +3040,12 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
-    double life = p -> resource_max[ RESOURCE_HEALTH ] * 0.15;
+    double life = p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 3 ) / 100.0;
     p -> resource_loss( RESOURCE_HEALTH, life );
-    p -> resource_gain( RESOURCE_MANA, life * 1.20, p -> gains_life_tap );
+    p -> resource_gain( RESOURCE_MANA, life * effect_base_value( 2 ) / 100.0, p -> gains_life_tap );
     if ( p -> talent_mana_feed -> rank() && p -> active_pet)
     {
-      p -> active_pet -> resource_gain( RESOURCE_MANA, life * 1.20 * p -> talent_mana_feed -> effect_base_value( 1 ) / 100.0, p -> active_pet -> gains_mana_feed );
+      p -> active_pet -> resource_gain( RESOURCE_MANA, life * effect_base_value( 2 ) / 100.0 * p -> talent_mana_feed -> effect_base_value( 1 ) / 100.0, p -> active_pet -> gains_mana_feed );
     }
   }
 
@@ -3113,7 +3106,7 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     current_tick = 0; // ticks indefinitely
-    p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 2 ) / 100.0 * ( 1.0 + p -> talent_demonic_aegis -> rank() * 0.5 ), p -> gains_fel_armor, this );
+    p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 2 ) / 100.0 * ( 1.0 + p -> talent_demonic_aegis -> effect_base_value( 1 ) / 100.0 ), p -> gains_fel_armor, this );
   }
 
   virtual bool ready()
@@ -3144,7 +3137,7 @@ struct summon_pet_t : public warlock_spell_t
     parse_options( options, options_str );
 
     harmful = false;
-    base_execute_time -= p -> talent_master_summoner -> rank() * 0.5;
+    base_execute_time += p -> talent_master_summoner -> effect_base_value( 1 ) / 1000.0;
   }
 
   summon_pet_t( const char* n, player_t* player, int id ) :
@@ -3153,7 +3146,7 @@ struct summon_pet_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     harmful = false;
-    base_execute_time -= p -> talent_master_summoner -> rank() * 0.5;
+    base_execute_time += p -> talent_master_summoner -> effect_base_value( 1 ) / 1000.0;
   }
 
   virtual void execute()
@@ -3173,9 +3166,7 @@ struct summon_pet_t : public warlock_spell_t
      double t = warlock_spell_t::execute_time();
 
      if ( p -> buffs_soulburn -> check() )
-     {
        t = 0.0;
-     }
 
      return t;
   }
@@ -3267,7 +3258,7 @@ struct summon_infernal_t : public summon_pet_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    summoning_duration = 45.0 + 10.0 * p -> talent_ancient_grimoire -> rank();
+    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect_base_value( 1 ) / 1000.0;
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -3512,7 +3503,7 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     if ( p -> dots_immolate -> ticking()  && p -> talent_cremation -> rank() )
     {
-      if ( p -> rng_cremation -> roll( p -> talent_cremation -> rank() * 0.5 ) )
+      if ( p -> rng_cremation -> roll( p -> talent_cremation -> proc_chance() ) )
       {
         p -> dots_immolate -> action -> refresh_duration();
       }
@@ -3561,7 +3552,7 @@ struct fel_flame_t : public warlock_spell_t
 
   	if ( p -> buffs_tier11_4pc_caster -> up() )
   	{
-      player_crit += 1.00;
+      player_crit += p -> buffs_tier11_4pc_caster -> effect_base_value( 1 ) / 100.0;
   	}
   }
 };
@@ -3643,7 +3634,8 @@ struct dark_intent_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::gcd();
 
-    if ( p -> sim -> current_time == 0 ) t=0;
+    if ( p -> sim -> current_time == 0 )
+      t=0;
 
     return t;
   }
@@ -3729,14 +3721,40 @@ struct demon_soul_t : public warlock_spell_t
   }
 };
 
+// Hellfire Effect Spell =====================================================
+
+struct hellfire_tick_t : public warlock_spell_t
+{
+  hellfire_tick_t( player_t* player ) :
+    warlock_spell_t( "hellfire_tick", player, 5857 )
+  {
+    dual        = true;
+    background  = true;
+    aoe         = true;
+    direct_tick = true;
+
+    warlock_t* p = player -> cast_warlock();
+    base_multiplier *= 1.0 + p -> talent_cremation -> rank() * 0.15;
+    stats = player -> get_stats( "hellfire" );
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    tick_dmg = direct_dmg;
+    update_stats( DMG_OVER_TIME );
+  }
+};
+
 // Hellfire Spell ===========================================================
 
 struct hellfire_t : public warlock_spell_t
 {
   int interrupt;
+  hellfire_tick_t* hellfire_tick;
 
   hellfire_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "hellfire", player, "Hellfire" ), interrupt( 0 )
+    warlock_spell_t( "hellfire", player, 1949 ), interrupt( 0 )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -3747,23 +3765,26 @@ struct hellfire_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_td     = p -> player_data.effect_min ( 2059, player_type( p -> type ), p -> level );
-    tick_power_mod  = p -> player_data.effect_coeff( 2059 );
+    // Hellfire has it's own damage effect, which is actually the damage to the player himself, so harmful is set to false.
+    harmful = false;
 
     channeled         = true;
     scale_with_haste  = false;
+
+
+    hellfire_tick = new hellfire_tick_t( p );
 
     if ( p -> talent_inferno -> rank() )
     {
       usable_moving   = true;
       range += 10.0;
     }
-    base_multiplier *= 1.0 + p -> talent_cremation -> rank() * 0.15;
+
   }
 
   virtual void tick()
   {
-    warlock_spell_t::tick();
+    hellfire_tick -> execute();
 
     if ( interrupt && ( current_tick != num_ticks ) )
     {
@@ -3899,7 +3920,7 @@ double warlock_t::composite_spell_haste() SC_CONST
     if ( buffs.bloodlust -> up() )
       buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
     else
-      h /= ( 1.0 + util_t::talent_rank( talent_improved_soul_fire -> rank(), 2, 0.07, 0.15 ) );
+      h /=  1.0 + talent_improved_soul_fire -> effect_base_value( 1 ) / 100.0;
   }
 
   return h;
