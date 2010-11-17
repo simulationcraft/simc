@@ -3093,7 +3093,7 @@ void warrior_t::init_actions()
     {
       if ( talents.sweeping_strikes -> rank() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
       if ( talents.deadly_calm -> rank() ) action_list_str += "/deadly_calm,if=rage<10";
-      action_list_str += "/inner_rage,rage>=90";
+      if ( level >= 83 ) action_list_str += "/inner_rage,,if=rage>=90";
       action_list_str += "/heroic_strike,if=rage>=75&target.adds=0";
       action_list_str += "/cleave,if=rage>=75&target.adds>0";
       action_list_str += "/rend,if=!ticking";
