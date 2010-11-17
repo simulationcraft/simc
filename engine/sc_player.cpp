@@ -1491,8 +1491,8 @@ double player_t::composite_attack_haste() SC_CONST
 
     if ( type != PLAYER_PET )
     {
-      if ( buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
-      if ( buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
+      if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
+      if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
     }
     if ( ( race == RACE_GOBLIN ) )
     {

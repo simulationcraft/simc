@@ -574,181 +574,107 @@ struct spellsurge_callback_t : public action_callback_t
   }
 };
 
-// Berserking Enchant =========================================================
+// Weapon Stat Proc Callback ==================================================
 
-struct berserking_callback_t : public action_callback_t
+struct weapon_stat_proc_callback_t : public action_callback_t
 {
-  int slot;
+  weapon_t* weapon;
   buff_t* buff;
+  double PPM;
 
-  berserking_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+  weapon_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, double ppm=0.0 ) :
+    action_callback_t( p -> sim, p ), weapon(w), buff(b), PPM(ppm) {}
 
   virtual void trigger( action_t* a )
   {
-    if ( ! a -> weapon ) 
-      return;
+    if( weapon && a -> weapon != weapon ) return;
 
-    if ( a -> weapon -> slot != slot ) 
-      return;
-
-    // Apparently, Berserking has a 1.0 PPM (proc per minute) that scales with haste, so
-    // we no longer use time_to_execute to determine proc chance.
-
-    double PPM    = 1.0;
-    double chance = a -> weapon -> proc_chance_on_swing( PPM );
-   
-    buff -> trigger( 1, 0, chance );
+    if( PPM > 0 )
+    {
+      buff -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) ); // scales with haste
+    }
+    else
+    {
+      buff -> trigger();
+    }
     buff -> up();  // track uptime info
   }
 };
 
-// Mongoose Enchant =========================================================
+// Weapon Discharge Proc Callback =============================================
 
-struct mongoose_callback_t : public action_callback_t
+struct weapon_discharge_proc_callback_t : public action_callback_t
 {
-  int slot;
-  buff_t* buff;
+  std::string name_str;
+  weapon_t* weapon;
+  int stacks, max_stacks;
+  double fixed_chance, PPM;
+  double cooldown, cooldown_ready;
+  spell_t* spell;
+  proc_t* proc;
+  rng_t* rng;
 
-  mongoose_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void trigger( action_t* a )
+  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double cd, double fc, double ppm=0, int rng_type=RNG_DEFAULT ) :
+      action_callback_t( p -> sim, p ),
+      name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), cooldown( cd ), fixed_chance( fc ), PPM( ppm ), cooldown_ready( 0 )
   {
-    if ( ! a -> weapon ) 
-      return;
+    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    if ( a -> weapon -> slot != slot ) 
-      return;
+    struct discharge_spell_t : public spell_t
+    {
+      discharge_spell_t( const char* n, player_t* p, double dmg, const school_type s ) :
+          spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+      {
+        trigger_gcd = 0;
+        base_dd_min = dmg;
+        base_dd_max = dmg;
+        may_crit = ( s != SCHOOL_DRAIN );
+        background  = true;
+        base_spell_power_multiplier = 0;
+        reset();
+      }
+    };
 
-    // Apparently, Mongoose has a 1.0 PPM (proc per minute) that scales with haste, so
-    // we no longer use time_to_execute to determine proc chance.
+    spell = new discharge_spell_t( name_str.c_str(), p, dmg, school );
 
-    double PPM    = 1.0;
-    double chance = a -> weapon -> proc_chance_on_swing( PPM );
-
-    buff -> trigger( 1, 0, chance );
+    proc = p -> get_proc( name_str.c_str() );
+    rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
   }
-};
 
-// Executioner Enchant =========================================================
+  virtual void reset() { stacks=0; cooldown_ready=0; }
 
-struct executioner_callback_t : public action_callback_t
-{
-  int slot;
-  buff_t* buff;
-
-  executioner_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
+  virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
 
   virtual void trigger( action_t* a )
   {
-    if ( ! a -> weapon ) 
-      return;
+    if( weapon && a -> weapon != weapon ) return;
 
-    if ( a -> weapon -> slot != slot ) 
-      return;
+    if ( cooldown )
+      if ( sim -> current_time < cooldown_ready )
+        return;
 
-    // Apparently, Executioner has a 1.0 PPM (proc per minute) that scales with haste, so
-    // we no longer use time_to_execute to determine proc chance.
+    double chance = fixed_chance;
 
-    double PPM    = 1.0;
-    double chance = a -> weapon -> proc_chance_on_swing( PPM );
+    if( PPM > 0 )
+      chance = weapon -> proc_chance_on_swing( PPM ); // scales with haste
 
-    buff -> trigger( 1, 0, chance );
-    buff -> up();  // track uptime info
-  }
-};
+    if ( chance > 0 )
+      if ( ! rng -> roll( chance ) )
+        return;
 
+    if ( cooldown )
+      cooldown_ready = sim -> current_time + cooldown;
 
-// Hurricane Enchant =========================================================
-
-struct hurricane_callback_t : public action_callback_t
-{
-  int slot;
-  buff_t* buff;
-
-  hurricane_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void trigger( action_t* a )
-  {
-    if ( ( a -> weapon ) && ( a -> weapon -> slot != slot ) )
-      return;
-
-    // TO-DO: Verify proc chance and ICD.
-    double chance = 0.15;
-
-    buff -> trigger( 1, 0, chance );
-    buff -> up();  // track uptime info
-  }
-};
-
-// Landslide Enchant =========================================================
-
-struct landslide_callback_t : public action_callback_t
-{
-  int slot;
-  buff_t* buff;
-
-  landslide_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void trigger( action_t* a )
-  {
-    if ( ! a -> weapon ) 
-      return;
-
-    if ( a -> weapon -> slot != slot ) 
-      return;
-
-    // TO-DO: Verify proc chance and ICD.
-    double chance = 0.15;
-
-    buff -> trigger( 1, 0, chance );
-    buff -> up();  // track uptime info
-  }
-};
-
-// Power Torrent Enchant =========================================================
-
-struct power_torrent_callback_t : public action_callback_t
-{
-  int slot;
-  buff_t* buff;
-
-  power_torrent_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void trigger( action_t* a )
-  {
-    if ( ( a -> weapon ) && ( a -> weapon -> slot != slot ) )
-      return;
-
-    // TO-DO: Verify ICD.
-    double chance = 0.20;
-
-    buff -> trigger( 1, 0, chance );
-    buff -> up();  // track uptime info
-  }
-};
-
-// Windwalk Enchant =========================================================
-
-struct windwalk_callback_t : public action_callback_t
-{
-  int slot;
-  buff_t* buff;
-
-  windwalk_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot(s), buff(b) {}
-
-  virtual void trigger( action_t* a )
-  {
-    if ( ! a -> weapon ) 
-      return;
-
-    if ( a -> weapon -> slot != slot ) 
-      return;
-
-    // TO-DO: Verify proc chance and ICD.
-    double chance = 0.15;
-
-    buff -> trigger( 1, 0, chance );
-    buff -> up();  // track uptime info
+    if ( ++stacks < max_stacks )
+    {
+      listener -> aura_gain( name_str.c_str() );
+    }
+    else
+    {
+      stacks = 0;
+      spell -> execute();
+      proc -> occur();
+    }
   }
 };
 
@@ -762,24 +688,31 @@ void enchant_t::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
-  // Need to expose the Mongoose buffs for attack_t::haste()
-  p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
-  p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
-
   std::string& mh_enchant = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
   std::string& oh_enchant = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
 
+  weapon_t* mhw = &( p -> main_hand_weapon );
+  weapon_t* ohw = &( p -> main_hand_weapon );
+
+  if ( mh_enchant == "avalanche" )
+  {
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_mh", p, mhw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
+  if ( oh_enchant == "avalanche" )
+  {
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_oh", p, ohw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+  }
   if ( mh_enchant == "berserking" )
   {
     buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
-
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "berserking" )
   {
     buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
-
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new berserking_callback_t( p, SLOT_OFF_HAND, buff ) );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "elemental_slayer" )
   {
@@ -797,56 +730,54 @@ void enchant_t::init( player_t* p )
 
     if ( mh_enchant == "executioner" )
     {
-      p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p, SLOT_MAIN_HAND, buff ) );
+      p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
     }
     if ( oh_enchant == "executioner" )
     {
-      p -> register_attack_result_callback( RESULT_HIT_MASK, new executioner_callback_t( p, SLOT_OFF_HAND, buff ) );
+      p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
     }
   }
   if ( mh_enchant == "hurricane" )
   {
-    buff_t* buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_MAIN_HAND, buff ) );
-    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    buff_t* buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p,  mhw, buff ) );
+    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, NULL, buff ) );
   }
   if ( oh_enchant == "hurricane" )
   {
-    buff_t* buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_OFF_HAND, buff ) );
-    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new hurricane_callback_t( p, SLOT_OFF_HAND, buff ) );
+    buff_t* buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p,  ohw, buff ) );
+    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, NULL, buff ) );
   }
   if ( mh_enchant == "landslide" )
   {
-    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new landslide_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff ) );
   }
   if ( oh_enchant == "landslide" )
   {
-    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new landslide_callback_t( p, SLOT_OFF_HAND, buff ) );
+    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
   }
   if ( mh_enchant == "mongoose" )
   {
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p, SLOT_MAIN_HAND, p -> buffs.mongoose_mh ) );
+    p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "mongoose" )
   {
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new mongoose_callback_t( p, SLOT_OFF_HAND, p -> buffs.mongoose_oh ) );
+    p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, p -> buffs.mongoose_oh, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "power_torrent" )
   {
-    buff_t* buff = new stat_buff_t( p, "power_torrent_mh", STAT_INTELLECT, 500, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    power_torrent_callback_t* cb = new power_torrent_callback_t( p, SLOT_MAIN_HAND, buff );
-    p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
-    p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
+    buff_t* buff = new stat_buff_t( p, "power_torrent_mh", STAT_INTELLECT, 500, 1, 12, 45, 0.20, false, false, RNG_DISTRIBUTED );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff ) );
   }
   if ( oh_enchant == "power_torrent" )
   {
-    buff_t* buff = new stat_buff_t( p, "power_torrent_oh", STAT_INTELLECT, 500, 1, 12, 45, 0, false, false, RNG_DISTRIBUTED );
-    power_torrent_callback_t* cb = new power_torrent_callback_t( p, SLOT_OFF_HAND, buff );
-    p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
-    p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
+    buff_t* buff = new stat_buff_t( p, "power_torrent_oh", STAT_INTELLECT, 500, 1, 12, 45, 0.20, false, false, RNG_DISTRIBUTED );
+    p -> register_spell_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
   }
   if ( mh_enchant == "spellsurge" || 
        oh_enchant == "spellsurge" )
@@ -855,13 +786,13 @@ void enchant_t::init( player_t* p )
   }
   if ( mh_enchant == "windwalk" )
   {
-    buff_t* buff = new stat_buff_t( p, "windwalk_mh", STAT_DODGE_RATING, 600, 1, 10, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new windwalk_callback_t( p, SLOT_MAIN_HAND, buff ) );
+    buff_t* buff = new stat_buff_t( p, "windwalk_mh", STAT_DODGE_RATING, 600, 1, 10, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff ) );
   }
   if ( oh_enchant == "windwalk" )
   {
-    buff_t* buff = new stat_buff_t( p, "windwalk_oh", STAT_DODGE_RATING, 600, 1, 10, 45, 0, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new windwalk_callback_t( p, SLOT_OFF_HAND, buff ) );
+    buff_t* buff = new stat_buff_t( p, "windwalk_oh", STAT_DODGE_RATING, 600, 1, 10, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
   }
 
   int num_items = ( int ) p -> items.size();

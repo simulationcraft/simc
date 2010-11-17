@@ -900,16 +900,16 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( int                type,
-    int64_t            mask,
-    const std::string& name,
-    player_t*          player,
-    int                max_stacks,
-    const school_type  school,
-    double             min_dmg,
-    double             max_dmg,
-    double             proc_chance,
-    double             cooldown,
-    int                rng_type )
+							   int64_t            mask,
+							   const std::string& name,
+							   player_t*          player,
+							   int                max_stacks,
+							   const school_type  school,
+							   double             min_dmg,
+							   double             max_dmg,
+							   double             proc_chance,
+							   double             cooldown,
+							   int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, min_dmg, max_dmg, proc_chance, cooldown, rng_type );
 
@@ -1082,7 +1082,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 
   // Enchants
-  else if ( name == "avalanche"                           ) e = "OnAttackHit_500Nature_15%";
   else if ( name == "lightweave"                          ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
   else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
   else if ( name == "lightweave_2"                        ) e = "OnSpellCast_580Int_20%_15Dur_60Cd";  // TO-DO: Check ICD.
