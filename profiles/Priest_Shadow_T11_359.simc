@@ -43,7 +43,7 @@ hands=mercurial_gloves,type=cloth,stats=233int_380sta_149crit_169mastery_782armo
 finger1=signet_of_the_fifth_circle,stats=190int_286sta_127mastery_127haste,reforge=mastery_spi,enchant=40int
 finger2=security_measure_alpha,stats=190int_286sta_127spi_127crit,reforge=crit_hit,enchant=40int
 trinket1=theralions_mirror,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
-trinket2=heart_of_ignacious,stats=268haste,equip=onspelldamage_77sp_5stack_15dur
+trinket2=heart_of_ignacious
 back=haunt_of_flies,stats=190int_286sta_127crit_127haste_625armor,enchant=50int
 main_hand=incineratus,stats=146int_219sta_97mastery_97haste_1954sp,reforge=mastery_spi,enchant=power_torrent
 off_hand=book_of_binding_will,stats=190int_286sta_127haste_127hit,enchant=100int
@@ -57,10 +57,11 @@ ranged=finkles_mixer_upper,stats=107int_161sta_72spi_72mastery,reforge=mastery_h
 # gear_spell_power=1954
 # gear_hit_rating=255
 # gear_crit_rating=912
-# gear_haste_rating=1956
+# gear_haste_rating=1688
 # gear_mastery_rating=472
 # gear_armor=7817
 # meta_gem=ember_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
+# trinket2=heart_of_ignacious
 # main_hand=incineratus,enchant=power_torrent

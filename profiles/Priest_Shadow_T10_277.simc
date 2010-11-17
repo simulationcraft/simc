@@ -1,0 +1,64 @@
+#!./simc 
+
+priest=Priest_Shadow_T10_277
+#bugs=0
+level=80
+race=night_elf
+use_pre_potion=1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=032000000000000000000000000000000000000000322032210201222100231
+glyphs=shadow_word_death/mind_flay/shadow_word_pain/inner_fire/spirit_tap/fortitude/fading/levitate
+actions=flask,type=frost_wyrm
+actions+=/food,type=fish_feast
+actions+=/fortitude
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/vampiric_embrace
+actions+=/snapshot_stats
+actions+=/wild_magic_potion,if=!in_combat
+actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/shadow_fiend
+actions+=/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5
+actions+=/cancelaura_shadow_orbs,if=buff.empowered_shadow.remains<=gcd+0.5
+actions+=/shadow_word_pain,if=!ticking|dot.shadow_word_pain.remains<gcd+0.5
+actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+0.5
+actions+=/vampiric_touch,if=!ticking|dot.vampiric_touch.remains<cast_time+0.5
+actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
+actions+=/devouring_plague,if=!ticking|dot.devouring_plague.remains<gcd+0.5
+actions+=/shadow_word_death,health_percentage<=25
+actions+=/mind_blast
+actions+=/mind_flay
+actions+=/devouring_plague,moving=1
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
+head=sanctified_crimson_acolyte_cowl,heroic=1,type=cloth,stats=973armor_122crit_98haste_158int_261sta,gems=chaotic_skyflare_10int_10spi_9sp,enchant=30sp_20crit
+neck=amulet_of_the_silent_eulogy,heroic=1,stats=68haste_60hit_94int_146sta,reforge=haste_spirit,gems=10haste_10int_5sp
+shoulders=sanctified_crimson_acolyte_mantle,heroic=1,type=cloth,stats=899armor_90crit_82haste_128int_193sta,gems=10haste_10int_5sp,enchant=24sp_15crit
+shirt=tuxedo_shirt
+chest=sanctified_crimson_acolyte_raiments,heroic=1,type=cloth,stats=1198armor_114crit_114haste_167int_261sta,gems=20int_10haste_10int_7sp,enchant=10str_10agi_10sta_10int_10spiwaist=crushing_coldwraith_belt,heroic=1,type=cloth,stats=674armor_74crit_90haste_120int_193sta,reforge=haste_spirit,gems=10agi_10int_10spi_10sta_10str_20int_20int_7splegs=plaguebringers_stained_pants,heroic=1,type=cloth,stats=1048armor_116haste_104hit_158int_261sta,gems=20int_20int_20int,enchant=50sp_20spi
+feet=plague_scientists_boots,heroic=1,type=cloth,stats=824armor_74crit_90haste_120int_193sta,gems=10int_10spi_20int_7sp,enchant=15sta
+wrists=bracers_of_fiery_night,heroic=1,type=cloth,stats=477armor_65crit_73haste_101int_156sta,reforge=haste_spirit,gems=20int_5sp,enchant=30sp
+hands=sanctified_crimson_acolyte_handwraps,heroic=1,type=cloth,stats=749armor_90crit_82hit_128int_193sta,gems=20int,enchant=28sp
+finger1=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_94int_146sta,gems=20int,enchant=23sp
+finger2=ashen_band_of_endless_destruction,stats=64haste_51hit_87int_133sta,gems=10haste_10int_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
+trinket1=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
+trinket2=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,equip=onspelltickdamage_1206sp_30%_20dur_100cd
+back=cloak_of_burning_dusk,heroic=1,stats=545armor_65crit_73haste_101int_156sta,gems=20int_5sp,enchant=lightweave_embroidery
+main_hand=royal_scepter_of_terenas_ii,heroic=1,stats=55crit_71haste_1118sp_152sta,gems=20int_5sp,enchant=63sp,weapon=mace_1.80speed_166min_310max
+off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_102int_146sta
+ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_49int_83sta,gems=10haste_10int_5sp
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=2708
+# gear_intellect=1937
+# gear_spirit=153
+# gear_spell_power=1454
+# gear_hit_rating=297
+# gear_crit_rating=1151
+# gear_haste_rating=1225
+# gear_armor=7387
+# meta_gem=chaotic_skyflare
+# tier10_2pc_caster=1
+# tier10_4pc_caster=1
+# back=cloak_of_burning_dusk,heroic=1,enchant=lightweave_embroidery
+# main_hand=royal_scepter_of_terenas_ii,heroic=1,weapon=mace_1.80speed_166min_310max
