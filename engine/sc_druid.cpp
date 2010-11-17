@@ -942,8 +942,8 @@ struct ferocious_bite_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-     base_dd_adder   += base_dmg_per_point * p -> buffs_combo_points -> stack();
-     direct_power_mod = 0.109 * p -> buffs_combo_points -> stack();
+    base_dd_adder    = base_dmg_per_point * p -> buffs_combo_points -> stack();
+    direct_power_mod = 0.109 * p -> buffs_combo_points -> stack();
 
     // consumes up to 35 additional energy to increase damage by up to 100%.
     // Assume 100/35 = 2.857% per additional energy consumed
