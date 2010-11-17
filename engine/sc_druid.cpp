@@ -39,7 +39,6 @@ struct druid_t : public player_t
   buff_t* buffs_savage_roar;
   buff_t* buffs_shooting_stars;
   buff_t* buffs_stealthed;
-  buff_t* buffs_t8_4pc_caster;
   buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_tigers_fury;
@@ -608,24 +607,6 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
   }
 }
 
-// trigger_t8_2pc_melee ====================================================
-
-static void trigger_t8_2pc_melee( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> set_bonus.tier8_2pc_melee() )
-    return;
-
-  /* 2% chance on tick, http://ptr.wowhead.com/?spell=64752
-  /  It is just another chance to procc the same clearcasting
-  /  buff that OoC provides. OoC and t8_2pc_melee overwrite
-  /  each other. Easier to treat it just (ab)use the OoC handling */
-
-  if ( p -> buffs_omen_of_clarity -> trigger( 1, 1, 0.02 ) )
-    p -> procs_tier8_2pc -> occur();
-}
-
 // trigger_t10_4pc_caster ==================================================
 
 static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int school )
@@ -732,11 +713,11 @@ static void trigger_rage_gain( druid_bear_attack_t* a )
   p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gains_bear_melee );
 }
 
-// =========================================================================
-// Druid Attack
-// =========================================================================
+// ==========================================================================
+// Druid Cat Attack
+// ==========================================================================
 
-// druid_cat_attack_t::parse_options =======================================
+// druid_cat_attack_t::parse_options ========================================
 
 void druid_cat_attack_t::parse_options( option_t*          options,
                                         const std::string& options_str )
@@ -749,7 +730,7 @@ void druid_cat_attack_t::parse_options( option_t*          options,
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
-// druid_cat_attack_t::cost ================================================
+// druid_cat_attack_t::cost =================================================
 
 double druid_cat_attack_t::cost() SC_CONST
 {
@@ -761,7 +742,7 @@ double druid_cat_attack_t::cost() SC_CONST
   return c;
 }
 
-// druid_cat_attack_t::consume_resource ====================================
+// druid_cat_attack_t::consume_resource =====================================
 
 void druid_cat_attack_t::consume_resource()
 {
@@ -779,7 +760,7 @@ void druid_cat_attack_t::consume_resource()
   }
 }
 
-// druid_cat_attack_t::execute =============================================
+// druid_cat_attack_t::execute ==============================================
 
 void druid_cat_attack_t::execute()
 {
@@ -805,7 +786,7 @@ void druid_cat_attack_t::execute()
   if ( harmful ) p -> buffs_stealthed -> expire();
 }
 
-// druid_cat_attack_t::player_buff =========================================
+// druid_cat_attack_t::player_buff ==========================================
 
 void druid_cat_attack_t::player_buff()
 {
@@ -814,14 +795,15 @@ void druid_cat_attack_t::player_buff()
   attack_t::player_buff();
 
   player_multiplier *= 1.0 + p -> buffs_tigers_fury -> value();
-  if (school == SCHOOL_BLEED)
-    player_multiplier *= 1.0 + 0.0313 * p->composite_mastery();
+  
+  if ( school == SCHOOL_BLEED )
+    player_multiplier *= 1.0 + p -> mastery_razor_claws -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
 
   p -> uptimes_rip  -> update( p -> dots_rip  -> ticking() );
   p -> uptimes_rake -> update( p -> dots_rake -> ticking() );
 }
 
-// druid_cat_attack_t::ready ===============================================
+// druid_cat_attack_t::ready ================================================
 
 bool druid_cat_attack_t::ready()
 {
@@ -847,7 +829,7 @@ bool druid_cat_attack_t::ready()
   return true;
 }
 
-// Cat Melee Attack ========================================================
+// Cat Melee Attack =========================================================
 
 struct cat_melee_t : public druid_cat_attack_t
 {
@@ -858,18 +840,20 @@ struct cat_melee_t : public druid_cat_attack_t
     repeating   = true;
     trigger_gcd = 0;
     base_cost   = 0;
-    may_crit    = true;
   }
+
   virtual void player_buff()
   {
     druid_cat_attack_t::player_buff();
     druid_t* p = player -> cast_druid();
-    player_multiplier *= 1 + p -> buffs_savage_roar -> value();
+    player_multiplier *= 1.0 + p -> buffs_savage_roar -> value();
   }
 
   virtual double execute_time() SC_CONST
   {
-    if ( ! player -> in_combat ) return 0.01;
+    if ( ! player -> in_combat )
+      return 0.01;
+
     return druid_cat_attack_t::execute_time();
   }
 
@@ -884,7 +868,7 @@ struct cat_melee_t : public druid_cat_attack_t
   }
 };
 
-// Berserk ==================================================================
+// Berserk (Cat) ============================================================
 
 struct berserk_cat_t : public druid_cat_attack_t
 {
@@ -916,7 +900,7 @@ struct berserk_cat_t : public druid_cat_attack_t
   }
 };
 
-// Claw ====================================================================
+// Claw =====================================================================
 
 struct claw_t : public druid_cat_attack_t
 {
@@ -931,7 +915,7 @@ struct claw_t : public druid_cat_attack_t
   }
 };
 
-// Ferocious Bite ============================================================
+// Ferocious Bite ===========================================================
 
 struct ferocious_bite_t : public druid_cat_attack_t
 {
@@ -1028,7 +1012,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
   }
 };
 
-// Maim ======================================================================
+// Maim =====================================================================
 
 struct maim_t : public druid_cat_attack_t
 {
@@ -1053,7 +1037,7 @@ struct maim_t : public druid_cat_attack_t
   }
 };
 
-// Mangle (Cat) ============================================================
+// Mangle (Cat) =============================================================
 
 struct mangle_cat_t : public druid_cat_attack_t
 {
@@ -1086,7 +1070,7 @@ struct mangle_cat_t : public druid_cat_attack_t
   }
 };
 
-// Rake ====================================================================
+// Rake =====================================================================
 
 struct rake_t : public druid_cat_attack_t
 {
@@ -1144,7 +1128,7 @@ struct rip_t : public druid_cat_attack_t
   }
 };
 
-// Savage Roar =============================================================
+// Savage Roar ==============================================================
 
 struct savage_roar_t : public druid_cat_attack_t
 {
@@ -1182,7 +1166,7 @@ struct savage_roar_t : public druid_cat_attack_t
   }
 };
 
-// Shred ===================================================================
+// Shred ====================================================================
 
 struct shred_t : public druid_cat_attack_t
 {
@@ -1248,7 +1232,7 @@ struct shred_t : public druid_cat_attack_t
   }
 };
 
-// Tigers Fury =============================================================
+// Tigers Fury ==============================================================
 
 struct tigers_fury_t : public druid_cat_attack_t
 {
@@ -1466,8 +1450,6 @@ struct lacerate_t : public druid_bear_attack_t
   lacerate_t( player_t* player, const std::string& options_str ) :
       druid_bear_attack_t( "lacerate",  player, SCHOOL_BLEED, TREE_FERAL )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { NULL,     OPT_UNKNOWN, NULL       }
@@ -1490,8 +1472,6 @@ struct lacerate_t : public druid_bear_attack_t
     tick_power_mod   = 0.01;
     tick_may_crit    = true;
     dot_behavior = DOT_REFRESH;
-
-    if ( p -> set_bonus.tier9_2pc_melee() ) base_td_multiplier *= 1.05;
   }
 
   virtual void execute()
@@ -1503,12 +1483,6 @@ struct lacerate_t : public druid_bear_attack_t
       p -> buffs_lacerate -> trigger();
       base_td_multiplier = p -> buffs_lacerate -> current_stack;
     }
-  }
-
-  virtual void tick()
-  {
-    druid_bear_attack_t::tick();
-    trigger_t8_2pc_melee( this );
   }
 
   virtual void last_tick()
@@ -2107,8 +2081,7 @@ struct insect_swarm_t : public druid_spell_t
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
 
-    base_multiplier *= 1.0 + ( p -> glyphs.insect_swarm          ? 0.30 : 0.00 ) +
-                             ( p -> set_bonus.tier7_2pc_caster() ? 0.10 : 0.00 );
+    base_multiplier *= 1.0 + ( p -> glyphs.insect_swarm ? 0.30 : 0.00 );
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
@@ -2120,7 +2093,6 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_spell_t::tick();
     druid_t* p = player -> cast_druid();
-    p -> buffs_t8_4pc_caster -> trigger();
     if ( p -> buffs_shooting_stars -> trigger() )
       starsurge_cd -> reset();
   }
@@ -2474,11 +2446,10 @@ struct starfire_t : public druid_spell_t
 {
   std::string prev_str;
   int extend_moonfire;
-  int instant;
 
   starfire_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
-      extend_moonfire( 0 ), instant( 0 )
+      extend_moonfire( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2486,7 +2457,6 @@ struct starfire_t : public druid_spell_t
     {
       { "extendmf", OPT_BOOL,   &extend_moonfire },
       { "prev",     OPT_STRING, &prev_str        },
-      { "instant",  OPT_BOOL,   &instant         },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2511,18 +2481,6 @@ struct starfire_t : public druid_spell_t
     base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath -> rank(), 3, 0.15, 0.25, 0.5 );
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-
-
-    if ( p -> set_bonus.tier6_4pc_caster() ) base_crit += 0.05;
-    if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
-    if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier *= 1.04;
-  }
-
-  virtual void schedule_execute()
-  {
-    druid_spell_t::schedule_execute();
-    druid_t* p = player -> cast_druid();
-    p -> buffs_t8_4pc_caster -> expire();
   }
 
   virtual void execute()
@@ -2562,25 +2520,12 @@ struct starfire_t : public druid_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
-  {
-    druid_t* p = player -> cast_druid();
-    if ( p -> buffs_t8_4pc_caster -> check() )
-      return 0;
-
-    return druid_spell_t::execute_time();
-  }
-
   virtual bool ready()
   {
     if ( ! druid_spell_t::ready() )
       return false;
 
     druid_t* p = player -> cast_druid();
-
-    if ( instant )
-      if ( ! p -> buffs_t8_4pc_caster -> may_react() )
-        return false;
 
     if ( extend_moonfire )
     {
@@ -2629,11 +2574,6 @@ struct wrath_t : public druid_spell_t
     base_execute_time += p -> talents.starlight_wrath -> effect_base_value( 1 ) * 0.001;
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-
-
-    if ( p -> set_bonus.tier7_4pc_caster() ) base_crit += 0.05;
-    if ( p -> set_bonus.tier9_4pc_caster() ) base_multiplier   *= 1.04;
-
   }
 
   virtual void player_buff()
@@ -3268,7 +3208,6 @@ void druid_t::init_buffs()
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + 4.0 * talents.endless_carnage -> rank() );
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> rank() * 0.02 );
-  buffs_t8_4pc_caster      = new buff_t( this, "t8_4pc_caster"     , 1,  10.0,     0, set_bonus.tier8_4pc_caster() * 0.08 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
 
