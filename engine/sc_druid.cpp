@@ -902,6 +902,7 @@ struct berserk_cat_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     cooldown = p -> get_cooldown( "berserk" );
+    cooldown -> duration = p -> player_data.spell_cooldown( id );
   }
 
   virtual void execute()
@@ -1051,8 +1052,8 @@ struct rip_t : public druid_cat_attack_t
 struct savage_roar_t : public druid_cat_attack_t
 {
   double buff_value;
-  savage_roar_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "savage_roar", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  savage_roar_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "savage_roar", 52610, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1061,28 +1062,26 @@ struct savage_roar_t : public druid_cat_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    requires_combo_points = true;
-    base_cost = 25;
-    id = 52610;
-    harmful = false;
 
-    buff_value = 0.50;
-    if ( p -> glyphs.savage_roar ) buff_value += 0.03;
+    buff_value            = 0.50; // 30 in the DBC with no scaling factors
+    harmful               = false;
+    requires_combo_points = true;
+        
+    if ( p -> glyphs.savage_roar )
+      buff_value += 0.05;
   }
 
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
     double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
-    duration += 4.0 * p -> talents.endless_carnage -> rank();
-    if ( p -> set_bonus.tier8_4pc_melee() ) duration += 8.0;
+    duration += p -> talents.endless_carnage -> effect_base_value( 2 ) / 1000.0;
 
     // execute clears CP, so has to be after calculation duration
     druid_cat_attack_t::execute();
 
     p -> buffs_savage_roar -> buff_duration = duration;
     p -> buffs_savage_roar -> trigger( 1, buff_value );
-    //p -> buffs_combo_points -> expire();
   }
 };
 
@@ -1090,30 +1089,21 @@ struct savage_roar_t : public druid_cat_attack_t
 
 struct shred_t : public druid_cat_attack_t
 {
-  int omen_of_clarity;
   int extend_rip;
 
-  shred_t( player_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "shred", player, SCHOOL_PHYSICAL, TREE_FERAL ),
-    omen_of_clarity( 0 ), extend_rip( 0 )
+  shred_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "shred", 5221, player ),
+    extend_rip( 0 )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
-      { "omen_of_clarity", OPT_BOOL, &omen_of_clarity },
-      { "extend_rip",      OPT_BOOL, &extend_rip      },
+      { "extend_rip", OPT_BOOL, &extend_rip },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    id = 5221;
-    parse_data( p -> player_data );
-
-    weapon = &( p -> main_hand_weapon );
     requires_position  = POSITION_BACK;
-    adds_combo_points  = true;
-    may_crit           = true;
+    // FIXME: Tooltip shows an increase in base_dd_min/max by 3.5, is this correct?
   }
 
   virtual void execute()
@@ -1151,10 +1141,6 @@ struct shred_t : public druid_cat_attack_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
-
-    if ( omen_of_clarity )
-      if ( ! p -> buffs_omen_of_clarity -> may_react() )
-        return false;
 
     if ( extend_rip )
       if ( ! p -> glyphs.shred ||
