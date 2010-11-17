@@ -772,14 +772,14 @@ void enchant_t::init( player_t* p )
   if ( mh_enchant == "power_torrent" )
   {
     buff_t* buff = new stat_buff_t( p, "power_torrent_mh", STAT_INTELLECT, 500, 1, 12, 45, 0.20, false, false, RNG_DISTRIBUTED );
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, mhw, buff );
+    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
   }
   if ( oh_enchant == "power_torrent" )
   {
     buff_t* buff = new stat_buff_t( p, "power_torrent_oh", STAT_INTELLECT, 500, 1, 12, 45, 0.20, false, false, RNG_DISTRIBUTED );
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, ohw, buff );
+    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
   }
