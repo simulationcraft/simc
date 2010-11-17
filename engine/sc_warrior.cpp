@@ -393,8 +393,8 @@ struct warrior_attack_t : public attack_t
 
   void _init_warrior_attack_t()
   {
-    may_crit               = true;
-    may_glance             = false;
+    may_crit   = true;
+    may_glance = false;
     // normalize_weapon_speed is set correctly by parse_data now
    }
 
@@ -915,6 +915,8 @@ void warrior_attack_t::parse_options( option_t* options, const std::string& opti
 double warrior_attack_t::calculate_weapon_damage()
 {
   double dmg = attack_t::calculate_weapon_damage();
+
+  if( dmg == 0 ) return 0;
 
   warrior_t* p = player -> cast_warrior();
 

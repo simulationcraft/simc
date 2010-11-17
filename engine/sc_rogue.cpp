@@ -1058,10 +1058,10 @@ double rogue_attack_t::calculate_weapon_damage()
   
   if( dmg == 0 ) return 0;
 
-  if ( weapon -> slot == SLOT_OFF_HAND )
-  {
-    rogue_t* p = player -> cast_rogue();
+  rogue_t* p = player -> cast_rogue();
 
+  if ( weapon -> slot == SLOT_OFF_HAND && p -> spec_ambidexterity -> ok() )
+  {
     dmg *= 1.0 + p -> spec_ambidexterity -> base_value( E_APPLY_AURA, A_MOD_OFFHAND_DAMAGE_PCT );
   }
 
