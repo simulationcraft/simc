@@ -162,6 +162,7 @@ void action_t::_init_action_t()
   stats -> resource = resource;
   
   id = spell_id();
+  tree = util_t::talent_tree(s_tree, player -> type );
 
   parse_data ( player -> player_data );
 

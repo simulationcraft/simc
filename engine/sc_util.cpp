@@ -502,6 +502,85 @@ school_type util_t::parse_school_type( const std::string& name )
 
 // util_t::talent_tree_string ==============================================
 
+int util_t::talent_tree( int tree, player_type ptype )
+{
+  switch ( ptype )
+  {
+  case DEATH_KNIGHT:
+  switch ( tree )
+  {
+  case DEATH_KNIGHT_BLOOD:         return TREE_BLOOD;
+  case DEATH_KNIGHT_FROST:        return TREE_FROST;
+  case DEATH_KNIGHT_UNHOLY:       return TREE_UNHOLY;
+  }
+  case DRUID:
+  switch ( tree )
+  {
+  case DRUID_BALANCE:   return TREE_BALANCE;
+  case DRUID_FERAL:         return TREE_FERAL;
+  case DRUID_RESTORATION:   return TREE_RESTORATION;
+  }
+  case HUNTER:
+  switch ( tree )
+  {
+  case HUNTER_BEAST_MASTERY: return TREE_BEAST_MASTERY;
+  case HUNTER_MARKSMANSHIP:  return TREE_MARKSMANSHIP;
+  case HUNTER_SURVIVAL:      return TREE_SURVIVAL;
+  }
+  case MAGE:
+  switch ( tree )
+  {
+  case MAGE_ARCANE:        return TREE_ARCANE;
+  case MAGE_FIRE:          return TREE_FIRE;
+  case MAGE_FROST:         return TREE_FROST;
+  }
+  case PALADIN:
+  switch ( tree )
+  {
+  case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
+  }
+  case PRIEST:
+  switch ( tree )
+  {
+  case PRIEST_DISCIPLINE:    return TREE_DISCIPLINE;
+  case PRIEST_HOLY:          return TREE_HOLY;
+  case PRIEST_SHADOW:        return TREE_SHADOW;
+  }
+  case ROGUE:
+  switch ( tree )
+  {
+  case ROGUE_ASSASSINATION: return TREE_ASSASSINATION;
+  case ROGUE_COMBAT:        return TREE_COMBAT;
+  case ROGUE_SUBTLETY:      return TREE_SUBTLETY;
+  }
+  case SHAMAN:
+  switch ( tree )
+  {
+  case SHAMAN_ELEMENTAL:     return TREE_ELEMENTAL;
+  case SHAMAN_ENHANCEMENT:   return TREE_ENHANCEMENT;
+  }
+  case WARLOCK:
+  switch ( tree )
+  {
+  case WARLOCK_AFFLICTION:    return TREE_AFFLICTION;
+  case WARLOCK_DEMONOLOGY:    return TREE_DEMONOLOGY;
+  case WARLOCK_DESTRUCTION:   return TREE_DESTRUCTION;
+  }
+  case WARRIOR:
+  switch ( tree )
+  {
+  case WARRIOR_ARMS:          return TREE_ARMS;
+  case WARRIOR_FURY:          return TREE_FURY;
+  case WARRIOR_PROTECTION:    return TREE_PROTECTION;
+  }
+  default:
+    break;
+  }
+  return TREE_NONE;
+}
+
+// util_t::talent_tree_string ==============================================
+
 const char* util_t::talent_tree_string( int tree )
 {
   switch ( tree )
