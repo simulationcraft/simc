@@ -393,9 +393,9 @@ struct warrior_attack_t : public attack_t
 
   void _init_warrior_attack_t()
   {
-     may_crit               = true;
-     may_glance             = false;
-     normalize_weapon_speed = true;
+    may_crit               = true;
+    may_glance             = false;
+    // normalize_weapon_speed is set correctly by parse_data now
    }
 
   virtual double armor() SC_CONST;
@@ -1030,8 +1030,6 @@ struct melee_t : public warrior_attack_t
     trigger_gcd     = 0;
     base_cost       = 0;
 
-    normalize_weapon_speed = false;
-
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
@@ -1634,11 +1632,10 @@ struct overpower_t : public warrior_attack_t
     if ( sim -> P403 )
       weapon_multiplier = 1.25;
 
-    // To Do: Is this still normalized in 403?
-
     may_dodge  = false;
     may_parry  = false;
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
+
     base_crit += p -> talents.taste_for_blood -> effect_base_value( 2 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_multiplier            *= 1.0 + p -> glyphs.overpower * 0.10;
@@ -2036,8 +2033,12 @@ struct slam_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
+    // id = 50783 has the real info including normalize_weapon_speed = true
+    //            but is currently suffering from the real_ppl *100 bug.
     id = 1464;
     parse_data( p -> player_data );
+    normalize_weapon_speed      = true;
+
     weapon                      = &( p -> main_hand_weapon );
     base_dd_min                 = p -> player_data.effect_min( 462, p -> type, p -> level );
     base_dd_max                 = p -> player_data.effect_max( 462, p -> type, p -> level );
