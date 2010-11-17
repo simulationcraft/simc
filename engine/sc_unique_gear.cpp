@@ -819,6 +819,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "heart_of_ignacious"        ) ) register_heart_of_ignacious     ( &item );
     if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
+    if ( ! strcmp( item.name(), "shard_of_woe"              ) ) register_shard_of_woe           ( &item );
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar" ) ) register_tiny_abom              ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"    ) ) register_tyrandes_favorite_doll ( &item );
     if ( ! strcmp( item.name(), "unheeded_warning"          ) ) register_unheeded_warning       ( &item );

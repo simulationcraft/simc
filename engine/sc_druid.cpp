@@ -838,6 +838,7 @@ struct cat_melee_t : public druid_cat_attack_t
   {
     background  = true;
     repeating   = true;
+    may_crit    = true;
     trigger_gcd = 0;
     base_cost   = 0;
   }
@@ -1015,16 +1016,30 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
 struct maim_t : public druid_cat_attack_t
 {
+  double base_dmg_per_point;
+
   maim_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "maim", 22570, player )
   {
+    druid_t* p = player -> cast_druid();
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
     
+    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     requires_combo_points = true;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    base_dd_adder = base_dmg_per_point * p -> buffs_combo_points -> stack();
+
+    druid_cat_attack_t::execute();
   }
 
   virtual bool ready()
