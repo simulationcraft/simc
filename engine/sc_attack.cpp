@@ -33,7 +33,6 @@ void attack_t::_init_attack_t()
   base_attack_power_multiplier = 1.0;
   base_crit_bonus = 1.0;
 
-  trigger_gcd = player -> base_gcd;
   min_gcd = 1.0;
   scale_with_haste = false;
 

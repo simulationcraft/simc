@@ -16,7 +16,6 @@ void spell_t::_init_spell_t()
   may_miss = may_resist = true;
   base_spell_power_multiplier = 1.0;
   base_crit_bonus = 0.5;
-  trigger_gcd = player -> base_gcd;
   min_gcd = 1.0;
   scale_with_haste = true;
 }

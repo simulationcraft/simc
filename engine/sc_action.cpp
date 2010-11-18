@@ -46,7 +46,7 @@ void action_t::_init_action_t()
   dot_behavior                   = DOT_WAIT;
   rp_gain                        = 0.0;
   min_gcd                        = 0.0;
-  trigger_gcd                    = 0.0;
+  trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
   weapon_power_mod               = 1.0/14.0;
   direct_power_mod               = 0.0;
