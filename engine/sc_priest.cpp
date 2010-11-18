@@ -942,14 +942,7 @@ struct shadowy_apparition_t : public priest_spell_t
     trigger_gcd       = 0;
     travel_speed      = 3.5;
 
-    if ( sim -> P403 )
-    {
-      base_crit += 0.06;
-    }
-    else
-    {
-      base_crit += 0.06; // estimated.
-    }
+    base_crit += 0.06; // estimated.
     reset();
   }
 
@@ -1868,13 +1861,6 @@ struct shadow_word_death_t : public priest_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    if ( ! p -> sim -> P403 )
-    {
-      direct_power_mod = 0.2820000052;
-      base_dd_min *= 0.3336820246621212656891103184076;
-      base_dd_max *= 0.3336820246621212656891103184076;
-    }
 
     base_cost        *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
@@ -3372,11 +3358,11 @@ void priest_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    if ( sim -> P403 )
+    if ( level > 80 )
     {
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
     }
-    else
+    else if ( level >= 75 )
     {
       action_list_str  = "flask,type=frost_wyrm/food,type=fish_feast";
     }
@@ -3401,12 +3387,12 @@ void priest_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_SHADOW:
-      if ( sim -> P403 )
+      if ( level > 80 )
       {
                                                          action_list_str += "/volcanic_potion,if=!in_combat";
                                                          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
-      else
+      else if ( level >= 70 )
       {
                                                          action_list_str += "/wild_magic_potion,if=!in_combat";
                                                          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
