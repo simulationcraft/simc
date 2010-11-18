@@ -9,25 +9,16 @@
 //
 // TODO:
 //  Before 4.0.3 release:
-//   * Check (if possible) all the ordering of the multipliers and adders
-//     to make sure they are interacting correctly.
-//   * Go through all of Deep Wounds and figure out what's going on.
-//     * Is it working right?
-//     * Why is the stats output fubar?
-//   * Recheck overrides of mined spell data.
+//   * Recheck the fixmes.
 //   * Measure and implement the formula for rage from damage taken 
 //     (n.b., based on percentage of HP for unmitigated hit size).
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
-//   * Check normalize_weapon_speed for correctness everywhere.
-//   * Does Colossus Smash itself ignore armor?
-//   * Can you cancel Inner Rage?
 //   * Sanity check init_buffs() wrt durations and chances.
-//   * Fix the arms action list to match the profiles.
 //   * Sanitise use of buff up() vs check() for stats.
-//   * Arms.
 //  Later:
+//   * Verify that Colossus Smash itself doesn't ignore armor.
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
 //   * Move the bleeds out of being warrior_attack_t to stop them
 //     triggering effects or having special cases in the class.
@@ -768,9 +759,9 @@ static void trigger_flurry( attack_t* a, int stacks )
     if ( mhe ) {
       double delta;
       if ( mhe -> reschedule_time )
-	delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
+        delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
       else 
-	delta = ( mhe -> time - sim -> current_time ) * mult;
+        delta = ( mhe -> time - sim -> current_time ) * mult;
       p -> main_hand_attack -> reschedule_execute( delta );
     }
   }
@@ -780,9 +771,9 @@ static void trigger_flurry( attack_t* a, int stacks )
     if ( ohe ) {
       double delta;
       if ( ohe -> reschedule_time )
-	delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
+        delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
       else 
-	delta = ( ohe -> time - sim -> current_time ) * mult;
+        delta = ( ohe -> time - sim -> current_time ) * mult;
       p -> off_hand_attack -> reschedule_execute( delta );
     }
   }
@@ -934,64 +925,82 @@ void warrior_attack_t::player_buff()
 {
   attack_t::player_buff();
 
+  // FIXME: much of this can be moved to base for efficiency, but we need
+  // to be careful to get the add_percent_mod effect ordering in the
+  // abilities right.
+
   warrior_t* p = player -> cast_warrior();
 
-  if ( weapon && weapon -> group() == WEAPON_2H && p -> spec.two_handed_weapon_specialization -> ok() )
-  {
-    player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
-  }
+  // --- Stances ---
 
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
-    player_multiplier *= ( 1 + p -> buffs_battle_stance -> effect_base_value (1) / 100.0 );
+    player_multiplier *= ( 1.0 + p -> buffs_battle_stance -> effect_base_value (1) / 100.0 );
   }
   else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
   {
-    player_multiplier *= ( 1 + p -> buffs_berserker_stance -> effect_base_value (1) / 100.0 );
+    player_multiplier *= ( 1.0 + p -> buffs_berserker_stance -> effect_base_value (1) / 100.0 );
   }
   else if ( p -> active_stance == STANCE_DEFENSE && p -> buffs_defensive_stance -> up() )
   {
     // No penalty for defensive stance at the moment.
   }
   
-  player_multiplier *= 1.0 + p -> buffs_death_wish    -> value();
+  // --- Specializations --
+
+  if ( weapon && weapon -> group() == WEAPON_2H && p -> spec.two_handed_weapon_specialization -> ok() )
+    player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
+
+  if ( p -> spec.dual_wield_specialization -> ok() && p -> dual_wield() && school == SCHOOL_PHYSICAL )
+    player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
+
+  // --- Enrages ---
+
   player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
+
   if ( school == SCHOOL_PHYSICAL )
     player_multiplier *= 1.0 + p -> buffs_enrage -> value();
   
+  if ( school == SCHOOL_PHYSICAL && p -> buffs_bastion_of_defense -> check() )
+    player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
+
+  // --- Passive Talents ---
+
+  player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
+
   if ( p -> talents.single_minded_fury -> rank() && p -> dual_wield() )
   {
+    // FIXME: seems like you should need to have two 1Hers (&&)
     if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H ||
          p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
     {
-      player_multiplier *= 1 + p -> talents.single_minded_fury -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effect_base_value( 1 ) / 100.0;
     }
   }
-
-  if ( p -> spec.dual_wield_specialization -> ok() && p -> dual_wield() && school == SCHOOL_PHYSICAL )
-  {
-    player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
-  }
-
-  if ( special && p -> buffs_recklessness -> up() )
-    player_crit += 1.0;
-
-  if ( p -> buffs_inner_rage -> check() )
-    player_multiplier *= 1.15;
-
-  if ( p -> buffs_rude_interruption -> check() )
-    player_multiplier *= 1.05;
 
   if ( p -> talents.rampage -> rank() )
     player_crit += p -> talents.rampage -> effect_base_value( 2 ) / 100.0;
 
+  // --- Buffs / Procs ---
+
+  if ( p -> buffs_inner_rage -> check() )
+    player_multiplier *= 1.0 + p -> buffs_inner_rage -> effect_base_value(2) / 100.0;
+
+  if ( p -> buffs_rude_interruption -> check() )
+    player_multiplier *= 1.05;
+
+  if ( special && p -> buffs_recklessness -> up() )
+    player_crit += 1.0;
+
   if ( p -> buffs_hold_the_line -> check() )
     player_crit += 0.10;
 
-  if ( p -> buffs_bastion_of_defense -> check() )
-    player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
+  // --- Set Bonuses ---
 
   if ( p -> set_bonus.tier10_4pc_melee() )
+    player_multiplier *= 1.05;
+
+  if ( school == SCHOOL_PHYSICAL && p -> set_bonus.tier10_2pc_melee() )
     player_multiplier *= 1.05;
 
   if ( sim -> debug )
@@ -1259,9 +1268,12 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
-    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10;
-    base_multiplier   *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
+
+    // Bloodthirst's values can't be derived by parse_data() for now.
     direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
+
+    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10
+                             + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
 
@@ -1294,8 +1306,10 @@ struct cleave_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     aoe              = true;
-    base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
-    base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
+                           + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+
+    // Cleave's values can't be derived by parse_data() for now.
     direct_power_mod = sim -> P403 ? 0.562 : 0.675;
     base_dd_min      = 6;
     base_dd_max      = 6;
@@ -1398,8 +1412,8 @@ struct devastate_t : public warrior_attack_t
     id = 20243;
     parse_data( p -> player_data );
 
-    base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0
-               + p -> glyphs.devastate * 0.05;
+    base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> glyphs.devastate * 0.05;
   }
 
   virtual void execute()
@@ -1493,6 +1507,7 @@ struct execute_t : public warrior_attack_t
     double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + base_consumed );
     
     // Damage scales directly with AP per rage since 4.0.1.
+    // Can't be derived by parse_data() for now.
     if ( sim -> P403 )
       direct_power_mod = 0.0437 * max_consumed;
     else
@@ -1500,6 +1515,7 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
+      // Note: additive, be careful of interactions with player_buff().
       player_multiplier *= 1.0 + p -> talents.lambs_to_the_slaughter -> rank() * 0.10;
     }
   }
@@ -1575,8 +1591,8 @@ struct mortal_strike_t : public warrior_attack_t
     id = 12294;
     parse_data( p -> player_data );
 
-    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
-    base_multiplier            *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
+    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10
+                                      + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1745,6 +1761,7 @@ struct raging_blow_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> mastery.unshackled_fury -> ok() )
     {
+      // Caution: additive
       player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
     }
   }
@@ -1828,7 +1845,7 @@ struct revenge_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
     direct_power_mod  = 0.31; // Assumption from 3.3.5
-    base_multiplier  *= 1 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
+    base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
                           + p -> glyphs.revenge * 0.1;
     stancemask = STANCE_DEFENSE;
   }
@@ -2019,22 +2036,23 @@ struct slam_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    // id = 50783 seems to have better info but isn't scaling.
     id = 1464;
     parse_data( p -> player_data );
-    normalize_weapon_speed      = true;
 
+    // Slam's values can't be derived by parse_data() for now.
+    normalize_weapon_speed      = true;
     weapon                      = &( p -> main_hand_weapon );
     base_dd_min                 = p -> player_data.effect_min( 462, p -> type, p -> level );
     base_dd_max                 = p -> player_data.effect_max( 462, p -> type, p -> level );
+    if ( sim -> P403 )
+      weapon_multiplier = 1.25;
+
     base_crit                  += p -> glyphs.slam * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale      -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam     -> effect_base_value( 1 ) / 1000.0;
     // FIXME: Confirm this is additive and not multiplicative
-    base_multiplier            *= 1 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
+    base_multiplier            *= 1.0 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
                                     + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
-    if ( sim -> P403 )
-      weapon_multiplier *= 1.25;
   }
 
   virtual double haste() SC_CONST
@@ -2166,6 +2184,7 @@ struct whirlwind_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_meat_cleaver -> check() )
     {
+      // Caution: additive
       player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
     }
   }
@@ -2929,7 +2948,7 @@ void warrior_t::init_buffs()
   buffs_flurry                    = new buff_t( this, "flurry",                    3, 15.0,   0, talents.flurry -> proc_chance() );
   buffs_hold_the_line             = new buff_t( this, "hold_the_line",             1,  5.0 * talents.hold_the_line -> rank() ); 
   buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 0.0, talents.incite -> proc_chance() );
-  buffs_inner_rage                = new buff_t( this, "inner_rage",                1, 15.0 );
+  buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    1, 15.0,  0, talents.lambs_to_the_slaughter -> proc_chance() );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
@@ -3177,10 +3196,8 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 {
   double mult = player_t::composite_attack_power_multiplier();
 
-  if ( buffs_tier10_2pc_melee -> up() )
-    mult *= 1.16;
   if ( buffs_tier11_4pc_melee -> up() )
-    mult *= 1 + 0.01 * buffs_tier11_4pc_melee -> stack();
+    mult *= 1.0 + 0.01 * buffs_tier11_4pc_melee -> stack();
   return mult;
 }
 
