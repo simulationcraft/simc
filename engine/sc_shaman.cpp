@@ -161,17 +161,6 @@ struct shaman_t : public player_t
   
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r )
   {
-    static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = {
-      //  C2P    C4P    M2P    M4P    T2P    T4P
-      { 38443, 38436, 38429, 38432,     0,     0 }, // Tier6
-      { 60164, 60165, 60168, 60169,     0,     0 }, // Tier7
-      { 64925, 64928, 64916, 64917,     0,     0 }, // Tier8
-      { 67227, 67228, 67220, 67221,     0,     0 }, // Tier9
-      { 70811, 70817, 70830, 70832,     0,     0 }, // Tier10
-      { 90503, 90505, 90501, 90502,     0,     0 }, // Tier11
-      {     0,     0,     0,     0,     0,     0 },
-    };
-
     tree_type[ SHAMAN_ELEMENTAL   ] = TREE_ELEMENTAL;
     tree_type[ SHAMAN_ENHANCEMENT ] = TREE_ENHANCEMENT;
     tree_type[ SHAMAN_RESTORATION ] = TREE_RESTORATION;
@@ -193,9 +182,6 @@ struct shaman_t : public player_t
     // Weapon Enchants
     windfury_weapon_attack   = 0;
     flametongue_weapon_spell = 0;
-    
-    // New set bonus system
-    sets                     = new set_bonus_array_t( this, set_bonuses );
   }
 
   // Character Definition
@@ -216,6 +202,7 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
@@ -990,10 +977,15 @@ struct unleash_flame_t : public shaman_spell_t
   unleash_flame_t( player_t* player ) : 
     shaman_spell_t( "unleash_flame", 73683, player )
   {
+    shaman_t* p = player -> cast_shaman();
+
     background           = true;
     may_miss             = false;
     proc                 = true;
     
+    base_crit_bonus_multiplier *= 1.0 + 
+      p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+
     // Don't cooldown here, unleash elements ability will handle it
     cooldown -> duration = 0.0;
   }
@@ -1184,9 +1176,6 @@ void shaman_attack_t::player_buff()
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 
-  if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
-    player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
-  
   if ( p -> buffs_elemental_rage -> up() )
     player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
 }
@@ -1617,11 +1606,6 @@ void shaman_spell_t::player_buff()
     
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-    
-  // Removed school check here, all our spells are nature/fire/frost so there's no need to do it
-  // Flametongue weapon bugs with mastery, so disable it completely for now
-  if ( ! proc )
-    player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
     
   if ( p -> buffs_elemental_rage -> up() )
     player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
@@ -3502,7 +3486,7 @@ struct searing_flames_buff_t : public new_buff_t
     default_chance     = p -> player_data.effect_base_value( id, E_APPLY_AURA ) / 100.0;
 
     // Various other things are specified in the actual debuff placed on the target
-    buff_duration           = p -> player_data.spell_duration( 77661 );
+    buff_duration      = p -> player_data.spell_duration( 77661 );
     max_stack          = p -> player_data.spell_max_stacks( 77661 );
 
     _init_buff_t();
@@ -3679,6 +3663,18 @@ void shaman_t::init_talents()
 
 void shaman_t::init_spells()
 {
+  // New set bonus system
+  uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    { 38443, 38436, 38429, 38432,     0,     0 }, // Tier6
+    { 60164, 60165, 60168, 60169,     0,     0 }, // Tier7
+    { 64925, 64928, 64916, 64917,     0,     0 }, // Tier8
+    { 67227, 67228, 67220, 67221,     0,     0 }, // Tier9
+    { 70811, 70817, 70830, 70832,     0,     0 }, // Tier10
+    { 90503, 90505, 90501, 90502,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
+
   player_t::init_spells();
 
   // Tree Specialization
@@ -3712,6 +3708,8 @@ void shaman_t::init_spells()
   glyph_thunder               = new glyph_t( this, "Glyph of Thunder" );
   
   glyph_thunderstorm          = new glyph_t( this, "Glyph of Thunderstorm" );
+  
+  sets                        = new set_bonus_array_t( this, set_bonuses );
 }
 
 // shaman_t::init_glyphs ======================================================
@@ -3935,12 +3933,22 @@ void shaman_t::init_actions()
   {
     if ( primary_tree() == TREE_ENHANCEMENT )
     {
-      action_list_str  = "flask,type=endless_rage/food,type=fish_feast/windfury_weapon,weapon=main/flametongue_weapon,weapon=off";
+      if ( level > 80 )
+        action_list_str  = "flask,type=winds/food,type=seafood_magnifique_feast";
+      else
+        action_list_str  = "flask,type=endless_rage/food,type=fish_feast";
+        
+      action_list_str +="/windfury_weapon,weapon=main/flametongue_weapon,weapon=off";
       action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
-      action_list_str += "/auto_attack";
+      if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
+      if ( level > 80 )
+        action_list_str += "/tolvir_potion,if=!in_combat";
+      else
+        action_list_str += "/speed_potion,if=!in_combat";
       action_list_str += "/snapshot_stats";
+      action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
-      action_list_str += "/bloodlust,time_to_die<=60";
+      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,time_to_die<=60";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -3959,6 +3967,13 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
 
+      if ( level > 80 )
+        action_list_str += "/tolvir_potion,if=buff.bloodlust.react";
+      else
+        action_list_str += "/speed_potion,if=buff.bloodlust.react";
+        
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
+      
       if ( set_bonus.tier10_4pc_melee() )
       {
         action_list_str += "/fire_elemental_totem,if=buff.maelstrom_power.react,time_to_die>=125";
@@ -3966,26 +3981,38 @@ void shaman_t::init_actions()
       }
       else
         action_list_str += "/fire_elemental_totem";
-      action_list_str += "/speed_potion";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
+        
       action_list_str += "/searing_totem";
       action_list_str += "/lava_lash";
-      if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
-      if ( level >= 81 ) action_list_str += "/unleash_elements";
+      if ( level > 80 ) action_list_str += "/unleash_elements";
       action_list_str += "/flame_shock,if=!ticking";
       action_list_str += "/earth_shock";
+      if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/fire_nova";
-      if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
-      if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
-      if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage";
+      if ( level < 81 )
+      {
+        if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
+        if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage";
+      }
     }
     else
     {
-      action_list_str  = "flask,type=frost_wyrm/food,type=fish_feast/flametongue_weapon,weapon=main/lightning_shield";
+      if ( level > 80 )
+        action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
+      else
+        action_list_str  = "flask,type=frost_wyrm/food,type=fish_feast";
+        
+      action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       action_list_str += "/snapshot_stats";
+      
+      if ( level > 80 )
+        action_list_str += "/volcanic_potion,if=!in_combat";
+      else
+        action_list_str += "/speed_potion,if=!in_combat";
+      
       action_list_str += "/wind_shear";
-      action_list_str += "/bloodlust,time_to_die<=59";
+      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,time_to_die<=60";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -4003,29 +4030,38 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-      if ( set_bonus.tier9_2pc_caster() || set_bonus.tier10_2pc_caster() )
-      {
-        action_list_str += "/wild_magic_potion,if=buff.bloodlust.react";
-      }
+      
+      if ( level > 80 )
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react";
       else
       {
-        action_list_str += "/speed_potion";
+        if ( set_bonus.tier9_2pc_caster() || set_bonus.tier10_2pc_caster() )
+          action_list_str += "/wild_magic_potion,if=buff.bloodlust.react";
+        else
+          action_list_str += "/speed_potion";
       }
       
       if ( talent_elemental_mastery -> rank() )
       {
-        action_list_str += "/elemental_mastery,time_to_die<=17";
-        action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
+        if ( level > 80 )
+          action_list_str += "/elemental_mastery,time_to_die<=10";
+        else
+        {
+          action_list_str += "/elemental_mastery,time_to_die<=17";
+          action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
+        }
       }
+      
       if ( talent_fulmination -> rank() )
-        action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9&dot.flame_shock.remains>6.0";
+        action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9";
       action_list_str += "/flame_shock,if=!ticking";
-      if ( level >= 81 )
-        action_list_str += "/unleash_elements";
-      if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.1";
+      // Unleash elements for elemental is a downgrade in dps ...
+      //if ( level >= 81 )
+      //  action_list_str += "/unleash_elements";
+      if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05";
       action_list_str += "/fire_elemental_totem";
       action_list_str += "/searing_totem";
-      action_list_str += "/chain_lightning,if=target.adds>1";
+      action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier9_4pc_caster() || set_bonus.tier10_2pc_caster() || set_bonus.tier11_4pc_caster() || level > 80 ))
         action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
       action_list_str += "/lightning_bolt";
@@ -4106,25 +4142,29 @@ double shaman_t::composite_spell_power( const school_type school ) SC_CONST
   double sp = player_t::composite_spell_power( school );
 
   if ( primary_tree() == TREE_ENHANCEMENT )
-  {
-    double ap = composite_attack_power_multiplier() * composite_attack_power();
-    sp += ap * spec_mental_quickness -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
-  }
+    sp += composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
 
   if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-  {
     sp += main_hand_weapon.buff_value;
-  }
-  if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-  {
-    sp += off_hand_weapon.buff_value;
-  }
 
-  // Glyph unchanged so far
-  // sp += buffs_totem_of_wrath_glyph -> value();
+  if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+    sp += off_hand_weapon.buff_value;
 
   return sp;
 }
+
+// shaman_t::composite_player_multiplier ====================================
+
+double shaman_t::composite_player_multiplier( const school_type school ) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school );
+  
+  if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
+    m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
+ 
+  return m; 
+}
+
 
 // shaman_t::regen  =======================================================
 

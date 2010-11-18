@@ -285,9 +285,9 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     sim -> sim_data.spell_scaling_class( spell -> id ),
     sim -> P403 ? 85 : 80 );
 
-  s << floor( v_min );
+  s << v_min;
   if ( v_min != v_max )
-    s << " - " << ceil( v_max );
+    s << " - " << v_max;
 
   if ( v_min != e -> base_value && v_max != e -> base_value )
     s << " (" << e -> base_value << ")";
