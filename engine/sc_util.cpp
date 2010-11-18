@@ -537,6 +537,8 @@ int util_t::talent_tree( int tree, player_type ptype )
   case PALADIN:
   switch ( tree )
   {
+  case PALADIN_HOLY:          return TREE_HOLY;
+  case PALADIN_PROTECTION:    return TREE_PROTECTION;
   case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
   }
   case PRIEST:
