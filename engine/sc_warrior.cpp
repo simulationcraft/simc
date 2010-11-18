@@ -1150,7 +1150,7 @@ struct auto_attack_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( player_t* player ) :
+  bladestorm_tick_t( warrior_t* player ) :
       warrior_attack_t( "bladestorm_tick", 50622, player, TREE_ARMS, false )
   {
     dual        = true;
