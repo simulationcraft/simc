@@ -1,7 +1,7 @@
-#define CLASS_ABILITY_SIZE (59)
+#define CLASS_ABILITY_SIZE (63)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13286
+// Class based active abilities, wow build 13316
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -113,13 +113,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       85673, // Word of Glory
           0,
     },
-    // Protection tree, 21 abilities
+    // Protection tree, 20 abilities
     {
       31850, // Ardent Defender
       31935, // Avenger's Shield
       20217, // Blessing of Kings
         465, // Devotion Aura
-      70940, // Divine Guardian
         498, // Divine Protection
         642, // Divine Shield
       86150, // Guardian of Ancient Kings
@@ -226,11 +225,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 59 abilities
+    // Pet tree, 63 abilities
     {
       55749, // Acid Spit (Special Ability)
       90355, // Ancient Hysteria
       50433, // Ankle Crack (Special Ability)
+      90337, // Bad Manner
       17253, // Bite (Basic Attack)
       93433, // Burrow Attack (Exotic Ability)
       53434, // Call of the Wild
@@ -256,9 +256,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       58604, // Lava Breath (Special Ability)
       53426, // Lick Your Wounds
       24844, // Lightning Breath (Special Ability)
+      90327, // Lock Jaw (Special Ability)
       54680, // Monstrous Bite (Exotic Ability)
       50479, // Nether Shock (Special Ability)
       50245, // Pin (Special Ability)
+      90347, // Play (Bonus Ability)
       24450, // Prowl (Bonus Ability)
       26090, // Pummel (Special Ability)
       90364, // Qiraji Fortitude (Exotic Ability)
@@ -277,6 +279,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       57386, // Stampede (Special Ability)
       56626, // Sting (Special Ability)
       52825, // Swoop
+      90314, // Tailspin (Special Ability)
       53477, // Taunt
       50498, // Tear Armor
       50271, // Tendon Rip (Special Ability)
@@ -370,7 +373,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        9484, // Shackle Undead
           0,
     },
-    // Holy tree, 20 abilities
+    // Holy tree, 21 abilities
     {
       32546, // Binding Heal
       14751, // Chakra
@@ -385,6 +388,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       14914, // Holy Fire
       15237, // Holy Nova
       88625, // Holy Word: Chastise
+      88684, // Holy Word: Serenity
       64901, // Hymn of Hope
       73325, // Leap of Faith
         724, // Lightwell
@@ -424,7 +428,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // Blood tree, 13 abilities
+    // Blood tree, 14 abilities
     {
       48721, // Blood Boil
       48263, // Blood Presence
@@ -434,6 +438,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       49028, // Dancing Rune Weapon
       56222, // Dark Command
       77606, // Dark Simulacrum
+      48743, // Death Pact
       49998, // Death Strike
       55050, // Heart Strike
       50842, // Pestilence
@@ -457,7 +462,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       56815, // Rune Strike
           0,
     },
-    // Unholy tree, 15 abilities
+    // Unholy tree, 16 abilities
     {
       48707, // Anti-Magic Shell
       51052, // Anti-Magic Zone
@@ -469,6 +474,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       73975, // Necrotic Strike
       77575, // Outbreak
       45462, // Plague Strike
+      61999, // Raise Ally
       46584, // Raise Dead
       55090, // Scourge Strike
       49206, // Summon Gargoyle
@@ -750,7 +756,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // Balance tree, 20 abilities
+    // Balance tree, 22 abilities
     {
       22812, // Barkskin
       33786, // Cyclone
@@ -771,6 +777,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       78674, // Starsurge
         467, // Thorns
       50516, // Typhoon
+      88747, // Wild Mushroom
+      88751, // Wild Mushroom: Detonate
        5176, // Wrath
           0,
     },
@@ -815,13 +823,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         783, // Travel Form (Shapeshift)
           0,
     },
-    // Restoration tree, 12 abilities
+    // Restoration tree, 13 abilities
     {
        5185, // Healing Touch
       33763, // Lifebloom
        1126, // Mark of the Wild
       17116, // Nature's Swiftness
       50464, // Nourish
+      20484, // Rebirth
        8936, // Regrowth
         774, // Rejuvenation
        2782, // Remove Corruption
@@ -839,7 +848,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13286
+// Talent tree specialization abilities, wow build 13316
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -881,7 +890,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     // Specialization abilities for Holy tree
     {
       20473, // Holy Shock
-      85101, // Meditation
+      95859, // Meditation
       85102, // Walk in the Light
           0,
     },
@@ -950,20 +959,21 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     // Specialization abilities for Discipline tree
     {
       84732, // Enlightenment
-      85101, // Meditation
+      95860, // Meditation
       47540, // Penance
           0,
     },
     // Specialization abilities for Holy tree
     {
       88625, // Holy Word: Chastise
-      85101, // Meditation
+      95861, // Meditation
       87336, // Spiritual Healing
           0,
     },
     // Specialization abilities for Shadow tree
     {
       15407, // Mind Flay
+      95740, // Shadow Orbs
       87327, // Shadow Power
           0,
     },
@@ -1011,7 +1021,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     // Specialization abilities for Restoration tree
     {
         974, // Earth Shield
-      85101, // Meditation
+      95862, // Meditation
       16213, // Purification
           0,
     },
@@ -1096,7 +1106,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13286
+// Class mastery abilities, wow build 13316
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1132,7 +1142,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   // Class mastery abilities for Priest
   {
     77485, // Echo of Light
-    77486, // Shadow Orbs
+    77486, // Shadow Orb Power
     77484, // Shield Discipline
         0,
   },
@@ -1181,7 +1191,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13286
+// Racial abilities, wow build 13316
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1290,6 +1300,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
+      92682, // Explorer
       20596, // Frost Resistance
       20595, // Gun Specialization
       59224, // Mace Specialization
@@ -1443,7 +1454,13 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   },
   // Racial abilities for Goblin
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      69041, // Rocket Barrage
+      69070, // Rocket Jump
+      69042, // Time is Money
+          0,
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -1460,10 +1477,14 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
-        822, // Magic Resistance
+        822, // Arcane Resistance
           0,
     },
-    {     0, },
+    // Racial abilities for Warrior class
+    {
+      69179, // Arcane Torrent
+          0,
+    },
     // Racial abilities for Paladin class
     {
       28730, // Arcane Torrent
@@ -1703,17 +1724,87 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   // Racial abilities for Worgen
   {
     {     0, },
+    // Racial abilities for Warrior class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Hunter class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Rogue class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Priest class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Shaman class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Mage class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
+    // Racial abilities for Warlock class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Druid class
+    {
+      68976, // Aberration
+      94293, // Enable Worgen Altered Form
+      69001, // Transform: Worgen
+      68975, // Viciousness
+          0,
+    },
   },
   {
     {     0, },
@@ -1731,9 +1822,9 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   },
 };
 
-#define GLYPH_ABILITIES_SIZE (20)
+#define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13286
+// Glyph spells for classes, wow build 13316
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1796,7 +1887,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (17 spells)
+    // Major Glyphs (18 spells)
     {
       63218, // Glyph of Beacon of Light
       54935, // Glyph of Cleansing
@@ -1809,21 +1900,20 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       54923, // Glyph of Hammer of Justice
       54926, // Glyph of Hammer of Wrath
       56420, // Glyph of Holy Wrath
+      57955, // Glyph of Lay on Hands
       54940, // Glyph of Light of Dawn
       54925, // Glyph of Rebuke
       63225, // Glyph of Salvation
       54931, // Glyph of Turn Evil
       54938, // Glyph of the Ascetic Crusader
       93466, // Glyph of the Long Word
-          0,
     },
-    // Minor Glyphs (7 spells)
+    // Minor Glyphs (6 spells)
     {
       57937, // Glyph of Blessing of Kings
       57958, // Glyph of Blessing of Might
       57979, // Glyph of Insight
       57954, // Glyph of Justice
-      57955, // Glyph of Lay on Hands
       89401, // Glyph of Righteousness
       57947, // Glyph of Truth
           0,
@@ -1912,7 +2002,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       56811, // Glyph of Sprint
       63256, // Glyph of Tricks of the Trade
       89758, // Glyph of Vanish
-          0,
     },
     // Minor Glyphs (6 spells)
     {
@@ -2085,46 +2174,47 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Mage
   {
-    // Major Glyphs (20 spells)
+    // Major Glyphs (13 spells)
     {
-      63092, // Glyph of Arcane Barrage
-      56363, // Glyph of Arcane Missiles
       56381, // Glyph of Arcane Power
       62126, // Glyph of Blast Wave
       56365, // Glyph of Blink
       56373, // Glyph of Dragon's Breath
       56380, // Glyph of Evocation
-      56368, // Glyph of Fireball
       56376, // Glyph of Frost Nova
-      56370, // Glyph of Frostbolt
-      61205, // Glyph of Frostfire
       63095, // Glyph of Ice Barrier
       56372, // Glyph of Ice Block
       56374, // Glyph of Icy Veins
       56366, // Glyph of Invisibility
       70937, // Glyph of Mana Shield
-      63093, // Glyph of Mirror Image
-      56382, // Glyph of Molten Armor
       56375, // Glyph of Polymorph
       63091, // Glyph of Slow
+          0,
     },
-    // Minor Glyphs (5 spells)
+    // Minor Glyphs (6 spells)
     {
       57924, // Glyph of Arcane Brilliance
       57928, // Glyph of Conjuring
+      63093, // Glyph of Mirror Image
       57925, // Glyph of Slow Fall
       57927, // Glyph of the Monkey
       52648, // Glyph of the Penguin
           0,
     },
-    // Prime Glyphs (7 spells)
+    // Prime Glyphs (13 spells)
     {
+      63092, // Glyph of Arcane Barrage
       62210, // Glyph of Arcane Blast
+      56363, // Glyph of Arcane Missiles
       56364, // Glyph of Cone of Cold
       63090, // Glyph of Deep Freeze
+      56368, // Glyph of Fireball
+      56370, // Glyph of Frostbolt
+      61205, // Glyph of Frostfire
       56377, // Glyph of Ice Lance
       89926, // Glyph of Living Bomb
       56383, // Glyph of Mage Armor
+      56382, // Glyph of Molten Armor
       56384, // Glyph of Pyroblast
           0,
     },
@@ -2211,9 +2301,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       54828, // Glyph of Starfall
       57862, // Glyph of Thorns
       62970, // Glyph of Wild Growth
-          0,
     },
-    // Minor Glyphs (6 spells)
+    // Minor Glyphs (7 spells)
     {
       57856, // Glyph of Aquatic Form
       57858, // Glyph of Challenging Roar
@@ -2221,6 +2310,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       57855, // Glyph of Mark of the Wild
       62135, // Glyph of Typhoon
       57857, // Glyph of Unburdened Rebirth
+      95212, // Glyph of the Treant
           0,
     },
     // Prime Glyphs (16 spells)
@@ -2248,7 +2338,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13286
+// Tier item set bonuses for class, wow build 13316
 static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
   {
     {
@@ -2338,7 +2428,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70854, // Ymirjar Lord's Battlegear - 2 Piece Bonus (Item - Warrior T10 Melee 2P Bonus)
           0,
     },
+    // Tier 11 bonuses (4 spells)
     {
+      90293, // Earthen Warplate - 2 Piece Bonus (Item - Warrior T11 DPS 2P Bonus)
+      90295, // Earthen Warplate - 4 Piece Bonus (Item - Warrior T11 DPS 4P Bonus)
+      90296, // Earthen Battleplate - 2 Piece Bonus (Item - Warrior T11 Protection 2P Bonus)
+      90297, // Earthen Battleplate - 4 Piece Bonus (Item - Warrior T11 Protection 4P Bonus)
           0,
     },
   },
@@ -2425,7 +2520,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70765, // Lightsworn Battlegear - 2 Piece Bonus (Item - Paladin T10 Retribution 2P Bonus)
           0,
     },
+    // Tier 11 bonuses (4 spells)
     {
+      90298, // Reinforced Sapphirium Battleplate - 2 Piece Bonus (Item - Paladin T11 Retribution 2P Bonus)
+      90299, // Reinforced Sapphirium Battleplate - 4 Piece Bonus (Item - Paladin T11 Retribution 4P Bonus)
+      90301, // Reinforced Sapphirium Battlearmor - 2 Piece Bonus (Item - Paladin T11 Protection 2P Bonus)
+      90306, // Reinforced Sapphirium Battlearmor - 4 Piece Bonus (Item - Paladin T11 Protection 4P Bonus)
           0,
     },
   },
@@ -2498,7 +2598,10 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70730, // Ahn'Kahar Blood Hunter's Battlegear - 4 Piece Bonus (Item - Hunter T10 4P Bonus)
           0,
     },
+    // Tier 11 bonuses (2 spells)
     {
+      89923, // Lightning-Charged Battlegear - 2 Piece Bonus (Item - Hunter T11 2P Bonus)
+      89925, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
           0,
     },
   },
@@ -2571,7 +2674,10 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70805, // Shadowblade's Battlegear - 2 Piece Bonus (Item - Rogue T10 2P Bonus)
           0,
     },
+    // Tier 11 bonuses (2 spells)
     {
+      90460, // Wind Dancer's Regalia - 2 Piece Bonus (Item - Rogue T11 2P Bonus)
+      90473, // Wind Dancer's Regalia - 4 Piece Bonus (Item - Rogue T11 4P Bonus)
           0,
     },
   },
@@ -2643,7 +2749,10 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70801, // Crimson Acolyte's Regalia - 4 Piece Bonus (Item - Priest T10 Shadow 4P Bonus)
           0,
     },
+    // Tier 11 bonuses (2 spells)
     {
+      89915, // Mercurial Regalia - 2 Piece Bonus (Item - Priest T11 Shadow 2P Bonus)
+      89922, // Mercurial Regalia - 4 Piece Bonus (Item - Priest T11 Shadow 4P Bonus)
           0,
     },
   },
@@ -2702,7 +2811,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70656, // Scourgelord's Battlegear - 4 Piece Bonus (Item - Death Knight T10 Melee 4P Bonus)
           0,
     },
+    // Tier 11 bonuses (4 spells)
     {
+      90454, // Magma Plated Battlearmor - 2 Piece Bonus (Item - Death Knight T11 Blood 2P Bonus)
+      90456, // Magma Plated Battlearmor - 4 Piece Bonus (Item - Death Knight T11 Blood 4P Bonus)
+      90457, // Magma Plated Battlegear - 2 Piece Bonus (Item - Death Knight T11 DPS 2P Bonus)
+      90459, // Magma Plated Battlegear - 4 Piece Bonus (Item - Death Knight T11 DPS 4P Bonus)
           0,
     },
   },
@@ -2789,7 +2903,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70832, // Frost Witch's Battlegear - 4 Piece Bonus (Item - Shaman T10 Enhancement 4P Bonus)
           0,
     },
+    // Tier 11 bonuses (4 spells)
     {
+      90501, // Battlegear of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Enhancement 2P Bonus)
+      90502, // Battlegear of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Enhancment 4P Bonus)
+      90503, // Regalia of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Elemental 2P Bonus)
+      90505, // Regalia of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Elemental 4P Bonus)
           0,
     },
   },
@@ -2862,7 +2981,10 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70752, // Bloodmage's Regalia - 2 Piece Bonus (Item - Mage T10 2P Bonus)
           0,
     },
+    // Tier 11 bonuses (2 spells)
     {
+      90290, // Firelord's Vestments - 2 Piece Bonus (Item - Mage T11 2P Bonus)
+      90291, // Firelord's Vestments - 4 Piece Bonus (Item - Mage T11 4P Bonus)
           0,
     },
   },
@@ -2935,7 +3057,10 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70841, // Dark Coven's Regalia - 4 Piece Bonus (Item - Warlock T10 4P Bonus)
           0,
     },
+    // Tier 11 bonuses (2 spells)
     {
+      89934, // Shadowflame Regalia - 2 Piece Bonus (Item - Warlock T11 2P Bonus)
+      89935, // Shadowflame Regalia - 4 Piece Bonus (Item - Warlock T11 4P Bonus)
           0,
     },
   },
@@ -3028,7 +3153,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       70726, // Lasherweave Battlegear - 4 Piece Bonus (Item - Druid T10 Feral 4P Bonus)
           0,
     },
+    // Tier 11 bonuses (4 spells)
     {
+      90160, // Stormrider's Regalia - 2 Piece Bonus (Item - Druid T11 Balance 2P Bonus)
+      90162, // Stormrider's Battlegarb - 2 Piece Bonus (Item - Druid T11 Feral 2P Bonus)
+      90163, // Stormrider's Regalia - 4 Piece Bonus (Item - Druid T11 Balance 4P Bonus)
+      90165, // Stormrider's Battlegarb - 4 Piece Bonus (Item - Druid T11 Feral 4P Bonus)
           0,
     },
   },
