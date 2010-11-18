@@ -1151,16 +1151,8 @@ struct auto_attack_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( player_t* player ) :
-      warrior_attack_t( "bladestorm_tick", player, SCHOOL_PHYSICAL, TREE_ARMS, false )
+      warrior_attack_t( "bladestorm_tick", 50622, player, TREE_ARMS, false )
   {
-    warrior_t* p = player -> cast_warrior();
-
-    id = 50622;
-    parse_data( p -> player_data );
-    
-    if ( sim -> P403 )
-      weapon_multiplier = 1.5;
-
     dual        = true;
     background  = true;
     aoe         = true;
@@ -1583,9 +1575,6 @@ struct mortal_strike_t : public warrior_attack_t
     id = 12294;
     parse_data( p -> player_data );
 
-    if ( sim -> P403 )
-      weapon_multiplier           = 1.5;
-
     base_multiplier            *= 1.0 + p -> glyphs.mortal_strike * 0.10;
     base_multiplier            *= 1.0 + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
@@ -1630,9 +1619,6 @@ struct overpower_t : public warrior_attack_t
 
     id = 7384;
     parse_data( p -> player_data );
-
-    if ( sim -> P403 )
-      weapon_multiplier = 1.25;
 
     may_dodge  = false;
     may_parry  = false;
@@ -1728,8 +1714,6 @@ struct raging_blow_t : public warrior_attack_t
 
     base_crit += p -> glyphs.raging_blow * 0.05;
     stancemask = STANCE_BERSERKER;
-
-    weapon_multiplier *= sim -> P403 ? 1.1 : 1.875;
   }
 
   // We run this attack again for off-hand but we don't re-consume
@@ -2035,8 +2019,7 @@ struct slam_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    // id = 50783 has the real info including normalize_weapon_speed = true
-    //            but is currently suffering from the real_ppl *100 bug.
+    // id = 50783 seems to have better info but isn't scaling.
     id = 1464;
     parse_data( p -> player_data );
     normalize_weapon_speed      = true;
@@ -2152,9 +2135,6 @@ struct whirlwind_t : public warrior_attack_t
     id = 1680;
     parse_data( p -> player_data );
 
-    if ( sim -> P403 )
-      weapon_multiplier = 0.65;
-
     aoe               = true;
     stancemask        = STANCE_BERSERKER;
   }
@@ -2205,8 +2185,8 @@ struct victory_rush_t : public warrior_attack_t
     id = 34428;
     parse_data( p -> player_data );
 
+    // FIXME: doesn't have a weapon component.
     weapon           = &( p -> main_hand_weapon );
-    direct_power_mod = sim -> P403 ? 0.56 : 0.45;
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
   }
 
