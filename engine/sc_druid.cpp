@@ -296,8 +296,8 @@ struct druid_cat_attack_t : public attack_t
     tick_may_crit = true;
   }
 
-  druid_cat_attack_t( const char* n, uint32_t id, druid_t* p ) :
-    attack_t( n, id, p, 0 ), 
+  druid_cat_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
+    attack_t( n, id, p, 0, special ), 
     adds_combo_points( 0 )
   {
     adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
@@ -972,7 +972,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( result_is_hit() && target -> health_percentage() <= p -> talents.blood_in_the_water -> base_value() )
     {
-      if ( p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> proc_chance() ) )
+      if ( p -> dots_rip -> ticking() && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> proc_chance() ) )
       {
         p -> dots_rip -> action -> refresh_duration();
       }
@@ -1137,7 +1137,7 @@ struct rake_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     direct_power_mod  = 0.23;
-    tick_power_mod    = 0.42;
+    tick_power_mod    = 0.14; // 0.42 / 3 ticks
   }
 };
 
@@ -1188,12 +1188,26 @@ struct rip_t : public druid_cat_attack_t
     if ( p -> glyphs.rip )
       base_multiplier *= 1.15;
   }
+  
+  virtual void execute()
+  {
+    // We have to save these values for refreshes by Blood in the Water, so
+    // we simply reset them to zeroes on each execute and check them in ::player_buff.
+    base_td        = 0.0;
+    tick_power_mod = 0.0;
+
+    druid_cat_attack_t::execute();
+  }
 
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
-    base_td        = base_td_init + p -> buffs_combo_points -> stack() * base_dmg_per_point;
-    tick_power_mod = p -> buffs_combo_points -> stack() * ap_per_point;
+    if ( base_td == 0.0 && tick_power_mod == 0.0 )
+    {
+      base_td        = base_td_init + p -> buffs_combo_points -> stack() * base_dmg_per_point;
+      tick_power_mod = p -> buffs_combo_points -> stack() * ap_per_point;
+    }
+
     druid_cat_attack_t::player_buff();
   }
 };
@@ -3777,22 +3791,6 @@ int druid_t::decode_set( item_t& item )
                     strstr( s, "legguards"    ) ||
                     strstr( s, "handgrips"    ) );
 
-  if ( strstr( s, "dreamwalker" ) )
-  {
-    if ( is_caster ) return SET_T7_CASTER;
-    if ( is_melee  ) return SET_T7_MELEE;
-  }
-  if ( strstr( s, "nightsong" ) )
-  {
-    if ( is_caster ) return SET_T8_CASTER;
-    if ( is_melee  ) return SET_T8_MELEE;
-  }
-  if ( strstr( s, "malfurions" ) ||
-       strstr( s, "runetotems" ) )
-  {
-    if ( is_caster ) return SET_T9_CASTER;
-    if ( is_melee  ) return SET_T9_MELEE;
-  }
   if ( strstr( s, "lasherweave" ) )
   {
     if ( is_caster ) return SET_T10_CASTER;
