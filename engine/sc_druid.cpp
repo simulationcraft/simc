@@ -1041,14 +1041,6 @@ struct maim_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
   }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() )
-      return false;
-
-    return druid_cat_attack_t::ready();
-  }
 };
 
 // Mangle (Cat) =============================================================
@@ -1307,6 +1299,46 @@ struct shred_t : public druid_cat_attack_t
         return false;
 
     return druid_cat_attack_t::ready();
+  }
+};
+
+// Skull Bash (Cat) =========================================================
+
+struct skull_bash_cat_t : public druid_cat_attack_t
+{
+  skull_bash_cat_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "skull_bash_cat", 22570, player )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+  }
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
+    return druid_cat_attack_t::ready();
+  }
+};
+
+// Swipe (Cat) ==============================================================
+
+struct swipe_cat_t : public druid_cat_attack_t
+{
+  swipe_cat_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "swipe_cat", 62078, player )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    
+    aoe = true;
   }
 };
 
@@ -1678,9 +1710,7 @@ struct maul_t : public druid_bear_attack_t
     {
       player_multiplier *= 1 + 0.20/3.0 * p -> talents.rend_and_tear -> rank();
     }
-
   }
-
 };
 
 // Swipe (Bear) ============================================================
@@ -3022,21 +3052,20 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rip"               ) return new               rip_t( this, options_str );
   if ( name == "savage_roar"       ) return new       savage_roar_t( this, options_str );
   if ( name == "shred"             ) return new             shred_t( this, options_str );
+  if ( name == "skull_bash_cat"    ) return new    skull_bash_cat_t( this, options_str );
   if ( name == "starfire"          ) return new          starfire_t( this, options_str );
   if ( name == "starfall"          ) return new          starfall_t( this, options_str );
   if ( name == "starsurge"         ) return new         starsurge_t( this, options_str );
   if ( name == "stealth"           ) return new           stealth_t( this, options_str );
   if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
+  if ( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
   if ( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
   if ( name == "treants"           ) return new     treants_spell_t( this, options_str );
   if ( name == "typhoon"           ) return new           typhoon_t( this, options_str );
   if ( name == "wrath"             ) return new             wrath_t( this, options_str );
 #if 0
   if ( name == "cower"             ) return new             cower_t( this, options_str );
-  if ( name == "maim"              ) return new              maim_t( this, options_str );
   if ( name == "prowl"             ) return new             prowl_t( this, options_str );
-  if ( name == "ravage"            ) return new            ravage_t( this, options_str );
-  if ( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
 #endif
 
   return player_t::create_action( name, options_str );
