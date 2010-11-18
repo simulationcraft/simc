@@ -382,6 +382,14 @@ struct warrior_attack_t : public attack_t
     _init_warrior_attack_t();
   }
 
+  /* Class spell data based construction, spell name in s_name */
+  warrior_attack_t( const char* n, const char* s_name, player_t* player ) :
+    attack_t( n, s_name, player, TREE_NONE, true ),
+    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+  { 
+    _init_warrior_attack_t();
+  }
+
   void _init_warrior_attack_t()
   {
     may_crit   = true;
@@ -1256,21 +1264,17 @@ struct bladestorm_t : public warrior_attack_t
 struct bloodthirst_t : public warrior_attack_t
 {
   bloodthirst_t( player_t* player, const std::string& options_str ) :
-      warrior_attack_t( "bloodthirst",  player, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "bloodthirst", "Bloodthirst", player )
   {
     warrior_t* p = player -> cast_warrior();
     check_spec( TREE_FURY );
 
     parse_options( NULL, options_str );
 
-    id = 23881;
-    parse_data( p -> player_data );
-
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier  = 0;
 
-    // Bloodthirst's values can't be derived by parse_data() for now.
-    direct_power_mod   = sim -> P403 ? 0.62 : 0.75;
+    direct_power_mod   = effect_min( 1 ) / 100.0;
 
     base_multiplier   *= 1.0 + p -> glyphs.bloodthirst * 0.10
                              + p -> set_bonus.tier11_2pc_melee() * 0.05;
