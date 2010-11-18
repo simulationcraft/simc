@@ -614,7 +614,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, double cd, int rng_type=RNG_DEFAULT ) :
+  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, double cd=0, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm ), cooldown( cd ), cooldown_ready( 0 )
   {
