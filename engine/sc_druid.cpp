@@ -1084,6 +1084,53 @@ struct mangle_cat_t : public druid_cat_attack_t
   }
 };
 
+// Pounce ===================================================================
+
+struct pounce_bleed_t : public druid_cat_attack_t
+{
+  pounce_bleed_t( druid_t* player ) :
+    druid_cat_attack_t( "pounce_bleed", 9007, player )
+  {
+    dual           = true;
+    background     = true;
+    stats          = player -> get_stats( "pounce" );
+    tick_power_mod = 0; // FIXME: Does pounce scale?
+  }
+
+  virtual void tick()
+  {
+    druid_cat_attack_t::tick();
+    update_stats( DMG_OVER_TIME );
+  }
+};
+
+struct pounce_t : public druid_cat_attack_t
+{
+  pounce_bleed_t* pounce_bleed;
+
+  pounce_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "pounce", 9005, player )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    requires_stealth = true;
+    pounce_bleed     = new pounce_bleed_t( p );
+  }
+
+  virtual void execute()
+  {
+    druid_cat_attack_t::execute();
+    if ( result_is_hit() )
+      pounce_bleed -> execute();
+  }
+};
+
 // Rake =====================================================================
 
 struct rake_t : public druid_cat_attack_t
@@ -1097,9 +1144,26 @@ struct rake_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    adds_combo_points = true;
     direct_power_mod  = 0.23;
     tick_power_mod    = 0.42;
+  }
+};
+
+// Ravage ===================================================================
+
+struct ravage_t : public druid_cat_attack_t
+{
+  ravage_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "ravage", 6785, player )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    requires_position = POSITION_BACK;
+    requires_stealth  = true;
   }
 };
 
@@ -2952,7 +3016,9 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonfire"          ) return new          moonfire_t( this, options_str );
   if ( name == "moonkin_form"      ) return new      moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness" ) return new  druids_swiftness_t( this, options_str );
+  if ( name == "pounce"            ) return new            pounce_t( this, options_str );
   if ( name == "rake"              ) return new              rake_t( this, options_str );
+  if ( name == "ravage"            ) return new            ravage_t( this, options_str );
   if ( name == "rip"               ) return new               rip_t( this, options_str );
   if ( name == "savage_roar"       ) return new       savage_roar_t( this, options_str );
   if ( name == "shred"             ) return new             shred_t( this, options_str );
