@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (659)
 
-// 659 talents, wow build 13277
+// 659 talents, wow build 13316
 static struct talent_data_t __ptr_talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 } },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 } },
@@ -660,5 +660,5 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Protector of the Innocent"         , 12189, 0x00,  0, 0x002, 0x0,     0,  0,  1,  0, { 20138, 20139, 20140 } },
   { "Divinity"                          , 12198, 0x00,  1, 0x002, 0x0,     0,  0,  0,  0, { 63646, 63647, 63648 } },
   { "Improved Blood Tap"                , 12223, 0x00,  0, 0x020, 0x0,     0,  0,  0,  1, { 94553, 94555,     0 } },
-  { "Rapid Renewal"                     , 14738, 0x00,  1, 0x010, 0x0,  9593,  0,  0,  3, { 95649,     0,     0 } },
+  { "Rapid Renewal"                     , 14738, 0x00,  1, 0x010, 0x0,  9593,  1,  0,  3, { 95649,     0,     0 } },
 };
