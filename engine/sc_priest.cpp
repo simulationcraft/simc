@@ -174,6 +174,7 @@ struct priest_t : public player_t
     active_spell_t* chakra;
     active_spell_t* archangel;
     active_spell_t* holy_archangel;
+    active_spell_t* holy_archangel2;
     active_spell_t* dark_archangel;
  
     active_spell_t* penance;
@@ -1071,13 +1072,15 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    m += p -> set_bonus.tier8_2pc_caster() * 0.15;
+    // IDP only crits for *1.5 not *2.0
+    player_crit_bonus_multiplier /= 1.0 + p -> constants.shadow_power_crit_value;
 
     if ( ! p -> bugs )
     {
       m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
-      m += p -> buffs_empowered_shadow -> value();
     }
+
+    m += p -> buffs_empowered_shadow -> value();
 
     player_multiplier *= m;
   } 
@@ -3295,6 +3298,7 @@ void priest_t::init_spells()
   active_spells.chakra                = new active_spell_t( this, "chakra", "Chakra", talents.chakra );
   active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
   active_spells.holy_archangel        = new active_spell_t( this, "holy_archangel", 87152 );
+  active_spells.holy_archangel2       = new active_spell_t( this, "holy_archangel2", 81700 );
   active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
@@ -3538,20 +3542,12 @@ void priest_t::init_values()
     break;
   }
 
-  if ( ! bugs )
-  {
-    constants.dark_archangel_damage_value   = active_spells.dark_archangel   -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
-    constants.dark_archangel_mana_value     = active_spells.dark_archangel   -> effect_base_value( 3 ) / 100.0;
-    constants.holy_archangel_value          = active_spells.archangel        -> base_value();
-    constants.archangel_mana_value          = active_spells.holy_archangel   -> base_value( E_ENERGIZE_PCT );
-  }
-  else
-  {
-    constants.dark_archangel_damage_value   = 0.02;
-    constants.dark_archangel_mana_value     = 0.05;
-    constants.holy_archangel_value          = 0.04;
-    constants.archangel_mana_value          = 0.01;
-  }
+
+  constants.dark_archangel_damage_value   = active_spells.dark_archangel   -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
+  constants.dark_archangel_mana_value     = active_spells.dark_archangel   -> effect_base_value( 3 ) / 100.0;
+  constants.holy_archangel_value          = active_spells.holy_archangel2  -> base_value( E_APPLY_AURA, A_MOD_HEALING_DONE_PERCENT ) / 100.0;
+  constants.archangel_mana_value          = active_spells.holy_archangel   -> base_value( E_ENERGIZE_PCT );
+
   
   constants.inner_fire_spellpower_value     = util_t::ability_rank( level, 425,85,  360,83,  324,82,  120,80, 0,0 );
   constants.inner_fire_armor_mult           = active_spells.inner_fire          -> effect_base_value( 1 ) / 100.0;
