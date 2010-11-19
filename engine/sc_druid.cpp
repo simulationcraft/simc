@@ -118,7 +118,6 @@ struct druid_t : public player_t
     talent_t* moonkin_form;
     talent_t* natures_grace;
     talent_t* natures_majesty;
-//    talent_t* overgrowth;
     talent_t* owlkin_frenzy;
     talent_t* shooting_stars;
     talent_t* solar_beam;
@@ -171,6 +170,8 @@ struct druid_t : public player_t
     int insect_swarm;
     int lacerate;
     int mangle;
+    int mark_of_the_wild;
+    int maul;
     int monsoon;
     int moonfire;
     int rip;
@@ -182,6 +183,7 @@ struct druid_t : public player_t
     int tigers_fury;
     int typhoon;
     int wrath;
+
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -1081,7 +1083,6 @@ struct mangle_cat_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     adds_combo_points = 1; // Not in the DBC
-
     base_multiplier  *= 1.0 + p -> glyphs.mangle * 0.1;
   }
 
@@ -1519,7 +1520,7 @@ void druid_bear_attack_t::player_buff()
 
   if ( p -> talents.master_shapeshifter -> rank() )
   {
-    player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> rank() * 0.04;
+    player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> base_value() * 0.01;
   }
   if ( p -> talents.king_of_the_jungle -> rank() && p -> buffs_enrage -> up() )
   {
@@ -1628,6 +1629,8 @@ struct lacerate_t : public druid_bear_attack_t
   lacerate_t( player_t* player, const std::string& options_str ) :
       druid_bear_attack_t( "lacerate",  player, SCHOOL_BLEED, TREE_FERAL )
   {
+    druid_t* p = player -> cast_druid();
+
     option_t options[] =
     {
       { NULL,     OPT_UNKNOWN, NULL       }
@@ -1643,13 +1646,14 @@ struct lacerate_t : public druid_bear_attack_t
     };
     init_rank( ranks );
 
-    may_crit = true;
-    num_ticks = 5;
-    base_tick_time = 3.0;
+    may_crit         = true;
+    num_ticks        = 5;
+    base_tick_time   = 3.0;
     direct_power_mod = 0.01;
     tick_power_mod   = 0.01;
     tick_may_crit    = true;
-    dot_behavior = DOT_REFRESH;
+    dot_behavior     = DOT_REFRESH;
+    base_crit       += p -> glyphs.lacerate * 0.05;
   }
 
   virtual void execute()
@@ -1753,6 +1757,16 @@ struct maul_t : public druid_bear_attack_t
     //normalize_weapon_speed = false;
 
     cooldown -> duration = 3;
+  }
+
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    druid_bear_attack_t::assess_damage( amount, dmg_type );
+
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> glyphs.maul && target -> adds_nearby )
+      druid_bear_attack_t::additional_damage( amount * 0.50, dmg_type );
   }
 
   virtual void execute()
@@ -1963,7 +1977,7 @@ void druid_spell_t::player_buff()
 
   if ( p -> buffs_moonkin_form -> check() )
   {
-    player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> rank() * 0.04;
+    player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> base_value() * 0.01;
   }
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
@@ -2999,11 +3013,14 @@ struct mark_of_the_wild_t : public druid_spell_t
   mark_of_the_wild_t( player_t* player, const std::string& options_str ) :
       druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION )
   {
+    druid_t* p = player -> cast_druid();
+
     // TODO: Cata => +5% like BoK
     // druid_t* p = player -> cast_druid();
 
     trigger_gcd = 0;
-    id = 1126;
+    id          = 1126;
+    base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
   }
 
   virtual void execute()
@@ -3128,10 +3145,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "treants"           ) return new     treants_spell_t( this, options_str );
   if ( name == "typhoon"           ) return new           typhoon_t( this, options_str );
   if ( name == "wrath"             ) return new             wrath_t( this, options_str );
-#if 0
-  if ( name == "cower"             ) return new             cower_t( this, options_str );
-  if ( name == "prowl"             ) return new             prowl_t( this, options_str );
-#endif
 
   return player_t::create_action( name, options_str );
 }
@@ -3192,7 +3205,6 @@ void druid_t::init_talents()
   talents.natures_swiftness     = new talent_t( this, "natures_swiftness", "Nature's Swiftness" ); 
   talents.natures_grace         = new talent_t( this, "natures_grace", "Nature's Grace" );
   talents.nurturing_instict     = new talent_t( this, "nurturing_instinct", "Nurturing Instinct" );
-//  talents.overgrowth            = new talent_t( this, "overgrowth", "Overgrowth" );
   talents.owlkin_frenzy         = new talent_t( this, "owlkin_frenzy", "Owlkin Frenzy" );
   talents.predatory_strikes     = new talent_t( this, "predatory_strikes", "Predatory Strikes" );
   talents.primal_fury           = new talent_t( this, "primal_fury", "Primal Fury" );
@@ -3248,6 +3260,8 @@ void druid_t::init_glyphs()
     else if ( n == "innervate"             ) glyphs.innervate = 1;
     else if ( n == "insect_swarm"          ) glyphs.insect_swarm = 1;
     else if ( n == "lacerate"              ) glyphs.lacerate = 1;
+    else if ( n == "mark_of_the_wild"      ) glyphs.mark_of_the_wild = 1;
+    else if ( n == "maul"                  ) glyphs.maul = 1;
     else if ( n == "mangle"                ) glyphs.mangle = 1;
     else if ( n == "monsoon"               ) glyphs.monsoon = 1;
     else if ( n == "moonfire"              ) glyphs.moonfire = 1;
@@ -3272,8 +3286,6 @@ void druid_t::init_glyphs()
     else if ( n == "healing_touch"         ) ;
     else if ( n == "hurricane"             ) ;
     else if ( n == "lifebloom"             ) ;
-    else if ( n == "mark_of_the_wild"      ) ;
-    else if ( n == "maul"                  ) ;
     else if ( n == "rake"                  ) ;
     else if ( n == "rebirth"               ) ;
     else if ( n == "regrowth"              ) ;
