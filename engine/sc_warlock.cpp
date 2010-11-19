@@ -1302,7 +1302,7 @@ struct felguard_pet_t : public warlock_main_pet_t
       base_attack_power_multiplier = 0.0;
 
       weapon   = &( p -> main_hand_weapon );
-      base_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
+      base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 2 ) / 100.0;
       if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> base_value();
     }
 
@@ -1911,7 +1911,7 @@ struct bane_of_doom_t : public warlock_spell_t
     warlock_spell_t::tick();
 
     warlock_t* p = player -> cast_warlock();
-    double x = effect_base_value( 2 ) / 100.0 + 0.05+ p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0;
+    double x = effect_base_value( 2 ) / 100.0 + p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0;
     if ( p -> rng_ebon_imp -> roll ( x ) )
     {
       p -> procs_ebon_imp -> occur();
@@ -2363,7 +2363,7 @@ struct drain_life_t : public warlock_spell_t
 
     if ( p -> buffs_soulburn -> check() )
     {
-      t *= 1.0 - 0.6;
+      t *= 1.0 - 0.5;
     }
 
     return t;
@@ -2546,7 +2546,6 @@ struct unstable_affliction_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
-    base_td = effect_base_value( 2 );
     base_execute_time += p -> glyphs.unstable_affliction -> base_value() / 1000.0;
   }
 
@@ -2889,9 +2888,9 @@ struct searing_pain_t : public warlock_spell_t
       player_crit += p -> talent_improved_searing_pain -> effect_base_value( 1 ) / 100.0;
     }
 
-    if ( p -> buffs_soulburn -> check() ) player_crit +=  1.00;
+    if ( p -> buffs_soulburn -> check() ) player_crit +=  p -> buffs_soulburn -> effect_base_value( 3 ) / 100.0;
 
-    if ( p -> buffs_searing_pain_soulburn -> check() ) player_crit += 0.50;
+    if ( p -> buffs_searing_pain_soulburn -> check() ) player_crit += p -> buffs_searing_pain_soulburn -> effect_base_value( 1 ) / 100.0;
 
   }
 
@@ -3418,19 +3417,11 @@ struct demonic_empowerment_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
+    warlock_spell_t::execute();
     if( p -> active_pet -> pet_type == PET_FELGUARD )
     {
-      p -> buffs_demonic_empowerment -> buff_duration = 15.0;
-      p -> buffs_demonic_empowerment -> trigger();
+      p -> active_pet -> buffs.stunned -> expire();
     }
-    else if( p -> active_pet -> pet_type == PET_IMP )
-    {
-      p -> buffs_demonic_empowerment -> buff_duration = 30.0;
-      p -> buffs_demonic_empowerment -> trigger();
-    }
-    else assert( false );
   }
 
   virtual bool ready()
@@ -3592,23 +3583,16 @@ struct dark_intent_t : public warlock_spell_t
 
     if ( dark_intent_target == p )
     {
-      return ! p -> buffs.dark_intent_feedback -> check();
+      if ( p -> buffs.dark_intent_feedback -> check() )
+        return false;
     }
     else
     {
-      return ! dark_intent_target -> buffs.dark_intent -> check();
+      if ( dark_intent_target -> buffs.dark_intent -> check() )
+        return false;
     }
-  }
 
-  virtual double gcd() SC_CONST
-  {
-    warlock_t* p = player -> cast_warlock();
-    double t = warlock_spell_t::gcd();
-
-    if ( p -> sim -> current_time == 0 )
-      t=0;
-
-    return t;
+    return warlock_spell_t::ready();
   }
 };
 
@@ -3650,7 +3634,6 @@ struct demon_soul_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd=0;
     harmful = false;
   }
 
@@ -3705,7 +3688,7 @@ struct hellfire_tick_t : public warlock_spell_t
     direct_tick = true;
 
     warlock_t* p = player -> cast_warlock();
-    base_multiplier *= 1.0 + p -> talent_cremation -> rank() * 0.15;
+    base_multiplier *= 1.0 + p -> talent_cremation -> effect_base_value( 1 ) / 100.0;
     stats = player -> get_stats( "hellfire" );
   }
 
@@ -3748,7 +3731,7 @@ struct hellfire_t : public warlock_spell_t
     if ( p -> talent_inferno -> rank() )
     {
       usable_moving   = true;
-      range += 10.0;
+      range += p -> talent_inferno -> effect_base_value( 1 );
     }
 
   }
