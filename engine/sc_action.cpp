@@ -1266,10 +1266,8 @@ void action_t::refresh_duration()
 
   player_buff();
 
-  if ( sim -> P403 )
-  {
-    snapshot_haste = haste();
-  }
+
+  snapshot_haste = haste();
 
   if ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) )
   {
