@@ -289,20 +289,23 @@ struct druid_cat_attack_t : public attack_t
   int requires_position;
   bool requires_combo_points;
   int adds_combo_points;
+  double min_mangle_expire, max_mangle_expire;
 
   druid_cat_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
       requires_stealth( 0 ),
       requires_position( POSITION_NONE ),
       requires_combo_points( false ),
-      adds_combo_points( 0 )
+      adds_combo_points( 0 ),
+      min_mangle_expire( 0 ), max_mangle_expire( 0 )
   {
     tick_may_crit = true;
   }
 
   druid_cat_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
-    attack_t( n, id, p, 0, special ), 
-    adds_combo_points( 0 )
+      attack_t( n, id, p, 0, special ), 
+      adds_combo_points( 0 ),
+      min_mangle_expire( 0 ), max_mangle_expire( 0 )
   {
     adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
     may_crit              = true;
@@ -326,8 +329,11 @@ struct druid_cat_attack_t : public attack_t
 
 struct druid_bear_attack_t : public attack_t
 {
+  double min_mangle_expire, max_mangle_expire;
+
   druid_bear_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, RESOURCE_RAGE, s, t, true )
+      attack_t( n, player, RESOURCE_RAGE, s, t, true ),
+      min_mangle_expire( 0 ), max_mangle_expire( 0 )
   {
   }
 
@@ -336,6 +342,7 @@ struct druid_bear_attack_t : public attack_t
   virtual void   execute();
   virtual void   consume_resource();
   virtual void   player_buff();
+  virtual bool   ready();
 };
 
 // ==========================================================================
@@ -747,6 +754,8 @@ void druid_cat_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
+    { "mangle>", OPT_FLT, &min_mangle_expire },
+    { "mangle<", OPT_FLT, &max_mangle_expire },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -848,6 +857,16 @@ bool druid_cat_attack_t::ready()
 
   if ( requires_combo_points && ! p -> buffs_combo_points -> check() )
     return false;
+
+  target_t* t = sim -> target;
+
+  if ( min_mangle_expire > 0 )
+    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
+      return false;
+
+  if ( max_mangle_expire > 0 )
+    if ( t -> debuffs.mangle -> remains_gt( max_mangle_expire ) )
+      return false;
 
   return true;
 }
@@ -1456,6 +1475,30 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
+// druid_bear_attack_t::ready ==============================================
+
+bool druid_bear_attack_t::ready()
+{
+  if ( ! attack_t::ready() )
+    return false;
+
+  druid_t*  p = player -> cast_druid();
+  target_t* t = sim -> target;
+
+  if ( ! p -> buffs_bear_form -> check() )
+    return false;
+
+  if ( min_mangle_expire > 0 )
+    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
+      return false;
+
+  if ( max_mangle_expire > 0 )
+    if ( t -> debuffs.mangle -> remains_gt( max_mangle_expire ) )
+      return false;
+
+  return true;
+}
+
 // druid_bear_attack_t::parse_options ======================================
 
 void druid_bear_attack_t::parse_options( option_t*          options,
@@ -1463,6 +1506,8 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
+    { "mangle>", OPT_FLT, &min_mangle_expire },
+    { "mangle<", OPT_FLT, &max_mangle_expire },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
