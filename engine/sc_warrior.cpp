@@ -3105,7 +3105,7 @@ void warrior_t::init_actions()
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
       action_list_str += "/cleave,if=target.adds>0";
-      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up)";
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up|buff.incite.up)";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
       action_list_str += "/rend,if=!ticking&target.health_pct>=20";
       if ( level >= 81 ) action_list_str += "/colossus_smash,if=!buff.colossus_smash.up";
