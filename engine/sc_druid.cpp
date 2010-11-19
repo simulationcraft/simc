@@ -289,23 +289,20 @@ struct druid_cat_attack_t : public attack_t
   int requires_position;
   bool requires_combo_points;
   int adds_combo_points;
-  double min_mangle_expire, max_mangle_expire;
 
   druid_cat_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
       requires_stealth( 0 ),
       requires_position( POSITION_NONE ),
       requires_combo_points( false ),
-      adds_combo_points( 0 ),
-      min_mangle_expire( 0 ), max_mangle_expire( 0 )
+      adds_combo_points( 0 )
   {
     tick_may_crit = true;
   }
 
   druid_cat_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
       attack_t( n, id, p, 0, special ), 
-      adds_combo_points( 0 ),
-      min_mangle_expire( 0 ), max_mangle_expire( 0 )
+      adds_combo_points( 0 )
   {
     adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
     may_crit              = true;
@@ -329,11 +326,8 @@ struct druid_cat_attack_t : public attack_t
 
 struct druid_bear_attack_t : public attack_t
 {
-  double min_mangle_expire, max_mangle_expire;
-
   druid_bear_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, RESOURCE_RAGE, s, t, true ),
-      min_mangle_expire( 0 ), max_mangle_expire( 0 )
+      attack_t( n, player, RESOURCE_RAGE, s, t, true )
   {
   }
 
@@ -342,7 +336,6 @@ struct druid_bear_attack_t : public attack_t
   virtual void   execute();
   virtual void   consume_resource();
   virtual void   player_buff();
-  virtual bool   ready();
 };
 
 // ==========================================================================
@@ -367,7 +360,6 @@ struct druid_spell_t : public spell_t
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   schedule_execute();
-  virtual void   target_debuff( int dmg_type );
 };
 
 // ==========================================================================
@@ -754,8 +746,6 @@ void druid_cat_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "mangle>", OPT_FLT, &min_mangle_expire },
-    { "mangle<", OPT_FLT, &max_mangle_expire },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -857,16 +847,6 @@ bool druid_cat_attack_t::ready()
 
   if ( requires_combo_points && ! p -> buffs_combo_points -> check() )
     return false;
-
-  target_t* t = sim -> target;
-
-  if ( min_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
-      return false;
-
-  if ( max_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_gt( max_mangle_expire ) )
-      return false;
 
   return true;
 }
@@ -1475,30 +1455,6 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
-// druid_bear_attack_t::ready ==============================================
-
-bool druid_bear_attack_t::ready()
-{
-  if ( ! attack_t::ready() )
-    return false;
-
-  druid_t*  p = player -> cast_druid();
-  target_t* t = sim -> target;
-
-  if ( ! p -> buffs_bear_form -> check() )
-    return false;
-
-  if ( min_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_lt( min_mangle_expire ) )
-      return false;
-
-  if ( max_mangle_expire > 0 )
-    if ( t -> debuffs.mangle -> remains_gt( max_mangle_expire ) )
-      return false;
-
-  return true;
-}
-
 // druid_bear_attack_t::parse_options ======================================
 
 void druid_bear_attack_t::parse_options( option_t*          options,
@@ -1506,8 +1462,6 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "mangle>", OPT_FLT, &min_mangle_expire },
-    { "mangle<", OPT_FLT, &max_mangle_expire },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -2051,15 +2005,6 @@ void druid_spell_t::player_buff()
   
   player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
 
-}
-
-// druid_spell_t::target_debuff ============================================
-
-void druid_spell_t::target_debuff( int dmg_type )
-{
-  //druid_t*  p = player -> cast_druid();
-  //target_t* t = target;
-  spell_t::target_debuff( dmg_type );
 }
 
 // Auto Attack =============================================================
@@ -3060,9 +3005,6 @@ struct mark_of_the_wild_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    // TODO: Cata => +5% like BoK
-    // druid_t* p = player -> cast_druid();
-
     trigger_gcd = 0;
     id          = 1126;
     base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
@@ -3565,8 +3507,8 @@ void druid_t::init_actions()
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
         action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
-        action_list_str += "/mangle_bear,mangle<=0.5";
-        action_list_str += "/lacerate,lacerate<=6.9";           // This seems to be the sweet spot to prevent Lacerate falling off.
+        action_list_str += "/mangle_bear,debuff.mangle.remains<=0.5";
+        action_list_str += "/lacerate,if=dot.lacerate.remains<=6.9"; // This seems to be the sweet spot to prevent Lacerate falling off.
         if ( talents.berserk -> rank() ) action_list_str+="/berserk_bear";
         action_list_str += use_str;
         action_list_str += "/mangle_bear";
@@ -3581,18 +3523,19 @@ void druid_t::init_actions()
         action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
-        action_list_str += "/maim";
-        action_list_str += "/faerie_fire_feral,debuff_only=1";
+        action_list_str += "/skull_bash_cat";
+        action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
         action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
         if ( talents.berserk -> rank() )action_list_str += "/berserk_cat,if=energy>=80&energy<=90&!buff.tigers_fury.up";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
+        action_list_str += use_str;
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&target.time_to_die>=9&buff.savage_roar.remains<=8&dot.rip.remains-buff.savage_roar.remains>=-3";
         action_list_str += "/ferocious_bite,if=target.time_to_die<=6&buff.combo_points.stack>=5";
         action_list_str += "/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
         if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
-        action_list_str += "/mangle_cat,mangle<=1";
+        action_list_str += "/mangle_cat,if=debuff.mangle.remains<=1";
         action_list_str += "/rake,if=target.time_to_die>=9";
         action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
         action_list_str += "/shred,if=target.time_to_die<=9";
