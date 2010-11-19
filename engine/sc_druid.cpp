@@ -42,6 +42,7 @@ struct druid_t : public player_t
   buff_t* buffs_stealthed;
   buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
+  buff_t* buffs_t11_4pc_melee;
   buff_t* buffs_tigers_fury;
 
   // Cooldowns
@@ -1094,6 +1095,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       target -> debuffs.mangle -> trigger();
       target -> debuffs.mangle -> source = p;
       trigger_infected_wounds( this );
+      p -> buffs_t11_4pc_melee -> trigger();
     }
   }
 };
@@ -1160,9 +1162,10 @@ struct rake_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    direct_power_mod  = 0.23;
-    tick_power_mod    = 0.14; // 0.42 / 3 ticks
-    num_ticks        += p -> talents.endless_carnage -> rank();
+    direct_power_mod    = 0.23;
+    tick_power_mod      = 0.14; // 0.42 / 3 ticks
+    num_ticks          += p -> talents.endless_carnage -> rank();
+    base_td_multiplier *= 1.0 + p -> set_bonus.tier11_4pc_melee() * 0.10;
   }
 };
 
@@ -1645,14 +1648,15 @@ struct lacerate_t : public druid_bear_attack_t
     };
     init_rank( ranks );
 
-    may_crit         = true;
-    num_ticks        = 5;
-    base_tick_time   = 3.0;
-    direct_power_mod = 0.01;
-    tick_power_mod   = 0.01;
-    tick_may_crit    = true;
-    dot_behavior     = DOT_REFRESH;
-    base_crit       += p -> glyphs.lacerate * 0.05;
+    may_crit            = true;
+    num_ticks           = 5;
+    base_tick_time      = 3.0;
+    direct_power_mod    = 0.01;
+    tick_power_mod      = 0.01;
+    tick_may_crit       = true;
+    dot_behavior        = DOT_REFRESH;
+    base_crit          += p -> glyphs.lacerate * 0.05;
+    base_td_multiplier *= 1.0 + p -> set_bonus.tier11_4pc_melee() * 0.10;
   }
 
   virtual void execute()
@@ -3383,6 +3387,7 @@ void druid_t::init_buffs()
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> rank() * 0.02 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
+  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
 
   buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
@@ -3648,6 +3653,11 @@ double druid_t::composite_attack_power() SC_CONST
   if ( buffs_cat_form  -> check() )
   {
       ap += 2.0 * ( agility() - 10.0 );
+  }
+
+  if ( buffs_t11_4pc_melee -> check() )
+  {
+    ap *= 1.0 + buffs_t11_4pc_melee -> stack() * 0.01;
   }
 
   return floor( ap );
