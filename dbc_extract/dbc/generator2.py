@@ -1,4 +1,3 @@
-    #!/usr/bin/python
 import sys, os, re, types, json
 import parser, db, data
 

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import os, io, struct, stat, sys
 import data
 

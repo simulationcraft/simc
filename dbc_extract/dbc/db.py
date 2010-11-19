@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 class DBCDB(dict):
     def __init__(self, obj = None):
         dict.__init__(self)

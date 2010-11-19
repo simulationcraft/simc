@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys, os, re, types
 
 import parser, db, data, constants

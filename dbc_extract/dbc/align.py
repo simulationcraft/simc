@@ -1,5 +1,3 @@
-#!/usr/bin
-
 import sys, struct
 import parser, db
 

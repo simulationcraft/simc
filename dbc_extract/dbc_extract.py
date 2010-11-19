@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import optparse, sys, os, glob, re
 import dbc.generator, dbc.db, dbc.parser, dbc.patch
