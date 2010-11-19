@@ -81,16 +81,10 @@ struct paladin_t : public player_t
 
   struct spells_t {
     active_spell_t* avenging_wrath;
-    active_spell_t* consecration;
-    active_spell_t* consecration_tick;
     active_spell_t* divine_favor;
     active_spell_t* divine_plea;
-    active_spell_t* exorcism;
     active_spell_t* guardian_of_ancient_kings;
     active_spell_t* guardian_of_ancient_kings_ret;
-    active_spell_t* ancient_fury;
-    active_spell_t* holy_shock;
-    active_spell_t* holy_wrath;
     active_spell_t* inquisition;
     active_spell_t* zealotry;
     active_spell_t* judgements_of_the_bold; // the actual self-buff
@@ -1325,13 +1319,35 @@ struct paladin_spell_t : public spell_t
   bool uses_holy_power;
   double holy_power_chance;
 
-  paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE ) :
-      spell_t( n, p, RESOURCE_MANA, s, t ), uses_holy_power(false), holy_power_chance(0.0)
+  paladin_spell_t(const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE)
+    : spell_t(n, p, RESOURCE_MANA, s, t), uses_holy_power(false), holy_power_chance(0.0)
   {
-    base_multiplier *= 1.0 + 0.01 * p->talents.communion->effect_base_value(3);
+    initialize_();
+  }
 
-    if (p->set_bonus.tier10_2pc_melee())
+  paladin_spell_t( const char* n, uint32_t id, paladin_t* p)
+    : spell_t(n, id, p)
+  {
+    initialize_();
+  }
+
+  paladin_spell_t(const char *n, const char *sname, paladin_t* p)
+    : spell_t(n, sname, p)
+  {
+    initialize_();
+  }
+
+  void initialize_()
+  {
+    base_multiplier *= 1.0 + 0.01 * p()->talents.communion->effect_base_value(3);
+
+    if (p()->set_bonus.tier10_2pc_melee())
       base_multiplier *= 1.05;
+  }
+
+  paladin_t* p() SC_CONST
+  {
+    return static_cast<paladin_t*>(player);
   }
 
   virtual double haste() SC_CONST
@@ -1391,20 +1407,17 @@ struct paladin_spell_t : public spell_t
 
 struct avenging_wrath_t : public paladin_spell_t
 {
-  avenging_wrath_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "avenging_wrath", p )
+  avenging_wrath_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "avenging_wrath", "Avenging Wrath", p )
   {
-    id = p->spells.avenging_wrath->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    parse_data(p->player_data);
     harmful = false;
     parse_effect_data(p->player_data, p->talents.sanctified_wrath->spell_id(), 1);
-    //cooldown -> duration += 0.001 * p -> talents.sanctified_wrath->effect_base_value(1);
   }
 
   virtual void execute()
@@ -1421,19 +1434,18 @@ struct avenging_wrath_t : public paladin_spell_t
 
 struct consecration_tick_t : public paladin_spell_t
 {
-  consecration_tick_t( paladin_t* p ) :
-      paladin_spell_t( "consecration", p )
+  consecration_tick_t( paladin_t* p )
+    : paladin_spell_t( "consecration", 81297, p )
   {
-    id = p->spells.consecration_tick->spell_id();
     aoe        = true;
     dual       = true;
     background = true;
     may_crit   = true;
     may_miss   = true;
 
-    parse_data(p->player_data);
-
-    base_spell_power_multiplier = base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier  = direct_power_mod;
+    base_attack_power_multiplier = extra_coeff();
+    direct_power_mod = 1.0;
 
     base_multiplier *= 1.0 + 0.01 * p->talents.hallowed_ground->effect_base_value(1);
   }
@@ -1453,23 +1465,19 @@ struct consecration_t : public paladin_spell_t
 {
   action_t* consecration_tick;
 
-  consecration_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "consecration", p )
+  consecration_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "consecration", "Consecration", p )
   {
-    id = p->spells.consecration->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    parse_data(p->player_data);
-
     may_miss       = false;
     num_ticks      = 10;
     base_tick_time = 1;
     
-    //base_cost *= 1.0 + 0.01 * p->talents.hallowed_ground->effect_base_value(2);
     parse_effect_data(p->player_data, p->talents.hallowed_ground->spell_id(), 2);
 
     if ( p -> glyphs.consecration )
@@ -1495,12 +1503,11 @@ struct consecration_t : public paladin_spell_t
 
 struct divine_favor_t : public paladin_spell_t
 {
-  divine_favor_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "divine_favor", p )
+  divine_favor_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "divine_favor", "Divine Favor", p )
   {
     check_talent( p -> talents.divine_favor->rank() );
 
-    id = p->spells.divine_favor->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1508,8 +1515,6 @@ struct divine_favor_t : public paladin_spell_t
     parse_options( options, options_str );
 
     harmful = false;
-
-    parse_data(p->player_data);
   }
 
   virtual void execute()
@@ -1527,10 +1532,9 @@ struct divine_favor_t : public paladin_spell_t
 // TODO: shield of the templar generating hopow
 struct divine_plea_t : public paladin_spell_t
 {
-  divine_plea_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "divine_plea", p )
+  divine_plea_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "divine_plea", "Divine Plea", p )
   {
-    id = p->spells.divine_plea->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1538,7 +1542,6 @@ struct divine_plea_t : public paladin_spell_t
     parse_options( options, options_str );
 
     harmful = false;
-    parse_data(p->player_data);
   }
 
   virtual void execute()
@@ -1566,10 +1569,9 @@ struct exorcism_t : public paladin_spell_t
   double saved_multiplier;
   double blazing_light_multiplier;
 
-  exorcism_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "exorcism", p ), art_of_war(0), undead_demon(0)
+  exorcism_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "exorcism", "Exorcism", p ), art_of_war(0), undead_demon(0)
   {
-    id        = p -> spells.exorcism->spell_id();
     option_t options[] =
     {
       { "art_of_war",   OPT_BOOL, &art_of_war   },
@@ -1577,11 +1579,6 @@ struct exorcism_t : public paladin_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    parse_data(p->player_data);
-
-    weapon            = &p->main_hand_weapon;
-    weapon_multiplier = 0.0;
 
     blazing_light_multiplier = 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1);
 
@@ -1682,17 +1679,15 @@ struct exorcism_t : public paladin_spell_t
 // TODO: fix the fugly hack
 struct holy_shock_t : public paladin_spell_t
 {
-  holy_shock_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "holy_shock", p )
+  holy_shock_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_shock", "Holy Shock", p )
   {
-    id = p->spells.holy_shock->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    parse_data(p->player_data);
     // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
     // to do damage is 25912
     parse_effect_data(p->player_data, 25912, 1);
@@ -1719,17 +1714,14 @@ struct holy_shock_t : public paladin_spell_t
 
 struct holy_wrath_t : public paladin_spell_t
 {
-  holy_wrath_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "holy_wrath", p )
+  holy_wrath_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_wrath", "Holy Wrath", p )
   {
-    id = p->spells.holy_wrath->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    parse_data(p->player_data);
 
     // aoe = true; FIXME disabled until we have meteor support
     may_crit = true;
@@ -1745,11 +1737,11 @@ struct holy_wrath_t : public paladin_spell_t
 struct inquisition_t : public paladin_spell_t
 {
   double base_duration;
-  inquisition_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "inquisition", p )
+  inquisition_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "inquisition", "Inquisition", p )
   {
-    assert(p->spells.inquisition->ok());
-    id = p->spells.inquisition->spell_id();
+    assert(ok());
+
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1759,8 +1751,7 @@ struct inquisition_t : public paladin_spell_t
     uses_holy_power = true;
     harmful = false;
     holy_power_chance = p->talents.divine_purpose->proc_chance();
-    parse_data(p->player_data);
-    base_duration = p->player_data.spell_duration(id) * (1.0 + 0.01 * p->talents.inquiry_of_faith->effect_base_value(2));
+    base_duration = duration() * (1.0 + 0.01 * p->talents.inquiry_of_faith->effect_base_value(2));
   }
 
   virtual void execute()
@@ -1788,12 +1779,11 @@ struct inquisition_t : public paladin_spell_t
 
 struct zealotry_t : public paladin_spell_t
 {
-  zealotry_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "zealotry", p )
+  zealotry_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "zealotry", "Zealotry", p )
   {
     check_talent( p -> talents.zealotry->rank() );
 
-    id = p->spells.zealotry->spell_id();
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -1802,7 +1792,6 @@ struct zealotry_t : public paladin_spell_t
 
     uses_holy_power = false;
     harmful = false;
-    parse_data(p->player_data);
   }
 
   virtual void execute()
@@ -1824,18 +1813,16 @@ struct zealotry_t : public paladin_spell_t
 
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
-  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str ) :
-      paladin_spell_t( "guardian_of_ancient_kings", p )
+  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "guardian_of_ancient_kings", 86150, p )
   {
     assert(p->primary_tree() == TREE_RETRIBUTION);
-    id = p->spells.guardian_of_ancient_kings->spell_id();
+
     option_t options[] = 
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    parse_data(p->player_data);
   }
 
   virtual void execute()
@@ -2286,16 +2273,10 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
-  spells.consecration              = new active_spell_t( this, "consecration", "Consecration" );
-  spells.consecration_tick         = new active_spell_t( this, "consecration_tick", 81297 );
   spells.divine_favor              = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
   spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
-  spells.exorcism                  = new active_spell_t( this, "exorcism", "Exorcism" );
   spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", 86150 );
   spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
-  spells.ancient_fury              = new active_spell_t( this, "ancient_fury", 86704 );
-  spells.holy_shock                = new active_spell_t( this, "holy_shock", "Holy Shock" );
-  spells.holy_wrath                = new active_spell_t( this, "holy_wrath", "Holy Wrath" );
   spells.inquisition               = new active_spell_t( this, "inquisition", "Inquisition" );
   spells.zealotry                  = new active_spell_t( this, "zealotry", "Zealotry", talents.zealotry );
   spells.judgements_of_the_wise    = new active_spell_t( this, "judgements_of_the_wise", 31930 );
