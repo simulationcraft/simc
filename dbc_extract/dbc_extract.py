@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import optparse, sys, os, glob, re
-import dbc.generator, dbc.db, dbc.parser, dbc.generator2, dbc.align, dbc.patch
+import dbc.generator, dbc.db, dbc.parser, dbc.patch
 
 parser = optparse.OptionParser( usage= "%prog [-otlbp] [ARGS]", version = "%prog 1.0" )
 parser.add_option("-o", "--out", dest = "output_type", 
@@ -11,7 +11,7 @@ parser.add_option("-o", "--out", dest = "output_type",
 parser.add_option("-t", "--type", dest = "type", 
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
-                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'new_spell', 'new_talent', 'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'glyph_list', 'class_flags', 'set_list' ]), 
+                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'glyph_list', 'class_flags', 'set_list' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [85]", 
                   default = 85, action = "store", type = "int")
@@ -19,7 +19,7 @@ parser.add_option("-p", "--path", dest = "path",
                   help    = "DBC input directory [cwd]", 
                   default = r'.', action = "store", type = "string")
 parser.add_option("-b", "--build", dest = "build", 
-                  help    = "World of Warcraft build number [%d]" % dbc.data.current_patch_level(), 
+                  help    = "World of Warcraft build number", 
                   default = 0, action = "store", type = "int")
 parser.add_option("--prefix", dest = "prefix", 
                   help    = "Data structure prefix string", 
@@ -28,17 +28,16 @@ parser.add_option("--suffix", dest = "suffix",
                   help    = "Data structure suffix string", 
                   default = r'', action = "store", type = "string")
 
-
 (options, args) = parser.parse_args()
+
+if options.build == 0 and options.type != 'header' and options.type != 'patch':
+    parser.error('-b is a mandatory parameter for extraction type "%s"' % options.type)
 
 if options.level % 5 != 0 or options.level > 100:
     parser.error('-l must be given as a multiple of 5 and be smaller than 100')
 
 if options.type == 'view' and len(args) == 0:
     parser.error('View requires a DBC file name and an optional ID number')
-
-if options.type == 'align' and len(args) != 2:
-    parser.error('Alignment check requires exactly two parameters, file_old, file_new')
 
 if options.type == 'header' and len(args) == 0:
     parser.error('Header parsing requires at least a single DBC file to parse it from')
@@ -107,35 +106,6 @@ elif options.type == 'set_list':
     ids = g.filter()
     
     print g.generate(ids)
-elif options.type == 'new_spell':
-    g       = dbc.generator2.SpellDataGenerator(options)
-    g.initialize()
-    ids     = g.filter()
-    effects = { }
-    
-    # Figure out the effect list from id list
-    for spell, filter in ids.iteritems():
-        for effect in g._Spell_db[spell]._effects:
-            if not effect or not filter['effect_list'][effect.index]:
-                continue
-            
-            effects[effect.id] = { }
-            
-    if options.output_type == 'cpp':
-        print g.generate_cpp('Spell', ids)
-        print
-        print g.generate_cpp('SpellEffect', effects)
-    else:
-        print g.generate_json('Spell', g.filter())
-        print
-        print g.generate_json('SpellEffect', effects)
-elif options.type == 'new_talent':
-    g = dbc.generator2.TalentDataGenerator(options)
-    
-    if options.output_type == 'cpp':
-        print g.generate_cpp('Talent', g.filter())
-    else:
-        print g.generate_json('Talent', g.filter())
 elif options.type == 'header':
     dbcs = [ ]
     for fn in args:
@@ -149,10 +119,6 @@ elif options.type == 'header':
 
         sys.stdout.write('%s: records=%d fields=%d record_size=%d string_block_size=%d\n' %
             ( i, dbc_file._records, dbc_file._fields, dbc_file._record_size, dbc_file._string_block_size ))
-elif options.type == 'align':
-    aligner = dbc.align.DBCAligner(options, args[0], args[1])
-
-    print aligner.align()
 elif options.type == 'talent':
     g = dbc.generator.TalentDataGenerator(options)
     if not g.initialize():

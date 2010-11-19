@@ -6,8 +6,6 @@ _REMOVE_FIELD = 0x00
 _ADD_FIELD    = 0x01
 
 _DIFF_DATA = {
-    12604: { }, # No changes
-    12644: { }, # No changes
     12694: { 
         'Spell.dbc' : [ 
             ( ( 'flags_12694', '%#.8x' ), _ADD_FIELD, 'flags_7' )
@@ -22,27 +20,6 @@ _DIFF_DATA = {
             ( 'unk_12759_2', _ADD_FIELD, 'unk_12759_1' ),
         ],
     },
-    12803: { },
-    12857: { },
-    12942: { },
-    12984: { },
-    13033: { },
-    13066: { },
-    13082: { },
-    13117: { },
-    13131: { },
-    13164: { },
-    13183: { },
-    13189: { },
-    13195: { },
-    13202: { },
-    13205: { },
-    13221: { },
-    13241: { },
-    13277: { },
-    13286: { },
-    13287: { },
-    13316: { },
 }
 
 # Base DBC fields, works for 12604, as that's our first DBC data version
@@ -627,9 +604,6 @@ class GameTables(DBCRecord):
 
         return s
         
-def current_patch_level():
-    return sorted(_DIFF_DATA.keys())[len(_DIFF_DATA) - 1]
-    
 def initialize_data_model(build, obj):
     # First, create base classes, based on build id 0
     for dbc_file_name, field_data in _DBC_FIELDS.iteritems():
@@ -666,30 +640,23 @@ def initialize_data_model(build, obj):
         setattr(cls, '_fields', cls_fields)
         setattr(cls, '_format', cls_format)
         setattr(cls, '_field_fmt', cls_field_fmt)
-    
-    
-    # Then, derive patch classes from base
-    old_suffix = ''
-    for build_id in sorted(_DIFF_DATA.keys()):
-        if build > 0 and build_id > build:
-            break
-        
-        build_entry  = _DIFF_DATA[build_id]
-        class_suffix = '%d' % build_id
 
-        for dbc_file_name in _DBC_FIELDS.keys():
-            dbc_diff_data   = build_entry.get(dbc_file_name)
+    # Then, derive patch classes from base
+    for build_id in sorted(_DIFF_DATA.keys()):
+        for dbc_file_name, dbc_fields in _DBC_FIELDS.iteritems():
             class_base_name = dbc_file_name.split('.')[0]
-            class_name      = '%s%s' % ( class_base_name, class_suffix )
-            # Parent class is the previous patch-level class, or base class for first
-            # patch level
-            parent_class    = getattr(obj, '%s%s' % ( class_base_name, old_suffix ))
-            
+            class_name      = r'%s%d' % ( class_base_name, build )
+            dbc_diff_data   = _DIFF_DATA.get(build_id, { }).get(dbc_file_name)
+
             if class_name not in dir(obj):
-                setattr(obj, class_name, type(r'%s' % class_name, ( parent_class, ), dict(parent_class.__dict__)))
-            
-            cls = getattr(obj, class_name)
-            
+                parent_class = getattr(obj, '%s' % class_base_name)
+                setattr(obj, 
+                    r'%s%d' % ( class_base_name, build ), 
+                    type(r'%s%d' % ( class_base_name, build ), ( parent_class, ), dict(parent_class.__dict__))
+                )
+
+            cls             = getattr(obj, '%s%d' % ( class_base_name, build ) )
+
             if not dbc_diff_data:
                 continue
             
@@ -730,5 +697,7 @@ def initialize_data_model(build, obj):
                     del cls._fields[idx_field]
                     del cls._field_fmt[idx_field]
                     delattr(cls, diff_data[0])
-                
-        old_suffix = class_suffix
+
+        if build_id >= build:
+            break
+

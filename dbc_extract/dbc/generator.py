@@ -82,7 +82,7 @@ class BaseScalingDataGenerator(DataGenerator):
         s = ''
 
         for i in self._dbc:
-            s += '// Base scaling data for classes, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+            s += '// Base scaling data for classes, wow build %d\n' % self._options.build
             s += 'static double __%s%s%s[] = {\n' % ( 
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(),
@@ -118,7 +118,7 @@ class CombatRatingsDataGenerator(DataGenerator):
 
         db = self._gtcombatratings_db
         s += '// Combat ratings for levels 1 - %d, wow build %d \n' % ( 
-            self._options.level, self._options.build or data.current_patch_level() )
+            self._options.level, self._options.build )
         s += 'static double __%s%s%s[][%d] = {\n' % ( 
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(),
@@ -138,7 +138,7 @@ class CombatRatingsDataGenerator(DataGenerator):
         s += '};\n\n'
 
         db = self._gtoctclasscombatratingscalar_db
-        s += '// Combat Rating scalar multipliers for classes, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Combat Rating scalar multipliers for classes, wow build %d\n' % self._options.build
         s += 'static double __%s%s%s[][%d] = {\n' % ( 
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             re.sub(r'([A-Z]+)', r'_\1', self._dbc[1]).lower(), 
@@ -178,7 +178,7 @@ class ClassScalingDataGenerator(DataGenerator):
         for i in self._dbc:
             db = getattr(self, '_%s_db' % i.lower())
             s += '// Class based scaling multipliers for levels 1 - %d, wow build %d\n' % ( 
-                self._options.level, self._options.build or data.current_patch_level() )
+                self._options.level, self._options.build )
             s += 'static double __%s%s%s[][%d] = {\n' % ( 
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(), 
@@ -213,7 +213,7 @@ class SpellScalingDataGenerator(DataGenerator):
 
         s = ''
         s += '// Spell scaling multipliers for levels 1 - %d, wow build %d\n' % ( 
-            self._options.level, self._options.build or data.current_patch_level() )
+            self._options.level, self._options.build )
         s += 'static double __%s%s%s[][%d] = {\n' % ( 
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(), 
@@ -275,7 +275,7 @@ class TalentDataGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         )
-        s += '// %d talents, wow build %d\n' % ( len(ids), self._options.build or data.current_patch_level() )
+        s += '// %d talents, wow build %d\n' % ( len(ids), self._options.build )
         s += 'static struct talent_data_t __%stalent%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
@@ -784,7 +784,7 @@ class SpellDataGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         )
-        s += '// %d spells, wow build level %d\n' % ( len(ids), self._options.build or data.current_patch_level() )
+        s += '// %d spells, wow build level %d\n' % ( len(ids), self._options.build )
         s += 'static struct spell_data_t __%sspell%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or ''
@@ -811,8 +811,7 @@ class SpellDataGenerator(DataGenerator):
             fields += spell.field('extra_coeff')
 
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
-            if (self._options.build or data.current_patch_level()) >= 12694 and \
-               (self._options.build or data.current_patch_level()) < 12942:
+            if self._options.build >= 12694 and self._options.build < 12942:
                 range = self._spellrange_db[spell.id_range]
                 if range.id_range > 0:
                     range = self._spellrange_db[range.id_range]
@@ -864,7 +863,7 @@ class SpellDataGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(effects)
         )
-        s += '// %d effects, wow build level %d\n' % ( len(effects), self._options.build or data.current_patch_level() )
+        s += '// %d effects, wow build level %d\n' % ( len(effects), self._options.build )
         s += 'static struct spelleffect_data_t __%sspelleffect%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or ''
@@ -955,7 +954,7 @@ class MasteryAbilityGenerator(DataGenerator):
             data_str.upper(),
             max_ids
         )
-        s += '// Class mastery abilities, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Class mastery abilities, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -1057,7 +1056,7 @@ class RacialSpellGenerator(SpellDataGenerator):
             data_str.upper(),
             max_ids
         )
-        s += '// Racial abilities, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Racial abilities, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][CLASS_SIZE][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper()
@@ -1136,7 +1135,7 @@ class TalentSpecializationGenerator(DataGenerator):
             max_ids
         )
 
-        s += '// Talent tree specialization abilities, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Talent tree specialization abilities, wow build %d\n' % self._options.build 
         s += 'static unsigned __%s_data[][MAX_TALENT_TABS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -1375,7 +1374,7 @@ class SpellListGenerator(SpellDataGenerator):
             max_ids
         )
         s += '#define %s_TREE_SIZE (%d)\n\n' % ( data_str.upper(), len( keys[0] ) )
-        s += '// Class based active abilities, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Class based active abilities, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][%s_TREE_SIZE][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -1684,7 +1683,7 @@ class GlyphListGenerator(SpellDataGenerator):
             max_ids
         )
 
-        s += '// Glyph spells for classes, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Glyph spells for classes, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][3][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -1798,7 +1797,7 @@ class ItemSetListGenerator(SpellDataGenerator):
             max_ids
         )
 
-        s += '// Tier item set bonuses for class, wow build %d\n' % ( self._options.build or data.current_patch_level() )
+        s += '// Tier item set bonuses for class, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][12][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
