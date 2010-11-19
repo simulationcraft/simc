@@ -12,11 +12,8 @@
  * - Seed of Corruption with Soulburn: Trigger Corruptions
  * - Execute felguard:felstorm by player, not the pet
  * - Verify if the current incinerate bonus calculation is correct
- * - Verify shadow bite spell power coefficient
  * - Investigate pet mp5 - probably needs to scale with owner int
  * - Dismissing a pet drops aura -> demonic_pact. Either don't let it dropt if there is another pet alive, or recheck application when dropping it.
- * - Figure out how to calculate Immolation Aura Tick Damage
- * - Why does UA use base_td = effect_base_value(2); ?
  */
 
 // ==========================================================================
@@ -897,7 +894,7 @@ struct warlock_spell_t : public spell_t
 	    player_multiplier *= 1.0 + p -> buffs_demon_soul_felguard -> effect_base_value( 2 ) / 100.0;
     }
 
-    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == 2 )
+    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
     {
       player_crit_multiplier *= 1.0 + p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
     }
@@ -2970,7 +2967,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( ( sim -> P403 || target -> health_percentage() >= 80 ) )
+      if ( ( sim -> P403 || target -> health_percentage() >= p -> talent_improved_soul_fire -> rank_spell() -> effect_base_value( 2 ) ) )
       {
         if ( !p -> buffs.bloodlust -> up() )
           p -> buffs_improved_soul_fire -> trigger();
