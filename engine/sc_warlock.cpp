@@ -1992,7 +1992,7 @@ struct shadow_bolt_t : public warlock_spell_t
     base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0 );
 
-    base_crit += p -> set_bonus.tier10_2pc_caster() * 0.05;
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double execute_time() SC_CONST
@@ -2138,7 +2138,7 @@ struct chaos_bolt_t : public warlock_spell_t
 
     may_resist        = false;
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
-    base_execute_time *= 1 - p -> set_bonus.tier11_2pc_caster() * 0.10;
+    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
   }
 
@@ -2301,8 +2301,9 @@ struct corruption_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0 + p -> set_bonus.tier10_2pc_caster() * 0.05;
+    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_multiplier *= 1.0 + ( p -> talent_improved_corruption -> effect_base_value( 1 ) ) / 100.0;
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void tick()
@@ -2568,7 +2569,7 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       p -> buffs_tier10_4pc_caster -> trigger();
     }
-    if ( p -> set_bonus.tier11_4pc_caster() && tick_dmg > 0 )
+    if ( tick_dmg > 0 )
     {
       p -> buffs_tier11_4pc_caster -> trigger();
     }
@@ -2602,7 +2603,7 @@ struct haunt_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time *= 1 - p -> set_bonus.tier11_2pc_caster() * 0.10;
+    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
     direct_power_mod = 2 / 3.5;
   }
 
@@ -2657,11 +2658,11 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t::tick();
     warlock_t* p = player -> cast_warlock();
     p -> buffs_molten_core -> trigger( 3 );
-    if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
+    if ( tick_dmg > 0 )
     {
       p -> buffs_tier10_4pc_caster -> trigger();
     }
-    if ( p -> set_bonus.tier11_4pc_caster() && tick_dmg > 0 )
+    if ( tick_dmg > 0 )
     {
       p -> buffs_tier11_4pc_caster -> trigger();
     }
@@ -2785,7 +2786,7 @@ struct incinerate_t : public warlock_spell_t
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
-    base_crit		  += p -> set_bonus.tier10_2pc_caster() * 0.05;
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void execute()
@@ -2922,7 +2923,7 @@ struct soul_fire_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 1 ) / 1000.0;
-    base_crit		  += p -> set_bonus.tier10_2pc_caster() * 0.05;
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void execute()
@@ -3452,7 +3453,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time *= 1 - p -> set_bonus.tier11_2pc_caster() * 0.10;
+    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void execute()
@@ -4039,6 +4040,19 @@ void warlock_t::init_talents()
 
 void warlock_t::init_spells()
 {
+  // New set bonus system
+  uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    {     0,    0,      0,     0,     0,     0 }, // Tier6
+    {     0,    0,      0,     0,     0,     0 }, // Tier7
+    {     0,    0,      0,     0,     0,     0 }, // Tier8
+    {     0,    0,      0,     0,     0,     0 }, // Tier9
+    { 70839, 70841,     0,     0,     0,     0 }, // Tier10
+    { 89934, 89935,     0,     0,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
+
+
   player_t::init_spells();
 
   // passive_spells =======================================================================================
@@ -4078,6 +4092,7 @@ void warlock_t::init_spells()
   glyphs.life_tap             = new glyph_t(this, "Glyph of Life Tap");
   glyphs.shadow_bolt          = new glyph_t(this, "Glyph of Shadow Bolt");
 
+  sets                        = new set_bonus_array_t( this, set_bonuses );
 }
 
 // warlock_t::init_glyphs =====================================================
@@ -4219,9 +4234,8 @@ void warlock_t::init_buffs()
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
   buffs_searing_pain_soulburn = new buff_t( this, 79440, "searing_pain_soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
-
-  buffs_tier10_4pc_caster     = new buff_t( this, 70840, "tier10_4pc_caster", 0.15 );
-  buffs_tier11_4pc_caster     = new buff_t( this, 89937, "tier11_4pc_caster", 0.02 );
+  buffs_tier10_4pc_caster     = new buff_t( this, sets -> set ( SET_T10_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier10_4pc_caster", sets -> set ( SET_T10_4PC_CASTER ) -> proc_chance() );
+  buffs_tier11_4pc_caster     = new buff_t( this, sets -> set ( SET_T11_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier11_4pc_caster", sets -> set ( SET_T11_4PC_CASTER ) -> proc_chance() );
 
 }
 
