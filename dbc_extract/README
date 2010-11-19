@@ -50,10 +50,10 @@ Examples
 ========
 
 Extract all relevant spell data from the DBC files
-  $ ./dbc_extract.py -t spell -p /path/to/your/dbc/files > sc_spell_data.inc
+  $ ./dbc_extract.py -b 13286 -t spell -p /path/to/your/dbc/files > sc_spell_data.inc
 
 Extract scaling data from the DBC files, with a prefix
-  $ ./dbc_extract.py -t scale -p /path/to/your/dbc/files --prefix=ptr > sc_scale_data_ptr.inc
+  $ ./dbc_extract.py -b 13286 -t scale -p /path/to/your/dbc/files --prefix=ptr > sc_scale_data_ptr.inc
 
 Patch DBC files to a new build version
   $ ./dbc_extract.py -t patch /path/to/your/old/dbc/files /path/to/your/new/dbc/directory \
@@ -63,9 +63,9 @@ Check the DBC header information of a DBC file
   $ ./dbc_extract.py -t header /path/to/your/dbc/file
 
 View the spell data of Lightning Bolt
-  $ ./dbc_extract.py -t view -p /path/to/your/dbc/files Spell.dbc 403
+  $ ./dbc_extract.py -b 13286 -t view -p /path/to/your/dbc/files Spell.dbc 403
 
 View the spell relationships for a class (VERY EXPERIMENTAL)
-  $ ./ dbc_extract.py -t class_flags -p /path/to/your/dbc/files Shaman
+  $ ./ dbc_extract.py -b 13286 -t class_flags -p /path/to/your/dbc/files Shaman
 
 
