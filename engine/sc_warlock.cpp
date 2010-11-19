@@ -716,7 +716,7 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
+    return owner -> spell_hit * 26.0 / 17.0;
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
@@ -724,14 +724,14 @@ struct warlock_main_pet_t : public warlock_pet_t
   virtual double composite_spell_haste() SC_CONST
   {
     double h = player_t::composite_spell_haste();
-    h *= owner -> composite_spell_haste();
+    h *= owner -> spell_haste;
     return h;
   }
 
   virtual double composite_attack_haste() SC_CONST
   {
     double h = player_t::composite_attack_haste();
-    h *= owner -> composite_spell_haste();
+    h *= owner -> spell_haste;
     return h;
   }
 
@@ -787,13 +787,13 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
     // untested !!
     spell_power[ SCHOOL_MAX ] += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80) * 0.5;
-    attack_power += o -> composite_attack_power() * ( level / 80 );
-    attack_hit += o -> composite_attack_hit();
-    attack_expertise += o -> composite_attack_expertise() * 26.0 / 17.0;
-    spell_haste *= o -> composite_spell_haste();
-    attack_haste *= o -> composite_attack_haste();
-    attack_crit = o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
-    spell_crit = o -> composite_spell_crit(); // Does not seem to benefit from any buffs on its own.
+    attack_power += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 );
+    attack_hit += o -> attack_hit;
+    attack_expertise += o -> attack_expertise * 26.0 / 17.0;
+    spell_haste *= o -> spell_haste;
+    attack_haste *= o -> attack_haste;
+    attack_crit = o -> spell_crit; // Does not seem to benefit from any buffs on its own.
+    spell_crit = o -> spell_crit; // Does not seem to benefit from any buffs on its own.
     // untested!!
   }
 
