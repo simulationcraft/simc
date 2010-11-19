@@ -439,7 +439,7 @@ struct treants_pet_t : public pet_t
   }
 };
 
-// add_combo_point =========================================================
+// add_combo_point ==========================================================
 
 static void add_combo_point( druid_t* p )
 {
@@ -450,77 +450,6 @@ static void add_combo_point( druid_t* p )
   }
 
   p -> buffs_combo_points -> trigger();
-}
-
-// trigger_omen_of_clarity ==================================================
-
-static void trigger_omen_of_clarity( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( a -> aoe ) return;
-  if ( a -> proc ) return;
-
-  if ( p -> buffs_omen_of_clarity -> trigger() )
-    p -> buffs_t10_2pc_caster -> trigger( 1, 0.15 );
-
-}
-
-// trigger_fury_swipes ======================================================
-
-static void trigger_fury_swipes( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( a -> proc ) return;
-
-  if ( a -> result_is_miss() ) return;
-
-  if ( ! a -> weapon ) return;
-
-  if ( ! p -> talents.fury_swipes -> rank() )
-    return;
-
-  if ( p -> cooldowns_fury_swipes -> remains() > 0 )
-    return;
-
-  if ( p -> rng_fury_swipes -> roll( p -> talents.fury_swipes -> proc_chance() ) )
-  {
-      if ( ! p -> active_fury_swipes )
-      {
-        struct fury_swipes_t : public druid_cat_attack_t
-        {
-          fury_swipes_t( druid_t* player ) :
-              druid_cat_attack_t( "fury_swipes", 80861, player )
-          {
-            background = true; 
-            proc       = true;
-            reset();
-          }
-
-          void execute() { attack_t::execute(); }
-          void consume_resource() { }
-        };
-        p -> active_fury_swipes = new fury_swipes_t( p );
-      }
-
-    p -> active_fury_swipes    -> execute();
-    p -> cooldowns_fury_swipes -> start( 3.0 );
-    p -> procs_fury_swipes     -> occur();
-  }
-}
-
-// trigger_infected_wounds ==================================================
-
-static void trigger_infected_wounds( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( p -> talents.infected_wounds -> rank() )
-  {
-    a -> target -> debuffs.infected_wounds -> trigger();
-    a -> target -> debuffs.infected_wounds -> source = p;
-  }
 }
 
 // trigger_earth_and_moon ===================================================
@@ -537,7 +466,7 @@ static void trigger_earth_and_moon( spell_t* s )
   t -> debuffs.earth_and_moon -> source = p;
 }
 
-// trigger_eclipse_proc ====================================================
+// trigger_eclipse_proc =====================================================
 
 static void trigger_eclipse_proc( druid_t* p )
 {
@@ -620,7 +549,145 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
   }
 }
 
-// trigger_t10_4pc_caster ==================================================
+// trigger_energy_refund ====================================================
+
+static void trigger_energy_refund( druid_cat_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! a -> adds_combo_points )
+    return;
+
+  double energy_restored = a -> resource_consumed * 0.80;
+
+  p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
+}
+
+// trigger_fury_swipes ======================================================
+
+static void trigger_fury_swipes( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( a -> proc ) return;
+
+  if ( ! a -> weapon ) return;
+
+  if ( ! p -> talents.fury_swipes -> rank() )
+    return;
+
+  if ( p -> cooldowns_fury_swipes -> remains() > 0 )
+    return;
+
+  if ( p -> rng_fury_swipes -> roll( p -> talents.fury_swipes -> proc_chance() ) )
+  {
+    if ( ! p -> active_fury_swipes )
+    {
+      struct fury_swipes_t : public druid_cat_attack_t
+      {
+        fury_swipes_t( druid_t* player ) :
+            druid_cat_attack_t( "fury_swipes", 80861, player )
+        {
+          background  = true; 
+          proc        = true;
+          trigger_gcd = 0;
+          reset();
+        }
+      };
+      p -> active_fury_swipes = new fury_swipes_t( p );
+    }
+
+    p -> active_fury_swipes    -> execute();
+    p -> cooldowns_fury_swipes -> start( 3.0 );
+    p -> procs_fury_swipes     -> occur();
+  }
+}
+
+// trigger_infected_wounds ==================================================
+
+static void trigger_infected_wounds( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( p -> talents.infected_wounds -> rank() )
+  {
+    a -> target -> debuffs.infected_wounds -> trigger();
+    a -> target -> debuffs.infected_wounds -> source = p;
+  }
+}
+
+// trigger_omen_of_clarity ==================================================
+
+static void trigger_omen_of_clarity( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( a -> aoe ) return;
+  if ( a -> proc ) return;
+
+  if ( p -> buffs_omen_of_clarity -> trigger() )
+    p -> buffs_t10_2pc_caster -> trigger( 1, 0.15 );
+
+}
+
+// trigger_primal_fury (Bear ) ==============================================
+
+static void trigger_primal_fury( druid_bear_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! p -> talents.primal_fury -> rank() )
+    return;
+
+  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury -> rank() * 0.5 ) )
+  {
+    p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_primal_fury );
+  }
+}
+
+// trigger_primal_fury (Cat) ================================================
+
+static void trigger_primal_fury( druid_cat_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! p -> talents.primal_fury -> rank() )
+    return;
+
+  if ( ! a -> adds_combo_points )
+    return;
+
+  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury -> rank() * 0.5 ) )
+  {
+    add_combo_point( p );
+    p -> procs_primal_fury -> occur();
+  }
+}
+
+// trigger_primal_madness (Cat) =============================================
+
+static void trigger_primal_madness( druid_cat_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! p -> talents.primal_madness -> rank() )
+    return;
+
+  p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
+}
+
+// trigger_rage_gain ========================================================
+
+static void trigger_rage_gain( druid_bear_attack_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  double rage_gain = 0;
+
+  p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gains_bear_melee );
+}
+
+// trigger_t10_4pc_caster ===================================================
 
 static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int school )
 {
@@ -665,77 +732,6 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
   }
    p -> active_t10_4pc_caster_dot -> base_td = dmg /  p -> active_t10_4pc_caster_dot -> num_ticks;
    p -> active_t10_4pc_caster_dot -> schedule_tick();
-}
-
-// trigger_primal_fury =====================================================
-
-static void trigger_primal_fury( druid_cat_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> talents.primal_fury -> rank() )
-    return;
-
-  if ( ! a -> adds_combo_points )
-    return;
-
-  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury -> rank() * 0.5 ) )
-  {
-    add_combo_point( p );
-    p -> procs_primal_fury -> occur();
-  }
-}
-
-// trigger_primal_madness (Cat) =============================================
-
-static void trigger_primal_madness( druid_cat_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> talents.primal_madness -> rank() )
-    return;
-
-  p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
-}
-
-// trigger_energy_refund ===================================================
-
-static void trigger_energy_refund( druid_cat_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! a -> adds_combo_points )
-    return;
-
-  double energy_restored = a -> resource_consumed * 0.80;
-
-  p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
-}
-
-// trigger_primal_fury =====================================================
-
-static void trigger_primal_fury( druid_bear_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( ! p -> talents.primal_fury -> rank() )
-    return;
-
-  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury -> rank() * 0.5 ) )
-  {
-    p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_primal_fury );
-  }
-}
-
-// trigger_rage_gain =======================================================
-
-static void trigger_rage_gain( druid_bear_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  double rage_gain = 0;
-
-  p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gains_bear_melee );
 }
 
 // ==========================================================================
