@@ -914,7 +914,7 @@ struct warlock_spell_t : public spell_t
     // Shadow
     shadow_multiplier *= 1.0 + ( p -> passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 );
     shadow_multiplier *= 1.0 + ( p -> passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
-    shadow_multiplier *= 1.0 + trigger_deaths_embrace( this ) * 0.01;
+    shadow_multiplier *= 1.0 + trigger_deaths_embrace( this );
 
     if ( school == SCHOOL_FIRE )
       player_multiplier *= fire_multiplier;
@@ -978,24 +978,11 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = player -> cast_warlock();
     spell_t::execute();
-    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == 2 )
+    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
     {
       p -> buffs_demon_soul_imp -> decrement();
     }
 
-  }
-
-  // warlock_spell_t::parse_options =============================================
-
-  virtual void parse_options( option_t*          options,
-                                       const std::string& options_str )
-  {
-    option_t base_options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    std::vector<option_t> merged_options;
-    spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
   }
 
   virtual double gcd() SC_CONST
@@ -1062,7 +1049,7 @@ struct warlock_spell_t : public spell_t
 
   // trigger_deaths_embrace ===================================================
 
-  static int trigger_deaths_embrace( spell_t* s )
+  static double trigger_deaths_embrace( spell_t* s )
   {
     warlock_t* p = s -> player -> cast_warlock();
 
@@ -1070,7 +1057,7 @@ struct warlock_spell_t : public spell_t
 
     if ( s -> target -> health_percentage() < 25 )
     {
-      return p -> talent_deaths_embrace -> rank() * 4;
+    	return p -> talent_deaths_embrace -> effect_base_value( 2 ) / 100.0;
     }
 
     return 0;
@@ -1243,7 +1230,7 @@ struct warlock_pet_spell_t : public spell_t
 
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
-      player_multiplier *= 1.10;
+      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
     }
 
   }
@@ -1263,7 +1250,7 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> base_value() );
       direct_power_mod = 0.690;  // From live testing 2010/10/15
-      base_execute_time -= o -> talent_dark_arts -> rank() * 0.25;
+      base_execute_time += o -> talent_dark_arts -> effect_base_value( 1 ) / 1000.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
@@ -1422,7 +1409,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
-      target_multiplier *= 1.0 + o -> talent_dark_arts -> rank() * 0.05;
+      target_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 3 ) / 100.0;
       direct_power_mod   = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
     }
 
@@ -1431,7 +1418,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
       warlock_pet_spell_t::player_buff();
 
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      player_multiplier *= 1.0 + o -> active_dots() * 0.15;
+      player_multiplier *= 1.0 + o -> active_dots() * effect_base_value( 3 ) / 100.0;
     }
 
     virtual void travel( int travel_result, double travel_dmg)
@@ -2531,13 +2518,13 @@ struct drain_soul_t : public warlock_spell_t
     // FIXME! Hack! Deaths Embrace is additive with Drain Soul "execute".
     // Perhaps it is time to add notion of "execute" into action_t class.
 
-    int de_bonus = trigger_deaths_embrace( this );
-    if ( de_bonus ) player_multiplier /= 1.0 + de_bonus * 0.01;
+    double de_bonus = trigger_deaths_embrace( this );
+    if ( de_bonus ) player_multiplier /= 1.0 + de_bonus;
 
 
       if ( target -> health_percentage() < effect_base_value( 3 ) )
       {
-        player_multiplier *= 2.0 + de_bonus * 0.01;
+        player_multiplier *= 2.0 + de_bonus;
       }
   }
 };
