@@ -51,7 +51,12 @@ talent_t::talent_t( player_t* player, const char* t_name, const char* name ) :
   spell_id_t( player, t_name, name ), t_data( 0 ), t_rank( 0 ), t_overridden( false )
 {
   assert( s_player && name && s_player -> sim );
-
+  
+  t_default_rank = new spell_id_t();
+  const_cast< spell_id_t* >( t_default_rank ) -> s_enabled = false;
+  for ( int i = 0; i < MAX_RANK; i++ )
+    t_rank_spells[ i ] = t_default_rank;
+  
   uint32_t id = find_talent_id( name );
   
   if ( id != 0 )
@@ -70,10 +75,25 @@ talent_t::talent_t( const talent_t& copy ) :
   spell_id_t( copy ), t_data( copy.t_data ), t_rank( copy.t_rank ),
   t_enabled( copy.t_enabled ), t_overridden( copy.t_overridden )
 {
+  t_default_rank = new spell_id_t();
+  for ( int i = 0; i < MAX_RANK; i++ )
+    t_rank_spells[ i ] = t_default_rank;
+  
 // Not sure if I should push back or not yet.
 /*
   s_player -> talent_list2.push_back( const_cast<talent_t *>( this ) );
 */
+}
+
+talent_t::~talent_t()
+{
+  for ( int i = 0; i < MAX_RANK; i++ )
+  {
+    if ( t_rank_spells[ i ] && t_rank_spells[ i ] != this && t_rank_spells[ i ] != t_default_rank )
+      delete t_rank_spells[ i ];
+  }
+  
+  delete t_default_rank;
 }
 
 bool talent_t::ok() SC_CONST
@@ -92,6 +112,7 @@ std::string talent_t::to_str() SC_CONST
   s << " talent_enabled=" << ( t_enabled ? "true" : "false" );
   if ( t_overridden ) s << " (forced)";
   s << " talent_rank=" << t_rank;
+  s << " max_rank=" << max_rank();
   
   return s.str();
 }
@@ -142,6 +163,25 @@ bool talent_t::set_rank( uint32_t value, bool overridden )
    
   if ( s_player -> sim -> debug ) 
     log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
+  
+  if ( t_rank > 0 )
+  {
+    // Setup all of the talent spells
+    for ( int i = 0; i < MAX_RANK; i++ )
+    {
+      if ( t_rank == (unsigned) i + 1 )
+        t_rank_spells[ i ] = this;
+      else if ( t_data -> rank_id[ i ] && s_player -> player_data.spell_exists( t_data -> rank_id[ i ] ) )
+      {
+        char rankbuf[128];
+        snprintf( rankbuf, sizeof( rankbuf ), "%s_rank_%d", s_token.c_str(), i + 1 );
+        spell_id_t* talent_rank_spell = new spell_id_t( s_player, rankbuf, t_data -> rank_id[ i ] );
+        talent_rank_spell -> s_enabled = s_enabled;
+        t_rank_spells[ i ] = talent_rank_spell;
+        if ( s_player -> sim -> debug ) log_t::output( s_player -> sim, "Talent Base status: %s", t_rank_spells[ i ] -> to_str().c_str() );
+      }
+    }
+  }
   return true;
 }
 
@@ -183,6 +223,17 @@ uint32_t talent_t::rank_spell_id( const uint32_t r ) SC_CONST
     return 0;
 
   return s_player -> player_data.talent_rank_spell_id( t_data -> id, r );
+}
+
+const spell_id_t* talent_t::rank_spell( uint32_t r ) SC_CONST
+{
+  assert( r <= max_rank() );
+  
+  // With default argument, return base spell always
+  if ( ! r )
+    return t_rank_spells[ 0 ];
+
+  return t_rank_spells[ r - 1 ];
 }
 
 uint32_t talent_t::rank() SC_CONST

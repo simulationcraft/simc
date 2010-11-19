@@ -1055,7 +1055,7 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( s -> target -> health_percentage() < 25 )
+    if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> rank_spell() -> effect_base_value( 3 ) )
     {
     	return p -> talent_deaths_embrace -> effect_base_value( 2 ) / 100.0;
     }

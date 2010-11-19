@@ -1844,10 +1844,12 @@ struct talent_t : spell_id_t
   unsigned             t_rank;
   bool                 t_enabled;
   bool                 t_overridden;
+  const spell_id_t*    t_rank_spells[ MAX_RANK ];
+  const spell_id_t*    t_default_rank;
 
   talent_t( player_t* p, const char* t_name, const char* name );
   talent_t( const talent_t& copy );
-  virtual ~talent_t() {}
+  virtual ~talent_t();
   virtual uint32_t talent_id() { return ( s_player && t_data ) ? t_data -> id : 0; };
   virtual bool set_rank( uint32_t value, bool overridden = false );
   virtual bool ok() SC_CONST;
@@ -1857,6 +1859,7 @@ struct talent_t : spell_id_t
   virtual uint32_t spell_id() SC_CONST;
   virtual uint32_t max_rank() SC_CONST;
   virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
+  virtual const spell_id_t* rank_spell( uint32_t r = 0 ) SC_CONST;
 
 private:
   virtual uint32_t find_talent_id( const char* name );
