@@ -1059,7 +1059,7 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
       if ( dot_behavior == DOT_REFRESH )
       {
         current_tick = 0;
-		added_ticks = 0;
+        added_ticks = 0;
         snapshot_haste = haste();
         if ( ! ticking ) schedule_tick();
       }

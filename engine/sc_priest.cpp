@@ -1059,9 +1059,7 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     if ( p -> bugs )
     {
-      direct_dmg /= dot_nt;
-      direct_dmg = floor( direct_dmg ) + 0.5;
-      direct_dmg *= dot_nt;
+      direct_dmg += 3.0; // IDP is doing between 2 to 4 extra damage for no reason...
     }
   }
 
@@ -1132,10 +1130,11 @@ struct devouring_plague_t : public priest_spell_t
     {
       double t = p -> talents.improved_devouring_plague -> base_value( E_APPLY_AURA, A_DUMMY, P_DAMAGE_TAKEN ) / 100.0 *
                  ( base_td + total_power() * tick_power_mod );
-
-      devouring_plague_burst -> base_dd_min  = t * num_ticks;
-      devouring_plague_burst -> base_dd_max  = t * num_ticks;
-      devouring_plague_burst -> dot_nt       = num_ticks;
+      double n = p -> bugs ? ceil( num_ticks / p -> spell_haste ) : hasted_num_ticks(); // Currently it's rounding up but only using haste rating haste.
+    
+      devouring_plague_burst -> base_dd_min  = t * n;
+      devouring_plague_burst -> base_dd_max  = t * n;
+      devouring_plague_burst -> dot_nt       = n;
       devouring_plague_burst -> execute();
     }
   }
