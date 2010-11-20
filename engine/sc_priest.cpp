@@ -944,6 +944,12 @@ struct shadowy_apparition_t : public priest_spell_t
     travel_speed      = 3.5;
 
     base_crit += 0.06; // estimated.
+
+    if ( player -> bugs )
+    {
+      base_dd_min *= 1.065;
+      base_dd_max *= 1.065;
+    }
     reset();
   }
 
@@ -980,7 +986,6 @@ struct shadowy_apparition_t : public priest_spell_t
   
     if ( player -> bugs )
     {
-      player_spell_power += 54.0; // Will probably need adjusting for level.
       player_multiplier /= 1.0 + p -> constants.twisted_faith_static_value;
     }
     
