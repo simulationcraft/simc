@@ -1,0 +1,9 @@
+#!simc
+
+patch=4.0.3
+optimal_raid=1
+target_level=83
+
+Mage_Arcane_T10_277.simc
+Mage_Fire_T10_277.simc
+Mage_Frost_T10_277.simc
