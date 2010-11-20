@@ -1,13 +1,13 @@
-#!./simc 
+#!./simc
 
-rogue=Rogue_403_Muti
+rogue=Rogue_Subtlety_T11
 level=85
 race=undead
 use_pre_potion=-1
  
-talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=033323001302211132100300000000000000002030020000000000000
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=032003000000000000000200000000000000000331032321310012321
 
-glyphs=mutilate/backstab/rupture/expose_armor
+glyphs=backstab/shadow_dance/rupture/expose_armor
 
 head=wind_dancers_helmet,stats=281agi_1356armor_228crit_168hit_512sta,gems=relentless_earthsiege_30agi,enchant=60agi_35haste
 neck=amulet_of_dull_dreaming,stats=168agi_112crit_112haste_252sta
@@ -26,4 +26,3 @@ back=viewless_wings,stats=190agi_625armor_127crit_127hit_286sta,enchant=65crit
 main_hand=elementium_shank,stats=146agi_97hit_97haste_219sta,enchant=berserking,weapon=dagger_1.80speed_583min_1082max
 off_hand=throat_slasher,stats=129agi_86crit_86hit_194sta,enchant=berserking,weapon=dagger_1.40speed_401min_745max
 ranged=slashing_thorns,stats=84agi_56crit_56hit_126sta
-

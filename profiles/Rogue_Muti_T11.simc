@@ -1,13 +1,13 @@
 #!./simc 
 
-rogue=Rogue_403_Combat
+rogue=Rogue_Muti_T11
 level=85
 race=undead
 use_pre_potion=-1
  
-talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=033000000000000000003322303100302123210030000000000000000
+talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=033323001302211132100300000000000000002030020000000000000
 
-glyphs=sinister_strike/adrenaline_rush/rupture/expose_armor
+glyphs=mutilate/backstab/rupture/expose_armor
 
 head=wind_dancers_helmet,stats=281agi_1356armor_228crit_168hit_512sta,gems=relentless_earthsiege_30agi,enchant=60agi_35haste
 neck=amulet_of_dull_dreaming,stats=168agi_112crit_112haste_252sta
@@ -23,7 +23,7 @@ finger2=ring_of_blinding_stars,stats=149agi_100haste_100mastery_224sta
 trinket1=fluid_death,stats=321hit,equip=onattackhit_38agi_10stack_15dur
 trinket2=darkmoon_card_hurricane,stats=321agi,equip=onattackhit_5000nature_35%_45cd
 back=viewless_wings,stats=190agi_625armor_127crit_127hit_286sta,enchant=65crit
-# as there are no 359 agi swords/axes/maces make one up
-main_hand=imaginary_359epic_axe,stats=146agi_97hit_97haste_219sta,enchant=berserking,weapon=axe_2.60speed_841min_1563max
+main_hand=elementium_shank,stats=146agi_97hit_97haste_219sta,enchant=berserking,weapon=dagger_1.80speed_583min_1082max
 off_hand=throat_slasher,stats=129agi_86crit_86hit_194sta,enchant=berserking,weapon=dagger_1.40speed_401min_745max
 ranged=slashing_thorns,stats=84agi_56crit_56hit_126sta
+
