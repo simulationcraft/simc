@@ -413,8 +413,8 @@ struct fire_elemental_pet_t : public pet_t
     
     fire_elemental_spell_t( player_t* player, const char* n ) :
       spell_t( n, player, RESOURCE_MANA, SCHOOL_FIRE ),
-      int_multiplier( ( player -> sim -> P403 ) ? 0.8003 : 0.805 ), 
-      sp_multiplier ( ( player -> sim -> P403 ) ? 0.501  : 0.475 )
+      int_multiplier( ( player -> sim -> P404 ) ? 0.8003 : 0.805 ), 
+      sp_multiplier ( ( player -> sim -> P404 ) ? 0.501  : 0.475 )
     {
       
     }
@@ -474,7 +474,7 @@ struct fire_elemental_pet_t : public pet_t
       base_execute_time    = player -> player_data.spell_cast_time( 12470, player -> level );
       
       // Fire elemental works very differently in cataclysm w/ regards to damage
-      if ( player -> sim -> P403 )
+      if ( player -> sim -> P404 )
       {
         base_dd_min        = ( player -> level ) * 6.7;
         base_dd_max        = ( player -> level ) * 7.7;
@@ -497,7 +497,7 @@ struct fire_elemental_pet_t : public pet_t
       base_execute_time    = 0;
       direct_power_mod     = player -> player_data.effect_coeff( 57984, E_SCHOOL_DAMAGE );
       
-      if ( player -> sim -> P403 )
+      if ( player -> sim -> P404 )
       {
         base_dd_min        = ( player -> level ) * 3.169;
         base_dd_max        = ( player -> level ) * 3.687;
@@ -517,8 +517,8 @@ struct fire_elemental_pet_t : public pet_t
     
     fire_melee_t( player_t* player ) :
       attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE ), 
-      int_multiplier( ( player -> sim -> P403 ) ? 0.8003 : 0.805 ), 
-      sp_multiplier ( ( player -> sim -> P403 ) ? 0.5355 : 0.509 )
+      int_multiplier( ( player -> sim -> P404 ) ? 0.8003 : 0.805 ), 
+      sp_multiplier ( ( player -> sim -> P404 ) ? 0.5355 : 0.509 )
     {
       may_crit                     = true;
       base_execute_time            = 0.0;
@@ -527,7 +527,7 @@ struct fire_elemental_pet_t : public pet_t
       base_attack_power_multiplier = 0.0;
       base_execute_time            = 2.0;
       
-      if ( player -> sim -> P403 )
+      if ( player -> sim -> P404 )
       {
         base_dd_min                = ( player -> level ) * 4.916;
         base_dd_max                = ( player -> level ) * 5.301;
@@ -3675,7 +3675,7 @@ void shaman_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
-  if ( ! sim -> P403 )
+  if ( ! sim -> P404 )
   {
     // Tier11
     set_bonuses[ 5 ][ 0 ] = 0;
@@ -4346,7 +4346,7 @@ void player_t::shaman_combat_begin( sim_t* sim )
   if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.05 );
   
   if ( sim -> overrides.mana_spring_totem ) 
-    sim -> auras.mana_spring_totem -> override( 1, sim -> sim_data.effect_min( 5677, ( sim -> P403 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_POWER_REGEN ) );
+    sim -> auras.mana_spring_totem -> override( 1, sim -> sim_data.effect_min( 5677, ( sim -> P404 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_POWER_REGEN ) );
   if ( sim -> overrides.strength_of_earth ) 
-    sim -> auras.strength_of_earth -> override( 1, sim -> sim_data.effect_min( 8076, ( sim -> P403 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_STAT ) );
+    sim -> auras.strength_of_earth -> override( 1, sim -> sim_data.effect_min( 8076, ( sim -> P404 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_STAT ) );
 }

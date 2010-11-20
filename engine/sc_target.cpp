@@ -141,7 +141,7 @@ void target_t::init()
 {
   if ( level < 0 )
   {
-    level = sim->P403 ? 88 : 83;
+    level = sim->P404 ? 88 : 83;
   }
 
   if ( initial_armor < 0 ) 

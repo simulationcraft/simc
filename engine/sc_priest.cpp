@@ -423,7 +423,7 @@ struct shadow_orb_buff_t : public buff_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> sim -> P403 )
+    if ( p -> sim -> P404 )
     {
       p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() * value );
     }
@@ -3267,14 +3267,14 @@ void priest_t::init_spells()
 
   passive_spells.shield_discipline    = new passive_spell_t( this, "shield_discipline", "Shield Discipline" );
 
-  if ( sim -> P403 )
+  if ( sim -> P404 )
   {
     passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
   }
 
 
   // Shadow Mastery
-  if ( sim -> P403 )
+  if ( sim -> P404 )
   {
     passive_spells.shadow_orb_power   = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
     passive_spells.shadow_orbs        = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
@@ -3324,7 +3324,7 @@ void priest_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
-  if ( ! sim -> P403 )
+  if ( ! sim -> P404 )
   {
     // Tier11
     set_bonuses[ 5 ][ 0 ] = 0;
@@ -3341,7 +3341,7 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  if ( sim -> P403 )
+  if ( sim -> P404 )
   {
     buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
   }
@@ -3597,7 +3597,7 @@ void priest_t::init_values()
   cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
   cooldowns_dark_archangel -> duration      = active_spells.dark_archangel      -> cooldown();
 
-  if ( sim ->P403 )
+  if ( sim ->P404 )
   {
     constants.max_shadowy_apparitions       = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
   }

@@ -91,10 +91,10 @@ struct patch_t
     *version  = ( int ) m % 100; m /= 100;
     *arch     = ( int ) m % 100;
   }
-  patch_t() { mask = encode( 4, 0, 1 ); }
+  patch_t() { mask = encode( 4, 0, 3 ); }
 };
 
-#define SC_MAJOR_VERSION "401"
+#define SC_MAJOR_VERSION "403"
 #define SC_MINOR_VERSION "1"
 
 // Forward Declarations ======================================================
@@ -2241,7 +2241,7 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   patch_t     patch;
-  int         P403;
+  int         P404;
   event_t*    free_list;
   target_t*   target;
   target_t*   target_list;
@@ -3513,7 +3513,7 @@ struct action_t : public spell_id_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int P403, moving, vulnerable, invulnerable, wait_on_ready;
+  int P404, moving, vulnerable, invulnerable, wait_on_ready;
   double snapshot_haste;
   bool recast;
   std::string if_expr_str;

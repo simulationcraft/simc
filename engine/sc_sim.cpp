@@ -382,7 +382,7 @@ sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P403( false ),
+    parent( p ), P404( false ),
     free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), canceled( 0 ),
     queue_lag( 0.075 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
@@ -808,9 +808,9 @@ bool sim_t::init()
     deterministic_roll = 1;
   }
 
-  P403 = patch.after( 4, 0, 3 );
+  P404 = patch.after( 4, 0, 4 );
 
-  if ( P403 )
+  if ( P404 )
   {
     sim_data.set_parent( &sim_t::ptr_data );
   }
@@ -1937,9 +1937,9 @@ int sim_t::main( int argc, char** argv )
   // Spell query, dont simulate anything
   else if ( sd )
   {
-    P403 = patch.after( 4, 0, 3 );
+    P404 = patch.after( 4, 0, 4 );
 
-    if ( P403 )
+    if ( P404 )
       sim_data.set_parent( &sim_t::ptr_data );
 
     sd -> evaluate();

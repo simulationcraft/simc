@@ -2191,7 +2191,7 @@ void paladin_t::init_actions()
 
   if ( action_list_str.empty() && primary_tree() == TREE_RETRIBUTION )
   {
-    if (sim->P403)
+    if (sim->P404)
       action_list_str = "flask,type=titanic_strength/food,type=beer_basted_crocolisk";
     else
       action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";

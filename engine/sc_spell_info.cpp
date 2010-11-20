@@ -279,11 +279,11 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
 
   v_min = sim -> sim_data.effect_min( e -> id, 
     sim -> sim_data.spell_scaling_class( spell -> id ),
-    sim -> P403 ? 85 : 80 );
+    sim -> P404 ? 85 : 80 );
 
   v_max = sim -> sim_data.effect_max( e -> id, 
     sim -> sim_data.spell_scaling_class( spell -> id ),
-    sim -> P403 ? 85 : 80 );
+    sim -> P404 ? 85 : 80 );
 
   s << v_min;
   if ( v_min != v_max )
@@ -296,7 +296,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   {
     s << " | Bonus Value: " << sim -> sim_data.effect_bonus( e -> id,
       sim -> sim_data.spell_scaling_class( spell -> id ),
-      sim -> P403 ? 85 : 80 );
+      sim -> P404 ? 85 : 80 );
   }
   
   if ( e -> real_ppl != 0 )
@@ -391,14 +391,14 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     {
       double base_mana = rating_t::get_attribute_base( sim, 
         sim -> sim_data, 
-        ( sim -> P403 ) ? 85 : 80, 
+        ( sim -> P404 ) ? 85 : 80, 
         pt, 
         RACE_NONE, 
         BASE_STAT_MANA );
       
       s << spell -> cost << ( spell -> power_type == 0 ? "% " : " " ) << _resource_strings[ spell -> power_type + 2 ];
       if ( spell -> power_type == 0 ) 
-        s << " (" << floor( spell -> cost * base_mana / 100.0 ) << " mana @" << ( sim -> P403 ? 85 : 80 ) << ")";
+        s << " (" << floor( spell -> cost * base_mana / 100.0 ) << " mana @" << ( sim -> P404 ? 85 : 80 ) << ")";
         
       s << std::endl;
     }
@@ -442,7 +442,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << "Cast Time    : ";
     
     if ( spell -> cast_div )
-      s << sim -> sim_data.spell_cast_time( spell -> id, sim -> P403 ? 85 : 80 );
+      s << sim -> sim_data.spell_cast_time( spell -> id, sim -> P404 ? 85 : 80 );
     else if ( spell -> cast_min != spell -> cast_max )
       s << spell -> cast_min / 1000.0 << " - " << spell -> cast_max / 1000.0;
     else

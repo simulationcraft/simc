@@ -1148,7 +1148,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if ( c != 0 )
     {
-      c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P403 ? 1.50 : 1.75 );
+      c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P404 ? 1.50 : 1.75 );
     }
     return c;
   }
@@ -1174,7 +1174,7 @@ struct arcane_blast_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
     
-    if ( sim -> P403 )
+    if ( sim -> P404 )
       t -= p -> buffs_arcane_blast -> stack() * 0.01;
 
     return t;
@@ -1184,7 +1184,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
     mage_t* p = player -> cast_mage();
-    double ab_stack_multiplier = sim -> P403 ? 0.10 : 0.20;
+    double ab_stack_multiplier = sim -> P404 ? 0.10 : 0.20;
     player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
   }
 };

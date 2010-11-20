@@ -2808,7 +2808,7 @@ struct incinerate_t : public warlock_spell_t
     spell_t::modify_direct_damage();
     warlock_t* p = player -> cast_warlock();
 
-    double divisor = ( sim -> P403 ) ? 6.0 : 4.0;
+    double divisor = ( sim -> P404 ) ? 6.0 : 4.0;
     if ( p -> dots_immolate -> ticking() )
       direct_dmg += sim -> range( base_dd_min, base_dd_max ) / divisor * total_dd_multiplier();
   }
@@ -2868,7 +2868,7 @@ struct searing_pain_t : public warlock_spell_t
 
     // Searing Pain Hotfix Nerf.
     warlock_t* p = player -> cast_warlock();
-    if ( ! sim -> P403 && p -> level == 80 )
+    if ( ! sim -> P404 && p -> level == 80 )
     {
       direct_power_mod = 1.5 / 3.5;
       base_dd_min = 288;
@@ -2967,7 +2967,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( ( sim -> P403 || target -> health_percentage() >= p -> talent_improved_soul_fire -> rank_spell() -> effect_base_value( 2 ) ) )
+      if ( ( sim -> P404 || target -> health_percentage() >= p -> talent_improved_soul_fire -> rank_spell() -> effect_base_value( 2 ) ) )
       {
         if ( !p -> buffs.bloodlust -> up() )
           p -> buffs_improved_soul_fire -> trigger();
@@ -4049,7 +4049,7 @@ void warlock_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
-  if ( ! sim -> P403 )
+  if ( ! sim -> P404 )
   {
     // Tier11
     set_bonuses[ 5 ][ 0 ] = 0;
@@ -4299,13 +4299,13 @@ void warlock_t::init_actions()
   if ( action_list_str.empty() )
   {
     // Flask
-    if ( level >= 80 && sim -> P403 )
+    if ( level >= 80 && sim -> P404 )
       action_list_str += "/flask,type=draconic_mind";
     else if ( level >= 75 )
       action_list_str += "/flask,type=frost_wyrm";
 
     // Food
-    if ( level >= 80 && sim -> P403 ) action_list_str += "/food,type=seafood_magnifique_feast";
+    if ( level >= 80 && sim -> P404 ) action_list_str += "/food,type=seafood_magnifique_feast";
     else if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
 
     // Armor
@@ -4350,7 +4350,7 @@ void warlock_t::init_actions()
     }
 
     // Choose Potion
-    if ( level >= 80 && sim -> P403 )
+    if ( level >= 80 && sim -> P404 )
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
     else if ( level >= 70 )
     {

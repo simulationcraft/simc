@@ -1317,7 +1317,7 @@ struct cleave_t : public warrior_attack_t
                            + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
 
     // Cleave's values can't be derived by parse_data() for now.
-    direct_power_mod = sim -> P403 ? 0.562 : 0.675;
+    direct_power_mod = sim -> P404 ? 0.562 : 0.675;
     base_dd_min      = 6;
     base_dd_max      = 6;
   }
@@ -1515,7 +1515,7 @@ struct execute_t : public warrior_attack_t
     
     // Damage scales directly with AP per rage since 4.0.1.
     // Can't be derived by parse_data() for now.
-    if ( sim -> P403 )
+    if ( sim -> P404 )
       direct_power_mod = 0.0437 * max_consumed;
     else
       direct_power_mod = 0.0525 * max_consumed;
@@ -1557,7 +1557,7 @@ struct heroic_strike_t : public warrior_attack_t
     base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
     base_dd_max       = 8;
-    direct_power_mod  = sim -> P403 ? 0.75 : 0.9;
+    direct_power_mod  = sim -> P404 ? 0.75 : 0.9;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
   }
@@ -2051,7 +2051,7 @@ struct slam_t : public warrior_attack_t
     weapon                      = &( p -> main_hand_weapon );
     base_dd_min                 = p -> player_data.effect_min( 462, p -> type, p -> level );
     base_dd_max                 = p -> player_data.effect_max( 462, p -> type, p -> level );
-    if ( sim -> P403 )
+    if ( sim -> P404 )
       weapon_multiplier = 1.25;
 
     base_crit                  += p -> glyphs.slam * 0.05;
@@ -3045,7 +3045,7 @@ void warrior_t::init_actions()
   if ( action_list_str.empty() )
   {
     // Flask
-    if ( level >= 80 && sim -> P403 )
+    if ( level >= 80 && sim -> P404 )
       action_list_str += "/flask,type=titanic_strength";
     else
       action_list_str += "/flask,type=endless_rage";
@@ -3070,7 +3070,7 @@ void warrior_t::init_actions()
     // Potion
     if ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY )
     {
-      if (level >= 80 && sim -> P403 )
+      if (level >= 80 && sim -> P404 )
         action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react";
       else
         action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
@@ -3447,7 +3447,7 @@ void player_t::warrior_init( sim_t* sim )
 void player_t::warrior_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.battle_shout ) 
-    sim -> auras.battle_shout -> override( 1, sim -> sim_data.effect_min( 6673, ( sim -> P403 ) ? 85 : 80, E_APPLY_AURA, A_MOD_STAT ) );
+    sim -> auras.battle_shout -> override( 1, sim -> sim_data.effect_min( 6673, ( sim -> P404 ) ? 85 : 80, E_APPLY_AURA, A_MOD_STAT ) );
 
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 

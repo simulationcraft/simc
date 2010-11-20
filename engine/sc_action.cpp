@@ -125,7 +125,7 @@ void action_t::_init_action_t()
   max_time_to_die                = 0.0;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
-  P403                           = -1;
+  P404                           = -1;
   moving                         = -1;
   vulnerable                     = 0;
   invulnerable                   = 0;
@@ -373,7 +373,7 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "P403",                   OPT_BOOL,   &P403                  },
+    { "P404",                   OPT_BOOL,   &P404                  },
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
     { "haste<",                 OPT_FLT,    &max_haste             },
     { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
@@ -1297,7 +1297,7 @@ void action_t::extend_duration( int extra_ticks )
   if ( dot_behavior == DOT_REFRESH )
   {
     player_buff();
-    if ( sim -> P403 )
+    if ( sim -> P404 )
     {
       snapshot_haste = haste();
     }
@@ -1482,8 +1482,8 @@ bool action_t::ready()
     if ( ! usable_moving && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
       return false;
 
-  if ( P403 != -1 )
-    if ( P403 != sim -> P403 )
+  if ( P404 != -1 )
+    if ( P404 != sim -> P404 )
       return false;
 
   if ( moving != -1 )
