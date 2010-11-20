@@ -24,9 +24,10 @@ actions+=/templars_verdict,if=buff.holy_power.react==3
 actions+=/crusader_strike,if=buff.hand_of_light.react&(buff.hand_of_light.remains>2)&(buff.holy_power.react<3)
 actions+=/templars_verdict,if=buff.hand_of_light.react
 actions+=/crusader_strike
+actions+=/judgement,if=buff.judgements_of_the_pure.remains<2
+actions+=/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.75
 actions+=/judgement
 actions+=/holy_wrath
-actions+=/wait,sec=0.1,if=(cooldown.crusader_strike.remains>0)&(cooldown.crusader_strike.remains<1)
 actions+=/consecration
 actions+=/divine_plea
 head=reinforced_sapphirium_helmet,type=plate,stats=281str_512sta_228haste_168exp_2784armor,gems=destructive_shadowspirit_20str_20haste_30str,enchant=60str_35mastery

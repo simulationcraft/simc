@@ -2211,10 +2211,11 @@ void paladin_t::init_actions()
     action_list_str += "/crusader_strike,if=buff.hand_of_light.react&(buff.hand_of_light.remains>2)&(buff.holy_power.react<3)";
     action_list_str += "/templars_verdict,if=buff.hand_of_light.react";
     action_list_str += "/crusader_strike";
+    action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<2";
+    // Don't delay CS too much
+    action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.75";
     action_list_str += "/judgement";
     action_list_str += "/holy_wrath";
-    // Don't delay CS for consecration or divine plea
-    action_list_str += "/wait,sec=0.1,if=(cooldown.crusader_strike.remains>0)&(cooldown.crusader_strike.remains<1)";
     action_list_str += "/consecration";
     action_list_str += "/divine_plea";
 
