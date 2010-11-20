@@ -1,9 +1,0 @@
-#!simc
-
-patch=4.0.3
-optimal_raid=1
-target_level=83
-
-Death_Knight_401_Frost_1h.simc
-Death_Knight_401_Frost_2h.simc
-Death_Knight_401_Unholy.simc
