@@ -4299,7 +4299,8 @@ void warlock_t::init_actions()
       action_list_str += "/flask,type=frost_wyrm";
 
     // Food
-    if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
+    if ( level >= 80 && sim -> P403 ) action_list_str += "/food,type=seafood_magnifique_feast";
+    else if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
 
     // Armor
     if ( level >= 62 ) action_list_str += "/fel_armor";

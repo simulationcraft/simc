@@ -7,7 +7,7 @@ use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00300000000000000023002000000000000003322220302201312201
 glyphs=conflagrate/immolate/imp/life_tap
 actions=flask,type=draconic_mind
-actions+=/food,type=fish_feast
+actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
 actions+=/summon_imp
 actions+=/dark_intent
