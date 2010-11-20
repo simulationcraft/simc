@@ -1,11 +1,7 @@
 #!./simc 
 
-patch=4.0.3
-#max_time=180
-
-priest=Priest_401_Heal_Discipline1
+priest=Priest_Heal_Discipline1_T10_277
 level=80
-target_level=83
 race=night_elf
 use_pre_potion=-1
 healer=1

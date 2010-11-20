@@ -1,16 +1,7 @@
 #!./simc 
 
-patch=4.0.3
-max_time=180
-
-#Healer extra lag
-queue_lag=0.15
-gcd_lag=0.3
-channel_lag=0.4
-
-priest=Priest_401_Heal_Holy
+priest=Priest_Heal_Holy_T10_277
 level=80
-target_level=83
 race=night_elf
 use_pre_potion=-1
 healer=1

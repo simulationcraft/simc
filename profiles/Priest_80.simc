@@ -1,0 +1,10 @@
+#!simc
+
+patch=4.0.3
+optimal_raid=1
+target_level=83
+
+Priest_Heal_Discipline1_T10_277.simc
+Priest_Heal_Discipline2_T10_277.simc
+Priest_Heal_Holy_T10_277.simc
+Priest_Shadow_T10_277.simc
