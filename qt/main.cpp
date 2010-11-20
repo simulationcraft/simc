@@ -6,7 +6,6 @@ int main(int argc, char *argv[])
 {
   thread_t::init();
   QApplication a(argc, argv);
-  SimulationCraftWindow w;
 
   AutoUpdater* updater = 0;
 
@@ -18,6 +17,9 @@ int main(int argc, char *argv[])
   QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
 
 #endif
+        
+        SimulationCraftWindow w;
+
   
   if(updater)
   {
@@ -35,8 +37,8 @@ int main(int argc, char *argv[])
 
       if( file.open( QIODevice::ReadOnly ) )
       {
-	w.simulateText->appendPlainText( file.readAll() );
-	file.close();
+        w.simulateText->appendPlainText( file.readAll() );
+        file.close();
       }
     }
     w.mainTab->setCurrentIndex( TAB_SIMULATE );    
