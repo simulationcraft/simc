@@ -348,12 +348,12 @@ struct water_elemental_pet_t : public pet_t
     {
       mage_t* o = player -> cast_pet() -> owner -> cast_mage();
 
-      if ( o -> talents.improved_freeze -> rank() )
+      if ( ! o -> talents.improved_freeze -> rank() )
+        return false;
+
+      if ( o -> buffs_fingers_of_frost -> stack() || o -> cooldowns_deep_freeze -> remains() )
       {
-        if ( o -> buffs_fingers_of_frost -> stack() && o -> cooldowns_deep_freeze -> remains() == 0 )
-        {
-          return true;
-        }
+        return false;
       }
 
       return spell_t::ready();
@@ -3314,7 +3314,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   {
     struct dps_rotation_expr_t : public action_expr_t
     {
-      dps_rotation_expr_t( action_t* a ) : action_expr_t( a, "dps_rotation" ) { result_type = TOK_NUM; }
+      dps_rotation_expr_t( action_t* a ) : action_expr_t( a, "dps_rotation", TOK_NUM ) {}
       virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPS ) ? 1.0 : 0.0; return TOK_NUM; }
     };
     return new dps_rotation_expr_t( a );
@@ -3323,7 +3323,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   {
     struct dpm_rotation_expr_t : public action_expr_t
     {
-      dpm_rotation_expr_t( action_t* a ) : action_expr_t( a, "dpm_rotation" ) { result_type = TOK_NUM; }
+      dpm_rotation_expr_t( action_t* a ) : action_expr_t( a, "dpm_rotation", TOK_NUM ) {}
       virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPM ) ? 1.0 : 0.0; return TOK_NUM; }
     };
     return new dpm_rotation_expr_t( a );
