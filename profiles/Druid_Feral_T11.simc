@@ -1,7 +1,5 @@
 #!./simc 
-patch=4.0.4
-target_level=88
-druid=Druid_403_Feral
+druid=Druid_Feral_T11
 level=85
 race=tauren
 use_pre_potion=-1
