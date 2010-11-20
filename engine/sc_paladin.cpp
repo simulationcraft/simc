@@ -1312,13 +1312,13 @@ struct paladin_spell_t : public spell_t
   }
 
   paladin_spell_t( const char* n, uint32_t id, paladin_t* p)
-    : spell_t(n, id, p)
+    : spell_t(n, id, p), uses_holy_power(false), holy_power_chance(0.0)
   {
     initialize_();
   }
 
   paladin_spell_t(const char *n, const char *sname, paladin_t* p)
-    : spell_t(n, sname, p)
+    : spell_t(n, sname, p), uses_holy_power(false), holy_power_chance(0.0)
   {
     initialize_();
   }
