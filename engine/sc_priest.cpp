@@ -3324,6 +3324,13 @@ void priest_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
+  if ( ! sim -> P403 )
+  {
+    // Tier11
+    set_bonuses[ 5 ][ 0 ] = 0;
+    set_bonuses[ 5 ][ 1 ] = 0;
+  }
+
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 

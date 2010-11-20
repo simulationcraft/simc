@@ -3675,6 +3675,15 @@ void shaman_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
+  if ( ! sim -> P403 )
+  {
+    // Tier11
+    set_bonuses[ 5 ][ 0 ] = 0;
+    set_bonuses[ 5 ][ 1 ] = 0;
+    set_bonuses[ 5 ][ 2 ] = 0;
+    set_bonuses[ 5 ][ 3 ] = 0;
+  }
+
   player_t::init_spells();
 
   // Tree Specialization
