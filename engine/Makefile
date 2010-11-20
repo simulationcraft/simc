@@ -25,6 +25,8 @@ OPTS       = -O3 -ffast-math
 BITS       = 32
 AR         = ar
 COPY       = cp
+REMOVE     = rm -f
+PATHSEP    = /
 ifeq (64,${BITS})
 CPP_FLAGS  += -m64
 LINK_FLAGS += -m64
@@ -53,6 +55,8 @@ LINK_LIBS  = -lwsock32
 OPTS       = -O3
 BITS       = 32
 COPY       = copy
+REMOVE     = del /f
+PATHSEP    = \\
 AR         = ar
 endif
 
@@ -118,7 +122,7 @@ SRC_H   := $(filter %.h,   $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
 OBJ_DIR = .
 OBJ_EXT = o
-SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)/%.$(OBJ_EXT))
+SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 
 .PHONY:	all mostlyclean clean
 
@@ -149,11 +153,11 @@ tarball:
 
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files
-	@rm -f $(SRC_OBJ)
+	@$(REMOVE) $(SRC_OBJ)
 
 clean: mostlyclean
 	-@echo [$(MODULE)] Cleaning target files
-	@rm -f $(MODULE)
+	@$(REMOVE) $(MODULE)
 
 # Deprecated targets
 
