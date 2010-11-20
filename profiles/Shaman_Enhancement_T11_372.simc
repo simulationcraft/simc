@@ -1,37 +1,68 @@
-#!./simc 
+#!./simc
+
 
 shaman=Shaman_Enhancement_T11_372
+
 level=85
+
 race=tauren
+
 use_pre_potion=1
+
 professions=Enchanting=525/Alchemy=525
+
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=303200200000000000023033200130230123210000000000000000000
+
 glyphs=stormstrike/lava_lash/feral_spirit/lightning_shield/healing_stream_totem/ghost_wolf
 actions=flask,type=winds
+
 actions+=/food,type=seafood_magnifique_feast
 actions+=/windfury_weapon,weapon=main
+
 actions+=/flametongue_weapon,weapon=off
+
 actions+=/strength_of_earth_totem
+
 actions+=/windfury_totem
+
 actions+=/mana_spring_totem
+
 actions+=/lightning_shield
+
 actions+=/spirit_wolf
+
 actions+=/tolvir_potion,if=!in_combat
+
 actions+=/snapshot_stats
+
 actions+=/auto_attack
+
 actions+=/wind_shear
+
 actions+=/bloodlust,health_percentage<=25
+
 actions+=/bloodlust,time_to_die<=60
+
 actions+=/tolvir_potion,if=buff.bloodlust.react
+
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react
+
 actions+=/fire_elemental_totem
+
 actions+=/searing_totem
+
 actions+=/lava_lash
+
 actions+=/unleash_elements
+
 actions+=/flame_shock,if=!ticking
+
 actions+=/earth_shock
+
 actions+=/stormstrike
+
 actions+=/fire_nova
+
 head=helmet_of_the_raging_elements,heroic=1,type=mail,stats=325agi_578sta_257hit_197mastery_2071armor,reforge=mastery_exp,gems=fleet_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143mastery_143haste,reforge=haste_hit
 shoulders=spaulders_of_the_raging_elements,heroic=1,type=mail,stats=266agi_429sta_191mastery_171hit_1911armor,reforge=mastery_exp,gems=40agi_10mastery,enchant=50agi_25mastery
@@ -42,28 +73,49 @@ feet=boots_of_vertigo,heroic=1,type=mail,stats=266agi_429sta_191haste_171hit_175
 wrists=chimaron_armguards,heroic=1,type=mail,stats=215agi_322sta_143crit_143hit_1115armor,reforge=crit_exp,enchant=65haste
 hands=grips_of_the_raging_elements,heroic=1,type=mail,stats=266agi_429sta_191crit_171hit_1593armor,reforge=crit_exp,gems=20agi_20hit_10agi,enchant=65mastery
 finger1=lightning_conductor_band,heroic=1,stats=215agi_322sta_143crit_143hit,reforge=crit_exp,enchant=40agi
+
 finger2=signet_of_the_elder_council,stats=190agi_286sta_127haste_127mastery,reforge=haste_exp,enchant=40agi
+
 trinket1=prestors_talisman_of_machination,heroic=1,stats=363agi,equip=onattackhit_2178haste_10%_15dur_60cd
+
 trinket2=essence_of_the_cyclone,heroic=1,stats=363agi,equip=onattackhit_2178crit_10%_10dur_45cd
+
 back=cloak_of_biting_chill,heroic=1,stats=215agi_322sta_143crit_143mastery_673armor,reforge=crit_hit,enchant=65crit
 main_hand=crulkorak_the_lightnings_arc,heroic=1,stats=165agi_248sta_110crit_110haste,reforge=crit_hit,enchant=landslide,weapon=axe_2.60speed_950min_1764max
 off_hand=maimgors_bite,heroic=1,stats=165agi_248sta_110mastery_110hit,reforge=mastery_exp,enchant=landslide,weapon=axe_2.60speed_950min_1764max
 ranged=relic_of_golganneth,stats=107agi_161sta_72crit_72haste,reforge=crit_hit,gems=40agi
+
 # Gear Summary
+
 # gear_strength=20
+
 # gear_agility=4968
+
 # gear_stamina=5740
+
 # gear_intellect=20
+
 # gear_spirit=20
+
 # gear_attack_power=190
+
 # gear_expertise_rating=514
+
 # gear_hit_rating=1737
+
 # gear_crit_rating=859
+
 # gear_haste_rating=912
+
 # gear_mastery_rating=1378
+
 # gear_armor=15382
+
 # meta_gem=fleet_shadowspirit
+
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
+
 # main_hand=crulkorak_the_lightnings_arc,heroic=1,weapon=axe_2.60speed_950min_1764max,enchant=landslide
+
 # off_hand=maimgors_bite,heroic=1,weapon=axe_2.60speed_950min_1764max,enchant=landslide
