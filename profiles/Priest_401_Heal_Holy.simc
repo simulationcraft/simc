@@ -1,6 +1,6 @@
 #!./simc 
 
-patch=4.0.4
+patch=4.0.3
 max_time=180
 
 #Healer extra lag
