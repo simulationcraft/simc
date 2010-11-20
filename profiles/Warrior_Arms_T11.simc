@@ -1,7 +1,6 @@
 #!./simc 
 
-warrior=Warrior_403_Arms
-optimal_raid=1
+warrior=Warrior_Arms_T11
 level=85
 race=tauren
 use_pre_potion=1

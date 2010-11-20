@@ -1,6 +1,6 @@
 #!./simc 
 
-warrior=Warrior_401_Fury_1h
+warrior=Warrior_Fury_1h_T10
 level=80
 race=tauren
 use_pre_potion=-1

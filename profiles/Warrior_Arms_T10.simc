@@ -1,5 +1,5 @@
 #!./simc 
-warrior=Warrior_401_Arms
+warrior=Warrior_Arms_T10
 level=80
 race=tauren
 use_pre_potion=-1
