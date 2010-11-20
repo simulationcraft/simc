@@ -1,0 +1,10 @@
+#!simc
+
+patch=4.0.1
+optimal_raid=1
+target_level=83
+
+Warlock_Affliction_T10_277.simc
+Warlock_AffDrain_T10_277.simc
+Warlock_Demonology_T10_277.simc
+Warlock_Destruction_T10_277.simc

@@ -4363,20 +4363,37 @@ void warlock_t::init_actions()
     case TREE_AFFLICTION:
 
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
+      action_list_str += "/soulburn,if=buff.bloodlust.down";
+      if ( talent_improved_soul_fire -> ok() && level >= 54)
+      {
+        if ( talent_emberstorm -> ok() )
+        {
+          action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<cast_time&buff.bloodlust.down";
+        } else
+        {
+          action_list_str += "/soul_fire,if=buff.soulburn.up";
+        }
+      }
       if ( level >= 12 ) action_list_str += "/bane_of_agony,if=(!ticking|dot.bane_of_agony.remains<tick_time)&target.time_to_die>=20";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
-      action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+gcd))&target.time_to_die>=5";
-      if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
+      if ( level >= 58) action_list_str += "/summon_doomguard";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
-      action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
-      action_list_str += "/soulburn";
-      action_list_str += "/drain_life";
+      action_list_str += "/life_tap,mana_percentage<=35";
+      if ( talent_bane -> rank() == 3 )
+      {
+        action_list_str += "/shadow_bolt";
+      } 
+      else
+      {
+        action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
+        action_list_str += "/drain_life,interrupt=1";
+      }
 
     break;
 
     case TREE_DESTRUCTION:
-      action_list_str += "/soulburn";
+      action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
         action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<cast_time&buff.bloodlust.down";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking";
@@ -4386,14 +4403,13 @@ void warlock_t::init_actions()
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
-      if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      if ( level >= 58) action_list_str += "/summon_doomguard";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
 
     break;
 
     case TREE_DEMONOLOGY:
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan,if=dot.immolate.remains>0";
-      if ( level >= 50) action_list_str += "/summon_infernal,if=buff.metamorphosis.react";
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
       action_list_str += "/soulburn,if=buff.metamorphosis.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.soulburn.react";
@@ -4405,6 +4421,7 @@ void warlock_t::init_actions()
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
+      if ( level >= 58) action_list_str += "/summon_doomguard";
       action_list_str += "/shadow_bolt";
 
     break;
