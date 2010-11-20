@@ -958,8 +958,6 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
 
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05;
-
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1)
                            + 0.10 * p->set_bonus.tier10_4pc_melee();
@@ -1017,8 +1015,6 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
 
-    base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
-
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
                            + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1);
@@ -1073,8 +1069,6 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
     may_crit  = false;
-
-    base_cost  = 0.05 * p -> resource_base[ RESOURCE_MANA ];
 
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
@@ -1204,8 +1198,6 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
     
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.05; // TODO move to judgement_t
-
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
                            + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1)
@@ -1263,13 +1255,6 @@ struct judgement_t : public paladin_attack_t
     return 0;
   }
 
-  virtual double cost() SC_CONST 
-  { 
-    action_t* seal = active_seal(); 
-    if ( ! seal ) return 0.0;
-    return seal -> cost(); 
-  }
-
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
@@ -1297,6 +1282,8 @@ struct judgement_t : public paladin_attack_t
     trigger_judgements_of_the_wise( seal );
     trigger_judgements_of_the_bold( seal );
     if ( p -> talents.communion->rank() ) p -> trigger_replenishment();
+
+    update_ready();
     
     p -> last_foreground_action = seal; // Necessary for DPET calculations.
   }
@@ -1305,7 +1292,6 @@ struct judgement_t : public paladin_attack_t
   {
     action_t* seal = active_seal();
     if( ! seal ) return false;
-    if( ! seal -> ready() ) return false;
     return paladin_attack_t::ready();
   }
 };
