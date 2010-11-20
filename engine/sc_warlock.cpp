@@ -1406,7 +1406,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
-      target_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 3 ) / 100.0;
+      base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 3 ) / 100.0;
       direct_power_mod   = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
     }
 
@@ -4317,7 +4317,7 @@ void warlock_t::init_actions()
     else if ( primary_tree() == TREE_DESTRUCTION )
       action_list_str += "/summon_imp";
     else if ( primary_tree() == TREE_AFFLICTION )
-      action_list_str += "/summon_imp";
+      action_list_str += "/summon_felhunter";
     else
       action_list_str += "/summon_imp";
 
@@ -4381,7 +4381,7 @@ void warlock_t::init_actions()
           action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
       }
-      if ( level >= 12 ) action_list_str += "/bane_of_agony,if=(!ticking|dot.bane_of_agony.remains<tick_time)&target.time_to_die>=20";
+      if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
       if ( level >= 58) action_list_str += "/summon_doomguard";
