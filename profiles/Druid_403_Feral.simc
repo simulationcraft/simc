@@ -1,5 +1,5 @@
 #!./simc 
-patch=4.0.3
+patch=4.0.4
 target_level=88
 druid=Druid_403_Feral
 level=85

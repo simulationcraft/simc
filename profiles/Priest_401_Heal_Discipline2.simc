@@ -1,6 +1,6 @@
 #!./simc 
 
-patch=4.0.1
+patch=4.0.4
 max_time=180
 
 priest=Priest_401_Heal_Discipline2
