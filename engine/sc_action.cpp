@@ -1733,8 +1733,12 @@ int action_t::hasted_num_ticks() SC_CONST
   if ( scale_with_haste )
   {
     assert ( snapshot_haste > 0.0 );
-    double t = num_ticks / snapshot_haste;
-    n = int ( floor ( t + 0.5 ) );
+
+    // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
+    // It's important that we're accurate here so that we model haste breakpoints correctly.
+    double d = num_ticks * base_tick_time;
+    double t = floor( ( base_tick_time * snapshot_haste * 1000.0 ) + 0.5 ) / 1000.0;
+    n = (int) floor( ( d / t ) + 0.5 );
   }
   return n;
 }

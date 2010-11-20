@@ -1130,7 +1130,19 @@ struct devouring_plague_t : public priest_spell_t
     {
       double t = p -> talents.improved_devouring_plague -> base_value( E_APPLY_AURA, A_DUMMY, P_DAMAGE_TAKEN ) / 100.0 *
                  ( base_td + total_power() * tick_power_mod );
-      double n = p -> bugs ? ceil( num_ticks / p -> spell_haste ) : hasted_num_ticks(); // Currently it's rounding up but only using haste rating haste.
+      double n;
+
+      if ( p -> bugs )
+      {
+        // Currently it's rounding up but only using haste rating haste.
+        double d = num_ticks * base_tick_time;
+        double t = floor( ( base_tick_time * p -> spell_haste * 1000.0 ) + 0.5 ) / 1000.0;
+        n = (int) floor( ( d / t ) + 0.5 );
+      }
+      else
+      {
+        n = hasted_num_ticks();
+      }
     
       devouring_plague_burst -> base_dd_min  = t * n;
       devouring_plague_burst -> base_dd_max  = t * n;
