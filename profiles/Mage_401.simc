@@ -1,9 +1,0 @@
-#!simc
-
-patch=4.0.3
-optimal_raid=1
-target_level=83
-
-Mage_401_arcane.simc
-Mage_401_fire.simc
-Mage_401_frost.simc
