@@ -5,7 +5,7 @@ priest=Priest_Shadow_T10_277
 level=80
 race=night_elf
 use_pre_potion=1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=032000000000000000000000000000000000000000322032210201222100231
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=03200000000000000000000000000000000000000322032210201222100231
 glyphs=shadow_word_death/mind_flay/shadow_word_pain/inner_fire/spirit_tap/fortitude/fading/levitate
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
