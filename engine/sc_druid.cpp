@@ -3608,14 +3608,15 @@ void druid_t::clear_debuffs()
 
 void druid_t::regen( double periodicity )
 {
-  player_t::regen( periodicity );
-
   int resource_type = primary_resource();
 
   if ( resource_type == RESOURCE_ENERGY )
   {
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
+
+    // haste (from rating) boosts energy regen by * ( 1 + haste% )
+    periodicity *= 1.0 + haste_rating / rating.attack_haste;
   }
   else if ( resource_type == RESOURCE_MANA)
   {
@@ -3629,6 +3630,8 @@ void druid_t::regen( double periodicity )
     uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                                 resource_max    [ RESOURCE_RAGE ] );
   }
+
+  player_t::regen( periodicity );
 }
 
 // druid_t::available =======================================================
