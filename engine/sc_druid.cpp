@@ -2351,13 +2351,20 @@ struct moonfire_t : public druid_spell_t
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
     base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
-    base_dd_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
     base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
     starsurge_cd = p -> get_cooldown( "starsurge" );
+  }
+
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    druid_t* p = player -> cast_druid();    
+    // +2/4/8% damage bonus only applies to direct damage
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
   }
 
   virtual void tick()
@@ -2372,10 +2379,13 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    druid_t* p = player -> cast_druid();
+    // Damage bonus only applies to direct damage
+    // Get rid of it for the ticks, hacky :<
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+
     if ( result_is_hit() )
     {
-      druid_t* p = player -> cast_druid();
-
       if ( p -> dots_sunfire -> ticking() )
         p -> dots_sunfire -> action -> cancel();
 
@@ -2627,6 +2637,7 @@ struct starfall_t : public druid_spell_t
     };
 
     druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.starfall -> rank() );
 
     option_t options[] =
     {
@@ -2769,13 +2780,20 @@ struct sunfire_t : public druid_spell_t
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
     base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
-    base_dd_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
     base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;    
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
     starsurge_cd = p -> get_cooldown( "starsurge" );
+  }
+
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    druid_t* p = player -> cast_druid();    
+    // +2/4/8% damage bonus only applies to direct damage
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
   }
 
   virtual void tick()
@@ -2790,10 +2808,13 @@ struct sunfire_t : public druid_spell_t
   {
    druid_spell_t::execute();
 
+    druid_t* p = player -> cast_druid();
+    // Damage bonus only applies to direct damage
+    // Get rid of it for the ticks, hacky :<
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+
     if ( result_is_hit() )
     {
-      druid_t* p = player -> cast_druid();
-
       if ( p -> dots_moonfire -> ticking() )
         p -> dots_moonfire -> action -> cancel();
 
@@ -3198,6 +3219,7 @@ void druid_t::init_base()
   attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
   initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
+  initial_spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
   base_miss    = 0.05;
