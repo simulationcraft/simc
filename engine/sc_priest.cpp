@@ -902,7 +902,7 @@ void priest_spell_t::assess_damage( double amount,
   if ( p -> buffs_vampiric_embrace -> up() ) 
   {
     double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
-    p -> resource_gain( RESOURCE_HEALTH, a * 0.15, p -> gains.vampiric_embrace );
+    p -> resource_gain( RESOURCE_HEALTH, a * ( p -> sim -> P404 ? 0.06 : 0.15 ), p -> gains.vampiric_embrace );
 
     pet_t* r = p -> pet_list;
 
