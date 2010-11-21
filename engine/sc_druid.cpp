@@ -332,6 +332,13 @@ struct druid_bear_attack_t : public attack_t
   {
   }
 
+  druid_bear_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
+      attack_t( n, id, p, 0, special )
+  {
+    may_crit      = true;
+    tick_may_crit = true;
+  }
+
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() SC_CONST;
   virtual void   execute();
@@ -350,7 +357,17 @@ struct druid_spell_t : public spell_t
   druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
       spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ),
       base_cost_reduction( 0.0 )
-      { }
+  {
+  }
+
+   druid_spell_t( const char* n, uint32_t id, druid_t* p ) :
+      spell_t( n, id, p, 0 ), skip_on_eclipse( 0 ),
+      base_cost_reduction( 0.0 )
+  {
+    may_crit      = true;
+    tick_may_crit = true;
+  }
+
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual double cost_reduction() SC_CONST;
@@ -632,7 +649,7 @@ static void trigger_omen_of_clarity( action_t* a )
 
 }
 
-// trigger_primal_fury (Bear ) ==============================================
+// trigger_primal_fury (Bear) ===============================================
 
 static void trigger_primal_fury( druid_bear_attack_t* a )
 {
@@ -666,16 +683,23 @@ static void trigger_primal_fury( druid_cat_attack_t* a )
   }
 }
 
-// trigger_primal_madness (Cat) =============================================
+// trigger_primal_madness ===================================================
 
-static void trigger_primal_madness( druid_cat_attack_t* a )
+static void trigger_primal_madness( druid_spell_t* s )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = s -> player -> cast_druid();
 
   if ( ! p -> talents.primal_madness -> rank() )
     return;
-
-  p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
+  
+  if ( p -> buffs_cat_form -> check() )
+  {
+    p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
+  }
+  else if ( p -> buffs_bear_form -> check() )
+  {
+    p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
+  }
 }
 
 // trigger_rage_gain ========================================================
@@ -889,39 +913,6 @@ struct cat_melee_t : public druid_cat_attack_t
       trigger_fury_swipes( this );
       trigger_omen_of_clarity( this );
     }
-  }
-};
-
-// Berserk (Cat) ============================================================
-
-struct berserk_cat_t : public druid_cat_attack_t
-{
-  berserk_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "berserk_cat", 50334, player )
-  {
-    druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.berserk -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    parse_options( options, options_str );
-
-    cooldown = p -> get_cooldown( "berserk" );
-    cooldown -> duration = p -> player_data.spell_cooldown( id );
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    // Berserk cancels TF
-    p -> buffs_tigers_fury -> expire();
-    druid_cat_attack_t::execute();
-    p -> buffs_berserk -> trigger();
-    trigger_primal_madness( this );
   }
 };
 
@@ -1342,7 +1333,8 @@ struct shred_t : public druid_cat_attack_t
 
     druid_cat_attack_t::player_buff();
 
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() ) player_multiplier *= 1.30;
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
+      player_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> check() )
     {
@@ -1440,7 +1432,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     }    
 
     p -> buffs_tigers_fury -> trigger( 1, effect_base_value( 1 ) / 100.0 );
-    trigger_primal_madness( this );
+    p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
   }
 
   virtual bool ready()
@@ -1537,7 +1529,6 @@ struct bear_melee_t : public druid_bear_attack_t
   bear_melee_t( player_t* player ) :
     druid_bear_attack_t( "bear_melee", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
-    base_dd_min = base_dd_max = 1;
     background  = true;
     repeating   = true;
     trigger_gcd = 0;
@@ -1563,73 +1554,12 @@ struct bear_melee_t : public druid_bear_attack_t
   }
 };
 
-// Bash ====================================================================
-
-struct bash_t : public druid_bear_attack_t
-{
-  bash_t( player_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "bash", player, SCHOOL_PHYSICAL, TREE_FERAL )
-  {
-    druid_t* p = player -> cast_druid();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    base_cost = 10;
-    cooldown -> duration  = 60 + p -> talents.brutal_impact -> effect_base_value( 2 ) / 1000.0;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() ) return false;
-    return druid_bear_attack_t::ready();
-  }
-};
-
-// Berserk =================================================================
-
-struct berserk_bear_t : public druid_bear_attack_t
-{
-  berserk_bear_t( player_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "berserk_bear", player )
-  {
-    druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.berserk -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    parse_options( options, options_str );
-
-    cooldown = p -> get_cooldown( "berserk" );
-    cooldown -> duration = 180;
-    id = 50334;
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_berserk -> trigger();
-    if ( p -> talents.primal_madness -> rank() )
-      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
-
-    p -> cooldowns_mangle_bear -> reset();
-    update_ready();
-  }
-};
-
 // Lacerate ================================================================
 
 struct lacerate_t : public druid_bear_attack_t
 {
-  lacerate_t( player_t* player, const std::string& options_str ) :
-      druid_bear_attack_t( "lacerate",  player, SCHOOL_BLEED, TREE_FERAL )
+  lacerate_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "lacerate",  33745, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1639,24 +1569,10 @@ struct lacerate_t : public druid_bear_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 3, 88, 88, 64, 15 },
-      { 73, 2, 70, 70, 51, 15 },
-      { 66, 1, 31, 31, 31, 15 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    may_crit            = true;
-    num_ticks           = 5;
-    base_tick_time      = 3.0;
-    direct_power_mod    = 0.01;
-    tick_power_mod      = 0.01;
-    tick_may_crit       = true;
+    direct_power_mod    = 0.115;
+    tick_power_mod      = 0.0077;
     dot_behavior        = DOT_REFRESH;
     base_crit          += p -> glyphs.lacerate * 0.05;
-    base_td_multiplier *= 1.0 + p -> set_bonus.tier11_4pc_melee() * 0.10;
   }
 
   virtual void execute()
@@ -1666,7 +1582,8 @@ struct lacerate_t : public druid_bear_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_lacerate -> trigger();
-      base_td_multiplier = p -> buffs_lacerate -> current_stack;
+      base_td_multiplier  = p -> buffs_lacerate -> current_stack;
+      base_td_multiplier *= 1.0 + p -> set_bonus.tier11_4pc_melee() * 0.10;
     }
   }
 
@@ -1682,8 +1599,8 @@ struct lacerate_t : public druid_bear_attack_t
 
 struct mangle_bear_t : public druid_bear_attack_t
 {
-  mangle_bear_t( player_t* player, const std::string& options_str ) :
-      druid_bear_attack_t( "mangle_bear", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  mangle_bear_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "mangle_bear", 33878, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1693,32 +1610,15 @@ struct mangle_bear_t : public druid_bear_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 80, 5, 260, 260, 0, 20 },
-      { 75, 4, 219, 219, 0, 20 },
-      { 68, 3, 135, 135, 0, 20 },
-      { 58, 2, 105, 105, 0, 20 },
-      {  0, 0,   0,   0, 0,  0 }
-    };
-    init_rank( ranks, 48564 );
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 1.15;
-
-    may_crit = true;
-
     base_multiplier *= 1.0 + p -> glyphs.mangle * 0.10;
-
-    cooldown = p -> get_cooldown( "mangle_bear" );
-    cooldown -> duration = 6.0;
   }
 
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
     druid_bear_attack_t::execute();
-    if ( p -> buffs_berserk -> up() ) cooldown -> reset();
+    if ( p -> buffs_berserk -> up() )
+      cooldown -> reset();
     if ( result_is_hit() )
     {
       target -> debuffs.mangle -> trigger();
@@ -1731,35 +1631,16 @@ struct mangle_bear_t : public druid_bear_attack_t
 
 struct maul_t : public druid_bear_attack_t
 {
-  maul_t( player_t* player, const std::string& options_str ) :
-      druid_bear_attack_t( "maul",  player, SCHOOL_PHYSICAL, TREE_FERAL )
+  maul_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "maul",  6807, player )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 79, 10, 578, 578, 0, 15 },
-      { 73,  9, 472, 472, 0, 15 },
-      { 67,  8, 290, 290, 0, 15 },
-      { 58,  7, 192, 192, 0, 15 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    trigger_gcd  = 0;
-    may_crit     = true;
-
-    // TODO: scaling?
-    weapon = &( p -> main_hand_weapon );
-    //normalize_weapon_speed = false;
-
-    cooldown -> duration = 3;
+    weapon = &( player -> main_hand_weapon );
   }
 
   virtual void assess_damage( double amount, int dmg_type )
@@ -1777,7 +1658,7 @@ struct maul_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
     if ( result_is_hit() )
     {
-      trigger_omen_of_clarity( this );
+      // trigger_omen_of_clarity( this ); //FIX ME is this still true?
       trigger_infected_wounds( this );
     }
   }
@@ -1789,7 +1670,8 @@ struct maul_t : public druid_bear_attack_t
 
     druid_bear_attack_t::player_buff();
 
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() ) player_multiplier *= 1.30;
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
+      player_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> check() )
     {
@@ -1798,12 +1680,39 @@ struct maul_t : public druid_bear_attack_t
   }
 };
 
+// Skull Bash (Bear) ========================================================
+
+struct skull_bash_bear_t : public druid_bear_attack_t
+{
+  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
+    druid_bear_attack_t( "skull_bash_bear", 80964, player )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 2 ) / 1000.0;
+  }
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
+    return druid_bear_attack_t::ready();
+  }
+};
+
 // Swipe (Bear) ============================================================
 
 struct swipe_bear_t : public druid_bear_attack_t
 {
-  swipe_bear_t( player_t* player, const std::string& options_str ) :
-      druid_bear_attack_t( "swipe_bear", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  swipe_bear_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "swipe_bear", 779, player )
   {
     // druid_t* p = player -> cast_druid();
 
@@ -1813,34 +1722,10 @@ struct swipe_bear_t : public druid_bear_attack_t
     };
     parse_options( options, options_str );
 
-    static rank_t ranks[] =
-    {
-      { 77, 8, 108, 108, 0, 20 },
-      { 72, 7,  95,  95, 0, 20 },
-      { 64, 6,  76,  76, 0, 20 },
-      { 54, 5,  54,  54, 0, 20 },
-      { 44, 4,  37,  37, 0, 20 },
-      { 34, 3,  19,  19, 0, 20 },
-      { 24, 2,  13,  13, 0, 20 },
-      { 16, 1,   9,   9, 0, 20 },
-      {  0, 0,   0,   0, 0,  0 }
-    };
-    init_rank( ranks, 48562 );
-
+    aoe               = true;
+    direct_power_mod  = extra_coeff();
+    weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    direct_power_mod = 0.07;
-    may_crit = true;
-  }
-
-  virtual void assess_damage( double amount,
-                               int    dmg_type )
-  {
-    druid_bear_attack_t::assess_damage( amount, dmg_type );
-
-    for ( int i=0; i < target -> adds_nearby && i < 10; i ++ )
-    {
-      druid_bear_attack_t::additional_damage( amount, dmg_type );
-    }
   }
 };
 
@@ -2034,6 +1919,39 @@ struct auto_attack_t : public action_t
     druid_t* p = player -> cast_druid();
     if ( p -> buffs.moving -> check() ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+// Berserk ==================================================================
+
+struct berserk_t : public druid_spell_t
+{
+  berserk_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "berserk", 50334, player )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.berserk -> rank() );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+
+    parse_options( options, options_str );
+
+    cooldown = p -> get_cooldown( "berserk" );
+    cooldown -> duration = p -> player_data.spell_cooldown( id );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    // Berserk cancels TF
+    p -> buffs_tigers_fury -> expire();
+    druid_spell_t::execute();
+    p -> buffs_berserk -> trigger();
+    trigger_primal_madness( this );
+    p -> cooldowns_mangle_bear -> reset();
   }
 };
 
@@ -3098,9 +3016,7 @@ action_t* druid_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if ( name == "auto_attack"       ) return new       auto_attack_t( this, options_str );
-  if ( name == "bash"              ) return new              bash_t( this, options_str );
-  if ( name == "berserk_bear"      ) return new      berserk_bear_t( this, options_str );
-  if ( name == "berserk_cat"       ) return new       berserk_cat_t( this, options_str );
+  if ( name == "berserk"           ) return new           berserk_t( this, options_str );
   if ( name == "bear_form"         ) return new         bear_form_t( this, options_str );
   if ( name == "cat_form"          ) return new          cat_form_t( this, options_str );
   if ( name == "claw"              ) return new              claw_t( this, options_str );
@@ -3125,6 +3041,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rip"               ) return new               rip_t( this, options_str );
   if ( name == "savage_roar"       ) return new       savage_roar_t( this, options_str );
   if ( name == "shred"             ) return new             shred_t( this, options_str );
+  if ( name == "skull_bash_bear"   ) return new   skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"    ) return new    skull_bash_cat_t( this, options_str );
   if ( name == "starfire"          ) return new          starfire_t( this, options_str );
   if ( name == "starfall"          ) return new          starfall_t( this, options_str );
@@ -3511,10 +3428,11 @@ void druid_t::init_actions()
         action_list_str += "/bear_form";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
+        action_list_str += "/skull_bash_bear";
         action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
         action_list_str += "/mangle_bear,debuff.mangle.remains<=0.5";
         action_list_str += "/lacerate,if=dot.lacerate.remains<=6.9"; // This seems to be the sweet spot to prevent Lacerate falling off.
-        if ( talents.berserk -> rank() ) action_list_str+="/berserk_bear";
+        if ( talents.berserk -> rank() ) action_list_str+="/berserk";
         action_list_str += use_str;
         action_list_str += "/mangle_bear";
         action_list_str += "/faerie_fire_feral";
@@ -3531,7 +3449,7 @@ void druid_t::init_actions()
         action_list_str += "/skull_bash_cat";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
         action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
-        if ( talents.berserk -> rank() )action_list_str += "/berserk_cat,if=energy>=80&energy<=90&!buff.tigers_fury.up";
+        if ( talents.berserk -> rank() )action_list_str += "/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += use_str;
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6";

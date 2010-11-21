@@ -14,7 +14,7 @@ actions+=/snapshot_stats
 actions+=/skull_bash_cat
 actions+=/mangle_cat,if=!debuff.mangle.up|buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3
 actions+=/tigers_fury,if=energy<=30&!buff.berserk.up
-actions+=/berserk_cat,if=energy>=80&energy<=90&!buff.tigers_fury.up
+actions+=/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up
 actions+=/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6
 actions+=/rake,if=target.time_to_die>=9
 actions+=/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1
