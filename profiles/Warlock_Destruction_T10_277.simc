@@ -20,7 +20,7 @@ actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/chaos_bolt
 actions+=/shadowflame
 actions+=/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up
-actions+=/summon_doomguard
+actions+=/summon_infernal
 actions+=/incinerate
 actions+=/life_tap
 head=sanctified_dark_coven_hood,heroic=1,stats=973armor_114crit_106haste_159int_261sta,gems=chaotic_skyflare_20hit_9sp,enchant=30sp_20crit,reforge=crit_mastery

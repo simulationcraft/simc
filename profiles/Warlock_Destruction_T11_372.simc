@@ -23,7 +23,7 @@ actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
 actions+=/shadowflame
 actions+=/chaos_bolt
 actions+=/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up
-actions+=/summon_doomguard
+actions+=/summon_infernal
 actions+=/incinerate
 actions+=/life_tap
 head=crown_of_the_twilight_queen,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=chaotic_shadowspirit_40hit_30int,enchant=60sp_35crit

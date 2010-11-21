@@ -137,9 +137,8 @@ struct _stat_list_t {
   };
   static const _weapon_list_t infernal_weapon[]=
   { 
-	  { 80, 824.6, 824.6, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
-    { 85, 926.3, 926.3, 2.0 },
+    { 80, 924.0, 924.0, 2.0 }, //Rough numbers
+    { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t doomguard_weapon[]=
@@ -148,9 +147,8 @@ struct _stat_list_t {
   };
   static const _weapon_list_t ebon_imp_weapon[]=
   {
-    { 80, 824.6, 824.6, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
-    { 85, 926.3, 926.3, 2.0 },
+    { 80, 956.0, 956.0, 2.0 }, //Rough numbers
+    { 85, 1110.0, 1110.0, 2.0 }, //Rough numbers
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t voidwalker_weapon[]=
@@ -671,6 +669,44 @@ struct warlock_pet_t : public pet_t
     pet_t::interrupt();
     if ( melee ) melee -> cancel();
   }
+
+  virtual double composite_spell_haste() SC_CONST
+  {
+    double h = player_t::composite_spell_haste();
+    h *= owner -> spell_haste;
+    return h;
+  }
+
+  virtual double composite_attack_haste() SC_CONST
+  {
+    double h = player_t::composite_attack_haste();
+    h *= owner -> spell_haste;
+    return h;
+  }
+
+  virtual double composite_spell_power( const school_type school ) SC_CONST
+  {
+    double sp = pet_t::composite_spell_power( school );
+    sp += owner -> composite_spell_power( school ) * ( level / 80 ) * 0.5 * owner -> composite_spell_power_multiplier();
+    return sp;
+  }
+
+  virtual double composite_attack_power() SC_CONST
+  {
+    double ap = pet_t::composite_attack_power();
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 ) * owner -> composite_spell_power_multiplier();
+    return ap;
+  }
+
+  virtual double composite_attack_crit() SC_CONST
+  {
+    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+  }
+
+  virtual double composite_spell_crit() SC_CONST
+  {
+    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+  }
 };
 
 // ==========================================================================
@@ -697,40 +733,12 @@ struct warlock_main_pet_t : public warlock_pet_t
     o -> active_pet = 0;
   }
 
-  virtual double composite_spell_power( const school_type school ) SC_CONST
-  {
-    double sp = pet_t::composite_spell_power( school );
-    sp += owner -> composite_spell_power( school ) * ( level / 80 ) * 0.5 * owner -> composite_spell_power_multiplier();
-    return sp;
-  }
-
-  virtual double composite_attack_power() SC_CONST
-  {
-    double ap = pet_t::composite_attack_power();
-    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 ) * owner -> composite_spell_power_multiplier();
-    return ap;
-  }
-
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> spell_hit * 26.0 / 17.0;
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
-
-  virtual double composite_spell_haste() SC_CONST
-  {
-    double h = player_t::composite_spell_haste();
-    h *= owner -> spell_haste;
-    return h;
-  }
-
-  virtual double composite_attack_haste() SC_CONST
-  {
-    double h = player_t::composite_attack_haste();
-    h *= owner -> spell_haste;
-    return h;
-  }
 
   virtual double composite_player_multiplier( const school_type school ) SC_CONST
   {
@@ -755,15 +763,6 @@ struct warlock_main_pet_t : public warlock_pet_t
     return h;
   }
 
-  virtual double composite_attack_crit() SC_CONST
-  {
-    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
-  }
-
-  virtual double composite_spell_crit() SC_CONST
-  {
-    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
-  }
 };
 
 // ==========================================================================
@@ -781,17 +780,6 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     warlock_pet_t::summon( duration );
     warlock_t*  o = owner -> cast_warlock();
     reset();
-
-    // untested !!
-    spell_power[ SCHOOL_MAX ] = o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 ) * 0.5 * o -> composite_spell_power_multiplier();
-    //attack_power += o -> attack_power * ( level / 80 );
-    //attack_hit += o -> attack_hit;
-    //attack_expertise += o -> attack_expertise * 26.0 / 17.0;
-    spell_haste *= o -> spell_haste;
-    attack_haste *= o -> attack_haste;
-    attack_crit += o -> spell_crit;
-    spell_crit += o -> spell_crit;
-    // untested!!
   }
 
   virtual double composite_attack_hit() SC_CONST
@@ -1635,8 +1623,6 @@ struct infernal_pet_t : public warlock_guardian_pet_t
   infernal_pet_t( sim_t* sim, player_t* owner ) :
       warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
-    damage_modifier = 1.16;
-
     action_list_str += "/snapshot_stats";
     if ( level >= 50) action_list_str += "/immolation,if=!ticking";
   }
@@ -1705,10 +1691,13 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
   ebon_imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_guardian_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
-    damage_modifier = 0.65;
-
     action_list_str += "/snapshot_stats";
     action_list_str += "/wait_until_ready";
+  }
+
+  virtual double composite_attack_power() SC_CONST
+  {
+    return 0;
   }
 
   virtual void init_base()
@@ -4389,7 +4378,7 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
-      if ( level >= 58) action_list_str += "/summon_doomguard";
+      if ( level >= 58) action_list_str += "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       action_list_str += "/life_tap,mana_percentage<=35";
       if ( talent_bane -> rank() == 3 )
@@ -4415,7 +4404,7 @@ void warlock_t::init_actions()
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
-      if ( level >= 58) action_list_str += "/summon_doomguard";
+      if ( level >= 58) action_list_str += "/summon_infernal";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
 
     break;
@@ -4433,7 +4422,7 @@ void warlock_t::init_actions()
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
-      if ( level >= 58) action_list_str += "/summon_doomguard";
+      if ( level >= 58) action_list_str += "/summon_infernal";
       action_list_str += "/life_tap,mana_percentage<=35";
       action_list_str += "/shadow_bolt";
 
@@ -4443,7 +4432,7 @@ void warlock_t::init_actions()
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/immolate,if=!ticking|dot.immolate.remains<(cast_time+tick_time)";
-      if ( level >= 58) action_list_str += "/summon_doomguard";
+      if ( level >= 58) action_list_str += "/summon_infernal";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
