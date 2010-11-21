@@ -4434,6 +4434,7 @@ void warlock_t::init_actions()
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
       if ( level >= 58) action_list_str += "/summon_doomguard";
+      action_list_str += "/life_tap,mana_percentage<=35";
       action_list_str += "/shadow_bolt";
 
     break;
@@ -4442,7 +4443,7 @@ void warlock_t::init_actions()
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/immolate,if=!ticking|dot.immolate.remains<(cast_time+tick_time)";
-      if ( level >= 58) action_list_str += "/summon_doomguard,if=buff.bloodlust.react";
+      if ( level >= 58) action_list_str += "/summon_doomguard";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
