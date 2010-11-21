@@ -1247,8 +1247,8 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> base_value() );
       direct_power_mod = 0.619; // seems to be 0.00 in DBC now?
-      if ( player -> level == 80 ) direct_power_mod = 0.690;  // From live testing 2010/11/20
-      if ( player -> level == 80 ) base_dd_min = base_dd_max = 355; // From live testing 2010/11/20
+      if ( ! sim -> P404 ) direct_power_mod = 0.690;  // From live testing 2010/11/20
+      if ( ! sim -> P404 ) base_dd_min = base_dd_max = 355; // From live testing 2010/11/20
       base_execute_time += o -> talent_dark_arts -> effect_base_value( 1 ) / 1000.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
