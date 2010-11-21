@@ -818,7 +818,7 @@ double action_t::calculate_tick_damage()
 
   if ( base_td == 0 ) base_td = base_td_init;
 
-  if ( base_td == 0 ) return 0;
+  if ( base_td == 0 && tick_power_mod == 0 ) return 0;
 
   tick_dmg  = base_td + total_power() * tick_power_mod;
   tick_dmg *= total_td_multiplier();
