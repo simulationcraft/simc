@@ -3506,6 +3506,7 @@ struct action_t : public spell_id_t
   stats_t* stats;
   event_t* execute_event;
   event_t* tick_event;
+  event_t* travel_event;
   double time_to_execute, time_to_tick, time_to_travel, travel_speed;
   int rank_index, bloodlust_active;
   double max_haste;

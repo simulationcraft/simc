@@ -111,6 +111,7 @@ void action_t::_init_action_t()
   stats                          = NULL;
   execute_event                  = NULL;
   tick_event                     = NULL;
+  travel_event                   = NULL;
   time_to_execute                = 0.0;
   time_to_tick                   = 0.0;
   time_to_travel                 = 0.0;
@@ -1239,7 +1240,7 @@ void action_t::schedule_travel()
       log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
     }
 
-    new ( sim ) action_travel_event_t( sim, this, time_to_travel );
+    travel_event = new ( sim ) action_travel_event_t( sim, this, time_to_travel );
   }
 }
 
@@ -1705,6 +1706,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     virtual int evaluate() { result_num = action -> travel_time(); return TOK_NUM; }
     };
     return new travel_time_expr_t( this );
+  }
+  if ( name_str == "in_flight" )
+  {
+    struct in_flight_expr_t : public action_expr_t
+    {
+      in_flight_expr_t( action_t* a ) : action_expr_t( a, "in_flight", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> travel_event != NULL; return TOK_NUM; }
+    };
+    return new in_flight_expr_t( this );
   }
 
   return player -> create_expression( this, name_str );

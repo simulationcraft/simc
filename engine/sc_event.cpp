@@ -203,6 +203,8 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
 void action_travel_event_t::execute()
 {
   action -> travel( result, damage );
+  if ( action -> travel_event == this )
+    action -> travel_event = NULL;
 }
 
 // ===========================================================================
