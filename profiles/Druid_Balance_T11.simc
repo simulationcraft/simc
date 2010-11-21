@@ -23,8 +23,8 @@ actions+=/sunfire,if=!ticking&!dot.moonfire.remains>0
 actions+=/moonfire,if=!ticking&!dot.sunfire.remains>0
 actions+=/insect_swarm,if=!ticking
 actions+=/starsurge
-actions+=/starfire,if=eclipse_dir=-1
-actions+=/wrath,if=eclipse_dir=1
+actions+=/starfire,if=eclipse_dir=1
+actions+=/wrath,if=eclipse_dir=-1
 actions+=/starfire
 head=stormriders_cover,heroic=1,type=leather,stats=325int_578sta_257crit_197haste_1439armor,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit

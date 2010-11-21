@@ -12,8 +12,8 @@
 struct druid_t : public player_t
 {
   // Active
-  action_t* active_t10_4pc_caster_dot;
   action_t* active_fury_swipes;
+  action_t* active_t10_4pc_caster_dot;
 
   // Auto-attacks
   attack_t* cat_melee_attack;
@@ -196,8 +196,8 @@ struct druid_t : public player_t
     tree_type[ DRUID_FERAL       ] = TREE_FERAL;
     tree_type[ DRUID_RESTORATION ] = TREE_RESTORATION;
 
-    active_t10_4pc_caster_dot = 0;
     active_fury_swipes        = NULL;
+    active_t10_4pc_caster_dot = 0;
     
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
@@ -266,11 +266,13 @@ struct druid_t : public player_t
     assert( buffs_combo_points -> check() );
     return cp_list[ buffs_combo_points -> stack() - 1 ];
   }
+
   double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) SC_CONST
   {
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
     return combo_point_rank( cp_list );
   }
+
   void reset_gcd()
   {
     for ( action_t* a=action_list; a; a = a -> next )
@@ -2140,7 +2142,6 @@ struct faerie_fire_feral_t : public druid_spell_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> buffs_bear_form -> check() )
     {
       // The damage component is only active in (Dire) Bear Form
@@ -2148,6 +2149,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     }
     else
     {
+      if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
       update_ready();
     }
     target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank(), 0.04 );
@@ -2285,7 +2287,7 @@ struct insect_swarm_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     if ( result_is_hit() )
     {
-      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> rank() * 0.05 );
+      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     }
   }
 };
@@ -2383,7 +2385,7 @@ struct moonfire_t : public druid_spell_t
 
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
-      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> rank() * 0.05 );
+      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     }
   }
 
@@ -2513,8 +2515,9 @@ struct starfire_t : public druid_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
+    
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
+
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
   }
@@ -2804,7 +2807,7 @@ struct sunfire_t : public druid_spell_t
 
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
-      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> rank() * 0.05 );
+      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     }
   }
 
@@ -3443,8 +3446,8 @@ void druid_t::init_actions()
       action_list_str += "/insect_swarm,if=!ticking";
       action_list_str += "/starsurge";
       action_list_str += use_str;
-      action_list_str += "/starfire,if=eclipse_dir=-1";
-      action_list_str += "/wrath,if=eclipse_dir=1";
+      action_list_str += "/starfire,if=eclipse_dir=1";
+      action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
     }
     action_list_default = 1;
@@ -3591,7 +3594,7 @@ double druid_t::composite_spell_hit() SC_CONST
 double druid_t::composite_spell_crit() SC_CONST
 {
   double crit = player_t::composite_spell_crit();
-  crit += talents.natures_majesty -> rank() * 0.02;
+  crit += talents.natures_majesty -> base_value() / 100.0;
   return crit;
 }
 
