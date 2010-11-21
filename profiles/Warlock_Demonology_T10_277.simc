@@ -12,7 +12,6 @@ actions+=/summon_felguard
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
 actions+=/hand_of_guldan,if=dot.immolate.remains>0
-actions+=/summon_infernal,if=buff.metamorphosis.react
 actions+=/metamorphosis
 actions+=/soulburn,if=buff.metamorphosis.react
 actions+=/soul_fire,if=buff.soulburn.react
