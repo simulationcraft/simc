@@ -1564,7 +1564,7 @@ struct nvpair_t
   std::string name;
   std::string value;
 
-  nvpair_t() { name = ""; value = ""; };
+  nvpair_t() : name(), value() { };
   nvpair_t( const std::string& n, const std::string& v ) : name( n ), value( v ) { };
 };
 

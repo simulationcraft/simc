@@ -509,12 +509,21 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug ) log_t::output( sim, "Initializing Players." );
 
   bool too_quiet = true;
-
+  bool unknown_options = false;
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
+    if ( p->unknown_options.size() > 0 )
+    {
+      unknown_options = true;
+      for (std::vector<nvpair_t*>::iterator it = p->unknown_options.begin(); it != p->unknown_options.end(); ++it)
+        sim -> errorf( "Unknown option/value pair: '%s' : '%s'\n", (*it)->name.c_str(), (*it)->value.c_str() );
+    }
   }
+
+  if (unknown_options)
+    return false;
 
   if ( too_quiet && ! sim -> debug )
   {

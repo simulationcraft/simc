@@ -463,13 +463,11 @@ std::string spell_id_t::to_str() SC_CONST
 
 bool spell_id_t::check_unknown_options( int opt_type )
 {
-  nvpair_t* t = 0;
-
   assert( s_player && s_player -> sim );
 
-  for ( int32_t i = s_player -> unknown_options.size() - 1; i >= 0; i-- )
+  for (std::vector<nvpair_t*>::iterator it = s_player->unknown_options.begin(); it != s_player->unknown_options.end(); ++it)
   {
-    t = s_player -> unknown_options[ i ];
+    nvpair_t* t = *it;
     
     if ( t -> name == s_token )
     {
@@ -486,6 +484,9 @@ bool spell_id_t::check_unknown_options( int opt_type )
 
       if ( ! option_t::parse( s_player -> sim, opt_vector, t -> name, t -> value ) )
         return false;
+
+      delete t;
+      s_player->unknown_options.erase(it);
 
       return true;
     }
