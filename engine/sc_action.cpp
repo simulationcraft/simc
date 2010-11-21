@@ -1091,6 +1091,12 @@ void action_t::assess_damage( double amount,
                      util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
     }
+    if ( sim -> csv_file )
+    {
+      fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
+               sim->current_iteration, player->name(), name(), target->name(),
+               util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
+    }
 
     action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
   }
@@ -1105,6 +1111,12 @@ void action_t::assess_damage( double amount,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
+    }
+    if ( sim -> csv_file )
+    {
+      fprintf( sim -> csv_file, "%d;%s;%s;%s;tick_%s;%s;%.1f\n",
+               sim->current_iteration, player->name(), name(), target->name(),
+               util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
     }
 
     action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
