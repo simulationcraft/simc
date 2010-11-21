@@ -719,7 +719,6 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
   virtual void execute()
   {
-    paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {

@@ -778,7 +778,6 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   virtual void summon( double duration=0 )
   {
     warlock_pet_t::summon( duration );
-    warlock_t*  o = owner -> cast_warlock();
     reset();
   }
 

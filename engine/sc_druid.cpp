@@ -54,6 +54,7 @@ struct druid_t : public player_t
   dot_t* dots_rake;
   dot_t* dots_insect_swarm;
   dot_t* dots_moonfire;
+  dot_t* dots_sunfire;
 
   // Gains
   gain_t* gains_bear_melee;
@@ -206,10 +207,11 @@ struct druid_t : public player_t
 
     distance = 30;
 
-    dots_rip          = get_dot( "rip" );
-    dots_rake         = get_dot( "rake" );
+    dots_rip          = get_dot( "rip"          );
+    dots_rake         = get_dot( "rake"         );
     dots_insect_swarm = get_dot( "insect_swarm" );
-    dots_moonfire     = get_dot( "moonfire" );
+    dots_moonfire     = get_dot( "moonfire"     );
+    dots_sunfire      = get_dot( "sunfire"      );
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -1769,7 +1771,6 @@ double druid_spell_t::cost_reduction() SC_CONST
 {
   druid_t* p = player -> cast_druid();
   double   cr = 0.0;
-
   cr += p -> talents.moonglow -> base_value();
   return cr;
 }
@@ -1803,7 +1804,9 @@ double druid_spell_t::haste() SC_CONST
 double druid_spell_t::execute_time() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  if ( p -> buffs_natures_swiftness -> check() ) return 0;
+  if ( p -> buffs_natures_swiftness -> check() )
+    return 0;
+
   return spell_t::execute_time();
 }
 
@@ -1829,7 +1832,8 @@ void druid_spell_t::execute()
 
   spell_t::execute();
 
-  if ( result == RESULT_CRIT ) p -> buffs_t11_4pc_caster -> decrement();
+  if ( result == RESULT_CRIT )
+    p -> buffs_t11_4pc_caster -> decrement();
 
   if ( ! aoe )
   {
@@ -1884,13 +1888,13 @@ void druid_spell_t::player_buff()
   // Eclipse increases wrath damage by 1.5% per mastery point
   if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_lunar -> up() )
-      player_multiplier *= 1.25 + p -> composite_mastery() * 0.0001 * p -> mastery_total_eclipse -> effect_base_value( 2 );
+      player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
 
   if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_solar -> up() )
-      player_multiplier *= 1.25 + p -> composite_mastery() * 0.0001 * p -> mastery_total_eclipse -> effect_base_value( 2 );
+      player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
 
-  player_multiplier *= 1.0 + p -> talents.earth_and_moon -> rank() * 0.02;
+  player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect_base_value( 2 ) / 100.0;
   
   player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
 
@@ -1917,8 +1921,73 @@ struct auto_attack_t : public action_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
-    if ( p -> buffs.moving -> check() ) return false;
+    if ( p -> buffs.moving -> check() )
+      return false;
+
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+// Bear Form Spell ========================================================
+
+struct bear_form_t : public druid_spell_t
+{
+  bear_form_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "bear_form", 5487, player )
+  {
+    druid_t* p = player -> cast_druid();
+
+    // Override these as we can do it before combat
+    trigger_gcd       = 0;
+    base_execute_time = 0;
+    harmful           = false;
+
+    if ( ! p -> bear_melee_attack )
+      p -> bear_melee_attack = new bear_melee_t( p );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    spell_t::execute();
+
+    weapon_t* w = &( p -> main_hand_weapon );
+
+    if ( w -> type != WEAPON_BEAST )
+    {
+      w -> type = WEAPON_BEAST;
+      w -> school = SCHOOL_PHYSICAL;
+      w -> damage = 54.8 * 2.5;
+      w -> swing_time = 2.5;
+    }
+
+    // Force melee swing to restart if necessary
+    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
+
+    p -> main_hand_attack = p -> bear_melee_attack;
+    p -> main_hand_attack -> weapon = w;
+
+    if ( p -> buffs_cat_form     -> check() ) p -> buffs_cat_form     -> expire();
+    if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
+
+    p -> buffs_bear_form -> start();
+    p -> base_gcd = 1.0;
+    p -> reset_gcd();
+
+    p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect_base_value( 1 ) / 100.0;
+    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.thick_hide -> rank() );
+
+    if ( p -> talents.leader_of_the_pack -> rank() )
+    {
+      sim -> auras.leader_of_the_pack -> trigger();
+    }
+  }
+
+  virtual bool ready()
+  {
+    druid_t* d = player -> cast_druid();
+    return ! d -> buffs_bear_form -> check();
   }
 };
 
@@ -1936,11 +2005,7 @@ struct berserk_t : public druid_spell_t
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
-
     parse_options( options, options_str );
-
-    cooldown = p -> get_cooldown( "berserk" );
-    cooldown -> duration = p -> player_data.spell_cooldown( id );
   }
 
   virtual void execute()
@@ -1955,35 +2020,94 @@ struct berserk_t : public druid_spell_t
   }
 };
 
-// Enrage ==================================================================
+// Cat Form Spell =========================================================
 
-struct enrage_t : public druid_spell_t
+struct cat_form_t : public druid_spell_t
 {
-  double max_rage;
-
-  enrage_t( player_t* player, const std::string& options_str ) :
-    druid_spell_t( "enrage", player, SCHOOL_PHYSICAL, TREE_FERAL )
+  cat_form_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "cat_form", 768, player )
   {
-    option_t options[] =
-    {
-      { "rage<", OPT_FLT,     &max_rage },
-      { NULL,    OPT_UNKNOWN, NULL      }
-    };
-    max_rage = 0;
-    parse_options( options, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 60;
+    druid_t* p = player -> cast_druid();
+    
+    // Override for precombat casting
+    trigger_gcd       = 0;
+    base_execute_time = 0;
+    harmful           = false;
+
+    if ( ! p -> cat_melee_attack )
+      p -> cat_melee_attack = new cat_melee_t( p );
   }
 
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+
+    spell_t::execute();
+
+    weapon_t* w = &( p -> main_hand_weapon );
+
+    if ( w -> type != WEAPON_BEAST )
+    {
+      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
+      w -> type = WEAPON_BEAST;
+      w -> school = SCHOOL_PHYSICAL;
+      w -> min_dmg /= w -> swing_time;
+      w -> max_dmg /= w -> swing_time;
+      w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
+      w -> swing_time = 1.0;
+    }
+
+    // Force melee swing to restart if necessary
+    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
+
+    p -> main_hand_attack = p -> cat_melee_attack;
+    p -> main_hand_attack -> weapon = w;
+
+    if ( p -> buffs_bear_form    -> check() ) p -> buffs_bear_form    -> expire();
+    if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
+
+    p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank();
+
+    p -> buffs_cat_form -> start();
+    p -> base_gcd = 1.0;
+    p -> reset_gcd();
+
+    if ( p -> talents.leader_of_the_pack -> rank() )
+    {
+      sim -> auras.leader_of_the_pack -> trigger();
+    }
+  }
+
+  virtual bool ready()
+  {
+    druid_t* d = player -> cast_druid();
+    return ! d -> buffs_cat_form -> check();
+  }
+};
+
+// Enrage ==================================================================
+
+struct enrage_t : public druid_spell_t
+{
+  enrage_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "enrage", 5229, player )
+  {
+    option_t options[] =
+    {
+      { NULL,    OPT_UNKNOWN, NULL      }
+    };
+    parse_options( options, options_str );
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    druid_t* p = player -> cast_druid();
     p -> buffs_enrage -> trigger();
-    p -> resource_gain( RESOURCE_RAGE, 20, p -> gains_enrage );
+    p -> resource_gain( RESOURCE_RAGE, effect_base_value( 2 ) / 10.0, p -> gains_enrage );
     if ( p -> talents.primal_madness -> rank() )
       p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
-    update_ready();
   }
 
   virtual bool ready()
@@ -1991,9 +2115,7 @@ struct enrage_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     if ( ! p -> buffs_bear_form -> check() )
       return false;
-    if ( max_rage > 0 )
-      if ( p -> resource_current[ RESOURCE_RAGE ] > max_rage )
-        return false;
+
     return druid_spell_t::ready();
   }
 };
@@ -2002,25 +2124,21 @@ struct enrage_t : public druid_spell_t
 
 struct faerie_fire_feral_t : public druid_spell_t
 {
-  int debuff_only;
-
-  faerie_fire_feral_t( player_t* player, const std::string& options_str ) :
-    druid_spell_t( "faerie_fire_feral", player, SCHOOL_PHYSICAL, TREE_FERAL ), debuff_only( 0 )
+  faerie_fire_feral_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "faerie_fire_feral", 60089, player )
   {
+    druid_t* p = player -> cast_druid();
+
     option_t options[] =
     {
-      { "debuff_only", OPT_BOOL, &debuff_only },
       { NULL, OPT_UNKNOWN, NULL }
     };
-    parse_options( options, options_str );
-
-    may_crit = true;
-    cooldown -> duration = 6.0;
-    base_dd_min = base_dd_max = 1;
-    direct_power_mod = 1.0;
-    base_spell_power_multiplier = 0;
-    base_attack_power_multiplier = 0.15;
-    id = 16857;
+    parse_options( options, options_str );    
+    
+    base_attack_power_multiplier = extra_coeff();
+    base_spell_power_multiplier  = 0;
+    direct_power_mod             = 1.0;
+    cooldown -> duration         = p -> player_data.spell_cooldown( 16857 ); // Cooldown is stored in another version of FF
   }
 
   virtual void execute()
@@ -2038,52 +2156,31 @@ struct faerie_fire_feral_t : public druid_spell_t
     }
     target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank(), 0.04 );
   }
-
-  virtual bool ready()
-  {
-    if ( debuff_only )
-      if ( target -> debuffs.faerie_fire -> up() )
-        return false;
-
-    return druid_spell_t::ready();
-  }
 };
 
 // Faerie Fire Spell =======================================================
 
 struct faerie_fire_t : public druid_spell_t
 {
-  faerie_fire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "faerie_fire", player, SCHOOL_NATURE, TREE_BALANCE )
+  faerie_fire_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "faerie_fire", 770, player )
   {
-    // TODO: convert to cata mechanic
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.08;
-    id = 770;
   }
 
   virtual void execute()
   {
     druid_t*  p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    consume_resource();
-    target -> debuffs.faerie_fire -> trigger( 1, 0.04 );
-    target -> debuffs.faerie_fire -> source = p;
-  }
-
-  virtual bool ready()
-  {
-    // druid_t*  p = player -> cast_druid();
-    // target_t* t = target;
-
-    return druid_spell_t::ready();
+    druid_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      target -> debuffs.faerie_fire -> trigger( 1, 0.04 );
+      target -> debuffs.faerie_fire -> source = p;
+    }
   }
 };
 
@@ -2094,8 +2191,8 @@ struct innervate_t : public druid_spell_t
   int trigger;
   player_t* innervate_target;
 
-  innervate_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "innervate", player, SCHOOL_NATURE, TREE_BALANCE ), trigger( 0 )
+  innervate_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "innervate", 29166, player ), trigger( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2108,25 +2205,18 @@ struct innervate_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    id = 29166;
-
-    base_cost = 0.0;
-    base_execute_time = 0;
-    cooldown -> duration  = 180;
-
-    harmful   = false;
+    harmful = false;
 
     // If no target is set, assume we have innervate for ourself
     innervate_target = target_str.empty() ? p : sim -> find_player( target_str );
     assert ( innervate_target != 0 );
   }
+  
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(),name() );
-
-    consume_resource();
-    update_ready();
+ 
+    druid_spell_t::execute();
 
     // 20% over 10s base
     double gain = 0.20;
@@ -2161,8 +2251,8 @@ struct innervate_t : public druid_spell_t
 struct insect_swarm_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
-  insect_swarm_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "insect_swarm", player, SCHOOL_NATURE, TREE_BALANCE ),
+  insect_swarm_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "insect_swarm", 5570, player ),
       starsurge_cd( 0 )
   {
     druid_t* p = player -> cast_druid();
@@ -2173,16 +2263,8 @@ struct insect_swarm_t : public druid_spell_t
     };
     parse_options( options, options_str );
     
-    id = 5570;
-    parse_data( p -> player_data );
-    
-    base_execute_time = 0;
-    base_tick_time    = 2.0;
-    num_ticks         = 6;
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
     num_ticks        += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 ); 
-    tick_power_mod    = 0.2;
-    tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
 
     base_multiplier *= 1.0 + ( p -> glyphs.insect_swarm ? 0.30 : 0.00 );
@@ -2226,15 +2308,48 @@ struct insect_swarm_t : public druid_spell_t
   }
 };
 
+// Mark of the Wild Spell =====================================================
+
+struct mark_of_the_wild_t : public druid_spell_t
+{
+  mark_of_the_wild_t( player_t* player, const std::string& options_str ) :
+      druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION )
+  {
+    druid_t* p = player -> cast_druid();
+
+    trigger_gcd = 0;
+    id          = 1126;
+    base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if ( p -> ooc_buffs() )
+      {
+        p -> buffs.mark_of_the_wild -> trigger();
+      }
+    }
+  }
+
+  virtual bool ready()
+  {
+    return ! player -> buffs.mark_of_the_wild -> check();
+  }
+};
+
 // Moonfire Spell ===========================================================
 
 struct moonfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
-  int         start_num_ticks;
-  moonfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, SCHOOL_ARCANE, TREE_BALANCE ), 
-      starsurge_cd( 0 ), start_num_ticks( 0 )
+
+  moonfire_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "moonfire", 8921, player ), 
+      starsurge_cd( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2244,23 +2359,15 @@ struct moonfire_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    id = 8921;
-    parse_data( p -> player_data );
-
-    base_execute_time = 0;
-    base_tick_time    = 2.0;
-    start_num_ticks   = 6;
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    start_num_ticks  += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 );
-    num_ticks         = start_num_ticks;
-    may_crit          = true;
-    tick_may_crit     = true;
-    dot_behavior      = DOT_REFRESH;
+    num_ticks   += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 );
+    dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
     base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+    base_dd_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
     base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
@@ -2276,13 +2383,7 @@ struct moonfire_t : public druid_spell_t
     if ( p -> buffs_shooting_stars -> trigger() )
       starsurge_cd -> reset();
   }
-  virtual void player_buff()
-  {
-    druid_spell_t::player_buff();
-    druid_t* p = player -> cast_druid();
-    // +2/4/8% damage bonus only applies to direct damage
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
-  }
+
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
@@ -2292,32 +2393,27 @@ struct moonfire_t : public druid_spell_t
       school = ( p -> buffs_eclipse_solar -> check() ? SCHOOL_NATURE : SCHOOL_ARCANE );
     
     druid_spell_t::execute();
-    // Damage bonus only applies to direct damage
-    // Get rid of it for the ticks, hacky :<
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
-
 
     if ( result_is_hit() )
     {
-      num_ticks   = start_num_ticks;
-      added_ticks = 0;
-      if ( p -> set_bonus.tier6_2pc_caster() ) num_ticks++;
-      update_ready();
+      if ( p -> dots_sunfire -> ticking() )
+        p -> dots_sunfire -> action -> cancel();
 
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> rank() * 0.05 );
     }
   }
+
   virtual double cost_reduction() SC_CONST
   {
     // Costreduction from moonglow and lunar shower is additive
     druid_t* p = player -> cast_druid();
     double cr = druid_spell_t::cost_reduction();
-    cr += (-0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
-    return cr;
-    
+    cr += ( -0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
+    return cr;    
   }
+
   virtual bool ready()
   {
     if ( ! druid_spell_t::ready() )
@@ -2325,133 +2421,10 @@ struct moonfire_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( skip_on_eclipse < 0 )
-      if ( p -> buffs_eclipse_solar -> check() )
-        return false;
+    if ( p -> talents.sunfire -> rank() && p -> buffs_eclipse_solar -> check() )
+      return false;
 
     return true;
-  }
-};
-
-// Bear Form Spell ========================================================
-
-struct bear_form_t : public druid_spell_t
-{
-  bear_form_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "bear_form", player, SCHOOL_NATURE, TREE_FERAL )
-  {
-    druid_t* p = player -> cast_druid();
-    trigger_gcd = 0;
-    base_execute_time = 0;
-    base_cost = 0;
-    id = 768;
-    if ( ! p -> bear_melee_attack ) p -> bear_melee_attack = new bear_melee_t( p );
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-
-    weapon_t* w = &( p -> main_hand_weapon );
-
-    if ( w -> type != WEAPON_BEAST )
-    {
-      w -> type = WEAPON_BEAST;
-      w -> school = SCHOOL_PHYSICAL;
-      w -> damage = 54.8 * 2.5;
-      w -> swing_time = 2.5;
-    }
-
-    // Force melee swing to restart if necessary
-    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
-
-    p -> main_hand_attack = p -> bear_melee_attack;
-    p -> main_hand_attack -> weapon = w;
-
-    if ( p -> buffs_cat_form     -> check() ) p -> buffs_cat_form     -> expire();
-    if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
-
-    p -> buffs_bear_form -> start();
-    p -> base_gcd = 1.0;
-    p -> reset_gcd();
-
-    p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect_base_value( 1 ) / 100.0;
-    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.thick_hide -> rank() );
-
-    if ( p -> talents.leader_of_the_pack -> rank() )
-    {
-      sim -> auras.leader_of_the_pack -> trigger();
-    }
-  }
-
-  virtual bool ready()
-  {
-    druid_t* d = player -> cast_druid();
-    return ! d -> buffs_bear_form -> check();
-  }
-};
-
-// Cat Form Spell =========================================================
-
-struct cat_form_t : public druid_spell_t
-{
-  cat_form_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "cat_form", player, SCHOOL_NATURE, TREE_FERAL )
-  {
-    druid_t* p = player -> cast_druid();
-    trigger_gcd = 0;
-    base_execute_time = 0;
-    base_cost = 0;
-    id = 768;
-    if ( ! p -> cat_melee_attack ) p -> cat_melee_attack = new cat_melee_t( p );
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-
-    weapon_t* w = &( p -> main_hand_weapon );
-
-    if ( w -> type != WEAPON_BEAST )
-    {
-      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
-      w -> type = WEAPON_BEAST;
-      w -> school = SCHOOL_PHYSICAL;
-      w -> min_dmg /= w -> swing_time;
-      w -> max_dmg /= w -> swing_time;
-      w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
-      w -> swing_time = 1.0;
-    }
-
-    // Force melee swing to restart if necessary
-    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
-
-    p -> main_hand_attack = p -> cat_melee_attack;
-    p -> main_hand_attack -> weapon = w;
-
-    if ( p -> buffs_bear_form    -> check() ) p -> buffs_bear_form    -> expire();
-    if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
-
-    p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank();
-
-    p -> buffs_cat_form -> start();
-    p -> base_gcd = 1.0;
-    p -> reset_gcd();
-
-    if ( p -> talents.leader_of_the_pack -> rank() )
-    {
-      sim -> auras.leader_of_the_pack -> trigger();
-    }
-  }
-
-  virtual bool ready()
-  {
-    druid_t* d = player -> cast_druid();
-    return ! d -> buffs_cat_form -> check();
   }
 };
 
@@ -2459,22 +2432,24 @@ struct cat_form_t : public druid_spell_t
 
 struct moonkin_form_t : public druid_spell_t
 {
-  moonkin_form_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonkin_form", player, SCHOOL_NATURE, TREE_BALANCE )
+  moonkin_form_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "moonkin_form", 24858, player )
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.moonkin_form -> rank() );
-    trigger_gcd = 0;
+
+    // Override these as we can precast before combat begins
+    trigger_gcd       = 0;
     base_execute_time = 0;
-    base_cost = 0;
-    id = 24858;
+    base_cost         = 0;
+    harmful           = false;
   }
 
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
 
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    spell_t::execute();
 
     if ( p -> buffs_bear_form -> check() ) p -> buffs_bear_form -> expire();
     if ( p -> buffs_cat_form  -> check() ) p -> buffs_cat_form  -> expire();
@@ -2500,29 +2475,26 @@ struct druids_swiftness_t : public druid_spell_t
   cooldown_t* sub_cooldown;
   dot_t*      sub_dot;
 
-  druids_swiftness_t( player_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_swiftness", player, SCHOOL_NATURE, TREE_RESTORATION ),
+  druids_swiftness_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "natures_swiftness", 17116, player ),
     sub_cooldown(0), sub_dot(0)
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.natures_swiftness -> rank() );
-    trigger_gcd = 0;
-    cooldown -> duration = 180.0;
+
     if ( ! options_str.empty() )
     {
       // This will prevent Natures Swiftness from being called before the desired "fast spell" is ready to be cast.
       sub_cooldown = p -> get_cooldown( options_str );
       sub_dot      = p -> get_dot     ( options_str );
     }
-    id = 17116;
   }
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
     p -> buffs_natures_swiftness -> trigger();
-    update_ready();
   }
 
   virtual bool ready()
@@ -2546,8 +2518,8 @@ struct starfire_t : public druid_spell_t
   std::string prev_str;
   int extend_moonfire;
 
-  starfire_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "starfire", player, SCHOOL_ARCANE, TREE_BALANCE ),
+  starfire_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "starfire", 2912, player ),
       extend_moonfire( 0 )
   {
     druid_t* p = player -> cast_druid();
@@ -2560,24 +2532,7 @@ struct starfire_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    // Starfire is leanred at level 78, but gains 5 damage per level
-    // so the actual damage range at 80 is: 1038 to 1222
-    static rank_t ranks[] =
-    {
-      { 80, 11, 1038, 1222, 0, 0.16 },
-      { 78, 10, 1028, 1212, 0, 0.16 },
-      { 72,  9,  854, 1006, 0, 0.16 },
-      { 67,  8,  818,  964, 0, 370  },
-      { 60,  7,  693,  817, 0, 340  },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks, 48465 );
-
-    base_execute_time = 3.5;
-    direct_power_mod  = ( base_execute_time / 3.5 );
-    may_crit          = true;
-
-    base_execute_time -= util_t::talent_rank( p -> talents.starlight_wrath -> rank(), 3, 0.15, 0.25, 0.5 );
+    base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
   }
@@ -2605,10 +2560,7 @@ struct starfire_t : public druid_spell_t
       // This is probably to force druid to oscillate
       if ( ! p -> buffs_eclipse_solar -> check() )
       {
-        // effect#2 of starfire spell => 92680
-        // 92680 -> base_value == 20
-
-        double gain = 20;
+        double gain = effect_base_value( 2 );
         if ( ! p -> buffs_eclipse_lunar -> check() 
           && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
         {
@@ -2646,14 +2598,321 @@ struct starfire_t : public druid_spell_t
   }
 };
 
+// Starfall Spell ===========================================================
+
+struct starfall_t : public druid_spell_t
+{
+  spell_t* starfall_star;
+
+  starfall_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "starfall", 48505, player )
+  {
+    struct starfall_star_t : public druid_spell_t
+    {
+      starfall_star_t( druid_t* player ) :
+          druid_spell_t( "starfall_star", 50288, player )
+      {
+        druid_t* p = player -> cast_druid();
+
+        background = true;
+        proc       = true;
+        dual       = true;
+        stats      = player -> get_stats( "starfall" );
+
+        if ( p -> primary_tree() == TREE_BALANCE )
+          base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+
+        if ( p -> glyphs.focus )
+          base_multiplier *= 1.1;
+      }
+
+      virtual void assess_damage( double amount, int dmg_type )
+      {
+        druid_spell_t::assess_damage( amount, dmg_type );
+
+        druid_t* p = player -> cast_druid();
+
+        // Starfall is an aoe, but limited to 20 stars, since 10 stars are used on single target,
+        // only let the other 10 hit one add
+        // damage will be the same assuming the add is up for the duration of starfall
+        if ( target -> adds_nearby )
+          druid_spell_t::additional_damage( amount, dmg_type );
+      }
+
+      virtual void execute()
+      {
+        druid_spell_t::execute();
+        tick_dmg = direct_dmg;
+        update_stats( DMG_OVER_TIME );
+      }
+    };
+
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    num_ticks        = 10;
+    base_tick_time   = 1.0;
+    scale_with_haste = false;
+
+    if ( p -> glyphs.starfall )
+      cooldown -> duration  -= 30;
+
+    may_miss = false; // The spell only triggers the buff
+
+    starfall_star = new starfall_star_t( p );
+  }
+
+  virtual void tick()
+  {
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    starfall_star -> execute();
+    update_time( DMG_OVER_TIME );
+  }
+};
+
+// Starsurge Spell ==========================================================
+
+struct starsurge_t : public druid_spell_t
+{
+  cooldown_t* starfall_cd;
+  starsurge_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "starsurge", 78674, player ),
+      starfall_cd( 0 )
+  {
+    druid_t* p = player -> cast_druid();
+    
+    check_spec( TREE_BALANCE );
+    
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( p -> primary_tree() == TREE_BALANCE )
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+    
+    starfall_cd = p -> get_cooldown( "starfall" );
+  }
+  
+  virtual void travel( int    travel_result,
+                       double travel_dmg )
+  {
+    druid_t* p = player -> cast_druid();
+    druid_spell_t::travel( travel_result, travel_dmg );
+
+    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    {
+      // gain is positive for p -> eclipse_bar_direction==0
+      // else it is towards p -> eclipse_bar_direction
+      double gain = effect_base_value( 2 );
+      if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
+
+      trigger_eclipse_energy_gain( this, gain );
+
+      if ( p -> glyphs.starsurge )
+        starfall_cd -> ready -= 5.0;
+    }
+  }
+
+  virtual void schedule_execute()
+  {
+    druid_spell_t::schedule_execute();
+    druid_t* p = player -> cast_druid();
+    p -> buffs_shooting_stars -> expire();
+  }
+  
+  virtual double execute_time() SC_CONST
+  {
+    druid_t* p = player -> cast_druid();
+    if ( p -> buffs_shooting_stars -> up() )
+      return 0;
+
+    return druid_spell_t::execute_time();
+  }  
+};
+
+// Stealth ==================================================================
+
+struct stealth_t : public spell_t
+{
+  stealth_t( player_t* player, const std::string& options_str ) :
+      spell_t( "stealth", player )
+  {
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    p -> buffs_stealthed -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+    return ! p -> buffs_stealthed -> check();
+  }
+};
+
+// Sunfire Spell ============================================================
+
+struct sunfire_t : public druid_spell_t
+{
+  cooldown_t* starsurge_cd;
+
+  // Identical to moonfire, except damage type and usability
+
+  sunfire_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "sunfire", 93402, player ), 
+      starsurge_cd( 0 )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.sunfire -> rank() );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
+    num_ticks   += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 );
+    dot_behavior = DOT_REFRESH;
+    
+    if ( p -> primary_tree() == TREE_BALANCE )
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+
+    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+    base_dd_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+    base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;    
+
+    if ( p -> set_bonus.tier11_2pc_caster() )
+      base_crit += 0.05;
+
+    starsurge_cd = p -> get_cooldown( "starsurge" );
+  }
+
+  virtual void tick()
+  {
+    druid_spell_t::tick();
+    druid_t* p = player -> cast_druid();
+    if ( p -> buffs_shooting_stars -> trigger() )
+      starsurge_cd -> reset();
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    
+    // Sunfire, basically just makes MF benefit from lunar AND solar!
+    if ( p -> talents.sunfire -> rank() )
+      school = ( p -> buffs_eclipse_solar -> check() ? SCHOOL_NATURE : SCHOOL_ARCANE );
+    
+    druid_spell_t::execute();
+
+    if ( result_is_hit() )
+    {
+      if ( p -> dots_moonfire -> ticking() )
+        p -> dots_moonfire -> action -> cancel();
+
+      // If moving trigger all 3 stacks, because it will stack up immediately
+      p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
+      p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> rank() * 0.05 );
+    }
+  }
+
+  virtual double cost_reduction() SC_CONST
+  {
+    // Costreduction from moonglow and lunar shower is additive
+    druid_t* p = player -> cast_druid();
+    double cr = druid_spell_t::cost_reduction();
+    cr += ( -0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
+    return cr;    
+  }
+
+  virtual bool ready()
+  {
+    if ( ! druid_spell_t::ready() )
+      return false;
+
+    druid_t* p = player -> cast_druid();
+
+    if ( ! p -> buffs_eclipse_solar -> check() )
+      return false;
+
+    return true;
+  }
+};
+
+// Treants Spell ============================================================
+
+struct treants_spell_t : public druid_spell_t
+{
+  treants_spell_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "treants", 33831, player )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.force_of_nature -> rank() );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+  }
+
+  virtual void execute()
+  {
+    consume_resource();
+    update_ready();
+    player -> summon_pet( "treants", 30.0 );
+  }
+};
+
+// Typhoon Spell ============================================================
+
+struct typhoon_t : public druid_spell_t
+{
+  typhoon_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "typhoon", 50516, player )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.typhoon -> rank() );
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    aoe               = true;
+    base_dd_min       = p -> player_data.effect_min( effect_id( 2 ), p -> type, p -> level );
+    base_dd_max       = p -> player_data.effect_max( effect_id( 2 ), p -> type, p -> level );
+    base_multiplier  *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
+    direct_power_mod  = p -> player_data.effect_coeff( effect_id( 2 ) );
+
+    if ( p -> glyphs.monsoon )
+      cooldown -> duration -= 3;
+    if ( p -> glyphs.typhoon )
+      base_cost *= 0.92;
+  }
+};
+
 // Wrath Spell ==============================================================
 
 struct wrath_t : public druid_spell_t
 {
   std::string prev_str;
 
-  wrath_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "wrath", player, SCHOOL_NATURE, TREE_BALANCE )
+  wrath_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "wrath", 5176, player )
   {
     druid_t* p = player -> cast_druid();
 
@@ -2663,14 +2922,8 @@ struct wrath_t : public druid_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    id = 5176;
-    parse_data( p -> player_data );
-
-    may_crit          = true;
     
-    // Times are given in ms in DBC files
-    base_execute_time += p -> talents.starlight_wrath -> effect_base_value( 1 ) * 0.001;
+    base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
   }
@@ -2682,6 +2935,7 @@ struct wrath_t : public druid_spell_t
     if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking() )
       player_multiplier *= 1.10;
   }
+
   virtual void travel( int    travel_result,
                        double travel_dmg )
   {
@@ -2697,8 +2951,6 @@ struct wrath_t : public druid_spell_t
 
       if ( ! p -> buffs_eclipse_lunar -> check() )
       {
-        // effect#2 of wrath spell => 92679
-        // 92679 -> base_value == 13
         // It actualy is 13.3333, SF and W have the exact same eclipse gain per second
         double gain = -(40.0/3.0); 
         if ( ! p -> buffs_eclipse_solar -> check() 
@@ -2728,279 +2980,6 @@ struct wrath_t : public druid_spell_t
     }
 
     return true;
-  }
-};
-
-// Starfall Spell ===========================================================
-
-struct starfall_t : public druid_spell_t
-{
-  spell_t* starfall_star;
-
-  starfall_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
-  {
-    struct starfall_star_t : public druid_spell_t
-    {
-      starfall_star_t( player_t* player ) : druid_spell_t( "starfall", player, SCHOOL_ARCANE, TREE_BALANCE )
-      {
-        druid_t* p = player -> cast_druid();
-
-        direct_power_mod = 0.30;
-        may_crit         = true;
-        may_miss         = true;
-        may_resist       = true;
-        background       = true;
-        proc             = true;
-        dual             = true;
-
-        base_dd_min = base_dd_max  = 0;
-        if ( p -> primary_tree() == TREE_BALANCE )
-          base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-
-        if ( p -> glyphs.focus )
-          base_multiplier *= 1.1;
-
-        id = 53195;
-      }
-
-      virtual void execute()
-      {
-        druid_spell_t::execute();
-        tick_dmg = direct_dmg;
-        update_stats( DMG_OVER_TIME );
-      }
-    };
-    druid_t* p = player -> cast_druid();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    static rank_t ranks[] =
-    {
-      { 80, 4, 563, 653, 0, 0.35 },
-      { 75, 3, 474, 551, 0, 0.35 },
-      { 70, 2, 324, 377, 0, 0.35 },
-      { 60, 1, 114, 167, 0, 0.35 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    num_ticks      = 10;
-    base_tick_time = 1.0;
-
-    cooldown -> duration          = 90;
-    if ( p -> glyphs.starfall )
-      cooldown -> duration  -= 30;
-
-    base_execute_time = 0;
-
-    may_miss = may_crit = false; // The spell only triggers the buff
-
-    starfall_star = new starfall_star_t( p );
-    starfall_star -> base_dd_max = base_dd_max;
-    starfall_star -> base_dd_min = base_dd_min;
-    base_dd_min = base_dd_max = 0;
-
-  }
-  virtual void tick()
-  {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
-    starfall_star -> execute();
-    update_time( DMG_OVER_TIME );
-  }
-};
-
-// Starsurge Spell ==========================================================
-
-struct starsurge_t : public druid_spell_t
-{
-  cooldown_t* starfall_cd;
-  starsurge_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "starsurge", player, SCHOOL_SPELLSTORM, TREE_BALANCE ),
-      starfall_cd( 0 )
-  {
-    druid_t* p = player -> cast_druid();
-    
-    check_spec( TREE_BALANCE );
-    
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    id = 78674;
-    parse_data( p -> player_data );
-
-    if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-    
-    starfall_cd = p -> get_cooldown( "starfall" );
-  }
-  
-  virtual void travel( int    travel_result,
-                       double travel_dmg )
-  {
-    druid_t* p = player -> cast_druid();
-    druid_spell_t::travel( travel_result, travel_dmg );
-
-    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
-    {
-      // gain is positive for p -> eclipse_bar_direction==0
-      // else it is towards p -> eclipse_bar_direction
-      double gain = 15;
-      if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
-
-      trigger_eclipse_energy_gain( this, gain );
-
-      if ( p -> glyphs.starsurge )
-        starfall_cd -> ready -= 5.0;
-    }
-  }
-
-  virtual void schedule_execute()
-  {
-    druid_spell_t::schedule_execute();
-    druid_t* p = player -> cast_druid();
-    p -> buffs_shooting_stars -> expire();
-  }
-  
-  virtual double execute_time() SC_CONST
-  {
-    druid_t* p = player -> cast_druid();
-    if ( p -> buffs_shooting_stars -> up() )
-      return 0;
-
-    return druid_spell_t::execute_time();
-  }  
-};
-
-// Typhoon Spell ============================================================
-
-struct typhoon_t : public druid_spell_t
-{
-  typhoon_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "typhoon", player, SCHOOL_NATURE, TREE_BALANCE )
-  {
-    druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.typhoon -> rank() );
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    static rank_t ranks[] =
-    {
-      { 80, 5, 1190, 1190, 0, 0.25 },
-      { 75, 4, 1010, 1010, 0, 0.25 },
-      { 70, 3,  735,  735, 0, 0.25 },
-      { 60, 2,  550,  550, 0, 0.25 },
-      { 50, 1,  400,  400, 0, 0.25 },
-      {  0, 0,    0,    0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    base_execute_time = 0;
-    direct_power_mod  = 0.193;
-    base_multiplier *= 1.0 + 0.15 * p -> talents.gale_winds -> rank();
-    aoe = true;
-
-    cooldown -> duration = 20;
-    if ( p -> glyphs.monsoon )
-      cooldown -> duration -= 3;
-    if ( p -> glyphs.typhoon )
-      base_cost *= 0.92;
-  }
-};
-
-// Mark of the Wild Spell =====================================================
-
-struct mark_of_the_wild_t : public druid_spell_t
-{
-  mark_of_the_wild_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "mark_of_the_wild", player, SCHOOL_NATURE, TREE_RESTORATION )
-  {
-    druid_t* p = player -> cast_druid();
-
-    trigger_gcd = 0;
-    id          = 1126;
-    base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( p -> ooc_buffs() )
-      {
-        p -> buffs.mark_of_the_wild -> trigger();
-      }
-    }
-  }
-
-  virtual bool ready()
-  {
-    return ! player -> buffs.mark_of_the_wild -> check();
-  }
-};
-
-// Treants Spell ============================================================
-
-struct treants_spell_t : public druid_spell_t
-{
-  treants_spell_t( player_t* player, const std::string& options_str ) :
-      druid_spell_t( "treants", player, SCHOOL_NATURE, TREE_BALANCE )
-  {
-    druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.force_of_nature -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    cooldown -> duration = 180.0;
-    base_cost = p -> resource_base[ RESOURCE_MANA ] * 0.12;
-    id = 33831;
-  }
-
-  virtual void execute()
-  {
-    consume_resource();
-    update_ready();
-    player -> summon_pet( "treants", 30.0 );
-  }
-};
-
-// Stealth ==================================================================
-
-struct stealth_t : public spell_t
-{
-  stealth_t( player_t* player, const std::string& options_str ) :
-      spell_t( "stealth", player )
-  {
-    trigger_gcd = 0;
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = player -> cast_druid();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    p -> buffs_stealthed -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    druid_t* p = player -> cast_druid();
-    return ! p -> buffs_stealthed -> check();
   }
 };
 
@@ -3047,6 +3026,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "starfall"          ) return new          starfall_t( this, options_str );
   if ( name == "starsurge"         ) return new         starsurge_t( this, options_str );
   if ( name == "stealth"           ) return new           stealth_t( this, options_str );
+  if ( name == "sunfire"           ) return new           sunfire_t( this, options_str );
   if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
   if ( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
@@ -3265,12 +3245,9 @@ void druid_t::init_base()
   switch ( primary_tree() )
   {
   case TREE_BALANCE:
-    // Dreamstate for choosing balance
-    // 12857 Dreamstate seems to be gone
-    // mp5_per_intellect = 0.10;
     break;
   case TREE_RESTORATION:
-    // Intensity for choosing resto
+    // Meditation for choosing resto
     mana_regen_while_casting = 0.50;
     break;
   case TREE_FERAL:
@@ -3295,6 +3272,7 @@ void druid_t::init_buffs()
   buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1 );
   buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
+  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower -> rank() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> rank() );
@@ -3302,12 +3280,10 @@ void druid_t::init_buffs()
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> rank() * 0.02 );
+  buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
-  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
-
-  buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
-  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
+  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );  
   
   // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
 
@@ -3471,15 +3447,19 @@ void druid_t::init_actions()
       if ( talents.moonkin_form -> rank() ) 
         action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
-      action_list_str += "/speed_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
+      action_list_str += "/volcanic_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
-      action_list_str += "/innervate,trigger=-2000";
+      action_list_str += "/innervate,if=mana_pct<50,";
       if ( talents.force_of_nature -> rank() )
-        action_list_str+="/treants,time>=5";
+        action_list_str += "/treants,time>=5";
       if ( talents.starfall -> rank() ) 
-        action_list_str+="/starfall,if=!eclipse";
+        action_list_str += "/starfall,if=!eclipse";
+      if ( talents.sunfire -> rank() )
+        action_list_str += "/sunfire,if=!dot.moonfire.remains>0";
       action_list_str += "/moonfire,if=!ticking";
+      if ( talents.sunfire -> rank() )
+        action_list_str += "&!dot.sunfire.remains>0";
       action_list_str += "/insect_swarm,if=!ticking";
       action_list_str += "/starsurge";
       action_list_str += use_str;
