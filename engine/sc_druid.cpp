@@ -2370,16 +2370,12 @@ struct moonfire_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
-    
-    // Sunfire, basically just makes MF benefit from lunar AND solar!
-    if ( p -> talents.sunfire -> rank() )
-      school = ( p -> buffs_eclipse_solar -> check() ? SCHOOL_NATURE : SCHOOL_ARCANE );
-    
     druid_spell_t::execute();
 
     if ( result_is_hit() )
     {
+      druid_t* p = player -> cast_druid();
+
       if ( p -> dots_sunfire -> ticking() )
         p -> dots_sunfire -> action -> cancel();
 
@@ -2792,16 +2788,12 @@ struct sunfire_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
-    
-    // Sunfire, basically just makes MF benefit from lunar AND solar!
-    if ( p -> talents.sunfire -> rank() )
-      school = ( p -> buffs_eclipse_solar -> check() ? SCHOOL_NATURE : SCHOOL_ARCANE );
-    
-    druid_spell_t::execute();
+   druid_spell_t::execute();
 
     if ( result_is_hit() )
     {
+      druid_t* p = player -> cast_druid();
+
       if ( p -> dots_moonfire -> ticking() )
         p -> dots_moonfire -> action -> cancel();
 
@@ -3262,7 +3254,7 @@ void druid_t::init_buffs()
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
-  buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> rank() * 0.02 );
+  buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> proc_chance() );
   buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
@@ -3442,7 +3434,7 @@ void druid_t::init_actions()
         action_list_str += "/sunfire,if=!dot.moonfire.remains>0";
       action_list_str += "/moonfire,if=!ticking";
       if ( talents.sunfire -> rank() )
-        action_list_str += "&!dot.sunfire.remains>0";
+        action_list_str += "&!dot.sunfire.remains>0&buff.lunar_eclipse.react";
       action_list_str += "/insect_swarm,if=!ticking";
       action_list_str += "/starsurge";
       action_list_str += use_str;

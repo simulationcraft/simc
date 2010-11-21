@@ -20,7 +20,7 @@ actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
 actions+=/starfall
 actions+=/sunfire,if=!ticking&!dot.moonfire.remains>0
-actions+=/moonfire,if=!ticking&!dot.sunfire.remains>0
+actions+=/moonfire,if=!ticking&!dot.sunfire.remains>0&buff.lunar_eclipse.react
 actions+=/insect_swarm,if=!ticking
 actions+=/starsurge
 actions+=/starfire,if=eclipse_dir=1
