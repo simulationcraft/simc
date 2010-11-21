@@ -565,8 +565,8 @@ struct warlock_pet_t : public pet_t
          return r;
        }
 
-  warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
-    pet_t( sim, owner, pet_name ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
+  warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt, bool guardian = false ) :
+    pet_t( sim, owner, pet_name, guardian ), pet_type( pt ), damage_modifier( 1.0 ), melee( 0 )
   {
     gains_mana_feed = get_gain("mana_feed");
     procs_mana_feed = get_proc("mana_feed");
@@ -700,14 +700,14 @@ struct warlock_main_pet_t : public warlock_pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
-    sp += owner -> composite_spell_power( school ) * ( level / 80) * 0.5;
+    sp += owner -> composite_spell_power( school ) * ( level / 80 ) * 0.5 * owner -> composite_spell_power_multiplier();
     return sp;
   }
 
   virtual double composite_attack_power() SC_CONST
   {
     double ap = pet_t::composite_attack_power();
-    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 );
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 ) * owner -> composite_spell_power_multiplier();
     return ap;
   }
 
@@ -773,7 +773,7 @@ struct warlock_main_pet_t : public warlock_pet_t
 struct warlock_guardian_pet_t : public warlock_pet_t
 {
   warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
-    warlock_pet_t( sim, owner, pet_name, pt )
+    warlock_pet_t( sim, owner, pet_name, pt, true )
   {}
 
   virtual void summon( double duration=0 )
@@ -783,14 +783,14 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     reset();
 
     // untested !!
-    spell_power[ SCHOOL_MAX ] += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80) * 0.5;
-    attack_power += o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 );
-    attack_hit += o -> attack_hit;
-    attack_expertise += o -> attack_expertise * 26.0 / 17.0;
+    spell_power[ SCHOOL_MAX ] = o -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 ) * 0.5 * o -> composite_spell_power_multiplier();
+    //attack_power += o -> attack_power * ( level / 80 );
+    //attack_hit += o -> attack_hit;
+    //attack_expertise += o -> attack_expertise * 26.0 / 17.0;
     spell_haste *= o -> spell_haste;
     attack_haste *= o -> attack_haste;
-    attack_crit = o -> spell_crit; // Does not seem to benefit from any buffs on its own.
-    spell_crit = o -> spell_crit; // Does not seem to benefit from any buffs on its own.
+    attack_crit += o -> spell_crit;
+    spell_crit += o -> spell_crit;
     // untested!!
   }
 
@@ -1246,7 +1246,9 @@ struct imp_pet_t : public warlock_main_pet_t
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> base_value() );
-      direct_power_mod = 0.690;  // From live testing 2010/10/15
+      direct_power_mod = 0.619; // seems to be 0.00 in DBC now?
+      if ( player -> level == 80 ) direct_power_mod = 0.690;  // From live testing 2010/11/20
+      if ( player -> level == 80 ) base_dd_min = base_dd_max = 355; // From live testing 2010/11/20
       base_execute_time += o -> talent_dark_arts -> effect_base_value( 1 ) / 1000.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
@@ -1666,6 +1668,9 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
     doom_bolt_t( player_t* player ) :
       warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
     {
+      base_dd_min *= 1.333; // Based on testing 2010/11/20
+      base_dd_max *= 1.333; // Based on testing 2010/11/20
+      direct_power_mod = 0.95; // Based on testing 2010/11/20
       base_execute_time = 2.5;
     }
   };
@@ -1700,7 +1705,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
   ebon_imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_guardian_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
-    damage_modifier = 1.14;
+    damage_modifier = 0.65;
 
     action_list_str += "/snapshot_stats";
     action_list_str += "/wait_until_ready";

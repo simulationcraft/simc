@@ -1860,17 +1860,18 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
 double player_t::composite_spell_power_multiplier() SC_CONST
 {
   double m = spell_power_multiplier;
-  /**/
-  if ( sim -> auras.demonic_pact -> check() )
+  if ( type != PLAYER_GUARDIAN )
   {
-    m *= 1.10;
+    if ( sim -> auras.demonic_pact -> check() )
+    {
+      m *= 1.10;
+    }
+    else
+    {
+       m *= 1.0 + std::max( sim -> auras.flametongue_totem -> value(),
+                            buffs.arcane_brilliance -> check() * 0.06 );
+    }
   }
-  else
-  {
-     m *= 1.0 + std::max( sim -> auras.flametongue_totem -> value(),
-                          buffs.arcane_brilliance -> check() * 0.06 );
-  }
-
   return m;
 }
 
