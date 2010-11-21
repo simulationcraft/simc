@@ -821,7 +821,7 @@ double action_t::calculate_tick_damage()
 
   if ( base_td == 0 && tick_power_mod == 0 ) return 0;
 
-  tick_dmg  = base_td + total_power() * tick_power_mod;
+  tick_dmg  = floor( base_td + 0.5 ) + total_power() * tick_power_mod;
   tick_dmg *= total_td_multiplier();
 
   modify_tick_damage();
@@ -837,6 +837,15 @@ double action_t::calculate_tick_damage()
   {
     resisted_dmg = resistance() * tick_dmg;
     tick_dmg -= resisted_dmg;
+  }
+
+  if ( sim -> roll( tick_dmg - floor( tick_dmg ) ) )
+  {
+    tick_dmg = ceil( tick_dmg );
+  }
+  else
+  {
+    tick_dmg = floor( tick_dmg );
   }
 
   if ( sim -> debug )
@@ -857,6 +866,8 @@ double action_t::calculate_direct_damage()
 
   double base_direct_dmg = sim -> range( base_dd_min, base_dd_max );
 
+  base_direct_dmg = floor( base_direct_dmg + 0.5 );
+
   if ( base_direct_dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
   
   direct_dmg  = base_direct_dmg + base_dd_adder + player_dd_adder + target_dd_adder;
@@ -868,7 +879,6 @@ double action_t::calculate_direct_damage()
     direct_dmg *= weapon_multiplier;
   }
   direct_dmg += direct_power_mod * total_power();
-  direct_dmg  = ceil( direct_dmg ); // Needs verifying. Seems okay for SW: Death
   direct_dmg *= total_dd_multiplier();
 
   modify_direct_damage();
@@ -921,6 +931,15 @@ double action_t::calculate_direct_damage()
     blocked_dmg = target -> block_value;
     direct_dmg -= blocked_dmg;
     if ( direct_dmg < 0 ) direct_dmg = 0;
+  }
+
+  if ( sim -> roll( direct_dmg - floor( direct_dmg ) ) )
+  {
+    direct_dmg = ceil( direct_dmg ); 
+  }
+  else
+  {
+    direct_dmg = floor( direct_dmg );
   }
 
   if ( sim -> debug )

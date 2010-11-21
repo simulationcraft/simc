@@ -691,7 +691,7 @@ double sc_data_access_t::effect_delta( const uint32_t effect_id, const player_ty
 
     return effect_m_average( effect_id ) * effect_m_delta( effect_id ) * *p_scale_ref;
   }
-  else if ( effect_die_sides( effect_id ) != 0 )
+  else if ( ( effect_m_average( effect_id ) == 0.0 ) && ( effect_m_delta( effect_id ) == 0.0 ) && ( effect_die_sides( effect_id ) != 0 ) )
     return effect_die_sides( effect_id );
   
   return 0;
