@@ -4378,7 +4378,7 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
-      if ( level >= 58) action_list_str += "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       action_list_str += "/life_tap,mana_percentage<=35";
       if ( talent_bane -> rank() == 3 )
@@ -4404,7 +4404,7 @@ void warlock_t::init_actions()
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
-      if ( level >= 58) action_list_str += "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_infernal";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
 
     break;
@@ -4422,7 +4422,7 @@ void warlock_t::init_actions()
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
-      if ( level >= 58) action_list_str += "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_infernal";
       action_list_str += "/life_tap,mana_percentage<=35";
       action_list_str += "/shadow_bolt";
 
@@ -4432,7 +4432,7 @@ void warlock_t::init_actions()
       action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
       action_list_str += "/immolate,if=!ticking|dot.immolate.remains<(cast_time+tick_time)";
-      if ( level >= 58) action_list_str += "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_infernal";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
