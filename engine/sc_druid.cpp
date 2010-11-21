@@ -1868,24 +1868,21 @@ void druid_spell_t::player_buff()
   spell_t::player_buff();
 
   if ( p -> buffs_moonkin_form -> check() )
-  {
     player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> base_value() * 0.01;
-  }
+
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
     player_multiplier *= 1.0 + 0.01 * p -> talents.balance_of_power -> effect_base_value( 1 );
-
+    
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
-    // Moonfury: Arcane and Nature spell damage increased by 25%
-    // One of the bonuses for choosing balance spec
-    if ( p -> primary_tree() == TREE_BALANCE )
-      player_multiplier *= 1.0 + 0.01 * p -> spec_moonfury -> mod_additive( P_GENERIC );
+    if ( p -> spec_moonfury -> ok() )
+      player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
 
     if ( p -> buffs_moonkin_form -> check() )
       player_multiplier *= 1.10;
   }
+
   // Both eclipse buffs need their own checks
-  // Eclipse increases wrath damage by 1.5% per mastery point
   if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
     if ( p -> buffs_eclipse_lunar -> up() )
       player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
@@ -1895,9 +1892,8 @@ void druid_spell_t::player_buff()
       player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect_base_value( 2 ) / 100.0;
-  
-  player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
 
+  player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
 }
 
 // Auto Attack =============================================================
@@ -2282,20 +2278,6 @@ struct insect_swarm_t : public druid_spell_t
     if ( p -> buffs_shooting_stars -> trigger() )
       starsurge_cd -> reset();
   }
-
-  virtual bool ready()
-  {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
-    druid_t* p = player -> cast_druid();
-
-    if ( skip_on_eclipse < 0 )
-      if ( p -> buffs_eclipse_lunar -> check() )
-        return false;
-
-    return true;
-  }
   
   virtual void execute()
   {
@@ -2630,8 +2612,6 @@ struct starfall_t : public druid_spell_t
       {
         druid_spell_t::assess_damage( amount, dmg_type );
 
-        druid_t* p = player -> cast_druid();
-
         // Starfall is an aoe, but limited to 20 stars, since 10 stars are used on single target,
         // only let the other 10 hit one add
         // damage will be the same assuming the add is up for the duration of starfall
@@ -2643,7 +2623,7 @@ struct starfall_t : public druid_spell_t
       {
         druid_spell_t::execute();
         tick_dmg = direct_dmg;
-        update_stats( DMG_OVER_TIME );
+        update_stats( DMG_DIRECT );
       }
     };
 
@@ -2671,7 +2651,7 @@ struct starfall_t : public druid_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
     starfall_star -> execute();
-    update_time( DMG_OVER_TIME );
+    update_time( DMG_DIRECT );
   }
 };
 
@@ -3742,7 +3722,7 @@ int druid_t::decode_set( item_t& item )
 
   bool is_caster = ( strstr( s, "cover"     ) ||
                      strstr( s, "mantle"    ) ||
-                     strstr( s, "vestment" ) ||
+                     strstr( s, "vestment"  ) ||
                      strstr( s, "trousers"  ) ||
                      strstr( s, "gloves"    ) );
 
@@ -3757,7 +3737,7 @@ int druid_t::decode_set( item_t& item )
     if ( is_caster ) return SET_T10_CASTER;
     if ( is_melee  ) return SET_T10_MELEE;
   }
-  if ( strstr( s, "stormrider" ) )
+  if ( strstr( s, "stormriders" ) )
   {
     bool is_caster = ( strstr( s, "cover"         ) ||
                        strstr( s, "shoulderwraps" ) ||
