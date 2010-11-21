@@ -1557,6 +1557,7 @@ void action_t::reset()
   result = RESULT_NONE;
   execute_event = 0;
   tick_event = 0;
+  travel_event = 0;
   if ( observer ) *observer = 0;
 
   if ( ! dual ) stats -> reset( this );
