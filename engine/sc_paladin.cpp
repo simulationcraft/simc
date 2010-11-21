@@ -228,6 +228,7 @@ struct paladin_t : public player_t
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name );
   virtual void      create_pets   ();
+  virtual void      combat_begin();
 
   bool              has_holy_power(int power_needed=1) SC_CONST;
   int               holy_power_stacks() SC_CONST;
@@ -2500,6 +2501,15 @@ void paladin_t::create_pets()
   guardian_of_ancient_kings = create_pet("guardian_of_ancient_kings_ret");
 }
 
+// paladin_t::combat_begin ===================================================
+
+void paladin_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if (talents.communion->rank()) sim->auras.communion->trigger();
+}
+
 // paladin_t::has_holy_power =================================================
 
 bool paladin_t::has_holy_power(int power_needed) SC_CONST
@@ -2552,14 +2562,14 @@ player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_ty
 
 void player_t::paladin_init( sim_t* sim )
 {
+  sim -> auras.communion              = new aura_t( sim, "communion",              1 );
   sim -> auras.devotion_aura          = new aura_t( sim, "devotion_aura",          1 );
-  sim -> auras.sanctified_retribution = new buff_t( sim, "sanctified_retribution", 1 );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.blessing_of_kings  = new buff_t( p, "blessing_of_kings",  !p -> is_pet() );
-    p -> buffs.blessing_of_might  = new buff_t( p, "blessing_of_might",  !p -> is_pet() );
-    p -> buffs.blessing_of_wisdom = new buff_t( p, "blessing_of_wisdom", !p -> is_pet() );
+    p -> buffs.blessing_of_kings       = new buff_t( p, "blessing_of_kings",       !p -> is_pet() );
+    p -> buffs.blessing_of_might       = new buff_t( p, "blessing_of_might",       !p -> is_pet() );
+    p -> buffs.blessing_of_might_regen = new buff_t( p, "blessing_of_might_regen", !p -> is_pet() );
   }
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
@@ -2572,16 +2582,23 @@ void player_t::paladin_init( sim_t* sim )
 
 void player_t::paladin_combat_begin( sim_t* sim )
 {
-  if( sim -> overrides.devotion_aura          ) sim -> auras.devotion_aura          -> override( 1, 1205 * 1.5 );
-  if( sim -> overrides.sanctified_retribution ) sim -> auras.sanctified_retribution -> override();
+  double devo = sim->sim_data.effect_min(465,   sim->P404 ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_RESISTANCE);
+  double bow  = sim->sim_data.effect_min(79101, sim->P404 ? 85 : 80, E_APPLY_AURA,           A_MOD_POWER_REGEN);
+
+  if( sim -> overrides.communion     ) sim -> auras.communion     -> override();
+  if( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( p -> ooc_buffs() )
     {
-      if ( sim -> overrides.blessing_of_kings  ) p -> buffs.blessing_of_kings  -> override();
-      if ( sim -> overrides.blessing_of_might  ) p -> buffs.blessing_of_might  -> override( 1, 688 );
-      if ( sim -> overrides.blessing_of_wisdom ) p -> buffs.blessing_of_wisdom -> override( 1, 91 * 1.2 );
+      if ( sim -> overrides.blessing_of_kings )
+        p -> buffs.blessing_of_kings -> override();
+      if ( sim -> overrides.blessing_of_might )
+      {
+        p -> buffs.blessing_of_might       -> override();
+        p -> buffs.blessing_of_might_regen -> override( 1, bow );
+      }
     }
   }
 

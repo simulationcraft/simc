@@ -1232,7 +1232,7 @@ void player_t::init_buffs()
 void player_t::init_gains()
 {
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
-  gains.blessing_of_wisdom     = get_gain( "blessing_of_wisdom" );
+  gains.blessing_of_might      = get_gain( "blessing_of_might" );
   gains.dark_rune              = get_gain( "dark_rune" );
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.focus_regen            = get_gain( "focus_regen" );
@@ -1977,9 +1977,9 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    if ( sim -> auras.ferocious_inspiration  -> up()
-      || sim -> auras.sanctified_retribution -> up()
-      || sim -> auras.arcane_tactics         -> up() )
+    if ( sim -> auras.ferocious_inspiration -> up()
+      || sim -> auras.communion             -> up()
+      || sim -> auras.arcane_tactics        -> up() )
     {
       m *= 1.03;
     }
@@ -2456,7 +2456,7 @@ void player_t::regen( double periodicity )
         resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
       }
 
-      double bow = buffs.blessing_of_wisdom -> current_value;
+      double bow = buffs.blessing_of_might_regen -> current_value;
       double ms  = sim -> auras.mana_spring_totem -> current_value;
 
       if ( ms > bow )
@@ -2469,7 +2469,7 @@ void player_t::regen( double periodicity )
       {
         double wisdom_regen = periodicity * bow / 5.0;
 
-        resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_wisdom );
+        resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
       }
     }
   }

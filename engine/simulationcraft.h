@@ -2302,13 +2302,13 @@ struct sim_t
     int bleeding;
     int blessing_of_kings;
     int blessing_of_might;
-    int blessing_of_wisdom;
     int blood_frenzy_bleed;
     int blood_frenzy_physical;
     int bloodlust;
     int bloodlust_early;
     int brittle_bones;
     int celerity;
+    int communion;
     int critical_mass;
     int curse_of_elements;
     int dark_intent;
@@ -2344,7 +2344,6 @@ struct sim_t
     int poisoned;
     int rampage;
     int replenishment;
-    int sanctified_retribution;
     int savage_combat;
     int scorpid_sting;
     int strength_of_earth;
@@ -2366,6 +2365,7 @@ struct sim_t
     aura_t* arcane_tactics;
     aura_t* battle_shout;
     aura_t* celerity;
+    aura_t* communion;
     aura_t* demonic_pact;
     aura_t* devotion_aura;
     aura_t* elemental_oath;
@@ -2379,7 +2379,6 @@ struct sim_t
     aura_t* moonkin;
     aura_t* mind_quickening;
     aura_t* rampage;
-    aura_t* sanctified_retribution;
     aura_t* strength_of_earth;
     aura_t* trueshot;
     aura_t* unleashed_rage;
@@ -2950,7 +2949,7 @@ struct player_t
     buff_t* berserking;
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;
-    buff_t* blessing_of_wisdom;
+    buff_t* blessing_of_might_regen; // the mana regen part of BoM
     buff_t* blood_fury_ap;
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
@@ -2991,7 +2990,7 @@ struct player_t
   struct gains_t
   {
     gain_t* arcane_torrent;
-    gain_t* blessing_of_wisdom;
+    gain_t* blessing_of_might;
     gain_t* dark_rune;
     gain_t* energy_regen;
     gain_t* focus_regen;

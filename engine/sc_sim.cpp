@@ -1385,10 +1385,10 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.bleeding               = optimal_raid;
   overrides.blessing_of_kings      = optimal_raid;
   overrides.blessing_of_might      = optimal_raid;
-  overrides.blessing_of_wisdom     = optimal_raid;
   overrides.blood_frenzy_bleed     = optimal_raid;
   overrides.blood_frenzy_physical  = optimal_raid;
   overrides.bloodlust              = optimal_raid;
+  overrides.communion              = optimal_raid;
   overrides.critical_mass          = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
@@ -1415,7 +1415,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.poisoned               = optimal_raid;
   overrides.rampage                = optimal_raid;
   overrides.replenishment          = optimal_raid;
-  overrides.sanctified_retribution = optimal_raid;
   overrides.savage_combat          = optimal_raid;
   overrides.scorpid_sting          = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
@@ -1622,12 +1621,12 @@ std::vector<option_t>& sim_t::get_options()
       { "override.bleeding",                OPT_BOOL,   &( overrides.bleeding                       ) },
       { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },
       { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
-      { "override.blessing_of_wisdom",      OPT_BOOL,   &( overrides.blessing_of_wisdom             ) },
       { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
       { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
       { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
       { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
       { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
+      { "override.communion",               OPT_BOOL,   &( overrides.communion         ) },
       { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
       { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
       { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
@@ -1658,7 +1657,6 @@ std::vector<option_t>& sim_t::get_options()
       { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
       { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
       { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
-      { "override.sanctified_retribution",  OPT_BOOL,   &( overrides.sanctified_retribution         ) },
       { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
       { "override.scorpid_sting",           OPT_BOOL,   &( overrides.scorpid_sting                  ) },
       { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
