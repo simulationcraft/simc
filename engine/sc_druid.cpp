@@ -1420,6 +1420,8 @@ struct tigers_fury_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
+    harmful = false;
+
     if ( p -> glyphs.tigers_fury ) 
       cooldown -> duration -= 3.0;
   }
@@ -2097,6 +2099,8 @@ struct enrage_t : public druid_spell_t
       { NULL,    OPT_UNKNOWN, NULL      }
     };
     parse_options( options, options_str );
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -2306,6 +2310,7 @@ struct mark_of_the_wild_t : public druid_spell_t
     trigger_gcd = 0;
     id          = 1126;
     base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
+    harmful     = false;
   }
 
   virtual void execute()
@@ -2480,6 +2485,8 @@ struct druids_swiftness_t : public druid_spell_t
       sub_cooldown = p -> get_cooldown( options_str );
       sub_dot      = p -> get_dot     ( options_str );
     }
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -2737,6 +2744,7 @@ struct stealth_t : public spell_t
       spell_t( "stealth", player )
   {
     trigger_gcd = 0;
+    harmful     = false;
   }
 
   virtual void execute()
@@ -2864,6 +2872,8 @@ struct treants_spell_t : public druid_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    harmful = false;
   }
 
   virtual void execute()
