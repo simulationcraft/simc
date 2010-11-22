@@ -278,7 +278,7 @@ void thread_t::de_init()
   {
     void *& b = cs_list.back();
     pthread_mutex_t* cs = (pthread_mutex_t*) b;
-    DeleteCriticalSection( cs );
+    pthread_mutex_destroy( cs );
     cs_list.pop_back();
     delete cs;
   }
