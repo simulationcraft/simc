@@ -2351,7 +2351,7 @@ struct moonfire_t : public druid_spell_t
     parse_options( options, options_str );
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks   += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 );
+    num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
     dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
@@ -2783,7 +2783,7 @@ struct sunfire_t : public druid_spell_t
     parse_options( options, options_str );
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks   += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 );
+    num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
     dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
