@@ -947,8 +947,8 @@ struct shadowy_apparition_t : public priest_spell_t
 
     if ( player -> bugs )
     {
-      base_dd_min *= 1.065;
-      base_dd_max *= 1.065;
+      base_dd_min *= 1.0625;
+      base_dd_max *= 1.0625;
     }
     reset();
   }
@@ -989,7 +989,7 @@ struct shadowy_apparition_t : public priest_spell_t
       player_multiplier /= 1.0 + p -> constants.twisted_faith_static_value;
     }
     
-    player_multiplier += 1.0 * p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
+    player_multiplier *= 1.0 + p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
   }
 };
 
@@ -1054,18 +1054,6 @@ struct devouring_plague_burst_t : public priest_spell_t
     priest_spell_t::execute();
 
     update_stats( DMG_DIRECT );
-  }
-
-  virtual void modify_direct_damage()
-  {
-    priest_t* p = player -> cast_priest();
-
-    priest_spell_t::modify_direct_damage();
-
-    if ( p -> bugs )
-    {
-      direct_dmg += 3.0; // IDP is doing between 2 to 4 extra damage for no reason...
-    }
   }
 
   virtual void player_buff()
@@ -1134,7 +1122,7 @@ struct devouring_plague_t : public priest_spell_t
     if ( devouring_plague_burst )
     {
       double t = p -> talents.improved_devouring_plague -> base_value( E_APPLY_AURA, A_DUMMY, P_DAMAGE_TAKEN ) / 100.0 *
-                 ( base_td + total_power() * tick_power_mod );
+                 ( ceil( base_td ) + total_power() * tick_power_mod );
       double n;
 
       if ( p -> bugs )
@@ -1149,9 +1137,10 @@ struct devouring_plague_t : public priest_spell_t
         n = hasted_num_ticks();
       }
     
-      devouring_plague_burst -> base_dd_min  = t * n;
-      devouring_plague_burst -> base_dd_max  = t * n;
-      devouring_plague_burst -> dot_nt       = n;
+      devouring_plague_burst -> base_dd_min    = t * n;
+      devouring_plague_burst -> base_dd_max    = t * n;
+      devouring_plague_burst -> dot_nt         = n;
+      devouring_plague_burst -> round_base_dmg = false;
       devouring_plague_burst -> execute();
     }
   }

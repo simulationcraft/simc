@@ -133,6 +133,7 @@ void action_t::_init_action_t()
   wait_on_ready                  = -1;
   snapshot_haste                 = -1;
   recast                         = false;
+  round_base_dmg                 = true;
   if_expr_str                    = "";
   if_expr                        = NULL;
   sync_str                       = "";
@@ -843,7 +844,7 @@ double action_t::calculate_tick_damage()
     tick_dmg -= resisted_dmg;
   }
 
-  if ( sim -> roll( tick_dmg - floor( tick_dmg ) ) )
+  if ( ! sim -> average_range && sim -> roll( tick_dmg - floor( tick_dmg ) ) )
   {
     tick_dmg = ceil( tick_dmg );
   }
@@ -871,6 +872,9 @@ double action_t::calculate_direct_damage()
   double base_direct_dmg = sim -> range( base_dd_min, base_dd_max );
 
   base_direct_dmg = floor( base_direct_dmg + 0.5 );
+
+  if ( round_base_dmg )
+    base_direct_dmg = floor( base_direct_dmg + 0.5 );
 
   if ( base_direct_dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
   
@@ -937,7 +941,7 @@ double action_t::calculate_direct_damage()
     if ( direct_dmg < 0 ) direct_dmg = 0;
   }
 
-  if ( sim -> roll( direct_dmg - floor( direct_dmg ) ) )
+  if ( ! sim -> average_range && sim -> roll( direct_dmg - floor( direct_dmg ) ) )
   {
     direct_dmg = ceil( direct_dmg ); 
   }

@@ -27,6 +27,7 @@
 #if defined( _MSC_VER )
 #  include "../vs/stdint.h"
 #  define snprintf _snprintf
+#  define strdup _strdup
 #else
 #  include <stdint.h>
 #endif
@@ -3517,6 +3518,7 @@ struct action_t : public spell_id_t
   int P404, moving, vulnerable, invulnerable, wait_on_ready;
   double snapshot_haste;
   bool recast;
+  bool round_base_dmg;
   std::string if_expr_str;
   action_expr_t* if_expr;
   std::string sync_str;
