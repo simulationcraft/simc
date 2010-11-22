@@ -1243,7 +1243,8 @@ struct auto_attack_t : public action_t
   {
     option_t options[] =
     {
-      { "sync_weapons", OPT_BOOL, &sync_weapons }
+      { "sync_weapons", OPT_BOOL, &sync_weapons },
+      { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
