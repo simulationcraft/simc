@@ -695,11 +695,11 @@ struct shadow_fiend_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
-      direct_power_mod = 0.511;  // Seems to be around that for level 80, but might be higher for higher levels.
+      direct_power_mod = 0.0064 * o -> level; 
       if (harmful)base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
-      base_dd_min = util_t::ability_rank( player -> level,  223.0,85,  197.0,82,  175.0,80,  1.0,0 );
-      base_dd_max = util_t::ability_rank( player -> level,  273.0,85,  245.0,82,  222.0,80,  2.0,0 );
+      base_dd_min = util_t::ability_rank( player -> level,  221.0,85,  197.0,82,  175.0,80,  1.0,0 );
+      base_dd_max = util_t::ability_rank( player -> level,  271.0,85,  245.0,82,  222.0,80,  2.0,0 );
       background = true;
       repeating  = true;
       may_dodge  = true;
