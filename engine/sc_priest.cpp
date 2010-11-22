@@ -2568,7 +2568,6 @@ struct _heal_t : public priest_heal_t
     }
 
     p -> buffs_grace -> trigger();
-    p -> buffs_inner_focus -> expire();
   }
 
   virtual void player_buff()
@@ -2578,19 +2577,6 @@ struct _heal_t : public priest_heal_t
     if ( p -> buffs_grace -> up() || p -> buffs_weakened_soul -> up() )
       player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
 
-    if ( p -> buffs_inner_focus -> up() )
-      player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
-  }
-
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-    double c = priest_heal_t::cost();
-
-    if ( p -> buffs_inner_focus -> up() )
-      c = 0;
-
-    return c;
   }
 };
 
