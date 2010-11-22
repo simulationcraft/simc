@@ -1331,7 +1331,7 @@ int util_t::printf( const char *format,  ... )
   char *p_locale = NULL;
   char buffer_locale[ 1024 ];
 
-  p_locale = setlocale( LC_CTYPE, NULL );
+  p_locale = _strdup( setlocale( LC_CTYPE, NULL ) );
   if ( p_locale != NULL )
   {
     strncpy( buffer_locale, p_locale, 1023 );
@@ -1350,6 +1350,8 @@ int util_t::printf( const char *format,  ... )
 
   setlocale( LC_CTYPE, p_locale );
 
+  free( p_locale );
+
   return retcode;
 }
 
@@ -1362,7 +1364,7 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   char *p_locale = NULL;
   char buffer_locale[ 1024 ];
 
-  p_locale = setlocale( LC_CTYPE, NULL );
+  p_locale = _strdup( setlocale( LC_CTYPE, NULL ) );
   if ( p_locale != NULL )
   {
     strncpy( buffer_locale, p_locale, 1023 );
@@ -1380,6 +1382,8 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   va_end( fmtargs );
 
   setlocale( LC_CTYPE, p_locale );
+
+  free( p_locale );
 
   return retcode;
 }
