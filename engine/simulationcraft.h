@@ -2142,7 +2142,7 @@ struct new_buff_t : public buff_t
   new_buff_t( player_t*, const std::string&, uint32_t, 
     double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
 
-  virtual bool   trigger( int stacks = 1, double value = -1.0, double chance = -1.0 );
+  virtual bool   trigger( int stacks = -1, double value = -1.0, double chance = -1.0 );
   virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
 };
 

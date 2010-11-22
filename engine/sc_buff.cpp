@@ -964,10 +964,7 @@ new_buff_t::new_buff_t( player_t*          p,
 bool new_buff_t::trigger( int stacks, double value, double chance)
 {
   // For buffs going up, use the default_stack_charge as the amount
-  if ( current_stack == 0 )
-    return buff_t::trigger( default_stack_charge, value, chance );
-  else
-    return buff_t::trigger( stacks, value, chance );
+  return buff_t::trigger( stacks == -1 ? default_stack_charge : stacks, value, chance );
 }
 
 double new_buff_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
