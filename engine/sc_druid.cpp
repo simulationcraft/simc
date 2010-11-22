@@ -702,7 +702,7 @@ static void trigger_primal_madness( druid_spell_t* s )
   }
   else if ( p -> buffs_bear_form -> check() )
   {
-    p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
+    p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> mod_additive( P_EFFECT_2 ) / 10.0, p -> gains_primal_madness );
   }
 }
 
@@ -954,7 +954,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
-    base_multiplier      *= 1.0 + p -> talents.feral_aggression -> effect_base_value( 2 ) / 100.0;
+    base_multiplier      *= 1.0 + p -> talents.feral_aggression -> mod_additive( P_GENERIC );
     requires_combo_points = true;
   }
 
@@ -2268,7 +2268,7 @@ struct insect_swarm_t : public druid_spell_t
     parse_options( options, options_str );
     
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks        += (int) ( p -> talents.genesis -> effect_base_value( 3 ) / 2000.0 ); 
+    num_ticks        += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
     dot_behavior      = DOT_REFRESH;
 
     base_multiplier *= 1.0 + ( p -> glyphs.insect_swarm ? 0.30 : 0.00 );
