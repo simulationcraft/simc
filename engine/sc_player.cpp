@@ -2662,7 +2662,14 @@ int player_t::normalize_by() SC_CONST
     return sim -> normalized_stat; 
   }
 
-  return ( primary_role() == ROLE_SPELL ) ? STAT_INTELLECT : STAT_ATTACK_POWER;
+  if ( primary_role() == ROLE_SPELL )
+    return STAT_INTELLECT;
+  else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE )
+    return STAT_AGILITY;
+  else if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
+    return STAT_STRENGTH;
+
+  return STAT_ATTACK_POWER;
 }
 
 

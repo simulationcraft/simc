@@ -2004,6 +2004,8 @@ struct berserk_t : public druid_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    harmful = false;
   }
 
   virtual void execute()
