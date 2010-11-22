@@ -470,9 +470,6 @@ static void trigger_deep_wounds( action_t* a )
   if ( ! p -> talents.deep_wounds -> rank() )
     return;
 
-  // Every action HAS to have an weapon associated.
-  assert( a -> weapon != 0 );
-
   struct deep_wounds_t : public warrior_attack_t
   {
     deep_wounds_t( warrior_t* p ) :
@@ -518,7 +515,11 @@ static void trigger_deep_wounds( action_t* a )
   if ( ! p -> active_deep_wounds )
     p -> active_deep_wounds = new deep_wounds_t( p );
 
-  p -> active_deep_wounds -> weapon = a -> weapon;
+  if ( a -> weapon )
+    p -> active_deep_wounds -> weapon = a -> weapon;
+  else
+    p -> active_deep_wounds -> weapon = &( p -> main_hand_weapon );
+
   p -> active_deep_wounds -> player_buff();
 
   double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
@@ -633,11 +634,6 @@ static void trigger_rage_gain( attack_t* a )
 static void trigger_strikes_of_opportunity( attack_t* a )
 {
   if ( a -> proc )
-    return;
-
-  weapon_t* w = a -> weapon;
-
-  if ( ! w )
     return;
 
   warrior_t* p = a -> player -> cast_warrior();
@@ -915,7 +911,8 @@ double warrior_attack_t::calculate_weapon_damage()
 {
   double dmg = attack_t::calculate_weapon_damage();
 
-  if( dmg == 0 ) return 0;
+  // Catch the case where weapon == 0 so we don't crash/retest below.
+  if ( dmg == 0 ) return 0;
 
   warrior_t* p = player -> cast_warrior();
 
@@ -1215,7 +1212,6 @@ struct bladestorm_t : public warrior_attack_t
     harmful   = false;
     channeled = true;
     tick_zero = true;
-    weapon    = &( player -> main_hand_weapon ); // Needed or it'll bomb
 
     if ( p -> glyphs.bladestorm ) cooldown -> duration -= 15;
 
@@ -1271,9 +1267,6 @@ struct bloodthirst_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    weapon             = &( p -> main_hand_weapon );
-    weapon_multiplier  = 0;
-
     direct_power_mod   = effect_min( 1 ) / 100.0;
 
     base_dd_min        = 0.0;
@@ -1306,8 +1299,6 @@ struct cleave_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     parse_options( NULL, options_str );
-
-    weapon = &( p -> main_hand_weapon );
 
     id = 845;
     parse_data( p -> player_data );
@@ -1398,8 +1389,6 @@ struct concussion_blow_t : public warrior_attack_t
     id = 12809;
     parse_data( p -> player_data );
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     direct_power_mod  = effect_base_value( 3 ) / 100.0;
   }
 };
@@ -1452,8 +1441,6 @@ struct execute_t : public warrior_attack_t
     id = 5308;
     parse_data( p -> player_data );
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     base_dd_min       = 10;
     base_dd_max       = 10;
     
@@ -1558,8 +1545,6 @@ struct heroic_strike_t : public warrior_attack_t
     base_dd_min       = 8;
     base_dd_max       = 8;
     direct_power_mod  = sim -> P404 ? 0.75 : 0.9;
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
   }
 
   virtual void execute()
@@ -1849,8 +1834,6 @@ struct revenge_t : public warrior_attack_t
     id = 6572;
     parse_data( p -> player_data );
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     direct_power_mod  = 0.31; // Assumption from 3.3.5
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
                           + p -> glyphs.revenge * 0.1;
@@ -1958,8 +1941,6 @@ struct shield_slam_t : public warrior_attack_t
     id = 23922;
     parse_data( p -> player_data );
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     direct_power_mod  = 0; // FIXME: What is this?
     base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
     base_multiplier  *= 1.0  + ( 0.10 * p -> glyphs.shield_slam );
@@ -2008,8 +1989,6 @@ struct shockwave_t : public warrior_attack_t
     id = 46968;
     parse_data( p -> player_data );
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
     direct_power_mod  = 0.75;
     may_dodge         = false;
     may_parry         = false;
@@ -2125,9 +2104,6 @@ struct thunder_clap_t : public warrior_attack_t
     id = 6343;
     parse_data( p -> player_data );
 
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
-
     aoe               = true;
     may_dodge         = false;
     may_parry         = false;
@@ -2211,8 +2187,6 @@ struct victory_rush_t : public warrior_attack_t
     id = 34428;
     parse_data( p -> player_data );
 
-    // FIXME: doesn't have a weapon component.
-    weapon           = &( p -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
   }
 
