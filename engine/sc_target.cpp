@@ -141,7 +141,11 @@ void target_t::init()
 {
   if ( level < 0 )
   {
-    level = sim->P404 ? 88 : 83;
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if ( level < ( p -> level + 3 ) )
+        level = p -> level + 3;
+    }
   }
 
   if ( initial_armor < 0 ) 
