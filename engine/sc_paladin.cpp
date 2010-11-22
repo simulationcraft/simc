@@ -772,7 +772,6 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
 // Shield of Righteousness =================================================
 
-// TODO
 struct shield_of_the_righteous_t : public paladin_attack_t
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str )
@@ -792,16 +791,24 @@ struct shield_of_the_righteous_t : public paladin_attack_t
 
     uses_holy_power = true;
 
+    direct_power_mod = extra_coeff();
+
     if ( p -> glyphs.shield_of_the_righteous ) base_multiplier *= 1.10;
   }
 
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    direct_power_mod = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.20, 0.60, 1.20 ); // TODO
     paladin_attack_t::execute();
     if ( p -> talents.holy_shield )
       p -> buffs_holy_shield -> trigger();
+  }
+
+  virtual void player_buff()
+  {
+    paladin_t* p = player -> cast_paladin();
+    paladin_attack_t::player_buff();
+    player_multiplier *= util_t::talent_rank( p -> holy_power_stacks(), 3, 1.0, 3.0, 6.0 );
   }
 
   virtual bool ready()
