@@ -3464,7 +3464,7 @@ void player_t::hunter_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, 500 * 1.5 );
+    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS ) * 1.3 );
   }
 }
 

@@ -1,7 +1,5 @@
 #!./simc 
 
-patch=4.0.4
-target_level=88
 druid=Druid_Feral_T11
 level=85
 race=tauren

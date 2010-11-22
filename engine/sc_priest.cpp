@@ -423,10 +423,7 @@ struct shadow_orb_buff_t : public buff_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> sim -> P404 )
-    {
-      p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() * value );
-    }
+    p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() * value );
   }
 
 };
@@ -902,7 +899,7 @@ void priest_spell_t::assess_damage( double amount,
   if ( p -> buffs_vampiric_embrace -> up() ) 
   {
     double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
-    p -> resource_gain( RESOURCE_HEALTH, a * ( p -> sim -> P404 ? 0.06 : 0.15 ), p -> gains.vampiric_embrace );
+    p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
 
     pet_t* r = p -> pet_list;
 
@@ -1261,7 +1258,7 @@ struct fortitude_t : public priest_spell_t
   {
     trigger_gcd = 0;
 
-    bonus = util_t::ability_rank( player -> level,  165.0,80,  79.0,70,  54.0,0 );
+    bonus = floor( sim -> sim_data.effect_min( 79104, player -> level, E_APPLY_AURA, A_MOD_STAT ) );
   }
 
   virtual void execute()
@@ -3247,23 +3244,13 @@ void priest_t::init_spells()
 
   passive_spells.shield_discipline    = new passive_spell_t( this, "shield_discipline", "Shield Discipline" );
 
-  if ( sim -> P404 )
-  {
-    passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
-  }
+  passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
 
 
   // Shadow Mastery
-  if ( sim -> P404 )
-  {
-    passive_spells.shadow_orb_power   = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
-    passive_spells.shadow_orbs        = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
-    passive_spells.empowered_shadow   = new passive_spell_t( this, "empowered_shadow", 95799 );
-  }
-  else
-  {
-    passive_spells.shadow_orb_power   = new mastery_t( this, "shadow_orbs", "Shadow Orbs", TREE_SHADOW );
-  }
+  passive_spells.shadow_orb_power     = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
+  passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
+  passive_spells.empowered_shadow     = new passive_spell_t( this, "empowered_shadow", 95799 );
 
   active_spells.penance               = new active_spell_t( this, "penance", "Penance" );
   active_spells.chastise              = new active_spell_t( this, "holy_word_chastise", "Holy Word: Chastise" );     // incomplete
@@ -3304,13 +3291,6 @@ void priest_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
-  if ( ! sim -> P404 )
-  {
-    // Tier11
-    set_bonuses[ 5 ][ 0 ] = 0;
-    set_bonuses[ 5 ][ 1 ] = 0;
-  }
-
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
@@ -3321,14 +3301,7 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  if ( sim -> P404 )
-  {
-    buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
-  }
-  else
-  {
-    buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1                           );
-  }
+  buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
   buffs_inner_fire                 = new buff_t( this, "inner_fire"                                              );
   buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
   buffs_inner_will                 = new buff_t( this, "inner_will"                                              );
@@ -3576,10 +3549,7 @@ void priest_t::init_values()
   cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
   cooldowns_dark_archangel -> duration      = active_spells.dark_archangel      -> cooldown();
 
-  if ( sim ->P404 )
-  {
-    constants.max_shadowy_apparitions       = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
-  }
+  constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
 }
 
 
@@ -3856,7 +3826,7 @@ void player_t::priest_init( sim_t* sim )
   
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, 165.0, !p -> is_pet() );
+    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, floor( sim -> sim_data.effect_min( 79104, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) ), !p -> is_pet() );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
   }
 
@@ -3872,7 +3842,7 @@ void player_t::priest_combat_begin( sim_t* sim )
   {
     if ( p -> ooc_buffs() )
     {
-      if ( sim -> overrides.fortitude     ) p -> buffs.fortitude     -> override( 1, 165.0 * 1.30 );
+      if ( sim -> overrides.fortitude     ) p -> buffs.fortitude     -> override( 1, floor( sim -> sim_data.effect_min( 79104, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) ) );
     }
   }
 }

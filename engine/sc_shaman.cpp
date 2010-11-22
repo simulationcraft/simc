@@ -3510,15 +3510,6 @@ void shaman_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
-  if ( ! sim -> P404 )
-  {
-    // Tier11
-    set_bonuses[ 5 ][ 0 ] = 0;
-    set_bonuses[ 5 ][ 1 ] = 0;
-    set_bonuses[ 5 ][ 2 ] = 0;
-    set_bonuses[ 5 ][ 3 ] = 0;
-  }
-
   player_t::init_spells();
 
   // Tree Specialization
@@ -4160,7 +4151,7 @@ void player_t::shaman_combat_begin( sim_t* sim )
   if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.05 );
   
   if ( sim -> overrides.mana_spring_totem ) 
-    sim -> auras.mana_spring_totem -> override( 1, sim -> sim_data.effect_min( 5677, ( sim -> P404 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_POWER_REGEN ) );
+    sim -> auras.mana_spring_totem -> override( 1, sim -> sim_data.effect_min( 5677, sim -> max_player_level, E_APPLY_AREA_AURA_RAID, A_MOD_POWER_REGEN ) );
   if ( sim -> overrides.strength_of_earth ) 
-    sim -> auras.strength_of_earth -> override( 1, sim -> sim_data.effect_min( 8076, ( sim -> P404 ) ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_STAT ) );
+    sim -> auras.strength_of_earth -> override( 1, sim -> sim_data.effect_min( 8076, sim -> max_player_level, E_APPLY_AREA_AURA_RAID, A_MOD_STAT ) );
 }

@@ -6,11 +6,13 @@
 #include "sc_spell_lists.inc"
 #include "sc_extra_data.inc"
 
+#if SC_USE_PTR
 #include "sc_scale_data_ptr.inc"
 #include "sc_talent_data_ptr.inc"
 #include "sc_spell_data_ptr.inc"
 #include "sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
+#endif
 
 
 void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
@@ -24,6 +26,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
 
   if ( m_parent == NULL )
   {
+#if SC_USE_PTR
     if ( ptr )
     {
       m_spells.create_copy( ( spell_data_t * ) __ptr_spell_data, sizeof( __ptr_spell_data ) / sizeof( spell_data_t ) );
@@ -52,6 +55,7 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
     }
     else
     {
+#endif
       m_spells.create_copy( ( spell_data_t * ) __spell_data, sizeof( __spell_data ) / sizeof( spell_data_t ) );
       m_effects.create_copy( ( spelleffect_data_t * ) __spelleffect_data, sizeof( __spelleffect_data ) / sizeof( spelleffect_data_t ) );
       m_talents.create_copy( ( talent_data_t * ) __talent_data, sizeof( __talent_data ) / sizeof( talent_data_t ) );
@@ -75,7 +79,9 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_base_mp5.create_copy( ( double * ) __gt_base_mp5, MAX_LEVEL, sizeof( __gt_base_mp5 ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_stats.create_copy( ( stat_data_t * ) __gt_class_stats_by_level, MAX_LEVEL, sizeof( __gt_class_stats_by_level ) / ( MAX_LEVEL * sizeof( stat_data_t ) ) );
       m_race_stats.create_copy( ( stat_data_t * ) __gt_race_stats, sizeof( __gt_race_stats ) / sizeof( stat_data_t ) );
+#if SC_USE_PTR
     }
+#endif
   }
   else
   {

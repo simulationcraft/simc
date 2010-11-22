@@ -1337,10 +1337,7 @@ void action_t::extend_duration( int extra_ticks )
   if ( dot_behavior == DOT_REFRESH )
   {
     player_buff();
-    if ( sim -> P404 )
-    {
-      snapshot_haste = haste();
-    }
+    snapshot_haste = haste();
     dot -> ready += tick_time() * extra_ticks;
   }
 

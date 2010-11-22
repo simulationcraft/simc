@@ -1,8 +1,6 @@
 #!simc
 
-patch=4.0.3
 optimal_raid=1
-target_level=83
 
 Warrior_Arms_T10.simc
 Warrior_Fury_1h_T10.simc

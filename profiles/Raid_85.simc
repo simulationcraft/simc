@@ -1,8 +1,7 @@
 #!simc
 
-patch=4.0.4
+patch=4.0.3
 optimal_raid=1
-target_level=88
 
 Druid_Balance_T11.simc
 Druid_Feral_T11.simc

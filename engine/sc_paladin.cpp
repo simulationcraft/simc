@@ -2184,7 +2184,7 @@ void paladin_t::init_actions()
 
   if ( action_list_str.empty() && primary_tree() == TREE_RETRIBUTION )
   {
-    if (sim->P404)
+    if ( level > 80 )
       action_list_str = "flask,type=titanic_strength/food,type=beer_basted_crocolisk";
     else
       action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
@@ -2588,8 +2588,8 @@ void player_t::paladin_init( sim_t* sim )
 
 void player_t::paladin_combat_begin( sim_t* sim )
 {
-  double devo = sim->sim_data.effect_min(465,   sim->P404 ? 85 : 80, E_APPLY_AREA_AURA_RAID, A_MOD_RESISTANCE);
-  double bow  = sim->sim_data.effect_min(79101, sim->P404 ? 85 : 80, E_APPLY_AURA,           A_MOD_POWER_REGEN);
+  double devo = sim->sim_data.effect_min(465,   sim -> max_player_level, E_APPLY_AREA_AURA_RAID, A_MOD_RESISTANCE);
+  double bow  = sim->sim_data.effect_min(79101, sim -> max_player_level, E_APPLY_AURA,           A_MOD_POWER_REGEN);
 
   if( sim -> overrides.communion     ) sim -> auras.communion     -> override();
   if( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );

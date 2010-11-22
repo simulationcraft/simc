@@ -1234,8 +1234,6 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier *= 1.0 + ( o -> glyphs.imp -> base_value() );
       direct_power_mod = 0.619; // seems to be 0.00 in DBC now?
-      if ( ! sim -> P404 ) direct_power_mod = 0.690;  // From live testing 2010/11/20
-      if ( ! sim -> P404 ) base_dd_min = base_dd_max = 355; // From live testing 2010/11/20
       base_execute_time += o -> talent_dark_arts -> effect_base_value( 1 ) / 1000.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
@@ -2801,7 +2799,7 @@ struct incinerate_t : public warlock_spell_t
     spell_t::modify_direct_damage();
     warlock_t* p = player -> cast_warlock();
 
-    double divisor = ( sim -> P404 ) ? 6.0 : 4.0;
+    double divisor = 6.0;
     if ( p -> dots_immolate -> ticking() )
       direct_dmg += sim -> range( base_dd_min, base_dd_max ) / divisor * total_dd_multiplier();
   }
@@ -2861,12 +2859,6 @@ struct searing_pain_t : public warlock_spell_t
 
     // Searing Pain Hotfix Nerf.
     warlock_t* p = player -> cast_warlock();
-    if ( ! sim -> P404 && p -> level == 80 )
-    {
-      direct_power_mod = 1.5 / 3.5;
-      base_dd_min = 288;
-      base_dd_max = 341;
-    }
   }
 
   virtual void player_buff()
@@ -2960,11 +2952,8 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( ( sim -> P404 || target -> health_percentage() >= p -> talent_improved_soul_fire -> rank_spell() -> effect_base_value( 2 ) ) )
-      {
-        if ( !p -> buffs.bloodlust -> up() )
-          p -> buffs_improved_soul_fire -> trigger();
-      }
+      if ( !p -> buffs.bloodlust -> up() )
+        p -> buffs_improved_soul_fire -> trigger();
     }
   }
 };
@@ -4042,13 +4031,6 @@ void warlock_t::init_spells()
     {     0,     0,     0,     0,     0,     0 },
   };
 
-  if ( ! sim -> P404 )
-  {
-    // Tier11
-    set_bonuses[ 5 ][ 0 ] = 0;
-    set_bonuses[ 5 ][ 1 ] = 0;
-  }
-
   player_t::init_spells();
 
   // passive_spells =======================================================================================
@@ -4292,13 +4274,15 @@ void warlock_t::init_actions()
   if ( action_list_str.empty() )
   {
     // Flask
-    if ( level >= 80 && sim -> P404 )
+    // TO-DO: Revert to >= 80 once Cata is out
+    if ( level > 80 )
       action_list_str += "/flask,type=draconic_mind";
     else if ( level >= 75 )
       action_list_str += "/flask,type=frost_wyrm";
 
     // Food
-    if ( level >= 80 && sim -> P404 ) action_list_str += "/food,type=seafood_magnifique_feast";
+    // TO-DO: Revert to >= 80 once Cata is out
+    if ( level > 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
     else if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
 
     // Armor
@@ -4343,7 +4327,8 @@ void warlock_t::init_actions()
     }
 
     // Choose Potion
-    if ( level >= 80 && sim -> P404 )
+    // TO-DO. Revert to >= 80 once Cata is out
+    if ( level > 80 )
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
     else if ( level >= 70 )
     {
@@ -4396,10 +4381,7 @@ void warlock_t::init_actions()
       action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
-        if ( sim -> P404 )
-          action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
-        else
-          action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
+        action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
       }
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking";
       action_list_str += "/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time+gcd|!ticking";
@@ -4419,10 +4401,7 @@ void warlock_t::init_actions()
       if ( level >= 54) {
         if ( talent_improved_soul_fire -> ok() )
         {
-          if ( sim -> P404 )
-            action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
-          else
-            action_list_str += "/soul_fire,health_percentage>=80,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
+          action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
         } else {
           action_list_str += "/soul_fire,if=buff.soulburn.react";
         }

@@ -1,7 +1,5 @@
 #!./simc 
 
-patch=4.0.4
-target_level=88
 druid=Druid_Balance_T11
 professions=Jewelcrafting/Blacksmithing
 level=85

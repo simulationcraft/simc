@@ -1148,7 +1148,7 @@ struct arcane_blast_t : public mage_spell_t
     double c = mage_spell_t::cost();
     if ( c != 0 )
     {
-      c += base_cost * p -> buffs_arcane_blast -> stack() * ( sim -> P404 ? 1.50 : 1.75 );
+      c += base_cost * p -> buffs_arcane_blast -> stack() * 1.50;
     }
     return c;
   }
@@ -1174,8 +1174,7 @@ struct arcane_blast_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
     
-    if ( sim -> P404 )
-      t -= p -> buffs_arcane_blast -> stack() * 0.01;
+    t -= p -> buffs_arcane_blast -> stack() * 0.01;
 
     return t;
   }
@@ -1184,7 +1183,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
     mage_t* p = player -> cast_mage();
-    double ab_stack_multiplier = sim -> P404 ? 0.10 : 0.20;
+    double ab_stack_multiplier = 0.10;
     player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
   }
 };
@@ -3440,7 +3439,7 @@ void player_t::mage_combat_begin( sim_t* sim )
   {
     if ( p -> ooc_buffs() )
     {
-      if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, 60.0 );
+      if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY ) );
       if ( sim -> overrides.focus_magic       ) p -> buffs.focus_magic       -> override();
     }
   }

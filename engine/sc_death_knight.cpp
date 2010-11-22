@@ -3684,7 +3684,7 @@ struct rune_strike_t : public death_knight_attack_t
     parse_data( p -> player_data );
 
     base_crit       += p -> glyphs.rune_strike * 0.10;
-    direct_power_mod = sim -> P404 ? 0.15 : 0.2;
+    direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
   }
 
@@ -4908,7 +4908,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 void player_t::death_knight_init( sim_t* sim )
 {
   sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1,   0.0 );
-  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0 );
+  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, sim -> sim_data.effect_min( 57330, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) );
   sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,   0.0 );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
@@ -4929,7 +4929,7 @@ void player_t::death_knight_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.abominations_might  ) sim -> auras.abominations_might  -> override( 1, 0.10 );
   if ( sim -> overrides.horn_of_winter      )
-    sim -> auras.horn_of_winter      -> override( 1, sim -> sim_data.effect_min( 57330, ( sim -> P404 ) ? 85 : 80, E_APPLY_AURA, A_MOD_STAT ) );
+    sim -> auras.horn_of_winter      -> override( 1, sim -> sim_data.effect_min( 57330, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) );
 
   if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.10 );
 

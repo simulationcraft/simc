@@ -383,7 +383,7 @@ sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
 
 sim_t::sim_t( sim_t* p, int index ) :
     parent( p ), P404( false ),
-    free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), canceled( 0 ),
+    free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), max_player_level( -1 ), canceled( 0 ),
     queue_lag( 0.075 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
     channel_lag( 0.250 ), channel_lag_stddev( 0 ),
@@ -810,10 +810,12 @@ bool sim_t::init()
 
   P404 = patch.after( 4, 0, 4 );
 
+#if SC_USE_PTR
   if ( P404 )
   {
     sim_data.set_parent( &sim_t::ptr_data );
   }
+#endif
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -837,6 +839,15 @@ bool sim_t::init()
   if (   queue_lag_stddev == 0 )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == 0 )     gcd_lag_stddev =     gcd_lag * 0.25;
   if ( channel_lag_stddev == 0 ) channel_lag_stddev = channel_lag * 0.25;
+
+  if ( max_player_level < 0 )
+  {
+    for ( player_t* p = player_list; p; p = p -> next )
+    {
+      if ( max_player_level < p -> level )
+        max_player_level = p -> level;
+    }    
+  }
 
   for ( target_t* t = target_list; t; t = t -> next )
   {
@@ -1953,8 +1964,10 @@ int sim_t::main( int argc, char** argv )
   {
     P404 = patch.after( 4, 0, 4 );
 
+#if SC_USE_PTR
     if ( P404 )
       sim_data.set_parent( &sim_t::ptr_data );
+#endif
 
     sd -> evaluate();
 

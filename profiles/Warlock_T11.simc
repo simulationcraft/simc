@@ -1,8 +1,6 @@
 #!simc
 
-patch=4.0.4
 optimal_raid=1
-target_level=88
 
 Warlock_AffDrain_T11_372.simc
 Warlock_Affliction_T11_372.simc

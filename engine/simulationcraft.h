@@ -97,6 +97,7 @@ struct patch_t
 
 #define SC_MAJOR_VERSION "403"
 #define SC_MINOR_VERSION "1"
+#define SC_USE_PTR ( 0 )
 
 // Forward Declarations ======================================================
 
@@ -2249,6 +2250,7 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   int         num_players;
+  int         max_player_level;
   int         canceled;
   double      queue_lag, queue_lag_stddev;
   double      gcd_lag, gcd_lag_stddev;

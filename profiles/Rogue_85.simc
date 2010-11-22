@@ -1,9 +1,6 @@
 #!simc
 
-patch=4.0.4
 optimal_raid=1
-target_level=88
-
 
 # rogues can really gain a lot from a more fine grained energy regeneration.
 regen_periodicy=0.25
