@@ -27,7 +27,7 @@ void* event_t::operator new( size_t size,
   }
   else
   {
-    new_event = ( event_t* ) malloc( SIZE );
+    new_event = ( event_t* ) ::new char[ SIZE ];
   }
 
   return new_event;
@@ -57,7 +57,8 @@ void event_t::operator delete( void* p )
 
 void event_t::deallocate( event_t* e )
 {
-  free( ( void* ) e );
+  char* e2 = ( char * ) e;
+  ::delete [] e2;
 }
 
 // ==========================================================================
