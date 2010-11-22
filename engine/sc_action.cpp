@@ -352,13 +352,17 @@ option_t* action_t::merge_options( std::vector<option_t>& merged_options,
                                    option_t*              options1,
                                    option_t*              options2 )
 {
-  if ( ! options1 ) return options2;
-  if ( ! options2 ) return options1;
-
   merged_options.clear();
 
-  for ( int i=0; options1[ i ].name; i++ ) merged_options.push_back( options1[ i ] );
-  for ( int i=0; options2[ i ].name; i++ ) merged_options.push_back( options2[ i ] );
+  if ( options1 )
+  {
+    for ( int i=0; options1[ i ].name; i++ ) merged_options.push_back( options1[ i ] );
+  }
+
+  if ( options2 )
+  {
+    for ( int i=0; options2[ i ].name; i++ ) merged_options.push_back( options2[ i ] );
+  }
 
   option_t null_option;
   null_option.name = 0;
