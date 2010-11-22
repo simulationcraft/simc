@@ -2542,7 +2542,7 @@ double paladin_t::get_divine_bulwark() SC_CONST
   if ( primary_tree() != TREE_PROTECTION ) return 0.0;
 
   // block rating, 2.25% per point of mastery
-  return composite_mastery() * 0.0225;
+  return composite_mastery() * passives.divine_bulwark->base_value(E_APPLY_AURA, A_DUMMY);
 }
 
 // paladin_t::get_hand_of_light ==============================================
@@ -2552,7 +2552,7 @@ double paladin_t::get_hand_of_light() SC_CONST
   if ( primary_tree() != TREE_RETRIBUTION ) return 0.0;
 
   // chance to proc buff, 1% per point of mastery
-  return composite_mastery() * 0.01;
+  return composite_mastery() * passives.hand_of_light->base_value(E_APPLY_AURA, A_DUMMY);
 }
 
 // ==========================================================================
