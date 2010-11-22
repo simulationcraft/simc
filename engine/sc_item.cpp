@@ -347,9 +347,10 @@ bool item_t::decode_armor_type()
       break;
   }
   if( encoded_name_str == "empty" ||
-      encoded_name_str == "none" )
+      encoded_name_str == "none"  ||
+      encoded_name_str == "" )
   {
-    is_matching_type = armor_type() != NULL;
+    is_matching_type = armor_type() == NULL;
   }
   else
   {

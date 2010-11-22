@@ -670,7 +670,18 @@ void player_t::init_items()
 
   gear_stats_t item_stats;
 
-  matching_gear = true;
+  bool slots[ SLOT_MAX ];
+  for ( int i = 0; i < SLOT_MAX; i++ )
+  {
+    if ( util_t::armor_type_string( type, i ) )
+    {
+      slots[ i ] = false;
+    }
+    else
+    {
+      slots[ i ] = true;
+    }
+  }
 
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
@@ -683,16 +694,34 @@ void player_t::init_items()
       return;
     }
 
-    if ( ! item.matching_type() )
-    {
-      matching_gear = false;
-    }
+    slots[ item.slot ] = item.matching_type();
 
     for ( int j=0; j < STAT_MAX; j++ )
     {
       item_stats.add_stat( j, item.stats.get_stat( j ) );
     }
   }
+
+  switch ( type )
+  {
+  case MAGE:
+  case PRIEST:
+  case WARLOCK:
+    matching_gear = true;
+    break;
+  default:
+    matching_gear = true;
+    for ( int i=0; i < SLOT_MAX; i++ )
+    {
+      if ( slots[ i ] == false )
+      {
+        matching_gear = false;
+        break;
+      }
+    }
+    break;
+  }
+
 
   init_meta_gem( item_stats );
 
