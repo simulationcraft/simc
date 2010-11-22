@@ -12,6 +12,7 @@ struct expr_unary_t : public action_expr_t
   int operation;
   action_expr_t* input;
   expr_unary_t( action_t* a, const std::string& n, int o, action_expr_t* i ) : action_expr_t(a,n), operation(o), input(i) {}
+  ~expr_unary_t() { delete input; }
   virtual int evaluate()
   {
     result_type = TOK_UNKNOWN;
@@ -43,6 +44,7 @@ struct expr_binary_t : public action_expr_t
   action_expr_t* left;
   action_expr_t* right;
   expr_binary_t( action_t* a, const std::string& n, int o, action_expr_t* l, action_expr_t* r ) : action_expr_t(a,n), operation(o), left(l), right(r) {}
+  ~expr_binary_t() { delete left; delete right; }
   virtual int evaluate()
   {
     result_type = TOK_UNKNOWN;
