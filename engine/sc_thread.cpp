@@ -315,7 +315,7 @@ void thread_t::mutex_init( void*& mutex )
     pthread_mutex_t* m = new pthread_mutex_t();
     pthread_mutex_init( m, NULL );
     mutex = m;
-    cs_list.push_back( cs );
+    cs_list.push_back( m );
   }
 
   pthread_mutex_unlock( &global_mutex );
