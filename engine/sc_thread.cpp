@@ -7,6 +7,7 @@
 
 static bool thread_initialized = false;
 static std::vector<void *> cs_list;
+static std::vector<void *> hnd_list;
 
 // Cross-Platform Support for Multi-Threading ===============================
 
@@ -205,6 +206,7 @@ void thread_t::wait( sim_t* sim )
 {
   HANDLE* handle = ( HANDLE* ) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
+  CloseHandle( *handle );
   if ( handle ) delete handle;
   sim -> thread_handle = NULL;
 }
