@@ -4292,7 +4292,14 @@ void warlock_t::init_actions()
     else if ( primary_tree() == TREE_DESTRUCTION )
       action_list_str += "/summon_imp";
     else if ( primary_tree() == TREE_AFFLICTION )
-      action_list_str += "/summon_felhunter";
+    {
+      if ( glyphs.lash_of_pain -> ok() && level < 85 )
+        action_list_str += "/summon_succubus";
+      else if ( glyphs.imp -> ok() && level < 85 )
+        action_list_str += "/summon_imp";
+      else
+        action_list_str += "/summon_felhunter";
+    }
     else
       action_list_str += "/summon_imp";
 

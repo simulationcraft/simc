@@ -2,44 +2,62 @@
 warlock=Warlock_Demonology_T10_277
 level=80
 race=undead
+use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000032122231031221221132
 glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
-use_pre_potion=1
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/fel_armor
 actions+=/summon_felguard
 actions+=/snapshot_stats
-actions+=/wild_magic_potion,if=(buff.bloodlust.react)|(!in_combat)
+actions+=/wild_magic_potion,if=buff.bloodlust.react|!in_combat
 actions+=/hand_of_guldan,if=dot.immolate.remains>0
-actions+=/metamorphosis
 actions+=/soulburn,if=buff.metamorphosis.react
 actions+=/soul_fire,if=buff.soulburn.react
+actions+=/metamorphosis
 actions+=/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time|!ticking
 actions+=/bane_of_doom,time_to_die>=20,if=!ticking
-actions+=/hand_of_guldan
-actions+=/immolation,if=(buff.tier10_4pc_caster.react|buff.metamorphosis.remains<16)&buff.metamorphosis.remains>10
+actions+=/immolation,if=buff.metamorphosis.remains>10
 actions+=/corruption,if=!ticking|dot.corruption.remains<tick_time
 actions+=/shadowflame
+actions+=/hand_of_guldan
 actions+=/incinerate,if=buff.molten_core.react
 actions+=/soul_fire,if=buff.decimation.react
 actions+=/summon_infernal
+actions+=/life_tap,mana_percentage<=35
 actions+=/shadow_bolt
 actions+=/life_tap
-head=sanctified_dark_coven_hood,heroic=1,stats=973armor_114crit_106haste_159int_261sta,gems=chaotic_skyflare_20hit_9sp,enchant=30sp_20crit,reforge=crit_mastery
+head=sanctified_dark_coven_hood,heroic=1,type=cloth,stats=973armor_114crit_106haste_159int_261sta,reforge=crit_mastery,gems=chaotic_skyflare_20hit_9sp,enchant=30sp_20crit
 neck=amulet_of_the_silent_eulogy,heroic=1,stats=68haste_60hit_94int_146sta,gems=20haste_5sp
-shoulders=sanctified_dark_coven_shoulderpads,heroic=1,stats=899armor_90crit_82haste_128int_193sta,gems=20haste_5sp,enchant=24sp_15crit,reforge=crit_mastery
-chest=sanctified_dark_coven_robe,heroic=1,stats=1198armor_122crit_106haste_167int_261sta,gems=10int_10hit_20haste_7sp,enchant=10str_10agi_10sta_10int_10spi,reforge=crit_mastery
-waist=crushing_coldwraith_belt,heroic=1,stats=674armor_74crit_90haste_120int_193sta,gems=20hit_10int_10hit_20int_7sp,reforge=crit_mastery
-legs=plaguebringers_stained_pants,heroic=1,stats=1048armor_116haste_104hit_158int_261sta,gems=10int_10hit_20hit_20haste_9sp,enchant=50sp_20spi
-feet=plague_scientists_boots,heroic=1,stats=824armor_74crit_90haste_120int_193sta,gems=20hit_20int_7sp,enchant=15sta,reforge=crit_mastery
-wrists=Bracers_of_Fiery_Night,heroic=1,stats=477armor_65crit_73haste_101int_156sta,gems=20int_5sp,enchant=30sp,reforge=crit_mastery
-hands=sanctified_dark_coven_gloves,heroic=1,stats=749armor_90crit_82hit_128int_193sta,gems=20hit_5sp,enchant=28sp,reforge=crit_haste
+shoulders=sanctified_dark_coven_shoulderpads,heroic=1,type=cloth,stats=899armor_90crit_82haste_128int_193sta,reforge=crit_mastery,gems=20haste_5sp,enchant=24sp_15crit
+chest=sanctified_dark_coven_robe,heroic=1,type=cloth,stats=1198armor_122crit_106haste_167int_261sta,reforge=crit_mastery,gems=10int_10hit_20haste_7sp,enchant=10str_10agi_10sta_10int_10spi
+waist=crushing_coldwraith_belt,heroic=1,type=cloth,stats=674armor_74crit_90haste_120int_193sta,reforge=crit_mastery,gems=20hit_10int_10hit_20int_7sp
+legs=plaguebringers_stained_pants,heroic=1,type=cloth,stats=1048armor_116haste_104hit_158int_261sta,gems=10int_10hit_20hit_20haste_9sp,enchant=50sp_20spi
+feet=plague_scientists_boots,heroic=1,type=cloth,stats=824armor_74crit_90haste_120int_193sta,reforge=crit_mastery,gems=20hit_20int_7sp,enchant=15sta
+wrists=bracers_of_fiery_night,heroic=1,type=cloth,stats=477armor_65crit_73haste_101int_156sta,reforge=crit_mastery,gems=20int_5sp,enchant=30sp
+hands=sanctified_dark_coven_gloves,heroic=1,type=cloth,stats=749armor_90crit_82hit_128int_193sta,reforge=crit_haste,gems=20hit_5sp,enchant=28sp
 finger1=ashen_band_of_endless_destruction,stats=64haste_51hit_87int_133sta,gems=20haste_5sp,enchant=23sp,equip=onspellcasthit_285sp_10%_10dur_60cd
-finger2=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_94int_146sta,gems=20hit_5sp,enchant=23sp,reforge=crit_mastery
-trinket1=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,equip=onspelltickdamage_1207sp_30%_20dur_100cd,reforge=crit_mastery
+finger2=ring_of_rapid_ascent,heroic=1,stats=68crit_60haste_94int_146sta,reforge=crit_mastery,gems=20hit_5sp,enchant=23sp
+trinket1=phylactery_of_the_nameless_lich,heroic=1,stats=172crit,reforge=crit_mastery,equip=onspelltickdamage_1207sp_30%_20dur_100cd
 trinket2=dislodged_foreign_object,heroic=1,stats=170haste,equip=onspellcast_121sp_10stack_10%_20dur_45cd_2tick
-back=Cloak_of_Burning_Dusk,heroic=1,stats=545armor_65crit_73haste_101int_156sta,gems=20int_5sp,enchant=lightweave_embroidery,reforge=crit_mastery
-main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_1118sp_152sta,gems=20int_5sp,enchant=63sp,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max,reforge=crit_mastery
+back=cloak_of_burning_dusk,heroic=1,stats=545armor_65crit_73haste_101int_156sta,reforge=crit_mastery,gems=20int_5sp,enchant=lightweave_embroidery
+main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,stats=55crit_71haste_1118sp_152sta,reforge=crit_mastery,gems=20int_5sp,enchant=63sp,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max
 off_hand=shadow_silk_spindle,heroic=1,stats=68crit_68haste_102int_146sta,reforge=crit_mastery
-ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_49int_83sta,gems=10haste_10int_5sp,reforge=crit_mastery
+ranged=corpseimpaling_spike,heroic=1,stats=38crit_30haste_49int_83sta,reforge=crit_mastery,gems=10haste_10int_5sp
+# Gear Summary
+# gear_strength=10
+# gear_agility=10
+# gear_stamina=2698
+# gear_intellect=1758
+# gear_spirit=30
+# gear_spell_power=1473
+# gear_hit_rating=447
+# gear_crit_rating=717
+# gear_haste_rating=1413
+# gear_mastery_rating=398
+# gear_armor=7387
+# meta_gem=chaotic_skyflare
+# tier10_2pc_caster=1
+# tier10_4pc_caster=1
+# back=cloak_of_burning_dusk,heroic=1,enchant=lightweave_embroidery
+# main_hand=bloodsurge_kelthuzads_blade_of_agony,heroic=1,weapon=sword_1.80speed_160.56001281738281min_446.56002807617187max
