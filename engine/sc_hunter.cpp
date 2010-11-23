@@ -40,7 +40,6 @@ struct hunter_t : public player_t
   buff_t* buffs_lock_and_load;
   buff_t* buffs_rapid_fire;
   buff_t* buffs_trueshot_aura;
-  buff_t* buffs_tier8_4pc;
   buff_t* buffs_tier10_2pc;
   buff_t* buffs_tier10_4pc;
 
@@ -246,7 +245,6 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_rabid_power_stack;
   buff_t* buffs_savage_rend;
   buff_t* buffs_wolverine_bite;
-  buff_t* buffs_tier9_4pc;
 
   // Gains
   gain_t* gains_go_for_the_throat;
@@ -421,7 +419,6 @@ struct hunter_pet_t : public pet_t
     buffs_rabid_power_stack = new buff_t( this, "rabid_power_stack", 1,    0, 0.0, talents.rabid * 0.5 );   // FIXME: Probably a ppm, not flat chance
     buffs_savage_rend       = new buff_t( this, "savage_rend",       1, 30.0 );
     buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0, talents.wolverine_bite );
-    buffs_tier9_4pc    = new stat_buff_t( this, "tier9_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( o -> set_bonus.tier9_4pc_melee() ? 0.35 : 0 ) );
   }
 
   virtual void init_gains()
@@ -637,7 +634,6 @@ struct hunter_attack_t : public attack_t
   }
 
   virtual double cost() SC_CONST;
-  virtual void   execute();
   virtual double execute_time() SC_CONST;
   virtual void   player_buff();
 };
@@ -955,7 +951,6 @@ struct pet_melee_t : public hunter_pet_attack_t
       hunter_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, false )
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
 
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
@@ -969,8 +964,6 @@ struct pet_melee_t : public hunter_pet_attack_t
       base_multiplier   *= ( 1.0 - p -> talents.cobra_reflexes * 0.075 );
       base_execute_time *= 1.0 / ( 1.0 + p -> talents.cobra_reflexes * 0.15 );
     }
-
-    if ( o -> set_bonus.tier7_2pc_melee() ) base_multiplier *= 1.05;
   }
 };
 
@@ -1483,20 +1476,6 @@ double hunter_attack_t::cost() SC_CONST
   return c;
 }
 
-// hunter_attack_t::execute ================================================
-
-void hunter_attack_t::execute()
-{
-  attack_t::execute();
-
-  hunter_t* p = player -> cast_hunter();
-  if ( result_is_hit() )
-  {
-    if ( p -> active_pet )
-      p -> active_pet -> buffs_tier9_4pc -> trigger();
-
-  }
-}
 
 // hunter_attack_t::execute_time ============================================
 
@@ -2098,7 +2077,6 @@ struct serpent_sting_t : public hunter_attack_t
     base_tick_time   = 3.0;
     num_ticks        = p -> glyphs.serpent_sting ? 7 : 5;
     tick_power_mod   = 0.2 / 5.0;
-    base_multiplier *= 1.0 + ( p -> set_bonus.tier8_2pc_melee() * 0.1 );
 
     tick_may_crit = true;
 
@@ -2208,7 +2186,6 @@ struct steady_shot_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
       p -> buffs_improved_steady_shot -> trigger();
-      p -> buffs_tier8_4pc -> trigger();
 
       trigger_hunting_party( this );
       if ( result == RESULT_CRIT )
@@ -2912,9 +2889,6 @@ void hunter_t::init_buffs()
   buffs_tier10_2pc                  = new buff_t( this, "tier10_2pc",                  1, 10.0,  0.0, ( set_bonus.tier10_2pc_melee() ? 0.05 : 0 ) );
   buffs_tier10_4pc                  = new buff_t( this, "tier10_4pc",                  1, 10.0,  0.0, ( set_bonus.tier10_4pc_melee() ? 0.05 : 0 ) );
 
-  buffs_tier8_4pc = new stat_buff_t( this, "tier8_4pc", STAT_ATTACK_POWER, 600, 1, 15.0, 45.0, ( set_bonus.tier8_4pc_melee() ? 0.1  : 0 ) );
-
-
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, "trueshot_aura");
 }
@@ -3417,9 +3391,6 @@ int hunter_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "cryptstalker"          ) ) return SET_T7_MELEE;
-  if ( strstr( s, "scourgestalker"        ) ) return SET_T8_MELEE;
-  if ( strstr( s, "windrunners"           ) ) return SET_T9_MELEE;
   if ( strstr( s, "ahnkahar_blood_hunter" ) ) return SET_T10_MELEE;
   if ( strstr( s, "lightning_charged"     ) ) return SET_T11_MELEE;
 

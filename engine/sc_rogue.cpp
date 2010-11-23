@@ -3818,10 +3818,6 @@ int rogue_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "bonescythe"   ) ) return SET_T7_MELEE;
-  if ( strstr( s, "terrorblade"  ) ) return SET_T8_MELEE;
-  if ( strstr( s, "vancleefs"    ) ) return SET_T9_MELEE;
-  if ( strstr( s, "garonas"      ) ) return SET_T9_MELEE;
   if ( strstr( s, "shadowblade"  ) ) return SET_T10_MELEE;
   if ( strstr( s, "wind_dancers" ) ) return SET_T11_MELEE;
 

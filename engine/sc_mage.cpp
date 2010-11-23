@@ -3391,10 +3391,6 @@ int mage_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "frostfire"   ) ) return SET_T7_CASTER;
-  if ( strstr( s, "kirin_tor"   ) ) return SET_T8_CASTER;
-  if ( strstr( s, "sunstriders" ) ) return SET_T9_CASTER;
-  if ( strstr( s, "khadgars"    ) ) return SET_T9_CASTER;
   if ( strstr( s, "bloodmage"   ) ) return SET_T10_CASTER;
   if ( strstr( s, "firelord"    ) ) return SET_T11_CASTER;
 

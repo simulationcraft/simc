@@ -2186,8 +2186,6 @@ struct vampiric_touch_t : public priest_spell_t
 
 
     base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
-    
-    num_ticks += ( int ) ( p -> sets -> set( SET_T9_2PC_CASTER  ) -> mod_additive( P_DURATION ) / base_tick_time );
   }
 
   virtual void execute()
@@ -3282,10 +3280,6 @@ void priest_t::init_spells()
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P
-    { 38413, 38412,     0,     0,     0,     0 }, // Tier6
-    { 60156, 60157,     0,     0,     0,     0 }, // Tier7
-    { 64906, 64908,     0,     0,     0,     0 }, // Tier8
-    { 67193, 67198,     0,     0,     0,     0 }, // Tier9
     { 70800, 70801,     0,     0,     0,     0 }, // Tier10
     { 89915, 89922,     0,     0,     0,     0 }, // Tier11
     {     0,     0,     0,     0,     0,     0 },
@@ -3766,25 +3760,8 @@ int priest_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_caster = ( strstr( s, "circlet"   ) ||
-         strstr( s, "mantle"    ) ||
-         strstr( s, "raiments"  ) ||
-         strstr( s, "handwraps" ) ||
-         strstr( s, "pants"     ) );
+  bool is_caster = false;
 
-  if ( strstr( s, "faith" ) )
-  {
-    if ( is_caster ) return SET_T7_CASTER;
-  }
-  if ( strstr( s, "sanctification" ) )
-  {
-    if ( is_caster ) return SET_T8_CASTER;
-  }
-  if ( strstr( s, "zabras" ) ||
-       strstr( s, "velens" ) )
-  {
-    if ( is_caster ) return SET_T9_CASTER;
-  }
   if ( strstr( s, "crimson_acolyte" ) )
   {
     is_caster = ( strstr( s, "cowl"      ) ||

@@ -2091,22 +2091,6 @@ int paladin_t::decode_set( item_t& item )
                    strstr( s, "legguards"      ) ||
                    strstr( s, "handguards"     ) );
   
-  if ( strstr( s, "redemption" ) ) 
-  {
-    if ( is_melee ) return SET_T7_MELEE;
-    if ( is_tank  ) return SET_T7_TANK;
-  }
-  if ( strstr( s, "aegis" ) )
-  {
-    if ( is_melee ) return SET_T8_MELEE;
-    if ( is_tank  ) return SET_T8_TANK;
-  }
-  if ( strstr( s, "turalyons" ) ||
-       strstr( s, "liadrins"  ) ) 
-  {
-    if ( is_melee ) return SET_T9_MELEE;
-    if ( is_tank  ) return SET_T9_TANK;
-  }
   if ( strstr( s, "lightsworn" ) )
   {
     if ( is_melee  ) return SET_T10_MELEE;

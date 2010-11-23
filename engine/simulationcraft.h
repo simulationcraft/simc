@@ -414,9 +414,9 @@ enum slot_type   // these enum values match armory settings
   SLOT_MAX       = 19
 };
 
-// Tiers 6..14
+// Tiers 10..14
 #ifndef N_TIER
-#define N_TIER 9
+#define N_TIER 5
 #endif
 
 // Caster 2/4, Melee 2/4, Tank 2/4
@@ -427,18 +427,6 @@ enum slot_type   // these enum values match armory settings
 enum set_type
 {
   SET_NONE = 0,
-  SET_T6_CASTER, SET_T6_2PC_CASTER, SET_T6_4PC_CASTER,
-  SET_T6_MELEE,  SET_T6_2PC_MELEE,  SET_T6_4PC_MELEE,
-  SET_T6_TANK,   SET_T6_2PC_TANK,   SET_T6_4PC_TANK,
-  SET_T7_CASTER, SET_T7_2PC_CASTER, SET_T7_4PC_CASTER,
-  SET_T7_MELEE,  SET_T7_2PC_MELEE,  SET_T7_4PC_MELEE,
-  SET_T7_TANK,   SET_T7_2PC_TANK,   SET_T7_4PC_TANK,
-  SET_T8_CASTER, SET_T8_2PC_CASTER, SET_T8_4PC_CASTER,
-  SET_T8_MELEE,  SET_T8_2PC_MELEE,  SET_T8_4PC_MELEE,
-  SET_T8_TANK,   SET_T8_2PC_TANK,   SET_T8_4PC_TANK,
-  SET_T9_CASTER, SET_T9_2PC_CASTER, SET_T9_4PC_CASTER,
-  SET_T9_MELEE,  SET_T9_2PC_MELEE,  SET_T9_4PC_MELEE,
-  SET_T9_TANK,   SET_T9_2PC_TANK,   SET_T9_4PC_TANK,
   SET_T10_CASTER, SET_T10_2PC_CASTER, SET_T10_4PC_CASTER,
   SET_T10_MELEE,  SET_T10_2PC_MELEE,  SET_T10_4PC_MELEE,
   SET_T10_TANK,   SET_T10_2PC_TANK,   SET_T10_4PC_TANK,
@@ -454,7 +442,6 @@ enum set_type
   SET_T14_CASTER, SET_T14_2PC_CASTER, SET_T14_4PC_CASTER,
   SET_T14_MELEE,  SET_T14_2PC_MELEE,  SET_T14_4PC_MELEE,
   SET_T14_TANK,   SET_T14_2PC_TANK,   SET_T14_4PC_TANK,
-  SET_SPELLSTRIKE,
   SET_MAX
 };
 
@@ -2695,14 +2682,6 @@ struct item_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier6_2pc_caster() SC_CONST; int tier6_2pc_melee() SC_CONST; int tier6_2pc_tank() SC_CONST;
-  int tier6_4pc_caster() SC_CONST; int tier6_4pc_melee() SC_CONST; int tier6_4pc_tank() SC_CONST;
-  int tier7_2pc_caster() SC_CONST; int tier7_2pc_melee() SC_CONST; int tier7_2pc_tank() SC_CONST;
-  int tier7_4pc_caster() SC_CONST; int tier7_4pc_melee() SC_CONST; int tier7_4pc_tank() SC_CONST;
-  int tier8_2pc_caster() SC_CONST; int tier8_2pc_melee() SC_CONST; int tier8_2pc_tank() SC_CONST;
-  int tier8_4pc_caster() SC_CONST; int tier8_4pc_melee() SC_CONST; int tier8_4pc_tank() SC_CONST;
-  int tier9_2pc_caster() SC_CONST; int tier9_2pc_melee() SC_CONST; int tier9_2pc_tank() SC_CONST;
-  int tier9_4pc_caster() SC_CONST; int tier9_4pc_melee() SC_CONST; int tier9_4pc_tank() SC_CONST;
   int tier10_2pc_caster() SC_CONST; int tier10_2pc_melee() SC_CONST; int tier10_2pc_tank() SC_CONST;
   int tier10_4pc_caster() SC_CONST; int tier10_4pc_melee() SC_CONST; int tier10_4pc_tank() SC_CONST;
   int tier11_2pc_caster() SC_CONST; int tier11_2pc_melee() SC_CONST; int tier11_2pc_tank() SC_CONST;
@@ -2713,7 +2692,6 @@ struct set_bonus_t
   int tier13_4pc_caster() SC_CONST; int tier13_4pc_melee() SC_CONST; int tier13_4pc_tank() SC_CONST;
   int tier14_2pc_caster() SC_CONST; int tier14_2pc_melee() SC_CONST; int tier14_2pc_tank() SC_CONST;
   int tier14_4pc_caster() SC_CONST; int tier14_4pc_melee() SC_CONST; int tier14_4pc_tank() SC_CONST;
-  int spellstrike() SC_CONST;
   int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();

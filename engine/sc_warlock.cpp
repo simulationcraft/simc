@@ -4022,10 +4022,6 @@ void warlock_t::init_spells()
   // New set bonus system
   uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = {
     //  C2P    C4P    M2P    M4P    T2P    T4P
-    {     0,    0,      0,     0,     0,     0 }, // Tier6
-    {     0,    0,      0,     0,     0,     0 }, // Tier7
-    {     0,    0,      0,     0,     0,     0 }, // Tier8
-    {     0,    0,      0,     0,     0,     0 }, // Tier9
     { 70839, 70841,     0,     0,     0,     0 }, // Tier10
     { 89934, 89935,     0,     0,     0,     0 }, // Tier11
     {     0,     0,     0,     0,     0,     0 },
@@ -4507,10 +4503,6 @@ int warlock_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "plagueheart"  ) ) return SET_T7_CASTER;
-  if ( strstr( s, "deathbringer" ) ) return SET_T8_CASTER;
-  if ( strstr( s, "kelthuzads"   ) ) return SET_T9_CASTER;
-  if ( strstr( s, "guldans"      ) ) return SET_T9_CASTER;
   if ( strstr( s, "dark_coven"   ) ) return SET_T10_CASTER;
   if ( strstr( s, "shadowflame"  ) ) return SET_T11_CASTER;
 

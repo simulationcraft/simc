@@ -824,11 +824,6 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"    ) ) register_tyrandes_favorite_doll ( &item );
     if ( ! strcmp( item.name(), "unheeded_warning"          ) ) register_unheeded_warning       ( &item );
   }
-
-  if ( p -> set_bonus.spellstrike() )
-  {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "spellstrike", p, STAT_SPELL_POWER, 1, 92, 0.05, 10.0, 0, 0 );
-  }
 }
 
 // ==========================================================================
