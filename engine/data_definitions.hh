@@ -1,4 +1,4 @@
-﻿#ifndef DATA_DEFINITIONS_HH
+#ifndef DATA_DEFINITIONS_HH
 #define DATA_DEFINITIONS_HH
 
 #include "data_enums.hh"

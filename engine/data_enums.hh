@@ -1,4 +1,4 @@
-﻿#ifndef DATA_ENUMS_HH
+#ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
 
