@@ -3514,8 +3514,8 @@ struct action_t : public spell_id_t
 
   virtual void _init_action_t();
 
-  virtual void      parse_data( sc_data_access_t& pData, int spell_id=0, bool overlay=false );
-  virtual void      parse_effect_data( sc_data_access_t& pData, int spell_id, int effect_nr, bool overlay=false );
+  virtual void      parse_data( sc_data_access_t& pData );
+  virtual void      parse_effect_data( sc_data_access_t& pData, int spell_id, int effect_nr );
   virtual void      parse_options( option_t*, const std::string& options_str );
   virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
