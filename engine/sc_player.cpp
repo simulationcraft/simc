@@ -230,6 +230,7 @@ player_t::player_t( sim_t*             s,
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), pri_tree( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
+    vengeance_factor( 0.0 ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
     // Haste
@@ -1549,6 +1550,9 @@ double player_t::composite_attack_power() SC_CONST
 
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
+
+  if ( tank && vengeance_factor )
+    ap += (std::min)(1.0, vengeance_factor) * 0.1 * resource_buffed[ RESOURCE_HEALTH ];
 
   return ap;
 }
@@ -4568,6 +4572,7 @@ std::vector<option_t>& player_t::get_options()
       { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
       { "flask",                                OPT_STRING, &( flask_str                                      ) },
       { "food",                                 OPT_STRING, &( food_str                                       ) },
+      { "vengeance_factor",                     OPT_FLT,  &( vengeance_factor                                 ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
 

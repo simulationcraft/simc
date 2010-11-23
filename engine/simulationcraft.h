@@ -2731,6 +2731,7 @@ struct player_t
   int         bugs;
   talent_tab_name pri_tree;
   int         invert_spirit_scaling;
+  double      vengeance_factor; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
 
   // Data access
   sc_data_access_t player_data;
