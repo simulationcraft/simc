@@ -1464,7 +1464,9 @@ bool sim_t::time_to_think( double proc_time )
 
 int sim_t::roll( double chance )
 {
-  return rng -> roll( chance );
+  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
+  
+  return r -> roll( chance );
 }
 
 // sim_t::range =============================================================
@@ -1472,7 +1474,9 @@ int sim_t::roll( double chance )
 double sim_t::range( double min,
                      double max )
 {
-  return rng -> range( min, max );
+  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
+  
+  return r -> range( min, max );
 }
 
 // sim_t::gauss =============================================================
@@ -1480,7 +1484,9 @@ double sim_t::range( double min,
 double sim_t::gauss( double mean,
                      double stddev )
 {
-  return rng -> gauss( mean, stddev );
+  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
+  
+  return r -> gauss( mean, stddev );
 }
 
 // sim_t::get_rng ===========================================================
@@ -1489,9 +1495,10 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 {
   assert( rng );
 
-  if ( ! smooth_rng || type == RNG_GLOBAL ) return rng;
-
+  if ( type == RNG_GLOBAL ) return rng;
   if ( type == RNG_DETERMINISTIC ) return deterministic_rng;
+
+  if ( ! smooth_rng ) return ( deterministic_roll ? deterministic_rng : rng );
 
   rng_t* r=0;
 
