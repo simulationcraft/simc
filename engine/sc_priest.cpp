@@ -507,7 +507,6 @@ struct priest_absorb_t : public spell_t
     tick_may_crit     = false;
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
-
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
     target = p -> heal_dummy;
@@ -614,8 +613,14 @@ struct priest_heal_t : public spell_t
   virtual void player_buff()
   {
     spell_t::player_buff();
-
     priest_t* p = player -> cast_priest();
+
+    if ( p -> meta_gem == META_REVITALIZING_SHADOWSPIRIT )
+    {
+      player_crit_multiplier *= 1.03;
+    }
+
+
     player_multiplier *= 1.0 + p -> passive_spells.spiritual_healing -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) ;
 
     if ( p -> buffs_grace -> up() )
@@ -2453,14 +2458,23 @@ struct renew_t : public priest_heal_t
     parse_options( options, options_str );
 
     base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                            + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
     base_multiplier *= 1.0 + p -> glyphs.renew * 0.10;
 
     num_ticks=number_ticks=3;
 
 
+  }
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double c = priest_heal_t::cost();
+    c *= p -> buffs_inner_will -> value();
+    c  = floor( c );
+
+    return c;
   }
   virtual double gcd() SC_CONST
   {
@@ -2695,9 +2709,18 @@ struct circle_of_healing_t : public priest_heal_t
     base_multiplier *= 5;
 
     base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                            + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
+  }
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double c = priest_heal_t::cost();
+    c *= p -> buffs_inner_will -> value();
+    c  = floor( c );
+
+    return c;
   }
 
 };
@@ -2719,11 +2742,19 @@ struct prayer_of_mending_t : public priest_heal_t
     base_dd_min = base_dd_max = effect_min(1);
 
     base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                            + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
   }
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
 
+    double c = priest_heal_t::cost();
+    c *= p -> buffs_inner_will -> value();
+    c  = floor( c );
+
+    return c;
+  }
 };
 
 struct glyph_power_word_shield_t : public priest_heal_t
@@ -2754,8 +2785,7 @@ struct power_word_shield_t : public priest_absorb_t
     parse_options( options, options_str );
 
     base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 )
-                            + p -> buffs_inner_will -> stack() * p -> constants.inner_will_value );
+                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
     cooldown -> duration += p -> talents.soul_warding -> effect_base_value( 1 ) / 1000.0;
     base_multiplier *= 1.0 + p -> talents.improved_power_word_shield -> effect_base_value( 1 ) / 100.0;
@@ -2767,6 +2797,16 @@ struct power_word_shield_t : public priest_absorb_t
     }
   }
 
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double c = priest_absorb_t::cost();
+    c *= p -> buffs_inner_will -> value();
+    c  = floor( c );
+
+    return c;
+  }
   virtual void execute()
   {
     priest_absorb_t::execute();
