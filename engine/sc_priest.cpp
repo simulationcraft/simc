@@ -3057,15 +3057,18 @@ void priest_t::init_race()
   case RACE_DWARF:
   case RACE_NIGHT_ELF:
   case RACE_DRAENEI:
+  case RACE_GNOME:
+  case RACE_WORGEN:
   case RACE_UNDEAD:
   case RACE_TROLL:
   case RACE_BLOOD_ELF:
-  case RACE_WORGEN:
   case RACE_GOBLIN:
+  case RACE_TAUREN:
     break;
   default:
     race = RACE_NIGHT_ELF;
     race_str = util_t::race_type_string( race );
+    break;
   }
 
   player_t::init_race();
@@ -3423,6 +3426,7 @@ void priest_t::init_actions()
                                                          action_list_str += "/prayer_of_mending";
                                                          action_list_str += "/inner_focus";
                                                          action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent";
                                                          action_list_str += "/penance_heal";
                                                          action_list_str += "/greater_heal";
       }

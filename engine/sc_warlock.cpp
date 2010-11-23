@@ -4131,10 +4131,12 @@ void warlock_t::init_race()
   switch ( race )
   {
   case RACE_HUMAN:
+  case RACE_DWARF:
   case RACE_GNOME:
   case RACE_UNDEAD:
   case RACE_ORC:
   case RACE_BLOOD_ELF:
+  case RACE_TROLL:
   case RACE_WORGEN:
   case RACE_GOBLIN:
     break;
@@ -4320,6 +4322,10 @@ void warlock_t::init_actions()
     else if ( race == RACE_BLOOD_ELF )
     {
       action_list_str += "/arcane_torrent";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
     }
 
     // Choose Potion

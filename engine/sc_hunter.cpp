@@ -2828,13 +2828,17 @@ void hunter_t::init_race()
   race = util_t::parse_race_type( race_str );
   switch ( race )
   {
+  case RACE_HUMAN:
   case RACE_DWARF:
   case RACE_DRAENEI:
   case RACE_NIGHT_ELF:
+  case RACE_WORGEN:
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_TAUREN:
   case RACE_BLOOD_ELF:
+  case RACE_UNDEAD:
+  case RACE_GOBLIN:
     break;
   default:
     race = RACE_NIGHT_ELF;

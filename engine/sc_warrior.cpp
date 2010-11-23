@@ -2839,6 +2839,7 @@ void warrior_t::init_race()
     case RACE_TROLL:
     case RACE_WORGEN:
     case RACE_UNDEAD:
+    case RACE_BLOOD_ELF:
       break;
     default:
       race = RACE_NIGHT_ELF;
@@ -3069,6 +3070,8 @@ void warrior_t::init_actions()
       action_list_str += "/blood_fury";
     else if ( race == RACE_TROLL )
       action_list_str += "/berserking";
+    else if ( race == RACE_BLOOD_ELF )
+      action_list_str += "/arcane_torrent";
 
     if ( primary_tree() == TREE_ARMS )
     {

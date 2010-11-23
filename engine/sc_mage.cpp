@@ -3101,6 +3101,10 @@ void mage_t::init_actions()
     {
       action_list_str += "/arcane_torrent";
     }
+    else if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
     action_list_str += "/mirror_image";
     if ( primary_tree() == TREE_ARCANE )
     {
