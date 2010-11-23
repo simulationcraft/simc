@@ -1879,6 +1879,8 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + 0.01 * p -> talents.balance_of_power -> effect_base_value( 1 );
     
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
+
+    // FIX ME: Moonfury is actually additive with other player_multipliers, like glyphs, etc.
     if ( p -> spec_moonfury -> ok() )
       player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
 
@@ -2357,8 +2359,7 @@ struct moonfire_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
-    base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
+    base_td_multiplier *= p -> glyphs.moonfire * 0.20;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
@@ -2370,8 +2371,9 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();    
-    // +2/4/8% damage bonus only applies to direct damage
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+    // Lunar Shower and BoG are additive and only apply to DD
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
   }
 
   virtual void tick()
@@ -2389,7 +2391,8 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     // Damage bonus only applies to direct damage
     // Get rid of it for the ticks, hacky :<
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
 
     if ( result_is_hit() )
     {
@@ -2789,7 +2792,6 @@ struct sunfire_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-    base_dd_multiplier *= 1.0 + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
     base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;    
 
     if ( p -> set_bonus.tier11_2pc_caster() )
@@ -2802,8 +2804,9 @@ struct sunfire_t : public druid_spell_t
   {
     druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();    
-    // +2/4/8% damage bonus only applies to direct damage
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+    // Lunar Shower and BoG are additive and only apply to DD
+    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
   }
 
   virtual void tick()
@@ -2821,7 +2824,8 @@ struct sunfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     // Damage bonus only applies to direct damage
     // Get rid of it for the ticks, hacky :<
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack();
+    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
 
     if ( result_is_hit() )
     {
