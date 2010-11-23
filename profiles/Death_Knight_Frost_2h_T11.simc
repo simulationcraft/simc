@@ -1,0 +1,62 @@
+#!./simc 
+
+iterations=10000
+
+death_knight=Death_Knight_Frost_2h_T11
+level=85
+race=tauren
+use_pre_potion=-1
+professions=Blacksmithing/Jewelcrafting
+talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=10300000000000000000320310122331120120310330000000000000000
+glyphs=frost_strike/howling_blast/obliterate
+actions=flask,type=titanic_strength
+actions+=/food,type=beer_basted_crocolisk
+actions+=/presence,choose=unholy
+actions+=/army_of_the_dead
+actions+=/snapshot_stats
+actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
+actions+=/auto_attack
+actions+=/pillar_of_frost
+actions+=/howling_blast,if=buff.rime.react
+actions+=/raise_dead,time>=5
+actions+=/icy_touch,if=dot.frost_fever.remains<=2
+actions+=/plague_strike,if=dot.blood_plague.remains<=2
+actions+=/obliterate
+actions+=/frost_strike
+actions+=/blood_strike
+actions+=/blood_tap
+actions+=/empower_rune_weapon
+actions+=/horn_of_winter
+head=magma_plated_helmet,heroic=1,type=plate,stats=325str_578sta_257haste_197exp_2891armor,gems=destructive_shadowspirit_20str_20crit_30str,enchant=60str_35mastery
+neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=mastery_haste
+shoulders=magma_plated_pauldrons,heroic=1,type=plate,stats=266str_429sta_191haste_171hit_2669armor,gems=67str_10haste,enchant=50str_25crit,reforge=hit_crit
+chest=magma_plated_battleplate,heroic=1,type=plate,stats=345str_578sta_257crit_217haste_3559armor,gems=67str_20str_20hit_20str,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_absolute_zero,heroic=1,type=plate,stats=266str_429sta_191crit_171hit_2002armor,gems=67str_40str_10hit,reforge=hit_haste
+legs=magma_plated_legplates,heroic=1,type=plate,stats=345str_578sta_257mastery_217hit_3114armor,gems=40str_40str,enchant=190ap_55crit,reforge=mastery_crit
+feet=massacre_treads,heroic=1,type=plate,stats=266str_429sta_171exp_191mastery_2447armor,gems=20str_20hit_10str,enchant=35mastery,reforge=exp_crit
+wrists=electron_inductor_coils,heroic=1,type=plate,stats=215str_322sta_143haste_143hit_1557armor,gems=40str,enchant=50exp,reforge=hit_crit
+hands=magma_plated_gauntlets,heroic=1,type=plate,stats=266str_429sta_191haste_171mastery_2224armor,reforge=mastery_crit,gems=20str_20hit_40str_10str,enchant=50str
+finger1=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_crit
+finger2=cataclysm_world_drop_epic_strength_dps_ring,stats=190str_286sta_127haste_127mastery,reforge=mastery_crit
+trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_10%_15dur_60cd
+trinket2=heart_of_rage,heroic=1,stats=363exp,equip=onattackhit_2178str_10%_20dur_60cd
+back=glittering_epidermis,heroic=1,stats=215str_322sta_143crit_143haste_673armor,enchant=65crit
+main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=rune_of_the_fallen_crusader,weapon=sword2h_3.80speed_1872min_3476max
+ranged=relic_of_aggramar,stats=107str_161sta_72crit_72exp
+# Gear Summary
+# gear_strength=4705
+# gear_agility=10
+# gear_stamina=5773
+# gear_intellect=10
+# gear_spirit=10
+# gear_attack_power=190
+# gear_expertise_rating=785
+# gear_hit_rating=979
+# gear_crit_rating=1609
+# gear_haste_rating=1547
+# gear_mastery_rating=768
+# gear_armor=21136
+# meta_gem=destructive_shadowspirit
+# tier11_2pc_melee=1
+# tier11_4pc_melee=1
+# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=sword2h_3.80speed_1872min_3476max,enchant=rune_of_the_fallen_crusader
