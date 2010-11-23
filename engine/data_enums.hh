@@ -1,5 +1,6 @@
-#ifndef DATA_ENUMS_HH
+﻿#ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
+
 
 // Property (misc_value) types for
 // A_ADD_PCT_MODIFIER, A_ADD_FLAT_MODIFIER
@@ -35,6 +36,7 @@ enum property_type_t {
   P_DISPEL_CHANCE     = 28,
   P_MAX               = 29,
 };
+
 
 enum effect_type_t {
     E_NONE = 0,
@@ -208,6 +210,7 @@ enum effect_type_t {
     E_168 = 168,
     E_MAX
 };
+
 
 enum effect_subtype_t {
     A_NONE = 0,
@@ -566,5 +569,6 @@ enum effect_subtype_t {
     A_353 = 353,
     A_MAX
 };
+
 
 #endif

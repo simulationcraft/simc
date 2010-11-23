@@ -1,10 +1,16 @@
-#ifndef DATA_DEFINITIONS_HH
+﻿#ifndef DATA_DEFINITIONS_HH
 #define DATA_DEFINITIONS_HH
 
 #include "data_enums.hh"
 
 // Spell.dbc
+
+#ifdef __OpenBSD__
+#pragma pack(1)
+#else
 #pragma pack( push, 1 )
+#endif
+
 struct spell_data_t {
   const char * name;               // Spell name from Spell.dbc stringblock (enGB)
   unsigned     id;                 // Spell ID in dbc
@@ -54,6 +60,7 @@ struct spell_data_t {
   const char * desc_vars;          // Spell description variable stringblock, if present
 };
 
+
 // SpellEffect.dbc
 struct spelleffect_data_t {
   unsigned         id;              // Effect id
@@ -83,6 +90,8 @@ struct spelleffect_data_t {
   int              die_sides;       // Effect damage range
 };
 
+
+
 struct talent_data_t {
   const char * name;        // Talent name
   unsigned     id;          // Talent id
@@ -96,6 +105,12 @@ struct talent_data_t {
   unsigned     row;         // Talent row
   unsigned     rank_id[3];  // Talent spell rank identifiers for ranks 1..3
 };
+
+#ifdef __OpenBSD__
+#pragma pack()
+#else
 #pragma pack( pop )
+#endif
 
 #endif
+
