@@ -80,6 +80,7 @@ enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 struct warrior_t : public player_t
 {
   bool instant_flurry_haste;
+  int initial_rage;
 
   // Active
   action_t* active_deep_wounds;
@@ -324,6 +325,7 @@ struct warrior_t : public player_t
     dots_rend        = get_dot( "rend"        );
 
     instant_flurry_haste = true;
+    initial_rage = 0;
   }
 
   // Character Definition
@@ -2890,6 +2892,7 @@ void warrior_t::init_base()
   base_gcd = 1.5;
 
   if ( tank == -1 && primary_tree() == TREE_PROTECTION ) tank = 1;
+
 }
 
 // warrior_t::init_scaling ==================================================
@@ -3140,8 +3143,8 @@ void warrior_t::combat_begin()
 {
   player_t::combat_begin();
 
-  // We start with zero rage into combat.
-  resource_current[ RESOURCE_RAGE ] = 0;
+  // We (usually) start combat with zero rage.
+  resource_current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
 
   if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
   {
@@ -3327,6 +3330,7 @@ std::vector<option_t>& warrior_t::get_options()
     option_t warrior_options[] =
     {
       // @option_doc loc=player/warrior/talents title="Talents"
+      { "initial_rage", OPT_INT, &initial_rage },
       { "instant_flurry_haste", OPT_BOOL, &instant_flurry_haste },
       { NULL, OPT_UNKNOWN, NULL }
     };
