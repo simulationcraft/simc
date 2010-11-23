@@ -281,7 +281,9 @@ class TalentDataGenerator(DataGenerator):
         for id in ids:
             talent     = self._talent_db[id]
             talent_tab = self._talenttab_db[talent.talent_tab]
-            spell      = self._spell_db[talent.id_rank_1]
+            spell      = self._spell_db.get(talent.id_rank_1)
+            if not spell:
+                continue
 
             fields = spell.field('name')
             fields += talent.field('id')
