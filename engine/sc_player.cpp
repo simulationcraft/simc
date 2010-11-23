@@ -3224,9 +3224,10 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
-  if ( ! sim -> smooth_rng || type == RNG_GLOBAL ) return sim -> rng;
-
+  if ( type == RNG_GLOBAL ) return sim -> rng;
   if ( type == RNG_DETERMINISTIC ) return sim -> deterministic_rng;
+
+  if ( ! sim -> smooth_rng ) return ( sim -> deterministic_roll ? sim -> deterministic_rng : sim -> rng );
 
   rng_t* rng=0;
 
