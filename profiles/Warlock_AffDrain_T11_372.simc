@@ -22,6 +22,7 @@ actions+=/unstable_affliction,time_to_die>=5,if=!ticking|dot.unstable_affliction
 actions+=/summon_infernal
 actions+=/drain_soul,health_percentage<=25,interrupt=1
 actions+=/shadow_bolt,if=buff.shadow_trance.react
+actions+=/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up
 actions+=/life_tap,mana_percentage<=35
 actions+=/drain_life,interrupt=1
 actions+=/life_tap

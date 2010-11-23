@@ -4373,6 +4373,7 @@ void warlock_t::init_actions()
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
       if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
+      if ( level >= 85 ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
       action_list_str += "/life_tap,mana_percentage<=35";
       if ( talent_bane -> rank() == 3 )
       {
