@@ -356,17 +356,15 @@ struct druid_bear_attack_t : public attack_t
 
 struct druid_spell_t : public spell_t
 {
-  int    skip_on_eclipse;
-  double base_cost_reduction;
+  double additive_multiplier;
+
   druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
-      spell_t( n, p, RESOURCE_MANA, s, t ), skip_on_eclipse( 0 ),
-      base_cost_reduction( 0.0 )
+      spell_t( n, p, RESOURCE_MANA, s, t ), additive_multiplier( 0.0 )
   {
   }
 
    druid_spell_t( const char* n, uint32_t id, druid_t* p ) :
-      spell_t( n, id, p, 0 ), skip_on_eclipse( 0 ),
-      base_cost_reduction( 0.0 )
+      spell_t( n, id, p, 0 ), additive_multiplier( 0.0 )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -380,7 +378,6 @@ struct druid_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual void   player_buff();
-  virtual bool   ready();
   virtual void   schedule_execute();
 };
 
@@ -1746,27 +1743,10 @@ void druid_spell_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "skip_on_eclipse",  OPT_INT, &skip_on_eclipse        },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
-}
-
-// druid_spell_t::ready ====================================================
-
-bool druid_spell_t::ready()
-{
-  if ( ! spell_t::ready() )
-    return false;
-
-  druid_t*  p = player -> cast_druid();
-
-  if ( skip_on_eclipse > 0 )
-    if ( p -> buffs_eclipse_lunar -> may_react() || p -> buffs_eclipse_solar -> may_react() )
-      return false;
-
-  return true;
 }
 
 // druid_spell_t::cost_reduction ===========================================
@@ -1880,9 +1860,9 @@ void druid_spell_t::player_buff()
     
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
 
-    // FIX ME: Moonfury is actually additive with other player_multipliers, like glyphs, etc.
+    // Moonfury is actually additive with other player_multipliers, like glyphs, etc.
     if ( p -> spec_moonfury -> ok() )
-      player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
+      additive_multiplier += p -> spec_moonfury -> mod_additive( P_GENERIC );
 
     if ( p -> buffs_moonkin_form -> check() )
       player_multiplier *= 1.10;
@@ -1898,6 +1878,11 @@ void druid_spell_t::player_buff()
       player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
 
   player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect_base_value( 2 ) / 100.0;
+
+  // Add in Additive Multipliers
+  player_multiplier *= 1.0 + additive_multiplier;
+  // Reset Additive_Multiplier
+  additive_multiplier = 0.0;
 
   player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
 }
@@ -2270,15 +2255,21 @@ struct insect_swarm_t : public druid_spell_t
     parse_options( options, options_str );
     
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks        += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
-    dot_behavior      = DOT_REFRESH;
-
-    base_multiplier *= 1.0 + ( p -> glyphs.insect_swarm ? 0.30 : 0.00 );
+    num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
+    dot_behavior = DOT_REFRESH;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
     
     starsurge_cd = p -> get_cooldown( "starsurge" );
+  }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+    // Glyph of Insect Swarm is Additive with Moonfury
+    additive_multiplier += ( p -> glyphs.insect_swarm ? 0.30 : 0.00 );
+    druid_spell_t::player_buff();
   }
 
   virtual void tick()
@@ -2369,11 +2360,12 @@ struct moonfire_t : public druid_spell_t
 
   virtual void player_buff()
   {
-    druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();    
-    // Lunar Shower and BoG are additive and only apply to DD
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+    // Lunar Shower and BoG are additive with Moonfury and only apply to DD
+    additive_multiplier += util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+
+    druid_spell_t::player_buff();
   }
 
   virtual void tick()
@@ -2389,10 +2381,13 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::execute();
 
     druid_t* p = player -> cast_druid();
-    // Damage bonus only applies to direct damage
-    // Get rid of it for the ticks, hacky :<
+    // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
+    // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
+    // then reapply moonfury, to get an accurate number
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
-                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
+                         + p -> spec_moonfury -> mod_additive( P_GENERIC );
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
 
     if ( result_is_hit() )
     {
@@ -2802,11 +2797,12 @@ struct sunfire_t : public druid_spell_t
 
   virtual void player_buff()
   {
-    druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();    
-    // Lunar Shower and BoG are additive and only apply to DD
-    player_multiplier *= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+    // Lunar Shower and BoG are additive with Moonfury and only apply to DD
+    additive_multiplier += util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+
+    druid_spell_t::player_buff();
   }
 
   virtual void tick()
@@ -2822,10 +2818,13 @@ struct sunfire_t : public druid_spell_t
    druid_spell_t::execute();
 
     druid_t* p = player -> cast_druid();
-    // Damage bonus only applies to direct damage
-    // Get rid of it for the ticks, hacky :<
+    // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
+    // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
+    // then reapply moonfury, to get an accurate number
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
-                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
+                         + p -> spec_moonfury -> mod_additive( P_GENERIC );
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
 
     if ( result_is_hit() )
     {
@@ -2942,10 +2941,12 @@ struct wrath_t : public druid_spell_t
 
   virtual void player_buff()
   {
-    druid_spell_t::player_buff();
     druid_t* p = player -> cast_druid();
+    // Glyph of Wrath is additive with Moonfury
     if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking() )
-      player_multiplier *= 1.10;
+      additive_multiplier += 0.10;
+
+    druid_spell_t::player_buff();
   }
 
   virtual void travel( int    travel_result,
