@@ -226,37 +226,44 @@ action_t::~action_t()
 }
 
 // action_t::parse_data ====================================================
-void action_t::parse_data( sc_data_access_t& pData )
+
+void action_t::parse_data( sc_data_access_t& pData, int spell_id, bool overlay )
 {
-  if ( pData.spell_exists(id) )
+  if( spell_id == 0 ) spell_id = id;
+
+  if ( pData.spell_exists(spell_id) )
   {
-    base_execute_time    = pData.spell_cast_time ( id, player -> level );
-    cooldown -> duration = pData.spell_cooldown ( id );
-    if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
-      cooldown -> duration = sim -> wheel_seconds - 2.0;
-    range                = pData.spell_max_range ( id );
-    travel_speed         = pData.spell_missile_speed ( id );
-    trigger_gcd          = pData.spell_gcd ( id );
-    school               = spell_id_t::get_school_type( pData.spell_school_mask( id ) );
-    stats -> school      = school;
-    resource             = pData.spell_power_type( id );
-    rp_gain              = pData.spell_runic_power_gain( id );
-
-    // For mana it returns the % of base mana, not the absolute cost
-    if ( resource == RESOURCE_MANA )
-      base_cost = floor ( pData.spell_cost( id ) * player -> resource_base[ RESOURCE_MANA ] );
-    else
-      base_cost = pData.spell_cost( id );
-
+    if( ! overlay || ! base_execute_time ) base_execute_time = pData.spell_cast_time( spell_id, player -> level );
+    if( ! overlay || ! range             ) range             = pData.spell_max_range( spell_id );
+    if( ! overlay || ! travel_speed      ) travel_speed      = pData.spell_missile_speed( spell_id );
+    if( ! overlay || ! trigger_gcd       ) trigger_gcd       = pData.spell_gcd( spell_id );
+    if( ! overlay || ! resource          ) resource          = pData.spell_power_type( spell_id );
+    if( ! overlay || ! rp_gain           ) rp_gain           = pData.spell_runic_power_gain( spell_id );
+    if( ! overlay || ! school ) 
+    {
+      school = stats -> school = spell_id_t::get_school_type( pData.spell_school_mask( spell_id ) );
+    }
+    if( ! overlay || ! cooldown -> duration )
+    {
+      cooldown -> duration = std::max( pData.spell_cooldown( spell_id ), sim -> wheel_seconds - 2.0 );
+    }
+    if( ! overlay || ! base_cost )
+    {
+      if ( resource == RESOURCE_MANA )
+	base_cost = floor ( pData.spell_cost( spell_id ) * player -> resource_base[ RESOURCE_MANA ] );
+      else
+	base_cost = pData.spell_cost( spell_id );
+    }
     for ( int i=1; i <= MAX_EFFECTS; i++)
     {
-      parse_effect_data(pData, id, i);
+      parse_effect_data(pData, spell_id, i);
     }
   }
 }
 
 // action_t::parse_effect_data ==============================================
-void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int effect_nr )
+
+void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int effect_nr, bool overlay )
 {
   if (!spell_id)
     return;
@@ -271,22 +278,22 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       // Direct Damage
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
-      direct_power_mod = pData.effect_coeff( effect );
-      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+      if( ! overlay || ! direct_power_mod ) direct_power_mod = pData.effect_coeff( effect );
+      if( ! overlay || ! base_dd_min      ) base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+      if( ! overlay || ! base_dd_max      ) base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
     case E_WEAPON_DAMAGE:         
-      base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-      base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-      weapon = &( player -> main_hand_weapon );
+      if( ! overlay || ! weapon ) weapon = &( player -> main_hand_weapon );
+      if( ! overlay || ! base_dd_min ) base_dd_min = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+      if( ! overlay || ! base_dd_max ) base_dd_max = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
       break;
 
     case E_WEAPON_PERCENT_DAMAGE:
-      weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+      if( ! overlay || ! weapon ) weapon = &( player -> main_hand_weapon );
+      if( ! overlay || ! weapon_multiplier ) weapon_multiplier = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
       break;
 
       // Dot
@@ -294,42 +301,42 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       switch ( pData.effect_subtype ( effect) )
       {
       case A_PERIODIC_DAMAGE:
-        tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-        base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
+        if( ! overlay || ! tick_power_mod ) tick_power_mod = pData.effect_coeff( effect );
+        if( ! overlay || ! base_td        ) base_td        = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        if( ! overlay || ! base_tick_time ) base_tick_time = pData.effect_period ( effect );
+        if( ! overlay || ! num_ticks      ) num_ticks      = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         if ( school == SCHOOL_PHYSICAL )
           school = stats -> school = SCHOOL_BLEED;
         break;
       case A_PERIODIC_LEECH:
-        tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-        base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
+        if( ! overlay || ! tick_power_mod ) tick_power_mod = pData.effect_coeff( effect );
+        if( ! overlay || ! base_td        ) base_td        = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        if( ! overlay || ! base_tick_time ) base_tick_time = pData.effect_period ( effect );
+        if( ! overlay || ! num_ticks      ) num_ticks      = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
       case A_PERIODIC_TRIGGER_SPELL:
-        base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
+        if( ! overlay || ! base_tick_time ) base_tick_time = pData.effect_period ( effect );
+        if( ! overlay || ! num_ticks      ) num_ticks      = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
       case A_SCHOOL_ABSORB:
-        direct_power_mod   = pData.effect_coeff( effect );
-        base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-        base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        if( ! overlay || ! direct_power_mod ) direct_power_mod = pData.effect_coeff( effect );
+        if( ! overlay || ! base_dd_min      ) base_dd_min      = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        if( ! overlay || ! base_dd_max      ) base_dd_max      = pData.effect_max ( effect, pData.spell_scaling_class( spell_id ), player -> level );
         break;
       case A_PERIODIC_HEAL:
-        tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-        base_tick_time   = pData.effect_period ( effect );
-        num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
+        if( ! overlay || ! tick_power_mod ) tick_power_mod = pData.effect_coeff( effect );
+        if( ! overlay || ! base_td        ) base_td        = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        if( ! overlay || ! base_tick_time ) base_tick_time = pData.effect_period ( effect );
+        if( ! overlay || ! num_ticks      ) num_ticks      = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
       case A_ADD_FLAT_MODIFIER:
         switch (pData.effect_misc_value1(effect))
         {
         case P_CRIT:
-          base_crit += 0.01 * pData.effect_base_value(effect);
+          if( ! overlay || ! base_crit ) base_crit += 0.01 * pData.effect_base_value(effect);
           break;
         case P_COOLDOWN:
-          cooldown->duration += 0.001 * pData.effect_base_value(effect);
+          if( ! overlay || ! cooldown->duration ) cooldown->duration += 0.001 * pData.effect_base_value(effect);
           break;
         }
         break;
@@ -337,7 +344,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
         switch (pData.effect_misc_value1(effect))
         {
         case P_RESOURCE_COST:
-          base_cost *= 1 + 0.01 * pData.effect_base_value(effect);
+          if( ! overlay || ! base_cost ) base_cost *= 1 + 0.01 * pData.effect_base_value(effect);
           break;
         }
         break;

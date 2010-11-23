@@ -17,14 +17,11 @@ struct mage_t : public player_t
   spell_t* active_ignite;
   pet_t*   active_water_elemental;
 
-  // Active Spells
-  struct active_spells_t
-  {
-    active_spell_t* arcane_barrage;
-    active_spell_t* pyroblast;
-    active_spell_t* summon_water_elemental;
-  };
-  active_spells_t active_spells;
+  // Dots
+  dot_t* dots_frostfire_bolt;
+  dot_t* dots_ignite;
+  dot_t* dots_living_bomb;
+  dot_t* dots_pyroblast;
 
   // Buffs
   buff_t* buffs_arcane_blast;
@@ -227,6 +224,12 @@ struct mage_t : public player_t
     // Active
     active_ignite          = 0;
     active_water_elemental = 0;
+
+    // Dots
+    dots_frostfire_bolt = get_dot( "frostfire_bolt" );
+    dots_ignite         = get_dot( "ignite"         );
+    dots_living_bomb    = get_dot( "living_bomb"    );
+    dots_pyroblast      = get_dot( "pyroblast"      );
 
     // Cooldowns
     cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
@@ -645,6 +648,17 @@ struct mirror_image_pet_t : public pet_t
   }
 };
 
+// calculate_dot_dps ========================================================
+
+static double calculate_dot_dps( dot_t* dot )
+{
+  if( ! dot -> ticking() ) return 0;
+
+  action_t* a = dot -> action;
+
+  return ( a -> calculate_tick_damage() / a -> time_to_tick );
+}
+
 // consume_brain_freeze =====================================================
 
 static void consume_brain_freeze( spell_t* s )
@@ -678,7 +692,7 @@ static void trigger_hot_streak( spell_t* s )
   sim_t* sim = s -> sim;
   mage_t*  p = s -> player -> cast_mage();
 
-  if ( ! p -> talents.improved_hot_streak -> rank() )
+  if ( ! p -> talents.hot_streak -> rank() )
     return;
 
   int result = s -> result;
@@ -690,12 +704,26 @@ static void trigger_hot_streak( spell_t* s )
   }
   if ( result == RESULT_CRIT )
   {
-    p -> buffs_hot_streak_crits -> trigger();
+    // Reference: http://elitistjerks.com/f75/t104767-fire_cataclysm_discussion_updated_4_01_a/p12/#post1766032
 
-    if ( p -> buffs_hot_streak_crits -> stack() == 2 )
+    double hot_streak_chance = -1.7106 * s -> total_crit() + 0.7803;
+
+    if( hot_streak_chance < 0 ) hot_streak_chance = 0;
+
+    if( p -> talents.improved_hot_streak -> rank() )
+    {
+      p -> buffs_hot_streak_crits -> trigger();
+
+      if ( p -> buffs_hot_streak_crits -> stack() == 2 )
+      {
+	hot_streak_chance += p -> talents.improved_hot_streak -> rank() * 0.50;
+	p -> buffs_hot_streak_crits -> expire();
+      }
+    }
+
+    if( sim -> rng -> roll( hot_streak_chance ) )
     {
       p -> buffs_hot_streak -> trigger();
-      p -> buffs_hot_streak_crits -> expire();
     }
   }
   else
@@ -727,11 +755,9 @@ static void trigger_ignite( spell_t* s, double dmg )
       background     = true;
       proc           = true;
       may_resist     = true;
-      scale_with_haste = false;
       reset();
     }
-    virtual void target_debuff( int dmg_type ) {}
-    virtual void player_buff() {}
+    virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
 
   double ignite_dmg = dmg * p -> talents.ignite -> effect_base_value( 1 ) / 100.0;
@@ -945,7 +971,7 @@ void mage_spell_t::execute()
   
   spell_t::execute();
   
-  if (p -> buffs_arcane_potency -> up() )
+  if ( p -> buffs_arcane_potency -> up() )
   {
     p -> buffs_arcane_potency -> decrement();
   }
@@ -971,11 +997,6 @@ void mage_spell_t::execute()
     if ( result == RESULT_CRIT )
     {
       trigger_master_of_elements( this, 1.0 );
-
-      if ( time_to_travel == 0 )
-      {
-	      trigger_ignite( this, direct_dmg );
-      }
     }
   }
   trigger_arcane_missiles( this );
@@ -1295,15 +1316,14 @@ struct arcane_missiles_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    // FIXME: How do all the talents + haste interact
     channeled        = true;
     num_ticks        = 3 + 1 * p -> talents.improved_arcane_missiles -> rank();
     base_tick_time   = 0.75;
-    scale_with_haste = false;
+    scale_with_haste = false; // no extra ticks
 
     if ( p -> talents.missile_barrage -> rank() )
     {
-      base_tick_time += p -> talents.missile_barrage -> effect_base_value( 1 ) / 1000.0;
+      base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
     }
 
     arcane_missiles_tick = new arcane_missiles_tick_t( p );
@@ -1431,16 +1451,26 @@ struct combustion_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     check_talent( p -> talents.combustion -> rank() );
+
+    // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
+    num_ticks        = 10;
+    base_tick_time   = 1.0;
+    tick_may_crit    = true;
+    scale_with_haste = true;
   }
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
+    base_td = 0;
+    base_td += calculate_dot_dps( p -> dots_frostfire_bolt );
+    base_td += calculate_dot_dps( p -> dots_ignite         );
+    base_td += calculate_dot_dps( p -> dots_living_bomb    );
+    base_td += calculate_dot_dps( p -> dots_pyroblast      );
     mage_spell_t::execute();
-    // mage_t* p = player -> cast_mage();
-    // FIXME: Add Combustion dot
-    // The dot takes current tick value of Ignite/Pyro/Living bomb/Glyphed FFB, sums it up to create a new dot
-    // That Dot ticks once a second for 10 seconds
   }
+
+  virtual double total_td_multiplier() SC_CONST { return 1.0; }
 };
 
 // Cone of Cold Spell =======================================================
@@ -1510,18 +1540,17 @@ struct counterspell_t : public mage_spell_t
 struct deep_freeze_strike_t : public mage_spell_t
 {
   deep_freeze_strike_t( mage_t* player ) :
-    mage_spell_t( "deep_freeze", 71757, player )
+    mage_spell_t( "deep_freeze_strike", 71757, player )
   {
     background = true;
     dual       = true;
     may_crit   = true;
+    stats = player -> get_stats( "deep_freeze" );
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
-    update_stats( DMG_DIRECT );
-
     mage_t* p = player -> cast_mage();
     p -> buffs_fingers_of_frost -> decrement();
   }
@@ -1532,7 +1561,7 @@ struct deep_freeze_strike_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
 
-    if ( p -> buffs_fingers_of_frost -> may_react() )
+    if ( p -> buffs_fingers_of_frost -> up() )
     {
       player_multiplier *= 1.0 + p -> mastery.frostburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
 
@@ -1560,6 +1589,7 @@ struct deep_freeze_t : public mage_spell_t
     parse_options( options, options_str );
 
     deep_freeze_strike = new deep_freeze_strike_t( p );
+
   }
 
   virtual void execute()
@@ -1730,13 +1760,6 @@ struct flame_orb_strike_t : public mage_spell_t
     may_crit         = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-    tick_dmg = direct_dmg;
-    update_stats( DMG_DIRECT );
-  }
 };
 
 struct flame_orb_t : public mage_spell_t
@@ -1746,9 +1769,9 @@ struct flame_orb_t : public mage_spell_t
   flame_orb_t( mage_t* player, const std::string& options_str ) :
     mage_spell_t( "flame_orb", 82731, player )
   {
-    check_min_level( 81 );
-
     mage_t* p = player -> cast_mage();
+
+    check_min_level( 81 );
 
     option_t options[] =
     {
@@ -1757,19 +1780,17 @@ struct flame_orb_t : public mage_spell_t
     parse_options( options, options_str );
 
     flame_orb_strike = new flame_orb_strike_t( p );
+
+    // FIXME! Need to add pseudo-DoT effect
   }
 
   virtual void execute()
   {
-    mage_spell_t::execute();
-
-    flame_orb_strike -> execute();
-
     mage_t* p = player -> cast_mage();
-
+    mage_spell_t::execute();
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> rank() / 3 ) )
     {
-      // FIXME: Trigger Flame Orb Explode (No idea what this is based on )
+      flame_orb_strike -> execute();
     }
   }
 };
@@ -1909,7 +1930,7 @@ struct frostbolt_t : public mage_spell_t
     {
       if ( ! p -> buffs_early_frost -> check() )
       {
-        ct += p -> talents.early_frost -> effect_base_value( 1 ) / 1000.0;
+        ct += p -> talents.early_frost -> mod_additive( P_CAST_TIME );
       }
     }
 
@@ -1921,8 +1942,10 @@ struct frostbolt_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
+  int dot_stack;
+
   frostfire_bolt_t( mage_t* player, const std::string& options_str ) :
-    mage_spell_t( "frostfire_bolt", 44614, player )
+    mage_spell_t( "frostfire_bolt", 44614, player ), dot_stack(0)
   {
     mage_t* p = player -> cast_mage();
 
@@ -1932,13 +1955,28 @@ struct frostfire_bolt_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    may_crit          = true;
+    may_crit = true;
 
     if ( p -> glyphs.frostfire )
     {
       base_multiplier *= 1.15;
-      // FIXME: Add in dot 3% over 12 sec, stacks 3x
+      num_ticks = 4;
+      base_tick_time = 3.0;
+      scale_with_haste = false;
+      dot_behavior = DOT_REFRESH;
     }
+  }
+  
+  virtual void reset() 
+  {
+    mage_spell_t::reset();
+    dot_stack=0; 
+  }
+
+  virtual void last_tick() 
+  {
+    mage_spell_t::last_tick();
+    dot_stack=0; 
   }
 
   virtual double cost() SC_CONST
@@ -1963,29 +2001,43 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-
-    if ( p -> buffs_fingers_of_frost -> check() )
+    p -> buffs_fingers_of_frost -> decrement();
+    if ( result_is_hit() )
     {
-      p -> buffs_fingers_of_frost -> decrement();
+      p -> buffs_fingers_of_frost -> trigger();
     }
-    else
-    {
-      if ( result_is_hit() )
-      {
-        p -> buffs_fingers_of_frost -> trigger();
-      }
-    }
-
     trigger_hot_streak( this );
     consume_brain_freeze( this );
   }
+
+  virtual void travel( int travel_result, double travel_dmg )
+  {
+    mage_t* p = player -> cast_mage();
+
+    if ( p -> glyphs.frostfire ) 
+    {
+      if( dot_stack == 0 ) base_td = 0;
+      if( dot_stack == 3 )
+      {
+	base_td *= 2.0 / 3.0;
+	dot_stack--;
+      }
+      
+      base_td += travel_dmg * 0.03 / num_ticks;
+      dot_stack++;
+    }
+    mage_spell_t::travel( travel_result, travel_dmg );
+  }
+
+  virtual double total_td_multiplier() SC_CONST { return 1.0; }
 
   virtual void player_buff()
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
 
-    if ( p -> buffs_fingers_of_frost -> may_react() && p -> buffs_brain_freeze -> may_react() )
+    if ( p -> buffs_fingers_of_frost -> up() && 
+	 p -> buffs_brain_freeze     -> up() )
     {
       player_multiplier *= 1.0 + p -> mastery.frostburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
 
@@ -2004,18 +2056,15 @@ struct frostfire_orb_strike_t : public mage_spell_t
   frostfire_orb_strike_t( mage_t* player ) :
     mage_spell_t( "frostfire_orb", 84721, player ) // FIXME: May not be the right ID
   {
-    aoe              = true; // While not a true aoe, it should hit most adds
-    dual             = true;
-    background       = true;
-    may_crit         = true;
+    aoe        = true; // While not a true aoe, it should hit most adds
+    dual       = true;
+    background = true;
+    may_crit   = true;
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
-    tick_dmg = direct_dmg;
-    update_stats( DMG_DIRECT );
-
     mage_t* p = player -> cast_mage();
     if ( result_is_hit() && p -> talents.frostfire_orb -> rank() == 2 ) // Only the 2nd rank has the chill effect
     {
@@ -2029,11 +2078,11 @@ struct frostfire_orb_t : public mage_spell_t
   frostfire_orb_strike_t* frostfire_orb_strike;
 
   frostfire_orb_t( mage_t* player, const std::string& options_str ) :
-    mage_spell_t( "frostfire_orb", 92283, player ) // FIXME: May not be the right ID
+    mage_spell_t( "frostfire_orb", 92283, player )
   {
-    check_min_level( 81 );
-
     mage_t* p = player -> cast_mage();
+
+    check_min_level( 81 );
 
     option_t options[] =
     {
@@ -2042,20 +2091,17 @@ struct frostfire_orb_t : public mage_spell_t
     parse_options( options, options_str );
 
     frostfire_orb_strike = new frostfire_orb_strike_t( p );
+
+    // FIXME! Need to add pseudo-DoT effect
   }
 
   virtual void execute()
   {
-    mage_spell_t::execute();
-
-    frostfire_orb_strike -> execute();
-
     mage_t* p = player -> cast_mage();
-
-    // FIXME: Does this still explode with this talent?
+    mage_spell_t::execute();
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> rank() / 3 ) )
     {
-      // FIXME: Trigger Flame Orb Explode (No idea what this is based on )
+      frostfire_orb_strike -> execute();
     }
   }
 };
@@ -2075,7 +2121,7 @@ struct ice_lance_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    may_crit          = true;
+    may_crit = true;
     base_multiplier *= 1.0 + p -> glyphs.ice_lance * 0.05;
   }
 
@@ -2092,7 +2138,7 @@ struct ice_lance_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
 
-    if ( p -> buffs_fingers_of_frost -> may_react() )
+    if ( p -> buffs_fingers_of_frost -> up() )
     {
       player_multiplier *= 2.0; // Built in bonus against frozen targets
 
@@ -2441,10 +2487,6 @@ struct pyroblast_t : public mage_spell_t
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
     }
-
-    // When performing Hot Streak Pyroblasts, do not wait for DoT to complete.
-    if ( p -> buffs_hot_streak -> check() )
-      dot -> ready = 0;
   }
 
   virtual double execute_time() SC_CONST
