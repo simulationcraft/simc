@@ -2458,6 +2458,7 @@ struct sim_t
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
+  double    real();
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   double    iteration_adjust();
   player_t* find_player( const std::string& name );

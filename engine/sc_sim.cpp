@@ -1489,6 +1489,15 @@ double sim_t::gauss( double mean,
   return r -> gauss( mean, stddev );
 }
 
+// sim_t::real ==============================================================
+
+double sim_t::real()
+{
+  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
+  
+  return r -> real();
+}
+
 // sim_t::get_rng ===========================================================
 
 rng_t* sim_t::get_rng( const std::string& n, int type )

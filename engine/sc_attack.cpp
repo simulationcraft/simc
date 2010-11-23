@@ -405,7 +405,7 @@ void attack_t::calculate_result()
     {
       // 1-roll attack table with true RNG
 
-      double random = sim -> rng -> real();
+      double random = sim -> real();
 
       for ( int i=0; i < num_results; i++ )
       {
