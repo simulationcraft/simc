@@ -2913,11 +2913,10 @@ struct soul_fire_t : public warlock_spell_t
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
 
-    if ( p -> buffs_empowered_imp -> up() ) p -> buffs_empowered_imp -> expire();
-    if ( p -> buffs_soulburn -> up() )
-    {
+    if ( p -> buffs_empowered_imp -> up() )
+      p -> buffs_empowered_imp -> expire();
+    else if ( p -> buffs_soulburn -> up() )
       p -> buffs_soulburn -> expire();
-    }
   }
 
   virtual double execute_time() SC_CONST
