@@ -717,8 +717,8 @@ static void trigger_hot_streak( mage_spell_t* s )
 
       if ( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
-	hot_streak_chance += p -> talents.improved_hot_streak -> rank() * 0.50;
-	p -> buffs_hot_streak_crits -> expire();
+        hot_streak_chance += p -> talents.improved_hot_streak -> rank() * 0.50;
+        p -> buffs_hot_streak_crits -> expire();
       }
     }
 
@@ -816,9 +816,9 @@ static void trigger_ignite( spell_t* s, double dmg )
 
       if ( p -> active_ignite -> ticking )
       {
-	if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
-	p -> procs_deferred_ignite -> occur();
-	p -> active_ignite -> cancel();
+        if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
+        p -> procs_deferred_ignite -> occur();
+        p -> active_ignite -> cancel();
       }
 
       p -> active_ignite -> base_td = ignite_dmg / 2.0; // Fix hardcoded num_ticks
@@ -840,7 +840,7 @@ static void trigger_ignite( spell_t* s, double dmg )
   if ( p -> active_ignite -> ticking )
   {
     if ( p -> active_ignite -> tick_event -> occurs() < 
-	       p -> ignite_delay_event -> occurs() )
+               p -> ignite_delay_event -> occurs() )
     {
       // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
       // both tick -and- get rolled into the next Ignite.
@@ -1029,7 +1029,7 @@ void mage_spell_t::travel( int travel_result, double travel_dmg )
   if( may_chill ) 
   {
     if( travel_result == RESULT_HIT ||
-	travel_result == RESULT_CRIT )
+        travel_result == RESULT_CRIT )
     {
       p -> buffs_fingers_of_frost -> trigger();
     }
@@ -1119,12 +1119,12 @@ void mage_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> mastery.frostburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
 
-    double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 2.0, 3.0 );
+    double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
 
     if( shatter > 0 ) // Affects "player" and "base" crit only, not target_crit
     {
-      player_crit *= shatter;
-      player_crit += base_crit * ( shatter - 1.0 );
+      player_crit += player_crit * shatter;
+      player_crit +=   base_crit * shatter;
     }
   }
 
@@ -1886,8 +1886,8 @@ struct frostfire_bolt_t : public mage_spell_t
       if( dot_stack == 0 ) base_td = 0;
       if( dot_stack == 3 )
       {
-	base_td *= 2.0 / 3.0;
-	dot_stack--;
+        base_td *= 2.0 / 3.0;
+        dot_stack--;
       }
       
       base_td += travel_dmg * 0.03 / num_ticks;
@@ -2931,7 +2931,7 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem";
       if ( talents.presence_of_mind -> rank() )
       {
-	// PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
+        // PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
         action_list_str += "/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>=3";
       }
       action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
