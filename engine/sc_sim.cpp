@@ -637,18 +637,18 @@ void sim_t::combat( int iteration )
     {
       if (  target -> current_health <= 0 )
       {
-	target -> recalculate_health();
-	if ( debug ) log_t::output( this, "Target has died, ending simulation" );
-	delete e;
-	break;
+        target -> recalculate_health();
+        if ( debug ) log_t::output( this, "Target has died, ending simulation" );
+        delete e;
+        break;
       }
     }
     else // initial_health == 0
     {
       if ( current_time > ( expected_time / 2.0 ) )
       {
-	if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
-	target -> recalculate_health();
+        if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
+        target -> recalculate_health();
       }
     }
     if ( e -> canceled )
