@@ -1568,14 +1568,7 @@ struct mind_flay_t : public priest_spell_t
 
     if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking() )
     {
-      if ( p -> bugs && p -> talents.twisted_faith -> rank() )
-      {
-        player_multiplier *= 1.0 + 0.10 + 0.02 * p -> talents.twisted_faith -> rank();
-      }
-      else
-      {
-        player_multiplier *= 1.0 + 0.10;    
-      }
+      player_multiplier *= 1.0 + 0.10;    
     }
   }
 
