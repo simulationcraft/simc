@@ -1306,6 +1306,8 @@ void action_t::refresh_duration()
 
   player_buff();
 
+  // To get recalculated target_crit
+  target_debuff( DMG_OVER_TIME );
 
   snapshot_haste = haste();
 
@@ -1337,6 +1339,8 @@ void action_t::extend_duration( int extra_ticks )
   if ( dot_behavior == DOT_REFRESH )
   {
     player_buff();
+    // To get recalculated target_crit (untested! - assuming this works the same in-game as for refreshed dots)
+    target_debuff( DMG_OVER_TIME );
     snapshot_haste = haste();
     dot -> ready += tick_time() * extra_ticks;
   }
