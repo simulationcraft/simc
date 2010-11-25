@@ -73,22 +73,23 @@ struct mage_t : public player_t
   struct glyphs_t
   {
     // Prime
-    int arcane_blast;
-    int cone_of_cold;
-    int ice_lance;
-    int living_bomb;
-    int mage_armor;
-    int pyroblast;
-
-    // Major
     int arcane_barrage;
+    int arcane_blast;
     int arcane_missiles;
-    int dragons_breath;
+    int cone_of_cold;
+    int deep_freeze;
     int fireball;
     int frostbolt;
     int frostfire;
-    int mirror_image;
+    int ice_lance;
+    int living_bomb;
+    int mage_armor;
     int molten_armor;
+    int pyroblast;
+
+    // Major
+    int dragons_breath;
+    int mirror_image;
 
     // Minor
     int arcane_brilliance;
@@ -1494,6 +1495,7 @@ struct deep_freeze_t : public mage_spell_t
 
     may_crit = true;
     fof_frozen = true;
+    base_multiplier *= 1.0 + p -> glyphs.deep_freeze * 0.2;
   }
 
   virtual bool ready()
@@ -2639,6 +2641,7 @@ void mage_t::init_glyphs()
     else if ( n == "arcane_brilliance" ) glyphs.arcane_brilliance = 1;
     else if ( n == "arcane_missiles"   ) glyphs.arcane_missiles = 1;
     else if ( n == "cone_of_cold"      ) glyphs.cone_of_cold = 1;
+    else if ( n == "deep_freeze"       ) glyphs.deep_freeze = 1;
     else if ( n == "dragons_breath"    ) glyphs.dragons_breath = 1;
     else if ( n == "fireball"          ) glyphs.fireball = 1;
     else if ( n == "frostbolt"         ) glyphs.frostbolt = 1;
@@ -2655,7 +2658,6 @@ void mage_t::init_glyphs()
     else if ( n == "blast_wave"   ) ;
     else if ( n == "blink"        ) ;
     else if ( n == "conjuring"    ) ;
-    else if ( n == "deep_freeze"  ) ;
     else if ( n == "evocation"    ) ;
     else if ( n == "frost_nova"   ) ;
     else if ( n == "ice_barrier"  ) ;
