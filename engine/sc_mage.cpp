@@ -73,26 +73,26 @@ struct mage_t : public player_t
   struct glyphs_t
   {
     // Prime
-    int arcane_barrage;
-    int arcane_blast;
-    int arcane_missiles;
-    int cone_of_cold;
-    int deep_freeze;
+    glyph_t* arcane_barrage;
+    glyph_t* arcane_blast;
+    glyph_t* arcane_missiles;
+    glyph_t* cone_of_cold;
+    glyph_t* deep_freeze;
     glyph_t* fireball;
-    int frostbolt;
-    int frostfire;
-    int ice_lance;
-    int living_bomb;
-    int mage_armor;
-    int molten_armor;
-    int pyroblast;
+    glyph_t* frostbolt;
+    glyph_t* frostfire;
+    glyph_t* ice_lance;
+    glyph_t* living_bomb;
+    glyph_t* mage_armor;
+    glyph_t* molten_armor;
+    glyph_t* pyroblast;
 
     // Major
-    int dragons_breath;
-    int mirror_image;
+    glyph_t* dragons_breath;
+    glyph_t* mirror_image;
 
     // Minor
-    int arcane_brilliance;
+    glyph_t* arcane_brilliance;
 
     //glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -1164,7 +1164,7 @@ struct arcane_barrage_t : public mage_spell_t
   {
     check_spec( TREE_ARCANE );
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 - p -> glyphs.arcane_barrage * 0.04;
+    base_multiplier *= 1.0 + p -> glyphs.arcane_barrage -> effect_base_value( 1 ) / 100.0;
     may_crit = true;
     consumes_arcane_blast = true;
   }
@@ -1221,7 +1221,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
     double ab_stack_multiplier = 0.10;
-    player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast ? 0.03 : 0.00 ) );
+    player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0 ) );
   }
 };
 
@@ -1235,7 +1235,7 @@ struct arcane_brilliance_t : public mage_spell_t
       mage_spell_t( "arcane_brilliance", 1459, p ), bonus( 0 )
   {
     bonus      = p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
-    base_cost *= 1.0 - p -> glyphs.arcane_brilliance * 0.5;
+    base_cost *= 1.0 + p -> glyphs.arcane_brilliance -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void execute()
@@ -1296,7 +1296,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     may_crit    = true;
     direct_tick = true;
-    base_crit  += p -> glyphs.arcane_missiles * 0.05;
+    base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
   }
 };
@@ -1453,7 +1453,7 @@ struct cone_of_cold_t : public mage_spell_t
     parse_options( NULL, options_str );
     aoe = true;
     may_crit = true;
-    base_multiplier *= 1.0 + p -> glyphs.cone_of_cold * 0.25;
+    base_multiplier *= 1.0 + p -> glyphs.cone_of_cold -> effect_base_value( 1 ) / 100.0;
     if ( p -> talents.ice_floes -> rank() )
     {
       cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
@@ -1498,7 +1498,7 @@ struct deep_freeze_t : public mage_spell_t
 
     may_crit = true;
     fof_frozen = true;
-    base_multiplier *= 1.0 + p -> glyphs.deep_freeze * 0.2;
+    base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect_base_value( 1 ) / 100.0;
     trigger_gcd = p -> base_gcd;
   }
 
@@ -1521,7 +1521,7 @@ struct dragons_breath_t : public mage_spell_t
     parse_options( NULL, options_str );
     aoe = true;
     may_crit = true;
-    cooldown -> duration -= p -> glyphs.dragons_breath * 3.0;
+    cooldown -> duration += p -> glyphs.dragons_breath -> effect_base_value( 1 ) / 1000.0;
   }
 };
 
@@ -1782,7 +1782,7 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", 116, p )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.frostbolt * 0.05;
+    base_crit += p -> glyphs.frostbolt -> effect_base_value( 1 ) / 100.0;
     may_crit = true;
     may_chill = true;
     may_brain_freeze = true;
@@ -1842,9 +1842,9 @@ struct frostfire_bolt_t : public mage_spell_t
     may_chill = true;
     may_hot_streak = true;
 
-    if ( p -> glyphs.frostfire )
+    if ( p -> glyphs.frostfire -> ok() )
     {
-      base_multiplier *= 1.15;
+      base_multiplier *= 1.0 + p -> glyphs.frostfire -> effect_base_value( 1 ) / 100.0;
       num_ticks = 4;
       base_tick_time = 3.0;
       scale_with_haste = true;
@@ -1893,7 +1893,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    if ( p -> glyphs.frostfire ) 
+    if ( p -> glyphs.frostfire -> ok() )
     {
       if( dot_stack == 0 ) base_td = 0;
       if( dot_stack == 3 )
@@ -1984,7 +1984,7 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t( "ice_lance", 30455, p )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> glyphs.ice_lance * 0.05;
+    base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_crit = true;
     fof_frozen = true;
@@ -2038,7 +2038,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     dual = true;
     background = true;
     may_crit = true;
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03
+    base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
                            + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
 };
@@ -2053,7 +2053,7 @@ struct living_bomb_t : public mage_spell_t
     check_talent( p -> talents.living_bomb -> rank() );
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb * 0.03
+    base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
                            + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
 
     tick_may_crit = true;
@@ -2262,7 +2262,7 @@ struct pyroblast_t : public mage_spell_t
   {
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.pyroblast * 0.05;
+    base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     tick_may_crit = true;
     may_crit = true;
@@ -2645,22 +2645,22 @@ void mage_t::init_glyphs()
   {
     std::string& n = glyph_names[ i ];
 
-    if      ( n == "arcane_barrage"    ) glyphs.arcane_barrage = 1;
-    else if ( n == "arcane_blast"      ) glyphs.arcane_blast = 1;
-    else if ( n == "arcane_brilliance" ) glyphs.arcane_brilliance = 1;
-    else if ( n == "arcane_missiles"   ) glyphs.arcane_missiles = 1;
-    else if ( n == "cone_of_cold"      ) glyphs.cone_of_cold = 1;
-    else if ( n == "deep_freeze"       ) glyphs.deep_freeze = 1;
-    else if ( n == "dragons_breath"    ) glyphs.dragons_breath = 1;
+    if      ( n == "arcane_barrage"    ) glyphs.arcane_barrage -> enable();
+    else if ( n == "arcane_blast"      ) glyphs.arcane_blast -> enable();
+    else if ( n == "arcane_brilliance" ) glyphs.arcane_brilliance -> enable();
+    else if ( n == "arcane_missiles"   ) glyphs.arcane_missiles -> enable();
+    else if ( n == "cone_of_cold"      ) glyphs.cone_of_cold -> enable();
+    else if ( n == "deep_freeze"       ) glyphs.deep_freeze -> enable();
+    else if ( n == "dragons_breath"    ) glyphs.dragons_breath -> enable();
     else if ( n == "fireball"          ) glyphs.fireball -> enable();
-    else if ( n == "frostbolt"         ) glyphs.frostbolt = 1;
-    else if ( n == "frostfire"         ) glyphs.frostfire = 1;
-    else if ( n == "ice_lance"         ) glyphs.ice_lance = 1;
-    else if ( n == "living_bomb"       ) glyphs.living_bomb = 1;
-    else if ( n == "mage_armor"        ) glyphs.mage_armor = 1;
-    else if ( n == "mirror_image"      ) glyphs.mirror_image = 1;
-    else if ( n == "molten_armor"      ) glyphs.molten_armor = 1;
-    else if ( n == "pyroblast"         ) glyphs.pyroblast = 1;
+    else if ( n == "frostbolt"         ) glyphs.frostbolt -> enable();
+    else if ( n == "frostfire"         ) glyphs.frostfire -> enable();
+    else if ( n == "ice_lance"         ) glyphs.ice_lance -> enable();
+    else if ( n == "living_bomb"       ) glyphs.living_bomb -> enable();
+    else if ( n == "mage_armor"        ) glyphs.mage_armor -> enable();
+    else if ( n == "mirror_image"      ) glyphs.mirror_image -> enable();
+    else if ( n == "molten_armor"      ) glyphs.molten_armor -> enable();
+    else if ( n == "pyroblast"         ) glyphs.pyroblast -> enable();
     // To prevent warnings....
     else if ( n == "arcane_power" ) ;
     else if ( n == "armors"       ) ;
@@ -2761,8 +2761,7 @@ void mage_t::init_spells()
   passive_spells.fire_specialization   = new passive_spell_t( this, "fire_specialization",   "Fire Specialization" );
   passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization" );
 
-  glyphs.fireball             = new glyph_t(this, "Glyph of Fireball");
-/*
+
   glyphs.arcane_barrage       = new glyph_t(this, "Glyph of Arcane Barrage");
   glyphs.arcane_blast         = new glyph_t(this, "Glyph of Arcane Blast");
   glyphs.arcane_brilliance    = new glyph_t(this, "Glyph of Arcane Brilliance");
@@ -2770,7 +2769,7 @@ void mage_t::init_spells()
   glyphs.cone_of_cold         = new glyph_t(this, "Glyph of Cone of Cold");
   glyphs.deep_freeze          = new glyph_t(this, "Glyph of Deep Freeze");
   glyphs.dragons_breath       = new glyph_t(this, "Glyph of Dragon's Breath");
-
+  glyphs.fireball             = new glyph_t(this, "Glyph of Fireball");
   glyphs.frostbolt            = new glyph_t(this, "Glyph of Frostbolt");
   glyphs.frostfire            = new glyph_t(this, "Glyph of Frostfire");
   glyphs.ice_lance            = new glyph_t(this, "Glyph of Ice Lance");
@@ -2779,7 +2778,7 @@ void mage_t::init_spells()
   glyphs.mirror_image         = new glyph_t(this, "Glyph of Mirror Image");
   glyphs.molten_armor         = new glyph_t(this, "Glyph of Molten Armor");
   glyphs.pyroblast            = new glyph_t(this, "Glyph of Pyroblast");
-*/
+
 }
 
 // mage_t::init_race ========================================================
@@ -3054,7 +3053,7 @@ double mage_t::composite_spell_crit() SC_CONST
 
   if ( buffs_molten_armor -> up() )
   {
-    c += 0.03 + glyphs.molten_armor * 0.02;
+    c += 0.03 + glyphs.molten_armor -> effect_base_value( 1 ) / 100.0;
   }
 
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
@@ -3111,7 +3110,7 @@ void mage_t::regen( double periodicity )
   if ( buffs_mage_armor -> up() )
   {
     double gain_amount = resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
-    gain_amount *= 1.0 + ( glyphs.mage_armor ? 0.20 : 0.00 );
+    gain_amount *= 1.0 + glyphs.mage_armor -> effect_base_value( 1 ) / 100.0;
 
     resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
   }
