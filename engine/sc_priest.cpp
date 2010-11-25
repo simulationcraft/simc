@@ -41,8 +41,6 @@
 // Priest
 // ==========================================================================
 
-struct shadow_orb_buff_t;
-
 struct priest_t : public player_t
 {
   bool healer;
@@ -57,7 +55,7 @@ struct priest_t : public player_t
   buff_t* buffs_mind_melt;
   buff_t* buffs_dark_evangelism;
   buff_t* buffs_holy_evangelism;
-  shadow_orb_buff_t* buffs_shadow_orb;
+  buff_t* buffs_shadow_orb;
   buff_t* buffs_dark_archangel;
   buff_t* buffs_holy_archangel;
   buff_t* buffs_chakra_pre;
@@ -401,31 +399,6 @@ struct priest_t : public player_t
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
-};
-
-struct shadow_orb_buff_t : public buff_t
-{
-  double value;
-
-  shadow_orb_buff_t( player_t* p, const std::string& name,
-          int max_stack=1, double buff_duration=0, double buff_cooldown=0,
-          double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 ) :
-    buff_t( p, name, max_stack, buff_duration, buff_cooldown, chance, quiet, reverse, rng_type, aura_id ), value( 0.0 )
-  {
-    priest_t* pp = player -> cast_priest();
-
-    value = pp -> passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
-  }
-
-  virtual void aura_loss()
-  {
-    buff_t::aura_loss();
-
-    priest_t* p = player -> cast_priest();
-
-    p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() * value );
-  }
-
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -1384,43 +1357,6 @@ struct inner_will_t : public priest_spell_t
   }
 };
 
-// Cancelaura Shadow Orbs pseudo-spell ============================================================
-
-struct cancelaura_shadow_orbs_t : public priest_spell_t
-{
-  cancelaura_shadow_orbs_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "cancelaura_shadow_orbs", player, SCHOOL_SHADOW, TREE_NONE )
-  {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd       = 0;
-    harmful           = false;
-  }
-
-
-  virtual void execute()
-  {
-    priest_t* p = player -> cast_priest();
-    p -> buffs_shadow_orb -> expire();
-
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    priest_t* p = player -> cast_priest();
-
-    if ( ! p -> buffs_shadow_orb -> check() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-};
-
 // Mind Blast Spell ============================================================
 
 struct mind_blast_t : public priest_spell_t
@@ -1456,6 +1392,7 @@ struct mind_blast_t : public priest_spell_t
     player -> cast_priest() -> buffs_mind_melt -> expire();
     p -> buffs_mind_spike -> expire();
     p -> buffs_shadow_orb -> expire();
+    p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() *  p -> passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC ) );
     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
@@ -1656,6 +1593,7 @@ struct mind_spike_t : public priest_spell_t
 
     p -> buffs_mind_melt  -> trigger( 1, 1.0 );
     p -> buffs_shadow_orb -> expire();
+    p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() *  p -> passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC ) );
     p -> buffs_mind_spike -> trigger();
   }
 
@@ -2969,7 +2907,6 @@ double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "cancelaura_shadow_orbs" ) return new cancelaura_shadow_orbs_t( this, options_str );
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
   if ( name == "fortitude"              ) return new fortitude_t             ( this, options_str );
@@ -3353,7 +3290,7 @@ void priest_t::init_buffs()
   buffs_weakened_soul              = new buff_t( this, 6788, "weakened_soul" );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
-  buffs_shadow_orb                 = new shadow_orb_buff_t( this, "shadow_orb",      3, 60.0                     );
+  buffs_shadow_orb                 = new buff_t( this, "shadow_orb",      3, 60.0                                );
   buffs_hymn_of_hope               = new buff_t( this, 64904, "hymn_of_hope" );
 }
 
@@ -3403,8 +3340,7 @@ void priest_t::init_actions()
                                                          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       }
 
-                                                         action_list_str +="/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5";
-                                                         action_list_str +="/cancelaura_shadow_orbs,if=buff.empowered_shadow.remains<=gcd+0.5";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
 
@@ -3428,7 +3364,7 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
                                                          action_list_str += "/shadow_fiend";
-                                                         action_list_str += "/mind_blast";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
                                                          action_list_str += "/mind_flay";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
       if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1";
