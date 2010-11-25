@@ -2900,9 +2900,10 @@ void mage_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=frost_wyrm/food,type=fish_feast";
+    action_list_str = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
     if ( talents.focus_magic -> rank() ) action_list_str += "/focus_magic";
     action_list_str += "/arcane_brilliance";
+    if ( primary_tree() == TREE_FROST ) action_list_str += "/water_elemental";
     action_list_str += "/speed_potion";
     action_list_str += "/snapshot_stats";
     action_list_str += "/counterspell";
@@ -2914,6 +2915,7 @@ void mage_t::init_actions()
     {
       action_list_str += "/molten_armor";
     }
+    action_list_str += "/mana_gem,if=mana_pct<=62";
     if ( talents.critical_mass -> rank() ) action_list_str += "/scorch,debuff=1";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -2940,7 +2942,6 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power";
-      action_list_str += "/mana_gem";
       if ( talents.presence_of_mind -> rank() )
       {
         // PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
@@ -2963,7 +2964,6 @@ void mage_t::init_actions()
          action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
       if ( level >= 81 ) action_list_str += "/flame_orb";
-      action_list_str += "/mana_gem";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       action_list_str += "/fireball";
@@ -2974,24 +2974,18 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      action_list_str += "/water_elemental"; // This will cast freeze then immediately to generate FoF charges
-      if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins";
-      if ( talents.frostfire_orb -> rank() && level >= 81 )
-      {
-        action_list_str += "/frostfire_orb";
-      }
+      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30";
+      if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&spell_haste<=25";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() )
       {
         action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
       }
-      else
+      action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
+      if ( talents.frostfire_orb -> rank() && level >= 81 )
       {
-        action_list_str += "/arcane_missiles";
+        action_list_str += "/frostfire_orb";
       }
-      action_list_str += "/ice_lance,if=buff.fingers_of_frost.react";
-      action_list_str += "/mana_gem";
-      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15";
       action_list_str += "/frostbolt";
       action_list_str += "/evocation";
       action_list_str += "/ice_lance,moving=1"; // when moving
