@@ -1,5 +1,7 @@
-﻿#!./simc
+#!./simc 
+
 mage=Mage_Arcane_T11_372
+origin="input=m.simc"
 level=85
 race=undead
 use_pre_potion=1
@@ -43,3 +45,19 @@ back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_69
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit
 ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5831
+# gear_intellect=4508
+# gear_spirit=20
+# gear_spell_power=2207
+# gear_hit_rating=1505
+# gear_crit_rating=955
+# gear_haste_rating=2251
+# gear_mastery_rating=1129
+# gear_armor=8341
+# meta_gem=chaotic_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# main_hand=incineratus,heroic=1,enchant=power_torrent

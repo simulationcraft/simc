@@ -2902,8 +2902,20 @@ void mage_t::init_actions()
     if ( talents.focus_magic -> rank() ) action_list_str += "/focus_magic";
     action_list_str += "/arcane_brilliance";
     if ( primary_tree() == TREE_FROST ) action_list_str += "/water_elemental";
-    action_list_str += "/speed_potion";
+
     action_list_str += "/snapshot_stats";
+
+    if ( level > 80 )
+    {
+      action_list_str += "/volcanic_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+    }
+    else if ( level >= 70 )
+    {
+      action_list_str += "/speed_potion,if=!in_combat";
+      action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
+    }
+
     action_list_str += "/counterspell";
     if ( primary_tree() == TREE_ARCANE )
     {
@@ -2912,8 +2924,10 @@ void mage_t::init_actions()
     else
     {
       action_list_str += "/molten_armor";
+      action_list_str += "/mana_gem,if=mana_pct<=62";
     }
-    action_list_str += "/mana_gem,if=mana_pct<=62";
+    
+    
     if ( talents.critical_mass -> rank() ) action_list_str += "/scorch,debuff=1";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -2936,20 +2950,25 @@ void mage_t::init_actions()
     {
       action_list_str += "/blood_fury";
     }
+    if ( primary_tree() == TREE_FROST )
+    {
+      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30";
+    }
     action_list_str += "/mirror_image";
     if ( primary_tree() == TREE_ARCANE )
     {
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power";
+      action_list_str += "/mana_gem";
       if ( talents.presence_of_mind -> rank() )
       {
         // PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
         action_list_str += "/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>=3";
       }
       action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
-      action_list_str += "/arcane_blast,if=cooldown.evocation.remains=0&mana_pct>=40";
+      action_list_str += "/arcane_blast,if=cooldown.evocation.remains=0";
       action_list_str += "/evocation";
       // action_list_str += "/choose_rotation";
-      action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3";
+      action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4";
       action_list_str += "/arcane_missiles";
       if ( primary_tree() == TREE_ARCANE ) action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
@@ -2961,18 +2980,15 @@ void mage_t::init_actions()
        {
          action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
-      if ( level >= 81 ) action_list_str += "/flame_orb";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
-      if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
+      if ( level >= 81 ) action_list_str += "/flame_orb";
       action_list_str += "/fireball";
       action_list_str += "/evocation";
       action_list_str += "/fire_blast,moving=1"; // when moving
-      action_list_str += "/ice_lance,moving=1";  // when moving
       action_list_str += "/scorch"; // This can be free, so cast it last
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30";
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&spell_haste<=25";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() )
