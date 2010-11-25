@@ -5,6 +5,9 @@
 
 #include "simulationcraftqt.h"
 #include <QtWebKit>
+#ifdef Q_WS_MAC
+#include <CoreFoundation/CoreFoundation.h>
+#endif
 
 // ==========================================================================
 // Utilities
@@ -75,10 +78,10 @@ static OptionEntry* getScalingOptions()
       { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
       { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
       { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
-      { "Analyze Armor Penetration Rating", "arpen",    "Calculate scale factors for Armor Penetration Rating" },
       { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
       { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
       { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+      { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
       { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
 	  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
       { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
@@ -100,7 +103,6 @@ static OptionEntry* getPlotOptions()
       { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
       { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
       { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
-      { "Plot DPS per Armor Penetration Rating", "arpen",   "Generate DPS curve for Armor Penetration Rating" },
       { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
       { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
       { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
@@ -341,9 +343,14 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   : QWidget(parent), visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
   cmdLineText = "";
+#ifndef Q_WS_MAC
   logFileText = "log.txt";
   resultsFileText = "results.html";
-
+#else
+  logFileText = QDir::currentPath() + QDir::separator() + "log.txt";
+  resultsFileText = QDir::currentPath() + QDir::separator() + "results.html";
+#endif
+	
   mainTab = new QTabWidget();
   createWelcomeTab();
   createOptionsTab();
@@ -402,12 +409,17 @@ void SimulationCraftWindow::createCmdLine()
 void SimulationCraftWindow::createWelcomeTab()
 {
   QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html was unable to load.</div>";
+  QString welcomeFile = "Welcome.html";
+#ifdef Q_WS_MAC
+	CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
+	CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+	welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+	
+	CFRelease(fileRef);
+	CFRelease(macPath);
+#endif
 
-  QFile file( "Welcome.html" );
-  if( !file.exists() )
-  {
-    file.setFileName( "simcqt.app/Contents/Resources/Welcome.html" );
-  }
+  QFile file( welcomeFile );
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
@@ -729,12 +741,17 @@ void SimulationCraftWindow::createLogTab()
 void SimulationCraftWindow::createExamplesTab()
 {
   QString s = "# If you are seeing this text, then Examples.simc was unable to load.";
+  QString exampleFile = "Examples.simc";
+#ifdef Q_WS_MAC
+  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Examples"), CFSTR("simc"), 0);
+  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+  exampleFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+	
+  CFRelease(fileRef);
+  CFRelease(macPath);
+#endif
 
-  QFile file( "Examples.simc" );
-  if( !file.exists() )
-  {
-    file.setFileName( "simcqt.app/Contents/Resources/Examples.simc" );
-  }
+  QFile file( exampleFile );
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
@@ -749,12 +766,17 @@ void SimulationCraftWindow::createExamplesTab()
 void SimulationCraftWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
-
-  QFile file( "Legend.html" );
-  if( !file.exists() )
-  {
-    file.setFileName( "simcqt.app/Contents/Resources/Legend.html" );
-  }
+  QString legendFile = "Legend.html";
+#ifdef Q_WS_MAC
+  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Legend"), CFSTR("html"), 0);
+  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+  legendFile          = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+	
+  CFRelease(fileRef);
+  CFRelease(macPath);
+#endif
+	
+  QFile file( legendFile );
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();

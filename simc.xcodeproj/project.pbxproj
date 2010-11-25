@@ -96,7 +96,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 44C41689107BB68700242308 /* simcqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = A00C8FB0AA9216CF54676433 /* simcqt */;
+			remoteGlobalIDString = 6135BF80F06B30E9A60CD6C1;
 			remoteInfo = simcqt;
 		};
 		444CCF8F107DCCD300229DD2 /* PBXContainerItemProxy */ = {
@@ -201,6 +201,13 @@
 		44E3D1E710545A7500677DEB /* sc_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_xml.cpp; sourceTree = "<group>"; };
 		44E3D21810545A9800677DEB /* simulationcraft.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = simulationcraft.h; sourceTree = "<group>"; };
 		44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = READ_ME_FIRST.txt; sourceTree = "<group>"; };
+		6E539C0E129ECAC700472FA2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = qt/main.cpp; sourceTree = "<group>"; };
+		6E539C0F129ECAC700472FA2 /* sc_autoupdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sc_autoupdate.h; path = qt/sc_autoupdate.h; sourceTree = "<group>"; };
+		6E539C10129ECAC700472FA2 /* sc_mac_update.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = sc_mac_update.mm; path = qt/sc_mac_update.mm; sourceTree = "<group>"; };
+		6E539C11129ECAC700472FA2 /* sc_window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_window.cpp; path = qt/sc_window.cpp; sourceTree = "<group>"; };
+		6E539C12129ECAC700472FA2 /* simcqt.pro */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = simcqt.pro; path = qt/simcqt.pro; sourceTree = "<group>"; };
+		6E539C14129ECAC700472FA2 /* simulationcraftqt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simulationcraftqt.h; path = qt/simulationcraftqt.h; sourceTree = "<group>"; };
+		6E539C44129EEE6C00472FA2 /* SparkleInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = SparkleInfo.plist; path = qt/SparkleInfo.plist; sourceTree = "<group>"; };
 		6E84EB5C1292F40B00976A2C /* data_definitions.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = data_definitions.hh; sourceTree = "<group>"; };
 		6E84EB5D1292F40B00976A2C /* data_enums.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = data_enums.hh; sourceTree = "<group>"; };
 		6E84EB5E1292F40B00976A2C /* sc_battle_net.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_battle_net.cpp; sourceTree = "<group>"; };
@@ -235,6 +242,7 @@
 		08FB7794FE84155DC02AAC07 /* simc */ = {
 			isa = PBXGroup;
 			children = (
+				6E539C0D129ECAA900472FA2 /* qt */,
 				4438981B107BB7C700462773 /* simcqt.app */,
 				44C41689107BB68700242308 /* simcqt.xcodeproj */,
 				08FB7795FE84155DC02AAC07 /* engine */,
@@ -333,6 +341,20 @@
 				44C41694107BB68700242308 /* simcqt.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6E539C0D129ECAA900472FA2 /* qt */ = {
+			isa = PBXGroup;
+			children = (
+				6E539C44129EEE6C00472FA2 /* SparkleInfo.plist */,
+				6E539C0E129ECAC700472FA2 /* main.cpp */,
+				6E539C0F129ECAC700472FA2 /* sc_autoupdate.h */,
+				6E539C10129ECAC700472FA2 /* sc_mac_update.mm */,
+				6E539C11129ECAC700472FA2 /* sc_window.cpp */,
+				6E539C12129ECAC700472FA2 /* simcqt.pro */,
+				6E539C14129ECAC700472FA2 /* simulationcraftqt.h */,
+			);
+			name = qt;
 			sourceTree = "<group>";
 		};
 		C6859E8C029090F304C91782 /* Documentation */ = {
@@ -471,7 +493,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "macdeployqt simcqt.app\n$CP -a dsa_pub.pem Examples.simc Welcome.html Legend.html simcqt.app/Contents/Resources/\n$CP -a /Library/Frameworks/Sparkle.framework $PROJECT_DIR/simcqt.app/Contents/Frameworks\ngit --version && sed -i -e \"s/GIT-REV-PARSE-HERE/`git rev-parse --short HEAD`/\" simcqt.app/Contents/Info.plist\nhdiutil create -srcfolder simcqt.app -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder simc -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $PROJECT_DIR/simcqt.app/Contents/Info CFBundleVersion`\" -ov -puppetstrings simcqt.dmg";
+			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" $PROJECT_DIR/engine/simulationcraft.h|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$(svn info $PROJECT_DIR|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\n\nmacdeployqt simcqt.app\n$CP -a dsa_pub.pem Examples.simc Welcome.html Legend.html simcqt.app/Contents/Resources/\n$CP -a /Library/Frameworks/Sparkle.framework $PROJECT_DIR/simcqt.app/Contents/Frameworks\n#git --version && sed -i -e \"s/GIT-REV-PARSE-HERE/`git rev-parse --short HEAD`/\" simcqt.app/Contents/Info.plist\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $PROJECT_DIR/simcqt.app/Contents/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $PROJECT_DIR/simcqt.app/Contents/Info.plist\nsvn export --force $PROJECT_DIR /tmp/source\nrm -rf /tmp/source/dbc_extract\nhdiutil create -srcfolder simcqt.app -srcfolder profiles -srcfolder /tmp/source -srcfolder READ_ME_FIRST.txt -srcfolder simc -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $PROJECT_DIR/simcqt.app/Contents/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx.dmg";
 		};
 /* End PBXShellScriptBuildPhase section */
 
