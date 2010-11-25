@@ -603,7 +603,7 @@ bool mmo_champion_t::download_slot( item_t&            item,
     //return false;
   }
 
-  if ( ! enchant_t::download_reforge( item, addon_id ) )
+  if ( ! enchant_t::download_reforge( item, reforge_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n", p -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
     //return false;
