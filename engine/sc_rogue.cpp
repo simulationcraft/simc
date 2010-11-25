@@ -1505,6 +1505,19 @@ struct envenom_t : public rogue_attack_t
       player_multiplier *= 1.0 + p -> buffs_revealing_strike -> value();
   }
 
+  virtual double total_multiplier() SC_CONST
+  {
+    // we have to overwrite it because Potent Poisons is additive with talents
+    rogue_t* p = player -> cast_rogue();
+
+    double add_mult = 0.0;
+  
+    if ( p -> mastery_potent_poisons -> ok() )
+      add_mult = p -> composite_mastery() * p -> mastery_potent_poisons -> base_value( E_APPLY_AURA, A_DUMMY );
+  
+    return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier; 
+  }
+
   virtual bool ready()
   {
     rogue_t* p = player -> cast_rogue();
