@@ -1496,6 +1496,7 @@ struct deep_freeze_t : public mage_spell_t
     may_crit = true;
     fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze * 0.2;
+    trigger_gcd = p -> base_gcd;
   }
 
   virtual bool ready()
