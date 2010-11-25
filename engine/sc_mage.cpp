@@ -1787,6 +1787,10 @@ struct frostbolt_t : public mage_spell_t
     may_chill = true;
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if( p -> buffs_early_frost -> check() )
+    {
+      trigger_gcd = 1.0;
+    }
   }
 
   virtual void execute()
