@@ -168,7 +168,7 @@ void action_t::_init_action_t()
 
   parse_data ( player -> player_data );
 
-  if ( player -> player_data.spell_exists(id) && ! player -> player_data.spell_is_level( id, player -> level ) )
+  if ( player -> player_data.spell_exists(id) && ! player -> player_data.spell_is_level( id, player -> level ) && player -> player_data.spell_level(id) <= MAX_LEVEL)
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );
     background = true; // prevent action from being executed
@@ -1057,7 +1057,6 @@ void action_t::tick()
 
   update_stats( DMG_OVER_TIME );
 }
-
 // action_t::last_tick =======================================================
 
 void action_t::last_tick()

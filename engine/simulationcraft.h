@@ -1345,6 +1345,7 @@ public:
   virtual bool          spell_is_class( const uint32_t spell_id, const player_type c ) SC_CONST;
   virtual bool          spell_is_race( const uint32_t spell_id, const race_type r ) SC_CONST;
   virtual bool          spell_is_level( const uint32_t spell_id, const uint32_t level ) SC_CONST;
+  virtual uint32_t      spell_level ( const uint32_t spell_id ) SC_CONST;
   virtual player_type   spell_scaling_class( uint32_t spell_id ) SC_CONST;
   virtual double        spell_min_range( const uint32_t spell_id ) SC_CONST;
   virtual double        spell_max_range( const uint32_t spell_id ) SC_CONST;

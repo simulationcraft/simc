@@ -154,6 +154,16 @@ bool sc_data_access_t::spell_is_level( const uint32_t spell_id, const uint32_t l
   return ( level >= m_spells_index[ spell_id ]->spell_level );
 }
 
+uint32_t sc_data_access_t::spell_level( const uint32_t spell_id ) SC_CONST
+{
+  if ( !spell_id )
+    return false;
+
+  assert( spell_exists( spell_id ) );
+
+  return m_spells_index[ spell_id ]->spell_level;
+}
+
 player_type sc_data_access_t::spell_scaling_class( uint32_t spell_id ) SC_CONST
 {
   if ( !spell_id )
