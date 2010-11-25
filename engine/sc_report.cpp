@@ -7,6 +7,17 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// beta warning messages
+static const char* beta_warnings[] =
+{
+  "Hunters not yet implemented.",
+  "Some other classes still need work.",
+  "Latency modeling needs updating.",
+  "BiS gear lists and action lists need verifying.",
+  "Some trinkets need their ICD checked.",
+  0
+};
+
 // player_type_string ========================================================
 
 static const char* player_type_string( player_t* p )
@@ -2011,6 +2022,20 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</div><hr />\n" );
 }
 
+static void print_wiki_beta_message( FILE * file )
+{
+#if SC_BETA
+  util_t::fprintf( file, "\n= Beta Release =\n" );
+  int i = 0;
+  while ( beta_warnings[ i ] )
+  {
+    util_t::fprintf( file, " * %s\n", beta_warnings[ i ] );
+    i++;
+  }
+  util_t::fprintf( file, "\n----\n\n<br>\n\n" );
+#endif
+}
+
 // print_wiki_preamble =======================================================
 
 static void print_wiki_preamble( FILE* file, sim_t* sim )
@@ -2028,6 +2053,7 @@ static void print_wiki_preamble( FILE* file, sim_t* sim )
   util_t::fprintf( file, " * Smooth RNG: %s\n", ( sim -> smooth_rng ? "true" : "false" ) );
 
   util_t::fprintf( file, "\n----\n\n<br>\n\n" );
+  print_wiki_beta_message( file );
 }
 
 // print_wiki_contents =======================================================
@@ -2630,6 +2656,17 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 {
   if ( sim -> total_seconds == 0 ) return;
 
+#if SC_BETA
+  util_t::fprintf( file, "\n\n*** Beta Release ***\n" );
+  int i = 0;
+  while ( beta_warnings[ i ] )
+  {
+    util_t::fprintf( file, " * %s\n", beta_warnings[ i ] );
+    i++;
+  }
+  util_t::fprintf( file, "\n" );
+#endif
+
   int num_players = ( int ) sim -> players_by_rank.size();
 
   if ( detail )
@@ -2746,6 +2783,22 @@ void report_t::print_html( sim_t* sim )
 
   util_t::fprintf( file, "<hr />\n" );
 
+#if SC_BETA
+  util_t::fprintf( file, "<h1>Beta Release</h1>\n" );
+  int ii = 0;
+  if ( beta_warnings[ 0 ] )
+    util_t::fprintf( file, "<ul>\n" );
+  while ( beta_warnings[ ii ] )
+  {
+    util_t::fprintf( file, "  <li>%s</li>\n", beta_warnings[ ii ] );
+    ii++;
+  }
+  if ( beta_warnings[ 0 ] )
+    util_t::fprintf( file, "</ul>\n" );
+
+  util_t::fprintf( file, "<hr />\n" );
+#endif
+
   if ( num_players > 1 )
   {
     print_html_contents( file, sim );
@@ -2830,6 +2883,22 @@ void report_t::print_html2( sim_t* sim )
   util_t::fprintf( file, "</ul>\n" );
 
   util_t::fprintf( file, "<hr />\n" );
+
+#if SC_BETA
+  util_t::fprintf( file, "<h1>Beta Release</h1>\n" );
+  int ii = 0;
+  if ( beta_warnings[ 0 ] )
+    util_t::fprintf( file, "<ul>\n" );
+  while ( beta_warnings[ ii ] )
+  {
+    util_t::fprintf( file, "  <li>%s</li>\n", beta_warnings[ ii ] );
+    ii++;
+  }
+  if ( beta_warnings[ 0 ] )
+    util_t::fprintf( file, "</ul>\n" );
+
+  util_t::fprintf( file, "<hr />\n" );
+#endif
 
   if ( num_players > 1 )
   {

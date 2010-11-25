@@ -3,6 +3,16 @@ Welcome to SimulationCraft!
 
 =============================================================================================
 
+Note: This is a BETA release
+
+Amongst other things there a few stand-out issues.
+
+* Hunters have not yet been implemented.
+* Some other classes need tweaking. Especially their action lists and the BiS gear profiles.
+* Latency modeling needs updating.
+
+=============================================================================================
+
 Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft.
