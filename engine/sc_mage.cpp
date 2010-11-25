@@ -1186,10 +1186,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     double c = mage_spell_t::cost();
-    if ( c != 0 )
-    {
-      c += base_cost * p -> buffs_arcane_blast -> stack() * 1.50;
-    }
+    c *= p -> buffs_arcane_blast -> stack() * p -> buffs_arcane_blast -> effect_base_value( 2 ) / 100.0;
     return c;
   }
 
@@ -1212,7 +1209,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     double t = mage_spell_t::execute_time();
-    t -= p -> buffs_arcane_blast -> stack() * 0.01;
+    t += p -> buffs_arcane_blast -> stack() * p -> buffs_arcane_blast -> effect_base_value( 3 ) / 1000.0;
     return t;
   }
 
@@ -1220,7 +1217,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
-    double ab_stack_multiplier = 0.10;
+    double ab_stack_multiplier = p -> buffs_arcane_blast -> effect_base_value( 1 ) / 100.0;
     player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0 ) );
   }
 };
@@ -2835,23 +2832,23 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4,  6.0 );
+  buffs_arcane_blast         = new buff_t( this, 36032, "arcane_blast" );
   buffs_arcane_missiles      = new buff_t( this, "arcane_missiles",      1, 20.0, 0.0, 0.40 );
-  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2,    0, 0, talents.arcane_potency -> rank() );
+  buffs_arcane_potency       = new buff_t( this, talents.arcane_potency -> spell_id(), "arcane_potency" );
   buffs_arcane_power         = new buff_t( this, talents.arcane_power -> spell_id(), "arcane_power" );
-  buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 2.0, talents.brain_freeze -> proc_chance() );
-  buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 15.0, 0, talents.arcane_concentration -> proc_chance() );
+  buffs_brain_freeze         = new buff_t( this, talents.brain_freeze -> effect_trigger_spell( 1 ), "brain_freeze", talents.brain_freeze -> proc_chance() );
+  buffs_clearcasting         = new buff_t( this, talents.arcane_concentration -> effect_trigger_spell( 1 ), "clearcasting", talents.arcane_concentration -> proc_chance() );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_early_frost          = new buff_t( this, "early_frost",          1, 15.0, 0, talents.early_frost -> rank() );
-  buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL ) / 100.0 );
+  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost -> effect_trigger_spell( 1 ), "fingers_of_frost", talents.fingers_of_frost -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL ) / 100.0 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0, talents.improved_hot_streak -> effect_base_value( 1 ) / 100 );
-  buffs_icy_veins            = new buff_t( this, "icy_veins",            1, 20.0 );
+  buffs_icy_veins            = new buff_t( this, talents.icy_veins -> spell_id(), "icy_veins" );
   buffs_improved_mana_gem    = new buff_t( this, "improved_mana_gem",    1, 10.0, 0, talents.improved_mana_gem -> rank() );
-  buffs_invocation           = new buff_t( this, "invocation",           1,  8.0 );
-  buffs_mage_armor           = new buff_t( this, "mage_armor"   );
-  buffs_molten_armor         = new buff_t( this, "molten_armor" );
+  buffs_invocation           = new buff_t( this, talents.invocation -> effect_trigger_spell( 1 ), "invocation" );
+  buffs_mage_armor           = new buff_t( this, "mage_armor", "Mage Armor"   );
+  buffs_molten_armor         = new buff_t( this, "molten_armor", "Molten Armor" );
   buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
   buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );  
 }
