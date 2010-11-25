@@ -339,6 +339,7 @@ bool option_t::parse_token( sim_t*       sim,
     if ( ! file )
     {
       sim -> errorf( "Unable to open input parameter file '%s'\n", value.c_str() );
+      return false;
     }
     sim -> active_files.push_back( token );
     parse_file( sim, file );
