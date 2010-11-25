@@ -22,24 +22,20 @@ static OptionEntry* getBuffOptions()
   static OptionEntry options[] =
     {
       { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
-      { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                             },
+      { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                                                },
       { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
-      { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
-      { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
+      { "Attack Power (%)",      "override.blessing_of_might",      "Blessing of Might\nAbomination's Might\nTrueshot Aura\nUnleashed Rage"      },
       { "Bloodlust",             "override.bloodlust",              "Bloodlust\nHeroism"                                                         },
-      { "All Damage",            "override.sanctified_retribution", "Arcane Empowerment\nFerocious Inspiration\nSanctified Retribution"          },
-      { "All Haste",             "override.swift_retribution",      "Improved Moonkin Form\nSwift Retribution"                                   },
+      { "All Damage",            "override.communion",              "Arcane Tactics\nFerocious Inspiration\nCommunion"                           },
       { "Intellect",             "override.arcane_brilliance",      "Arcane Intellect"                                                           },
-      { "Mana Regen",            "override.blessing_of_wisdom",     "Blessing of Wisdom\nMana Spring Totem"                                      },
-      { "Melee Critical Strike", "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
+      { "Critical Strike",       "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
+      { "Mana Regen",            "override.mana_spring_totem",      "Blessing of Might\nMana Spring Totem"                                       },
       { "Melee Haste",           "override.windfury_totem",         "Improved Icy Talons\nWindfury Totem"                                        },
       { "Replenishment",         "override.replenishment",          "Hunting Party\nImproved Soul Leech\nJudgements of the Wise\nVampiric Touch" },
-      { "Spell Critical Strike", "override.moonkin_aura",           "Elemental Oath\nMoonkin Aura"                                               },
       { "Spell Haste",           "override.wrath_of_air",           "Wrath of Air Totem"                                                         },
-      { "Spell Power",           "override.totem_of_wrath",         "Demonic Pact\nFlametongue Totem\nTotem of Wrath"                                        },
+      { "Spell Power",           "override.demonic_pact",           "Demonic Pact\nTotemic Wrath"                                                },
       { "Stamina",               "override.fortitude",              "Power Word: Fortitude"                                                      },
-      { "Stat Add",              "override.mark_of_the_wild",       "Mark of the Wild"                                                           },
-      { "Stat Multiplier",       "override.blessing_of_kings",      "Blessing of Kings"                                                          },
+      { "Stat Multiplier",       "override.blessing_of_kings",      "Blessing of Kings\nMark of the Wild"                                        },
       { NULL, NULL, NULL }
     };
   return options;
@@ -50,19 +46,14 @@ static OptionEntry* getDebuffOptions()
   static OptionEntry options[] =
     {
       { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                        },
-      { "Armor (Major)",          "override.sunder_armor",          "Acid Spit\nExpose Armor\nSunder Armor"                            },
-      { "Armor (Minor)",          "override.faerie_fire",           "Curse of Weakness\nFaerie Fire"                                   },
+      { "Armor Reduction",        "override.sunder_armor",          "Acid Spit\nExpose Armor\nSunder Armor"                            },
       { "Boss Attack Speed Slow", "override.thunder_clap",          "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
-      { "Boss Hit Reduction",     "override.insect_swarm",          "Insect Swarm\nScorpid Sting"                                      },
       { "Bleed Damage",           "override.mangle",                "Mangle\nTrauma"                                                   },
       { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                     },
-      { "Critical Strike",        "override.master_poisoner",       "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
-      { "Disease Damage",         "override.crypt_fever",           "Crypt Fever"                                                      },
-      { "Mana Restore",           "override.judgement_of_wisdom",   "Judgement of Wisdom"                                              },
-      { "Physical Damage",        "override.blood_frenzy",          "Blood Frenzy\nSavage Combat"                                      },
+      { "Physical Damage",        "override.blood_frenzy_physical", "Blood Frenzy\nSavage Combat"                                      },
       { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                     },
       { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                    },
-      { "Spell Critical Strike",  "override.improved_scorch",       "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
+      { "Spell Critical Strike",  "override.critical_mass",         "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
       { NULL, NULL, NULL }
     };
@@ -192,8 +183,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      {
        if( ! opt_value[ 0 ].compare( options[ opt ].option ) )
        {
-	 buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-	 break;
+         buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
+         break;
        }
      }
    }
@@ -784,8 +775,7 @@ void SimulationCraftWindow::createResultsTab()
 
 void SimulationCraftWindow::createToolTips()
 {
-  patchChoice->setToolTip( "4.0.1: Live\n"
-			   "4.0.3: Beta" );
+  patchChoice->setToolTip( "4.0.3: Live\n" );
 
   latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
 			     "High: queue=0.150  gcd=0.300  channel=0.500" );
