@@ -499,6 +499,14 @@ static void break_stealth( rogue_t* p )
     if ( p -> talents.overkill -> rank() )
       p -> buffs_overkill -> trigger();
   }
+
+  if ( p -> buffs_vanish -> check() )
+  {
+    p -> buffs_vanish -> expire();
+
+    if ( p -> talents.overkill -> rank() )
+      p -> buffs_overkill -> trigger();
+  }
 }
 
 // trigger_apply_poisons ===================================================
@@ -930,7 +938,7 @@ void rogue_attack_t::_init_rogue_attack_t()
   requires_stealth      = false;
   requires_combo_points = false;
 
-  adds_combo_points     = (int) base_value( E_ADD_COMBO_POINTS );
+  adds_combo_points     = (int) player -> player_data.effect_base_value( id, E_ADD_COMBO_POINTS );
 
   combo_points_spent    = 0;
     
