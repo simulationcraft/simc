@@ -287,31 +287,37 @@ struct mage_spell_t : public spell_t
   bool fof_frozen, consumes_arcane_blast;
   int dps_rotation;
   int dpm_rotation;
-
-  mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t ),
-      may_chill( false ), may_hot_streak( false ),
-      fof_frozen( false ), consumes_arcane_blast( false ),
-      dps_rotation( 0 ), dpm_rotation( 0 )
+  void _init_mage_spell_t()
   {
+    may_chill = false;
+    may_hot_streak = false;
+    may_brain_freeze = false;
+    fof_frozen = false;
+    consumes_arcane_blast = false;
+    dps_rotation = 0;
+    dpm_rotation = 0;
     mage_t* p = player -> cast_mage();
     if ( p -> talents.piercing_ice -> rank() )
     {
       base_crit += p -> talents.piercing_ice -> effect_base_value( 1 ) / 100.0;
     }
   }
+  mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
+      spell_t( n, player, RESOURCE_MANA, s, t )
+  {
+    _init_mage_spell_t();
+  }
 
   mage_spell_t( const char* n, uint32_t id, player_t* player ) :
-    spell_t( n, id, player ),
-    may_chill( false ), may_hot_streak( false ),
-    fof_frozen( false ), consumes_arcane_blast( false ),
-    dps_rotation( 0 ), dpm_rotation( 0 )
+    spell_t( n, id, player )
   {
-    mage_t* p = player -> cast_mage();
-    if ( p -> talents.piercing_ice -> rank() )
-    {
-      base_crit += p -> talents.piercing_ice -> effect_base_value( 1 ) / 100.0;
-    }
+    _init_mage_spell_t();
+  }
+
+  mage_spell_t( const char* n, const char* sname, player_t* player ) :
+    spell_t( n, sname, player )
+  {
+    _init_mage_spell_t();
   }
 
   virtual void   parse_options( option_t*, const std::string& );
@@ -1588,7 +1594,7 @@ struct fire_blast_t : public mage_spell_t
 struct fireball_t : public mage_spell_t
 {
   fireball_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "fireball", 133, p )
+    mage_spell_t( "fireball", "Fireball", p )
   {
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.fireball * 0.05;
