@@ -78,7 +78,7 @@ struct mage_t : public player_t
     int arcane_missiles;
     int cone_of_cold;
     int deep_freeze;
-    int fireball;
+    glyph_t* fireball;
     int frostbolt;
     int frostfire;
     int ice_lance;
@@ -94,7 +94,7 @@ struct mage_t : public player_t
     // Minor
     int arcane_brilliance;
 
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+    //glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
@@ -724,7 +724,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 
       if ( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
-        hot_streak_chance += p -> talents.improved_hot_streak -> rank() * 0.50;
+        hot_streak_chance += p -> talents.improved_hot_streak -> effect_base_value( 1 ) / 100.0;
         p -> buffs_hot_streak_crits -> expire();
       }
     }
@@ -755,11 +755,8 @@ static void trigger_ignite( spell_t* s, double dmg )
   struct ignite_t : public mage_spell_t
   {
     ignite_t( player_t* player ) : 
-      mage_spell_t( "ignite", player, SCHOOL_FIRE, TREE_FIRE )
+      mage_spell_t( "ignite", 12654, player )
     {
-      base_tick_time = 2.0;
-      num_ticks      = 2;
-      trigger_gcd    = 0;
       background     = true;
       proc           = true;
       may_resist     = true;
@@ -937,7 +934,7 @@ double mage_spell_t::cost() SC_CONST
     return 0;
   double c = spell_t::cost();
   if ( p -> buffs_arcane_power -> check() )
-    c += base_cost * 0.20;
+    c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
 
   if ( p -> talents.enduring_winter -> rank() )
   {
@@ -1203,7 +1200,7 @@ struct arcane_blast_t : public mage_spell_t
     p -> buffs_arcane_blast -> trigger();
     if ( ! target -> debuffs.snared() )
     {
-      if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> rank() / 2 ) )
+      if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> proc_chance() ) )
       {
         target -> debuffs.slow -> trigger();
         target -> debuffs.slow -> source = p;
@@ -1597,7 +1594,7 @@ struct fireball_t : public mage_spell_t
     mage_spell_t( "fireball", "Fireball", p )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.fireball * 0.05;
+    base_crit += p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
     may_crit = true;
     may_hot_streak = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
@@ -1661,8 +1658,6 @@ struct flame_orb_t : public mage_spell_t
   flame_orb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "flame_orb", 82731, p )
   {
-    check_min_level( 81 );
-
     parse_options( NULL, options_str );
 
     num_ticks = 15;
@@ -1683,7 +1678,7 @@ struct flame_orb_t : public mage_spell_t
   {
     mage_spell_t::last_tick();
     mage_t* p = player -> cast_mage();
-    if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> rank() / 3 ) )
+    if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
       explosion_spell -> execute();
       stats -> add_result( explosion_spell -> direct_dmg, DMG_DIRECT, explosion_spell -> result );
@@ -2641,7 +2636,7 @@ void mage_t::create_pets()
 
 void mage_t::init_glyphs()
 {
-  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
+  //memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
 
   std::vector<std::string> glyph_names;
   int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
@@ -2657,7 +2652,7 @@ void mage_t::init_glyphs()
     else if ( n == "cone_of_cold"      ) glyphs.cone_of_cold = 1;
     else if ( n == "deep_freeze"       ) glyphs.deep_freeze = 1;
     else if ( n == "dragons_breath"    ) glyphs.dragons_breath = 1;
-    else if ( n == "fireball"          ) glyphs.fireball = 1;
+    else if ( n == "fireball"          ) glyphs.fireball -> enable();
     else if ( n == "frostbolt"         ) glyphs.frostbolt = 1;
     else if ( n == "frostfire"         ) glyphs.frostfire = 1;
     else if ( n == "ice_lance"         ) glyphs.ice_lance = 1;
@@ -2765,6 +2760,26 @@ void mage_t::init_spells()
   passive_spells.arcane_specialization = new passive_spell_t( this, "arcane_specialization", "Arcane Specialization" );
   passive_spells.fire_specialization   = new passive_spell_t( this, "fire_specialization",   "Fire Specialization" );
   passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization" );
+
+  glyphs.fireball             = new glyph_t(this, "Glyph of Fireball");
+/*
+  glyphs.arcane_barrage       = new glyph_t(this, "Glyph of Arcane Barrage");
+  glyphs.arcane_blast         = new glyph_t(this, "Glyph of Arcane Blast");
+  glyphs.arcane_brilliance    = new glyph_t(this, "Glyph of Arcane Brilliance");
+  glyphs.arcane_missiles      = new glyph_t(this, "Glyph of Arcane Missiles");
+  glyphs.cone_of_cold         = new glyph_t(this, "Glyph of Cone of Cold");
+  glyphs.deep_freeze          = new glyph_t(this, "Glyph of Deep Freeze");
+  glyphs.dragons_breath       = new glyph_t(this, "Glyph of Dragon's Breath");
+
+  glyphs.frostbolt            = new glyph_t(this, "Glyph of Frostbolt");
+  glyphs.frostfire            = new glyph_t(this, "Glyph of Frostfire");
+  glyphs.ice_lance            = new glyph_t(this, "Glyph of Ice Lance");
+  glyphs.living_bomb          = new glyph_t(this, "Glyph of Living Bomb");
+  glyphs.mage_armor           = new glyph_t(this, "Glyph of Mage Armor");
+  glyphs.mirror_image         = new glyph_t(this, "Glyph of Mirror Image");
+  glyphs.molten_armor         = new glyph_t(this, "Glyph of Molten Armor");
+  glyphs.pyroblast            = new glyph_t(this, "Glyph of Pyroblast");
+*/
 }
 
 // mage_t::init_race ========================================================
@@ -2824,7 +2839,7 @@ void mage_t::init_buffs()
   buffs_arcane_blast         = new buff_t( this, "arcane_blast",         4,  6.0 );
   buffs_arcane_missiles      = new buff_t( this, "arcane_missiles",      1, 20.0, 0.0, 0.40 );
   buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2,    0, 0, talents.arcane_potency -> rank() );
-  buffs_arcane_power         = new buff_t( this, "arcane_power",         1, 15.0 );
+  buffs_arcane_power         = new buff_t( this, talents.arcane_power -> spell_id(), "arcane_power" );
   buffs_brain_freeze         = new buff_t( this, "brain_freeze",         1, 15.0, 2.0, talents.brain_freeze -> proc_chance() );
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 15.0, 0, talents.arcane_concentration -> proc_chance() );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
