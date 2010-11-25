@@ -1776,7 +1776,6 @@ double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype
         case A_308: // Increase critical chance of something, Stormstrike, Mind Spike, Holy Word: Serenity
         case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
         case A_319: // Windfury Totem
-        case A_PROC_TRIGGER_SPELL:
           v /= 100.0;
           break;
         default:
