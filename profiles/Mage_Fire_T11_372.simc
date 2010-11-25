@@ -22,7 +22,8 @@ actions+=/flame_orb
 actions+=/fireball
 actions+=/evocation
 actions+=/fire_blast,moving=1
-actions+=/scorchhead=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
+actions+=/scorch
+head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit
 shoulders=firelords_mantle,heroic=1,type=cloth,stats=1009armor_171hit_171haste_266int_429sta,gems=20hit_20int_10haste,enchant=50int_25haste
 chest=firelords_robes,heroic=1,type=cloth,stats=1251armor_218crit_198haste_301int_512sta,gems=20int_20hit_20int_20hit_20int,enchant=20all
