@@ -2856,9 +2856,6 @@ struct searing_pain_t : public warlock_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    // Searing Pain Hotfix Nerf.
-    warlock_t* p = player -> cast_warlock();
   }
 
   virtual void player_buff()
