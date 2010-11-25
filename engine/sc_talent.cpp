@@ -1014,7 +1014,15 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
        ( sub_type == A_MAX || s_single -> subtype == sub_type ) && 
        ( misc_value == DEFAULT_MISC_VALUE || s_single -> misc_value == misc_value ) &&
        ( misc_value2 == DEFAULT_MISC_VALUE || s_single -> misc_value_2 == misc_value2 ) )
-    return sc_data_access_t::fmt_value( s_single -> base_value, s_single -> type, s_single -> subtype );
+  {
+    if ( ( type == E_MAX || s_single -> type == type ) && 
+         ( sub_type == A_MAX || s_single -> subtype == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || s_single -> misc_value == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || s_single -> misc_value_2 == misc_value2 ) )
+      return sc_data_access_t::fmt_value( s_single -> base_value, s_single -> type, s_single -> subtype );
+    else
+      return 0.0;
+  }
 
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
