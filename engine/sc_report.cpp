@@ -10,7 +10,8 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // beta warning messages
 static const char* beta_warnings[] =
 {
-  "Hunters not yet implemented.",
+  "Hunters: Not Yet Implemented.",
+  "Rogues: Only Mutilate has default actions.",
   "Some other classes still need work.",
   "Latency modeling needs updating.",
   "BiS gear lists and action lists need verifying.",

@@ -5,11 +5,14 @@ Welcome to SimulationCraft!
 
 Note: This is a BETA release
 
-Amongst other things there a few stand-out issues.
+Amongst other things there a few stand-out issues:
 
-* Hunters have not yet been implemented.
-* Some other classes need tweaking. Especially their action lists and the BiS gear profiles.
+* Hunters: Not Yet Implemented.
+* Rogues: Only Mutilate has default actions.
+* Some other classes need work.
 * Latency modeling needs updating.
+* BiS gear lists and action lists need verifying.
+* Some trinkets need their ICD checked.
 
 =============================================================================================
 
