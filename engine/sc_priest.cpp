@@ -1858,10 +1858,6 @@ struct shadow_word_death_t : public priest_spell_t
 
     double m = 1.0;
 
-    if ( p -> bugs && p -> glyphs.shadow_word_death && ( target -> health_percentage() < 25 ) )
-    {
-      m += 0.1;
-    }
     if ( p -> talents.mind_melt -> rank() && ( target -> health_percentage() <= 25 ) )
     {
       m += p -> talents.mind_melt -> rank() * 0.15;
