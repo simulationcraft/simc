@@ -2815,7 +2815,7 @@ void mage_t::init_buffs()
   buffs_clearcasting         = new buff_t( this, "clearcasting",         1, 15.0, 0, talents.arcane_concentration -> proc_chance() );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_early_frost          = new buff_t( this, "early_frost",          1, 15.0, 0, talents.early_frost -> rank() );
-  buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost -> rank() * 0.10 );
+  buffs_fingers_of_frost     = new buff_t( this, "fingers_of_frost",     2,    0, 0, talents.fingers_of_frost -> rank() * 0.20 / 3.0 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0, talents.improved_hot_streak -> rank() / 2.0 );
