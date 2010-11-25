@@ -2989,7 +2989,7 @@ void mage_t::init_actions()
     }
     else if ( primary_tree() == TREE_FROST )
     {
-      if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&spell_haste<=25";
+      if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&!buff.bloodlust.react";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() )
       {
