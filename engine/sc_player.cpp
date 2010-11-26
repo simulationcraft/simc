@@ -4292,6 +4292,16 @@ action_expr_t* player_t::create_expression( action_t* a,
         };
         return new dot_remains_expr_t( a, dot );
       }
+      else if ( splits[ 2 ] == "ticking" )
+      {
+        struct dot_ticking_expr_t : public action_expr_t
+        {
+          dot_t* dot;
+          dot_ticking_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_ticking", TOK_NUM ), dot(d) {}
+          virtual int evaluate() { result_num = dot -> ticking() ? 1 : 0; return TOK_NUM; }
+        };
+        return new dot_ticking_expr_t( a, dot );
+      }
     }
     else if ( splits[ 0 ] == "swing" )
     {

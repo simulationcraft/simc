@@ -746,6 +746,8 @@ static void trigger_hot_streak( mage_spell_t* s )
 
 static void trigger_ignite( spell_t* s, double dmg )
 {
+  if ( s -> dual ) return;  // Hack for now to prevent Orb ticks from triggering Ignite.
+
   if ( s -> school != SCHOOL_FIRE &&
        s -> school != SCHOOL_FROSTFIRE ) return;
 
@@ -769,6 +771,8 @@ static void trigger_ignite( spell_t* s, double dmg )
   };
 
   double ignite_dmg = dmg * p -> talents.ignite -> effect_base_value( 1 ) / 100.0;
+
+  ignite_dmg *= 1.0 + p -> mastery.flashburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
 
   if ( sim -> merge_ignite ) // Does not report Ignite seperately.
   {
@@ -795,16 +799,18 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   if ( sim -> aura_delay == 0 )
   {
-    // Do not model the delay, so no munch/roll, just defer.
+    // Do not model the delay, so no munch/roll.
+
+    p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
 
     if ( p -> active_ignite -> ticking )
     {
-      if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
-      p -> procs_deferred_ignite -> occur();
-      p -> active_ignite -> cancel();
+      p -> active_ignite -> refresh_duration();
     }
-    p -> active_ignite -> base_td = ignite_dmg / 2.0; // Fix hardcoded num_ticks
-    p -> active_ignite -> schedule_tick();
+    else
+    {
+      p -> active_ignite -> schedule_tick();
+    }
     return;
   }
 
@@ -821,25 +827,26 @@ static void trigger_ignite( spell_t* s, double dmg )
     {
       mage_t* p = player -> cast_mage();
 
+      p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
+
       if ( p -> active_ignite -> ticking )
       {
-        if ( sim -> log ) log_t::output( sim, "Player %s defers Ignite.", p -> name() );
-        p -> procs_deferred_ignite -> occur();
-        p -> active_ignite -> cancel();
+	p -> active_ignite -> refresh_duration();
       }
-
-      p -> active_ignite -> base_td = ignite_dmg / 2.0; // Fix hardcoded num_ticks
-      p -> active_ignite -> schedule_tick();
-
+      else
+      {
+	p -> active_ignite -> schedule_tick();
+      }
       if ( p -> ignite_delay_event == this ) p -> ignite_delay_event = 0;
     }
   };
 
   if ( p -> ignite_delay_event ) 
   {
-    // There is an SPELL_AURA_APPLIED already in the queue.
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
     if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite.", p -> name() );
     p -> procs_munched_ignite -> occur();
+    event_t::cancel( p -> ignite_delay_event );
   }
 
   p -> ignite_delay_event = new ( sim ) ignite_delay_t( sim, p, ignite_dmg );
@@ -847,7 +854,7 @@ static void trigger_ignite( spell_t* s, double dmg )
   if ( p -> active_ignite -> ticking )
   {
     if ( p -> active_ignite -> tick_event -> occurs() < 
-               p -> ignite_delay_event -> occurs() )
+         p -> ignite_delay_event -> occurs() )
     {
       // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
       // both tick -and- get rolled into the next Ignite.
@@ -1347,7 +1354,7 @@ struct arcane_power_t : public mage_spell_t
     mage_spell_t( "arcane_power", 12042, p )
   {
     check_talent( p -> talents.arcane_power -> rank() );
-
+    parse_options( NULL, options_str );
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -1410,6 +1417,7 @@ struct combustion_t : public mage_spell_t
       mage_spell_t( "combustion", 11129, p )
   {
     check_talent( p -> talents.combustion -> rank() );
+    parse_options( NULL, options_str );
 
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks        = 10;
