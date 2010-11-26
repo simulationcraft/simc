@@ -2139,16 +2139,15 @@ struct mana_gem_t : public action_t
 
   virtual bool ready()
   {
-    if ( cooldown -> remains() > 0 )
-      return false;
-
     mage_t* p = player -> cast_mage();
 
     if ( p -> mana_gem_charges <= 0 )
       return false;
 
-    return( ( player -> resource_max    [ RESOURCE_MANA ] -
-              player -> resource_current[ RESOURCE_MANA ] ) > max );
+    if ( ( player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ] ) < max )
+      return false;
+
+    return action_t::ready();
   }
 };
 
