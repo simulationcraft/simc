@@ -1528,14 +1528,6 @@ struct evocation_t : public mage_spell_t
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
   }
 
-  virtual void execute()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::execute();
-    double mana = p -> resource_max[ RESOURCE_MANA ] * effect_base_value( 1 ) / 100.0;
-    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
-  }
-
   virtual void tick()
   {
     mage_t* p = player -> cast_mage();
