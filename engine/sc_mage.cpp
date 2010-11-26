@@ -1523,6 +1523,7 @@ struct evocation_t : public mage_spell_t
     tick_zero             = true;
     channeled             = true;
     harmful               = false;
+    scale_with_haste      = false;
 
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
   }
