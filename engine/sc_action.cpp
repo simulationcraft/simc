@@ -1088,12 +1088,14 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
         current_tick = 0;
         added_ticks = 0;
         snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
         if ( ! ticking ) schedule_tick();
       }
       else
       {
         if ( ticking ) cancel();
         snapshot_haste = haste();
+        number_ticks = hasted_num_ticks();
         schedule_tick();
       }
     }
@@ -1241,7 +1243,6 @@ void action_t::schedule_tick()
     snapshot_haste = haste();
   }
 
-  number_ticks = hasted_num_ticks() + added_ticks;
   time_to_tick = tick_time();
 
   tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
@@ -1309,6 +1310,7 @@ void action_t::refresh_duration()
   target_debuff( DMG_OVER_TIME );
 
   snapshot_haste = haste();
+  number_ticks = hasted_num_ticks();
 
   if ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) )
   {
@@ -1316,7 +1318,7 @@ void action_t::refresh_duration()
     // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
     // from the time of the next tick and add the time for the remaining ticks to that event.
 
-    double duration = ( tick_event -> time - sim -> current_time ) + tick_time() * ( hasted_num_ticks() - 1 );
+    double duration = ( tick_event -> time - sim -> current_time ) + tick_time() * ( number_ticks - 1 );
 
     dot -> start( this, duration );
   }
@@ -1331,6 +1333,9 @@ void action_t::extend_duration( int extra_ticks )
 {
   added_ticks += extra_ticks;
 
+  // Make sure this DoT is still ticking......
+  assert( tick_event );
+
   if ( dot_behavior == DOT_WAIT )
   {
     dot -> ready += tick_time() * extra_ticks;
@@ -1338,9 +1343,13 @@ void action_t::extend_duration( int extra_ticks )
   if ( dot_behavior == DOT_REFRESH )
   {
     player_buff();
+
     // To get recalculated target_crit (untested! - assuming this works the same in-game as for refreshed dots)
     target_debuff( DMG_OVER_TIME );
+
     snapshot_haste = haste();
+    number_ticks += extra_ticks;
+
     dot -> ready += tick_time() * extra_ticks;
   }
 
