@@ -352,7 +352,8 @@ struct water_elemental_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
+      player_spell_power = player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) * 0.4;
+      player_crit = player -> cast_pet() -> owner -> composite_spell_crit(); // Needs testing, but closer than before
     }
 
     virtual void execute()
@@ -393,7 +394,8 @@ struct water_elemental_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_spell_power += player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) / 3.0;
+      player_spell_power = player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) * 0.4;
+      player_crit = player -> cast_pet() -> owner -> composite_spell_crit(); // Needs testing, but closer than before
     }
   };
 
@@ -1055,8 +1057,6 @@ void mage_spell_t::travel( int travel_result, double travel_dmg )
 
 void mage_spell_t::tick()
 {
-  mage_t* p = player -> cast_mage();
-
   spell_t::tick();
 
   if ( result == RESULT_CRIT )
