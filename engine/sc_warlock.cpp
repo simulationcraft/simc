@@ -3339,22 +3339,31 @@ struct hand_of_guldan_t : public warlock_spell_t
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
-  virtual void execute()
+  virtual void travel(int travel_result, double travel_dmg)
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::execute();
+    warlock_spell_t::travel( travel_result, travel_dmg );
 
-    p -> buffs_hand_of_guldan -> trigger();
-    trigger_impending_doom( this );
-
-    if ( p -> dots_immolate -> ticking()  && p -> talent_cremation -> rank() )
+    if ( result_is_hit() )
     {
-      if ( p -> rng_cremation -> roll( p -> talent_cremation -> proc_chance() ) )
+      p -> buffs_hand_of_guldan -> trigger();
+      trigger_impending_doom( this );
+
+      if ( p -> dots_immolate -> ticking()  && p -> talent_cremation -> rank() )
       {
-        p -> dots_immolate -> action -> refresh_duration();
+        if ( p -> rng_cremation -> roll( p -> talent_cremation -> proc_chance() ) )
+        {
+          p -> dots_immolate -> action -> refresh_duration();
+        }
       }
     }
   }
+
+  virtual double travel_time()
+  {
+    return 0.2;
+  }
+
 };
 
 // Fel Flame Spell =========================================================
