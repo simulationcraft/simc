@@ -1198,7 +1198,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_HIT_RATING:               name = "mhit"; break;
     case STAT_CRIT_RATING:              name = "mcr";  break;
     case STAT_HASTE_RATING:             name = "mh";   break;
-    case STAT_MASTERY_RATING:           name = "mast"; break;
+    case STAT_MASTERY_RATING:           name = "Mr";   break;
     case STAT_ARMOR:                    name = "Arm";  break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
