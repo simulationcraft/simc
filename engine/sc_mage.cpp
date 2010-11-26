@@ -1520,12 +1520,19 @@ struct evocation_t : public mage_spell_t
     base_execute_time     = 6.0;
     base_tick_time        = 2.0;
     num_ticks             = 3;
-    tick_zero             = true;
     channeled             = true;
     harmful               = false;
     scale_with_haste      = false;
 
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::execute();
+    double mana = p -> resource_max[ RESOURCE_MANA ] * effect_base_value( 1 ) / 100.0;
+    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
   }
 
   virtual void tick()
