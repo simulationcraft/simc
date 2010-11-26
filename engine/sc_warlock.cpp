@@ -3810,6 +3810,60 @@ struct seed_of_corruption_t : public warlock_spell_t
 
 };
 
+// Rain of Fire Tick Spell ======================================================
+
+struct rain_of_fire_tick_t : public warlock_spell_t
+{
+  rain_of_fire_tick_t( player_t* player ) :
+    warlock_spell_t( "rain_of_fire_tick", player, 42223 )
+
+    {
+    dual        = true;
+    background  = true;
+    aoe         = true;
+    direct_tick = true;
+
+    stats = player -> get_stats( "rain_of_fire" );
+    }
+
+    virtual void execute()
+    {
+      warlock_spell_t::execute();
+      tick_dmg = direct_dmg;
+      update_stats( DMG_OVER_TIME );
+    }
+};
+// Rain of Fire Spell =======================================================
+
+struct rain_of_fire_t : public warlock_spell_t
+{
+  rain_of_fire_tick_t* rain_of_fire_tick;
+
+  rain_of_fire_t( player_t* player, const std::string& options_str ) :
+    warlock_spell_t( "rain_of_fire", player, "Rain of Fire" )
+  {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    harmful=false;
+    channeled         = true;
+    warlock_t* p = player -> cast_warlock();
+
+    rain_of_fire_tick = new rain_of_fire_tick_t( p );
+  }
+
+  virtual void tick()
+   {
+     warlock_spell_t::tick();
+
+    rain_of_fire_tick -> execute();
+
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // imp_pet_t::fire_bolt_t::execute ==========================================
@@ -3910,6 +3964,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "bane_of_havoc"       ) return new       bane_of_havoc_t( this, options_str );
   if ( name == "hellfire"            ) return new            hellfire_t( this, options_str );
   if ( name == "seed_of_corruption"  ) return new  seed_of_corruption_t( this, options_str );
+  if ( name == "rain_of_fire"        ) return new        rain_of_fire_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
