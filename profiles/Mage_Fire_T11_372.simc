@@ -15,7 +15,8 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/counterspell
 actions+=/molten_armor
-actions+=/mana_gem,if=mana_pct<=62
+actions+=/mana_gem,if=mana_pct<=62&cooldown.evocation.remains>1
+actions+=/evocation,if=mana_pct<39.5&target.time_to_die>60
 actions+=/scorch,debuff=1
 actions+=/mirror_image
 actions+=/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking

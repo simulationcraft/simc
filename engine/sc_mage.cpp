@@ -2906,7 +2906,7 @@ void mage_t::init_actions()
     else
     {
       action_list_str += "/molten_armor";
-      action_list_str += "/mana_gem,if=mana_pct<=62";
+      action_list_str += "/mana_gem,if=mana_pct<=62&cooldown.evocation.remains>1";
     }
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
@@ -2989,6 +2989,7 @@ void mage_t::init_actions()
     // Frost
     else if ( primary_tree() == TREE_FROST )
     {
+      action_list_str += "/evocation,if=mana_pct<39.5&target.time_to_die>60";
       if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30";
       if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&!buff.bloodlust.react";
