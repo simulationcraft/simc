@@ -1593,18 +1593,14 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     infernal_immolation_t( player_t* player, const std::string& options_str ) :
       warlock_pet_spell_t( "infernal_immolation", 19483, player )
     {
-      warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-      option_t options[] =
-      {
-        { NULL, OPT_UNKNOWN, NULL }
-      };
-      parse_options( options, options_str );
+      parse_options( NULL, options_str );
 
       harmful           = false;
       num_ticks         = 1;
       number_ticks      = 1;
       scale_with_haste  = false;
 
+      warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
       immolation_damage = new immolation_damage_t( p );
     }
 
@@ -1730,13 +1726,9 @@ struct curse_of_elements_t : public warlock_spell_t
   curse_of_elements_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "curse_of_the_elements", player, "Curse of the Elements" )
   {
-  warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
   }
 
@@ -1796,13 +1788,7 @@ struct bane_of_agony_t : public warlock_spell_t
      * at 12 ticks, everything is very consistent with this logic
      */
 
-
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
@@ -1849,15 +1835,11 @@ struct bane_of_doom_t : public warlock_spell_t
   bane_of_doom_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "bane_of_doom", player, "Bane of Doom" )
   {
-    warlock_t* p = player -> cast_warlock();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     scale_with_haste = false;
+
+    warlock_t* p = player -> cast_warlock();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
   }
@@ -1921,13 +1903,9 @@ struct bane_of_havoc_t : public warlock_spell_t
   bane_of_havoc_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "bane_of_havoc", player, "Bane of Havoc" )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
   }
 
@@ -2116,15 +2094,11 @@ struct chaos_bolt_t : public warlock_spell_t
   chaos_bolt_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "chaos_bolt", player, "Chaos Bolt" )
   {
-    warlock_t* p = player -> cast_warlock();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     may_resist        = false;
+
+    warlock_t* p = player -> cast_warlock();
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
@@ -2179,11 +2153,7 @@ struct death_coil_t : public warlock_spell_t
   death_coil_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "death_coil", player, "Death Coil" )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     binary            = true;
   }
@@ -2206,14 +2176,10 @@ struct shadowburn_t : public warlock_spell_t
   shadowburn_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "shadowburn", player, "Shadowburn" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_shadowburn -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
   }
 
   virtual void execute()
@@ -2281,14 +2247,9 @@ struct corruption_t : public warlock_spell_t
  corruption_t( player_t* player, const std::string& options_str ) :
    warlock_spell_t( "corruption", player, "Corruption" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
-
-    option_t options[] =
-    {
-     { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_multiplier *= 1.0 + ( p -> talent_improved_corruption -> effect_base_value( 1 ) ) / 100.0;
     base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
@@ -2525,15 +2486,11 @@ struct unstable_affliction_t : public warlock_spell_t
   unstable_affliction_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "unstable_affliction", player, "Unstable Affliction" )
   {
-    warlock_t* p = player -> cast_warlock();
+    parse_options( NULL, options_str );
+
     check_talent( ok() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
+    warlock_t* p = player -> cast_warlock();
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_execute_time += p -> glyphs.unstable_affliction -> base_value() / 1000.0;
   }
@@ -2565,12 +2522,14 @@ struct unstable_affliction_t : public warlock_spell_t
 
   virtual void extend_duration( int extra_ticks )
   {
-	// Can't extend beyond initial duration. Assuming this limit is calculated based on current haste, not haste at previous application/extension/refresh.
-	int remaining_ticks = number_ticks - ( current_tick - 1 ) + extra_ticks;
-	int hasted_ticks = hasted_num_ticks();
-    if ( remaining_ticks > hasted_ticks ) extra_ticks -= ( remaining_ticks - hasted_ticks );
-	if ( extra_ticks < 0 ) extra_ticks = 0;
-	warlock_spell_t::extend_duration( extra_ticks );
+    // Can't extend beyond initial duration. Assuming this limit is calculated based on current haste, not haste at previous application/extension/refresh.
+    int remaining_ticks = number_ticks - ( current_tick - 1 ) + extra_ticks;
+    int hasted_ticks = hasted_num_ticks();
+    if ( remaining_ticks > hasted_ticks )
+      extra_ticks -= ( remaining_ticks - hasted_ticks );
+    if ( extra_ticks < 0 )
+      extra_ticks = 0;
+    warlock_spell_t::extend_duration( extra_ticks );
   }
 
 };
@@ -2582,14 +2541,10 @@ struct haunt_t : public warlock_spell_t
   haunt_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "Haunt", player, "Haunt" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_haunt -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
     direct_power_mod = 2 / 3.5;
@@ -2616,14 +2571,9 @@ struct immolate_t : public warlock_spell_t
   immolate_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "immolate", player, "Immolate", WARLOCK )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
@@ -2690,13 +2640,9 @@ struct shadowflame_t : public warlock_spell_t
   shadowflame_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "shadowflame", player, "Shadowflame" )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     sf_dot = new shadowflame_dot_t( p );
   }
 
@@ -2714,15 +2660,10 @@ struct conflagrate_t : public warlock_spell_t
   conflagrate_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "conflagrate", player, "Conflagrate" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_conflagrate -> ok() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
     cooldown -> duration += ( p -> glyphs.conflagrate -> base_value() / 1000.0 );
     base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() ) + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
@@ -2764,13 +2705,9 @@ struct incinerate_t : public warlock_spell_t
   incinerate_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "incinerate", player, "Incinerate" )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
@@ -2851,11 +2788,7 @@ struct searing_pain_t : public warlock_spell_t
   searing_pain_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "searing_pain", player, "Searing Pain" )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
   }
 
   virtual void player_buff()
@@ -2894,13 +2827,9 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "soul_fire", player, "Soul Fire" )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     base_execute_time += p -> talent_emberstorm -> effect_base_value( 1 ) / 1000.0;
     base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
@@ -3020,14 +2949,11 @@ struct fel_armor_t : public warlock_spell_t
   fel_armor_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "fel_armor", player, "Fel Armor" ), bonus_spell_power( 0 )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
+
+    warlock_t* p = player -> cast_warlock();
     bonus_spell_power = p -> buffs_fel_armor -> effect_min( 1 );
 
     // Model the passive health tick.....
@@ -3075,13 +3001,9 @@ struct summon_pet_t : public warlock_spell_t
   summon_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
     warlock_spell_t( n, player, sname ), pet_name(n), summoning_duration ( 0 )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     harmful = false;
     base_execute_time += p -> talent_master_summoner -> effect_base_value( 1 ) / 1000.0;
   }
@@ -3311,13 +3233,9 @@ struct immolation_aura_t : public warlock_spell_t
   immolation_aura_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "immolation_aura", player, "Immolation Aura" )
   {
-    warlock_t* p = player -> cast_warlock();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
+    warlock_t* p = player -> cast_warlock();
     harmful = false;
     tick_may_crit = false;
     immolation_damage = new immolation_damage_t( p );
@@ -3349,15 +3267,10 @@ struct metamorphosis_t : public warlock_spell_t
   metamorphosis_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "metamorphosis", player, "Metamorphosis" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_metamorphosis -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     trigger_gcd = 0;
     harmful = false;
   }
@@ -3378,15 +3291,10 @@ struct demonic_empowerment_t : public warlock_spell_t
   demonic_empowerment_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "demonic_empowerment", player, "Demonic Empowerment" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_demonic_empowerment -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     harmful = false;
   }
 
@@ -3419,15 +3327,10 @@ struct hand_of_guldan_t : public warlock_spell_t
   hand_of_guldan_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "hand_of_guldan", player, "Hand of Gul'dan" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_hand_of_guldan -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -3457,11 +3360,7 @@ struct fel_flame_t : public warlock_spell_t
   fel_flame_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "fel_flame", player, "Fel Flame" )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -3579,11 +3478,7 @@ struct soulburn_t : public warlock_spell_t
   soulburn_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "soulburn", player, "Soulburn" )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
   }
@@ -3604,11 +3499,7 @@ struct demon_soul_t : public warlock_spell_t
   demon_soul_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "demon_soul", player, "Demon Soul" )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
   }
@@ -3771,14 +3662,9 @@ struct seed_of_corruption_t : public warlock_spell_t
   seed_of_corruption_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "seed_of_corruption", player, "Seed of Corruption" )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
 
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
@@ -3842,11 +3728,7 @@ struct rain_of_fire_t : public warlock_spell_t
   rain_of_fire_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "rain_of_fire", player, "Rain of Fire" )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful=false;
     channeled         = true;
