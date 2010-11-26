@@ -290,6 +290,7 @@ struct mage_spell_t : public spell_t
   {
     may_crit      = true;
     tick_may_crit = true;
+    base_crit_multiplier = 1.33;
     may_chill = false;
     may_hot_streak = false;
     may_brain_freeze = false;
@@ -345,9 +346,10 @@ struct water_elemental_pet_t : public pet_t
     freeze_t( player_t* player):
       spell_t( "freeze", 33395, player )
     {
-      aoe = true;
-      may_crit  = true;
-      base_cost = 0;
+      aoe                  = true;
+      may_crit             = true;
+      base_crit_multiplier = 1.33;
+      base_cost            = 0;
     }
 
     virtual void player_buff()
@@ -389,7 +391,8 @@ struct water_elemental_pet_t : public pet_t
     water_bolt_t( player_t* player ):
       spell_t( "water_bolt", 31707, player )
     {
-      may_crit  = true;
+      may_crit             = true;
+      base_crit_multiplier = 1.33;
     }
 
     virtual void player_buff()
