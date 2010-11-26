@@ -346,6 +346,7 @@ struct water_elemental_pet_t : public pet_t
       spell_t( "freeze", 33395, player )
     {
       aoe = true;
+      may_crit  = true;
       base_cost = 0;
     }
 
