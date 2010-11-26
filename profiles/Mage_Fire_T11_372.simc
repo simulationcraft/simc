@@ -19,6 +19,7 @@ actions+=/mana_gem,if=mana_pct<=62
 actions+=/scorch,debuff=1
 actions+=/mirror_image
 actions+=/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking
+actions+=/living_bomb,if=!ticking
 actions+=/pyroblast,if=buff.hot_streak.react
 actions+=/flame_orb
 actions+=/fireball

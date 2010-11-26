@@ -3013,8 +3013,9 @@ void mage_t::init_actions()
        {
          action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
-      if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
+      if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       if ( level >= 81 ) action_list_str += "/flame_orb";
+      if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
       action_list_str += "/fireball";
       if ( level >= 12 ) action_list_str += "/evocation";
       action_list_str += "/fire_blast,moving=1"; // when moving
