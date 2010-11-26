@@ -870,8 +870,8 @@ void warrior_attack_t::execute()
 
   warrior_t* p = player -> cast_warrior();
 
-  // Battle Trance only is effective+consumed if action cost was >=5
-  if ( attack_t::cost() >= 50 && p -> buffs_battle_trance -> up() )
+  // Battle Trance only is effective+consumed if action cost was >5
+  if ( attack_t::cost() > 50 && p -> buffs_battle_trance -> up() )
     p -> buffs_battle_trance -> expire();
 
   // FIXME: does Opportunity Strike proc Deep Wounds?
