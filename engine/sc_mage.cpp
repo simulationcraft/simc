@@ -762,6 +762,7 @@ static void trigger_ignite( spell_t* s, double dmg )
       background     = true;
       proc           = true;
       may_resist     = true;
+      number_ticks   = num_ticks;
       reset();
     }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
