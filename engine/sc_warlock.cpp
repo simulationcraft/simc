@@ -1180,25 +1180,29 @@ struct warlock_pet_spell_t : public spell_t
   warlock_pet_spell_t( const char* n, player_t* player, int r=RESOURCE_MANA, const school_type s=SCHOOL_SHADOW ) :
     spell_t( n, player, r, s )
   {
-    may_crit          = true;
+    may_crit             = true;
+    base_crit_multiplier = 1.33;
   }
 
   warlock_pet_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
     spell_t( s, t )
   {
-    may_crit          = true;
+    may_crit             = true;
+    base_crit_multiplier = 1.33;
   }
 
   warlock_pet_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
       spell_t( n, sname, player, t )
   {
-    may_crit          = true;
+    may_crit             = true;
+    base_crit_multiplier = 1.33;
   }
 
   warlock_pet_spell_t( const char* n, const uint32_t id, player_t* player, int t = TREE_NONE ) :
       spell_t( n, id, player, t )
   {
-    may_crit          = true;
+    may_crit             = true;
+    base_crit_multiplier = 1.33;
   }
 
   virtual void player_buff()
@@ -1574,6 +1578,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       background  = true;
       aoe         = true;
       direct_tick = true;
+      may_crit    = false;
       stats = player -> get_stats( "infernal_immolation" );
       direct_power_mod  = 0.4;
     }
