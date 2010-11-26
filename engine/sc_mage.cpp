@@ -328,6 +328,7 @@ struct mage_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   travel( int travel_result, double travel_dmg );
+  virtual void   tick();
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
@@ -746,8 +747,6 @@ static void trigger_hot_streak( mage_spell_t* s )
 
 static void trigger_ignite( spell_t* s, double dmg )
 {
-  if ( s -> dual ) return;  // Hack for now to prevent Orb ticks from triggering Ignite.
-
   if ( s -> school != SCHOOL_FIRE &&
        s -> school != SCHOOL_FROSTFIRE ) return;
 
@@ -761,10 +760,12 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_t( player_t* player ) : 
       mage_spell_t( "ignite", 12654, player )
     {
-      background     = true;
-      proc           = true;
-      may_resist     = true;
-      number_ticks   = num_ticks;
+      background       = true;
+      proc             = true;
+      may_resist       = true;
+      number_ticks     = num_ticks;
+      tick_may_crit    = false;
+      scale_with_haste = false;
       reset();
     }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
@@ -1047,6 +1048,20 @@ void mage_spell_t::travel( int travel_result, double travel_dmg )
     {
       p -> buffs_fingers_of_frost -> trigger();
     }
+  }
+}
+
+// mage_spell_t::tick =======================================================
+
+void mage_spell_t::tick()
+{
+  mage_t* p = player -> cast_mage();
+
+  spell_t::tick();
+
+  if ( result == RESULT_CRIT )
+  {
+    trigger_ignite( this, tick_dmg );
   }
 }
 
