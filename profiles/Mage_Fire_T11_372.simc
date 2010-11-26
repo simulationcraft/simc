@@ -15,6 +15,7 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/counterspell
 actions+=/molten_armor
+actions+=/choose_rotation
 actions+=/mana_gem,if=mana_pct<=62&cooldown.evocation.remains>1
 actions+=/evocation,if=mana_pct<39.5&target.time_to_die>60
 actions+=/scorch,debuff=1
@@ -23,19 +24,20 @@ actions+=/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast
 actions+=/living_bomb,if=!ticking
 actions+=/pyroblast,if=buff.hot_streak.react
 actions+=/flame_orb
+actions+=/scorch,if=dpm
 actions+=/fireball
 actions+=/evocation
 actions+=/fire_blast,moving=1
 actions+=/scorch
-head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
+head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,reforge=haste_hit,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit
-shoulders=firelords_mantle,heroic=1,type=cloth,stats=1009armor_171hit_171haste_266int_429sta,gems=20hit_20int_10haste,enchant=50int_25haste
-chest=firelords_robes,heroic=1,type=cloth,stats=1251armor_218crit_198haste_301int_512sta,gems=20int_20hit_20int_20hit_20int,enchant=20all
+shoulders=firelords_mantle,heroic=1,type=cloth,stats=1009armor_171hit_171haste_266int_429sta,reforge=haste_mastery,gems=20hit_20int_10haste,enchant=50int_25haste
+chest=firelords_robes,heroic=1,type=cloth,stats=1251armor_218crit_198haste_301int_512sta,reforge=crit_hit,gems=40int_20int_20hit_20int,enchant=20all
 waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20hit_20haste_40hit_20haste
-legs=firelords_leggings,heroic=1,type=cloth,stats=1177armor_217hit_257haste_345int_578sta,gems=20int_20crit_20int_20hit_20int,enchant=95int_80sta
-feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=mastery_hit,gems=20int_20hit_10haste,enchant=35mastery
+legs=firelords_leggings,heroic=1,type=cloth,stats=1177armor_217hit_257haste_345int_578sta,gems=20int_20mastery_20int_20hit_20int,enchant=95int_80sta
+feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=haste_hit,gems=20int_20hit_10haste,enchant=35mastery
 wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,reforge=crit_haste,enchant=65haste
-hands=firelords_gloves,heroic=1,type=cloth,stats=841armor_171crit_191mastery_266int_429sta,gems=20int_20crit_10mastery,enchant=65mastery
+hands=firelords_gloves,heroic=1,type=cloth,stats=841armor_171crit_191mastery_266int_429sta,reforge=mastery_hit,gems=20int_20mastery_10mastery,enchant=65mastery
 finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=mastery_hit,enchant=40int
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
@@ -44,19 +46,3 @@ back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_69
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit
 ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
-# Gear Summary
-# gear_strength=20
-# gear_agility=20
-# gear_stamina=5831
-# gear_intellect=4508
-# gear_spirit=20
-# gear_spell_power=2207
-# gear_hit_rating=1505
-# gear_crit_rating=955
-# gear_haste_rating=2251
-# gear_mastery_rating=1129
-# gear_armor=8341
-# meta_gem=chaotic_shadowspirit
-# tier11_2pc_caster=1
-# tier11_4pc_caster=1
-# main_hand=incineratus,heroic=1,enchant=power_torrent

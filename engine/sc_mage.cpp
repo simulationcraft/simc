@@ -2311,6 +2311,7 @@ struct scorch_t : public mage_spell_t
     parse_options( options, options_str );
 
     base_cost *= 1.0 + 0.01 * p -> talents.improved_scorch -> effect_base_value( 1 );
+    may_hot_streak = true;
 
     if ( debuff )
       check_talent( p -> talents.critical_mass -> rank() );
