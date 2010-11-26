@@ -243,6 +243,7 @@ struct mage_t : public player_t
   virtual void      init_spells();
   virtual void      init_race();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      init_glyphs();
   virtual void      init_buffs();
   virtual void      init_gains();
@@ -2814,6 +2815,14 @@ void mage_t::init_base()
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
+}
+
+// mage_t::init_scaling ========================================================
+
+void mage_t::init_scaling()
+{
+  player_t::init_scaling();
+  scales_with[ STAT_SPIRIT ] = 0;
 }
 
 // mage_t::init_buffs =======================================================
