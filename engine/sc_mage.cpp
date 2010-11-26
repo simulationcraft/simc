@@ -93,8 +93,6 @@ struct mage_t : public player_t
 
     // Minor
     glyph_t* arcane_brilliance;
-
-    //glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
 
@@ -287,8 +285,11 @@ struct mage_spell_t : public spell_t
   bool fof_frozen, consumes_arcane_blast;
   int dps_rotation;
   int dpm_rotation;
+
   void _init_mage_spell_t()
   {
+    may_crit      = true;
+    tick_may_crit = true;
     may_chill = false;
     may_hot_streak = false;
     may_brain_freeze = false;
@@ -302,6 +303,7 @@ struct mage_spell_t : public spell_t
       base_crit += p -> talents.piercing_ice -> effect_base_value( 1 ) / 100.0;
     }
   }
+
   mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
       spell_t( n, player, RESOURCE_MANA, s, t )
   {
@@ -952,7 +954,7 @@ double mage_spell_t::haste() SC_CONST
   double h = spell_t::haste();
   if ( p -> buffs_icy_veins -> up() )
   {
-    h *= 1.0 / ( 1.0 + 0.20 );
+    h *= 1.0 / ( 1.0 + p -> buffs_icy_veins -> effect_base_value( 1 ) / 100.0 );
   }
   if ( p -> talents.netherwind_presence -> rank() )
   {
@@ -1165,7 +1167,6 @@ struct arcane_barrage_t : public mage_spell_t
     check_spec( TREE_ARCANE );
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.arcane_barrage -> effect_base_value( 1 ) / 100.0;
-    may_crit = true;
     consumes_arcane_blast = true;
   }
 };
@@ -1178,7 +1179,6 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", 30451, p )
   {
     parse_options( NULL, options_str );
-    may_crit = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
   }
 
@@ -1265,7 +1265,6 @@ struct arcane_explosion_t : public mage_spell_t
     check_spec( TREE_ARCANE );
     parse_options( NULL, options_str );
     aoe = true;
-    may_crit = true;
     consumes_arcane_blast = true;
 
     if ( p -> talents.improved_arcane_explosion -> rank() )
@@ -1291,7 +1290,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     dual        = true;
     background  = true;
-    may_crit    = true;
     direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
@@ -1307,14 +1305,11 @@ struct arcane_missiles_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     channeled = true;
-    num_ticks = 3 + 1 * p -> talents.improved_arcane_missiles -> rank();
-    base_tick_time = 0.75;
+    num_ticks += p -> talents.improved_arcane_missiles -> rank();
     scale_with_haste = false; // no extra ticks
 
-    if ( p -> talents.missile_barrage -> rank() )
-    {
-      base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
-    }
+    base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
+
 
     tick_spell = new arcane_missiles_tick_t( p );
   }
@@ -1372,7 +1367,6 @@ struct blast_wave_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = true;
-    may_crit = true;
   }
 };
 
@@ -1388,10 +1382,7 @@ struct cold_snap_t : public mage_spell_t
     check_talent( p -> talents.cold_snap -> rank() );
     parse_options( NULL, options_str );
 
-    if ( p -> talents.ice_floes -> rank() )
-    {
-      cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
-    }
+    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
 
     cooldown_list.push_back( p -> get_cooldown( "cone_of_cold" ) );
     cooldown_list.push_back( p -> get_cooldown( "deep_freeze"  ) );
@@ -1422,7 +1413,6 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks        = 10;
     base_tick_time   = 1.0;
-    tick_may_crit    = true;
     scale_with_haste = true;
   }
 
@@ -1449,12 +1439,9 @@ struct cone_of_cold_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = true;
-    may_crit = true;
     base_multiplier *= 1.0 + p -> glyphs.cone_of_cold -> effect_base_value( 1 ) / 100.0;
-    if ( p -> talents.ice_floes -> rank() )
-    {
-      cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
-    }
+    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
+
     may_brain_freeze = true;
     may_chill = true;
   }
@@ -1493,7 +1480,6 @@ struct deep_freeze_t : public mage_spell_t
     base_cost = 0.09 * p -> resource_base[ RESOURCE_MANA ];
     cooldown -> duration = 30.0;
 
-    may_crit = true;
     fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect_base_value( 1 ) / 100.0;
     trigger_gcd = p -> base_gcd;
@@ -1517,7 +1503,6 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = true;
-    may_crit = true;
     cooldown -> duration += p -> glyphs.dragons_breath -> effect_base_value( 1 ) / 1000.0;
   }
 };
@@ -1538,10 +1523,7 @@ struct evocation_t : public mage_spell_t
     channeled             = true;
     harmful               = false;
 
-    if( p -> talents.arcane_flows -> rank() )
-    {
-      cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
-    }
+    cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
   }
 
   virtual void execute()
@@ -1578,7 +1560,6 @@ struct fire_blast_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     base_crit += p -> talents.improved_fire_blast -> effect_base_value( 1 ) / 100.0;
-    may_crit = true;
     may_hot_streak = true;
   }
 };
@@ -1592,7 +1573,6 @@ struct fireball_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
-    may_crit = true;
     may_hot_streak = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
   }
@@ -1629,7 +1609,6 @@ struct flame_orb_explosion_t : public mage_spell_t
   {
     background = true;
     aoe = true;
-    may_crit = true;
     dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
@@ -1641,7 +1620,6 @@ struct flame_orb_tick_t : public mage_spell_t
     mage_spell_t( "flame_orb_tick", 82739, p )
   {
     background = true;
-    may_crit = true;
     dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
@@ -1780,7 +1758,6 @@ struct frostbolt_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.frostbolt -> effect_base_value( 1 ) / 100.0;
-    may_crit = true;
     may_chill = true;
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
@@ -1835,7 +1812,6 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_crit = true;
     may_chill = true;
     may_hot_streak = true;
 
@@ -1917,7 +1893,6 @@ struct frostfire_orb_explosion_t : public mage_spell_t
   {
     background = true;
     aoe = true;
-    may_crit = true;
     dual = true;
     school = SCHOOL_FROSTFIRE; // required since defaults to FIRE
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
@@ -1930,7 +1905,6 @@ struct frostfire_orb_tick_t : public mage_spell_t
     mage_spell_t( "frostfire_orb_tick", 84721, p )
   {
     background = true;
-    may_crit = true;
     dual = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
@@ -1983,7 +1957,6 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    may_crit = true;
     fof_frozen = true;
   }
 
@@ -2008,10 +1981,7 @@ struct icy_veins_t : public mage_spell_t
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
 
-    if ( p -> talents.ice_floes -> rank() )
-    {
-      cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
-    }
+    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void execute()
@@ -2034,7 +2004,6 @@ struct living_bomb_explosion_t : public mage_spell_t
     aoe = true;
     dual = true;
     background = true;
-    may_crit = true;
     base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
                            + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
@@ -2053,7 +2022,6 @@ struct living_bomb_t : public mage_spell_t
     base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
                            + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
 
-    tick_may_crit = true;
     scale_with_haste = true;
     dot_behavior = DOT_REFRESH;
 
@@ -2260,8 +2228,6 @@ struct pyroblast_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    tick_may_crit = true;
-    may_crit = true;
     may_hot_streak = true;
     scale_with_haste = true;
     dot_behavior = DOT_REFRESH;
@@ -2316,7 +2282,6 @@ struct scorch_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    may_crit = true;
     base_cost *= 1.0 + 0.01 * p -> talents.improved_scorch -> effect_base_value( 1 );
 
     if ( debuff )
@@ -2389,7 +2354,6 @@ struct time_warp_t : public mage_spell_t
   time_warp_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "time_warp", 80353, p )
   {
-    check_min_level( 85 );
     parse_options( NULL, options_str );
     harmful = false;
   }
@@ -2835,6 +2799,7 @@ void mage_t::init_buffs()
   buffs_arcane_missiles      = new buff_t( this, "arcane_missiles",      1, 20.0, 0.0, 0.40 );
   buffs_arcane_potency       = new buff_t( this, talents.arcane_potency -> spell_id(), "arcane_potency" );
   buffs_arcane_power         = new buff_t( this, talents.arcane_power -> spell_id(), "arcane_power" );
+  buffs_arcane_power -> cooldown = get_cooldown( "arcane_power" );
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze -> effect_trigger_spell( 1 ), "brain_freeze", talents.brain_freeze -> proc_chance() );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration -> effect_trigger_spell( 1 ), "clearcasting", talents.arcane_concentration -> proc_chance() );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
@@ -3071,7 +3036,7 @@ double mage_t::composite_spell_crit() SC_CONST
 
   if ( buffs_molten_armor -> up() )
   {
-    c += 0.03 + glyphs.molten_armor -> effect_base_value( 1 ) / 100.0;
+    c += buffs_molten_armor -> effect_base_value( 3 ) / 100.0 + glyphs.molten_armor -> effect_base_value( 1 ) / 100.0;
   }
 
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
@@ -3127,7 +3092,7 @@ void mage_t::regen( double periodicity )
 
   if ( buffs_mage_armor -> up() )
   {
-    double gain_amount = resource_max[ RESOURCE_MANA ] * 0.03 / 5.0;
+    double gain_amount = resource_max[ RESOURCE_MANA ] * buffs_mage_armor -> effect_base_value( 2 ) / 100.0 / 5.0;
     gain_amount *= 1.0 + glyphs.mage_armor -> effect_base_value( 1 ) / 100.0;
 
     resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
