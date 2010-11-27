@@ -2112,8 +2112,8 @@ struct mana_gem_t : public action_t
   {
     parse_options( NULL, options_str );
     
-    min = p -> player_data.effect_min( 16856, p -> type, p -> level );
-    max = p -> player_data.effect_max( 16856, p -> type, p -> level );
+    min = p -> player_data.effect_min( 16856, p -> player_data.spell_scaling_class( 27103 ), p -> level );
+    max = p -> player_data.effect_max( 16856, p -> player_data.spell_scaling_class( 27103 ), p -> level );
     
     if ( p -> level <= 80 )
     {
