@@ -4353,18 +4353,19 @@ void warlock_t::init_actions()
     break;
 
     case TREE_DEMONOLOGY:
-      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan,if=dot.immolate.remains>0";
-      action_list_str += "/soulburn,if=buff.metamorphosis.react";
+      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan,if=dot.immolate.remains>(cast_time+travel_time)";
+      action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time";
+      action_list_str += "/soulburn,if=buff.metamorphosis.up";
       if ( level >= 54) {
         if ( talent_improved_soul_fire -> ok() )
         {
           action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
         } else {
-          action_list_str += "/soul_fire,if=buff.soulburn.react";
+          action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
       }
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
-      action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time|!ticking";
+      action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time|!ticking";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
       if ( level >= 60) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
       action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";

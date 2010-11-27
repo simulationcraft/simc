@@ -3,7 +3,7 @@ warlock=Warlock_Demonology_T10_277
 level=80
 race=undead
 use_pre_potion=1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=000000000000000000032122231031221221132
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00000000000000000003212223103122122113020000000000000000
 glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
@@ -11,11 +11,12 @@ actions+=/fel_armor
 actions+=/summon_felguard
 actions+=/snapshot_stats
 actions+=/wild_magic_potion,if=buff.bloodlust.react|!in_combat
-actions+=/hand_of_guldan,if=dot.immolate.remains>0
-actions+=/soulburn,if=buff.metamorphosis.react
-actions+=/soul_fire,if=buff.soulburn.react
+actions+=/hand_of_guldan,if=dot.immolate.remains>(cast_time+travel_time)
+actions+=/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time
+actions+=/soulburn,if=buff.metamorphosis.up
+actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
 actions+=/metamorphosis
-actions+=/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time|!ticking
+actions+=/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time|!ticking
 actions+=/bane_of_doom,time_to_die>=20,if=!ticking
 actions+=/immolation,if=buff.metamorphosis.remains>10
 actions+=/corruption,if=!ticking|dot.corruption.remains<tick_time
