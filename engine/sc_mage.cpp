@@ -2112,8 +2112,8 @@ struct mana_gem_t : public action_t
   {
     parse_options( NULL, options_str );
     
-    min = p -> player_data.effect_min( 1936, p -> type, p -> level );
-    max = p -> player_data.effect_max( 1936, p -> type, p -> level );
+    min = p -> player_data.effect_min( 16856, p -> type, p -> level );
+    max = p -> player_data.effect_max( 16856, p -> type, p -> level );
     
     if ( p -> level <= 80 )
     {
@@ -2494,7 +2494,7 @@ struct choose_rotation_t : public action_t
 
     // Mana Gem, if we have uses left
     if ( p -> mana_gem_charges > 0 )
-      regen_rate += p ->player_data.effect_max( 1936, p ->type, p ->level ) / 60.0;
+      regen_rate += p ->player_data.effect_max( 16856, p ->type, p ->level ) / 60.0;
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -3023,7 +3023,7 @@ void mage_t::init_actions()
     else if ( primary_tree() == TREE_FIRE )
     {
       action_list_str += "/choose_rotation";
-      action_list_str += "/mana_gem,if=mana_deficit>26500";
+      action_list_str += "/mana_gem,if=mana_deficit>12500";
       if ( talents.critical_mass -> rank() && level >= 26 ) action_list_str += "/scorch,debuff=1";
       if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.combustion -> rank()   )
@@ -3042,7 +3042,7 @@ void mage_t::init_actions()
     // Frost
     else if ( primary_tree() == TREE_FROST )
     {
-      action_list_str += "/mana_gem,if=mana_deficit>26000";
+      action_list_str += "/mana_gem,if=mana_deficit>12500";
       action_list_str += "/evocation,if=mana_pct<39.5&target.time_to_die>60";
       if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30";
       if ( talents.frostfire_orb -> rank() && level >= 81 )
