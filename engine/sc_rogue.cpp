@@ -2021,7 +2021,7 @@ struct recuperate_t : public rogue_attack_t
     if ( sim -> log )
       log_t::output( sim, "%s performs %s", p -> name(), name() );
 
-    num_ticks = 2 * p -> combo_points -> count;
+    number_ticks = num_ticks = 2 * p -> combo_points -> count;
 
     p -> buffs_recuperate -> buff_duration = num_ticks * base_tick_time;
     p -> buffs_recuperate -> trigger();
@@ -2113,7 +2113,7 @@ struct rupture_t : public rogue_attack_t
     
     if ( result_is_hit() )
     {
-      num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
+      number_ticks = num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
 
       update_ready();
 
@@ -2508,6 +2508,7 @@ struct deadly_poison_t : public rogue_poison_t
   deadly_poison_t( rogue_t* player ) :  rogue_poison_t( "deadly_poison", 2818, player )
   {
     tick_power_mod = extra_coeff();
+    number_ticks = num_ticks;
   }
 
   virtual void execute()
