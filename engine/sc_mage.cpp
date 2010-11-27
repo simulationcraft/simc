@@ -602,7 +602,7 @@ struct mirror_image_pet_t : public pet_t
     {
       action_t* front=0;
 
-      if ( owner -> cast_mage() -> glyphs.mirror_image && owner -> cast_mage() -> primary_tree() != TREE_FROST )
+      if ( owner -> cast_mage() -> glyphs.mirror_image -> ok() && owner -> cast_mage() -> primary_tree() != TREE_FROST )
       {
         // Fire/Arcane Mages cast 9 Fireballs/Arcane Blasts
         num_rotations = 9;    

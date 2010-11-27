@@ -6,7 +6,7 @@ level=85
 race=undead
 use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=3033022212021222121212200000000000000000000300000000000000000
-glyphs=mage_armor/arcane_blast/arcane_barrage
+glyphs=mage_armor/arcane_blast/arcane_missiles
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/focus_magic
