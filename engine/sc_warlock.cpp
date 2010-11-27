@@ -4351,13 +4351,14 @@ void warlock_t::init_actions()
 
     case TREE_DEMONOLOGY:
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan,if=dot.immolate.remains>(cast_time+travel_time)";
-      action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time";
-      action_list_str += "/soulburn,if=buff.metamorphosis.up";
       if ( level >= 54) {
         if ( talent_improved_soul_fire -> ok() )
         {
+          action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time";
+          action_list_str += "/soulburn,if=buff.metamorphosis.up";
           action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
         } else {
+          action_list_str += "/soulburn,if=buff.metamorphosis.up";
           action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
       }
