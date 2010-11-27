@@ -2950,7 +2950,6 @@ void mage_t::init_actions()
     else
     {
       action_list_str += "/molten_armor";
-      action_list_str += "/mana_gem,if=mana_deficit>26000&cooldown.evocation.remains>1";
     }
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
@@ -2996,20 +2995,20 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       if ( level >= 50 ) action_list_str += "/mirror_image";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power";
-      action_list_str += "/mana_gem";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<40";
+      action_list_str += "/mana_gem,if=cooldown.evocation.remains<40";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         // PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
         action_list_str += "/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>=3";
       }
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=cooldown.evocation.remains=0";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40";
       if ( level >= 12 ) action_list_str += "/evocation";
       // action_list_str += "/choose_rotation";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4";
       action_list_str += "/arcane_missiles";
-      if ( primary_tree() == TREE_ARCANE ) action_list_str += "/arcane_barrage";
+      action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving
     }

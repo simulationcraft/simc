@@ -16,7 +16,7 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/counterspell
 actions+=/molten_armor
-actions+=/mana_gem,if=mana_deficit>26000&cooldown.evocation.remains>1
+actions+=/mana_gem,if=mana_deficit>26000
 actions+=/evocation,if=mana_pct<39.5&target.time_to_die>60
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30
 actions+=/mirror_image
