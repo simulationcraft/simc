@@ -3044,7 +3044,12 @@ void mage_t::init_actions()
     {
       action_list_str += "/mana_gem,if=mana_deficit>26000";
       action_list_str += "/evocation,if=mana_pct<39.5&target.time_to_die>60";
-      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30";
+      if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30";
+      if ( talents.frostfire_orb -> rank() && level >= 81 )
+      {
+        action_list_str += "/frostfire_orb";
+      }
+      if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&!buff.bloodlust.react";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() && level >= 56)
@@ -3052,11 +3057,6 @@ void mage_t::init_actions()
         action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
-      if ( talents.frostfire_orb -> rank() && level >= 81 )
-      {
-        action_list_str += "/frostfire_orb,if=!ticking";
-      }
-      if ( level >= 50) action_list_str += "/mirror_image";
       action_list_str += "/frostbolt";
       if ( level >= 12 ) action_list_str += "/evocation";
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving
