@@ -96,8 +96,6 @@ void action_t::_init_action_t()
   resource_consumed              = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
-  resisted_dmg                   = 0.0;
-  blocked_dmg                    = 0.0;
   num_ticks                      = 0;
   number_ticks                   = 0;
   current_tick                   = 0;
@@ -295,7 +293,8 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       {
       case A_PERIODIC_DAMAGE:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+	base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         if ( school == SCHOOL_PHYSICAL )
@@ -303,7 +302,8 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
         break;
       case A_PERIODIC_LEECH:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+	base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
@@ -318,7 +318,8 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
         break;
       case A_PERIODIC_HEAL:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td          = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+	base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
@@ -452,6 +453,7 @@ rank_t* action_t::init_rank( rank_t* rank_list,
       base_dd_min  = rank -> dd_min;
       base_dd_max  = rank -> dd_max;
       base_td_init = rank -> tick;
+      base_td      = base_td_init;
       base_cost    = rank -> cost;
 
       if (id_override) id = id_override;
@@ -820,38 +822,28 @@ double action_t::calculate_weapon_damage()
 
 double action_t::calculate_tick_damage()
 {
-  tick_dmg = resisted_dmg = blocked_dmg = 0;
+  double dmg = 0;
 
   if ( base_td == 0 ) base_td = base_td_init;
 
   if ( base_td == 0 && tick_power_mod == 0 ) return 0;
 
-  tick_dmg  = floor( base_td + 0.5 ) + total_power() * tick_power_mod;
-  tick_dmg *= total_td_multiplier();
+  dmg  = floor( base_td + 0.5 ) + total_power() * tick_power_mod;
+  dmg *= total_td_multiplier();
 
-  modify_tick_damage();
-
-  double init_tick_dmg = tick_dmg;
+  double init_tick_dmg = dmg;
 
   if ( result == RESULT_CRIT )
   {
-    tick_dmg *= 1.0 + total_crit_bonus();
+    dmg *= 1.0 + total_crit_bonus();
   }
 
   if ( ! binary )
   {
-    resisted_dmg = resistance() * tick_dmg;
-    tick_dmg -= resisted_dmg;
+    dmg *= 1.0 - resistance();
   }
 
-  if ( ! sim -> average_range && sim -> roll( tick_dmg - floor( tick_dmg ) ) )
-  {
-    tick_dmg = ceil( tick_dmg );
-  }
-  else
-  {
-    tick_dmg = floor( tick_dmg );
-  }
+  if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
   if ( sim -> debug )
   {
@@ -860,38 +852,34 @@ double action_t::calculate_tick_damage()
                    total_power(), base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
   }
 
-  return tick_dmg;
+  return dmg;
 }
 
 // action_t::calculate_direct_damage =========================================
 
 double action_t::calculate_direct_damage()
 {
-  direct_dmg = resisted_dmg = blocked_dmg = 0;
+  double dmg = sim -> range( base_dd_min, base_dd_max );
 
-  double base_direct_dmg = sim -> range( base_dd_min, base_dd_max );
+  if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
 
-  base_direct_dmg = floor( base_direct_dmg + 0.5 );
+  if ( dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
 
-  if ( round_base_dmg )
-    base_direct_dmg = floor( base_direct_dmg + 0.5 );
-
-  if ( base_direct_dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
+  double base_direct_dmg = dmg;
   
-  direct_dmg  = base_direct_dmg + base_dd_adder + player_dd_adder + target_dd_adder;
+  dmg += base_dd_adder + player_dd_adder + target_dd_adder;
+
   if ( weapon_multiplier > 0 )
   {
     // x% weapon damage + Y
     // e.g. Obliterate, Shred, Backstab
-    direct_dmg += calculate_weapon_damage();
-    direct_dmg *= weapon_multiplier;
+    dmg += calculate_weapon_damage();
+    dmg *= weapon_multiplier;
   }
-  direct_dmg += direct_power_mod * total_power();
-  direct_dmg *= total_dd_multiplier();
+  dmg += direct_power_mod * total_power();
+  dmg *= total_dd_multiplier();
 
-  modify_direct_damage();
-
-  double init_direct_dmg = direct_dmg;
+  double init_direct_dmg = dmg;
 
   if ( result == RESULT_GLANCE )
   {
@@ -921,43 +909,34 @@ double action_t::calculate_direct_damage()
       max_glance = temp;
     }
 
-    direct_dmg *= sim -> range( min_glance, max_glance ); // 0.75 against +3 targets.
+    dmg *= sim -> range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
   else if ( result == RESULT_CRIT )
   {
-    direct_dmg *= 1.0 + total_crit_bonus();
+    dmg *= 1.0 + total_crit_bonus();
   }
 
   if ( ! binary )
   {
-    resisted_dmg = resistance() * direct_dmg;
-    direct_dmg -= resisted_dmg;
+    dmg *= 1.0 - resistance();
   }
 
   if ( result == RESULT_BLOCK )
   {
-    blocked_dmg = target -> block_value;
-    direct_dmg -= blocked_dmg;
-    if ( direct_dmg < 0 ) direct_dmg = 0;
+    dmg -= target -> block_value;
+    if ( dmg < 0 ) dmg = 0;
   }
 
-  if ( ! sim -> average_range && sim -> roll( direct_dmg - floor( direct_dmg ) ) )
-  {
-    direct_dmg = ceil( direct_dmg ); 
-  }
-  else
-  {
-    direct_dmg = floor( direct_dmg );
-  }
+  if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
   if ( sim -> debug )
   {
     log_t::output( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
-                   player -> name(), name(), direct_dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
+                   player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
                    total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
   }
 
-  return direct_dmg;
+  return dmg;
 }
 
 // action_t::consume_resource ===============================================
@@ -997,7 +976,7 @@ void action_t::execute()
 
   if ( result_is_hit() )
   {
-    calculate_direct_damage();
+    direct_dmg = calculate_direct_damage();
     schedule_travel();
   }
   else
@@ -1049,7 +1028,7 @@ void action_t::tick()
     }
   }
 
-  calculate_tick_damage();
+  tick_dmg = calculate_tick_damage();
 
   assess_damage( tick_dmg, DMG_OVER_TIME );
 

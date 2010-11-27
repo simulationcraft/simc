@@ -1805,16 +1805,20 @@ struct bane_of_agony_t : public warlock_spell_t
 
   }
 
-  virtual void modify_tick_damage()
+  virtual void tick()
   {
-    warlock_spell_t::modify_tick_damage();
+    double adjust = 1.0;
 
     // Modell ramp-up damage for number_ticks==12
-    double difference = base_td /2;
-    if (number_ticks==12 && current_tick <=4 )
-      tick_dmg -= difference;
-    if (number_ticks==12 && current_tick>=9)
-      tick_dmg += difference;
+    if ( number_ticks == 12 )
+    {
+      if( current_tick <= 4 ) adjust = 0.5;
+      if( current_tick >= 9 ) adjust = 1.5;
+    }
+
+    base_td = base_td_init * adjust;
+
+    warlock_spell_t::tick();
   }
 
   virtual void execute()
@@ -2721,8 +2725,11 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
+
+    base_dd_adder = ( p -> dots_immolate -> ticking() ? ( base_dd_min + base_dd_max ) / 12.0 : 0 );
+
+    warlock_spell_t::execute();
 
     for ( int i=0; i < 4; i++ )
     {
@@ -2734,16 +2741,6 @@ struct incinerate_t : public warlock_spell_t
       p -> buffs_backdraft -> decrement();
     }
     trigger_impending_doom( this );
-  }
-
-  virtual void modify_direct_damage()
-  {
-    spell_t::modify_direct_damage();
-    warlock_t* p = player -> cast_warlock();
-
-    double divisor = 6.0;
-    if ( p -> dots_immolate -> ticking() )
-      direct_dmg += sim -> range( base_dd_min, base_dd_max ) / divisor * total_dd_multiplier();
   }
 
   virtual void travel( int travel_result, double travel_dmg)

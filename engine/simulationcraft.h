@@ -3477,7 +3477,6 @@ struct action_t : public spell_id_t
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double resource_consumed;
   double direct_dmg, tick_dmg;
-  double resisted_dmg, blocked_dmg;
   int num_ticks, number_ticks, current_tick, added_ticks;
   int ticking;
   weapon_t* weapon;
@@ -3540,8 +3539,6 @@ struct action_t : public spell_id_t
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual double calculate_weapon_damage();
-  virtual void   modify_direct_damage() { };
-  virtual void   modify_tick_damage() { };
   virtual double armor() SC_CONST;
   virtual double resistance() SC_CONST;
   virtual void   consume_resource();

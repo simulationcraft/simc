@@ -1904,15 +1904,10 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> glyphs.frostfire -> ok() )
     {
-      if( dot_stack == 0 ) base_td = 0;
-      if( dot_stack == 3 )
-      {
-        base_td *= 2.0 / 3.0;
-        dot_stack--;
-      }
-      
-      base_td += travel_dmg * 0.03 / num_ticks;
-      dot_stack++;
+      if( dot_stack < 3 ) dot_stack++;
+      result = RESULT_HIT;
+      double dot_dmg = calculate_direct_damage() * 0.03;
+      base_td = dot_stack * dot_dmg / num_ticks;
     }
     mage_spell_t::travel( travel_result, travel_dmg );
   }

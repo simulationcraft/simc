@@ -676,7 +676,7 @@ static void register_tiny_abom( item_t* item )
     stats_t *old_stats;
     attack_t *first_stack_attack;
     int result;
-    double resource_consumed, direct_dmg, resisted_dmg, blocked_dmg;
+    double resource_consumed, direct_dmg;
     double time_to_execute;
     bool manifesting_anger;
 
@@ -729,8 +729,6 @@ static void register_tiny_abom( item_t* item )
         result            = attack -> result;
         resource_consumed = attack -> resource_consumed;
         direct_dmg        = attack -> direct_dmg;
-        resisted_dmg      = attack -> resisted_dmg;
-        blocked_dmg       = attack -> blocked_dmg;
         time_to_execute   = attack -> time_to_execute;
 
         attack -> time_to_execute = 0;
@@ -753,8 +751,6 @@ static void register_tiny_abom( item_t* item )
         attack -> result            = result;
         attack -> resource_consumed = resource_consumed;
         attack -> direct_dmg        = direct_dmg;
-        attack -> resisted_dmg      = resisted_dmg;
-        attack -> blocked_dmg       = blocked_dmg;
 	attack -> time_to_execute   = time_to_execute;
       }
     }

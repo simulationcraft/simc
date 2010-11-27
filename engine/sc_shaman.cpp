@@ -2479,7 +2479,7 @@ struct shaman_totem_t : public shaman_spell_t
 
     if ( result_is_hit() )
     {
-      calculate_direct_damage();
+      direct_dmg = calculate_direct_damage();
       
       if ( direct_dmg > 0 )
       {

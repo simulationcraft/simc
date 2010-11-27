@@ -926,13 +926,6 @@ void rogue_attack_t::_init_rogue_attack_t()
   direct_power_mod = 0.0;
   tick_power_mod   = 0.0;
 
-  // move base tick damage to base_td_init
-  if ( base_td )
-  {
-    base_td_init = base_td;
-    base_td = 0;
-  }
-    
   requires_weapon       = WEAPON_NONE;
   requires_position     = POSITION_NONE;
   requires_stealth      = false;
@@ -2569,13 +2562,10 @@ struct deadly_poison_t : public rogue_poison_t
     }
   }
 
-  virtual void modify_tick_damage()
+  virtual double calculate_tick_damage()
   {
-    rogue_poison_t::modify_tick_damage();
-
     rogue_t* p = player -> cast_rogue();
-
-    tick_dmg *= p -> buffs_poison_doses -> stack();
+    return rogue_poison_t::calculate_tick_damage() * p -> buffs_poison_doses -> stack();
   }
 
   virtual void last_tick()

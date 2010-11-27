@@ -188,8 +188,8 @@ void log_t::damage_event( action_t* a,
                    ",%d,0,%d,%d,0,%d,%s,%s,nil\n",
                    ( int ) dmg,
                    school_id( a -> school ),
-                   ( int ) a -> resisted_dmg,
-                   ( int ) a -> blocked_dmg,
+                   ( int ) 0 /*resisted_dmg*/,
+                   ( int ) 0 /*blocked_dmg*/,
                    ( ( a -> result == RESULT_CRIT   ) ? "1" : "nil" ),
                    ( ( a -> result == RESULT_GLANCE ) ? "1" : "nil" ) );
 

@@ -1218,7 +1218,6 @@ struct rip_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    base_td_init          = base_td;
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     ap_per_point          = 0.023; // Tooltip shows this * 8, but doesn't match combat logs
     requires_combo_points = true;

@@ -1764,7 +1764,7 @@ struct rend_t : public warrior_attack_t
 
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = false;
-    base_td                = p -> player_data.effect_min( 98699, p -> type, p -> level );
+    base_td_init           = p -> player_data.effect_min( 98699, p -> type, p -> level );
     base_tick_time         = p -> player_data.effect_period ( 98699 );
     num_ticks              = (int) ( p -> player_data.spell_duration ( 94009 ) / base_tick_time );
     tick_may_crit          = true;
