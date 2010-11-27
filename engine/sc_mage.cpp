@@ -2935,8 +2935,7 @@ void mage_t::init_actions()
     if ( talents.focus_magic -> rank() ) action_list_str += "/focus_magic";
     // Arcane Brilliance
     action_list_str += "/arcane_brilliance";
-    // Water Elemental
-    if ( primary_tree() == TREE_FROST ) action_list_str += "/water_elemental";
+
     // Armor
     if ( primary_tree() == TREE_ARCANE )
     {
@@ -2946,6 +2945,10 @@ void mage_t::init_actions()
     {
       action_list_str += "/molten_armor";
     }
+
+    // Water Elemental
+    if ( primary_tree() == TREE_FROST ) action_list_str += "/water_elemental";
+
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
     // Usable Items
@@ -3000,7 +3003,6 @@ void mage_t::init_actions()
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40";
       if ( level >= 12 ) action_list_str += "/evocation";
-      // action_list_str += "/choose_rotation";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
@@ -3010,6 +3012,8 @@ void mage_t::init_actions()
     // Fire
     else if ( primary_tree() == TREE_FIRE )
     {
+      action_list_str += "/choose_rotation";
+      action_list_str += "/mana_gem,if=mana_deficit>26500";
       if ( talents.critical_mass -> rank() && level >= 26 ) action_list_str += "/scorch,debuff=1";
       if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.combustion -> rank()   )
@@ -3017,19 +3021,20 @@ void mage_t::init_actions()
          action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
-      if ( level >= 81 ) action_list_str += "/flame_orb";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
-      action_list_str += "/fireball";
-      if ( level >= 12 ) action_list_str += "/evocation";
+      if ( level >= 81 ) action_list_str += "/flame_orb";
+      if ( level >= 26 ) action_list_str += "/scorch,if=dpm";
+      action_list_str += "/fireball,if=dps";
+      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>45";
       action_list_str += "/fire_blast,moving=1"; // when moving
       if ( level >= 26 ) action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
     else if ( primary_tree() == TREE_FROST )
     {
+      action_list_str += "/mana_gem,if=mana_deficit>26000";
       action_list_str += "/evocation,if=mana_pct<39.5&target.time_to_die>60";
       if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>10&cooldown.icy_veins.remains>30";
-      if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=!buff.icy_veins.react&!buff.bloodlust.react";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() && level >= 56)
@@ -3039,8 +3044,9 @@ void mage_t::init_actions()
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       if ( talents.frostfire_orb -> rank() && level >= 81 )
       {
-        action_list_str += "/frostfire_orb";
+        action_list_str += "/frostfire_orb,if=!ticking";
       }
+      if ( level >= 50) action_list_str += "/mirror_image";
       action_list_str += "/frostbolt";
       if ( level >= 12 ) action_list_str += "/evocation";
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving
