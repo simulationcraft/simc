@@ -199,6 +199,7 @@ struct mage_t : public player_t
     talent_t* ice_floes;
     talent_t* icy_veins;
     talent_t* improved_freeze;
+    talent_t* piercing_chill;
     talent_t* piercing_ice;
     talent_t* shatter;
 
@@ -1810,6 +1811,14 @@ struct frostbolt_t : public mage_spell_t
     if ( result_is_hit() )
     {
       trigger_replenishment( this );
+      if ( result == RESULT_CRIT )
+      {
+        int max_targets = p -> talents.piercing_chill -> rank();
+        for ( int i=0; i < target -> adds_nearby && i < max_targets; i ++ )
+        {
+          p -> buffs_fingers_of_frost -> trigger();
+        }
+      }
     }
   }
 
@@ -2732,6 +2741,7 @@ void mage_t::init_talents()
   talents.icy_veins                   = new talent_t( this, "icy_veins", "Icy Veins" );
   talents.improved_freeze             = new talent_t( this, "improved_freeze", "Improved Freeze" );
   talents.piercing_ice                = new talent_t( this, "piercing_ice", "Piercing Ice" );
+  talents.piercing_chill              = new talent_t( this, "piercing_chill", "Piercing Chill" );
   talents.shatter                     = new talent_t( this, "shatter", "Shatter" );
 
   player_t::init_talents();
