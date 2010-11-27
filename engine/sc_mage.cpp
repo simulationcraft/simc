@@ -2118,7 +2118,7 @@ struct mana_gem_t : public action_t
     }
 
     cooldown = p -> get_cooldown( "mana_gem" );
-    cooldown -> duration = 60.0;
+    cooldown -> duration = 120.0;
     trigger_gcd = 0;
     harmful = false;
   }
@@ -2950,7 +2950,7 @@ void mage_t::init_actions()
     else
     {
       action_list_str += "/molten_armor";
-      action_list_str += "/mana_gem,if=mana_pct<=62&cooldown.evocation.remains>1";
+      action_list_str += "/mana_gem,if=mana_deficit>26000&cooldown.evocation.remains>1";
     }
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
