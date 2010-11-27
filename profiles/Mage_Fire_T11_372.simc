@@ -17,7 +17,6 @@ actions+=/counterspell
 actions+=/molten_armor
 actions+=/choose_rotation
 actions+=/mana_gem,if=mana_deficit>26500
-actions+=/evocation,if=mana_pct<39.5&target.time_to_die>60
 actions+=/scorch,debuff=1
 actions+=/mirror_image
 actions+=/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking
@@ -25,8 +24,8 @@ actions+=/living_bomb,if=!ticking
 actions+=/pyroblast,if=buff.hot_streak.react
 actions+=/flame_orb
 actions+=/scorch,if=dpm
-actions+=/fireball
-actions+=/evocation
+actions+=/fireball,if=dps
+actions+=/evocation,if=target.time_to_die>45
 actions+=/fire_blast,moving=1
 actions+=/scorch
 head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,reforge=haste_hit,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
