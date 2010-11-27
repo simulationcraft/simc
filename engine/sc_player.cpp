@@ -4328,6 +4328,41 @@ action_expr_t* player_t::create_expression( action_t* a,
         return new swing_remains_expr_t( a, hand );
       }
     }
+    else if ( splits[ 0 ] == "action" )
+    {
+      std::vector<action_t*> in_flight_list;
+      for ( action_t* action = action_list; action; action = action -> next )
+      {
+        if ( action -> name_str == splits[ 1 ] )
+        {
+          if ( splits[ 2 ] == "in_flight" ) {
+            in_flight_list.push_back( action );
+          }
+          else
+          {
+            return action -> create_expression( splits[ 2 ] );
+          }
+        }
+      }
+      if ( in_flight_list.size() > 0 )
+      {
+        struct in_flight_multi_expr_t : public action_expr_t
+        {
+          std::vector<action_t*> action_list;
+          in_flight_multi_expr_t( std::vector<action_t*> al ) : action_expr_t( al[ 0 ], "in_flight", TOK_NUM ), action_list(al) {}
+          virtual int evaluate()
+          {
+            result_num = false;
+            for ( int i = 0; i < ( int ) action_list.size(); i++ )
+            {
+              if ( action_list[ i ] -> travel_event != NULL ) result_num = true;
+            }
+            return TOK_NUM;
+          }
+        };
+        return new in_flight_multi_expr_t( in_flight_list );
+      }
+    }
   }
 
   return sim -> create_expression( a, name_str );
