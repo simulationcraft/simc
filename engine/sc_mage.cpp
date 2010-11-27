@@ -424,6 +424,13 @@ struct water_elemental_pet_t : public pet_t
     mana_per_intellect = 5;
   }
 
+  virtual double composite_spell_haste() SC_CONST
+  {
+    double h = player_t::composite_spell_haste();
+    h *= owner -> spell_haste;
+    return h;
+  }
+
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
