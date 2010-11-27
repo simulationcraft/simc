@@ -1,6 +1,6 @@
 #!./simc 
 
-mage=Mage_Fire_T11_372
+mage=Mage_Frostfire_T11_372
 origin="input=m.simc"
 level=85
 race=undead
