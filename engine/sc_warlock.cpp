@@ -1800,7 +1800,7 @@ struct bane_of_agony_t : public warlock_spell_t
 
     int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
     // after patch 3.0.8, the added ticks are double the base damage
-    base_td = ( base_td * num_ticks + base_td * a_extra_ticks * 2 ) / (num_ticks + a_extra_ticks);
+    base_td_init = ( base_td_init * num_ticks + base_td_init * a_extra_ticks * 2 ) / (num_ticks + a_extra_ticks);
     num_ticks += a_extra_ticks;
 
   }
