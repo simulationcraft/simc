@@ -8,6 +8,7 @@
 // ==========================================================================
 // Spirit Walker's Grace Ability
 // Searing Flames affected by player crit?
+// Does flametongue's AP coefficient scale with level? Our values are at 80.
 // ==========================================================================
 // BUGS
 // ==========================================================================
@@ -413,7 +414,11 @@ struct fire_elemental_pet_t : public pet_t
     
     fire_elemental_spell_t( player_t* player, const char* n ) :
       spell_t( n, player, RESOURCE_MANA, SCHOOL_FIRE ),
-      int_multiplier( 0.85 ), sp_multiplier ( 0.53419 ) { }
+      int_multiplier( 0.85 ), sp_multiplier ( 0.53419 ) 
+    { 
+      // Apparently, fire elemental spell crit damage bonus is 100% now.
+      base_crit_bonus_multiplier = 2.0;
+    }
     
     virtual double total_spell_power() SC_CONST
     {
@@ -505,6 +510,7 @@ struct fire_elemental_pet_t : public pet_t
       base_spell_power_multiplier  = 1.0;
       base_attack_power_multiplier = 0.0;
       base_execute_time            = 3.5;
+      base_crit_bonus_multiplier   = 2.5;
       
       base_dd_min                = 427;
       base_dd_max                = 460;
@@ -623,6 +629,8 @@ static void trigger_flametongue_weapon( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
   double m_ft = a -> weapon -> swing_time / 4.0;
+  double m_sp = 0.1539;
+  double m_ap = p -> primary_tree() == TREE_ENHANCEMENT ? 0.04611 : 0;
 
   if ( p -> cooldowns_flametongue_weapon -> remains() > 0 ) return;
 
@@ -630,7 +638,9 @@ static void trigger_flametongue_weapon( attack_t* a )
   // Player based scaling is based on max damage in flametongue weapon tooltip
   p -> flametongue_weapon_spell -> base_dd_min      = m_ft * p -> player_data.effect_min( 8024, p -> level, E_DUMMY ) / 25.0;
   p -> flametongue_weapon_spell -> base_dd_max      = p -> flametongue_weapon_spell -> base_dd_min;
-  p -> flametongue_weapon_spell -> direct_power_mod = m_ft * 0.15244;
+  p -> flametongue_weapon_spell -> direct_power_mod = 1.0;
+  p -> flametongue_weapon_spell -> base_spell_power_multiplier = m_sp * m_ft;
+  p -> flametongue_weapon_spell -> base_attack_power_multiplier = m_ap * m_ft;
   
   // Add a very slight cooldown to flametongue weapon to prevent overly good results
   // when using FT/FT combo and synced auto-attack. This should model in-game results 
