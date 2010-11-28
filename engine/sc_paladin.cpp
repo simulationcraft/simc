@@ -2276,6 +2276,9 @@ void paladin_t::init_actions()
       action_list_str += "/consecration";
       action_list_str += "/divine_plea";
       } break;
+    default:
+      abort();
+      break;
     }
     action_list_default = 1;
   }
@@ -2296,9 +2299,10 @@ void paladin_t::init_talents()
   talents.improved_hammer_of_justice= new talent_t( this, "improved_hammer_of_justice", "Improved Hammer of Justice" );
   talents.hallowed_ground           = new talent_t( this, "hallowed_ground", "Hallowed Ground" );
   talents.hammer_of_the_righteous   = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
-  talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
   talents.wrath_of_the_lightbringer = new talent_t( this, "wrath_of_the_lightbringer", "Wrath of the Lightbringer" );
+  talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
   talents.grand_crusader            = new talent_t( this, "grand_crusader", "Grand Crusader" );
+  talents.holy_shield               = new talent_t( this, "holy_shield", "Holy Shield" );
   talents.sacred_duty               = new talent_t( this, "sacred_duty", "Sacred Duty" );
   talents.shield_of_the_templar     = new talent_t( this, "shield_of_the_templar", "Shield of the Templar" );
   // Ret
