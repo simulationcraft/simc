@@ -5,7 +5,7 @@ origin="input=m.simc"
 level=85
 race=undead
 use_pre_potion=1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0020000000000000000002303000000000000000002323021013331301021
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=2000000000000000000002303000000000000000002323021013331301021
 glyphs=molten_armor/deep_freeze/frostfire
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -14,7 +14,7 @@ actions+=/molten_armor
 actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
-actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
 actions+=/counterspell
 actions+=/mana_gem,if=mana_deficit>12500
 actions+=/evocation,if=mana_pct<39.5&target.time_to_die>60
@@ -23,7 +23,7 @@ actions+=/frostfire_orb
 actions+=/mirror_image
 actions+=/icy_veins,if=!buff.icy_veins.react&!buff.bloodlust.react
 actions+=/deep_freeze
-actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
 actions+=/frostbolt
 actions+=/evocation
@@ -37,12 +37,12 @@ waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171
 legs=firelords_leggings,heroic=1,type=cloth,stats=1177armor_217hit_257haste_345int_578sta,gems=20int_20mastery_20int_20hit_20int,enchant=95int_80sta
 feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=haste_hit,gems=20int_20hit_10haste,enchant=35mastery
 wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,reforge=crit_haste,enchant=65haste
-hands=firelords_gloves,heroic=1,type=cloth,stats=841armor_171crit_191mastery_266int_429sta,reforge=mastery_hit,gems=20int_20mastery_10mastery,enchant=65mastery
+hands=hands_of_the_twilight_council,heroic=1,type=cloth,stats=841armor_191crit_171mastery_266int_429sta,reforge=crit_hit,gems=40int_10crit,enchant=65mastery
 finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=mastery_hit,enchant=40int
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
 trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_hit,equip=onspellcrit_2178sp_30%_20dur_100cd
 back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=20hit_20haste_10int,enchant=50int
-main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
-off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit
-ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
+main_hand=blade_of_the_witching_hour,heroic=1,stats=165int_248sta_110mastery_110crit_2207sp,reforge=mastery_hit,enchant=power_torrent
+off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,reforge=haste_crit
+ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=mastery_crit
