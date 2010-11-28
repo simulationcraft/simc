@@ -23,7 +23,8 @@ actions+=/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>
 actions+=/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2
 actions+=/arcane_blast,if=cooldown.evocation.remains<40
 actions+=/evocation
-actions+=/arcane_blast,if=buff.arcane_blast.stack<4
+actions+=/arcane_blast,if=mana_pct>95
+actions+=/arcane_blast,if=buff.arcane_blast.stack<3
 actions+=/arcane_missiles
 actions+=/arcane_barrage
 actions+=/fire_blast,moving=1
