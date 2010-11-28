@@ -3029,21 +3029,23 @@ void mage_t::init_actions()
     // Fire
     else if ( primary_tree() == TREE_FIRE )
     {
-      action_list_str += "/choose_rotation";
       action_list_str += "/mana_gem,if=mana_deficit>12500";
       if ( talents.critical_mass -> rank() && level >= 26 ) action_list_str += "/scorch,debuff=1";
-      if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.combustion -> rank()   )
        {
          action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
+      if ( level >= 50) action_list_str += "/mirror_image";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb";
-      if ( level >= 26 ) action_list_str += "/scorch,if=dpm";
-      action_list_str += "/fireball,if=dps";
-      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>45";
-      action_list_str += "/fire_blast,moving=1"; // when moving
+      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>65";
+      if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
+      action_list_str += "/fireball,if=target.time_to_die<60";
+      action_list_str += "/scorch,if=mana_pct<5";
+      action_list_str += "/fireball,if=target.time_to_die<60";
+      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>30"
+      action_list_str += "/fireball,if=mana_pct>39"
       if ( level >= 26 ) action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
