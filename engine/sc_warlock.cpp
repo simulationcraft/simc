@@ -2038,34 +2038,21 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct burning_embers_t : public warlock_spell_t
 {
-
   burning_embers_t( player_t* player ) :
     warlock_spell_t( "burning_embers", player, 85421 )
   {
-    tick_may_crit= false;
+    warlock_t* p = player -> cast_warlock();
+    background = true;
+    tick_may_crit = false;
     scale_with_haste = false;
     reset();
   }
 
-  virtual double calculate_tick_damage()
-  {
-    warlock_t* p = player -> cast_warlock();
-    double cap;
-    double a;
-
-    cap = ( 0.5 * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_misc_value1( 2 ) ) / 7.0;
-    a = base_td * p -> talent_burning_embers -> effect_base_value( 1 ) / 100.0 + tick_dmg;
-
-    if ( a > cap)
-      tick_dmg = cap;
-    else
-      tick_dmg = a;
-
-    return tick_dmg;
-  }
+  virtual double calculate_tick_damage() { return base_td; }
 };
 
 // Trigger Burning Embers =========================================================
+
 static void trigger_burning_embers ( spell_t* s, double dmg )
 {
   warlock_t* p;
@@ -2081,18 +2068,19 @@ static void trigger_burning_embers ( spell_t* s, double dmg )
 
   if ( p -> talent_burning_embers -> rank() )
   {
-    if ( p -> spells_burning_embers )
-    {
-      p -> spells_burning_embers -> base_td = dmg ;
-      p -> spells_burning_embers -> execute();
-    }
-    else
-    {
-      p -> spells_burning_embers = new burning_embers_t( p );
-      p -> spells_burning_embers -> base_td = dmg ;
-      p -> spells_burning_embers -> execute();
-    }
+    if ( ! p -> spells_burning_embers ) p -> spells_burning_embers = new burning_embers_t( p );
 
+    if ( ! p -> spells_burning_embers -> ticking ) p -> spells_burning_embers -> base_td = 0;
+
+    int num_ticks = p -> spells_burning_embers -> num_ticks;
+
+    double cap = ( 0.5 * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_misc_value1( 2 ) ) / num_ticks;
+
+    p -> spells_burning_embers -> base_td += ( dmg * p -> talent_burning_embers -> effect_base_value( 1 ) / 100.0 ) / num_ticks;
+
+    if( p -> spells_burning_embers -> base_td > cap ) p -> spells_burning_embers -> base_td = cap;
+
+    p -> spells_burning_embers -> execute();
   }
 }
 
