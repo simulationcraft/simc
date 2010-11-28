@@ -1350,6 +1350,13 @@ struct arcane_missiles_t : public mage_spell_t
     tick_spell = new arcane_missiles_tick_t( p );
   }
 
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::execute();
+    p -> buffs_arcane_missiles -> expire();
+  }
+
   virtual void last_tick()
   {
     mage_t* p = player -> cast_mage();
