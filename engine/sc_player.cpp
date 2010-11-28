@@ -2352,7 +2352,7 @@ void player_t::schedule_ready( double delta_time,
 
         double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
-        if ( diff > 0 && ( last_foreground_action -> time_to_execute == 0 || sim -> strict_gcd_queue ) )
+        if ( diff > 0 && sim -> strict_gcd_queue )
         {
           lag = gcd_lag;
         }
