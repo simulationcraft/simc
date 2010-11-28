@@ -3044,8 +3044,8 @@ void mage_t::init_actions()
       action_list_str += "/fireball,if=target.time_to_die<60";
       action_list_str += "/scorch,if=mana_pct<5";
       action_list_str += "/fireball,if=target.time_to_die<60";
-      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>30"
-      action_list_str += "/fireball,if=mana_pct>39"
+      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>30";
+      action_list_str += "/fireball,if=mana_pct>39";
       if ( level >= 26 ) action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
