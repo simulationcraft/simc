@@ -36,7 +36,7 @@ wrists=manacles_of_the_sleeping_beast,heroic=1,type=leather,stats=215int_322sta_
 hands=stormriders_gloves,heroic=1,type=leather,stats=266int_429sta_191crit_171haste_1107armor,gems=40int_40int_10crit,enchant=65mastery,reforge=crit_hit
 finger1=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste
 finger2=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit
-trinket1=bell_of_enraging_resonance,heroic=1,stats=363crit,equip=onspellcrit_2178sp_30%_20dur_60cd,reforge=crit_haste
+trinket1=bell_of_enraging_resonance,heroic=1,stats=363crit,equip=onspellcrit_2178sp_30%_20dur_100cd,reforge=crit_haste
 trinket2=heart_of_ignacious,heroic=1
 back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,gems=20int_20mastery_10int,enchant=50int,reforge=mastery_hit
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,enchant=power_torrent,weapon=dagger_1.80speed_658min_1221max

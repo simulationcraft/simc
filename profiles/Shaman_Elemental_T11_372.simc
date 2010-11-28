@@ -40,7 +40,7 @@ hands=gloves_of_the_raging_elements,heroic=1,type=mail,stats=266int_429sta_191cr
 finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,enchant=40int
 finger2=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste,enchant=40int
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
-trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_spi,equip=onspellcrit_2178sp_30%_20dur_60cd
+trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_spi,equip=onspellcrit_2178sp_30%_20dur_100cd
 back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,gems=20int_20haste_10int,enchant=50int
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,enchant=power_torrent,weapon=dagger_1.80speed_658min_1221max
 off_hand=scepter_of_ice,heroic=1,stats=215int_322sta_143spi_143mastery,enchant=100int

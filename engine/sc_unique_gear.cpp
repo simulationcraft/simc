@@ -991,7 +991,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "ashen_band_of_endless_might"         ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_might"       ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "banner_of_victory"                   ) e = "OnAttackHit_1008AP_20%_10Dur_50Cd";
-  else if ( name == "bell_of_enraging_resonance"          ) e = ( heroic ? "OnSpellCrit_2178SP_30%_20Dur_60Cd" : "OnSpellCrit_1926SP_30%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "bell_of_enraging_resonance"          ) e = ( heroic ? "OnSpellCrit_2178SP_30%_20Dur_100Cd" : "OnSpellCrit_1926SP_30%_20Dur_100Cd" );
   else if ( name == "black_magic"                         ) e = "OnSpellDirectHit_250Haste_35%_10Dur_35Cd";
   else if ( name == "blood_of_the_old_god"                ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if ( name == "chuchus_tiny_box_of_horrors"         ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
