@@ -1125,8 +1125,6 @@ void player_t::init_actions()
         sim -> errorf( "Player %s has unknown action: %s\n", name(), splits[ i ].c_str() );
         return;
       }
-
-      a -> if_expr = action_expr_t::parse( a, a -> if_expr_str );
     }
   }
 
@@ -1140,6 +1138,11 @@ void player_t::init_actions()
       action_t* action = find_action( splits[ i ] );
       if ( action ) action -> background = true;
     }
+  }
+
+  for ( action_t* action = action_list; action; action = action -> next )
+  {
+    action -> if_expr = action_expr_t::parse( action, action -> if_expr_str );
   }
 }
 
@@ -2352,7 +2355,7 @@ void player_t::schedule_ready( double delta_time,
 
         double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
-        if ( diff > 0 && sim -> strict_gcd_queue )
+        if ( diff > 0 && ( last_foreground_action -> time_to_execute == 0 || sim -> strict_gcd_queue ) )
         {
           lag = gcd_lag;
         }
