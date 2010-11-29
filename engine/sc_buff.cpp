@@ -90,6 +90,7 @@ buff_t::buff_t( player_t*          p,
                 const std::string& n,
                 const char*        sname,
                 double             chance,
+                double             cd,
                 bool               q,
                 bool               r,
                 int                rng_type ) :
@@ -102,8 +103,15 @@ buff_t::buff_t( player_t*          p,
 {
   _init_buff_t();
 
-
   cooldown = player -> get_cooldown( "buff_" + name_str );
+  if ( cd < 0.0 )
+  {
+    cooldown -> duration = player -> player_data.spell_cooldown( spell_id() );
+  }
+  else
+  {
+    cooldown -> duration = cd;
+  }
   cooldown -> duration = player -> player_data.spell_cooldown( spell_id());
   if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
     cooldown -> duration = sim -> wheel_seconds - 2.0;
@@ -128,6 +136,7 @@ buff_t::buff_t( player_t*          p,
                 const uint32_t     id,
                 const std::string& n,
                 double             chance,
+                double             cd,
                 bool               q,
                 bool               r,
                 int                rng_type ) :
@@ -141,7 +150,15 @@ buff_t::buff_t( player_t*          p,
   _init_buff_t();
 
   cooldown = player -> get_cooldown( "buff_" + name_str );
-  cooldown -> duration = player -> player_data.spell_cooldown( spell_id() );
+  if ( cd < 0.0 )
+  {
+    cooldown -> duration = player -> player_data.spell_cooldown( spell_id() );
+  }
+  else
+  {
+    cooldown -> duration = cd;
+  }
+
   if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
     cooldown -> duration = sim -> wheel_seconds - 2.0;
 
@@ -762,10 +779,11 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           int                st,
                           double             a,
                           double             ch,
+                          double             cd,
                           bool               q,
                           bool               r,
                           int                rng_type ) :
-  buff_t( p, id, n, ch, q, r, rng_type ), stat(st), amount(a)
+  buff_t( p, id, n, ch, cd, q, r, rng_type ), stat(st), amount(a)
 {
 }
 

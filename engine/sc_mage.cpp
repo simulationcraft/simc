@@ -2858,7 +2858,7 @@ void mage_t::init_buffs()
   buffs_arcane_power         = new buff_t( this, talents.arcane_power -> spell_id(), "arcane_power" );
   buffs_arcane_power -> cooldown = get_cooldown( "arcane_power" );
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze -> effect_trigger_spell( 1 ), "brain_freeze", talents.brain_freeze -> proc_chance() );
-  buffs_clearcasting         = new buff_t( this, talents.arcane_concentration -> effect_trigger_spell( 1 ), "clearcasting", talents.arcane_concentration -> proc_chance() );
+  buffs_clearcasting         = new buff_t( this, talents.arcane_concentration -> effect_trigger_spell( 1 ), "clearcasting", talents.arcane_concentration -> proc_chance(), 15.0 );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
   buffs_early_frost          = new buff_t( this, "early_frost",          1, 15.0, 0, talents.early_frost -> rank() );
   buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost -> effect_trigger_spell( 1 ), "fingers_of_frost", talents.fingers_of_frost -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL ) / 100.0 );

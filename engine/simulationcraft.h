@@ -2019,12 +2019,12 @@ struct buff_t : public spell_id_t
 
   // Player Buff as spell_id_t by name
   buff_t( player_t*, const std::string& name, const char* sname,
-                  double chance=-1,
+                  double chance=-1, double duration=-1.0,
                   bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Player Buff as spell_id_t by id
   buff_t( player_t*, const uint32_t id, const std::string& name,
-                  double chance=-1,
+                  double chance=-1, double duration=-1.0,
                   bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
@@ -2075,7 +2075,7 @@ struct stat_buff_t : public buff_t
                double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
   stat_buff_t( player_t*, const uint32_t id, const std::string& name,
                  int stat, double amount,
-                 double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+                 double chance=1.0, double buff_cooldown=-1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
   virtual ~stat_buff_t() { };
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
