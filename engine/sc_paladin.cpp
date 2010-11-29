@@ -1131,6 +1131,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     scale_with_haste = true;
     spell_haste      = true;
     tick_may_crit    = true;
+    dot_behavior     = DOT_REFRESH;
     
     base_spell_power_multiplier  = tick_power_mod;
     base_attack_power_multiplier = extra_coeff();
@@ -1144,35 +1145,18 @@ struct seal_of_truth_dot_t : public paladin_attack_t
 
   virtual void player_buff()
   {
-    paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= p -> buffs_censure -> stack();
+    player_multiplier *= p()->buffs_censure->stack();
   }
 
-  virtual void execute()
+  virtual void travel(int travel_result, double travel_dmg=0)
   {
-    paladin_t* p = player -> cast_paladin();
-    player_buff();
-    target_debuff( DMG_DIRECT );
-    calculate_result();
-    if ( result_is_hit() )
+    if (result_is_hit())
     {
-      p -> buffs_censure -> trigger();
+      p()->buffs_censure->trigger();
       player_buff(); // update with new stack of the debuff
-
-      if ( ticking )
-      {
-        // Even though an attack has been executed, it counts as a refresh
-        refresh_duration();
-      }
-      else
-      {
-        // First application, take a snapshot of the haste and schedule the tick
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        schedule_tick();
-      }
     }
+    paladin_attack_t::travel(travel_result, travel_dmg);
   }
 
   virtual void last_tick()
