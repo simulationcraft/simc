@@ -4221,8 +4221,8 @@ void death_knight_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str  = "flask,type=endless_rage";
-    action_list_str += "/food,type=dragonfin_filet";
+    action_list_str  = "flask,type=titanic_strength";
+    action_list_str += "/food,type=beer_basted_crocolisk";
     if ( ( primary_tree() == TREE_FROST && main_hand_weapon.group() == WEAPON_2H )
          || primary_tree() == TREE_UNHOLY )
     {
@@ -4258,7 +4258,7 @@ void death_knight_t::init_actions()
     switch ( primary_tree() )
     {
     case TREE_BLOOD:
-      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.bone_shield -> rank() )
         action_list_str += "/bone_shield,if=!buff.bone_shield.up";
@@ -4276,55 +4276,44 @@ void death_knight_t::init_actions()
       action_list_str += "/death_coil";
       break;
     case TREE_FROST:
-      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
         action_list_str += "/pillar_of_frost,if=cooldown.blood_tap.remains>=58"; //Forces Pillar of Frost to only be used in combination with Blood Tap
+      if ( talents.howling_blast -> rank() && talents.rime -> rank() )
+        action_list_str += "/howling_blast,if=buff.rime.react";
       action_list_str += "/raise_dead,time>=5";
-      action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
+      if ( level > 81 )
+        action_list_str += "/outbreak,if=dot.frost_fever.ticking<=2|dot.blood_plague.ticking<=2";
+      action_list_str += "/howling_blast,if=dot.frost_fever.remains<=2";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
       action_list_str += "/obliterate";
       action_list_str += "/frost_strike";
-      if ( talents.howling_blast -> rank() )
-        action_list_str += "/howling_blast,if=buff.rime.react";
-      action_list_str += "/blood_strike,if=blood=2&death<=2";
-      action_list_str += "/blood_strike,if=blood=1&death<=1";
-      // If you are using Pillar of Frost, only use Blood Tap after you have consumed Death runes in your rotation.
-      // If not, use Blood Tap to produce an extra Obliterate once a minute.
-      if ( talents.pillar_of_frost -> rank() )
-      {
-        action_list_str += "/blood_tap,time>=10,if=blood=0&frost=0&unholy=0&inactive_death=0";
-      }
-      else
-      {
-        action_list_str += "/blood_tap,if=blood=1&inactive_death=1";
-      }
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&death=0";
+      action_list_str += "/blood_strike";
+      action_list_str += "/blood_tap";
+      action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
       break;
     case TREE_UNHOLY:
       action_list_str += "/raise_dead";
       if ( talents.bladed_armor -> rank() > 0 )
       {
-        action_list_str += "/indestructible_potion,if=!in_combat";
-        action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/earthen_potion,if=!in_combat";
+        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       }
       else
       {
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
       if ( talents.unholy_frenzy -> rank() )
-      {
         action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
-      }
       if ( level > 81 )
-      {
         action_list_str += "/outbreak,if=dot.frost_fever.ticking<3|dot.blood_plague.ticking<3";
-      }
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
-      action_list_str += "/dark_transformation";
+      if ( talents.dark_transformation -> rank() )
+        action_list_str += "/dark_transformation";
       if ( talents.summon_gargoyle -> rank() )
       {
         action_list_str += "/summon_gargoyle,time<=60";
@@ -4334,7 +4323,8 @@ void death_knight_t::init_actions()
       action_list_str += "/scourge_strike,if=unholy=2";
       action_list_str += "/festering_strike,if=blood=2&frost=2";
       action_list_str += "/death_coil,if=runic_power>90";
-      action_list_str += "/death_coil,if=buff.sudden_doom.react";
+      if ( talents.sudden_doom -> rank() )
+        action_list_str += "/death_coil,if=buff.sudden_doom.react";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
       action_list_str += "/death_coil";

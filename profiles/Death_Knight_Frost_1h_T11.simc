@@ -18,7 +18,8 @@ actions+=/auto_attack
 actions+=/pillar_of_frost
 actions+=/howling_blast,if=buff.rime.react
 actions+=/raise_dead,time>=5
-actions+=/icy_touch,if=dot.frost_fever.remains<=2
+actions+=/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2
+actions+=/howling_blast,if=dot.frost_fever.remains<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=2
 actions+=/obliterate
 actions+=/frost_strike
