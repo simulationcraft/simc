@@ -1024,7 +1024,7 @@ void mage_spell_t::execute()
     {
       p -> cooldowns_fire_blast -> reset();
     }
-    if ( p -> buffs_clearcasting -> trigger() )
+    if ( p -> buffs_clearcasting -> trigger() && p -> talents.arcane_potency -> rank() )
     {
       p -> buffs_arcane_potency -> trigger();
     }
