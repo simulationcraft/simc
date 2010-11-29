@@ -17,11 +17,11 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/counterspell
 actions+=/mirror_image
-actions+=/arcane_power,if=cooldown.evocation.remains<40
-actions+=/mana_gem,if=cooldown.evocation.remains<40
+actions+=/arcane_power,if=cooldown.evocation.remains<20
+actions+=/mana_gem,if=cooldown.evocation.remains<20
 actions+=/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>=3
 actions+=/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2
-actions+=/arcane_blast,if=cooldown.evocation.remains<40
+actions+=/arcane_blast,if=cooldown.evocation.remains<20
 actions+=/evocation
 actions+=/arcane_blast,if=mana_pct>95
 actions+=/arcane_blast,if=buff.arcane_blast.stack<3
