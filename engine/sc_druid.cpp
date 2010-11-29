@@ -2349,7 +2349,7 @@ struct moonfire_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-    base_td_multiplier *= p -> glyphs.moonfire * 0.20;
+    base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
