@@ -627,8 +627,7 @@ struct hunter_pet_t : public pet_t
         return m;
       }
 };
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+
 // ==========================================================================
 // Hunter Attack
 // ==========================================================================
@@ -695,7 +694,8 @@ struct hunter_spell_t : public spell_t
 };
 
 
-
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 // trigger_go_for_the_throat ===============================================
 
 static void trigger_go_for_the_throat( attack_t* a )
@@ -863,7 +863,7 @@ static void check_pet_type( action_t* a, int pet_type )
   }
 }
 
-
+} // ANONYMOUS NAMESPACE ===================================================
 
 // =========================================================================
 // Hunter Pet Attacks
@@ -2541,7 +2541,6 @@ struct trueshot_aura_t : public hunter_spell_t
     return( ! p -> buffs_trueshot_aura -> check() );
   }
 };
-} // ANONYMOUS NAMESPACE ===================================================
 
 // hunter_t::create_action ====================================================
 
