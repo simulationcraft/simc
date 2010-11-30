@@ -34,7 +34,7 @@ void attack_t::_init_attack_t()
   base_crit_bonus = 1.0;
 
   min_gcd = 1.0;
-  scale_with_haste = false;
+  hasted_ticks = false;
 
   range = 0; // Prevent action from being scheduled when player_t::moving!=0  
 }
@@ -111,8 +111,8 @@ void attack_t::player_buff()
       case WEAPON_AXE:
       case WEAPON_AXE_2H:
       case WEAPON_FIST:
-	      player_expertise += 0.03;
-	      break;
+              player_expertise += 0.03;
+              break;
       }
     }
     else if ( p -> race == RACE_TROLL )
@@ -120,8 +120,8 @@ void attack_t::player_buff()
       switch ( weapon -> type )
       {
       case WEAPON_BOW:
-	      player_crit += 0.01;
-	      break;
+              player_crit += 0.01;
+              break;
       }
     }
     else if ( p -> race == RACE_HUMAN )
@@ -132,8 +132,8 @@ void attack_t::player_buff()
       case WEAPON_MACE_2H:
       case WEAPON_SWORD:
       case WEAPON_SWORD_2H:
-	      player_expertise += 0.03;
-	      break;
+              player_expertise += 0.03;
+              break;
       }
     }
     else if ( p -> race == RACE_DWARF )
@@ -141,12 +141,12 @@ void attack_t::player_buff()
       switch ( weapon -> type )
       {
       case WEAPON_GUN: 
-	      player_crit += 0.01;
-	      break;
+              player_crit += 0.01;
+              break;
       case WEAPON_MACE:
       case WEAPON_MACE_2H:
-	      player_expertise += 0.03;
-	      break;
+              player_expertise += 0.03;
+              break;
       }
     }
     else if ( p -> race == RACE_GNOME )
@@ -155,8 +155,8 @@ void attack_t::player_buff()
       {
       case WEAPON_DAGGER:
       case WEAPON_SWORD:
-	      player_expertise += 0.03;
-	      break;
+              player_expertise += 0.03;
+              break;
       }
     }
   }
@@ -299,7 +299,7 @@ int attack_t::build_table( double* chances,
   }
 
   if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",
-				     name(), miss, dodge, parry, glance, block, crit );
+                                     name(), miss, dodge, parry, glance, block, crit );
 
   double limit = special ? 1.0 : 1.0;
   double total = 0;

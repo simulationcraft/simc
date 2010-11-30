@@ -292,7 +292,7 @@ struct mage_spell_t : public spell_t
 
   void _init_mage_spell_t()
   {
-    may_crit      = true;
+    may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
     base_crit_multiplier = 1.33;
     may_chill = false;
@@ -688,7 +688,7 @@ struct mirror_image_pet_t : public pet_t
 
 static double calculate_dot_dps( dot_t* dot )
 {
-  if( ! dot -> ticking() ) return 0;
+  if( ! dot -> ticking ) return 0;
 
   action_t* a = dot -> action;
 
@@ -777,12 +777,11 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_t( player_t* player ) : 
       mage_spell_t( "ignite", 12654, player )
     {
-      background       = true;
-      proc             = true;
-      may_resist       = true;
-      number_ticks     = num_ticks;
-      tick_may_crit    = false;
-      scale_with_haste = false;
+      background    = true;
+      proc          = true;
+      may_resist    = true;
+      tick_may_crit = false;
+      hasted_ticks  = false;
       reset();
     }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
@@ -804,12 +803,11 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
 
-  if ( p -> active_ignite -> ticking )
-  {
-    int number_ticks = p -> active_ignite -> number_ticks;
-    int remaining_ticks = number_ticks - p -> active_ignite -> current_tick;
+  dot_t* dot = p -> active_ignite -> dot;
 
-    ignite_dmg += p -> active_ignite -> base_td * remaining_ticks;
+  if ( dot -> ticking )
+  {
+    ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
   }
 
   // The Ignite SPELL_AURA_APPLIED does not actually occur immediately.
@@ -821,13 +819,13 @@ static void trigger_ignite( spell_t* s, double dmg )
 
     p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
 
-    if ( p -> active_ignite -> ticking )
+    if ( dot -> ticking )
     {
       p -> active_ignite -> refresh_duration();
     }
     else
     {
-      p -> active_ignite -> schedule_tick();
+      p -> active_ignite -> schedule_travel();
     }
     return;
   }
@@ -845,15 +843,15 @@ static void trigger_ignite( spell_t* s, double dmg )
     {
       mage_t* p = player -> cast_mage();
 
-      p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
+      p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> dot -> num_ticks;
 
-      if ( p -> active_ignite -> ticking )
+      if ( p -> active_ignite -> dot -> ticking )
       {
-	p -> active_ignite -> refresh_duration();
+        p -> active_ignite -> refresh_duration();
       }
       else
       {
-	p -> active_ignite -> schedule_tick();
+        p -> active_ignite -> schedule_travel();
       }
       if ( p -> ignite_delay_event == this ) p -> ignite_delay_event = 0;
     }
@@ -869,9 +867,9 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   p -> ignite_delay_event = new ( sim ) ignite_delay_t( sim, p, ignite_dmg );
 
-  if ( p -> active_ignite -> ticking )
+  if ( dot -> ticking )
   {
-    if ( p -> active_ignite -> tick_event -> occurs() < 
+    if ( dot -> tick_event -> occurs() < 
          p -> ignite_delay_event -> occurs() )
     {
       // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
@@ -1344,7 +1342,7 @@ struct arcane_missiles_t : public mage_spell_t
     parse_options( NULL, options_str );
     channeled = true;
     num_ticks += p -> talents.improved_arcane_missiles -> rank();
-    scale_with_haste = false; // no extra ticks
+    hasted_ticks = false;
 
     base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
 
@@ -1456,9 +1454,8 @@ struct combustion_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
-    num_ticks        = 10;
-    base_tick_time   = 1.0;
-    scale_with_haste = true;
+    num_ticks      = 10;
+    base_tick_time = 1.0;
   }
 
   virtual void execute()
@@ -1562,12 +1559,12 @@ struct evocation_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time     = 6.0;
-    base_tick_time        = 2.0;
-    num_ticks             = 3;
-    channeled             = true;
-    harmful               = false;
-    scale_with_haste      = false;
+    base_execute_time = 6.0;
+    base_tick_time    = 2.0;
+    num_ticks         = 3;
+    channeled         = true;
+    harmful           = false;
+    hasted_ticks      = false;
 
     cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
   }
@@ -1683,7 +1680,7 @@ struct flame_orb_t : public mage_spell_t
 
     num_ticks = 15;
     base_tick_time = 1.0;
-    scale_with_haste = false;
+    hasted_ticks = false;
 
     explosion_spell = new flame_orb_explosion_t( p );
     tick_spell      = new flame_orb_tick_t( p );
@@ -1874,7 +1871,6 @@ struct frostfire_bolt_t : public mage_spell_t
       base_multiplier *= 1.0 + p -> glyphs.frostfire -> effect_base_value( 1 ) / 100.0;
       num_ticks = 4;
       base_tick_time = 3.0;
-      scale_with_haste = true;
       dot_behavior = DOT_REFRESH;
     }
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
@@ -1972,7 +1968,7 @@ struct frostfire_orb_t : public mage_spell_t
 
     num_ticks = 15;
     base_tick_time = 1.0;
-    scale_with_haste = false;
+    hasted_ticks = false;
 
     explosion_spell = new frostfire_orb_explosion_t( p );
     tick_spell      = new frostfire_orb_tick_t( p );
@@ -2071,7 +2067,6 @@ struct living_bomb_t : public mage_spell_t
     base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
                            + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
 
-    scale_with_haste = true;
     dot_behavior = DOT_REFRESH;
 
     explosion_spell = new living_bomb_explosion_t( p );
@@ -2278,7 +2273,6 @@ struct pyroblast_t : public mage_spell_t
     base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_hot_streak = true;
-    scale_with_haste = true;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -2305,7 +2299,6 @@ struct pyroblast_hs_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    scale_with_haste = true;
     dot_behavior = DOT_REFRESH;
   }
 

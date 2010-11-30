@@ -467,7 +467,7 @@ struct rogue_poison_t : public spell_t
     trigger_gcd      = 0;
     may_crit         = true;
     tick_may_crit    = true;
-    scale_with_haste = false;
+    hasted_ticks     = false;
     
     base_hit         += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_SPELL_HIT_CHANCE );
     base_multiplier  *= 1.0 + p -> talents.vile_poisons -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER );
@@ -918,9 +918,9 @@ double rogue_attack_t::armor() SC_CONST
 
 void rogue_attack_t::_init_rogue_attack_t()
 {
-  may_crit              = true;
-  tick_may_crit         = true;
-  scale_with_haste      = false;
+  may_crit       = true;
+  tick_may_crit = true;
+  hasted_ticks  = false;
 
   // reset some damage related stuff ::parse_data set which we will overwhire anyway in actual spell ctors/executes
   direct_power_mod = 0.0;
@@ -1581,7 +1581,7 @@ struct eviscerate_t : public rogue_attack_t
       trigger_restless_blades( this );
 
       if ( p -> talents.serrated_blades-> rank() && 
-           p -> dots_rupture -> ticking() )
+           p -> dots_rupture -> ticking )
       {
         double chance = p -> talents.serrated_blades -> base_value() / 100.0 * combo_points_spent;
         if ( p -> rng_serrated_blades -> roll( chance ) )
@@ -1870,8 +1870,7 @@ struct killing_spree_t : public rogue_attack_t
 
   virtual void tick()
   {
-    if ( sim -> debug )
-      log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
     killing_spree_tick -> weapon = &( player -> main_hand_weapon );
     killing_spree_tick -> execute();
@@ -2021,14 +2020,14 @@ struct recuperate_t : public rogue_attack_t
     if ( sim -> log )
       log_t::output( sim, "%s performs %s", p -> name(), name() );
 
-    number_ticks = num_ticks = 2 * p -> combo_points -> count;
+    num_ticks = 2 * p -> combo_points -> count;
 
     p -> buffs_recuperate -> buff_duration = num_ticks * base_tick_time;
     p -> buffs_recuperate -> trigger();
     
     consume_resource();
 
-    schedule_tick();
+    schedule_travel();
   }
 
   virtual void tick()
@@ -2113,7 +2112,7 @@ struct rupture_t : public rogue_attack_t
     
     if ( result_is_hit() )
     {
-      number_ticks = num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
+      num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
 
       update_ready();
 
@@ -2508,7 +2507,6 @@ struct deadly_poison_t : public rogue_poison_t
   deadly_poison_t( rogue_t* player ) :  rogue_poison_t( "deadly_poison", 2818, player )
   {
     tick_power_mod = extra_coeff();
-    number_ticks = num_ticks;
   }
 
   virtual void execute()
@@ -2552,11 +2550,13 @@ struct deadly_poison_t : public rogue_poison_t
         if ( sim -> log )
           log_t::output( sim, "%s performs %s (%d)", player -> name(), name(), p -> buffs_poison_doses -> current_stack );
 
-        if ( ticking )
+        if ( dot -> ticking )
+        {
           refresh_duration();
+        }
         else
         {
-          schedule_tick();
+          schedule_travel();
           apply_poison_debuff( p );
         }
       }
@@ -3747,7 +3747,7 @@ void rogue_t::regen( double periodicity )
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                 resource_max    [ RESOURCE_ENERGY ] );
 
-  uptimes_rupture -> update( dots_rupture -> ticking() );
+  uptimes_rupture -> update( dots_rupture -> ticking );
 
   for ( int i = 0; i < 3; i++ )
     uptimes_bandits_guile[ i ] -> update( ( buffs_bandits_guile -> current_stack / 4 - 1 ) == i );

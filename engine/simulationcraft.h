@@ -254,7 +254,7 @@ enum pet_type_t
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
 
-enum dot_behavior_type { DOT_WAIT=0, DOT_CLIP, DOT_REFRESH };
+enum dot_behavior_type { DOT_CLIP=0, DOT_REFRESH };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
@@ -3455,7 +3455,7 @@ struct action_t : public spell_id_t
   int resource, tree, result;
   bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  bool tick_may_crit, tick_zero, scale_with_haste, usable_moving;
+  bool tick_may_crit, tick_zero, hasted_ticks, usable_moving;
   int dot_behavior;
   double rp_gain;
   double min_gcd, trigger_gcd, range;
@@ -3475,10 +3475,10 @@ struct action_t : public spell_id_t
   double player_crit_multiplier, player_crit_bonus_multiplier;
   double target_crit_multiplier, target_crit_bonus_multiplier;
   double base_dd_adder, player_dd_adder, target_dd_adder;
+  double player_haste;
   double resource_consumed;
   double direct_dmg, tick_dmg;
-  int num_ticks, number_ticks, current_tick, added_ticks;
-  int ticking;
+  int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
   bool normalize_weapon_damage;
@@ -3489,7 +3489,6 @@ struct action_t : public spell_id_t
   dot_t* dot;
   stats_t* stats;
   event_t* execute_event;
-  event_t* tick_event;
   event_t* travel_event;
   double time_to_execute, time_to_tick, time_to_travel, travel_speed;
   int rank_index, bloodlust_active;
@@ -3499,8 +3498,6 @@ struct action_t : public spell_id_t
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int P404, moving, vulnerable, invulnerable, wait_on_ready;
-  double snapshot_haste;
-  bool recast;
   bool round_base_dmg;
   std::string if_expr_str;
   action_expr_t* if_expr;
@@ -3694,30 +3691,37 @@ struct dot_t
   player_t* player;
   action_t* action;
   std::string name_str;
+  event_t* tick_event;
+  int num_ticks, current_tick, added_ticks, ticking;
   double ready;
   dot_t* next;
-  dot_t() : action(0) {}
-  dot_t( const std::string& n, player_t* p ) : player(p), action(0), name_str(n), ready(-1), next(0) {}
+  dot_t() : player(0) {}
+  dot_t( const std::string& n, player_t* p ) : 
+    player(p), action(0), name_str(n), tick_event(0),
+    num_ticks(0), current_tick(0), added_ticks(0), ticking(0),
+    ready(-1), next(0) {}
   virtual ~dot_t() {}
-  virtual void reset() { action=0; ready=-1; }
-  virtual void start( action_t* a, double duration )
+  virtual void reset() { tick_event=0; current_tick=0; added_ticks=0; ticking=0; ready=-1; }
+  virtual void recalculate_ready()
   {
-    action = a;
-    ready = player -> sim -> current_time + duration;
+    // Extending a DoT does not interfere with the next tick event.  To determine the 
+    // new finish time for the DoT, start from the time of the next tick and add the time 
+    // for the remaining ticks to that event.
+    int remaining_ticks = num_ticks - current_tick;
+    ready = 0.001 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
   }
   virtual double remains()
   {
     if ( ! action ) return 0;
-    if ( ! action -> ticking ) return 0;
+    if ( ! ticking ) return 0;
     return ready - player -> sim -> current_time;
   }
   virtual int ticks()
   {
     if ( ! action ) return 0;
-    if ( ! action -> ticking ) return 0;
-    return ( action -> number_ticks - action -> current_tick );
+    if ( ! ticking ) return 0;
+    return ( num_ticks - current_tick );
   }
-  virtual bool ticking() { return action && action -> ticking; }
   virtual const char* name() { return name_str.c_str(); }
 };
 
@@ -3776,12 +3780,12 @@ struct action_execute_event_t : public event_t
   virtual void execute();
 };
 
-// Action Tick Event =========================================================
+// DoT Tick Event ============================================================
 
-struct action_tick_event_t : public event_t
+struct dot_tick_event_t : public event_t
 {
-  action_t* action;
-  action_tick_event_t( sim_t* sim, action_t* a, double time_to_tick );
+  dot_t* dot;
+  dot_tick_event_t( sim_t* sim, dot_t* d, double time_to_tick );
   virtual void execute();
 };
 
@@ -3868,6 +3872,7 @@ struct uptime_t
   uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
   virtual ~uptime_t() {}
   void   update( bool is_up ) { if ( is_up ) up++; else down++; }
+  void   update( int  is_up ) { update( is_up ? true : false ); }
   double percentage() SC_CONST { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
   virtual void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
   const char* name() SC_CONST { return name_str.c_str(); }

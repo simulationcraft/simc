@@ -1000,7 +1000,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
-	  
+          
     cooldown -> duration = 8;
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
@@ -1057,7 +1057,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
-	  
+          
     cooldown -> duration = 8;
 
     if ( p -> glyphs.judgement ) base_multiplier *= 1.10;
@@ -1128,7 +1128,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
   {
     background       = true;
     proc             = true;
-    scale_with_haste = true;
+    hasted_ticks     = true;
     spell_haste      = true;
     tick_may_crit    = true;
     dot_behavior     = DOT_REFRESH;
@@ -1502,7 +1502,7 @@ struct consecration_t : public paladin_spell_t
 
   virtual void tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     consecration_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -1592,11 +1592,11 @@ struct exorcism_t : public paladin_spell_t
     blazing_light_multiplier = 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1);
 
     holy_power_chance = p->talents.divine_purpose->proc_chance();
-	  
+          
     may_crit = true;
     tick_may_crit = true;
     dot_behavior = DOT_REFRESH;
-    scale_with_haste = false;
+    hasted_ticks = false;
 
     direct_power_mod = 1.0;
     tick_power_mod = 0.2/3; // glyph of exorcism is 20% of damage over three ticks ... FIXME: or just base damage?
@@ -2221,7 +2221,7 @@ void paladin_t::init_actions()
       action_list_str += "/zealotry,if=buff.avenging_wrath.down";
       if (spells.inquisition->ok())
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff.hand_of_light.react)";
-      action_list_str += "/exorcism,recast=1,if=buff.the_art_of_war.react";
+      action_list_str += "/exorcism,if=buff.the_art_of_war.react";
       action_list_str += "/hammer_of_wrath";
       // CS before TV if <3 power, even with HoL up
       action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
@@ -2460,8 +2460,8 @@ int paladin_t::target_swing()
 
       if ( max_reschedule > 0 )
       {
-	main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
-	procs_parry_haste -> occur();
+        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+        procs_parry_haste -> occur();
       }
     }
   }

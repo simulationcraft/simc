@@ -817,7 +817,7 @@ struct searing_flames_t : public shaman_spell_t
     tick_may_crit    = true;  
     proc             = true;      
     dot_behavior     = DOT_REFRESH;
-    scale_with_haste = false;
+    hasted_ticks     = false;
     
     // Override spell data values, as they seem wrong, instead
     // make searing totem calculate the damage portion of the
@@ -1690,7 +1690,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     if ( max_lvb_cd > 0  )
       if ( p -> cooldowns_lava_burst -> remains() > ( max_lvb_cd * haste() ) )
-	    return false;
+            return false;
 
     return shaman_spell_t::ready();
   }
@@ -1875,9 +1875,9 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
       {
-        double nticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> active_flame_shock -> base_tick_time;
-        nticks *= 1.0 / p -> active_flame_shock -> snapshot_haste;
-        p -> active_flame_shock -> extend_duration( int( floor( nticks + 0.5 ) ) );
+        double extra_ticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> active_flame_shock -> base_tick_time;
+        extra_ticks *= 1.0 / p -> active_flame_shock -> player_haste;
+        p -> active_flame_shock -> extend_duration( int( floor( extra_ticks + 0.5 ) ) );
       }
     }
   }
@@ -2332,9 +2332,7 @@ struct flame_shock_t : public shaman_spell_t
     
     base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
-    double n              = num_ticks;
-    n                    *= 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION );
-    num_ticks             = (int) n;
+    num_ticks = (int) floor( ( (double) num_ticks ) * ( 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION ) ) );
 
     cooldown              = p -> cooldowns_shock;
     cooldown -> duration  = p -> player_data.spell_cooldown( spell_id() ) + 
@@ -2349,13 +2347,6 @@ struct flame_shock_t : public shaman_spell_t
     observer              = &( p -> active_flame_shock );
   }
 
-  virtual void execute()
-  {
-    added_ticks = 0;
-    
-    shaman_spell_t::execute();
-  }
-  
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
@@ -2461,7 +2452,7 @@ struct shaman_totem_t : public shaman_spell_t
     parse_options( options, options_str );
 
     harmful              = false;
-    scale_with_haste     = false;
+    hasted_ticks         = false;
     base_cost_reduction += p -> talent_totemic_focus -> mod_additive( P_RESOURCE_COST );
     totem_duration       = p -> player_data.spell_duration( spell_id() ) * 
       ( 1.0 + p -> talent_totemic_focus -> mod_additive( P_DURATION ) );
@@ -2474,15 +2465,13 @@ struct shaman_totem_t : public shaman_spell_t
 
     consume_resource();
     update_ready();
-
-    if ( num_ticks )
-      schedule_tick();
+    schedule_travel();
   }
   
   virtual void tick()
   {
     if ( sim -> debug ) 
-      log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+      log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
     target_debuff( DMG_DIRECT );
     calculate_result();
@@ -2523,14 +2512,10 @@ struct fire_elemental_totem_t : public shaman_totem_t
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
-
-    num_ticks            = 1; 
-    number_ticks         = num_ticks;
-    base_tick_time       = totem_duration;
-    
+    num_ticks = 1; 
+    base_tick_time = totem_duration;
     cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
-    
-    observer             = &( p -> active_fire_totem );
+    observer = &( p -> active_fire_totem );
   }
   
   virtual void schedule_execute()
@@ -2648,7 +2633,6 @@ struct magma_totem_t : public shaman_totem_t
     // Spell id 8188 does the triggering of magma totem's aura
     base_tick_time    = p -> player_data.effect_period( 8188, E_APPLY_AURA, A_PERIODIC_TRIGGER_SPELL );
     num_ticks         = (int) ( totem_duration / base_tick_time );
-    number_ticks      = num_ticks;
     
     // Fill out scaling data
     trig_spell_id     = p -> player_data.effect_trigger_spell_id( 8188, E_APPLY_AURA, A_PERIODIC_TRIGGER_SPELL );
@@ -2818,7 +2802,6 @@ struct searing_totem_t : public shaman_totem_t
     travel_speed         = p -> player_data.spell_missile_speed( 3606 );
     range                = p -> player_data.spell_max_range( 3606 );
     num_ticks            = (int) ( totem_duration / base_tick_time );
-    number_ticks         = num_ticks;
     // Also kludge totem school to fire
     school               = spell_id_t::get_school_type( p -> player_data.spell_school_mask( 3606 ) );
     stats -> school      = SCHOOL_FIRE;

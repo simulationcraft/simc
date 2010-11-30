@@ -536,82 +536,82 @@ struct hunter_pet_t : public pet_t
 
   virtual std::vector<talent_translation_t>& get_talent_list()
   {
-	if(this->talent_list.empty())
-	{
-		talent_translation_t *translation_table;
-		if ( group() == PET_FEROCITY )
-		{
-		  talent_translation_t group_table[] =
-		  {
-			{  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
-			{  2, 0, NULL                               , 0, 0 },
-			{  3, 0, NULL                               , 0, 0 },
-			{  4, 0, NULL                               , 0, 0 },
-			{  5, 0, NULL                               , 1, 0 },
-			{  6, 0, NULL                               , 1, 0 },
-			{  7, 3, &( talents.spiked_collar          ), 1, 0 },
-			{  8, 0, NULL                               , 1, 0 },
-			{  9, 3, &( talents.culling_the_herd       ), 2, 0 },
-			{ 10, 0, NULL                               , 2, 0 },
-			{ 11, 0, NULL                               , 2, 0 },
-			{ 12, 0, NULL                               , 3, 6 },
-			{ 13, 3, &( talents.spiders_bite           ), 3, 0 },
-			{ 14, 0, NULL                               , 3, 0 },
-			{ 15, 1, &( talents.rabid                  ), 4, 9 },
-			{ 16, 0, NULL                               , 4, 12 },
-			{ 17, 1, &( talents.call_of_the_wild       ), 4, 13 },
-			{ 18, 2, &( talents.shark_attack           ), 5, 0 },
-			{ 19, 2, &( talents.wild_hunt              ), 5, 17 },
-			{  0, 0, NULL                                } /// must have talent with index 0 here
-		  };
-		  translation_table = group_table;
-		}
-		else if ( group() == PET_CUNNING )
-		{
-		  talent_translation_t group_table[] =
-		  {
-			{  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
-			{  2, 0, NULL                               , 0, 0 },
-			{  3, 0, NULL                               , 0, 0 },
-			{  4, 0, NULL                               , 0, 0 },
-			{  5, 0, NULL                               , 1, 0 },
-			{  6, 0, NULL                               , 1, 2 },
-			{  7, 2, &( talents.owls_focus             ), 1, 0 },
-			{  8, 3, &( talents.spiked_collar          ), 1, 0 },
-			{  9, 3, &( talents.culling_the_herd       ), 2, 0 },
-			{ 10, 0, NULL                               , 2, 0 },
-			{ 11, 0, NULL                               , 2, 0 },
-			{ 12, 0, NULL                               , 3, 0 },
-			{ 13, 0, NULL                               , 3, 0 },
-			{ 14, 2, &( talents.feeding_frenzy         ), 3, 8 },
-			{ 15, 1, &( talents.wolverine_bite         ), 4, 9 },
-			{ 16, 1, &( talents.roar_of_recovery       ), 4, 0 },
-			{ 17, 0, NULL                               , 4, 0 },
-			{ 18, 0, NULL                               , 4, 0 },
-			{ 19, 2, &( talents.wild_hunt              ), 5, 15 },
-			{ 20, 0, NULL                               , 5, 18 },
-			{  0, 0, NULL                                } /// must have talent with index 0 here
-		  };
-		  translation_table = group_table;
-		}
-		else // TENACITY
-		{
-		  return talent_list;
-		}
+        if(this->talent_list.empty())
+        {
+                talent_translation_t *translation_table;
+                if ( group() == PET_FEROCITY )
+                {
+                  talent_translation_t group_table[] =
+                  {
+                        {  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
+                        {  2, 0, NULL                               , 0, 0 },
+                        {  3, 0, NULL                               , 0, 0 },
+                        {  4, 0, NULL                               , 0, 0 },
+                        {  5, 0, NULL                               , 1, 0 },
+                        {  6, 0, NULL                               , 1, 0 },
+                        {  7, 3, &( talents.spiked_collar          ), 1, 0 },
+                        {  8, 0, NULL                               , 1, 0 },
+                        {  9, 3, &( talents.culling_the_herd       ), 2, 0 },
+                        { 10, 0, NULL                               , 2, 0 },
+                        { 11, 0, NULL                               , 2, 0 },
+                        { 12, 0, NULL                               , 3, 6 },
+                        { 13, 3, &( talents.spiders_bite           ), 3, 0 },
+                        { 14, 0, NULL                               , 3, 0 },
+                        { 15, 1, &( talents.rabid                  ), 4, 9 },
+                        { 16, 0, NULL                               , 4, 12 },
+                        { 17, 1, &( talents.call_of_the_wild       ), 4, 13 },
+                        { 18, 2, &( talents.shark_attack           ), 5, 0 },
+                        { 19, 2, &( talents.wild_hunt              ), 5, 17 },
+                        {  0, 0, NULL                                } /// must have talent with index 0 here
+                  };
+                  translation_table = group_table;
+                }
+                else if ( group() == PET_CUNNING )
+                {
+                  talent_translation_t group_table[] =
+                  {
+                        {  1, 2, &( talents.cobra_reflexes         ), 0, 0 },
+                        {  2, 0, NULL                               , 0, 0 },
+                        {  3, 0, NULL                               , 0, 0 },
+                        {  4, 0, NULL                               , 0, 0 },
+                        {  5, 0, NULL                               , 1, 0 },
+                        {  6, 0, NULL                               , 1, 2 },
+                        {  7, 2, &( talents.owls_focus             ), 1, 0 },
+                        {  8, 3, &( talents.spiked_collar          ), 1, 0 },
+                        {  9, 3, &( talents.culling_the_herd       ), 2, 0 },
+                        { 10, 0, NULL                               , 2, 0 },
+                        { 11, 0, NULL                               , 2, 0 },
+                        { 12, 0, NULL                               , 3, 0 },
+                        { 13, 0, NULL                               , 3, 0 },
+                        { 14, 2, &( talents.feeding_frenzy         ), 3, 8 },
+                        { 15, 1, &( talents.wolverine_bite         ), 4, 9 },
+                        { 16, 1, &( talents.roar_of_recovery       ), 4, 0 },
+                        { 17, 0, NULL                               , 4, 0 },
+                        { 18, 0, NULL                               , 4, 0 },
+                        { 19, 2, &( talents.wild_hunt              ), 5, 15 },
+                        { 20, 0, NULL                               , 5, 18 },
+                        {  0, 0, NULL                                } /// must have talent with index 0 here
+                  };
+                  translation_table = group_table;
+                }
+                else // TENACITY
+                {
+                  return talent_list;
+                }
 
-		int count = 0;
+                int count = 0;
 
-	  	for(int i=0; translation_table[i].index;i++)
-		{
-			if(translation_table[i].index > 0)
-			{
-				talent_list.push_back(translation_table[i]);
-				talent_list[count].tree = 0;
-				talent_list[count].index = count+1;
-				count++;
-			}
-		}
-	}
+                for(int i=0; translation_table[i].index;i++)
+                {
+                        if(translation_table[i].index > 0)
+                        {
+                                talent_list.push_back(translation_table[i]);
+                                talent_list[count].tree = 0;
+                                talent_list[count].index = count+1;
+                                count++;
+                        }
+                }
+        }
     return talent_list;
   }
 
@@ -693,9 +693,8 @@ struct hunter_spell_t : public spell_t
   virtual double gcd() SC_CONST;
 };
 
+namespace { // ANONYMOUS NAMESPACE =========================================
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
 // trigger_go_for_the_throat ===============================================
 
 static void trigger_go_for_the_throat( attack_t* a )
@@ -752,16 +751,16 @@ static void trigger_piercing_shots( action_t* a )
   {
     piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, 63468 )
     {
-      may_miss    = false;
-      may_crit    = true;
-      background  = true;
-      proc        = true;
-      scale_with_haste = false;
+      may_miss     = false;
+      may_crit     = true;
+      background   = true;
+      proc         = true;
+      hasted_ticks = false;
 
       base_multiplier = 1.0;
       tick_power_mod = 0;
-      number_ticks=num_ticks = 8;
-      base_tick_time=1.0;
+      num_ticks = 8;
+      base_tick_time = 1.0;
     }
     void player_buff() {}
     void target_debuff( int dmg_type )
@@ -778,16 +777,15 @@ static void trigger_piercing_shots( action_t* a )
 
   if ( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
-  if ( p -> active_piercing_shots -> ticking )
-  {
-    int num_ticks = p -> active_piercing_shots -> num_ticks;
-    int remaining_ticks = num_ticks - p -> active_piercing_shots -> current_tick;
+  dot_t* dot = p -> active_piercing_shots -> dot;
 
-    dmg += p -> active_piercing_shots -> base_td * remaining_ticks;
+  if ( dot -> ticking )
+  {
+    dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
 
     p -> active_piercing_shots -> cancel();
   }
-  p -> active_piercing_shots -> base_td = dmg / 8;
+  p -> active_piercing_shots -> base_td = dmg / p -> active_piercing_shots -> num_ticks;
   p -> active_piercing_shots -> execute();
 }
 
@@ -858,12 +856,12 @@ static void check_pet_type( action_t* a, int pet_type )
   if ( p -> pet_type != pet_type )
   {
     a -> sim -> errorf( "Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
-			o -> name(), p -> name(), a -> name() );
+                        o -> name(), p -> name(), a -> name() );
     a -> background = true;
   }
 }
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
 // =========================================================================
 // Hunter Pet Attacks
@@ -1942,7 +1940,7 @@ struct explosive_shot_t : public hunter_attack_t
 
   virtual void tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     explosive_tick -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -1979,7 +1977,7 @@ struct kill_shot_t : public hunter_attack_t
     weapon_multiplier = 1.5;
     direct_power_mod = 0.3;
 
-		normalize_weapon_speed = true;
+                normalize_weapon_speed = true;
     if ( p -> glyphs.kill_shot -> ok() )
     {
       cooldown -> duration -= 6;
@@ -2133,7 +2131,7 @@ struct steady_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-		normalize_weapon_damage = true;
+                normalize_weapon_damage = true;
     normalize_weapon_speed  = true;
     
     direct_power_mod = 0.021;

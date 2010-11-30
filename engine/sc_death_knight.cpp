@@ -386,17 +386,11 @@ struct death_knight_t : public player_t
   virtual int       primary_role() SC_CONST { return ROLE_ATTACK; }
   virtual void      trigger_runic_empowerment();
 
-  // Death Knight Specific helperfunctions
-  int  diseases()
+  int diseases()
   {
     int disease_count = 0;
-
-    if ( dots_blood_plague -> ticking() )
-      disease_count++;
-
-    if ( dots_frost_fever -> ticking() )
-      disease_count++;
-
+    if ( dots_blood_plague -> ticking ) disease_count++;
+    if ( dots_frost_fever  -> ticking )disease_count++;
     return disease_count;
   }
 
@@ -754,13 +748,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
   int drw_diseases()
   {
     int drw_disease_count = 0;
-
-    if ( dots_drw_blood_plague -> ticking() )
-      drw_disease_count++;
-
-    if ( dots_drw_frost_fever -> ticking() )
-      drw_disease_count++;
-
+    if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
+    if ( dots_drw_frost_fever  -> ticking ) drw_disease_count++;
     return drw_disease_count;
   }
 
@@ -815,7 +804,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       num_ticks          = 7 + o -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
       direct_power_mod  *= 0.055 * 1.15;
       may_miss           = false;
-      scale_with_haste   = false;
+      hasted_ticks       = false;
       base_multiplier   *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
@@ -899,7 +888,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background        = true;
       trigger_gcd       = 0;
       base_tick_time    = 3.0;
-      scale_with_haste  = false;
+      hasted_ticks      = false;
       may_miss          = false;
       num_ticks         = 7 + o -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
       direct_power_mod *= 0.055 * 1.15;
@@ -1826,14 +1815,14 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 
       parse_data( p -> player_data );
 
-      base_tick_time    = 1.0;
-      num_ticks         = 10;
-      background        = true;
-      proc              = true;
-      may_crit          = false;
-      may_resist        = false;
-      may_miss          = false;
-      scale_with_haste  = false;
+      base_tick_time = 1.0;
+      num_ticks      = 10;
+      background     = true;
+      proc           = true;
+      may_crit       = false;
+      may_resist     = false;
+      may_miss       = false;
+      hasted_ticks   = false;
 
       reset();
     }
@@ -1853,10 +1842,13 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
     p -> active_unholy_blight = new unholy_blight_t( p );
 
   double unholy_blight_dmg = death_coil_dmg * 0.10;
-  if ( p -> active_unholy_blight -> ticking )
+
+  dot_t* dot = p -> active_unholy_blight -> dot;
+
+  if ( dot -> ticking )
   {
-    int remaining_ticks = p -> active_unholy_blight -> num_ticks - p -> active_unholy_blight -> current_tick;
-    unholy_blight_dmg += p -> active_unholy_blight -> base_td * remaining_ticks;
+    unholy_blight_dmg += p -> active_unholy_blight -> base_td * dot -> ticks();
+
     p -> active_unholy_blight -> cancel();
   }
   p -> active_unholy_blight -> base_td = unholy_blight_dmg / p -> active_unholy_blight -> num_ticks;
@@ -2343,14 +2335,14 @@ struct blood_plague_t : public death_knight_spell_t
 
     parse_data( p -> player_data );
 
-    base_td              = 1.0;
-    base_tick_time       = 3.0;
-    tick_may_crit        = true;
-    num_ticks            = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
-    tick_power_mod       = 0.055 * 1.15;
-    base_multiplier     *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
-    may_miss             = false;
-    scale_with_haste     = false;
+    base_td          = 1.0;
+    base_tick_time   = 3.0;
+    tick_may_crit    = true;
+    num_ticks        = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
+    tick_power_mod   = 0.055 * 1.15;
+    base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
+    may_miss         = false;
+    hasted_ticks     = false;
     reset(); // Not a real action
   }
 
@@ -2376,13 +2368,6 @@ struct blood_plague_t : public death_knight_spell_t
     {
       player_multiplier *= 1.0 + p -> mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
     }
-  }
-
-  virtual void refresh_duration()
-  {
-    death_knight_spell_t::refresh_duration();
-
-    trigger_ebon_plaguebringer( this );
   }
 };
 
@@ -2854,10 +2839,8 @@ struct festering_strike_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      if (  p -> dots_blood_plague -> ticking() )
-        p -> dots_blood_plague -> action -> extend_duration( 2 );
-      if (  p -> dots_frost_fever -> ticking() )
-        p -> dots_frost_fever -> action -> extend_duration( 2 );
+      if ( p -> dots_blood_plague -> ticking ) p -> dots_blood_plague -> action -> extend_duration( 2 );
+      if ( p -> dots_frost_fever  -> ticking ) p -> dots_frost_fever  -> action -> extend_duration( 2 );
     }
   }
 };
@@ -2875,7 +2858,7 @@ struct frost_fever_t : public death_knight_spell_t
 
     base_td           = 1.0;
     base_tick_time    = 3.0;
-    scale_with_haste  = false;
+    hasted_ticks      = false;
     may_miss          = false;
     tick_may_crit     = true;
     base_crit_bonus_multiplier /= 2.0;  // current bug, FF crits for 150% instead of 200%, which means half the bonus multiplier.
@@ -2897,14 +2880,6 @@ struct frost_fever_t : public death_knight_spell_t
   virtual void extend_duration( int extra_ticks )
   {
     death_knight_spell_t::extend_duration( extra_ticks );
-
-    trigger_brittle_bones( this );
-    trigger_ebon_plaguebringer( this );
-  }
-
-  virtual void refresh_duration()
-  {
-    death_knight_spell_t::refresh_duration();
 
     trigger_brittle_bones( this );
     trigger_ebon_plaguebringer( this );
@@ -3510,15 +3485,18 @@ struct plague_strike_t : public death_knight_attack_t
     death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
+    {
       p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
-
+    }
     if ( result_is_hit() )
     {
-      if ( p -> dots_blood_plague -> ticking() )
+      if ( p -> dots_blood_plague -> ticking ) 
+      {
         p -> buffs_blood_swarm -> trigger();
+      }
 
-      if ( ! p -> blood_plague )
-        p -> blood_plague = new blood_plague_t( p );
+      if ( ! p -> blood_plague ) p -> blood_plague = new blood_plague_t( p );
+
       p -> blood_plague -> execute();
     }
 
@@ -4761,8 +4739,8 @@ void death_knight_t::regen( double periodicity )
   if ( talents.butchery -> rank() )
     resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect_base_value( 2 ) / 10.0 / 5.0 / periodicity ), gains_butchery );
 
-  uptimes_blood_plague -> update( dots_blood_plague -> ticking() );
-  uptimes_frost_fever  -> update( dots_frost_fever -> ticking() );
+  uptimes_blood_plague -> update( dots_blood_plague -> ticking );
+  uptimes_frost_fever  -> update( dots_frost_fever  -> ticking );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {

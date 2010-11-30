@@ -130,7 +130,7 @@ struct _stat_list_t {
   };
   static const _weapon_list_t succubus_weapon[]=
   {
-	  { 80, 824.6, 824.6, 2.0 },
+          { 80, 824.6, 824.6, 2.0 },
     { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
     { 0, 0, 0, 0 }
@@ -391,7 +391,7 @@ struct warlock_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual void		  init_resources( bool force );
+  virtual void            init_resources( bool force );
   virtual void      reset();
   virtual std::vector<talent_translation_t>& get_talent_list();
   virtual std::vector<option_t>& get_options();
@@ -412,28 +412,28 @@ struct warlock_t : public player_t
   int affliction_effects()
   {
     int effects = 0;
-    if ( dots_curse_of_elements -> ticking()    ) effects++;
-    if ( dots_bane_of_agony -> ticking()        ) effects++;
-    if ( dots_bane_of_doom -> ticking()         ) effects++;
-    if ( dots_corruption -> ticking()           ) effects++;
-    if ( dots_drain_life -> ticking()           ) effects++;
-    if ( dots_drain_soul -> ticking()           ) effects++;
-    if ( dots_unstable_affliction -> ticking()  ) effects++;
-    if ( buffs_haunted        -> check()        ) effects++;
-    if ( buffs_shadow_embrace -> check()        ) effects++;
+    if ( dots_curse_of_elements -> ticking    ) effects++;
+    if ( dots_bane_of_agony -> ticking        ) effects++;
+    if ( dots_bane_of_doom -> ticking         ) effects++;
+    if ( dots_corruption -> ticking           ) effects++;
+    if ( dots_drain_life -> ticking           ) effects++;
+    if ( dots_drain_soul -> ticking           ) effects++;
+    if ( dots_unstable_affliction -> ticking  ) effects++;
+    if ( buffs_haunted        -> check()      ) effects++;
+    if ( buffs_shadow_embrace -> check()      ) effects++;
     return effects;
   }
   int active_dots()
   {
     int dots = 0;
-    if ( dots_bane_of_agony -> ticking()            ) dots++;
-    if ( dots_bane_of_doom -> ticking()             ) dots++;
-    if ( dots_corruption -> ticking()               ) dots++;
-    if ( dots_drain_life -> ticking()               ) dots++;
-    if ( dots_drain_soul -> ticking()               ) dots++;
-    if ( dots_immolate -> ticking()                 ) dots++;
-    if ( dots_shadowflame -> ticking()              ) dots++;
-    if ( dots_unstable_affliction -> ticking()      ) dots++;
+    if ( dots_bane_of_agony -> ticking            ) dots++;
+    if ( dots_bane_of_doom -> ticking             ) dots++;
+    if ( dots_corruption -> ticking               ) dots++;
+    if ( dots_drain_life -> ticking               ) dots++;
+    if ( dots_drain_soul -> ticking               ) dots++;
+    if ( dots_immolate -> ticking                 ) dots++;
+    if ( dots_shadowflame -> ticking              ) dots++;
+    if ( dots_unstable_affliction -> ticking      ) dots++;
     return dots;
   }
 };
@@ -656,12 +656,12 @@ struct warlock_pet_t : public pet_t
   virtual void dismiss()
   {
     pet_t::dismiss();
-	/* Commenting this out for now - we never dismiss the real pet during combat
-	anyway, and we don't want to accidentally turn off DP when guardians are dismissed
+        /* Commenting this out for now - we never dismiss the real pet during combat
+        anyway, and we don't want to accidentally turn off DP when guardians are dismissed
     warlock_t*  o = owner -> cast_warlock();
     if ( o -> talent_demonic_pact -> rank() )
       sim -> auras.demonic_pact -> expire();
-	  */
+          */
   }
 
   virtual void interrupt()
@@ -871,14 +871,14 @@ struct warlock_spell_t : public spell_t
 
     player_multiplier *= 1.0 + ( p -> talent_demonic_pact -> effect_base_value( 3 ) / 100.0 );
 
-	  if ( p -> buffs_tier10_4pc_caster -> up() )
-	  {
+          if ( p -> buffs_tier10_4pc_caster -> up() )
+          {
       player_multiplier *= ( 1.0 + p -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0 );
-	  }
+          }
 
     if ( p -> buffs_demon_soul_felguard -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
     {
-	    player_multiplier *= 1.0 + p -> buffs_demon_soul_felguard -> effect_base_value( 2 ) / 100.0;
+            player_multiplier *= 1.0 + p -> buffs_demon_soul_felguard -> effect_base_value( 2 ) / 100.0;
     }
 
     if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
@@ -966,27 +966,25 @@ struct warlock_spell_t : public spell_t
     {
       p -> buffs_demon_soul_imp -> decrement();
     }
+  }
 
+  virtual double cost() SC_CONST
+  {
+    if ( usable_pre_combat && ! player -> in_combat ) return 0;
+    return spell_t::cost();
   }
 
   virtual double gcd() SC_CONST
   {
-    double t = spell_t::gcd();
-
-    if ( usable_pre_combat && ! player -> in_combat ) t=0;
-
-    return t;
+    if ( usable_pre_combat && ! player -> in_combat ) return 0;
+    return spell_t::gcd();
   }
 
   virtual double execute_time() SC_CONST
   {
-     double t = spell_t::execute_time();
-
-     if ( usable_pre_combat && !player -> in_combat ) t=0;
-
-     return t;
+    if ( usable_pre_combat && ! player -> in_combat ) return 0;
+    return spell_t::execute_time();
   }
-
 
   // trigger_impending_doom ===================================================
 
@@ -1041,7 +1039,7 @@ struct warlock_spell_t : public spell_t
 
     if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> rank_spell() -> effect_base_value( 3 ) )
     {
-    	return p -> talent_deaths_embrace -> effect_base_value( 2 ) / 100.0;
+        return p -> talent_deaths_embrace -> effect_base_value( 2 ) / 100.0;
     }
 
     return 0;
@@ -1055,7 +1053,7 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> talent_everlasting_affliction -> rank() ) return;
 
-    if ( ! p -> dots_corruption -> ticking() ) return;
+    if ( ! p -> dots_corruption -> ticking ) return;
 
     if ( p -> talent_everlasting_affliction -> rank() )
     {
@@ -1280,7 +1278,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct legion_strike_t : public warlock_pet_attack_t
   {
     legion_strike_t( player_t* player ) :
-		warlock_pet_attack_t( "legion_strike", player, "Legion Strike" )
+                warlock_pet_attack_t( "legion_strike", player, "Legion Strike" )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
@@ -1339,7 +1337,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
     virtual void tick()
     {
-      if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+      if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
       felstorm_tick -> weapon = &( player -> main_hand_weapon );
       felstorm_tick -> execute();
@@ -1600,10 +1598,9 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     {
       parse_options( NULL, options_str );
 
-      harmful           = false;
-      num_ticks         = 1;
-      number_ticks      = 1;
-      scale_with_haste  = false;
+      harmful      = false;
+      num_ticks    = 1;
+      hasted_ticks = false;
 
       warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
       immolation_damage = new immolation_damage_t( p );
@@ -1611,7 +1608,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
 
   virtual void tick()
   {
-    current_tick = 0; // ticks indefinitely
+    dot -> current_tick = 0; // ticks indefinitely
     immolation_damage -> execute();
     update_time( DMG_OVER_TIME );
   }
@@ -1798,27 +1795,18 @@ struct bane_of_agony_t : public warlock_spell_t
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
-    int a_extra_ticks = (int) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
-    // after patch 3.0.8, the added ticks are double the base damage
-    base_td_init = ( base_td_init * num_ticks + base_td_init * a_extra_ticks * 2 ) / (num_ticks + a_extra_ticks);
-    num_ticks += a_extra_ticks;
+    int extra_ticks = (int) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
 
-  }
-
-  virtual void tick()
-  {
-    double adjust = 1.0;
-
-    // Modell ramp-up damage for number_ticks==12
-    if ( number_ticks == 12 )
+    if( extra_ticks > 0 )
     {
-      if( current_tick <= 4 ) adjust = 0.5;
-      if( current_tick >= 9 ) adjust = 1.5;
+      // after patch 3.0.8, the added ticks are double the base damage
+
+      double total_damage = base_td_init * ( num_ticks + extra_ticks * 2 );
+
+      num_ticks += extra_ticks;
+
+      base_td_init = total_damage / num_ticks;
     }
-
-    base_td = base_td_init * adjust;
-
-    warlock_spell_t::tick();
   }
 
   virtual void execute()
@@ -1827,8 +1815,10 @@ struct bane_of_agony_t : public warlock_spell_t
     warlock_spell_t::execute();
     if ( result_is_hit() )
       {
-        if ( p -> dots_bane_of_doom -> ticking() )
+        if ( p -> dots_bane_of_doom -> ticking )
+        {
           p -> dots_bane_of_doom -> action -> cancel();
+        }
         else if ( p -> buffs_bane_of_havoc -> up() )
         {
           p -> buffs_bane_of_havoc -> expire();
@@ -1846,7 +1836,7 @@ struct bane_of_doom_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    scale_with_haste = false;
+    hasted_ticks = false;
 
     warlock_t* p = player -> cast_warlock();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
@@ -1860,8 +1850,10 @@ struct bane_of_doom_t : public warlock_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> dots_bane_of_agony -> ticking() )
+      if ( p -> dots_bane_of_agony -> ticking )
+      {
         p -> dots_bane_of_agony -> action -> cancel();
+      }
       else if ( p -> buffs_bane_of_havoc -> up() )
       {
         p -> buffs_bane_of_havoc -> expire();
@@ -1927,10 +1919,14 @@ struct bane_of_havoc_t : public warlock_spell_t
     {
       p -> buffs_bane_of_havoc -> trigger();
 
-      if ( p -> dots_bane_of_agony -> ticking() )
+      if ( p -> dots_bane_of_agony -> ticking )
+      {
         p -> dots_bane_of_agony -> action -> cancel();
-      else if ( p -> dots_bane_of_doom -> ticking() )
-      p -> dots_bane_of_doom -> action -> cancel();
+      }
+      else if ( p -> dots_bane_of_doom -> ticking )
+      {
+        p -> dots_bane_of_doom -> action -> cancel();
+      }
     }
   }
 
@@ -2044,7 +2040,7 @@ struct burning_embers_t : public warlock_spell_t
   {
     background = true;
     tick_may_crit = false;
-    scale_with_haste = false;
+    hasted_ticks = false;
     reset();
   }
 
@@ -2070,7 +2066,7 @@ static void trigger_burning_embers ( spell_t* s, double dmg )
   {
     if ( ! p -> spells_burning_embers ) p -> spells_burning_embers = new burning_embers_t( p );
 
-    if ( ! p -> spells_burning_embers -> ticking ) p -> spells_burning_embers -> base_td = 0;
+    if ( ! p -> spells_burning_embers -> dot -> ticking ) p -> spells_burning_embers -> base_td = 0;
 
     int num_ticks = p -> spells_burning_embers -> num_ticks;
 
@@ -2132,7 +2128,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    if ( p -> dots_immolate -> ticking() )
+    if ( p -> dots_immolate -> ticking )
     {
       player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect_base_value( 1 ) / 100.0;
     }
@@ -2289,9 +2285,9 @@ struct drain_life_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    channeled         = true;
-    binary            = true;
-    scale_with_haste  = false;
+    channeled    = true;
+    binary       = true;
+    hasted_ticks = false;
   }
 
   virtual void execute()
@@ -2365,7 +2361,7 @@ struct drain_life_t : public warlock_spell_t
     if ( p -> buffs_shadow_trance -> trigger() )
       p -> procs_shadow_trance -> occur();
 
-    if ( interrupt && ( current_tick != num_ticks ) )
+    if ( interrupt && ( dot -> ticks() > 0 ) )
     {
       // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
       for ( action_t* action = p -> action_list; action != this; action = action -> next )
@@ -2373,7 +2369,7 @@ struct drain_life_t : public warlock_spell_t
         if ( action -> background ) continue;
         if ( action -> ready() )
         {
-          current_tick = number_ticks;
+          dot -> current_tick = dot -> num_ticks;
           break;
         }
       }
@@ -2397,9 +2393,9 @@ struct drain_soul_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    channeled         = true;
-    binary            = true;
-    scale_with_haste  = true; // informative
+    channeled    = true;
+    binary       = true;
+    hasted_ticks = true; // informative
   }
 
   virtual void tick()
@@ -2414,15 +2410,15 @@ struct drain_soul_t : public warlock_spell_t
       {
         if ( (target -> health_percentage() < effect_base_value( 3 ) ) && (p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
         {
-            if ( p -> dots_unstable_affliction -> ticking() )
-            {
-              p -> dots_unstable_affliction -> action -> refresh_duration();
-            }
+          if ( p -> dots_unstable_affliction -> ticking )
+          {
+            p -> dots_unstable_affliction -> action -> refresh_duration();
+          }
         }
       }
     }
 
-    if ( interrupt && ( current_tick != num_ticks ) )
+    if ( interrupt && ( dot -> ticks() > 0 ) )
     {
       warlock_t* p = player -> cast_warlock();
       // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
@@ -2431,7 +2427,7 @@ struct drain_soul_t : public warlock_spell_t
         if ( action -> background ) continue;
         if ( action -> ready() )
         {
-          current_tick = number_ticks;
+          dot -> current_tick = dot -> num_ticks;
           break;
         }
       }
@@ -2507,8 +2503,10 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit() )
     {
-      if ( p -> dots_immolate -> ticking() )
+      if ( p -> dots_immolate -> ticking )
+      {
         p -> dots_immolate -> action -> cancel();
+      }
     }
   }
 
@@ -2528,14 +2526,12 @@ struct unstable_affliction_t : public warlock_spell_t
 
   virtual void extend_duration( int extra_ticks )
   {
-    // Can't extend beyond initial duration. Assuming this limit is calculated based on current haste, not haste at previous application/extension/refresh.
-    int remaining_ticks = number_ticks - ( current_tick - 1 ) + extra_ticks;
-    int hasted_ticks = hasted_num_ticks();
-    if ( remaining_ticks > hasted_ticks )
-      extra_ticks -= ( remaining_ticks - hasted_ticks );
-    if ( extra_ticks < 0 )
-      extra_ticks = 0;
-    warlock_spell_t::extend_duration( extra_ticks );
+    // Can't extend beyond initial duration. 
+    // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
+
+    int max_extra_ticks = std::max( hasted_num_ticks() - dot -> ticks(), 0 );
+
+    warlock_spell_t::extend_duration( std::min( extra_ticks, max_extra_ticks ) );
   }
 
 };
@@ -2592,8 +2588,10 @@ struct immolate_t : public warlock_spell_t
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
-      if ( p -> dots_unstable_affliction -> ticking() )
+      if ( p -> dots_unstable_affliction -> ticking )
+      {
         p -> dots_unstable_affliction -> action -> cancel();
+      }
     }
   }
 
@@ -2614,12 +2612,12 @@ struct immolate_t : public warlock_spell_t
 
   virtual void extend_duration( int extra_ticks )
   {
-	// Can't extend beyond initial duration. Assuming this limit is calculated based on current haste, not haste at previous application/extension/refresh.
-	int remaining_ticks = number_ticks - ( current_tick - 1 ) + extra_ticks;
-	int hasted_ticks = hasted_num_ticks();
-    if ( remaining_ticks > hasted_ticks ) extra_ticks -= ( remaining_ticks - hasted_ticks );
-	if ( extra_ticks < 0 ) extra_ticks = 0;
-	warlock_spell_t::extend_duration( extra_ticks );
+    // Can't extend beyond initial duration. 
+    // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
+
+    int max_extra_ticks = std::max( hasted_num_ticks() - dot -> ticks(), 0 );
+
+    warlock_spell_t::extend_duration( std::min( extra_ticks, max_extra_ticks ) );
   }
 
 };
@@ -2679,10 +2677,11 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    double t = ( p -> dots_immolate -> action -> base_td + p -> dots_immolate -> action -> total_power() * p -> dots_immolate -> action -> tick_power_mod );
+    action_t* a = p -> dots_immolate -> action;
 
-    base_dd_min  = t * ( p -> dots_immolate -> action -> number_ticks - p -> dots_immolate -> action -> added_ticks ) * effect_base_value( 2 ) / 100.0 ;
-    base_dd_max  = base_dd_min;
+    double periodic_dmg = a -> base_td + a -> total_power() * a -> tick_power_mod;
+
+    base_dd_min = base_dd_max = periodic_dmg * a -> num_ticks * effect_base_value( 2 ) / 100.0 ;
 
     warlock_spell_t::execute();
 
@@ -2701,9 +2700,7 @@ struct conflagrate_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-
-    if ( ! ( p -> dots_immolate -> ticking() ) ) return false;
-
+    if ( ! ( p -> dots_immolate -> ticking ) ) return false;
     return warlock_spell_t::ready();
   }
 };
@@ -2730,7 +2727,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    base_dd_adder = ( p -> dots_immolate -> ticking() ? ( base_dd_min + base_dd_max ) / 12.0 : 0 );
+    base_dd_adder = ( p -> dots_immolate -> ticking ? ( base_dd_min + base_dd_max ) / 12.0 : 0 );
 
     warlock_spell_t::execute();
 
@@ -2762,7 +2759,7 @@ struct incinerate_t : public warlock_spell_t
       p -> buffs_molten_core -> decrement();
     }
 
-    if ( p -> dots_immolate -> ticking() )
+    if ( p -> dots_immolate -> ticking )
     {
       player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect_base_value( 1 ) / 100.0;
     }
@@ -2964,26 +2961,21 @@ struct fel_armor_t : public warlock_spell_t
 
     // Model the passive health tick.....
     base_tick_time = effect_period( 2 );
-    num_ticks      = 1;
-    number_ticks   = 1;
+    num_ticks = 1;
     usable_pre_combat = true;
   }
-
 
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-
-    if ( sim -> log ) log_t::output( sim, "%s performs %s with %.1f spellpower", p -> name(), name(), bonus_spell_power );
-
     p -> buffs_fel_armor -> trigger( 1, bonus_spell_power );
-    schedule_tick();
+    warlock_spell_t::execute();
   }
 
   virtual void tick()
   {
     warlock_t* p = player -> cast_warlock();
-    current_tick = 0; // ticks indefinitely
+    dot -> current_tick = 0; // ticks indefinitely
     p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 2 ) / 100.0 * ( 1.0 + p -> talent_demonic_aegis -> effect_base_value( 1 ) / 100.0 ), p -> gains_fel_armor, this );
   }
 
@@ -2992,7 +2984,6 @@ struct fel_armor_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( p -> buffs_fel_armor -> up() )
       return false;
-
     return warlock_spell_t::ready();
   }
 };
@@ -3253,7 +3244,7 @@ struct immolation_aura_t : public warlock_spell_t
     if ( p -> buffs_metamorphosis -> check() )
       immolation_damage -> execute();
     else
-      current_tick = number_ticks;
+      dot -> current_tick = dot -> num_ticks;
   }
 
   virtual bool ready()
@@ -3350,7 +3341,7 @@ struct hand_of_guldan_t : public warlock_spell_t
       p -> buffs_hand_of_guldan -> trigger();
       trigger_impending_doom( this );
 
-      if ( p -> dots_immolate -> ticking()  && p -> talent_cremation -> rank() )
+      if ( p -> dots_immolate -> ticking && p -> talent_cremation -> rank() )
       {
         if ( p -> rng_cremation -> roll( p -> talent_cremation -> proc_chance() ) )
         {
@@ -3384,17 +3375,14 @@ struct fel_flame_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit() )
     {
-      if ( p -> dots_immolate -> ticking() )
-        p -> dots_immolate -> action -> extend_duration( 2 );
-
-      if ( p -> dots_unstable_affliction -> ticking() )
-        p -> dots_unstable_affliction -> action -> extend_duration( 2 );
+      if ( p -> dots_immolate -> ticking            ) p -> dots_immolate            -> action -> extend_duration( 2 );
+      if ( p -> dots_unstable_affliction -> ticking ) p -> dots_unstable_affliction -> action -> extend_duration( 2 );
     }
 
-  	if ( p -> buffs_tier11_4pc_caster -> check() )
-  	{
-  	  p -> buffs_tier11_4pc_caster -> expire();
-  	}
+    if ( p -> buffs_tier11_4pc_caster -> check() )
+    {
+      p -> buffs_tier11_4pc_caster -> expire();
+    }
   }
 
   virtual void player_buff()
@@ -3402,10 +3390,10 @@ struct fel_flame_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
 
-  	if ( p -> buffs_tier11_4pc_caster -> up() )
-  	{
+        if ( p -> buffs_tier11_4pc_caster -> up() )
+        {
       player_crit += p -> buffs_tier11_4pc_caster -> effect_base_value( 1 ) / 100.0;
-  	}
+        }
   }
 };
 
@@ -3604,8 +3592,8 @@ struct hellfire_t : public warlock_spell_t
     // Hellfire has it's own damage effect, which is actually the damage to the player himself, so harmful is set to false.
     harmful = false;
 
-    channeled         = true;
-    scale_with_haste  = false;
+    channeled    = true;
+    hasted_ticks = false;
 
 
     hellfire_tick = new hellfire_tick_t( p );
@@ -3622,7 +3610,7 @@ struct hellfire_t : public warlock_spell_t
   {
     hellfire_tick -> execute();
 
-    if ( interrupt && ( current_tick != num_ticks ) )
+    if ( interrupt && ( dot -> ticks() > 0 ) )
     {
       warlock_t* p = player -> cast_warlock();
       // If any spell ahead of Hellfire in the action list is "ready", then cancel the Hellfire channel
@@ -3631,7 +3619,7 @@ struct hellfire_t : public warlock_spell_t
         if ( action -> background ) continue;
         if ( action -> ready() )
         {
-          current_tick = number_ticks;
+          dot -> current_tick = dot -> num_ticks;
           break;
         }
       }
@@ -3690,7 +3678,7 @@ struct seed_of_corruption_t : public warlock_spell_t
      warlock_t* p = player -> cast_warlock();
      warlock_spell_t::travel( travel_result, travel_dmg);
      dot_damage_done = target -> total_dmg;
-     if ( p -> dots_corruption -> ticking() )
+     if ( p -> dots_corruption -> ticking )
      {
        p -> dots_corruption -> action -> cancel();
      }
@@ -4400,8 +4388,8 @@ void warlock_t::init_actions()
 
 void warlock_t::init_resources( bool force )
 {
-	player_t::init_resources( force );
-	if ( active_pet ) active_pet -> init_resources( force );
+        player_t::init_resources( force );
+        if ( active_pet ) active_pet -> init_resources( force );
 }
 
 

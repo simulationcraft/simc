@@ -41,9 +41,9 @@ void action_t::_init_action_t()
   may_crit                       = false;
   tick_may_crit                  = false;
   tick_zero                      = false;
-  scale_with_haste               = false;
+  hasted_ticks                   = false;
   usable_moving                  = false;
-  dot_behavior                   = DOT_WAIT;
+  dot_behavior                   = DOT_CLIP;
   rp_gain                        = 0.0;
   min_gcd                        = 0.0;
   trigger_gcd                    = player -> base_gcd;
@@ -93,14 +93,11 @@ void action_t::_init_action_t()
   base_dd_adder                  = 0.0;
   player_dd_adder                = 0.0;
   target_dd_adder                = 0.0;
+  player_haste                   = 1.0;
   resource_consumed              = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
   num_ticks                      = 0;
-  number_ticks                   = 0;
-  current_tick                   = 0;
-  added_ticks                    = 0;
-  ticking                        = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
   normalize_weapon_damage        = false;
@@ -108,7 +105,6 @@ void action_t::_init_action_t()
   rng_travel                     = NULL;
   stats                          = NULL;
   execute_event                  = NULL;
-  tick_event                     = NULL;
   travel_event                   = NULL;
   time_to_execute                = 0.0;
   time_to_tick                   = 0.0;
@@ -129,8 +125,6 @@ void action_t::_init_action_t()
   vulnerable                     = 0;
   invulnerable                   = 0;
   wait_on_ready                  = -1;
-  snapshot_haste                 = -1;
-  recast                         = false;
   round_base_dmg                 = true;
   if_expr_str                    = "";
   if_expr                        = NULL;
@@ -294,7 +288,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       case A_PERIODIC_DAMAGE:
         tick_power_mod   = pData.effect_coeff( effect );
         base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-	base_td          = base_td_init;
+        base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         if ( school == SCHOOL_PHYSICAL )
@@ -303,7 +297,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       case A_PERIODIC_LEECH:
         tick_power_mod   = pData.effect_coeff( effect );
         base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-	base_td          = base_td_init;
+        base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
@@ -319,7 +313,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       case A_PERIODIC_HEAL:
         tick_power_mod   = pData.effect_coeff( effect );
         base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
-	base_td          = base_td_init;
+        base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
@@ -398,7 +392,6 @@ void action_t::parse_options( option_t*          options,
     { "travel_speed",           OPT_FLT,    &travel_speed          },
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
-    { "recast",                 OPT_BOOL,   &recast                },
     { NULL,                     0,          NULL                   }
   };
 
@@ -549,6 +542,8 @@ void action_t::player_buff()
     player_spell_power            = p -> composite_spell_power( school );
     player_spell_power_multiplier = p -> composite_spell_power_multiplier();
   }
+
+  player_haste = haste();
 
   if ( sim -> debug )
     log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
@@ -1001,7 +996,7 @@ void action_t::execute()
 
 void action_t::tick()
 {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, number_ticks );
+  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
   result = RESULT_HIT;
 
@@ -1042,7 +1037,7 @@ void action_t::last_tick()
 {
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), target -> name() );
 
-  ticking = 0;
+  dot -> ticking = 0;
   time_to_tick = 0;
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
@@ -1062,21 +1057,14 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
     }
     if ( num_ticks > 0 )
     {
-      if ( dot_behavior == DOT_REFRESH )
-      {
-        current_tick = 0;
-        added_ticks = 0;
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        if ( ! ticking ) schedule_tick();
-      }
-      else
-      {
-        if ( ticking ) cancel();
-        snapshot_haste = haste();
-        number_ticks = hasted_num_ticks();
-        schedule_tick();
-      }
+      if ( dot_behavior != DOT_REFRESH ) cancel();
+
+      dot -> action = this;
+      dot -> num_ticks = hasted_num_ticks();
+      dot -> current_tick = 0;
+      dot -> added_ticks = 0;
+
+      if ( ! dot -> ticking ) schedule_tick();
     }
   }
 }
@@ -1114,7 +1102,7 @@ void action_t::assess_damage( double amount,
     {
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
-                     current_tick, number_ticks,
+                     dot -> current_tick, dot -> num_ticks,
                      target -> name(), amount,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( result ) );
@@ -1204,7 +1192,7 @@ void action_t::schedule_tick()
 {
   if ( sim -> debug ) log_t::output( sim, "%s schedules tick for %s", player -> name(), name() );
 
-  if ( current_tick == 0 )
+  if ( dot -> current_tick == 0 )
   {
     if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> increment();
 
@@ -1215,16 +1203,11 @@ void action_t::schedule_tick()
     }
   }
 
-  ticking = 1;
-
-  if ( snapshot_haste <= 0.0 )
-  {
-    snapshot_haste = haste();
-  }
-
   time_to_tick = tick_time();
 
-  tick_event = new ( sim ) action_tick_event_t( sim, this, time_to_tick );
+  dot -> tick_event = new ( sim ) dot_tick_event_t( sim, dot, time_to_tick );
+
+  dot -> ticking = 1;
 
   if ( channeled ) player -> channeling = this;
 
@@ -1238,7 +1221,9 @@ void action_t::schedule_travel()
   time_to_travel = travel_time();
 
   if ( time_to_travel == 0 )
+  {
     travel( result, direct_dmg );
+  }
   else
   {
     if ( sim -> log )
@@ -1281,58 +1266,34 @@ void action_t::refresh_duration()
   if ( sim -> debug ) log_t::output( sim, "%s refreshes duration of %s", player -> name(), name() );
 
   // Make sure this DoT is still ticking......
-  assert( tick_event );
+  assert( dot -> tick_event );
 
   player_buff();
-
-  // To get recalculated target_crit
   target_debuff( DMG_OVER_TIME );
 
-  snapshot_haste = haste();
-  number_ticks = hasted_num_ticks();
-
-  if ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) )
-  {
-    // Refreshing a DoT does not interfere with the next tick event.  Ticks will stil occur
-    // every "base_tick_time" seconds.  To determine the new finish time for the DoT, start
-    // from the time of the next tick and add the time for the remaining ticks to that event.
-
-    double duration = ( tick_event -> time - sim -> current_time ) + tick_time() * ( number_ticks - 1 );
-
-    dot -> start( this, duration );
-  }
-
-  current_tick = 0;
-  added_ticks = 0;
+  dot -> action = this;
+  dot -> current_tick = 0;
+  dot -> added_ticks = 0;
+  dot -> num_ticks = hasted_num_ticks();
+  dot -> recalculate_ready();
 }
 
 // action_t::extend_duration =================================================
 
 void action_t::extend_duration( int extra_ticks )
 {
-  added_ticks += extra_ticks;
+  if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, dot -> num_ticks + extra_ticks );
 
   // Make sure this DoT is still ticking......
-  assert( tick_event );
+  assert( dot -> tick_event );
 
-  if ( dot_behavior == DOT_WAIT )
-  {
-    dot -> ready += tick_time() * extra_ticks;
-  }
-  if ( dot_behavior == DOT_REFRESH )
-  {
-    player_buff();
+  player_buff();
+  target_debuff( DMG_OVER_TIME );
 
-    // To get recalculated target_crit (untested! - assuming this works the same in-game as for refreshed dots)
-    target_debuff( DMG_OVER_TIME );
-
-    snapshot_haste = haste();
-    number_ticks += extra_ticks;
-
-    dot -> ready += tick_time() * extra_ticks;
-  }
-
-  if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, number_ticks );
+  dot -> action = this;
+  dot -> added_ticks += extra_ticks;
+  dot -> num_ticks += extra_ticks;
+  dot -> recalculate_ready();
 }
 
 // action_t::update_ready ====================================================
@@ -1345,23 +1306,17 @@ void action_t::update_ready()
 
     cooldown -> start();
   }
-  if ( num_ticks && ( ( dot_behavior == DOT_WAIT ) || ( dot_behavior == DOT_REFRESH ) ) )
+  if ( num_ticks )
   {
-    if ( ticking && ! channeled )
+    if ( dot -> ticking && ! channeled )
     {
-      assert( num_ticks && tick_event );
+      assert( dot -> tick_event );
 
-      int remaining_ticks = number_ticks - current_tick;
-
-      double next_tick = tick_event -> occurs() - sim -> current_time;
-
-      double duration = 0.01 + next_tick + tick_time() * ( remaining_ticks - 1 );
+      dot -> recalculate_ready();
 
       if ( sim -> debug )
-        log_t::output( sim, "%s shares duration (%.2f) for %s (%s)", 
-                       player -> name(), duration, name(), dot -> name() );
-
-      dot -> start( this, duration );
+        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
+                       player -> name(), dot -> ready, name(), dot -> name() );
     }
     else if( result_is_miss() )
     {
@@ -1369,7 +1324,7 @@ void action_t::update_ready()
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
                        player -> name(), sim -> reaction_time, name(), dot -> name() );
 
-      dot -> start( this, sim -> reaction_time );
+      dot -> ready = sim -> current_time + sim -> reaction_time;
     }
   }
 }
@@ -1428,34 +1383,6 @@ bool action_t::ready()
   if ( player -> skill < 1.0 )
     if ( ! sim -> roll( player -> skill ) )
       return false;
-
-  bool check_duration = true;
-
-  if ( ( scale_with_haste ) && ( haste_gain_percentage > 0.0 ) && ( ticking ) )
-  {
-    check_duration = ( ( snapshot_haste / haste() - 1.0 ) * 100.0 ) <= haste_gain_percentage;
-  }
-
-  if ( recast || ( dot_behavior != DOT_WAIT ) )
-  {
-    check_duration = false;
-  }
-
-  if ( check_duration )
-  {
-    double remains = dot -> remains();
-
-    if ( remains > 0 )
-    {
-      double delta = remains - execute_time();
-
-      if ( delta > tick_time() )
-        return false;
-
-      if ( delta > 0 && sim -> roll( player -> skill ) )
-        return false;
-    }
-  }
 
   if ( cooldown -> remains() > 0 )
     return false;
@@ -1564,40 +1491,29 @@ void action_t::reset()
     }
   }
 
-  ticking = 0;
-  current_tick = 0;
-  added_ticks = 0;
   cooldown -> reset();
   dot -> reset();
   result = RESULT_NONE;
   execute_event = 0;
-  tick_event = 0;
   travel_event = 0;
-  if ( observer ) *observer = 0;
 
-  if ( ! dual ) stats -> reset( this );
+  if ( observer ) *observer = 0;
 }
 
 // action_t::cancel =========================================================
 
 void action_t::cancel()
 {
-  if ( ticking ) last_tick();
+  if ( dot -> ticking ) last_tick();
 
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this ) player -> channeling = 0;
 
   event_t::cancel( execute_event );
-  event_t::cancel(    tick_event );
+  event_t::cancel( dot -> tick_event );
 
-  ticking = 0;
-  current_tick = 0;
-  added_ticks = 0;
-  cooldown -> reset();
   dot -> reset();
-  execute_event = 0;
-  tick_event = 0;
-  snapshot_haste = -1.0;
+
   if ( observer ) *observer = 0;
 }
 
@@ -1611,7 +1527,7 @@ void action_t::check_talent( int talent_rank )
   {
     pet_t* p = player -> cast_pet();
     sim -> errorf( "Player %s has pet %s attempting to execute action %s without the required talent.\n", 
-		   p -> owner -> name(), p -> name(), name() );
+                   p -> owner -> name(), p -> name(), name() );
   }
   else
   {
@@ -1656,7 +1572,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct ticking_expr_t : public action_expr_t
     {
       ticking_expr_t( action_t* a ) : action_expr_t( a, "ticking", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> dot -> ticking() ? 1 : 0 ); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> dot -> ticking; return TOK_NUM; }
     };
     return new ticking_expr_t( this );
   }
@@ -1665,7 +1581,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct ticks_expr_t : public action_expr_t
     {
       ticks_expr_t( action_t* a ) : action_expr_t( a, "ticks", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> dot -> ticking() ? action -> dot -> action -> current_tick : 0 ); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> dot -> current_tick; return TOK_NUM; }
     };
     return new ticks_expr_t( this );
   }
@@ -1674,7 +1590,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct ticks_remain_expr_t : public action_expr_t
     {
       ticks_remain_expr_t( action_t* a ) : action_expr_t( a, "ticks_remain", TOK_NUM ) {}
-      virtual int evaluate() { action_t* a = action -> dot -> action; result_num = ( action -> dot -> ticking() ? ( a -> number_ticks - a -> current_tick ) : 0 ); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> dot -> ticks(); return TOK_NUM; }
     };
     return new ticks_remain_expr_t( this );
   }
@@ -1701,7 +1617,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t* a ) : action_expr_t( a, "tick_time", TOK_NUM ) {}
-	  virtual int evaluate() { result_num = ( action -> dot -> ticking() ) ? action -> dot -> action -> tick_time() : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = ( action -> dot -> ticking ) ? action -> dot -> action -> tick_time() : 0; return TOK_NUM; }
     };
     return new tick_time_expr_t( this );
   }
@@ -1757,26 +1673,25 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
 double action_t::tick_time() SC_CONST
 {
   double t = base_tick_time;
-  if ( channeled || ( scale_with_haste ) )
+  if ( channeled || hasted_ticks )
   {
-    assert( snapshot_haste > 0.0 );
-    t *= snapshot_haste;
+    t *= player_haste;
   }
   return t;
 }
 
 int action_t::hasted_num_ticks() SC_CONST
 {
-  int n = num_ticks;
-  if ( scale_with_haste )
-  {
-    assert ( snapshot_haste > 0.0 );
+  if ( ! hasted_ticks ) return num_ticks;
 
-    // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
-    // It's important that we're accurate here so that we model haste breakpoints correctly.
-    double d = num_ticks * base_tick_time;
-    double t = floor( ( base_tick_time * snapshot_haste * 1000.0 ) + 0.5 ) / 1000.0;
-    n = (int) floor( ( d / t ) + 0.5 );
-  }
-  return n;
+  assert( player_haste > 0.0 );
+
+  // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
+  // It's important that we're accurate here so that we model haste breakpoints correctly.
+
+  double d = num_ticks * base_tick_time;
+
+  double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
+
+  return (int) floor( ( d / t ) + 0.5 );
 }

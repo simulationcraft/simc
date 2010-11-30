@@ -839,9 +839,9 @@ void player_t::init_core()
   if ( initial_stats.haste_rating < 0 ) initial_stats.haste_rating = 0;
   if ( initial_stats.mastery_rating < 0 ) initial_stats.mastery_rating = 0;
 
-  initial_haste_rating 		= initial_stats.haste_rating;
+  initial_haste_rating          = initial_stats.haste_rating;
 
-  initial_mastery_rating 	= initial_stats.mastery_rating;
+  initial_mastery_rating        = initial_stats.mastery_rating;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -1150,8 +1150,8 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-	 if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f",
-	                   level,type );
+         if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f",
+                           level,type );
   rating.init( sim, player_data, level, type );
 }
 
@@ -1364,10 +1364,10 @@ void player_t::init_scaling()
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
 
-    scales_with[ STAT_HIT_RATING   		] = 1;
-    scales_with[ STAT_CRIT_RATING  		] = 1;
-    scales_with[ STAT_HASTE_RATING 		] = 1;
-    scales_with[ STAT_MASTERY_RATING 	        ] = 1;
+    scales_with[ STAT_HIT_RATING                ] = 1;
+    scales_with[ STAT_CRIT_RATING               ] = 1;
+    scales_with[ STAT_HASTE_RATING              ] = 1;
+    scales_with[ STAT_MASTERY_RATING            ] = 1;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : 0;
@@ -2413,7 +2413,7 @@ void player_t::clear_debuffs()
 
   for ( action_t* a = action_list; a; a = a -> next )
   {
-    if ( a -> ticking ) a -> cancel();
+    if ( a -> dot -> ticking ) a -> cancel();
   }
 }
 
@@ -4310,7 +4310,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           dot_t* dot;
           dot_ticking_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_ticking", TOK_NUM ), dot(d) {}
-          virtual int evaluate() { result_num = dot -> ticking() ? 1 : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = dot -> ticking; return TOK_NUM; }
         };
         return new dot_ticking_expr_t( a, dot );
       }
@@ -4326,16 +4326,16 @@ action_expr_t* player_t::create_expression( action_t* a,
       {
         struct swing_remains_expr_t : public action_expr_t
         {
-	  int slot;
+          int slot;
           swing_remains_expr_t( action_t* a, int s ) : action_expr_t( a, "swing_remains", TOK_NUM ), slot(s) {}
           virtual int evaluate()
-	  {
-	    result_num = 9999;
-	    player_t* p = action -> player;
-	    attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
-	    if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> occurs() - action -> sim -> current_time;
-	    return TOK_NUM;
-	  }
+          {
+            result_num = 9999;
+            player_t* p = action -> player;
+            attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
+            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> occurs() - action -> sim -> current_time;
+            return TOK_NUM;
+          }
         };
         return new swing_remains_expr_t( a, hand );
       }

@@ -507,73 +507,6 @@ static enchant_data_t enchant_db[] =
 // Add-Ons use the same enchant data-base for now
 static enchant_data_t* addon_db = enchant_db;
 
-// Spellsurge Enchant =======================================================
-
-struct spellsurge_callback_t : public action_callback_t
-{
-  spell_t* spell;
-  rng_t* rng;
-
-  spellsurge_callback_t( player_t* p ) : action_callback_t( p -> sim, p )
-  {
-    struct spellsurge_t : public spell_t
-    {
-      spellsurge_t( player_t* p ) :
-          spell_t( "spellsurge", p, RESOURCE_MANA, SCHOOL_ARCANE )
-      {
-        background     = true;
-        base_tick_time = 1.0;
-        num_ticks      = 10;
-        trigger_gcd    = 0;
-        cooldown -> duration = 60;
-      }
-      virtual void execute()
-      {
-        assert( current_tick == 0 );
-        schedule_tick();
-      }
-      virtual void tick()
-      {
-        for ( player_t* p = sim -> player_list; p; p = p -> next )
-        {
-          if ( p -> party == player -> party )
-          {
-            if ( sim -> log ) log_t::output( sim, "Player %s gains mana from %s 's Spellsurge.", p -> name(), player -> name() );
-            p -> resource_gain( RESOURCE_MANA, 10.0, p -> gains.spellsurge );
-          }
-        }
-      }
-    };
-
-    spell = new spellsurge_t( p );
-    rng = p -> get_rng( "spellsurge" );
-  }
-
-  virtual void trigger( action_t* a )
-  {
-    if ( spell -> ready() && rng -> roll( 0.15 ) )
-    {
-      for ( player_t* p = a -> sim -> player_list; p; p = p -> next )
-      {
-        // Invalidate any existing Spellsurge procs.
-
-        if ( p -> party == a -> player -> party )
-        {
-          action_t* spellsurge = p -> find_action( "spellsurge" );
-
-          if ( spellsurge && spellsurge -> ticking )
-          {
-            spellsurge -> cancel();
-            break;
-          }
-        }
-      }
-
-      spell -> execute();
-    }
-  }
-};
-
 // Weapon Stat Proc Callback ==================================================
 
 struct weapon_stat_proc_callback_t : public action_callback_t
@@ -783,11 +716,6 @@ void enchant_t::init( player_t* p )
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
   }
-  if ( mh_enchant == "spellsurge" || 
-       oh_enchant == "spellsurge" )
-  {
-    p -> register_spell_result_callback( RESULT_ALL_MASK, new spellsurge_callback_t( p ) );
-  }
   if ( mh_enchant == "windwalk" )
   {
     buff_t* buff = new stat_buff_t( p, "windwalk_mh", STAT_DODGE_RATING, 600, 1, 10, 45, 0.15, false, false, RNG_DISTRIBUTED );
@@ -838,8 +766,8 @@ bool enchant_t::get_encoding( std::string& name,
 // enchant_t::get_addon_encoding ============================================
 
 bool enchant_t::get_addon_encoding( std::string& name,
-				    std::string& encoding,
-				    const std::string& addon_id )
+                                    std::string& encoding,
+                                    const std::string& addon_id )
 {
   for ( int i=0; addon_db[ i ].id; i++ )
   {
@@ -858,8 +786,8 @@ bool enchant_t::get_addon_encoding( std::string& name,
 // enchant_t::get_reforge_encoding ==========================================
 
 bool enchant_t::get_reforge_encoding( std::string& name,
-				      std::string& encoding,
-				      const std::string& reforge_id )
+                                      std::string& encoding,
+                                      const std::string& reforge_id )
 {
   name = encoding = "";
 
@@ -934,7 +862,7 @@ bool enchant_t::download_addon( item_t&            item,
 // enchant_t::download_reforge ===============================================
 
 bool enchant_t::download_reforge( item_t&            item,
-				  const std::string& reforge_id )
+                                  const std::string& reforge_id )
 {
   item.armory_reforge_str.clear();
 

@@ -1396,7 +1396,7 @@ struct mind_blast_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
-      if ( p -> dots_vampiric_touch -> ticking() )
+      if ( p -> dots_vampiric_touch -> ticking )
       {
         p -> trigger_replenishment();
       }
@@ -1451,8 +1451,8 @@ struct mind_flay_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    channeled        = true;
-    scale_with_haste = false;
+    channeled = true;
+    hasted_ticks = false;
 
     base_tick_time += p -> sets -> set( SET_T10_4PC_CASTER ) -> mod_additive( P_TICK_TIME );
     base_crit      += p -> sets -> set( SET_T11_2PC_CASTER ) -> mod_additive( P_CRIT );
@@ -1503,7 +1503,7 @@ struct mind_flay_t : public priest_spell_t
 
     player_multiplier *= m;
 
-    if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking() )
+    if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking )
     {
       player_multiplier *= 1.0 + 0.10;    
     }
@@ -1518,7 +1518,7 @@ struct mind_flay_t : public priest_spell_t
       p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
 
-      if ( p -> dots_shadow_word_pain -> ticking() )
+      if ( p -> dots_shadow_word_pain -> ticking )
       {
         if ( p -> rng_pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
         {
@@ -1545,11 +1545,11 @@ struct mind_flay_t : public priest_spell_t
     // it's uses.
     if ( swp_refresh && ( p -> talents.pain_and_suffering -> rank() > 0 ) )
     {
-      if ( ! p -> dots_shadow_word_pain -> ticking() )
+      if ( ! p -> dots_shadow_word_pain -> ticking )
         return false;
 
-      if ( ( p -> dots_shadow_word_pain -> action -> num_ticks -
-             p -> dots_shadow_word_pain -> action -> current_tick ) > 2 )
+      if ( ( p -> dots_shadow_word_pain -> num_ticks -
+             p -> dots_shadow_word_pain -> current_tick ) > 2 )
         return false;
     }
 
@@ -1666,7 +1666,7 @@ struct penance_t : public priest_spell_t
 
   virtual void tick()
   {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
   penance_tick -> execute();
   update_time( DMG_OVER_TIME );
   }
@@ -2058,7 +2058,7 @@ struct smite_t : public priest_spell_t
   {
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
-    if ( p -> dots_holy_fire -> ticking() && p -> glyphs.smite ) player_multiplier *= 1.20;
+    if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite ) player_multiplier *= 1.20;
   }
 };
 
@@ -2362,7 +2362,7 @@ struct hymn_of_hope_t : public priest_spell_t
 
   virtual void tick()
     {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     hymn_of_hope_tick -> execute();
     update_time( DMG_OVER_TIME );
     }
@@ -2373,7 +2373,6 @@ struct hymn_of_hope_t : public priest_spell_t
 
 struct renew_t : public priest_heal_t
 {
-
   renew_t( player_t* player, const std::string& options_str ) :
       priest_heal_t( "renew", player, "Renew" )
   {
@@ -2384,14 +2383,9 @@ struct renew_t : public priest_heal_t
     };
     parse_options( options, options_str );
 
-    base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
-    base_cost         = floor( base_cost );
+    base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
+    base_cost  = floor( base_cost );
     base_multiplier *= 1.0 + p -> glyphs.renew * 0.10;
-
-    num_ticks=number_ticks=3;
-
-
   }
   virtual double cost() SC_CONST
   {
@@ -2451,12 +2445,6 @@ struct renew_t : public priest_heal_t
       p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
     }
   }
-  virtual void travel( int travel_result, double travel_dmg)
-  {
-    current_tick = 0;
-    snapshot_haste = haste();
-    schedule_tick();
-  }
 };
 
 
@@ -2494,7 +2482,7 @@ struct _heal_t : public priest_heal_t
 
     if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 1)
     {
-      if ( p -> dots_renew -> ticking() )
+      if ( p -> dots_renew -> ticking )
         p -> dots_renew -> action -> refresh_duration();
 
       if ( p -> talents.state_of_mind -> ok() )
@@ -2819,7 +2807,7 @@ struct penance_heal_t : public priest_heal_t
 
   virtual void tick()
   {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
   penance_tick -> execute();
   update_time( DMG_OVER_TIME );
   }

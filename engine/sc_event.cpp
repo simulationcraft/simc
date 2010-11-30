@@ -118,63 +118,63 @@ void action_execute_event_t::execute()
 }
 
 // ==========================================================================
-// Action Tick Event
+// DoT Tick Event
 // ==========================================================================
 
-// action_tick_event_t::action_tick_event_t =================================
+// dot_tick_event_t::dot_tick_event_t =======================================
 
-action_tick_event_t::action_tick_event_t( sim_t*    sim,
-                                          action_t* a,
-                                          double    time_to_tick ) :
-    event_t( sim, a -> player ), action( a )
+dot_tick_event_t::dot_tick_event_t( sim_t* sim,
+                                    dot_t* d,
+                                    double time_to_tick ) :
+  event_t( sim, d -> player ), dot( d )
 {
-  name = "Action Tick";
+  name = "DoT Tick";
 
   if ( sim -> debug )
-    log_t::output( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
-                   player -> name(), a -> name(), a -> current_tick + 1, a -> number_ticks, time_to_tick );
+    log_t::output( sim, "New DoT Tick Event: %s %s %d-of-%d %.2f",
+                   player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick );
 
   sim -> add_event( this, time_to_tick );
 }
 
-// action_tick_event_t::execute ==============================================
+// dot_tick_event_t::execute =================================================
 
-void action_tick_event_t::execute()
+void dot_tick_event_t::execute()
 {
-
-  if ( action -> current_tick >= action -> number_ticks )
+  if ( dot -> current_tick >= dot -> num_ticks )
   {
     sim -> errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
-		   player -> name(), action -> current_tick, action -> number_ticks, action -> name() );
+                   player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
     sim -> cancel();
   }
 
-  action -> tick_event = 0;
-  action -> current_tick++;
+  dot -> tick_event = 0;
+  dot -> current_tick++;
 
-  if ( action -> channeled &&
-       action -> current_tick == action -> number_ticks &&
+  if ( dot -> action -> channeled &&
+       dot -> current_tick == dot -> num_ticks &&
        player -> skill < 1.0 )
   {
-    if ( sim -> roll( player -> skill ) ) action -> tick();
+    if ( sim -> roll( player -> skill ) ) 
+    {
+      dot -> action -> tick();
+    }
   }
-  else
+  else // No skill-check required
   {
-    action -> tick();
+    dot -> action -> tick();
   }
 
-  if ( action -> current_tick == action -> number_ticks )
+  if ( dot -> current_tick == dot -> num_ticks )
   {
-    action -> last_tick();
-    action -> ticking = 0;
-    action -> current_tick = 0;
+    dot -> action -> last_tick();
 
-    if ( action -> channeled )
+    if ( dot -> action -> channeled )
     {
       player -> schedule_ready( 0 );
     }
   }
-  else action -> schedule_tick();
+  else dot -> action -> schedule_tick();
 }
 
 // ==========================================================================

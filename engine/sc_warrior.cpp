@@ -488,7 +488,6 @@ static void trigger_deep_wounds( action_t* a )
       may_crit = false;
       base_tick_time = 1.0;
       num_ticks = 6;
-      number_ticks = num_ticks;
       reset(); // required since construction occurs after player_t::init()
 
       id = 12834;
@@ -533,12 +532,11 @@ static void trigger_deep_wounds( action_t* a )
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
 
-  if ( p -> active_deep_wounds -> ticking )
+  dot_t* dot = p -> active_deep_wounds -> dot;
+  
+  if ( dot -> ticking )
   {
-    int num_ticks = p -> active_deep_wounds -> num_ticks;
-    int remaining_ticks = num_ticks - p -> active_deep_wounds -> current_tick;
-
-    deep_wounds_dmg += p -> active_deep_wounds -> base_td * remaining_ticks;
+    deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
   }
 
   // The Deep Wounds SPELL_AURA_APPLIED does not actually occur immediately.
@@ -548,15 +546,16 @@ static void trigger_deep_wounds( action_t* a )
   {
     // Do not model the delay, so no munch/roll, just defer.
 
-    if ( p -> active_deep_wounds -> ticking )
+    if ( dot -> ticking )
     {
       if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
       p -> procs_deferred_deep_wounds -> occur();
       p -> active_deep_wounds -> cancel();
     }
 
-    p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
-    p -> active_deep_wounds -> schedule_tick();
+    p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
+    p -> active_deep_wounds -> execute();
+
     trigger_blood_frenzy( p -> active_deep_wounds );
 
     return;
@@ -575,15 +574,16 @@ static void trigger_deep_wounds( action_t* a )
     {
       warrior_t* p = player -> cast_warrior();
 
-      if ( p -> active_deep_wounds -> ticking )
+      if ( p -> active_deep_wounds -> dot -> ticking )
       {
         if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
         p -> procs_deferred_deep_wounds -> occur();
         p -> active_deep_wounds -> cancel();
       }
 
-      p -> active_deep_wounds -> base_td = deep_wounds_dmg / 6.0;
-      p -> active_deep_wounds -> schedule_tick();
+      p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
+      p -> active_deep_wounds -> execute();
+
       trigger_blood_frenzy( p -> active_deep_wounds );
 
       if ( p -> deep_wounds_delay_event == this ) p -> deep_wounds_delay_event = 0;
@@ -599,10 +599,10 @@ static void trigger_deep_wounds( action_t* a )
 
   p -> deep_wounds_delay_event = new ( sim ) deep_wounds_delay_t( sim, p, deep_wounds_dmg );
 
-  if ( p -> active_deep_wounds -> ticking )
+  if ( dot -> ticking )
   {
-    if ( p -> active_deep_wounds -> tick_event -> occurs() <
-   p -> deep_wounds_delay_event -> occurs() )
+    if ( dot -> tick_event -> occurs() <
+         p -> deep_wounds_delay_event -> occurs() )
     {
       // Deep Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep Wounds will
       // both tick -and- get rolled into the next Deep Wounds.
@@ -1234,7 +1234,7 @@ struct bladestorm_t : public warrior_attack_t
 
   virtual void tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
     bladestorm_tick -> weapon = &( player -> main_hand_weapon );
     bladestorm_tick -> execute();
@@ -1770,7 +1770,6 @@ struct rend_t : public warrior_attack_t
     tick_may_crit          = true;
     tick_zero              = true;
     normalize_weapon_speed = false;
-    scale_with_haste       = false;
     base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
     stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
     school                 = stats -> school = SCHOOL_BLEED;
@@ -3204,10 +3203,10 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
 
-  uptimes_deep_wounds -> update( dots_deep_wounds -> ticking() );
+  uptimes_rend        -> update( dots_rend -> ticking );
+  uptimes_deep_wounds -> update( dots_deep_wounds -> ticking );
   uptimes_rage_cap    -> update( resource_current[ RESOURCE_RAGE ] ==
                                  resource_max    [ RESOURCE_RAGE] );
-  uptimes_rend        -> update( dots_rend -> ticking() );
 }
 
 // warrior_t::resource_loss =================================================

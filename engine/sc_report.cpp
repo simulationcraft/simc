@@ -325,7 +325,7 @@ static void print_buffs( FILE* file, player_t* p )
 
       if ( ! b -> constant )
       {
-	std::string full_name = pet -> name_str + "-" + b -> name_str;
+        std::string full_name = pet -> name_str + "-" + b -> name_str;
 
         util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
                          max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
@@ -1607,7 +1607,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            "<br> base_td: %.2f"
            "<br> num_ticks: %i"
            "<br> base_tick_time: %.2f"
-           "<br> scale_with_haste: %s"
+           "<br> hasted_ticks: %s"
            "<br> dot_behavior: %s<br>"
            "<br> <b> weapon</b>"
            "<br> weapon_power_mod: %.6f"
@@ -1622,7 +1622,7 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
            a -> base_dd_min, a -> base_dd_max,
            a -> tick_may_crit?"true":"false",
            a -> tick_zero?"true":"false", a -> tick_power_mod, a -> base_td, a -> num_ticks, a -> base_tick_time,
-           a -> scale_with_haste?"true":"false",
+           a -> hasted_ticks?"true":"false",
            a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
            a -> weapon_power_mod, a -> weapon_multiplier);
       i++;

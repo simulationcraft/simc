@@ -17,7 +17,7 @@ void spell_t::_init_spell_t()
   base_spell_power_multiplier = 1.0;
   base_crit_bonus = 0.5;
   min_gcd = 1.0;
-  scale_with_haste = true;
+  hasted_ticks = true;
 }
 
 spell_t::spell_t( const active_spell_t& s, int t ) :

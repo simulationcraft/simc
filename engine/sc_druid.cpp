@@ -160,8 +160,8 @@ struct druid_t : public player_t
     talent_t* natures_swiftness;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
- 	};
- 	talents_t talents;
+        };
+        talents_t talents;
 
   struct glyphs_t
   {
@@ -726,19 +726,18 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
   {
     t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
     {
-      may_miss         = false;
-      may_resist       = false;
-      background       = true;
-      proc             = true;
-      trigger_gcd      = 0;
-      base_cost        = 0;
-      base_multiplier  = 1.0;
-      tick_power_mod   = 0;
-      base_tick_time   = 2.0;
-      num_ticks        = 2;
-      number_ticks     = num_ticks;
-      scale_with_haste = false;
-      id               = 71023;
+      may_miss        = false;
+      may_resist      = false;
+      background      = true;
+      proc            = true;
+      trigger_gcd     = 0;
+      base_cost       = 0;
+      base_multiplier = 1.0;
+      tick_power_mod  = 0;
+      base_tick_time  = 2.0;
+      num_ticks       = 2;
+      hasted_ticks    = false;
+      id              = 71023;
       reset();
     }
     void player_buff() {}
@@ -748,17 +747,17 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
   if ( ! p -> active_t10_4pc_caster_dot ) p -> active_t10_4pc_caster_dot = new t10_4pc_caster_dot_t( p );
 
   double dmg = direct_dmg * 0.07;
-  if (  p -> active_t10_4pc_caster_dot -> ticking )
-  {
-    int num_ticks =  p -> active_t10_4pc_caster_dot -> num_ticks;
-    int remaining_ticks = num_ticks -  p -> active_t10_4pc_caster_dot -> current_tick;
 
-    dmg +=  p -> active_t10_4pc_caster_dot -> base_td * remaining_ticks;
+  dot_t* dot = p -> active_t10_4pc_caster_dot -> dot;
+
+  if ( dot -> ticking )
+  {
+    dmg +=  p -> active_t10_4pc_caster_dot -> base_td * dot -> ticks();
 
     p -> active_t10_4pc_caster_dot -> cancel();
   }
-   p -> active_t10_4pc_caster_dot -> base_td = dmg /  p -> active_t10_4pc_caster_dot -> num_ticks;
-   p -> active_t10_4pc_caster_dot -> schedule_tick();
+   p -> active_t10_4pc_caster_dot -> base_td = dmg / dot -> num_ticks;
+   p -> active_t10_4pc_caster_dot -> execute();
 }
 
 // ==========================================================================
@@ -847,8 +846,8 @@ void druid_cat_attack_t::player_buff()
   if ( school == SCHOOL_BLEED )
     player_multiplier *= 1.0 + p -> mastery_razor_claws -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
 
-  p -> uptimes_rip  -> update( p -> dots_rip  -> ticking() );
-  p -> uptimes_rake -> update( p -> dots_rake -> ticking() );
+  p -> uptimes_rip  -> update( p -> dots_rip  -> ticking );
+  p -> uptimes_rake -> update( p -> dots_rake -> ticking );
 }
 
 // druid_cat_attack_t::ready ================================================
@@ -988,7 +987,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( result_is_hit() && target -> health_percentage() <= p -> talents.blood_in_the_water -> base_value() )
     {
-      if ( p -> dots_rip -> ticking() && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> proc_chance() ) )
+      if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> proc_chance() ) )
       {
         p -> dots_rip -> action -> refresh_duration();
       }
@@ -1315,14 +1314,12 @@ struct shred_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
     druid_cat_attack_t::execute();
     if ( p -> glyphs.shred &&
-         p -> dots_rip -> ticking()  &&
-         p -> dots_rip -> action -> added_ticks < 4 )
+         p -> dots_rip -> ticking  &&
+         p -> dots_rip -> added_ticks < 4 )
     {
       // Glyph adds 1/1/2 ticks on execute
-      if ( p -> dots_rip -> action -> added_ticks == 2 )
-        p -> dots_rip -> action -> extend_duration( 2 );
-      else
-        p -> dots_rip -> action -> extend_duration( 1 );
+      int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
+      p -> dots_rip -> action -> extend_duration( extra_ticks );
     }
     if ( result_is_hit() )
     {
@@ -1353,8 +1350,8 @@ struct shred_t : public druid_cat_attack_t
 
     if ( extend_rip )
       if ( ! p -> glyphs.shred ||
-           ! p -> dots_rip -> ticking() ||
-           ( p -> dots_rip -> action -> added_ticks == 4 ) )
+           ! p -> dots_rip -> ticking ||
+           ( p -> dots_rip -> added_ticks == 4 ) )
         return false;
 
     return druid_cat_attack_t::ready();
@@ -1575,10 +1572,10 @@ struct lacerate_t : public druid_bear_attack_t
     };
     parse_options( options, options_str );
 
-    direct_power_mod    = 0.115;
-    tick_power_mod      = 0.0077;
-    dot_behavior        = DOT_REFRESH;
-    base_crit          += p -> glyphs.lacerate * 0.05;
+    direct_power_mod = 0.115;
+    tick_power_mod   = 0.0077;
+    dot_behavior     = DOT_REFRESH;
+    base_crit       += p -> glyphs.lacerate * 0.05;
   }
 
   virtual void execute()
@@ -2392,7 +2389,7 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> dots_sunfire -> ticking() )
+      if ( p -> dots_sunfire -> ticking )
         p -> dots_sunfire -> action -> cancel();
 
       // If moving trigger all 3 stacks, because it will stack up immediately
@@ -2551,8 +2548,8 @@ struct starfire_t : public druid_spell_t
       }
       if ( p -> glyphs.starfire )
       {
-        if ( p -> dots_moonfire -> ticking() )
-          if ( p -> dots_moonfire -> action -> added_ticks < 3 )
+        if ( p -> dots_moonfire -> ticking )
+          if ( p -> dots_moonfire -> added_ticks < 3 )
             p -> dots_moonfire -> action -> extend_duration( 1 );
       }
       // If Solar is up SF won't give you eclipse energy
@@ -2580,8 +2577,8 @@ struct starfire_t : public druid_spell_t
     if ( extend_moonfire )
     {
       if ( ! p -> glyphs.starfire ) return false;
-      if ( ! p -> dots_moonfire -> ticking() ) return false;
-      if ( p -> dots_moonfire -> action -> added_ticks > 2 ) return false;
+      if ( ! p -> dots_moonfire -> ticking ) return false;
+      if ( p -> dots_moonfire -> added_ticks > 2 ) return false;
     }
 
     if ( ! prev_str.empty() )
@@ -2653,9 +2650,9 @@ struct starfall_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    num_ticks        = 10;
-    base_tick_time   = 1.0;
-    scale_with_haste = false;
+    num_ticks      = 10;
+    base_tick_time = 1.0;
+    hasted_ticks   = false;
 
     if ( p -> glyphs.starfall )
       cooldown -> duration  -= 30;
@@ -2667,7 +2664,7 @@ struct starfall_t : public druid_spell_t
 
   virtual void tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), current_tick, num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     starfall_star -> execute();
     update_time( DMG_DIRECT );
   }
@@ -2827,7 +2824,7 @@ struct sunfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> dots_moonfire -> ticking() )
+      if ( p -> dots_moonfire -> ticking )
         p -> dots_moonfire -> action -> cancel();
 
       // If moving trigger all 3 stacks, because it will stack up immediately
@@ -2942,7 +2939,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     // Glyph of Wrath is additive with Moonfury
-    if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking() )
+    if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking )
       additive_multiplier += 0.10;
 
     druid_spell_t::player_buff();
@@ -3448,7 +3445,7 @@ void druid_t::init_actions()
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
         if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
         action_list_str += "/mangle_cat,if=debuff.mangle.remains<=1";
-        action_list_str += "/rake,if=target.time_to_die>=9";
+        action_list_str += "/rake,if=!ticking&target.time_to_die>=9";
         action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
         action_list_str += "/shred,if=target.time_to_die<=9";
         action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";

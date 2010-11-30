@@ -18,7 +18,7 @@ actions+=/guardian_of_ancient_kings
 actions+=/avenging_wrath,if=buff.zealotry.down
 actions+=/zealotry,if=buff.avenging_wrath.down
 actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff.hand_of_light.react)
-actions+=/exorcism,recast=1,if=buff.the_art_of_war.react
+actions+=/exorcism,if=buff.the_art_of_war.react
 actions+=/hammer_of_wrath
 actions+=/templars_verdict,if=buff.holy_power.react==3
 actions+=/crusader_strike,if=buff.hand_of_light.react&(buff.hand_of_light.remains>2)&(buff.holy_power.react<3)
