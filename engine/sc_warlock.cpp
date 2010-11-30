@@ -2013,10 +2013,10 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::travel(travel_result, travel_dmg);
-    trigger_decimation( this, travel_result );
-    trigger_impending_doom( this );
     if ( result_is_hit() )
     {
+      trigger_decimation( this, travel_result );
+      trigger_impending_doom( this );
       p -> buffs_shadow_embrace -> trigger();
       target -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
       target -> debuffs.curse_of_elements -> source = p;
@@ -2041,7 +2041,6 @@ struct burning_embers_t : public warlock_spell_t
   burning_embers_t( player_t* player ) :
     warlock_spell_t( "burning_embers", player, 85421 )
   {
-    warlock_t* p = player -> cast_warlock();
     background = true;
     tick_may_crit = false;
     scale_with_haste = false;
@@ -2126,10 +2125,6 @@ struct chaos_bolt_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
-    if ( result_is_hit() )
-    {
-      trigger_soul_leech( this );
-    }
   }
 
   virtual void player_buff()
@@ -2139,6 +2134,15 @@ struct chaos_bolt_t : public warlock_spell_t
     if ( p -> dots_immolate -> ticking() )
     {
       player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect_base_value( 1 ) / 100.0;
+    }
+  }
+
+  virtual void travel( int travel_result, double travel_dmg)
+  {
+    warlock_spell_t::travel(travel_result, travel_dmg);
+    if ( result_is_hit() )
+    {
+      trigger_soul_leech( this );
     }
   }
 };
@@ -2155,9 +2159,9 @@ struct death_coil_t : public warlock_spell_t
     binary            = true;
   }
 
-  virtual void execute()
+  virtual void travel( int travel_result, double travel_dmg)
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::travel(travel_result, travel_dmg);
     if ( result_is_hit() )
     {
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
@@ -2179,9 +2183,9 @@ struct shadowburn_t : public warlock_spell_t
     check_talent( p -> talent_shadowburn -> rank() );
   }
 
-  virtual void execute()
+  virtual void travel( int travel_result, double travel_dmg)
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::travel(travel_result, travel_dmg);
     if ( result_is_hit() )
     {
       trigger_soul_leech( this );
@@ -2293,16 +2297,20 @@ struct drain_life_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
-    if ( result_is_hit() )
-    {
-      trigger_everlasting_affliction( this );
-    }
     if ( p -> buffs_soulburn -> up() )
     {
       p -> buffs_soulburn -> expire();
     }
   }
 
+  virtual void travel( int travel_result, double travel_dmg)
+  {
+    warlock_spell_t::travel(travel_result, travel_dmg);
+    if ( result_is_hit() )
+    {
+      trigger_everlasting_affliction( this );
+    }
+  }
   virtual double tick_time() SC_CONST
   {
     warlock_t* p = player -> cast_warlock();
@@ -2677,11 +2685,17 @@ struct conflagrate_t : public warlock_spell_t
 
     warlock_spell_t::execute();
 
-    if ( result_is_hit() )
-    {
-      p -> buffs_backdraft -> trigger( 3 );
-    }
   }
+
+  virtual void travel( int travel_result, double travel_dmg)
+   {
+     warlock_t* p = player -> cast_warlock();
+     warlock_spell_t::travel(travel_result, travel_dmg);
+     if ( result_is_hit() )
+     {
+       p -> buffs_backdraft -> trigger( 3 );
+     }
+   }
 
   virtual bool ready()
   {
@@ -2860,10 +2874,11 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_spell_t::travel( travel_result, travel_dmg);
 
-    trigger_decimation( this, travel_result );
+
     if ( result_is_hit() )
     {
       warlock_t* p = player -> cast_warlock();
+      trigger_decimation( this, travel_result );
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
@@ -3669,16 +3684,15 @@ struct seed_of_corruption_t : public warlock_spell_t
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
   }
 
-  virtual void execute()
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::execute();
-
-    dot_damage_done = target -> total_dmg;
-    if ( p -> dots_corruption -> ticking() )
-    {
-      p -> dots_corruption -> action -> cancel();
-    }
+  virtual void travel( int travel_result, double travel_dmg)
+   {
+     warlock_t* p = player -> cast_warlock();
+     warlock_spell_t::travel( travel_result, travel_dmg);
+     dot_damage_done = target -> total_dmg;
+     if ( p -> dots_corruption -> ticking() )
+     {
+       p -> dots_corruption -> action -> cancel();
+     }
   }
 
   virtual void tick()
