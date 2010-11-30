@@ -18,7 +18,7 @@ actions+=/kick
 actions+=/garrote
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/vendetta
-actions+=/rupture,if=combo_points>=4&target.time_to_die>15&buff.slice_and_dice.remains>6
+actions+=/rupture,if=!ticking&combo_points>=4&target.time_to_die>15&buff.slice_and_dice.remains>6
 actions+=/cold_blood,sync=envenom
 actions+=/envenom,if=combo_points>=4&buff.envenom.down
 actions+=/envenom,if=combo_points>=4&energy>90
