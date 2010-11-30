@@ -1894,7 +1894,8 @@ struct bane_of_doom_t : public warlock_spell_t
     if ( p -> rng_ebon_imp -> roll ( x ) )
     {
       p -> procs_ebon_imp -> occur();
-      p -> summon_pet( "ebon_imp", 15.0 );
+      p -> dismiss_pet( "ebon_imp" );
+      p -> summon_pet( "ebon_imp", 14.99 );
     }
   }
 
