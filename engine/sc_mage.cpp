@@ -1370,8 +1370,7 @@ struct arcane_missiles_t : public mage_spell_t
   virtual void tick()
   {
     tick_spell -> execute();
-    stats -> add_result( tick_spell -> direct_dmg, DMG_OVER_TIME, tick_spell -> result );
-    stats -> add_time( time_to_tick, DMG_OVER_TIME );
+    stats -> add( tick_spell -> direct_dmg, DMG_OVER_TIME, tick_spell -> result, time_to_tick );
   }
 
   virtual bool ready()
