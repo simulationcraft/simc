@@ -6,7 +6,7 @@ race=tauren
 use_pre_potion=1
 professions=Enchanting=525/Jewelcrafting=525
 talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=303202321223110132120300220000000000000000000000000000000
-glyphs=lava_burst/lightning_bolt/flame_shock/lightning_bolt/healing_stream_totem/ghost_wolf
+glyphs=lava_burst/lightning_bolt/flame_shock/lightning_shield/healing_stream_totem/ghost_wolf
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/flametongue_weapon,weapon=main

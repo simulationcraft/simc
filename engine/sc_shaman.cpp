@@ -853,8 +853,8 @@ struct lightning_charge_t : public shaman_spell_t
 {
   int consume_threshold;
   
-  lightning_charge_t( player_t* player ) :
-    shaman_spell_t( "lightning_shield", 26364, player ), consume_threshold( 0 )
+  lightning_charge_t( player_t* player, const std::string& n ) :
+    shaman_spell_t( n.c_str(), 26364, player ), consume_threshold( 0 )
   {
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     shaman_t* p      = player -> cast_shaman();
@@ -3189,7 +3189,7 @@ struct lightning_shield_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     harmful     = false;
 
-    p -> active_lightning_charge = new lightning_charge_t( p ) ;
+    p -> active_lightning_charge = new lightning_charge_t( p, p -> primary_tree() == TREE_ELEMENTAL ? "fulmination" : "lightning_shield" );
   }
 
   virtual void execute()
