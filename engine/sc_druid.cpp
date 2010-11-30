@@ -50,10 +50,10 @@ struct druid_t : public player_t
   cooldown_t* cooldowns_fury_swipes;
 
   // DoTs
-  dot_t* dots_rip;
-  dot_t* dots_rake;
   dot_t* dots_insect_swarm;
   dot_t* dots_moonfire;
+  dot_t* dots_rake;
+  dot_t* dots_rip;
   dot_t* dots_sunfire;
 
   // Gains
@@ -3438,7 +3438,7 @@ void druid_t::init_actions()
         if ( talents.berserk -> rank() )action_list_str += "/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += use_str;
-        action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6";
+        action_list_str += "/rip,if=!ticking&buff.combo_points.stack>=5&target.time_to_die>=6";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&target.time_to_die>=9&buff.savage_roar.remains<=8&dot.rip.remains-buff.savage_roar.remains>=-3";
         action_list_str += "/ferocious_bite,if=target.time_to_die<=6&buff.combo_points.stack>=5";
         action_list_str += "/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4";
@@ -3466,7 +3466,7 @@ void druid_t::init_actions()
       if ( talents.starfall -> rank() ) 
         action_list_str += "/starfall,if=!eclipse";
       if ( talents.sunfire -> rank() )
-        action_list_str += "/sunfire,if=!dot.moonfire.remains>0";
+        action_list_str += "/sunfire,if=!ticking&!dot.moonfire.remains>0";
       action_list_str += "/moonfire,if=!ticking";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0&buff.lunar_eclipse.react";

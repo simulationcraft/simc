@@ -1,10 +1,10 @@
 #!./simc 
 
 druid=Druid_Balance_T11
-professions=Jewelcrafting/Blacksmithing
 level=85
 race=night_elf
 use_pre_potion=-1
+professions=Jewelcrafting/Blacksmithing
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=332332211200021110310200000000000000000000220301000000000000000
 glyphs=moonfire/insect_swarm/wrath/starfall/focus/innervate
 actions=flask,type=draconic_mind
@@ -25,34 +25,37 @@ actions+=/starsurge
 actions+=/starfire,if=eclipse_dir=1
 actions+=/wrath,if=eclipse_dir=-1
 actions+=/starfire
-head=stormriders_cover,heroic=1,type=leather,stats=325int_578sta_257crit_197haste_1439armor,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit,reforge=crit_hit
+head=stormriders_cover,heroic=1,type=leather,stats=325int_578sta_257crit_197haste_1439armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste
 shoulders=passive_resistor_spaulders,heroic=1,type=leather,stats=266int_429sta_171spi_191haste_1328armor,gems=67int_10spi,enchant=50int_25haste
-chest=stormriders_vestment,heroic=1,type=leather,stats=345int_578sta_227crit_247mastery_1771armor,gems=20int_20spi_20int_20mastery_20int,enchant=20all,reforge=crit_haste
-waist=belt_of_the_nightmare,heroic=1,type=leather,stats=266int_429sta_171spi_191crit_996armor,gems=20int_20spi_67int_10crit,reforge=crit_haste
+chest=stormriders_vestment,heroic=1,type=leather,stats=345int_578sta_227crit_247mastery_1771armor,reforge=crit_haste,gems=20int_20spi_20int_20mastery_20int,enchant=20all
+waist=belt_of_the_nightmare,heroic=1,type=leather,stats=266int_429sta_171spi_191crit_996armor,reforge=crit_haste,gems=20int_20spi_67int_10crit
 legs=stormriders_leggings,heroic=1,type=leather,stats=345int_578sta_217spi_257haste_1550armor,gems=67int_20int_20spi_20int,enchant=95int_55spi
-feet=treads_of_hideous_transformation,heroic=1,type=leather,stats=266int_429sta_191spi_171crit_1218armor,gems=20int_20spi_10int,enchant=35mastery,reforge=crit_haste
-wrists=manacles_of_the_sleeping_beast,heroic=1,type=leather,stats=215int_322sta_143spi_143mastery_775armor,gems=40int,enchant=65haste,reforge=mastery_haste
-hands=stormriders_gloves,heroic=1,type=leather,stats=266int_429sta_191crit_171haste_1107armor,gems=40int_40int_10crit,enchant=65mastery,reforge=crit_hit
+feet=treads_of_hideous_transformation,heroic=1,type=leather,stats=266int_429sta_191spi_171crit_1218armor,reforge=crit_haste,gems=20int_20spi_10int,enchant=35mastery
+wrists=manacles_of_the_sleeping_beast,heroic=1,type=leather,stats=215int_322sta_143spi_143mastery_775armor,reforge=mastery_haste,gems=40int,enchant=65haste
+hands=stormriders_gloves,heroic=1,type=leather,stats=266int_429sta_191crit_171haste_1107armor,reforge=crit_hit,gems=40int_40int_10crit,enchant=65mastery
 finger1=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste
 finger2=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit
-trinket1=bell_of_enraging_resonance,heroic=1,stats=363crit,equip=onspellcrit_2178sp_30%_20dur_100cd,reforge=crit_haste
+trinket1=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_haste,equip=onspellcrit_2178sp_30%_20dur_100cd
 trinket2=heart_of_ignacious,heroic=1
-back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,gems=20int_20mastery_10int,enchant=50int,reforge=mastery_hit
+back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=20int_20mastery_10int,enchant=50int
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,enchant=power_torrent,weapon=dagger_1.80speed_658min_1221max
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit
-ranged=relic_of_norgannon,stats=107int_161sta_72crit_72haste,gems=40int,reforge=crit_mastery
+ranged=relic_of_norgannon,stats=107int_161sta_72crit_72haste,reforge=crit_mastery,gems=40int
 # Gear Summary
+# gear_strength=20
+# gear_agility=20
 # gear_stamina=5833
 # gear_intellect=4555
 # gear_spirit=1364
 # gear_spell_power=2207
 # gear_hit_rating=439
-# gear_crit_rating=114
+# gear_crit_rating=1114
 # gear_haste_rating=2057
 # gear_mastery_rating=789
 # gear_armor=10883
+# meta_gem=ember_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # trinket2=heart_of_ignacious,heroic=1
-# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_658min_1221max
+# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_658min_1221max,enchant=power_torrent
