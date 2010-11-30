@@ -1,13 +1,6 @@
 #!./simc 
 
-iterations=10000
-#calculate_scale_factors=1
-scale_hit_rating=250
-scale_expertise_rating=250
-scale_only=haste_rating,crit_rating,mastery_rating,hit_rating,expertise_rating,agility
-
-rogue=Rogue_Muti_T11
-origin="input=Rogue_Muti_T11.simc"
+rogue=Rogue_Assassination_T11
 level=85
 race=undead
 use_pre_potion=-1
@@ -33,23 +26,23 @@ actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<2
 actions+=/backstab,if=combo_points<4&target.health_pct<35
 actions+=/mutilate,if=combo_points<4&target.health_pct>=35
 actions+=/vanish,if=time>30&energy>50
-head=wind_dancers_helmet,heroic=1,type=leather,stats=325agi_1439armor_257crit_197hit_578sta,gems=relentless_earthsiege_20agi_20hit_30agi,enchant=60agi_35haste,reforge=crit_exp
+head=wind_dancers_helmet,heroic=1,type=leather,stats=325agi_1439armor_257crit_197hit_578sta,reforge=crit_exp,gems=relentless_earthsiege_20agi_20hit_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143haste_143mastery,reforge=haste_hit
-shoulders=wind_dancers_spaulders,heroic=1,type=leather,stats=266agi_1328armor_171crit_191haste_429sta,gems=20hit_20agi_10agi,enchant=50agi_25mastery,reforge=crit_hit
-chest=wind_dancers_tunic,heroic=1,type=leather,stats=345agi_1771armor_257haste_217exp_578sta,gems=67agi_20agi_20hit_20agi,enchant=20str_20agi_20sta_20int_20spi,reforge=haste_hit
-waist=dispersing_belt,heroic=1,type=leather,stats=266agi_429sta_996armor_171crit_191haste,gems=20agi_20hit_67agi_10agi,reforge=crit_hit
-legs=wind_dancers_legguards,heroic=1,type=leather,stats=345agi_1550armor_217crit_257mastery_578sta,gems=20agi_20crit_20agi_20hit_20agi,enchant=190ap_55crit,reforge=crit_hit
-feet=storm_riders_boots,heroic=1,type=leather,stats=266agi_429sta_171haste_1218armor_191mastery,gems=20agi_20crit_10mastery,enchant=50mastery,reforge=haste_hit
-wrists=parasitic_bands,heroic=1,type=leather,stats=215agi_322sta_143crit_143mastery_775armor,enchant=65haste,reforge=crit_hit
-hands=wind_dancers_gloves,heroic=1,type=leather,stats=266agi_1107armor_191haste_171hit_429sta,gems=67agi_10haste,enchant=65mastery,reforge=haste_exp
-finger1=lightning_conductor_band,heroic=1,stats=215agi_322sta_143crit_143hit,enchant=40agi,reforge=crit_exp
-finger2=signet_of_the_elder_council,stats=190agi_286sta_127haste_127mastery,enchant=40agi,reforge=haste_hit
+shoulders=wind_dancers_spaulders,heroic=1,type=leather,stats=266agi_1328armor_171crit_191haste_429sta,reforge=crit_hit,gems=20hit_20agi_10agi,enchant=50agi_25mastery
+chest=wind_dancers_tunic,heroic=1,type=leather,stats=345agi_1771armor_257haste_217exp_578sta,reforge=haste_hit,gems=67agi_20agi_20hit_20agi,enchant=20str_20agi_20sta_20int_20spi
+waist=dispersing_belt,heroic=1,type=leather,stats=266agi_429sta_996armor_171crit_191haste,reforge=crit_hit,gems=20agi_20hit_67agi_10agi
+legs=wind_dancers_legguards,heroic=1,type=leather,stats=345agi_1550armor_217crit_257mastery_578sta,reforge=crit_hit,gems=20agi_20crit_20agi_20hit_20agi,enchant=190ap_55crit
+feet=storm_riders_boots,heroic=1,type=leather,stats=266agi_429sta_171haste_1218armor_191mastery,reforge=haste_hit,gems=20agi_20crit_10mastery,enchant=50mastery
+wrists=parasitic_bands,heroic=1,type=leather,stats=215agi_322sta_143crit_143mastery_775armor,reforge=crit_hit,enchant=65haste
+hands=wind_dancers_gloves,heroic=1,type=leather,stats=266agi_1107armor_191haste_171hit_429sta,reforge=haste_exp,gems=67agi_10haste,enchant=65mastery
+finger1=lightning_conductor_band,heroic=1,stats=215agi_322sta_143crit_143hit,reforge=crit_exp,enchant=40agi
+finger2=signet_of_the_elder_council,stats=190agi_286sta_127haste_127mastery,reforge=haste_hit,enchant=40agi
 trinket1=prestors_talisman_of_machination,heroic=1,stats=363agi,equip=onattackhit_2178haste_10%_15dur_60cd
 trinket2=essence_of_the_cyclone,heroic=1,stats=363agi,equip=onattackhit_2178crit_10%_10dur_45cd
-back=cloak_of_biting_chill,heroic=1,stats=673armor_215agi_322sta_143crit_143mastery,enchant=65crit,reforge=crit_hit
-main_hand=organic_lifeform_inverter,heroic=1,stats=165agi_248sta_110exp_110mastery,enchant=landslide,weapon=dagger_1.80speed_751min_1128max,reforge=mastery_hit
-off_hand=uhnagh_fash_the_darkest_betrayal,heroic=1,stats=165agi_248sta_110crit_110haste,enchant=landslide,weapon=dagger_1.40speed_511min_950max,reforge=crit_hit
-ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste,weapon=crossbow_3.00speed_1478min_2744max,reforge=crit_hit
+back=cloak_of_biting_chill,heroic=1,stats=673armor_215agi_322sta_143crit_143mastery,reforge=crit_hit,enchant=65crit
+main_hand=organic_lifeform_inverter,heroic=1,stats=165agi_248sta_110exp_110mastery,reforge=mastery_hit,enchant=landslide,weapon=dagger_1.80speed_751min_1128max
+off_hand=uhnagh_fash_the_darkest_betrayal,heroic=1,stats=165agi_248sta_110crit_110haste,reforge=crit_hit,enchant=landslide,weapon=dagger_1.40speed_511min_950max
+ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste,reforge=crit_hit,weapon=crossbow_3.00speed_1478min_2744max
 # Gear Summary
 # gear_strength=20
 # gear_agility=4968
@@ -57,15 +50,15 @@ ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste,weapon=cr
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=217
-# gear_hit_rating=611
-# gear_crit_rating=1706
-# gear_haste_rating=1682
-# gear_mastery_rating=1154
+# gear_expertise_rating=562
+# gear_hit_rating=1344
+# gear_crit_rating=1025
+# gear_haste_rating=1219
+# gear_mastery_rating=1220
 # gear_armor=10857
 # meta_gem=relentless_earthsiege
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# main_hand=crulkorak_the_lightnings_arc,heroic=1,weapon=axe_2.60speed_950min_1764max,enchant=landslide
+# main_hand=organic_lifeform_inverter,heroic=1,weapon=dagger_1.80speed_751min_1128max,enchant=landslide
 # off_hand=uhnagh_fash_the_darkest_betrayal,heroic=1,weapon=dagger_1.40speed_511min_950max,enchant=landslide
 # ranged=dragonheart_piercer,heroic=1,weapon=crossbow_3.00speed_1478min_2744max
