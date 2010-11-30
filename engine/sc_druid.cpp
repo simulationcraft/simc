@@ -1219,7 +1219,7 @@ struct rip_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
-    ap_per_point          = 0.023; // Tooltip shows this * 8, but doesn't match combat logs
+    ap_per_point          = 0.023;
     requires_combo_points = true;
 
     if ( p -> set_bonus.tier10_2pc_melee() )
@@ -1316,9 +1316,13 @@ struct shred_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
     if ( p -> glyphs.shred &&
          p -> dots_rip -> ticking()  &&
-         p -> dots_rip -> action -> added_ticks < 3 )
+         p -> dots_rip -> action -> added_ticks < 4 )
     {
-      p -> dots_rip -> action -> extend_duration( 1 );
+      // Glyph adds 1/1/2 ticks on execute
+      if ( p -> dots_rip -> action -> added_ticks == 2 )
+        p -> dots_rip -> action -> extend_duration( 2 );
+      else
+        p -> dots_rip -> action -> extend_duration( 1 );
     }
     if ( result_is_hit() )
     {
@@ -1350,7 +1354,7 @@ struct shred_t : public druid_cat_attack_t
     if ( extend_rip )
       if ( ! p -> glyphs.shred ||
            ! p -> dots_rip -> ticking() ||
-           ( p -> dots_rip -> action -> added_ticks == 3 ) )
+           ( p -> dots_rip -> action -> added_ticks == 4 ) )
         return false;
 
     return druid_cat_attack_t::ready();
