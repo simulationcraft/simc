@@ -2349,8 +2349,6 @@ struct moonfire_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-    base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;
-
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
@@ -2382,11 +2380,11 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
     // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
-    // then reapply moonfury, to get an accurate number
+    // then reapply moonfury and the glyph, to get an accurate number
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire * 0.20;
 
     if ( result_is_hit() )
     {
@@ -2786,8 +2784,6 @@ struct sunfire_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
 
-    base_td_multiplier *= 1.0 + p -> glyphs.moonfire * 0.20;    
-
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
@@ -2819,11 +2815,11 @@ struct sunfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
     // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
-    // then reapply moonfury, to get an accurate number
+    // then reapply moonfury and the glyph, to get an accurate number
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC );
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire * 0.20;
 
     if ( result_is_hit() )
     {
