@@ -1083,7 +1083,7 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     double c = priest_spell_t::cost();
-    c *= p -> buffs_inner_will -> value();
+    c *= 1.0 - p -> buffs_inner_will -> value();
     c  = floor( c );
 
     return c;
@@ -2398,7 +2398,7 @@ struct renew_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     double c = priest_heal_t::cost();
-    c *= p -> buffs_inner_will -> value();
+    c *= 1.0 - p -> buffs_inner_will -> value();
     c  = floor( c );
 
     return c;
@@ -2644,7 +2644,7 @@ struct circle_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     double c = priest_heal_t::cost();
-    c *= p -> buffs_inner_will -> value();
+    c *= 1.0 - p -> buffs_inner_will -> value();
     c  = floor( c );
 
     return c;
@@ -2677,7 +2677,7 @@ struct prayer_of_mending_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     double c = priest_heal_t::cost();
-    c *= p -> buffs_inner_will -> value();
+    c *= 1.0 - p -> buffs_inner_will -> value();
     c  = floor( c );
 
     return c;
@@ -2729,7 +2729,7 @@ struct power_word_shield_t : public priest_absorb_t
     priest_t* p = player -> cast_priest();
 
     double c = priest_absorb_t::cost();
-    c *= p -> buffs_inner_will -> value();
+    c *= 1.0 - p -> buffs_inner_will -> value();
     c  = floor( c );
 
     return c;
