@@ -120,6 +120,34 @@ bool set_bonus_t::init( player_t* p )
   return true;
 }
 
+action_expr_t* set_bonus_t::create_expression( action_t* action,
+                                          const std::string& type )
+{
+  if ( type == "tier10_2pc_caster" )
+  {
+    struct tier10_2pc_caster_expr_t : public action_expr_t
+    {
+      set_bonus_t* set_bonus;
+      tier10_2pc_caster_expr_t( action_t* a, set_bonus_t* s ) : action_expr_t( a, "tier10_2pc_caster", TOK_NUM ), set_bonus(s) {}
+      virtual int evaluate() { result_num = set_bonus -> tier10_2pc_caster(); return TOK_NUM; }
+    };
+    return new tier10_2pc_caster_expr_t( action, this );
+  }
+  else if ( type == "tier10_4pc_caster" )
+  {
+    struct tier10_4pc_caster_expr_t : public action_expr_t
+    {
+      set_bonus_t* set_bonus;
+      tier10_4pc_caster_expr_t( action_t* a, set_bonus_t* s ) : action_expr_t( a, "tier10_4pc_caster", TOK_NUM ), set_bonus(s) {}
+      virtual int evaluate() { result_num = set_bonus -> tier10_4pc_caster(); return TOK_NUM; }
+    };
+    return new tier10_4pc_caster_expr_t( action, this );
+  }
+
+
+  return 0;
+}
+
 // set_bonus_array_t::set_bonus_array_t ======================================
 
 set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] ) :

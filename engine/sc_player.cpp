@@ -4493,6 +4493,15 @@ action_expr_t* player_t::create_expression( action_t* a,
       }
     }
   }
+  if ( num_splits == 2)
+  {
+    if ( splits[ 0 ] == "set_bonus" )
+    {
+     return a -> player -> set_bonus.create_expression( a, splits[ 1 ] );
+    }
+  }
+
+
 
   return sim -> create_expression( a, name_str );
 }

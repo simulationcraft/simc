@@ -2699,6 +2699,8 @@ struct set_bonus_t
   int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();
+
+  action_expr_t* create_expression( action_t*, const std::string& type );
 };
 
 struct set_bonus_array_t
