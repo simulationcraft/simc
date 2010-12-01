@@ -1611,6 +1611,7 @@ struct util_t
   static const char* result_type_string        ( int type );
   static const char* school_type_string        ( int type );
   static const char* armor_type_string         ( player_type ptype, int slot_type );
+  static const char* set_bonus_string          ( set_type type );
   static const char* slot_type_string          ( int type );
   static const char* stat_type_string          ( int type );
   static const char* stat_type_abbrev          ( int type );
@@ -1632,6 +1633,7 @@ struct util_t
   static int parse_resource_type               ( const std::string& name );
   static int parse_result_type                 ( const std::string& name );
   static school_type parse_school_type         ( const std::string& name );
+  static set_type parse_set_bonus              ( const std::string& name );
   static int parse_slot_type                   ( const std::string& name );
   static stat_type parse_stat_type             ( const std::string& name );
   static stat_type parse_reforge_type          ( const std::string& name );

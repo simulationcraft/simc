@@ -753,6 +753,59 @@ int util_t::parse_food_type( const std::string& name )
   return FOOD_NONE;
 }
 
+// util_t::set_bonus_string ===============================================
+
+const char* util_t::set_bonus_string( set_type type )
+{
+  switch ( type )
+  {
+  case SET_T10_2PC_CASTER: return "tier10_2pc_caster";
+  case SET_T10_4PC_CASTER: return "tier10_4pc_caster";
+  case SET_T10_2PC_MELEE:  return "tier10_2pc_melee";
+  case SET_T10_4PC_MELEE:  return "tier10_4pc_melee";
+  case SET_T10_2PC_TANK:   return "tier10_2pc_tank";
+  case SET_T10_4PC_TANK:   return "tier10_4pc_tank";
+  case SET_T11_2PC_CASTER: return "tier11_2pc_caster";
+  case SET_T11_4PC_CASTER: return "tier11_4pc_caster";
+  case SET_T11_2PC_MELEE:  return "tier11_2pc_melee";
+  case SET_T11_4PC_MELEE:  return "tier11_4pc_melee";
+  case SET_T11_2PC_TANK:   return "tier11_2pc_tank";
+  case SET_T11_4PC_TANK:   return "tier11_4pc_tank";
+  case SET_T12_2PC_CASTER: return "tier12_2pc_caster";
+  case SET_T12_4PC_CASTER: return "tier12_4pc_caster";
+  case SET_T12_2PC_MELEE:  return "tier12_2pc_melee";
+  case SET_T12_4PC_MELEE:  return "tier12_4pc_melee";
+  case SET_T12_2PC_TANK:   return "tier12_2pc_tank";
+  case SET_T12_4PC_TANK:   return "tier12_4pc_tank";
+  case SET_T13_2PC_CASTER: return "tier13_2pc_caster";
+  case SET_T13_4PC_CASTER: return "tier13_4pc_caster";
+  case SET_T13_2PC_MELEE:  return "tier13_2pc_melee";
+  case SET_T13_4PC_MELEE:  return "tier13_4pc_melee";
+  case SET_T13_2PC_TANK:   return "tier13_2pc_tank";
+  case SET_T13_4PC_TANK:   return "tier13_4pc_tank";
+  case SET_T14_2PC_CASTER: return "tier14_2pc_caster";
+  case SET_T14_4PC_CASTER: return "tier14_4pc_caster";
+  case SET_T14_2PC_MELEE:  return "tier14_2pc_melee";
+  case SET_T14_4PC_MELEE:  return "tier14_4pc_melee";
+  case SET_T14_2PC_TANK:   return "tier14_2pc_tank";
+  case SET_T14_4PC_TANK:   return "tier14_4pc_tank";
+  default:
+    break;
+  }
+  return "unknown";
+}
+
+// util_t::parse_set_bonus ================================================
+
+set_type util_t::parse_set_bonus( const std::string& name )
+{
+  for ( int i=0; i < SET_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::set_bonus_string( (set_type) i ) ) )
+      return (set_type) i;
+
+  return SET_NONE;
+}
+
 // util_t::slot_type_string =================================================
 
 const char* util_t::slot_type_string( int slot )

@@ -123,27 +123,18 @@ bool set_bonus_t::init( player_t* p )
 action_expr_t* set_bonus_t::create_expression( action_t* action,
                                           const std::string& type )
 {
-  if ( type == "tier10_2pc_caster" )
-  {
-    struct tier10_2pc_caster_expr_t : public action_expr_t
-    {
-      set_bonus_t* set_bonus;
-      tier10_2pc_caster_expr_t( action_t* a, set_bonus_t* s ) : action_expr_t( a, "tier10_2pc_caster", TOK_NUM ), set_bonus(s) {}
-      virtual int evaluate() { result_num = set_bonus -> tier10_2pc_caster(); return TOK_NUM; }
-    };
-    return new tier10_2pc_caster_expr_t( action, this );
-  }
-  else if ( type == "tier10_4pc_caster" )
-  {
-    struct tier10_4pc_caster_expr_t : public action_expr_t
-    {
-      set_bonus_t* set_bonus;
-      tier10_4pc_caster_expr_t( action_t* a, set_bonus_t* s ) : action_expr_t( a, "tier10_4pc_caster", TOK_NUM ), set_bonus(s) {}
-      virtual int evaluate() { result_num = set_bonus -> tier10_4pc_caster(); return TOK_NUM; }
-    };
-    return new tier10_4pc_caster_expr_t( action, this );
-  }
+  set_type bonus_type = util_t::parse_set_bonus( type );
 
+  if ( bonus_type != SET_NONE )
+  {
+    struct set_bonus_expr_t : public action_expr_t
+    {
+      set_type set_bonus_type;
+      set_bonus_expr_t( action_t* a, set_type bonus_type ) : action_expr_t( a, util_t::set_bonus_string( bonus_type ), TOK_NUM ), set_bonus_type( bonus_type ) {}
+      virtual int evaluate() { result_num = action -> player -> sets -> has_set_bonus( set_bonus_type ); return TOK_NUM; }
+    };
+    return new set_bonus_expr_t( action, bonus_type );
+  }
 
   return 0;
 }

@@ -369,7 +369,6 @@ struct druid_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      clear_debuffs();
-  virtual double    energy_regen_per_second() SC_CONST;
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
@@ -3866,15 +3865,6 @@ void druid_t::clear_debuffs()
   player_t::clear_debuffs();
 
   buffs_combo_points -> expire();
-}
-
-// druid_t::energy_regen_per_second ===========================================================
-
-double druid_t::energy_regen_per_second() SC_CONST
-{
-  double r = player_t::energy_regen_per_second();
-
-  return r;  
 }
 
 // druid_t::regen ===========================================================
