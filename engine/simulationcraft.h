@@ -3715,7 +3715,7 @@ struct dot_t
     // new finish time for the DoT, start from the time of the next tick and add the time 
     // for the remaining ticks to that event.
     int remaining_ticks = num_ticks - current_tick;
-    ready = 0.001 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
+    ready = 0.01 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
   }
   virtual double remains()
   {

@@ -1498,6 +1498,8 @@ void action_t::reset()
   travel_event = 0;
 
   if ( observer ) *observer = 0;
+
+  if ( ! dual ) stats -> reset( this );
 }
 
 // action_t::cancel =========================================================
