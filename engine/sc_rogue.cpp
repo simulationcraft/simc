@@ -295,7 +295,7 @@ struct rogue_t : public player_t
     glyph_t* expose_armor;        // done
     glyph_t* feint;               // done
     glyph_t* hemorrhage;          // done
-    glyph_t* kick;                // XXX
+    glyph_t* kick;                // done
     glyph_t* killing_spree;       // done
     glyph_t* mutilate;            // done
     glyph_t* preparation;         // done
@@ -1837,6 +1837,12 @@ struct kick_t : public rogue_attack_t
     base_attack_power_multiplier = 0.0;
 
     parse_options( options_str );
+
+    if ( p -> glyphs.kick -> ok() )
+    {
+      // All kicks are assumed to interrupt a cast
+      cooldown -> duration -= 2.0; // + 4 Duration - 6 on Success = -2
+    }
   }
 
   virtual bool ready()
