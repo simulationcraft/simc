@@ -40,7 +40,7 @@ struct druid_t : public player_t
         uint32_t sid = ( p -> talents.primal_madness -> rank() == 2 ) ? 80886 : 80879;
         passive_spell_t spell_primal_madness_energy( p, "primal_madness_energy", sid );
         energy_value = spell_primal_madness_energy.base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
-        rage_value = p -> talents.primal_madness->base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL_WITH_VALUE ) * 0.1;        
+        rage_value = p -> talents.primal_madness -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL_WITH_VALUE ) * 0.1;
       }
     };
 
@@ -168,6 +168,8 @@ struct druid_t : public player_t
   buff_t* buffs_pulverize;
   buff_t* buffs_savage_roar;
   buff_t* buffs_shooting_stars;
+  buff_t* buffs_stampede_bear;
+  buff_t* buffs_stampede_cat;
   buff_t* buffs_stealthed;
   buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
@@ -265,7 +267,7 @@ struct druid_t : public player_t
     talent_t* brutal_impact;
     talent_t* endless_carnage;
     talent_t* feral_aggression;
-    talent_t* feral_charge; // NYI
+    talent_t* feral_charge;
     talent_t* feral_swiftness;
     talent_t* furor;
     talent_t* fury_swipes;
@@ -279,7 +281,7 @@ struct druid_t : public player_t
     talent_t* primal_madness;
     talent_t* pulverize; // NYI
     talent_t* rend_and_tear;
-    talent_t* stampede; // NYI -> Valid to run out->charge->ravage?
+    talent_t* stampede;
     talent_t* survival_instincts; // NYI as we don't simulate damage
     talent_t* thick_hide; // How does the +10% and +33%@bear stack etc
     
@@ -477,6 +479,7 @@ struct druid_bear_attack_t : public attack_t
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() SC_CONST;
   virtual void   execute();
+  virtual double haste() SC_CONST;
   virtual void   consume_resource();
   virtual void   player_buff();
 };
@@ -1043,6 +1046,69 @@ struct claw_t : public druid_cat_attack_t
   }
 };
 
+// Feral Charge (Cat) ======================================================
+
+struct feral_charge_cat_t : public druid_cat_attack_t
+{
+  double stampede_cost_reduction, stampede_duration;
+
+  feral_charge_cat_t( druid_t* player, const std::string& options_str ) :
+      druid_cat_attack_t( "feral_charge_cat", 49376, player ), stampede_cost_reduction( 0.0 ), stampede_duration( 0.0 )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( p -> talents.stampede -> rank() )
+    {
+      uint32_t sid = ( p -> talents.stampede -> rank() == 2 ) ? 81022 : 81021;
+      passive_spell_t stampede_spell( p, "stampede_cat_spell", sid );
+      stampede_cost_reduction = stampede_spell.mod_additive( P_RESOURCE_COST );
+      // 81022 is bugged and says FLAT_MODIFIER not PCT_MODIFIER so adjust it
+      if ( sid == 81022 )
+      {
+        stampede_cost_reduction /= 100.0;
+      }
+      stampede_cost_reduction = -stampede_cost_reduction;
+      stampede_duration = stampede_spell.duration();
+    }
+
+    p -> buffs_stampede_cat -> buff_duration = stampede_duration;
+
+    may_miss   = false;
+    may_dodge  = false;
+    may_parry  = false;
+    may_block  = false;
+    may_glance = false;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_cat_attack_t::execute();
+    
+    p -> buffs_stampede_cat -> trigger( 1, stampede_cost_reduction );
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> in_combat && ( p -> position != POSITION_RANGED ) )
+    {
+      return false;
+    }
+    
+    return druid_cat_attack_t::ready();
+  }
+};
+
+
 // Ferocious Bite ===========================================================
 
 struct ferocious_bite_t : public druid_cat_attack_t
@@ -1291,10 +1357,42 @@ struct ravage_t : public druid_cat_attack_t
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
+
     druid_cat_attack_t::execute();
+
+    p -> buffs_stampede_cat -> expire();
+    requires_stealth = true;
 
     if ( result_is_hit() )
       trigger_infected_wounds( this );
+  }
+
+  virtual double cost() SC_CONST
+  {
+    druid_t* p = player -> cast_druid();
+
+    double c = druid_cat_attack_t::cost();
+
+    c *= 1.0 - p -> buffs_stampede_cat -> value();
+
+    return c;
+  }
+
+  virtual void consume_resource()
+  {
+    druid_t* p = player -> cast_druid();
+    attack_t::consume_resource();
+    if ( p -> buffs_omen_of_clarity -> up() && ! p -> buffs_stampede_cat -> check() )
+    {
+      // Treat the savings like a energy gain.
+      double amount = attack_t::cost();
+      if ( amount > 0 )
+      {
+        p -> gains_omen_of_clarity -> add( amount );
+        p -> buffs_omen_of_clarity -> expire();
+      }
+    }
   }
 
   virtual void player_buff()
@@ -1309,6 +1407,17 @@ struct ravage_t : public druid_cat_attack_t
     druid_cat_attack_t::player_buff();
   }
 
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> buffs_stampede_cat -> up() )
+    {
+      requires_stealth = false;
+    }
+
+    return druid_cat_attack_t::ready();  
+  }
 };
 
 // Rip ======================================================================
@@ -1637,6 +1746,20 @@ void druid_bear_attack_t::execute()
   }
 }
 
+double druid_bear_attack_t::haste() SC_CONST
+{
+  druid_t* p = player -> cast_druid();
+
+  double h = attack_t::haste();
+  
+  if ( p -> buffs_stampede_bear -> up() )
+  {
+    h *= p -> buffs_stampede_bear -> value();
+  }
+
+  return h;
+}
+
 // druid_bear_attack_t::player_buff ========================================
 
 void druid_bear_attack_t::player_buff()
@@ -1685,6 +1808,64 @@ struct bear_melee_t : public druid_bear_attack_t
     }
   }
 };
+
+// Feral Charge (Bear) ======================================================
+
+struct feral_charge_bear_t : public druid_bear_attack_t
+{
+  double stampede_haste, stampede_duration;
+
+  feral_charge_bear_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "feral_charge_bear", 16979, player ), stampede_haste( 0.0 ), stampede_duration( 0.0 )
+  {
+    druid_t* p = player -> cast_druid();
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( p -> talents.stampede -> rank() )
+    {
+      uint32_t sid = ( p -> talents.stampede -> rank() == 2 ) ? 78893 : 78892;
+      passive_spell_t stampede_spell( p, "stampede_bear_spell", sid );
+      stampede_haste = stampede_spell.base_value( E_APPLY_AURA, A_MOD_HASTE ) / 100.0;
+      stampede_duration = stampede_spell.duration();
+    }
+
+    stampede_haste = 1.0 / ( 1.0 + stampede_haste );
+    p -> buffs_stampede_bear -> buff_duration = stampede_duration;
+
+    may_miss   = false;
+    may_dodge  = false;
+    may_parry  = false;
+    may_block  = false;
+    may_glance = false;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_bear_attack_t::execute();
+    
+    p -> buffs_stampede_bear -> trigger( 1, stampede_haste );
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> in_combat && ( p -> position != POSITION_RANGED ) )
+    {
+      return false;
+    }
+    
+    return druid_bear_attack_t::ready();
+  }
+};
+
 
 // Lacerate ================================================================
 
@@ -3140,6 +3321,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "enrage"            ) return new            enrage_t( this, options_str );
   if ( name == "faerie_fire"       ) return new       faerie_fire_t( this, options_str );
   if ( name == "faerie_fire_feral" ) return new faerie_fire_feral_t( this, options_str );
+  if ( name == "feral_charge_bear" ) return new feral_charge_bear_t( this, options_str );
+  if ( name == "feral_charge_cat"  ) return new  feral_charge_cat_t( this, options_str );
   if ( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
   if ( name == "insect_swarm"      ) return new      insect_swarm_t( this, options_str );
   if ( name == "innervate"         ) return new         innervate_t( this, options_str );
@@ -3428,6 +3611,8 @@ void druid_t::init_buffs()
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> proc_chance() );
+  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> rank() ); 
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> rank() ); 
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );  
