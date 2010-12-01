@@ -286,6 +286,14 @@ spell_id_t::spell_id_t( const spell_id_t& copy ) :
   memcpy( s_effects, copy.s_effects, sizeof( s_effects ) );
 }
 
+spell_id_t::~spell_id_t()
+{
+  if ( s_player )
+  {
+    s_player -> spell_list.remove( this );
+  }
+}
+
 bool spell_id_t::initialize( const char* s_name )
 {
   player_type player_class;

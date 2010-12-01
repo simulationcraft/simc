@@ -2704,6 +2704,13 @@ void player_t::stat_gain( int    stat,
   case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount ); break;
   case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount ); break;
 
+  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] += amount; break;
+  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] += amount; break;
+  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] += amount; break;
+  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] += amount; break;
+  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; break;
+  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] += amount; break;
+
   case STAT_SPELL_POWER:       stats.spell_power       += amount; spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
   case STAT_MP5:               stats.mp5               += amount; mp5                       += amount; break;
@@ -2763,12 +2770,19 @@ void player_t::stat_loss( int    stat,
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; attribute[ i ] -= amount; } break;
 
-  case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount ); break;
-  case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount ); break;
-  case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount ); break;
-  case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount ); break;
-  case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount ); break;
-  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount ); break;
+  case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount ); break;
+  case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount ); break;
+  case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount ); break;
+  case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount ); break;
+  case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount ); break;
+  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC,  amount ); break;
+
+  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] -= amount; resource_current[ RESOURCE_HEALTH ] = std::min( resource_current[ RESOURCE_HEALTH ], resource_max[ RESOURCE_HEALTH ] ); break;
+  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] -= amount; resource_current[ RESOURCE_MANA ]   = std::min( resource_current[ RESOURCE_MANA ],   resource_max[ RESOURCE_MANA ] );   break;
+  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] -= amount; resource_current[ RESOURCE_RAGE ]   = std::min( resource_current[ RESOURCE_RAGE ],   resource_max[ RESOURCE_RAGE ] );   break;
+  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] -= amount; resource_current[ RESOURCE_ENERGY ] = std::min( resource_current[ RESOURCE_ENERGY ], resource_max[ RESOURCE_ENERGY ] ); break;
+  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] -= amount; resource_current[ RESOURCE_FOCUS ]  = std::min( resource_current[ RESOURCE_FOCUS ],  resource_max[ RESOURCE_FOCUS ] );  break;
+  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] -= amount; resource_current[ RESOURCE_RUNIC ]  = std::min( resource_current[ RESOURCE_RUNIC ],  resource_max[ RESOURCE_RUNIC ] );  break;
 
   case STAT_SPELL_POWER:       stats.spell_power       -= amount; spell_power[ SCHOOL_MAX ] -= amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration -= amount; spell_penetration         -= amount; break;

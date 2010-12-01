@@ -518,6 +518,7 @@ enum stat_type
   STAT_NONE=0,
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
+  STAT_MAX_HEALTH, STAT_MAX_MANA, STAT_MAX_RAGE, STAT_MAX_ENERGY, STAT_MAX_FOCUS, STAT_MAX_RUNIC,
   STAT_SPELL_POWER, STAT_SPELL_PENETRATION, STAT_MP5,
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING,
   STAT_HIT_RATING, STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
@@ -1749,7 +1750,7 @@ struct spell_id_t
   spell_id_t( player_t* player = 0, const char* t_name = 0 );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
   spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
-  virtual ~spell_id_t() {}
+  virtual ~spell_id_t();
 
   // Generic spell data initialization
   bool initialize( const char* s_name = 0 );
@@ -2750,7 +2751,7 @@ struct player_t
 
   talent_tree_type tree_type[ MAX_TALENT_TREES ];
 
-  std::vector<spell_id_t*> spell_list;
+  std::list<spell_id_t*> spell_list;
 
   // Profs
   std::string professions_str;

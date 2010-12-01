@@ -31,6 +31,13 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] += value; break;
   case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] += value; break;
 
+  case STAT_MAX_HEALTH: 
+  case STAT_MAX_MANA:   
+  case STAT_MAX_RAGE:   
+  case STAT_MAX_ENERGY: 
+  case STAT_MAX_FOCUS:  
+  case STAT_MAX_RUNIC:  break;
+
   case STAT_SPELL_POWER:       spell_power       += value; break;
   case STAT_SPELL_PENETRATION: spell_penetration += value; break;
   case STAT_MP5:               mp5               += value; break;
@@ -87,6 +94,13 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] = value; break;
   case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] = value; break;
 
+  case STAT_MAX_HEALTH: 
+  case STAT_MAX_MANA:   
+  case STAT_MAX_RAGE:   
+  case STAT_MAX_ENERGY: 
+  case STAT_MAX_FOCUS:  
+  case STAT_MAX_RUNIC:  break;
+
   case STAT_SPELL_POWER:       spell_power       = value; break;
   case STAT_SPELL_PENETRATION: spell_penetration = value; break;
   case STAT_MP5:               mp5               = value; break;
@@ -141,6 +155,13 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
   case STAT_ENERGY: return resource[ RESOURCE_ENERGY ];
   case STAT_FOCUS:  return resource[ RESOURCE_FOCUS  ];
   case STAT_RUNIC:  return resource[ RESOURCE_RUNIC  ];
+
+  case STAT_MAX_HEALTH: 
+  case STAT_MAX_MANA:   
+  case STAT_MAX_RAGE:   
+  case STAT_MAX_ENERGY: 
+  case STAT_MAX_FOCUS:  
+  case STAT_MAX_RUNIC:  return 0;
 
   case STAT_SPELL_POWER:       return spell_power;
   case STAT_SPELL_PENETRATION: return spell_penetration;

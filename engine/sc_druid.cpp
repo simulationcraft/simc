@@ -21,8 +21,137 @@ struct druid_t : public player_t
 
   double equipped_weapon_dps;
 
+  struct primal_madness_buff_t;
+  struct tigers_fury_buff_t;
+  struct berserk_buff_t;
+
+  struct primal_madness_buff_t : public buff_t
+  {
+    double energy_value;
+    double rage_value;
+
+    primal_madness_buff_t( player_t* player ) : 
+      buff_t( player, "primal_madness", 1 ), energy_value( 0.0 ), rage_value( 0.0 )
+    {
+      druid_t* p = player -> cast_druid();
+
+      if ( p -> talents.primal_madness -> rank() > 0 )
+      {
+        uint32_t sid = ( p -> talents.primal_madness -> rank() == 2 ) ? 80886 : 80879;
+        passive_spell_t spell_primal_madness_energy( p, "primal_madness_energy", sid );
+        energy_value = spell_primal_madness_energy.base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
+        rage_value = p -> talents.primal_madness->base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL_WITH_VALUE ) * 0.1;        
+      }
+    };
+
+    virtual void aura_loss()
+    {
+      druid_t* p = player -> cast_druid();
+
+      buff_t::aura_loss();
+
+      if ( p -> buffs_cat_form -> check() )
+      {
+        p -> stat_loss( STAT_MAX_ENERGY, energy_value );
+      }
+    }
+
+    virtual void aura_gain()
+    {
+      druid_t* p = player -> cast_druid();
+
+      buff_t::aura_gain();
+
+      if ( p -> buffs_cat_form -> check() )
+      {
+        p -> stat_gain( STAT_MAX_ENERGY, energy_value );
+        p -> resource_gain( RESOURCE_ENERGY, energy_value, p -> gains_primal_madness );
+      }
+    }
+
+    virtual bool trigger( int stacks=1, double value=-1.0, double chance=-1.0 )
+    {
+      druid_t* p = player -> cast_druid();
+
+      stacks = 1;
+      value  = energy_value;
+      chance = p -> talents.primal_madness -> rank(); 
+      return buff_t::trigger( stacks, value, chance );
+    }
+  };
+
+  struct berserk_buff_t : public buff_t
+  {
+    berserk_buff_t( player_t* player ) : 
+      buff_t( player, "berserk", 1, 15.0 + ( player -> cast_druid() -> glyphs.berserk ? 5.0 : 0.0 ) )
+    {
+    }
+
+    virtual void aura_loss()
+    {
+      druid_t* p = player -> cast_druid();
+
+      buff_t::aura_loss();
+
+      if ( ! p -> buffs_tigers_fury -> check() )
+      {
+        p -> buffs_primal_madness -> expire();
+      }
+    }
+
+    virtual void aura_gain()
+    {
+      druid_t* p = player -> cast_druid();
+
+      buff_t::aura_gain();
+
+      if ( ! p -> buffs_tigers_fury -> check() )
+      {
+        p -> buffs_primal_madness -> trigger();
+      }
+    }
+  };
+
+  struct tigers_fury_buff_t : public buff_t
+  {
+    double dmg_value;
+
+    tigers_fury_buff_t( player_t* player ) : 
+      buff_t( player, "tigers_fury", 1, 6.0 ), dmg_value( 0.0 )
+    {
+    }
+
+    virtual void aura_loss()
+    {
+      druid_t* p = player -> cast_druid();
+
+      buff_t::aura_loss();
+
+      if ( ! p -> buffs_berserk -> check() )
+      {
+        p -> buffs_primal_madness -> expire();
+      }
+    }
+
+    virtual void aura_gain()
+    {
+      druid_t* p = player -> cast_druid();
+
+      buff_t::aura_gain();
+
+      if ( ! p -> buffs_berserk -> check() )
+      {
+        p -> buffs_primal_madness -> trigger();
+      }
+
+      if ( p -> talents.king_of_the_jungle -> rank() )
+      {
+        p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect_base_value( 2 ), p -> gains_tigers_fury );
+      }
+    }
+  };
+
   // Buffs
-  buff_t* buffs_berserk;
   buff_t* buffs_bear_form;
   buff_t* buffs_cat_form;
   buff_t* buffs_combo_points;
@@ -43,7 +172,9 @@ struct druid_t : public player_t
   buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_t11_4pc_melee;
-  buff_t* buffs_tigers_fury;
+  berserk_buff_t*        buffs_berserk;
+  primal_madness_buff_t* buffs_primal_madness;
+  tigers_fury_buff_t*    buffs_tigers_fury;
 
   // Cooldowns
   cooldown_t* cooldowns_mangle_bear;
@@ -145,7 +276,7 @@ struct druid_t : public player_t
     talent_t* nurturing_instict; // NYI as we don't simulate healing
     talent_t* predatory_strikes;
     talent_t* primal_fury;
-    talent_t* primal_madness; // TODO: Max energy gap
+    talent_t* primal_madness;
     talent_t* pulverize; // NYI
     talent_t* rend_and_tear;
     talent_t* stampede; // NYI -> Valid to run out->charge->ravage?
@@ -681,25 +812,6 @@ static void trigger_primal_fury( druid_cat_attack_t* a )
   {
     add_combo_point( p );
     p -> procs_primal_fury -> occur();
-  }
-}
-
-// trigger_primal_madness ===================================================
-
-static void trigger_primal_madness( druid_spell_t* s )
-{
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( ! p -> talents.primal_madness -> rank() )
-    return;
-  
-  if ( p -> buffs_cat_form -> check() )
-  {
-    p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
-  }
-  else if ( p -> buffs_bear_form -> check() )
-  {
-    p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> mod_additive( P_EFFECT_2 ) / 10.0, p -> gains_primal_madness );
   }
 }
 
@@ -1429,13 +1541,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
 
-    if ( p -> talents.king_of_the_jungle -> rank() )
-    {
-      p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect_base_value( 2 ), p -> gains_tigers_fury );
-    }    
-
     p -> buffs_tigers_fury -> trigger( 1, effect_base_value( 1 ) / 100.0 );
-    p -> resource_gain( RESOURCE_ENERGY, p -> talents.primal_madness -> rank() * 10.0, p -> gains_primal_madness );
   }
 
   virtual bool ready()
@@ -2000,11 +2106,10 @@ struct berserk_t : public druid_spell_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    // Berserk cancels TF
-    p -> buffs_tigers_fury -> expire();
     druid_spell_t::execute();
     p -> buffs_berserk -> trigger();
-    trigger_primal_madness( this );
+    if ( p -> talents.primal_madness -> rank() )
+      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
     p -> cooldowns_mangle_bear -> reset();
   }
 };
@@ -3136,6 +3241,8 @@ void druid_t::init_spells()
   spec_vengeance          = new passive_spell_t( this, "vengeance",       84840 );
   mastery_razor_claws     = new mastery_t      ( this, "razor_claws",     77493, TREE_FERAL );
   mastery_savage_defender = new mastery_t      ( this, "savage_defender", 77494, TREE_FERAL );
+
+
 }
 
 // druid_t::init_glyphs =====================================================
@@ -3278,7 +3385,6 @@ void druid_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_berserk            = new buff_t( this, "berserk"           , 1,  15.0 + ( glyphs.berserk ? 5.0 : 0.0 ) );
   buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1 );
   buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
@@ -3290,7 +3396,6 @@ void druid_t::init_buffs()
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> proc_chance() );
-  buffs_tigers_fury        = new buff_t( this, "tigers_fury"       , 1,   6.0 );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );  
@@ -3304,6 +3409,10 @@ void druid_t::init_buffs()
   buffs_moonkin_form = new buff_t( this, "moonkin_form" );
   buffs_savage_roar  = new buff_t( this, "savage_roar" );
   buffs_stealthed    = new buff_t( this, "stealthed" );
+
+  buffs_berserk        = new        berserk_buff_t( this );
+  buffs_primal_madness = new primal_madness_buff_t( this );
+  buffs_tigers_fury    = new    tigers_fury_buff_t( this );
 }
 
 // druid_t::init_items ======================================================

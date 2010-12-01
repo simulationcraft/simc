@@ -3252,7 +3252,7 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_empowered_shadow         = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
+  buffs_empowered_shadow           = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
   buffs_inner_fire                 = new buff_t( this, "inner_fire"                                              );
   buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
   buffs_inner_will                 = new buff_t( this, "inner_will"                                              );
