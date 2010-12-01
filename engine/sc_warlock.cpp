@@ -2681,10 +2681,11 @@ struct conflagrate_t : public warlock_spell_t
 
     double periodic_dmg = a -> base_td + a -> total_power() * a -> tick_power_mod;
 
-    base_dd_min = base_dd_max = periodic_dmg * a -> num_ticks * effect_base_value( 2 ) / 100.0 ;
+    int periodic_ticks = p -> dots_immolate -> num_ticks - p -> dots_immolate -> added_ticks;
+
+    base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * effect_base_value( 2 ) / 100.0 ;
 
     warlock_spell_t::execute();
-
   }
 
   virtual void travel( int travel_result, double travel_dmg)
