@@ -1794,7 +1794,7 @@ struct hemorrhage_t : public rogue_attack_t
 
     parse_options( options_str );
     
-    if ( p -> glyphs.hemorrhage )
+    if ( p -> glyphs.hemorrhage -> ok() )
     {
       num_ticks = 8;
       base_tick_time = 3.0;
