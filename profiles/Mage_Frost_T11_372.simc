@@ -35,7 +35,7 @@ chest=firelords_robes,heroic=1,type=cloth,stats=1346armor_247crit_227haste_345in
 waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=haste_hit,gems=20hit_20crit_20hit_20int_20haste
 legs=firelords_leggings,heroic=1,type=cloth,stats=1177armor_217hit_257haste_345int_578sta,reforge=haste_crit,gems=20int_20crit_20int_20hit_20int,enchant=95int_80sta
 feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=mastery_hit,gems=20int_20hit_10haste,enchant=35mastery
-wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,enchant=65haste
+wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,enchant=65crit
 hands=hands_of_the_twilight_council,heroic=1,type=cloth,stats=841armor_191crit_171mastery_266int_429sta,reforge=mastery_hit,gems=40int_10crit,enchant=65mastery
 finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=mastery_hit,enchant=40int

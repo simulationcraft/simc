@@ -2293,7 +2293,7 @@ struct pyroblast_t : public mage_spell_t
 struct pyroblast_hs_t : public mage_spell_t
 {
   pyroblast_hs_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "pyroblast!", 92315, p )
+    mage_spell_t( "pyroblast_hs", 92315, p )
   {
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
