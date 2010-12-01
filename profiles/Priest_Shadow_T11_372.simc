@@ -27,7 +27,8 @@ actions+=/shadow_word_death,health_percentage<=25
 actions+=/shadow_fiend
 actions+=/mind_blast,if=buff.shadow_orb.stack>=1
 actions+=/mind_flay
-actions+=/devouring_plague,moving=1
+actions+=/dispersion,moving=1
+actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
 head=crown_of_the_twilight_queen,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
