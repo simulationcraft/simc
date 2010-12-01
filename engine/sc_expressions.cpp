@@ -180,7 +180,7 @@ int expression_t::is_binary( int expr_token_type )
 
 // next_token ================================================================
 
-int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str )
+int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token )
 {
   char c = expr_str[ current_index++ ];
 
@@ -190,7 +190,8 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
 
   if ( c == '@' ) return TOK_ABS;
   if ( c == '+' ) return TOK_ADD;
-  if ( c == '-' && ! isdigit( expr_str[ current_index ] ) ) return TOK_SUB;
+  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) ) return TOK_SUB;
+  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( expr_str[ current_index ] ) ) return TOK_SUB;
   if ( c == '*' ) return TOK_MULT;
   if ( c == '/' ) return TOK_DIV;
   if ( c == '&' ) 
@@ -275,9 +276,11 @@ void expression_t::parse_tokens( action_t* action,
 {
   expr_token_t token;
   int current_index=0;
+  token_type_t t = TOK_UNKNOWN;
   
-  while( ( token.type = next_token( action, expr_str, current_index, token.label ) ) != TOK_UNKNOWN )
+  while( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
   {
+    t = ( token_type_t ) token.type;
     tokens.push_back( token );
   }
 }
