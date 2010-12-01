@@ -1703,6 +1703,35 @@ static void print_html2_stats (FILE* file, player_t* a )
   }
 }
 
+static void print_html2_talents(FILE* file, player_t* a )
+{
+  if ( a -> total_seconds > 0 )
+    {
+
+    util_t::fprintf( file, "\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-talents');\">Talents</a>\n", a -> name(),a -> name() );
+
+    util_t::fprintf( file, "<table class=\"player\"> <tbody id=\"%s-talents\" style=\"display:none;\">" );
+
+    uint32_t i_tab, talent_num, talent_id,i;
+    i=0;
+     for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
+     {
+       talent_num = 0;
+       util_t::fprintf( file, "<td><table>\n" );
+       while ( ( talent_id = a->player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
+       {
+         util_t::fprintf( file, " <tr> <td>%s</td>  <td>%s</td>  </tr>\n",a -> player_data.talent_name_str(talent_id), a -> talent_list2[i] -> real_name()  );
+
+         talent_num++;
+         i++;
+       }
+       util_t::fprintf( file, "</table</td>\n" );
+     }
+
+    util_t::fprintf( file, "</tbody></table> <br />\n" );
+    }
+}
+
 // print_html2_player =========================================================
 
 static void print_html2_player( FILE* file, player_t* p )
@@ -2024,6 +2053,12 @@ static void print_html2_player( FILE* file, player_t* p )
   print_html2_stats( file, p );
   util_t::fprintf( file, "</table> <br />\n" );
 
+  if ( !p -> is_pet() )
+  {
+  print_html2_talents( file, p );
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
+
 
   if ( p -> sim -> scaling -> has_scale_factors() )
   {
@@ -2046,6 +2081,8 @@ static void print_html2_player( FILE* file, player_t* p )
 
   util_t::fprintf( file, "</div><hr />\n" );
 }
+
+
 
 static void print_wiki_beta_message( FILE * file )
 {
