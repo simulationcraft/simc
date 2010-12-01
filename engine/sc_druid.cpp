@@ -2927,9 +2927,6 @@ struct starfall_t : public druid_spell_t
 
         if ( p -> primary_tree() == TREE_BALANCE )
           base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-
-        if ( p -> glyphs.focus )
-          base_multiplier *= 1.1;
       }
 
       virtual void assess_damage( double amount, int dmg_type )
@@ -2948,6 +2945,14 @@ struct starfall_t : public druid_spell_t
         druid_spell_t::execute();
         tick_dmg = direct_dmg;
         update_stats( DMG_DIRECT );
+      }
+
+      virtual void player_buff()
+      {
+        druid_t* p = player -> cast_druid();
+        // Glyph of Focus is Additive with Moonfury
+        additive_multiplier += ( p -> glyphs.focus ? 0.10 : 0.00 );
+        druid_spell_t::player_buff();
       }
     };
 
