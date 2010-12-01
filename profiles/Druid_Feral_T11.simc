@@ -8,12 +8,14 @@ professions=Blacksmithing/Jewelcrafting
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=000000000000000000002320322312011221202301020301000000000000000
 glyphs=rip/shred/savage_roar/ferocious_bite
 actions=flask,type=winds
-actions+=/food,type=skewered_eel
+actions+=/food,type=seafood_magnifique_feast
+actions+=/mark_of_the_wild
 actions+=/cat_form
 actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/skull_bash_cat
+actions+=/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)
 actions+=/mangle_cat,if=!debuff.mangle.up|buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3
 actions+=/tigers_fury,if=energy<=30&!buff.berserk.up
 actions+=/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up

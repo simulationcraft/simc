@@ -1268,7 +1268,7 @@ struct rake_t : public druid_cat_attack_t
     direct_power_mod    = 0.23;
     tick_power_mod      = 0.14; // 0.42 / 3 ticks
     num_ticks          += p -> talents.endless_carnage -> rank();
-    base_td_multiplier *= 1.0 + p -> set_bonus.tier11_4pc_melee() * 0.10;
+    base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
 };
 
@@ -1692,7 +1692,7 @@ struct lacerate_t : public druid_bear_attack_t
     {
       p -> buffs_lacerate -> trigger();
       base_td_multiplier  = p -> buffs_lacerate -> current_stack;
-      base_td_multiplier *= 1.0 + p -> set_bonus.tier11_4pc_melee() * 0.10;
+      base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
     }
   }
 
@@ -2235,6 +2235,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     base_spell_power_multiplier  = 0;
     direct_power_mod             = 1.0;
     cooldown -> duration         = p -> player_data.spell_cooldown( 16857 ); // Cooldown is stored in another version of FF
+    trigger_gcd                  = p -> player_data.spell_gcd( 16857 );
   }
 
   virtual void execute()
@@ -3242,7 +3243,15 @@ void druid_t::init_spells()
   mastery_razor_claws     = new mastery_t      ( this, "razor_claws",     77493, TREE_FERAL );
   mastery_savage_defender = new mastery_t      ( this, "savage_defender", 77494, TREE_FERAL );
 
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    { 70718, 70723, 70724, 70726,     0,     0 }, // Tier10
+    { 90160, 90163, 90162, 90165,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
 
+  sets = new set_bonus_array_t( this, set_bonuses );
 }
 
 // druid_t::init_glyphs =====================================================
@@ -3519,7 +3528,15 @@ void druid_t::init_actions()
     {
       if ( tank > 0 )
       {
-        action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
+        if ( level > 80 )
+        {
+          action_list_str += "flask,type=steelskin/food,type=seafood_magnifique_feast";
+        }
+        else
+        {
+          action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
+        }
+        action_list_str += "/mark_of_the_wild";
         action_list_str += "/bear_form";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
@@ -3535,26 +3552,34 @@ void druid_t::init_actions()
       }
       else
       {
-        action_list_str += "flask,type=endless_rage";
-        action_list_str += "/food,type=hearty_rhino";
+        if ( level > 80 )
+        {
+          action_list_str += "flask,type=winds";
+          action_list_str += "/food,type=seafood_magnifique_feast";
+        }
+        else
+        {
+          action_list_str += "flask,type=endless_rage";
+          action_list_str += "/food,type=hearty_rhino";
+        }
+        action_list_str += "/mark_of_the_wild";
         action_list_str += "/cat_form";
         action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
+        action_list_str += "/mangle_cat,if=!debuff.mangle.up|buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3";
         action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
         if ( talents.berserk -> rank() )action_list_str += "/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up";
-        action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += use_str;
         action_list_str += "/rip,if=!ticking&buff.combo_points.stack>=5&target.time_to_die>=6";
-        action_list_str += "/savage_roar,if=buff.combo_points.stack>=3&target.time_to_die>=9&buff.savage_roar.remains<=8&dot.rip.remains-buff.savage_roar.remains>=-3";
+        action_list_str += "/rake,if=!ticking&target.time_to_die>=9";
+        action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += "/ferocious_bite,if=target.time_to_die<=6&buff.combo_points.stack>=5";
         action_list_str += "/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
         if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
-        action_list_str += "/mangle_cat,if=debuff.mangle.remains<=1";
-        action_list_str += "/rake,if=!ticking&target.time_to_die>=9";
         action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
         action_list_str += "/shred,if=target.time_to_die<=9";
         action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";
@@ -3562,18 +3587,28 @@ void druid_t::init_actions()
     }
     else
     {
-      action_list_str += "flask,type=frost_wyrm/food,type=fish_feast/mark_of_the_wild";
+      if ( level > 80 )
+      {
+        action_list_str += "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
+      }
+      else
+      {
+        action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
+      }
+      action_list_str += "/mark_of_the_wild";
       if ( talents.moonkin_form -> rank() ) 
         action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat|(buff.bloodlust.react&buff.lunar_eclipse.react)|(target.time_to_die<=60&buff.lunar_eclipse.react)";
+      action_list_str += "/volcanic_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
-      action_list_str += "/innervate,if=mana_pct<50,";
+      action_list_str += "/innervate,if=mana_pct<50";
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
       if ( talents.starfall -> rank() ) 
-        action_list_str += "/starfall,if=!eclipse";
+        action_list_str += "/starfall";
       if ( talents.sunfire -> rank() )
         action_list_str += "/sunfire,if=!ticking&!dot.moonfire.remains>0";
       action_list_str += "/moonfire,if=!ticking";

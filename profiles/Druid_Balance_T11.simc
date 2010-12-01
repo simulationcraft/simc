@@ -14,6 +14,7 @@ actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/faerie_fire,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)
 actions+=/typhoon,moving=1
 actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
