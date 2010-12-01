@@ -1361,6 +1361,29 @@ struct rip_t : public druid_cat_attack_t
 
     druid_cat_attack_t::player_buff();
   }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> dots_rip -> ticking )
+    {
+      double b = base_td_init + p -> buffs_combo_points -> stack() * base_dmg_per_point;
+      double t = p -> buffs_combo_points -> stack() * ap_per_point;
+      double current_value = b + t * p -> composite_attack_power();
+      double saved_value = base_td + tick_power_mod * player_attack_power;
+
+      if ( current_value < saved_value )
+      {
+        // A more powerful spell is active message.
+        // Note we're making the assumption that's it is based off the simple sum of: basedmg + tick_mod * AP
+        // We know it doesn't involve crit at all due to testing. It's unsure if player_multiplier will be needed or not.
+        // Or if it's based off some other set of rules.
+        return false;
+      }
+    }
+    return druid_cat_attack_t::ready();
+  }
 };
 
 // Savage Roar ==============================================================
