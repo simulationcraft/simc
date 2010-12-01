@@ -171,6 +171,8 @@ void dot_tick_event_t::execute()
 
     if ( dot -> action -> channeled )
     {
+      if( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+
       player -> schedule_ready( 0 );
     }
   }
