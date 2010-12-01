@@ -896,6 +896,18 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
   assert( sim ->  dps_charts.size() ==
           sim -> gear_charts.size() );
 
+  if ( ! sim -> raid_events_str.empty() )
+  {
+    util_t::fprintf( file, "<table class=\"charts\">\n  <tr> <th></th> <th>Raid Event List</th> </tr>\n" );
+    std::vector<std::string> raid_event_names;
+    int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    for ( int i=0; i < num_raid_events; i++ )
+    {
+      util_t::fprintf( file, "  <tr> <th>%d</th> <td>%s</td> </tr>\n", i, raid_event_names[ i ].c_str() );
+    }
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
+
   util_t::fprintf( file, "<table class=\"charts\">\n" );
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
@@ -1422,6 +1434,18 @@ static void print_html2_raid_summary( FILE*  file, sim_t* sim )
 
   assert( sim ->  dps_charts.size() ==
           sim -> gear_charts.size() );
+
+  if ( ! sim -> raid_events_str.empty() )
+  {
+    util_t::fprintf( file, "<table class=\"charts\">\n  <tr> <th></th> <th>Raid Event List</th> </tr>\n" );
+    std::vector<std::string> raid_event_names;
+    int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    for ( int i=0; i < num_raid_events; i++ )
+    {
+      util_t::fprintf( file, "  <tr> <th>%d</th> <td>%s</td> </tr>\n", i, raid_event_names[ i ].c_str() );
+    }
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
 
   util_t::fprintf( file, "<table class=\"charts\">\n" );
   int count = ( int ) sim -> dps_charts.size();
@@ -2037,6 +2061,22 @@ static void print_wiki_beta_message( FILE * file )
 #endif
 }
 
+static void print_wiki_raid_events( FILE * file, sim_t* sim )
+{
+  if ( ! sim -> raid_events_str.empty() )
+  {
+    util_t::fprintf( file, "\n= Raid Events =\n" );
+    util_t::fprintf( file, "|| || *Raid Event List* ||\n" );
+    std::vector<std::string> raid_event_names;
+    int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    for ( int i=0; i < num_raid_events; i++ )
+    {
+      util_t::fprintf( file, "|| *%d* || %s ||\n", i, raid_event_names[ i ].c_str() );
+    }
+    util_t::fprintf( file, "\n" );
+  }
+}
+
 // print_wiki_preamble =======================================================
 
 static void print_wiki_preamble( FILE* file, sim_t* sim )
@@ -2051,10 +2091,15 @@ static void print_wiki_preamble( FILE* file, sim_t* sim )
   util_t::fprintf( file, " * Timestamp: %s", ctime( &rawtime ) );
   util_t::fprintf( file, " * Iterations: %d\n", sim -> iterations );
   util_t::fprintf( file, " * Fight Length: %.0f\n", sim -> max_time );
+  if ( sim -> vary_combat_length > 0.0 )
+  {
+    util_t::fprintf( file, " * Vary Combat Length: %.2f\n", sim -> vary_combat_length );
+  }
   util_t::fprintf( file, " * Smooth RNG: %s\n", ( sim -> smooth_rng ? "true" : "false" ) );
 
   util_t::fprintf( file, "\n----\n\n<br>\n\n" );
   print_wiki_beta_message( file );
+  print_wiki_raid_events( file, sim );
 }
 
 // print_wiki_contents =======================================================
@@ -2668,6 +2713,20 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   util_t::fprintf( file, "\n" );
 #endif
 
+  if ( ! sim -> raid_events_str.empty() )
+  {
+    util_t::fprintf( file, "\n\nRaid Events:\n" );
+    std::vector<std::string> raid_event_names;
+    int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    if ( num_raid_events )
+      util_t::fprintf( file, "  raid_event=/%s\n", raid_event_names[ 0 ].c_str() );
+    for ( int i=1; i < num_raid_events; i++ )
+    {
+      util_t::fprintf( file, "  raid_event+=/%s\n", raid_event_names[ i ].c_str() );
+    }
+    util_t::fprintf( file, "\n" );
+  }
+
   int num_players = ( int ) sim -> players_by_rank.size();
 
   if ( detail )
@@ -2779,6 +2838,10 @@ void report_t::print_html( sim_t* sim )
   util_t::fprintf( file, "  <li>Timestamp: %s</li>\n", ctime( &rawtime ) );
   util_t::fprintf( file, "  <li>Iterations: %d</li>\n", sim -> iterations );
   util_t::fprintf( file, "  <li>Fight Length: %.0f</li>\n", sim -> max_time );
+  if ( sim -> vary_combat_length > 0.0 )
+  {
+    util_t::fprintf( file, "  <li>Vary Combat Length: %.2f</li>\n", sim -> vary_combat_length );
+  }
   util_t::fprintf( file, "  <li>Smooth RNG: %s</li>\n", ( sim -> smooth_rng ? "true" : "false" ) );
   util_t::fprintf( file, "</ul>\n" );
 
@@ -2799,6 +2862,7 @@ void report_t::print_html( sim_t* sim )
 
   util_t::fprintf( file, "<hr />\n" );
 #endif
+
 
   if ( num_players > 1 )
   {
@@ -2880,6 +2944,10 @@ void report_t::print_html2( sim_t* sim )
   util_t::fprintf( file, "  <li>Timestamp: %s</li>\n", ctime( &rawtime ) );
   util_t::fprintf( file, "  <li>Iterations: %d</li>\n", sim -> iterations );
   util_t::fprintf( file, "  <li>Fight Length: %.0f</li>\n", sim -> max_time );
+  if ( sim -> vary_combat_length > 0.0 )
+  {
+    util_t::fprintf( file, "  <li>Vary Combat Length: %.2f</li>\n", sim -> vary_combat_length );
+  }
   util_t::fprintf( file, "  <li>Smooth RNG: %s</li>\n", ( sim -> smooth_rng ? "true" : "false" ) );
   util_t::fprintf( file, "</ul>\n" );
 

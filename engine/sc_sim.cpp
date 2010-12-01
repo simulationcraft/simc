@@ -1965,9 +1965,19 @@ int sim_t::main( int argc, char** argv )
   current_throttle = armory_throttle;
 
   patch.decode(&arch, &version, &revision);
-  util_t::fprintf( output_file,
-                   "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
-                   arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
+
+  if ( vary_combat_length > 0.0 )
+  {
+    util_t::fprintf( output_file,
+                     "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, smooth_rng=%d )\n",
+                     arch, version, revision, iterations, max_time, vary_combat_length, optimal_raid, smooth_rng );
+  }
+  else
+  {
+    util_t::fprintf( output_file,
+                     "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
+                     arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
+  }
   fflush( output_file );
 
   if ( need_to_save_profiles( this ) )
