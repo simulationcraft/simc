@@ -409,8 +409,8 @@ struct hunter_pet_t : public pet_t
     resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resource_base[ RESOURCE_FOCUS  ] = 100;
 
-    focus_regen_per_second  = ( 24.5 / 4.0 );
-    focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> rank()* 0.10;
+    base_focus_regen_per_second  = ( 24.5 / 4.0 );
+    base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> rank()* 0.10;
 
     base_gcd = 1.20;
   }
@@ -2874,7 +2874,7 @@ void hunter_t::init_base()
 
   health_per_stamina = 10;
   // FIXME! 
-  focus_regen_per_second = 6;
+  base_focus_regen_per_second = 6;
   
   resource_base[ RESOURCE_FOCUS ] = 100;
 

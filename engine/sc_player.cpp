@@ -251,7 +251,7 @@ player_t::player_t( sim_t*             s,
     spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
     mp5_per_intellect( 0 ),
     mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
-    energy_regen_per_second( 0 ), focus_regen_per_second( 0 ),
+    base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ),
     last_cast( 0 ),
     // Attack Mechanics
     base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
@@ -1508,6 +1508,24 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
+// player_t::energy_regen_per_second ======================================
+
+double player_t::energy_regen_per_second() SC_CONST
+{
+  double r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
+
+  return r;
+}
+
+// player_t::focus_regen_per_second ======================================
+
+double player_t::focus_regen_per_second() SC_CONST
+{
+  double r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
+
+  return r;
+}
+
 // player_t::composite_attack_haste ========================================
 
 double player_t::composite_attack_haste() SC_CONST
@@ -2462,13 +2480,13 @@ void player_t::regen( double periodicity )
   {
     if ( resource_type == RESOURCE_ENERGY )
     {
-      double energy_regen = periodicity * energy_regen_per_second;
+      double energy_regen = periodicity * energy_regen_per_second();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
     }
     else if ( resource_type == RESOURCE_FOCUS )
     {
-      double focus_regen = periodicity * focus_regen_per_second;
+      double focus_regen = periodicity * focus_regen_per_second();
 
       resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
     }
@@ -4278,6 +4296,91 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { result_num = action -> player -> composite_spell_haste(); return TOK_NUM; }
     };
     return new spell_haste_expr_t( a );
+  }
+  if ( name_str == "energy_regen" )
+  {
+    struct energy_regen_expr_t : public action_expr_t
+    {
+      energy_regen_expr_t( action_t* a ) : action_expr_t( a, "energy_regen", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> energy_regen_per_second(); return TOK_NUM; }
+    };
+    return new energy_regen_expr_t( a );
+  }
+  if ( name_str == "focus_regen" )
+  {
+    struct focus_regen_expr_t : public action_expr_t
+    {
+      focus_regen_expr_t( action_t* a ) : action_expr_t( a, "focus_regen", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> focus_regen_per_second(); return TOK_NUM; }
+    };
+    return new focus_regen_expr_t( a );
+  }
+  if ( name_str == "time_to_max_energy" )
+  {
+    struct time_to_max_energy_expr_t : public action_expr_t
+    {
+      time_to_max_energy_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_energy", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> player -> resource_max[ RESOURCE_ENERGY ] - 
+                                              action -> player -> resource_current[ RESOURCE_ENERGY ] ) /
+                                            action -> player -> energy_regen_per_second(); return TOK_NUM; }
+    };
+    return new time_to_max_energy_expr_t( a );
+  }
+  if ( name_str == "time_to_max_focus" )
+  {
+    struct time_to_max_focus_expr_t : public action_expr_t
+    {
+      time_to_max_focus_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_focus", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> player -> resource_max[ RESOURCE_FOCUS ] - 
+                                              action -> player -> resource_current[ RESOURCE_FOCUS ] ) / 
+                                            action -> player -> focus_regen_per_second(); return TOK_NUM; }
+    };
+    return new time_to_max_focus_expr_t( a );
+  }
+  if ( name_str == "max_energy" )
+  {
+    struct max_energy_expr_t : public action_expr_t
+    {
+      max_energy_expr_t( action_t* a ) : action_expr_t( a, "max_energy", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_ENERGY ]; return TOK_NUM; }
+    };
+    return new max_energy_expr_t( a );
+  }
+  if ( name_str == "max_focus" )
+  {
+    struct max_focus_expr_t : public action_expr_t
+    {
+      max_focus_expr_t( action_t* a ) : action_expr_t( a, "max_focus", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_FOCUS ]; return TOK_NUM; }
+    };
+    return new max_focus_expr_t( a );
+  }
+  if ( name_str == "max_rage" )
+  {
+    struct max_rage_expr_t : public action_expr_t
+    {
+      max_rage_expr_t( action_t* a ) : action_expr_t( a, "max_rage", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_RAGE ]; return TOK_NUM; }
+    };
+    return new max_rage_expr_t( a );
+  }
+  if ( name_str == "max_runic" )
+  {
+    struct max_runic_expr_t : public action_expr_t
+    {
+      max_runic_expr_t( action_t* a ) : action_expr_t( a, "max_runic", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_RUNIC ]; return TOK_NUM; }
+    };
+    return new max_runic_expr_t( a );
+  }
+  if ( name_str == "max_mana" )
+  {
+    struct max_mana_expr_t : public action_expr_t
+    {
+      max_mana_expr_t( action_t* a ) : action_expr_t( a, "max_mana", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_MANA ]; return TOK_NUM; }
+    };
+    return new max_mana_expr_t( a );
   }
 
   std::vector<std::string> splits;

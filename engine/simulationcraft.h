@@ -2789,8 +2789,8 @@ struct player_t
   double mp5_per_intellect;
   double mana_regen_base;
   double mana_regen_while_casting;
-  double energy_regen_per_second;
-  double focus_regen_per_second;
+  double base_energy_regen_per_second;
+  double base_focus_regen_per_second;
   double last_cast;
 
   // Attack Mechanics
@@ -3062,6 +3062,8 @@ struct player_t
 
   virtual double composite_mastery() SC_CONST { return mastery; }
 
+  virtual double energy_regen_per_second() SC_CONST;
+  virtual double focus_regen_per_second() SC_CONST;
   virtual double composite_attack_haste() SC_CONST;
   virtual double composite_attack_power() SC_CONST;
   virtual double composite_attack_crit() SC_CONST;

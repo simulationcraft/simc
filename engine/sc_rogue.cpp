@@ -373,6 +373,7 @@ struct rogue_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      clear_debuffs();
+  virtual double    energy_regen_per_second() SC_CONST;
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
   virtual std::vector<talent_translation_t>& get_talent_list();
@@ -3358,7 +3359,7 @@ void rogue_t::init_base()
   resource_base[ RESOURCE_ENERGY ] = 100 + spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
 
   health_per_stamina      = 10;
-  energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
+  base_energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
 
   base_gcd = 1.0;
 
@@ -3741,17 +3742,23 @@ void rogue_t::clear_debuffs()
   combo_points -> clear();
 }
 
+// rogue_t::energy_regen_per_second ========================================
+
+double rogue_t::energy_regen_per_second() SC_CONST
+{
+  double r = player_t::energy_regen_per_second();
+
+  if ( buffs_blade_flurry -> up() )
+    r *= glyphs.blade_flurry -> ok() ? 0.90 : 0.80;
+
+  return r;
+}
+
 // rogue_t::regen ==========================================================
 
 void rogue_t::regen( double periodicity )
 {  
   // XXX review how this all stacks (additive/multiplicative)
-  
-  // haste (from rating) boosts energy regen by * ( 1 + haste% )
-  periodicity *= 1.0 + haste_rating / rating.attack_haste;
-  
-  if ( buffs_blade_flurry -> up() )
-    periodicity *= glyphs.blade_flurry -> ok() ? 0.90 : 0.80;
 
   player_t::regen( periodicity );
 
@@ -3759,7 +3766,7 @@ void rogue_t::regen( double periodicity )
   {
     if ( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
-      double energy_regen = periodicity * energy_regen_per_second;
+      double energy_regen = periodicity * energy_regen_per_second();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
     }
@@ -3769,7 +3776,7 @@ void rogue_t::regen( double periodicity )
   {
     if ( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
-      double energy_regen = periodicity * energy_regen_per_second * 0.30;
+      double energy_regen = periodicity * energy_regen_per_second() * 0.30;
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_overkill );
     }
@@ -3793,7 +3800,7 @@ double rogue_t::available() SC_CONST
   if ( energy > 25 )
     return 0.1;
 
-  return std::max( ( 25 - energy ) / energy_regen_per_second, 0.1 );
+  return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
 }
 
 // rogue_t::get_talent_trees ==============================================

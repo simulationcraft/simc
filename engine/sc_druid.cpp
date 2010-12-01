@@ -369,6 +369,7 @@ struct druid_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual void      clear_debuffs();
+  virtual double    energy_regen_per_second() SC_CONST;
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
@@ -3566,9 +3567,9 @@ void druid_t::init_base()
 
   resource_base[ RESOURCE_ENERGY ] = 100;
   resource_base[ RESOURCE_RAGE   ] = 100;
-  mana_per_intellect      = 15;
-  health_per_stamina      = 10;
-  energy_regen_per_second = 10;
+  mana_per_intellect           = 15;
+  health_per_stamina           = 10;
+  base_energy_regen_per_second = 10;
   
   // Furor: +5/10/15% max mana
   resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect_base_value( 2 ) * 0.01;
@@ -3867,6 +3868,15 @@ void druid_t::clear_debuffs()
   buffs_combo_points -> expire();
 }
 
+// druid_t::energy_regen_per_second ===========================================================
+
+double druid_t::energy_regen_per_second() SC_CONST
+{
+  double r = player_t::energy_regen_per_second();
+
+  return r;  
+}
+
 // druid_t::regen ===========================================================
 
 void druid_t::regen( double periodicity )
@@ -3877,9 +3887,6 @@ void druid_t::regen( double periodicity )
   {
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
-
-    // haste (from rating) boosts energy regen by * ( 1 + haste% )
-    periodicity *= 1.0 + haste_rating / rating.attack_haste;
   }
   else if ( resource_type == RESOURCE_MANA)
   {
@@ -3907,7 +3914,7 @@ double druid_t::available() SC_CONST
 
   if ( energy > 25 ) return 0.1;
 
-  return std::max( ( 25 - energy ) / energy_regen_per_second, 0.1 );
+  return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
 }
 
 // druid_t::composite_attack_power ==========================================

@@ -592,7 +592,7 @@ struct army_ghoul_pet_t : public pet_t
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     resource_base[ RESOURCE_ENERGY ] = 100;
-    energy_regen_per_second  = 10;
+    base_energy_regen_per_second  = 10;
   }
 
   virtual double strength() SC_CONST
@@ -1350,7 +1350,7 @@ struct ghoul_pet_t : public pet_t
     initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     resource_base[ RESOURCE_ENERGY ] = 100;
-    energy_regen_per_second  = 10;
+    base_energy_regen_per_second  = 10;
   }
 
   virtual double strength() SC_CONST
