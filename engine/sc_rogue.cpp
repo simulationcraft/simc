@@ -102,8 +102,7 @@ struct combo_points_t
 
 // ==========================================================================
 // Todo for Cata :
-//  New Ability: Redirect
-//  New Glyph: Hemorrhage
+//  New Ability: Redirect, doable once we allow debuffs on multiple targets
 //  Review: Ability Scaling
 //  Review: Bandit's Guile
 //  Review: Energy Regen (how Adrenaline rush stacks with Blade Flurry / haste)
@@ -270,7 +269,7 @@ struct rogue_t : public player_t
     talent_t* elusiveness;                // done
     talent_t* energetic_recovery;         // done
     talent_t* find_weakness;              // done
-    talent_t* hemorrhage;                 // XXX raid aura / target debuff state
+    talent_t* hemorrhage;                 // done
     talent_t* honor_among_thieves;        // XXX more changes needed?
     talent_t* improved_ambush;            // done
     talent_t* initiative;                 // done
@@ -295,7 +294,7 @@ struct rogue_t : public player_t
     glyph_t* eviscerate;          // done
     glyph_t* expose_armor;        // done
     glyph_t* feint;               // done
-    glyph_t* hemorrhage;          // XXX
+    glyph_t* hemorrhage;          // done
     glyph_t* kick;                // XXX
     glyph_t* killing_spree;       // done
     glyph_t* mutilate;            // done
@@ -1794,6 +1793,13 @@ struct hemorrhage_t : public rogue_attack_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     parse_options( options_str );
+    
+    if ( p -> glyphs.hemorrhage )
+    {
+      num_ticks = 8;
+      base_tick_time = 3.0;
+      dot_behavior = DOT_REFRESH;
+    }
   }
 
   virtual void execute()
@@ -1809,7 +1815,11 @@ struct hemorrhage_t : public rogue_attack_t
 
       if ( p -> glyphs.hemorrhage -> ok() )
       {
-        // XXX Add glyph here
+        // Dot can crit and double dips in player multipliers
+        // Damage is based off actual damage, not normalized to hits like FFB
+        // http://elitistjerks.com/f78/t105429-cataclysm_mechanics_testing/p6/#post1796877
+        double dot_dmg = calculate_direct_damage() * p -> glyphs.hemorrhage -> base_value() / 100.0;
+        base_td = dot_dmg / num_ticks;        
       }
     }
   }
