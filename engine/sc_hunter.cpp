@@ -2778,6 +2778,16 @@ void hunter_t::init_spells()
   glyphs.the_beast = new glyph_t(this, "Glyph of the Beast");
   glyphs.the_hawk = new glyph_t(this, "Glyph of the Hawk");
   glyphs.trueshot_aura = new glyph_t(this, "Glyph of Trueshot Aura");
+
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    {     0,     0, 70727, 70730,     0,     0 }, // Tier10
+    {     0,     0, 89923, 89925,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
+
+  sets = new set_bonus_array_t( this, set_bonuses );
 }
 
 // hunter_t::init_glyphs ===================================================

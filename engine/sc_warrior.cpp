@@ -2749,6 +2749,16 @@ void warrior_t::init_spells()
   glyphs.slam                = new glyph_t( this, "Glyph of Slam" );
   glyphs.sweeping_strikes    = new glyph_t( this, "Glyph of Sweeping Strikes" );
   glyphs.victory_rush        = new glyph_t( this, "Glyph of Victory Rush" );
+
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    {     0,     0, 70854, 70847, 70843, 70844 }, // Tier10
+    {     0,     0, 90293, 90295, 90296, 90297 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
+
+  sets = new set_bonus_array_t( this, set_bonuses );
 }
 
 // warrior_t::init_glyphs ===================================================

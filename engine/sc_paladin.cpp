@@ -2325,6 +2325,16 @@ void paladin_t::init_spells()
   passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
   passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold" );
   passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise" );
+
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  {
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    {     0,     0, 70765, 70762, 70758, 70761 }, // Tier10
+    {     0,     0, 90298, 90299, 90301, 90306 }, // Tier11
+    {     0,     0,     0,     0,     0,     0 },
+  };
+
+  sets = new set_bonus_array_t( this, set_bonuses );
 }
 
 // paladin_t::primary_tab ====================================================
