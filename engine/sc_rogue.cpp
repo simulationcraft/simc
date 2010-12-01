@@ -107,7 +107,6 @@ struct combo_points_t
 //  Review: Ability Scaling
 //  Review: Bandit's Guile
 //  Review: Energy Regen (how Adrenaline rush stacks with Blade Flurry / haste)
-//  Tier 11 4pc
 // ==========================================================================
 
 enum poison_type_t { POISON_NONE=0, ANESTHETIC_POISON, DEADLY_POISON, INSTANT_POISON, WOUND_POISON };
@@ -129,6 +128,7 @@ struct rogue_t : public player_t
   buff_t* buffs_recuperate;
   buff_t* buffs_shiv;
   buff_t* buffs_stealthed;
+  buff_t* buffs_tier11_4pc;
   buff_t* buffs_vanish;
   
   new_buff_t* buffs_adrenaline_rush;
@@ -1228,7 +1228,13 @@ struct melee_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     if ( result_is_hit() )
+    {
+      rogue_t* p = player -> cast_rogue();
+
       trigger_combat_potency( this );
+      p -> buffs_tier11_4pc -> trigger();
+    }
+      
   }
 };
 
@@ -1486,6 +1492,7 @@ struct envenom_t : public rogue_attack_t
       trigger_restless_blades( this );
 
       p -> buffs_revealing_strike -> expire();
+      p -> buffs_tier11_4pc -> expire();
     }
   }
 
@@ -1504,6 +1511,9 @@ struct envenom_t : public rogue_attack_t
 
     if ( p -> buffs_revealing_strike -> up() )
       player_multiplier *= 1.0 + p -> buffs_revealing_strike -> value();
+
+    if ( p -> buffs_tier11_4pc -> up() )
+      player_crit += 1.0;
   }
 
   virtual double total_multiplier() SC_CONST
@@ -1592,6 +1602,7 @@ struct eviscerate_t : public rogue_attack_t
       }
 
       p -> buffs_revealing_strike -> expire();
+      p -> buffs_tier11_4pc -> expire();
     }
   }
 
@@ -1603,6 +1614,9 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( p -> buffs_revealing_strike -> up() )
       player_multiplier *= 1.0 + p -> buffs_revealing_strike -> value();
+    
+    if ( p -> buffs_tier11_4pc -> up() )
+      player_crit += 1.0;
   }
 };
 
@@ -3527,6 +3541,7 @@ void rogue_t::init_buffs()
   buffs_recuperate         = new buff_t( this, "recuperate",    1  );
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
+  buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
   buffs_blade_flurry       = new new_buff_t( this, "blade_flurry",   spec_blade_flurry -> spell_id() );
