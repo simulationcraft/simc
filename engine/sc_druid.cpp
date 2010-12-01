@@ -3777,10 +3777,7 @@ void druid_t::init_actions()
         action_list_str += "/snapshot_stats";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
-        if ( sets -> set( SET_T11_4PC_MELEE ) )
-          action_list_str += "/mangle_cat,if=!debuff.mangle.up|buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3";
-        else
-          action_list_str += "/mangle_cat,if=!debuff.mangle.up";
+        action_list_str += "/mangle_cat,if=!debuff.mangle.up|set_bonus.tier11_4pc_melee&(buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3)";
         action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
         if ( talents.berserk -> rank() )action_list_str += "/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up";
         action_list_str += use_str;

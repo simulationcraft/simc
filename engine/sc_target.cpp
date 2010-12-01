@@ -283,6 +283,17 @@ target_t* target_t::find( sim_t* sim,
 action_expr_t* target_t::create_expression( action_t* action,
                                           const std::string& type )
 {
+   if ( name_str == "level" )
+   {
+     struct level_expr_t : public action_expr_t
+     {
+       target_t* target;
+       level_expr_t( action_t* a, target_t* t ) : 
+         action_expr_t( a, "target_level", TOK_NUM ), target(t) {}
+       virtual int evaluate() { result_num = target -> level; return TOK_NUM; }
+     };
+     return new level_expr_t( action, this );
+   }
    if ( type == "time_to_die" )
    {
      struct target_time_to_die_expr_t : public action_expr_t
@@ -294,7 +305,6 @@ action_expr_t* target_t::create_expression( action_t* action,
      };
      return new target_time_to_die_expr_t( action, this );
    }
-
    else if ( type == "health_pct" )
    {
      struct target_health_pct_expr_t : public action_expr_t

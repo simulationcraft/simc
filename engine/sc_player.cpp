@@ -4252,6 +4252,24 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new resource_expr_t( a, name_str, resource_type );
   }
+  if ( name_str == "level" )
+  {
+    struct level_expr_t : public action_expr_t
+    {
+      level_expr_t( action_t* a ) : action_expr_t( a, "level", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = p -> level; return TOK_NUM; }
+    };
+    return new level_expr_t( a );
+  }
+  if ( name_str == "multiplier" )
+  {
+    struct multiplier_expr_t : public action_expr_t
+    {
+      multiplier_expr_t( action_t* a ) : action_expr_t( a, "multiplier", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = p -> composite_player_multiplier( action -> school ); return TOK_NUM; }
+    };
+    return new multiplier_expr_t( a );
+  }
   if ( name_str == "mana_pct" )
   {
     struct mana_pct_expr_t : public action_expr_t
@@ -4411,6 +4429,15 @@ action_expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "dot" )
     {
       dot_t* dot = get_dot( splits[ 1 ] );
+      if ( splits[ 2 ] == "multiplier" )
+      {
+        struct multiplier_expr_t : public action_expr_t
+        {
+          multiplier_expr_t( action_t* a ) : action_expr_t( a, "dot_multiplier", TOK_NUM ) {}
+          virtual int evaluate() { result_num = action -> player_multiplier; return TOK_NUM; }
+        };
+        return new multiplier_expr_t( a );
+      }
       if ( splits[ 2 ] == "remains" )
       {
         struct dot_remains_expr_t : public action_expr_t

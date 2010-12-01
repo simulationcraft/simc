@@ -25,6 +25,7 @@ struct expr_unary_t : public action_expr_t
       case TOK_PLUS:  result_num =   input -> result_num; break;
       case TOK_MINUS: result_num = - input -> result_num; break;
       case TOK_NOT:   result_num = ( input -> result_num != 0 ) ? 0 : 1; break;
+      case TOK_ABS:   result_num = fabs( input -> result_num ); break;
       }
     }
     else
@@ -107,6 +108,7 @@ int expression_t::precedence( int expr_token_type )
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
+  case TOK_ABS:
     return 5;
 
   case TOK_MULT:
@@ -145,6 +147,7 @@ int expression_t::is_unary( int expr_token_type )
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
+  case TOK_ABS:
     return true;
   }
   return false;
@@ -185,6 +188,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
 
   token_str = c;
 
+  if ( c == '@' ) return TOK_ABS;
   if ( c == '+' ) return TOK_ADD;
   if ( c == '-' && ! isdigit( expr_str[ current_index ] ) ) return TOK_SUB;
   if ( c == '*' ) return TOK_MULT;

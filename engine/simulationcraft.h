@@ -2123,6 +2123,7 @@ enum token_type_t {
   TOK_NOTIN,
   TOK_NUM,
   TOK_STR,
+  TOK_ABS,
   TOK_SPELL_LIST
 };
 
