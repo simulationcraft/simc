@@ -843,7 +843,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     {
       mage_t* p = player -> cast_mage();
 
-      p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> dot -> num_ticks;
+      p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
 
       if ( p -> active_ignite -> dot -> ticking )
       {
