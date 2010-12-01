@@ -1263,7 +1263,7 @@ void action_t::reschedule_execute( double time )
 
 void action_t::refresh_duration()
 {
-  if ( sim -> debug ) log_t::output( sim, "%s refreshes duration of %s", player -> name(), name() );
+  if ( sim -> log ) log_t::output( sim, "%s refreshes duration of %s", player -> name(), name() );
 
   // Make sure this DoT is still ticking......
   assert( dot -> tick_event );
@@ -1282,7 +1282,7 @@ void action_t::refresh_duration()
 
 void action_t::extend_duration( int extra_ticks )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, dot -> num_ticks + extra_ticks );
+  if ( sim -> log ) log_t::output( sim, "%s extends duration of %s, adding %d tick(s), totalling %d ticks", player -> name(), name(), extra_ticks, dot -> num_ticks + extra_ticks );
 
   // Make sure this DoT is still ticking......
   assert( dot -> tick_event );
