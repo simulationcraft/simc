@@ -1713,17 +1713,29 @@ static void print_html2_talents(FILE* file, player_t* a )
     util_t::fprintf( file, "<table class=\"player\"> <tbody id=\"%s-talents\" style=\"display:none;\">" );
 
     uint32_t i_tab, talent_num, talent_id,i;
-    i=0;
+
      for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
      {
        talent_num = 0;
        util_t::fprintf( file, "<td><table>\n" );
        while ( ( talent_id = a->player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
        {
-         util_t::fprintf( file, " <tr> <td>%s</td>  <td>%s</td>  </tr>\n",a -> player_data.talent_name_str(talent_id), a -> talent_list2[i] -> real_name()  );
+         util_t::fprintf( file, " <tr> <td>%s</td><td>",a -> player_data.talent_name_str(talent_id) );
+         i=0;
+         while( i < a -> talent_list2.size() )
+           {
+           if ( talent_id == a -> talent_list2[i] -> talent_id() )
+             {
+             if ( a -> talent_list2[i] -> real_name())
+             util_t::fprintf( file, "%s",a -> talent_list2[i] -> real_name() );
+             break;
+             }
+           i++;
+           }
+         util_t::fprintf( file,"</td></tr>\n");
+
 
          talent_num++;
-         i++;
        }
        util_t::fprintf( file, "</table</td>\n" );
      }
