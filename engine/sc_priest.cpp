@@ -3351,7 +3351,8 @@ void priest_t::init_actions()
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
                                                          action_list_str += "/mind_flay";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
-      if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1";
+      if ( talents.dispersion -> rank() )                action_list_str += "/dispersion,moving=1";
+      if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1,if=mana_pct>10";
                                                          action_list_str += "/shadow_word_death,moving=1";
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion";
       break;
