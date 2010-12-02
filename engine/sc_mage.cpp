@@ -337,6 +337,7 @@ struct mage_spell_t : public spell_t
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( int dmg_type );
+  virtual double hot_streak_crit() { return base_crit + player_crit; }
 };
 
 // ==========================================================================
@@ -731,24 +732,28 @@ static void trigger_hot_streak( mage_spell_t* s )
   {
     // Reference: http://elitistjerks.com/f75/t104767-fire_cataclysm_discussion_updated_4_01_a/p12/#post1766032
 
-    double hot_streak_chance = -1.7106 * s -> total_crit() + 0.7803;
+    double hot_streak_chance = -1.7106 * s -> hot_streak_crit() + 0.7893;
 
-    if( hot_streak_chance < 0 ) hot_streak_chance = 0;
-
-    if( p -> talents.improved_hot_streak -> rank() )
+    if( hot_streak_chance > 0 && sim -> rng -> roll( hot_streak_chance ) )
+    {
+      p -> buffs_hot_streak -> trigger();
+      p -> buffs_hot_streak_crits -> expire();
+    }
+    else if( p -> talents.improved_hot_streak -> rank() )
     {
       p -> buffs_hot_streak_crits -> trigger();
 
       if ( p -> buffs_hot_streak_crits -> stack() == 2 )
       {
-        hot_streak_chance += p -> talents.improved_hot_streak -> effect_base_value( 1 ) / 100.0;
         p -> buffs_hot_streak_crits -> expire();
-      }
-    }
 
-    if( sim -> rng -> roll( hot_streak_chance ) )
-    {
-      p -> buffs_hot_streak -> trigger();
+        hot_streak_chance = p -> talents.improved_hot_streak -> effect_base_value( 1 ) / 100.0;
+
+	if( sim -> rng -> roll( hot_streak_chance ) )
+        {
+	  p -> buffs_hot_streak -> trigger();
+	}
+      }
     }
   }
   else
@@ -1615,6 +1620,13 @@ struct fireball_t : public mage_spell_t
     base_crit += p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
     may_hot_streak = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+  }
+
+  virtual double hot_streak_crit()
+  {
+    // When calculating Hot-Streak proc chance, do not include Fireball glyph
+    mage_t* p = player -> cast_mage();
+    return base_crit + player_crit - p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double cost() SC_CONST

@@ -1161,28 +1161,33 @@ void player_t::init_actions()
         action_name    = action_name.substr( 0, cut_pt );
       }
       
-      action_t* a;
+      action_t* a=0;
 
       cut_pt = action_name.find( ":" );
       if ( cut_pt != action_name.npos )
       {
-        pet_t* pet = find_pet( action_name.substr( 0, cut_pt ) );
-        if ( ! pet )
-        {
-          sim -> errorf( "Player %s refers to unknown pet in action: %s\n", name(), splits[ i ].c_str() );
-          return;
-        }
+	std::string pet_name   = action_name.substr( 0, cut_pt );
+	std::string pet_action = action_name.substr( cut_pt + 1 );
 
-        action_name = action_name.substr( cut_pt + 1 );
-        a =  new execute_pet_action_t( this, pet, action_name, action_options );
+        pet_t* pet = find_pet( pet_name );
+        if ( pet )
+        {
+	  a =  new execute_pet_action_t( this, pet, pet_action, action_options );
+	}
+	else
+	{
+          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n", name(), pet_name.c_str(), splits[ i ].c_str() );
+        }
       }
-      else {
+      else 
+      {
         a = create_action( action_name, action_options );
       }
 
       if ( ! a )
       {
-        sim -> errorf( "Player %s has unknown action: %s\n", name(), splits[ i ].c_str() );
+        sim -> errorf( "Player %s unable to create action: %s\n", name(), splits[ i ].c_str() );
+	sim -> cancel();
         return;
       }
     }
