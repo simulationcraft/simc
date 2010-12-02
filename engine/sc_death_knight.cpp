@@ -3721,8 +3721,13 @@ struct scourge_strike_t : public death_knight_attack_t
     virtual void target_debuff( int dmg_type )
     {
       death_knight_t* p = player -> cast_death_knight();
-      // Shadow portion doesn't dip into 8% spell damage ironically
       target_multiplier = p -> diseases() * 0.12;
+
+      // Shadow portion doesn't benefit from EP, gets 8% from E&M and 6% from CoE...
+      if ( target -> debuffs.earth_and_moon -> up() )
+        target_multiplier *= 1.08;
+      else if ( target -> debuffs.curse_of_elements -> up() )
+        target_multiplier *= 1.06;
     }
   };
 
