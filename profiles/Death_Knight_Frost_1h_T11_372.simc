@@ -1,7 +1,6 @@
 #!./simc 
 
-death_knight=Death_Knight_Frost_1h_T11
-origin="input=Death_Knight_Frost_1h_T11.simc"
+death_knight=Death_Knight_Frost_1h_T11_372
 level=85
 race=tauren
 use_pre_potion=1

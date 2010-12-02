@@ -1,8 +1,6 @@
 #!./simc 
 
-iterations=10000
-
-death_knight=Death_Knight_Frost_2h_T11
+death_knight=Death_Knight_Frost_2h_T11_372
 level=85
 race=tauren
 use_pre_potion=1
