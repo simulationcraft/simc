@@ -3777,25 +3777,54 @@ void druid_t::init_actions()
         }
         action_list_str += "/mark_of_the_wild";
         action_list_str += "/cat_form";
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-        action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
+
+        if ( level > 80 )
+        {
+          action_list_str += "/tolvir_potion,if=!in_combat";
+        }
+        else
+        {
+          action_list_str += "/speed_potion,if=!in_combat";
+        }
+
+        action_list_str += "/feral_charge_cat,if=!in_combat";
+        action_list_str += "/auto_attack";
         action_list_str += "/skull_bash_cat";
+        action_list_str += "/tigers_fury,if=energy<=26";
+        if ( level > 80 )
+        {
+          action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        }
+        else
+        {
+          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        }
+        action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&(buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3)";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
-        action_list_str += "/mangle_cat,if=!debuff.mangle.up|set_bonus.tier11_4pc_melee&(buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3)";
-        action_list_str += "/tigers_fury,if=energy<=30&!buff.berserk.up";
-        if ( talents.berserk -> rank() )action_list_str += "/berserk,if=energy>=80&energy<=90&!buff.tigers_fury.up";
+        action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
+        action_list_str += "/ravage,if=buff.stampede_cat.up&buff.stampede_cat.remains<=1";
+        if ( talents.berserk -> rank() )action_list_str += "/berserk,if=time_to_max_energy>=2.0&!buff.tigers_fury.up&cooldown.tigers_fury.remains>15";
+        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=25";
+        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=25";
         action_list_str += use_str;
-        action_list_str += "/rip,if=!ticking&buff.combo_points.stack>=5&target.time_to_die>=6";
-        action_list_str += "/rake,if=!ticking&target.time_to_die>=9";
+        action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
+        action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<multiplier)";
+        action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
+        action_list_str += "/shred,if=buff.omen_of_clarity.react";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
-        action_list_str += "/ferocious_bite,if=target.time_to_die<=6&buff.combo_points.stack>=5";
-        action_list_str += "/ferocious_bite,if=target.time_to_die<=1&buff.combo_points.stack>=4";
-        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8&buff.savage_roar.remains>=11";
-        if ( glyphs.shred )action_list_str += "/shred,extend_rip=1,if=dot.rip.remains<=4";
-        action_list_str += "/shred,if=(buff.combo_points.stack<=4|dot.rip.remains>=0.8)&dot.rake.remains>=0.4&(energy>=80|buff.omen_of_clarity.react|dot.rip.remains<=2|buff.berserk.up|cooldown.tigers_fury.remains<=3)";
-        action_list_str += "/shred,if=target.time_to_die<=9";
-        action_list_str += "/shred,if=buff.combo_points.stack<=0&buff.savage_roar.remains<=2";
+        action_list_str += "/savage_roar,if=target.time_to_die>=9&buff.combo_points.stack>=5&dot.rip.ticking&dot.rip.remains<=12&@(dot.rip.remains-buff.savage_roar.remains)<=3";
+        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&buff.combo_points.stack>=5)|target.time_to_die<=1";
+        action_list_str += "/ferocious_bite,if=level<=80&buff.combo_points.stack>=5&dot.rip.remains>=8.0&buff.savage_roar.remains>=4.0";
+        action_list_str += "/ferocious_bite,if=level>80&buff.combo_points.stack>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
+        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health_pct>25";
+        action_list_str += "/ravage,if=buff.stampede_cat.up&!buff.omen_of_clarity.react&buff.tigers_fury.up";
+        action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.stack<3";
+        action_list_str += "/shred,if=buff.combo_points.stack<=4&dot.rake.remains>3.0&dot.rip.remains>3.0&(time_to_max_energy<=2.0|(buff.berserk.up&energy>=20))";
+        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/shred,if=target.time_to_die<=dot.rake.duration";
+        action_list_str += "/shred,if=buff.combo_points.stack=0&(buff.savage_roar.remains<=2.0|dot.rake.remains>=5.0)";
+        action_list_str += "/shred,if=!dot.rip.ticking|time_to_max_energy<=1.0";
       }
     }
     else

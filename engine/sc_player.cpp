@@ -225,7 +225,7 @@ player_t::player_t( sim_t*             s,
                     race_type          r ) :
     sim( s ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( -1 ), tank( -1 ),
+    next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ), tank( -1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
@@ -4429,6 +4429,15 @@ action_expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "dot" )
     {
       dot_t* dot = get_dot( splits[ 1 ] );
+      if ( splits[ 2 ] == "duration" )
+      {
+        struct duration_expr_t : public action_expr_t
+        {
+          duration_expr_t( action_t* a ) : action_expr_t( a, "dot_duration", TOK_NUM ) {}
+          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time(); return TOK_NUM; }
+        };
+        return new duration_expr_t( a );
+      }
       if ( splits[ 2 ] == "multiplier" )
       {
         struct multiplier_expr_t : public action_expr_t

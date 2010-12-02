@@ -1,9 +1,9 @@
 #!./simc 
 
-druid=Druid_Balance_T11
+druid=Druid_Balance_T11_372
 level=85
 race=night_elf
-use_pre_potion=-1
+use_pre_potion=1
 professions=Jewelcrafting/Blacksmithing
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=332332211200021110310200000000000000000000220301000000000000000
 glyphs=moonfire/insect_swarm/wrath/starfall/focus/innervate
