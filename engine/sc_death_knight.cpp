@@ -389,7 +389,7 @@ struct death_knight_t : public player_t
   int diseases()
   {
     int disease_count = 0;
-    if ( sim -> target -> debuffs.ebon_plaguebringer -> source == this ) disease_count++;
+    //if ( sim -> target -> debuffs.ebon_plaguebringer -> source == this ) disease_count++;
     if ( dots_blood_plague -> ticking ) disease_count++;
     if ( dots_frost_fever  -> ticking ) disease_count++;
     return disease_count;
@@ -749,7 +749,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   int drw_diseases()
   {
     int drw_disease_count = 0;
-    if ( sim -> target -> debuffs.ebon_plaguebringer -> source == owner ) drw_disease_count++;
+    //if ( sim -> target -> debuffs.ebon_plaguebringer -> source == owner ) drw_disease_count++;
     if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
     if ( dots_drw_frost_fever  -> ticking ) drw_disease_count++;
     return drw_disease_count;
