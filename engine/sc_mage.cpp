@@ -368,10 +368,7 @@ struct water_elemental_pet_t : public pet_t
       spell_t::execute();
       mage_t* o = player -> cast_pet() -> owner -> cast_mage();
 
-      if ( o -> rng_improved_freeze -> roll( o -> talents.improved_freeze -> rank() ) )
-      {
-        o -> buffs_fingers_of_frost -> trigger( 2 );
-      }
+      o -> buffs_fingers_of_frost -> trigger( 2, 1, o -> talents.improved_freeze -> effect_base_value( 1 ) / 100.0 );
     }
 
     virtual bool ready()
