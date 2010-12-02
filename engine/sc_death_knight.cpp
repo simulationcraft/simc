@@ -99,6 +99,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_bone_shield;
   buff_t* buffs_dancing_rune_weapon;
   buff_t* buffs_dark_transformation;
+  buff_t* buffs_ebon_plaguebringer; // Used for disease tracking
   buff_t* buffs_frost_presence;
   buff_t* buffs_killing_machine;
   buff_t* buffs_pillar_of_frost;
@@ -389,7 +390,7 @@ struct death_knight_t : public player_t
   int diseases()
   {
     int disease_count = 0;
-    //if ( sim -> target -> debuffs.ebon_plaguebringer -> source == this ) disease_count++;
+    if ( buffs_ebon_plaguebringer -> up() ) disease_count++;
     if ( dots_blood_plague -> ticking ) disease_count++;
     if ( dots_frost_fever  -> ticking ) disease_count++;
     return disease_count;
@@ -1783,11 +1784,14 @@ static void trigger_brittle_bones( spell_t* s )
 
 static void trigger_ebon_plaguebringer( action_t* a )
 {
-  if ( a -> sim -> overrides.ebon_plaguebringer )
-    return;
-
   death_knight_t* p = a -> player -> cast_death_knight();
   if ( ! p -> talents.ebon_plaguebringer -> rank() )
+    return;
+
+  // Each DK gets their own ebon plaguebringer debuff, but we only track one a time, so fake it
+  p -> buffs_ebon_plaguebringer -> trigger();
+
+  if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
   double duration = 21.0 + p -> talents.epidemic -> mod_additive( P_DURATION ); 
@@ -3710,15 +3714,15 @@ struct scourge_strike_t : public death_knight_attack_t
       background        = true;
       trigger_gcd       = 0;
       weapon_multiplier = 0;
-      if ( p -> glyphs.scourge_strike )
-        base_multiplier *= 1.3;
+      base_multiplier  *= 1.0 + p -> glyphs.scourge_strike * 0.3
+                              + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
     }
 
     virtual void target_debuff( int dmg_type )
     {
       death_knight_t* p = player -> cast_death_knight();
-      death_knight_spell_t::target_debuff( dmg_type );
-      target_multiplier *= p -> diseases() * 0.12;
+      // Shadow portion doesn't dip into 8% spell damage ironically
+      target_multiplier = p -> diseases() * 0.12;
     }
   };
 
@@ -4501,6 +4505,7 @@ void death_knight_t::init_buffs()
   buffs_bone_shield         = new buff_t( this, "bone_shield",                                        3, 300.0 );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
+  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer",                                 1,  21.0 + talents.epidemic -> mod_additive( P_DURATION ), 0.0, 1.0, true );
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
