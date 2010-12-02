@@ -4403,7 +4403,12 @@ action_expr_t* player_t::create_expression( action_t* a,
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
-  if ( num_splits == 3 )
+  if ( splits[ 0 ] == "pet" )
+  {
+    pet_t* pet = find_pet( splits[ 1 ] );
+    if ( pet ) return pet -> create_expression( a, name_str.substr( splits[ 1 ].length() + 5 ) );
+  }
+  else if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "buff" )
     {
@@ -4529,7 +4534,7 @@ action_expr_t* player_t::create_expression( action_t* a,
       }
     }
   }
-  if ( num_splits == 2)
+  else if ( num_splits == 2)
   {
     if ( splits[ 0 ] == "set_bonus" )
     {
