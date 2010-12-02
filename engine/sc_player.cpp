@@ -1093,6 +1093,48 @@ void player_t::init_professions()
   else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;
 }
 
+// Execute Pet Action =========================================================
+
+struct execute_pet_action_t : public action_t
+{
+  action_t* pet_action;
+  pet_t* pet;
+  std::string action_str;
+
+  execute_pet_action_t( player_t* player, pet_t* p, const std::string& as, const std::string& options_str ) :
+      action_t( ACTION_OTHER, "execute_pet_action", player )
+  {
+    parse_options( NULL, options_str );
+    pet = p;
+    action_str = as;
+    trigger_gcd = 0;
+  }
+
+  virtual void reset()
+  {
+    for ( action_t* action = pet -> action_list; action; action = action -> next )
+    {
+      if ( action -> name_str == action_str )
+      {
+        action -> background = true;
+        pet_action = action;
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    pet_action -> execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! action_t::ready() ) return false;
+    if ( pet_action -> player -> sleeping ) return false;
+    return pet_action -> ready();
+  }
+};
+
 // player_t::init_actions ==================================================
 
 void player_t::init_actions()
@@ -1111,15 +1153,33 @@ void player_t::init_actions()
       std::string action_name    = splits[ i ];
       std::string action_options = "";
 
-      std::string::size_type cut_pt = action_name.find_first_of( ",:" );
+      std::string::size_type cut_pt = action_name.find( "," );
 
       if ( cut_pt != action_name.npos )
       {
         action_options = action_name.substr( cut_pt + 1 );
         action_name    = action_name.substr( 0, cut_pt );
       }
+      
+      action_t* a;
 
-      action_t* a = create_action( action_name, action_options );
+      cut_pt = action_name.find( ":" );
+      if ( cut_pt != action_name.npos )
+      {
+        pet_t* pet = find_pet( action_name.substr( 0, cut_pt ) );
+        if ( ! pet )
+        {
+          sim -> errorf( "Player %s refers to unknown pet in action: %s\n", name(), splits[ i ].c_str() );
+          return;
+        }
+
+        action_name = action_name.substr( cut_pt + 1 );
+        a =  new execute_pet_action_t( this, pet, action_name, action_options );
+      }
+      else {
+        a = create_action( action_name, action_options );
+      }
+
       if ( ! a )
       {
         sim -> errorf( "Player %s has unknown action: %s\n", name(), splits[ i ].c_str() );
