@@ -1331,6 +1331,7 @@ struct rake_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
+    dot_behavior        = DOT_REFRESH;
     direct_power_mod    = 0.23;
     tick_power_mod      = 0.14; // 0.42 / 3 ticks
     num_ticks          += p -> talents.endless_carnage -> rank();

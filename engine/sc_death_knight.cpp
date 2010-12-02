@@ -1790,10 +1790,10 @@ static void trigger_ebon_plaguebringer( action_t* a )
   if ( ! p -> talents.ebon_plaguebringer -> rank() )
     return;
 
-  double disease_duration = a -> dot -> ready - a -> sim -> current_time;
-  if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( disease_duration ) )
+  double duration = 21.0 + p -> talents.epidemic -> mod_additive( P_DURATION ); 
+  if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
-    a -> target -> debuffs.ebon_plaguebringer -> buff_duration = disease_duration;
+    a -> target -> debuffs.ebon_plaguebringer -> buff_duration = duration;
     a -> target -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
     a -> target -> debuffs.ebon_plaguebringer -> source = p;
   }
@@ -2352,20 +2352,6 @@ struct blood_plague_t : public death_knight_spell_t
     reset(); // Not a real action
   }
 
-  virtual void execute()
-  {
-    death_knight_spell_t::execute();
-
-    trigger_ebon_plaguebringer( this );
-  }
-
-  virtual void extend_duration( int extra_ticks )
-  {
-    death_knight_spell_t::extend_duration( extra_ticks );
-
-    trigger_ebon_plaguebringer( this );
-  }
-
   virtual void player_buff()
   {
     death_knight_spell_t::player_buff();
@@ -2847,6 +2833,7 @@ struct festering_strike_t : public death_knight_attack_t
     {
       if ( p -> dots_blood_plague -> ticking ) p -> dots_blood_plague -> action -> extend_duration( 2 );
       if ( p -> dots_frost_fever  -> ticking ) p -> dots_frost_fever  -> action -> extend_duration( 2 );
+      trigger_ebon_plaguebringer( this );
     }
   }
 };
@@ -2881,7 +2868,6 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     trigger_brittle_bones( this );
-    trigger_ebon_plaguebringer( this );
   }
 
   virtual void extend_duration( int extra_ticks )
@@ -2889,7 +2875,6 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_spell_t::extend_duration( extra_ticks );
 
     trigger_brittle_bones( this );
-    trigger_ebon_plaguebringer( this );
   }
 
   virtual void player_buff()
@@ -3197,6 +3182,7 @@ struct icy_touch_t : public death_knight_spell_t
       if ( ! p -> frost_fever )
         p -> frost_fever = new frost_fever_t( p );
       p -> frost_fever -> execute();
+      trigger_ebon_plaguebringer( this );
     }
     p -> buffs_killing_machine -> expire();
     p -> buffs_rime -> expire();
@@ -3505,6 +3491,7 @@ struct plague_strike_t : public death_knight_attack_t
       if ( ! p -> blood_plague ) p -> blood_plague = new blood_plague_t( p );
 
       p -> blood_plague -> execute();
+      trigger_ebon_plaguebringer( this );
     }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
