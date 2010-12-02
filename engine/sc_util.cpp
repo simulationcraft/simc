@@ -259,6 +259,19 @@ const char* util_t::player_type_string( int type )
   return "unknown";
 }
 
+// util_t::player_type_string ==============================================
+
+const char* util_t::pet_type_string( int type )
+{
+  switch ( type )
+  {
+  case PLAYER_NONE:     return "none";
+  case PET_CAT:         return "cat";
+  case PET_WOLF:        return "wolf";
+  }
+  return "unknown";
+}
+
 // util_t::parse_player_type ===============================================
 
 player_type util_t::parse_player_type( const std::string& name )

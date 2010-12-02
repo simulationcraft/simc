@@ -1718,7 +1718,7 @@ static void print_html2_talents(FILE* file, player_t* a )
      {
        talent_num = 0;
        util_t::fprintf( file, "<td><table>\n" );
-       while ( ( talent_id = a->player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
+       while ( a -> is_pet() ? ( talent_id = a->player_data.talent_pet_get_id_by_num( a -> cast_pet() -> pet_type, talent_num ) ) : ( talent_id = a->player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
        {
          util_t::fprintf( file, " <tr> <td>%s</td><td>",a -> player_data.talent_name_str(talent_id) );
          i=0;
@@ -1761,7 +1761,7 @@ static void print_html2_player( FILE* file, player_t* p )
        "  <tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%d</td>\n"
        "</table><br />\n",
        p -> name(), p -> race_str.c_str(),
-       util_t::player_type_string( p -> type ),
+       p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
        util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
   util_t::fprintf( file,
@@ -2065,11 +2065,11 @@ static void print_html2_player( FILE* file, player_t* p )
   print_html2_stats( file, p );
   util_t::fprintf( file, "</table> <br />\n" );
 
-  if ( !p -> is_pet() )
-  {
+  //if ( !p -> is_pet() )
+  //{
   print_html2_talents( file, p );
     util_t::fprintf( file, "</table> <br />\n" );
-  }
+  //}
 
 
   if ( p -> sim -> scaling -> has_scale_factors() )

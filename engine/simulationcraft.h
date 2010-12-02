@@ -1605,6 +1605,7 @@ struct util_t
   static const char* gem_type_string           ( int type );
   static const char* meta_gem_type_string      ( int type );
   static const char* player_type_string        ( int type );
+  static const char* pet_type_string           ( int type );
   static const char* profession_type_string    ( int type );
   static const char* race_type_string          ( int type );
   static const char* resource_type_string      ( int type );
@@ -3284,8 +3285,11 @@ struct pet_t : public player_t
   double intellect_per_owner;
   double summon_time;
   bool summoned;
+  pet_type_t pet_type;
 
+  void _init_pet_t();
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
+  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_type_t pt, bool guardian=false );
 
   // Pets gain their owners' hit rating, but it rounds down to a
   // percentage.  Also, heroic presence does not contribute to pet
