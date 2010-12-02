@@ -1,6 +1,5 @@
 #!simc
 
-patch=4.0.3
 optimal_raid=1
 
 Death_Knight_Frost_1h_T10_277.simc
@@ -18,6 +17,6 @@ Warlock_AffDrain_T10_277.simc
 Warlock_Demonology_T10_277.simc
 Warlock_Destruction_T10_277.simc
 
-Warrior_Arms_T10.simc
-Warrior_Fury_1h_T10.simc
-Warrior_Fury_2h_T10.simc
+Warrior_Arms_T10_277.simc
+Warrior_Fury_1h_T10_277.simc
+Warrior_Fury_2h_T10_277.simc
