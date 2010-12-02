@@ -1,4 +1,6 @@
-origin="input=m.simc"
+#!./simc 
+
+mage=Mage_Frost_T11_359
 level=85
 race=undead
 use_pre_potion=1
