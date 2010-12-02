@@ -4406,7 +4406,22 @@ action_expr_t* player_t::create_expression( action_t* a,
   if ( splits[ 0 ] == "pet" )
   {
     pet_t* pet = find_pet( splits[ 1 ] );
-    if ( pet ) return pet -> create_expression( a, name_str.substr( splits[ 1 ].length() + 5 ) );
+    if ( pet ) {
+      if ( splits[ 2 ] == "active" )
+      {
+        struct pet_active_expr_t : public action_expr_t
+        {
+          pet_t* pet;
+          pet_active_expr_t( action_t* a, pet_t* p ) : action_expr_t( a, "pet_active", TOK_NUM ), pet(p) {}
+          virtual int evaluate() { result_num = ( pet -> sleeping ) ? 0 : 1; return TOK_NUM; }
+        };
+        return new pet_active_expr_t( a, pet );
+      }
+      else
+      {
+        return pet -> create_expression( a, name_str.substr( splits[ 1 ].length() + 5 ) );
+      }
+    }
   }
   else if ( num_splits == 3 )
   {
