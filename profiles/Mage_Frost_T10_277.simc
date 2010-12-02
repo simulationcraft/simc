@@ -9,8 +9,9 @@ glyphs=cone_of_cold/ice_lance/frostbolt/frostfire/arcane_brilliance
 actions=flask,type=frost_wyrm
 actions+=/food,type=fish_feast
 actions+=/arcane_brilliance
-actions+=/speed_potion
 actions+=/snapshot_stats
+actions+=/speed_potion,if=!in_combat
+actions+=/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/counterspell
 actions+=/molten_armor
 actions+=/mirror_image

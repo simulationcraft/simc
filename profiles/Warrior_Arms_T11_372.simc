@@ -1,6 +1,6 @@
 #!./simc 
 
-warrior=Warrior_Arms_T11
+warrior=Warrior_Arms_T11_372
 level=85
 race=tauren
 use_pre_potion=1
@@ -9,9 +9,9 @@ glyphs=mortal_strike/overpower/slam/sweeping_strikes/berserker_rage/cleaving
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/stance,choose=battle,if=!in_combat
-actions+=/auto_attack
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
+actions+=/auto_attack
 actions+=/deadly_calm,if=rage<=10
 actions+=/sweeping_strikes,if=target.adds>0
 actions+=/berserker_rage

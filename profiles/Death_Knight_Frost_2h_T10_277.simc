@@ -3,7 +3,7 @@
 death_knight=Death_Knight_Frost_2h_T10_277
 level=80
 race=tauren
-use_pre_potion=-1
+use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=0030000000000000000032030022233112012031002
 glyphs=frost_strike/howling_blast/obliterate
 actions=flask,type=endless_rage

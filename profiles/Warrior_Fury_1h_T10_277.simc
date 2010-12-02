@@ -1,6 +1,6 @@
 #!./simc 
 
-warrior=Warrior_Fury_1h_T10
+warrior=Warrior_Fury_1h_T10_277
 level=80
 race=tauren
 use_pre_potion=-1
@@ -9,8 +9,9 @@ glyphs=bloodthirst/raging_blow/slam/cleaving/battle/berserker_rage
 actions=flask,type=endless_rage
 actions+=/food,type=dragonfin_filet
 actions+=/stance,choose=berserker,if=in_combat=0
-actions+=/auto_attack
 actions+=/snapshot_stats
+actions+=/speed_potion,if=!in_combat|buff.bloodlust.react
+actions+=/auto_attack
 actions+=/recklessness
 actions+=/death_wish
 actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)

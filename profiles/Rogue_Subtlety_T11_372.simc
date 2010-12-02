@@ -1,9 +1,9 @@
 #!./simc
 
-rogue=Rogue_Subtlety_T11
+rogue=Rogue_Subtlety_T11_372
 level=85
 race=undead
-use_pre_potion=-1
+use_pre_potion=1
  
 talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=032003000000000000000200000000000000000331032321310012321
 

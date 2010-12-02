@@ -3,7 +3,7 @@
 death_knight=Death_Knight_Unholy_T10_277
 level=80
 race=tauren
-use_pre_potion=-1
+use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=10300000000000000000000000000000000000000331032123131021231
 glyphs=raise_dead/scourge_strike/death_coil
 actions=flask,type=endless_rage

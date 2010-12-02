@@ -3024,7 +3024,6 @@ void warrior_t::init_actions()
     else if ( primary_tree() == TREE_PROTECTION )
       action_list_str += "/stance,choose=defensive,if=!in_combat";
 
-    action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
 
     // Potion
@@ -3040,6 +3039,8 @@ void warrior_t::init_actions()
     {
       // FIXME: earthen potion, but when to use?
     }
+
+    action_list_str += "/auto_attack";
 
     // Usable Item
     int num_items = ( int ) items.size();

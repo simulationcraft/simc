@@ -3,7 +3,7 @@
 death_knight=Death_Knight_Unholy_2h_T11
 level=85
 race=tauren
-use_pre_potion=-1
+use_pre_potion=1
 professions=Blacksmithing/Jewelcrafting
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=20320000000000000000000000000000000000000331032123331021231
 glyphs=raise_dead/scourge_strike/death_coil

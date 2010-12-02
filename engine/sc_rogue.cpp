@@ -3077,9 +3077,16 @@ void rogue_t::init_actions()
     action_list_str += "flask,type=endless_rage";
     action_list_str += "/food,type=blackened_dragonfin";
     action_list_str += "/apply_poison,main_hand=instant,off_hand=deadly";
-    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20";
-    action_list_str += "/auto_attack";
     action_list_str += "/snapshot_stats";
+    if ( level > 80 )
+    {
+      action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30";
+    }
+    else
+    {
+      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20";
+    }
+    action_list_str += "/auto_attack";
     
     if ( talents.overkill -> rank() || spec_master_of_subtlety -> ok() )
       action_list_str += "/stealth";

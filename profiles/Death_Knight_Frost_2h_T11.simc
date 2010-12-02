@@ -5,7 +5,7 @@ iterations=10000
 death_knight=Death_Knight_Frost_2h_T11
 level=85
 race=tauren
-use_pre_potion=-1
+use_pre_potion=1
 professions=Blacksmithing/Jewelcrafting
 talents=http://www.wowarmory.com/talent-calc.xml?cid=6&tal=10300000000000000000320310122331120120310330000000000000000
 glyphs=frost_strike/howling_blast/obliterate
