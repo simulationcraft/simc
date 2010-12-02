@@ -234,7 +234,14 @@ static bool parse_armory( sim_t*             sim,
 	player_name = encoding[ 0 ];
 	description = encoding[ 1 ];
       }
-      sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, description );
+      if ( region == "cn" || region == "tw" )
+      {
+	sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
+      }
+      else
+      {
+	sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, description );
+      }
       if ( ! sim -> active_player ) return false;
     }
     return true;

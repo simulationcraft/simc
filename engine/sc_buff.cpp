@@ -22,7 +22,7 @@ buff_t::buff_t( sim_t*             s,
                 int                rng_type,
                 int                id ) :
   spell_id_t( 0, n.c_str() ),
-  sim( s ), player( 0 ), name_str( n ), 
+  sim( s ), player( 0 ), source( 0 ), name_str( n ), 
   max_stack( ms ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false ), quiet( q ), aura_id( id )
 {
@@ -60,7 +60,7 @@ buff_t::buff_t( player_t*          p,
                 int                rng_type,
                 int                id ) :
   spell_id_t( p, n.c_str() ),
-  sim( p -> sim ), player( p ), name_str( n ), 
+  sim( p -> sim ), player( p ), source( p ), name_str( n ), 
   max_stack( ms ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false), quiet( q ), aura_id( id )
 {
@@ -505,6 +505,7 @@ void buff_t::expire()
 {
   if ( current_stack <= 0 ) return;
   event_t::cancel( expiration );
+  source = 0;
   current_stack = 0;
   current_value = 0;
   aura_loss();
