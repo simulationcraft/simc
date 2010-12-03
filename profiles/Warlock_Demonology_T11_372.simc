@@ -3,6 +3,7 @@ warlock=Warlock_Demonology_T11_372
 level=85
 race=undead
 use_pre_potion=1
+professions=enchanting=525/inscription=525
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00000000000000000033222003103122122113122200000000000000
 glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
 actions=flask,type=draconic_mind
