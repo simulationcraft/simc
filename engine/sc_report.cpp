@@ -88,14 +88,14 @@ static void wiki_chart_url( std::string& buffer )
 static std::string wiki_player_anchor( player_t* p )
 {
   std::string buffer = wiki_player_reference( p );
-
+  /* Commenting this out for now, in case it turns out to be needed after all
   // GoogleCode Wiki is giving me headaches......
   int size = buffer.size();
   if ( isdigit( buffer[ size-1 ] ) )
   {
     buffer.insert( 0, "!" );
   }
-
+  */
   return buffer;
 }
 
