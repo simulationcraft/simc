@@ -42,7 +42,7 @@ trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery
 trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_hit,equip=onspellcrit_2178sp_30%_20dur_100cd
 back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=20hit_20haste_10int,enchant=50int
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
-off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit
+off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int
 ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
 # Gear Summary
 # gear_strength=20
