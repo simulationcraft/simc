@@ -2203,7 +2203,7 @@ void paladin_t::init_actions()
 
       if ( level > 80 )
       {
-        action_list_str += "/golem_blood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
       }
       else
       {
