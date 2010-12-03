@@ -3041,6 +3041,7 @@ struct player_t
   virtual void init_meta_gem( gear_stats_t& );
   virtual void init_core();
   virtual void init_race();
+  virtual void init_racials();
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_defense();

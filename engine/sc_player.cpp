@@ -604,6 +604,7 @@ void player_t::init()
   init_glyphs();
   init_race();
   init_base();
+  init_racials();
   init_items();
   init_core();
   init_spell();
@@ -858,6 +859,16 @@ void player_t::init_race()
   race = util_t::parse_race_type( race_str );
 }
 
+// player_t::init_racials ======================================================
+
+void player_t::init_racials()
+{
+  if ( race == RACE_GNOME )
+  {
+    mana_per_intellect *= 1.05;
+  }
+}
+
 // player_t::init_spell =====================================================
 
 void player_t::init_spell()
@@ -1011,6 +1022,10 @@ void player_t::init_resources( bool force )
         if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
         {
           resource_initial[ i ] *= 1.02;
+        }
+        if ( race == RACE_GNOME )
+        {
+          resource_initial[ i ] *= 1.05;
         }
         resource_initial[ i ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
       }
