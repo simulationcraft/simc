@@ -3304,6 +3304,7 @@ struct pet_t : public player_t
   virtual void init();
   virtual void init_data();
   virtual void init_base();
+  virtual void init_talents();
   virtual void reset();
   virtual void summon( double duration=0 );
   virtual void dismiss();

@@ -193,16 +193,31 @@ uint32_t talent_t::find_talent_id( const char* name )
 
   assert( s_player && name && name[ 0 ] );
 
-  for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
+  if ( s_player -> is_pet() )
   {
     talent_num = 0;
-    while ( ( talent_id = s_player->player_data.talent_player_get_id_by_num( s_player -> type, i_tab, talent_num ) ) != 0 )
+    while (  ( talent_id = s_player->player_data.talent_pet_get_id_by_num( s_player -> cast_pet() -> pet_type, talent_num ) ) != 0 )
     {
       if ( util_t::str_compare_ci( s_player -> player_data.talent_name_str( talent_id ), name ) )
       {
         return talent_id;
       }
       talent_num++;
+    }
+  }
+  else
+  {
+    for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
+    {
+      talent_num = 0;
+      while ( ( talent_id = s_player->player_data.talent_player_get_id_by_num( s_player -> type, i_tab, talent_num ) ) != 0 )
+      {
+        if ( util_t::str_compare_ci( s_player -> player_data.talent_name_str( talent_id ), name ) )
+        {
+          return talent_id;
+        }
+        talent_num++;
+      }
     }
   }
   

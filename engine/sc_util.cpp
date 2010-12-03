@@ -268,6 +268,7 @@ const char* util_t::pet_type_string( int type )
   case PLAYER_NONE:     return "none";
   case PET_CAT:         return "cat";
   case PET_WOLF:        return "wolf";
+  case PET_FEROCITY:    return "pet_ferocity";
   }
   return "unknown";
 }

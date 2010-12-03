@@ -468,7 +468,7 @@ struct ferocity_pet_t : public hunter_pet_t
   ferocity_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     hunter_pet_t( sim,owner,pet_name,pt )
   {
-
+    pet_type=PET_FEROCITY;
   }
 
   virtual void init_base()
@@ -497,7 +497,9 @@ struct ferocity_pet_t : public hunter_pet_t
     talents.shark_attack = new talent_t ( this, "shark_attack", "shark_attack" );
     talents.wild_hunt = new talent_t ( this, "wild_hunt", "wild_hunt" );
 
+
     hunter_pet_t::init_talents();
+    talents.spiked_collar -> set_rank( 3, true );
   }
   virtual void init_buffs()
   {
