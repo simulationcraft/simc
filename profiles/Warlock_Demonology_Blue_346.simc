@@ -16,7 +16,7 @@ actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
 actions+=/demon_soul
 actions+=/hand_of_guldan,if=dot.immolate.remains>(cast_time+travel_time)
 actions+=/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time
-actions+=/soulburn,if=buff.metamorphosis.up
+actions+=/soulburn,if=buff.metamorphosis.up&buff.bloodlust.down
 actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
 actions+=/metamorphosis
 actions+=/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time|!ticking
