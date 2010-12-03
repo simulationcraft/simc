@@ -35,7 +35,7 @@ shoulders=mantle_of_the_eastern_lords,heroic=1,type=cloth,stats=870armor_130hit_
 chest=inquisition_robes,heroic=1,type=cloth,stats=1160armor_202hit_162mastery_262int_454sta,reforge=mastery_crit,gems=20crit_20hit_20int_20hit_20mastery,enchant=20all
 waist=dreamless_belt,heroic=0,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_crit,gems=40hit_40hit_10hit
 legs=breeches_of_mended_nightmares,heroic=0,type=cloth,stats=1094armor_214crit_216haste_321int_512sta,reforge=haste_hit,gems=20int_20hit_10haste,enchant=95int_80sta
-feet=slippers_of_the_twilight_prophet,heroic=1,type=cloth,stats=205int_337sta_130hit_150mastery_797armor,reforge=mastery_crit,gems=20int_20hit_10ing,enchant=35mastery
+feet=slippers_of_the_twilight_prophet,heroic=1,type=cloth,stats=205int_337sta_130hit_150mastery_797armor,reforge=mastery_crit,gems=20int_20hit_10int,enchant=35mastery
 wrists=sand_silk_wristband,heroic=1,type=cloth,stats=168int_252sta_112crit_112hit_507armor,enchant=65crit
 hands=mnemiopsis_gloves,heroic=1,type=cloth,stats=725armor_150hit_130crit_205int_337sta,gems=40hit_10int,enchant=65mastery
 finger1=band_of_rays,heroic=1,stats=168int_252sta_112hit_112crit,enchant=40int
