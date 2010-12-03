@@ -2991,7 +2991,7 @@ void mage_t::init_actions()
     action_list_str += "/arcane_brilliance";
 
     // Armor
-    if ( primary_tree() == TREE_ARCANE )
+    if ( ( primary_tree() == TREE_ARCANE ) || ( primary_tree() == TREE_FROST ) )
     {
       action_list_str += "/mage_armor";
     }
@@ -3019,7 +3019,14 @@ void mage_t::init_actions()
     if ( level > 80 )
     {
       action_list_str += "/volcanic_potion,if=!in_combat";
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      if ( primary_tree() == TREE_FROST )
+      {
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
+      }
+      else
+      {
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      }
     }
     else if ( level >= 70 )
     {
@@ -3047,17 +3054,16 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       if ( level >= 50 ) action_list_str += "/mirror_image";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<40";
-      action_list_str += "/mana_gem,if=cooldown.evocation.remains<40";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<16";
+      action_list_str += "/mana_gem,if=cooldown.evocation.remains<16";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         // PoM triggers CC, so make sure between the two casts, we won't wast the mana regened and since it's 2 AB's, make sure the free is at a 4 stack
         action_list_str += "/presence_of_mind,arcane_blast,if=mana_pct<97&&buff.arcane_blast.stack>=3";
       }
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=cooldown.evocation.remains<16|mana_pct>95|buff.arcane_blast.stack<3";
       if ( level >= 12 ) action_list_str += "/evocation";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
@@ -3076,20 +3082,17 @@ void mage_t::init_actions()
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb";
-      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>65";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
-      action_list_str += "/fireball,if=target.time_to_die<60";
-      action_list_str += "/scorch,if=mana_pct<5";
-      action_list_str += "/fireball,if=target.time_to_die<60";
-      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>30";
+      action_list_str += "/fireball,if=target.time_to_die<100";
+      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
       action_list_str += "/fireball,if=mana_pct>39";
+      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>105";
       if ( level >= 26 ) action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
     else if ( primary_tree() == TREE_FROST )
     {
       action_list_str += "/mana_gem,if=mana_deficit>12500";
-      action_list_str += "/evocation,if=mana_pct<39.5&target.time_to_die>60";
       if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30";
       if ( talents.frostfire_orb -> rank() && level >= 81 )
       {
@@ -3103,6 +3106,7 @@ void mage_t::init_actions()
         action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
+      if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains=0";
       action_list_str += "/frostbolt";
       if ( level >= 12 ) action_list_str += "/evocation";
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving

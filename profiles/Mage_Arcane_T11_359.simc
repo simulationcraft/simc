@@ -44,3 +44,20 @@ back=haunt_of_flies,heroic=0,stats=190int_286sta_127crit_127haste_625armor,refor
 main_hand=incineratus,heroic=0,stats=146int_219sta_97mastery_97haste_1954sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=0,stats=197int_286sta_127haste_127hit,enchant=100int
 ranged=theresas_booklight,heroic=0,stats=107int_161sta_72mastery_72hit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5252
+# gear_intellect=4261
+# gear_spirit=20
+# gear_spell_power=1954
+# gear_hit_rating=1517
+# gear_crit_rating=696
+# gear_haste_rating=1285
+# gear_mastery_rating=1664
+# gear_armor=7817
+# meta_gem=chaotic_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=haunt_of_flies,enchant=lightweave_embroidery
+# main_hand=incineratus,enchant=power_torrent

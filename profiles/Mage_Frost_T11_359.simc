@@ -22,8 +22,9 @@ actions+=/frostfire_orb
 actions+=/mirror_image
 actions+=/icy_veins,if=!buff.icy_veins.react&!buff.bloodlust.react
 actions+=/deep_freeze
-actions+=/frostfire_bolt,if=buff.brain_freeze.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
+actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains=0
 actions+=/frostbolt
 actions+=/evocation
 actions+=/ice_lance,moving=1
@@ -45,3 +46,20 @@ back=haunt_of_flies,heroic=0,stats=190int_286sta_127crit_127haste_625armor,refor
 main_hand=blade_of_the_witching_hour,heroic=0,stats=146int_219sta_97mastery_97crit_1954sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=0,stats=197int_286sta_127haste_127hit,reforge=haste_crit,enchant=100int
 ranged=theresas_booklight,heroic=0,stats=107int_161sta_72mastery_72hit,reforge=mastery_crit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5252
+# gear_intellect=4181
+# gear_spirit=20
+# gear_spell_power=1954
+# gear_hit_rating=1605
+# gear_crit_rating=1243
+# gear_haste_rating=1298
+# gear_mastery_rating=1096
+# gear_armor=7817
+# meta_gem=chaotic_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=haunt_of_flies,enchant=lightweave_embroidery
+# main_hand=blade_of_the_witching_hour,enchant=power_torrent

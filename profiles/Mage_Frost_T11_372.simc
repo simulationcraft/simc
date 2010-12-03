@@ -46,3 +46,20 @@ back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_69
 main_hand=blade_of_the_witching_hour,heroic=1,stats=165int_248sta_110mastery_110crit_2207sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,reforge=haste_crit,enchant=100int
 ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=mastery_crit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5897
+# gear_intellect=4642
+# gear_spirit=20
+# gear_spell_power=2207
+# gear_hit_rating=1737
+# gear_crit_rating=1581
+# gear_haste_rating=1594
+# gear_mastery_rating=966
+# gear_armor=8436
+# meta_gem=chaotic_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
+# main_hand=blade_of_the_witching_hour,heroic=1,enchant=power_torrent
