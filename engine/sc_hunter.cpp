@@ -9,13 +9,6 @@
 // Hunter
 // ==========================================================================
 
-#define PET_MAX_TALENT_POINTS 20
-#define PET_TALENT_ROW_MULTIPLIER 3
-#define PET_MAX_TALENT_ROW 6
-#define PET_MAX_TALENT_TREES 1
-#define PET_MAX_TALENT_COL 4
-#define PET_MAX_TALENT_SLOTS (PET_MAX_TALENT_TREES*PET_MAX_TALENT_ROW*PET_MAX_TALENT_COL)
-
 struct ferocity_pet_t;
 struct hunter_pet_t;
 
@@ -491,7 +484,7 @@ struct ferocity_pet_t : public hunter_pet_t
     talents.natural_armor = new talent_t ( this, "natural_armor", "natural_armor" );
     talents.improved_cower = new talent_t ( this, "improved_cower", "improved_cower" );
     talents.bloodthirsty = new talent_t ( this, "bloodthirsty", "bloodthirsty" );
-    talents.spiked_collar = new talent_t ( this, "spiked_collar", "spiked_collar" );
+    talents.spiked_collar         = new talent_t ( this, "spiked_collar", "Spiked Collar" );
     talents.boars_speed = new talent_t ( this, "boars_speed", "boars_speed" );
     talents.culling_the_herd = new talent_t ( this, "culling_the_herd", "culling_the_herd" );
     talents.lionhearted = new talent_t ( this, "lionhearted", "lionhearted" );
@@ -541,6 +534,7 @@ struct ferocity_pet_t : public hunter_pet_t
 
     hunter_pet_t::init_actions();
   }
+
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 };
@@ -2442,7 +2436,6 @@ struct trueshot_aura_t : public hunter_spell_t
   }
 };
 
-
 // hunter_pet_t::create_action =============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
@@ -2501,7 +2494,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
-  if ( name == "cobra_shot"    ) return new    cobra_shot_t( this, options_str );
+  if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

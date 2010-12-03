@@ -43,3 +43,9 @@ actions+=/steady_shot
  trinket2=deathbringers_will
  main_hand=archon_glaive,weapon=polearm_3.50speed_715min_1074max
  ranged=themios_the_darkbringer,weapon=bow_2.90speed_1428min_2653max
+ 
+pet=cat
+#spiked_collar=3
+actions=auto_attack/claw
+active=owner
+ 
