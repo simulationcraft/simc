@@ -34,7 +34,6 @@ struct hunter_t : public player_t
   buff_t* buffs_call_of_the_wild;
   buff_t* buffs_cobra_strikes;
   buff_t* buffs_culling_the_herd;
-  buff_t* buffs_furious_howl;
   buff_t* buffs_improved_steady_shot;
   buff_t* buffs_lock_and_load;
   buff_t* buffs_rapid_fire;
@@ -240,7 +239,6 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_call_of_the_wild;
   buff_t* buffs_culling_the_herd;
   buff_t* buffs_frenzy;
-  buff_t* buffs_furious_howl;
   buff_t* buffs_monstrous_bite;
   buff_t* buffs_owls_focus;
   buff_t* buffs_rabid;
@@ -344,10 +342,9 @@ struct hunter_pet_t : public pet_t
   {
     pet_t::init_buffs();
     buffs_bestial_wrath     = new buff_t( this, "bestial_wrath",     1, 10.0 );
-    buffs_call_of_the_wild  = new buff_t( this, "call_of_the_wild",  1, 10.0 );
+    buffs_call_of_the_wild  = new buff_t( this, 53434, "call_of_the_wild" );
     buffs_culling_the_herd  = new buff_t( this, 70893, "culling_the_herd" );
     buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0, 0.0 );
-    buffs_furious_howl      = new buff_t( this, "furious_howl",      1, 20.0 );
     buffs_monstrous_bite    = new buff_t( this, "monstrous_bite",    3, 12.0 );
     buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, 0 );
     buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
@@ -380,7 +377,6 @@ struct hunter_pet_t : public pet_t
     double ap = player_t::composite_attack_power();
 
     ap += o -> composite_attack_power() * 0.22;
-    ap += buffs_furious_howl -> value();
 
     return ap;
   }
@@ -395,7 +391,7 @@ struct hunter_pet_t : public pet_t
       mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
 
     if ( buffs_call_of_the_wild -> up() )
-      mult *= 1.1;
+      mult *= 1.0 + buffs_call_of_the_wild -> effect_base_value( 1 ) / 100.0;
 
     if ( o -> buffs_tier10_4pc -> up() )
       mult *= 1.2;
@@ -468,7 +464,6 @@ struct ferocity_pet_t : public hunter_pet_t
   ferocity_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     hunter_pet_t( sim,owner,pet_name,pt )
   {
-    pet_type=PET_FEROCITY;
   }
 
   virtual void init_base()
@@ -478,24 +473,24 @@ struct ferocity_pet_t : public hunter_pet_t
 
   virtual void init_talents()
   {
-    talents.serpent_swiftness = new talent_t ( this, "serpent_swiftness", "serpent_swiftness" );
-    talents.dash = new talent_t ( this, "dash", "dash" );
-    talents.great_stamina = new talent_t ( this, "great_stamina", "great_stamina" );
-    talents.natural_armor = new talent_t ( this, "natural_armor", "natural_armor" );
-    talents.improved_cower = new talent_t ( this, "improved_cower", "improved_cower" );
-    talents.bloodthirsty = new talent_t ( this, "bloodthirsty", "bloodthirsty" );
+    talents.serpent_swiftness     = new talent_t ( this, "serpent_swiftness", "Serpent Swiftness" );
+    talents.dash                  = new talent_t ( this, "dash", "Dash" );
+    talents.great_stamina         = new talent_t ( this, "great_stamina", "Great Stamina" );
+    talents.natural_armor         = new talent_t ( this, "natural_armor", "Natural Armor" );
+    talents.improved_cower        = new talent_t ( this, "improved_cower", "Improved Cower" );
+    talents.bloodthirsty          = new talent_t ( this, "bloodthirsty", "Bloodthirsty" );
     talents.spiked_collar         = new talent_t ( this, "spiked_collar", "Spiked Collar" );
-    talents.boars_speed = new talent_t ( this, "boars_speed", "boars_speed" );
-    talents.culling_the_herd = new talent_t ( this, "culling_the_herd", "culling_the_herd" );
-    talents.lionhearted = new talent_t ( this, "lionhearted", "lionhearted" );
-    talents.heart_of_the_phoenix = new talent_t ( this, "heart_of_the_phoenix", "heart_of_the_phoenix" );
-    talents.spiders_bite = new talent_t ( this, "spiders_bite", "spiders_bite" );
-    talents.great_resistance = new talent_t ( this, "great_resistance", "great_resistance" );
-    talents.rabid = new talent_t ( this, "rabid", "rabid" );
-    talents.lick_your_wounds = new talent_t ( this, "lick_your_wounds", "lick_your_wounds" );
-    talents.call_of_the_wild = new talent_t ( this, "call_of_the_wild", "call_of_the_wild" );
-    talents.shark_attack = new talent_t ( this, "shark_attack", "shark_attack" );
-    talents.wild_hunt = new talent_t ( this, "wild_hunt", "wild_hunt" );
+    talents.boars_speed           = new talent_t ( this, "boars_speed", "Boars Speed" );
+    talents.culling_the_herd      = new talent_t ( this, "culling_the_herd", "Culling the Herd" );
+    talents.lionhearted           = new talent_t ( this, "lionhearted", "Lionhearted" );
+    talents.heart_of_the_phoenix  = new talent_t ( this, "heart_of_the_phoenix", "Heart of the Phoenix" );
+    talents.spiders_bite          = new talent_t ( this, "spiders_bite", "Spiders Bite" );
+    talents.great_resistance      = new talent_t ( this, "great_resistance", "Great Resistance" );
+    talents.rabid                 = new talent_t ( this, "rabid", "rabid" );
+    talents.lick_your_wounds      = new talent_t ( this, "lick_your_wounds", "Lick your Wounds" );
+    talents.call_of_the_wild      = new talent_t ( this, "call_of_the_wild", "Call of the Wild" );
+    talents.shark_attack          = new talent_t ( this, "shark_attack", "Shark Attack" );
+    talents.wild_hunt             = new talent_t ( this, "wild_hunt", "Wild Hunt" );
 
 
     hunter_pet_t::init_talents();
@@ -836,11 +831,11 @@ struct hunter_pet_attack_t : public attack_t
     player_multiplier *= 1.0 + p -> buffs_monstrous_bite -> stack() * 0.03;
 
     if ( p -> buffs_culling_the_herd -> up() )
-      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
+      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
 
     if ( ! special )
     {
-      if ( o -> buffs_cobra_strikes -> up() ) player_crit += 1.0;
+      if ( o -> buffs_cobra_strikes -> up() ) player_crit += o -> buffs_cobra_strikes -> effect_base_value( 1 ) / 100.0;
     }
 
     if ( o -> buffs_tier10_2pc -> up() )
@@ -1099,7 +1094,7 @@ struct hunter_pet_spell_t : public spell_t
     if ( p -> buffs_bestial_wrath -> up() ) player_multiplier *= 1.50;
 
     if ( p -> buffs_culling_the_herd -> up() )
-      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
+      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
 
 
     if ( o -> buffs_tier10_2pc -> up() )
@@ -1245,11 +1240,10 @@ struct furious_howl_t : public hunter_pet_spell_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-    double apbonus = 4 * p -> level;
-    o -> buffs_furious_howl -> trigger( 1, apbonus );
-    p -> buffs_furious_howl -> trigger( 1, apbonus );
+    for ( player_t* pl = sim -> player_list; pl; pl = pl -> next )
+    {
+      pl -> buffs.furious_howl -> trigger();
+    }
     hunter_pet_spell_t::execute();
   }
 };
@@ -1339,7 +1333,7 @@ double hunter_attack_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> buffs_beast_within -> up() ) c *= 0.50;
+  if ( p -> buffs_beast_within -> up() ) c *= ( 1.0 + p -> buffs_beast_within -> effect_base_value( 1 ) / 100.0 );
   return c;
 }
 
@@ -1369,10 +1363,9 @@ void hunter_attack_t::player_buff()
   attack_t::player_buff();
 
 
-  hunter_pet_t* pet = p -> active_pet;
-  if ( p -> talents.the_beast_within -> rank() && pet -> buffs_bestial_wrath -> check() )
+  if (  p -> buffs_beast_within -> up() )
   {
-    player_multiplier *= 1.10;
+    player_multiplier *= 1.0 + p -> buffs_beast_within -> effect_base_value( 2 ) / 100.0;
   }
   if ( p -> dots_serpent_sting -> ticking && p -> talents.noxious_stings -> rank() )
   {
@@ -1380,7 +1373,7 @@ void hunter_attack_t::player_buff()
   }
 
   if ( p -> buffs_culling_the_herd -> up() )
-    player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> value() * 0.01 );
+    player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
 
   if ( p -> buffs_tier10_2pc -> up() )
     player_multiplier *= 1.15;
@@ -1594,9 +1587,13 @@ struct black_arrow_t : public hunter_attack_t
     cooldown -> duration -= p -> talents.resourcefulness -> rank() * 2;
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> rank() * 0.10;
+    base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
 
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() ) tick_zero = true;
+
+    base_dd_min=base_dd_max=0;
+    tick_power_mod=extra_coeff();
 
     // Figure out how damage is calculated.
   }
@@ -1747,7 +1744,7 @@ struct explosive_shot_t : public hunter_attack_t
   virtual void update_ready()
   {
     hunter_t* p = player -> cast_hunter();
-    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : 6.0 );
+    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : spell_id_t::cooldown() );
     hunter_attack_t::update_ready();
   }
 
@@ -1885,6 +1882,7 @@ struct serpent_sting_t : public hunter_attack_t
 
     base_crit += p -> glyphs.serpent_sting -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
+    base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
     if ( p -> talents.improved_serpent_sting -> rank() )
     {
@@ -2066,7 +2064,7 @@ double hunter_spell_t::gcd() SC_CONST
 struct aspect_of_the_hawk_t : public hunter_spell_t
 {
   aspect_of_the_hawk_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "aspect_of_the_hawk", player, "Aspect of the Hawk")
+    hunter_spell_t( "aspect_of_the_hawk", player, "Aspect of the Hawk" )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2080,7 +2078,7 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     if ( !p -> active_aspect )
       {
       p -> active_aspect = ASPECT_HAWK;
-      p -> buffs_aspect_of_the_hawk -> trigger( 1, 0 );
+      p -> buffs_aspect_of_the_hawk -> trigger( 1, effect_average( 1 ) * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
       }
     else if ( p -> active_aspect == ASPECT_HAWK )
       {
@@ -2089,73 +2087,14 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
       }
 
   }
-};
-
-// Aspect ==================================================================
-
-struct aspect_t : public hunter_spell_t
-{
-  int    hawk_always;
-  double hawk_bonus;
-
-  aspect_t( player_t* player, const std::string& options_str ) :
-      hunter_spell_t( "aspect", player, SCHOOL_NATURE, TREE_BEAST_MASTERY ),
-      hawk_always( 0 ), hawk_bonus( 0 )
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    option_t options[] =
-    {
-      { "hawk_always",     OPT_BOOL, &hawk_always },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd      = 0.0;
-    harmful          = false;
-    hawk_bonus       = util_t::ability_rank( p -> level, 300,80, 230,74, 155,68,  120,0 );
-    hawk_bonus *= 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0;
-
-  }
-
-  int choose_aspect()
-  {
-    //hunter_t* p = player -> cast_hunter();
-
-    if ( hawk_always ) return ASPECT_HAWK;
-
-    return ASPECT_HAWK;
-  }
-
-  virtual void execute()
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    int aspect = choose_aspect();
-
-    if ( aspect != p -> active_aspect )
-    {
-      if ( aspect == ASPECT_HAWK )
-      {
-        if ( sim -> log ) log_t::output( sim, "%s performs Aspect of the Hawk", p -> name() );
-        p -> active_aspect = ASPECT_HAWK;
-        p -> buffs_aspect_of_the_hawk -> trigger( 1, hawk_bonus );
-      }
-      else
-      {
-        p -> active_aspect = ASPECT_NONE;
-        p -> buffs_aspect_of_the_hawk -> expire();
-      }
-    }
-  }
-
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-
-    return choose_aspect() != p -> active_aspect;
+    if ( p -> active_aspect == ASPECT_HAWK) return false;
+    return hunter_spell_t::ready();
   }
 };
+
 
 // Bestial Wrath =========================================================
 
@@ -2477,7 +2416,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
-  if ( name == "aspect"                ) return new                 aspect_t( this, options_str );
+  if ( name == "aspect_of_the_hawk"    ) return new     aspect_of_the_hawk_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
@@ -2828,24 +2767,24 @@ void hunter_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs_aspect_of_the_hawk          = new buff_t( this, "aspect_of_the_hawk",          1,  0.0 );
-  buffs_beast_within                = new buff_t( this, "beast_within",                1, 10.0,  0.0, talents.the_beast_within -> rank() );
-  buffs_call_of_the_wild            = new buff_t( this, "call_of_the_wild",            1, 10.0 );
-  buffs_cobra_strikes               = new buff_t( this, "cobra_strikes",               2, 10.0,  0.0, talents.cobra_strikes -> rank() * 0.20 );
-  buffs_culling_the_herd            = new buff_t( this, "culling_the_herd",            1, 10.0 );
-  buffs_furious_howl                = new buff_t( this, "furious_howl",                1, 20.0 );
-  buffs_improved_steady_shot        = new buff_t( this, "improved_steady_shot",        1,  8.0,  0.0, talents.improved_steady_shot -> rank() );
-  buffs_lock_and_load               = new buff_t( this, "lock_and_load",               2, 10.0, 22.0, talents.tnt -> effect_base_value( 1 ) / 100.0 );
+  buffs_aspect_of_the_hawk          = new buff_t( this, 13165, "aspect_of_the_hawk" );
+  buffs_beast_within                = new buff_t( this, 34471, "beast_within", talents.the_beast_within -> rank() );
+  buffs_call_of_the_wild            = new buff_t( this, 53434, "call_of_the_wild" );
+  buffs_cobra_strikes               = new buff_t( this, 53257, "cobra_strikes", talents.cobra_strikes -> rank() * 0.20 );
+  buffs_culling_the_herd            = new buff_t( this, 70893, "culling_the_herd" );
+  buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> rank() );
+  buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect_base_value( 1 ) / 100.0 );
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance());
 
-  buffs_rapid_fire                  = new buff_t( this, "rapid_fire",                  1, 15.0 );
+  buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
+  buffs_rapid_fire -> cooldown -> duration = 0;
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2 );
 
   buffs_tier10_2pc                  = new buff_t( this, "tier10_2pc",                  1, 10.0,  0.0, ( set_bonus.tier10_2pc_melee() ? 0.05 : 0 ) );
   buffs_tier10_4pc                  = new buff_t( this, "tier10_4pc",                  1, 10.0,  0.0, ( set_bonus.tier10_4pc_melee() ? 0.05 : 0 ) );
 
   // Own TSA for Glyph of TSA
-  buffs_trueshot_aura               = new buff_t( this, "trueshot_aura");
+  buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
 }
 
 // hunter_t::init_gains ======================================================
@@ -3004,14 +2943,14 @@ void hunter_t::init_actions()
       {
         action_list_str += "/kill_command";
       }
-      action_list_str += "/aspect";
+      action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/rapid_fire";
       action_list_str += "/kill_shot";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/steady_shot";
       break;
     case TREE_MARKSMANSHIP:
-      action_list_str += "/aspect";
+      action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
       //action_list_str += "/kill_command";
@@ -3024,11 +2963,10 @@ void hunter_t::init_actions()
 
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=40&buff.improved_steady_shot.up";
-      //action_list_str += "/aimed_shot,if=focus>=80&buff.improved_steady_shot.up";
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:
-      action_list_str += "/aspect";
+      action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/rapid_fire";
       action_list_str += "/kill_shot";
       if ( talents.lock_and_load -> rank() )
@@ -3038,16 +2976,14 @@ void hunter_t::init_actions()
       }
       else if ( talents.lock_and_load -> rank() == 0 )
       {
-        action_list_str += "/explosive_shot&!ticking";
+        action_list_str += "/explosive_shot,if=!ticking";
       }
-      if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow";
+      if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
       action_list_str += "/serpent_sting,if=!ticking";
-      action_list_str += "/multi_shot";
-      action_list_str += "/arcane_shot,if=focus>=40";
       if ( level >=81 )
-        action_list_str += "/cobra_shot";
-      else
-        action_list_str += "/steady_shot";
+        action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<=8";
+      action_list_str += "/arcane_shot,if=focus>=40|buff.lock_and_load.remains<gcd";
+      action_list_str += "/steady_shot";
       break;
     default: break;
     }
@@ -3097,8 +3033,6 @@ double hunter_t::composite_attack_power() SC_CONST
 
   ap += buffs_aspect_of_the_hawk -> value();
 
-  ap += buffs_furious_howl -> value();
-
   if ( passive_spells.animal_handler -> ok() )
   {
     ap *= 1.15;
@@ -3119,7 +3053,7 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
   }
   if ( buffs_call_of_the_wild -> up() )
   {
-    mult *= 1.1;
+    mult *= 1.0 + buffs_call_of_the_wild -> effect_base_value( 1 ) / 100.0;
   }
 
   return mult;

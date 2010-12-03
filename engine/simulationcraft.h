@@ -2976,6 +2976,7 @@ struct player_t
     buff_t* tolvir_potion;
     buff_t* wild_magic_potion_sp;
     buff_t* wild_magic_potion_crit;
+    buff_t* furious_howl;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;

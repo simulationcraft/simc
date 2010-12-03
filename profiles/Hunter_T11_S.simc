@@ -15,7 +15,7 @@ actions+=/summon_pet
 actions+=/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_shot
 actions+=/snapshot_stats
-actions+=/aspect
+actions+=/aspect_of_the_hawk
 actions+=/rapid_fire
 actions+=/kill_shot
 actions+=/explosive_shot,if=buff.lock_and_load.react&!ticking
@@ -23,7 +23,7 @@ actions+=/explosive_shot,if=!buff.lock_and_load.up&!ticking
 actions+=/black_arrow,if=!ticking
 actions+=/serpent_sting,if=!ticking
 actions+=/cobra_shot,if=dot.serpent_sting.remains<=8
-actions+=/arcane_shot,if=focus>=50
+actions+=/arcane_shot,if=focus>=40
 actions+=/steady_shot
 # Gear Summary
  gear_strength=20

@@ -1312,6 +1312,8 @@ void player_t::init_buffs()
   buffs.strength_of_wrynn    = new buff_t( this, "strength_of_wrynn",   1       );
   buffs.dark_intent          = new buff_t( this, 85767, "dark_intent" );
   buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
+  buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
+
 
 
   // Infinite-Stacking Buffs
@@ -1654,7 +1656,8 @@ double player_t::composite_attack_crit() SC_CONST
     if ( sim -> auras.leader_of_the_pack -> check() 
       || sim -> auras.honor_among_thieves -> check() 
       || sim -> auras.elemental_oath -> check()
-      || sim -> auras.rampage -> check() )
+      || sim -> auras.rampage -> check()
+      || buffs.furious_howl -> check() )
     {
       ac += 0.05;
     }
@@ -2016,7 +2019,8 @@ double player_t::composite_spell_crit() SC_CONST
     if ( sim -> auras.leader_of_the_pack -> check() 
       || sim -> auras.honor_among_thieves -> check() 
       || sim -> auras.elemental_oath -> check()
-      || sim -> auras.rampage -> check() )
+      || sim -> auras.rampage -> check()
+      || buffs.furious_howl -> check() )
     {
       sc += 0.05;
     }
