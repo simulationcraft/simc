@@ -1076,7 +1076,7 @@ static void print_html_stats (FILE* file, player_t* a )
   util_t::fprintf( file, " <tr> <th>Melee Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_hit,         100 * a -> composite_attack_hit(),         a -> stats.hit_rating );
   util_t::fprintf( file, " <tr> <th>Melee Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_crit,        100 * a -> composite_attack_crit(),        a -> stats.crit_rating );
   util_t::fprintf( file, " <tr> <th>Melee Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / a -> buffed_attack_haste - 1 ), 100 * ( 1 / a -> attack_haste - 1 ), a -> stats.haste_rating );
-  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_expertise,   100 * a -> composite_attack_expertise(),   a -> stats.expertise_rating );
+  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f</td> <td>%.2f</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_expertise,   100 * a -> composite_attack_expertise(),   a -> stats.expertise_rating );
 
   util_t::fprintf( file, " <tr> <th>Armor</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_armor,       a -> composite_armor(), ( a -> stats.armor + a -> stats.bonus_armor ) );
   util_t::fprintf( file, " <tr> <th>Block Value</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_block_value, a -> composite_block_value(), a -> stats.block_value );
@@ -1687,7 +1687,7 @@ static void print_html2_stats (FILE* file, player_t* a )
   util_t::fprintf( file, " <tr> <th>Melee Hit</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_hit,         100 * a -> composite_attack_hit(),         a -> stats.hit_rating );
   util_t::fprintf( file, " <tr> <th>Melee Crit</th>        <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_crit,        100 * a -> composite_attack_crit(),        a -> stats.crit_rating );
   util_t::fprintf( file, " <tr> <th>Melee Haste</th>       <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * ( 1 / a -> buffed_attack_haste - 1 ), 100 * ( 1 / a -> attack_haste - 1 ), a -> stats.haste_rating );
-  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f%%</td> <td>%.2f%%</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_expertise,   100 * a -> composite_attack_expertise(),   a -> stats.expertise_rating );
+  util_t::fprintf( file, " <tr> <th>Expertise</th>         <td>%.2f</td> <td>%.2f</td> <td>%.0f</td> </tr>\n", 100 * a -> buffed_attack_expertise,   100 * a -> composite_attack_expertise(),   a -> stats.expertise_rating );
 
   util_t::fprintf( file, " <tr> <th>Armor</th>       <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_armor,       a -> composite_armor(), ( a -> stats.armor + a -> stats.bonus_armor ) );
   util_t::fprintf( file, " <tr> <th>Block Value</th> <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",     a -> buffed_block_value, a -> composite_block_value(), a -> stats.block_value );
@@ -2585,7 +2585,7 @@ static void print_wiki_player( FILE* file, player_t* p )
   util_t::fprintf( file, "|| *Melee Hit*         || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating );
   util_t::fprintf( file, "|| *Melee Crit*        || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating );
   util_t::fprintf( file, "|| *Melee Haste*       || %.2f%% || %.2f%% || %.0f ||\n", 100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> attack_haste - 1 ), p -> stats.haste_rating );
-  util_t::fprintf( file, "|| *Expertise*         || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating );
+  util_t::fprintf( file, "|| *Expertise*         || %.2f || %.2f || %.0f ||\n", 100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating );
 
   util_t::fprintf( file, "|| *Armor*       || %.0f || %.0f || %.0f ||\n",     p -> buffed_armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ) );
   util_t::fprintf( file, "|| *Block Value* || %.0f || %.0f || %.0f ||\n",     p -> buffed_block_value, p -> composite_block_value(), p -> stats.block_value );

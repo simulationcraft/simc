@@ -211,6 +211,7 @@ struct paladin_t : public player_t
   virtual void      reset();
   virtual void      interrupt();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    composite_attack_expertise() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -434,10 +435,6 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
     attack_t::player_buff();
-    if ( p -> active_seal == SEAL_OF_TRUTH && p -> glyphs.seal_of_truth )
-    {
-      player_expertise += 0.10;
-    }
     if ( p -> buffs_avenging_wrath -> up() ) 
     {
       player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.avenging_wrath->effect_id(1));
@@ -2365,6 +2362,18 @@ talent_tab_name paladin_t::primary_tab() SC_CONST
     return PALADIN_RETRIBUTION;
   else
     return TALENT_TAB_NONE;
+}
+
+// paladin_t::composite_attack_expertise =================================
+
+double paladin_t::composite_attack_expertise() SC_CONST
+{
+  double m = player_t::composite_attack_expertise();
+  if ( active_seal == SEAL_OF_TRUTH && glyphs.seal_of_truth )
+  {
+    m += 0.10;
+  }
+  return m;
 }
 
 // paladin_t::composite_attribute_multiplier =================================
