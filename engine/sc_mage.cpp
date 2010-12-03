@@ -734,9 +734,8 @@ static void trigger_hot_streak( mage_spell_t* s )
 
     double hot_streak_chance = -1.7106 * s -> hot_streak_crit() + 0.7893;
 
-    if( hot_streak_chance > 0 && sim -> rng -> roll( hot_streak_chance ) )
+    if( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
     {
-      p -> buffs_hot_streak -> trigger();
       p -> buffs_hot_streak_crits -> expire();
     }
     else if( p -> talents.improved_hot_streak -> rank() )
@@ -749,10 +748,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 
         hot_streak_chance = p -> talents.improved_hot_streak -> effect_base_value( 1 ) / 100.0;
 
-	if( sim -> rng -> roll( hot_streak_chance ) )
-        {
-	  p -> buffs_hot_streak -> trigger();
-	}
+	p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance );
       }
     }
   }
@@ -2379,7 +2375,6 @@ struct scorch_t : public mage_spell_t
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
     }
-    trigger_hot_streak( this );
   }
 
   virtual bool ready()
@@ -2906,7 +2901,7 @@ void mage_t::init_buffs()
   buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost -> effect_trigger_spell( 1 ), "fingers_of_frost", talents.fingers_of_frost -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL ) / 100.0 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
-  buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0, talents.improved_hot_streak -> effect_base_value( 1 ) / 100 );
+  buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0 );
   buffs_icy_veins            = new buff_t( this, talents.icy_veins -> spell_id(), "icy_veins" );
   buffs_improved_mana_gem    = new buff_t( this, "improved_mana_gem",    1, 10.0, 0, talents.improved_mana_gem -> rank() );
   buffs_invocation           = new buff_t( this, talents.invocation -> effect_trigger_spell( 1 ), "invocation" );

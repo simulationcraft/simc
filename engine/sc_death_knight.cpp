@@ -750,7 +750,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   int drw_diseases()
   {
     int drw_disease_count = 0;
-    //if ( sim -> target -> debuffs.ebon_plaguebringer -> source == owner ) drw_disease_count++;
     if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
     if ( dots_drw_frost_fever  -> ticking ) drw_disease_count++;
     return drw_disease_count;
