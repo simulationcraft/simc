@@ -12,7 +12,7 @@ actions+=/food,type=beer_basted_crocolisk
 actions+=/presence,choose=unholy
 actions+=/army_of_the_dead
 actions+=/snapshot_stats
-actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
+actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/pillar_of_frost
 actions+=/howling_blast,if=buff.rime.react

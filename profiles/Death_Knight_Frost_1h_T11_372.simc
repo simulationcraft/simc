@@ -12,7 +12,7 @@ actions+=/food,type=beer_basted_crocolisk
 actions+=/presence,choose=frost
 actions+=/army_of_the_dead
 actions+=/snapshot_stats
-actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
+actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/pillar_of_frost
 actions+=/howling_blast,if=buff.rime.react
@@ -32,7 +32,7 @@ shoulders=magma_plated_pauldrons,heroic=1,type=plate,stats=266str_429sta_191hast
 chest=magma_plated_battleplate,heroic=1,type=plate,stats=345str_578sta_257crit_217haste_3559armor,gems=67str_20str_20hit_20str,enchant=10str_10agi_10sta_10int_10spi
 waist=belt_of_absolute_zero,heroic=1,type=plate,stats=266str_429sta_191crit_171hit_2002armor,gems=67str_40str_10hit
 legs=magma_plated_legplates,heroic=1,type=plate,stats=345str_578sta_257mastery_217hit_3114armor,gems=40str_40str,enchant=190ap_55crit
-feet=massacre_treads,heroic=1,type=plate,stats=266str_429sta_171exp_191mastery_2447armor,gems=20str_20hit_10str,enchant=35mastery,reforge=exp_haste
+feet=massacre_treads,heroic=1,type=plate,stats=266str_429sta_171exp_191mastery_2447armor,reforge=exp_haste,gems=20str_20hit_10str,enchant=35mastery
 wrists=electron_inductor_coils,heroic=1,type=plate,stats=215str_322sta_143haste_143hit_1557armor,gems=40str,enchant=50exp
 hands=magma_plated_gauntlets,heroic=1,type=plate,stats=266str_429sta_191haste_171mastery_2224armor,gems=20str_20hit_40str_10str,enchant=50str
 finger1=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery

@@ -4274,7 +4274,7 @@ void death_knight_t::init_actions()
         action_list_str += "/howling_blast,if=buff.rime.react";
       action_list_str += "/raise_dead,time>=5";
       if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.ticking<=2|dot.blood_plague.ticking<=2";
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/howling_blast,if=dot.frost_fever.remains<=2";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
       action_list_str += "/obliterate";
@@ -4286,20 +4286,14 @@ void death_knight_t::init_actions()
       break;
     case TREE_UNHOLY:
       action_list_str += "/raise_dead";
-      if ( talents.bladed_armor -> rank() > 0 )
-      {
-        action_list_str += "/earthen_potion,if=!in_combat";
-        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      }
-      else
-      {
-        action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-      }
+      action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.unholy_frenzy -> rank() )
         action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
+#if 0
       if ( level > 81 )
         action_list_str += "/outbreak,if=dot.frost_fever.ticking<3|dot.blood_plague.ticking<3";
+#endif
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       if ( talents.dark_transformation -> rank() )
@@ -4318,8 +4312,8 @@ void death_knight_t::init_actions()
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
       action_list_str += "/death_coil";
-      action_list_str += "/blood_tap,if=frost=0&unholy=0&blood=1&inactive_death=1";
-      action_list_str += "/empower_rune_weapon,if=blood=0&frost=0&unholy=0";
+      action_list_str += "/blood_tap,if=unholy=0&inactive_death=1";
+      action_list_str += "/empower_rune_weapon,if=unholy=0";
       action_list_str += "/horn_of_winter";
       break;
     default: break;
