@@ -685,13 +685,13 @@ void enchant_t::init( player_t* p )
   }
   if ( mh_enchant == "landslide" )
   {
-    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff ) );
+    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "landslide" )
   {
-    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
+    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "mongoose" )
   {
