@@ -24,6 +24,7 @@
 #define TAB_RAWR       2
 #define TAB_BIS        3
 #define TAB_HISTORY    4
+#define TAB_CUSTOM     5
 
 #define HISTORY_VERSION "4.0"
 
@@ -100,9 +101,12 @@ public:
     SimulationCraftWebView* wowheadView;
     SimulationCraftWebView* visibleWebView;
     QPushButton* rawrButton;
+    QPushButton* customButton;
     QLabel* rawrDir;
+    QLabel* customDir;
     QByteArray rawrDialogState;
     QListWidget* rawrList;
+    QListWidget* customList;
     QListWidget* historyList;
     QTreeWidget* bisTree;
     SimulationCraftTextEdit* simulateText;
@@ -165,6 +169,7 @@ public:
     void createImportTab();
     void createRawrTab();
     void createBestInSlotTab();
+    void createCustomTab();
     void createSimulateTab();
     void createOverridesTab();
     void createExamplesTab();

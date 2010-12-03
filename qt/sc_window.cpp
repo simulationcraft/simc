@@ -408,7 +408,7 @@ void SimulationCraftWindow::createCmdLine()
 
 void SimulationCraftWindow::createWelcomeTab()
 {
-  QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html was unable to load.</div>";
+  QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html & Welcome.png was unable to load.</div>";
   QString welcomeFile = "Welcome.html";
 #ifdef Q_WS_MAC
 	CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
@@ -585,6 +585,8 @@ void SimulationCraftWindow::createImportTab()
   connect( rawrList,    SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(   rawrDoubleClicked(QListWidgetItem*)) );
   connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
   connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
+
+  createCustomTab();
 }
 
 void SimulationCraftWindow::createRawrTab()
@@ -708,6 +710,21 @@ void SimulationCraftWindow::createBestInSlotTab()
   bisTree->setColumnWidth( 0, 300 );
 
   connect( bisTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(bisDoubleClicked(QTreeWidgetItem*,int)) );
+}
+
+void SimulationCraftWindow::createCustomTab()
+{
+  QVBoxLayout* customLayout = new QVBoxLayout();
+  QLabel* customLabel = new QLabel( "Reserved : Custom Character Profiler Page" );
+  customLabel->setWordWrap( true );
+  customLayout->addWidget( customLabel );
+  //(Removed)customLayout->addWidget( customButton = new QPushButton( "Change Directory" ) );
+  //To Be Done : Add Load & Save Character buttons
+  customLayout->addWidget( customDir = new QLabel( "Reserved : Character/File Name" ) );
+  customLayout->addWidget( customList = new QListWidget(), 1 );
+  QGroupBox* customGroupBox = new QGroupBox();
+  customGroupBox->setLayout( customLayout );
+  importTab->addTab( customGroupBox, "Custom Profile" );
 }
 
 void SimulationCraftWindow::createSimulateTab()
@@ -1442,6 +1459,7 @@ void SimulationCraftWindow::importTabChanged( int index )
 {
   if( index == TAB_RAWR ||
       index == TAB_BIS  ||
+      index == TAB_CUSTOM  ||
       index == TAB_HISTORY )
   {
     visibleWebView = 0;
