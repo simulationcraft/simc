@@ -2191,17 +2191,24 @@ void paladin_t::init_actions()
     case TREE_RETRIBUTION: {
       if ( level > 80 )
       {
-        action_list_str = "flask,type=titanic_strength/food,type=beer_basted_crocolisk";
-        action_list_str += "/golem_blood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/flask,type=titanic_strength/food,type=beer_basted_crocolisk";
       }
       else
       {
-        action_list_str = "flask,type=endless_rage/food,type=dragonfin_filet";
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/flask,type=endless_rage/food,type=dragonfin_filet";
       }
       action_list_str += "/seal_of_truth";
       action_list_str += "/snapshot_stats";
       // TODO: action_list_str += "/rebuke";
+
+      if ( level > 80 )
+      {
+        action_list_str += "/golem_blood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
+      }
+      else
+      {
+        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      }
 
       // This should<tm> get Censure up before the auto attack lands
       action_list_str += "/auto_attack/judgement,if=buff.judgements_of_the_pure.down";
