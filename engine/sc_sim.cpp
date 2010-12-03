@@ -1833,6 +1833,13 @@ bool sim_t::parse_options( int    _argc,
       return false;
   }
 
+  if ( player_list == NULL )
+  {
+    errorf( "Nothing to sim!\n" );
+    cancel();
+    return false;
+  }
+
   if ( parent )
   {
     debug = 0;
@@ -1849,6 +1856,7 @@ bool sim_t::parse_options( int    _argc,
     {
       errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
       cancel();
+      return false;
     }
   }
   if ( ! log_file_str.empty() )
@@ -1858,6 +1866,7 @@ bool sim_t::parse_options( int    _argc,
     {
       errorf( "Unable to open combat log file '%s'\n", log_file_str.c_str() );
       cancel();
+      return false;
     }
     log = 1;
   }
@@ -1867,12 +1876,14 @@ bool sim_t::parse_options( int    _argc,
     {
       errorf( "Cannot log to CSV file with multiple threads.\n" );
       cancel();
+      return false;
     }
     csv_file = fopen( csv_file_str.c_str(), "w" );
     if ( ! csv_file )
     {
       errorf( "Unable to open CSV log file '%s'\n", csv_file_str.c_str() );
       cancel();
+      return false;
     }
     fprintf( csv_file, "Iteration;Source;Action;Target;Result;School;Value\n" );
   }
