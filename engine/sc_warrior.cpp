@@ -3088,14 +3088,18 @@ void warrior_t::init_actions()
       action_list_str += "/whirlwind,if=target.adds>0";      
       if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/execute";
-      if ( talents.raging_blow -> ok() )
+      if ( talents.titans_grip -> ok() && talents.raging_blow -> ok() )
       {
-        // This should be after BT and Slam for SMF... probably.
         action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
         action_list_str += "/raging_blow";
       }
       action_list_str += "/bloodthirst";
       action_list_str += "/slam,if=buff.bloodsurge.react";
+      if ( ! talents.titans_grip -> ok() && talents.raging_blow -> ok() )
+      {
+        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+        action_list_str += "/raging_blow";
+      }
       action_list_str += "/battle_shout,if=rage<30";
       if (! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) 
         action_list_str += "/berserker_rage";

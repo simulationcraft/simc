@@ -10,12 +10,12 @@ actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/stance,choose=battle,if=!in_combat
 actions+=/snapshot_stats
-actions+=/golemblood_potion,if=buff.bloodlust.react|!in_combat
+actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
-actions+=/deadly_calm,if=rage<=10
+actions+=/deadly_calm,if=rage<10
 actions+=/sweeping_strikes,if=target.adds>0
 actions+=/berserker_rage
-actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up
+actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up
 actions+=/cleave,if=target.adds>0
 actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up|buff.incite.up)
 actions+=/overpower,if=buff.taste_for_blood.remains<1.5
@@ -58,8 +58,3 @@ ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste
 # meta_gem=enigmatic_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=mace2h_3.80speed_1872min_3476max,enchant=landslide
-
-#neck=gift_of_nadun,stats=190str_286sta_127haste_127crit,reforge=haste_hit
-#hands=earthen_gauntlets,heroic=1,stats=2224armor_266str_429sta_191haste_171mastery,gems=20str_20hit_10str,enchant=50str
-#off_hand=shalugdoom_the_axe_of_unmaking,heroic=1,stats=385str_578sta_257crit_257exp,weapon=axe2h_3.60speed_1773min_3293max,enchant=landslide
