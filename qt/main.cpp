@@ -17,16 +17,22 @@ int main(int argc, char *argv[])
   QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
 
 #endif
-        
-        SimulationCraftWindow w;
-
   
-  if(updater)
+  SimulationCraftWindow w;
+  
+  if( updater)
   {
-     updater->checkForUpdates();
+    updater->checkForUpdates();
   }
-  
-  w.showMaximized();
+
+  if( w.historyWidth  != 0 &&
+      w.historyHeight != 0 )
+  {
+    w.resize( w.historyWidth, w.historyHeight );
+    w.show();
+  }
+  else w.showMaximized();
+
   w.cmdLine->setFocus();
 
   if( argc > 1 )

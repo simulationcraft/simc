@@ -282,6 +282,8 @@ void SimulationCraftWindow::loadHistory()
     QString historyVersion;
     in >> historyVersion;
     if( historyVersion != HISTORY_VERSION ) return;
+    in >> historyWidth;
+    in >> historyHeight;
     QStringList importHistory;
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
@@ -296,7 +298,6 @@ void SimulationCraftWindow::loadHistory()
     for( int i=0; i < count; i++ )
     {
       QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
-      //item->setFont( QFont( "fixed" ) );
       historyList->addItem( item );
     }
 
@@ -324,6 +325,8 @@ void SimulationCraftWindow::saveHistory()
 
     QDataStream out( &file );
     out << QString( HISTORY_VERSION );
+    out << (qint32) width();
+    out << (qint32) height();
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
@@ -340,7 +343,8 @@ void SimulationCraftWindow::saveHistory()
 // ==========================================================================
 
 SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
-  : QWidget(parent), visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
+  : QWidget(parent), historyWidth(0), historyHeight(0), 
+    visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
   cmdLineText = "";
 #ifndef Q_WS_MAC
@@ -570,10 +574,6 @@ void SimulationCraftWindow::createImportTab()
   armoryView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab->addTab( armoryView, "Armory" );
 
-  wowheadView = new SimulationCraftWebView( this );
-  wowheadView->setUrl( QUrl( "http://www.wowhead.com/profiles" ) );
-  importTab->addTab( wowheadView, "Wowhead" );
-  
   createRawrTab();
   createBestInSlotTab();
 
@@ -586,7 +586,8 @@ void SimulationCraftWindow::createImportTab()
   connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
   connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
 
-  createCustomTab();
+  // Commenting out until it is more fleshed out.
+  // createCustomTab();
 }
 
 void SimulationCraftWindow::createRawrTab()
@@ -611,100 +612,54 @@ void SimulationCraftWindow::createRawrTab()
 
 void SimulationCraftWindow::createBestInSlotTab()
 {
-  QStringList headerLabels( "Player Class" ); headerLabels += QString( "URL" );
+  QStringList headerLabels( "Player Class" ); headerLabels += QString( "Profile" );
 
   bisTree = new QTreeWidget();
-  bisTree->setColumnCount( 2 );
+  bisTree->setColumnCount( 1 );
   bisTree->setHeaderLabels( headerLabels );
   importTab->addTab( bisTree, "BiS" );
 
-  const int T10=0, T11=1, TMAX=2;
-  const char* TNAMES[] = { "T10", "T11" };
-  QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TMAX ];
+  const int TIER_MAX=2;
+  const char* tierNames[] = { "Blue", "T11" };
+  QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
     QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
-    //top->setFont( 0, QFont( "fixed" ) );
     bisTree->addTopLevelItem( top );
-    for( int j=0; j < TMAX; j++ )
+    for( int j=0; j < TIER_MAX; j++ )
     {
-      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( TNAMES[ j ] ) ) );
-      //rootItems[ i ][ j ]->setFont( 0, QFont( "fixed" ) );
+      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
     }
   }
+  
+  QDir dir = "profiles";
+  dir.setSorting( QDir::Name );
+  dir.setFilter( QDir::Files );
+  dir.setNameFilters( QStringList( "*.simc" ) );
+  bisProfilePath = dir.absolutePath() + "/";
+  bisProfilePath = QDir::toNativeSeparators( bisProfilePath );
 
-  struct bis_entry_t { int type; int tier; const char* name; int site; const char* id; };
-
-  bis_entry_t bisList[] = 
-    {
-      /*
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20",     TAB_WOWHEAD, "21203256" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20_GoD", TAB_WOWHEAD, "21203314" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_53_18",     TAB_WOWHEAD, "21203260" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_14_00_57",     TAB_WOWHEAD, "21203277" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_17_54",     TAB_WOWHEAD, "21203280" },
-
-      { DRUID,     T10, "Druid_T10_00_55_16",               TAB_WOWHEAD, "21284121" },
-      { DRUID,     T10, "Druid_T10_00_55_16_M",             TAB_WOWHEAD, "21284118" },
-      { DRUID,     T10, "Druid_T10_58_00_13",               TAB_WOWHEAD, "21284122" },
-
-      { HUNTER,    T10, "Hunter_T10_53_14_04",              TAB_WOWHEAD, "21284132" },
-      { HUNTER,    T10, "Hunter_T10_07_57_07",              TAB_WOWHEAD, "21284133" },
-      { HUNTER,    T10, "Hunter_T10_07_57_07_HM",           TAB_WOWHEAD, "21284135" },
-      { HUNTER,    T10, "Hunter_T10_06_14_51",              TAB_WOWHEAD, "21284137" },
-      { HUNTER,    T10, "Hunter_T10_03_15_53_HP",           TAB_WOWHEAD, "21284138" },
-
-      { MAGE,      T10, "Mage_T10_00_53_18",                TAB_WOWHEAD, "21284296" },
-      { MAGE,      T10, "Mage_T10_18_00_53",                TAB_WOWHEAD, "21284292" },
-      { MAGE,      T10, "Mage_T10_20_51_00",                TAB_WOWHEAD, "21284285" },
-      { MAGE,      T10, "Mage_T10_57_03_11",                TAB_WOWHEAD, "21284284" },
-
-      { PALADIN,   T10, "Paladin_T10_05_11_55",             TAB_WOWHEAD, "16266770" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_H",           TAB_WOWHEAD, "20977380" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_N",           TAB_WOWHEAD, "20966865" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_HA",          TAB_WOWHEAD, "20980773" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_HAA",         TAB_WOWHEAD, "20983668" },
-
-      { PRIEST,    T10, "Priest_T10_13_00_58_264",          TAB_WOWHEAD, "18052647" },
-      { PRIEST,    T10, "Priest_T10_13_00_58_277",          TAB_WOWHEAD, "20704178" },
-
-      { ROGUE,     T10, "Rogue_T10_20_51_00",               TAB_WOWHEAD, "21162773" },
-      { ROGUE,     T10, "Rogue_T10_51_18_02",               TAB_WOWHEAD, "21162321" },
-      { ROGUE,     T10, "Rogue_T10_51_18_02_R",             TAB_WOWHEAD, "21162335" },
-
-      { SHAMAN,    T10, "Shaman_T10_19_52_00",              TAB_WOWHEAD, "20837779" },
-      { SHAMAN,    T10, "Shaman_T10_57_14_00",              TAB_WOWHEAD, "20837754" },
-      { SHAMAN,    T10, "Shaman_T10_57_14_00_ToW",          TAB_WOWHEAD, "20837752" },
-
-      { WARLOCK,   T10, "Warlock_T10_00_13_58",             TAB_WOWHEAD, "20850049" },
-      { WARLOCK,   T10, "Warlock_T10_00_18_53",             TAB_WOWHEAD, "20983226" },
-      { WARLOCK,   T10, "Warlock_T10_55_00_16",             TAB_WOWHEAD, "20850045" },
-      { WARLOCK,   T10, "Warlock_T10_56_00_15",             TAB_WOWHEAD, "20983156" },
-      { WARLOCK,   T10, "Warlock_T10_00_56_15",             TAB_WOWHEAD, "20983242" },
-
-      { WARRIOR,   T10, "Warrior_T10_19_52_00_277",         TAB_WOWHEAD, "21169162" },
-      { WARRIOR,   T10, "Warrior_T10_55_08_08_277",         TAB_WOWHEAD, "21169165" },
-      { WARRIOR,   T10, "Warrior_T10_19_52_00_264",         TAB_WOWHEAD, "21169160" },
-      */
-
-      { PLAYER_NONE, TMAX, NULL, -1, NULL }
-    };
-
-  for( int i=0; bisList[ i ].type != PLAYER_NONE; i++ )
+  QStringList profileList = dir.entryList();
+  int numProfiles = profileList.count();
+  for( int i=0; i < numProfiles; i++ )
   {
-    bis_entry_t& b = bisList[ i ];
-    QString url = "";
-    switch( b.site )
+    QString& profile = profileList[ i ];
+
+    int player = PLAYER_MAX;
+    for( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
+      if( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
+	player = j;
+
+    int tier = TIER_MAX;
+    for( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
+      if( profile.contains( tierNames[ j ] ) )
+	tier = j;
+
+    if( player != PLAYER_MAX && tier != TIER_MAX )
     {
-    case TAB_WOWHEAD: url += "http://www.wowhead.com/profile="; break;
-    default: assert(0);
+      QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( profile ) );
+      rootItems[ player ][ tier ]->addChild( item );
     }
-    url += b.id;
-    QStringList labels = QStringList( b.name ); labels += url;
-    QTreeWidgetItem* item = new QTreeWidgetItem( labels );
-    //item->setFont( 0, QFont( "fixed" ) );
-    //item->setFont( 1, QFont( "fixed" ) );
-    rootItems[ b.type ][ b.tier ]->addChild( item );
   }
 
   bisTree->setColumnWidth( 0, 300 );
@@ -731,7 +686,6 @@ void SimulationCraftWindow::createSimulateTab()
 {
   simulateText = new SimulationCraftTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  //simulateText->document()->setDefaultFont( QFont( "fixed" ) );
   simulateText->setPlainText( defaultSimulateText() );
   mainTab->addTab( simulateText, "Simulate" );
 }
@@ -922,38 +876,6 @@ void ImportThread::importArmory()
   }
 }
 
-void ImportThread::importWowhead()
-{
-  QString id;
-  QStringList tokens = url.split( QRegExp( "[/?&=]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
-  {
-    if( tokens[ i ] == "profile" )
-    {
-      id = tokens[ i+1 ];
-      break;
-    }
-  }
-  if( id.isEmpty() )
-  {
-    fprintf( sim->output_file, "Import from Wowhead requires use of Profiler!\n" );
-  }
-  else
-  {
-    tokens = id.split( '.', QString::SkipEmptyParts );
-    count = tokens.count();
-    if( count == 1 )
-    {
-      player = wowhead_t::download_player( sim, id.toStdString() );
-    }
-    else if( count == 3 )
-    {
-      player = wowhead_t::download_player( sim, tokens[ 0 ].toStdString(), tokens[ 1 ].toStdString(), tokens[ 2 ].toStdString() ); 
-    }
-  }
-}
-
 void ImportThread::importRawr()
 {
   player = rawr_t::load_player( sim, url.toStdString() );
@@ -964,7 +886,6 @@ void ImportThread::run()
   switch( tab )
   {
   case TAB_ARMORY:     importArmory();     break;
-  case TAB_WOWHEAD:    importWowhead();    break;
   case TAB_RAWR:       importRawr();       break;
   default: assert(0);
   }
@@ -1274,7 +1195,6 @@ void SimulationCraftWindow::closeEvent( QCloseEvent* e )
 { 
   saveHistory();
   armoryView->stop();
-  wowheadView->stop();
   QCoreApplication::quit();
   e->accept();
 }
@@ -1303,11 +1223,6 @@ void SimulationCraftWindow::cmdLineReturnPressed()
       armoryView->setUrl( QUrl( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_ARMORY );
     }
-    else if( cmdLine->text().count( "wowhead" ) )
-    {
-      wowheadView->setUrl( QUrl( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_WOWHEAD );
-    }
     else
     {
       if( ! sim ) mainButtonClicked( true );
@@ -1333,7 +1248,6 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
     switch( importTab->currentIndex() )
     {
     case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
-    case TAB_WOWHEAD:    startImport( TAB_WOWHEAD,    cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
     break;
@@ -1529,11 +1443,6 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
     armoryView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_ARMORY );
   }
-  else if( url.count( ".wowhead." ) )
-  {
-    wowheadView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
-    importTab->setCurrentIndex( TAB_WOWHEAD );
-  }
   else
   {
     importTab->setCurrentIndex( TAB_RAWR );
@@ -1544,20 +1453,21 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
 {
   col=0;
 
-  if( item->columnCount() == 1 ) return;
+  QString profile = item->text( 0 );
 
-  QString url = item->text( 1 );
+  QString s = "Unable to import profile "; s += profile;
+  
+  QFile file( bisProfilePath + profile );
+  if( file.open( QIODevice::ReadOnly ) )
+  {
+    s = file.readAll();
+    file.close();
+  }
 
-  if( url.count( ".battle.net" ) )
-  {
-    armoryView->setUrl( url );
-    importTab->setCurrentIndex( TAB_ARMORY );
-  }
-  else if( url.count( ".wowhead." ) )
-  {
-    wowheadView->setUrl( url );
-    importTab->setCurrentIndex( TAB_WOWHEAD );
-  }
+  simulateText->setPlainText( s );
+  simulateTextHistory.add( s );
+  mainTab->setCurrentIndex( TAB_SIMULATE );
+  simulateText->setFocus();
 }
 
 void SimulationCraftWindow::allBuffsChanged( bool checked )

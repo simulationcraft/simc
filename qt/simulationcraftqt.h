@@ -20,13 +20,12 @@
 #define TAB_RESULTS   7
 
 #define TAB_ARMORY     0
-#define TAB_WOWHEAD    1
-#define TAB_RAWR       2
-#define TAB_BIS        3
-#define TAB_HISTORY    4
-#define TAB_CUSTOM     5
+#define TAB_RAWR       1
+#define TAB_BIS        2
+#define TAB_HISTORY    3
+#define TAB_CUSTOM     4
 
-#define HISTORY_VERSION "4.0"
+#define HISTORY_VERSION "4.3"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -77,6 +76,7 @@ class SimulationCraftWindow : public QWidget
     Q_OBJECT
 
 public:
+    qint32 historyWidth, historyHeight;
     QTabWidget* mainTab;
     QTabWidget* optionsTab;
     QComboBox* patchChoice;
@@ -98,7 +98,6 @@ public:
     QButtonGroup* plotsButtonGroup;
     QTabWidget* importTab;
     SimulationCraftWebView* armoryView;
-    SimulationCraftWebView* wowheadView;
     SimulationCraftWebView* visibleWebView;
     QPushButton* rawrButton;
     QPushButton* customButton;
@@ -109,6 +108,7 @@ public:
     QListWidget* customList;
     QListWidget* historyList;
     QTreeWidget* bisTree;
+    QString bisProfilePath;
     SimulationCraftTextEdit* simulateText;
     SimulationCraftTextEdit* overridesText;
     QPlainTextEdit* logText;
@@ -339,7 +339,6 @@ public:
     player_t* player;
 
     void importArmory();
-    void importWowhead();
     void importRawr();
 
     void start( sim_t* s, int t, const QString& u ) { sim=s; tab=t; url=u; profile=""; player=0; QThread::start(); }
