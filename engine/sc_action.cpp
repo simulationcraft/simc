@@ -938,6 +938,8 @@ double action_t::calculate_direct_damage()
 
 void action_t::consume_resource()
 {
+  if( resource == RESOURCE_NONE ) return;
+
   resource_consumed = cost();
 
   if ( sim -> debug )

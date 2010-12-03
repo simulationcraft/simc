@@ -880,17 +880,17 @@ static void trigger_ignite( spell_t* s, double dmg )
 
 // trigger_master_of_elements ===============================================
 
-static void trigger_master_of_elements( spell_t* s, double adjust )
+static void trigger_master_of_elements( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( s -> resource_consumed == 0 )
+  if ( s -> base_cost == 0 )
     return;
 
   if ( ! p -> talents.master_of_elements -> rank() )
     return;
 
-  p -> resource_gain( RESOURCE_MANA, adjust * s -> base_cost * p -> talents.master_of_elements -> effect_base_value( 1 ) / 100.0, p -> gains_master_of_elements );
+  p -> resource_gain( RESOURCE_MANA, s -> base_cost * p -> talents.master_of_elements -> effect_base_value( 1 ) / 100.0, p -> gains_master_of_elements );
 }
 
 // trigger_replenishment ====================================================
@@ -1000,6 +1000,11 @@ void mage_spell_t::execute()
   
   spell_t::execute();
 
+  if ( result == RESULT_CRIT )
+  {
+    trigger_master_of_elements( this );
+  }
+
   if( background ) return;
 
   if( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
@@ -1029,7 +1034,6 @@ void mage_spell_t::execute()
 
     if ( result == RESULT_CRIT )
     {
-      trigger_master_of_elements( this, 1.0 );
       trigger_hot_streak( this );
     }
   }
@@ -2075,6 +2079,8 @@ struct living_bomb_t : public mage_spell_t
     dot_behavior = DOT_REFRESH;
 
     explosion_spell = new living_bomb_explosion_t( p );
+    explosion_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work 
+    explosion_spell -> base_cost = base_cost;
   }
 
   virtual void last_tick()
