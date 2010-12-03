@@ -1174,6 +1174,8 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
+    if (p->bugs)
+      weapon_multiplier = 0.15; // files say 9% but in-game testing says 15%
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
     base_multiplier *= ( 1.0 + 0.01 * p -> talents.seals_of_the_pure->effect_base_value(1) )
