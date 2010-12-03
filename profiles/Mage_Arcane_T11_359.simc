@@ -39,7 +39,7 @@ finger1=signet_of_the_fifth_circle,heroic=0,stats=190int_286sta_127mastery_127ha
 finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=haste_hit,enchant=40int
 trinket1=theralions_mirror,heroic=0,stats=321int,equip=onharmfulcast_1926mastery_10%_20dur_100cd
 trinket2=bell_of_enraging_resonance,heroic=0,stats=321crit,reforge=crit_hit,equip=onspellcrit_1926sp_30%_20dur_100cd
-back=haunt_of_flies,heroic=0,stats=190int_286sta_127crit_127haste_625armor,reforge=haste_hit,enchant=50int
+back=haunt_of_flies,heroic=0,stats=190int_286sta_127crit_127haste_625armor,reforge=haste_hit,enchant=lightweave_embroidery
 main_hand=incineratus,heroic=0,stats=146int_219sta_97mastery_97haste_1954sp,reforge=mastery_hit,enchant=power_torrent
-off_hand=book_of_binding_will,heroic=0,stats=197int_286sta_127haste_127hit
+off_hand=book_of_binding_will,heroic=0,stats=197int_286sta_127haste_127hit,enchant=100int
 ranged=theresas_booklight,heroic=0,stats=107int_161sta_72mastery_72hit
