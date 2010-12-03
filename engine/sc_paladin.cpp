@@ -369,7 +369,7 @@ struct paladin_attack_t : public attack_t
     may_crit = true;
     if (use2hspec && p()->primary_tree() == TREE_RETRIBUTION && p()->main_hand_weapon.group() == WEAPON_2H)
     {
-      base_multiplier *= 1.0 + p()->passives.two_handed_weapon_spec->base_value(E_APPLY_AURA, A_MOD_DAMAGE_DONE);
+      base_multiplier *= 1.0 + p()->passives.two_handed_weapon_spec->base_value(E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE);
     }
 
     // Communion has some weird A_ADD_FLAT_MODIFIER effect instead of the expected A_MOD_DAMAGE_DONE
@@ -467,7 +467,7 @@ struct paladin_attack_t : public attack_t
 struct melee_t : public paladin_attack_t
 {
   melee_t( paladin_t* p )
-    : paladin_attack_t( "melee", p )
+    : paladin_attack_t( "melee", p, SCHOOL_PHYSICAL, true/*2hspec*/, false/*special*/ )
   {
     special           = false;
     trigger_seal      = true;
