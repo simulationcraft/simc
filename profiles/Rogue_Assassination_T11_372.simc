@@ -11,7 +11,7 @@ actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/snapshot_stats
-actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20
+actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30
 actions+=/auto_attack
 actions+=/stealth
 actions+=/kick

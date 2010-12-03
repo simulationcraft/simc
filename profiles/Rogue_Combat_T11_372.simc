@@ -4,14 +4,14 @@ rogue=Rogue_Combat_T11_372
 level=85
 race=undead
 use_pre_potion=1
+professions=Enchanting/Jewelcrafting
 talents=http://www.wowarmory.com/talent-calc.xml?cid=4&tal=023200000000000000003322303100302123210030000000000000000
 glyphs=sinister_strike/adrenaline_rush/slice_and_dice/expose_armor
-professions=Enchanting/Jewelcrafting
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/apply_poison,main_hand=instant,off_hand=deadly
 actions+=/snapshot_stats
-actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20
+actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30
 actions+=/auto_attack
 actions+=/kick
 actions+=/slice_and_dice,if=buff.slice_and_dice.down&time<4

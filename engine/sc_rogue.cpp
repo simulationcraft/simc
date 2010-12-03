@@ -3074,8 +3074,16 @@ void rogue_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str += "flask,type=endless_rage";
-    action_list_str += "/food,type=blackened_dragonfin";
+    if ( level > 80 )
+    {
+      action_list_str += "flask,type=winds";
+      action_list_str += "/food,type=seafood_magnifique_feast";
+    }
+    else
+    {
+      action_list_str += "flask,type=endless_rage";
+      action_list_str += "/food,type=blackened_dragonfin";
+    }
     action_list_str += "/apply_poison,main_hand=instant,off_hand=deadly";
     action_list_str += "/snapshot_stats";
     if ( level > 80 )
