@@ -29,7 +29,6 @@ actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.
 actions+=/mage_armor,if=mana_pct<15
 actions+=/evocation,if=mana_pct<5&target.time_to_die>60
 actions+=/frostbolt
-actions+=/evocation
 actions+=/ice_lance,moving=1
 actions+=/fire_blast,moving=1
 head=blinders_of_the_follower,heroic=0,type=cloth,stats=942armor_162crit_182mastery_242int_454sta,gems=chaotic_shadowspirit_20crit_20int_30int,enchant=60int_35crit

@@ -3123,11 +3123,10 @@ void mage_t::init_actions()
         action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
-      if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains=0";
+      if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
       if ( level >= 68 ) action_list_str += "/mage_armor,if=mana_pct<15";
       if ( level >= 12 ) action_list_str += "/evocation,if=mana_pct<5&target.time_to_die>60";
       action_list_str += "/frostbolt";
-      if ( level >= 12 ) action_list_str += "/evocation";
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }

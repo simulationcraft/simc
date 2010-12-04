@@ -24,11 +24,10 @@ actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/deep_freeze
 actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
-actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains=0
+actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
 actions+=/mage_armor,if=mana_pct<15
 actions+=/evocation,if=mana_pct<5&target.time_to_die>60
 actions+=/frostbolt
-actions+=/evocation
 actions+=/ice_lance,moving=1
 actions+=/fire_blast,moving=1
 head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,reforge=mastery_hit,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
