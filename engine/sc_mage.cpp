@@ -3100,10 +3100,10 @@ void mage_t::init_actions()
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
-      action_list_str += "/fireball,if=target.time_to_die<100";
-      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
+      action_list_str += "/fireball,if=target.time_to_die<60";
       action_list_str += "/fireball,if=mana_pct>39";
-      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>105";
+      action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
+      if ( level >= 12 ) action_list_str += "/evocation";
       if ( level >= 26 ) action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost

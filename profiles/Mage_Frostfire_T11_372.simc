@@ -23,10 +23,10 @@ actions+=/living_bomb,if=!ticking
 actions+=/pyroblast_hs,if=buff.hot_streak.react
 actions+=/flame_orb
 actions+=/scorch,if=mana_pct<5
-actions+=/frostfire_bolt,if=target.time_to_die<100
-actions+=/scorch,if=mana_pct<95&cooldown.evocation.remains>60
+actions+=/frostfire_bolt,if=target.time_to_die<60
 actions+=/frostfire_bolt,if=mana_pct>39
-actions+=/evocation,if=target.time_to_die>105
+actions+=/scorch,if=mana_pct<95&cooldown.evocation.remains>60
+actions+=/evocation
 actions+=/scorch
 head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,reforge=mastery_hit,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit

@@ -24,10 +24,10 @@ actions+=/living_bomb,if=!ticking
 actions+=/pyroblast_hs,if=buff.hot_streak.react
 actions+=/flame_orb
 actions+=/scorch,if=mana_pct<5
-actions+=/frostfire_bolt,if=target.time_to_die<100
-actions+=/scorch,if=mana_pct<95&cooldown.evocation.remains>60
+actions+=/frostfire_bolt,if=target.time_to_die<60
 actions+=/frostfire_bolt,if=mana_pct>39
-actions+=/evocation,if=target.time_to_die>105
+actions+=/scorch,if=mana_pct<95&cooldown.evocation.remains>60
+actions+=/evocation
 actions+=/scorch
 head=blinders_of_the_follower,heroic=0,type=cloth,stats=942armor_162crit_182mastery_242int_454sta,gems=chaotic_shadowspirit_20crit_20int_30int,enchant=60int_35crit
 neck=charm_of_the_muse,heroic=1,stats=168int_252sta_112hit_112crit
