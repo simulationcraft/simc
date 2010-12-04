@@ -435,7 +435,7 @@ void SimulationCraftWindow::createWelcomeTab()
   QFileInfo fi( welcomeFile );
   welcomeBanner->setSearchPaths( QStringList( fi.path() ) ); 
 #endif
-  welcomeBanner->setHtml( s + QDir::currentPath());
+  welcomeBanner->setHtml( s );
   welcomeBanner->moveCursor( QTextCursor::Start );
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
