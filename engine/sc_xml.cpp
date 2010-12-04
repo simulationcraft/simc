@@ -124,11 +124,12 @@ static void create_parameter( sim_t*                  sim,
 
   assert( input[ index ] == '=' );
   index++;
-  assert( input[ index ] == '"' );
+  char quote = input[ index ];
+  assert( quote == '"' || quote == '\'' );
   index++;
 
   std::string::size_type start = index;
-  while ( input[ index ] != '"' )
+  while ( input[ index ] != quote )
   {
     assert( input[ index ] );
     index++;
