@@ -2111,10 +2111,9 @@ struct mage_armor_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if ( ! mage_spell_t::ready() )
-      return false;
     mage_t* p = player -> cast_mage();
-    return ! p -> buffs_mage_armor -> check();
+    if( p -> buffs_mage_armor -> check() ) return false;
+    return mage_spell_t::ready();
   }
 };
 
@@ -2218,10 +2217,9 @@ struct molten_armor_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if ( ! mage_spell_t::ready() )
-      return false;
     mage_t* p = player -> cast_mage();
-    return ! p -> buffs_molten_armor -> check();
+    if( p -> buffs_molten_armor -> check() ) return false;
+    return mage_spell_t::ready();
   }
 };
 
@@ -2417,6 +2415,7 @@ struct slow_t : public mage_spell_t
       mage_spell_t( "slow", 31589, p )
   {
     check_talent( p -> talents.slow -> rank() );
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
