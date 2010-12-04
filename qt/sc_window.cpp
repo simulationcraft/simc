@@ -415,12 +415,12 @@ void SimulationCraftWindow::createWelcomeTab()
   QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html & Welcome.png was unable to load.</div>";
   QString welcomeFile = "Welcome.html";
 #ifdef Q_WS_MAC
-	CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
-	CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-	welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
-	
-	CFRelease(fileRef);
-	CFRelease(macPath);
+  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
+  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+  welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+
+  CFRelease(fileRef);
+  CFRelease(macPath);
 #endif
 
   QFile file( welcomeFile );
@@ -431,7 +431,11 @@ void SimulationCraftWindow::createWelcomeTab()
   }
 
   QTextBrowser* welcomeBanner = new QTextBrowser();
-  welcomeBanner->setHtml( s );
+#ifdef Q_WS_MAC
+  QFileInfo fi( welcomeFile );
+  welcomeBanner->setSearchPaths( QStringList( fi.path() ) ); 
+#endif
+  welcomeBanner->setHtml( s + QDir::currentPath());
   welcomeBanner->moveCursor( QTextCursor::Start );
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
@@ -631,8 +635,16 @@ void SimulationCraftWindow::createBestInSlotTab()
       top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
     }
   }
-  
+#ifndef Q_WS_MAC
   QDir dir = "profiles";
+#else
+  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("profiles"), 0, 0);
+  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+  QDir dir            = QString( CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding()) );
+	
+  CFRelease(fileRef);
+  CFRelease(macPath);
+#endif
   dir.setSorting( QDir::Name );
   dir.setFilter( QDir::Files );
   dir.setNameFilters( QStringList( "*.simc" ) );

@@ -21,7 +21,7 @@ macx {
 	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.5
 	QMAKE_INFO_PLIST = SparkleInfo.plist
 	CONFIG += x86 x86_64
-        ICON = icon/simcraft2.icns
+	ICON = icon/simcraft2.icns
 	OBJECTIVE_SOURCES += sc_mac_update.mm
 	LIBS += -framework CoreFoundation -framework Sparkle -framework AppKit
 }
