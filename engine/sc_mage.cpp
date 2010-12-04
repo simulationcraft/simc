@@ -2098,6 +2098,7 @@ struct mage_armor_t : public mage_spell_t
   mage_armor_t( mage_t* p, const std::string& options_str ) :
       mage_spell_t( "mage_armor", 6117, p )
   {
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -2110,6 +2111,8 @@ struct mage_armor_t : public mage_spell_t
 
   virtual bool ready()
   {
+    if ( ! mage_spell_t::ready() )
+      return false;
     mage_t* p = player -> cast_mage();
     return ! p -> buffs_mage_armor -> check();
   }
@@ -2202,6 +2205,7 @@ struct molten_armor_t : public mage_spell_t
   molten_armor_t( mage_t* p, const std::string& options_str ) :
       mage_spell_t( "molten_armor", 30482, p )
   {
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -2214,6 +2218,8 @@ struct molten_armor_t : public mage_spell_t
 
   virtual bool ready()
   {
+    if ( ! mage_spell_t::ready() )
+      return false;
     mage_t* p = player -> cast_mage();
     return ! p -> buffs_molten_armor -> check();
   }
