@@ -2648,7 +2648,7 @@ struct item_t
         max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
         tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
-  } use, equip, enchant, addon, use_addon;
+  } use, equip, enchant, addon;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ), unique_addon( false ), is_heroic( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );

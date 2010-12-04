@@ -559,8 +559,8 @@ bool item_t::decode_addon()
   if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic() ) )
   {
     unique_addon = true;
-    use_addon.name_str = encoded_addon_str;
-    return decode_special( use_addon, use_str );
+    use.name_str = encoded_addon_str;
+    return decode_special( use, use_str );
   }
 
   std::string equip_str;
