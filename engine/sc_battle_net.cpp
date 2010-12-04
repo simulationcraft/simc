@@ -76,7 +76,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   if ( ! xml_t::get_value( name_str, xml_t::get_child( name_node, "a" ), "." ) ||
        ! xml_t::get_value( type_str, xml_t::get_node( profile_info, "span", "class", "class" ), "." ) ||
        ! xml_t::get_value( race_str, xml_t::get_node( profile_info, "span", "class", "race"  ), "." ) ||
-       ! xml_t::get_value(    level, xml_t::get_node( profile_info, "span", "class", "level" ), "." ) )
+       ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) )
   {
     sim -> errorf( "Unable to determine name/class/race/level from armory xml for %s|%s|%s.\n",
 		   region.c_str(), server.c_str(), name.c_str() );
