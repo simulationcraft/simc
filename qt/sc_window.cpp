@@ -575,8 +575,12 @@ void SimulationCraftWindow::createImportTab()
   mainTab->addTab( importTab, "Import" );
 
   armoryView = new SimulationCraftWebView( this );
-  armoryView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
+  armoryView->setUrl( QUrl( "http://us.wowarmory.com" ) );
   importTab->addTab( armoryView, "Armory" );
+
+  battleNetView = new SimulationCraftWebView( this );
+  battleNetView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
+  importTab->addTab( battleNetView, "Battle.Net" );
 
   createRawrTab();
   createBestInSlotTab();
@@ -864,14 +868,22 @@ void ImportThread::importArmory()
   QString region, server, character;
   QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
   int count = tokens.count();
-  for( int i=0; i < count-2; i++ ) 
+  for( int i=0; i < count-1; i++ ) 
   {
     QString& t = tokens[ i ];
     if( t == "http" )
     {
       region = tokens[ ++i ];
     }
-    else if( t == "character" )
+    else if( t == "r" ) // old armory
+    {
+      server = tokens[ ++i ];
+    }
+    else if( t == "n" || t == "cn" ) // old armory
+    {
+      character = tokens[ ++i ];
+    }
+    else if( t == "character" && (i<count-2) ) // new battle.net
     {
       server    = tokens[ ++i ];
       character = tokens[ ++i ];
@@ -897,8 +909,9 @@ void ImportThread::run()
 {
   switch( tab )
   {
-  case TAB_ARMORY:     importArmory();     break;
-  case TAB_RAWR:       importRawr();       break;
+  case TAB_ARMORY:     importArmory(); break;
+  case TAB_BATTLE_NET: importArmory(); break;
+  case TAB_RAWR:       importRawr();   break;
   default: assert(0);
   }
 
@@ -1207,6 +1220,7 @@ void SimulationCraftWindow::closeEvent( QCloseEvent* e )
 { 
   saveHistory();
   armoryView->stop();
+  battleNetView->stop();
   QCoreApplication::quit();
   e->accept();
 }
@@ -1230,10 +1244,15 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "battle.net" ) )
+    if( cmdLine->text().count( "wowarmory"  ) )
     {
       armoryView->setUrl( QUrl( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_ARMORY );
+    }
+    else if( cmdLine->text().count( "battle.net" ) )
+    {
+      battleNetView->setUrl( QUrl( cmdLine->text() ) ); 
+      importTab->setCurrentIndex( TAB_BATTLE_NET );
     }
     else
     {
@@ -1260,6 +1279,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
     switch( importTab->currentIndex() )
     {
     case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
+    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
     break;
@@ -1450,10 +1470,15 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
 
-  if( url.count( ".battle.net" ) )
+  if( url.count( ".wowarmory." ) )
   {
     armoryView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_ARMORY );
+  }
+  else if( url.count( ".battle.net" ) )
+  {
+    battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
+    importTab->setCurrentIndex( TAB_BATTLE_NET );
   }
   else
   {
@@ -1515,6 +1540,9 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 {
 
-  QString s = "http://" + region + ".battle.net/wow/en";
-  armoryView->setUrl( QUrl( s ) );
+  QString armoryUrl = "http://" + region + ".wowarmory.com";
+  armoryView->setUrl( QUrl( armoryUrl ) );
+
+  QString battleNetUrl = "http://" + region + ".battle.net/wow/en";
+  battleNetView->setUrl( QUrl( battleNetUrl ) );
 }

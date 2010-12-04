@@ -20,10 +20,11 @@
 #define TAB_RESULTS   7
 
 #define TAB_ARMORY     0
-#define TAB_RAWR       1
-#define TAB_BIS        2
-#define TAB_HISTORY    3
-#define TAB_CUSTOM     4
+#define TAB_BATTLE_NET 1
+#define TAB_RAWR       2
+#define TAB_BIS        3
+#define TAB_HISTORY    4
+#define TAB_CUSTOM     5
 
 #define HISTORY_VERSION "4.3"
 
@@ -98,6 +99,7 @@ public:
     QButtonGroup* plotsButtonGroup;
     QTabWidget* importTab;
     SimulationCraftWebView* armoryView;
+    SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* visibleWebView;
     QPushButton* rawrButton;
     QPushButton* customButton;
