@@ -521,6 +521,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a )
   {
+    if( a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
 
     if( PPM > 0 )
