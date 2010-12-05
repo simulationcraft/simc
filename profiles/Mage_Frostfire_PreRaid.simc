@@ -1,13 +1,13 @@
 #!./simc 
 # TODO: Optimize gear
 
-mage=Mage_Fire_Blue_346
+mage=Mage_Frostfire_PreRaid
 origin="input=m.simc"
 level=85
 race=undead
 use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0030000000000000000002323302011201212132310300000000000000000
-glyphs=molten_armor/fireball/pyroblast
+glyphs=molten_armor/frostfire/pyroblast
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/arcane_brilliance
@@ -24,8 +24,8 @@ actions+=/living_bomb,if=!ticking
 actions+=/pyroblast_hs,if=buff.hot_streak.react
 actions+=/flame_orb
 actions+=/scorch,if=mana_pct<5
-actions+=/fireball,if=target.time_to_die<60
-actions+=/fireball,if=mana_pct>39
+actions+=/frostfire_bolt,if=target.time_to_die<60
+actions+=/frostfire_bolt,if=mana_pct>39
 actions+=/scorch,if=mana_pct<95&cooldown.evocation.remains>60
 actions+=/evocation
 actions+=/scorch

@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_Shadow_Blue_346
+priest=Priest_Shadow_PreRaid
 level=85
 race=night_elf
 use_pre_potion=1
