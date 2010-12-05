@@ -674,20 +674,14 @@ bool armory_t::download_guild( sim_t* sim,
                                int max_rank,
                                int cache )
 {
-  std::string guild_name = name;
-  util_t::format_name( guild_name );
-
-  std::string formatted_guild_name = guild_name;
-  armory_t::format( formatted_guild_name, FORMAT_GUILD_NAME_MASK | FORMAT_ASCII_MASK );
-
-  std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + formatted_guild_name;
+  std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
   xml_node_t* guild_info = xml_t::download( sim, url, "</members>", ( cache ? 0 : -1 ), sim -> current_throttle );
   if ( ! guild_info )
   {
     sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
 
-    sim -> errorf( "Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
+    sim -> errorf( "Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return false;
   }
   sim -> current_throttle = sim -> armory_throttle;
@@ -697,7 +691,7 @@ bool armory_t::download_guild( sim_t* sim,
   xml_node_t* members = xml_t::get_node( guild_info, "members" );
   if ( ! members )
   {
-    sim -> errorf( "Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
+    sim -> errorf( "Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return false;
   }
 
@@ -731,8 +725,6 @@ bool armory_t::download_guild( sim_t* sim,
         if ( player_filter != player_type )
           continue;
 
-      armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-
       character_names.push_back( character_name );
     }
   }
@@ -747,7 +739,7 @@ bool armory_t::download_guild( sim_t* sim,
       std::string& character_name = character_names[ i ];
       std::string  formatted_name = character_name;
 
-      util_t::format_name( formatted_name );
+      util_t::format_text( formatted_name, sim -> input_is_utf8 );
 
       sim -> errorf( "Downloading character: %s\n", formatted_name.c_str() );
       player_t* p = armory_t::download_player( sim, region, server, character_name, "active", cache );
@@ -788,11 +780,8 @@ player_t* armory_t::download_player( sim_t* sim,
   sim -> current_slot = 0;
   sim -> current_name = name;
 
-  std::string temp_name = name;
-  armory_t::format( temp_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-
-  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, temp_name, cache );
-  xml_node_t* talents_xml = download_character_talents( sim, region, server, temp_name, cache );
+  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name, cache );
+  xml_node_t* talents_xml = download_character_talents( sim, region, server, name, cache );
 
   if ( ! sheet_xml || ! talents_xml )
   {
@@ -815,8 +804,6 @@ player_t* armory_t::download_player( sim_t* sim,
     return 0;
   }
   armory_t::format( type_str );
-  armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-  util_t::format_name( name_str );
   armory_t::format( race_str );
 
   race_type r = util_t::parse_race_type( race_str );
@@ -839,7 +826,7 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> region_str = region;
   p -> server_str = server;
 
-  std::string temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + temp_name;
+  std::string temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
   http_t::format( p -> origin_str, temp_origin_str );
 
   std::string last_modified;
@@ -1126,10 +1113,10 @@ std::string& armory_t::format( std::string& name, int format_type )
   switch ( format_type & FORMAT_CONVERT_MASK )
   {
   case FORMAT_UTF8_MASK:
-    util_t::utf8_binary_to_hex( name );
+    util_t::urlencode( name );
     break;
   case FORMAT_ASCII_MASK:
-    util_t::ascii_binary_to_utf8_hex( name );
+    util_t::str_to_utf8( name );
     break;
   }
 

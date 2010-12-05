@@ -1659,10 +1659,13 @@ struct util_t
   static int printf( const char *format,  ... );
   static int fprintf( FILE *stream, const char *format,  ... );
 
-  static std::string& utf8_binary_to_hex( std::string& name );
-  static std::string& ascii_binary_to_utf8_hex( std::string& name );
-  static std::string& utf8_hex_to_ascii( std::string& name );
-  static std::string& format_name( std::string& name );
+
+  static std::string& str_to_utf8( std::string& str );
+  static std::string& str_to_latin1( std::string& str );
+  static std::string& urlencode( std::string& str );
+  static std::string& urldecode( std::string& str );
+  
+  static std::string& format_text( std::string& name, bool input_is_utf8 );
 
   static bool str_compare_ci( const std::string& l, const std::string& r );
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
@@ -2262,7 +2265,8 @@ struct sim_t
   int         save_profiles;
   int         normalized_stat;
   std::string current_name, default_region_str, default_server_str;
-
+  bool        input_is_utf8;
+  
   // Data access
   static sc_data_access_t  base_data;
   static sc_data_access_t  ptr_data;

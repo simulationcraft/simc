@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.h"
+#include "utf8.h"
 
 // Cross-Platform Support for HTTP-Download =================================
 
@@ -315,29 +316,13 @@ std::string& http_t::format( std::string& encoded_url,
                              const std::string& url )
 {
   encoded_url.clear();
+  bool is_utf8 = utf8::is_valid( url.begin(), url.end() );
+  encoded_url = url;
 
-  int size = ( int ) url.size();
-  for ( int i=0; i < size; i++ )
-  {
-    char c = url[ i ];
-
-    if ( c == '+' || c == ' ' )
-    {
-      encoded_url += "%20";
-    }
-    else if ( c == '\'' )
-    {
-      encoded_url += "%27";
-    }
-    else if ( ( unsigned char ) c > 127 )
-    {
-      std::string temp = "";
-      temp += c;
-      util_t::ascii_binary_to_utf8_hex( temp );
-      encoded_url += temp;
-    }
-    else encoded_url += c;
-  }
+  if ( is_utf8 )
+    util_t::urlencode( encoded_url );
+  else
+    util_t::urlencode( util_t::str_to_utf8( encoded_url ) );
 
   return encoded_url;
 }

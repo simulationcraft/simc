@@ -1664,9 +1664,12 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
 
 static void print_html2_stats (FILE* file, player_t* a )
 {
+  std::string n = a -> name();
+  util_t::str_to_utf8( n );
+  
   if ( a -> total_seconds > 0 )
   {
-  util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-stats');\">%s</a></th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr></thead>\n", a -> name(),a -> name() );
+  util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-stats');\">%s</a></th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr></thead>\n", n.c_str(), n.c_str() );
 
   util_t::fprintf( file, " <tbody id=\"%s-stats\" style=\"display:none;\"> <tr> <th>Strength</th>  <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",a -> name(), a -> attribute_buffed[ ATTR_STRENGTH  ], a -> strength(),  a -> stats.attribute[ ATTR_STRENGTH  ] );
   util_t::fprintf( file, " <tr> <th>Agility</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_AGILITY   ], a -> agility(),   a -> stats.attribute[ ATTR_AGILITY   ] );
@@ -1705,11 +1708,14 @@ static void print_html2_stats (FILE* file, player_t* a )
 
 static void print_html2_talents( FILE* file, player_t* a )
 {
+  std::string n = a -> name();
+  util_t::str_to_utf8( n );
+  
   if ( a -> total_seconds > 0 )
   {
     util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-talents');\">%s Talents</a></th> <th>Rank</th> </tr></thead>\n", a -> name(), a -> name() );
 
-    util_t::fprintf( file, " <tbody id=\"%s-talents\" style=\"display:none;\">", a -> name() );
+    util_t::fprintf( file, " <tbody id=\"%s-talents\" style=\"display:none;\">", n.c_str() );
 
     uint32_t i_tab, talent_num, talent_id, i;
 
@@ -1769,11 +1775,13 @@ static void print_html2_talents( FILE* file, player_t* a )
 static void print_html2_player( FILE* file, player_t* p )
 {
   char buffer[ 4096 ];
-
-  util_t::fprintf( file, "<a name=\"%s\" href=\"javascript:;\" onclick=\"toggleSlide('%s-player');\"><h1>%s&nbsp;:&nbsp;%.0fdps</h1></a>\n", p -> name(), p -> name(), p -> name(), p -> dps );
+  std::string n = p -> name();
+  util_t::str_to_utf8( n );
+  
+  util_t::fprintf( file, "<a name=\"%s\" href=\"javascript:;\" onclick=\"toggleSlide('%s-player');\"><h1>%s&nbsp;:&nbsp;%.0fdps</h1></a>\n", n.c_str(), n.c_str(), n.c_str(), p -> dps );
 
   util_t::fprintf( file, "<div id=\"%s-player\" style=\"display:%s;\"><style type=\"text/css\">\n  table.player td, table.player th { padding: 4px; border: 1px inset; }\n  table.player { border: 1px outset; }</style>\n",
-      p -> name(), p -> is_pet()?"none":"");
+      n.c_str(), p -> is_pet()?"none":"");
 
   util_t::fprintf( file,
        "<table class=\"player\">\n"
@@ -1781,6 +1789,7 @@ static void print_html2_player( FILE* file, player_t* p )
        "  <tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%d</td>\n"
        "</table><br />\n",
        p -> name(), p -> race_str.c_str(),
+       n.c_str(), p -> race_str.c_str(),
        p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
        util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
@@ -1926,9 +1935,9 @@ static void print_html2_player( FILE* file, player_t* p )
        " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
        " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
        " </tr></thead><tbody id=\"%s-ability\">\n",
-       p -> name(), p -> name());
+       n.c_str(), n.c_str());
 
-  util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", p -> name(), p -> dps );
+  util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", n.c_str(), p -> dps );
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -1959,7 +1968,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-dynamic-buffs');\">Dynamic Buffs</a></th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr></thead><tbody id=\"%s-dynamic-buffs\" style=\"display:none;\">\n",
-      p -> name(), p -> name() );
+      n.c_str(), n.c_str() );
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count || b -> constant )
@@ -1991,7 +2000,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</tbody></table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-constant-buffs');\">Constant Buffs</a></th> </tr></thead><tbody id=\"%s-constant-buffs\" style=\"display:none;\">\n",
-      p -> name(), p -> name());
+      n.c_str(), n.c_str());
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count || ! b -> constant )
@@ -2020,7 +2029,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</tbody></table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-uptimes');\">Up-Times</a></th> <th>%%</th> </tr></thead><tbody id=\"%s-uptimes\" style=\"display:none;\">\n",
-      p -> name(), p -> name());
+      n.c_str(), n.c_str());
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
     if ( u -> percentage() > 0 )
@@ -2031,7 +2040,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</tbody></table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-procs');\">Procs</th> <th>Count</th> <th>Interval</th> </tr></thead><tbody id=\"%s-procs\" style=\"display:none;\">\n",
-      p -> name(), p -> name());
+      n.c_str(), n.c_str());
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
   {
     if ( proc -> count > 0 )
@@ -2042,7 +2051,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-gains');\">Gains</a></th> <th>%s</th> <th>Overflow</th> </tr></thead><tbody id=\"%s-gains\" style=\"display:none;\">\n",
-      p -> name(), util_t::resource_type_string( p -> primary_resource() ), p -> name() );
+      n.c_str(), util_t::resource_type_string( p -> primary_resource() ), n.c_str() );
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
     if ( g -> actual > 0 )
@@ -2072,7 +2081,7 @@ static void print_html2_player( FILE* file, player_t* p )
   util_t::fprintf( file, "</tbody></table> <br />\n" );
 
   util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th>#</th> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-action_priority_list');\">Action Priority List</a></th> </tr></thead><tbody id=\"%s-action_priority_list\" style=\"display:none;\">\n",
-      p -> name(), p -> name() );
+      n.c_str(), n.c_str() );
   std::vector<std::string> action_names;
   int num_actions = util_t::string_split( action_names, p -> action_list_str, "/" );
   for ( int i=0; i < num_actions; i++ )
@@ -2988,7 +2997,7 @@ void report_t::print_html2( sim_t* sim )
 
   util_t::fprintf( file, "<head>\n" );
   util_t::fprintf( file, "<title>Simulationcraft Results</title>\n" );
-
+  util_t::fprintf( file, "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n");
   util_t::fprintf ( file, "<script type=\"text/javascript\">\nfunction toggleSlide(objname){\nif(document.getElementById(objname).style.display == \"none\"){\ndocument.getElementById(objname).style.display=\"\";\n}else{\ndocument.getElementById(objname).style.display=\"none\";\n}\n}\n</script>\n" );
 
   util_t::fprintf( file, "</head>\n" );
@@ -3269,6 +3278,7 @@ void report_t::print_profiles( sim_t* sim )
       file_name  = "save_";
       file_name += p -> name_str;
       file_name += ".simc";
+      util_t::urlencode( util_t::format_text( file_name, sim -> input_is_utf8 ) );
     }
 
     if ( file_name.empty() ) continue;

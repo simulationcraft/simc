@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.h"
+#include "utf8.h"
 
 bool my_isdigit( char c );
 
@@ -16,7 +17,7 @@ static bool pred_ci ( char a, char b ) {
 // compare_ci ==============================================================
 
 bool util_t::str_compare_ci( const std::string& l,
-			     const std::string& r )
+                             const std::string& r )
 {
   if ( l.size() != r.size() || l.size() == 0 )
     return false;
@@ -27,7 +28,7 @@ bool util_t::str_compare_ci( const std::string& l,
 // compare_ci ==============================================================
 
 bool util_t::str_in_str_ci( const std::string& l,
-			    const std::string& r )
+                            const std::string& r )
 {
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
@@ -1491,195 +1492,103 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-std::string& util_t::utf8_binary_to_hex( std::string& name )
+std::string& util_t::str_to_utf8( std::string& str )
 {
-  if ( name.empty() ) return name;
+  std::string temp;
+  int l = str.length();
+  
+  if ( ! l ) return str;
+  if ( utf8::is_valid( str.begin(), str.end() ) ) return str;
+  
+  for ( int i = 0; i < l; i++ )
+    utf8::append( ( unsigned char ) str[ i ], std::back_inserter( temp ) );
 
-  std::string buffer="";
-  char buffer2[32];
-
-  int size = ( int ) name.size();
-  for ( int i=0; i < size; i++ )
-  {
-    unsigned char c = name[ i ];
-
-    if ( c >= 0x80 )
-    {
-      snprintf( buffer2,31,"%%%0X",c );
-      buffer2[31] = '\0';
-      buffer += buffer2;
-      continue;
-    }
-
-    buffer += c;
-  }
-  name = buffer;
-
-  return name;
+  str = temp;
+  return str;
 }
 
-std::string& util_t::ascii_binary_to_utf8_hex( std::string& name )
+std::string& util_t::str_to_latin1( std::string& str )
 {
-  if ( name.empty() ) return name;
+  if ( str.empty() ) return str;
+  if ( ! utf8::is_valid( str.begin(), str.end() ) ) return str;
 
-  std::string buffer="";
-  char buffer2[32];
+  std::string temp;
+  std::string::iterator i = str.begin();
 
-  int size = ( int ) name.size();
-  for ( int i=0; i < size; i++ )
-  {
-    unsigned char c = name[ i ];
+  while ( i != str.end() )
+    temp += ( unsigned char ) utf8::next( i, str.end() );
 
-    if ( c >= 0x80 )
-    {
-      if ( c < 0xC0 )
-      {
-        buffer += "%C2";
-      }
-      else
-      {
-        buffer += "%C3";
-        c -= 0x40;
-      }
-      snprintf( buffer2,31,"%%%0X",c );
-      buffer2[31] = '\0';
-      buffer += buffer2;
-      continue;
-    }
-
-    buffer += c;
-  }
-  name = buffer;
-
-  return name;
+  str = temp;
+  
+  return str;
 }
 
-std::string& util_t::utf8_hex_to_ascii( std::string& name )
+std::string& util_t::urlencode( std::string& str )
 {
-  if ( name.empty() ) return name;
+  std::string temp;
+  int l = str.length();
+  char enc_str[4];
 
-  std::string buffer="";
+  if ( ! l ) return str;
 
-  int size = ( int ) name.size();
-  for ( int i=0; i < size; i++ )
+  for ( int i = 0; i < l; i++ )
   {
-    unsigned char c = name[ i ];
+    unsigned char c = str[ i ];
 
-    if ( c == '%' )
+    if ( c > 0x7F || c == ' ' || c == '\'' )
     {
-      if ( ( ( i + 5 ) < size ) && ( name[ i + 3 ] == '%' ) &&
-           ( tolower( name[ i + 1 ] ) == 'c' ) &&
-           ( name[ i + 2 ] >= '2' ) && ( name[ i + 2 ] <= '3' ) &&
-           (
-             ( name[ i + 4 ] == '8' ) || ( name[ i + 4 ] == '9' ) ||
-             ( tolower( name[ i + 4 ] ) == 'a' ) || ( tolower( name[ i + 4 ] ) == 'b' )
-           )
-         )
-      {
-        int num = 0;
-        switch ( tolower( name[ i + 4 ] ) )
-        {
-        case 8:
-          num=0x80;
-          break;
-        case 9:
-          num=0x90;
-          break;
-        case 'a':
-          num=0xA0;
-          break;
-        case 'b':
-          num=0xB0;
-          break;
-        }
-
-        int c2 = tolower( name[ i + 5 ] );
-        if ( ( c2 >= '0' ) && ( c2 <= '9' ) )
-        {
-          num += c2 - '0';
-        }
-        else if ( ( c2 >= 'a' ) && ( c2 <= 'f' ) )
-        {
-          num += 10 + c2 - 'a';
-        }
-        else
-        {
-          buffer += c;
-          continue;
-        }
-
-        if ( name[ i + 2 ] == '3' )
-        {
-          num += 0x40;
-        }
-        buffer += ( unsigned char ) num;
-
-        i += 5;
-        continue;
-      }
-
-      if ( ( i + 2 ) < size )
-      {
-        int num = 0;
-        unsigned char d;
-
-        num = tolower( name[ i + 1 ] ) - 'c';
-        if ( ( num < 0 ) || ( num > 3 ) )
-        {
-          buffer += c;
-          continue;
-        }
-        num = num << 4;
-        num += 0xC0;
-        d = tolower( name[ i + 2 ] );
-        if ( isdigit( d ) )
-        {
-          num += d - '0';
-        }
-        else if ( ( d >= 'a' ) || ( d <= 'f' ) )
-        {
-          num += 10 + d - 'a';
-        }
-        else
-        {
-          buffer += c;
-          continue;
-        }
-
-        if ( num < 0xC2 || num > 0xF4 )
-        {
-          buffer += c;
-          continue;
-        }
-        if ( num >= 0xC2 && num <= 0xDF )
-        {
-          i += 5;
-        }
-        else if ( num >= 0xE0 && num <= 0xEF )
-        {
-          i += 8;
-        }
-        else
-        {
-          i += 11;
-        }
-      }
-      continue;
+      snprintf( enc_str, sizeof( enc_str ), "%%%02X", c );
+      temp += enc_str;
     }
-
-    buffer += c;
+    else if ( c == '+' )
+      temp += "%20";
+    else if ( c < 0x20 )
+      continue;
+    else
+      temp += c;
   }
-  name = buffer;
-
-  return name;
+  
+  str = temp;
+  return str;
 }
 
+std::string& util_t::urldecode( std::string& str )
+{
+  std::string temp;
+  int l = str.length();
 
-std::string& util_t::format_name( std::string& name )
+  if ( ! l ) return str;
+  
+  for ( int i = 0; i < l; i++ )
+  {
+    unsigned char c = ( unsigned char ) str[ i ];
+
+    if ( c == '%' && i + 2 < l )
+    {
+      long c = 0;
+      c = strtol( str.c_str() + i + 1, 0, 16 );
+      if ( c ) temp += (unsigned char) c;
+      i += 2;
+    }
+    else if ( c == '+' )
+      temp += ' ';
+    else
+      temp += c;
+  }
+  
+  str = temp;
+  return str;
+}
+
+std::string& util_t::format_text( std::string& name, bool input_is_utf8 )
 {
   if ( name.empty() ) return name;
-
-  util_t::utf8_hex_to_ascii( name );
+  bool is_utf8 = utf8::is_valid( name.begin(), name.end() );
+  
+  if ( is_utf8 && ! input_is_utf8 )
+    util_t::str_to_latin1( name );
+  else if ( ! is_utf8 && input_is_utf8 )
+    util_t::str_to_utf8( name );
 
   return name;
 }

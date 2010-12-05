@@ -748,8 +748,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   sim -> current_name = name_str;
 
-  armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-  util_t::format_name ( name_str );
+  util_t::format_text ( name_str, sim -> input_is_utf8 );
 
   std::string level_str;
   if ( ! js_t::get_value( level_str, profile_js, "level"  ) )

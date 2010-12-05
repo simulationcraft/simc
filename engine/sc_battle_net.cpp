@@ -48,12 +48,9 @@ player_t* battle_net_t::download_player( sim_t* sim,
   sim -> current_slot = 0;
   sim -> current_name = name;
 
-  std::string temp_name = name;
-  armory_t::format( temp_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-
-  xml_node_t* sheet_xml     = download_character_sheet  ( sim, region, server, temp_name );
-  xml_node_t* p_talents_xml = download_character_talents( sim, region, server, temp_name, "primary" );
-  xml_node_t* s_talents_xml = download_character_talents( sim, region, server, temp_name, "secondary" );
+  xml_node_t* sheet_xml     = download_character_sheet  ( sim, region, server, name );
+  xml_node_t* p_talents_xml = download_character_talents( sim, region, server, name, "primary" );
+  xml_node_t* s_talents_xml = download_character_talents( sim, region, server, name, "secondary" );
 
   if ( ! sheet_xml || ! p_talents_xml || ! s_talents_xml )
   {
@@ -79,15 +76,27 @@ player_t* battle_net_t::download_player( sim_t* sim,
        ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) )
   {
     sim -> errorf( "Unable to determine name/class/race/level from armory xml for %s|%s|%s.\n",
-		   region.c_str(), server.c_str(), name.c_str() );
+      region.c_str(), server.c_str(), name.c_str() );
     return 0;
+  }
+
+  size_t pos = 0;
+  name_str.erase( name_str.end() - 1 );
+  
+  if ( ( pos = name_str.rfind( '/' ) ) == std::string::npos )
+  {
+    sim -> errorf("Could not find '/' in %s, no how to parse the player name.\n", name_str.c_str() );
+    return 0;
+  }
+  else
+  {
+    name_str = name_str.substr( pos + 1 );
+    name_str = util_t::format_text( util_t::urldecode( name_str ), sim -> input_is_utf8 );
   }
 
   std::string cid_str = util_t::class_id_string( util_t::parse_player_type( type_str ) );
   
   armory_t::format( type_str );
-  armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-  util_t::format_name( name_str );
   armory_t::format( race_str );
 
   race_type r = util_t::parse_race_type( race_str );
@@ -110,7 +119,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   p -> region_str = region;
   p -> server_str = server;
 
-  std::string origin_str = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + temp_name + "/advanced";
+  std::string origin_str = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
   http_t::format( p -> origin_str, origin_str );
 
   std::string last_modified;
