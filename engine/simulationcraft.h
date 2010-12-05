@@ -1618,7 +1618,7 @@ struct util_t
   static const char* stat_type_abbrev          ( int type );
   static const char* stat_type_wowhead         ( int type );
   static int         talent_tree               ( int tree, player_type ptype );
-  static char* talent_tree_string              ( int tree, bool armory_format = true );
+  static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
 
   static int parse_attribute_type              ( const std::string& name );
