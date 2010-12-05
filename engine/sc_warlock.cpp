@@ -4272,8 +4272,7 @@ void warlock_t::init_actions()
     }
 
     // Choose Potion
-    // TO-DO. Revert to >= 80 once Cata is out
-    if ( level > 80 )
+    if ( level >= 80 )
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
     else if ( level >= 70 )
     {
@@ -4304,9 +4303,9 @@ void warlock_t::init_actions()
           action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
       }
-      if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20&!ticking";
-      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
-      action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5";
+      if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react";
+      action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
+      action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( talent_bane -> rank() == 3 )
@@ -4331,10 +4330,10 @@ void warlock_t::init_actions()
       {
         action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
       }
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking";
-      action_list_str += "/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time+gcd|!ticking";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react";
+      action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
-      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<gcd";
+      action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up";
@@ -4348,7 +4347,7 @@ void warlock_t::init_actions()
       if ( level >= 54) {
         if ( talent_improved_soul_fire -> ok() )
         {
-          action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time";
+          action_list_str += "/immolate,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time&target.time_to_die>=4&miss_react";
           action_list_str += "/soulburn,if=buff.metamorphosis.up&buff.bloodlust.down";
           action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
         } else {
@@ -4357,10 +4356,10 @@ void warlock_t::init_actions()
         }
       }
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
-      action_list_str += "/immolate,time_to_die>=4,if=dot.immolate.remains<cast_time+tick_time|!ticking";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
+      action_list_str += "/immolate,if=(dot.immolate.remains<cast_time+tick_time|!ticking)&target.time_to_die>=4&miss_react";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react";
       if ( level >= 60) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
-      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
+      action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
@@ -4372,9 +4371,9 @@ void warlock_t::init_actions()
     break;
 
   default:
-      action_list_str += "/bane_of_doom,time_to_die>=20,if=!ticking";
-      action_list_str += "/corruption,if=!ticking|dot.corruption.remains<tick_time";
-      action_list_str += "/immolate,if=!ticking|dot.immolate.remains<(cast_time+tick_time)";
+      action_list_str += "/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react";
+      action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
+      action_list_str += "/immolate,if=(!ticking|remains<(cast_time+tick_time))&miss_react";
       if ( level >= 50) action_list_str += "/summon_infernal";
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );

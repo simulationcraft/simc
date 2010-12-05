@@ -1,5 +1,7 @@
 #!./simc 
+
 warlock=Warlock_Affliction_T11_372
+origin="Warlock_Affliction_T11_372.simc"
 level=85
 race=undead
 use_pre_potion=1
@@ -17,9 +19,9 @@ actions+=/demon_soul
 actions+=/haunt
 actions+=/soulburn,if=buff.bloodlust.down
 actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
-actions+=/bane_of_agony,if=target.time_to_die>=20&!ticking
-actions+=/corruption,if=!ticking|dot.corruption.remains<tick_time
-actions+=/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5
+actions+=/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react
+actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
+actions+=/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/summon_infernal
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up
@@ -47,7 +49,7 @@ ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5755
-# gear_intellect=4392
+# gear_intellect=4492
 # gear_spirit=20
 # gear_spell_power=2362
 # gear_hit_rating=1747

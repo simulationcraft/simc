@@ -1,5 +1,7 @@
 #!./simc 
+
 warlock=Warlock_Destruction_T11_372
+origin="Warlock_Destruction_T11_372.simc"
 level=85
 race=undead
 use_pre_potion=1
@@ -16,10 +18,10 @@ actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
 actions+=/demon_soul
 actions+=/soulburn,if=buff.bloodlust.down
 actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
-actions+=/bane_of_doom,if=!ticking
-actions+=/immolate,time_to_die>=3,if=dot.immolate.remains<cast_time+gcd|!ticking
+actions+=/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react
+actions+=/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
 actions+=/conflagrate
-actions+=/corruption,if=!ticking|dot.corruption.remains<gcd
+actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
 actions+=/shadowflame
 actions+=/chaos_bolt
 actions+=/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up
@@ -47,7 +49,7 @@ ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5755
-# gear_intellect=4392
+# gear_intellect=4492
 # gear_spirit=20
 # gear_spell_power=2362
 # gear_hit_rating=1747
