@@ -190,7 +190,7 @@ void stats_t::analyze()
 
   for ( int i=0; i < num_buckets; i++ )
   {
-    if( i == sim -> divisor_timeline.size() ) break;
+    if( i == (int) sim -> divisor_timeline.size() ) break;
     timeline_dmg[ i ] /= sim -> divisor_timeline[ i ];
   }
 
