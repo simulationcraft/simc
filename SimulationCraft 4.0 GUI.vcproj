@@ -213,6 +213,22 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="engine\utf8\checked.h"
+				>
+			</File>
+			<File
+				RelativePath="engine\utf8\core.h"
+				>
+			</File>
+			<File
+				RelativePath="engine\utf8\unchecked.h"
+				>
+			</File>
+			<File
+				RelativePath="engine\utf8.h"
+				>
+			</File>
+			<File
 				RelativePath="engine\data_definitions.hh"
 				>
 			</File>

@@ -178,6 +178,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\engine\utf8\checked.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\utf8\core.h"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\data_definitions.hh"
 			>
 		</File>
@@ -447,6 +455,14 @@
 		</File>
 		<File
 			RelativePath=".\engine\simulationcraft.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\utf8\unchecked.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\utf8.h"
 			>
 		</File>
 	</Files>

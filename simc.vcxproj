@@ -162,6 +162,10 @@
   <ItemGroup>
     <None Include="engine\data_definitions.hh" />
     <None Include="engine\data_enums.hh" />
+    <None Include="engine\utf8.h" />
+    <None Include="engine\utf8\checked.h" />
+    <None Include="engine\utf8\core.h" />
+    <None Include="engine\utf8\unchecked.h" />
     <None Include="engine\sc_extra_data.inc" />
     <None Include="engine\sc_extra_data_ptr.inc" />
     <None Include="engine\sc_scale_data.inc">

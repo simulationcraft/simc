@@ -212,14 +212,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="engine\data_definitions.hh"
-				>
-			</File>
-			<File
-				RelativePath="engine\data_enums.hh"
-				>
-			</File>
-			<File
 				RelativePath="qt\main.cpp"
 				>
 			</File>
@@ -490,6 +482,22 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="engine\utf8\checked.h"
+				>
+			</File>
+			<File
+				RelativePath="engine\utf8\core.h"
+				>
+			</File>
+			<File
+				RelativePath="engine\data_definitions.hh"
+				>
+			</File>
+			<File
+				RelativePath="engine\data_enums.hh"
+				>
+			</File>
+			<File
 				RelativePath="qt\sc_autoupdate.h"
 				>
 			</File>
@@ -523,24 +531,20 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="engine\utf8\unchecked.h"
+				>
+			</File>
+			<File
+				RelativePath="engine\utf8.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Generated Files"
 			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			>
-			<File
-				RelativePath="debug\moc_simulationcraftqt.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="release\moc_simulationcraftqt.cpp"
 				>
@@ -554,14 +558,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="debug\simcqt.res"
+				RelativePath="debug\moc_simulationcraftqt.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
-						Name="VCCustomBuildTool"
+						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
 			</File>
@@ -570,6 +574,18 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\simcqt.res"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
