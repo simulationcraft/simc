@@ -1172,6 +1172,10 @@ void action_t::schedule_execute()
   {
     player -> executing = this;
     player -> gcd_ready = sim -> current_time + gcd();
+    if( player -> action_queued )
+    {
+      player -> gcd_ready -= sim -> queue_gcd_reduction;
+    }
   }
   if ( special && execute_time() > 0 && ! proc )
   {
