@@ -15,7 +15,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& name )
 {
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
-  xml_node_t* node = xml_t::download( sim, url );
+  xml_node_t* node = xml_t::download( sim, url, "", -1 );
   if ( sim -> debug ) xml_t::print( node, sim -> output_file );
   return node;
 }
@@ -29,7 +29,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
 					       const char* p_s )
 {
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/talent/" + p_s;
-  xml_node_t* node = xml_t::download( sim, url );
+  xml_node_t* node = xml_t::download( sim, url, "", -1 );
   if ( sim -> debug ) xml_t::print( node, sim -> output_file );
   return node;
 }
