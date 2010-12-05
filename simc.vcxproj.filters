@@ -93,10 +93,23 @@
       <Filter>Data Files</Filter>
     </None>
     <None Include="engine\data_enums.hh" />
+    <None Include="engine\utf8.h" />
+    <None Include="engine\utf8\core.h">
+      <Filter>utf8</Filter>
+    </None>
+    <None Include="engine\utf8\checked.h">
+      <Filter>utf8</Filter>
+    </None>
+    <None Include="engine\utf8\unchecked.h">
+      <Filter>utf8</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">
       <UniqueIdentifier>{342108d4-6ee8-45eb-9202-53facfe3ea9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utf8">
+      <UniqueIdentifier>{3222852b-0c45-4154-b5b9-05232007bb46}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
