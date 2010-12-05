@@ -42,7 +42,7 @@ finger1=band_of_rays,heroic=1,stats=168int_252sta_112crit_112hit,reforge=crit_ha
 finger2=lavishly_jeweled_ring,heroic=1,stats=133int_252sta_112mastery_107hit,reforge=mastery_haste,gems=40int_10hit,enchant=40int
 trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
 trinket2=talisman_of_sinister_order,stats=234int,equip=onspellcast_918mastery_10%_20dur_75cd
-back=periwinkle_cloak,heroic=1,stats=168int_252sta_112haste_112mastery_580armor,reforge=mastery_hit
+back=periwinkle_cloak,heroic=1,stats=168int_252sta_112haste_112mastery_580armor,reforge=mastery_hit,enchant=50int
 main_hand=modguds_blade,heroic=1,stats=129int_194sta_86crit_86hit_1729sp,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_516min_958max
 off_hand=beautys_favorite_bone,heroic=1,stats=168int_252sta_98crit_120hit,reforge=crit_haste,enchant=100int
 ranged=corlas_baton,heroic=1,stats=95int_143sta_68mastery_56hit,reforge=mastery_haste
