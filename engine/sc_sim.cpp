@@ -401,9 +401,10 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
     armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
-    optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ),
+    optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ), default_actions( 0 ),
     normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
+    save_prefix_str( "save_" ),
     sim_data( &sim_t::base_data ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
@@ -1637,6 +1638,7 @@ std::vector<option_t>& sim_t::get_options()
       { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
       // @option_doc loc=skip
       { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
+      { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
       { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
       { "debug",                            OPT_BOOL,   &( debug                                    ) },
       { "html",                             OPT_STRING, &( html2_file_str                           ) },
@@ -1756,6 +1758,7 @@ std::vector<option_t>& sim_t::get_options()
       { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
       { "default_region",                   OPT_STRING, &( default_region_str                       ) },
       { "default_server",                   OPT_STRING, &( default_server_str                       ) },
+      { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
       { "spell_crit_suppression",           OPT_BOOL,   &( spell_crit_suppression                   ) },
       // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
       { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },

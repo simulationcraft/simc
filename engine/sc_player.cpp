@@ -513,6 +513,7 @@ bool player_t::init( sim_t* sim )
   bool unknown_options = false;
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
+    if ( sim -> default_actions ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
     if ( p->unknown_options.size() > 0 )

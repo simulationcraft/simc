@@ -3275,7 +3275,7 @@ void report_t::print_profiles( sim_t* sim )
 
     if ( file_name.empty() && sim -> save_profiles )
     {
-      file_name  = "save_";
+      file_name  = sim -> save_prefix_str;
       file_name += p -> name_str;
       file_name += ".simc";
       util_t::urlencode( util_t::format_text( file_name, sim -> input_is_utf8 ) );
