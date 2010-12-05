@@ -78,8 +78,14 @@ class SimulationCraftWindow : public QWidget
 
 public:
     qint32 historyWidth, historyHeight;
+    QWidget *customGearTab;
+    QWidget *customTalentsTab;
+    QWidget *customGlyphsTab;
     QTabWidget* mainTab;
     QTabWidget* optionsTab;
+    QTabWidget* importTab;
+    QTabWidget* resultsTab;
+    QTabWidget *createCustomProfileDock;
     QComboBox* patchChoice;
     QComboBox* latencyChoice;
     QComboBox* iterationsChoice;
@@ -97,30 +103,26 @@ public:
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
     QButtonGroup* plotsButtonGroup;
-    QTabWidget* importTab;
     SimulationCraftWebView* armoryView;
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* visibleWebView;
     QPushButton* rawrButton;
-    QPushButton* customButton;
     QLabel* rawrDir;
-    QLabel* customDir;
     QByteArray rawrDialogState;
     QListWidget* rawrList;
-    QListWidget* customList;
     QListWidget* historyList;
     QTreeWidget* bisTree;
     QString bisProfilePath;
     SimulationCraftTextEdit* simulateText;
     SimulationCraftTextEdit* overridesText;
     QPlainTextEdit* logText;
-    QTabWidget* resultsTab;
     QPushButton* backButton;
     QPushButton* forwardButton;
     SimulationCraftCommandLine* cmdLine;
     QProgressBar* progressBar;
     QPushButton* mainButton;
     QGroupBox* cmdLineGroupBox;
+    QGroupBox* createCustomCharData;
 
     QTimer* timer;
     ImportThread* importThread;

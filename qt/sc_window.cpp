@@ -685,17 +685,33 @@ void SimulationCraftWindow::createBestInSlotTab()
 
 void SimulationCraftWindow::createCustomTab()
 {
-  QVBoxLayout* customLayout = new QVBoxLayout();
-  QLabel* customLabel = new QLabel( "Reserved : Custom Character Profiler Page" );
-  customLabel->setWordWrap( true );
-  customLayout->addWidget( customLabel );
-  //(Removed)customLayout->addWidget( customButton = new QPushButton( "Change Directory" ) );
-  //To Be Done : Add Load & Save Character buttons
-  customLayout->addWidget( customDir = new QLabel( "Reserved : Character/File Name" ) );
-  customLayout->addWidget( customList = new QListWidget(), 1 );
+  //In Dev - Character Retrieval Boxes & Buttons
+  //In Dev - Load & Save Profile Buttons
+  //In Dev - Profiler Slots, Talent & Glyph Layout
+  QHBoxLayout* customLayout = new QHBoxLayout();
   QGroupBox* customGroupBox = new QGroupBox();
   customGroupBox->setLayout( customLayout );
   importTab->addTab( customGroupBox, "Custom Profile" );
+  customLayout->addWidget( createCustomCharData = new QGroupBox(tr("Character Data")), 1 );
+  createCustomCharData->setObjectName(QString::fromUtf8("createCustomCharData"));
+  customLayout->addWidget( createCustomProfileDock = new QTabWidget(), 1 );
+  createCustomProfileDock->setObjectName(QString::fromUtf8("createCustomProfileDock"));
+  createCustomProfileDock->setAcceptDrops(true);
+  customGearTab = new QWidget();
+  customGearTab->setObjectName(QString::fromUtf8("customGearTab"));
+  createCustomProfileDock->addTab(customGearTab, QString());
+  customTalentsTab = new QWidget();
+  customTalentsTab->setObjectName(QString::fromUtf8("customTalentsTab"));
+  createCustomProfileDock->addTab(customTalentsTab, QString());
+  customGlyphsTab = new QWidget();
+  customGlyphsTab->setObjectName(QString::fromUtf8("customGlyphsTab"));
+  createCustomProfileDock->addTab(customGlyphsTab, QString());
+  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customGearTab), QApplication::translate("createCustomTab", "Gear", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customGearTab), QApplication::translate("createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customTalentsTab), QApplication::translate("createCustomTab", "Talents", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customTalentsTab), QApplication::translate("createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customGlyphsTab), QApplication::translate("createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customGlyphsTab), QApplication::translate("createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8));
 }
 
 void SimulationCraftWindow::createSimulateTab()
