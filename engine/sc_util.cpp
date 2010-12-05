@@ -514,7 +514,7 @@ school_type util_t::parse_school_type( const std::string& name )
   return SCHOOL_NONE;
 }
 
-// util_t::talent_tree_string ==============================================
+// util_t::talent_tree ==============================================
 
 int util_t::talent_tree( int tree, player_type ptype )
 {
@@ -597,38 +597,47 @@ int util_t::talent_tree( int tree, player_type ptype )
 
 // util_t::talent_tree_string ==============================================
 
-const char* util_t::talent_tree_string( int tree )
+char* util_t::talent_tree_string( int tree, bool armory_format )
 {
+  char* str = "Unknown";
+
   switch ( tree )
   {
-  case TREE_BLOOD:         return "blood";
-  case TREE_UNHOLY:        return "unholy";
-  case TREE_BALANCE:       return "balance";
-  case TREE_FERAL:         return "feral";
-  case TREE_RESTORATION:   return "restoration";
-  case TREE_BEAST_MASTERY: return "beast_mastery";
-  case TREE_MARKSMANSHIP:  return "marksmanship";
-  case TREE_SURVIVAL:      return "survival";
-  case TREE_ARCANE:        return "arcane";
-  case TREE_FIRE:          return "fire";
-  case TREE_FROST:         return "frost";
-  case TREE_RETRIBUTION:   return "retribution";
-  case TREE_DISCIPLINE:    return "discipline";
-  case TREE_HOLY:          return "holy";
-  case TREE_SHADOW:        return "shadow";
-  case TREE_ASSASSINATION: return "assassination";
-  case TREE_COMBAT:        return "combat";
-  case TREE_SUBTLETY:      return "subtlety";
-  case TREE_ELEMENTAL:     return "elemental";
-  case TREE_ENHANCEMENT:   return "enhancement";
-  case TREE_AFFLICTION:    return "affliction";
-  case TREE_DEMONOLOGY:    return "demonology";
-  case TREE_DESTRUCTION:   return "destruction";
-  case TREE_ARMS:          return "arms";
-  case TREE_FURY:          return "fury";
-  case TREE_PROTECTION:    return "protection";
+  case TREE_BLOOD:         str = "Blood"; break;
+  case TREE_UNHOLY:        str = "Unholy"; break;
+  case TREE_BALANCE:       str = "Balance"; break;
+  case TREE_FERAL:         str = "Feral"; break;
+  case TREE_RESTORATION:   str = "Restoration"; break;
+  case TREE_BEAST_MASTERY: str = "Beast Mastery"; break;
+  case TREE_MARKSMANSHIP:  str = "Marksmanship"; break;
+  case TREE_SURVIVAL:      str = "Survival"; break;
+  case TREE_ARCANE:        str = "Arcane"; break;
+  case TREE_FIRE:          str = "Fire"; break;
+  case TREE_FROST:         str = "Frost"; break;
+  case TREE_RETRIBUTION:   str = "Retribution"; break;
+  case TREE_DISCIPLINE:    str = "Discipline"; break;
+  case TREE_HOLY:          str = "Holy"; break;
+  case TREE_SHADOW:        str = "Shadow"; break;
+  case TREE_ASSASSINATION: str = "Assassination"; break;
+  case TREE_COMBAT:        str = "Combat"; break;
+  case TREE_SUBTLETY:      str = "Subtlety"; break;
+  case TREE_ELEMENTAL:     str = "Elemental"; break;
+  case TREE_ENHANCEMENT:   str = "Enhancement"; break;
+  case TREE_AFFLICTION:    str = "Affliction"; break;
+  case TREE_DEMONOLOGY:    str = "Demonology"; break;
+  case TREE_DESTRUCTION:   str = "Destruction"; break;
+  case TREE_ARMS:          str = "Arms"; break;
+  case TREE_FURY:          str = "Fury"; break;
+  case TREE_PROTECTION:    str = "Protection"; break;
+  default: break;
   }
-  return "unknown";
+  if ( armory_format )
+  {
+    std::string s = str;
+    armory_t::format( s );
+    return (char *) s.c_str();
+  }
+  return str;
 }
 
 // util_t::parse_talent_tree ===============================================

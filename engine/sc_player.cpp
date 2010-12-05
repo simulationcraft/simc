@@ -2757,43 +2757,7 @@ talent_tab_name player_t::primary_tab() SC_CONST
 
 const char* player_t::primary_tree_name() SC_CONST
 {
-  return talent_tree_name( primary_tree() );
-}
-
-// player_t::talent_tree_name ==============================================
-
-const char* player_t::talent_tree_name( talent_tree_type t ) SC_CONST
-{
-  switch ( t )
-  {
-    case TREE_BLOOD: return "Blood";
-    case TREE_UNHOLY: return "Unholy";
-    case TREE_BALANCE: return "Balance";
-    case TREE_FERAL: return "Feral";
-    case TREE_RESTORATION: return "Restoration";
-    case TREE_BEAST_MASTERY: return "Beast Mastery";
-    case TREE_MARKSMANSHIP: return "Marksmanship";
-    case TREE_SURVIVAL: return "Survival";
-    case TREE_ARCANE: return "Arcane";
-    case TREE_FIRE: return "Fire";
-    case TREE_FROST: return "Frost";
-    case TREE_RETRIBUTION: return "Retribution";
-    case TREE_DISCIPLINE: return "Discipline";
-    case TREE_HOLY: return "Holy";
-    case TREE_SHADOW: return "Shadow";
-    case TREE_ASSASSINATION: return "Assassination";
-    case TREE_COMBAT: return "Combat";
-    case TREE_SUBTLETY: return "Subtlety";
-    case TREE_ELEMENTAL: return "Elemental";
-    case TREE_ENHANCEMENT: return "Enhancement";
-    case TREE_AFFLICTION: return "Affliction";
-    case TREE_DEMONOLOGY: return "Demonology";
-    case TREE_DESTRUCTION: return "Destruction";
-    case TREE_ARMS: return "Arms";
-    case TREE_FURY: return "Fury";
-    case TREE_PROTECTION: return "Protection";
-    default: return NULL;
-  }
+  return util_t::talent_tree_string( primary_tree() );
 }
 
 // player_t::primary_tree ===================================================

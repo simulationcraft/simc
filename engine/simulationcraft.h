@@ -1618,7 +1618,7 @@ struct util_t
   static const char* stat_type_abbrev          ( int type );
   static const char* stat_type_wowhead         ( int type );
   static int         talent_tree               ( int tree, player_type ptype );
-  static const char* talent_tree_string        ( int tree );
+  static char* talent_tree_string              ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
 
   static int parse_attribute_type              ( const std::string& name );
@@ -3126,7 +3126,6 @@ struct player_t
   virtual talent_tree_type primary_tree() SC_CONST;
   virtual talent_tab_name primary_tab() SC_CONST;
   virtual const char* primary_tree_name() SC_CONST;
-  virtual const char* talent_tree_name( talent_tree_type t ) SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
   virtual void stat_gain( int stat, double amount );

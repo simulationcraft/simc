@@ -1739,7 +1739,7 @@ static void print_html2_talents( FILE* file, player_t* a )
     {
       for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
       {
-        util_t::fprintf( file, "<tr> <th>%s</th> </tr>\n", a -> talent_tree_name( a -> tree_type[ i_tab ] ) );
+        util_t::fprintf( file, "<tr> <th>%s</th> </tr>\n", util_t::talent_tree_string( a -> tree_type[ i_tab ], false ) );
         talent_num = 0;
         while ( ( talent_id = a -> player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
         {
