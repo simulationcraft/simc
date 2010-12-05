@@ -948,11 +948,6 @@ struct paladin_seal_t : public paladin_attack_t
     if ( p -> active_seal == seal_type ) return false;
     return paladin_attack_t::ready();
   }
-
-  virtual double cost() SC_CONST 
-  { 
-    return player -> in_combat ? paladin_attack_t::cost() : 0;
-  }
 };
 
 // Seal of Justice ==========================================================
@@ -1277,6 +1272,7 @@ struct judgement_t : public paladin_attack_t
     if ( ! seal )
       return;
 
+    seal -> trigger_gcd = trigger_gcd;
     seal -> execute();
 
     if ( seal -> result_is_hit() )

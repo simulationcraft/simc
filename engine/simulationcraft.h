@@ -3543,7 +3543,7 @@ struct action_t : public spell_id_t
 
   virtual double cost() SC_CONST;
   virtual double haste() SC_CONST        { return 1.0;               }
-  virtual double gcd() SC_CONST          { return trigger_gcd;       }
+  virtual double gcd() SC_CONST;
   virtual double execute_time() SC_CONST { return base_execute_time; }
   virtual double tick_time() SC_CONST;
   virtual int    hasted_num_ticks() SC_CONST;

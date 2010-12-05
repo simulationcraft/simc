@@ -465,6 +465,9 @@ rank_t* action_t::init_rank( rank_t* rank_list,
 
 double action_t::cost() SC_CONST
 {
+  if ( ! harmful && ! player -> in_combat )
+    return 0;
+
   double c = base_cost;
 
   if ( resource == RESOURCE_MANA )
@@ -475,6 +478,16 @@ double action_t::cost() SC_CONST
   if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_cost, c, util_t::resource_type_string( resource ) );
 
   return floor( c );
+}
+
+// action_t::gcd =============================================================
+
+double action_t::gcd() SC_CONST
+{
+  if ( ! harmful && ! player -> in_combat )
+    return 0;
+
+  return trigger_gcd;
 }
 
 // action_t::travel_time =====================================================

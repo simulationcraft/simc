@@ -55,7 +55,7 @@ double spell_t::haste() SC_CONST
 
 double spell_t::gcd() SC_CONST
 {
-  double t = trigger_gcd;
+  double t = action_t::gcd();
   if ( t == 0 ) return 0;
 
   t *= haste();
