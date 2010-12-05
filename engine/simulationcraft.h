@@ -2415,6 +2415,7 @@ struct sim_t
   std::string downtime_chart;
   std::vector<double> iteration_timeline;
   std::vector<int> distribution_timeline;
+  std::vector<int> divisor_timeline;
   std::string timeline_chart;
   std::string output_file_str, log_file_str, html_file_str, html2_file_str, wiki_file_str, xml_file_str, csv_file_str;
   std::string path_str;

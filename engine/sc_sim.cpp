@@ -985,7 +985,7 @@ void sim_t::analyze_player( player_t* p )
 
   for ( int i=0; i < max_buckets; i++ )
   {
-    p -> timeline_resource[ i ] /= iterations;
+    p -> timeline_resource[ i ] /= divisor_timeline[ i ];
   }
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -1100,6 +1100,21 @@ void sim_t::analyze()
 {
   if ( total_seconds == 0 ) return;
 
+  // divisor_timeline is necessary because not all iterations go the same length of time
+
+  int max_buckets = (int) floor( total_seconds / iterations ) + 1;
+  divisor_timeline.insert( divisor_timeline.begin(), max_buckets, 0 );
+
+  int num_timelines = iteration_timeline.size();
+  for( int i=0; i < num_timelines; i++ )
+  {
+    int last = (int) floor( iteration_timeline[ i ] );
+    int num_buckets = divisor_timeline.size();
+    int delta = 1 + last - num_buckets;
+    if( delta > 0 ) divisor_timeline.insert( divisor_timeline.begin() + num_buckets, delta, 0 );
+    for( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
+  }
+
   // buff_t::analyze must be called before total_seconds is normalized via iteration count
 
   for ( buff_t* b = buff_list; b; b = b -> next )
@@ -1113,8 +1128,6 @@ void sim_t::analyze()
     analyze_player( p );
   }
 
-
-  int num_timelines = iteration_timeline.size();
   if ( num_timelines > 2 )
   {
     std::sort( iteration_timeline.begin(), iteration_timeline.end() );

@@ -175,8 +175,6 @@ void stats_t::analyze()
 
   }
 
-
-
   resource_consumed /= num_iterations;
 
   num_executes /= num_iterations;
@@ -192,7 +190,8 @@ void stats_t::analyze()
 
   for ( int i=0; i < num_buckets; i++ )
   {
-    timeline_dmg[ i ] /= num_iterations;
+    if( i == sim -> divisor_timeline.size() ) break;
+    timeline_dmg[ i ] /= sim -> divisor_timeline[ i ];
   }
 
   timeline_dps.clear();
