@@ -70,7 +70,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   std::string type_str, race_str, name_str;
   int level;
 
-  if ( ! xml_t::get_value( name_str, xml_t::get_child( name_node, "a" ), "." ) ||
+  if ( ! xml_t::get_value( name_str, xml_t::get_child( name_node, "a" ), "href" ) ||
        ! xml_t::get_value( type_str, xml_t::get_node( profile_info, "span", "class", "class" ), "." ) ||
        ! xml_t::get_value( race_str, xml_t::get_node( profile_info, "span", "class", "race"  ), "." ) ||
        ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) )
