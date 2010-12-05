@@ -1565,13 +1565,13 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
   util_t::fprintf( file,
        " <tr>"
        " <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-stats');\">%s</a></td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f</td> <td align=right>%.2fsec</td>"
-       " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
+       " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
        " <td align=right>%.1f%%</td> <td align=right>%.1f%%</td> <td>%.1f%%</td> <td align=right>%.1f%%</td>"
        " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f%%</td>"
        " </tr>\n",
        s -> name_str.c_str(), p -> name(), s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
        s -> num_executes, s -> frequency,
-       s -> dpe, s -> dpet, s -> dpr,
+       s -> dpe, s -> dpet, s -> dpr, s -> rpe,
        s -> execute_results[ RESULT_HIT  ].avg_dmg,
        s -> execute_results[ RESULT_CRIT ].avg_dmg,
        s -> execute_results[ RESULT_CRIT ].max_dmg,
@@ -1922,7 +1922,7 @@ static void print_html2_player( FILE* file, player_t* p )
        "<table class=\"player\">\n"
        " <thead><tr>"
        " <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-ability');\">Ability</a></th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
-       " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
+       " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>RPE</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
        " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
        " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
        " </tr></thead><tbody id=\"%s-ability\">\n",
