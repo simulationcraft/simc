@@ -1788,7 +1788,6 @@ static void print_html2_player( FILE* file, player_t* p )
        "  <tr> <th>Name</th> <th>Race</th> <th>Class</th> <th>Tree</th> <th>Level</th> </tr>\n"
        "  <tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%d</td>\n"
        "</table><br />\n",
-       p -> name(), p -> race_str.c_str(),
        n.c_str(), p -> race_str.c_str(),
        p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
        util_t::talent_tree_string( p -> primary_tree() ), p -> level );

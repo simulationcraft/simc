@@ -267,7 +267,7 @@ void SimulationCraftWindow::updateSimProgress()
   if( mainTab->currentIndex() != TAB_IMPORT &&
       mainTab->currentIndex() != TAB_RESULTS )
   {
-    progressBar->setFormat( simPhase.c_str() );
+    progressBar->setFormat( QString::fromUtf8( simPhase.c_str() ) );
     progressBar->setValue( simProgress );
   }
 }
@@ -896,7 +896,9 @@ void ImportThread::importArmory()
   else
   {
     std::string talents = mainWindow->armorySpecChoice  ->currentText().toStdString();
-    player = battle_net_t::download_player( sim, region.toStdString(), server.toStdString(), character.toStdString(), talents );
+    QByteArray s = server.toUtf8(), c = character.toUtf8();
+    std::string cpp_s = s.constData(), cpp_c = c.constData();
+    player = battle_net_t::download_player( sim, region.toStdString(), cpp_s, cpp_c, talents );
   }
 }
 
@@ -920,7 +922,7 @@ void ImportThread::run()
     sim->init();
     std::string buffer="";
     player->create_profile( buffer );
-    profile = buffer.c_str();
+    profile = QString::fromUtf8( buffer.c_str() );
   }
 }
 
@@ -957,7 +959,7 @@ void SimulationCraftWindow::importFinished()
     simulateText->setPlainText( importThread->profile );
     simulateTextHistory.add( importThread->profile );
 
-    QString label = importThread->player->name_str.c_str();
+    QString label = QString::fromUtf8( importThread->player->name_str.c_str() );
     while( label.size() < 20 ) label += " ";
     label += importThread->player->origin_str.c_str();
 

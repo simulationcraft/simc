@@ -217,6 +217,10 @@
 		6E84EB621292F40B00976A2C /* sc_spell_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_spell_data.cpp; sourceTree = "<group>"; };
 		6E84EB631292F40B00976A2C /* sc_spell_info.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_spell_info.cpp; sourceTree = "<group>"; };
 		6E84EB641292F40B00976A2C /* sc_talent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_talent.cpp; sourceTree = "<group>"; };
+		6EC66C6A12AA5A580075FB57 /* checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checked.h; sourceTree = "<group>"; };
+		6EC66C6B12AA5A580075FB57 /* unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unchecked.h; sourceTree = "<group>"; };
+		6EC66C6C12AA5A580075FB57 /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8.h; sourceTree = "<group>"; };
+		6EC66C6F12AA5A920075FB57 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* simc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = simc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -256,6 +260,8 @@
 		08FB7795FE84155DC02AAC07 /* engine */ = {
 			isa = PBXGroup;
 			children = (
+				6EC66C6912AA5A580075FB57 /* utf8 */,
+				6EC66C6C12AA5A580075FB57 /* utf8.h */,
 				6E84EB5C1292F40B00976A2C /* data_definitions.hh */,
 				6E84EB5D1292F40B00976A2C /* data_enums.hh */,
 				6E84EB5E1292F40B00976A2C /* sc_battle_net.cpp */,
@@ -355,6 +361,16 @@
 				6E539C14129ECAC700472FA2 /* simulationcraftqt.h */,
 			);
 			name = qt;
+			sourceTree = "<group>";
+		};
+		6EC66C6912AA5A580075FB57 /* utf8 */ = {
+			isa = PBXGroup;
+			children = (
+				6EC66C6A12AA5A580075FB57 /* checked.h */,
+				6EC66C6B12AA5A580075FB57 /* unchecked.h */,
+				6EC66C6F12AA5A920075FB57 /* core.h */,
+			);
+			path = utf8;
 			sourceTree = "<group>";
 		};
 		C6859E8C029090F304C91782 /* Documentation */ = {

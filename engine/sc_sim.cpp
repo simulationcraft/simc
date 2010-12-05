@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.h"
+#include "utf8.h"
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -176,9 +177,18 @@ static bool parse_player( sim_t*             sim,
 
     option_t::parse( sim, "player", options, player_options );
 
+    sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
+    
     if ( wowhead.empty() )
     {
-      sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, talents );
+      if ( region == "cn" || region == "tw" )
+      {
+        sim -> active_player = armory_t::download_player( sim, region, server, player_name, "active" );
+      }
+      else
+      {
+        sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, "active" );
+      }
     }
     else
     {
@@ -231,16 +241,18 @@ static bool parse_armory( sim_t*             sim,
       std::vector<std::string> encoding;
       if ( util_t::string_split( encoding, player_name, "|" ) > 1 )
       {
-	player_name = encoding[ 0 ];
-	description = encoding[ 1 ];
+        player_name = encoding[ 0 ];
+        description = encoding[ 1 ];
       }
+      if ( ! sim -> input_is_utf8 )
+        sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
       if ( region == "cn" || region == "tw" )
       {
-	sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
+        sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
       }
       else
       {
-	sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, description );
+        sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, description );
       }
       if ( ! sim -> active_player ) return false;
     }
