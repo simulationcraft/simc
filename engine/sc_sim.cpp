@@ -1826,11 +1826,13 @@ bool sim_t::parse_option( const std::string& name,
 
   if ( active_player )
   {
+    // Give the player a chance to parse them through the spell data stuff
     nvpair_t *s = new nvpair_t( name, value );
     active_player -> unknown_options.push_back( s );
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 // sim_t::parse_options =====================================================
