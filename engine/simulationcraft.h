@@ -3125,6 +3125,8 @@ struct player_t
   virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
   virtual talent_tree_type primary_tree() SC_CONST;
   virtual talent_tab_name primary_tab() SC_CONST;
+  virtual const char* primary_tree_name() SC_CONST;
+  virtual const char* talent_tree_name( talent_tree_type t ) SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
   virtual void stat_gain( int stat, double amount );

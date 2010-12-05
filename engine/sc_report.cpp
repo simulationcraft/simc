@@ -1666,7 +1666,7 @@ static void print_html2_stats (FILE* file, player_t* a )
 {
   if ( a -> total_seconds > 0 )
   {
-  util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-stats');\">%s</a></th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr></thead>\n", a -> name(),a -> name(),a -> name() );
+  util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-stats');\">%s</a></th> <th>Raid-Buffed</th> <th>Un-Buffed</th> <th>Gear Amount</th> </tr></thead>\n", a -> name(),a -> name() );
 
   util_t::fprintf( file, " <tbody id=\"%s-stats\" style=\"display:none;\"> <tr> <th>Strength</th>  <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n",a -> name(), a -> attribute_buffed[ ATTR_STRENGTH  ], a -> strength(),  a -> stats.attribute[ ATTR_STRENGTH  ] );
   util_t::fprintf( file, " <tr> <th>Agility</th>   <td>%.0f</td> <td>%.0f</td> <td>%.0f</td> </tr>\n", a -> attribute_buffed[ ATTR_AGILITY   ], a -> agility(),   a -> stats.attribute[ ATTR_AGILITY   ] );
@@ -1703,45 +1703,65 @@ static void print_html2_stats (FILE* file, player_t* a )
   }
 }
 
-static void print_html2_talents(FILE* file, player_t* a )
+static void print_html2_talents( FILE* file, player_t* a )
 {
   if ( a -> total_seconds > 0 )
+  {
+    util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-talents');\">%s Talents</a></th> <th>Rank</th> </tr></thead>\n", a -> name(), a -> name() );
+
+    util_t::fprintf( file, " <tbody id=\"%s-talents\" style=\"display:none;\">", a -> name() );
+
+    uint32_t i_tab, talent_num, talent_id, i;
+
+    if ( a -> is_pet() )
     {
-
-    util_t::fprintf( file, "\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-talents');\">Talents</a>\n", a -> name(),a -> name() );
-
-    util_t::fprintf( file, "<table class=\"player\"> <tbody id=\"%s-talents\" style=\"display:none;\">" );
-
-    uint32_t i_tab, talent_num, talent_id,i;
-
-     for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
-     {
-       talent_num = 0;
-       util_t::fprintf( file, "<td><table>\n" );
-       while ( a -> is_pet() ? ( talent_id = a->player_data.talent_pet_get_id_by_num( a -> cast_pet() -> pet_type, talent_num ) ) : ( talent_id = a->player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
-       {
-         util_t::fprintf( file, " <tr> <td>%s</td><td>",a -> player_data.talent_name_str(talent_id) );
-         i=0;
-         while( i < a -> talent_list2.size() )
-           {
-           if ( talent_id == a -> talent_list2[i] -> talent_id() )
-             {
-             if ( a -> talent_list2[i] -> real_name())
-             util_t::fprintf( file, "%s",a -> talent_list2[i] -> real_name() );
-             break;
-             }
-           i++;
-           }
-         util_t::fprintf( file,"</td></tr>\n");
-
-
-         talent_num++;
-       }
-       util_t::fprintf( file, "</table</td>\n" );
-     }
-
-    util_t::fprintf( file, "</tbody></table> <br />\n" );
+      util_t::fprintf( file, "<tr> <th>Pet Talents</th> </tr>\n" );
+      talent_num = 0;
+      while ( ( talent_id = a -> player_data.talent_pet_get_id_by_num( a -> cast_pet() -> pet_type, talent_num ) ) != 0 )
+      {
+        util_t::fprintf( file, " <tr> <td>%s</td><td>", a -> player_data.talent_name_str(talent_id) );
+        i=0;
+        while( i < a -> talent_list2.size() )
+        {
+          if ( talent_id == a -> talent_list2[i] -> talent_id() )
+          {              
+            if ( a -> talent_list2[i] -> rank() )
+              util_t::fprintf( file, "%d", a -> talent_list2[i] -> rank() );
+            break;
+          }
+          i++;
+        }
+        util_t::fprintf( file,"</td></tr>\n");
+        talent_num++;
+      }
     }
+    else
+    {
+      for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
+      {
+        util_t::fprintf( file, "<tr> <th>%s</th> </tr>\n", a -> talent_tree_name( a -> tree_type[ i_tab ] ) );
+        talent_num = 0;
+        while ( ( talent_id = a -> player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
+        {
+          util_t::fprintf( file, " <tr> <td>%s</td><td>", a -> player_data.talent_name_str(talent_id) );
+          i=0;
+          while( i < a -> talent_list2.size() )
+          {
+            if ( talent_id == a -> talent_list2[i] -> talent_id() )
+            {              
+              if ( a -> talent_list2[i] -> rank() )
+                util_t::fprintf( file, "%d", a -> talent_list2[i] -> rank() );
+              break;
+            }
+            i++;
+          }
+          util_t::fprintf( file,"</td></tr>\n");
+          talent_num++;
+        }
+      }
+    }
+    util_t::fprintf( file, "</tbody></table> <br />\n" );
+  }
 }
 
 // print_html2_player =========================================================
