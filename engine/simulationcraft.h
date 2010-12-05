@@ -3710,14 +3710,15 @@ struct dot_t
   event_t* tick_event;
   int num_ticks, current_tick, added_ticks, ticking;
   double ready;
+  double miss_time;
   dot_t* next;
   dot_t() : player(0) {}
   dot_t( const std::string& n, player_t* p ) : 
     player(p), action(0), name_str(n), tick_event(0),
     num_ticks(0), current_tick(0), added_ticks(0), ticking(0),
-    ready(-1), next(0) {}
+    ready(-1), miss_time(-1), next(0) {}
   virtual ~dot_t() {}
-  virtual void reset() { tick_event=0; current_tick=0; added_ticks=0; ticking=0; ready=-1; }
+  virtual void reset() { tick_event=0; current_tick=0; added_ticks=0; ticking=0; ready=-1; miss_time=-1; }
   virtual void recalculate_ready()
   {
     // Extending a DoT does not interfere with the next tick event.  To determine the 

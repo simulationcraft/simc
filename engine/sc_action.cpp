@@ -1326,7 +1326,7 @@ void action_t::update_ready()
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
                        player -> name(), sim -> reaction_time, name(), dot -> name() );
 
-      dot -> ready = sim -> current_time + sim -> reaction_time;
+      dot -> miss_time = sim -> current_time;
     }
   }
 }
@@ -1651,6 +1651,26 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate() { result_num = action -> travel_event != NULL; return TOK_NUM; }
     };
     return new in_flight_expr_t( this );
+  }
+  if ( name_str == "miss_react" )
+  {
+    struct miss_react_expr_t : public action_expr_t
+    {
+      miss_react_expr_t( action_t* a ) : action_expr_t( a, "miss_react", TOK_NUM ) {}
+      virtual int evaluate() { 
+        if ( action -> dot -> miss_time == -1 
+          || action -> sim -> current_time >= action -> dot -> miss_time + action -> sim -> reaction_time )
+        {
+          result_num = 1;
+        }
+        else
+        {
+          result_num = 0; 
+        }
+        return TOK_NUM; 
+      }
+    };
+    return new miss_react_expr_t( this );
   }
 
   return player -> create_expression( this, name_str );
