@@ -1,12 +1,12 @@
 #!./simc 
 
-warlock=Warlock_AffDrain_Blue_346
-origin="Warlock_AffDrain_Blue_346.simc"
+warlock=Warlock_Affliction_PreRaid
+origin="Warlock_Affliction_PreRaid.simc"
 level=85
 race=undead
 use_pre_potion=1
 professions=enchanting=525/inscription=525
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=22322200301332032101000000000000000002302200000000000000
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=22322200301332032100000000000000000003302200000000000000
 glyphs=corruption/haunt/life_tap/bane_of_agony/shadow_bolt
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -24,15 +24,14 @@ actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
 actions+=/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/summon_infernal
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
-actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up
 actions+=/life_tap,mana_percentage<=35
-actions+=/drain_life,interrupt=1
+actions+=/shadow_bolt
 actions+=/life_tap
 head=helm_of_the_typhonic_beast,heroic=1,type=cloth,stats=242int_454sta_162hit_182mastery_942armor,reforge=mastery_haste,gems=ember_shadowspirit_54int_20int_20haste_30int,enchant=60int_35crit
 neck=lightning_flash_pendant,stats=190int_286sta_127crit_127mastery,reforge=crit_haste
 shoulders=mantle_of_the_eastern_lords,heroic=1,type=cloth,stats=205int_337sta_150mastery_130hit_870armor,reforge=mastery_haste,gems=40int,enchant=130int_25haste
-chest=inquisition_robes,heroic=1,type=cloth,stats=262int_454sta_202hit_162mastery_1160armor,reforge=mastery_haste,gems=40int_40int,enchant=20all
+chest=robes_of_rampant_growth,heroic=1,type=cloth,stats=262int_454sta_202crit_162haste_1160armor,reforge=crit_hit,gems=40int_40int,enchant=20all
 waist=dreamless_belt,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_haste,gems=40int
 legs=breeches_of_mended_nightmares,type=cloth,stats=321int_512sta_214crit_216haste_1094armor,reforge=crit_hit,gems=40int_10haste,enchant=95int_80sta
 feet=desert_walker_sandals,type=cloth,stats=233int_380sta_149haste_169hit_860armor,gems=40int,enchant=35mastery
@@ -53,10 +52,10 @@ ranged=wand_of_dark_worship,heroic=1,stats=95int_143sta_63crit_63haste,reforge=c
 # gear_intellect=4480
 # gear_spirit=20
 # gear_spell_power=1729
-# gear_hit_rating=1527
-# gear_crit_rating=403
-# gear_haste_rating=1422
-# gear_mastery_rating=933
+# gear_hit_rating=1405
+# gear_crit_rating=525
+# gear_haste_rating=1520
+# gear_mastery_rating=835
 # gear_armor=7499
 # meta_gem=ember_shadowspirit
 # main_hand=blade_of_the_burning_sun,heroic=1,weapon=dagger_1.80speed_516min_958max,enchant=power_torrent

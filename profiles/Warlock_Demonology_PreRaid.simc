@@ -1,36 +1,41 @@
 #!./simc 
 
-warlock=Warlock_Destruction_Blue_346
-origin="Warlock_Destruction_Blue_346.simc"
+warlock=Warlock_Demonology_PreRaid
+origin="Warlock_Demonology_PreRaid.simc"
 level=85
 race=undead
 use_pre_potion=1
 professions=enchanting=525/inscription=525
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00300000000000000023002000000000000003322220302201312201
-glyphs=conflagrate/immolate/imp/life_tap
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00000000000000000033222003103122122113122200000000000000
+glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
-actions+=/summon_imp
+actions+=/summon_felguard
 actions+=/dark_intent
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
 actions+=/demon_soul
-actions+=/soulburn,if=buff.bloodlust.down
+actions+=/hand_of_guldan,if=dot.immolate.remains>(cast_time+travel_time)
+actions+=/immolate,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time&target.time_to_die>=4&miss_react
+actions+=/soulburn,if=buff.metamorphosis.up&buff.bloodlust.down
 actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
+actions+=/metamorphosis
+actions+=/immolate,if=(dot.immolate.remains<cast_time+tick_time|!ticking)&target.time_to_die>=4&miss_react
 actions+=/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react
-actions+=/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
-actions+=/conflagrate
+actions+=/immolation,if=buff.metamorphosis.remains>10
 actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
 actions+=/shadowflame
-actions+=/chaos_bolt
-actions+=/soul_fire,if=buff.empowered_imp.react|buff.soulburn.up
+actions+=/hand_of_guldan
+actions+=/incinerate,if=buff.molten_core.react
+actions+=/soul_fire,if=buff.decimation.react
 actions+=/summon_infernal
-actions+=/incinerate
+actions+=/life_tap,mana_percentage<=35
+actions+=/shadow_bolt
 actions+=/life_tap
-head=helm_of_the_typhonic_beast,heroic=1,type=cloth,stats=242int_454sta_162hit_182mastery_942armor,reforge=mastery_crit,gems=ember_shadowspirit_54int_20int_20crit_30int,enchant=60int_35crit
+head=crown_of_enfeebled_bodies,heroic=1,type=cloth,stats=242int_454sta_162crit_182haste_942armor,reforge=crit_hit,gems=ember_shadowspirit_54int_20int_20hit_30int,enchant=60int_35crit
 neck=lightning_flash_pendant,stats=190int_286sta_127crit_127mastery,reforge=mastery_hit
-shoulders=mantle_of_the_eastern_lords,heroic=1,type=cloth,stats=205int_337sta_150mastery_130hit_870armor,reforge=mastery_haste,gems=40int,enchant=130int_25haste
+shoulders=mantle_of_master_cho,heroic=1,type=cloth,stats=205int_337sta_150crit_130haste_870armor,reforge=crit_hit,gems=40int,enchant=130int_25haste
 chest=robes_of_orsis,type=cloth,stats=262int_454sta_172crit_192hit_1160armor,reforge=crit_haste,gems=40int_40int,enchant=20all
 waist=dreamless_belt,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_haste,gems=40int
 legs=breeches_of_mended_nightmares,type=cloth,stats=321int_512sta_214crit_216haste_1094armor,reforge=crit_hit,gems=40int_10haste,enchant=95int_80sta
@@ -41,10 +46,10 @@ finger1=band_of_rays,heroic=1,stats=168int_252sta_112crit_112hit,reforge=crit_ha
 finger2=lavishly_jeweled_ring,heroic=1,stats=133int_252sta_112mastery_107hit,reforge=mastery_haste,gems=40int_10hit,enchant=40int
 trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
 trinket2=talisman_of_sinister_order,stats=234int,equip=onspellcast_918mastery_10%_20dur_75cd
-back=shadow_of_perfect_bliss,heroic=1,stats=168int_252sta_128crit_85hit_580armor,reforge=crit_haste,enchant=50int
+back=cloak_of_ancient_wisdom,stats=168int_252sta_112crit_112haste_580armor,reforge=crit_hit,enchant=50int
 main_hand=modguds_blade,heroic=1,stats=129int_194sta_86crit_86hit_1729sp,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_516min_958max
 off_hand=beautys_favorite_bone,heroic=1,stats=168int_252sta_98crit_120hit,reforge=crit_haste,enchant=100int
-ranged=corlas_baton,heroic=1,stats=95int_143sta_68mastery_56hit,reforge=mastery_haste
+ranged=wand_of_dark_worship,heroic=1,stats=95int_143sta_63crit_63haste,reforge=crit_hit
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
@@ -52,10 +57,10 @@ ranged=corlas_baton,heroic=1,stats=95int_143sta_68mastery_56hit,reforge=mastery_
 # gear_intellect=4480
 # gear_spirit=20
 # gear_spell_power=1729
-# gear_hit_rating=1742
-# gear_crit_rating=811
-# gear_haste_rating=1027
-# gear_mastery_rating=690
+# gear_hit_rating=1522
+# gear_crit_rating=936
+# gear_haste_rating=1376
+# gear_mastery_rating=449
 # gear_armor=7499
 # meta_gem=ember_shadowspirit
 # main_hand=modguds_blade,heroic=1,weapon=dagger_1.80speed_516min_958max,enchant=power_torrent
