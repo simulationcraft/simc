@@ -2417,7 +2417,7 @@ struct sim_t
   std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
-  std::string output_file_str, log_file_str, html_file_str, html2_file_str, wiki_file_str, xml_file_str, csv_file_str;
+  std::string output_file_str, log_file_str, html_file_str, html2_file_str, html3_file_str,  wiki_file_str, xml_file_str, csv_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
@@ -3963,6 +3963,7 @@ struct report_t
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
   static void print_html2( sim_t* );
+  static void print_html3( sim_t* );
   static void print_wiki( sim_t* );
   static void print_xml( sim_t* );
   static void print_suite( sim_t* );

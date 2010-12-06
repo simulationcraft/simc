@@ -1424,6 +1424,39 @@ static void print_html2_contents( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "<br /><hr />\n" );
 }
 
+// print_html3_contents =======================================================
+
+static void print_html3_contents( FILE*  file, sim_t* sim )
+{
+  util_t::fprintf( file, "<h2 class=\"toggle\">Table of Contents</h2>\n" );
+  util_t::fprintf( file, "<div class=\"toggle-content\">\n" );
+  util_t::fprintf( file, "<ul class=\"toc\">\n" );
+  util_t::fprintf( file, " <li> <a href=\"#raid_summary\"> Raid Summary </a> </li>\n" );
+  if ( sim -> scaling -> has_scale_factors() )
+  {
+    util_t::fprintf( file, " <li> <a href=\"#scale_factors\"> Scale Factors </a> </li>\n" );
+  }
+  util_t::fprintf( file, " <li> <a href=\"#auras_debuffs\"> Auras and Debuffs </a> </li>\n" );
+  int num_players = ( int ) sim -> players_by_name.size();
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+    util_t::fprintf( file, " <li> <a href=\"#%s\"> %s </a> </li>\n", p -> name(), p -> name() );
+    if ( sim -> report_pets_separately )
+    {
+      util_t::fprintf( file, "<ul>\n" );
+      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      {
+        if ( pet -> summoned )
+          util_t::fprintf( file, " <li> <a href=\"#%s\"> %s </a> </li>\n", pet -> name(), pet -> name() );
+      }
+      util_t::fprintf( file, "</ul>\n" );
+    }
+  }
+  util_t::fprintf( file, "</ul>\n" );
+  util_t::fprintf( file, "</div>\n" );
+}
+
 // print_html2_raid_summary ===================================================
 
 static void print_html2_raid_summary( FILE*  file, sim_t* sim )
@@ -1465,6 +1498,63 @@ static void print_html2_raid_summary( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "</table> <br />\n" );
 
   util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
+}
+
+// print_html3_raid_summary ===================================================
+
+static void print_html3_raid_summary( FILE*  file, sim_t* sim )
+{
+  util_t::fprintf( file, "<a name=\"raid_summary\"></a>\n" );
+  util_t::fprintf( file, "<div id=\"raid-summary\" class=\"section\">\n" );
+  util_t::fprintf( file, "<h2 class=\"toggle open\">Raid Summary</h2>\n" );
+  util_t::fprintf( file, "<div class=\"toggle-content\">\n" );
+
+  assert( sim ->  dps_charts.size() ==
+          sim -> gear_charts.size() );
+
+  // Left side charts: dps, gear, timeline, raid events
+  util_t::fprintf( file, "<div class=\"charts\">\n" );
+  int count = ( int ) sim -> dps_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> dps_charts[ i ].c_str() );
+  }
+  count = ( int ) sim -> dps_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> gear_charts[ i ].c_str() );
+  }
+  util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> timeline_chart.c_str() );
+  if ( ! sim -> raid_events_str.empty() )
+  {
+    util_t::fprintf( file, "<table>\n<tr><th></th><th class=\"left\">Raid Event List</th></tr>\n" );
+    std::vector<std::string> raid_event_names;
+    int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    for ( int i=0; i < num_raid_events; i++ )
+    {
+      util_t::fprintf( file, "  <tr" );
+      if ( !( i & 1 ) )
+      {
+        util_t::fprintf( file, " class=\"even\"" );
+      }
+      util_t::fprintf( file, "><th class=\"right\">%d</th><td class=\"left\">%s</td></tr>\n", i, raid_event_names[ i ].c_str() );
+    }
+    util_t::fprintf( file, "</table>\n" );
+  }
+  util_t::fprintf( file, "</div>\n" );
+
+  // Right side charts: dpet
+  util_t::fprintf( file, "<div class=\"charts\">\n" );
+  count = ( int ) sim -> dpet_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    util_t::fprintf( file, "<img src=\"%s\" />\n", sim -> dpet_charts[ i ].c_str() );
+  }
+  util_t::fprintf( file, "</div>\n" );
+  
+  // closure
+  util_t::fprintf( file, "<div class=\"clear\"></div></div>\n</div>\n" );
+
 }
 
 // print_html2_scale_factors ===================================================
@@ -1519,6 +1609,62 @@ static void print_html2_scale_factors( FILE*  file, sim_t* sim )
   util_t::fprintf( file, "</table> <br />\n" );
 }
 
+// print_html3_scale_factors ===================================================
+
+static void print_html3_scale_factors( FILE*  file, sim_t* sim )
+{
+  if ( ! sim -> scaling -> has_scale_factors() ) return;
+
+  if ( sim -> report_precision < 0 )
+    sim -> report_precision = 2;
+
+  util_t::fprintf( file, "<a name=\"scale_factors\"></a><div id=\"raid-scale-factors\" class=\"section\"><h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n<div class=\"toggle-content\">\n" );
+
+  util_t::fprintf( file, "<table class=\"bottom\">\n" );
+
+  std::string buffer;
+  int num_players = ( int ) sim -> players_by_name.size();
+  int prev_type = PLAYER_NONE;
+
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    if( p -> type != prev_type )
+    {
+      prev_type = p -> type;
+
+      util_t::fprintf( file, "<tr><th class=\"left\">Profile</th>" );
+      for ( int i=0; i < STAT_MAX; i++ )
+      {
+  if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+        {
+    util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
+  }
+      }
+      util_t::fprintf( file, " <th>wowhead</th> <th>lootrank</th> </tr>\n" );
+    }
+
+    util_t::fprintf( file, "  <tr" );
+    if ( !( i & 1 ) )
+    {
+      util_t::fprintf( file, " class=\"even\"" );
+    }
+    util_t::fprintf( file, ">\n<td class=\"left\">%s</td>\n", p -> name() );
+    for ( int j=0; j < STAT_MAX; j++ )
+    {
+      if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+      {
+        util_t::fprintf( file, "    <td>%.*f</td>\n", sim -> report_precision, p -> scaling.get_stat( j ) );
+      }
+    }
+    util_t::fprintf( file, " <td><a href=\"%s\"> wowhead </a></td> <td><a href=\"%s\"> lootrank</a></td> </tr>\n",
+         p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+  util_t::fprintf( file, "</div></div>\n" );
+}
+
 // print_html2_auras_debuffs ==================================================
 
 static void print_html2_auras_debuffs( FILE*  file, sim_t* sim )
@@ -1549,6 +1695,38 @@ static void print_html2_auras_debuffs( FILE*  file, sim_t* sim )
     util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
   }
   util_t::fprintf( file, "</table> <br />\n" );
+
+}
+
+// print_html3_auras_debuffs ==================================================
+
+static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
+{
+  util_t::fprintf( file, "<div id=\"auras-and-debuffs\" class=\"section\">\n<h2 class=\"toggle\">Auras and Debuffs</h2>\n<div class=\"toggle-content\">\n" );
+
+  util_t::fprintf( file, "<table class=\"auras\">\n  <tr> <th>Dynamic</th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr>\n" );
+  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f</td> <td>%.1fsec</td> <td>%.1fsec</td> <td>%.0f%%</td> <td>%.0f%%</td> </tr>\n",
+         b -> name(), b -> avg_start, b -> avg_refresh,
+         b -> avg_start_interval, b -> avg_trigger_interval,
+         b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"auras\">\n  <tr> <th>Constant</th> </tr>\n" );
+  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
+  }
+  util_t::fprintf( file, "</table>\n" );
+  util_t::fprintf( file, "</div></div>\n" );
 
 }
 
@@ -2120,6 +2298,360 @@ static void print_html2_player( FILE* file, player_t* p )
   }
 
   util_t::fprintf( file, "</div><hr />\n" );
+}
+
+// print_html3_player =========================================================
+
+static void print_html3_player( FILE* file, player_t* p )
+{
+  char buffer[ 4096 ];
+  std::string n = p -> name();
+  util_t::str_to_utf8( n );
+  
+  util_t::fprintf( file, "<div class=\"player section\">\n<h2 class=\"toggle\">%s&nbsp;:&nbsp;%.0fdps</h2>\n", n.c_str(), n.c_str(), n.c_str(), p -> dps );
+  
+  util_t::fprintf( file, "<div class=\"toggle-content\">\n" );
+
+  util_t::fprintf( file,
+       "<ul class=\"params\">\n"
+       "<li><b>Name:</b> %s</li>\n"
+       "<li><b>Race:</b> %s</li>\n"
+       "<li><b>Class:</b> %s</li>\n"
+       "<li><b>Tree:</b> %s</li>\n"
+       "<li><b>Level:</b> %d</li>\n"
+       "</ul>\n<div class=\"clear\"></div>\n",
+       n.c_str(), p -> race_str.c_str(),
+       p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
+       util_t::talent_tree_string( p -> primary_tree() ), p -> level );
+
+  util_t::fprintf( file,
+       "<table class=\"player\">\n"
+       "  <tr> <th>DPS</th> <th>Error</th> <th>Range</th> <th>DPR</th> <th>RPS-Out</th> <th>RPS-In</th> <th>Resource</th> <th>Waiting</th> <th>ApM</th> </tr>\n"
+       "  <tr> <td>%.1f</td> <td>%.1f / %.1f%%</td> <td>%.1f / %.1f%%</td> <td>%.1f</td> <td>%.1f</td> <td>%.1f</td> <td>%s</td> <td>%.2f%%</td> <td>%.1f</td>\n"
+       "</table><br />\n",
+       p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( ( p -> dps_max - p -> dps_min ) / 2 ), ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+       p -> dpr, p -> rps_loss, p -> rps_gain, util_t::resource_type_string( p -> primary_resource() ),
+       100.0 * p -> total_waiting / p -> total_seconds,
+       60.0 * p -> total_foreground_actions / p -> total_seconds  );
+  if ( p -> origin_str.compare("unknown") )
+  util_t::fprintf( file,
+       "<table class=\"player\">\n"
+       "  <tr> <th>Origin</th> <td><a href=\"%s\">%s</a></td>\n"
+       "</table><br />\n",
+       p -> origin_str.c_str(), p -> origin_str.c_str() );
+
+  if ( !p -> talents_str.empty() )
+  util_t::fprintf( file,
+       "<table class=\"player\">\n"
+       "  <tr> <th>Talents</th> <td><a href=\"%s\">%s</a></td>\n"
+       "</table><br />\n",
+       p -> talents_str.c_str(), p -> talents_str.c_str() );
+
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, p -> glyphs_str, ",/" );
+  if ( num_glyphs )
+  {
+    util_t::fprintf( file, "<table class=\"player\"> <tr> <th>Glyphs</th>" );
+
+    for ( int i=0; i < num_glyphs; i++ )
+    {
+      util_t::fprintf( file, " <td>%s</td>", glyph_names[ i ].c_str() );
+    }
+    util_t::fprintf( file, " </tr> </table> <br />\n" );
+  }
+
+  if ( p -> sim -> scaling -> has_scale_factors() )
+  {
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+
+    util_t::fprintf( file, " <tr> <th></th>" );
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( p -> scales_with[ i ] )
+  util_t::fprintf( file, " <th>%s</th>", util_t::stat_type_abbrev( i ) );
+
+    if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, " <th>ms Lag</th>" );
+    util_t::fprintf( file, " </tr>\n" );
+
+    util_t::fprintf( file, " <tr> <th>Scale Factors</th>" );
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( p -> scales_with[ i ] )
+  util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling.get_stat( i ) );
+
+    if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> scaling_lag );
+    util_t::fprintf( file, " </tr>\n" );
+
+    util_t::fprintf( file, " <tr> <th>Normalized</th>" );
+    for ( int i=0; i < STAT_MAX; i++ )
+      if ( p -> scales_with[ i ] )
+  util_t::fprintf( file, " <td>%.*f</td>", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
+    util_t::fprintf( file, " </tr>\n" );
+
+    util_t::fprintf( file, "</table>\n" );
+    util_t::fprintf( file, "<i>DPS gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>DPS loss</b> per unit stat <b>decrease</b></i><p>\n" );
+
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+    util_t::fprintf( file, " <tr> <th>Gear Ranking</th> <td><a href=\"%s\">wowhead</a></td> <td><a href=\"%s\">lootrank</a></td> </tr>\n",
+         p -> gear_weights_wowhead_link.c_str(), p -> gear_weights_lootrank_link.c_str() );
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
+
+  std::string action_dpet_str       = "empty";
+  std::string action_dmg_str        = "empty";
+  std::string gains_str             = "empty";
+  std::string timeline_resource_str = "empty";
+  std::string timeline_dps_str      = "empty";
+  std::string distribution_dps_str  = "empty";
+
+  if ( ! p -> action_dpet_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_action_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
+    action_dpet_str = buffer;
+  }
+  if ( ! p -> action_dmg_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_action_dmg\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
+    action_dmg_str = buffer;
+  }
+  if ( ! p -> gains_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
+    gains_str = buffer;
+  }
+  if ( ! p -> timeline_resource_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_timeline_resource\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+    timeline_resource_str = buffer;
+  }
+  if ( ! p -> timeline_dps_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_timeline_dps\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
+    timeline_dps_str = buffer;
+  }
+  if ( ! p -> distribution_dps_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_distribution_dps\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+    distribution_dps_str = buffer;
+  }
+
+  util_t::fprintf( file,
+       "<table class=\"player\">\n"
+       "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+       "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
+       "  <tr> <td>%s</td> <td>%s</td> </tr>\n",
+       action_dpet_str.c_str(), action_dmg_str.c_str(),
+       gains_str.c_str(), timeline_resource_str.c_str(),
+       timeline_dps_str.c_str(), distribution_dps_str.c_str() );
+
+  if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
+  {
+    util_t::fprintf( file, "<tr>\n" );
+    if( ! p -> scaling_dps_chart.empty() )
+    {
+       util_t::fprintf( file, "  <td><img name=\"chart_scaling_dps\" src=\"%s\" /></td>\n",
+                        p -> scaling_dps_chart.c_str() );
+    }
+    if( ! p -> scale_factors_chart.empty() )
+    {
+       util_t::fprintf( file, "  <td><img name=\"scale_factors\" src=\"%s\" /></td>\n",
+                        p -> scale_factors_chart.c_str() );
+    }
+  }
+  util_t::fprintf( file, "</tr></table> <br />\n" );
+
+  util_t::fprintf( file,
+       "<table class=\"player\">\n"
+       " <thead><tr>"
+       " <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-ability');\">Ability</a></th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
+       " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>RPE</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
+       " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
+       " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
+       " </tr></thead><tbody id=\"%s-ability\">\n",
+       n.c_str(), n.c_str());
+
+  util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", n.c_str(), p -> dps );
+
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  {
+    if ( s -> num_executes > 0 || s -> total_dmg > 0 )
+    {
+      print_html2_action( file, s, p );
+    }
+  }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    bool first=true;
+
+    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    {
+      if ( s -> num_executes > 0 )
+      {
+        if ( first )
+        {
+          first = false;
+    util_t::fprintf( file, " <tr> <th>pet - %s</th> <th>%.0f</th> </tr>\n", pet -> name_str.c_str(), pet -> dps );
+        }
+        print_html2_action( file, s, p );
+      }
+    }
+  }
+
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-dynamic-buffs');\">Dynamic Buffs</a></th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr></thead><tbody id=\"%s-dynamic-buffs\" style=\"display:none;\">\n",
+      n.c_str(), n.c_str() );
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-buff');\">%s</a></td> <td align=right>%.1f</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> <td align=right>%.1fsec</td> <td align=right>%.0f%%</td> <td align=right>%.0f%%</td> </tr>\n",
+         b -> name(), b -> player -> name(), b -> name(), b -> avg_start, b -> avg_refresh,
+         b -> avg_start_interval, b -> avg_trigger_interval,
+         b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+    util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
+
+    util_t::fprintf( file, "<br>id: %.i"
+                           "<br>cooldown name: %s"
+                           "<br>tooltip: %s"
+                           "<br>max_stacks: %.i"
+                           "<br>duration: %.2f"
+                           "<br>cooldown: %.2f"
+                           "<br>default_chance: %.2f",
+                           b -> s_id,
+                           b -> cooldown -> name_str.c_str(),
+                           b -> tooltip(),
+                           b -> max_stack,
+                           b -> buff_duration,
+                           b -> cooldown -> duration,
+                           b -> default_chance );
+
+    util_t::fprintf( file, "</tr>\n" );
+  }
+  util_t::fprintf( file, "</tbody></table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-constant-buffs');\">Constant Buffs</a></th> </tr></thead><tbody id=\"%s-constant-buffs\" style=\"display:none;\">\n",
+      n.c_str(), n.c_str());
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
+      continue;
+
+    util_t::fprintf( file, "  <tr> <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-buff');\">%s</a></td> </tr>\n", b -> name(), b -> player -> name(), b -> name() );
+
+    util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
+    util_t::fprintf( file, "<br>id: %.i"
+                           "<br>cooldown name: %s"
+                           "<br>tooltip: %s"
+                           "<br>max_stacks: %.i"
+                           "<br>duration: %.2f"
+                           "<br>cooldown: %.2f"
+                           "<br>default_chance: %.2f",
+                           b -> s_id,
+                           b -> cooldown -> name_str.c_str(),
+                           b -> tooltip(),
+                           b -> max_stack,
+                           b -> buff_duration,
+                           b -> cooldown -> duration,
+                           b -> default_chance );
+
+    util_t::fprintf( file, "</tr>\n" );
+  }
+  util_t::fprintf( file, "</tbody></table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-uptimes');\">Up-Times</a></th> <th>%%</th> </tr></thead><tbody id=\"%s-uptimes\" style=\"display:none;\">\n",
+      n.c_str(), n.c_str());
+  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  {
+    if ( u -> percentage() > 0 )
+    {
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f%%</td> </tr>\n", u -> name(), u -> percentage() );
+    }
+  }
+  util_t::fprintf( file, "</tbody></table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-procs');\">Procs</th> <th>Count</th> <th>Interval</th> </tr></thead><tbody id=\"%s-procs\" style=\"display:none;\">\n",
+      n.c_str(), n.c_str());
+  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+  {
+    if ( proc -> count > 0 )
+    {
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> </tr>\n", proc -> name(), proc -> count, proc -> frequency );
+    }
+  }
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-gains');\">Gains</a></th> <th>%s</th> <th>Overflow</th> </tr></thead><tbody id=\"%s-gains\" style=\"display:none;\">\n",
+      n.c_str(), util_t::resource_type_string( p -> primary_resource() ), n.c_str() );
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  {
+    if ( g -> actual > 0 )
+    {
+      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+    }
+  }
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    if ( pet -> total_dmg <= 0 ) continue;
+    bool first = true;
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 )
+      {
+  if ( first )
+  {
+    first = false;
+    util_t::fprintf( file, "  <tr> <th>pet - %s</th> <th>%s</th> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
+  }
+  double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+  util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+      }
+    }
+  }
+  util_t::fprintf( file, "</tbody></table> <br />\n" );
+
+  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th>#</th> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-action_priority_list');\">Action Priority List</a></th> </tr></thead><tbody id=\"%s-action_priority_list\" style=\"display:none;\">\n",
+      n.c_str(), n.c_str() );
+  std::vector<std::string> action_names;
+  int num_actions = util_t::string_split( action_names, p -> action_list_str, "/" );
+  for ( int i=0; i < num_actions; i++ )
+  {
+    util_t::fprintf( file, "  <tr> <th>%d</th> <td>%s</td> </tr>\n", i, action_names[ i ].c_str() );
+  }
+  util_t::fprintf( file, "</tbody></table> <br />\n" );
+
+
+  print_html2_stats( file, p );
+  util_t::fprintf( file, "</table> <br />\n" );
+
+  //if ( !p -> is_pet() )
+  //{
+  print_html2_talents( file, p );
+    util_t::fprintf( file, "</table> <br />\n" );
+  //}
+
+
+  if ( p -> sim -> scaling -> has_scale_factors() )
+  {
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+    util_t::fprintf( file, " <tr> <th>Pawn Standard</th> <td>%s</td> </tr>\n",      p -> gear_weights_pawn_std_string.c_str() );
+    util_t::fprintf( file, " <tr> <th>Zero Hit/Expertise</th> <td>%s</td> </tr>\n", p -> gear_weights_pawn_alt_string.c_str() );
+    util_t::fprintf( file, "</table> <br />\n" );
+
+    std::string rhada_std = p -> gear_weights_pawn_std_string;
+    std::string rhada_alt = p -> gear_weights_pawn_alt_string;
+
+    if ( rhada_std.size() > 10 ) rhada_std.replace( 2, 8, "RhadaTip" );
+    if ( rhada_alt.size() > 10 ) rhada_alt.replace( 2, 8, "RhadaTip" );
+
+    util_t::fprintf( file, "<table class=\"player\">\n" );
+    util_t::fprintf( file, " <tr> <th>RhadaTip Standard</th> <td>%s</td> </tr>\n",  rhada_std.c_str() );
+    util_t::fprintf( file, " <tr> <th>Zero Hit/Expertise</th> <td>%s</td> </tr>\n", rhada_alt.c_str() );
+    util_t::fprintf( file, "</table> <br />\n" );
+  }
+
+  util_t::fprintf( file, "</div></div>\n" );
 }
 
 
@@ -3079,6 +3611,143 @@ void report_t::print_html2( sim_t* sim )
 
   fclose( file );
 }
+
+// report_t::print_html3 ======================================================
+void report_t::print_html3( sim_t* sim )
+{
+	int num_players = ( int ) sim -> players_by_name.size();
+	
+	if ( num_players == 0 ) return;
+	if ( sim -> total_seconds == 0 ) return;
+	if ( sim -> html3_file_str.empty() ) return;
+	
+	FILE* file = fopen( sim -> html3_file_str.c_str(), "w" );
+	if ( ! file )
+	{
+		sim -> errorf( "Unable to open html file '%s'\n", sim -> html3_file_str.c_str() );
+		return;
+	}
+	
+	util_t::fprintf( file, "<!DOCTYPE html>\n" );
+	util_t::fprintf( file, "<html>\n" );
+	
+	util_t::fprintf( file, "<head>\n" );
+	util_t::fprintf( file, "<title>Simulationcraft Results</title>\n" );
+	util_t::fprintf( file, "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n");
+	
+	// Old javascript toggle
+	util_t::fprintf ( file, "<script type=\"text/javascript\">\nfunction toggleSlide(objname){\nif(document.getElementById(objname).style.display == \"none\"){\ndocument.getElementById(objname).style.display=\"\";\n}else{\ndocument.getElementById(objname).style.display=\"none\";\n}\n}\n</script>\n" );
+	
+	// jQuery
+	util_t::fprintf ( file, "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n" );
+	
+	// New javascript toggles
+util_t::fprintf( file, "<script>\njQuery.noConflict();\njQuery(document).ready(function($) {\n$('.toggle-content, .help-box').hide();\n$('.open').next('.toggle-content').show();\n$('.toggle').click(function(e) {\ne.preventDefault();\n$(this).toggleClass('open');\n$(this).next('.toggle-content').toggle(150);\n});\n$('.toggle-details').click(function(e) {\ne.preventDefault();\n$(this).toggleClass('open');\n$(this).parents().next('.details').toggleClass('hide');\n});\n$('.toggle-db-details').click(function(e) {\ne.preventDefault();\n$(this).toggleClass('open');\n$(this).parent().next('.toggle-content').toggle(150);\n});\n$('.help').click(function(e) {\ne.preventDefault();\nvar target = $(this).attr('rel') + ' .help-box';\nvar content = $(target).html();\n$('#active-help-dynamic .help-box').html(content);\n$('#active-help .help-box').show();\nvar t = e.pageY - 20;\nvar l = e.pageX - 20;\n$('#active-help').css({top:t,left:l});\n$('#active-help').toggle(250);\n});\n$('#active-help a.close').click(function(e) {\ne.preventDefault();\n$('#active-help').toggle(250);\n});\n});\n</script>\n" );
+
+	// Styles galore
+	util_t::fprintf( file, "<style type=\"text/css\">\n* { border: none; margin: 0; padding: 0; }\nbody { padding: 10px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; }\np { margin-top: 1em; }\nh1, h2, h3, h4, h5, h6 { color: #555; margin-top: 1em; margin-bottom: 0.5em; }\nh1, h2 { margin: 0; padding: 2px 2px 0 2px; }\nh2 { font-size: 24px; }\nh3 { margin: 0; font-size: 20px; }\na { color: #666688; text-decoration: none; }\na:hover, a:active { color: #333; }\nul, ol { padding-left: 20px; }\nul.float, ol.float { padding: 0; }\nul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 1px solid #ddd; }\n.overlay { position: absolute; top: 0; left: 0; background: #000; z-index: 5; }\n.clear { clear: both; }\n.hide { display: none; }\n.toggle { cursor: pointer; }\n.first { margin-top: 1em; }\nh2.toggle { padding-left: 24px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAIAAABxU02MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFkSURBVHja3JXLjkVAEIZPO1jZiifA1nWJB/U02CFsXfbEnhVhatKJMEe3yywmmVq0Dvnyd9dfVdCyLK+nwbx+EX8HoziOu65DCN3C5nmWZZmFR9M0D2RVVX37vg+7tm1vnBYhz/MARtiqLMvSNL1Iuq4L5Pd+9TnP8yRJrpMQ7PpB0zRYKTw+raIo6xt2+03XdRLPMIzjOFvywGfgLcs6JNfT0orEMIwtDyc6JIkVBrxpmni/zdCPYEnpAXiaJkEQSOTOqs8YhoHjOJ7nn8D/tZ93cFEUVVVdh3dW1XUNvQkppNhDVIYyhDUMw7IsH94ZlC/yxwnD/On9idkGPggCuj7NKuCjKKLwzOmIpfDnRQI8KX/sFUvw/aFDYdBvm+xGefZ9P47jbWU8G9bZcg+GkQaD6UnCSOS5sm3beJjftopO0mAg8Q/oaj9v70nXPFDGkxQsIWWIpixJkiiKn36S4kuAAQD206PftRFaxQAAAABJRU5ErkJggg==) 0 -15px no-repeat; }\nh2.open { background-position: 0 9px; margin-bottom: 10px; }\nh3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAIAAADeNBkWAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADzSURBVHja1JS7CoQwFER9FiKojb3gxyj4vYqfYG1tYSs2KojFErKz6z6y8Sba7lQmHIdkuBOzaZphGGzbNtRijCVJ4qRp2nXduq4aNIoioCbnfFmWuq6naSK5OI7zPPc8z8IiCIIsy/CrhsO3tW+FYYgtiRa5L3r0ljjocVbRaZ7nqqpc1y2KQuQIFML9gPq+L+0TqEqWcVn/ibZti2G4hPZ9j6HZtu0cxcgifA0tn3UcRxVNXEtF0wmQtDIs0GVZikXS5Xp76rN0NNXDpKMdJ65HjnYFh6qgPycJ7H5H7scVTwhKQvq9xN/Ci4SAuFp3AQYAEZCf9NU/U8cAAAAASUVORK5CYII=) 0 -10px no-repeat; }\nh3.open { background-position: 0 8px; }\n.toggle-content { display: none; }\n#active-help, .help-box { display: none; }\n#active-help { position: absolute; width: 350px; padding: 3px; background: #fff; z-index: 10; }\n#active-help-dynamic { padding: 6px 6px 18px 6px; background: #eeeef5; outline: 1px solid #ddd; font-size: 13px; }\n#active-help .close { position: absolute; right: 10px; bottom: 4px; }\n.help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n.help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n.section { position: relative; padding: 8px; margin: 0 0 25px 0; outline: 1px solid #ccc; background-color: #fff; }\nul.params { padding: 0; }\nul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 12px; }\n.toggle-content ul.params { position: relative; top: 2px; left: 24px; width: 90%; }\n#masthead h2 { margin-top: 20px; }\n#masthead .notice { width: 500px; padding: 0 2px 2px 2px; outline: 1px solid #bb9999; background: #ffdddd; }\n#masthead ul.toc { padding: 0; margin-left: 24px; }\n#masthead ul.toc li { list-style-type: none; }\n.charts { margin: 20px 20px 0 4px; float: left; width: 550px; }\n.charts img { padding: 8px; margin-bottom: 20px; outline: 2px solid #eee; }\ntable { margin-bottom: 20px; border: 0; background-color: #eee; }\ntable.bottom { margin-bottom: 0px; }\ntable.mt { margin-top: 20px; }\ntr { background-color: #ddd; }\ntr.head { background-color: #999; color: #fff; }\ntr.even { background-color: #fff; }\nth { padding: 2px 4px; text-align: center; background-color: #999; color: #fff; }\nth a { color: #fff; text-decoration: underline; }\nth a:hover, th a:active { color: #f1f1ff; }\ntd { padding: 2px 4px; text-align: center; font-size: 13px; }\ntd.left, th.left { padding-right: 6px; text-align: left }\ntr.details { margin-top: 0px; }\ntr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\ntr.details td ul { width: 400px; padding: 0; margin-bottom: 10px; }\ntr.details td ul li { list-style-type: none; }\n</style>\n" );
+	
+	util_t::fprintf( file, "</head>\n" );
+	util_t::fprintf( file, "<body>\n" );
+	
+	if( ! sim -> error_list.empty() )
+	{
+		util_t::fprintf( file, "<pre>\n" );
+		int num_errors = sim -> error_list.size();
+		for( int i=0; i < num_errors; i++ ) util_t::fprintf( file, "%s\n", sim -> error_list[ i ].c_str() );
+		util_t::fprintf( file, "</pre>\n" );
+	}
+	
+	// Prints div wrappers for help popups
+	util_t::fprintf( file, "<div id=\"active-help\">\n<div id=\"active-help-dynamic\">\n<div class=\"help-box\">\n</div>\n<a href=\"#\" class=\"close\">close</a>\n</div>\n</div>\n" );
+	
+	// Begin masthead section
+	util_t::fprintf( file, "<div id=\"masthead\" class=\"section\">" );
+	
+	int arch = 0, version = 0, revision = 0;
+	sim -> patch.decode( &arch, &version, &revision );
+	util_t::fprintf( file, "<h1>SimulationCraft %s.%s for World of Warcraft release %d.%d.%d</h1>\n", SC_MAJOR_VERSION, SC_MINOR_VERSION, arch, version, revision );
+	
+	time_t rawtime;
+	time ( &rawtime );
+	
+	util_t::fprintf( file, "<ul class=\"params\">\n" );
+	util_t::fprintf( file, "  <li>Timestamp: %s</li>\n", ctime( &rawtime ) );
+	util_t::fprintf( file, "  <li>Iterations: %d</li>\n", sim -> iterations );
+	util_t::fprintf( file, "  <li>Fight Length: %.0f</li>\n", sim -> max_time );
+	if ( sim -> vary_combat_length > 0.0 )
+	{
+		util_t::fprintf( file, "  <li>Vary Combat Length: %.2f</li>\n", sim -> vary_combat_length );
+	}
+	util_t::fprintf( file, "  <li>Smooth RNG: %s</li>\n", ( sim -> smooth_rng ? "true" : "false" ) );
+	util_t::fprintf( file, "</ul>\n" );
+	
+	util_t::fprintf( file, "<div class=\"clear\"></div>\n" );
+	
+#if SC_BETA
+    util_t::fprintf( file, "<div class=\"notice\">\n" );
+	util_t::fprintf( file, "<h2>Beta Release</h2>\n" );
+	int ii = 0;
+	if ( beta_warnings[ 0 ] )
+		util_t::fprintf( file, "<ul>\n" );
+	while ( beta_warnings[ ii ] )
+	{
+		util_t::fprintf( file, "  <li>%s</li>\n", beta_warnings[ ii ] );
+		ii++;
+	}
+	if ( beta_warnings[ 0 ] )
+		util_t::fprintf( file, "</ul>\n" );
+	
+	util_t::fprintf( file, "</div>\n" );
+#endif
+	
+	if ( num_players > 1 )
+	{
+		print_html3_contents( file, sim );
+	}
+	
+	// End masthead section
+	util_t::fprintf( file, "</div>\n" );
+	
+	// Begin main content
+	util_t::fprintf( file, "<div id=\"main_content\">\n" );
+	
+	if ( num_players > 1 )
+	{
+		print_html3_raid_summary( file, sim );
+		print_html3_scale_factors( file, sim );
+		util_t::fprintf( file, "<hr />\n" );
+	}
+	
+	for ( int i=0; i < num_players; i++ )
+	{
+		print_html3_player( file, sim -> players_by_name[ i ] );
+		if ( sim -> report_pets_separately )
+		{
+			for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+			{
+				if ( pet -> summoned )
+					print_html2_player( file, pet );
+			}
+		}
+	}
+	
+	if ( num_players == 1 )
+	{
+		util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
+	}
+	
+	print_html3_auras_debuffs( file, sim );
+	
+	// End main content
+	util_t::fprintf( file, "</div>\n" );
+	
+	util_t::fprintf( file, "</body>\n" );
+	util_t::fprintf( file, "</html>" );
+	
+	fclose( file );
+}
+
 // report_t::print_wiki ======================================================
 
 void report_t::print_wiki( sim_t* sim )
@@ -3303,6 +3972,7 @@ void report_t::print_suite( sim_t* sim )
   report_t::print_text( sim -> output_file, sim );
   report_t::print_html( sim );
   report_t::print_html2( sim );
+  report_t::print_html3( sim );
   report_t::print_wiki( sim );
   report_t::print_xml( sim );
   report_t::print_profiles( sim );

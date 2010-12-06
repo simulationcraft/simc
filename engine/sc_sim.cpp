@@ -1669,6 +1669,7 @@ std::vector<option_t>& sim_t::get_options()
       { "html",                             OPT_STRING, &( html2_file_str                           ) },
       { "html_old",                         OPT_STRING, &( html_file_str                            ) },
       { "html2",                            OPT_STRING, &( html2_file_str                           ) },
+      { "html3",                            OPT_STRING, &( html3_file_str                           ) },
       { "xml",                              OPT_STRING, &( xml_file_str                             ) },
       { "log",                              OPT_BOOL,   &( log                                      ) },
       { "csv",                              OPT_STRING, &( csv_file_str                             ) },
