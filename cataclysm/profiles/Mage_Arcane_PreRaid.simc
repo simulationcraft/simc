@@ -1,0 +1,67 @@
+#!./simc 
+# TODO: Optimize gear
+
+mage=Mage_Arcane_PreRaid
+origin="input=m.simc"
+level=85
+race=undead
+use_pre_potion=1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=3033022212021222121212200000000000000000000300000000000000000
+glyphs=mage_armor/arcane_blast/arcane_missiles
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/focus_magic
+actions+=/arcane_brilliance
+actions+=/mage_armor
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/counterspell
+actions+=/mirror_image
+actions+=/arcane_power,if=target.time_to_die<20
+actions+=/arcane_power,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3
+actions+=/mana_gem,if=target.time_to_die<20
+actions+=/mana_gem,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3
+actions+=/presence_of_mind,arcane_blast
+actions+=/arcane_blast,if=target.time_to_die<20&mana_pct>5
+actions+=/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2
+actions+=/arcane_blast,if=(cooldown.evocation.remains<16&mana_pct>25)|mana_pct>94|buff.arcane_blast.stack<3
+actions+=/evocation,if=target.time_to_die>=25
+actions+=/arcane_missiles
+actions+=/arcane_barrage
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+head=blinders_of_the_follower,heroic=0,type=cloth,stats=942armor_162crit_182mastery_242int_454sta,gems=chaotic_shadowspirit_20crit_20int_30int,enchant=60int_35crit
+neck=charm_of_the_muse,heroic=1,stats=168int_252sta_112hit_112crit
+shoulders=mantle_of_the_eastern_lords,heroic=1,type=cloth,stats=870armor_130hit_150mastery_205int_337sta,reforge=mastery_crit,gems=20hit_20crit_10int,enchant=50int_25haste
+chest=inquisition_robes,heroic=1,type=cloth,stats=1160armor_202hit_162mastery_262int_454sta,reforge=mastery_crit,gems=20crit_20hit_20int_20hit_20mastery,enchant=20all
+waist=dreamless_belt,heroic=0,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_crit,gems=20hit_20int_40int_10hit
+legs=breeches_of_mended_nightmares,heroic=0,type=cloth,stats=1094armor_214crit_216haste_321int_512sta,gems=20int_20hit_10haste,enchant=95int_80sta
+feet=slippers_of_the_twilight_prophet,heroic=1,type=cloth,stats=205int_337sta_130hit_150mastery_797armor,reforge=mastery_crit,gems=20int_20hit_10int,enchant=35mastery
+wrists=sand_silk_wristband,heroic=1,type=cloth,stats=168int_252sta_112crit_112hit_507armor,enchant=65crit
+hands=mnemiopsis_gloves,heroic=1,type=cloth,stats=725armor_150hit_130crit_205int_337sta,gems=20hit_20int_10int,enchant=65mastery
+finger1=band_of_rays,heroic=1,stats=168int_252sta_112hit_112crit,enchant=40int
+finger2=lavishly_jeweled_ring,heroic=1,stats=133int_252sta_112mastery_107hit,reforge=mastery_crit,gems=20int_20hit_10hit,enchant=40int
+trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
+trinket2=talisman_of_sinister_order,heroic=0,stats=234int,equip=OnSpellCast_918Mastery_10%_20Dur_75Cd
+back=shadow_of_perfect_bliss,heroic=0,stats=168int_252sta_85hit_128crit_580armor,enchant=lightweave_embroidery
+main_hand=modguds_blade,heroic=1,stats=129int_194sta_86hit_86crit_1729sp,enchant=power_torrent
+off_hand=beautys_favorite_bone,heroic=1,stats=168int_252sta_98crit_120hit,enchant=100int
+ranged=corlas_baton,heroic=1,stats=95int_143sta_68mastery_56hit,reforge=mastery_crit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5252
+# gear_intellect=4261
+# gear_spirit=20
+# gear_spell_power=1954
+# gear_hit_rating=1517
+# gear_crit_rating=696
+# gear_haste_rating=1285
+# gear_mastery_rating=1664
+# gear_armor=7817
+# meta_gem=chaotic_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=haunt_of_flies,enchant=lightweave_embroidery
+# main_hand=incineratus,enchant=power_torrent

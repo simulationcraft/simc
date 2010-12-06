@@ -1,0 +1,63 @@
+#!./simc 
+
+shaman=Shaman_Elemental_T11_372
+level=85
+race=tauren
+use_pre_potion=1
+professions=Enchanting=525/Jewelcrafting=525
+talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=303202321223110132120300220000000000000000000000000000000
+glyphs=lava_burst/lightning_bolt/flame_shock/lightning_shield/healing_stream_totem/ghost_wolf
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/flametongue_weapon,weapon=main
+actions+=/lightning_shield
+actions+=/mana_spring_totem
+actions+=/wrath_of_air_totem
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/wind_shear
+actions+=/bloodlust,health_percentage<=25
+actions+=/bloodlust,time_to_die<=60
+actions+=/volcanic_potion,if=buff.bloodlust.react
+actions+=/elemental_mastery
+actions+=/flame_shock,if=!ticking
+actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05
+actions+=/earth_shock,if=buff.lightning_shield.stack=9
+actions+=/fire_elemental_totem
+actions+=/searing_totem
+actions+=/chain_lightning,if=target.adds>2
+actions+=/lightning_bolt
+actions+=/thunderstorm
+head=headpiece_of_the_raging_elements,heroic=1,type=mail,stats=325int_578sta_257mastery_197haste_2071armor,reforge=mastery_spi,gems=ember_shadowspirit_20haste_20int_30int,enchant=60int_35crit
+neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_spi
+shoulders=shoulderwraps_of_the_raging_elements,heroic=1,type=mail,stats=266int_429sta_191crit_171mastery_1911armor,reforge=mastery_haste,gems=20haste_20int_10int,enchant=50int_25haste
+chest=hauberk_of_the_raging_elements,heroic=1,type=mail,stats=345int_578sta_257haste_217crit_2548armor,reforge=crit_spi,gems=67int_20int_20spi_20int,enchant=20str_20agi_20sta_20int_20spi
+waist=waistguard_of_hatred,heroic=1,type=mail,stats=266int_429sta_191spi_171mastery_1433armor,reforge=mastery_haste,gems=20int_20spi_10spi_40int
+legs=kilt_of_the_forgotten_battle,heroic=1,type=mail,stats=345int_578sta_257spi_217mastery_2230armor,reforge=mastery_haste,gems=67int_20int_20haste_20spi,enchant=95int_55spi
+feet=boots_of_azgalada,type=mail,stats=266int_458sta_174spi_194mastery_1796armor,reforge=mastery_haste,gems=67int_20int_20haste_20int,enchant=50hit
+wrists=chaos_beast_bracers,heroic=1,type=mail,stats=215int_322sta_143spi_143mastery_1115armor,reforge=mastery_haste,enchant=65haste
+hands=gloves_of_the_raging_elements,heroic=1,type=mail,stats=266int_429sta_191crit_171haste_1593armor,reforge=crit_spi,gems=20int_20spi_10int,enchant=65mastery
+finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,enchant=40int
+finger2=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste,enchant=40int
+trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
+trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_spi,equip=onspellcrit_2178sp_30%_20dur_100cd
+back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,gems=20int_20haste_10int,enchant=50int
+main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,enchant=power_torrent,weapon=dagger_1.80speed_658min_1221max
+off_hand=scepter_of_ice,heroic=1,stats=215int_322sta_143spi_143mastery,enchant=100int
+ranged=relic_of_norgannon,stats=107int_161sta_72crit_72haste,reforge=crit_spi,gems=40int
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5862
+# gear_intellect=5048
+# gear_spirit=1710
+# gear_spell_power=2207
+# gear_hit_rating=50
+# gear_crit_rating=820
+# gear_haste_rating=1829
+# gear_mastery_rating=1395
+# gear_armor=15396
+# meta_gem=ember_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_658min_1221max,enchant=power_torrent

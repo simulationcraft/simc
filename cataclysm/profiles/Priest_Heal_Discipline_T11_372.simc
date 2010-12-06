@@ -1,0 +1,58 @@
+#!./simc 
+
+priest=Priest_Heal_Discipline_T11_372.simc
+origin=""
+level=85
+race=night_elf
+use_pre_potion=-1
+professions=enchanting=450/tailoring=450
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=23300322101320031202102300000000000000000000000000000000000000
+glyphs=inner_fire/shadowfiend/shadow_protection/smite/levitate/holy_nova/penance/renew/power_word_shield
+actions=flask,type=draconic_mind
+actions+=/food,type=fish_feast
+actions+=/fortitude
+actions+=/inner_will
+actions+=/snapshot_stats
+actions+=/mana_potion,time>=200
+actions+=/shadow_fiend,trigger=10000
+actions+=/renew,if=!ticking
+actions+=/prayer_of_mending
+actions+=/power_word_shield,if=buff.weakened_soul.down
+actions+=/inner_focus
+actions+=/penance_heal
+actions+=/greater_heal
+head=helm_of_eldritch_authority,heroic=1,type=cloth,stats=325int_578sta_217spi_237haste_1093armor,reforge=spi_crit,gems=revitalizing_shadowspirit_40int_30haste,enchant=60int_35crit
+neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit,reforge=spi_haste
+shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,stats=266int_429sta_171spi_191haste_1009armor,reforge=spi_crit,gems=40int_10haste,enchant=50int_25haste
+shirt=red_swashbucklers_shirt
+chest=shadowforges_lightbound_smock,heroic=1,type=cloth,stats=345int_578sta_257spi_217haste_1346armor,reforge=spi_crit,gems=40int_20int_20spi_20spi,enchant=20all
+waist=xtron_duct_tape,heroic=1,type=cloth,stats=266int_429sta_191spi_171crit_757armor,reforge=spi_haste,gems=40crit_10int_40int
+legs=mercurial_leggings,heroic=1,type=cloth,stats=345int_578sta_217spi_257haste_1177armor,gems=40crit_40int_20int,enchant=95int_55spi
+feet=treads_of_liquid_ice,heroic=1,type=cloth,stats=266int_429sta_171spi_191mastery_925armor,reforge=mastery_haste,gems=40crit_10int,enchant=35mastery
+wrists=bracers_of_the_burningeye,heroic=1,type=cloth,stats=215int_322sta_143spi_143haste_589armor,reforge=spi_crit,enchant=65haste
+hands=mercurial_handwraps,heroic=1,type=cloth,stats=266int_429sta_191spi_171mastery_841armor,reforge=spi_crit,gems=20int_20spi_10int,enchant=50haste
+finger1=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=spi_haste,enchant=40int
+finger2=security_measure_alpha,stats=190int_286sta_127spi_127crit,reforge=spi_haste,enchant=40int
+trinket1=shard_of_woe
+trinket2=jar_of_ancient_remedies,heroic=1,equip=onspellcast_116spi_5stack_15dur
+back=drape_of_the_twins,heroic=1,stats=215int_322sta_143spi_143haste_673armor,enchant=50int
+main_hand=twilights_hammer,heroic=1,stats=165int_248sta_110crit_110haste_2207sp,enchant=power_torrent,weapon=mace_2.30speed_840min_1560max
+off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,reforge=hit_spi,enchant=100int
+ranged=vicious_gladiators_baton_of_light,stats=121int_181sta_81spi
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5795
+# gear_intellect=4375
+# gear_spirit=1812
+# gear_spell_power=2207
+# gear_hit_rating=86
+# gear_crit_rating=1238
+# gear_haste_rating=1937
+# gear_mastery_rating=321
+# gear_armor=8410
+# meta_gem=revitalizing_shadowspirit
+# tier11_2pc_caster=1
+# trinket1=shard_of_woe
+# main_hand=twilights_hammer,heroic=1,weapon=mace_2.30speed_840min_1560max,enchant=power_torrent
+healer=1

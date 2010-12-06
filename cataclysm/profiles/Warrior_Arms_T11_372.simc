@@ -1,0 +1,60 @@
+#!./simc 
+
+warrior=Warrior_Arms_T11_372
+level=85
+race=tauren
+use_pre_potion=1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=1&tal=320003231202123122110322000000000000000003
+glyphs=mortal_strike/overpower/slam/sweeping_strikes/berserker_rage/cleaving
+actions=flask,type=titanic_strength
+actions+=/food,type=beer_basted_crocolisk
+actions+=/stance,choose=battle,if=!in_combat
+actions+=/snapshot_stats
+actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
+actions+=/auto_attack
+actions+=/deadly_calm,if=rage<10
+actions+=/sweeping_strikes,if=target.adds>0
+actions+=/berserker_rage
+actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up
+actions+=/cleave,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up|buff.incite.up)
+actions+=/overpower,if=buff.taste_for_blood.remains<1.5
+actions+=/rend,if=!ticking&target.health_pct>=20
+actions+=/colossus_smash,if=!buff.colossus_smash.up
+actions+=/mortal_strike
+actions+=/execute
+actions+=/overpower
+actions+=/slam
+actions+=/battle_shout,if=rage<30
+head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,reforge=haste_crit,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery
+neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=mastery_crit
+shoulders=earthen_pauldrons,heroic=1,type=,stats=2669armor_266str_429sta_191haste_171hit,gems=40str_10haste,enchant=50str_25crit
+chest=earthen_battleplate,heroic=1,type=,stats=3559armor_345str_578sta_257crit_217haste,gems=40str_20str_20hit_20str,enchant=10str_10agi_10sta_10int_10spi
+waist=belt_of_absolute_zero,heroic=1,type=,stats=2002armor_266str_429sta_171hit_191crit,gems=40str_40str_10hit
+legs=earthen_legplates,heroic=1,type=,stats=3114armor_345str_578sta_257mastery_217hit,reforge=mastery_crit,gems=20str_20crit_20str_20crit_20haste,enchant=190ap_55crit
+feet=treads_of_savage_beatings,heroic=1,type=,stats=2447armor_226str_429sta_191crit_171haste,gems=20str_20crit_10crit,enchant=25agi
+wrists=bracers_of_the_matredor,type=,stats=1589armor_229str_344sta_113haste_153crit,gems=20str_20crit_10str_40str,enchant=65crit
+hands=plated_fists_of_provocation,heroic=1,type=,stats=2224armor_266str_429sta_191crit_171haste,gems=20str_20crit_10crit_40str,enchant=50str
+finger1=dargonaxs_signet,heroic=1,stats=229str_344sta_113crit_153mastery,gems=20str_20crit_10str,enchant=40str
+finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=haste_crit,enchant=40str
+trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_10%_15dur_60cd
+trinket2=darkmoon_card_hurricane,stats=321str,equip=onattackhit_5000nature_100%_60cd
+back=glittering_epidermis,heroic=1,stats=673armor_215str_322sta_143crit_143haste,enchant=65crit
+main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=mace2h_3.80speed_1872min_3476max
+ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste
+# Gear Summary
+# gear_strength=4931
+# gear_agility=156
+# gear_stamina=5873
+# gear_intellect=10
+# gear_spirit=10
+# gear_attack_power=190
+# gear_expertise_rating=197
+# gear_hit_rating=989
+# gear_crit_rating=2319
+# gear_haste_rating=1358
+# gear_mastery_rating=572
+# gear_armor=21168
+# meta_gem=enigmatic_shadowspirit
+# tier11_2pc_melee=1
+# tier11_4pc_melee=1

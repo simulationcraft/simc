@@ -1,0 +1,67 @@
+#!./simc 
+
+warlock=Warlock_Demonology_T11_372
+origin="Warlock_Demonology_T11_372.simc"
+level=85
+race=undead
+use_pre_potion=1
+professions=enchanting=525/inscription=525
+talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00000000000000000033222003103122122113122200000000000000
+glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/fel_armor
+actions+=/summon_felguard
+actions+=/dark_intent
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
+actions+=/demon_soul
+actions+=/hand_of_guldan,if=dot.immolate.remains>(cast_time+travel_time)
+actions+=/immolate,if=dot.immolate.remains<cast_time+tick_time&buff.improved_soul_fire.remains>cast_time&target.time_to_die>=4&miss_react
+actions+=/soulburn,if=buff.metamorphosis.up&buff.bloodlust.down
+actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
+actions+=/metamorphosis
+actions+=/immolate,if=(dot.immolate.remains<cast_time+tick_time|!ticking)&target.time_to_die>=4&miss_react
+actions+=/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react
+actions+=/immolation,if=buff.metamorphosis.remains>10
+actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
+actions+=/shadowflame
+actions+=/hand_of_guldan
+actions+=/incinerate,if=buff.molten_core.react
+actions+=/soul_fire,if=buff.decimation.react
+actions+=/summon_infernal
+actions+=/life_tap,mana_percentage<=35
+actions+=/shadow_bolt
+actions+=/life_tap
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20hit_30int,enchant=60sp_35crit
+neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit
+shoulders=shadowflame_mantle,heroic=1,type=cloth,stats=266int_429sta_191haste_171hit_1009armor,gems=40int_10haste,enchant=130int_25haste
+chest=shadowblaze_robes,heroic=1,type=cloth,stats=345int_578sta_257mastery_217hit_1346armor,reforge=mastery_haste,gems=20int_20haste_20int_20hit_20int,enchant=20all
+waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20int_20haste_20haste_40int
+legs=shadowflame_leggings,heroic=1,type=cloth,stats=301int_512sta_228haste_188hit_1094armor,gems=20int_20haste_40int_20int,enchant=95sp_80sta
+feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=mastery_hit,gems=40int_10haste,enchant=35mastery
+wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,reforge=crit_haste,enchant=65haste
+hands=hands_of_the_twilight_council,heroic=1,type=cloth,stats=266int_429sta_191crit_171haste_841armor,reforge=crit_hit,gems=40int_10crit,enchant=50haste
+finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit,enchant=40int
+finger2=band_of_secret_names,stats=190int_286sta_127crit_127haste,reforge=crit_hit,enchant=40int
+trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
+trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelltickdamage_17sp_20stack_15dur
+back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=40int,enchant=50int
+main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
+off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int
+ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=mastery_haste
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5870
+# gear_intellect=4813
+# gear_spirit=20
+# gear_spell_power=2362
+# gear_hit_rating=1569
+# gear_crit_rating=585
+# gear_haste_rating=2731
+# gear_mastery_rating=672
+# gear_armor=8396
+# meta_gem=ember_shadowspirit
+# tier11_2pc_caster=1
+# main_hand=incineratus,heroic=1,enchant=power_torrent

@@ -1,0 +1,64 @@
+#!./simc 
+
+priest=Priest_Shadow_PreRaid
+level=85
+race=night_elf
+use_pre_potion=1
+professions=Enchanting=525/Jewelcrafting=525
+talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=032212000000000000000000000000000000000000322032210201222100231
+glyphs=shadow_word_death/mind_flay/shadow_word_pain/inner_fire/spirit_tap/fortitude/fading/levitate
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/fortitude
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/vampiric_embrace
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5
+actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react
+actions+=/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+0.5)&miss_react
+actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+0.5
+actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+0.5)&miss_react
+actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
+actions+=/dark_archangel,if=buff.dark_evangelism.stack>=5&dot.vampiric_touch.remains>5&dot.devouring_plague.remains>5
+actions+=/shadow_word_death,health_percentage<=25
+actions+=/shadow_fiend
+actions+=/mind_blast,if=buff.shadow_orb.stack>=1
+actions+=/mind_flay
+actions+=/dispersion,moving=1
+actions+=/devouring_plague,moving=1,if=mana_pct>10
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
+head=helm_of_the_typhonic_beast,heroic=1,type=cloth,stats=242int_454sta_162hit_182mastery_942armor,gems=ember_shadowspirit_20int_20haste_30int,enchant=60int_35crit
+neck=lightning_flash_pendant,stats=190int_286sta_127crit_127mastery,reforge=mastery_spi
+shoulders=summer_song_shoulderwraps,type=cloth,stats=205int_337sta_150spi_130crit_870armor,gems=20int_20spi_10int,enchant=50int_25haste
+chest=robes_of_orsis,type=cloth,stats=262int_454sta_172crit_192hit_1160armor,gems=20int_20haste_20int_20spi_20int,enchant=20all
+waist=belt_of_the_depths,type=cloth,stats=233int_380sta_152spi_165haste_704armor,gems=20int_20spi_67int_10int
+legs=breeches_of_mended_nightmares,type=cloth,stats=321int_512sta_214crit_216haste_1094armor,gems=67int_10haste,enchant=95int_55spi
+feet=desert_walker_sandals,type=cloth,stats=233int_380sta_149haste_169hit_860armor,gems=20int_20haste_10hit,enchant=35mastery
+wrists=crimsonborne_bracers,heroic=1,type=cloth,stats=168int_252sta_112spi_112crit_507armor,enchant=65haste
+hands=flamebloom_gloves,type=cloth,stats=233int_380sta_169mastery_149haste_782armor,reforge=mastery_spi,gems=20int_20spi_10int,enchant=65mastery
+finger1=ring_of_warring_elements,stats=143int_252sta_104mastery_101crit,reforge=mastery_spi,gems=67int,enchant=40int
+finger2=ring_of_the_great_whale,heroic=1,stats=168int_252sta_112spi_112haste,enchant=40int
+trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
+trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelltickdamage_17sp_20stack_15dur
+back=solar_wind_cloak,heroic=1,stats=168int_252sta_112spi_112haste_580armor,enchant=50int
+main_hand=scepter_of_power,heroic=1,stats=129int_194sta_86spi_86haste_1729sp,enchant=power_torrent,weapon=mace_2.30speed_659min_1225max
+off_hand=applebent_bough,stats=168int_252sta_112spi_112haste,enchant=100int
+ranged=wand_of_untainted_power,heroic=1,stats=95int_143sta_63spi_63haste
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=4800
+# gear_intellect=4173
+# gear_spirit=1212
+# gear_spell_power=1729
+# gear_hit_rating=533
+# gear_crit_rating=891
+# gear_haste_rating=1609
+# gear_mastery_rating=524
+# gear_armor=7499
+# meta_gem=ember_shadowspirit
+# main_hand=scepter_of_power,heroic=1,weapon=mace_2.30speed_659min_1225max,enchant=power_torrent

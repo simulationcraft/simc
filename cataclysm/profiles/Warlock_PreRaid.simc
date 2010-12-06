@@ -1,0 +1,8 @@
+#!simc
+
+optimal_raid=1
+
+Warlock_AffDrain_PreRaid.simc
+Warlock_Affliction_PreRaid.simc
+Warlock_Demonology_PreRaid.simc
+Warlock_Destruction_PreRaid.simc
