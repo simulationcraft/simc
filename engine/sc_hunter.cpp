@@ -296,6 +296,7 @@ struct hunter_pet_t : public pet_t
     case PET_RAPTOR:
     case PET_WOLF:
     case PET_WIND_SERPENT:
+    case PET_FEROCITY:
       return true;
     default:
       return false;
@@ -1874,7 +1875,7 @@ struct serpent_sting_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
-    tick_power_mod = 0.4 / num_ticks;
+    tick_power_mod = 0.4;
 
     base_crit += p -> glyphs.serpent_sting -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
@@ -2923,11 +2924,11 @@ void hunter_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=endless_rage";
-    action_list_str += ( primary_tree() != TREE_SURVIVAL ) ? "/food,type=hearty_rhino" : "/food,type=blackened_dragonfin";
+    action_list_str = "flask,type=winds";
+    action_list_str += "/food,type=seafood_magnifique_feast";
     action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura -> rank() ) action_list_str += "/trueshot_aura";
-    action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+    action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
@@ -2977,7 +2978,7 @@ void hunter_t::init_actions()
       action_list_str += "/aimed_shot,if=buff.master_marksman.stack=5";
 
       action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/arcane_shot,if=focus>=40&buff.improved_steady_shot.up";
+      action_list_str += "/arcane_shot,if=focus>=40&buff.improved_steady_shot.up&cooldown.chimera_shot.remains>0";
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:
@@ -2997,7 +2998,7 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking";
       if ( level >=81 )
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<=8";
-      action_list_str += "/arcane_shot,if=focus>=40|buff.lock_and_load.remains<gcd";
+      action_list_str += "/arcane_shot,if=focus>=50|buff.lock_and_load.remains<gcd";
       action_list_str += "/steady_shot";
       break;
     default: break;
@@ -3179,7 +3180,7 @@ std::vector<option_t>& hunter_t::get_options()
 
 bool hunter_t::create_profile( std::string& profile_str, int save_type )
 {
-  profile_str+= "regen_periodicy=0.25";
+
   return player_t::create_profile( profile_str, save_type );
 }
 
