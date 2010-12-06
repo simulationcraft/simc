@@ -381,12 +381,12 @@ static bool parse_rawr( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
-static void * parse_spell_query( sim_t*             sim,
+static bool parse_spell_query( sim_t*             sim,
                                  const std::string& name,
                                  const std::string& value)
 {
   sim -> sd = spell_data_expr_t::parse( sim, value );
-  return 0;
+  return sim -> sd > 0;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -1865,7 +1865,7 @@ bool sim_t::parse_options( int    _argc,
       return false;
   }
 
-  if ( player_list == NULL )
+  if ( player_list == NULL && sd == NULL )
   {
     errorf( "Nothing to sim!\n" );
     cancel();
