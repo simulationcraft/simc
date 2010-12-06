@@ -142,7 +142,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   if( tokens.count() >= 13 )
   {
            patchChoice->setCurrentIndex( tokens[  0 ].toInt() );
-         latencyChoice->setCurrentIndex( tokens[  1 ].toInt() );
+  //       latencyChoice->setCurrentIndex( tokens[  1 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  2 ].toInt() );
      fightLengthChoice->setCurrentIndex( tokens[  3 ].toInt() );
    fightVarianceChoice->setCurrentIndex( tokens[  4 ].toInt() );
@@ -194,9 +194,9 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
     .arg(         patchChoice->currentIndex() )
-    .arg(       latencyChoice->currentIndex() )
+//    .arg(       latencyChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
@@ -467,7 +467,7 @@ void SimulationCraftWindow::createGlobalsTab()
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 1, "4.0.3" ) );
-  globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
+  // globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
@@ -573,11 +573,11 @@ void SimulationCraftWindow::createImportTab()
 {
   importTab = new QTabWidget();
   mainTab->addTab( importTab, "Import" );
-
+/*
   armoryView = new SimulationCraftWebView( this );
   armoryView->setUrl( QUrl( "http://us.wowarmory.com" ) );
   importTab->addTab( armoryView, "Armory" );
-
+*/
   battleNetView = new SimulationCraftWebView( this );
   battleNetView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab->addTab( battleNetView, "Battle.Net" );
@@ -802,8 +802,8 @@ void SimulationCraftWindow::createToolTips()
 {
   patchChoice->setToolTip( "4.0.3: Live\n" );
 
-  latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
-			     "High: queue=0.150  gcd=0.300  channel=0.500" );
+//  latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
+//			     "High: queue=0.150  gcd=0.300  channel=0.500" );
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
 				"1000:  Sufficient for DPS Analysis\n"
@@ -1068,6 +1068,7 @@ QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
   options += "patch=" + patchChoice->currentText() + "\n";
+  /*  
   if( latencyChoice->currentText() == "Low" )
   {
     options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
@@ -1076,6 +1077,7 @@ QString SimulationCraftWindow::mergeOptions()
   {
     options += "queue_lag=0.150  gcd_lag=0.300  channel_lag=0.500\n";
   }
+  */
   options += "iterations=" + iterationsChoice->currentText() + "\n";
   if( iterationsChoice->currentText() == "10000" )
   {

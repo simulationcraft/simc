@@ -96,7 +96,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 44C41689107BB68700242308 /* simcqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 25806D6E478AB64013A59984 /* simcqt */;
+			remoteGlobalIDString = C2797ED71846E3EBF024903A /* simcqt */;
 			remoteInfo = simcqt;
 		};
 		444CCF8F107DCCD300229DD2 /* PBXContainerItemProxy */ = {
@@ -461,6 +461,7 @@
 			};
 			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "simc" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
