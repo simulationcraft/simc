@@ -1843,10 +1843,8 @@ struct scatter_shot_t : public hunter_attack_t
 };
 struct serpent_sting_burst_t : public hunter_attack_t
 {
-  double dot_nt;
-
   serpent_sting_burst_t( player_t* player ) :
-    hunter_attack_t( "serpent_sting_burst", player, SCHOOL_NATURE, TREE_MARKSMANSHIP ), dot_nt( 8.0 )
+    hunter_attack_t( "serpent_sting_burst", player, SCHOOL_NATURE, TREE_MARKSMANSHIP )
   {
     dual       = true;
     proc       = true;
@@ -1882,10 +1880,8 @@ struct serpent_sting_t : public hunter_attack_t
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
-    if ( p -> talents.improved_serpent_sting -> rank() )
-    {
-      serpent_sting_burst = new serpent_sting_burst_t( p );
-    }
+    serpent_sting_burst = new serpent_sting_burst_t( p );
+
   }
 
   virtual void execute()
@@ -1893,20 +1889,14 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_attack_t::execute();
     if ( result_is_hit() ) target -> debuffs.poisoned -> increment();
     hunter_t* p = player -> cast_hunter();
-    if ( serpent_sting_burst )
+    if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> rank() )
         {
-          double t = p -> talents.improved_serpent_sting -> rank() * 0.30 *
-                     ( ceil( base_td ) + total_power() * tick_power_mod );
-          double n;
-
-
-          n = hasted_num_ticks();
+          double t = p -> talents.improved_serpent_sting -> rank() * 0.30 * ( ceil( base_td ) + total_power() * tick_power_mod );
+          double n = hasted_num_ticks();
 
 
           serpent_sting_burst -> base_dd_min    = t * n;
           serpent_sting_burst -> base_dd_max    = t * n;
-          serpent_sting_burst -> dot_nt         = n;
-          serpent_sting_burst -> round_base_dmg = false;
           serpent_sting_burst -> execute();
         }
   }
@@ -2379,15 +2369,25 @@ struct trueshot_aura_t : public hunter_spell_t
 
 // Event Shedule Sniper Trainig
 
-struct sniper_training_t : public event_t
+struct snipertraining_hunter_t : public event_t
 {
-  sniper_training_t ( player_t* player ) :
-    event_t( player -> sim, player, "sniper_training" )
+  snipertraining_hunter_t ( player_t* player ) :
+    event_t( player -> sim, player )
   {
-    // This Event should be executed every 5 seconds (always)
-    // It will check if the last moving buff ended more than 6seconds before, and if true it will trigger the buff sniper_training
-    // Check could look like this:  if ( p -> buffs.moving.down() && ( sim -> current_time() - p -> buffs.moving -> last_start - p -> buffs.moving -> duration - p -> talents.sniper_training -> effect_base_value( 1 ) ) > 0 )
-    // p -> buffs_sniper_training -> trigger();
+    name = "Sniper_Training_Check";
+    sim -> add_event( this, 5.0 );
+  }
+
+  virtual void execute()
+  {
+    hunter_t* p = player -> cast_hunter();
+    if ( !p -> in_combat )
+      p -> buffs_sniper_training -> trigger();
+    if ( !p -> buffs.moving -> up() && ( sim -> current_time - p -> buffs.moving -> last_start - p -> buffs.moving -> buff_duration - p -> talents.sniper_training -> effect_base_value( 1 ) ) > 0 )
+    {
+      p -> buffs_sniper_training -> trigger();
+    }
+    new (sim) snipertraining_hunter_t( p );
   }
 };
 
@@ -2789,7 +2789,7 @@ void hunter_t::init_buffs()
   buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> rank() );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect_base_value( 1 ) / 100.0 );
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance());
-  buffs_sniper_training             = new buff_t( this, talents.sniper_training -> effect_trigger_spell( 1 ), "sniper_training" );
+  buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
   buffs_rapid_fire -> cooldown -> duration = 0;
@@ -3017,6 +3017,9 @@ void hunter_t::combat_begin()
 
   if ( talents.ferocious_inspiration -> rank() )
     sim -> auras.ferocious_inspiration -> trigger();
+
+  buffs_sniper_training -> trigger();
+  new (sim) snipertraining_hunter_t( this );
 }
 
 // hunter_t::reset ===========================================================
@@ -3220,6 +3223,7 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_typ
 
 void player_t::hunter_init( sim_t* sim )
 {
+
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
 
@@ -3234,6 +3238,8 @@ void player_t::hunter_init( sim_t* sim )
 
 void player_t::hunter_combat_begin( sim_t* sim )
 {
+
+
   if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
 
