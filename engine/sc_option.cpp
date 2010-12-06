@@ -271,11 +271,23 @@ bool option_t::parse_file( sim_t* sim,
                            FILE*  file )
 {
   char buffer[ 1024 ];
+  bool first = true;
   while ( fgets( buffer, 1024, file ) )
   {
-    if ( *buffer == '#' ) continue;
-    if ( only_white_space( buffer ) ) continue;
-    option_t::parse_line( sim, buffer );
+    char *b = buffer;
+    if ( first )
+    {
+      // Skip the Windows UTF-8 magic cookie.
+      uint32_t len = strlen( b );
+      if ( ( len >= 3 ) && ( (unsigned char) b[ 0 ] == 0xEF ) && ( (unsigned char) b[ 1 ] == 0xBB ) && ( (unsigned char) b[ 2 ] == 0xBF ) )
+      {
+        b += 3;
+      }
+      first = false;
+    }
+    if ( *b == '#' ) continue;
+    if ( only_white_space( b ) ) continue;
+    option_t::parse_line( sim, b );
   }
   return true;
 }
