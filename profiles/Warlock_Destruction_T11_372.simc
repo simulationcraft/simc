@@ -31,9 +31,9 @@ actions+=/life_tap
 head=crown_of_the_twilight_queen,heroic=1,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20hit_30int,enchant=60sp_35crit
 neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit
 shoulders=shadowflame_mantle,heroic=1,type=cloth,stats=266int_429sta_191haste_171hit_1009armor,gems=40int_10haste,enchant=130int_25haste
-chest=shadowblaze_robes,heroic=1,type=cloth,stats=345int_578sta_257mastery_217hit_1346armor,reforge=mastery_haste,gems=20int_20haste_20int_20hit_20int,enchant=20all
-waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20int_20haste_20haste_40int
-legs=shadowflame_leggings,heroic=1,type=cloth,stats=301int_512sta_228haste_188hit_1094armor,gems=20int_20haste_40int_20int,enchant=95sp_80sta
+chest=shadowblaze_robes,heroic=1,type=cloth,stats=345int_578sta_257mastery_217hit_1346armor,reforge=mastery_haste,gems=20int_20crit_20int_20hit_20int,enchant=20all
+waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20int_20crit_20haste_40int
+legs=shadowflame_leggings,heroic=1,type=cloth,stats=301int_512sta_228haste_188hit_1094armor,gems=20int_20crit_40int_20int,enchant=95sp_80sta
 feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=mastery_hit,gems=40int_10haste,enchant=35mastery
 wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,reforge=crit_haste,enchant=65haste
 hands=hands_of_the_twilight_council,heroic=1,type=cloth,stats=266int_429sta_191crit_171haste_841armor,reforge=crit_hit,gems=40int_10crit,enchant=50haste
@@ -44,7 +44,7 @@ trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelldamage_17sp_20stac
 back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=40int,enchant=50int
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int
-ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=mastery_haste
+ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=mastery_crit
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
@@ -53,8 +53,8 @@ ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=m
 # gear_spirit=20
 # gear_spell_power=2362
 # gear_hit_rating=1569
-# gear_crit_rating=585
-# gear_haste_rating=2731
+# gear_crit_rating=677
+# gear_haste_rating=2639
 # gear_mastery_rating=672
 # gear_armor=8396
 # meta_gem=ember_shadowspirit
