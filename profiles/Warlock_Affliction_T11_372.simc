@@ -40,7 +40,7 @@ hands=hands_of_the_twilight_council,heroic=1,type=cloth,stats=266int_429sta_191c
 finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,stats=190int_286sta_127crit_127haste,reforge=crit_hit,enchant=40int
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
-trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelldamage_17sp_20stack_15dur
+trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelltickdamage_17sp_20stack_15dur
 back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=40int,enchant=50int
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int

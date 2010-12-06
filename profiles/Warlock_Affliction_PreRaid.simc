@@ -40,7 +40,7 @@ hands=flamebloom_gloves,type=cloth,stats=233int_380sta_169mastery_149haste_782ar
 finger1=band_of_lamentation,stats=168int_252sta_112mastery_112hit,reforge=mastery_haste,enchant=40int
 finger2=lavishly_jeweled_ring,heroic=1,stats=133int_252sta_112mastery_107hit,reforge=mastery_haste,gems=40int_10hit,enchant=40int
 trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
-trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelldamage_17sp_20stack_15dur
+trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelltickdamage_17sp_20stack_15dur
 back=periwinkle_cloak,heroic=1,stats=168int_252sta_112haste_112mastery_580armor,reforge=mastery_hit,enchant=50int
 main_hand=blade_of_the_burning_sun,heroic=1,stats=129int_194sta_93crit_76haste_1729sp,reforge=crit_hit,enchant=power_torrent,weapon=dagger_1.80speed_516min_958max
 off_hand=dungeoneering_guide,stats=168int_252sta_116hit_107mastery,reforge=mastery_haste,enchant=100int
