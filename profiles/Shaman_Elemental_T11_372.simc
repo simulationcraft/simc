@@ -20,9 +20,9 @@ actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,time_to_die<=60
 actions+=/volcanic_potion,if=buff.bloodlust.react
 actions+=/elemental_mastery
-actions+=/earth_shock,if=buff.lightning_shield.stack=9
 actions+=/flame_shock,if=!ticking
 actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05
+actions+=/earth_shock,if=buff.lightning_shield.stack=9
 actions+=/fire_elemental_totem
 actions+=/searing_totem
 actions+=/chain_lightning,if=target.adds>2

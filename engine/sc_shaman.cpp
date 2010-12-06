@@ -3866,13 +3866,12 @@ void shaman_t::init_actions()
         }
       }
       
-      if ( talent_fulmination -> rank() )
-        action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9";
       action_list_str += "/flame_shock,if=!ticking";
       // Unleash elements for elemental is a downgrade in dps ...
       //if ( level >= 81 )
       //  action_list_str += "/unleash_elements";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05";
+      if ( talent_fulmination -> rank() ) action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9";
       action_list_str += "/fire_elemental_totem";
       action_list_str += "/searing_totem";
       action_list_str += "/chain_lightning,if=target.adds>2";
