@@ -19,7 +19,6 @@
 #define TAB_LOG       6
 #define TAB_RESULTS   7
 
-//#define TAB_ARMORY     0
 #define TAB_BATTLE_NET 0
 #define TAB_RAWR       1
 #define TAB_BIS        2
