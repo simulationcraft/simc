@@ -42,6 +42,7 @@ struct hunter_t : public player_t
   buff_t* buffs_tier10_4pc;
   buff_t* buffs_master_marksman;
   buff_t* buffs_pre_improved_steady_shot;
+  buff_t* buffs_sniper_training;
 
   // Gains
   gain_t* gains_glyph_of_arcane_shot;
@@ -589,11 +590,6 @@ struct hunter_attack_t : public attack_t
         trigger_improved_steady_shot();
       if ( p -> buffs_pre_improved_steady_shot -> stack() == 2 )
         p -> buffs_improved_steady_shot -> trigger();
-
-
-
-
-
 
   }
 
@@ -1706,6 +1702,8 @@ struct cobra_shot_t : public hunter_attack_t
     {
       player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
     }
+    if ( p -> buffs_sniper_training -> up() )
+      player_multiplier *= 1.0 + p -> buffs_sniper_training -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -2009,6 +2007,8 @@ struct steady_shot_t : public hunter_attack_t
     {
       player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
     }
+    if ( p -> buffs_sniper_training -> up() )
+      player_multiplier *= 1.0 + p -> buffs_sniper_training -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -2374,6 +2374,20 @@ struct trueshot_aura_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
     return( ! p -> buffs_trueshot_aura -> check() );
+  }
+};
+
+// Event Shedule Sniper Trainig
+
+struct sniper_training_t : public event_t
+{
+  sniper_training_t ( player_t* player ) :
+    event_t( player -> sim, player, "sniper_training" )
+  {
+    // This Event should be executed every 5 seconds (always)
+    // It will check if the last moving buff ended more than 6seconds before, and if true it will trigger the buff sniper_training
+    // Check could look like this:  if ( p -> buffs.moving.down() && ( sim -> current_time() - p -> buffs.moving -> last_start - p -> buffs.moving -> duration - p -> talents.sniper_training -> effect_base_value( 1 ) ) > 0 )
+    // p -> buffs_sniper_training -> trigger();
   }
 };
 
@@ -2775,6 +2789,7 @@ void hunter_t::init_buffs()
   buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> rank() );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect_base_value( 1 ) / 100.0 );
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance());
+  buffs_sniper_training             = new buff_t( this, talents.sniper_training -> effect_trigger_spell( 1 ), "sniper_training" );
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
   buffs_rapid_fire -> cooldown -> duration = 0;
