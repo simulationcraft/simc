@@ -2314,13 +2314,12 @@ static void print_html3_player( FILE* file, player_t* p )
 
   util_t::fprintf( file,
        "<ul class=\"params\">\n"
-       "<li><b>Name:</b> %s</li>\n"
        "<li><b>Race:</b> %s</li>\n"
        "<li><b>Class:</b> %s</li>\n"
        "<li><b>Tree:</b> %s</li>\n"
        "<li><b>Level:</b> %d</li>\n"
        "</ul>\n<div class=\"clear\"></div>\n",
-       n.c_str(), p -> race_str.c_str(),
+       p -> race_str.c_str(),
        p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
        util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
@@ -3645,7 +3644,64 @@ void report_t::print_html3( sim_t* sim )
 util_t::fprintf( file, "<script>\njQuery.noConflict();\njQuery(document).ready(function($) {\n$('.toggle-content, .help-box').hide();\n$('.open').next('.toggle-content').show();\n$('.toggle').click(function(e) {\ne.preventDefault();\n$(this).toggleClass('open');\n$(this).next('.toggle-content').toggle(150);\n});\n$('.toggle-details').click(function(e) {\ne.preventDefault();\n$(this).toggleClass('open');\n$(this).parents().next('.details').toggleClass('hide');\n});\n$('.toggle-db-details').click(function(e) {\ne.preventDefault();\n$(this).toggleClass('open');\n$(this).parent().next('.toggle-content').toggle(150);\n});\n$('.help').click(function(e) {\ne.preventDefault();\nvar target = $(this).attr('rel') + ' .help-box';\nvar content = $(target).html();\n$('#active-help-dynamic .help-box').html(content);\n$('#active-help .help-box').show();\nvar t = e.pageY - 20;\nvar l = e.pageX - 20;\n$('#active-help').css({top:t,left:l});\n$('#active-help').toggle(250);\n});\n$('#active-help a.close').click(function(e) {\ne.preventDefault();\n$('#active-help').toggle(250);\n});\n});\n</script>\n" );
 
 	// Styles galore
-	util_t::fprintf( file, "<style type=\"text/css\">\n* { border: none; margin: 0; padding: 0; }\nbody { padding: 10px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; }\np { margin-top: 1em; }\nh1, h2, h3, h4, h5, h6 { color: #555; margin-top: 1em; margin-bottom: 0.5em; }\nh1, h2 { margin: 0; padding: 2px 2px 0 2px; }\nh2 { font-size: 24px; }\nh3 { margin: 0; font-size: 20px; }\na { color: #666688; text-decoration: none; }\na:hover, a:active { color: #333; }\nul, ol { padding-left: 20px; }\nul.float, ol.float { padding: 0; }\nul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 1px solid #ddd; }\n.overlay { position: absolute; top: 0; left: 0; background: #000; z-index: 5; }\n.clear { clear: both; }\n.hide { display: none; }\n.toggle { cursor: pointer; }\n.first { margin-top: 1em; }\nh2.toggle { padding-left: 24px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAIAAABxU02MAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFkSURBVHja3JXLjkVAEIZPO1jZiifA1nWJB/U02CFsXfbEnhVhatKJMEe3yywmmVq0Dvnyd9dfVdCyLK+nwbx+EX8HoziOu65DCN3C5nmWZZmFR9M0D2RVVX37vg+7tm1vnBYhz/MARtiqLMvSNL1Iuq4L5Pd+9TnP8yRJrpMQ7PpB0zRYKTw+raIo6xt2+03XdRLPMIzjOFvywGfgLcs6JNfT0orEMIwtDyc6JIkVBrxpmni/zdCPYEnpAXiaJkEQSOTOqs8YhoHjOJ7nn8D/tZ93cFEUVVVdh3dW1XUNvQkppNhDVIYyhDUMw7IsH94ZlC/yxwnD/On9idkGPggCuj7NKuCjKKLwzOmIpfDnRQI8KX/sFUvw/aFDYdBvm+xGefZ9P47jbWU8G9bZcg+GkQaD6UnCSOS5sm3beJjftopO0mAg8Q/oaj9v70nXPFDGkxQsIWWIpixJkiiKn36S4kuAAQD206PftRFaxQAAAABJRU5ErkJggg==) 0 -15px no-repeat; }\nh2.open { background-position: 0 9px; margin-bottom: 10px; }\nh3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAIAAADeNBkWAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADzSURBVHja1JS7CoQwFER9FiKojb3gxyj4vYqfYG1tYSs2KojFErKz6z6y8Sba7lQmHIdkuBOzaZphGGzbNtRijCVJ4qRp2nXduq4aNIoioCbnfFmWuq6naSK5OI7zPPc8z8IiCIIsy/CrhsO3tW+FYYgtiRa5L3r0ljjocVbRaZ7nqqpc1y2KQuQIFML9gPq+L+0TqEqWcVn/ibZti2G4hPZ9j6HZtu0cxcgifA0tn3UcRxVNXEtF0wmQtDIs0GVZikXS5Xp76rN0NNXDpKMdJ65HjnYFh6qgPycJ7H5H7scVTwhKQvq9xN/Ci4SAuFp3AQYAEZCf9NU/U8cAAAAASUVORK5CYII=) 0 -10px no-repeat; }\nh3.open { background-position: 0 8px; }\n.toggle-content { display: none; }\n#active-help, .help-box { display: none; }\n#active-help { position: absolute; width: 350px; padding: 3px; background: #fff; z-index: 10; }\n#active-help-dynamic { padding: 6px 6px 18px 6px; background: #eeeef5; outline: 1px solid #ddd; font-size: 13px; }\n#active-help .close { position: absolute; right: 10px; bottom: 4px; }\n.help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n.help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n.section { position: relative; padding: 8px; margin: 0 0 25px 0; outline: 1px solid #ccc; background-color: #fff; }\nul.params { padding: 0; }\nul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 12px; }\n.toggle-content ul.params { position: relative; top: 2px; left: 24px; width: 90%; }\n#masthead h2 { margin-top: 20px; }\n#masthead .notice { width: 500px; padding: 0 2px 2px 2px; outline: 1px solid #bb9999; background: #ffdddd; }\n#masthead ul.toc { padding: 0; margin-left: 24px; }\n#masthead ul.toc li { list-style-type: none; }\n.charts { margin: 20px 20px 0 4px; float: left; width: 550px; }\n.charts img { padding: 8px; margin-bottom: 20px; outline: 2px solid #eee; }\ntable { margin-bottom: 20px; border: 0; background-color: #eee; }\ntable.bottom { margin-bottom: 0px; }\ntable.mt { margin-top: 20px; }\ntr { background-color: #ddd; }\ntr.head { background-color: #999; color: #fff; }\ntr.even { background-color: #fff; }\nth { padding: 2px 4px; text-align: center; background-color: #999; color: #fff; }\nth a { color: #fff; text-decoration: underline; }\nth a:hover, th a:active { color: #f1f1ff; }\ntd { padding: 2px 4px; text-align: center; font-size: 13px; }\ntd.left, th.left { padding-right: 6px; text-align: left }\ntr.details { margin-top: 0px; }\ntr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\ntr.details td ul { width: 400px; padding: 0; margin-bottom: 10px; }\ntr.details td ul li { list-style-type: none; }\n</style>\n" );
+    util_t::fprintf( file, "<style type=\"text/css\">\n"
+      "* { border: none; margin: 0; padding: 0; }\n"
+      "body { padding: 10px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; }\n"
+      "p { margin-top: 1em; }\n"
+      "h1, h2, h3, h4, h5, h6 { color: #777; margin-top: 1em; margin-bottom: 0.5em; }\n"
+      "h1, h2 { margin: 0; padding: 2px 2px 0 2px; }\n"
+      "h1 { font-size: 24px; }\n"
+      "h2 { font-size: 18px; }\n"
+      "h3 { margin: 0; font-size: 16px; }\n"
+      "a { color: #666688; text-decoration: none; }\n"
+      "a:hover, a:active { color: #333; }\n"
+      "ul, ol { padding-left: 20px; }\n"
+      "ul.float, ol.float { padding: 0; }\n"
+      "ul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 1px solid #ddd; }\n"
+      ".overlay { position: absolute; top: 0; left: 0; background: #000; z-index: 5; }\n"
+      ".clear { clear: both; }\n"
+      ".hide { display: none; }\n"
+      ".toggle { cursor: pointer; }\n"
+      ".first { margin-top: 1em; }\n"
+      "h2.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAIAAADeNBkWAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADzSURBVHja1JS7CoQwFER9FiKojb3gxyj4vYqfYG1tYSs2KojFErKz6z6y8Sba7lQmHIdkuBOzaZphGGzbNtRijCVJ4qRp2nXduq4aNIoioCbnfFmWuq6naSK5OI7zPPc8z8IiCIIsy/CrhsO3tW+FYYgtiRa5L3r0ljjocVbRaZ7nqqpc1y2KQuQIFML9gPq+L+0TqEqWcVn/ibZti2G4hPZ9j6HZtu0cxcgifA0tn3UcRxVNXEtF0wmQtDIs0GVZikXS5Xp76rN0NNXDpKMdJ65HjnYFh6qgPycJ7H5H7scVTwhKQvq9xN/Ci4SAuFp3AQYAEZCf9NU/U8cAAAAASUVORK5CYII=) 0 -9px no-repeat; }\n"
+      "h2.open { margin-bottom: 10px; background-position: 0 8px; }\n"
+      "h3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAIAAADeNBkWAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADzSURBVHja1JS7CoQwFER9FiKojb3gxyj4vYqfYG1tYSs2KojFErKz6z6y8Sba7lQmHIdkuBOzaZphGGzbNtRijCVJ4qRp2nXduq4aNIoioCbnfFmWuq6naSK5OI7zPPc8z8IiCIIsy/CrhsO3tW+FYYgtiRa5L3r0ljjocVbRaZ7nqqpc1y2KQuQIFML9gPq+L+0TqEqWcVn/ibZti2G4hPZ9j6HZtu0cxcgifA0tn3UcRxVNXEtF0wmQtDIs0GVZikXS5Xp76rN0NNXDpKMdJ65HjnYFh6qgPycJ7H5H7scVTwhKQvq9xN/Ci4SAuFp3AQYAEZCf9NU/U8cAAAAASUVORK5CYII=) 0 -10px no-repeat; }\n"
+      "h3.open { background-position: 0 8px; }\n"
+      ".toggle-content { display: none; }\n"
+      "#active-help, .help-box { display: none; }\n"
+      "#active-help { position: absolute; width: 350px; padding: 3px; background: #fff; z-index: 10; }\n"
+      "#active-help-dynamic { padding: 6px 6px 18px 6px; background: #eeeef5; outline: 1px solid #ddd; font-size: 13px; }\n"
+      "#active-help .close { position: absolute; right: 10px; bottom: 4px; }\n"
+      ".help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
+      ".help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
+      ".section { position: relative; padding: 8px; margin: 0 0 15px 0; outline: 1px solid #ccc; background-color: #fff; }\n"
+      ".section .toggle-content { padding-left: 14px; }\n"
+      "ul.params { padding: 0; }\n"
+      "ul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 12px; }\n"
+      ".player h2 { margin: 0; }\n"
+      ".player ul.params { position: relative; top: 2px; }\n"
+      "#masthead h2 { margin: 10px 0 5px 0; }\n"
+      "#notice { outline: 1px solid #bb9999; background: #ffdddd; font-size: 12px; }\n"
+      "#notice h2 { margin-bottom: 10px; }\n"
+      "#masthead ul.toc { padding: 0; }\n"
+      "#masthead ul.toc li { list-style-type: none; }\n"
+      ".charts { margin: 20px 20px 0 4px; float: left; width: 550px; }\n"
+      ".charts img { padding: 8px; margin-bottom: 20px; outline: 2px solid #eee; }\n"
+      "table { border: 0; background-color: #eee; }\n"
+      "table.mt { margin-top: 20px; }\n"
+      "tr { background-color: #ddd; }\n"
+      "tr.head { background-color: #999; color: #fff; }\n"
+      "tr.even { background-color: #fff; }\n"
+      "th { padding: 2px 4px; text-align: center; background-color: #999; color: #fff; }\n"
+      "th a { color: #fff; text-decoration: underline; }\n"
+      "th a:hover, th a:active { color: #f1f1ff; }\n"
+      "td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
+      "td.left, th.left { padding-right: 6px; text-align: left }\n"
+      "tr.details { margin-top: 0px; }\n"
+      "tr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\n"
+      "tr.details td ul { width: 400px; padding: 0; margin-bottom: 10px; }\n"
+      "tr.details td ul li { list-style-type: none; }\n"
+    "</style>\n" );
 	
 	util_t::fprintf( file, "</head>\n" );
 	util_t::fprintf( file, "<body>\n" );
@@ -3684,8 +3740,16 @@ util_t::fprintf( file, "<script>\njQuery.noConflict();\njQuery(document).ready(f
 	
 	util_t::fprintf( file, "<div class=\"clear\"></div>\n" );
 	
+	if ( num_players > 1 )
+	{
+		print_html3_contents( file, sim );
+	}
+	
+	// End masthead section
+	util_t::fprintf( file, "</div>\n" );
+	
 #if SC_BETA
-    util_t::fprintf( file, "<div class=\"notice\">\n" );
+    util_t::fprintf( file, "<div id=\"notice\" class=\"section\">\n" );
 	util_t::fprintf( file, "<h2>Beta Release</h2>\n" );
 	int ii = 0;
 	if ( beta_warnings[ 0 ] )
@@ -3701,14 +3765,6 @@ util_t::fprintf( file, "<script>\njQuery.noConflict();\njQuery(document).ready(f
 	util_t::fprintf( file, "</div>\n" );
 #endif
 	
-	if ( num_players > 1 )
-	{
-		print_html3_contents( file, sim );
-	}
-	
-	// End masthead section
-	util_t::fprintf( file, "</div>\n" );
-	
 	// Begin main content
 	util_t::fprintf( file, "<div id=\"main_content\">\n" );
 	
@@ -3716,7 +3772,6 @@ util_t::fprintf( file, "<script>\njQuery.noConflict();\njQuery(document).ready(f
 	{
 		print_html3_raid_summary( file, sim );
 		print_html3_scale_factors( file, sim );
-		util_t::fprintf( file, "<hr />\n" );
 	}
 	
 	for ( int i=0; i < num_players; i++ )
