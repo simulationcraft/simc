@@ -29,11 +29,11 @@ actions+=/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up
 actions+=/life_tap,mana_percentage<=35
 actions+=/drain_life,interrupt=1
 actions+=/life_tap
-head=helm_of_the_typhonic_beast,heroic=1,type=cloth,stats=242int_454sta_162hit_182mastery_942armor,reforge=mastery_haste,gems=ember_shadowspirit_54int_20int_20haste_30int,enchant=60int_35crit
+head=helm_of_the_typhonic_beast,heroic=1,type=cloth,stats=242int_454sta_162hit_182mastery_942armor,reforge=mastery_haste,gems=ember_shadowspirit_20int_20haste_30int,enchant=60int_35crit
 neck=lightning_flash_pendant,stats=190int_286sta_127crit_127mastery,reforge=crit_haste
 shoulders=mantle_of_the_eastern_lords,heroic=1,type=cloth,stats=205int_337sta_150mastery_130hit_870armor,reforge=mastery_haste,gems=40int,enchant=130int_25haste
 chest=inquisition_robes,heroic=1,type=cloth,stats=262int_454sta_202hit_162mastery_1160armor,reforge=mastery_haste,gems=40int_40int,enchant=20all
-waist=dreamless_belt,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_haste,gems=40int
+waist=dreamless_belt,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_haste,gems=40int_40int
 legs=breeches_of_mended_nightmares,type=cloth,stats=321int_512sta_214crit_216haste_1094armor,reforge=crit_hit,gems=40int_10haste,enchant=95int_80sta
 feet=desert_walker_sandals,type=cloth,stats=233int_380sta_149haste_169hit_860armor,gems=40int,enchant=35mastery
 wrists=sand_silk_wristband,heroic=1,type=cloth,stats=168int_252sta_112crit_112hit_507armor,reforge=crit_haste,enchant=65haste
@@ -41,7 +41,7 @@ hands=flamebloom_gloves,type=cloth,stats=233int_380sta_169mastery_149haste_782ar
 finger1=band_of_lamentation,stats=168int_252sta_112mastery_112hit,reforge=mastery_haste,enchant=40int
 finger2=lavishly_jeweled_ring,heroic=1,stats=133int_252sta_112mastery_107hit,reforge=mastery_haste,gems=40int_10hit,enchant=40int
 trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
-trinket2=talisman_of_sinister_order,stats=234int,equip=onspellcast_918mastery_10%_20dur_75cd
+trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelldamage_17sp_20stack_15dur
 back=periwinkle_cloak,heroic=1,stats=168int_252sta_112haste_112mastery_580armor,reforge=mastery_hit,enchant=50int
 main_hand=blade_of_the_burning_sun,heroic=1,stats=129int_194sta_93crit_76haste_1729sp,reforge=crit_hit,enchant=power_torrent,weapon=dagger_1.80speed_516min_958max
 off_hand=dungeoneering_guide,stats=168int_252sta_116hit_107mastery,reforge=mastery_haste,enchant=100int
@@ -50,12 +50,12 @@ ranged=wand_of_dark_worship,heroic=1,stats=95int_143sta_63crit_63haste,reforge=c
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=4880
-# gear_intellect=4480
+# gear_intellect=4232
 # gear_spirit=20
 # gear_spell_power=1729
 # gear_hit_rating=1527
 # gear_crit_rating=403
-# gear_haste_rating=1422
+# gear_haste_rating=1707
 # gear_mastery_rating=933
 # gear_armor=7499
 # meta_gem=ember_shadowspirit
