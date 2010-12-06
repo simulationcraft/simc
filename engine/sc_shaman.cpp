@@ -829,11 +829,6 @@ struct searing_flames_t : public shaman_spell_t
 
   // Don't double dip
   virtual void target_debuff( int dmg_type ) { }
-  virtual void player_buff() 
-  {
-    // Make searing flames have some sort of base crit
-    player_crit = 0.03;
-  }
   
   virtual double total_td_multiplier() SC_CONST
   {
