@@ -29,36 +29,35 @@ actions+=/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up
 actions+=/life_tap,mana_percentage<=35
 actions+=/drain_life,interrupt=1
 actions+=/life_tap
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=chaotic_shadowspirit_20int_20hit_30int,enchant=60sp_35crit
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20hit_30int,enchant=60sp_35crit
 neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=mastery_hit
-shoulders=shadowflame_mantle,heroic=1,type=cloth,stats=266int_429sta_191haste_171hit_1009armor,gems=20int_20hit_10haste,enchant=130int_25haste
-chest=shadowflame_robes,heroic=1,type=cloth,stats=301int_512sta_218crit_198haste_1251armor,reforge=crit_hit,gems=20int_20hit_20int_20hit_20int,enchant=20str_20agi_20sta_20int_20spi
-waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20hit_20haste_40hit_20haste
-legs=shadowflame_leggings,heroic=1,type=cloth,stats=301int_512sta_228haste_188hit_1094armor,gems=20hit_20haste_40int_20int,enchant=95sp_80sta
-feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=mastery_hit,gems=20int_20hit_10haste,enchant=35mastery
+shoulders=shadowflame_mantle,heroic=1,type=cloth,stats=266int_429sta_191haste_171hit_1009armor,gems=40int_10haste,enchant=130int_25haste
+chest=shadowblaze_robes,heroic=1,type=cloth,stats=345int_578sta_257mastery_217hit_1346armor,reforge=mastery_haste,gems=20int_20haste_20int_20hit_20int,enchant=20all
+waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20int_20haste_20haste_40int
+legs=shadowflame_leggings,heroic=1,type=cloth,stats=301int_512sta_228haste_188hit_1094armor,gems=20int_20haste_40int_20int,enchant=95sp_80sta
+feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=mastery_hit,gems=40int_10haste,enchant=35mastery
 wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,reforge=crit_haste,enchant=65haste
-hands=shadowflame_handwraps,heroic=1,type=cloth,stats=233int_380sta_149crit_169mastery_782armor,reforge=crit_hit,gems=20hit_20haste_10mastery,enchant=65mastery
+hands=hands_of_the_twilight_council,heroic=1,type=cloth,stats=266int_429sta_191crit_171haste_841armor,reforge=crit_hit,gems=40int_10crit,enchant=50haste
 finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit,enchant=40int
-finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=mastery_hit,enchant=40int
+finger2=band_of_secret_names,stats=190int_286sta_127crit_127haste,reforge=crit_hit,enchant=40int
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
-trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_hit,equip=onspellcrit_2178sp_30%_20dur_100cd
-back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=20hit_20haste_10int,enchant=50int
+trinket2=gale_of_shadows,heroic=1,stats=285haste,equip=onspelldamage_17sp_20stack_15dur
+back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_hit,gems=40int,enchant=50int
 main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int
-ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
+ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=5755
-# gear_intellect=4492
+# gear_stamina=5870
+# gear_intellect=4813
 # gear_spirit=20
 # gear_spell_power=2362
-# gear_hit_rating=1747
-# gear_crit_rating=876
-# gear_haste_rating=2309
-# gear_mastery_rating=870
-# gear_armor=8242
-# meta_gem=chaotic_shadowspirit
+# gear_hit_rating=1569
+# gear_crit_rating=585
+# gear_haste_rating=2731
+# gear_mastery_rating=672
+# gear_armor=8396
+# meta_gem=ember_shadowspirit
 # tier11_2pc_caster=1
-# tier11_4pc_caster=1
 # main_hand=incineratus,heroic=1,enchant=power_torrent
