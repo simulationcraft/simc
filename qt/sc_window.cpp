@@ -927,7 +927,7 @@ void ImportThread::run()
 {
   switch( tab )
   {
-  case TAB_ARMORY:     importArmory(); break;
+  //case TAB_ARMORY:     importArmory(); break;
   case TAB_BATTLE_NET: importArmory(); break;
   case TAB_RAWR:       importRawr();   break;
   default: assert(0);
@@ -1239,7 +1239,7 @@ void SimulationCraftWindow::saveResults()
 void SimulationCraftWindow::closeEvent( QCloseEvent* e ) 
 { 
   saveHistory();
-  armoryView->stop();
+  //armoryView->stop();
   battleNetView->stop();
   QCoreApplication::quit();
   e->accept();
@@ -1264,12 +1264,12 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "wowarmory"  ) )
+/*    if( cmdLine->text().count( "wowarmory"  ) )
     {
       armoryView->setUrl( QUrl( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_ARMORY );
     }
-    else if( cmdLine->text().count( "battle.net" ) )
+    else*/ if( cmdLine->text().count( "battle.net" ) )
     {
       battleNetView->setUrl( QUrl( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_BATTLE_NET );
@@ -1298,7 +1298,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
   case TAB_IMPORT:
     switch( importTab->currentIndex() )
     {
-    case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
+    //case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
@@ -1489,13 +1489,13 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
 {
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
-
+/*
   if( url.count( ".wowarmory." ) )
   {
     armoryView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_ARMORY );
   }
-  else if( url.count( ".battle.net" ) )
+  else*/ if( url.count( ".battle.net" ) )
   {
     battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_BATTLE_NET );
@@ -1560,8 +1560,8 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 {
 
-  QString armoryUrl = "http://" + region + ".wowarmory.com";
-  armoryView->setUrl( QUrl( armoryUrl ) );
+  //QString armoryUrl = "http://" + region + ".wowarmory.com";
+  //armoryView->setUrl( QUrl( armoryUrl ) );
 
   QString battleNetUrl = "http://" + region + ".battle.net/wow/en";
   battleNetView->setUrl( QUrl( battleNetUrl ) );

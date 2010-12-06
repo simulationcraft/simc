@@ -96,7 +96,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 44C41689107BB68700242308 /* simcqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = C2797ED71846E3EBF024903A /* simcqt */;
+			remoteGlobalIDString = 6135BF80F06B30E9A60CD6C1 /* simcqt */;
 			remoteInfo = simcqt;
 		};
 		444CCF8F107DCCD300229DD2 /* PBXContainerItemProxy */ = {
