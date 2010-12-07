@@ -1667,6 +1667,8 @@ struct util_t
   
   static std::string& format_text( std::string& name, bool input_is_utf8 );
 
+  static std::string& html_special_char_decode( std::string& str );
+
   static bool str_compare_ci( const std::string& l, const std::string& r );
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
 
@@ -4062,6 +4064,12 @@ struct thread_t
 
 struct armory_t
 {
+  static int download_servers( std::vector<std::string>& servers,
+			       const std::string& region );
+  static int download_guild( std::vector<std::string>& characters,
+			     const std::string& region,
+			     const std::string& server,
+			     const std::string& name );
   static bool download_guild( sim_t* sim,
                               const std::string& region,
                               const std::string& server,

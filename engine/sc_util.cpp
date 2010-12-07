@@ -1593,6 +1593,43 @@ std::string& util_t::format_text( std::string& name, bool input_is_utf8 )
   return name;
 }
 
+std::string& util_t::html_special_char_decode( std::string& str )
+{
+  std::string::size_type pos = 0;
+
+  while ( ( pos = str.find( "&", pos ) ) != std::string::npos )
+  {
+    if ( str[ pos+1 ] == '#' )
+    {
+      char encoding = (char) atoi( str.substr( pos+2, pos+5 ).c_str() );
+      str.erase( pos, 6 ); // example: &#039; becomes '
+      str += encoding;
+    }
+    else if ( 0 == str.compare( pos, 6, "&quot;" ) )
+    {
+      str.erase( pos, 6 );
+      str.insert( pos, "\"" );
+    }
+    else if ( 0 == str.compare( pos, 5, "&amp;" ) )
+    {
+      str.erase( pos, 5 );
+      str.insert( pos, "&" );
+    }
+    else if ( 0 == str.compare( pos, 4, "&lt;" ) )
+    {
+      str.erase( pos, 4 );
+      str.insert( pos, "<" );
+    }
+    else if ( 0 == str.compare( pos, 4, "&gt;" ) )
+    {
+      str.erase( pos, 4 );
+      str.insert( pos, ">" );
+    }
+  }
+
+  return str;
+}
+
 void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b )
 {
   result.level      = a.level      + b.level;

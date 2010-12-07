@@ -172,9 +172,12 @@ static xml_node_t* create_node( sim_t*                  sim,
   }
   else
   {
-    sim -> errorf( "Unexpected character '%c' at index %d (%s)\n", c, ( int ) index, node -> name() );
-    sim -> errorf( "%s\n", input.c_str() );
-    sim -> cancel();
+    if( sim )
+    {
+      sim -> errorf( "Unexpected character '%c' at index %d (%s)\n", c, ( int ) index, node -> name() );
+      sim -> errorf( "%s\n", input.c_str() );
+      sim -> cancel();
+    }
     return 0;
   }
 
@@ -188,7 +191,7 @@ static int create_children( sim_t*                  sim,
                             const std::string&      input,
                             std::string::size_type& index )
 {
-  while ( ! sim -> canceled )
+  while ( ! sim || ! sim -> canceled )
   {
     while ( is_white_space( input[ index ] ) ) index++;
 
@@ -213,9 +216,12 @@ static int create_children( sim_t*                  sim,
           std::string::size_type finish = input.find( "]]", index );
           if ( finish == std::string::npos )
           {
-            sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
-            sim -> errorf( "%s\n", input.c_str() );
-            sim -> cancel();
+	    if( sim )
+	    {
+	      sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
+	      sim -> errorf( "%s\n", input.c_str() );
+	      sim -> cancel();
+	    }
 	    return 0;
           }
           root -> parameters.push_back( xml_parm_t( "cdata", input.substr( index, finish-index ) ) );
@@ -230,7 +236,9 @@ static int create_children( sim_t*                  sim,
       }
       else
       {
-        root -> children.push_back( create_node( sim, input, index ) );
+	xml_node_t* n = create_node( sim, input, index );
+	if( ! n ) return 0;
+        root -> children.push_back( n );
       }
     }
     else if ( input[ index ] == '\0' )
