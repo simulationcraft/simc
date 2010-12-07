@@ -10,12 +10,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // beta warning messages
 static const char* beta_warnings[] =
 {
-  "Hunters: Not Yet Implemented.",
-  "Rogues: Only Mutilate has default actions.",
-  "Some other classes still need work.",
-  "Latency modeling needs updating.",
-  "BiS gear lists and action lists need verifying.",
-  "Some trinkets need their ICD checked.",
+  "Beta! Beta! Beta! Beta! Beta! Beta!",
+  "All classes are supported.",
+  "Some class models still need tweaking.",
+  "Some class action lists need tweaking.",
+  "Some class BiS gear setups need tweaking.",
+  "Some trinkets not yet implemented.",
+  "Constructive feedback regarding our output will shorten the Beta phase dramatically.",
+  "Beta! Beta! Beta! Beta! Beta! Beta!",
   0
 };
 
@@ -1226,7 +1228,7 @@ static void print_html_player( FILE* file, player_t* p )
                    "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
                    "  <tr> <td>%s</td> <td>%s</td> </tr>\n",
                    action_dpet_str.c_str(), action_dmg_str.c_str(),
-                   gains_str.c_str(), timeline_resource_str.c_str(),
+                   timeline_resource_str.c_str(), gains_str.c_str(), 
                    timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
   if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
@@ -2182,7 +2184,7 @@ static void print_html2_player( FILE* file, player_t* p )
        "  <tr> <td>%s</td> <td>%s</td> </tr>\n"
        "  <tr> <td>%s</td> <td>%s</td> </tr>\n",
        action_dpet_str.c_str(), action_dmg_str.c_str(),
-       gains_str.c_str(), timeline_resource_str.c_str(),
+       timeline_resource_str.c_str(), gains_str.c_str(), 
        timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
   if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
@@ -3194,7 +3196,7 @@ static void print_wiki_player( FILE* file, player_t* p )
                    "|| %s || %s ||\n"
                    "\n",
                    action_dpet_str.c_str(), action_dmg_str.c_str(),
-                   gains_str.c_str(), timeline_resource_str.c_str(),
+                   timeline_resource_str.c_str(), gains_str.c_str(), 
                    timeline_dps_str.c_str(), distribution_dps_str.c_str() );
 
 
