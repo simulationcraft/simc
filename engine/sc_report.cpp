@@ -2414,8 +2414,6 @@ static void print_html3_player( FILE* file, player_t* p )
     "    <div class=\"player section\">\n"
     "      <h2 class=\"toggle\">%s&nbsp;:&nbsp;%.0fdps</h2>\n",
     n.c_str(),
-    n.c_str(),
-    n.c_str(),
     p -> dps );
   
   util_t::fprintf( file,
@@ -4015,12 +4013,12 @@ void report_t::print_html3( sim_t* sim )
 		}
 	}
 	
+	print_html3_auras_debuffs( file, sim );
+	
 	if ( num_players == 1 )
 	{
 		util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
 	}
-	
-	print_html3_auras_debuffs( file, sim );
 	
 	print_html3_help_boxes( file, sim );
 	
