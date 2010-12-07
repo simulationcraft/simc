@@ -26,12 +26,21 @@ int main(int argc, char *argv[])
   }
 
   if( w.historyWidth  != 0 &&
-      w.historyHeight != 0 )
+      w.historyHeight != 0 &&
+      w.historyX      != 0 &&
+      w.historyY      != 0 )
   {
-    w.resize( w.historyWidth, w.historyHeight );
-    w.show();
+    w.setGeometry( w.historyX, w.historyY, w.historyWidth, w.historyHeight );
   }
-  else w.showMaximized();
+
+  if( w.historyMaximized )
+  {
+    w.showMaximized();
+  }
+  else
+  {
+    w.showNormal();
+  }
 
   w.cmdLine->setFocus();
 

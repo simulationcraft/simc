@@ -282,6 +282,9 @@ void SimulationCraftWindow::loadHistory()
     if( historyVersion != HISTORY_VERSION ) return;
     in >> historyWidth;
     in >> historyHeight;
+    in >> historyX;
+    in >> historyY;
+    in >> historyMaximized;
     QStringList importHistory;
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
@@ -325,6 +328,9 @@ void SimulationCraftWindow::saveHistory()
     out << QString( HISTORY_VERSION );
     out << (qint32) width();
     out << (qint32) height();
+    out << (qint32) x();
+    out << (qint32) y();
+    out << (qint32) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
@@ -341,7 +347,8 @@ void SimulationCraftWindow::saveHistory()
 // ==========================================================================
 
 SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
-  : QWidget(parent), historyWidth(0), historyHeight(0), 
+  : QWidget(parent), 
+    historyWidth(0), historyHeight(0), historyX(0), historyY(0), historyMaximized(1),
     visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
   cmdLineText = "";
@@ -904,7 +911,14 @@ void ImportThread::importArmory()
     std::string talents = mainWindow->armorySpecChoice  ->currentText().toStdString();
     QByteArray s = server.toUtf8(), c = character.toUtf8();
     std::string cpp_s = s.constData(), cpp_c = c.constData();
-    player = battle_net_t::download_player( sim, region.toStdString(), cpp_s, cpp_c, talents );
+    if( region == "cn" || region == "tw" )
+    {
+      player = armory_t::download_player( sim, region.toStdString(), cpp_s, cpp_c, talents );
+    }
+    else
+    {
+      player = battle_net_t::download_player( sim, region.toStdString(), cpp_s, cpp_c, talents );
+    }
   }
 }
 
@@ -1526,9 +1540,16 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 
 void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 {
-  QString importUrl = "http://" + region + ".battle.net/wow/en";
-  if ( region == "cn" || region == "tw" )
-    importUrl = "http://" + region + ".wowarmory.com";
+  QString importUrl = "http://" + region;
+
+  if( region == "cn" || region == "tw" )
+  {
+    importUrl += ".wowarmory.com";
+  }
+  else
+  {
+    importUrl += ".battle.net/wow/en";
+  }
 
   battleNetView->setUrl( QUrl( importUrl ) );
 }
