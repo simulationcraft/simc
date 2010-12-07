@@ -3828,62 +3828,6 @@ void report_t::print_html3( sim_t* sim )
 	  "    <title>Simulationcraft Results</title>\n\n" );
 	util_t::fprintf( file,
 	  "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n\n");
-	
-	// Old javascript toggle
-	util_t::fprintf ( file,
-	  "    <script type=\"text/javascript\">\n"
-	  "      function toggleSlide(objname){\n"
-	  "        if (document.getElementById(objname).style.display == \"none\") {\n"
-	  "          document.getElementById(objname).style.display=\"\";\n"
-	  "        } else {\n"
-	  "          document.getElementById(objname).style.display=\"none\";\n"
-	  "        }\n"
-	  "      }\n"
-	  "    </script>\n\n" );
-	
-	// jQuery
-	util_t::fprintf ( file,
-	  "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
-	
-	// New javascript toggles
-    util_t::fprintf( file,
-      "    <script>\n"
-      "      jQuery.noConflict();\n"
-      "      jQuery(document).ready(function($) {\n"
-      "        $('.toggle-content, .help-box').hide();\n"
-      "        $('.open').next('.toggle-content').show();\n"
-      "        $('.toggle').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $(this).toggleClass('open');\n"
-      "          $(this).next('.toggle-content').toggle(150);\n"
-      "        });\n"
-      "        $('.toggle-details').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $(this).toggleClass('open');\n"
-      "          $(this).parents().next('.details').toggleClass('hide');\n"
-      "        });\n"
-      "        $('.toggle-db-details').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $(this).toggleClass('open');\n"
-      "          $(this).parent().next('.toggle-content').toggle(150);\n"
-      "        });\n"
-      "        $('.help').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          var target = $(this).attr('rel') + ' .help-box';\n"
-      "          var content = $(target).html();\n"
-      "          $('#active-help-dynamic .help-box').html(content);\n"
-      "          $('#active-help .help-box').show();\n"
-      "          var t = e.pageY - 20;\n"
-      "          var l = e.pageX - 20;\n"
-      "          $('#active-help').css({top:t,left:l});\n"
-      "          $('#active-help').toggle(250);\n"
-      "        });\n"
-      "        $('#active-help a.close').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $('#active-help').toggle(250);\n"
-      "        });\n"
-      "      });\n"
-      "    </script>\n\n" );
 
 	// Styles galore
     util_t::fprintf( file,
@@ -4078,8 +4022,64 @@ void report_t::print_html3( sim_t* sim )
 	
 	print_html3_help_boxes( file, sim );
 	
-	util_t::fprintf( file, "  </body>\n\n" );
-	util_t::fprintf( file, "</html>\n" );
+	
+	// Old javascript toggle
+	util_t::fprintf ( file,
+	  "    <script type=\"text/javascript\">\n"
+	  "      function toggleSlide(objname){\n"
+	  "        if (document.getElementById(objname).style.display == \"none\") {\n"
+	  "          document.getElementById(objname).style.display=\"\";\n"
+	  "        } else {\n"
+	  "          document.getElementById(objname).style.display=\"none\";\n"
+	  "        }\n"
+	  "      }\n"
+	  "    </script>\n\n" );
+	
+	// jQuery
+	util_t::fprintf ( file,
+	  "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
+	
+	// New javascript toggles
+    util_t::fprintf( file,
+      "    <script>\n"
+      "      jQuery.noConflict();\n"
+      "      jQuery(document).ready(function($) {\n"
+      "        $('.toggle-content, .help-box').hide();\n"
+      "        $('.open').next('.toggle-content').show();\n"
+      "        $('.toggle').click(function(e) {\n"
+      "          e.preventDefault();\n"
+      "          $(this).toggleClass('open');\n"
+      "          $(this).next('.toggle-content').toggle(150);\n"
+      "        });\n"
+      "        $('.toggle-details').click(function(e) {\n"
+      "          e.preventDefault();\n"
+      "          $(this).toggleClass('open');\n"
+      "          $(this).parents().next('.details').toggleClass('hide');\n"
+      "        });\n"
+      "        $('.toggle-db-details').click(function(e) {\n"
+      "          e.preventDefault();\n"
+      "          $(this).toggleClass('open');\n"
+      "          $(this).parent().next('.toggle-content').toggle(150);\n"
+      "        });\n"
+      "        $('.help').click(function(e) {\n"
+      "          e.preventDefault();\n"
+      "          var target = $(this).attr('rel') + ' .help-box';\n"
+      "          var content = $(target).html();\n"
+      "          $('#active-help-dynamic .help-box').html(content);\n"
+      "          $('#active-help .help-box').show();\n"
+      "          var t = e.pageY - 20;\n"
+      "          var l = e.pageX - 20;\n"
+      "          $('#active-help').css({top:t,left:l});\n"
+      "          $('#active-help').toggle(250);\n"
+      "        });\n"
+      "        $('#active-help a.close').click(function(e) {\n"
+      "          e.preventDefault();\n"
+      "          $('#active-help').toggle(250);\n"
+      "        });\n"
+      "      });\n"
+      "    </script>\n\n"
+	  "  </body>\n\n"
+	  "</html>\n" );
 	
 	fclose( file );
 }
