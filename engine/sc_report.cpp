@@ -2888,7 +2888,7 @@ static void print_html3_player( FILE* file, player_t* p )
     "        <div class=\"player-section dynamic-buffs\">\n"
     "          <h3 class=\"toggle\">Dynamic Buffs</h3>\n"
     "          <div class=\"toggle-content\">\n"
-    "            <table class=\"mt\">\n"
+    "            <table class=\"mb\">\n"
     "              <tr>\n"
     "                <th></th>\n"
     "                <th>Start</th>\n"
