@@ -2878,44 +2878,85 @@ static void print_html3_player( FILE* file, player_t* p )
     }
   }
 
+  // Dynamic Buffs table
   util_t::fprintf( file,
     "            </table>\n"
     "          </div>\n"
     "        </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"mt\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-dynamic-buffs');\">Dynamic Buffs</a></th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr></thead><tbody id=\"%s-dynamic-buffs\" style=\"display:none;\">\n",
-      n.c_str(), n.c_str() );
+  util_t::fprintf( file,
+    "        <div class=\"player-section dynamic-buffs\">\n"
+    "          <h3 class=\"toggle\">Dynamic Buffs</h3>\n"
+    "          <div class=\"toggle-content\">\n"
+    "            <table class=\"mt\">\n"
+    "              <tr>\n"
+    "                <th></th>\n"
+    "                <th>Start</th>\n"
+    "                <th>Refresh</th>\n"
+    "                <th>Interval</th>\n"
+    "                <th>Trigger</th>\n"
+    "                <th>Up-Time</th>\n"
+    "                <th>Benefit</th>\n"
+    "              </tr>\n",
+    n.c_str(),
+    n.c_str() );
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count || b -> constant )
       continue;
 
-    util_t::fprintf( file, "  <tr> <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-buff');\">%s</a></td> <td align=right>%.1f</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> <td align=right>%.1fsec</td> <td align=right>%.0f%%</td> <td align=right>%.0f%%</td> </tr>\n",
-         b -> name(), b -> player -> name(), b -> name(), b -> avg_start, b -> avg_refresh,
-         b -> avg_start_interval, b -> avg_trigger_interval,
-         b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
-    util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
+    util_t::fprintf( file,
+      "              <tr>\n"
+      "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
+      "                <td class=\"right\">%.1f</td>\n"
+      "                <td class=\"right\">%.1f</td>\n"
+      "                <td class=\"right\">%.1fsec</td>\n"
+      "                <td class=\"right\">%.1fsec</td>\n"
+      "                <td class=\"right\">%.0f%%</td>\n"
+      "                <td class=\"right\">%.0f%%</td>\n"
+      "              </tr>\n",
+      b -> name(),
+      b -> player -> name(),
+      b -> name(),
+      b -> avg_start,
+      b -> avg_refresh,
+      b -> avg_start_interval,
+      b -> avg_trigger_interval,
+      b -> uptime_pct,
+      b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+    util_t::fprintf( file,
+      "              <tr class=\"details hide\">"
+      "                <td colspan=\"7\">\n",
+      b -> name(),
+      b -> player -> name() );
 
-    util_t::fprintf( file, "<br>id: %.i"
-                           "<br>cooldown name: %s"
-                           "<br>tooltip: %s"
-                           "<br>max_stacks: %.i"
-                           "<br>duration: %.2f"
-                           "<br>cooldown: %.2f"
-                           "<br>default_chance: %.2f",
-                           b -> s_id,
-                           b -> cooldown -> name_str.c_str(),
-                           b -> tooltip(),
-                           b -> max_stack,
-                           b -> buff_duration,
-                           b -> cooldown -> duration,
-                           b -> default_chance );
+    util_t::fprintf( file,
+      "                  <ul>\n"
+      "                    <li><span class=\"label\">id:</span>%.i</li>\n"
+      "                    <li><span class=\"label\">cooldown name:</span>%s</li>\n"
+      "                    <li><span class=\"label\">tooltip:</span>%s</li>\n"
+      "                    <li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+      "                    <li><span class=\"label\">duration:</span>%.2f</li>\n"
+      "                    <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+      "                    <li><span class=\"label\">default_chance:</span>%.2f</li>\n"
+      "                  </ul>\n",
+      b -> s_id,
+      b -> cooldown -> name_str.c_str(),
+      b -> tooltip(),
+      b -> max_stack,
+      b -> buff_duration,
+      b -> cooldown -> duration,
+      b -> default_chance );
 
-    util_t::fprintf( file, "</tr>\n" );
+    util_t::fprintf( file,
+      "                </tr>\n" );
   }
-  util_t::fprintf( file, "</tbody></table> <br />\n" );
+  util_t::fprintf( file,
+    "              </table>\n"
+    "            </div>\n"
+    "          </div>\n");
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-constant-buffs');\">Constant Buffs</a></th> </tr></thead><tbody id=\"%s-constant-buffs\" style=\"display:none;\">\n",
+  util_t::fprintf( file, "<table class=\"mt\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-constant-buffs');\">Constant Buffs</a></th> </tr></thead><tbody id=\"%s-constant-buffs\" style=\"display:none;\">\n",
       n.c_str(), n.c_str());
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
@@ -4087,8 +4128,9 @@ void report_t::print_html3( sim_t* sim )
       "      tr.details { margin-top: 0px; }\n"
       "      tr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\n"
       "      tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
-      "      tr.details td ul li { padding: 2px; list-style-type: none; }\n"
+      "      tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
       "      tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
+      "      .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
       "    </style>\n\n" );
 	
 	util_t::fprintf( file,
