@@ -1936,6 +1936,163 @@ static void print_html2_action( FILE* file, stats_t* s, player_t* p )
 
 }
 
+// print_html3_action =========================================================
+
+static void print_html3_action( FILE* file, stats_t* s, player_t* p )
+{
+  double executes_divisor = s -> num_executes;
+  double    ticks_divisor = s -> num_ticks;
+
+  if ( executes_divisor <= 0 ) executes_divisor = 1;
+  if (    ticks_divisor <= 0 )    ticks_divisor = 1;
+
+  util_t::fprintf( file,
+    "              <tr class=\"odd\">\n"
+    "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f</td>\n"
+    "                <td class=\"right\">%.2fsec</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.1f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.0f</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
+    "              </tr>\n",
+    s -> name_str.c_str(),
+    p -> name(),
+    s -> name_str.c_str(),
+    s -> portion_dps,
+    s -> portion_dmg * 100,
+    s -> num_executes,
+    s -> frequency,
+    s -> dpe,
+    s -> dpet,
+    s -> dpr,
+    s -> rpe,
+    s -> execute_results[ RESULT_HIT  ].avg_dmg,
+    s -> execute_results[ RESULT_CRIT ].avg_dmg,
+    s -> execute_results[ RESULT_CRIT ].max_dmg,
+    s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
+    s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
+    s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
+    s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
+    s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+    s -> num_ticks,
+    s -> tick_results[ RESULT_HIT  ].avg_dmg,
+    s -> tick_results[ RESULT_CRIT ].avg_dmg,
+    s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
+    s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
+  util_t::fprintf( file,
+    "              <tr class=\"details hide\">\n"
+    "                <td colspan=\"22\">\n"
+    "                  <ul>\n"
+    "                    <li><span class=\"label\">Resource per Execute:</span>%.2f</li>\n"
+    "                    <li><span class=\"label\">Resource consumed:</span>%.2f</li>\n"
+    "                    <li><span class=\"label\">Resource consumed %%:</span>%.2f%%</li>\n"
+    "                  </ul>\n",
+    s -> rpe,
+    s -> resource_consumed,
+    s -> resource_consumed ? s -> resource_consumed / s -> player -> resource_lost [ s -> resource ] * 100.0 : 0) ;
+  int i=0;
+  for ( action_t* a = s -> player -> action_list; a; a = a -> next )
+  {
+    if ( !a -> stats -> name_str.compare( s -> name_str ) )
+    {
+      util_t::fprintf (file,
+        "                  <h4 class=\"toggle\">Database details</h4>\n" );
+      util_t::fprintf (file,
+        "                  <div class=\"toggle-content\">\n"
+        "                    <b>Static Values</b>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">id:</span>%i</li>\n"
+        "                      <li><span class=\"label\">school:</span>%s\n"
+        "                      <li><span class=\"label\">resource:</span>%s</li>\n"
+        "                      <li><span class=\"label\">tree:</span>%s</li>\n"
+        "                      <li><span class=\"label\">range:</span>%.1f</li>\n"
+        "                      <li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
+        "                      <li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
+        "                      <li><span class=\"label\">base_cost:</span>%.1f</li>\n"
+        "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">tooltip:</span>%s</li>\n"
+        "                      <li><span class=\"label\">rp gain:</span>%.1f</li>\n"
+        "                    </ul>\n"
+        "                    <b>Direct Damage</b>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">may_crit:</span>%s</li>\n"
+        "                      <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
+        "                      <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
+        "                    </ul>\n"
+        "                    <b>Damage Over Time</b>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
+        "                      <li><span class=\"label\">tick_zero:</span>%s</li>\n"
+        "                      <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
+        "                      <li><span class=\"label\">base_td:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">num_ticks:</span>%i</li>\n"
+        "                      <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
+        "                      <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
+        "                    </ul>\n"
+        "                    <b>Weapon</b>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
+        "                      <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
+        "                    </ul>\n"
+        "                  </div>\n",
+        a -> id,
+        util_t::school_type_string( a-> school ),
+        util_t::resource_type_string( a -> resource ),
+        util_t::talent_tree_string( a -> tree ),
+        a -> range,
+        a -> travel_speed,
+        a -> trigger_gcd,
+        a -> base_cost,
+        a -> cooldown -> duration,
+        a -> base_execute_time,
+        a -> base_crit,
+        a -> tooltip(),
+        a -> rp_gain,
+        a -> may_crit?"true":"false",
+        a -> direct_power_mod,
+        a -> base_dd_min,
+        a -> base_dd_max,
+        a -> tick_may_crit?"true":"false",
+        a -> tick_zero?"true":"false",
+        a -> tick_power_mod,
+        a -> base_td,
+        a -> num_ticks,
+        a -> base_tick_time,
+        a -> hasted_ticks?"true":"false",
+        a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
+        a -> weapon_power_mod,
+        a -> weapon_multiplier );
+      i++;
+    }
+  }
+
+
+  util_t::fprintf( file,
+    "                </td>\n"
+    "              </tr>\n" );
+
+}
+
 
 // print_html2_stats ============================================================
 
@@ -2648,22 +2805,51 @@ static void print_html3_player( FILE* file, player_t* p )
     "        <div class=\"clear\"></div>\n" );
 
   util_t::fprintf( file,
-       "<table class=\"player\">\n"
-       " <thead><tr>"
-       " <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-ability');\">Ability</a></th> <th>DPS</th> <th>DPS%%</th> <th>Count</th> <th>Interval</th>"
-       " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th>RPE</th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
-       " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
-       " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
-       " </tr></thead><tbody id=\"%s-ability\">\n",
-       n.c_str(), n.c_str());
+    "        <div class=\"player-section\">\n"
+    "          <h3 class=\"toggle\">Abilities</h3>\n"
+    "          <div class=\"toggle-content\">\n"
+    "            <table class=\"mb\">\n"
+    "              <tr>\n"
+    "                <th></th>\n"
+    "                <th>DPS</th>\n"
+    "                <th>DPS%%</th>\n"
+    "                <th>Count</th>\n"
+    "                <th>Interval</th>\n"
+    "                <th>DPE</th>\n"
+    "                <th>DPET</th>\n"
+    "                <th>DPR</th>\n"
+    "                <th>RPE</th>\n"
+    "                <th>Hit</th>\n"
+    "                <th>Crit</th>\n"
+    "                <th>Max</th>\n"
+    "                <th>Crit%%</th>\n"
+    "                <th>M%%</th>\n"
+    "                <th>D%%</th>\n"
+    "                <th>P%%</th>\n"
+    "                <th>G%%</th>\n"
+    "                <th>Ticks</th>\n"
+    "                <th>T-Hit</th>\n"
+    "                <th>T-Crit</th>\n"
+    "                <th>T-Crit%%</th>\n"
+    "                <th>T-M%%</th>\n"
+    "              </tr>\n",
+    n.c_str(),
+    n.c_str());
 
-  util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", n.c_str(), p -> dps );
+  util_t::fprintf( file,
+    "              <tr>\n"
+    "                <th class=\"left\">%s</th>\n"
+    "                <th>%.0f</th>\n"
+    "                <td colspan=\"20\"></td>\n"
+    "              </tr>\n",
+    n.c_str(),
+    p -> dps );
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     if ( s -> num_executes > 0 || s -> total_dmg > 0 )
     {
-      print_html2_action( file, s, p );
+      print_html3_action( file, s, p );
     }
   }
 
@@ -2678,16 +2864,26 @@ static void print_html3_player( FILE* file, player_t* p )
         if ( first )
         {
           first = false;
-    util_t::fprintf( file, " <tr> <th>pet - %s</th> <th>%.0f</th> </tr>\n", pet -> name_str.c_str(), pet -> dps );
+    util_t::fprintf( file,
+      "              <tr>\n"
+      "                <th class=\"left\">pet - %s</th>\n"
+      "                <th>%.0f</th>\n"
+      "                <td colspan=\"20\"></td>\n"
+      "              </tr>\n",
+      pet -> name_str.c_str(),
+      pet -> dps );
         }
-        print_html2_action( file, s, p );
+        print_html3_action( file, s, p );
       }
     }
   }
 
-  util_t::fprintf( file, "</table> <br />\n" );
+  util_t::fprintf( file,
+    "            </table>\n"
+    "          </div>\n"
+    "        </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-dynamic-buffs');\">Dynamic Buffs</a></th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr></thead><tbody id=\"%s-dynamic-buffs\" style=\"display:none;\">\n",
+  util_t::fprintf( file, "<table class=\"mt\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-dynamic-buffs');\">Dynamic Buffs</a></th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr></thead><tbody id=\"%s-dynamic-buffs\" style=\"display:none;\">\n",
       n.c_str(), n.c_str() );
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
@@ -3848,10 +4044,12 @@ void report_t::print_html3( sim_t* sim )
       "      .clear { clear: both; }\n"
       "      .hide { display: none; }\n"
       "      .toggle { cursor: pointer; }\n"
-      "      h2.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAIAAADeNBkWAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADzSURBVHja1JS7CoQwFER9FiKojb3gxyj4vYqfYG1tYSs2KojFErKz6z6y8Sba7lQmHIdkuBOzaZphGGzbNtRijCVJ4qRp2nXduq4aNIoioCbnfFmWuq6naSK5OI7zPPc8z8IiCIIsy/CrhsO3tW+FYYgtiRa5L3r0ljjocVbRaZ7nqqpc1y2KQuQIFML9gPq+L+0TqEqWcVn/ibZti2G4hPZ9j6HZtu0cxcgifA0tn3UcRxVNXEtF0wmQtDIs0GVZikXS5Xp76rN0NNXDpKMdJ65HjnYFh6qgPycJ7H5H7scVTwhKQvq9xN/Ci4SAuFp3AQYAEZCf9NU/U8cAAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
+      "      h2.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD1SURBVHja7JQ9CoQwFIT9LURQG3vBwyh4XsUjWFtb2IqNCmIhkp1dd9dsfIkeYKdKHl+G5CUTvaqqrutM09Tk2rYtiiIrjuOmaeZ5VqBBEADVGWPTNJVlOQwDyYVhmKap4zgGJp7nJUmCpQoOY2Mv+b6PkkDz3IGevQUOeu6VdxrHsSgK27azLOM5AoVwPqCu6wp1ApXJ0G7rjx5oXdd4YrfQtm3xFJdluUYRBFypghb32ve9jCaOJaPpDpC0tFmg8zzn46nq6/rSd2opAo38IHMXrmeOdgWHACKVFx3Y/c7cjys+JkSP9HuLfYR/Dg1icj0EGACcXZ/44V8+SgAAAABJRU5ErkJggg==) 0 -10px no-repeat; }\n"
       "      h2.open { margin-bottom: 10px; background-position: 0 9px; }\n"
-      "      h3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAIAAADeNBkWAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADzSURBVHja1JS7CoQwFER9FiKojb3gxyj4vYqfYG1tYSs2KojFErKz6z6y8Sba7lQmHIdkuBOzaZphGGzbNtRijCVJ4qRp2nXduq4aNIoioCbnfFmWuq6naSK5OI7zPPc8z8IiCIIsy/CrhsO3tW+FYYgtiRa5L3r0ljjocVbRaZ7nqqpc1y2KQuQIFML9gPq+L+0TqEqWcVn/ibZti2G4hPZ9j6HZtu0cxcgifA0tn3UcRxVNXEtF0wmQtDIs0GVZikXS5Xp76rN0NNXDpKMdJ65HjnYFh6qgPycJ7H5H7scVTwhKQvq9xN/Ci4SAuFp3AQYAEZCf9NU/U8cAAAAASUVORK5CYII=) 0 -9px no-repeat; }\n"
-      "      h3.open { background-position: 0 9px; }\n"
+      "      h3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAIAAAAMmCo2AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEfSURBVHjazJPLjkRAGIXbdSM8ACISvWeDNRYeGuteuL2EdMSGWLrOmdExaCO9nLOq+vPV+S9VRTwej6IoGIYhCOK21zzPfd/f73da07TiRxRFbTkQ4zjKsqyqKoFN27ZhGD6fT5ZlV2IYBkVRXNflOI5ESBAEz/NEUYT5lnAcBwQi307L6aZpoiiqqgprSZJwbCF2EFTXdRAENE37vr8SR2jhAPE8vw0eoVORtw/0j6Fpmi7afEFlWeZ5jhu9grqui+M4SZIrCO8Eg86y7JT7LXx5TODSNL3qDhw6eOeOIyBJEuUj6ZY7mRNmAUvQa4Q+EEiHJizLMgzj3AkeMLBte0vsoCULPHRd//NaUK9pmu/EywDCv0M7+CTzmb4EGADS4Lwj+N6gZgAAAABJRU5ErkJggg==) 0 -11px no-repeat; }\n"
+      "      h3.open { background-position: 0 7px; }\n"
+      "      h4.toggle { margin: 0 0 8px 0; padding-left: 12px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
+      "      h4.open { background-position: 0 6px; }\n"
       "      .toggle-content { display: none; }\n"
       "      #active-help, .help-box { display: none; }\n"
       "      #active-help { position: absolute; width: 350px; padding: 3px; background: #fff; z-index: 10; }\n"
@@ -3885,10 +4083,12 @@ void report_t::print_html3( sim_t* sim )
       "      th a:hover, th a:active { color: #f1f1ff; }\n"
       "      td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
       "      th.left, td.left, tr.left th, tr.left td { text-align: left; padding-right: 6px; }\n"
+      "      th.right, td.right, tr.right th, tr.right td { text-align: right; padding-right: 6px; }\n"
       "      tr.details { margin-top: 0px; }\n"
       "      tr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\n"
-      "      tr.details td ul { width: 400px; padding: 0; margin-bottom: 10px; }\n"
-      "      tr.details td ul li { list-style-type: none; }\n"
+      "      tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
+      "      tr.details td ul li { padding: 2px; list-style-type: none; }\n"
+      "      tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
       "    </style>\n\n" );
 	
 	util_t::fprintf( file,
