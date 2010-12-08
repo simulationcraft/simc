@@ -1815,14 +1815,20 @@ struct frostbolt_t : public mage_spell_t
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
   }
 
-  virtual void execute()
+  virtual void schedule_execute()
   {
     mage_t* p = player -> cast_mage();
-    mage_spell_t::execute();
+    mage_spell_t::schedule_execute();
     if ( ! p -> buffs_early_frost -> check() )
     {
       p -> buffs_early_frost -> trigger();
     }
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::execute();
     if ( result_is_hit() )
     {
       trigger_replenishment( this );
