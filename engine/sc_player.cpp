@@ -3410,15 +3410,8 @@ struct start_moving_t : public action_t
   start_moving_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "start_moving", player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    parse_options( options, options_str );
-
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
-
     cooldown -> duration = 0.5;
     harmful = false;
   }
@@ -3446,15 +3439,8 @@ struct stop_moving_t : public action_t
   stop_moving_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stop_moving", player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    parse_options( options, options_str );
-
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
-
     cooldown -> duration = 0.5; 
     harmful = false;
   }
@@ -3486,6 +3472,7 @@ struct arcane_torrent_t : public action_t
   arcane_torrent_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "arcane_torrent", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
   }
@@ -3548,6 +3535,7 @@ struct berserking_t : public action_t
   berserking_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "berserking", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 180;
   }
@@ -3580,6 +3568,7 @@ struct blood_fury_t : public action_t
   blood_fury_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "blood_fury", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
   }
@@ -3621,6 +3610,7 @@ struct stoneform_t : public action_t
   stoneform_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stoneform", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
   }
@@ -3767,6 +3757,7 @@ struct snapshot_stats_t : public action_t
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "snapshot_stats", player ), attack(0), spell(0)
   {
+    parse_options( NULL, options_str );
     base_execute_time = 0.001; // Needs to be non-zero to ensure all the buffs have been setup.
     trigger_gcd = 0;
   }
@@ -4099,6 +4090,53 @@ struct use_item_t : public action_t
   }
 };
 
+// Cancel Buff ================================================================
+
+struct cancel_buff_t : public action_t
+{
+  buff_t* buff;
+
+  cancel_buff_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "cancel_buff", player ), buff(0)
+  {
+    std::string buff_name;
+    option_t options[] =
+    {
+      { "name", OPT_STRING, &buff_name },
+      { NULL,  OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if( buff_name.empty() )
+    {
+      sim -> errorf( "Player %s uses cancel_buff without specifying the name of the buff\n", player -> name() );
+      sim -> cancel();
+    }
+
+    buff = buff_t::find( player, buff_name );
+
+    if( ! buff )
+    {
+      sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
+    }
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s cancels buff %s", player -> name(), buff -> name() );
+    buff -> expire();
+  }
+
+  virtual bool ready()
+  {
+    if( ! buff || ! buff -> check() )
+      return false;
+    return action_t::ready();
+  }
+};
+
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
@@ -4107,6 +4145,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
+  if ( name == "cacnel_buff"      ) return new      cancel_buff_t( this, options_str );
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );

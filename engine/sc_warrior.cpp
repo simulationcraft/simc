@@ -158,6 +158,7 @@ struct warrior_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_colossus_smash;
   cooldown_t* cooldowns_shield_slam;
+  cooldown_t* cooldowns_strikes_of_opportunity;
 
   // Dots
   dot_t* dots_deep_wounds;
@@ -321,8 +322,9 @@ struct warrior_t : public player_t
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
-    cooldowns_colossus_smash = get_cooldown( "colossus_smash" );
-    cooldowns_shield_slam    = get_cooldown( "shield_slam"    );
+    cooldowns_colossus_smash         = get_cooldown( "colossus_smash"         );
+    cooldowns_shield_slam            = get_cooldown( "shield_slam"            );
+    cooldowns_strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
 
     // Dots
     dots_deep_wounds = get_dot( "deep_wounds" );
@@ -645,10 +647,14 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( ! p -> mastery.strikes_of_opportunity -> ok() )
     return;
 
+  if ( p -> cooldowns_strikes_of_opportunity -> remains() > 0 ) return;
+
   double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect_base_value( 2 ) / 10000.0;
 
   if ( ! p -> rng_strikes_of_opportunity -> roll( chance ) )
     return;
+
+  p -> cooldowns_strikes_of_opportunity -> start( 0.5 );
 
   if ( p -> sim -> debug )
     log_t::output( p -> sim, "Opportunity Strike procced from %s", a -> name() );
@@ -660,19 +666,15 @@ static void trigger_strikes_of_opportunity( attack_t* a )
       opportunity_strike_t( warrior_t* p ) :
           warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
       {
-        background = proc = true;
+        background = true;
         reset();
       }
-
-      // It's not a real warrior_attack_t but it needs player_buff.
-      void execute() { attack_t::execute(); }
-      void consume_resource() { }
     };
     p -> active_opportunity_strike = new opportunity_strike_t( p );
   }
 
-  p -> active_opportunity_strike -> execute();
   p -> procs_strikes_of_opportunity -> occur();
+  p -> active_opportunity_strike -> execute();
 }
 
 // trigger_sudden_death =====================================================
@@ -874,9 +876,7 @@ void warrior_attack_t::execute()
   if ( attack_t::cost() > 50 && p -> buffs_battle_trance -> up() )
     p -> buffs_battle_trance -> expire();
 
-  // FIXME: does Opportunity Strike proc Deep Wounds?
-  if ( proc )
-    return;
+  if ( proc ) return;
 
   if ( result_is_hit() )
   {
