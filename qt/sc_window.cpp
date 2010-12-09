@@ -1018,7 +1018,7 @@ void SimulateThread::run()
     file.close();
   }
 
-  sim -> html2_file_str = "simc_report.html";
+  sim -> html3_file_str = "simc_report.html";
 
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
 
@@ -1160,7 +1160,7 @@ void SimulationCraftWindow::simulateFinished()
   simProgress = 100;
   progressBar->setFormat( simPhase.c_str() );
   progressBar->setValue( simProgress );
-  QFile file( sim->html2_file_str.c_str() );
+  QFile file( sim->html3_file_str.c_str() );
   deleteSim();
   if( ! simulateThread->success )
   {

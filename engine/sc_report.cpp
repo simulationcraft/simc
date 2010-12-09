@@ -1972,8 +1972,6 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     "                <td class=\"right\">%.1f%%</td>\n"
     "              </tr>\n",
     s -> name_str.c_str(),
-    p -> name(),
-    s -> name_str.c_str(),
     s -> portion_dps,
     s -> portion_dmg * 100,
     s -> num_executes,
@@ -2832,9 +2830,7 @@ static void print_html3_player( FILE* file, player_t* p )
     "                <th>T-Crit</th>\n"
     "                <th>T-Crit%%</th>\n"
     "                <th>T-M%%</th>\n"
-    "              </tr>\n",
-    n.c_str(),
-    n.c_str());
+    "              </tr>\n" );
 
   util_t::fprintf( file,
     "              <tr>\n"

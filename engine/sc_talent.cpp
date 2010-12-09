@@ -78,11 +78,6 @@ talent_t::talent_t( const talent_t& copy ) :
   t_default_rank = new spell_id_t();
   for ( int i = 0; i < MAX_RANK; i++ )
     t_rank_spells[ i ] = t_default_rank;
-  
-// Not sure if I should push back or not yet.
-/*
-  s_player -> talent_list2.push_back( const_cast<talent_t *>( this ) );
-*/
 }
 
 talent_t::~talent_t()
