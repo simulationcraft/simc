@@ -2004,84 +2004,91 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     s -> rpe,
     s -> resource_consumed,
     s -> resource_consumed ? s -> resource_consumed / s -> player -> resource_lost [ s -> resource ] * 100.0 : 0) ;
-  int i=0;
+
+  std::vector<std::string> processed_actions;
+
   for ( action_t* a = s -> player -> action_list; a; a = a -> next )
   {
-    if ( !a -> stats -> name_str.compare( s -> name_str ) )
-    {
-      util_t::fprintf (file,
-        "                  <h4 class=\"toggle\">Database details</h4>\n" );
-      util_t::fprintf (file,
-        "                  <div class=\"toggle-content\">\n"
-        "                    <h5>Static Values</h5>\n"
-        "                    <ul>\n"
-        "                      <li><span class=\"label\">id:</span>%i</li>\n"
-        "                      <li><span class=\"label\">school:</span>%s\n"
-        "                      <li><span class=\"label\">resource:</span>%s</li>\n"
-        "                      <li><span class=\"label\">tree:</span>%s</li>\n"
-        "                      <li><span class=\"label\">range:</span>%.1f</li>\n"
-        "                      <li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
-        "                      <li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
-        "                      <li><span class=\"label\">base_cost:</span>%.1f</li>\n"
-        "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">tooltip:</span>%s</li>\n"
-        "                      <li><span class=\"label\">rp gain:</span>%.1f</li>\n"
-        "                    </ul>\n"
-        "                    <h5>Direct Damage</h5>\n"
-        "                    <ul>\n"
-        "                      <li><span class=\"label\">may_crit:</span>%s</li>\n"
-        "                      <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
-        "                      <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
-        "                    </ul>\n"
-        "                    <h5>Damage Over Time</h5>\n"
-        "                    <ul>\n"
-        "                      <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
-        "                      <li><span class=\"label\">tick_zero:</span>%s</li>\n"
-        "                      <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
-        "                      <li><span class=\"label\">base_td:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">num_ticks:</span>%i</li>\n"
-        "                      <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
-        "                      <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
-        "                    </ul>\n"
-        "                    <h5>Weapon</h5>\n"
-        "                    <ul>\n"
-        "                      <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
-        "                      <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
-        "                    </ul>\n"
-        "                  </div>\n",
-        a -> id,
-        util_t::school_type_string( a-> school ),
-        util_t::resource_type_string( a -> resource ),
-        util_t::talent_tree_string( a -> tree ),
-        a -> range,
-        a -> travel_speed,
-        a -> trigger_gcd,
-        a -> base_cost,
-        a -> cooldown -> duration,
-        a -> base_execute_time,
-        a -> base_crit,
-        a -> tooltip(),
-        a -> rp_gain,
-        a -> may_crit?"true":"false",
-        a -> direct_power_mod,
-        a -> base_dd_min,
-        a -> base_dd_max,
-        a -> tick_may_crit?"true":"false",
-        a -> tick_zero?"true":"false",
-        a -> tick_power_mod,
-        a -> base_td,
-        a -> num_ticks,
-        a -> base_tick_time,
-        a -> hasted_ticks?"true":"false",
-        a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
-        a -> weapon_power_mod,
-        a -> weapon_multiplier );
-      i++;
-    }
+    if ( a -> stats != s ) continue;
+
+    bool found = false;
+    for ( int i=processed_actions.size()-1; i >= 0 && !found; i-- )
+      if ( processed_actions[ i ] == a -> name() )
+	found = true;
+    if( found ) continue;
+    processed_actions.push_back( a -> name() );
+    
+    util_t::fprintf (file,
+      "                  <h4 class=\"toggle\">Database details</h4>\n" );
+    util_t::fprintf (file,
+      "                  <div class=\"toggle-content\">\n"
+      "                    <h5>Static Values</h5>\n"
+      "                    <ul>\n"
+      "                      <li><span class=\"label\">id:</span>%i</li>\n"
+      "                      <li><span class=\"label\">school:</span>%s\n"
+      "                      <li><span class=\"label\">resource:</span>%s</li>\n"
+      "                      <li><span class=\"label\">tree:</span>%s</li>\n"
+      "                      <li><span class=\"label\">range:</span>%.1f</li>\n"
+      "                      <li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
+      "                      <li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
+      "                      <li><span class=\"label\">base_cost:</span>%.1f</li>\n"
+      "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">tooltip:</span>%s</li>\n"
+      "                      <li><span class=\"label\">rp gain:</span>%.1f</li>\n"
+      "                    </ul>\n"
+      "                    <h5>Direct Damage</h5>\n"
+      "                    <ul>\n"
+      "                      <li><span class=\"label\">may_crit:</span>%s</li>\n"
+      "                      <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
+      "                      <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
+      "                    </ul>\n"
+      "                    <h5>Damage Over Time</h5>\n"
+      "                    <ul>\n"
+      "                      <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
+      "                      <li><span class=\"label\">tick_zero:</span>%s</li>\n"
+      "                      <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
+      "                      <li><span class=\"label\">base_td:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">num_ticks:</span>%i</li>\n"
+      "                      <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
+      "                      <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
+      "                    </ul>\n"
+      "                    <h5>Weapon</h5>\n"
+      "                    <ul>\n"
+      "                      <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
+      "                      <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
+      "                    </ul>\n"
+      "                  </div>\n",
+      a -> id,
+      util_t::school_type_string( a-> school ),
+      util_t::resource_type_string( a -> resource ),
+      util_t::talent_tree_string( a -> tree ),
+      a -> range,
+      a -> travel_speed,
+      a -> trigger_gcd,
+      a -> base_cost,
+      a -> cooldown -> duration,
+      a -> base_execute_time,
+      a -> base_crit,
+      a -> tooltip(),
+      a -> rp_gain,
+      a -> may_crit?"true":"false",
+      a -> direct_power_mod,
+      a -> base_dd_min,
+      a -> base_dd_max,
+      a -> tick_may_crit?"true":"false",
+      a -> tick_zero?"true":"false",
+      a -> tick_power_mod,
+      a -> base_td,
+      a -> num_ticks,
+      a -> base_tick_time,
+      a -> hasted_ticks?"true":"false",
+      a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
+      a -> weapon_power_mod,
+      a -> weapon_multiplier );
   }
 
 
@@ -3085,7 +3092,7 @@ static void print_html3_player( FILE* file, player_t* p )
     util_t::fprintf( file,
       "              <tr class=\"left\">\n"
       "                <th>Talents</th>\n"
-      "                <td><a href=\"%s\">%s</a></td>\n",
+      "                <td><a href=\"%s\">%s</a></td>\n"
       "              </tr>\n",
       p -> talents_str.c_str(),
       p -> talents_str.c_str() );
@@ -3611,7 +3618,7 @@ static void print_html3_player( FILE* file, player_t* p )
 
   util_t::fprintf( file,
     "            <div class=\"player-section action-priority-list\">\n"
-    "              <h3 class=\"toggle\">Action Priority List</h3\n"
+    "              <h3 class=\"toggle\">Action Priority List</h3>\n"
     "              <div class=\"toggle-content\">\n"
     "                <table>\n"
     "                  <tr>\n"
