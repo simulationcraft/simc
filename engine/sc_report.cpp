@@ -3033,18 +3033,45 @@ static void print_html3_player( FILE* file, player_t* p )
     "            </div>\n"
     "          </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"mt\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-procs');\">Procs</th> <th>Count</th> <th>Interval</th> </tr></thead><tbody id=\"%s-procs\" style=\"display:none;\">\n",
-      n.c_str(), n.c_str());
+  util_t::fprintf( file,
+    "          <div class=\"player-section procs\">\n"
+    "            <h3 class=\"toggle\">Procs</h3>\n"
+    "            <div class=\"toggle-content\">\n"
+    "              <table>\n"
+    "                <th></th>\n"
+    "                <th>Count</th>\n"
+    "                <th>Interval</th>\n"
+    "              </tr>\n",
+    n.c_str(),
+    n.c_str());
+  i = 1;
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
   {
     if ( proc -> count > 0 )
     {
-      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1fsec</td> </tr>\n", proc -> name(), proc -> count, proc -> frequency );
+      util_t::fprintf( file,
+        "                <tr" );
+      if ( !( i & 1 ) ) {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">" );
+      util_t::fprintf( file,
+        "                  <td class=\"left\">%s</td>\n"
+        "                  <td class=\"right\">%.1f</td>\n"
+        "                  <td class=\"right\">%.1fsec</td>\n"
+        "                </tr>\n",
+        proc -> name(),
+        proc -> count,
+        proc -> frequency );
+      i++;
     }
   }
-  util_t::fprintf( file, "</table> <br />\n" );
+  util_t::fprintf( file,
+    "              </table>\n"
+    "            </div>\n"
+    "          </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-gains');\">Gains</a></th> <th>%s</th> <th>Overflow</th> </tr></thead><tbody id=\"%s-gains\" style=\"display:none;\">\n",
+  util_t::fprintf( file, "<table class=\"mt\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-gains');\">Gains</a></th> <th>%s</th> <th>Overflow</th> </tr></thead><tbody id=\"%s-gains\" style=\"display:none;\">\n",
       n.c_str(), util_t::resource_type_string( p -> primary_resource() ), n.c_str() );
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
