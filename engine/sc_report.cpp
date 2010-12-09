@@ -2773,18 +2773,18 @@ static void print_html3_player( FILE* file, player_t* p )
     "          %s\n"
     "          %s\n"
     "          %s\n"
-    "          %s\n"
     "        </div>\n",
     action_dpet_str.c_str(),
-    timeline_resource_str.c_str(),
-    timeline_dps_str.c_str(),
-    distribution_dps_str.c_str() );
+    action_dmg_str.c_str(),
+    gains_str.c_str() );
   util_t::fprintf( file,
     "        <div class=\"charts\">\n"
     "          %s\n"
+    "          %s\n"
     "          %s\n",
-    action_dmg_str.c_str(),
-    gains_str.c_str() );
+    timeline_resource_str.c_str(),
+    timeline_dps_str.c_str(),
+    distribution_dps_str.c_str() );
   if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
   {
     if( ! p -> scaling_dps_chart.empty() )
