@@ -3059,9 +3059,10 @@ static void print_html3_player( FILE* file, player_t* p )
     60.0 * p -> total_foreground_actions / p -> total_seconds  );
 
   // Spec and gear
+  util_t::fprintf( file,
+    "            <table class=\"mt\">\n" );
   if ( p -> origin_str.compare("unknown") )
   util_t::fprintf( file,
-    "            <table class=\"mt\">\n"
     "              <tr class=\"left\">\n"
     "                <th>Origin</th>\n"
     "                <td><a href=\"%s\">%s</a></td>\n"
