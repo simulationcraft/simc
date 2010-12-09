@@ -1677,7 +1677,7 @@ static void print_html3_scale_factors( FILE*  file, sim_t* sim )
     "      <div class=\"toggle-content\">\n" );
 
   util_t::fprintf( file,
-    "        <table class=\"mb\">\n" );
+    "        <table>\n" );
 
   std::string buffer;
   int num_players = ( int ) sim -> players_by_name.size();
@@ -2202,6 +2202,323 @@ static void print_html2_talents( FILE* file, player_t* a )
   }
 }
 
+
+// print_html3_stats ============================================================
+
+static void print_html3_stats (FILE* file, player_t* a )
+{
+  std::string n = a -> name();
+  util_t::str_to_utf8( n );
+  
+  if ( a -> total_seconds > 0 )
+  {
+    util_t::fprintf( file,
+      "            <div class=\"player-section talents\">\n"
+      "              <h3 class=\"toggle\">Stats</h3>\n"
+      "              <div class=\"toggle-content\">\n"
+      "                <table>\n"
+      "                  <tr>\n"
+      "                    <th></th>\n"
+      "                    <th>Raid-Buffed</th>\n"
+      "                    <th>Unbuffed</th>\n"
+      "                    <th>Gear Amount</th>\n"
+      "                  </tr>\n" );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Strength</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> name(),
+      a -> attribute_buffed[ ATTR_STRENGTH  ],
+      a -> strength(),
+      a -> stats.attribute[ ATTR_STRENGTH  ] );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Agility</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> attribute_buffed[ ATTR_AGILITY   ],
+      a -> agility(),
+      a -> stats.attribute[ ATTR_AGILITY   ] );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Stamina</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> attribute_buffed[ ATTR_STAMINA   ],
+      a -> stamina(),
+      a -> stats.attribute[ ATTR_STAMINA   ] );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Intellect</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> attribute_buffed[ ATTR_INTELLECT ],
+      a -> intellect(),
+      a -> stats.attribute[ ATTR_INTELLECT ] );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Spirit</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> attribute_buffed[ ATTR_SPIRIT    ],
+      a -> spirit(),
+      a -> stats.attribute[ ATTR_SPIRIT    ] );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Health</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> resource_buffed[ RESOURCE_HEALTH ],
+      a -> resource_max[ RESOURCE_HEALTH ],
+      0.0 );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Mana</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> resource_buffed[ RESOURCE_MANA   ],
+      a -> resource_max[ RESOURCE_MANA   ],
+      0.0 );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Spell Power</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> buffed_spell_power,
+      a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(),
+      a -> stats.spell_power );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Spell Hit</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_spell_hit,
+      100 * a -> composite_spell_hit(),
+      a -> stats.hit_rating  );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Spell Crit</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_spell_crit,
+      100 * a -> composite_spell_crit(),
+      a -> stats.crit_rating );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Spell Haste</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * ( 1 / a -> buffed_spell_haste - 1 ),
+      100 * ( 1 / a -> spell_haste - 1 ),
+      a -> stats.haste_rating );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Spell Penetration</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_spell_penetration,
+      100 * a -> composite_spell_penetration(),
+      a -> stats.spell_penetration );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Mana Per 5</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> buffed_mp5,
+      a -> composite_mp5(),
+      a -> stats.mp5 );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Attack Power</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> buffed_attack_power,
+      a -> composite_attack_power() * a -> composite_attack_power_multiplier(),
+      a -> stats.attack_power );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Melee Hit</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_attack_hit,
+      100 * a -> composite_attack_hit(),
+      a -> stats.hit_rating );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Melee Crit</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_attack_crit,
+      100 * a -> composite_attack_crit(),
+      a -> stats.crit_rating );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Melee Haste</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * ( 1 / a -> buffed_attack_haste - 1 ),
+      100 * ( 1 / a -> attack_haste - 1 ),
+      a -> stats.haste_rating );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Expertise</th>\n"
+      "                    <td class=\"right\">%.2f</td>\n"
+      "                    <td class=\"right\">%.2f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_attack_expertise,
+      100 * a -> composite_attack_expertise(),
+      a -> stats.expertise_rating );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Armor</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> buffed_armor,
+      a -> composite_armor(),
+       ( a -> stats.armor + a -> stats.bonus_armor ) );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Block Value</th>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> buffed_block_value,
+      a -> composite_block_value(),
+      a -> stats.block_value );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Tank-Miss</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_miss,
+      100 * ( a -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
+      0.0  );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Tank-Dodge</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_dodge,
+      100 * ( a -> composite_tank_dodge() - a -> diminished_dodge() ),
+      a -> stats.dodge_rating );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Tank-Parry</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_parry,
+      100 * ( a -> composite_tank_parry() - a -> diminished_parry() ),
+      a -> stats.parry_rating );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Tank-Block</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_block,
+      100 * a -> composite_tank_block(),
+      a -> stats.block_rating );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <th class=\"left\">Tank-Crit</th>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.2f%%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      100 * a -> buffed_crit,
+      100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ),
+      0.0 );
+
+    util_t::fprintf( file,
+      "                  <tr class=\"odd\">\n"
+      "                    <th class=\"left\">Mastery</th>\n"
+      "                    <td class=\"right\">%.2f% </td>\n"
+      "                    <td class=\"right\">%.2f%</td>\n"
+      "                    <td class=\"right\">%.0f</td>\n"
+      "                  </tr>\n",
+      a -> buffed_mastery,
+      a -> composite_mastery(),
+      a -> stats.mastery_rating );
+
+    util_t::fprintf( file,
+      "                </table>\n"
+      "              </div>\n"
+      "            </div>\n" );
+  }
+}
+
+
 // print_html2_player =========================================================
 
 static void print_html2_player( FILE* file, player_t* p )
@@ -2589,30 +2906,33 @@ static void print_html3_player( FILE* file, player_t* p )
 
   // Main player table
   util_t::fprintf( file,
-    "        <table class=\"mt\">\n"
-    "          <tr>\n"
-    "            <th>DPS</th>\n"
-    "            <th>Error</th>\n"
-    "            <th>Range</th>\n"
-    "            <th>DPR</th>\n"
-    "            <th>RPS-Out</th>\n"
-    "            <th>RPS-In</th>\n"
-    "            <th>Resource</th>\n"
-    "            <th>Waiting</th>\n"
-    "            <th>ApM</th>\n"
-    "          </tr>\n"
-    "          <tr>\n"
-    "            <td>%.1f</td>\n"
-    "            <td>%.1f / %.1f%%</td>\n"
-    "            <td>%.1f / %.1f%%</td>\n"
-    "            <td>%.1f</td>\n"
-    "            <td>%.1f</td>\n"
-    "            <td>%.1f</td>\n"
-    "            <td>%s</td>\n"
-    "            <td>%.2f%%</td>\n"
-    "            <td>%.1f</td>\n"
-    "          </tr>\n"
-    "        </table>\n",
+    "        <div class=\"player-section results-spec-gear mt\">\n"
+    "          <h3 class=\"toggle open\">Results, Spec and Gear</h3>\n"
+    "          <div class=\"toggle-content\">\n"
+    "            <table>\n"
+    "              <tr>\n"
+    "                <th>DPS</th>\n"
+    "                <th>Error</th>\n"
+    "                <th>Range</th>\n"
+    "                <th>DPR</th>\n"
+    "                <th>RPS-Out</th>\n"
+    "                <th>RPS-In</th>\n"
+    "                <th>Resource</th>\n"
+    "                <th>Waiting</th>\n"
+    "                <th>ApM</th>\n"
+    "              </tr>\n"
+    "              <tr>\n"
+    "                <td>%.1f</td>\n"
+    "                <td>%.1f / %.1f%%</td>\n"
+    "                <td>%.1f / %.1f%%</td>\n"
+    "                <td>%.1f</td>\n"
+    "                <td>%.1f</td>\n"
+    "                <td>%.1f</td>\n"
+    "                <td>%s</td>\n"
+    "                <td>%.2f%%</td>\n"
+    "                <td>%.1f</td>\n"
+    "              </tr>\n"
+    "            </table>\n",
     p -> dps,
     p -> dps_error,
     p -> dps_error * 100 / p -> dps,
@@ -2628,19 +2948,19 @@ static void print_html3_player( FILE* file, player_t* p )
   // Spec and gear
   if ( p -> origin_str.compare("unknown") )
   util_t::fprintf( file,
-    "        <table class=\"mt\">\n"
-    "          <tr class=\"left\">\n"
-    "            <th>Origin</th>\n"
-    "            <td><a href=\"%s\">%s</a></td>\n"
-    "          </tr>\n",
+    "            <table class=\"mt\">\n"
+    "              <tr class=\"left\">\n"
+    "                <th>Origin</th>\n"
+    "                <td><a href=\"%s\">%s</a></td>\n"
+    "              </tr>\n",
     p -> origin_str.c_str(),
     p -> origin_str.c_str() );
   if ( !p -> talents_str.empty() )
   util_t::fprintf( file,
-    "          <tr class=\"left\">\n"
-    "            <th>Talents</th>\n"
-    "            <td><a href=\"%s\">%s</a></td>\n",
-    "          </tr>\n",
+    "              <tr class=\"left\">\n"
+    "                <th>Talents</th>\n"
+    "                <td><a href=\"%s\">%s</a></td>\n",
+    "              </tr>\n",
     p -> talents_str.c_str(),
     p -> talents_str.c_str() );
   std::vector<std::string> glyph_names;
@@ -2648,83 +2968,93 @@ static void print_html3_player( FILE* file, player_t* p )
   if ( num_glyphs )
   {
     util_t::fprintf( file,
-      "          <tr class=\"left\">\n"
-      "            <th>Glyphs</th>\n"
-      "            <td>\n"
-      "              <ul class=\"float\">\n");
+      "              <tr class=\"left\">\n"
+      "                <th>Glyphs</th>\n"
+      "                <td>\n"
+      "                  <ul class=\"float\">\n");
     for ( int i=0; i < num_glyphs; i++ )
     {
       util_t::fprintf( file,
-        "                <li>%s</li>",
+        "                    <li>%s</li>",
         glyph_names[ i ].c_str() );
     }
     util_t::fprintf( file,
-      "              </ul>\n"
-      "            </td>\n"
-      "          </tr>\n" );
+      "                  </ul>\n"
+      "                </td>\n"
+      "              </tr>\n" );
   }
 
   util_t::fprintf( file,
-    "        </table>\n" );
+    "            </table>\n" );
 
   if ( p -> sim -> scaling -> has_scale_factors() )
   {
+    int colspan = 0;
     util_t::fprintf( file,
-      "        <table class=\"mt\">\n" );
+      "            <table class=\"mt\">\n" );
     util_t::fprintf( file,
-      "          <tr>\n"
-      "            <th><a href=\"#\" class=\"help\" rel=\"#scale-factors\">?</a></th>\n" );
+      "              <tr>\n"
+      "                <th><a href=\"#\" class=\"help\" rel=\"#scale-factors\">?</a></th>\n" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
+      {
         util_t::fprintf( file,
-          "            <th>%s</th>\n",
+          "                <th>%s</th>\n",
           util_t::stat_type_abbrev( i ) );
+        colspan++;
+      }
     if ( p -> sim -> scaling -> scale_lag )
+    {
       util_t::fprintf( file,
-        "            <th>ms Lag</th>\n" );
+        "                <th>ms Lag</th>\n" );
+      colspan++;
+    }
     util_t::fprintf( file,
-      "          </tr>\n" );
+      "              </tr>\n" );
     util_t::fprintf( file,
-      "          <tr>\n"
-      "            <th class=\"left\">Scale Factors</th>\n" );
+      "              <tr>\n"
+      "                <th class=\"left\">Scale Factors</th>\n" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
         util_t::fprintf( file,
-          "            <td>%.*f</td>\n",
+          "                <td>%.*f</td>\n",
           p -> sim -> report_precision,
           p -> scaling.get_stat( i ) );
     if ( p -> sim -> scaling -> scale_lag )
       util_t::fprintf( file,
-        "            <td>%.*f</td>\n",
+        "                <td>%.*f</td>\n",
         p -> sim -> report_precision,
         p -> scaling_lag );
     util_t::fprintf( file,
-      "          </tr>\n" );
+      "              </tr>\n" );
     util_t::fprintf( file,
-      "          <tr>\n"
-      "            <th class=\"left\">Normalized</th>\n" );
+      "              <tr>\n"
+      "                <th class=\"left\">Normalized</th>\n" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
         util_t::fprintf( file,
-          "            <td>%.*f</td>\n",
+          "                <td>%.*f</td>\n",
           p -> sim -> report_precision,
           p -> normalized_scaling.get_stat( i ) );
     util_t::fprintf( file,
-      "          </tr>\n" );
+      "              </tr>\n" );
     util_t::fprintf( file,
-      "          <tr class=\"left\">\n"
-      "            <th>Gear Ranking</th>\n"
-      "            <td colspan=\"6\">\n"
-      "              <ul class=\"float\">\n"
-      "                <li><a href=\"%s\">wowhead</a></li>\n"
-      "                <li><a href=\"%s\">lootrank</a></li>\n"
-      "              </ul>\n"
-      "            </td>\n"
-      "          </tr>\n",
+      "              <tr class=\"left\">\n"
+      "                <th>Gear Ranking</th>\n"
+      "                <td colspan=\"%i\">\n"
+      "                  <ul class=\"float\">\n"
+      "                    <li><a href=\"%s\">wowhead</a></li>\n"
+      "                    <li><a href=\"%s\">lootrank</a></li>\n"
+      "                  </ul>\n"
+      "                </td>\n"
+      "              </tr>\n",
+      colspan,
       p -> gear_weights_wowhead_link.c_str(),
       p -> gear_weights_lootrank_link.c_str() );
     util_t::fprintf( file,
-      "        </table>\n" );
+      "            </table>\n"
+      "          </div>"
+      "        </div>" );
 
   }
 
@@ -2767,19 +3097,22 @@ static void print_html3_player( FILE* file, player_t* p )
   }
 
   util_t::fprintf( file,
-    "        <div class=\"charts\">\n"
-    "          %s\n"
-    "          %s\n"
-    "          %s\n"
-    "        </div>\n",
+    "        <div class=\"player-section\">\n"
+    "          <h3 class=\"toggle open\">Charts</h3>\n"
+    "          <div class=\"toggle-content\">\n"
+    "            <div class=\"charts\">\n"
+    "              %s\n"
+    "              %s\n"
+    "              %s\n"
+    "            </div>\n",
     action_dpet_str.c_str(),
     action_dmg_str.c_str(),
     gains_str.c_str() );
   util_t::fprintf( file,
-    "        <div class=\"charts\">\n"
-    "          %s\n"
-    "          %s\n"
-    "          %s\n",
+    "            <div class=\"charts\">\n"
+    "              %s\n"
+    "              %s\n"
+    "              %s\n",
     timeline_resource_str.c_str(),
     timeline_dps_str.c_str(),
     distribution_dps_str.c_str() );
@@ -2788,25 +3121,27 @@ static void print_html3_player( FILE* file, player_t* p )
     if( ! p -> scaling_dps_chart.empty() )
     {
       util_t::fprintf( file,
-        "          <img name=\"chart_scaling_dps\" src=\"%s\" />\n",
-                        p -> scaling_dps_chart.c_str() );
+        "              <img name=\"chart_scaling_dps\" src=\"%s\" />\n",
+        p -> scaling_dps_chart.c_str() );
     }
     if( ! p -> scale_factors_chart.empty() )
     {
       util_t::fprintf( file,
-        "          <img name=\"scale_factors\" src=\"%s\" /></td>\n",
-                        p -> scale_factors_chart.c_str() );
+        "              <img name=\"scale_factors\" src=\"%s\" /></td>\n",
+        p -> scale_factors_chart.c_str() );
     }
   }
   util_t::fprintf( file,
-    "        </div>\n"
-    "        <div class=\"clear\"></div>\n" );
+    "            </div>\n"
+    "            <div class=\"clear\"></div>\n"
+    "          </div>\n"
+    "        </div>\n" );
 
   util_t::fprintf( file,
     "        <div class=\"player-section\">\n"
     "          <h3 class=\"toggle\">Abilities</h3>\n"
     "          <div class=\"toggle-content\">\n"
-    "            <table class=\"mb\">\n"
+    "            <table>\n"
     "              <tr>\n"
     "                <th></th>\n"
     "                <th>DPS</th>\n"
@@ -2884,7 +3219,7 @@ static void print_html3_player( FILE* file, player_t* p )
     "        <div class=\"player-section dynamic-buffs\">\n"
     "          <h3 class=\"toggle\">Dynamic Buffs</h3>\n"
     "          <div class=\"toggle-content\">\n"
-    "            <table class=\"mb\">\n"
+    "            <table>\n"
     "              <tr>\n"
     "                <th></th>\n"
     "                <th>Start</th>\n"
@@ -3014,7 +3349,7 @@ static void print_html3_player( FILE* file, player_t* p )
       if ( !( i & 1 ) ) {
         util_t::fprintf( file, " class=\"odd\"" );
       }
-      util_t::fprintf( file, ">" );
+      util_t::fprintf( file, ">\n" );
       util_t::fprintf( file,
         "                  <td class=\"left\">%s</td>\n"
         "                  <td class=\"right\">%.1f%%</td>\n"
@@ -3050,7 +3385,7 @@ static void print_html3_player( FILE* file, player_t* p )
       if ( !( i & 1 ) ) {
         util_t::fprintf( file, " class=\"odd\"" );
       }
-      util_t::fprintf( file, ">" );
+      util_t::fprintf( file, ">\n" );
       util_t::fprintf( file,
         "                  <td class=\"left\">%s</td>\n"
         "                  <td class=\"right\">%.1f</td>\n"
@@ -3067,14 +3402,38 @@ static void print_html3_player( FILE* file, player_t* p )
     "            </div>\n"
     "          </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"mt\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-gains');\">Gains</a></th> <th>%s</th> <th>Overflow</th> </tr></thead><tbody id=\"%s-gains\" style=\"display:none;\">\n",
-      n.c_str(), util_t::resource_type_string( p -> primary_resource() ), n.c_str() );
+  util_t::fprintf( file,
+    "          <div class=\"player-section gains\">\n"
+    "            <h3 class=\"toggle\">Gains</h3>\n"
+    "            <div class=\"toggle-content\">\n"
+    "              <table>\n"
+    "                <tr>\n"
+    "                  <th></th>\n"
+    "                  <th>%s</th>\n"
+    "                  <th>Overflow</th>\n"
+    "                </tr>\n",
+    util_t::resource_type_string( p -> primary_resource() ) );
+  i = 1;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
     if ( g -> actual > 0 )
     {
       double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f</td> <td align=right>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+      util_t::fprintf( file,
+        "                <tr" );
+      if ( !( i & 1 ) ) {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">\n" );
+      util_t::fprintf( file,
+        "                  <td class=\"left\">%s</td>\n"
+        "                  <td class=\"right\">%.1f</td>\n"
+        "                  <td class=\"right\">%.1f%%</td>\n"
+        "                </tr>\n",
+        g -> name(),
+        g -> actual,
+        overflow_pct );
+      i++;
     }
   }
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
@@ -3085,31 +3444,70 @@ static void print_html3_player( FILE* file, player_t* p )
     {
       if ( g -> actual > 0 )
       {
-  if ( first )
-  {
-    first = false;
-    util_t::fprintf( file, "  <tr> <th>pet - %s</th> <th>%s</th> </tr>\n", pet -> name_str.c_str(), util_t::resource_type_string( pet -> primary_resource() ) );
-  }
-  double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-  util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f%%</td> </tr>\n", g -> name(), g -> actual, overflow_pct );
+        if ( first )
+        {
+          first = false;
+          util_t::fprintf( file,
+            "                <tr>\n"
+            "                  <th>pet - %s</th>\n"
+            "                  <th>%s</th>\n"
+            "                </tr>\n",
+            pet -> name_str.c_str(),
+            util_t::resource_type_string( pet -> primary_resource() ) );
+        }
+        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+        util_t::fprintf( file,
+          "                <tr>\n"
+          "                  <td>%s</td>\n"
+          "                  <td>%.1f</td>\n"
+          "                  <td>%.1f%%</td>\n"
+          "                </tr>\n",
+          g -> name(),
+          g -> actual,
+          overflow_pct );
       }
     }
   }
-  util_t::fprintf( file, "</tbody></table> <br />\n" );
+  util_t::fprintf( file,
+    "                </table>\n"
+    "              </div>\n"
+    "            </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th>#</th> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-action_priority_list');\">Action Priority List</a></th> </tr></thead><tbody id=\"%s-action_priority_list\" style=\"display:none;\">\n",
-      n.c_str(), n.c_str() );
+  util_t::fprintf( file,
+    "            <div class=\"player-section action-priority-list\">\n"
+    "              <h3 class=\"toggle\">Action Priority List</h3\n"
+    "              <div class=\"toggle-content\">\n"
+    "                <table>\n"
+    "                  <tr>\n"
+    "                    <th class=\"right\">#</th>\n"
+    "                    <th class=\"left\">action,conditions</th>\n"
+    "                  </tr>\n" );
   std::vector<std::string> action_names;
+  i = 1;
   int num_actions = util_t::string_split( action_names, p -> action_list_str, "/" );
-  for ( int i=0; i < num_actions; i++ )
+  for ( int j=0; j < num_actions; j++ )
   {
-    util_t::fprintf( file, "  <tr> <th>%d</th> <td>%s</td> </tr>\n", i, action_names[ i ].c_str() );
+    util_t::fprintf( file,
+      "                <tr" );
+    if ( !( i & 1 ) ) {
+      util_t::fprintf( file, " class=\"odd\"" );
+    }
+    util_t::fprintf( file, ">\n" );
+    util_t::fprintf( file,
+      "                    <th class=\"right\">%d</th>\n"
+      "                    <td class=\"left\">%s</td>\n"
+      "                  </tr>\n",
+      j,
+      action_names[ j ].c_str() );
+    i++;
   }
-  util_t::fprintf( file, "</tbody></table> <br />\n" );
+  util_t::fprintf( file,
+    "                </table>\n"
+    "              </div>\n"
+    "            </div>\n" );
 
 
-  print_html2_stats( file, p );
-  util_t::fprintf( file, "</table> <br />\n" );
+  print_html3_stats( file, p );
 
   //if ( !p -> is_pet() )
   //{
@@ -4136,7 +4534,7 @@ void report_t::print_html3( sim_t* sim )
       "      h1, h2 { margin: 0; padding: 2px 2px 0 2px; }\n"
       "      h1 { font-size: 24px; }\n"
       "      h2 { font-size: 18px; }\n"
-      "      h3 { margin: 0; font-size: 16px; }\n"
+      "      h3 { margin: 0 0 4px 0; font-size: 16px; }\n"
       "      a { color: #666688; text-decoration: none; }\n"
       "      a:hover, a:active { color: #333; }\n"
       "      ul, ol { padding-left: 20px; }\n"
@@ -4144,6 +4542,8 @@ void report_t::print_html3( sim_t* sim )
       "      ul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 2px solid #eee; }\n"
       "      .clear { clear: both; }\n"
       "      .hide { display: none; }\n"
+      "      .mt { margin-top: 20px; }\n"
+      "      .mb { margin-bottom: 20px; }\n"
       "      .toggle { cursor: pointer; }\n"
       "      h2.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD1SURBVHja7JQ9CoQwFIT9LURQG3vBwyh4XsUjWFtb2IqNCmIhkp1dd9dsfIkeYKdKHl+G5CUTvaqqrutM09Tk2rYtiiIrjuOmaeZ5VqBBEADVGWPTNJVlOQwDyYVhmKap4zgGJp7nJUmCpQoOY2Mv+b6PkkDz3IGevQUOeu6VdxrHsSgK27azLOM5AoVwPqCu6wp1ApXJ0G7rjx5oXdd4YrfQtm3xFJdluUYRBFypghb32ve9jCaOJaPpDpC0tFmg8zzn46nq6/rSd2opAo38IHMXrmeOdgWHACKVFx3Y/c7cjys+JkSP9HuLfYR/Dg1icj0EGACcXZ/44V8+SgAAAABJRU5ErkJggg==) 0 -10px no-repeat; }\n"
       "      h2.open { margin-bottom: 10px; background-position: 0 9px; }\n"
@@ -4159,7 +4559,7 @@ void report_t::print_html3( sim_t* sim )
       "      .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
       "      .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
       "      .section { position: relative; padding: 8px; margin: 0 0 15px 0; outline: 1px solid #ccc; background-color: #fff; }\n"
-      "      .section .toggle-content { padding-left: 14px; }\n"
+      "      .section .toggle-content { padding: 0 0 20px 14px; }\n"
       "      ul.params { padding: 0; }\n"
       "      ul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 12px; }\n"
       "      .player h2 { margin: 0; }\n"
@@ -4174,8 +4574,6 @@ void report_t::print_html3( sim_t* sim )
       "      .charts { margin: 20px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
       "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; outline: 2px solid #eee; }\n"
       "      table { border: 0; background-color: #eee; }\n"
-      "      table.mt { margin-top: 20px; }\n"
-      "      table.mb { margin-bottom: 20px; }\n"
       "      tr { background-color: #fff; }\n"
       "      tr.head { background-color: #aaa; color: #fff; }\n"
       "      tr.odd { background-color: #f3f3f3; }\n"
