@@ -4145,7 +4145,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
-  if ( name == "cacnel_buff"      ) return new      cancel_buff_t( this, options_str );
+  if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
