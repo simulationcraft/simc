@@ -2015,7 +2015,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
         "                  <h4 class=\"toggle\">Database details</h4>\n" );
       util_t::fprintf (file,
         "                  <div class=\"toggle-content\">\n"
-        "                    <b>Static Values</b>\n"
+        "                    <h5>Static Values</h5>\n"
         "                    <ul>\n"
         "                      <li><span class=\"label\">id:</span>%i</li>\n"
         "                      <li><span class=\"label\">school:</span>%s\n"
@@ -2031,14 +2031,14 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
         "                      <li><span class=\"label\">tooltip:</span>%s</li>\n"
         "                      <li><span class=\"label\">rp gain:</span>%.1f</li>\n"
         "                    </ul>\n"
-        "                    <b>Direct Damage</b>\n"
+        "                    <h5>Direct Damage</h5>\n"
         "                    <ul>\n"
         "                      <li><span class=\"label\">may_crit:</span>%s</li>\n"
         "                      <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
         "                      <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
         "                      <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
         "                    </ul>\n"
-        "                    <b>Damage Over Time</b>\n"
+        "                    <h5>Damage Over Time</h5>\n"
         "                    <ul>\n"
         "                      <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
         "                      <li><span class=\"label\">tick_zero:</span>%s</li>\n"
@@ -2049,7 +2049,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
         "                      <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
         "                      <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
         "                    </ul>\n"
-        "                    <b>Weapon</b>\n"
+        "                    <h5>Weapon</h5>\n"
         "                    <ul>\n"
         "                      <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
         "                      <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
@@ -2906,7 +2906,7 @@ static void print_html3_player( FILE* file, player_t* p )
       continue;
 
     util_t::fprintf( file,
-      "              <tr>\n"
+      "              <tr class=\"odd\">\n"
       "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
       "                <td class=\"right\">%.1f</td>\n"
       "                <td class=\"right\">%.1f</td>\n"
@@ -2956,47 +2956,84 @@ static void print_html3_player( FILE* file, player_t* p )
     "            </div>\n"
     "          </div>\n");
 
-  util_t::fprintf( file, "<table class=\"mt\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-constant-buffs');\">Constant Buffs</a></th> </tr></thead><tbody id=\"%s-constant-buffs\" style=\"display:none;\">\n",
-      n.c_str(), n.c_str());
+  util_t::fprintf( file,
+    "          <div class=\"player-section constant-buffs\">\n"
+    "            <h3 class=\"toggle\">Constant Buffs</h3>\n"
+    "            <div class=\"toggle-content\">\n"
+    "              <table>\n" );
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count || ! b -> constant )
       continue;
 
-    util_t::fprintf( file, "  <tr> <td><a href=\"javascript:;\" onclick=\"toggleSlide('%s-%s-buff');\">%s</a></td> </tr>\n", b -> name(), b -> player -> name(), b -> name() );
+    util_t::fprintf( file,
+      "                <tr class=\"odd\">\n"
+      "                  <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
+      "                </tr>\n",
+      b -> name() );
 
-    util_t::fprintf( file, "<tr id=\"%s-%s-buff\" style=\"display:none;\"><td colspan=\"100\">\n", b -> name(), b -> player -> name() );
-    util_t::fprintf( file, "<br>id: %.i"
-                           "<br>cooldown name: %s"
-                           "<br>tooltip: %s"
-                           "<br>max_stacks: %.i"
-                           "<br>duration: %.2f"
-                           "<br>cooldown: %.2f"
-                           "<br>default_chance: %.2f",
-                           b -> s_id,
-                           b -> cooldown -> name_str.c_str(),
-                           b -> tooltip(),
-                           b -> max_stack,
-                           b -> buff_duration,
-                           b -> cooldown -> duration,
-                           b -> default_chance );
-
-    util_t::fprintf( file, "</tr>\n" );
+    util_t::fprintf( file,
+      "                <tr class=\"details hide\">\n"
+      "                  <td>\n"
+      "                    <ul>\n"
+      "                      <li><span class=\"label\">id:</span>%.i</li>\n"
+      "                      <li><span class=\"label\">cooldown name:</span>%s</li>\n"
+      "                      <li><span class=\"label\">tooltip:</span>%s</li>\n"
+      "                      <li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+      "                      <li><span class=\"label\">duration:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">default_chance:</span>%.2f</li>\n"
+      "                    </ul>\n"
+      "                  </td>\n"
+      "                </tr>\n",
+      b -> s_id,
+      b -> cooldown -> name_str.c_str(),
+      b -> tooltip(),
+      b -> max_stack,
+      b -> buff_duration,
+      b -> cooldown -> duration,
+      b -> default_chance );
   }
-  util_t::fprintf( file, "</tbody></table> <br />\n" );
+  util_t::fprintf( file,
+    "              </table>\n"
+    "            </div>\n"
+    "          </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n  <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-uptimes');\">Up-Times</a></th> <th>%%</th> </tr></thead><tbody id=\"%s-uptimes\" style=\"display:none;\">\n",
-      n.c_str(), n.c_str());
+  util_t::fprintf( file,
+    "          <div class=\"player-section uptimes\">\n"
+    "            <h3 class=\"toggle\">Uptimes</h3>\n"
+    "            <div class=\"toggle-content\">\n"
+    "              <table>\n"
+    "                <tr>\n"
+    "                  <th></th>\n"
+    "                  <th>%%</th>\n"
+    "                </tr>\n" );
+  int i = 1;
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
     if ( u -> percentage() > 0 )
     {
-      util_t::fprintf( file, "  <tr> <td>%s</td> <td align=right>%.1f%%</td> </tr>\n", u -> name(), u -> percentage() );
+      util_t::fprintf( file,
+        "                <tr" );
+      if ( !( i & 1 ) ) {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">" );
+      util_t::fprintf( file,
+        "                  <td class=\"left\">%s</td>\n"
+        "                  <td class=\"right\">%.1f%%</td>\n"
+        "                </tr>\n",
+        u -> name(),
+        u -> percentage() );
+      i++;
     }
   }
-  util_t::fprintf( file, "</tbody></table> <br />\n" );
+  util_t::fprintf( file,
+    "              </table>\n"
+    "            </div>\n"
+    "          </div>\n" );
 
-  util_t::fprintf( file, "<table class=\"player\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-procs');\">Procs</th> <th>Count</th> <th>Interval</th> </tr></thead><tbody id=\"%s-procs\" style=\"display:none;\">\n",
+  util_t::fprintf( file, "<table class=\"mt\">\n <thead><tr> <th><a href=\"javascript:;\" onclick=\"toggleSlide('%s-procs');\">Procs</th> <th>Count</th> <th>Interval</th> </tr></thead><tbody id=\"%s-procs\" style=\"display:none;\">\n",
       n.c_str(), n.c_str());
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
   {
@@ -4125,7 +4162,7 @@ void report_t::print_html3( sim_t* sim )
       "      td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
       "      th.left, td.left, tr.left th, tr.left td { text-align: left; padding-right: 6px; }\n"
       "      th.right, td.right, tr.right th, tr.right td { text-align: right; padding-right: 6px; }\n"
-      "      tr.details { margin-top: 0px; }\n"
+      "      tr.details { padding-bottom: 8px; }\n"
       "      tr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\n"
       "      tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
       "      tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
