@@ -4148,7 +4148,7 @@ void report_t::print_html3( sim_t* sim )
       "      #masthead ul.toc li { list-style-type: none; }\n"
       "      #masthead ul.toc li ul { padding-left: 18px; }\n"
       "      #masthead ul.toc li ul li { list-style-type: circle; font-size: 13px; }\n"
-      "      .charts { margin: 20px 40px 0 4px; float: left; width: 550px; text-align: center; }\n"
+      "      .charts { margin: 20px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
       "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; outline: 2px solid #eee; }\n"
       "      table { border: 0; background-color: #eee; }\n"
       "      table.mt { margin-top: 20px; }\n"
