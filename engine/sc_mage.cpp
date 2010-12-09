@@ -1324,13 +1324,14 @@ struct arcane_explosion_t : public mage_spell_t
 struct arcane_missiles_tick_t : public mage_spell_t
 {
   arcane_missiles_tick_t( mage_t* p ) :
-    mage_spell_t( "arcane_missiles", 7268, p )
+    mage_spell_t( "arcane_missiles_tick", 7268, p )
   {
     dual        = true;
     background  = true;
     direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
+    stats = p -> get_stats( "arcane_missiles" );
   }
 };
 
@@ -1347,7 +1348,6 @@ struct arcane_missiles_t : public mage_spell_t
     hasted_ticks = false;
 
     base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
-
 
     tick_spell = new arcane_missiles_tick_t( p );
   }
@@ -1614,7 +1614,7 @@ struct fire_blast_t : public mage_spell_t
 struct fireball_t : public mage_spell_t
 {
   fireball_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "fireball", "Fireball", p )
+    mage_spell_t( "fireball", 133, p )
   {
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
@@ -1663,6 +1663,7 @@ struct flame_orb_explosion_t : public mage_spell_t
     aoe = true;
     dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
+    stats = p -> get_stats( "flame_orb" );
   }
 };
 
@@ -1674,6 +1675,7 @@ struct flame_orb_tick_t : public mage_spell_t
     background = true;
     dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
+    stats = p -> get_stats( "flame_orb" );
   }
 };
 
@@ -1956,6 +1958,7 @@ struct frostfire_orb_explosion_t : public mage_spell_t
     dual = true;
     school = SCHOOL_FROSTFIRE; // required since defaults to FIRE
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
+    stats = p -> get_stats( "frostfire_orb" );
   }
 };
 
@@ -1967,6 +1970,7 @@ struct frostfire_orb_tick_t : public mage_spell_t
     background = true;
     dual = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
+    stats = p -> get_stats( "frostfire_orb" );
   }
 };
 
