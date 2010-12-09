@@ -2519,6 +2519,119 @@ static void print_html3_stats (FILE* file, player_t* a )
 }
 
 
+// print_htmprint_html3_talentsl3_player ======================================================
+static void print_html3_talents( FILE* file, player_t* a )
+{
+  std::string n = a -> name();
+  util_t::str_to_utf8( n );
+  
+  if ( a -> total_seconds > 0 )
+  {
+    util_t::fprintf( file,
+      "            <div class=\"player-section talents\">\n"
+      "              <h3 class=\"toggle\">Talents</h3>\n"
+      "              <div class=\"toggle-content\">\n" );
+
+    uint32_t i_tab, talent_num, talent_id, i;
+
+    if ( a -> is_pet() )
+    {
+      util_t::fprintf( file,
+        "                  <table>\n"
+        "                    <tr>\n"
+        "                      <th></th>\n"
+        "                      <th>Rank</th>\n"
+        "                    </tr>\n"
+        "                    <tr>\n"
+        "                      <th>Pet Talents</th>\n"
+        "                    </tr>\n" );
+      talent_num = 0;
+      while ( ( talent_id = a -> player_data.talent_pet_get_id_by_num( a -> cast_pet() -> pet_type, talent_num ) ) != 0 )
+      {
+        util_t::fprintf( file,
+          "                    <tr" );
+        if ( ( talent_num & 1 ) )
+        {
+          util_t::fprintf( file, " class=\"odd\"" );
+        }
+        util_t::fprintf( file, ">\n" );
+        util_t::fprintf( file,
+          "                      <td class=\"left\">%s</td>\n"
+          "                      <td>",
+          a -> player_data.talent_name_str(talent_id) );
+        uint32_t j = 0;
+        while( j < a -> talent_list2.size() )
+        {
+          if ( talent_id == a -> talent_list2[j] -> talent_id() )
+          {              
+            if ( a -> talent_list2[j] -> rank() )
+              util_t::fprintf( file, "%d", a -> talent_list2[j] -> rank() );
+            break;
+          }
+          j++;
+        }
+        util_t::fprintf( file, "</td>\n"
+          "                    </tr>\n" );
+        talent_num++;
+      }
+      util_t::fprintf( file,
+        "                  </table>\n" );
+    }
+    else
+    {
+      for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
+      {
+        util_t::fprintf( file,
+          "                <div class=\"float\">\n"
+          "                  <table>\n"
+          "                    <tr>\n"
+          "                      <th class=\"left\">%s</th>\n"
+          "                      <th>Rank</th>\n"
+          "                    </tr>\n",
+          util_t::talent_tree_string( a -> tree_type[ i_tab ], false ) );
+        talent_num = 0;
+        while ( ( talent_id = a -> player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
+        {
+          util_t::fprintf( file,
+            "                    <tr" );
+          if ( ( talent_num & 1 ) )
+          {
+            util_t::fprintf( file, " class=\"odd\"" );
+          }
+          util_t::fprintf( file, ">\n" );
+          util_t::fprintf( file,
+            "                      <td class=\"left\">%s</td>\n"
+            "                      <td>",
+            a -> player_data.talent_name_str(talent_id) );
+          i=0;
+          while( i < a -> talent_list2.size() )
+          {
+            if ( talent_id == a -> talent_list2[i] -> talent_id() )
+            {              
+              if ( a -> talent_list2[i] -> rank() )
+                util_t::fprintf( file, "%d", a -> talent_list2[i] -> rank() );
+              break;
+            }
+            i++;
+          }
+          util_t::fprintf( file, "</td>\n"
+            "                    </tr>\n");
+          talent_num++;
+        }
+        util_t::fprintf( file,
+          "                  </table>\n"
+          "                </div>\n" );
+      }
+      util_t::fprintf( file,
+        "                <div class=\"clear\"></div>\n" );
+    }
+    util_t::fprintf( file,
+      "                </div>\n"
+      "              </div>\n" );
+  }
+}
+
+
 // print_html2_player =========================================================
 
 static void print_html2_player( FILE* file, player_t* p )
@@ -3127,7 +3240,7 @@ static void print_html3_player( FILE* file, player_t* p )
     if( ! p -> scale_factors_chart.empty() )
     {
       util_t::fprintf( file,
-        "              <img name=\"scale_factors\" src=\"%s\" /></td>\n",
+        "              <img name=\"scale_factors\" src=\"%s\" />\n",
         p -> scale_factors_chart.c_str() );
     }
   }
@@ -3369,10 +3482,11 @@ static void print_html3_player( FILE* file, player_t* p )
     "            <h3 class=\"toggle\">Procs</h3>\n"
     "            <div class=\"toggle-content\">\n"
     "              <table>\n"
-    "                <th></th>\n"
-    "                <th>Count</th>\n"
-    "                <th>Interval</th>\n"
-    "              </tr>\n",
+    "                <tr>\n"
+    "                  <th></th>\n"
+    "                  <th>Count</th>\n"
+    "                  <th>Interval</th>\n"
+    "                </tr>\n",
     n.c_str(),
     n.c_str());
   i = 1;
@@ -3509,11 +3623,7 @@ static void print_html3_player( FILE* file, player_t* p )
 
   print_html3_stats( file, p );
 
-  //if ( !p -> is_pet() )
-  //{
-  print_html2_talents( file, p );
-    util_t::fprintf( file, "</table> <br />\n" );
-  //}
+  print_html3_talents( file, p );
 
 
   if ( p -> sim -> scaling -> has_scale_factors() )
@@ -4571,8 +4681,9 @@ void report_t::print_html3( sim_t* sim )
       "      #masthead ul.toc li { list-style-type: none; }\n"
       "      #masthead ul.toc li ul { padding-left: 18px; }\n"
       "      #masthead ul.toc li ul li { list-style-type: circle; font-size: 13px; }\n"
-      "      .charts { margin: 20px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
+      "      .charts { margin: 10px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
       "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; outline: 2px solid #eee; }\n"
+      "      .talents div.float { float: left; width: auto; margin-right: 50px; }\n"
       "      table { border: 0; background-color: #eee; }\n"
       "      tr { background-color: #fff; }\n"
       "      tr.head { background-color: #aaa; color: #fff; }\n"
