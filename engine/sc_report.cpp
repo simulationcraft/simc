@@ -1780,31 +1780,105 @@ static void print_html2_auras_debuffs( FILE*  file, sim_t* sim )
 
 static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
 {
-  util_t::fprintf( file, "<div id=\"auras-and-debuffs\" class=\"section\">\n<h2 class=\"toggle\">Auras and Debuffs</h2>\n<div class=\"toggle-content\">\n" );
-
-  util_t::fprintf( file, "<table class=\"auras\">\n  <tr> <th>Dynamic</th> <th>Start</th> <th>Refresh</th> <th>Interval</th> <th>Trigger</th> <th>Up-Time</th> <th>Benefit</th> </tr>\n" );
+  int show_dyn = 0;
+  int show_con = 0;
+  int i;
   for ( buff_t* b = sim -> buff_list; b; b = b -> next )
   {
-    if ( b -> quiet || ! b -> start_count || b -> constant )
-      continue;
-
-    util_t::fprintf( file, "  <tr> <td>%s</td> <td>%.1f</td> <td>%.1f</td> <td>%.1fsec</td> <td>%.1fsec</td> <td>%.0f%%</td> <td>%.0f%%</td> </tr>\n",
-         b -> name(), b -> avg_start, b -> avg_refresh,
-         b -> avg_start_interval, b -> avg_trigger_interval,
-         b -> uptime_pct, b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+    if ( b -> constant )
+    {
+      show_con++;
+    }
+    else
+    {
+      show_dyn++;
+    }
   }
-  util_t::fprintf( file, "</table> <br />\n" );
+  
+  util_t::fprintf( file,
+    "        <div id=\"auras-and-debuffs\" class=\"section\">\n"
+    "          <h2 class=\"toggle\">Auras and Debuffs</h2>\n"
+    "            <div class=\"toggle-content\">\n" );
 
-  util_t::fprintf( file, "<table class=\"auras\">\n  <tr> <th>Constant</th> </tr>\n" );
-  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+  if ( show_dyn > 0 )
   {
-    if ( b -> quiet || ! b -> start_count || ! b -> constant )
-      continue;
+    i = 0;
+    util_t::fprintf( file,
+      "              <table class=\"mb\">\n"
+      "                <tr>\n"
+      "                  <th class=\"left\">Dynamic Buff</th>\n"
+      "                  <th>Start</th>\n"
+      "                  <th>Refresh</th>\n"
+      "                  <th>Interval</th>\n"
+      "                  <th>Trigger</th>\n"
+      "                  <th>Up-Time</th>\n"
+      "                  <th>Benefit</th>\n"
+      "                </tr>\n" );
+    for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+    {
+      if ( b -> quiet || ! b -> start_count || b -> constant )
+        continue;
 
-    util_t::fprintf( file, "  <tr> <td>%s</td> </tr>\n", b -> name() );
+      util_t::fprintf( file,
+        "                <tr" );
+      if ( ( i & 1 ) ) {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">\n" );
+      util_t::fprintf( file,
+        "                  <td class=\"left\">%s</td>\n"
+        "                  <td class=\"right\">%.1f</td>\n"
+        "                  <td class=\"right\">%.1f</td>\n"
+        "                  <td class=\"right\">%.1fsec</td>\n"
+        "                  <td class=\"right\">%.1fsec</td>\n"
+        "                  <td class=\"right\">%.0f%%</td>\n"
+        "                  <td class=\"right\">%.0f%%</td>\n"
+        "                </tr>\n",
+        b -> name(),
+        b -> avg_start,
+        b -> avg_refresh,
+        b -> avg_start_interval,
+        b -> avg_trigger_interval,
+        b -> uptime_pct,
+        b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+      i++;
+    }
+    util_t::fprintf( file,
+      "              </table>\n" );
   }
-  util_t::fprintf( file, "</table>\n" );
-  util_t::fprintf( file, "</div></div>\n" );
+  
+  if ( show_con > 0 )
+  {
+    i = 0;
+    util_t::fprintf( file,
+      "              <table>\n"
+      "                <tr>\n"
+      "                  <th class=\"left\">Constant Buff</th>\n"
+      "                </tr>\n" );
+    for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+    {
+      if ( b -> quiet || ! b -> start_count || ! b -> constant )
+        continue;
+
+      util_t::fprintf( file,
+        "                <tr class=\"left" );
+      if ( ( i & 1 ) ) {
+        util_t::fprintf( file, " odd" );
+      }
+      util_t::fprintf( file, "\">\n" );
+      util_t::fprintf( file,
+        "                  <td>%s</td>\n"
+        "                </tr>\n",
+        b -> name() );
+      i++;
+    }
+    util_t::fprintf( file,
+      "              </table>\n" );
+  }
+  
+  util_t::fprintf( file,
+    "            </div>\n"
+    "          </div>\n\n" );
 
 }
 
@@ -2497,7 +2571,7 @@ static void print_html3_stats (FILE* file, player_t* a )
 }
 
 
-// print_htmprint_html3_talents_player ======================================================
+// print_html3_talents_player ======================================================
 
 static void print_html3_talents( FILE* file, player_t* p )
 {
@@ -2546,8 +2620,8 @@ static void print_html3_talents( FILE* file, player_t* p )
         "                <div class=\"clear\"></div>\n" );
 
     util_t::fprintf( file,
-      "                </div>\n"
-      "              </div>\n" );
+      "              </div>\n"
+      "            </div>\n" );
   }
 }
 
@@ -3611,7 +3685,9 @@ static void print_html3_player( FILE* file, player_t* p )
       "            </div>\n" );
   }
 
-  util_t::fprintf( file, "</div></div>\n" );
+  util_t::fprintf( file,
+    "          </div>\n"
+    "        </div>\n\n" );
 }
 
 
