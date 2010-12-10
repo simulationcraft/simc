@@ -447,6 +447,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   use_optimal_buffs_and_debuffs( 1 );
 
+  create_options();
+
   if ( parent )
   {
     // Import the config file
@@ -465,8 +467,6 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     seed = parent -> seed;
   }
-
-  create_options();
 }
 
 // sim_t::~sim_t ============================================================
