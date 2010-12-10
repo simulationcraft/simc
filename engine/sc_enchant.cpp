@@ -796,7 +796,8 @@ bool enchant_t::get_reforge_encoding( std::string& name,
   int start = 0;
   int target = atoi( reforge_id.c_str() );
   target %= 56;
-  if( target <= start ) return false;
+  if( target == 0 ) target = 56;
+  else if( target <= start ) return false;
 
   const char* stats[] = { "spirit", "dodge", "parry", "hit", "crit", "haste", "exp", "mastery", NULL };
 
