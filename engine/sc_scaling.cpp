@@ -95,7 +95,9 @@ scaling_t::scaling_t( sim_t* s ) :
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
   scale_haste_iterations( 1.0 )
-{}
+{
+  create_options();
+}
 
 // scaling_t::progress ======================================================
 
@@ -428,9 +430,9 @@ void scaling_t::analyze()
 
 }
 
-// scaling_t::get_options ===================================================
+// scaling_t::create_options ================================================
 
-int scaling_t::get_options( std::vector<option_t>& options )
+void scaling_t::create_options()
 {
   option_t scaling_options[] =
   {
@@ -466,9 +468,7 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { NULL, OPT_UNKNOWN, NULL }
   };
 
-  option_t::copy( options, scaling_options );
-
-  return ( int ) options.size();
+  option_t::copy( sim -> options, scaling_options );
 }
 
 // scaling_t::has_scale_factors =============================================

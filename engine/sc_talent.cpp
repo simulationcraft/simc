@@ -5,50 +5,14 @@
 
 #include "simulationcraft.h"
 
-#if 0
-static talent_tab_name tree_to_tab_name( const player_type c, const talent_tree_type tree )
-{
-  switch ( tree )
-  {
-  case TREE_BLOOD: return DEATH_KNIGHT_BLOOD;
-  case TREE_FROST: return c == MAGE ? MAGE_FROST : DEATH_KNIGHT_FROST;
-  case TREE_UNHOLY: return DEATH_KNIGHT_UNHOLY;
-  case TREE_BALANCE: return DRUID_BALANCE;
-  case TREE_FERAL: return DRUID_FERAL;
-  case TREE_RESTORATION: return c == DRUID ? DRUID_RESTORATION : SHAMAN_RESTORATION;
-  case TREE_BEAST_MASTERY: return HUNTER_BEAST_MASTERY;
-  case TREE_MARKSMANSHIP: return HUNTER_MARKSMANSHIP;
-  case TREE_SURVIVAL: return HUNTER_SURVIVAL;
-  case TREE_ARCANE: return MAGE_ARCANE;
-  case TREE_FIRE: return MAGE_FIRE;
-  case TREE_HOLY: return c == PALADIN ? PALADIN_HOLY : PRIEST_HOLY;
-  case TREE_PROTECTION: return c == PALADIN? PALADIN_PROTECTION : WARRIOR_PROTECTION;
-  case TREE_RETRIBUTION: return PALADIN_RETRIBUTION;
-  case TREE_DISCIPLINE: return PRIEST_DISCIPLINE;
-  case TREE_SHADOW: return PRIEST_SHADOW;
-  case TREE_ASSASSINATION: return ROGUE_ASSASSINATION;
-  case TREE_COMBAT: return ROGUE_COMBAT;
-  case TREE_SUBTLETY: return ROGUE_SUBTLETY;
-  case TREE_ELEMENTAL: return SHAMAN_ELEMENTAL;
-  case TREE_ENHANCEMENT: return SHAMAN_ENHANCEMENT;
-  case TREE_AFFLICTION: return WARLOCK_AFFLICTION;
-  case TREE_DEMONOLOGY: return WARLOCK_DEMONOLOGY;
-  case TREE_DESTRUCTION: return WARLOCK_DESTRUCTION;
-  case TREE_ARMS: return WARRIOR_ARMS;
-  case TREE_FURY: return WARRIOR_FURY;
-  default: return WARRIOR_ARMS;
-  }
-}
-#endif
-
 // ==========================================================================
 // Talent
 // ==========================================================================
 
 // talent_t::talent_t =======================================================
 
-talent_t::talent_t( player_t* player, const char* t_name, const char* name ) : 
-  spell_id_t( player, t_name, name ), t_data( 0 ), t_rank( 0 ), t_overridden( false )
+talent_t::talent_t( player_t* player, const char* name, uint32_t id ) : 
+  spell_id_t( player, name, name ), t_data( 0 ), t_rank( 0 ), t_overridden( false )
 {
   assert( s_player && name && s_player -> sim );
   
@@ -57,17 +21,11 @@ talent_t::talent_t( player_t* player, const char* t_name, const char* name ) :
   for ( int i = 0; i < MAX_RANK; i++ )
     t_rank_spells[ i ] = t_default_rank;
   
-  uint32_t id = find_talent_id( name );
-  
   if ( id != 0 )
   {
     t_data = s_player->player_data.m_talents_index[ id ];
     t_enabled = s_player -> player_data.talent_is_enabled( t_data -> id );
-
-    s_player -> talent_list2.push_back( const_cast<talent_t*>( this ) );
     s_player -> player_data.talent_set_used( id, true );
-
-    check_unknown_options( OPT_TALENT_RANK_FORCED );
   }
 }
 
@@ -269,6 +227,8 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   else
     s_token = t_name;
   
+  armory_t::format( s_token, FORMAT_ASCII_MASK );
+
   // Dummy constructor for old-style
   memset( s_effects, 0, sizeof( s_effects ) );
 }
@@ -278,6 +238,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
     s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 )
 {
   initialize();
+  armory_t::format( s_token, FORMAT_ASCII_MASK );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
@@ -285,6 +246,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
     s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 )
 {
   initialize( s_name );
+  armory_t::format( s_token, FORMAT_ASCII_MASK );
 }
 
 spell_id_t::spell_id_t( const spell_id_t& copy ) :
@@ -478,40 +440,6 @@ std::string spell_id_t::to_str() SC_CONST
   return s.str();
 }
 
-
-bool spell_id_t::check_unknown_options( int opt_type )
-{
-  assert( s_player && s_player -> sim );
-
-  for (std::vector<nvpair_t*>::iterator it = s_player->unknown_options.begin(); it != s_player->unknown_options.end(); ++it)
-  {
-    nvpair_t* t = *it;
-    
-    if ( t -> name == s_token )
-    {
-      option_t opt[ 2 ];
-      std::vector<option_t> opt_vector;
-
-      opt[ 1 ].name = 0;
-      opt[ 1 ].type = OPT_UNKNOWN;
-      opt[ 1 ].address = 0;
-      opt[ 0 ].name = s_token.c_str();
-      opt[ 0 ].type = opt_type;
-      opt[ 0 ].address = this;
-      option_t::copy( opt_vector, opt );
-
-      if ( ! option_t::parse( s_player -> sim, opt_vector, t -> name, t -> value ) )
-        return false;
-
-      delete t;
-      s_player->unknown_options.erase(it);
-
-      return true;
-    }
-  }
-
-  return false;
-}
 
 const char* spell_id_t::real_name() SC_CONST
 {
@@ -1181,9 +1109,6 @@ passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const ch
 glyph_t::glyph_t( player_t* player, const char* t_name ) :
   spell_id_t( player, t_name )
 {
-  std::string name = t_name;
-  s_token = armory_t::format( name, FORMAT_ASCII_MASK );
-  
   initialize( t_name );
   s_enabled = false;
   
@@ -1200,7 +1125,7 @@ bool glyph_t::enable( bool override_value )
   return s_enabled;
 }
 
-mastery_t::mastery_t( player_t* player, const char* t_name, const uint32_t id, talent_tree_type tree ) :
+mastery_t::mastery_t( player_t* player, const char* t_name, const uint32_t id, int tree ) :
   spell_id_t( player, t_name, id ), m_tree( tree )
 {
   s_player -> spell_list.push_back( this );
@@ -1209,7 +1134,7 @@ mastery_t::mastery_t( player_t* player, const char* t_name, const uint32_t id, t
     log_t::output( s_player -> sim, "Mastery status: %s", to_str().c_str() );
 }
 
-mastery_t::mastery_t( player_t* player, const char* t_name, const char* s_name, talent_tree_type tree ) :
+mastery_t::mastery_t( player_t* player, const char* t_name, const char* s_name, int tree ) :
   spell_id_t( player, t_name, s_name ), m_tree( tree )
 {
   s_player -> spell_list.push_back( this );

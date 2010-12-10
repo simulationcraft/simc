@@ -104,6 +104,8 @@ struct talent_data_t {
   unsigned     col;         // Talent column
   unsigned     row;         // Talent row
   unsigned     rank_id[3];  // Talent spell rank identifiers for ranks 1..3
+
+  static talent_data_t* list();
 };
 
 #ifdef __OpenBSD__

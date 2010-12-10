@@ -186,6 +186,8 @@ struct hunter_t : public player_t
     ranged_attack = 0;
     summon_pet_str = "cat";
     base_gcd = 1.0;
+
+    create_options();
   }
 
   // Character Definition
@@ -211,9 +213,8 @@ struct hunter_t : public player_t
   virtual double    agility() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
   virtual cooldown_t* get_cooldown( const std::string& name );
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual void      create_pets();
@@ -475,24 +476,24 @@ struct ferocity_pet_t : public hunter_pet_t
 
   virtual void init_talents()
   {
-    talents.serpent_swiftness     = new talent_t ( this, "serpent_swiftness", "Serpent Swiftness" );
-    talents.dash                  = new talent_t ( this, "dash", "Dash" );
-    talents.great_stamina         = new talent_t ( this, "great_stamina", "Great Stamina" );
-    talents.natural_armor         = new talent_t ( this, "natural_armor", "Natural Armor" );
-    talents.improved_cower        = new talent_t ( this, "improved_cower", "Improved Cower" );
-    talents.bloodthirsty          = new talent_t ( this, "bloodthirsty", "Bloodthirsty" );
-    talents.spiked_collar         = new talent_t ( this, "spiked_collar", "Spiked Collar" );
-    talents.boars_speed           = new talent_t ( this, "boars_speed", "Boars Speed" );
-    talents.culling_the_herd      = new talent_t ( this, "culling_the_herd", "Culling the Herd" );
-    talents.lionhearted           = new talent_t ( this, "lionhearted", "Lionhearted" );
-    talents.heart_of_the_phoenix  = new talent_t ( this, "heart_of_the_phoenix", "Heart of the Phoenix" );
-    talents.spiders_bite          = new talent_t ( this, "spiders_bite", "Spiders Bite" );
-    talents.great_resistance      = new talent_t ( this, "great_resistance", "Great Resistance" );
-    talents.rabid                 = new talent_t ( this, "rabid", "rabid" );
-    talents.lick_your_wounds      = new talent_t ( this, "lick_your_wounds", "Lick your Wounds" );
-    talents.call_of_the_wild      = new talent_t ( this, "call_of_the_wild", "Call of the Wild" );
-    talents.shark_attack          = new talent_t ( this, "shark_attack", "Shark Attack" );
-    talents.wild_hunt             = new talent_t ( this, "wild_hunt", "Wild Hunt" );
+    talents.serpent_swiftness     = new talent_t ( this, "Serpent Swiftness" );
+    talents.dash                  = new talent_t ( this, "Dash" );
+    talents.great_stamina         = new talent_t ( this, "Great Stamina" );
+    talents.natural_armor         = new talent_t ( this, "Natural Armor" );
+    talents.improved_cower        = new talent_t ( this, "Improved Cower" );
+    talents.bloodthirsty          = new talent_t ( this, "Bloodthirsty" );
+    talents.spiked_collar         = new talent_t ( this, "Spiked Collar" );
+    talents.boars_speed           = new talent_t ( this, "Boars Speed" );
+    talents.culling_the_herd      = new talent_t ( this, "Culling the Herd" );
+    talents.lionhearted           = new talent_t ( this, "Lionhearted" );
+    talents.heart_of_the_phoenix  = new talent_t ( this, "Heart of the Phoenix" );
+    talents.spiders_bite          = new talent_t ( this, "Spiders Bite" );
+    talents.great_resistance      = new talent_t ( this, "Great Resistance" );
+    talents.rabid                 = new talent_t ( this, "Rabid" );
+    talents.lick_your_wounds      = new talent_t ( this, "Lick your Wounds" );
+    talents.call_of_the_wild      = new talent_t ( this, "Call of the Wild" );
+    talents.shark_attack          = new talent_t ( this, "Shark Attack" );
+    talents.wild_hunt             = new talent_t ( this, "Wild Hunt" );
 
 
     hunter_pet_t::init_talents();
@@ -2569,68 +2570,68 @@ void hunter_t::init_talents()
 {
 
   // Beast Mastery
-  talents.improved_kill_command           = new talent_t ( this, "improved_kill_command", "Improved Kill Command" );
-  talents.one_with_nature                 = new talent_t ( this, "one_with_nature", "One with Nature" );
-  talents.bestial_discipline              = new talent_t ( this, "bestial_discipline", "Bestial Discipline" );
-  talents.pathfinding                     = new talent_t ( this, "pathfinding", "Pathfinding" );
-  talents.spirit_bond                     = new talent_t ( this, "spirit_bond", "Spirit Bond" );
-  talents.frenzy                          = new talent_t ( this, "frenzy", "Frenzy" );
-  talents.improved_mend_pet               = new talent_t ( this, "improved_mend_pet", "Improved Mend Pet" );
-  talents.cobra_strikes                   = new talent_t ( this, "cobra_strikes", "Cobra Strikes" );
-  talents.fervor                          = new talent_t ( this, "fervor", "Fervor" );
-  talents.focus_fire                      = new talent_t ( this, "focus_fire", "Focus Fire" );
-  talents.longevity                       = new talent_t ( this, "longevity", "Longevity" );
-  talents.killing_streak                  = new talent_t ( this, "killing_streak", "Killing Streak" );
-  talents.crouching_tiger_hidden_chimera  = new talent_t ( this, "crouching_tiger_hidden_chimera", "Crouching Tiger, Hidden Chimera" );
-  talents.bestial_wrath                   = new talent_t ( this, "bestial_wrath", "Bestial Wrath" );
-  talents.ferocious_inspiration           = new talent_t ( this, "ferocious_inspiration", "Ferocious Inspiration" );
-  talents.kindred_spirits                 = new talent_t ( this, "kindred_spirits", "Kindred Spirits" );
-  talents.the_beast_within                = new talent_t ( this, "the_beast_within", "The Beast Within" );
-  talents.invigoration                    = new talent_t ( this, "invigoration", "Invigoration" );
-  talents.beast_mastery                   = new talent_t ( this, "beast_mastery", "Beast Mastery" );
+  talents.improved_kill_command           = find_talent( "Improved Kill Command" );
+  talents.one_with_nature                 = find_talent( "One with Nature" );
+  talents.bestial_discipline              = find_talent( "Bestial Discipline" );
+  talents.pathfinding                     = find_talent( "Pathfinding" );
+  talents.spirit_bond                     = find_talent( "Spirit Bond" );
+  talents.frenzy                          = find_talent( "Frenzy" );
+  talents.improved_mend_pet               = find_talent( "Improved Mend Pet" );
+  talents.cobra_strikes                   = find_talent( "Cobra Strikes" );
+  talents.fervor                          = find_talent( "Fervor" );
+  talents.focus_fire                      = find_talent( "Focus Fire" );
+  talents.longevity                       = find_talent( "Longevity" );
+  talents.killing_streak                  = find_talent( "Killing Streak" );
+  talents.crouching_tiger_hidden_chimera  = find_talent( "Crouching Tiger, Hidden Chimera" );
+  talents.bestial_wrath                   = find_talent( "Bestial Wrath" );
+  talents.ferocious_inspiration           = find_talent( "Ferocious Inspiration" );
+  talents.kindred_spirits                 = find_talent( "Kindred Spirits" );
+  talents.the_beast_within                = find_talent( "The Beast Within" );
+  talents.invigoration                    = find_talent( "Invigoration" );
+  talents.beast_mastery                   = find_talent( "Beast Mastery" );
 
   // Marksmanship
-  talents.go_for_the_throat               = new talent_t ( this, "go_for_the_throat", "Go for the Throat" );
-  talents.efficiency                      = new talent_t ( this, "efficiency", "Efficiency" );
-  talents.rapid_killing                   = new talent_t ( this, "rapid_killing", "Rapid Killing" );
-  talents.sic_em                          = new talent_t ( this, "sic_em", "Sic 'Em!" );
-  talents.improved_steady_shot            = new talent_t ( this, "improved_steady_shot", "Improved Steady Shot" );
-  talents.careful_aim                     = new talent_t ( this, "careful_aim", "Careful Aim" );
-  talents.silencing_shot                  = new talent_t ( this, "silencing_shot", "Silencing Shot" );
-  talents.concussive_barrage              = new talent_t ( this, "concussive_barrage", "Concussive Barrage" );
-  talents.piercing_shots                  = new talent_t ( this, "piercing_shots", "Piercing Shots" );
-  talents.bombardment                     = new talent_t ( this, "bombardment", "Bombardment" );
-  talents.trueshot_aura                   = new talent_t ( this, "trueshot_aura", "Trueshot Aura" );
-  talents.termination                     = new talent_t ( this, "termination", "Termination" );
-  talents.resistance_is_futile            = new talent_t ( this, "resistance_is_futile", "Resistance is Futile" );
-  talents.rapid_recuperation              = new talent_t ( this, "rapid_recuperation", "Rapid Recuperation" );
-  talents.master_marksman                 = new talent_t ( this, "master_marksman", "Master Marksman" );
-  talents.readiness                       = new talent_t ( this, "readiness", "Readiness" );
-  talents.posthaste                       = new talent_t ( this, "posthaste", "Posthaste" );
-  talents.marked_for_death                = new talent_t ( this, "marked_for_death", "Marked for Death" );
-  talents.chimera_shot                    = new talent_t ( this, "chimera_shot", "Chimera Shot" );
+  talents.go_for_the_throat               = find_talent( "Go for the Throat" );
+  talents.efficiency                      = find_talent( "Efficiency" );
+  talents.rapid_killing                   = find_talent( "Rapid Killing" );
+  talents.sic_em                          = find_talent( "Sic 'Em!" );
+  talents.improved_steady_shot            = find_talent( "Improved Steady Shot" );
+  talents.careful_aim                     = find_talent( "Careful Aim" );
+  talents.silencing_shot                  = find_talent( "Silencing Shot" );
+  talents.concussive_barrage              = find_talent( "Concussive Barrage" );
+  talents.piercing_shots                  = find_talent( "Piercing Shots" );
+  talents.bombardment                     = find_talent( "Bombardment" );
+  talents.trueshot_aura                   = find_talent( "Trueshot Aura" );
+  talents.termination                     = find_talent( "Termination" );
+  talents.resistance_is_futile            = find_talent( "Resistance is Futile" );
+  talents.rapid_recuperation              = find_talent( "Rapid Recuperation" );
+  talents.master_marksman                 = find_talent( "Master Marksman" );
+  talents.readiness                       = find_talent( "Readiness" );
+  talents.posthaste                       = find_talent( "Posthaste" );
+  talents.marked_for_death                = find_talent( "Marked for Death" );
+  talents.chimera_shot                    = find_talent( "Chimera Shot" );
 
   // Survival
-  talents.hunter_vs_wild                  = new talent_t ( this, "hunter_vs_wild", "Hunter vs. Wild" );
-  talents.pathing                         = new talent_t ( this, "pathing", "Pathing" );
-  talents.improved_serpent_sting          = new talent_t ( this, "improved_serpent_sting", "Improved Serpent Sting" );
-  talents.survival_tactics                = new talent_t ( this, "survival_tactics", "Survival Tactics" );
-  talents.trap_mastery                    = new talent_t ( this, "trap_mastery", "Trap Mastery" );
-  talents.entrapment                      = new talent_t ( this, "entrapment", "Entrapment" );
-  talents.point_of_no_escape              = new talent_t ( this, "point_of_no_escape", "Point of No Escape" );
-  talents.thrill_of_the_hunt              = new talent_t ( this, "thrill_of_the_hunt", "Thrill of the Hunt" );
-  talents.counterattack                   = new talent_t ( this, "counterattack", "Counterattack" );
-  talents.lock_and_load                   = new talent_t ( this, "lock_and_load", "Lock and Load" );
-  talents.resourcefulness                 = new talent_t ( this, "resourcefulness", "Resourcefulness" );
-  talents.mirrored_blades                 = new talent_t ( this, "mirrored_blades", "Mirrored Blades" );
-  talents.tnt                             = new talent_t ( this, "tnt", "T.N.T." );
-  talents.toxicology                      = new talent_t ( this, "toxicology", "Toxicology" );
-  talents.wyvern_sting                    = new talent_t ( this, "wyvern_sting", "Wyvern Sting" );
-  talents.noxious_stings                  = new talent_t ( this, "noxious_stings", "Noxious Stings" );
-  talents.hunting_party                   = new talent_t ( this, "hunting_party", "Hunting Party" );
-  talents.sniper_training                 = new talent_t ( this, "sniper_training", "Sniper Training" );
-  talents.serpent_spread                  = new talent_t ( this, "serpent_spread", "Serpent Spread" );
-  talents.black_arrow                     = new talent_t ( this, "black_arrow", "Black Arrow" );
+  talents.hunter_vs_wild                  = find_talent( "Hunter vs. Wild" );
+  talents.pathing                         = find_talent( "Pathing" );
+  talents.improved_serpent_sting          = find_talent( "Improved Serpent Sting" );
+  talents.survival_tactics                = find_talent( "Survival Tactics" );
+  talents.trap_mastery                    = find_talent( "Trap Mastery" );
+  talents.entrapment                      = find_talent( "Entrapment" );
+  talents.point_of_no_escape              = find_talent( "Point of No Escape" );
+  talents.thrill_of_the_hunt              = find_talent( "Thrill of the Hunt" );
+  talents.counterattack                   = find_talent( "Counterattack" );
+  talents.lock_and_load                   = find_talent( "Lock and Load" );
+  talents.resourcefulness                 = find_talent( "Resourcefulness" );
+  talents.mirrored_blades                 = find_talent( "Mirrored Blades" );
+  talents.tnt                             = find_talent( "T.N.T." );
+  talents.toxicology                      = find_talent( "Toxicology" );
+  talents.wyvern_sting                    = find_talent( "Wyvern Sting" );
+  talents.noxious_stings                  = find_talent( "Noxious Stings" );
+  talents.hunting_party                   = find_talent( "Hunting Party" );
+  talents.sniper_training                 = find_talent( "Sniper Training" );
+  talents.serpent_spread                  = find_talent( "Serpent Spread" );
+  talents.black_arrow                     = find_talent( "Black Arrow" );
 
   player_t::init_talents();
 }
@@ -3145,35 +3146,19 @@ cooldown_t* hunter_t::get_cooldown( const std::string& name )
   return player_t::get_cooldown( name );
 }
 
-// hunter_t::get_talent_trees ==============================================
+// hunter_t::create_options =================================================
 
-std::vector<talent_translation_t>& hunter_t::get_talent_list()
+void hunter_t::create_options()
 {
-  talent_list.clear();
-  return talent_list;
-}
+  player_t::create_options();
 
-
-// hunter_t::get_options ====================================================
-
-std::vector<option_t>& hunter_t::get_options()
-{
-  if ( options.empty() )
+  option_t hunter_options[] =
   {
-    player_t::get_options();
+    { "summon_pet", OPT_STRING, &( summon_pet_str ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t hunter_options[] =
-    {
-
-      // @option_doc loc=player/hunter/misc title="Misc"
-      { "summon_pet",                        OPT_STRING, &( summon_pet_str                    ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, hunter_options );
-  }
-
-  return options;
+  option_t::copy( options, hunter_options );
 }
 
 // hunter_t::create_profile =================================================

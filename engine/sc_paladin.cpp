@@ -118,13 +118,13 @@ struct paladin_t : public player_t
     talent_t* seals_of_the_pure;
     int eternal_glory;
     talent_t* judgements_of_the_just;
-    int toughness;
+    talent_t* toughness;
     talent_t* improved_hammer_of_justice;
     talent_t* hallowed_ground;
     int sanctuary;
     talent_t* hammer_of_the_righteous;
     talent_t* wrath_of_the_lightbringer;
-    int reckoning;
+    talent_t* reckoning;
     talent_t* shield_of_the_righteous;
     talent_t* grand_crusader;
     int vindication;
@@ -195,6 +195,8 @@ struct paladin_t : public player_t
     active_seal_of_righteousness_proc = 0;
     active_seal_of_truth_proc         = 0;
     active_seal_of_truth_dot          = 0;
+
+    create_options();
   }
 
   virtual void      init_race();
@@ -215,13 +217,10 @@ struct paladin_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
-  virtual int                primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int                primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual talent_tab_name    primary_tab() SC_CONST;
+  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -1924,7 +1923,7 @@ void paladin_t::init_base()
   base_miss    = 0.05;
   base_parry   = 0.05;
   base_block   = 0.05;
-  initial_armor_multiplier *= 1.0 + 0.1 * talents.toughness / 3.0;
+  initial_armor_multiplier *= 1.0 + 0.1 * talents.toughness -> rank() / 3.0;
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -2065,7 +2064,7 @@ void paladin_t::init_scaling()
 {
   player_t::init_scaling();
 
-  talent_tree_type tree = primary_tree();
+  int tree = primary_tree();
 
   // Technically prot and ret scale with int and sp too, but it's so minor it's not worth the sim time.
   scales_with[ STAT_STAMINA     ] = tree == TREE_PROTECTION;
@@ -2141,7 +2140,7 @@ void paladin_t::init_buffs()
   buffs_divine_plea            = new buff_t( this, "divine_plea",            1, spells.divine_plea->duration() );
   buffs_holy_shield            = new buff_t( this, "holy_shield",            1, 20.0 );
   buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure->effect_trigger_spell(1), "judgements_of_the_pure", 1 );
-  buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0, 0, talents.reckoning * 0.10 );
+  buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0, 0, talents.reckoning->rank() * 0.10 );
   buffs_censure                = new buff_t( this, "censure",                5       );
   buffs_the_art_of_war         = new buff_t( this, "the_art_of_war",         1,
                                              player_data.spell_duration( talents.the_art_of_war->effect_trigger_spell(3) ),
@@ -2275,34 +2274,49 @@ void paladin_t::init_actions()
 void paladin_t::init_talents()
 {
   // Holy
-  talents.arbiter_of_the_light   = new talent_t( this, "arbiter_of_the_light", "Arbiter of the Light" );
-  talents.judgements_of_the_pure = new talent_t( this, "judgements_of_the_pure", "Judgements of the Pure" );
-  talents.blazing_light          = new talent_t( this, "blazing_light", "Blazing Light" );
-  talents.divine_favor           = new talent_t( this, "divine_favor", "Divine Favor" );
+  talents.arbiter_of_the_light   = find_talent( "Arbiter of the Light" );
+  talents.judgements_of_the_pure = find_talent( "Judgements of the Pure" );
+  talents.blazing_light          = find_talent( "Blazing Light" );
+  talents.divine_favor           = find_talent( "Divine Favor" );
   // Prot
-  talents.seals_of_the_pure         = new talent_t( this, "seals_of_the_pure", "Seals of the Pure" );
-  talents.judgements_of_the_just    = new talent_t( this, "judgements_of_the_just", "Judgements of the Just" );
-  talents.improved_hammer_of_justice= new talent_t( this, "improved_hammer_of_justice", "Improved Hammer of Justice" );
-  talents.hallowed_ground           = new talent_t( this, "hallowed_ground", "Hallowed Ground" );
-  talents.hammer_of_the_righteous   = new talent_t( this, "hammer_of_the_righteous", "Hammer of the Righteous" );
-  talents.wrath_of_the_lightbringer = new talent_t( this, "wrath_of_the_lightbringer", "Wrath of the Lightbringer" );
-  talents.shield_of_the_righteous   = new talent_t( this, "shield_of_the_righteous", "Shield of the Righteous" );
-  talents.grand_crusader            = new talent_t( this, "grand_crusader", "Grand Crusader" );
-  talents.holy_shield               = new talent_t( this, "holy_shield", "Holy Shield" );
-  talents.sacred_duty               = new talent_t( this, "sacred_duty", "Sacred Duty" );
-  talents.shield_of_the_templar     = new talent_t( this, "shield_of_the_templar", "Shield of the Templar" );
+  talents.seals_of_the_pure         = find_talent( "Seals of the Pure" );
+  talents.judgements_of_the_just    = find_talent( "Judgements of the Just" );
+  talents.improved_hammer_of_justice= find_talent( "Improved Hammer of Justice" );
+  talents.hallowed_ground           = find_talent( "Hallowed Ground" );
+  talents.hammer_of_the_righteous   = find_talent( "Hammer of the Righteous" );
+  talents.wrath_of_the_lightbringer = find_talent( "Wrath of the Lightbringer" );
+  talents.shield_of_the_righteous   = find_talent( "Shield of the Righteous" );
+  talents.grand_crusader            = find_talent( "Grand Crusader" );
+  talents.holy_shield               = find_talent( "Holy Shield" );
+  talents.sacred_duty               = find_talent( "Sacred Duty" );
+  talents.shield_of_the_templar     = find_talent( "Shield of the Templar" );
+  talents.reckoning                 = find_talent( "Reckoning" );
+  talents.toughness                 = find_talent( "Toughness" );
   // Ret
-  talents.crusade            = new talent_t( this, "crusade", "Crusade" );
-  talents.rule_of_law        = new talent_t( this, "rule_of_law", "Rule of Law" );
-  talents.communion          = new talent_t( this, "communion", "Communion" );
-  talents.the_art_of_war     = new talent_t( this, "the_art_of_war", "The Art of War" );
-  talents.divine_storm       = new talent_t( this, "divine_storm", "Divine Storm" );
-  talents.sanctity_of_battle = new talent_t( this, "sanctity_of_battle", "Sanctity of Battle" );
-  talents.seals_of_command   = new talent_t( this, "seals_of_command", "Seals of Command" );
-  talents.divine_purpose     = new talent_t( this, "divine_purpose", "Divine Purpose" );
-  talents.sanctified_wrath   = new talent_t( this, "sanctified_wrath", "Sanctified Wrath" );
-  talents.inquiry_of_faith   = new talent_t( this, "inquiry_of_faith", "Inquiry of Faith" );
-  talents.zealotry           = new talent_t( this, "zealotry", "Zealotry" );
+  talents.crusade            = find_talent( "Crusade" );
+  talents.rule_of_law        = find_talent( "Rule of Law" );
+  talents.communion          = find_talent( "Communion" );
+  talents.the_art_of_war     = find_talent( "The Art of War" );
+  talents.divine_storm       = find_talent( "Divine Storm" );
+  talents.sanctity_of_battle = find_talent( "Sanctity of Battle" );
+  talents.seals_of_command   = find_talent( "Seals of Command" );
+  talents.divine_purpose     = find_talent( "Divine Purpose" );
+  talents.sanctified_wrath   = find_talent( "Sanctified Wrath" );
+  talents.inquiry_of_faith   = find_talent( "Inquiry of Faith" );
+  talents.zealotry           = find_talent( "Zealotry" );
+
+  // NYI
+  talents.ardent_defender = 0 ;
+  talents.aura_mastery = 0;
+  talents.blessed_life = 0;
+  talents.enlightened_judgements = 0;
+  talents.eternal_glory = 0;
+  talents.eye_for_an_eye = 0;
+  talents.guarded_by_the_light = 0;
+  talents.improved_judgement = 0;
+  talents.long_arm_of_the_law = 0;
+  talents.rebuke = 0;
+  talents.vindication = 0;
 
   player_t::init_talents();
 }
@@ -2337,29 +2351,6 @@ void paladin_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// paladin_t::primary_tab ====================================================
-
-talent_tab_name paladin_t::primary_tab() SC_CONST
-{
-  int num_ranks[3] = { 0, 0, 0 };
-  for (size_t i = 0; i < talent_list2.size(); ++i)
-  {
-    unsigned page = talent_list2.at(i)->t_data->tab_page;
-    assert(page < 3);
-    num_ranks[page] += talent_list2.at(i)->rank();
-  }
-
-  int min_ranks = level > 69 ? 11 : 1;
-  if (num_ranks[PALADIN_HOLY] >= min_ranks)
-    return PALADIN_HOLY;
-  else if (num_ranks[PALADIN_PROTECTION] >= min_ranks)
-    return PALADIN_PROTECTION;
-  else if (num_ranks[PALADIN_RETRIBUTION] >= min_ranks)
-    return PALADIN_RETRIBUTION;
-  else
-    return TALENT_TAB_NONE;
 }
 
 // paladin_t::composite_attack_expertise =================================
@@ -2490,48 +2481,6 @@ int paladin_t::target_swing()
     }
   }
   return result;
-}
-
-// paladin_t::get_talents_trees ==============================================
-
-std::vector<talent_translation_t>& paladin_t::get_talent_list()
-{
-  talent_list.clear();
-  return talent_list;
-}
-
-// paladin_t::get_options ====================================================
-
-std::vector<option_t>& paladin_t::get_options()
-{
-  if ( options.empty() )
-  {
-    player_t::get_options();
-
-    option_t paladin_options[] =
-    {
-      // @option_doc loc=player/paladin/talents title="Talents"
-      { "ardent_defender",             OPT_INT,         &( talents.ardent_defender             ) },
-      { "aura_mastery",                OPT_INT,         &( talents.aura_mastery                ) },
-      { "blessed_life",                OPT_INT,         &( talents.blessed_life                ) },
-      { "enlightened_judgements",      OPT_INT,         &( talents.enlightened_judgements      ) },
-      { "eternal_glory",               OPT_INT,         &( talents.eternal_glory               ) },
-      { "eye_for_an_eye",              OPT_INT,         &( talents.eye_for_an_eye              ) },
-      { "guarded_by_the_light",        OPT_INT,         &( talents.guarded_by_the_light        ) },
-      { "improved_judgement",          OPT_INT,         &( talents.improved_judgement          ) },
-      { "long_arm_of_the_law",         OPT_INT,         &( talents.long_arm_of_the_law         ) },
-      { "rebuke",                      OPT_INT,         &( talents.rebuke                      ) },
-      { "reckoning",                   OPT_INT,         &( talents.reckoning                   ) },
-      { "toughness",                   OPT_INT,         &( talents.toughness                   ) },
-      { "vindication",                 OPT_INT,         &( talents.vindication                 ) },
-      // @option_doc loc=player/paladin/misc title="Misc"
-      { "tier10_2pc_procs_from_strikes", OPT_DEPRECATED, NULL },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, paladin_options );
-  }
-  return options;
 }
 
 // paladin_t::get_cooldown ===================================================

@@ -411,7 +411,7 @@ int mmo_champion_t::parse_gem( item_t&            item,
   {
     if ( ! cache_only )
       item.sim -> errorf( "Player %s unable to download gem id %s from mmo-champion.\n", 
-			  item.player -> name(), gem_id.c_str() );
+                          item.player -> name(), gem_id.c_str() );
     return GEM_NONE;
   }
 
@@ -612,104 +612,3 @@ bool mmo_champion_t::download_slot( item_t&            item,
   return true;
 }
 
-bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_string)
-{
-  unsigned int i;
-  unsigned int visible[MAX_TALENT_SLOTS] = {0};
-  int trees[3] = {0};
-  int numleft = MAX_TALENT_POINTS;
-  int thismax;
-  unsigned int rangelow = 0;
-  unsigned int rangehigh = RANGE_HIGH;
-  unsigned int rangeval = 0;
-  unsigned int div1;
-  int mul1;
-  int mul2;
-  unsigned int len;
-  char c;
-  int newvisible = 1;
-  int talents[MAX_TALENT_SLOTS] = {0};
-
-  std::vector<talent_translation_t> translations = player->get_talent_list();
-
-  // need to have empty talent in the front of vector
-  std::vector<talent_translation_t> talent_list;
-  talent_translation_t empty_talent = {0,0,0,0,0,0,0};
-  talent_list.push_back(empty_talent);
-  for(i=0;i<translations.size();i++)
-	talent_list.push_back(translations[i]);
-
-  char* src = (char*)talent_string.c_str();
-
-  for(i=0;i<RANGE_BITS/6;i++) get_next_range_byte(&rangeval, &src);    // get 24 bits
-
-    // 0 = disabled
-    // 1 = enabled this pass
-    // 2 = already scanned over, not considering again
-
-  visible[0] = 2;
-  while(newvisible) {
-    newvisible = 0;
-
-      // step 1: enable (consider) next row, if requirements met
-
-    for(i=1; i < talent_list.size();i++) {
-      if(visible[i] == 0 && trees[talent_list[i].tree] >= 5*talent_list[i].row && visible[talent_list[i].req] == 2 && talents[talent_list[i].req] == talent_list[talent_list[i].req].max) visible[i] = 1;
-    }
-
-      // step 2: step through each enabled node, convert
-
-	  for(i=1; i < talent_list.size();i++) {
-		  if(!numleft) break;
-
-		  if(visible[i] == 1) 
-		  {
-			newvisible = 1;
-			visible[i] = 2;
-
-		  thismax = numleft;
-		  if(talent_list[i].max < thismax) thismax = talent_list[i].max;
-
-		  div1 = thismax+1;        // # choices
-		  mul2 = 1;                // prob of just this one
-
-			len = rangehigh - rangelow;
-
-			for(mul1=0;mul1<thismax+1;mul1++) {
-			  if(rangeval >= rangelow + len * mul1 / div1 && rangeval < rangelow + len * (mul1 + mul2) / div1) break;
-			}
-
-			talents[i] = mul1;
-			if(talents[i] > talent_list[i].max) {    // probably corrupt string or wrong version, we can't really continue decode
-			  return 1;
-			}
-
-			rangehigh = rangelow + len * (mul1 + mul2) / div1;// - 1;
-			rangelow += len * mul1 / div1;
-
-			while( (rangelow & RANGE_HIGH_MASK) == (rangehigh & RANGE_HIGH_MASK) ) {
-			  c = (rangelow >> (RANGE_BITS-6)) & 0x3f;
-			  len = rangehigh - rangelow;
-			  rangelow = ((rangelow & RANGE_LOW_MASK) << 6);
-			  rangehigh = rangelow + len*0x40 - 1;
-			  get_next_range_byte(&rangeval, &src);    // get 6 bits
-			}
-
-			// update
-			trees[talent_list[i].tree] += talents[i];
-			numleft -= talents[i];
-		  }
-	  }
-  }
-  for(i=0;i<translations.size();i++)
-	  talents[i] = talents[i+1];
-  return  player->parse_talent_trees( talents, translations.size() );
-}
-
-void mmo_champion_t::get_next_range_byte(unsigned int* rangeval, char** src) {
-  *rangeval = ((*rangeval)&(RANGE_HIGH>>6))<<6;
-  if(**src && strchr(base64, **src)) {
-    *rangeval |= (strchr(base64, **src)-base64);
-    *src = (*src) + 1;
-  }
-}

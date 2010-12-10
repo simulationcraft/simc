@@ -660,4 +660,7 @@ static struct talent_data_t __talent_data[] = {
   { "Divinity"                          , 12198, 0x00,  1, 0x002, 0x0,     0,  0,  0,  0, { 63646, 63647, 63648 } },
   { "Improved Blood Tap"                , 12223, 0x00,  0, 0x020, 0x0,     0,  0,  0,  1, { 94553, 94555,     0 } },
   { "Rapid Renewal"                     , 14738, 0x00,  1, 0x010, 0x0,  9593,  1,  0,  3, { 95649,     0,     0 } },
+  { NULL }
 };
+
+talent_data_t* talent_data_t::list() { return __talent_data; }

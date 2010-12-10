@@ -19,6 +19,7 @@ target_t::target_t( sim_t* s, const std::string& n ) :
     adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
+  create_options();
 }
 
 // target_t::~target_t ======================================================
@@ -230,9 +231,9 @@ bool target_t::debuffs_t::snared()
   return false;
 }
 
-// target_t::get_options =======================================================
+// target_t::create_options ====================================================
 
-int target_t::get_options( std::vector<option_t>& options )
+void target_t::create_options()
 {
   option_t target_options[] =
   {
@@ -260,15 +261,13 @@ int target_t::get_options( std::vector<option_t>& options )
     { NULL, OPT_UNKNOWN, NULL }
   };
 
-  option_t::copy( options, target_options );
-
-  return ( int ) options.size();
+  option_t::copy( sim -> options, target_options );
 }
 
 // target_t::find =========================================================
 
 target_t* target_t::find( sim_t* sim,
-			  const std::string& name_str )
+                          const std::string& name_str )
 {
   for ( target_t* t = sim -> target_list; t; t = t -> next )
     if ( name_str == t -> name() )
@@ -276,7 +275,6 @@ target_t* target_t::find( sim_t* sim,
 
   return 0;
 }
-
 
 // target_t::create_expression ================================================
 

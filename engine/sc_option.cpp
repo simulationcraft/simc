@@ -135,6 +135,20 @@ void option_t::save( FILE* file )
   }
 }
 
+// option_t::add ============================================================
+
+void option_t::add( std::vector<option_t>& options,
+                    const                  char* name,
+                    int                    type,
+                    void*                  address )
+{
+  int size = ( int ) options.size();
+  options.resize( size+1 );
+  options[ size ].name = name;
+  options[ size ].type = type;
+  options[ size ].address = address;
+}
+
 // option_t::copy ===========================================================
 
 void option_t::copy( std::vector<option_t>& opt_vector,
@@ -173,14 +187,15 @@ bool option_t::parse( sim_t*             sim,
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case OPT_FUNC: return ( ( option_function_t ) address )( sim, n, v );
-    case OPT_TALENT_RANK: 
-      return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ) );
-    case OPT_TALENT_RANK_FORCED: 
+    case OPT_LIST:  
+      ( ( std::vector<std::string>* ) address ) -> push_back( v ); 
+      break;
+    case OPT_FUNC: 
+      return ( ( option_function_t ) address )( sim, n, v );
+    case OPT_TALENT_RANK:   
       return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ), true );
     case OPT_SPELL_ENABLED: 
       return ( ( struct spell_id_t *) address)->enable( atoi( v.c_str() ) != 0 );
-    case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
     case OPT_DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );
       if ( address ) sim -> errorf( "Please use option '%s' instead.\n", ( char* ) address );

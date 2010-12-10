@@ -357,7 +357,7 @@ enum talent_tree_type
   TALENT_TREE_MAX
 };
 
-enum talent_tab_name
+enum talent_tab_type
 {
   TALENT_TAB_NONE = -1,
   TALENT_PET_TAB = 3,
@@ -1524,7 +1524,6 @@ enum option_type_t
   OPT_LIST,       // std::vector<std::string>*
   OPT_FUNC,       // function pointer
   OPT_TALENT_RANK, // talent rank
-  OPT_TALENT_RANK_FORCED, // forced set of talent rank
   OPT_SPELL_ENABLED, // spell enabled
   OPT_DEPRECATED,
   OPT_UNKNOWN
@@ -1542,6 +1541,7 @@ struct option_t
   void save ( FILE* );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
+  static void add( std::vector<option_t>&, const char* name, int type, void* address );
   static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
@@ -1549,15 +1549,6 @@ struct option_t
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, char* line );
   static bool parse_token( sim_t*, std::string& token );
-};
-
-struct nvpair_t
-{
-  std::string name;
-  std::string value;
-
-  nvpair_t() : name(), value() { };
-  nvpair_t( const std::string& n, const std::string& v ) : name( n ), value( v ) { };
 };
 
 // Talent Translation =========================================================
@@ -1641,6 +1632,7 @@ struct util_t
   static int parse_talent_tree                 ( const std::string& name );
   static int parse_weapon_type                 ( const std::string& name );
 
+  static int class_id( int type );
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
   static race_type translate_race_id( int rid );
@@ -1673,8 +1665,6 @@ struct util_t
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
 
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
-
-  static void translate_talent_trees( std::vector<talent_translation_t>& talent_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size );
 };
 
 // Event =====================================================================
@@ -1764,9 +1754,6 @@ struct spell_id_t
   bool initialize( const char* s_name = 0 );
   virtual bool enable( bool override_value = false );
 
-  // Spell data option parsing
-  virtual bool check_unknown_options( int opt_type = OPT_SPELL_ENABLED );
-  
   // Spell data object validity check
   virtual bool ok() SC_CONST;
   
@@ -1847,7 +1834,7 @@ struct talent_t : spell_id_t
   const spell_id_t*    t_rank_spells[ MAX_RANK ];
   const spell_id_t*    t_default_rank;
 
-  talent_t( player_t* p, const char* t_name, const char* name );
+  talent_t( player_t* p, const char* name, uint32_t id=0 );
   talent_t( const talent_t& copy );
   virtual ~talent_t();
   virtual uint32_t talent_id() { return ( s_player && t_data ) ? t_data -> id : 0; };
@@ -1898,12 +1885,12 @@ struct glyph_t : public spell_id_t
 
 struct mastery_t : public spell_id_t
 {
-  talent_tree_type m_tree;
+  int m_tree;
   
   mastery_t( const mastery_t& copy ) : spell_id_t( copy ), m_tree( copy.m_tree ) { }
   mastery_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) { }
-  mastery_t( player_t* player, const char* t_name, const uint32_t id, talent_tree_type tree );
-  mastery_t( player_t* player, const char* t_name, const char* s_name, talent_tree_type tree );
+  mastery_t( player_t* player, const char* t_name, const uint32_t id, int tree );
+  mastery_t( player_t* player, const char* t_name, const char* s_name, int tree );
   virtual ~mastery_t() {}
   
   std::string to_str() SC_CONST;
@@ -2465,7 +2452,7 @@ struct sim_t
   void      partition();
   bool      execute();
   void      print_options();
-  std::vector<option_t>& get_options();
+  void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
   bool      time_to_think( double proc_time );
@@ -2524,7 +2511,7 @@ struct scaling_t
   void normalize();
   void derive();
   double progress( std::string& phase );
-  int get_options( std::vector<option_t>& );
+  void create_options();
   bool has_scale_factors();
 };
 
@@ -2546,7 +2533,7 @@ struct plot_t
   void analyze();
   void analyze_stats();
   double progress( std::string& phase );
-  int get_options( std::vector<option_t>& );
+  void create_options();
 };
 
 // Gear Rating Conversions ===================================================
@@ -2681,11 +2668,11 @@ struct item_t
   bool decode_reforge();
 
   static bool download_slot( item_t&, 
-			     const std::string& item_id, 
-			     const std::string& enchant_id, 
-			     const std::string& addon_id, 
-			     const std::string& reforge_id, 
-			     const std::string gem_ids[ 3 ] );
+                             const std::string& item_id, 
+                             const std::string& enchant_id, 
+                             const std::string& addon_id, 
+                             const std::string& reforge_id, 
+                             const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
   static int  parse_gem( item_t&            item,
@@ -2745,7 +2732,7 @@ struct player_t
   pet_t*      pet_list;
   int64_t     last_modified;
   int         bugs;
-  talent_tab_name pri_tree;
+  int         pri_tree;
   int         invert_spirit_scaling;
   double      vengeance_factor; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
 
@@ -2754,15 +2741,12 @@ struct player_t
 
   // Option Parsing
   std::vector<option_t> options;
-  std::vector<nvpair_t *> unknown_options;
 
   // Talent Parsing
-  std::vector<talent_translation_t> talent_list;
-  uint32_t talent_tab_points[ MAX_TALENT_TREES ];
-  std::vector<talent_t *> talent_list2;
-  std::vector<int> talent_str;
+  int talent_tab_points[ MAX_TALENT_TREES ];
+  std::vector<talent_t*> talents[ MAX_TALENT_TREES ];
 
-  talent_tree_type tree_type[ MAX_TALENT_TREES ];
+  int tree_type[ MAX_TALENT_TREES ];
 
   std::list<spell_id_t*> spell_list;
 
@@ -3041,7 +3025,6 @@ struct player_t
   virtual const char* id();
 
   virtual void init();
-  virtual void init_data();
   virtual void init_glyphs() {}
   virtual void init_base() = 0;
   virtual void init_items();
@@ -3130,8 +3113,8 @@ struct player_t
   virtual bool   resource_available( int resource, double cost ) SC_CONST;
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
   virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
-  virtual talent_tree_type primary_tree() SC_CONST;
-  virtual talent_tab_name primary_tab() SC_CONST;
+  virtual int    primary_tree() SC_CONST;
+  virtual int    primary_tab();
   virtual const char* primary_tree_name() SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
@@ -3157,15 +3140,15 @@ struct player_t
   virtual void register_spell_cast_result_callback   ( int64_t result_mask, action_callback_t* );
   virtual void register_harmful_cast_result_callback ( int64_t result_mask, action_callback_t* );
 
-  virtual std::vector<talent_translation_t>& get_talent_list();
   virtual bool parse_talent_trees( int talents[], const uint32_t size );
   virtual bool parse_talents_armory ( const std::string& talent_string );
-  virtual bool parse_talents_mmo    ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
+  virtual void create_talents();
+  virtual talent_t* find_talent( const std::string& name );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
-  virtual std::vector<option_t>& get_options();
+  virtual void create_options();
   virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3312,7 +3295,6 @@ struct pet_t : public player_t
   virtual double intellect() SC_CONST;
 
   virtual void init();
-  virtual void init_data();
   virtual void init_base();
   virtual void init_talents();
   virtual void reset();
@@ -3393,7 +3375,7 @@ struct target_t
   double base_armor() SC_CONST;
   void aura_gain( const char* name, int aura_id=0 );
   void aura_loss( const char* name, int aura_id=0 );
-  int get_options( std::vector<option_t>& );
+  void create_options();
   const char* name() SC_CONST { return name_str.c_str(); }
   const char* id();
   static target_t* find(    sim_t*, const std::string& name );
@@ -4065,11 +4047,11 @@ struct thread_t
 struct armory_t
 {
   static int download_servers( std::vector<std::string>& servers,
-			       const std::string& region );
+                               const std::string& region );
   static int download_guild( std::vector<std::string>& characters,
-			     const std::string& region,
-			     const std::string& server,
-			     const std::string& name );
+                             const std::string& region,
+                             const std::string& server,
+                             const std::string& name );
   static bool download_guild( sim_t* sim,
                               const std::string& region,
                               const std::string& server,
@@ -4114,12 +4096,12 @@ struct wowhead_t
                                     int active=1 );
   static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
   static bool download_slot( item_t&, 
-			     const std::string& item_id, 
-			     const std::string& enchant_id, 
-			     const std::string& addon_id, 
-			     const std::string& reforge_id, 
-			     const std::string gem_ids[ 3 ], 
-			     int cache_only=0 );
+                             const std::string& item_id, 
+                             const std::string& enchant_id, 
+                             const std::string& addon_id, 
+                             const std::string& reforge_id, 
+                             const std::string gem_ids[ 3 ], 
+                             int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
@@ -4130,18 +4112,15 @@ struct wowhead_t
 struct mmo_champion_t
 {
   static bool download_slot( item_t&, 
-			     const std::string& item_id, 
-			     const std::string& enchant_id, 
-			     const std::string& addon_id, 
-			     const std::string& reforge_id, 
-			     const std::string gem_ids[ 3 ], 
-			     int cache_only=0 );
+                             const std::string& item_id, 
+                             const std::string& enchant_id, 
+                             const std::string& addon_id, 
+                             const std::string& reforge_id, 
+                             const std::string gem_ids[ 3 ], 
+                             int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
-  static bool parse_talents( player_t* player, const std::string& talent_string );
-
-  static void get_next_range_byte(unsigned int* rangeval, char** src);
 };
 
 // Rawr ======================================================================

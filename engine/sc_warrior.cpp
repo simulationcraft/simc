@@ -332,6 +332,8 @@ struct warrior_t : public player_t
 
     instant_flurry_haste = true;
     initial_rage = 0;
+
+    create_options();
   }
 
   // Character Definition
@@ -356,8 +358,7 @@ struct warrior_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    resource_loss( int resurce, double amount, action_t* );
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
@@ -2626,54 +2627,54 @@ void warrior_t::init_talents()
   // Talents
 
   // Arms
-  talents.bladestorm              = new talent_t( this, "bladestorm", "Bladestorm" );
-  talents.blood_frenzy            = new talent_t( this, "blood_frenzy", "Blood Frenzy" );
-  talents.deadly_calm             = new talent_t( this, "deadly_calm", "Deadly Calm" );
-  talents.deep_wounds             = new talent_t( this, "deep_wounds", "Deep Wounds" );
-  talents.drums_of_war            = new talent_t( this, "drums_of_war", "Drums of War" );
-  talents.impale                  = new talent_t( this, "impale", "Impale" );
-  talents.improved_slam           = new talent_t( this, "improved_slam", "Improved Slam" );
-  talents.lambs_to_the_slaughter  = new talent_t( this, "lambs_to_the_slaughter", "Lambs to the Slaughter" );
-  talents.sudden_death            = new talent_t( this, "sudden_death", "Sudden Death" );
-  talents.sweeping_strikes        = new talent_t( this, "sweeping_strikes", "Sweeping Strikes" );
-  talents.tactical_mastery        = new talent_t( this, "tactical_mastery", "Tactical Mastery" );
-  talents.taste_for_blood         = new talent_t( this, "taste_for_blood", "Taste for Blood" );
-  talents.war_academy             = new talent_t( this, "war_academy", "War Academy" );
-  talents.wrecking_crew           = new talent_t( this, "wrecking_crew", "Wrecking Crew" );
+  talents.bladestorm              = find_talent( "Bladestorm" );
+  talents.blood_frenzy            = find_talent( "Blood Frenzy" );
+  talents.deadly_calm             = find_talent( "Deadly Calm" );
+  talents.deep_wounds             = find_talent( "Deep Wounds" );
+  talents.drums_of_war            = find_talent( "Drums of War" );
+  talents.impale                  = find_talent( "Impale" );
+  talents.improved_slam           = find_talent( "Improved Slam" );
+  talents.lambs_to_the_slaughter  = find_talent( "Lambs to the Slaughter" );
+  talents.sudden_death            = find_talent( "Sudden Death" );
+  talents.sweeping_strikes        = find_talent( "Sweeping Strikes" );
+  talents.tactical_mastery        = find_talent( "Tactical Mastery" );
+  talents.taste_for_blood         = find_talent( "Taste for Blood" );
+  talents.war_academy             = find_talent( "War Academy" );
+  talents.wrecking_crew           = find_talent( "Wrecking Crew" );
 
   // Fury
-  talents.battle_trance           = new talent_t( this, "battle_trance", "Battle Trance" );
-  talents.bloodsurge              = new talent_t( this, "bloodsurge", "Bloodsurge" );
-  talents.booming_voice           = new talent_t( this, "booming_voice", "Booming Voice" );
-  talents.cruelty                 = new talent_t( this, "cruelty", "Cruelty" );
-  talents.death_wish              = new talent_t( this, "death_wish", "Death Wish" );
-  talents.enrage                  = new talent_t( this, "enrage", "Enrage" );
-  talents.executioner             = new talent_t( this, "executioner", "Executioner" );
-  talents.flurry                  = new talent_t( this, "flurry", "Flurry" );
-  talents.gag_order               = new talent_t( this, "gag_order", "Gag Order" );
-  talents.intensify_rage          = new talent_t( this, "intensify_rage", "Intensify Rage" );
-  talents.meat_cleaver            = new talent_t( this, "meat_cleaver", "Meat Cleaver" );
-  talents.raging_blow             = new talent_t( this, "raging_blow", "Raging Blow" );
-  talents.rampage                 = new talent_t( this, "rampage", "Rampage" );
-  talents.rude_interruption       = new talent_t( this, "rude_interruption", "Rude Interruption" );
-  talents.single_minded_fury      = new talent_t( this, "single_minded_fury", "Single-Minded Fury" );
-  talents.titans_grip             = new talent_t( this, "titans_grip", "Titan's Grip" );
+  talents.battle_trance           = find_talent( "Battle Trance" );
+  talents.bloodsurge              = find_talent( "Bloodsurge" );
+  talents.booming_voice           = find_talent( "Booming Voice" );
+  talents.cruelty                 = find_talent( "Cruelty" );
+  talents.death_wish              = find_talent( "Death Wish" );
+  talents.enrage                  = find_talent( "Enrage" );
+  talents.executioner             = find_talent( "Executioner" );
+  talents.flurry                  = find_talent( "Flurry" );
+  talents.gag_order               = find_talent( "Gag Order" );
+  talents.intensify_rage          = find_talent( "Intensify Rage" );
+  talents.meat_cleaver            = find_talent( "Meat Cleaver" );
+  talents.raging_blow             = find_talent( "Raging Blow" );
+  talents.rampage                 = find_talent( "Rampage" );
+  talents.rude_interruption       = find_talent( "Rude Interruption" );
+  talents.single_minded_fury      = find_talent( "Single-Minded Fury" );
+  talents.titans_grip             = find_talent( "Titan's Grip" );
 
   // Prot
-  talents.bastion_of_defense      = new talent_t( this, "bastion_of_defense", "Bastion of Defense" );
-  talents.concussion_blow         = new talent_t( this, "concussion_blow", "Concussion Blow" );
-  talents.devastate               = new talent_t( this, "devastate", "Devastate" );
-  talents.heavy_repercussions     = new talent_t( this, "heavy_repercussions", "Heavy Repercussions" );
-  talents.hold_the_line           = new talent_t( this, "hold_the_line", "Hold the Line" );
-  talents.impending_victory       = new talent_t( this, "impending_victory", "Impending Victory" );
-  talents.improved_revenge        = new talent_t( this, "improved_revenge", "Improved Revenge" );
-  talents.incite                  = new talent_t( this, "incite", "Incite" );
-  talents.shockwave               = new talent_t( this, "shockwave", "Shockwave" );
-  talents.shield_mastery          = new talent_t( this, "shield_mastery", "Shield Mastery" );
-  talents.shield_specialization   = new talent_t( this, "shield_specialization", "Shield Specialization" );
-  talents.sword_and_board         = new talent_t( this, "sword_and_board", "Sword and Board" );
-  talents.toughness               = new talent_t( this, "toughness", "Toughness" );
-  talents.thunderstruck           = new talent_t( this, "thunderstruck", "Thunderstruck" );
+  talents.bastion_of_defense      = find_talent( "Bastion of Defense" );
+  talents.concussion_blow         = find_talent( "Concussion Blow" );
+  talents.devastate               = find_talent( "Devastate" );
+  talents.heavy_repercussions     = find_talent( "Heavy Repercussions" );
+  talents.hold_the_line           = find_talent( "Hold the Line" );
+  talents.impending_victory       = find_talent( "Impending Victory" );
+  talents.improved_revenge        = find_talent( "Improved Revenge" );
+  talents.incite                  = find_talent( "Incite" );
+  talents.shockwave               = find_talent( "Shockwave" );
+  talents.shield_mastery          = find_talent( "Shield Mastery" );
+  talents.shield_specialization   = find_talent( "Shield Specialization" );
+  talents.sword_and_board         = find_talent( "Sword and Board" );
+  talents.toughness               = find_talent( "Toughness" );
+  talents.thunderstruck           = find_talent( "Thunderstruck" );
 
   player_t::init_talents();
 }
@@ -3297,34 +3298,20 @@ int warrior_t::target_swing()
   return result;
 }
 
-// warrior_t::get_talent_trees ==============================================
+// warrior_t::create_options ================================================
 
-std::vector<talent_translation_t>& warrior_t::get_talent_list()
+void warrior_t::create_options()
 {
-  talent_list.clear();
-  return talent_list;
-}
+  player_t::create_options();
 
-// warrior_t::get_options ===================================================
-
-std::vector<option_t>& warrior_t::get_options()
-{
-  if ( options.empty() )
+  option_t warrior_options[] =
   {
-    player_t::get_options();
+    { "initial_rage", OPT_INT, &initial_rage },
+    { "instant_flurry_haste", OPT_BOOL, &instant_flurry_haste },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t warrior_options[] =
-    {
-      // @option_doc loc=player/warrior/talents title="Talents"
-      { "initial_rage", OPT_INT, &initial_rage },
-      { "instant_flurry_haste", OPT_BOOL, &instant_flurry_haste },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, warrior_options );
-  }
-
-  return options;
+  option_t::copy( options, warrior_options );
 }
 
 // warrior_t::decode_set ====================================================

@@ -360,6 +360,8 @@ struct priest_t : public player_t
     cooldowns_rapture                    = get_cooldown( "rapture" );
     cooldowns_rapture -> duration = 12.0;
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
+
+    create_options();
   }
 
   // Character Definition
@@ -378,8 +380,7 @@ struct priest_t : public player_t
   virtual void      init_scaling();
   virtual void      reset();
   virtual void      init_party();
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -3129,54 +3130,54 @@ void priest_t::init_rng()
 void priest_t::init_talents()
 {
   // Discipline
-  talents.improved_power_word_shield  = new talent_t( this, "improved_power_word_shield", "Improved Power Word: Shield" );
-  talents.twin_disciplines            = new talent_t( this, "twin_disciplines", "Twin Disciplines" );
-  talents.mental_agility              = new talent_t( this, "mental_agility", "Mental Agility" );
-  talents.evangelism                  = new talent_t( this, "evangelism", "Evangelism" );
-  talents.archangel                   = new talent_t( this, "archangel", "Archangel" );
-  talents.inner_sanctum               = new talent_t( this, "inner_sanctum", "Inner Sanctum" );
-  talents.soul_warding                = new talent_t( this, "soul_warding", "Soul Warding" );
-  talents.renewed_hope                = new talent_t( this, "renewed_hope", "Renewed Hope" );
-  talents.power_infusion              = new talent_t( this, "power_infusion", "Power Infusion" );
-  talents.atonement                   = new talent_t( this, "atonement", "Atonement" );
-  talents.inner_focus                 = new talent_t( this, "inner_focus", "Inner Focus" );
-  talents.rapture                     = new talent_t( this, "rapture", "Rapture" );
-  talents.borrowed_time               = new talent_t( this, "borrowed_time", "Borrowed Time" );
-  talents.strength_of_soul            = new talent_t( this, "strength_of_soul", "Strength of Soul" );
-  talents.divine_aegis                = new talent_t( this, "divine_aegis", "Divine Aegis" );
-  talents.train_of_thought            = new talent_t( this, "train_of_thought", "Train of Thought" );
-  talents.grace                       = new talent_t( this, "grace", "Grace" );
-  talents.power_word_barrier          = new talent_t( this, "power_word_barrier", "Power Word: Barrier" );
+  talents.improved_power_word_shield  = find_talent( "Improved Power Word: Shield" );
+  talents.twin_disciplines            = find_talent( "Twin Disciplines" );
+  talents.mental_agility              = find_talent( "Mental Agility" );
+  talents.evangelism                  = find_talent( "Evangelism" );
+  talents.archangel                   = find_talent( "Archangel" );
+  talents.inner_sanctum               = find_talent( "Inner Sanctum" );
+  talents.soul_warding                = find_talent( "Soul Warding" );
+  talents.renewed_hope                = find_talent( "Renewed Hope" );
+  talents.power_infusion              = find_talent( "Power Infusion" );
+  talents.atonement                   = find_talent( "Atonement" );
+  talents.inner_focus                 = find_talent( "Inner Focus" );
+  talents.rapture                     = find_talent( "Rapture" );
+  talents.borrowed_time               = find_talent( "Borrowed Time" );
+  talents.strength_of_soul            = find_talent( "Strength of Soul" );
+  talents.divine_aegis                = find_talent( "Divine Aegis" );
+  talents.train_of_thought            = find_talent( "Train of Thought" );
+  talents.grace                       = find_talent( "Grace" );
+  talents.power_word_barrier          = find_talent( "Power Word: Barrier" );
 
 
   // Holy
-  talents.empowered_healing           = new talent_t( this, "empowered_healing", "Empowered Healing" );
-  talents.divine_fury                 = new talent_t( this, "divine_fury", "Divine Fury" );
-  talents.divine_touch                = new talent_t( this, "divine_touch", "Divine Touch" );
-  talents.chakra                      = new talent_t( this, "chakra", "Chakra" ); //             done: basic implementation 12759      incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
-  talents.state_of_mind               = new talent_t( this, "state_of_mind", "State of Mind" ); //                               incomplete: implement a function to increase the duration of a buff
-  talents.holy_concentration          = new talent_t( this, "holy_concentration", "Holy Concentration" ); //      complete 12803
+  talents.empowered_healing           = find_talent( "Empowered Healing" );
+  talents.divine_fury                 = find_talent( "Divine Fury" );
+  talents.divine_touch                = find_talent( "Divine Touch" );
+  talents.chakra                      = find_talent( "Chakra" ); //             done: basic implementation 12759      incomplete: trigger 60s cooldown on chakra_t just when smite_t hits
+  talents.state_of_mind               = find_talent( "State of Mind" ); //                               incomplete: implement a function to increase the duration of a buff
+  talents.holy_concentration          = find_talent( "Holy Concentration" ); //      complete 12803
 
   // Shadow
-  talents.darkness                    = new talent_t( this, "darkness", "Darkness" ); //           complete 12803
-  talents.improved_devouring_plague   = new talent_t( this, "improved_devouring_plague", "Improved Devouring Plague" );  //   complete 12803
-  talents.improved_mind_blast         = new talent_t( this, "improved_mind_blast", "Improved Mind Blast" ); //     complete 12803
-  talents.mind_melt                   = new talent_t( this, "mind_melt", "Mind Melt" ); //           complete 12803
-  talents.dispersion                  = new talent_t( this, "dispersion", "Dispersion" ); //           complete 12803
-  talents.improved_shadow_word_pain   = new talent_t( this, "improved_shadow_word_pain", "Improved Shadow Word: Pain" ); //   complete 12803
-  talents.pain_and_suffering          = new talent_t( this, "pain_and_suffering", "Pain and Suffering" ); //       complete 12803
-  talents.masochism                   = new talent_t( this, "masochism", "Masochism" ); // new 12857
+  talents.darkness                    = find_talent( "Darkness" ); //           complete 12803
+  talents.improved_devouring_plague   = find_talent( "Improved Devouring Plague" );  //   complete 12803
+  talents.improved_mind_blast         = find_talent( "Improved Mind Blast" ); //     complete 12803
+  talents.mind_melt                   = find_talent( "Mind Melt" ); //           complete 12803
+  talents.dispersion                  = find_talent( "Dispersion" ); //           complete 12803
+  talents.improved_shadow_word_pain   = find_talent( "Improved Shadow Word: Pain" ); //   complete 12803
+  talents.pain_and_suffering          = find_talent( "Pain and Suffering" ); //       complete 12803
+  talents.masochism                   = find_talent( "Masochism" ); // new 12857
 
-  talents.shadow_form                 = new talent_t( this, "shadow_form", "Shadowform" ); //         complete 12803
-  talents.twisted_faith               = new talent_t( this, "twisted_faith", "Twisted Faith" ); //         complete 12803
-  talents.veiled_shadows              = new talent_t( this, "veiled_shadows", "Veiled Shadows" ); //         complete 12803
-  talents.harnessed_shadows           = new talent_t( this, "harnessed_shadows", "Harnessed Shadows" ); //        complete 12803  
-  talents.shadowy_apparition          = new talent_t( this, "shadowy_apparition", "Shadowy Apparition" ); //       done: talent function 12803
-  talents.vampiric_embrace            = new talent_t( this, "vampiric_embrace", "Vampiric Embrace" ); //       complete 12803
-  talents.vampiric_touch              = new talent_t( this, "vampiric_touch", "Vampiric Touch" ); //         complete 12803
-  talents.sin_and_punishment          = new talent_t( this, "sin_and_punishment", "Sin and Punishment" );
-  talents.paralysis                   = new talent_t( this, "paralysis", "Paralysis" );
-  talents.phantasm                    = new talent_t( this, "phantasm", "Phantasm" );
+  talents.shadow_form                 = find_talent( "Shadowform" ); //         complete 12803
+  talents.twisted_faith               = find_talent( "Twisted Faith" ); //         complete 12803
+  talents.veiled_shadows              = find_talent( "Veiled Shadows" ); //         complete 12803
+  talents.harnessed_shadows           = find_talent( "Harnessed Shadows" ); //        complete 12803  
+  talents.shadowy_apparition          = find_talent( "Shadowy Apparition" ); //       done: talent function 12803
+  talents.vampiric_embrace            = find_talent( "Vampiric Embrace" ); //       complete 12803
+  talents.vampiric_touch              = find_talent( "Vampiric Touch" ); //         complete 12803
+  talents.sin_and_punishment          = find_talent( "Sin and Punishment" );
+  talents.paralysis                   = find_talent( "Paralysis" );
+  talents.phantasm                    = find_talent( "Phantasm" );
 
   player_t::init_talents();
 }
@@ -3626,49 +3627,36 @@ double priest_t::resource_loss( int       resource,
   return actual_amount;
 }
 
-// priest_t::get_talent_trees ===============================================
+// priest_t::create_options ================================================
 
-std::vector<talent_translation_t>& priest_t::get_talent_list()
+void priest_t::create_options()
 {
-  talent_list.clear();
-  return talent_list;
-}
+  player_t::create_options();
 
-// priest_t::get_options ===================================================
-
-std::vector<option_t>& priest_t::get_options()
-{
-  if ( options.empty() )
+  option_t priest_options[] =
   {
-    player_t::get_options();
+    { "glyph_dispersion",        OPT_BOOL,   &( glyphs.dispersion         ) },
+    { "glyph_divine_accuracy",   OPT_BOOL,   &( glyphs.divine_accuracy    ) },
+    { "glyph_holy_nova",         OPT_BOOL,   &( glyphs.holy_nova          ) },
+    { "glyph_inner_fire",        OPT_BOOL,   &( glyphs.inner_fire         ) },
+    { "glyph_mind_flay",         OPT_BOOL,   &( glyphs.mind_flay          ) },
+    { "glyph_penance",           OPT_BOOL,   &( glyphs.penance            ) },
+    { "glyph_shadow_word_death", OPT_BOOL,   &( glyphs.shadow_word_death  ) },
+    { "glyph_shadow_word_pain",  OPT_BOOL,   &( glyphs.shadow_word_pain   ) },
+    { "glyph_spirit_tap",        OPT_BOOL,   &( glyphs.spirit_tap         ) },
+    { "glyph_smite",             OPT_BOOL,   &( glyphs.smite              ) },
+    { "glyph_renew",             OPT_BOOL,   &( glyphs.renew              ) },
+    { "glyph_power_word_shield", OPT_BOOL,   &( glyphs.power_word_shield  ) },
 
-    option_t priest_options[] =
-    {
-      // @option_doc loc=player/priest/glyphs title="Glyphs"
-      { "glyph_dispersion",                         OPT_BOOL,   &( glyphs.dispersion                          ) },
-      { "glyph_divine_accuracy",                    OPT_BOOL,   &( glyphs.divine_accuracy                     ) },
-      { "glyph_holy_nova",                          OPT_BOOL,   &( glyphs.holy_nova                           ) },
-      { "glyph_inner_fire",                         OPT_BOOL,   &( glyphs.inner_fire                          ) },
-      { "glyph_mind_flay",                          OPT_BOOL,   &( glyphs.mind_flay                           ) },
-      { "glyph_penance",                            OPT_BOOL,   &( glyphs.penance                             ) },
-      { "glyph_shadow_word_death",                  OPT_BOOL,   &( glyphs.shadow_word_death                   ) },
-      { "glyph_shadow_word_pain",                   OPT_BOOL,   &( glyphs.shadow_word_pain                    ) },
-      { "glyph_spirit_tap",                         OPT_BOOL,   &( glyphs.spirit_tap                          ) },
-      { "glyph_smite",                              OPT_BOOL,   &( glyphs.smite                               ) },
-      { "glyph_renew",                              OPT_BOOL,   &( glyphs.renew                               ) },
-      { "glyph_power_word_shield",                  OPT_BOOL,   &( glyphs.power_word_shield                   ) },
-      // @option_doc loc=player/priest/misc title="Misc"
-      { "use_shadow_word_death",                    OPT_BOOL,   &( use_shadow_word_death                      ) },
-      { "use_mind_blast",                           OPT_INT,    &( use_mind_blast                             ) },
-      { "power_infusion_target",                    OPT_STRING, &( power_infusion_target_str                  ) },
-      { "healer",                                   OPT_BOOL,   &( healer                                     ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+    { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
+    { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
+    { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },
+    { "healer",                  OPT_BOOL,   &( healer                                     ) },
 
-    option_t::copy( options, priest_options );
-  }
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-  return options;
+  option_t::copy( options, priest_options );
 }
 
 // priest_t::create_profile ===================================================

@@ -2014,7 +2014,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     bool found = false;
     for ( int i=processed_actions.size()-1; i >= 0 && !found; i-- )
       if ( processed_actions[ i ] == a -> name() )
-	found = true;
+        found = true;
     if( found ) continue;
     processed_actions.push_back( a -> name() );
     
@@ -2161,53 +2161,19 @@ static void print_html2_talents( FILE* file, player_t* a )
 
     util_t::fprintf( file, " <tbody id=\"%s-talents\" style=\"display:none;\">", n.c_str() );
 
-    uint32_t i_tab, talent_num, talent_id, i;
+    for ( int i=0; i < MAX_TALENT_TREES; i++ )
+    {
+      util_t::fprintf( file, "<tr> <th>%s</th> </tr>\n", util_t::talent_tree_string( a -> tree_type[ i ], false ) );
 
-    if ( a -> is_pet() )
-    {
-      util_t::fprintf( file, "<tr> <th>Pet Talents</th> </tr>\n" );
-      talent_num = 0;
-      while ( ( talent_id = a -> player_data.talent_pet_get_id_by_num( a -> cast_pet() -> pet_type, talent_num ) ) != 0 )
+      int tree_size = a -> talents[ i ].size();
+
+      for ( int j=0; j < tree_size; j++ )
       {
-        util_t::fprintf( file, " <tr> <td>%s</td><td>", a -> player_data.talent_name_str(talent_id) );
-        i=0;
-        while( i < a -> talent_list2.size() )
-        {
-          if ( talent_id == a -> talent_list2[i] -> talent_id() )
-          {              
-            if ( a -> talent_list2[i] -> rank() )
-              util_t::fprintf( file, "%d", a -> talent_list2[i] -> rank() );
-            break;
-          }
-          i++;
-        }
+        talent_t* t = a -> talents[ i ][ j ];
+
+        util_t::fprintf( file, " <tr> <td>%s</td><td>", t -> t_data -> name );
+        util_t::fprintf( file, "%d", t -> rank() );
         util_t::fprintf( file,"</td></tr>\n");
-        talent_num++;
-      }
-    }
-    else
-    {
-      for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
-      {
-        util_t::fprintf( file, "<tr> <th>%s</th> </tr>\n", util_t::talent_tree_string( a -> tree_type[ i_tab ], false ) );
-        talent_num = 0;
-        while ( ( talent_id = a -> player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
-        {
-          util_t::fprintf( file, " <tr> <td>%s</td><td>", a -> player_data.talent_name_str(talent_id) );
-          i=0;
-          while( i < a -> talent_list2.size() )
-          {
-            if ( talent_id == a -> talent_list2[i] -> talent_id() )
-            {              
-              if ( a -> talent_list2[i] -> rank() )
-                util_t::fprintf( file, "%d", a -> talent_list2[i] -> rank() );
-              break;
-            }
-            i++;
-          }
-          util_t::fprintf( file,"</td></tr>\n");
-          talent_num++;
-        }
       }
     }
     util_t::fprintf( file, "</tbody></table> <br />\n" );
@@ -2531,112 +2497,54 @@ static void print_html3_stats (FILE* file, player_t* a )
 }
 
 
-// print_htmprint_html3_talentsl3_player ======================================================
-static void print_html3_talents( FILE* file, player_t* a )
+// print_htmprint_html3_talents_player ======================================================
+
+static void print_html3_talents( FILE* file, player_t* p )
 {
-  std::string n = a -> name();
+  std::string n = p -> name();
   util_t::str_to_utf8( n );
   
-  if ( a -> total_seconds > 0 )
+  if ( p -> total_seconds > 0 )
   {
     util_t::fprintf( file,
       "            <div class=\"player-section talents\">\n"
       "              <h3 class=\"toggle\">Talents</h3>\n"
       "              <div class=\"toggle-content\">\n" );
 
-    uint32_t i_tab, talent_num, talent_id, i;
-
-    if ( a -> is_pet() )
+    for ( int i = 0; i < MAX_TALENT_TREES; i++ )
     {
       util_t::fprintf( file,
-        "                  <table>\n"
-        "                    <tr>\n"
-        "                      <th></th>\n"
-        "                      <th>Rank</th>\n"
-        "                    </tr>\n"
-        "                    <tr>\n"
-        "                      <th>Pet Talents</th>\n"
-        "                    </tr>\n" );
-      talent_num = 0;
-      while ( ( talent_id = a -> player_data.talent_pet_get_id_by_num( a -> cast_pet() -> pet_type, talent_num ) ) != 0 )
-      {
-        util_t::fprintf( file,
-          "                    <tr" );
-        if ( ( talent_num & 1 ) )
-        {
-          util_t::fprintf( file, " class=\"odd\"" );
-        }
-        util_t::fprintf( file, ">\n" );
-        util_t::fprintf( file,
-          "                      <td class=\"left\">%s</td>\n"
-          "                      <td>",
-          a -> player_data.talent_name_str(talent_id) );
-        uint32_t j = 0;
-        while( j < a -> talent_list2.size() )
-        {
-          if ( talent_id == a -> talent_list2[j] -> talent_id() )
-          {              
-            if ( a -> talent_list2[j] -> rank() )
-              util_t::fprintf( file, "%d", a -> talent_list2[j] -> rank() );
-            break;
-          }
-          j++;
-        }
-        util_t::fprintf( file, "</td>\n"
-          "                    </tr>\n" );
-        talent_num++;
-      }
-      util_t::fprintf( file,
-        "                  </table>\n" );
-    }
-    else
-    {
-      for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
-      {
-        util_t::fprintf( file,
           "                <div class=\"float\">\n"
           "                  <table>\n"
           "                    <tr>\n"
           "                      <th class=\"left\">%s</th>\n"
           "                      <th>Rank</th>\n"
           "                    </tr>\n",
-          util_t::talent_tree_string( a -> tree_type[ i_tab ], false ) );
-        talent_num = 0;
-        while ( ( talent_id = a -> player_data.talent_player_get_id_by_num( a -> type, i_tab, talent_num ) ) != 0 )
-        {
-          util_t::fprintf( file,
-            "                    <tr" );
-          if ( ( talent_num & 1 ) )
-          {
-            util_t::fprintf( file, " class=\"odd\"" );
-          }
-          util_t::fprintf( file, ">\n" );
-          util_t::fprintf( file,
-            "                      <td class=\"left\">%s</td>\n"
-            "                      <td>",
-            a -> player_data.talent_name_str(talent_id) );
-          i=0;
-          while( i < a -> talent_list2.size() )
-          {
-            if ( talent_id == a -> talent_list2[i] -> talent_id() )
-            {              
-              if ( a -> talent_list2[i] -> rank() )
-                util_t::fprintf( file, "%d", a -> talent_list2[i] -> rank() );
-              break;
-            }
-            i++;
-          }
-          util_t::fprintf( file, "</td>\n"
-            "                    </tr>\n");
-          talent_num++;
-        }
+          util_t::talent_tree_string( p -> tree_type[ i ], false ) );
+
+      int tree_size = p -> talents[ i ].size();
+
+      for ( int j=0; j < tree_size; j++ )
+      {
+        talent_t* t = p -> talents[ i ][ j ];
+
+        util_t::fprintf( file, 
+            "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
+
         util_t::fprintf( file,
+            "                      <td class=\"left\">%s</td>\n"
+            "                      <td>%d</td>\n"
+            "                    </tr>\n",
+            t -> t_data -> name, t -> rank() );
+      } 
+      util_t::fprintf( file,
           "                  </table>\n"
           "                </div>\n" );
-      }
-      util_t::fprintf( file,
-        "                <div class=\"clear\"></div>\n" );
     }
+    
+    util_t::fprintf( file,
+        "                <div class=\"clear\"></div>\n" );
+
     util_t::fprintf( file,
       "                </div>\n"
       "              </div>\n" );
@@ -4667,32 +4575,32 @@ void report_t::print_html2( sim_t* sim )
 // report_t::print_html3 ======================================================
 void report_t::print_html3( sim_t* sim )
 {
-	int num_players = ( int ) sim -> players_by_name.size();
-	
-	if ( num_players == 0 ) return;
-	if ( sim -> total_seconds == 0 ) return;
-	if ( sim -> html3_file_str.empty() ) return;
-	
-	FILE* file = fopen( sim -> html3_file_str.c_str(), "w" );
-	if ( ! file )
-	{
-		sim -> errorf( "Unable to open html file '%s'\n", sim -> html3_file_str.c_str() );
-		return;
-	}
-	
-	util_t::fprintf( file,
-	  "<!DOCTYPE html>\n\n" );
-	util_t::fprintf( file,
-	  "<html>\n\n" );
-	
-	util_t::fprintf( file,
-	  "  <head>\n\n" );
-	util_t::fprintf( file,
-	  "    <title>Simulationcraft Results</title>\n\n" );
-	util_t::fprintf( file,
-	  "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n\n");
+        int num_players = ( int ) sim -> players_by_name.size();
+        
+        if ( num_players == 0 ) return;
+        if ( sim -> total_seconds == 0 ) return;
+        if ( sim -> html3_file_str.empty() ) return;
+        
+        FILE* file = fopen( sim -> html3_file_str.c_str(), "w" );
+        if ( ! file )
+        {
+                sim -> errorf( "Unable to open html file '%s'\n", sim -> html3_file_str.c_str() );
+                return;
+        }
+        
+        util_t::fprintf( file,
+          "<!DOCTYPE html>\n\n" );
+        util_t::fprintf( file,
+          "<html>\n\n" );
+        
+        util_t::fprintf( file,
+          "  <head>\n\n" );
+        util_t::fprintf( file,
+          "    <title>Simulationcraft Results</title>\n\n" );
+        util_t::fprintf( file,
+          "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n\n");
 
-	// Styles galore
+        // Styles galore
     util_t::fprintf( file,
       "    <style type=\"text/css\">\n"
       "      * { border: none; margin: 0; padding: 0; }\n"
@@ -4764,156 +4672,156 @@ void report_t::print_html3( sim_t* sim )
       "      tr.details td div.float ul { margin: 0 0 12px 0; }\n"
       "      .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
       "    </style>\n\n" );
-	
-	util_t::fprintf( file,
-	  "  </head>\n\n" );
-	  
-	util_t::fprintf( file,
-	  "  <body>\n\n" );
-	
-	if( ! sim -> error_list.empty() )
-	{
-		util_t::fprintf( file,
-		  "    <pre>\n" );
-		int num_errors = sim -> error_list.size();
-		for( int i=0; i < num_errors; i++ )
-		  util_t::fprintf( file,
-		    "      %s\n", sim -> error_list[ i ].c_str() );
-		util_t::fprintf( file,
-		  "    </pre>\n\n" );
-	}
-	
-	// Prints div wrappers for help popups
-	util_t::fprintf( file,
-	  "    <div id=\"active-help\">\n"
-	  "      <div id=\"active-help-dynamic\">\n"
-	  "        <div class=\"help-box\">\n"
-	  "        </div>\n"
-	  "        <a href=\"#\" class=\"close\">close</a>\n"
-	  "      </div>\n"
-	  "    </div>\n\n" );
-	
-	// Begin masthead section
-	util_t::fprintf( file,
-	  "    <div id=\"masthead\" class=\"section\">\n\n" );
-	
-	int arch = 0, version = 0, revision = 0;
-	sim -> patch.decode( &arch, &version, &revision );
-	util_t::fprintf( file,
-	  "      <h1>SimulationCraft %s.%s for World of Warcraft release %d.%d.%d</h1>\n\n",
-	  SC_MAJOR_VERSION,
-	  SC_MINOR_VERSION,
-	  arch,
-	  version,
-	  revision );
-	
-	time_t rawtime;
-	time ( &rawtime );
-	
-	util_t::fprintf( file,
-	  "      <ul class=\"params\">\n" );
-	util_t::fprintf( file,
-	  "        <li><b>Timestamp:</b> %s</li>\n",
-	  ctime( &rawtime ) );
-	util_t::fprintf( file,
-	  "        <li><b>Iterations:</b> %d</li>\n",
-	  sim -> iterations );
-	util_t::fprintf( file,
-	  "        <li><b>Fight Length:</b> %.0f</li>\n",
-	  sim -> max_time );
-	if ( sim -> vary_combat_length > 0.0 )
-	{
-	  util_t::fprintf( file,
-	    "        <li><b>Vary Combat Length:</b> %.2f</li>\n",
-	    sim -> vary_combat_length );
-	}
-	util_t::fprintf( file,
-	  "        <li><b>Smooth RNG:</b> %s</li>\n",
-	  ( sim -> smooth_rng ? "true" : "false" ) );
-	util_t::fprintf( file,
-	  "      </ul>\n" );
-	util_t::fprintf( file,
-	  "      <div class=\"clear\"></div>\n\n" );
-	
-	if ( num_players > 1 )
-	{
-		print_html3_contents( file, sim );
-	}
-	
-	// End masthead section
-	util_t::fprintf( file,
-	  "    </div>\n\n" );
-	
+        
+        util_t::fprintf( file,
+          "  </head>\n\n" );
+          
+        util_t::fprintf( file,
+          "  <body>\n\n" );
+        
+        if( ! sim -> error_list.empty() )
+        {
+                util_t::fprintf( file,
+                  "    <pre>\n" );
+                int num_errors = sim -> error_list.size();
+                for( int i=0; i < num_errors; i++ )
+                  util_t::fprintf( file,
+                    "      %s\n", sim -> error_list[ i ].c_str() );
+                util_t::fprintf( file,
+                  "    </pre>\n\n" );
+        }
+        
+        // Prints div wrappers for help popups
+        util_t::fprintf( file,
+          "    <div id=\"active-help\">\n"
+          "      <div id=\"active-help-dynamic\">\n"
+          "        <div class=\"help-box\">\n"
+          "        </div>\n"
+          "        <a href=\"#\" class=\"close\">close</a>\n"
+          "      </div>\n"
+          "    </div>\n\n" );
+        
+        // Begin masthead section
+        util_t::fprintf( file,
+          "    <div id=\"masthead\" class=\"section\">\n\n" );
+        
+        int arch = 0, version = 0, revision = 0;
+        sim -> patch.decode( &arch, &version, &revision );
+        util_t::fprintf( file,
+          "      <h1>SimulationCraft %s.%s for World of Warcraft release %d.%d.%d</h1>\n\n",
+          SC_MAJOR_VERSION,
+          SC_MINOR_VERSION,
+          arch,
+          version,
+          revision );
+        
+        time_t rawtime;
+        time ( &rawtime );
+        
+        util_t::fprintf( file,
+          "      <ul class=\"params\">\n" );
+        util_t::fprintf( file,
+          "        <li><b>Timestamp:</b> %s</li>\n",
+          ctime( &rawtime ) );
+        util_t::fprintf( file,
+          "        <li><b>Iterations:</b> %d</li>\n",
+          sim -> iterations );
+        util_t::fprintf( file,
+          "        <li><b>Fight Length:</b> %.0f</li>\n",
+          sim -> max_time );
+        if ( sim -> vary_combat_length > 0.0 )
+        {
+          util_t::fprintf( file,
+            "        <li><b>Vary Combat Length:</b> %.2f</li>\n",
+            sim -> vary_combat_length );
+        }
+        util_t::fprintf( file,
+          "        <li><b>Smooth RNG:</b> %s</li>\n",
+          ( sim -> smooth_rng ? "true" : "false" ) );
+        util_t::fprintf( file,
+          "      </ul>\n" );
+        util_t::fprintf( file,
+          "      <div class=\"clear\"></div>\n\n" );
+        
+        if ( num_players > 1 )
+        {
+                print_html3_contents( file, sim );
+        }
+        
+        // End masthead section
+        util_t::fprintf( file,
+          "    </div>\n\n" );
+        
 #if SC_BETA
     util_t::fprintf( file,
       "    <div id=\"notice\" class=\"section\">\n" );
-	util_t::fprintf( file,
-	  "      <h2>Beta Release</h2>\n" );
-	int ii = 0;
-	if ( beta_warnings[ 0 ] )
-	  util_t::fprintf( file,
+        util_t::fprintf( file,
+          "      <h2>Beta Release</h2>\n" );
+        int ii = 0;
+        if ( beta_warnings[ 0 ] )
+          util_t::fprintf( file,
         "      <ul>\n" );
-	while ( beta_warnings[ ii ] )
-	{
-	  util_t::fprintf( file,
-		"        <li>%s</li>\n",
-		beta_warnings[ ii ] );
+        while ( beta_warnings[ ii ] )
+        {
+          util_t::fprintf( file,
+                "        <li>%s</li>\n",
+                beta_warnings[ ii ] );
       ii++;
-	}
-	if ( beta_warnings[ 0 ] )
-	  util_t::fprintf( file,
-	    "      </ul>\n" );
-	util_t::fprintf( file,
-	  "    </div>\n\n" );
+        }
+        if ( beta_warnings[ 0 ] )
+          util_t::fprintf( file,
+            "      </ul>\n" );
+        util_t::fprintf( file,
+          "    </div>\n\n" );
 #endif
-	
-	// Players
-	if ( num_players > 1 )
-	{
-		print_html3_raid_summary( file, sim );
-		print_html3_scale_factors( file, sim );
-	}
-	
-	for ( int i=0; i < num_players; i++ )
-	{
-		print_html3_player( file, sim -> players_by_name[ i ] );
-		if ( sim -> report_pets_separately )
-		{
-			for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
-			{
-				if ( pet -> summoned )
-					print_html3_player( file, pet );
-			}
-		}
-	}
-	
-	print_html3_auras_debuffs( file, sim );
-	
-	if ( num_players == 1 )
-	{
-		util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
-	}
-	
-	print_html3_help_boxes( file, sim );
-	
-	
-	// Old javascript toggle
-	util_t::fprintf ( file,
-	  "    <script type=\"text/javascript\">\n"
-	  "      function toggleSlide(objname){\n"
-	  "        if (document.getElementById(objname).style.display == \"none\") {\n"
-	  "          document.getElementById(objname).style.display=\"\";\n"
-	  "        } else {\n"
-	  "          document.getElementById(objname).style.display=\"none\";\n"
-	  "        }\n"
-	  "      }\n"
-	  "    </script>\n\n" );
-	
-	// jQuery
-	util_t::fprintf ( file,
-	  "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
-	
-	// New javascript toggles
+        
+        // Players
+        if ( num_players > 1 )
+        {
+                print_html3_raid_summary( file, sim );
+                print_html3_scale_factors( file, sim );
+        }
+        
+        for ( int i=0; i < num_players; i++ )
+        {
+                print_html3_player( file, sim -> players_by_name[ i ] );
+                if ( sim -> report_pets_separately )
+                {
+                        for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+                        {
+                                if ( pet -> summoned )
+                                        print_html3_player( file, pet );
+                        }
+                }
+        }
+        
+        print_html3_auras_debuffs( file, sim );
+        
+        if ( num_players == 1 )
+        {
+                util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
+        }
+        
+        print_html3_help_boxes( file, sim );
+        
+        
+        // Old javascript toggle
+        util_t::fprintf ( file,
+          "    <script type=\"text/javascript\">\n"
+          "      function toggleSlide(objname){\n"
+          "        if (document.getElementById(objname).style.display == \"none\") {\n"
+          "          document.getElementById(objname).style.display=\"\";\n"
+          "        } else {\n"
+          "          document.getElementById(objname).style.display=\"none\";\n"
+          "        }\n"
+          "      }\n"
+          "    </script>\n\n" );
+        
+        // jQuery
+        util_t::fprintf ( file,
+          "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
+        
+        // New javascript toggles
     util_t::fprintf( file,
       "    <script>\n"
       "      jQuery.noConflict();\n"
@@ -4952,10 +4860,10 @@ void report_t::print_html3( sim_t* sim )
       "        });\n"
       "      });\n"
       "    </script>\n\n"
-	  "  </body>\n\n"
-	  "</html>\n" );
-	
-	fclose( file );
+          "  </body>\n\n"
+          "</html>\n" );
+        
+        fclose( file );
 }
 
 // report_t::print_wiki ======================================================

@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // is_plot_stat =============================================================
 
 static bool is_plot_stat( sim_t* sim,
-			  int    stat )
+                          int    stat )
 {
   if ( ! sim -> plot -> dps_plot_stat_str.empty() )
   {
@@ -53,7 +53,9 @@ plot_t::plot_t( sim_t* s ) :
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
   remaining_plot_points( 0 )
-{}
+{
+  create_options();
+}
 
 // plot_t::progress =========================================================
 
@@ -118,40 +120,40 @@ void plot_t::analyze_stats()
 
       if ( j != 0 )
       {
-	delta_sim = new sim_t( sim );
+        delta_sim = new sim_t( sim );
         if ( dps_plot_iterations > 0 ) delta_sim -> iterations = dps_plot_iterations;
-	delta_sim -> enchant.add_stat( i, j * dps_plot_step );
-	delta_sim -> execute();
-	if ( dps_plot_debug ) 
-	{
-	  util_t::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util_t::stat_type_string( i ), j );
-	  report_t::print_text( sim -> output_file, delta_sim, true );
-	}
+        delta_sim -> enchant.add_stat( i, j * dps_plot_step );
+        delta_sim -> execute();
+        if ( dps_plot_debug ) 
+        {
+          util_t::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util_t::stat_type_string( i ), j );
+          report_t::print_text( sim -> output_file, delta_sim, true );
+        }
       }
 
       for ( int k=0; k < num_players; k++ )
       {
-	player_t* p = sim -> players_by_name[ k ];
+        player_t* p = sim -> players_by_name[ k ];
 
-	if ( p -> scales_with[ i ] <= 0 ) continue;
+        if ( p -> scales_with[ i ] <= 0 ) continue;
 
-	if ( delta_sim )
-	{
-	  player_t* delta_p = delta_sim -> find_player( p -> name() );
+        if ( delta_sim )
+        {
+          player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-	  p -> dps_plot_data[ i ].push_back( delta_p -> dps );
-	}
-	else
-	{
-	  p -> dps_plot_data[ i ].push_back( p -> dps );
-	}
+          p -> dps_plot_data[ i ].push_back( delta_p -> dps );
+        }
+        else
+        {
+          p -> dps_plot_data[ i ].push_back( p -> dps );
+        }
       }
 
       if ( delta_sim ) 
       {
-	delete delta_sim;
-	delta_sim = 0;
-	remaining_plot_points--;
+        delete delta_sim;
+        delta_sim = 0;
+        remaining_plot_points--;
       }
     }
 
@@ -175,9 +177,9 @@ void plot_t::analyze()
   }
 }
 
-// plot_t::get_options ======================================================
+// plot_t::create_options ===================================================
 
-int plot_t::get_options( std::vector<option_t>& options )
+void plot_t::create_options()
 {
   option_t plot_options[] =
   {
@@ -191,7 +193,5 @@ int plot_t::get_options( std::vector<option_t>& options )
     { NULL, OPT_UNKNOWN, NULL }
   };
 
-  option_t::copy( options, plot_options );
-
-  return ( int ) options.size();
+  option_t::copy( sim -> options, plot_options );
 }

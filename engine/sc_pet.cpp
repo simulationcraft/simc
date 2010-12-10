@@ -98,13 +98,6 @@ void pet_t::init()
   level = owner -> level;
 }
 
-// pet_t::init_data()
-
-void pet_t::init_data()
-{
-  player_data.set_parent( &owner -> player_data );
-}
-
 // pet_t::init_base =========================================================
 
 void pet_t::init_base()
@@ -113,47 +106,6 @@ void pet_t::init_base()
 
 void pet_t::init_talents()
 {
-   uint32_t i = 0;
-   uint32_t j = 0;
-   uint32_t num = 0;
-   uint32_t talent_id = 0;
-   uint32_t num_talents;
-   uint32_t rank;
-   std::vector<int>::const_iterator talent_iter;
-
-   num_talents = talent_list2.size();
-
-   uint32_t list_size = 0;
-
-
-   list_size = player_data.talent_pet_get_num_talents( pet_type );
-
-   num = 0;
-
-   talent_iter = talent_str.begin();
-
-   for ( i = 0; ( i < list_size ) && ( talent_iter != talent_str.end() ); i++, num++, talent_iter++ )
-   {
-     rank = ( *talent_iter >= 0 ) && ( *talent_iter <= 3 ) ? *talent_iter : 0 ;
-
-     talent_id = player_data.talent_pet_get_id_by_num( pet_type, num );
-
-     if ( talent_id != 0 )
-     {
-       for ( j = 0; j < num_talents; j++ )
-       {
-         if ( talent_list2[ j ] && talent_list2[ j ] -> t_data && talent_list2[ j ] -> t_data-> id == talent_id )
-         {
-           talent_str.begin();
-
-           if ( rank > player_data.talent_max_rank( talent_id ) )
-             rank = player_data.talent_max_rank( talent_id );
-           talent_list2[ j ] -> set_rank( rank );
-           break;
-         }
-       }
-     }
-   }
 
    pri_tree = primary_tab();
 }

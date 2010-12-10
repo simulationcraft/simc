@@ -187,8 +187,8 @@ const char* util_t::race_type_string( int type )
   case RACE_TAUREN:    return "tauren";
   case RACE_TROLL:     return "troll";
   case RACE_UNDEAD:    return "undead";
-  case RACE_GOBLIN:	   return "goblin";
-  case RACE_WORGEN:	   return "worgen";
+  case RACE_GOBLIN:        return "goblin";
+  case RACE_WORGEN:        return "worgen";
   }
   return "unknown";
 }
@@ -486,20 +486,20 @@ const char* util_t::school_type_string( int school )
 {
   switch ( school )
   {
-  case SCHOOL_ARCANE:     	return "arcane";
-  case SCHOOL_BLEED:      	return "bleed";
-  case SCHOOL_CHAOS:      	return "chaos";
-  case SCHOOL_FIRE:       	return "fire";
-  case SCHOOL_FROST:      	return "frost";
-  case SCHOOL_FROSTFIRE:  	return "frostfire";
-  case SCHOOL_HOLY:       	return "holy";
-  case SCHOOL_NATURE:     	return "nature";
-  case SCHOOL_PHYSICAL:   	return "physical";
-  case SCHOOL_SHADOW:     	return "shadow";
-  case SCHOOL_SPELLSTORM: 	return "spellstorm";
-  case SCHOOL_SHADOWFROST: 	return "shadowfrost";
-  case SCHOOL_SHADOWFLAME:	return "shadowflame";
-  case SCHOOL_DRAIN:      	return "drain";
+  case SCHOOL_ARCANE:           return "arcane";
+  case SCHOOL_BLEED:            return "bleed";
+  case SCHOOL_CHAOS:            return "chaos";
+  case SCHOOL_FIRE:             return "fire";
+  case SCHOOL_FROST:            return "frost";
+  case SCHOOL_FROSTFIRE:        return "frostfire";
+  case SCHOOL_HOLY:             return "holy";
+  case SCHOOL_NATURE:           return "nature";
+  case SCHOOL_PHYSICAL:         return "physical";
+  case SCHOOL_SHADOW:           return "shadow";
+  case SCHOOL_SPELLSTORM:       return "spellstorm";
+  case SCHOOL_SHADOWFROST:      return "shadowfrost";
+  case SCHOOL_SHADOWFLAME:      return "shadowflame";
+  case SCHOOL_DRAIN:            return "drain";
   }
   return "unknown";
 }
@@ -1132,7 +1132,28 @@ stat_type util_t::parse_reforge_type( const std::string& name )
   }
 }
 
-// util_t::translate_class_id ==============================================
+// util_t::class_id ========================================================
+
+int util_t::class_id( int type )
+{
+  switch ( type )
+  {
+  case WARRIOR:      return  1;
+  case PALADIN:      return  2;
+  case HUNTER:       return  3;
+  case ROGUE:        return  4;
+  case PRIEST:       return  5;
+  case DEATH_KNIGHT: return  6;
+  case SHAMAN:       return  7;
+  case MAGE:         return  8;
+  case WARLOCK:      return  9;
+  case DRUID:        return 11;
+  }
+
+  return 0;
+}
+
+// util_t::class_id_string =================================================
 
 const char* util_t::class_id_string( int type )
 {
@@ -1642,35 +1663,6 @@ void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t
   result.spirit     = a.spirit     + b.spirit;
   result.spell_crit = a.spell_crit + b.spell_crit;
   result.melee_crit = a.melee_crit + b.melee_crit;
-}
-
-void util_t::translate_talent_trees( std::vector<talent_translation_t>& talent_list, talent_translation_t translation_table[][ MAX_TALENT_TREES ], size_t table_size )
-{
-  size_t count = 0;
-	int trees[ MAX_TALENT_TREES ];
-  size_t max_i = table_size / sizeof( talent_translation_t ) / MAX_TALENT_TREES;
-
-	for( size_t j = 0; j < MAX_TALENT_TREES; j++ )
-	{
-	  trees[ j ] = 0;
-		for( size_t i = 0; i < max_i; i++ )
-    {
-			if( translation_table[ i ][ j ].index > 0 )
-			{
-				talent_list.push_back( translation_table[ i ][ j ] );
-				talent_list[ count ].tree = j;
-				talent_list[ count ].name = "";
-				if( talent_list[ count ].req > 0 )
-				{
-					for( size_t k = 0; k < j; k++ )
-						talent_list[ count ].req += trees[ k ];
-				}
-				talent_list[ count ].index = count+1;
-				count++;
-				trees[ j ]++;
-			}
-		}
-	}
 }
 
 //-------------------------------

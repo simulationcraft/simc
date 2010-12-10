@@ -376,6 +376,8 @@ struct warlock_t : public player_t
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
 
     use_pre_soulburn = 0;
+
+    create_options();
   }
 
   // Character Definition
@@ -391,10 +393,9 @@ struct warlock_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual void            init_resources( bool force );
+  virtual void      init_resources( bool force );
   virtual void      reset();
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
   virtual void      create_pets();
@@ -3895,58 +3896,58 @@ void warlock_t::init_talents()
 
   // Affliction
   talent_unstable_affliction          = new passive_spell_t ( this, "unstable_affliction", "Unstable Affliction" );
-  talent_doom_and_gloom               = new talent_t ( this, "doom_and_gloom", "Doom and Gloom" );
-  talent_improved_life_tap            = new talent_t ( this, "improved_life_tap", "Improved Life Tap" );
-  talent_improved_corruption          = new talent_t ( this, "improved_corruption", "Improved Corruption" );
-  talent_jinx                         = new talent_t ( this, "jinx", "Jinx" );
-  talent_soul_siphon                  = new talent_t ( this, "soul_siphon", "Soul Siphon" );
-  talent_siphon_life                  = new talent_t ( this, "siphon_life", "Siphon Life" );
-  talent_eradication                  = new talent_t ( this, "eradication", "Eradication" );
-  talent_soul_swap                    = new talent_t ( this, "soul_swap", "Soul Swap" );
-  talent_shadow_embrace               = new talent_t ( this, "shadow_embrace", "Shadow Embrace" );
-  talent_deaths_embrace               = new talent_t ( this, "deaths_embrace", "Death's Embrace" );
-  talent_nightfall                    = new talent_t ( this, "nightfall", "Nightfall" );
-  talent_soulburn_seed_of_corruption  = new talent_t ( this, "soulburn_seed_of_corruption", "Soulburn: Seed of Corruption" );
-  talent_everlasting_affliction       = new talent_t ( this, "everlasting_affliction", "Everlasting Affliction" );
-  talent_pandemic                     = new talent_t ( this, "pandemic", "Pandemic" );
-  talent_haunt                        = new talent_t ( this, "haunt", "Haunt" );
+  talent_doom_and_gloom               = find_talent( "Doom and Gloom" );
+  talent_improved_life_tap            = find_talent( "Improved Life Tap" );
+  talent_improved_corruption          = find_talent( "Improved Corruption" );
+  talent_jinx                         = find_talent( "Jinx" );
+  talent_soul_siphon                  = find_talent( "Soul Siphon" );
+  talent_siphon_life                  = find_talent( "Siphon Life" );
+  talent_eradication                  = find_talent( "Eradication" );
+  talent_soul_swap                    = find_talent( "Soul Swap" );
+  talent_shadow_embrace               = find_talent( "Shadow Embrace" );
+  talent_deaths_embrace               = find_talent( "Death's Embrace" );
+  talent_nightfall                    = find_talent( "Nightfall" );
+  talent_soulburn_seed_of_corruption  = find_talent( "Soulburn: Seed of Corruption" );
+  talent_everlasting_affliction       = find_talent( "Everlasting Affliction" );
+  talent_pandemic                     = find_talent( "Pandemic" );
+  talent_haunt                        = find_talent( "Haunt" );
 
   // Demonology
   talent_summon_felguard      = new passive_spell_t ( this, "summon_felguard", "Summon Felguard" );
-  talent_demonic_embrace      = new talent_t ( this, "demonic_embrace", "Demonic Embrace" );
-  talent_dark_arts            = new talent_t ( this, "dark_arts", "Dark Arts" );
-  talent_mana_feed            = new talent_t ( this, "mana_feed", "Mana Feed" );
-  talent_demonic_aegis        = new talent_t ( this, "demonic_aegis", "Demonic Aegis" );
-  talent_master_summoner      = new talent_t ( this, "master_summoner", "Master Summoner" );
-  talent_impending_doom       = new talent_t ( this, "impending_doom", "Impending Doom" );
-  talent_demonic_empowerment  = new talent_t ( this, "demonic_empowerment", "Demonic Empowerment" );
-  talent_molten_core          = new talent_t ( this, "molten_core", "Molten Core" );
-  talent_hand_of_guldan       = new talent_t ( this, "hand_of_guldan", "Hand of Gul'dan" );
-  talent_aura_of_foreboding   = new talent_t ( this, "aura_of_foreboding", "Aura of Foreboding" );
-  talent_ancient_grimoire     = new talent_t ( this, "ancient_grimoire", "Ancient Grimoire" );
-  talent_inferno              = new talent_t ( this, "inferno", "Inferno" );
-  talent_decimation           = new talent_t ( this, "decimation", "Decimation" );
-  talent_cremation            = new talent_t ( this, "cremation", "Cremation" );
-  talent_demonic_pact         = new talent_t ( this, "demonic_pact", "Demonic Pact" );
-  talent_metamorphosis        = new talent_t ( this, "metamorphosis", "Metamorphosis" );
+  talent_demonic_embrace      = find_talent( "Demonic Embrace" );
+  talent_dark_arts            = find_talent( "Dark Arts" );
+  talent_mana_feed            = find_talent( "Mana Feed" );
+  talent_demonic_aegis        = find_talent( "Demonic Aegis" );
+  talent_master_summoner      = find_talent( "Master Summoner" );
+  talent_impending_doom       = find_talent( "Impending Doom" );
+  talent_demonic_empowerment  = find_talent( "Demonic Empowerment" );
+  talent_molten_core          = find_talent( "Molten Core" );
+  talent_hand_of_guldan       = find_talent( "Hand of Gul'dan" );
+  talent_aura_of_foreboding   = find_talent( "Aura of Foreboding" );
+  talent_ancient_grimoire     = find_talent( "Ancient Grimoire" );
+  talent_inferno              = find_talent( "Inferno" );
+  talent_decimation           = find_talent( "Decimation" );
+  talent_cremation            = find_talent( "Cremation" );
+  talent_demonic_pact         = find_talent( "Demonic Pact" );
+  talent_metamorphosis        = find_talent( "Metamorphosis" );
 
   // Destruction
   talent_conflagrate            = new passive_spell_t ( this, "conflagrate", "Conflagrate" );
-  talent_bane                   = new talent_t ( this, "bane", "Bane" );
-  talent_shadow_and_flame       = new talent_t ( this, "shadow_and_flame", "Shadow and Flame" );
-  talent_improved_immolate      = new talent_t ( this, "improved_immolate", "Improved Immolate" );
-  talent_improved_soul_fire     = new talent_t ( this, "improved_soul_fire", "Improved Soul Fire" );
-  talent_emberstorm             = new talent_t ( this, "emberstorm", "Emberstorm" );
-  talent_improved_searing_pain  = new talent_t ( this, "improved_searing_pain", "Improved Searing Pain" );
-  talent_backdraft              = new talent_t ( this, "backdraft", "Backdraft" );
-  talent_shadowburn             = new talent_t ( this, "shadowburn", "Shadowburn" );
-  talent_burning_embers         = new talent_t ( this, "burning_embers", "Burning Embers" );
-  talent_soul_leech             = new talent_t ( this, "soul_leech", "Soul Leech" );
-  talent_fire_and_brimstone     = new talent_t ( this, "fire_and_brimstone", "Fire and Brimstone" );
-  talent_shadowfury             = new talent_t ( this, "shadowfury", "Shadowfury" );
-  talent_empowered_imp          = new talent_t ( this, "empowered_imp", "Empowered Imp" );
-  talent_bane_of_havoc          = new talent_t ( this, "bane_of_havoc", "Bane of Havoc" );
-  talent_chaos_bolt             = new talent_t ( this, "chaos_bolt", "Chaos Bolt" );
+  talent_bane                   = find_talent( "Bane" );
+  talent_shadow_and_flame       = find_talent( "Shadow and Flame" );
+  talent_improved_immolate      = find_talent( "Improved Immolate" );
+  talent_improved_soul_fire     = find_talent( "Improved Soul Fire" );
+  talent_emberstorm             = find_talent( "Emberstorm" );
+  talent_improved_searing_pain  = find_talent( "Improved Searing Pain" );
+  talent_backdraft              = find_talent( "Backdraft" );
+  talent_shadowburn             = find_talent( "Shadowburn" );
+  talent_burning_embers         = find_talent( "Burning Embers" );
+  talent_soul_leech             = find_talent( "Soul Leech" );
+  talent_fire_and_brimstone     = find_talent( "Fire and Brimstone" );
+  talent_shadowfury             = find_talent( "Shadowfury" );
+  talent_empowered_imp          = find_talent( "Empowered Imp" );
+  talent_bane_of_havoc          = find_talent( "Bane of Havoc" );
+  talent_chaos_bolt             = find_talent( "Chaos Bolt" );
 
   player_t::init_talents();
 }
@@ -4413,33 +4414,20 @@ action_expr_t* warlock_t::create_expression( action_t* a, const std::string& nam
   return player_t::create_expression( a, name_str );
 }
 
-// warlock_t::get_talent_trees =============================================
+// warlock_t::create_options ==================================================
 
-std::vector<talent_translation_t>& warlock_t::get_talent_list()
+void warlock_t::create_options()
 {
-    talent_list.clear();
-    return talent_list;
-}
+  player_t::create_options();
 
-// warlock_t::get_options ==================================================
-
-std::vector<option_t>& warlock_t::get_options()
-{
-  if ( options.empty() )
+  option_t warlock_options[] =
   {
-    player_t::get_options();
+    { "use_pre_soulburn",         OPT_BOOL,   &( use_pre_soulburn                    ) },
+    { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str              ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t warlock_options[] =
-    {
-      // @option_doc loc=player/warlock/misc title="Misc"
-      { "use_pre_soulburn",         OPT_BOOL,   &( use_pre_soulburn                    ) },
-      { "dark_intent_target",       OPT_STRING, &( dark_intent_target_str              ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, warlock_options );
-  }
-  return options;
+  option_t::copy( options, warlock_options );
 }
 
 // warlock_t::decode_set ===================================================

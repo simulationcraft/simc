@@ -19,13 +19,13 @@ struct sim_signal_handler_t
   static void callback_func( int signal )
   {
     if( signal == SIGSEGV ||
-	signal == SIGBUS  )
+        signal == SIGBUS  )
     {
       const char* name = ( signal == SIGSEGV ) ? "SIGSEGV" : "SIGBUS";
       if( global_sim )
       {
-	fprintf( stderr, "sim_signal_handler:  %s!  Seed=%d  Iteration=%d\n", name, global_sim -> seed, global_sim -> current_iteration );
-	fflush( stderr );
+        fprintf( stderr, "sim_signal_handler:  %s!  Seed=%d  Iteration=%d\n", name, global_sim -> seed, global_sim -> current_iteration );
+        fflush( stderr );
       }
       exit(0);
     }
@@ -33,8 +33,8 @@ struct sim_signal_handler_t
     {
       if( global_sim )
       {
-	if( global_sim -> canceled ) exit(0);
-	global_sim -> cancel();
+        if( global_sim -> canceled ) exit(0);
+        global_sim -> cancel();
       }
     }
   }
@@ -197,7 +197,7 @@ static bool parse_player( sim_t*             sim,
       if ( sim -> active_player )
         if ( player_name != sim -> active_player -> name() )
           sim -> errorf( "Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
-			 player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
+                         player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
 
     }
   }
@@ -465,6 +465,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     seed = parent -> seed;
   }
+
+  create_options();
 }
 
 // sim_t::~sim_t ============================================================
@@ -1248,7 +1250,7 @@ void sim_t::merge( sim_t& other_sim )
     }
 
     int num_buckets = ( int ) std::min(       p -> timeline_resource.size(),
-					other_p -> timeline_resource.size() );
+                                        other_p -> timeline_resource.size() );
 
     for ( int i=0; i < num_buckets; i++ )
     {
@@ -1567,7 +1569,7 @@ double sim_t::iteration_adjust()
 // sim_t::create_expression =================================================
 
 action_expr_t* sim_t::create_expression( action_t* a,
-					 const std::string& name_str )
+                                         const std::string& name_str )
 {
   if ( name_str == "time" )
   {
@@ -1614,7 +1616,6 @@ void sim_t::print_options()
 {
   util_t::fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
 
-  std::vector<option_t>& options = get_options();
   int num_options = ( int ) options.size();
 
   util_t::fprintf( output_file, "\nSimulation Engine:\n" );
@@ -1622,206 +1623,196 @@ void sim_t::print_options()
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
-    std::vector<option_t>& options = p -> get_options();
-    int num_options = ( int ) options.size();
+    num_options = ( int ) p -> options.size();
 
     util_t::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
-    for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
+    for ( int i=0; i < num_options; i++ ) p -> options[ i ].print( output_file );
   }
 
   util_t::fprintf( output_file, "\n" );
   fflush( output_file );
 }
 
-// sim_t::get_options =======================================================
+// sim_t::create_options ====================================================
 
-std::vector<option_t>& sim_t::get_options()
+void sim_t::create_options()
 {
-  if ( options.empty() )
+  option_t global_options[] =
   {
-    option_t global_options[] =
-    {
-      // @option_doc loc=global/general title="General"
-      { "iterations",                       OPT_INT,    &( iterations                               ) },
-      { "max_time",                         OPT_FLT,    &( max_time                                 ) },
-      { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
-      { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
-      { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
-      { "threads",                          OPT_INT,    &( threads                                  ) },
-      { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
-      // @option_doc loc=global/lag title="Lag"
-      { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
-      { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
-      { "gcd_lag",                          OPT_FLT,    &( gcd_lag                                  ) },
-      { "gcd_lag_stddev",                   OPT_FLT,    &( gcd_lag_stddev                           ) },
-      { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
-      { "queue_lag_stddev",                 OPT_FLT,    &( queue_lag_stddev                         ) },
-      { "queue_gcd_reduction",              OPT_FLT,    &( queue_gcd_reduction                      ) },
-      { "strict_gcd_queue",                 OPT_BOOL,   &( strict_gcd_queue                         ) },
-      { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
-      { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
-      { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
-      // @option_doc loc=skip
-      { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
-      { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
-      { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
-      { "debug",                            OPT_BOOL,   &( debug                                    ) },
-      { "html",                             OPT_STRING, &( html2_file_str                           ) },
-      { "html_old",                         OPT_STRING, &( html_file_str                            ) },
-      { "html2",                            OPT_STRING, &( html2_file_str                           ) },
-      { "html3",                            OPT_STRING, &( html3_file_str                           ) },
-      { "xml",                              OPT_STRING, &( xml_file_str                             ) },
-      { "log",                              OPT_BOOL,   &( log                                      ) },
-      { "csv",                              OPT_STRING, &( csv_file_str                             ) },
-      { "output",                           OPT_STRING, &( output_file_str                          ) },
-      { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
-      { "path",                             OPT_STRING, &( path_str                                 ) },
-      { "path+",                            OPT_APPEND, &( path_str                                 ) },
-      // @option_doc loc=global/overrides title="Buff/Debuff Overrides"
-      { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
-      { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },
-      { "override.arcane_tactics",          OPT_BOOL,   &( overrides.arcane_tactics                 ) },
-      { "override.battle_shout",            OPT_BOOL,   &( overrides.battle_shout                   ) },
-      { "override.bleeding",                OPT_BOOL,   &( overrides.bleeding                       ) },
-      { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },
-      { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
-      { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
-      { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
-      { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
-      { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
-      { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
-      { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
-      { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
-      { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
-      { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
-      { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
-      { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
-      { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
-      { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
-      { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
-      { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
-      { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
-      { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
-      { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
-      { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
-      { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
-      { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
-      { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
-      { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
-      { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
-      { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
-      { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
-      { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
-      { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
-      { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
-      { "override.mana_spring_totem",       OPT_BOOL,   &( overrides.mana_spring_totem              ) },
-      { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
-      { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },
-      { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
-      { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
-      { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
-      { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
-      { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
-      { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
-      { "override.scorpid_sting",           OPT_BOOL,   &( overrides.scorpid_sting                  ) },
-      { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
-      { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
-      { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
-      { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
-      { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
-      { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },
-      { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
-      { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
-      // @option_doc loc=global/regen title="Regen"
-      { "infinite_energy",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
-      { "infinite_focus",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
-      { "infinite_health",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
-      { "infinite_mana",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_MANA   ]     ) },
-      { "infinite_rage",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
-      { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
-      { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
-      // @option_doc loc=global/rng title="Smooth RNG"
-      { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
-      { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
-      { "average_range",                    OPT_BOOL,   &( average_range                            ) },
-      { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
-      // @option_doc loc=global/party title="Party Composition"
-      { "party",                            OPT_LIST,   &( party_encoding                           ) },
-      // @option_doc loc=skip
-      { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
-      { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
-      { "aura_delay",                       OPT_FLT,    &( aura_delay                               ) },
-      { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
-      { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
-      { "seed",                             OPT_INT,    &( seed                                     ) },
-      { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
-      { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
-      { "armory_throttle",                  OPT_INT,    &( armory_throttle                          ) },
-      { "reference_player",                 OPT_STRING, &( reference_player_str                     ) },
-      { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
-      { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
-      { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
-      { "report_precision",                 OPT_INT,    &( report_precision                         ) },
-      { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
-      { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
-      // @option_doc loc=skip
-      { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
-      { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
-      { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
-      { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
-      { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
-      { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
-      { "default_region",                   OPT_STRING, &( default_region_str                       ) },
-      { "default_server",                   OPT_STRING, &( default_server_str                       ) },
-      { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
-      { "spell_crit_suppression",           OPT_BOOL,   &( spell_crit_suppression                   ) },
-      // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
-      { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
-      { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },
-      { "default_enchant_stamina",                  OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ] ) },
-      { "default_enchant_intellect",                OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ] ) },
-      { "default_enchant_spirit",                   OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ] ) },
-      { "default_enchant_spell_power",              OPT_FLT,  &( enchant.spell_power                 ) },
-      { "default_enchant_mp5",                      OPT_FLT,  &( enchant.mp5                         ) },
-      { "default_enchant_attack_power",             OPT_FLT,  &( enchant.attack_power                ) },
-      { "default_enchant_expertise_rating",         OPT_FLT,  &( enchant.expertise_rating            ) },
-      { "default_enchant_armor",                    OPT_FLT,  &( enchant.bonus_armor                 ) },
-      { "default_enchant_dodge_rating",             OPT_FLT,  &( enchant.dodge_rating                ) },
-      { "default_enchant_parry_rating",             OPT_FLT,  &( enchant.parry_rating                ) },
-      { "default_enchant_block_rating",             OPT_FLT,  &( enchant.block_rating                ) },
-      { "default_enchant_block_value",              OPT_FLT,  &( enchant.block_value                 ) },
-      { "default_enchant_haste_rating",             OPT_FLT,  &( enchant.haste_rating                ) },
-      { "default_enchant_mastery_rating",           OPT_FLT,  &( enchant.mastery_rating              ) },
-      { "default_enchant_hit_rating",               OPT_FLT,  &( enchant.hit_rating                  ) },
-      { "default_enchant_crit_rating",              OPT_FLT,  &( enchant.crit_rating                 ) },
-      { "default_enchant_health",                   OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ] ) },
-      { "default_enchant_mana",                     OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ] ) },
-      { "default_enchant_rage",                     OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ] ) },
-      { "default_enchant_energy",                   OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ] ) },
-      { "default_enchant_focus",                    OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ] ) },
-      { "default_enchant_runic",                    OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ] ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
+    // @option_doc loc=global/general title="General"
+    { "iterations",                       OPT_INT,    &( iterations                               ) },
+    { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+    { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
+    { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
+    { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
+    { "threads",                          OPT_INT,    &( threads                                  ) },
+    { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
+    // @option_doc loc=global/lag title="Lag"
+    { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
+    { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
+    { "gcd_lag",                          OPT_FLT,    &( gcd_lag                                  ) },
+    { "gcd_lag_stddev",                   OPT_FLT,    &( gcd_lag_stddev                           ) },
+    { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
+    { "queue_lag_stddev",                 OPT_FLT,    &( queue_lag_stddev                         ) },
+    { "queue_gcd_reduction",              OPT_FLT,    &( queue_gcd_reduction                      ) },
+    { "strict_gcd_queue",                 OPT_BOOL,   &( strict_gcd_queue                         ) },
+    { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
+    { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
+    { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
+    // @option_doc loc=skip
+    { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
+    { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
+    { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
+    { "debug",                            OPT_BOOL,   &( debug                                    ) },
+    { "html",                             OPT_STRING, &( html2_file_str                           ) },
+    { "html_old",                         OPT_STRING, &( html_file_str                            ) },
+    { "html2",                            OPT_STRING, &( html2_file_str                           ) },
+    { "html3",                            OPT_STRING, &( html3_file_str                           ) },
+    { "xml",                              OPT_STRING, &( xml_file_str                             ) },
+    { "log",                              OPT_BOOL,   &( log                                      ) },
+    { "csv",                              OPT_STRING, &( csv_file_str                             ) },
+    { "output",                           OPT_STRING, &( output_file_str                          ) },
+    { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
+    { "path",                             OPT_STRING, &( path_str                                 ) },
+    { "path+",                            OPT_APPEND, &( path_str                                 ) },
+    // @option_doc loc=global/overrides title="Buff/Debuff Overrides"
+    { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
+    { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },
+    { "override.arcane_tactics",          OPT_BOOL,   &( overrides.arcane_tactics                 ) },
+    { "override.battle_shout",            OPT_BOOL,   &( overrides.battle_shout                   ) },
+    { "override.bleeding",                OPT_BOOL,   &( overrides.bleeding                       ) },
+    { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },
+    { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
+    { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
+    { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
+    { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
+    { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
+    { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
+    { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
+    { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
+    { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
+    { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
+    { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
+    { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
+    { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
+    { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
+    { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
+    { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
+    { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
+    { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
+    { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
+    { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
+    { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
+    { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
+    { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
+    { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
+    { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
+    { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
+    { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
+    { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
+    { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
+    { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
+    { "override.mana_spring_totem",       OPT_BOOL,   &( overrides.mana_spring_totem              ) },
+    { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
+    { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },
+    { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
+    { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
+    { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
+    { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
+    { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
+    { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
+    { "override.scorpid_sting",           OPT_BOOL,   &( overrides.scorpid_sting                  ) },
+    { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
+    { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
+    { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
+    { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
+    { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
+    { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },
+    { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
+    { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
+    // @option_doc loc=global/regen title="Regen"
+    { "infinite_energy",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
+    { "infinite_focus",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
+    { "infinite_health",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
+    { "infinite_mana",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_MANA   ]     ) },
+    { "infinite_rage",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
+    { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
+    { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
+    // @option_doc loc=global/rng title="Smooth RNG"
+    { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
+    { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
+    { "average_range",                    OPT_BOOL,   &( average_range                            ) },
+    { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
+    // @option_doc loc=global/party title="Party Composition"
+    { "party",                            OPT_LIST,   &( party_encoding                           ) },
+    // @option_doc loc=skip
+    { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
+    { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
+    { "aura_delay",                       OPT_FLT,    &( aura_delay                               ) },
+    { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
+    { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
+    { "seed",                             OPT_INT,    &( seed                                     ) },
+    { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
+    { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },
+    { "armory_throttle",                  OPT_INT,    &( armory_throttle                          ) },
+    { "reference_player",                 OPT_STRING, &( reference_player_str                     ) },
+    { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
+    { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
+    { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
+    { "report_precision",                 OPT_INT,    &( report_precision                         ) },
+    { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
+    { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
+    // @option_doc loc=skip
+    { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
+    { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
+    { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
+    { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
+    { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
+    { "default_region",                   OPT_STRING, &( default_region_str                       ) },
+    { "default_server",                   OPT_STRING, &( default_server_str                       ) },
+    { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
+    { "spell_crit_suppression",           OPT_BOOL,   &( spell_crit_suppression                   ) },
+    // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
+    { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
+    { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },
+    { "default_enchant_stamina",                  OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ] ) },
+    { "default_enchant_intellect",                OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ] ) },
+    { "default_enchant_spirit",                   OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ] ) },
+    { "default_enchant_spell_power",              OPT_FLT,  &( enchant.spell_power                 ) },
+    { "default_enchant_mp5",                      OPT_FLT,  &( enchant.mp5                         ) },
+    { "default_enchant_attack_power",             OPT_FLT,  &( enchant.attack_power                ) },
+    { "default_enchant_expertise_rating",         OPT_FLT,  &( enchant.expertise_rating            ) },
+    { "default_enchant_armor",                    OPT_FLT,  &( enchant.bonus_armor                 ) },
+    { "default_enchant_dodge_rating",             OPT_FLT,  &( enchant.dodge_rating                ) },
+    { "default_enchant_parry_rating",             OPT_FLT,  &( enchant.parry_rating                ) },
+    { "default_enchant_block_rating",             OPT_FLT,  &( enchant.block_rating                ) },
+    { "default_enchant_block_value",              OPT_FLT,  &( enchant.block_value                 ) },
+    { "default_enchant_haste_rating",             OPT_FLT,  &( enchant.haste_rating                ) },
+    { "default_enchant_mastery_rating",           OPT_FLT,  &( enchant.mastery_rating              ) },
+    { "default_enchant_hit_rating",               OPT_FLT,  &( enchant.hit_rating                  ) },
+    { "default_enchant_crit_rating",              OPT_FLT,  &( enchant.crit_rating                 ) },
+    { "default_enchant_health",                   OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ] ) },
+    { "default_enchant_mana",                     OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ] ) },
+    { "default_enchant_rage",                     OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ] ) },
+    { "default_enchant_energy",                   OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ] ) },
+    { "default_enchant_focus",                    OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ] ) },
+    { "default_enchant_runic",                    OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ] ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t::copy( options, global_options );
-
-    target  -> get_options( options );
-    scaling -> get_options( options );
-    plot    -> get_options( options );
-  }
-
-  return options;
+  option_t::copy( options, global_options );
 }
 
 // sim_t::parse_option ======================================================
@@ -1832,19 +1823,11 @@ bool sim_t::parse_option( const std::string& name,
   if ( canceled ) return false;
 
   if ( active_player )
-    if ( option_t::parse( this, active_player -> get_options(), name, value ) )
+    if ( option_t::parse( this, active_player -> options, name, value ) )
       return true;
 
-  if ( option_t::parse( this, get_options(), name, value ) )
+  if ( option_t::parse( this, options, name, value ) )
     return true;
-
-  if ( active_player )
-  {
-    // Give the player a chance to parse them through the spell data stuff
-    nvpair_t *s = new nvpair_t( name, value );
-    active_player -> unknown_options.push_back( s );
-    return true;
-  }
 
   return false;
 }
@@ -1974,7 +1957,7 @@ double sim_t::progress( std::string& phase )
     return plot -> progress( phase );
   }
   else if ( scaling -> calculate_scale_factors &&
-	    scaling -> num_scaling_stats > 0 )
+            scaling -> num_scaling_stats > 0 )
   {
     return scaling -> progress( phase );
   }

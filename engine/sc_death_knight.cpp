@@ -345,6 +345,8 @@ struct death_knight_t : public player_t
     frost_fever  = NULL;
 
     cooldowns_howling_blast = get_cooldown( "howling_blast" );
+
+    create_options();
   }
 
   // Character Definition
@@ -376,8 +378,7 @@ struct death_knight_t : public player_t
   virtual void      reset();
   virtual int       target_swing();
   virtual void      combat_begin();
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual pet_t*    create_pet( const std::string& name );
@@ -4087,51 +4088,51 @@ void death_knight_t::init_base()
 void death_knight_t::init_talents()
 {
   // Blood
-  talents.abominations_might          = new talent_t( this, "abominations_might", "Abomination's Might" );
-  talents.bladed_armor                = new talent_t( this, "bladed_armor", "Bladed Armor" );
-  talents.blood_caked_blade           = new talent_t( this, "blood_caked_blade", "Blood-Caked Blade" );
-  talents.blood_parasite              = new talent_t( this, "blood_parasite", "Blood Parasite" );
-  talents.bone_shield                 = new talent_t( this, "bone_shield", "Bone Shield" );
-  talents.butchery                    = new talent_t( this, "butchery", "Butchery" );
-  talents.crimson_scourge             = new talent_t( this, "crimson_scourge", "Crimson Scourge" );
-  talents.dancing_rune_weapon         = new talent_t( this, "dancing_rune_weapon", "Dancing Rune Weapon" );
-  talents.improved_blood_presence     = new talent_t( this, "improved_blood_presence", "Improved Blood Presence" );
-  talents.improved_blood_tap          = new talent_t( this, "improved_blood_tap", "Improved Blood Tap" );
-  talents.improved_death_strike       = new talent_t( this, "improved_death_strike", "Improved Death Strike" );
-  talents.scent_of_blood              = new talent_t( this, "scent_of_blood", "Scent of Blood" );
+  talents.abominations_might          = find_talent( "Abomination's Might" );
+  talents.bladed_armor                = find_talent( "Bladed Armor" );
+  talents.blood_caked_blade           = find_talent( "Blood-Caked Blade" );
+  talents.blood_parasite              = find_talent( "Blood Parasite" );
+  talents.bone_shield                 = find_talent( "Bone Shield" );
+  talents.butchery                    = find_talent( "Butchery" );
+  talents.crimson_scourge             = find_talent( "Crimson Scourge" );
+  talents.dancing_rune_weapon         = find_talent( "Dancing Rune Weapon" );
+  talents.improved_blood_presence     = find_talent( "Improved Blood Presence" );
+  talents.improved_blood_tap          = find_talent( "Improved Blood Tap" );
+  talents.improved_death_strike       = find_talent( "Improved Death Strike" );
+  talents.scent_of_blood              = find_talent( "Scent of Blood" );
 
   // Frost
-  talents.annihilation                = new talent_t( this, "annihilation", "Annihilation" );
-  talents.brittle_bones               = new talent_t( this, "brittle_bones", "Brittle Bones" );
-  talents.chill_of_the_grave          = new talent_t( this, "chill_of_the_grave", "Chill of the Grave" );
-  talents.endless_winter              = new talent_t( this, "endless_winter", "Endless Winter" );
-  talents.howling_blast               = new talent_t( this, "howling_blast", "Howling Blast" );
-  talents.improved_frost_presence     = new talent_t( this, "improved_frost_presence", "Improved Frost Presence" );
-  talents.improved_icy_talons         = new talent_t( this, "improved_icy_talons", "Improved Icy Talons" );
-  talents.killing_machine             = new talent_t( this, "killing_machine", "Killing Machine" );
-  talents.merciless_combat            = new talent_t( this, "merciless_combat", "Merciless Combat" );
-  talents.might_of_the_frozen_wastes  = new talent_t( this, "might_of_the_frozen_wastes", "Might of the Frozen Wastes" );
-  talents.nerves_of_cold_steel        = new talent_t( this, "nerves_of_cold_steel", "Nerves of Cold Steel" );
-  talents.pillar_of_frost             = new talent_t( this, "pillar_of_frost", "Pillar of Frost" );
-  talents.rime                        = new talent_t( this, "rime", "Rime" );
-  talents.runic_power_mastery         = new talent_t( this, "runic_power_mastery", "Runic Power Mastery" );
-  talents.threat_of_thassarian        = new talent_t( this, "threat_of_thassarian", "Threat of Thassarian" );
-  talents.toughness                   = new talent_t( this, "toughness", "Toughness" );
+  talents.annihilation                = find_talent( "Annihilation" );
+  talents.brittle_bones               = find_talent( "Brittle Bones" );
+  talents.chill_of_the_grave          = find_talent( "Chill of the Grave" );
+  talents.endless_winter              = find_talent( "Endless Winter" );
+  talents.howling_blast               = find_talent( "Howling Blast" );
+  talents.improved_frost_presence     = find_talent( "Improved Frost Presence" );
+  talents.improved_icy_talons         = find_talent( "Improved Icy Talons" );
+  talents.killing_machine             = find_talent( "Killing Machine" );
+  talents.merciless_combat            = find_talent( "Merciless Combat" );
+  talents.might_of_the_frozen_wastes  = find_talent( "Might of the Frozen Wastes" );
+  talents.nerves_of_cold_steel        = find_talent( "Nerves of Cold Steel" );
+  talents.pillar_of_frost             = find_talent( "Pillar of Frost" );
+  talents.rime                        = find_talent( "Rime" );
+  talents.runic_power_mastery         = find_talent( "Runic Power Mastery" );
+  talents.threat_of_thassarian        = find_talent( "Threat of Thassarian" );
+  talents.toughness                   = find_talent( "Toughness" );
 
   // Unholy
-  talents.dark_transformation         = new talent_t( this, "dark_transformation", "Dark Transformation" );
-  talents.ebon_plaguebringer          = new talent_t( this, "ebon_plaguebringer", "Ebon Plaguebringer" );
-  talents.epidemic                    = new talent_t( this, "epidemic", "Epidemic" );
-  talents.improved_unholy_presence    = new talent_t( this, "improved_unholy_presence", "Improved Unholy Presence" );
-  talents.morbidity                   = new talent_t( this, "morbidity", "Morbidity" );
-  talents.rage_of_rivendare           = new talent_t( this, "rage_of_rivendare", "Rage of Rivendare" );
-  talents.runic_corruption            = new talent_t( this, "runic_corruption", "Runic Corruption" );
-  talents.shadow_infusion             = new talent_t( this, "shadow_infusion", "Shadow Infusion" );
-  talents.sudden_doom                 = new talent_t( this, "sudden_doom", "Sudden Doom" );
-  talents.summon_gargoyle             = new talent_t( this, "summon_gargoyle", "Summon Gargoyle" );
-  talents.unholy_blight               = new talent_t( this, "unholy_blight", "Unholy Blight" );
-  talents.unholy_frenzy               = new talent_t( this, "unholy_frenzy", "Unholy Frenzy" );
-  talents.virulence                   = new talent_t( this, "virulence", "Virulence" );
+  talents.dark_transformation         = find_talent( "Dark Transformation" );
+  talents.ebon_plaguebringer          = find_talent( "Ebon Plaguebringer" );
+  talents.epidemic                    = find_talent( "Epidemic" );
+  talents.improved_unholy_presence    = find_talent( "Improved Unholy Presence" );
+  talents.morbidity                   = find_talent( "Morbidity" );
+  talents.rage_of_rivendare           = find_talent( "Rage of Rivendare" );
+  talents.runic_corruption            = find_talent( "Runic Corruption" );
+  talents.shadow_infusion             = find_talent( "Shadow Infusion" );
+  talents.sudden_doom                 = find_talent( "Sudden Doom" );
+  talents.summon_gargoyle             = find_talent( "Summon Gargoyle" );
+  talents.unholy_blight               = find_talent( "Unholy Blight" );
+  talents.unholy_frenzy               = find_talent( "Unholy Frenzy" );
+  talents.virulence                   = find_talent( "Virulence" );
 
   player_t::init_talents();
 }
@@ -4755,33 +4756,19 @@ void death_knight_t::regen( double periodicity )
   }
 }
 
-// death_knight_t::get_translation_list =====================================
+// death_knight_t::create_options ===========================================
 
-std::vector<talent_translation_t>& death_knight_t::get_talent_list()
+void death_knight_t::create_options()
 {
-  talent_list.clear();
-  return talent_list;
-}
+  player_t::create_options();
 
-// death_knight_t::get_options ==============================================
-
-std::vector<option_t>& death_knight_t::get_options()
-{
-  if ( options.empty() )
+  option_t death_knight_options[] =
   {
-    player_t::get_options();
+    { "unholy_frenzy_target", OPT_STRING, &( unholy_frenzy_target_str ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t death_knight_options[] =
-    {
-      { "unholy_frenzy_target", OPT_STRING, &( unholy_frenzy_target_str ) },
-      // @option_doc loc=player/death_knight/talents title="Talents"
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, death_knight_options );
-  }
-
-  return options;
+  option_t::copy( options, death_knight_options );
 }
 
 // death_knight_t::decode_set ===============================================

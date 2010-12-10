@@ -239,6 +239,8 @@ struct mage_t : public player_t
 
     distance         = 40;
     mana_gem_charges =  3;
+
+    create_options();
   }
 
   // Character Definition
@@ -258,8 +260,7 @@ struct mage_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
-  virtual std::vector<talent_translation_t>& get_talent_list();
-  virtual std::vector<option_t>& get_options();
+  virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name );
@@ -748,7 +749,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 
         hot_streak_chance = p -> talents.improved_hot_streak -> effect_base_value( 1 ) / 100.0;
 
-	p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance );
+        p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance );
       }
     }
   }
@@ -2748,57 +2749,57 @@ void mage_t::init_glyphs()
 void mage_t::init_talents()
 {
   // Arcane
-  talents.arcane_concentration        = new talent_t( this, "arcane_concentration", "Arcane Concentration" );
-  talents.arcane_flows                = new talent_t( this, "arcane_flows", "Arcane Flows" );
-  talents.arcane_potency              = new talent_t( this, "arcane_potency", "Arcane Potency" );
-  talents.arcane_power                = new talent_t( this, "arcane_power", "Arcane Power" );
-  talents.arcane_tactics              = new talent_t( this, "arcane_tactics", "Arcane Tactics" );
-  talents.focus_magic                 = new talent_t( this, "focus_magic", "Focus Magic" );
-  talents.improved_arcane_explosion   = new talent_t( this, "improved_arcane_explosion", "Improved Arcane Explosion" );
-  talents.improved_arcane_missiles    = new talent_t( this, "improved_arcane_missiles", "Improved Arcane Missiles" );
-  talents.improved_counterspell       = new talent_t( this, "improved_counterspell", "Improved Counterspell" );
-  talents.improved_mana_gem           = new talent_t( this, "improved_mana_gem", "Improved Mana Gem" );
-  talents.invocation                  = new talent_t( this, "invocation", "Invocation" );
-  talents.missile_barrage             = new talent_t( this, "missile_barrage", "Missile Barrage" );
-  talents.nether_vortex               = new talent_t( this, "nether_vortex", "Nether Vortex" );
-  talents.netherwind_presence         = new talent_t( this, "netherwind_presence", "Netherwind Presence" );
-  talents.presence_of_mind            = new talent_t( this, "presence_of_mind", "Presence of Mind" );
-  talents.slow                        = new talent_t( this, "slow", "Slow" );
-  talents.torment_the_weak            = new talent_t( this, "torment_the_weak", "Torment the Weak" );
+  talents.arcane_concentration        = find_talent( "Arcane Concentration" );
+  talents.arcane_flows                = find_talent( "Arcane Flows" );
+  talents.arcane_potency              = find_talent( "Arcane Potency" );
+  talents.arcane_power                = find_talent( "Arcane Power" );
+  talents.arcane_tactics              = find_talent( "Arcane Tactics" );
+  talents.focus_magic                 = find_talent( "Focus Magic" );
+  talents.improved_arcane_explosion   = find_talent( "Improved Arcane Explosion" );
+  talents.improved_arcane_missiles    = find_talent( "Improved Arcane Missiles" );
+  talents.improved_counterspell       = find_talent( "Improved Counterspell" );
+  talents.improved_mana_gem           = find_talent( "Improved Mana Gem" );
+  talents.invocation                  = find_talent( "Invocation" );
+  talents.missile_barrage             = find_talent( "Missile Barrage" );
+  talents.nether_vortex               = find_talent( "Nether Vortex" );
+  talents.netherwind_presence         = find_talent( "Netherwind Presence" );
+  talents.presence_of_mind            = find_talent( "Presence of Mind" );
+  talents.slow                        = find_talent( "Slow" );
+  talents.torment_the_weak            = find_talent( "Torment the Weak" );
 
   // Fire
-  talents.blast_wave                  = new talent_t( this, "blast_wave", "Blast Wave" );
-  talents.combustion                  = new talent_t( this, "combustion", "Combustion" );
-  talents.critical_mass               = new talent_t( this, "critical_mass", "Critical Mass" );
-  talents.dragons_breath              = new talent_t( this, "dragons_breath", "Dragon's Breath" );
-  talents.fire_power                  = new talent_t( this, "fire_power", "Fire Power" );
-  talents.firestarter                 = new talent_t( this, "firestarter", "Firestarter" );
-  talents.hot_streak                  = new talent_t( this, "hot_streak", "Hot Streak" );
-  talents.ignite                      = new talent_t( this, "ignite", "Ignite" );
-  talents.impact                      = new talent_t( this, "impact", "Impact" );
-  talents.improved_fire_blast         = new talent_t( this, "improved_fire_blast", "Improved Fire Blast" );
-  talents.improved_flamestrike        = new talent_t( this, "improved_flamestrike", "Improved Flamestrike" );
-  talents.improved_hot_streak         = new talent_t( this, "improved_hot_streak", "Improved Hot Streak" );
-  talents.improved_scorch             = new talent_t( this, "improved_scorch", "Improved Scorch" );
-  talents.living_bomb                 = new talent_t( this, "living_bomb", "Living Bomb" );
-  talents.master_of_elements          = new talent_t( this, "master_of_elements", "Master of Elements" );
-  talents.molten_fury                 = new talent_t( this, "molten_fury", "Molten Fury" );
+  talents.blast_wave                  = find_talent( "Blast Wave" );
+  talents.combustion                  = find_talent( "Combustion" );
+  talents.critical_mass               = find_talent( "Critical Mass" );
+  talents.dragons_breath              = find_talent( "Dragon's Breath" );
+  talents.fire_power                  = find_talent( "Fire Power" );
+  talents.firestarter                 = find_talent( "Firestarter" );
+  talents.hot_streak                  = find_talent( "Hot Streak" );
+  talents.ignite                      = find_talent( "Ignite" );
+  talents.impact                      = find_talent( "Impact" );
+  talents.improved_fire_blast         = find_talent( "Improved Fire Blast" );
+  talents.improved_flamestrike        = find_talent( "Improved Flamestrike" );
+  talents.improved_hot_streak         = find_talent( "Improved Hot Streak" );
+  talents.improved_scorch             = find_talent( "Improved Scorch" );
+  talents.living_bomb                 = find_talent( "Living Bomb" );
+  talents.master_of_elements          = find_talent( "Master of Elements" );
+  talents.molten_fury                 = find_talent( "Molten Fury" );
 
   // Frost
-  talents.brain_freeze                = new talent_t( this, "brain_freeze", "Brain Freeze" );
-  talents.cold_snap                   = new talent_t( this, "cold_snap", "Cold Snap" );
-  talents.deep_freeze                 = new talent_t( this, "deep_freeze", "Deep Freeze" );
-  talents.early_frost                 = new talent_t( this, "early_frost", "Early Frost" );
-  talents.enduring_winter             = new talent_t( this, "enduring_winter", "Enduring Winter" );
-  talents.fingers_of_frost            = new talent_t( this, "fingers_of_frost", "Fingers of Frost" );
-  talents.frostfire_orb               = new talent_t( this, "frostfire_orb", "Frostfire Orb" );
-  talents.ice_barrier                 = new talent_t( this, "ice_barrier", "Ice Barrier" );
-  talents.ice_floes                   = new talent_t( this, "ice_floes", "Ice Floes" );
-  talents.icy_veins                   = new talent_t( this, "icy_veins", "Icy Veins" );
-  talents.improved_freeze             = new talent_t( this, "improved_freeze", "Improved Freeze" );
-  talents.piercing_ice                = new talent_t( this, "piercing_ice", "Piercing Ice" );
-  talents.piercing_chill              = new talent_t( this, "piercing_chill", "Piercing Chill" );
-  talents.shatter                     = new talent_t( this, "shatter", "Shatter" );
+  talents.brain_freeze                = find_talent( "Brain Freeze" );
+  talents.cold_snap                   = find_talent( "Cold Snap" );
+  talents.deep_freeze                 = find_talent( "Deep Freeze" );
+  talents.early_frost                 = find_talent( "Early Frost" );
+  talents.enduring_winter             = find_talent( "Enduring Winter" );
+  talents.fingers_of_frost            = find_talent( "Fingers of Frost" );
+  talents.frostfire_orb               = find_talent( "Frostfire Orb" );
+  talents.ice_barrier                 = find_talent( "Ice Barrier" );
+  talents.ice_floes                   = find_talent( "Ice Floes" );
+  talents.icy_veins                   = find_talent( "Icy Veins" );
+  talents.improved_freeze             = find_talent( "Improved Freeze" );
+  talents.piercing_ice                = find_talent( "Piercing Ice" );
+  talents.piercing_chill              = find_talent( "Piercing Chill" );
+  talents.shatter                     = find_talent( "Shatter" );
 
   player_t::init_talents();
 }
@@ -3312,35 +3313,19 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   return player_t::create_expression( a, name_str );
 }
 
-// mage_t::get_talent_trees =================================================
+// mage_t::create_options ===================================================
 
-std::vector<talent_translation_t>& mage_t::get_talent_list()
+void mage_t::create_options()
 {
+  player_t::create_options();
 
-  talent_list.clear();
-  return talent_list;
-}
-
-// mage_t::get_options ======================================================
-
-std::vector<option_t>& mage_t::get_options()
-{
-  if ( options.empty() )
+  option_t mage_options[] =
   {
-    player_t::get_options();
+    { "focus_magic_target", OPT_STRING, &( focus_magic_target_str ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
 
-    option_t mage_options[] =
-    {
-
-      // @option_doc loc=player/mage/misc title="Misc"
-      { "focus_magic_target",        OPT_STRING, &( focus_magic_target_str           ) },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::copy( options, mage_options );
-  }
-
-  return options;
+  option_t::copy( options, mage_options );
 }
 
 // mage_t::create_profile ===================================================
