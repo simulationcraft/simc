@@ -187,6 +187,7 @@ struct hunter_t : public player_t
     summon_pet_str = "cat";
     base_gcd = 1.0;
 
+    create_talents();
     create_options();
   }
 
@@ -285,7 +286,8 @@ struct hunter_pet_t : public pet_t
       else assert( 0 );
     }
 
-
+    create_talents();
+    create_options();
   }
 
   static bool supported( int family )
@@ -297,7 +299,6 @@ struct hunter_pet_t : public pet_t
     case PET_RAPTOR:
     case PET_WOLF:
     case PET_WIND_SERPENT:
-    case PET_FEROCITY:
       return true;
     default:
       return false;
@@ -306,9 +307,10 @@ struct hunter_pet_t : public pet_t
 
   virtual int group()
   {
-    if ( pet_type < PET_FEROCITY ) return PET_FEROCITY;
-    if ( pet_type < PET_TENACITY ) return PET_TENACITY;
-    if ( pet_type < PET_CUNNING  ) return PET_CUNNING;
+    assert( pet_type > PET_NONE && pet_type < PET_HUNTER );
+    if ( pet_type >= PET_CARRION_BIRD && pet_type <= PET_WOLF         ) return PET_FEROCITY;
+    if ( pet_type >= PET_BEAR         && pet_type <= PET_WORM         ) return PET_TENACITY;
+    if ( pet_type >= PET_BAT          && pet_type <= PET_WIND_SERPENT ) return PET_CUNNING;
     return PET_NONE;
   }
 
@@ -495,9 +497,12 @@ struct ferocity_pet_t : public hunter_pet_t
     talents.shark_attack          = new talent_t ( this, "Shark Attack" );
     talents.wild_hunt             = new talent_t ( this, "Wild Hunt" );
 
-
     hunter_pet_t::init_talents();
-    talents.spiked_collar -> set_rank( 3, true );
+
+    if ( false /* no talents set */ )
+    {
+      talents.spiked_collar -> set_rank( 3, true );
+    }
   }
   virtual void init_buffs()
   {
@@ -507,30 +512,25 @@ struct ferocity_pet_t : public hunter_pet_t
   virtual void init_actions()
   {
     if ( action_list_str.empty() )
+    {
+      if ( pet_type == PET_CAT )
       {
-    if ( pet_type == PET_CAT )
-    {
-      action_list_str += "/auto_attack";
-      action_list_str += "/call_of_the_wild";
-      action_list_str += "/rabid";
-      action_list_str += "/claw";
-      action_list_str += "/wait_until_ready,sec=2,if=cooldown.claw.remains>=2";
-      action_list_str += "/wait_until_ready,sec=1,if=cooldown.claw.remains>=1";
-    }
-    else if ( pet_type == PET_DEVILSAUR )
-    {
-      action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite";
-    }
-    else if ( pet_type == PET_RAPTOR )
-    {
-      action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw";
-    }
-    else if ( pet_type == PET_WOLF )
-    {
-      action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite";
-    }
-    action_list_default = 1;
+	action_list_str = "auto_attack/call_of_the_wild/rabid/claw/wait_until_ready,sec=3";
       }
+      else if ( pet_type == PET_DEVILSAUR )
+      {
+	action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite/wait_until_ready,sec=3";
+      }
+      else if ( pet_type == PET_RAPTOR )
+      {
+	action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw/wait_until_ready,sec=3";
+      }
+      else if ( pet_type == PET_WOLF )
+      {
+	action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite/wait_until_ready,sec=3";
+      }
+      action_list_default = 1;
+    }
 
     hunter_pet_t::init_actions();
   }

@@ -196,6 +196,7 @@ struct paladin_t : public player_t
     active_seal_of_truth_proc         = 0;
     active_seal_of_truth_dot          = 0;
 
+    create_talents();
     create_options();
   }
 

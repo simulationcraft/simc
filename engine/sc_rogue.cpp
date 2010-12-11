@@ -347,6 +347,7 @@ struct rogue_t : public player_t
     tricks_of_the_trade_target_str = "other";
     tricks_of_the_trade_target = 0;
 
+    create_talents();
     create_options();
   }
 

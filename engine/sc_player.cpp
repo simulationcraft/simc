@@ -348,8 +348,6 @@ player_t::player_t( sim_t*             s,
   spell_list.clear();
 
   player_data.set_parent( & sim -> sim_data );
-
-  create_talents();
 }
 
 // player_t::~player_t =====================================================
@@ -3775,7 +3773,7 @@ struct wait_until_ready_t : public action_t
       if ( remains > 0 && remains < wait ) wait = remains;
     }
 
-    return wait;
+    return wait + 0.001;
   }
 
   virtual void execute()
@@ -4234,6 +4232,10 @@ struct compare_talents
     {
       if( l -> row == r -> row )
       {
+	if( l -> col == r -> col )
+	{
+	  return ( l -> id > r -> id ); // not a typo: Dive comes before Dash in pet talent string!
+	}
         return ( l -> col < r -> col );
       }
       return ( l -> row < r -> row );
@@ -4244,8 +4246,7 @@ struct compare_talents
 
 void player_t::create_talents()
 {
-  int cid = util_t::class_id( type );
-  int cid_mask = ( cid > 0 ) ? ( 1 << ( cid - 1 ) ) : 0;
+  int cid_mask = util_t::class_id_mask( type );
 
   talent_data_t* talent_data = talent_data_t::list();
 
@@ -4262,8 +4263,17 @@ void player_t::create_talents()
         option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
       }
     }
-    else // pet
+    else if( td.m_pet )
     {
+      for( int j=0; j < MAX_TALENT_TREES; j++ )
+      {
+	if( td.m_pet & ( 1 << j ) )
+	{
+	  talent_t* t = new talent_t( this, td.name, td.id );
+	  talents[ j ].push_back( t );
+	  option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
+	}
+      }
     }
   }
 
@@ -4276,10 +4286,14 @@ void player_t::create_talents()
 
 // player_t::find_talent ====================================================
 
-talent_t* player_t::find_talent( const std::string& n )
+talent_t* player_t::find_talent( const std::string& n,
+				 int tree )
 {
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
+    if( tree != TALENT_TAB_NONE && tree != i )
+      continue;
+
     for( int j=talents[ i ].size()-1; j >= 0; j-- )
     {
       talent_t* t = talents[ i ][ j ];

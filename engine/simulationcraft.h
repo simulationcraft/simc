@@ -192,7 +192,6 @@ enum pet_type_t
   PET_TALLSTRIDER,
   PET_WASP,
   PET_WOLF,
-  PET_FEROCITY,
 
   PET_BEAR,
   PET_BOAR,
@@ -204,7 +203,6 @@ enum pet_type_t
   PET_TURTLE,
   PET_WARP_STALKER,
   PET_WORM,
-  PET_TENACITY,
 
   PET_BAT,
   PET_BIRD_OF_PREY,
@@ -217,7 +215,6 @@ enum pet_type_t
   PET_SPIDER,
   PET_SPOREBAT,
   PET_WIND_SERPENT,
-  PET_CUNNING,
   PET_HUNTER,
 
   PET_FELGUARD, 
@@ -360,7 +357,6 @@ enum talent_tree_type
 enum talent_tab_type
 {
   TALENT_TAB_NONE = -1,
-  TALENT_PET_TAB = 3,
   DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
   DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_RESTORATION,   // DRUID
   HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
@@ -371,6 +367,7 @@ enum talent_tab_type
   SHAMAN_ELEMENTAL = 0,     SHAMAN_ENHANCEMENT,  SHAMAN_RESTORATION,  // SHAMAN
   WARLOCK_AFFLICTION = 0,   WARLOCK_DEMONOLOGY,  WARLOCK_DESTRUCTION, // WARLOCK
   WARRIOR_ARMS = 0,         WARRIOR_FURY,        WARRIOR_PROTECTION,  // WARRIOR
+  PET_FEROCITY = 0,         PET_TENACITY,        PET_CUNNING,         // PET
 };
 
 enum weapon_type
@@ -1632,6 +1629,7 @@ struct util_t
   static int parse_talent_tree                 ( const std::string& name );
   static int parse_weapon_type                 ( const std::string& name );
 
+  static int class_id_mask( int type );
   static int class_id( int type );
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
@@ -3144,7 +3142,7 @@ struct player_t
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
   virtual void create_talents();
-  virtual talent_t* find_talent( const std::string& name );
+  virtual talent_t* find_talent( const std::string& name, int tree = TALENT_TAB_NONE );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 

@@ -974,7 +974,7 @@ const char* chart_t::timeline_dps( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  s += "chs=425x130";
+  s += "chs=425x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
@@ -998,7 +998,7 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|DPS+Timeline", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 
@@ -1041,7 +1041,7 @@ const char* chart_t::timeline_resource( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  s += "chs=425x150";
+  s += "chs=425x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
@@ -1063,7 +1063,7 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
   s += "&amp;";
@@ -1091,7 +1091,7 @@ const char* chart_t::distribution_dps( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://chart.apis.google.com/chart?";
-  s += "chs=525x130";
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=bvs";
   s += "&amp;";
@@ -1117,7 +1117,7 @@ const char* chart_t::distribution_dps( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|DPS+Distribution", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=000000,20";
 

@@ -240,6 +240,7 @@ struct mage_t : public player_t
     distance         = 40;
     mana_gem_charges =  3;
 
+    create_talents();
     create_options();
   }
 

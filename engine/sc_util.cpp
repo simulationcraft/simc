@@ -269,7 +269,6 @@ const char* util_t::pet_type_string( int type )
   case PLAYER_NONE:     return "none";
   case PET_CAT:         return "cat";
   case PET_WOLF:        return "wolf";
-  case PET_FEROCITY:    return "pet_ferocity";
   }
   return "unknown";
 }
@@ -1130,6 +1129,15 @@ stat_type util_t::parse_reforge_type( const std::string& name )
   default:
     return STAT_NONE;
   }
+}
+
+// util_t::class_id_max ====================================================
+
+int util_t::class_id_mask( int type )
+{
+  int cid = class_id( type );
+  if( cid <= 0 ) return 0;
+  return 1 << ( cid - 1 );
 }
 
 // util_t::class_id ========================================================

@@ -377,6 +377,7 @@ struct warlock_t : public player_t
 
     use_pre_soulburn = 0;
 
+    create_talents();
     create_options();
   }
 

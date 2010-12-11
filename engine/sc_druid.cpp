@@ -351,6 +351,7 @@ struct druid_t : public player_t
 
     equipped_weapon_dps = 0; 
 
+    create_talents();
     create_options();
   }
 

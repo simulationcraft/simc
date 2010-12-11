@@ -333,6 +333,7 @@ struct warrior_t : public player_t
     instant_flurry_haste = true;
     initial_rage = 0;
 
+    create_talents();
     create_options();
   }
 

@@ -361,6 +361,7 @@ struct priest_t : public player_t
     cooldowns_rapture -> duration = 12.0;
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
 
+    create_talents();
     create_options();
   }
 

@@ -189,6 +189,7 @@ struct shaman_t : public player_t
     windfury_weapon_attack   = 0;
     flametongue_weapon_spell = 0;
 
+    create_talents();
     create_options();
   }
 
