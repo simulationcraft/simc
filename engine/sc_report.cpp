@@ -3206,17 +3206,23 @@ static void print_html2_player( FILE* file, player_t* p )
 
 // print_html3_player =========================================================
 
-static void print_html3_player( FILE* file, player_t* p )
+static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
 {
   char buffer[ 4096 ];
   std::string n = p -> name();
   util_t::str_to_utf8( n );
+  int num_players = ( int ) sim -> players_by_name.size();
   int i;
   
   util_t::fprintf( file,
     "    <div id=\"%s\" class=\"player section\">\n"
-    "      <h2 class=\"toggle\">%s&nbsp;:&nbsp;%.0fdps</h2>\n",
-    n.c_str(),
+    "      <h2 class=\"toggle",
+    n.c_str() );
+  if ( num_players == 1 )
+  {
+    util_t::fprintf( file, " open" );
+  }
+  util_t::fprintf( file, "\">%s&nbsp;:&nbsp;%.0fdps</h2>\n",
     n.c_str(),
     p -> dps );
   
@@ -3414,42 +3420,90 @@ static void print_html3_player( FILE* file, player_t* p )
     "          </div>\n"
     "        </div>\n" );
 
-  std::string action_dpet_str       = "empty";
-  std::string action_dmg_str        = "empty";
-  std::string gains_str             = "empty";
-  std::string timeline_resource_str = "empty";
-  std::string timeline_dps_str      = "empty";
-  std::string distribution_dps_str  = "empty";
+  std::string action_dpet_str                     = "empty";
+  std::string action_dmg_str                      = "empty";
+  std::string gains_str                           = "empty";
+  std::string timeline_resource_str               = "empty";
+  std::string timeline_dps_str                    = "empty";
+  std::string distribution_dps_str                = "empty";
+  std::string distribution_encounter_timeline_str = "empty";
 
   if ( ! p -> action_dpet_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n", p -> action_dpet_chart.c_str() );
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Action DPET Chart\" />\n", p -> action_dpet_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n", p -> action_dpet_chart.c_str() );
+    }
     action_dpet_str = buffer;
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n", p -> action_dmg_chart.c_str() );
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Action Damage Chart\" />\n", p -> action_dmg_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n", p -> action_dmg_chart.c_str() );
+    }
     action_dmg_str = buffer;
   }
   if ( ! p -> gains_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\" title=\"Resource Gains Chart\">%s</span>\n", p -> gains_chart.c_str() );
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Gains Chart\" />\n", p -> gains_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\" title=\"Resource Gains Chart\">%s</span>\n", p -> gains_chart.c_str() );
+    }
     gains_str = buffer;
   }
   if ( ! p -> timeline_resource_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-resource\" title=\"Resource Timeline Chart\">%s</span>\n", p -> timeline_resource_chart.c_str() );
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n", p -> timeline_resource_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-resource\" title=\"Resource Timeline Chart\">%s</span>\n", p -> timeline_resource_chart.c_str() );
+    }
     timeline_resource_str = buffer;
   }
   if ( ! p -> timeline_dps_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n", p -> timeline_dps_chart.c_str() );
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n", p -> timeline_dps_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n", p -> timeline_dps_chart.c_str() );
+    }
     timeline_dps_str = buffer;
   }
   if ( ! p -> distribution_dps_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n", p -> distribution_dps_chart.c_str() );
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Distribution Chart\" />\n", p -> distribution_dps_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n", p -> distribution_dps_chart.c_str() );
+    }
     distribution_dps_str = buffer;
+  }
+  if ( num_players == 1 )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Encounter Timeline Distribution Chart\" />\n", sim -> timeline_chart.c_str() );
+    distribution_encounter_timeline_str = buffer;
   }
 
   util_t::fprintf( file,
@@ -3465,6 +3519,7 @@ static void print_html3_player( FILE* file, player_t* p )
     "              %s"
     "              %s"
     "              %s"
+    "              %s"
     "            </div>\n"
     "            <div class=\"clear\"></div>\n"
     "          </div>\n"
@@ -3474,7 +3529,8 @@ static void print_html3_player( FILE* file, player_t* p )
     gains_str.c_str(),
     timeline_resource_str.c_str(),
     timeline_dps_str.c_str(),
-    distribution_dps_str.c_str() );
+    distribution_dps_str.c_str(),
+    distribution_encounter_timeline_str.c_str() );
 
   util_t::fprintf( file,
     "        <div class=\"player-section\">\n"
@@ -5095,23 +5151,18 @@ void report_t::print_html3( sim_t* sim )
         
         for ( int i=0; i < num_players; i++ )
         {
-                print_html3_player( file, sim -> players_by_name[ i ] );
+                print_html3_player( file, sim, sim -> players_by_name[ i ] );
                 if ( sim -> report_pets_separately )
                 {
                         for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
                         {
                                 if ( pet -> summoned )
-                                        print_html3_player( file, pet );
+                                        print_html3_player( file, sim, pet );
                         }
                 }
         }
         
         print_html3_auras_debuffs( file, sim );
-        
-        if ( num_players == 1 )
-        {
-                util_t::fprintf( file, "<img src=\"%s\" /> <br />\n", sim -> timeline_chart.c_str() );
-        }
         
         print_html3_help_boxes( file, sim );
         
