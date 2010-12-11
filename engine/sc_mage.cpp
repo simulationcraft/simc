@@ -3090,6 +3090,7 @@ void mage_t::init_actions()
         action_list_str += "/presence_of_mind,arcane_blast";
       }
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<20&mana_pct>5";
+      if ( level >= 81 ) action_list_str += "/flame_orb";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<16&mana_pct>25)|mana_pct>94|buff.arcane_blast.stack<3";
       if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=25";
