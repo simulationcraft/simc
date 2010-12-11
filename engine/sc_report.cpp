@@ -1562,7 +1562,7 @@ static void print_html3_raid_summary( FILE*  file, sim_t* sim )
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file,
-      "          <img src=\"%s\" alt=\"DPS Chart\" />\n",
+      "          <a href=\"#help-dps\" class=\"help\"><img src=\"%s\" alt=\"DPS Chart\" /></a>\n",
       sim -> dps_charts[ i ].c_str() );
   }
   count = ( int ) sim -> dps_charts.size();
@@ -1573,7 +1573,7 @@ static void print_html3_raid_summary( FILE*  file, sim_t* sim )
       sim -> gear_charts[ i ].c_str() );
   }
   util_t::fprintf( file,
-    "          <img src=\"%s\" alt=\"Raid Events Chart\" />\n",
+    "          <a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
     sim -> timeline_chart.c_str() );
   if ( ! sim -> raid_events_str.empty() )
   {
@@ -1906,18 +1906,226 @@ static void print_html3_help_boxes( FILE*  file, sim_t* sim )
 {
   util_t::fprintf( file,
     "    <!-- Help Boxes -->\n"
-    "    <div id=\"scale-factors\">\n"
+
+    "    <div id=\"help-apm\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>APM</h3>\n"
+    "        <p>Average number of actions executed per minute.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-constant-buffs\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Constant Buffs</h3>\n"
+    "        <p>Buffs received prior to combat and present the entire fight.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-count\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Count</h3>\n"
+    "        <p>Average number of times an action is executed per iteration.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-crit\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Crit</h3>\n"
+    "        <p>Average crit damage.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-crit-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Crit%%</h3>\n"
+    "        <p>Percentage of executes that resulted in critical strikes.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dodge-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Dodge%%</h3>\n"
+    "        <p>Percentage of executes that resulted in dodges.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dpe\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>DPE</h3>\n"
+    "        <p>Average damage per execution of an individual action.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dpet\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>DPET</h3>\n"
+    "        <p>Average damage per execute time of an individual action; the amount of damage generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dpr\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>DPR</h3>\n"
+    "        <p>Average damage per resource point spent.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dps\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>DPS</h3>\n"
+    "        <p>Average damage per second.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dps-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>DPS%%</h3>\n"
+    "        <p>Percentage of total DPS contributed by a particular action.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-dynamic-buffs\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Dynamic Buffs</h3>\n"
+    "        <p>Temporary buffs received during combat, perhaps multiple times.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    // Plain English needed
+    "    <div id=\"help-error\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Error</h3>\n"
+    "        <p>( 2 * dps_stddev / sqrt( iterations ) ) / dps_avg</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-glance-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>G%%</h3>\n"
+    "        <p>Percentage of executes that resulted in glancing blows.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-hit\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Hit</h3>\n"
+    "        <p>Average non-crit damage.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-interval\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Interval</h3>\n"
+    "        <p>Average time between executions of a particular action.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-max\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Max</h3>\n"
+    "        <p>Maximum crit damage over all iterations.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-miss-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>M%%</h3>\n"
+    "        <p>Percentage of executes that resulted in misses.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-origin\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Origin</h3>\n"
+    "        <p>The player profile from which the simulation script was generated. The profile must be copied into the same directory as this HTML file in order for the link to work.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-parry-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Parry%%</h3>\n"
+    "        <p>Percentage of executes that resulted in parries.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    // Plain English needed
+    "    <div id=\"help-range\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Range</h3>\n"
+    "        <p>( dps_max - dps_min ) / ( 2 * dps_avg )</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-rps-in\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>RPS In</h3>\n"
+    "        <p>Average resource points generated per second.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-rps-out\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>RPS Out</h3>\n"
+    "        <p>Average resource points consumed per second.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-scale-factors\">\n"
     "      <div class=\"help-box\">\n"
     "        <h3>Scale Factors</h3>\n"
     "        <p>DPS gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>DPS loss</b> per unit stat <b>decrease</b>.</p>\n"
     "      </div>\n"
     "    </div>\n"
-    "    <div id=\"waiting\">\n"
+
+    "    <div id=\"help-ticks\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Ticks</h3>\n"
+    "        <p>Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component will have zero ticks.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-ticks-crit\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>T-Crit</h3>\n"
+    "        <p>Average crit tick damage.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-ticks-crit-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>T-Crit%%</h3>\n"
+    "        <p>Percentage of ticks that resulted in critical strikes.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-ticks-hit\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>T-Hit</h3>\n"
+    "        <p>Average non-crit tick damage.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-ticks-miss-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>T-M%%</h3>\n"
+    "        <p>Percentage of ticks that resulted in misses.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-timeline-distribution\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>Timeline Distribution</h3>\n"
+    "        <p>The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This chart shows how often the duration of the encounter varied by how much time.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
+    "    <div id=\"help-waiting\">\n"
     "      <div class=\"help-box\">\n"
     "        <h3>Waiting</h3>\n"
     "        <p>This is the percentage of time in which no action can be taken other than autoattacks. This can be caused by resource starvation, lockouts, and timers.</p>\n"
     "      </div>\n"
     "    </div>\n"
+
     "    <!-- End Help Boxes -->\n" );
 }
 
@@ -3003,6 +3211,7 @@ static void print_html3_player( FILE* file, player_t* p )
   char buffer[ 4096 ];
   std::string n = p -> name();
   util_t::str_to_utf8( n );
+  int i;
   
   util_t::fprintf( file,
     "    <div id=\"%s\" class=\"player section\">\n"
@@ -3044,15 +3253,15 @@ static void print_html3_player( FILE* file, player_t* p )
     "          <div class=\"toggle-content\">\n"
     "            <table>\n"
     "              <tr>\n"
-    "                <th>DPS</th>\n"
-    "                <th>Error</th>\n"
-    "                <th>Range</th>\n"
-    "                <th>DPR</th>\n"
-    "                <th>RPS-Out</th>\n"
-    "                <th>RPS-In</th>\n"
+    "                <th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+    "                <th><a href=\"#help-error\" class=\"help\">Error</a></th>\n"
+    "                <th><a href=\"#help-range\" class=\"help\">Range</a></th>\n"
+    "                <th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
+    "                <th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
+    "                <th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
     "                <th>Resource</th>\n"
-    "                <th>Waiting</th>\n"
-    "                <th>ApM</th>\n"
+    "                <th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
+    "                <th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
     "              </tr>\n"
     "              <tr>\n"
     "                <td>%.1f</td>\n"
@@ -3088,7 +3297,7 @@ static void print_html3_player( FILE* file, player_t* p )
       std::string  enc_url = p -> origin_str; encode_html(  enc_url );
       util_t::fprintf( file,
         "              <tr class=\"left\">\n"
-        "                <th>Origin</th>\n"
+        "                <th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
         "                <td><a href=\"%s\">%s</a></td>\n"
         "              </tr>\n",
         p -> origin_str.c_str(),
@@ -3140,7 +3349,7 @@ static void print_html3_player( FILE* file, player_t* p )
         "            <table class=\"mt\">\n" );
       util_t::fprintf( file,
         "              <tr>\n"
-        "                <th><a href=\"#\" class=\"help\" rel=\"#scale-factors\">?</a></th>\n" );
+        "                <th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
       for ( int i=0; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
         {
@@ -3274,27 +3483,27 @@ static void print_html3_player( FILE* file, player_t* p )
     "            <table>\n"
     "              <tr>\n"
     "                <th></th>\n"
-    "                <th>DPS</th>\n"
-    "                <th>DPS%%</th>\n"
-    "                <th>Count</th>\n"
-    "                <th>Interval</th>\n"
-    "                <th>DPE</th>\n"
-    "                <th>DPET</th>\n"
-    "                <th>DPR</th>\n"
+    "                <th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+    "                <th><a href=\"#help-dps-pct\" class=\"help\">DPS%%</a></th>\n"
+    "                <th><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+    "                <th><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+    "                <th><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
+    "                <th><a href=\"#help-dpet\" class=\"help\">DPET</a></th>\n"
+    "                <th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
     "                <th>RPE</th>\n"
-    "                <th>Hit</th>\n"
-    "                <th>Crit</th>\n"
-    "                <th>Max</th>\n"
-    "                <th>Crit%%</th>\n"
-    "                <th>M%%</th>\n"
-    "                <th>D%%</th>\n"
-    "                <th>P%%</th>\n"
-    "                <th>G%%</th>\n"
-    "                <th>Ticks</th>\n"
-    "                <th>T-Hit</th>\n"
-    "                <th>T-Crit</th>\n"
-    "                <th>T-Crit%%</th>\n"
-    "                <th>T-M%%</th>\n"
+    "                <th><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+    "                <th><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+    "                <th><a href=\"#help-max\" class=\"help\">Max</a></th>\n"
+    "                <th><a href=\"#help-crit-pct\" class=\"help\">Crit%%</a></th>\n"
+    "                <th><a href=\"#help-miss-pct\" class=\"help\">M%%</a></th>\n"
+    "                <th><a href=\"#help-dodge-pct\" class=\"help\">D%%</a></th>\n"
+    "                <th><a href=\"#help-parry-pct\" class=\"help\">P%%</a></th>\n"
+    "                <th><a href=\"#help-glance-pct\" class=\"help\">G%%</a></th>\n"
+    "                <th><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
+    "                <th><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
+    "                <th><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
+    "                <th><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%%</a></th>\n"
+    "                <th><a href=\"#help-ticks-miss-pct\" class=\"help\">T-M%%</a></th>\n"
     "              </tr>\n" );
 
   util_t::fprintf( file,
@@ -3339,19 +3548,21 @@ static void print_html3_player( FILE* file, player_t* p )
     }
   }
 
-  // Dynamic Buffs table
   util_t::fprintf( file,
     "            </table>\n"
     "          </div>\n"
     "        </div>\n" );
 
   util_t::fprintf( file,
-    "        <div class=\"player-section dynamic-buffs\">\n"
-    "          <h3 class=\"toggle\">Dynamic Buffs</h3>\n"
-    "          <div class=\"toggle-content\">\n"
-    "            <table>\n"
+    "        <div class=\"player-section buffs\">\n"
+    "          <h3 class=\"toggle\">Buffs</h3>\n"
+    "          <div class=\"toggle-content\">\n" );
+    
+  // Dynamic Buffs table
+  util_t::fprintf( file,
+    "            <table class=\"mb\">\n"
     "              <tr>\n"
-    "                <th></th>\n"
+    "                <th class=\"left\"><a href=\"#help-dynamic-buffs\" class=\"help\">Dynamic Buffs</a></th>\n"
     "                <th>Start</th>\n"
     "                <th>Refresh</th>\n"
     "                <th>Interval</th>\n"
@@ -3361,13 +3572,20 @@ static void print_html3_player( FILE* file, player_t* p )
     "              </tr>\n",
     n.c_str(),
     n.c_str() );
+  i = 1;
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
     if ( b -> quiet || ! b -> start_count || b -> constant )
       continue;
 
     util_t::fprintf( file,
-      "              <tr class=\"odd\">\n"
+      "              <tr" );
+    if ( !( i & 1 ) )
+    {
+      util_t::fprintf( file, " class=\"odd\"" );
+    }
+    util_t::fprintf( file, ">\n" );
+    util_t::fprintf( file,
       "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
       "                <td class=\"right\">%.1f</td>\n"
       "                <td class=\"right\">%.1f</td>\n"
@@ -3385,6 +3603,7 @@ static void print_html3_player( FILE* file, player_t* p )
       b -> avg_trigger_interval,
       b -> uptime_pct,
       b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+
     util_t::fprintf( file,
       "              <tr class=\"details hide\">\n"
       "                <td colspan=\"7\">\n",
@@ -3395,7 +3614,7 @@ static void print_html3_player( FILE* file, player_t* p )
       "                  <ul>\n"
       "                    <li><span class=\"label\">id:</span>%.i</li>\n"
       "                    <li><span class=\"label\">cooldown name:</span>%s</li>\n"
-      "                    <li><span class=\"label\">tooltip:</span>%s</li>\n"
+      "                    <li><span class=\"label\">tooltip:</span><span class=\"tooltip-wider\">%s</span></li>\n"
       "                    <li><span class=\"label\">max_stacks:</span>%.i</li>\n"
       "                    <li><span class=\"label\">duration:</span>%.2f</li>\n"
       "                    <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
@@ -3412,27 +3631,33 @@ static void print_html3_player( FILE* file, player_t* p )
     util_t::fprintf( file,
       "                </td>\n"
       "              </tr>\n" );
+    i++;
   }
   util_t::fprintf( file,
-    "              </table>\n"
-    "            </div>\n"
-    "          </div>\n");
+    "            </table>\n" );
 
   // constant buffs
   if ( !p -> is_pet() )
   {
     util_t::fprintf( file,
-      "          <div class=\"player-section constant-buffs\">\n"
-      "            <h3 class=\"toggle\">Constant Buffs</h3>\n"
-      "            <div class=\"toggle-content\">\n"
-      "              <table>\n" );
+      "              <table>\n"
+      "                <tr>\n"
+      "                  <th class=\"left\"><a href=\"#help-constant-buffs\" class=\"help\">Constant Buffs</a></th>\n"
+      "                </tr>\n" );
+    i = 1;
     for ( buff_t* b = p -> buff_list; b; b = b -> next )
     {
       if ( b -> quiet || ! b -> start_count || ! b -> constant )
         continue;
 
       util_t::fprintf( file,
-        "                <tr class=\"odd\">\n"
+        "              <tr" );
+      if ( !( i & 1 ) )
+      {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">\n" );
+      util_t::fprintf( file,
         "                  <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
         "                </tr>\n",
         b -> name() );
@@ -3443,7 +3668,7 @@ static void print_html3_player( FILE* file, player_t* p )
         "                    <ul>\n"
         "                      <li><span class=\"label\">id:</span>%.i</li>\n"
         "                      <li><span class=\"label\">cooldown name:</span>%s</li>\n"
-        "                      <li><span class=\"label\">tooltip:</span>%s</li>\n"
+        "                      <li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
         "                      <li><span class=\"label\">max_stacks:</span>%.i</li>\n"
         "                      <li><span class=\"label\">duration:</span>%.2f</li>\n"
         "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
@@ -3458,6 +3683,7 @@ static void print_html3_player( FILE* file, player_t* p )
         b -> buff_duration,
         b -> cooldown -> duration,
         b -> default_chance );
+      i++;
     }
     util_t::fprintf( file,
       "              </table>\n"
@@ -3474,7 +3700,7 @@ static void print_html3_player( FILE* file, player_t* p )
     "                  <th></th>\n"
     "                  <th>%%</th>\n"
     "                </tr>\n" );
-  int i = 1;
+  i = 1;
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
     if ( u -> percentage() > 0 )
@@ -4718,6 +4944,7 @@ void report_t::print_html3( sim_t* sim )
       "      #active-help .close { position: absolute; right: 10px; bottom: 4px; }\n"
       "      .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
       "      .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
+      "      a.help { cursor: help; }\n"
       "      .section { position: relative; padding: 8px; margin: 0 0 15px 0; outline: 1px solid #ccc; background-color: #fff; }\n"
       "      .section .toggle-content { padding: 0 0 20px 14px; }\n"
       "      #raid-summary .toggle-content { padding-bottom: 0px; }\n"
@@ -4739,7 +4966,7 @@ void report_t::print_html3( sim_t* sim )
       "      tr { background-color: #fff; }\n"
       "      tr.head { background-color: #aaa; color: #fff; }\n"
       "      tr.odd { background-color: #f3f3f3; }\n"
-      "      th { padding: 2px 4px; text-align: center; background-color: #aaa; color: #fff; }\n"
+      "      th { padding: 2px 4px; text-align: center; background-color: #aaa; color: #fcfcfc; }\n"
       "      th a { color: #fff; text-decoration: underline; }\n"
       "      th a:hover, th a:active { color: #f1f1ff; }\n"
       "      td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
@@ -4750,6 +4977,7 @@ void report_t::print_html3( sim_t* sim )
       "      tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
       "      tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
       "      tr.details td ul li span.tooltip { display: block; float: left; width: 190px; }\n"
+      "      tr.details td ul li span.tooltip-wider { display: block; float: left; width: 350px; }\n"
       "      tr.details td div.float { width: 350px; }\n"
       "      tr.details td div.float h5 { margin-top: 4px; }\n"
       "      tr.details td div.float ul { margin: 0 0 12px 0; }\n"
@@ -4932,7 +5160,7 @@ void report_t::print_html3( sim_t* sim )
       "        });\n"
       "        $('.help').click(function(e) {\n"
       "          e.preventDefault();\n"
-      "          var target = $(this).attr('rel') + ' .help-box';\n"
+      "          var target = $(this).attr('href') + ' .help-box';\n"
       "          var content = $(target).html();\n"
       "          $('#active-help-dynamic .help-box').html(content);\n"
       "          $('#active-help .help-box').show();\n"
