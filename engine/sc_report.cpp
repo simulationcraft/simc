@@ -1437,14 +1437,14 @@ static void print_html3_contents( FILE*  file, sim_t* sim )
   util_t::fprintf( file,
     "        <ul class=\"toc\">\n" );
   util_t::fprintf( file,
-    "          <li><a href=\"#raid_summary\">Raid Summary</a></li>\n" );
+    "          <li><a href=\"#raid-summary\">Raid Summary</a></li>\n" );
   if ( sim -> scaling -> has_scale_factors() )
   {
     util_t::fprintf( file,
-      "          <li><a href=\"#scale_factors\">Scale Factors</a></li>\n" );
+      "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n" );
   }
   util_t::fprintf( file,
-    "          <li><a href=\"#auras_debuffs\">Auras and Debuffs</a></li>\n" );
+    "          <li><a href=\"#auras-debuffs\">Auras and Debuffs</a></li>\n" );
   int num_players = ( int ) sim -> players_by_name.size();
   for ( int i=0; i < num_players; i++ )
   {
@@ -1524,8 +1524,6 @@ static void print_html2_raid_summary( FILE*  file, sim_t* sim )
 
 static void print_html3_raid_summary( FILE*  file, sim_t* sim )
 {
-  util_t::fprintf( file,
-    "    <a name=\"raid_summary\"></a>\n" );
   util_t::fprintf( file,
     "    <div id=\"raid-summary\" class=\"section\">\n\n" );
   util_t::fprintf( file,
@@ -1671,7 +1669,6 @@ static void print_html3_scale_factors( FILE*  file, sim_t* sim )
     sim -> report_precision = 2;
 
   util_t::fprintf( file,
-    "    <a name=\"scale_factors\"></a>\n"
     "    <div id=\"raid-scale-factors\" class=\"section\">\n\n"
     "      <h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n"
     "      <div class=\"toggle-content\">\n" );
@@ -2987,11 +2984,9 @@ static void print_html3_player( FILE* file, player_t* p )
   util_t::str_to_utf8( n );
   
   util_t::fprintf( file,
-    "    <a name=\"%s\"></a>\n",
-    n.c_str() );
-  util_t::fprintf( file,
-    "    <div class=\"player section\">\n"
+    "    <div id=\"%s\" class=\"player section\">\n"
     "      <h2 class=\"toggle\">%s&nbsp;:&nbsp;%.0fdps</h2>\n",
+    n.c_str(),
     n.c_str(),
     p -> dps );
   
@@ -3068,21 +3063,21 @@ static void print_html3_player( FILE* file, player_t* p )
     util_t::fprintf( file,
       "            <table class=\"mt\">\n" );
     if ( p -> origin_str.compare("unknown") )
-    util_t::fprintf( file,
-      "              <tr class=\"left\">\n"
-      "                <th>Origin</th>\n"
-      "                <td><a href=\"%s\">%s</a></td>\n"
-      "              </tr>\n",
-      p -> origin_str.c_str(),
-      p -> origin_str.c_str() );
+      util_t::fprintf( file,
+        "              <tr class=\"left\">\n"
+        "                <th>Origin</th>\n"
+        "                <td><a href=\"%s\">%s</a></td>\n"
+        "              </tr>\n",
+        p -> origin_str.c_str(),
+        p -> origin_str.c_str() );
     if ( !p -> talents_str.empty() )
-    util_t::fprintf( file,
-      "              <tr class=\"left\">\n"
-      "                <th>Talents</th>\n"
-      "                <td><a href=\"%s\">%s</a></td>\n"
-      "              </tr>\n",
-      p -> talents_str.c_str(),
-      p -> talents_str.c_str() );
+      util_t::fprintf( file,
+        "              <tr class=\"left\">\n"
+        "                <th>Talents</th>\n"
+        "                <td><a href=\"%s\">%s</a></td>\n"
+        "              </tr>\n",
+        p -> talents_str.c_str(),
+        p -> talents_str.c_str() );
     std::vector<std::string> glyph_names;
     int num_glyphs = util_t::string_split( glyph_names, p -> glyphs_str, ",/" );
     if ( num_glyphs )
@@ -3095,7 +3090,7 @@ static void print_html3_player( FILE* file, player_t* p )
       for ( int i=0; i < num_glyphs; i++ )
       {
         util_t::fprintf( file,
-          "                    <li>%s</li>",
+          "                    <li>%s</li>\n",
           glyph_names[ i ].c_str() );
       }
       util_t::fprintf( file,
@@ -3180,8 +3175,8 @@ static void print_html3_player( FILE* file, player_t* p )
     }
   }
   util_t::fprintf( file,
-    "          </div>"
-    "        </div>" );
+    "          </div>\n"
+    "        </div>\n" );
 
   std::string action_dpet_str       = "empty";
   std::string action_dmg_str        = "empty";
@@ -3192,32 +3187,32 @@ static void print_html3_player( FILE* file, player_t* p )
 
   if ( ! p -> action_dpet_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_action_dpet\" src=\"%s\" />\n", p -> action_dpet_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dpet\">%s</span>\n", p -> action_dpet_chart.c_str() );
     action_dpet_str = buffer;
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_action_dmg\" src=\"%s\" />\n", p -> action_dmg_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dmg\">%s</span>\n", p -> action_dmg_chart.c_str() );
     action_dmg_str = buffer;
   }
   if ( ! p -> gains_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_gains\" src=\"%s\" />\n", p -> gains_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\">%s</span>\n", p -> gains_chart.c_str() );
     gains_str = buffer;
   }
   if ( ! p -> timeline_resource_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_timeline_resource\" src=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-resource\">%s</span>\n", p -> timeline_resource_chart.c_str() );
     timeline_resource_str = buffer;
   }
   if ( ! p -> timeline_dps_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_timeline_dps\" src=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-dps\">%s</span>\n", p -> timeline_dps_chart.c_str() );
     timeline_dps_str = buffer;
   }
   if ( ! p -> distribution_dps_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img name=\"chart_distribution_dps\" src=\"%s\" />\n", p -> distribution_dps_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-distribution-dps\">%s</span>\n", p -> distribution_dps_chart.c_str() );
     distribution_dps_str = buffer;
   }
 
@@ -3226,41 +3221,24 @@ static void print_html3_player( FILE* file, player_t* p )
     "          <h3 class=\"toggle open\">Charts</h3>\n"
     "          <div class=\"toggle-content\">\n"
     "            <div class=\"charts\">\n"
-    "              %s\n"
-    "              %s\n"
-    "              %s\n"
-    "            </div>\n",
-    action_dpet_str.c_str(),
-    action_dmg_str.c_str(),
-    gains_str.c_str() );
-  util_t::fprintf( file,
+    "              %s"
+    "              %s"
+    "              %s"
+    "            </div>\n"
     "            <div class=\"charts\">\n"
-    "              %s\n"
-    "              %s\n"
-    "              %s\n",
-    timeline_resource_str.c_str(),
-    timeline_dps_str.c_str(),
-    distribution_dps_str.c_str() );
-  if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
-  {
-    if( ! p -> scaling_dps_chart.empty() )
-    {
-      util_t::fprintf( file,
-        "              <img name=\"chart_scaling_dps\" src=\"%s\" />\n",
-        p -> scaling_dps_chart.c_str() );
-    }
-    if( ! p -> scale_factors_chart.empty() )
-    {
-      util_t::fprintf( file,
-        "              <img name=\"scale_factors\" src=\"%s\" />\n",
-        p -> scale_factors_chart.c_str() );
-    }
-  }
-  util_t::fprintf( file,
+    "              %s"
+    "              %s"
+    "              %s"
     "            </div>\n"
     "            <div class=\"clear\"></div>\n"
     "          </div>\n"
-    "        </div>\n" );
+    "        </div>\n",
+    action_dpet_str.c_str(),
+    action_dmg_str.c_str(),
+    gains_str.c_str(),
+    timeline_resource_str.c_str(),
+    timeline_dps_str.c_str(),
+    distribution_dps_str.c_str() );
 
   util_t::fprintf( file,
     "        <div class=\"player-section\">\n"
@@ -4693,7 +4671,7 @@ void report_t::print_html3( sim_t* sim )
       "      ul.float, ol.float { padding: 0; }\n"
       "      ul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 2px solid #eee; }\n"
       "      .clear { clear: both; }\n"
-      "      .hide { display: none; }\n"
+      "      .hide, .charts span { display: none; }\n"
       "      .float { float: left; }\n"
       "      .mt { margin-top: 20px; }\n"
       "      .mb { margin-bottom: 20px; }\n"
@@ -4881,23 +4859,11 @@ void report_t::print_html3( sim_t* sim )
         print_html3_help_boxes( file, sim );
         
         
-        // Old javascript toggle
-        util_t::fprintf ( file,
-          "    <script type=\"text/javascript\">\n"
-          "      function toggleSlide(objname){\n"
-          "        if (document.getElementById(objname).style.display == \"none\") {\n"
-          "          document.getElementById(objname).style.display=\"\";\n"
-          "        } else {\n"
-          "          document.getElementById(objname).style.display=\"none\";\n"
-          "        }\n"
-          "      }\n"
-          "    </script>\n\n" );
-        
         // jQuery
         util_t::fprintf ( file,
           "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
         
-        // New javascript toggles
+    // New javascript toggles
     util_t::fprintf( file,
       "    <script>\n"
       "      jQuery.noConflict();\n"
@@ -4905,9 +4871,21 @@ void report_t::print_html3( sim_t* sim )
       "        $('.toggle-content, .help-box').hide();\n"
       "        $('.open').next('.toggle-content').show();\n"
       "        $('.toggle').click(function(e) {\n"
+      "          var img_id = '';\n"
+      "          var src = '';\n"
+      "          var target = '';\n"
       "          e.preventDefault();\n"
       "          $(this).toggleClass('open');\n"
       "          $(this).next('.toggle-content').toggle(150);\n"
+      "          $(this).next('.toggle-content').find('.charts').each(function() {\n"
+      "            $(this).children('span').each(function() {\n"
+      "              img_class = '.' + $(this).attr('class');\n"
+      "              src = $(this).html().replace(/&amp;/g, \"&\");\n"
+      "              img = '<img class=\"' + img_class + '\" src=\"' + src + '\" />';\n"
+      "              $(this).replaceWith(img);\n"
+      "              $(this).load();\n"
+      "            });\n"
+      "          });\n"
       "        });\n"
       "        $('.toggle-details').click(function(e) {\n"
       "          e.preventDefault();\n"
@@ -4936,8 +4914,8 @@ void report_t::print_html3( sim_t* sim )
       "        });\n"
       "      });\n"
       "    </script>\n\n"
-          "  </body>\n\n"
-          "</html>\n" );
+      "  </body>\n\n"
+      "</html>\n" );
         
         fclose( file );
 }
