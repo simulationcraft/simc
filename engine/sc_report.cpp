@@ -61,6 +61,27 @@ static void simplify_html( std::string& buffer )
   }
 }
 
+// encode_html =============================================================
+
+static void encode_html ( std::string& buffer )
+{
+  for ( std::string::size_type pos = buffer.find( "<", 0 ); pos != std::string::npos; pos = buffer.find( "<", pos ) )
+  {
+    buffer.replace( pos, 1, "&lt;" );
+    pos+=2;
+  }
+  for ( std::string::size_type pos = buffer.find( ">", 0 ); pos != std::string::npos; pos = buffer.find( ">", pos ) )
+  {
+    buffer.replace( pos, 1, "&gt;" );
+    pos+=2;
+  }
+  for ( std::string::size_type pos = buffer.find( "&", 0 ); pos != std::string::npos; pos = buffer.find( "&", pos ) )
+  {
+    buffer.replace( pos, 1, "&amp;" );
+    pos+=2;
+  }
+}
+
 // wiki_player_reference =====================================================
 
 static std::string wiki_player_reference( player_t* p )
@@ -1541,18 +1562,18 @@ static void print_html3_raid_summary( FILE*  file, sim_t* sim )
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file,
-      "          <img src=\"%s\" />\n",
+      "          <img src=\"%s\" alt=\"DPS Chart\" />\n",
       sim -> dps_charts[ i ].c_str() );
   }
   count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file,
-      "          <img src=\"%s\" />\n",
+      "          <img src=\"%s\" alt=\"Gear Chart\" />\n",
       sim -> gear_charts[ i ].c_str() );
   }
   util_t::fprintf( file,
-    "          <img src=\"%s\" />\n",
+    "          <img src=\"%s\" alt=\"Raid Events Chart\" />\n",
     sim -> timeline_chart.c_str() );
   if ( ! sim -> raid_events_str.empty() )
   {
@@ -1593,7 +1614,7 @@ static void print_html3_raid_summary( FILE*  file, sim_t* sim )
   for ( int i=0; i < count; i++ )
   {
     util_t::fprintf( file,
-      "          <img src=\"%s\" />\n",
+      "          <img src=\"%s\" alt=\"DPET Chart\" />\n",
       sim -> dpet_charts[ i ].c_str() );
   }
   util_t::fprintf( file,
@@ -3063,21 +3084,27 @@ static void print_html3_player( FILE* file, player_t* p )
     util_t::fprintf( file,
       "            <table class=\"mt\">\n" );
     if ( p -> origin_str.compare("unknown") )
+    {
+      std::string  enc_url = p -> origin_str; encode_html(  enc_url );
       util_t::fprintf( file,
         "              <tr class=\"left\">\n"
         "                <th>Origin</th>\n"
         "                <td><a href=\"%s\">%s</a></td>\n"
         "              </tr>\n",
         p -> origin_str.c_str(),
-        p -> origin_str.c_str() );
+        enc_url.c_str() );
+    }
     if ( !p -> talents_str.empty() )
+    {
+      std::string  enc_url = p -> talents_str; encode_html(  enc_url );
       util_t::fprintf( file,
         "              <tr class=\"left\">\n"
         "                <th>Talents</th>\n"
         "                <td><a href=\"%s\">%s</a></td>\n"
         "              </tr>\n",
-        p -> talents_str.c_str(),
-        p -> talents_str.c_str() );
+        enc_url.c_str(),
+        enc_url.c_str() );
+    }
     std::vector<std::string> glyph_names;
     int num_glyphs = util_t::string_split( glyph_names, p -> glyphs_str, ",/" );
     if ( num_glyphs )
@@ -3187,32 +3214,32 @@ static void print_html3_player( FILE* file, player_t* p )
 
   if ( ! p -> action_dpet_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dpet\">%s</span>\n", p -> action_dpet_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n", p -> action_dpet_chart.c_str() );
     action_dpet_str = buffer;
   }
   if ( ! p -> action_dmg_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dmg\">%s</span>\n", p -> action_dmg_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n", p -> action_dmg_chart.c_str() );
     action_dmg_str = buffer;
   }
   if ( ! p -> gains_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\">%s</span>\n", p -> gains_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\" title=\"Resource Gains Chart\">%s</span>\n", p -> gains_chart.c_str() );
     gains_str = buffer;
   }
   if ( ! p -> timeline_resource_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-resource\">%s</span>\n", p -> timeline_resource_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-resource\" title=\"Resource Timeline Chart\">%s</span>\n", p -> timeline_resource_chart.c_str() );
     timeline_resource_str = buffer;
   }
   if ( ! p -> timeline_dps_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-dps\">%s</span>\n", p -> timeline_dps_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n", p -> timeline_dps_chart.c_str() );
     timeline_dps_str = buffer;
   }
   if ( ! p -> distribution_dps_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-distribution-dps\">%s</span>\n", p -> distribution_dps_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n", p -> distribution_dps_chart.c_str() );
     distribution_dps_str = buffer;
   }
 
@@ -3359,7 +3386,7 @@ static void print_html3_player( FILE* file, player_t* p )
       b -> uptime_pct,
       b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
     util_t::fprintf( file,
-      "              <tr class=\"details hide\">"
+      "              <tr class=\"details hide\">\n"
       "                <td colspan=\"7\">\n",
       b -> name(),
       b -> player -> name() );
@@ -3383,7 +3410,8 @@ static void print_html3_player( FILE* file, player_t* p )
       b -> default_chance );
 
     util_t::fprintf( file,
-      "                </tr>\n" );
+      "                </td>\n"
+      "              </tr>\n" );
   }
   util_t::fprintf( file,
     "              </table>\n"
@@ -3601,12 +3629,13 @@ static void print_html3_player( FILE* file, player_t* p )
       util_t::fprintf( file, " class=\"odd\"" );
     }
     util_t::fprintf( file, ">\n" );
+    std::string  enc_action = action_names[ j ]; encode_html(  enc_action );
     util_t::fprintf( file,
       "                    <th class=\"right\">%d</th>\n"
       "                    <td class=\"left\">%s</td>\n"
       "                  </tr>\n",
       j,
-      action_names[ j ].c_str() );
+      enc_action.c_str() );
     i++;
   }
   util_t::fprintf( file,
@@ -4645,7 +4674,7 @@ void report_t::print_html3( sim_t* sim )
         util_t::fprintf( file,
           "<!DOCTYPE html>\n\n" );
         util_t::fprintf( file,
-          "<html>\n\n" );
+          "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n\n" );
         
         util_t::fprintf( file,
           "  <head>\n\n" );
@@ -4865,7 +4894,7 @@ void report_t::print_html3( sim_t* sim )
         
     // New javascript toggles
     util_t::fprintf( file,
-      "    <script>\n"
+      "    <script type=\"text/javascript\">\n"
       "      jQuery.noConflict();\n"
       "      jQuery(document).ready(function($) {\n"
       "        $('.toggle-content, .help-box').hide();\n"
@@ -4879,9 +4908,13 @@ void report_t::print_html3( sim_t* sim )
       "          $(this).next('.toggle-content').toggle(150);\n"
       "          $(this).next('.toggle-content').find('.charts').each(function() {\n"
       "            $(this).children('span').each(function() {\n"
-      "              img_class = '.' + $(this).attr('class');\n"
-      "              src = $(this).html().replace(/&amp;/g, \"&\");\n"
-      "              img = '<img class=\"' + img_class + '\" src=\"' + src + '\" />';\n"
+      "              img_class = $(this).attr('class');\n"
+      "              img_alt = $(this).attr('title');\n"
+      "              img_src = $(this).html().replace(/&amp;/g, \"&\");\n"
+      "              var img = new Image();\n"
+      "              $(img).attr('class', img_class);\n"
+      "              $(img).attr('src', img_src);\n"
+      "              $(img).attr('alt', img_alt);\n"
       "              $(this).replaceWith(img);\n"
       "              $(this).load();\n"
       "            });\n"

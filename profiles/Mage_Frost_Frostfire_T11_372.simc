@@ -5,7 +5,7 @@ origin="input=m.simc"
 level=85
 race=undead
 use_pre_potion=1
-talents=talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0020000000000000000002303000000000000000002323023013311301021
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0020000000000000000002303000000000000000002323023013311301021
 glyphs=ice_lance/deep_freeze/frostfire
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
