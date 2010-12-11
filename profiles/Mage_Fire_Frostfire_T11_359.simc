@@ -1,7 +1,7 @@
 #!./simc 
 # TODO: Optimize gear
 
-mage=Mage_Frostfire_T11_359
+mage=Mage_Fire_Frostfire_T11_359
 level=85
 race=undead
 use_pre_potion=1

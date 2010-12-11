@@ -1,0 +1,67 @@
+#!./simc 
+# TODO: Optimize gear
+
+mage=Mage_Frost_Frostfire_T11_359
+level=85
+race=undead
+use_pre_potion=1
+talents=http://www.wowarmory.com/talent-calc.xml?cid=8&tal=0020000000000000000002303000000000000000002323023013311301021
+glyphs=ice_lance/deep_freeze/frostfire
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/arcane_brilliance
+actions+=/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down
+actions+=/water_elemental
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/counterspell
+actions+=/mana_gem,if=mana_deficit>12500
+actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30
+actions+=/frostfire_orb
+actions+=/mirror_image
+actions+=/icy_veins,if=time>5&buff.icy_veins.down&buff.bloodlust.down
+actions+=/deep_freeze
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
+actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
+actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
+actions+=/mage_armor,if=mana_pct<15
+actions+=/evocation,if=mana_pct<5&target.time_to_die>60
+actions+=/frostbolt,if=buff.early_frost.down
+actions+=/frostfire_bolt
+actions+=/ice_lance,moving=1
+actions+=/fire_blast,moving=1
+head=firelords_hood,heroic=0,type=cloth,stats=1016armor_188haste_208mastery_281int_512sta,reforge=mastery_hit,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
+neck=valionas_medallion,heroic=0,stats=190int_286sta_127haste_127mastery,reforge=mastery_hit
+shoulders=firelords_mantle,heroic=0,type=cloth,stats=938armor_149hit_169haste_233int_380sta,reforge=haste_crit,gems=20hit_20int_10haste,enchant=50int_25haste
+chest=shadowblaze_robes,heroic=0,type=cloth,stats=1251armor_188hit_228mastery_301int_512sta,gems=20int_20mastery_40int_20int,enchant=20all
+waist=belt_of_arcane_storms,heroic=0,type=cloth,stats=704armor_233int_380sta_149crit_169haste,reforge=haste_hit,gems=20hit_20crit_20hit_20int_20haste
+legs=firelords_leggings,heroic=0,type=cloth,stats=1094armor_188hit_228haste_301int_512sta,reforge=haste_crit,gems=20int_20crit_20int_20hit_20int,enchant=95int_80sta
+feet=einhorns_galoshes,heroic=0,type=cloth,stats=233int_380sta_169haste_149mastery_860armor,reforge=mastery_hit,gems=20int_20hit_10haste,enchant=35mastery
+wrists=bracers_of_the_dark_pool,heroic=0,type=cloth,stats=190int_286sta_127crit_127hit_547armor,enchant=65crit
+hands=firelords_gloves,heroic=0,type=cloth,stats=782armor_149crit_169mastery_233int_380sta,reforge=crit_hit,gems=20int_20mastery_10mastery,enchant=65mastery
+finger1=signet_of_the_fifth_circle,heroic=0,stats=190int_286sta_127mastery_127haste,reforge=mastery_hit,enchant=40int
+finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=mastery_hit,enchant=40int
+trinket1=theralions_mirror,heroic=0,stats=321int,equip=onharmfulcast_1926mastery_10%_20dur_100cd
+trinket2=bell_of_enraging_resonance,heroic=0,stats=321crit,reforge=crit_hit,equip=onspellcrit_1926sp_30%_20dur_100cd
+back=haunt_of_flies,heroic=0,stats=190int_286sta_127crit_127haste_625armor,reforge=haste_hit,enchant=lightweave_embroidery
+main_hand=blade_of_the_witching_hour,heroic=0,stats=146int_219sta_97mastery_97crit_1954sp,reforge=mastery_hit,enchant=power_torrent
+off_hand=book_of_binding_will,heroic=0,stats=197int_286sta_127haste_127hit,reforge=haste_crit,enchant=100int
+ranged=theresas_booklight,heroic=0,stats=107int_161sta_72mastery_72hit,reforge=mastery_crit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5252
+# gear_intellect=4181
+# gear_spirit=20
+# gear_spell_power=1954
+# gear_hit_rating=1605
+# gear_crit_rating=1243
+# gear_haste_rating=1298
+# gear_mastery_rating=1096
+# gear_armor=7817
+# meta_gem=chaotic_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=haunt_of_flies,enchant=lightweave_embroidery
+# main_hand=blade_of_the_witching_hour,enchant=power_torrent

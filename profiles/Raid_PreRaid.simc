@@ -5,8 +5,9 @@ optimal_raid=1
 
 Mage_Arcane_PreRaid.simc
 Mage_Fire_PreRaid.simc
+Mage_Fire_Frostfire_PreRaid.simc
 Mage_Frost_PreRaid.simc
-Mage_Frostfire_PreRaid.simc
+Mage_Frost_Frostfire_PreRaid.simc
 
 Priest_Shadow_PreRaid.simc
 
