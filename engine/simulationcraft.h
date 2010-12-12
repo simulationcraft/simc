@@ -3394,7 +3394,7 @@ struct stats_t
   bool initialized;
 
   int resource;
-  double resource_consumed;
+  double resource_consumed, resource_portion;
   double frequency, num_executes, num_ticks;
   double total_execute_time, total_tick_time;
   double total_dmg, portion_dmg;

@@ -10,7 +10,7 @@
 stats_t::stats_t( const std::string& n, player_t* p ) :
     name_str( n ), sim( p->sim ), player( p ), next( 0 ), school( SCHOOL_NONE ),
     channeled( false ), analyzed( false ), initialized( false ),
-    resource_consumed( 0 ), last_execute( -1 )
+    resource( RESOURCE_NONE ), resource_consumed( 0 ), last_execute( -1 )
 {
 }
 
@@ -181,6 +181,10 @@ void stats_t::analyze()
   num_ticks    /= num_iterations;
 
   rpe = resource_consumed / num_executes;
+
+  double resource_total = player -> resource_lost [ resource ] / num_iterations;
+
+  resource_portion = ( resource_total > 0 ) ? ( resource_consumed / resource_total ) : 0;
 
   frequency = num_intervals ? total_intervals / num_intervals : 0;
 

@@ -2065,13 +2065,14 @@ struct icy_veins_t : public mage_spell_t
 struct living_bomb_explosion_t : public mage_spell_t
 {
   living_bomb_explosion_t( mage_t* p ) :
-    mage_spell_t( "living_bomb", 44461, p )
+    mage_spell_t( "living_bomb_explosion", 44461, p )
   {
     aoe = true;
     dual = true;
     background = true;
     base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
                            + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
+    stats = p -> get_stats( "living_bomb" );
   }
 };
 

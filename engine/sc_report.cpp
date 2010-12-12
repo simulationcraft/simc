@@ -2251,6 +2251,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
     "                <td class=\"right\">%.0f</td>\n"
     "                <td class=\"right\">%.1f%%</td>\n"
+    "                <td class=\"right\">%.1f%%</td>\n"
     "                <td class=\"right\">%.1f</td>\n"
     "                <td class=\"right\">%.2fsec</td>\n"
     "                <td class=\"right\">%.0f</td>\n"
@@ -2274,6 +2275,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     s -> name_str.c_str(),
     s -> portion_dps,
     s -> portion_dmg * 100,
+    s -> resource_portion * 100,
     s -> num_executes,
     s -> frequency,
     s -> dpe,
@@ -2295,15 +2297,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
-    "                <td colspan=\"22\">\n"
-    "                  <ul>\n"
-    "                    <li><span class=\"label\">Resource per Execute:</span>%.2f</li>\n"
-    "                    <li><span class=\"label\">Resource consumed:</span>%.2f</li>\n"
-    "                    <li><span class=\"label\">Resource consumed %%:</span>%.2f%%</li>\n"
-    "                  </ul>\n",
-    s -> rpe,
-    s -> resource_consumed,
-    s -> resource_consumed ? s -> resource_consumed / s -> player -> resource_lost [ s -> resource ] * 100.0 : 0) ;
+    "                <td colspan=\"22\">\n" );
 
   std::vector<std::string> processed_actions;
 
@@ -2319,7 +2313,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     processed_actions.push_back( a -> name() );
     
     util_t::fprintf (file,
-      "                  <h4 class=\"toggle\">Database details</h4>\n" );
+      "                  <h4 class=\"toggle open\">Database details</h4>\n" );
     util_t::fprintf (file,
       "                  <div class=\"toggle-content\">\n"
       "                    <div class=\"float\">\n"
@@ -2337,36 +2331,9 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
       "                        <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
       "                        <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
       "                        <li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-      "                        <li><span class=\"label\">rp gain:</span>%.1f</li>\n"
       "                      </ul>\n"
       "                    </div>\n"
-      "                    <div class=\"float\">\n"
-      "                      <h5>Direct Damage</h5>\n"
-      "                      <ul>\n"
-      "                        <li><span class=\"label\">may_crit:</span>%s</li>\n"
-      "                        <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
-      "                        <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
-      "                        <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
-      "                      </ul>\n"
-      "                      <h5>Damage Over Time</h5>\n"
-      "                      <ul>\n"
-      "                        <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
-      "                        <li><span class=\"label\">tick_zero:</span>%s</li>\n"
-      "                        <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
-      "                        <li><span class=\"label\">base_td:</span>%.2f</li>\n"
-      "                        <li><span class=\"label\">num_ticks:</span>%i</li>\n"
-      "                        <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
-      "                        <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
-      "                        <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
-      "                      </ul>\n"
-      "                      <h5>Weapon</h5>\n"
-      "                      <ul>\n"
-      "                        <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
-      "                        <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
-      "                      </ul>\n"
-      "                    </div>\n"
-      "                    <div class=\"clear\"></div>\n"
-      "                  </div>\n",
+      "                    <div class=\"float\">\n",
       a -> id,
       util_t::school_type_string( a-> school ),
       util_t::resource_type_string( a -> resource ),
@@ -2378,22 +2345,60 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
       a -> cooldown -> duration,
       a -> base_execute_time,
       a -> base_crit,
-      a -> tooltip(),
-      a -> rp_gain,
-      a -> may_crit?"true":"false",
-      a -> direct_power_mod,
-      a -> base_dd_min,
-      a -> base_dd_max,
-      a -> tick_may_crit?"true":"false",
-      a -> tick_zero?"true":"false",
-      a -> tick_power_mod,
-      a -> base_td,
-      a -> num_ticks,
-      a -> base_tick_time,
-      a -> hasted_ticks?"true":"false",
-      a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT",
-      a -> weapon_power_mod,
-      a -> weapon_multiplier );
+      a -> tooltip() );
+    if( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
+    {
+      util_t::fprintf (file,
+        "                      <h5>Direct Damage</h5>\n"
+        "                      <ul>\n"
+        "                        <li><span class=\"label\">may_crit:</span>%s</li>\n"
+        "                        <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
+        "                        <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
+        "                        <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
+        "                      </ul>\n",
+        a -> may_crit?"true":"false",
+        a -> direct_power_mod,
+        a -> base_dd_min,
+        a -> base_dd_max );
+    }
+    if( a -> num_ticks )
+    {
+      util_t::fprintf (file,
+        "                      <h5>Damage Over Time</h5>\n"
+        "                      <ul>\n"
+        "                        <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
+        "                        <li><span class=\"label\">tick_zero:</span>%s</li>\n"
+        "                        <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
+        "                        <li><span class=\"label\">base_td:</span>%.2f</li>\n"
+        "                        <li><span class=\"label\">num_ticks:</span>%i</li>\n"
+        "                        <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
+        "                        <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
+        "                        <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
+        "                      </ul>\n",
+        a -> tick_may_crit?"true":"false",
+        a -> tick_zero?"true":"false",
+        a -> tick_power_mod,
+        a -> base_td,
+        a -> num_ticks,
+        a -> base_tick_time,
+        a -> hasted_ticks?"true":"false",
+        a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
+    }
+    if( a -> weapon )
+    {
+      util_t::fprintf (file,
+        "                      <h5>Weapon</h5>\n"
+        "                      <ul>\n"
+        "                        <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
+        "                        <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
+        "                      </ul>\n",
+        a -> weapon_power_mod,
+        a -> weapon_multiplier );
+    }
+    util_t::fprintf (file,
+      "                    </div>\n"
+      "                    <div class=\"clear\"></div>\n"
+      "                  </div>\n" );
   }
 
 
@@ -3549,13 +3554,14 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
 
   util_t::fprintf( file,
     "        <div class=\"player-section\">\n"
-    "          <h3 class=\"toggle\">Abilities</h3>\n"
+    "          <h3 class=\"toggle open\">Abilities</h3>\n"
     "          <div class=\"toggle-content\">\n"
     "            <table>\n"
     "              <tr>\n"
     "                <th></th>\n"
     "                <th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
     "                <th><a href=\"#help-dps-pct\" class=\"help\">DPS%%</a></th>\n"
+    "                <th>Res%%</th>\n"
     "                <th><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
     "                <th><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
     "                <th><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
@@ -3626,7 +3632,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
 
   util_t::fprintf( file,
     "        <div class=\"player-section buffs\">\n"
-    "          <h3 class=\"toggle\">Buffs</h3>\n"
+    "          <h3 class=\"toggle open\">Buffs</h3>\n"
     "          <div class=\"toggle-content\">\n" );
     
   // Dynamic Buffs table
