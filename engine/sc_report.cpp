@@ -3423,6 +3423,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   std::string action_dpet_str                     = "empty";
   std::string action_dmg_str                      = "empty";
   std::string gains_str                           = "empty";
+  std::string scale_factors_str                   = "empty";
   std::string timeline_resource_str               = "empty";
   std::string timeline_dps_str                    = "empty";
   std::string distribution_dps_str                = "empty";
@@ -3500,6 +3501,18 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     }
     distribution_dps_str = buffer;
   }
+  if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
+  {
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Scale Factors Chart\" />\n", p -> scale_factors_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">%s</span>\n", p -> scale_factors_chart.c_str() );
+    }
+    scale_factors_str = buffer;
+  }
   if ( num_players == 1 )
   {
     snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Encounter Timeline Distribution Chart\" />\n", sim -> timeline_chart.c_str() );
@@ -3520,6 +3533,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "              %s"
     "              %s"
     "              %s"
+    "              %s"
     "            </div>\n"
     "            <div class=\"clear\"></div>\n"
     "          </div>\n"
@@ -3527,6 +3541,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     action_dpet_str.c_str(),
     action_dmg_str.c_str(),
     gains_str.c_str(),
+    scale_factors_str.c_str(),
     timeline_resource_str.c_str(),
     timeline_dps_str.c_str(),
     distribution_dps_str.c_str(),
