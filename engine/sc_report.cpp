@@ -2297,7 +2297,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
-    "                <td colspan=\"22\">\n" );
+    "                <td colspan=\"23\">\n" );
 
   std::vector<std::string> processed_actions;
 
@@ -3587,7 +3587,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "              <tr>\n"
     "                <th class=\"left\">%s</th>\n"
     "                <th>%.0f</th>\n"
-    "                <td colspan=\"20\"></td>\n"
+    "                <td colspan=\"21\"></td>\n"
     "              </tr>\n",
     n.c_str(),
     p -> dps );
@@ -3615,7 +3615,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "              <tr>\n"
       "                <th class=\"left\">pet - %s</th>\n"
       "                <th>%.0f</th>\n"
-      "                <td colspan=\"20\"></td>\n"
+      "                <td colspan=\"21\"></td>\n"
       "              </tr>\n",
       pet -> name_str.c_str(),
       pet -> dps );
