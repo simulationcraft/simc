@@ -319,7 +319,7 @@ int js_t::get_children( std::vector<js_node_t*>& nodes,
   for ( int i=0; i < num_children; i++ )
   {
     js_node_t* node = root -> children[ i ];
-    if ( name_str == node -> name() ) nodes.push_back( node );
+    if ( name_str.empty() || ( name_str == node -> name() ) ) nodes.push_back( node );
   }
 
   return ( int ) nodes.size();

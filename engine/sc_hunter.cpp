@@ -219,11 +219,11 @@ struct hunter_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name );
   virtual void      create_pets();
-  virtual void      armory( xml_node_t* sheet_xml, xml_node_t* talents_xml );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_FOCUS; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+  virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c );
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -2515,55 +2515,6 @@ void hunter_t::create_pets()
   //create_pet( "wolf" );
 }
 
-// hunter_t::armory ===========================================================
-
-struct ammo_data
-{
-  int id;
-  double dps;
-};
-
-void hunter_t::armory( xml_node_t* sheet_xml, xml_node_t* talents_xml )
-{
-  // Pet support
-  static pet_type_t pet_types[] =
-    { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
-      /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
-      /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
-      /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
-      /*20*/ PET_SCORPID, PET_TURTLE, PET_NONE, PET_NONE, PET_BAT,
-      /*25*/ PET_HYENA, PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE, PET_NONE,
-      /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
-      /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
-      /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
-      /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST
-    };
-
-  std::vector<xml_node_t*> pet_nodes;
-  int num_pets = xml_t::get_nodes( pet_nodes, talents_xml, "pet" );
-  for ( int i=0; i < num_pets; i++ )
-  {
-    std::string name_str;
-    int family_id;
-
-    if ( xml_t::get_value( name_str,  pet_nodes[ i ], "name"     ) &&
-         xml_t::get_value( family_id, pet_nodes[ i ], "familyId" ) )
-    {
-      if ( family_id < 0 || family_id > 46 )
-        continue;
-      if ( ! hunter_pet_t::supported( pet_types[ family_id ] ) )
-        continue;
-      hunter_pet_t* pet = new hunter_pet_t( sim, this, name_str, pet_types[ family_id ] );
-      std::string talent_str;
-      if ( xml_t::get_value( talent_str, pet_nodes[ i ], "talentSpec/value" ) &&
-           talent_str != "" )
-      {
-        pet -> parse_talents_armory( talent_str );
-      }
-    }
-  }
-}
-
 // hunter_t::init_talents ===================================================
 
 void hunter_t::init_talents()
@@ -3167,6 +3118,87 @@ bool hunter_t::create_profile( std::string& profile_str, int save_type )
 {
 
   return player_t::create_profile( profile_str, save_type );
+}
+
+// hunter_t::armory_extensions ==============================================
+
+void hunter_t::armory_extensions( const std::string& region,
+				  const std::string& server,
+				  const std::string& character )
+{
+  // Pet support
+  static pet_type_t pet_types[] =
+    { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
+      /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
+      /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
+      /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
+      /*20*/ PET_SCORPID, PET_TURTLE, PET_NONE, PET_NONE, PET_BAT,
+      /*25*/ PET_HYENA, PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE, PET_NONE,
+      /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
+      /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
+      /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
+      /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST
+    };
+
+  std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + character + "/pet";
+  xml_node_t* pet_xml = xml_t::download( sim, url, "", -1 );
+  if ( sim -> debug ) xml_t::print( pet_xml, sim -> output_file );
+
+  xml_node_t* pet_list = xml_t::get_node( pet_xml, "div", "class", "pets-list" );
+
+  xml_node_t* pet_script = xml_t::get_node( pet_list, "script", "type", "text/javascript" );
+
+  if( ! pet_script )
+  {
+    sim -> errorf( "Hunter %s unable to download pet data from Armory\n", name() );
+    sim -> cancel();
+    return;
+  }
+
+  std::string cdata_str;
+  if( xml_t::get_value( cdata_str, pet_script, "cdata" ) )
+  {
+    std::string::size_type pos = cdata_str.find( "{" );
+    if( pos != std::string::npos ) cdata_str.erase( 0, pos+1 );
+    pos = cdata_str.rfind( "}" );
+    if( pos != std::string::npos ) cdata_str.erase( pos );
+
+    js_node_t* pet_js = js_t::create( sim, cdata_str );
+    pet_js = js_t::get_node( pet_js, "Pets" );
+    if ( sim -> debug ) js_t::print( pet_js, sim -> output_file );
+
+    if( ! pet_js )
+    {
+      sim -> errorf( "Hunter %s unable to download pet data from Armory\n", name() );
+      sim -> cancel();
+      return;
+    }
+
+    std::vector<js_node_t*> pet_records;
+    int num_pets = js_t::get_children( pet_records, pet_js );
+    for( int i=0; i < num_pets; i++ )
+    {
+      std::string pet_name, pet_talents;
+      int pet_level, pet_family;
+
+      if( ! js_t::get_value( pet_name,    pet_records[ i ], "name"     ) ||
+	  ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
+	  ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
+	  ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
+      {
+	sim -> errorf( "Hunter %s unable to decode pet name/build/level/familyId\n", name() );
+	sim -> cancel();
+	return;
+      }
+
+      log_t::output( sim, "NOT DOWNLOADING PET YET: %s %d %d %s\n", 
+		     pet_name.c_str(), pet_level, pet_family, pet_talents.c_str() );
+
+      // hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
+      // pet -> parse_talents_armory( pet_talents );
+      // Remember to filter out pets with all-zero talent strings.
+    }
+  }
 }
 
 // hunter_t::decode_set =====================================================

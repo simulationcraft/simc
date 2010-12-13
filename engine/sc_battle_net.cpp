@@ -298,6 +298,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
     }
   }
 
+  p -> armory_extensions( region, server, name );
+
   return p;
 }
 
