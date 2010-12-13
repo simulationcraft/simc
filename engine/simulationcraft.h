@@ -2786,6 +2786,7 @@ struct player_t
   double mana_regen_while_casting;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
+  double resource_reduction, initial_resource_reduction;
   double last_cast;
 
   // Attack Mechanics

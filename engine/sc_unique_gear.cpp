@@ -654,7 +654,7 @@ static void register_shard_of_woe( item_t* item )
 
   item -> unique = true;
 
-  // TODO!
+  p -> initial_resource_reduction += 405;
 }
 
 // register_tiny_abom ====================================================

@@ -470,6 +470,9 @@ double action_t::cost() SC_CONST
 
   double c = base_cost;
 
+  c -= player -> resource_reduction;
+  if ( c < 0 ) c = 0;
+
   if ( resource == RESOURCE_MANA )
   {
     if ( player -> buffs.power_infusion -> check() ) c *= 0.80;

@@ -237,6 +237,7 @@ player_t::player_t( sim_t*             s,
     mp5_per_intellect( 0 ),
     mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
     base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ),
+    resource_reduction( 0 ), initial_resource_reduction( 0 ),
     last_cast( 0 ),
     // Attack Mechanics
     base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
@@ -2264,6 +2265,8 @@ void player_t::reset()
   armor_multiplier  = initial_armor_multiplier;
   armor_per_agility = initial_armor_per_agility;
   dodge_per_agility = initial_dodge_per_agility;
+
+  resource_reduction = initial_resource_reduction;
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
