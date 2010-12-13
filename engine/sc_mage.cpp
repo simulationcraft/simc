@@ -1415,7 +1415,6 @@ struct arcane_power_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    cooldown -> reset(); // Temporary hack necessary because "execute" is triggering cooldown preventing buff "trigger"
     p -> buffs_arcane_power -> trigger( 1, effect_base_value( 1 ) / 100.0 );
   }
 };
@@ -2933,7 +2932,6 @@ void mage_t::init_buffs()
   buffs_arcane_missiles      = new buff_t( this, "arcane_missiles",      1, 20.0, 0.0, 0.40 );
   buffs_arcane_potency       = new buff_t( this, talents.arcane_potency -> spell_id(), "arcane_potency" );
   buffs_arcane_power         = new buff_t( this, talents.arcane_power -> spell_id(), "arcane_power" );
-  buffs_arcane_power -> cooldown = get_cooldown( "arcane_power" );
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze -> effect_trigger_spell( 1 ), "brain_freeze", talents.brain_freeze -> proc_chance() );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration -> effect_trigger_spell( 1 ), "clearcasting", talents.arcane_concentration -> proc_chance(), 15.0 );
   buffs_combustion           = new buff_t( this, "combustion",           3 );
