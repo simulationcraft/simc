@@ -2734,7 +2734,7 @@ void mage_t::init_glyphs()
     else if ( n == "icy_veins"    ) ;
     else if ( n == "invisibility" ) ;
     else if ( n == "mana_shield"  ) ;
-    else if ( n == "monkey"       ) ;
+    else if ( n == "the_monkey"   ) ;
     else if ( n == "the_penguin"  ) ;
     else if ( n == "polymorph"    ) ;
     else if ( n == "slow"         ) ;
