@@ -178,7 +178,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     if ( num_players > max_players ) num_players = max_players;
 
     s = "http://chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_players * 20 + 30 ); s += buffer;
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
@@ -275,7 +275,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     if ( num_players <= 12 ) height += 70;
 
     s = "http://chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=450x%d", height ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chs=525x%d", height ); s += buffer;
     s += "&amp;";
     s += "cht=bhs";
     s += "&amp;";
