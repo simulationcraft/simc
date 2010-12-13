@@ -3425,14 +3425,14 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "          </div>\n"
     "        </div>\n" );
 
-  std::string action_dpet_str                     = "empty";
-  std::string action_dmg_str                      = "empty";
-  std::string gains_str                           = "empty";
-  std::string scale_factors_str                   = "empty";
-  std::string timeline_resource_str               = "empty";
-  std::string timeline_dps_str                    = "empty";
-  std::string distribution_dps_str                = "empty";
-  std::string distribution_encounter_timeline_str = "empty";
+  std::string action_dpet_str                     = "";
+  std::string action_dmg_str                      = "";
+  std::string gains_str                           = "";
+  std::string scale_factors_str                   = "";
+  std::string timeline_resource_str               = "";
+  std::string timeline_dps_str                    = "";
+  std::string distribution_dps_str                = "";
+  std::string distribution_encounter_timeline_str = "";
 
   if ( ! p -> action_dpet_chart.empty() )
   {
