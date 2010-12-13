@@ -7,6 +7,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+#define MAX_PLAYERS_PER_CHART 20
+
 // Colors returned by this function are defined as http://www.wowwiki.com/Class_colors
 static const char* class_color( int type )
 {
@@ -169,7 +171,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
   char buffer[ 1024 ];
 
   std::vector<player_t*> player_list = sim -> players_by_rank;
-  int max_players = 25;
+  int max_players = MAX_PLAYERS_PER_CHART;
 
   while ( true )
   {
@@ -262,7 +264,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   bool first;
 
   std::vector<player_t*> player_list = sim -> players_by_rank;
-  int max_players = 25;
+  int max_players = MAX_PLAYERS_PER_CHART;
 
   while ( true )
   {
