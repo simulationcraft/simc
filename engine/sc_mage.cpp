@@ -309,6 +309,10 @@ struct mage_spell_t : public spell_t
     {
       base_crit += p -> talents.piercing_ice -> effect_base_value( 1 ) / 100.0;
     }
+    if ( p -> talents.enduring_winter -> rank() )
+    {
+      base_cost *= 1.0 + p -> talents.enduring_winter -> effect_base_value( 1 ) / 100.0;
+    }
   }
 
   mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
@@ -956,15 +960,15 @@ bool mage_spell_t::ready()
 double mage_spell_t::cost() SC_CONST
 {
   mage_t* p = player -> cast_mage();
+
   if ( p -> buffs_clearcasting -> check() )
     return 0;
-  double c = spell_t::cost();
-  if ( p -> buffs_arcane_power -> check() )
-    c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
 
-  if ( p -> talents.enduring_winter -> rank() )
+  double c = spell_t::cost();
+
+  if ( p -> buffs_arcane_power -> check() )
   {
-    c *= 1.0 + p -> talents.enduring_winter -> effect_base_value( 1 ) / 100.0;
+    c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
   }
 
   return c;
@@ -1225,8 +1229,19 @@ struct arcane_blast_t : public mage_spell_t
   virtual double cost() SC_CONST
   {
     mage_t* p = player -> cast_mage();
-    double c = mage_spell_t::cost();
+
+    if ( p -> buffs_clearcasting -> check() )
+      return 0;
+
+    double c = spell_t::cost();
+
     c *= p -> buffs_arcane_blast -> stack() * p -> buffs_arcane_blast -> effect_base_value( 2 ) / 100.0;
+
+    if ( p -> buffs_arcane_power -> check() )
+    {
+      c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
+    }
+
     return c;
   }
 
@@ -1400,6 +1415,7 @@ struct arcane_power_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
+    cooldown -> reset(); // Temporary hack necessary because "execute" is triggering cooldown preventing buff "trigger"
     p -> buffs_arcane_power -> trigger( 1, effect_base_value( 1 ) / 100.0 );
   }
 };
