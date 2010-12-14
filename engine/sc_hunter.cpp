@@ -1654,7 +1654,10 @@ struct chimera_shot_t : public hunter_attack_t
       {
         trigger_piercing_shots( this );
       }
-      p -> dots_serpent_sting -> action -> refresh_duration();
+      if ( p -> dots_serpent_sting -> ticking )
+      {
+	p -> dots_serpent_sting -> action -> refresh_duration();
+      }
     }
   }
 
