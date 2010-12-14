@@ -336,6 +336,7 @@ const char* util_t::gem_type_string( int type )
   case GEM_ORANGE:    return "orange";
   case GEM_GREEN:     return "green";
   case GEM_PURPLE:    return "purple";
+  case GEM_COGWHEEL:  return "cogwheel";
   }
   return "unknown";
 }
@@ -1231,6 +1232,8 @@ bool util_t::socket_gem_match( int socket,
                                int gem )
 {
   if ( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
+
+  if ( socket == GEM_COGWHEEL && gem == GEM_COGWHEEL ) return true;
 
   if ( socket == GEM_META ) return ( gem == GEM_META );
 
