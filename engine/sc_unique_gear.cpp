@@ -983,7 +983,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Stat Procs
   if      ( name == "abyssal_rune"                        ) e = "OnSpellCast_590SP_25%_10Dur_45Cd";
-  else if ( name == "anhuurs_hymnal"                      ) e = ( heroic ? "OnSpellCast_1710SP_10%_10Dur_75Cd" : "OnSpellCast_1512SP_10%_10Dur_75Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "anhuurs_hymnal"                      ) e = ( heroic ? "OnSpellCast_1710SP_10%_10Dur_45Cd" : "OnSpellCast_1512SP_10%_10Dur_45Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "ashen_band_of_endless_destruction"   ) e = "OnSpellCastHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_destruction" ) e = "OnSpellCastHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
@@ -1076,8 +1076,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Enchants
   else if ( name == "lightweave"                          ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
   else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave_2"                        ) e = "OnSpellCast_580Int_20%_15Dur_60Cd";  // TO-DO: Check ICD.
-  else if ( name == "lightweave_embroidery_2"             ) e = "OnSpellCast_580Int_20%_15Dur_60Cd";  
+  else if ( name == "lightweave_2"                        ) e = "OnSpellCast_580Int_20%_15Dur_45Cd";  // TO-DO: Check ICD.
+  else if ( name == "lightweave_embroidery_2"             ) e = "OnSpellCast_580Int_20%_15Dur_45d";  
   else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_400Mana_35%_60Cd";
   else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_800Mana_15%_60Cd";       // TO-DO: Check ICD.
   else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_400AP_20%_60Cd";
