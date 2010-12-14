@@ -181,6 +181,7 @@ enum pet_type_t
 {
   PET_NONE=0,
 
+  // Ferocity
   PET_CARRION_BIRD,
   PET_CAT,
   PET_CORE_HOUND,
@@ -193,6 +194,7 @@ enum pet_type_t
   PET_WASP,
   PET_WOLF,
 
+  // Tenacity
   PET_BEAR,
   PET_BOAR,
   PET_CRAB,
@@ -204,6 +206,7 @@ enum pet_type_t
   PET_WARP_STALKER,
   PET_WORM,
 
+  // Cunning
   PET_BAT,
   PET_BIRD_OF_PREY,
   PET_CHIMERA,
@@ -2743,8 +2746,7 @@ struct player_t
 
   // Talent Parsing
   int talent_tab_points[ MAX_TALENT_TREES ];
-  std::vector<talent_t*> talents[ MAX_TALENT_TREES ];
-
+  std::vector<talent_t*> talent_trees[ MAX_TALENT_TREES ];
   int tree_type[ MAX_TALENT_TREES ];
 
   std::list<spell_id_t*> spell_list;

@@ -9,11 +9,9 @@
 // Hunter
 // ==========================================================================
 
-struct ferocity_pet_t;
 struct hunter_pet_t;
 
-enum aspect_type
-{ ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
+enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
 struct hunter_t : public player_t
 {
@@ -236,6 +234,27 @@ struct hunter_t : public player_t
 
 struct hunter_pet_t : public pet_t
 {
+  struct talents_t
+  {
+    // Common Talents
+    talent_t* culling_the_herd;
+    talent_t* serpent_swiftness;
+    talent_t* spiked_collar;
+    talent_t* wild_hunt;
+
+    // Ferocity
+    talent_t* call_of_the_wild;
+    talent_t* rabid;
+    talent_t* spiders_bite;
+    talent_t* shark_attack;
+
+    // Cunning
+    talent_t* feeding_frenzy;
+    talent_t* owls_focus;
+    talent_t* roar_of_recovery;
+    talent_t* wolverine_bite;
+  };
+  talents_t talents;
 
   // Buffs
   buff_t* buffs_bestial_wrath;
@@ -254,16 +273,9 @@ struct hunter_pet_t : public pet_t
   gain_t* gains_go_for_the_throat;
   gain_t* gains_fervor;
 
-
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
       pet_t( sim, owner, pet_name, pt )
   {
-    if ( ! supported( pet_type ) )
-    {
-      sim -> errorf( "Pet %s is not yet supported.\n", pet_name.c_str() );
-      sim -> cancel();
-    }
-
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 51.0; // FIXME only level 80 value
     main_hand_weapon.max_dmg    = 78.0; // FIXME only level 80 value
@@ -274,35 +286,8 @@ struct hunter_pet_t : public pet_t
 
     health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
 
-
-    if ( group() == PET_CUNNING )
-    {
-
-
-      if ( pet_type == PET_WIND_SERPENT )
-      {
-        action_list_str = "auto_attack/roar_of_recovery/wolverine_bite/lightning_breath/bite";
-      }
-      else assert( 0 );
-    }
-
     create_talents();
     create_options();
-  }
-
-  static bool supported( int family )
-  {
-    switch ( family )
-    {
-    case PET_CAT:
-    case PET_DEVILSAUR:
-    case PET_RAPTOR:
-    case PET_WOLF:
-    case PET_WIND_SERPENT:
-      return true;
-    default:
-      return false;
-    }
   }
 
   virtual int group()
@@ -312,6 +297,46 @@ struct hunter_pet_t : public pet_t
     if ( pet_type >= PET_BEAR         && pet_type <= PET_WORM         ) return PET_TENACITY;
     if ( pet_type >= PET_BAT          && pet_type <= PET_WIND_SERPENT ) return PET_CUNNING;
     return PET_NONE;
+  }
+
+  virtual const char* unique_special()
+  {
+    switch ( pet_type )
+    {
+    case PET_CARRION_BIRD: return NULL;
+    case PET_CAT:          return NULL;
+    case PET_CORE_HOUND:   return NULL;
+    case PET_DEVILSAUR:    return "monstrous_bite";
+    case PET_HYENA:        return NULL;
+    case PET_MOTH:         return NULL;
+    case PET_RAPTOR:       return NULL;
+    case PET_SPIRIT_BEAST: return NULL;
+    case PET_TALLSTRIDER:  return NULL;
+    case PET_WASP:         return NULL;
+    case PET_WOLF:         return "furious_howl";
+    case PET_BEAR:         return NULL;
+    case PET_BOAR:         return NULL;
+    case PET_CRAB:         return NULL;
+    case PET_CROCOLISK:    return NULL;
+    case PET_GORILLA:      return NULL;
+    case PET_RHINO:        return NULL;
+    case PET_SCORPID:      return NULL;
+    case PET_TURTLE:       return NULL;
+    case PET_WARP_STALKER: return NULL;
+    case PET_WORM:         return NULL;
+    case PET_BAT:          return NULL;
+    case PET_BIRD_OF_PREY: return NULL;
+    case PET_CHIMERA:      return "firestorm_breath";
+    case PET_DRAGONHAWK:   return NULL;
+    case PET_NETHER_RAY:   return NULL;
+    case PET_RAVAGER:      return NULL;
+    case PET_SERPENT:      return NULL;
+    case PET_SILITHID:     return NULL;
+    case PET_SPIDER:       return NULL;
+    case PET_SPOREBAT:     return NULL;
+    case PET_WIND_SERPENT: return "lightning_breath";
+    }
+    return NULL;
   }
 
   virtual bool ooc_buffs() { return true; }
@@ -343,6 +368,69 @@ struct hunter_pet_t : public pet_t
     base_gcd = 1.20;
   }
 
+  virtual void init_talents()
+  {
+    int tab = group();
+
+    // Common Talents
+    talents.culling_the_herd  = find_talent( "Culling the Herd",  tab );
+    talents.serpent_swiftness = find_talent( "Serpent Swiftness", tab );
+    talents.spiked_collar     = find_talent( "Spiked Collar",     tab );
+    talents.wild_hunt         = find_talent( "Wild Hunt",         tab );
+
+    // Ferocity
+    talents.call_of_the_wild = find_talent( "Call of the Wild", PET_FEROCITY );
+    talents.rabid            = find_talent( "Rabid",            PET_FEROCITY );
+    talents.spiders_bite     = find_talent( "Spider's Bite",    PET_FEROCITY );
+    talents.shark_attack     = find_talent( "Shark Attack",     PET_FEROCITY );
+
+    // Cunning
+    talents.feeding_frenzy   = find_talent( "Feeding Frenzy",   PET_CUNNING );
+    talents.owls_focus       = find_talent( "Owl's Focus",      PET_CUNNING );
+    talents.roar_of_recovery = find_talent( "Roar of Recovery", PET_CUNNING );
+    talents.wolverine_bite   = find_talent( "Wolverine Bite",   PET_CUNNING );
+
+    pet_t::init_talents();
+
+    int total_points = 0;
+    for( int i=0; i < MAX_TALENT_TREES; i++ )
+      for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+        total_points += talent_trees[ i ][ j ] -> rank();
+
+    if ( total_points == 0 )
+    {
+      talents.culling_the_herd  -> set_rank( 3, true );
+      talents.serpent_swiftness -> set_rank( 3, true );
+      talents.spiked_collar     -> set_rank( 3, true );
+
+      if ( tab == PET_FEROCITY ) 
+      {
+        talents.call_of_the_wild -> set_rank( 1, true );
+        talents.rabid            -> set_rank( 1, true );
+        talents.spiders_bite     -> set_rank( 3, true );
+        talents.shark_attack     -> set_rank( 1, true );
+
+        if( owner -> primary_tab() == HUNTER_BEAST_MASTERY )
+        {
+          talents.shark_attack -> set_rank( 2, true );
+          talents.wild_hunt    -> set_rank( 2, true );
+        }
+      }
+      else if ( tab == PET_CUNNING )
+      {
+        talents.feeding_frenzy   -> set_rank( 2, true );
+        talents.owls_focus       -> set_rank( 2, true );
+        talents.roar_of_recovery -> set_rank( 1, true );
+        talents.wolverine_bite   -> set_rank( 1, true );
+
+        if( owner -> primary_tab() == HUNTER_BEAST_MASTERY )
+        {
+          talents.wild_hunt -> set_rank( 2, true );
+        }
+      }
+    }
+  }
+
   virtual void init_buffs()
   {
     pet_t::init_buffs();
@@ -357,6 +445,8 @@ struct hunter_pet_t : public pet_t
     buffs_savage_rend       = new buff_t( this, "savage_rend",       1, 30.0 );
     buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0 );
     buffs_sic_em = new buff_t( this, "sic_em", 1, 12.0 );
+
+    buffs_culling_the_herd -> current_value = talents.culling_the_herd -> rank();
   }
 
   virtual void init_gains()
@@ -364,6 +454,42 @@ struct hunter_pet_t : public pet_t
     pet_t::init_gains();
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
     gains_fervor            = get_gain( "fervor" );
+  }
+
+  virtual void init_actions()
+  {
+    if ( action_list_str.empty() )
+    {
+      action_list_str = "auto_attack";
+
+      if( talents.call_of_the_wild -> rank() )
+      {
+        action_list_str += "/call_of_the_wild,if=buff.bloodlust.up";
+      }
+      if( talents.roar_of_recovery -> rank() )
+      {
+        action_list_str += "/roar_of_recovery";
+      }
+      if ( talents.rabid -> rank() )
+      {
+        action_list_str += "/rabid";
+      }
+      const char* special = unique_special();
+      if ( special )
+      {
+        action_list_str += "/";
+        action_list_str += special;
+      }
+      if ( talents.wolverine_bite )
+      {
+        action_list_str += "/wolverine_bite";
+      }
+      action_list_str += "/claw";
+      action_list_str += "/wait_until_ready,sec=3";
+      action_list_default = 1;
+    }
+
+    pet_t::init_actions();
   }
 
   virtual double composite_armor() SC_CONST
@@ -425,119 +551,19 @@ struct hunter_pet_t : public pet_t
   virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
+
   virtual double composite_player_multiplier( const school_type school ) SC_CONST
-      {
-        double m = pet_t::composite_player_multiplier( school );
-        hunter_t*     o = owner -> cast_hunter();
-        if ( o -> passive_spells.master_of_beasts -> ok() )
-        {
-          m *= 1.0 + 1.7 / 100.0 * o -> composite_mastery();
-        }
-        return m;
-      }
-
+  {
+    double m = pet_t::composite_player_multiplier( school );
+    hunter_t*     o = owner -> cast_hunter();
+    if ( o -> passive_spells.master_of_beasts -> ok() )
+    {
+      m *= 1.0 + 1.7 / 100.0 * o -> composite_mastery();
+    }
+    return m;
+  }
 };
 
-// Pet Feriocity
-
-struct ferocity_pet_t : public hunter_pet_t
-{
-
-  struct talents_t
-   {
-     talent_t* serpent_swiftness;
-     talent_t* dash;
-     talent_t* great_stamina;
-     talent_t* natural_armor;
-     talent_t* improved_cower;
-     talent_t* bloodthirsty;
-     talent_t* spiked_collar;
-     talent_t* boars_speed;
-     talent_t* culling_the_herd;
-     talent_t* lionhearted;
-     talent_t* heart_of_the_phoenix;
-     talent_t* spiders_bite;
-     talent_t* great_resistance;
-     talent_t* rabid;
-     talent_t* lick_your_wounds;
-     talent_t* call_of_the_wild;
-     talent_t* shark_attack;
-     talent_t* wild_hunt;
-   };
-   talents_t talents;
-
-  ferocity_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
-    hunter_pet_t( sim,owner,pet_name,pt )
-  {
-  }
-
-  virtual void init_base()
-  {
-    hunter_pet_t::init_base();
-  }
-
-  virtual void init_talents()
-  {
-    talents.serpent_swiftness     = new talent_t ( this, "Serpent Swiftness" );
-    talents.dash                  = new talent_t ( this, "Dash" );
-    talents.great_stamina         = new talent_t ( this, "Great Stamina" );
-    talents.natural_armor         = new talent_t ( this, "Natural Armor" );
-    talents.improved_cower        = new talent_t ( this, "Improved Cower" );
-    talents.bloodthirsty          = new talent_t ( this, "Bloodthirsty" );
-    talents.spiked_collar         = new talent_t ( this, "Spiked Collar" );
-    talents.boars_speed           = new talent_t ( this, "Boars Speed" );
-    talents.culling_the_herd      = new talent_t ( this, "Culling the Herd" );
-    talents.lionhearted           = new talent_t ( this, "Lionhearted" );
-    talents.heart_of_the_phoenix  = new talent_t ( this, "Heart of the Phoenix" );
-    talents.spiders_bite          = new talent_t ( this, "Spiders Bite" );
-    talents.great_resistance      = new talent_t ( this, "Great Resistance" );
-    talents.rabid                 = new talent_t ( this, "Rabid" );
-    talents.lick_your_wounds      = new talent_t ( this, "Lick your Wounds" );
-    talents.call_of_the_wild      = new talent_t ( this, "Call of the Wild" );
-    talents.shark_attack          = new talent_t ( this, "Shark Attack" );
-    talents.wild_hunt             = new talent_t ( this, "Wild Hunt" );
-
-    hunter_pet_t::init_talents();
-
-    if ( false /* no talents set */ )
-    {
-      talents.spiked_collar -> set_rank( 3, true );
-    }
-  }
-  virtual void init_buffs()
-  {
-     hunter_pet_t::init_buffs();
-     buffs_culling_the_herd -> current_value = talents.culling_the_herd -> rank();
-  }
-  virtual void init_actions()
-  {
-    if ( action_list_str.empty() )
-    {
-      if ( pet_type == PET_CAT )
-      {
-	action_list_str = "auto_attack/call_of_the_wild/rabid/claw/wait_until_ready,sec=3";
-      }
-      else if ( pet_type == PET_DEVILSAUR )
-      {
-	action_list_str = "auto_attack/monstrous_bite/call_of_the_wild/rabid/bite/wait_until_ready,sec=3";
-      }
-      else if ( pet_type == PET_RAPTOR )
-      {
-	action_list_str = "auto_attack/savage_rend/call_of_the_wild/rabid/claw/wait_until_ready,sec=3";
-      }
-      else if ( pet_type == PET_WOLF )
-      {
-	action_list_str = "auto_attack/furious_howl/call_of_the_wild/rabid/bite/wait_until_ready,sec=3";
-      }
-      action_list_default = 1;
-    }
-
-    hunter_pet_t::init_actions();
-  }
-
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str );
-};
 
 // ==========================================================================
 // Hunter Attack
@@ -712,27 +738,13 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
 
   if ( ! p -> talents.thrill_of_the_hunt -> rank() )
     return;
+
   if ( p -> rng_thrill_of_the_hunt -> roll ( p -> talents.thrill_of_the_hunt -> proc_chance() ) )
   {
-  double gain = util_t::talent_rank(  p -> talents.thrill_of_the_hunt -> rank(), 3, 0.10, 0.20, 0.40 );
-  gain *= a -> resource_consumed;
+    double gain = util_t::talent_rank(  p -> talents.thrill_of_the_hunt -> rank(), 3, 0.10, 0.20, 0.40 );
+    gain *= a -> resource_consumed;
   
-  p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
-  }
-}
-
-// check_pet_type ==========================================================
-
-static void check_pet_type( action_t* a, int pet_type )
-{
-  hunter_pet_t* p = ( hunter_pet_t* ) a -> player -> cast_pet();
-  hunter_t*     o = p -> owner -> cast_hunter();
-
-  if ( p -> pet_type != pet_type )
-  {
-    a -> sim -> errorf( "Player %s has pet %s attempting to use action %s that is not available to that class of pets.\n",
-                        o -> name(), p -> name(), a -> name() );
-    a -> background = true;
+    p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
   }
 }
 
@@ -746,22 +758,22 @@ struct hunter_pet_attack_t : public attack_t
 {
   void _init_hunter_pet_attack_t()
   {
-        hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-        hunter_t*     o = p -> owner -> cast_hunter();
-        may_crit = true;
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+    may_crit = true;
+    
+    base_multiplier *= 1.05; // Cunning, Ferocity and Tenacity pets all have +5% damag
 
-        base_multiplier *= 1.05; // Cunning, Ferocity and Tenacity pets all have +5% damag
+    // Orc Command Racial
+    if ( o -> race == RACE_ORC )
+    {
+      base_multiplier *= 1.05;
+    }
+    
+    base_multiplier *= 1.0 + p -> talents.spiked_collar -> effect_base_value( 1 ) / 100.0;
 
-        // Orc Command Racial
-        if ( o -> race == RACE_ORC )
-        {
-          base_multiplier *= 1.05;
-        }
-        //base_multiplier *= 1.0 + p -> cast_ferocity_pet() -> talents.spiked_collar -> effect_base_value( 1 ) / 100.0;
-
-        // Assume happy pet
-        base_multiplier *= 1.25;
-
+    // Assume happy pet
+    base_multiplier *= 1.25;
   }
 
   hunter_pet_attack_t( const char* n, hunter_pet_t* player, const char* sname, bool special=true ) :
@@ -787,7 +799,6 @@ struct hunter_pet_attack_t : public attack_t
     return t;
   }
 
-
   virtual void execute()
   {
     attack_t::execute();
@@ -802,12 +813,18 @@ struct hunter_pet_attack_t : public attack_t
       if ( result == RESULT_CRIT )
       {
         p -> buffs_frenzy -> trigger();
+
         trigger_invigoration( this );
-        p -> buffs_wolverine_bite -> trigger();
+
+        if ( p -> talents.wolverine_bite -> rank() )
+        {
+          p -> buffs_wolverine_bite -> trigger();
+        }
+        if ( p -> talents.culling_the_herd -> rank() )
+        {
+          p -> buffs_culling_the_herd -> trigger();
+        }
       }
-
-
-
     }
     else
     {
@@ -841,44 +858,12 @@ struct hunter_pet_attack_t : public attack_t
   }
 
   virtual double cost() SC_CONST
-      {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      double c = attack_t::cost();
-      if ( p -> buffs_sic_em -> up() && c > 0 ) return 0;
-      return c;
-      }
-};
-
-struct ferocity_pet_attack_t : public hunter_pet_attack_t
-{
-  void _init_ferocity_pet_attack_t()
   {
-    ferocity_pet_t* p = (ferocity_pet_t*) player -> cast_pet();
-
-    // Hack for testing talents
-    base_multiplier *= 1.0 + p -> talents.spiked_collar -> effect_base_value( 1 ) * 100.0;
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    double c = attack_t::cost();
+    if ( p -> buffs_sic_em -> up() && c > 0 ) return 0;
+    return c;
   }
-
-  ferocity_pet_attack_t( const char* n, ferocity_pet_t* player, const char* sname, bool special=true ) :
-    hunter_pet_attack_t( n, player, sname, special )
-  {
-    _init_ferocity_pet_attack_t();
-  }
-  ferocity_pet_attack_t( const char* n, const uint32_t id, ferocity_pet_t* player, bool special=true ) :
-    hunter_pet_attack_t( n, id, player, special )
-  {
-    _init_ferocity_pet_attack_t();
-  }
-
-  virtual void execute()
-  {
-    hunter_pet_attack_t::execute();
-    ferocity_pet_t* p = (ferocity_pet_t*) player -> cast_pet();
-    if ( p -> talents.culling_the_herd -> rank() && result == RESULT_CRIT )
-      p -> buffs_culling_the_herd -> trigger();
-
-  }
-
 };
 
 // Pet Melee =================================================================
@@ -928,80 +913,49 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   }
 };
 
-/*
-struct bite_t : public hunter_pet_attack_t
+struct claw_t : public hunter_pet_attack_t
 {
-  bite_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_attack_t( "bite", 17253, player )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-    {
-     hunter_pet_attack_t::execute();
-
-    }
-};
-*/
-struct claw_t : public ferocity_pet_attack_t
-{
-  claw_t( ferocity_pet_t* player, const std::string& options_str ) :
-    ferocity_pet_attack_t( "claw", 16827, player )
+  claw_t( hunter_pet_t* p, const std::string& options_str ) :
+    hunter_pet_attack_t( "claw", 16827, p )
   {
     parse_options( NULL, options_str );
     direct_power_mod=0.4;
   }
-
-  virtual void execute()
-    {
-    ferocity_pet_attack_t::execute();
-    }
 };
 
 // Devilsaur Monstrous Bite ===================================================
 
-struct monstrous_bite_t : public ferocity_pet_attack_t
+struct monstrous_bite_t : public hunter_pet_attack_t
 {
-  monstrous_bite_t( ferocity_pet_t* player, const std::string& options_str ) :
-    ferocity_pet_attack_t( "monstrous_bite", player, "Monstrous Bite" )
+  monstrous_bite_t( hunter_pet_t* p, const std::string& options_str ) :
+    hunter_pet_attack_t( "monstrous_bite", 55499, p )
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_t* o = p -> owner -> cast_hunter();
 
-    check_pet_type( this, PET_DEVILSAUR );
-
-    parse_options( 0, options_str );
+    parse_options( NULL, options_str );
 
     base_dd_min = base_dd_max = 107;
     base_cost = 20;
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
-
-    id = 55499;
   }
 
   virtual void execute()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-
-    ferocity_pet_attack_t::execute();
-
+    hunter_pet_attack_t::execute();
     p -> buffs_monstrous_bite -> trigger();
   }
 };
 
-/*
 // Wolverine Bite =============================================================
 
 struct wolverine_bite_t : public hunter_pet_attack_t
 {
-  wolverine_bite_t( player_t* player, const std::string& options_str ) :
-      hunter_pet_attack_t( "wolverine_bite", player, "Wolverine Bite" )
+  wolverine_bite_t( hunter_pet_t* p, const std::string& options_str ) :
+      hunter_pet_attack_t( "wolverine_bite", p, "Wolverine Bite" )
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
+    hunter_t* o = p -> owner -> cast_hunter();
 
     parse_options( NULL, options_str );
 
@@ -1010,7 +964,6 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     auto_cast   = true;
 
     may_dodge = may_block = may_parry = false;
-
   }
 
   virtual void execute()
@@ -1024,14 +977,13 @@ struct wolverine_bite_t : public hunter_pet_attack_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
-    // This attack is only available after the target dodges
     if ( ! p -> buffs_wolverine_bite -> check() )
       return false;
 
     return hunter_pet_attack_t::ready();
   }
 };
-*/
+
 // =========================================================================
 // Hunter Pet Spells
 // =========================================================================
@@ -1100,25 +1052,6 @@ struct hunter_pet_spell_t : public spell_t
   }
 };
 
-struct ferocity_pet_spell_t : public hunter_pet_spell_t
-{
-  void _init_ferocity_pet_spell_t()
-  {
-
-  }
-
-  ferocity_pet_spell_t( const char* n, ferocity_pet_t* player, const char* sname ) :
-    hunter_pet_spell_t( n, player, sname )
-  {
-    _init_ferocity_pet_spell_t();
-  }
-  ferocity_pet_spell_t( const char* n, const uint32_t id, ferocity_pet_t* player ) :
-    hunter_pet_spell_t( n, player, id )
-  {
-    _init_ferocity_pet_spell_t();
-  }
-
-};
 // Chimera Froststorm Breath ================================================
 
 struct froststorm_breath_tick_t : public hunter_pet_spell_t
@@ -1149,8 +1082,6 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    check_pet_type( this, PET_CHIMERA );
-
     parse_options( NULL, options_str );
 
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
@@ -1174,8 +1105,6 @@ struct lightning_breath_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    check_pet_type( this, PET_WIND_SERPENT );
-
     parse_options( 0, options_str );
 
     base_dd_min = base_dd_max = 100;
@@ -1198,10 +1127,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    //check_talent( p -> talents.call_of_the_wild );
-
     parse_options( NULL, options_str );
-
 
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
   }
@@ -1226,14 +1152,11 @@ struct furious_howl_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    check_pet_type( this, PET_WOLF );
-
     parse_options( NULL, options_str );
 
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
 
     harmful = false;
-
   }
 
   virtual void execute()
@@ -1656,7 +1579,7 @@ struct chimera_shot_t : public hunter_attack_t
       }
       if ( p -> dots_serpent_sting -> ticking )
       {
-	p -> dots_serpent_sting -> action -> refresh_duration();
+        p -> dots_serpent_sting -> action -> refresh_duration();
       }
     }
   }
@@ -2071,15 +1994,15 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
 
     if ( !p -> active_aspect )
-      {
+    {
       p -> active_aspect = ASPECT_HAWK;
       p -> buffs_aspect_of_the_hawk -> trigger( 1, effect_average( 1 ) * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
-      }
+    }
     else if ( p -> active_aspect == ASPECT_HAWK )
-      {
+    {
       p -> active_aspect = ASPECT_NONE;
       p -> buffs_aspect_of_the_hawk -> expire();
-      }
+    }
 
   }
   virtual bool ready()
@@ -2328,6 +2251,11 @@ struct summon_pet_t : public hunter_spell_t
     pet_name = ( options_str.size() > 0 ) ? options_str : p -> summon_pet_str;
     harmful = false;
     trigger_gcd = 0;
+    if ( ! p -> find_pet( pet_name ) )
+    {
+      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name.c_str() );
+      sim -> cancel();
+    }
   }
 
   virtual void execute()
@@ -2402,29 +2330,17 @@ action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
 {
   if ( name == "auto_attack"       ) return new   pet_auto_attack_t( this, options_str );
-  //if ( name == "bite"              ) return new              bite_t( this, options_str );
   if ( name == "call_of_the_wild"  ) return new  call_of_the_wild_t( this, options_str );
+  if ( name == "claw"              ) return new              claw_t( this, options_str );
   if ( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
   if ( name == "furious_howl"      ) return new      furious_howl_t( this, options_str );
   if ( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
+  if ( name == "monstrous_bite"    ) return new    monstrous_bite_t( this, options_str );
   if ( name == "rabid"             ) return new             rabid_t( this, options_str );
   if ( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
-  //if ( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
-
+  if ( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
 
   return pet_t::create_action( name, options_str );
-}
-
-// ferocity_pet_t::create_action =============================================
-
-action_t* ferocity_pet_t::create_action( const std::string& name,
-                                       const std::string& options_str )
-{
-  if ( name == "claw"              ) return new              claw_t( this, options_str );
-  if ( name == "monstrous_bite"    ) return new    monstrous_bite_t( this, options_str );
-
-
-  return hunter_pet_t::create_action( name, options_str );
 }
 
 // hunter_t::create_action ====================================================
@@ -2467,17 +2383,17 @@ pet_t* hunter_t::create_pet( const std::string& pet_name )
   if ( p ) return p;
 
   // Ferocity
-  if ( pet_name == "carrion_bird" ) return new ferocity_pet_t( sim, this, pet_name, PET_CARRION_BIRD );
-  if ( pet_name == "cat"          ) return new ferocity_pet_t( sim, this, pet_name, PET_CAT          );
-  if ( pet_name == "core_hound"   ) return new ferocity_pet_t( sim, this, pet_name, PET_CORE_HOUND   );
-  if ( pet_name == "devilsaur"    ) return new ferocity_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
-  if ( pet_name == "hyena"        ) return new ferocity_pet_t( sim, this, pet_name, PET_HYENA        );
-  if ( pet_name == "moth"         ) return new ferocity_pet_t( sim, this, pet_name, PET_MOTH         );
-  if ( pet_name == "raptor"       ) return new ferocity_pet_t( sim, this, pet_name, PET_RAPTOR       );
-  if ( pet_name == "spirit_beast" ) return new ferocity_pet_t( sim, this, pet_name, PET_SPIRIT_BEAST );
-  if ( pet_name == "tallstrider"  ) return new ferocity_pet_t( sim, this, pet_name, PET_TALLSTRIDER  );
-  if ( pet_name == "wasp"         ) return new ferocity_pet_t( sim, this, pet_name, PET_WASP         );
-  if ( pet_name == "wolf"         ) return new ferocity_pet_t( sim, this, pet_name, PET_WOLF         );
+  if ( pet_name == "carrion_bird" ) return new hunter_pet_t( sim, this, pet_name, PET_CARRION_BIRD );
+  if ( pet_name == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
+  if ( pet_name == "core_hound"   ) return new hunter_pet_t( sim, this, pet_name, PET_CORE_HOUND   );
+  if ( pet_name == "devilsaur"    ) return new hunter_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
+  if ( pet_name == "hyena"        ) return new hunter_pet_t( sim, this, pet_name, PET_HYENA        );
+  if ( pet_name == "moth"         ) return new hunter_pet_t( sim, this, pet_name, PET_MOTH         );
+  if ( pet_name == "raptor"       ) return new hunter_pet_t( sim, this, pet_name, PET_RAPTOR       );
+  if ( pet_name == "spirit_beast" ) return new hunter_pet_t( sim, this, pet_name, PET_SPIRIT_BEAST );
+  if ( pet_name == "tallstrider"  ) return new hunter_pet_t( sim, this, pet_name, PET_TALLSTRIDER  );
+  if ( pet_name == "wasp"         ) return new hunter_pet_t( sim, this, pet_name, PET_WASP         );
+  if ( pet_name == "wolf"         ) return new hunter_pet_t( sim, this, pet_name, PET_WOLF         );
 
   // Tenacity
   if ( pet_name == "bear"         ) return new hunter_pet_t( sim, this, pet_name, PET_BEAR         );
@@ -2511,11 +2427,14 @@ pet_t* hunter_t::create_pet( const std::string& pet_name )
 
 void hunter_t::create_pets()
 {
-  create_pet( "cat" );
-  //create_pet( "devilsaur" );
-  //create_pet( "raptor" );
-  //create_pet( "wind_serpent" );
-  //create_pet( "wolf" );
+  if( ! pet_list )
+  {
+    create_pet( "cat" );
+    create_pet( "devilsaur" );
+    create_pet( "raptor" );
+    create_pet( "wind_serpent" );
+    create_pet( "wolf" );
+  }
 }
 
 // hunter_t::init_talents ===================================================
@@ -3126,8 +3045,8 @@ bool hunter_t::create_profile( std::string& profile_str, int save_type )
 // hunter_t::armory_extensions ==============================================
 
 void hunter_t::armory_extensions( const std::string& region,
-				  const std::string& server,
-				  const std::string& character )
+                                  const std::string& server,
+                                  const std::string& character )
 {
   // Pet support
   static pet_type_t pet_types[] =
@@ -3147,11 +3066,11 @@ void hunter_t::armory_extensions( const std::string& region,
   xml_node_t* pet_xml = xml_t::download( sim, url, "", -1 );
   if ( sim -> debug ) xml_t::print( pet_xml, sim -> output_file );
 
-  xml_node_t* pet_list = xml_t::get_node( pet_xml, "div", "class", "pets-list" );
+  xml_node_t* pet_list_xml = xml_t::get_node( pet_xml, "div", "class", "pets-list" );
 
-  xml_node_t* pet_script = xml_t::get_node( pet_list, "script", "type", "text/javascript" );
+  xml_node_t* pet_script_xml = xml_t::get_node( pet_list_xml, "script", "type", "text/javascript" );
 
-  if( ! pet_script )
+  if( ! pet_script_xml )
   {
     sim -> errorf( "Hunter %s unable to download pet data from Armory\n", name() );
     sim -> cancel();
@@ -3159,7 +3078,7 @@ void hunter_t::armory_extensions( const std::string& region,
   }
 
   std::string cdata_str;
-  if( xml_t::get_value( cdata_str, pet_script, "cdata" ) )
+  if( xml_t::get_value( cdata_str, pet_script_xml, "cdata" ) )
   {
     std::string::size_type pos = cdata_str.find( "{" );
     if( pos != std::string::npos ) cdata_str.erase( 0, pos+1 );
@@ -3185,22 +3104,29 @@ void hunter_t::armory_extensions( const std::string& region,
       int pet_level, pet_family;
 
       if( ! js_t::get_value( pet_name,    pet_records[ i ], "name"     ) ||
-	  ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
-	  ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
-	  ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
+          ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
+          ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
+          ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
       {
-	sim -> errorf( "Hunter %s unable to decode pet name/build/level/familyId\n", name() );
-	sim -> cancel();
-	return;
+        sim -> errorf( "Hunter %s unable to decode pet name/build/level/familyId\n", name() );
+        sim -> cancel();
+        return;
       }
 
-      log_t::output( sim, "NOT DOWNLOADING PET YET: %s %d %d %s\n", 
-		     pet_name.c_str(), pet_level, pet_family, pet_talents.c_str() );
+      armory_t::format( pet_name );
 
-      // hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
-      // pet -> parse_talents_armory( pet_talents );
-      // Remember to filter out pets with all-zero talent strings.
+      bool all_zeros = true;
+      for( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
+	if( pet_talents[ j ] != '0' )
+	  all_zeros = false;
+      if( all_zeros ) continue;
+
+      hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
+
+      pet -> parse_talents_armory( pet_talents );
     }
+
+    if( pet_list ) summon_pet_str = pet_list -> name_str;
   }
 }
 

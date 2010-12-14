@@ -2470,11 +2470,11 @@ static void print_html2_talents( FILE* file, player_t* a )
     {
       util_t::fprintf( file, "<tr> <th>%s</th> </tr>\n", util_t::talent_tree_string( a -> tree_type[ i ], false ) );
 
-      int tree_size = a -> talents[ i ].size();
+      int tree_size = a -> talent_trees[ i ].size();
 
       for ( int j=0; j < tree_size; j++ )
       {
-        talent_t* t = a -> talents[ i ][ j ];
+        talent_t* t = a -> talent_trees[ i ][ j ];
 
         util_t::fprintf( file, " <tr> <td>%s</td><td>", t -> t_data -> name );
         util_t::fprintf( file, "%d", t -> rank() );
@@ -2827,11 +2827,11 @@ static void print_html3_talents( FILE* file, player_t* p )
           "                    </tr>\n",
           util_t::talent_tree_string( p -> tree_type[ i ], false ) );
 
-      int tree_size = p -> talents[ i ].size();
+      int tree_size = p -> talent_trees[ i ].size();
 
       for ( int j=0; j < tree_size; j++ )
       {
-        talent_t* t = p -> talents[ i ][ j ];
+        talent_t* t = p -> talent_trees[ i ][ j ];
 
         util_t::fprintf( file, 
             "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );

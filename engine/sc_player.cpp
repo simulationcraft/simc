@@ -434,10 +434,10 @@ player_t::~player_t()
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    while ( talents[ i ].size() )
+    while ( talent_trees[ i ].size() )
     {
-      talent_t* t = talents[ i ].back();
-      talents[ i ].pop_back();
+      talent_t* t = talent_trees[ i ].back();
+      talent_trees[ i ].pop_back();
       delete t;
     }
   }
@@ -1201,8 +1201,8 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-         if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f",
-                           level,type );
+  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f", level,type );
+
   rating.init( sim, player_data, level, type );
 }
 
@@ -1214,9 +1214,9 @@ void player_t::init_talents()
   {
     talent_tab_points[ i ] = 0;
 
-    for( int j=talents[ i ].size()-1; j >= 0; j-- )
+    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
     {
-      talent_tab_points[ i ] += talents[ i ][ j ] -> rank();
+      talent_tab_points[ i ] += talent_trees[ i ][ j ] -> rank();
     }
   }
 
@@ -4101,11 +4101,11 @@ bool player_t::parse_talent_trees( int encoding[], const uint32_t size )
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    int tree_size = talents[ i ].size();
+    int tree_size = talent_trees[ i ].size();
 
     for( int j=0; j < tree_size; j++ )
     {
-      talents[ i ][ j ] -> set_rank( encoding[ index++ ] );
+      talent_trees[ i ][ j ] -> set_rank( encoding[ index++ ] );
     }
   }
 
@@ -4182,7 +4182,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     {
       count = 0;
       for( int j=0; j <= tree; j++)
-        count += talents[ j ].size();
+        count += talent_trees[ j ].size();
       tree++;
       continue;
     }
@@ -4202,13 +4202,13 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     encoding[ count++ ] += decode -> first - '0';
     tree_count[ tree ] += 1;
 
-    if ( tree_count[ tree ] < talents[ tree ].size() )
+    if ( tree_count[ tree ] < talent_trees[ tree ].size() )
     {
       encoding[ count++ ] += decode -> second - '0';
       tree_count[ tree ] += 1;
     }
 
-    if ( tree_count[ tree ] >= talents[ tree ].size() )
+    if ( tree_count[ tree ] >= talent_trees[ tree ].size() )
     {
       tree++;
     }
@@ -4264,7 +4264,7 @@ void player_t::create_talents()
       if( cid_mask & td.m_class )
       {
         talent_t* t = new talent_t( this, td.name, td.id );
-        talents[ td.tab_page ].push_back( t );
+        talent_trees[ td.tab_page ].push_back( t );
         option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
       }
     }
@@ -4275,7 +4275,7 @@ void player_t::create_talents()
 	if( td.m_pet & ( 1 << j ) )
 	{
 	  talent_t* t = new talent_t( this, td.name, td.id );
-	  talents[ j ].push_back( t );
+	  talent_trees[ j ].push_back( t );
 	  option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
 	}
       }
@@ -4284,7 +4284,7 @@ void player_t::create_talents()
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    std::vector<talent_t*>& tree = talents[ i ];
+    std::vector<talent_t*>& tree = talent_trees[ i ];
     if( ! tree.empty() ) std::sort( tree.begin(), tree.end(), compare_talents() );
   }
 }
@@ -4299,9 +4299,9 @@ talent_t* player_t::find_talent( const std::string& n,
     if( tree != TALENT_TAB_NONE && tree != i )
       continue;
 
-    for( int j=talents[ i ].size()-1; j >= 0; j-- )
+    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
     {
-      talent_t* t = talents[ i ][ j ];
+      talent_t* t = talent_trees[ i ][ j ];
 
       if( n == t -> t_data -> name )
       {
