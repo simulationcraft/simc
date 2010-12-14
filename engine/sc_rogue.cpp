@@ -3327,7 +3327,9 @@ void rogue_t::init_glyphs()
     else if ( n == "garrote"             ) ;
     else if ( n == "pick_lock"           ) ;
     else if ( n == "pick_pocket"         ) ;
+    else if ( n == "poisons"             ) ;
     else if ( n == "safe_fall"           ) ;
+    else if ( n == "sap"                 ) ;
     else if ( n == "sprint"              ) ;
     else if ( n == "vanish"              ) ;
     else if ( ! sim -> parent ) 

@@ -39,6 +39,7 @@ static enchant_data_t enchant_db[] =
   { "4191",  "+130 Strength",                                             "130str"                         },
   { "4190",  "+130 Agility",                                              "130agi"                         },
   { "4189",  "+195 Stamina",                                              "195sta"                         },
+  { "4188",  "Grounded Plasma Shield",                                    ""                               },
   { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
   { "4179",  "Synapse Springs",                                           "synapse_springs"                },
   { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery_2"        },
