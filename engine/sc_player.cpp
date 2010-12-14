@@ -1061,15 +1061,17 @@ void player_t::init_professions()
   }
 
   // Miners gain additional stamina
-  if      ( profession[ PROF_MINING ] >= 450 ) attribute_initial[ ATTR_STAMINA ] += 50.0;
-  else if ( profession[ PROF_MINING ] >= 375 ) attribute_initial[ ATTR_STAMINA ] += 30.0;
-  else if ( profession[ PROF_MINING ] >= 300 ) attribute_initial[ ATTR_STAMINA ] += 10.0;
-  else if ( profession[ PROF_MINING ] >= 225 ) attribute_initial[ ATTR_STAMINA ] +=  7.0;
-  else if ( profession[ PROF_MINING ] >= 150 ) attribute_initial[ ATTR_STAMINA ] +=  5.0;
-  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3.0;
+  if      ( profession[ PROF_MINING ] >= 525 ) attribute_initial[ ATTR_STAMINA ] += 120.0;
+  else if ( profession[ PROF_MINING ] >= 450 ) attribute_initial[ ATTR_STAMINA ] +=  60.0;
+  else if ( profession[ PROF_MINING ] >= 375 ) attribute_initial[ ATTR_STAMINA ] +=  30.0;
+  else if ( profession[ PROF_MINING ] >= 300 ) attribute_initial[ ATTR_STAMINA ] +=  10.0;
+  else if ( profession[ PROF_MINING ] >= 225 ) attribute_initial[ ATTR_STAMINA ] +=   7.0;
+  else if ( profession[ PROF_MINING ] >= 150 ) attribute_initial[ ATTR_STAMINA ] +=   5.0;
+  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=   3.0;
 
   // Skinners gain additional crit rating
-  if      ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 32.0 / rating.attack_crit;
+  if      ( profession[ PROF_SKINNING ] >= 525 ) initial_attack_crit += 80.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 40.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 375 ) initial_attack_crit += 20.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 300 ) initial_attack_crit += 12.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 225 ) initial_attack_crit +=  9.0 / rating.attack_crit;
