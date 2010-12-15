@@ -42,6 +42,9 @@ static enchant_data_t enchant_db[] =
   { "4188",  "Grounded Plasma Shield",                                    ""                               },
   { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
   { "4179",  "Synapse Springs",                                           "synapse_springs"                },
+  { "4175",  "Gnomish X-Ray Scope",                                       "gnomish_xray"                   },
+  { "4126",  "+190 Attack Power and +55 Crit Rating",                     "190AP_55Crit"                   },
+  { "4122",  "+110 Attack Power and +45 Crit Rating",                     "110AP_45Crit"                   },
   { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery_2"        },
   { "4116",  "Darkglow Embroidery",                                       "darkglow_embroidery_2"          },
   { "4115",  "Lightweave Embroidery",                                     "lightweave_embroidery_2"        },
@@ -624,11 +627,13 @@ void enchant_t::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
-  std::string& mh_enchant = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
-  std::string& oh_enchant = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
+  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+  std::string& ranged_enchant = p -> items[ SLOT_RANGED    ].encoded_enchant_str;
 
   weapon_t* mhw = &( p -> main_hand_weapon );
-  weapon_t* ohw = &( p -> main_hand_weapon );
+  weapon_t* ohw = &( p -> off_hand_weapon );
+  weapon_t* rw  = &( p -> ranged_weapon );
 
   if ( mh_enchant == "avalanche" )
   {
@@ -728,6 +733,12 @@ void enchant_t::init( player_t* p )
   {
     buff_t* buff = new stat_buff_t( p, "windwalk_oh", STAT_DODGE_RATING, 600, 1, 10, 45, 0.15, false, false, RNG_DISTRIBUTED );
     p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
+  }
+  if ( ranged_enchant == "gnomish_xray" )
+  {
+    //FIXME: 1.0 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
+    buff_t* buff = new stat_buff_t( p, "xray_targeting", STAT_ATTACK_POWER, 800, 1, 10, 40, 0, false, false, RNG_DISTRIBUTED, 95712 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw, buff, 1.0/*PPM*/ ) );
   }
 
   int num_items = ( int ) p -> items.size();
