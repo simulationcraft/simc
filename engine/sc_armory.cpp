@@ -655,6 +655,7 @@ int armory_t::parse_meta_gem( const std::string& description )
   if ( description == "+12 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFIRE;
   if ( description == "+21 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFLARE;
   if ( description == "+17 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_STARFLARE;
+  if ( description == "Chance to Increase Melee/Ranged Attack Speed"                      ) return META_THUNDERING_SKYFLARE; //FIXME: Assuming the best one for now, since there's no way to tell by just the description
   if ( description == "+17 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_STARFLARE;
   if ( description == "+21 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_SKYFLARE;
   if ( description == "+21 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSIEGE;

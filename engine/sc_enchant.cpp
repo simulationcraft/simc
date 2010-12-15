@@ -740,6 +740,22 @@ void enchant_t::init( player_t* p )
     buff_t* buff = new stat_buff_t( p, "xray_targeting", STAT_ATTACK_POWER, 800, 1, 10, 40, 0, false, false, RNG_DISTRIBUTED, 95712 );
     p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw, buff, 1.0/*PPM*/ ) );
   }
+  if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
+  {
+    //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
+    buff_t* buff = new stat_buff_t( p, "skyfire_swiftness", STAT_HASTE_RATING, 240, 1, 6, 40, 0, false, false, RNG_DISTRIBUTED, 39959 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
+  }
+  if ( p -> meta_gem == META_THUNDERING_SKYFLARE )
+  {
+    //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
+    buff_t* buff = new stat_buff_t( p, "skyflare_swiftness", STAT_HASTE_RATING, 480, 1, 6, 40, 0, false, false, RNG_DISTRIBUTED, 55379 );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
+    p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
+  }
 
   int num_items = ( int ) p -> items.size();
   for ( int i=0; i < num_items; i++ )
