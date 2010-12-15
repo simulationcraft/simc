@@ -1207,8 +1207,6 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
 
-    //check_talent( p -> talents.roar_of_recovery );
-
     parse_options( 0, options_str );
 
     trigger_gcd    = 0.0;
@@ -1223,21 +1221,15 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
 
   virtual void tick()
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    o -> resource_gain( RESOURCE_MANA, 0.10 * o -> resource_max[ RESOURCE_MANA ], o -> gains_roar_of_recovery );
+    hunter_t* o = player -> cast_pet() -> owner -> cast_hunter();
+    o -> resource_gain( RESOURCE_FOCUS, 10, o -> gains_roar_of_recovery );
   }
 
   virtual bool ready()
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    if ( ( o -> resource_current[ RESOURCE_MANA ] /
-           o -> resource_max    [ RESOURCE_MANA ] ) > 0.50 )
+    hunter_t* o = player -> cast_pet() -> owner -> cast_hunter();
+    if ( o -> resource_current[ RESOURCE_FOCUS ] > 50 )
       return false;
-
     return hunter_pet_spell_t::ready();
   }
 };
@@ -2379,7 +2371,7 @@ action_t* hunter_t::create_action( const std::string& name,
 // hunter_t::create_pet =======================================================
 
 pet_t* hunter_t::create_pet( const std::string& pet_name,
-			     const std::string& pet_type )
+                             const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
   if ( p ) return p;
@@ -3134,8 +3126,8 @@ void hunter_t::armory_extensions( const std::string& region,
 
       bool all_zeros = true;
       for( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
-	if( pet_talents[ j ] != '0' )
-	  all_zeros = false;
+        if( pet_talents[ j ] != '0' )
+          all_zeros = false;
       if( all_zeros ) continue;
 
       hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
@@ -3145,10 +3137,10 @@ void hunter_t::armory_extensions( const std::string& region,
       pet -> talents_str = "";
       for( int j=0; j < MAX_TALENT_TREES; j++ )
       {
-	for( int k=0; k < (int) pet -> talent_trees[ j ].size(); k++ )
+        for( int k=0; k < (int) pet -> talent_trees[ j ].size(); k++ )
         {
-	  pet -> talents_str += (char) ( pet -> talent_trees[ j ][ k ] -> rank() + (int) '0' );
-	}
+          pet -> talents_str += (char) ( pet -> talent_trees[ j ][ k ] -> rank() + (int) '0' );
+        }
       }
     }
 

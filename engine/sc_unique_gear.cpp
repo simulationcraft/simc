@@ -657,6 +657,34 @@ static void register_shard_of_woe( item_t* item )
   p -> initial_resource_reduction += 405;
 }
 
+// register_sorrowsong =================================================
+
+static void register_sorrowsong( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct sorrowsong_callback_t : public stat_proc_callback_t
+  {
+    sorrowsong_callback_t( player_t* p, bool h ) :
+      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 0.10, 10.0, 20.0 )
+    {}
+
+    virtual void trigger( action_t* a )
+    {
+      if ( a -> target -> health_percentage() < 35 )
+      {
+        stat_proc_callback_t::trigger( a );
+      }
+    }
+  };
+
+  stat_proc_callback_t* cb = new sorrowsong_callback_t( p, item -> heroic() );
+  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
+  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+}
+
 // register_tiny_abom ====================================================
 
 static void register_tiny_abom( item_t* item )
@@ -737,9 +765,9 @@ static void register_tiny_abom( item_t* item )
         attack -> may_glance = false;
         attack -> special = true;
         attack -> base_multiplier *= 0.5;
-	manifesting_anger = true;
+        manifesting_anger = true;
         attack -> execute();
-	manifesting_anger = false;
+        manifesting_anger = false;
         attack -> base_multiplier /= 0.5;
         attack -> special = false;
         attack -> may_glance = true;
@@ -751,7 +779,7 @@ static void register_tiny_abom( item_t* item )
         attack -> result            = result;
         attack -> resource_consumed = resource_consumed;
         attack -> direct_dmg        = direct_dmg;
-	attack -> time_to_execute   = time_to_execute;
+        attack -> time_to_execute   = time_to_execute;
       }
     }
   };
@@ -816,6 +844,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
     if ( ! strcmp( item.name(), "shard_of_woe"              ) ) register_shard_of_woe           ( &item );
+    if ( ! strcmp( item.name(), "sorrowsong"                ) ) register_sorrowsong             ( &item );
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar" ) ) register_tiny_abom              ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"    ) ) register_tyrandes_favorite_doll ( &item );
     if ( ! strcmp( item.name(), "unheeded_warning"          ) ) register_unheeded_warning       ( &item );
@@ -827,18 +856,18 @@ void unique_gear_t::init( player_t* p )
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( int                type,
-						      int64_t            mask,
-						      const std::string& name,
-						      player_t*          player,
-						      int                stat,
-						      int                max_stacks,
-						      double             amount,
-						      double             proc_chance,
-						      double             duration,
-						      double             cooldown,
-						      double             tick,
-						      bool               reverse,
-						      int                rng_type )
+                                                      int64_t            mask,
+                                                      const std::string& name,
+                                                      player_t*          player,
+                                                      int                stat,
+                                                      int                max_stacks,
+                                                      double             amount,
+                                                      double             proc_chance,
+                                                      double             duration,
+                                                      double             cooldown,
+                                                      double             tick,
+                                                      bool               reverse,
+                                                      int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, rng_type );
 
@@ -892,16 +921,16 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( int                type,
-							   int64_t            mask,
-							   const std::string& name,
-							   player_t*          player,
-							   int                max_stacks,
-							   const school_type  school,
-							   double             min_dmg,
-							   double             max_dmg,
-							   double             proc_chance,
-							   double             cooldown,
-							   int                rng_type )
+                                                           int64_t            mask,
+                                                           const std::string& name,
+                                                           player_t*          player,
+                                                           int                max_stacks,
+                                                           const school_type  school,
+                                                           double             min_dmg,
+                                                           double             max_dmg,
+                                                           double             proc_chance,
+                                                           double             cooldown,
+                                                           int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, min_dmg, max_dmg, proc_chance, cooldown, rng_type );
 
@@ -951,7 +980,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
-    item_t::special_effect_t& e )
+                                                      item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
@@ -963,7 +992,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
-    item_t::special_effect_t& e )
+                                                           item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
@@ -1014,7 +1043,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "grace_of_the_herald"                 ) e = ( heroic ? "OnAttackHit_1710Crit_10%_10Dur_75Cd" : "OnAttackHit_924Crit_10%_10Dur_75Cd" ); // TO-DO: Confirm ICD
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_75Cd"; // TO-DO: Confirm ICD
-
   else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_60Cd" : "OnAttackHit_1926Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_75Cd" : "OnAttackHit_1512Str_10%_20Dur_75Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_45Cd"; // TO-DO: Confirm ICD.
@@ -1039,6 +1067,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "schnotzzs_medallion_of_command"      ) e = "OnAttackHit_918Mastery_10%_20Dur_75Cd"; // TO-DO: Confirm ICD.
   else if ( name == "sextant_of_unstable_currents"        ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
   else if ( name == "shiffars_nexus_horn"                 ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
+  else if ( name == "stonemothers_kiss"                   ) e = "OnSpellCast_1164Crit_10%_20Dur_75Cd";
   else if ( name == "stump_of_time"                       ) e = "OnSpellCast_1926SP_10%_15Dur_75Cd";
   else if ( name == "sundial_of_the_exiled"               ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_95Cd"; // TO-DO: Confirm ICD.
