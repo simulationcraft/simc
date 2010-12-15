@@ -65,6 +65,11 @@ static void simplify_html( std::string& buffer )
 
 static void encode_html ( std::string& buffer )
 {
+  for ( std::string::size_type pos = buffer.find( "&", 0 ); pos != std::string::npos; pos = buffer.find( "&", pos ) )
+  {
+    buffer.replace( pos, 1, "&amp;" );
+    pos+=2;
+  }
   for ( std::string::size_type pos = buffer.find( "<", 0 ); pos != std::string::npos; pos = buffer.find( "<", pos ) )
   {
     buffer.replace( pos, 1, "&lt;" );
@@ -73,11 +78,6 @@ static void encode_html ( std::string& buffer )
   for ( std::string::size_type pos = buffer.find( ">", 0 ); pos != std::string::npos; pos = buffer.find( ">", pos ) )
   {
     buffer.replace( pos, 1, "&gt;" );
-    pos+=2;
-  }
-  for ( std::string::size_type pos = buffer.find( "&", 0 ); pos != std::string::npos; pos = buffer.find( "&", pos ) )
-  {
-    buffer.replace( pos, 1, "&amp;" );
     pos+=2;
   }
 }
