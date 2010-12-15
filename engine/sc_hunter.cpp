@@ -293,9 +293,9 @@ struct hunter_pet_t : public pet_t
   virtual int group()
   {
     //assert( pet_type > PET_NONE && pet_type < PET_HUNTER );
-    if ( pet_type >= PET_CARRION_BIRD && pet_type <= PET_WOLF         ) return PET_FEROCITY;
-    if ( pet_type >= PET_BEAR         && pet_type <= PET_WORM         ) return PET_TENACITY;
-    if ( pet_type >= PET_BAT          && pet_type <= PET_WIND_SERPENT ) return PET_CUNNING;
+    if ( pet_type >= PET_CARRION_BIRD && pet_type <= PET_WOLF         ) return PET_TAB_FEROCITY;
+    if ( pet_type >= PET_BEAR         && pet_type <= PET_WORM         ) return PET_TAB_TENACITY;
+    if ( pet_type >= PET_BAT          && pet_type <= PET_WIND_SERPENT ) return PET_TAB_CUNNING;
     return PET_NONE;
   }
 
@@ -335,6 +335,7 @@ struct hunter_pet_t : public pet_t
     case PET_SPIDER:       return NULL;
     case PET_SPOREBAT:     return NULL;
     case PET_WIND_SERPENT: return "lightning_breath";
+    default: break;
     }
     return NULL;
   }
@@ -379,16 +380,16 @@ struct hunter_pet_t : public pet_t
     talents.wild_hunt         = find_talent( "Wild Hunt",         tab );
 
     // Ferocity
-    talents.call_of_the_wild = find_talent( "Call of the Wild", PET_FEROCITY );
-    talents.rabid            = find_talent( "Rabid",            PET_FEROCITY );
-    talents.spiders_bite     = find_talent( "Spider's Bite",    PET_FEROCITY );
-    talents.shark_attack     = find_talent( "Shark Attack",     PET_FEROCITY );
+    talents.call_of_the_wild = find_talent( "Call of the Wild", PET_TAB_FEROCITY );
+    talents.rabid            = find_talent( "Rabid",            PET_TAB_FEROCITY );
+    talents.spiders_bite     = find_talent( "Spider's Bite",    PET_TAB_FEROCITY );
+    talents.shark_attack     = find_talent( "Shark Attack",     PET_TAB_FEROCITY );
 
     // Cunning
-    talents.feeding_frenzy   = find_talent( "Feeding Frenzy",   PET_CUNNING );
-    talents.owls_focus       = find_talent( "Owl's Focus",      PET_CUNNING );
-    talents.roar_of_recovery = find_talent( "Roar of Recovery", PET_CUNNING );
-    talents.wolverine_bite   = find_talent( "Wolverine Bite",   PET_CUNNING );
+    talents.feeding_frenzy   = find_talent( "Feeding Frenzy",   PET_TAB_CUNNING );
+    talents.owls_focus       = find_talent( "Owl's Focus",      PET_TAB_CUNNING );
+    talents.roar_of_recovery = find_talent( "Roar of Recovery", PET_TAB_CUNNING );
+    talents.wolverine_bite   = find_talent( "Wolverine Bite",   PET_TAB_CUNNING );
 
     pet_t::init_talents();
 
@@ -403,7 +404,7 @@ struct hunter_pet_t : public pet_t
       talents.serpent_swiftness -> set_rank( 3, true );
       talents.spiked_collar     -> set_rank( 3, true );
 
-      if ( tab == PET_FEROCITY ) 
+      if ( tab == PET_TAB_FEROCITY ) 
       {
         talents.call_of_the_wild -> set_rank( 1, true );
         talents.rabid            -> set_rank( 1, true );
@@ -416,7 +417,7 @@ struct hunter_pet_t : public pet_t
           talents.wild_hunt    -> set_rank( 2, true );
         }
       }
-      else if ( tab == PET_CUNNING )
+      else if ( tab == PET_TAB_CUNNING )
       {
         talents.feeding_frenzy   -> set_rank( 2, true );
         talents.owls_focus       -> set_rank( 2, true );

@@ -1933,7 +1933,7 @@ uint32_t sc_data_access_t::get_pet_id( const pet_type_t p )
   {
   case 0x1: return 1;
   case 0x2: return 2;
-  case 0x3: return 3;
+  case 0x4: return 3;
   }
 
   return 0;

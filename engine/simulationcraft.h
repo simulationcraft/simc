@@ -194,6 +194,8 @@ enum pet_type_t
   PET_WASP,
   PET_WOLF,
 
+  PET_FEROCITY,
+
   // Tenacity
   PET_BEAR,
   PET_BOAR,
@@ -205,6 +207,8 @@ enum pet_type_t
   PET_TURTLE,
   PET_WARP_STALKER,
   PET_WORM,
+
+  PET_TENACITY,
 
   // Cunning
   PET_BAT,
@@ -218,6 +222,9 @@ enum pet_type_t
   PET_SPIDER,
   PET_SPOREBAT,
   PET_WIND_SERPENT,
+
+  PET_CUNNING,
+
   PET_HUNTER,
 
   PET_FELGUARD, 
@@ -370,7 +377,7 @@ enum talent_tab_type
   SHAMAN_ELEMENTAL = 0,     SHAMAN_ENHANCEMENT,  SHAMAN_RESTORATION,  // SHAMAN
   WARLOCK_AFFLICTION = 0,   WARLOCK_DEMONOLOGY,  WARLOCK_DESTRUCTION, // WARLOCK
   WARRIOR_ARMS = 0,         WARRIOR_FURY,        WARRIOR_PROTECTION,  // WARRIOR
-  PET_FEROCITY = 0,         PET_TENACITY,        PET_CUNNING,         // PET
+  PET_TAB_FEROCITY = 0,     PET_TAB_TENACITY,    PET_TAB_CUNNING,     // PET
 };
 
 enum weapon_type
