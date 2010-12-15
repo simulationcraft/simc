@@ -21,9 +21,9 @@ actions+=/arcane_power,if=target.time_to_die<20
 actions+=/arcane_power,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3
 actions+=/mana_gem,if=target.time_to_die<20
 actions+=/mana_gem,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3
+actions+=/flame_orb
 actions+=/presence_of_mind,arcane_blast
 actions+=/arcane_blast,if=target.time_to_die<20&mana_pct>5
-actions+=/flame_orb
 actions+=/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2
 actions+=/arcane_blast,if=(cooldown.evocation.remains<16&mana_pct>25)|mana_pct>94|buff.arcane_blast.stack<3
 actions+=/evocation,if=target.time_to_die>=25
@@ -45,7 +45,7 @@ finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=has
 trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
 trinket2=bell_of_enraging_resonance,heroic=1,stats=363crit,reforge=crit_hit,equip=onspellcrit_2178sp_30%_20dur_100cd
 back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=haste_hit,gems=20hit_20haste_10int,enchant=lightweave_embroidery
-main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit,enchant=power_torrent
+main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit
 off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int
 ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
 # Gear Summary
