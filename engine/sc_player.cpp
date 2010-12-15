@@ -189,6 +189,18 @@ static bool parse_talent_url( sim_t* sim,
       return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
     }
   }
+  else
+  {
+    bool all_digits = true;
+    for( int i=url.size()-1; i >= 0 && all_digits; i-- )
+      if( ! isdigit( url[ i ] ) )
+	  all_digits = false;
+
+    if( all_digits )
+    {
+      return p -> parse_talents_armory( url );
+    }
+  }
 
   sim -> errorf( "Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
 
@@ -4943,10 +4955,6 @@ player_t* player_t::create( sim_t*             sim,
   else if ( type == "warrior" )
   {
     return player_t::create_warrior( sim, name, r );
-  }
-  else if ( type == "pet" )
-  {
-    return sim -> active_player -> create_pet( name );
   }
   return 0;
 }

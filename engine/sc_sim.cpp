@@ -201,6 +201,20 @@ static bool parse_player( sim_t*             sim,
 
     }
   }
+  else if( name == "pet" )
+  {
+    std::string pet_name = value;
+    std::string pet_type = value;
+
+    std::string::size_type cut_pt = value.find_first_of( "," );
+    if ( cut_pt != value.npos )
+    {
+      pet_type = value.substr( 0, cut_pt );
+      pet_name = value.substr( cut_pt + 1 );
+    }
+
+    sim -> active_player = sim -> active_player -> create_pet( pet_name, pet_type );
+  }
   else
   {
     sim -> active_player = player_t::create( sim, name, value );

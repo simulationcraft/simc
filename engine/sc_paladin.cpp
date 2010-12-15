@@ -225,7 +225,7 @@ struct paladin_t : public player_t
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
-  virtual pet_t*    create_pet    ( const std::string& name );
+  virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
   virtual void      combat_begin();
 
@@ -2496,13 +2496,15 @@ cooldown_t* paladin_t::get_cooldown( const std::string& name )
 
 // paladin_t::create_pet =====================================================
 
-pet_t* paladin_t::create_pet( const std::string& name )
+pet_t* paladin_t::create_pet( const std::string& pet_name,
+			      const std::string& pet_type )
 {
-  pet_t* p = find_pet(name);
-  if (p) return p;
-  if (name == "guardian_of_ancient_kings_ret")
+  pet_t* p = find_pet( pet_name );
+  if ( p ) return p;
+
+  if ( pet_name == "guardian_of_ancient_kings_ret" )
   {
-    return new guardian_of_ancient_kings_ret_t(sim, this);
+    return new guardian_of_ancient_kings_ret_t( sim, this );
   }
   return 0;
 }
@@ -2512,9 +2514,10 @@ pet_t* paladin_t::create_pet( const std::string& name )
 // FIXME: Not possible to check spec at this point, but in the future when all
 // three versions of the guardian are implemented, it would be fugly to have to
 // give them different names just for the lookup
+
 void paladin_t::create_pets()
 {
-  guardian_of_ancient_kings = create_pet("guardian_of_ancient_kings_ret");
+  guardian_of_ancient_kings = create_pet( "guardian_of_ancient_kings_ret" );
 }
 
 // paladin_t::combat_begin ===================================================

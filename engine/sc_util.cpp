@@ -260,15 +260,62 @@ const char* util_t::player_type_string( int type )
   return "unknown";
 }
 
-// util_t::player_type_string ==============================================
+// util_t::pet_type_string =================================================
 
 const char* util_t::pet_type_string( int type )
 {
   switch ( type )
   {
-  case PLAYER_NONE:     return "none";
-  case PET_CAT:         return "cat";
-  case PET_WOLF:        return "wolf";
+  case PET_NONE:                return "none";
+  case PET_CARRION_BIRD:        return "carrion_bird";
+  case PET_CAT:		        return "cat";
+  case PET_CORE_HOUND:	        return "core_hound";
+  case PET_DEVILSAUR:	        return "devilsaur";
+  case PET_HYENA:		return "hyena";
+  case PET_MOTH:		return "moth";
+  case PET_RAPTOR:		return "raptor";
+  case PET_SPIRIT_BEAST:	return "spirit_beast";
+  case PET_TALLSTRIDER:	        return "tallstrider";
+  case PET_WASP:		return "wasp";
+  case PET_WOLF:		return "wolf";
+  case PET_BEAR:		return "bear";
+  case PET_BOAR:		return "boar";
+  case PET_CRAB:		return "crab";
+  case PET_CROCOLISK:	        return "crocolisk";
+  case PET_GORILLA:		return "gorilla";
+  case PET_RHINO:		return "rhino";
+  case PET_SCORPID:		return "scorpid";
+  case PET_TURTLE:		return "turtle";
+  case PET_WARP_STALKER:	return "warp_stalker";
+  case PET_WORM:		return "worm";
+  case PET_BAT:		        return "bat";
+  case PET_BIRD_OF_PREY:	return "bird_of_prey";
+  case PET_CHIMERA:		return "chimera";
+  case PET_DRAGONHAWK:	        return "dragonhawk";
+  case PET_NETHER_RAY:	        return "nether_ray";
+  case PET_RAVAGER:		return "ravager";
+  case PET_SERPENT:		return "serpent";
+  case PET_SILITHID:		return "silithid";
+  case PET_SPIDER:		return "spider";
+  case PET_SPOREBAT:		return "sporebat";
+  case PET_WIND_SERPENT:	return "wind_serpent";
+  case PET_FELGUARD: 	        return "felguard";
+  case PET_FELHUNTER: 	        return "felhunter";
+  case PET_IMP:		        return "imp";
+  case PET_VOIDWALKER: 	        return "voidwalker";
+  case PET_SUCCUBUS: 	        return "succubus";
+  case PET_INFERNAL:  	        return "infernal";
+  case PET_DOOMGUARD:	        return "doomguard";
+  case PET_EBON_IMP:		return "ebon_imp";
+  case PET_GHOUL:		return "ghoul";
+  case PET_BLOODWORMS:	        return "bloodworms";
+  case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";
+  case PET_TREANTS:		return "treants";
+  case PET_WATER_ELEMENTAL:	return "water_elemental";
+  case PET_SHADOWFIEND:	        return "shadowfiend";
+  case PET_SPIRIT_WOLF:	        return "spirit_wolf";
+  case PET_FIRE_ELEMENTAL:	return "fire_elemental";
+  case PET_EARTH_ELEMENTAL:     return "earth_elemental";
   }
   return "unknown";
 }

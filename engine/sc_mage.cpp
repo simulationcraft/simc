@@ -264,7 +264,7 @@ struct mage_t : public player_t
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name );
+  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
@@ -2686,7 +2686,8 @@ action_t* mage_t::create_action( const std::string& name,
 
 // mage_t::create_pet =======================================================
 
-pet_t* mage_t::create_pet( const std::string& pet_name )
+pet_t* mage_t::create_pet( const std::string& pet_name,
+			   const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 

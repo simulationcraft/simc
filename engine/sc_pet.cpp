@@ -15,8 +15,11 @@ void pet_t::_init_pet_t()
 {
   level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
-  next_pet = owner -> pet_list;
-  owner -> pet_list = this;
+
+  pet_t** last = &( owner -> pet_list );
+  while ( *last ) last = &( ( *last ) -> next_pet );
+  *last = this;
+  next_pet = 0;
 
   // Pets have inherent 5% critical strike chance if not overridden.
   base_spell_crit  = 0.05;
