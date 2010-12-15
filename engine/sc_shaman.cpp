@@ -3559,7 +3559,7 @@ void shaman_t::init_glyphs()
     else if ( n == "water_shield"         ) glyph_water_shield -> enable();
     else if ( n == "windfury_weapon"      ) glyph_windfury_weapon -> enable();
     // To prevent warnings....
-    else if ( n == "the_artic_wolf"       ) ;
+    else if ( n == "the_arctic_wolf"      ) ;
     else if ( n == "astral_recall"        ) ;
     else if ( n == "chain_heal"           ) ;
     else if ( n == "earth_shield"         ) ;

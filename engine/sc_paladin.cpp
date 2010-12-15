@@ -2027,7 +2027,7 @@ void paladin_t::init_glyphs()
     else if ( n == "templars_verdict"        ) glyphs.templars_verdict = 1;
     else if ( n == "word_of_glory"           ) ;
     // major glyphs
-    else if ( n == "ascetic_crusader"        ) glyphs.ascetic_crusader = 1;
+    else if ( n == "the_ascetic_crusader"    ) glyphs.ascetic_crusader = 1;
     else if ( n == "beacon_of_light"         ) ;
     else if ( n == "cleansing"               ) ;
     else if ( n == "consecration"            ) glyphs.consecration = 1;
