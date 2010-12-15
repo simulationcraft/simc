@@ -3860,7 +3860,7 @@ void druid_t::init_actions()
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0&buff.lunar_eclipse.react";
       action_list_str += "/insect_swarm,if=!ticking";
-      action_list_str += "/starsurge";
+      if ( primary_tree() == TREE_BALANCE ) action_list_str += "/starsurge";
       action_list_str += use_str;
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";

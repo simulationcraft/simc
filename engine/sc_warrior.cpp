@@ -2795,6 +2795,7 @@ void warrior_t::init_glyphs()
     else if ( n == "sweeping_strikes"   ) glyphs.sweeping_strikes -> enable();
     else if ( n == "victory_rush"       ) glyphs.victory_rush -> enable();
     // To prevent warnings....
+    else if ( n == "colossus_smash"     ) ;
     else if ( n == "death_wish"         ) ;
     else if ( n == "demoralizing_shout" ) ;
     else if ( n == "furious_sundering"  ) ;

@@ -1046,6 +1046,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_60Cd" : "OnAttackHit_1926Str_10%_20Dur_60Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_75Cd" : "OnAttackHit_1512Str_10%_20Dur_75Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_45Cd"; // TO-DO: Confirm ICD.
+  else if ( name == "heartsong"                           ) e = "OnSpellCast_200Spi_25%_15Dur_20Cd";
   else if ( name == "herkuml_war_token"                   ) e = "OnAttackHit_17AP_20Stack_10Dur";
   else if ( name == "illustration_of_the_dragon_soul"     ) e = "OnSpellCast_20SP_10Stack_10Dur";
   else if ( name == "key_to_the_endless_chamber"          ) e = ( heroic ? "OnAttackHit_1710Agi_10%_15Dur_75Cd" : "OnAttackHit_1290Agi_10%_15Dur_75Cd" ); // TO-DO: Confirm ICD.
