@@ -292,7 +292,7 @@ struct hunter_pet_t : public pet_t
 
   virtual int group()
   {
-    assert( pet_type > PET_NONE && pet_type < PET_HUNTER );
+    //assert( pet_type > PET_NONE && pet_type < PET_HUNTER );
     if ( pet_type >= PET_CARRION_BIRD && pet_type <= PET_WOLF         ) return PET_FEROCITY;
     if ( pet_type >= PET_BEAR         && pet_type <= PET_WORM         ) return PET_TENACITY;
     if ( pet_type >= PET_BAT          && pet_type <= PET_WIND_SERPENT ) return PET_CUNNING;
@@ -326,7 +326,7 @@ struct hunter_pet_t : public pet_t
     case PET_WORM:         return NULL;
     case PET_BAT:          return NULL;
     case PET_BIRD_OF_PREY: return NULL;
-    case PET_CHIMERA:      return "firestorm_breath";
+    case PET_CHIMERA:      return "froststorm_breath";
     case PET_DRAGONHAWK:   return NULL;
     case PET_NETHER_RAY:   return NULL;
     case PET_RAVAGER:      return NULL;
