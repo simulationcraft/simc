@@ -2430,11 +2430,11 @@ void hunter_t::create_pets()
 {
   if( ! pet_list )
   {
-    create_pet( "cat" );
-    create_pet( "devilsaur" );
-    create_pet( "raptor" );
-    create_pet( "wind_serpent" );
-    create_pet( "wolf" );
+    create_pet( "cat",          "cat"          );
+    create_pet( "devilsaur",    "devilsaur"    );
+    create_pet( "raptor",       "raptor"       );
+    create_pet( "wind_serpent", "wind_serpent" );
+    create_pet( "wolf",         "wolf"         );
   }
 }
 
