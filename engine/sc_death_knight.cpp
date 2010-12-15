@@ -4459,7 +4459,7 @@ void death_knight_t::init_glyphs()
     else if ( n == "blood_boil"          ) ;
     else if ( n == "blood_tap"           ) ;
     else if ( n == "bone_shield"         ) ;
-    else if ( n == "chians_of_ice"       ) ;
+    else if ( n == "chains_of_ice"       ) ;
     else if ( n == "dancing_rune_weapon" ) ;
     else if ( n == "death_grip"          ) ;
     else if ( n == "deaths_embrace"      ) ;
