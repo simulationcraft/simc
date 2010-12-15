@@ -438,7 +438,7 @@ struct hunter_pet_t : public pet_t
     buffs_bestial_wrath     = new buff_t( this, "bestial_wrath",     1, 10.0 );
     buffs_call_of_the_wild  = new buff_t( this, 53434, "call_of_the_wild" );
     buffs_culling_the_herd  = new buff_t( this, 70893, "culling_the_herd" );
-    buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0, 0.0 );
+    buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0 );
     buffs_monstrous_bite    = new buff_t( this, "monstrous_bite",    3, 12.0 );
     buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, 0 );
     buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
@@ -481,7 +481,7 @@ struct hunter_pet_t : public pet_t
         action_list_str += "/";
         action_list_str += special;
       }
-      if ( talents.wolverine_bite )
+      if ( talents.wolverine_bite -> rank() )
       {
         action_list_str += "/wolverine_bite";
       }
@@ -561,6 +561,7 @@ struct hunter_pet_t : public pet_t
     {
       m *= 1.0 + 1.7 / 100.0 * o -> composite_mastery();
     }
+    m *= 1.0 + talents.shark_attack -> rank() * 0.03;
     return m;
   }
 };
@@ -615,11 +616,11 @@ struct hunter_attack_t : public attack_t
     attack_t::execute();
     hunter_t* p = player -> cast_hunter();
 
-      if ( p -> talents.improved_steady_shot -> rank() )
-        trigger_improved_steady_shot();
-      if ( p -> buffs_pre_improved_steady_shot -> stack() == 2 )
-        p -> buffs_improved_steady_shot -> trigger();
+    if ( p -> talents.improved_steady_shot -> rank() )
+      trigger_improved_steady_shot();
 
+    if ( p -> buffs_pre_improved_steady_shot -> stack() == 2 )
+      p -> buffs_improved_steady_shot -> trigger();
   }
 
   virtual double cost() SC_CONST;
@@ -764,14 +765,9 @@ struct hunter_pet_attack_t : public attack_t
     may_crit = true;
     
     base_multiplier *= 1.05; // Cunning, Ferocity and Tenacity pets all have +5% damag
-
-    // Orc Command Racial
-    if ( o -> race == RACE_ORC )
-    {
-      base_multiplier *= 1.05;
-    }
-    
-    base_multiplier *= 1.0 + p -> talents.spiked_collar -> effect_base_value( 1 ) / 100.0;
+    if ( o -> race == RACE_ORC ) base_multiplier *= 1.05;
+    base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
+    base_crit += p -> talents.spiders_bite -> rank() * 0.03;
 
     // Assume happy pet
     base_multiplier *= 1.25;
@@ -788,40 +784,46 @@ struct hunter_pet_attack_t : public attack_t
     _init_hunter_pet_attack_t();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double swing_haste() SC_CONST
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-
-    double t = attack_t::execute_time();
-    if ( t == 0 ) return 0;
-
-    if ( p -> buffs_frenzy -> up() ) t *= 1.0 / 1.3;
-
-    return t;
+    hunter_t* o = p -> owner -> cast_hunter();
+    double h = attack_t::swing_haste();
+    h *= 1.0 / ( 1.0 + p -> talents.serpent_swiftness -> rank() * 0.05 );
+    if ( p -> buffs_frenzy -> up() ) 
+    {
+      h *= 1.0 / ( 1.0 + o -> talents.frenzy -> rank() * p -> buffs_frenzy -> stack() * 0.02 );
+    }
+    return h;
   }
 
   virtual void execute()
   {
-    attack_t::execute();
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t* o = p -> owner -> cast_hunter();
+
+    attack_t::execute();
 
     if ( attack_t::cost() > 0 ) p -> buffs_sic_em -> expire();
     if ( result_is_hit() )
     {
+      if ( o -> talents.frenzy -> rank() && special ) 
+      {
+	p -> buffs_frenzy -> trigger();
+      }
       if ( p -> buffs_rabid -> check() )
+      {
         p -> buffs_rabid_power_stack -> trigger();
-
+      }
       if ( result == RESULT_CRIT )
       {
-        p -> buffs_frenzy -> trigger();
-
         trigger_invigoration( this );
 
         if ( p -> talents.wolverine_bite -> rank() )
         {
           p -> buffs_wolverine_bite -> trigger();
         }
-        if ( p -> talents.culling_the_herd -> rank() )
+        if ( special && p -> talents.culling_the_herd -> rank() )
         {
           p -> buffs_culling_the_herd -> trigger();
         }
@@ -847,22 +849,37 @@ struct hunter_pet_attack_t : public attack_t
     player_multiplier *= 1.0 + p -> buffs_monstrous_bite -> stack() * 0.03;
 
     if ( p -> buffs_culling_the_herd -> up() )
+    {
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
-
+    }
     if ( ! special )
     {
       if ( o -> buffs_cobra_strikes -> up() ) player_crit += o -> buffs_cobra_strikes -> effect_base_value( 1 ) / 100.0;
     }
-
+    if ( p -> talents.feeding_frenzy -> rank() && ( target -> health_percentage() < 35 ) )
+    {
+      player_multiplier *= 1.0 + p -> talents.feeding_frenzy -> rank() * 0.08;
+    }
+    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
+    {
+      player_multiplier *= 1.0 + p -> talents.wild_hunt -> rank() * 0.60;
+    }
     if ( o -> buffs_tier10_2pc -> up() )
+    {
       player_multiplier *= 1.15;
+    }
   }
 
   virtual double cost() SC_CONST
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     double c = attack_t::cost();
-    if ( p -> buffs_sic_em -> up() && c > 0 ) return 0;
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_sic_em -> up() ) return 0;
+    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
+    {
+      c *= 1.0 + p -> talents.wild_hunt -> rank() * 0.50;
+    }
     return c;
   }
 };
@@ -913,6 +930,9 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
+
+// FIXME! I believe many of the talents that refer to "Basic Attacks" mean Claw/Bite
+// Right now those talents key off of "special" but perhaps they should be moved here.
 
 struct claw_t : public hunter_pet_attack_t
 {
@@ -993,19 +1013,26 @@ struct hunter_pet_spell_t : public spell_t
 {
   void _init_hunter_pet_spell_t()
   {
-    base_multiplier *= 1.05; // 3.1.0 change: # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses.
-
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    hunter_t* o = p -> cast_hunter();
+    base_multiplier *= 1.05; // # Cunning, Ferocity and Tenacity pets now all have +5% damage
+    if ( o -> race == RACE_ORC ) base_multiplier *= 1.05;
+    base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
+    base_crit += p -> talents.spiders_bite -> rank() * 0.03;
+    base_multiplier *= 1.25; // Assume happy pet
   }
+
   hunter_pet_spell_t( const char* n, player_t* player, const char* sname ) :
-        spell_t( n, sname, player )
-    {
-      _init_hunter_pet_spell_t();
-    }
+    spell_t( n, sname, player )
+  {
+    _init_hunter_pet_spell_t();
+  }
+
   hunter_pet_spell_t( const char* n, player_t* player, const uint32_t id ) :
-        spell_t( n, id, player )
-    {
-      _init_hunter_pet_spell_t();
-    }
+    spell_t( n, id, player )
+  {
+    _init_hunter_pet_spell_t();
+  }
 
   virtual double cost() SC_CONST
   {
@@ -1045,11 +1072,17 @@ struct hunter_pet_spell_t : public spell_t
     if ( p -> buffs_bestial_wrath -> up() ) player_multiplier *= 1.50;
 
     if ( p -> buffs_culling_the_herd -> up() )
+    {
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
-
-
+    }
+    if ( p -> talents.feeding_frenzy -> rank() && ( target -> health_percentage() < 35 ) )
+    {
+      player_multiplier *= 1.0 + p -> talents.feeding_frenzy -> rank() * 0.08;
+    }
     if ( o -> buffs_tier10_2pc -> up() )
+    {
       player_multiplier *= 1.15;
+    }
   }
 };
 
@@ -1179,8 +1212,6 @@ struct rabid_t : public hunter_pet_spell_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
-
-    //check_talent( p -> talents.rabid );
 
     parse_options( NULL, options_str );
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
@@ -3037,6 +3068,13 @@ bool hunter_t::create_profile( std::string& profile_str, int save_type )
   for( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
     hunter_pet_t* p = (hunter_pet_t*) pet;
+
+    if( pet -> talents_str.empty() )
+    {
+      for( int j=0; j < MAX_TALENT_TREES; j++ )
+        for( int k=0; k < (int) pet -> talent_trees[ j ].size(); k++ )
+          pet -> talents_str += (char) ( pet -> talent_trees[ j ][ k ] -> rank() + (int) '0' );
+    }
     
     profile_str += "pet=";
     profile_str += util_t::pet_type_string( p -> pet_type );
