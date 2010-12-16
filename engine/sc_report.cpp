@@ -3947,7 +3947,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       if( j % 50 == 0 ) util_t::fprintf( file, "%s<li> ", ( (j>0) ? "\n" : ""  ) );
       util_t::fprintf( file, "%c", seq[ j ] );
     }
-    util_t::fprintf( file, "<\ul>\n</div>\n" );
+    util_t::fprintf( file, "</ul>\n</div>\n" );
   }
 
   util_t::fprintf( file,
