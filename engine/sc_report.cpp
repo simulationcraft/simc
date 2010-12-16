@@ -3938,16 +3938,19 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   util_t::fprintf( file,
     "                </table>\n" );
 
-  std::string& seq = p -> iteration_sequence[ 0 ];
+  std::string& seq = p -> iteration_sequence[ p -> sim -> iterations - 1 ];
   if ( seq.size() > 0 )
   {
-    util_t::fprintf( file, "<div>\n<b>Sequence:</b>\n<ul>\n" );
-    for( int j=0; j < (int) seq.size(); j++ )
+    util_t::fprintf( file, "<div>\n<h3>Sample Sequence:</h3>\n<ul>" );
+    int size = (int) seq.size();
+    int line_length = 100;
+    for( int j=1; line_length > 80; j++ ) line_length = size / j;
+    for( int j=0; j < size; j++ )
     {
-      if( j % 50 == 0 ) util_t::fprintf( file, "%s<li> ", ( (j>0) ? "\n" : ""  ) );
+      if( j % line_length == 0 ) util_t::fprintf( file, "\n<li> " );
       util_t::fprintf( file, "%c", seq[ j ] );
     }
-    util_t::fprintf( file, "</ul>\n</div>\n" );
+    util_t::fprintf( file, "\n</ul>\n</div>\n" );
   }
 
   util_t::fprintf( file,
