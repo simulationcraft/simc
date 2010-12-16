@@ -222,8 +222,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
         break;
       case E_TRIGGER_SPELL:
       case E_TRIGGER_SPELL_WITH_VALUE:
-        if ( e -> trigger_spell && sim -> sim_data.m_spells_index[ e -> trigger_spell ] )
-          s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell ] -> name;
+        if ( e -> trigger_spell_id && sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] )
+          s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] -> name;
         break;
       default:
         break;
@@ -246,13 +246,13 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
            s << " every " << e -> amplitude / 1000.0 << " seconds";
          break;
        case A_PROC_TRIGGER_SPELL:
-         if ( e -> trigger_spell && sim -> sim_data.m_spells_index[ e -> trigger_spell ] )
-           s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell ] -> name;
+         if ( e -> trigger_spell_id && sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] )
+           s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] -> name;
          break;
        case A_PERIODIC_TRIGGER_SPELL:
-         if ( e -> trigger_spell && sim -> sim_data.m_spells_index[ e -> trigger_spell ] )
+         if ( e -> trigger_spell_id && sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] )
          {
-           s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell ] -> name;
+           s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] -> name;
            if ( e -> amplitude )
              s << " every " << e -> amplitude / 1000.0 << " seconds";
          }
@@ -340,8 +340,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   if ( e -> pp_combo_points != 0 )
     s << " | Points Per Combo Point: " << e -> pp_combo_points;
 
-  if ( e -> trigger_spell != 0 )
-    s << " | Trigger Spell: " << e -> trigger_spell;
+  if ( e -> trigger_spell_id != 0 )
+    s << " | Trigger Spell: " << e -> trigger_spell_id;
 
   s << std::endl;
   return s;

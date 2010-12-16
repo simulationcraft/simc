@@ -537,10 +537,10 @@ uint32_t sc_data_access_t::effect_trigger_spell_id( const uint32_t effect_id ) S
 
   assert( effect_exists( effect_id ) );
 
-  if ( m_effects_index[ effect_id ]->trigger_spell < 0 )
+  if ( m_effects_index[ effect_id ]->trigger_spell_id < 0 )
     return 0;
 
-  return ( uint32_t ) m_effects_index[ effect_id ]->trigger_spell;
+  return ( uint32_t ) m_effects_index[ effect_id ]->trigger_spell_id;
 }
 
 double sc_data_access_t::effect_chain_multiplier( uint32_t effect_id ) SC_CONST
@@ -932,7 +932,7 @@ uint32_t sc_data_access_t::effect_trigger_spell_id( uint32_t spell_id, effect_ty
   if ( ( e = effect( spell_id, type, sub_type, misc_value ) ) == 0 )
     return 0;
 
-  return e -> trigger_spell;
+  return e -> trigger_spell_id;
 }
 
 /*************** Talent functions ***********************/

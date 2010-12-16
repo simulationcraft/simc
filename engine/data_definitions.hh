@@ -11,6 +11,10 @@
 #pragma pack( push, 1 )
 #endif
 
+struct spell_data_t;
+struct spelleffect_data_t;
+struct talent_data_t;
+
 struct spell_data_t {
   const char * name;               // Spell name from Spell.dbc stringblock (enGB)
   unsigned     id;                 // Spell ID in dbc
@@ -58,6 +62,10 @@ struct spell_data_t {
   const char * tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
   const char * desc_vars;          // Spell description variable stringblock, if present
+  // Pointers for runtime linking
+  spelleffect_data_t* effect1;
+  spelleffect_data_t* effect2;
+  spelleffect_data_t* effect3;
 };
 
 
@@ -83,11 +91,14 @@ struct spelleffect_data_t {
   int              base_value;      // Effect value
   int              misc_value;      // Effect miscellaneous value
   int              misc_value_2;    // Effect miscellaneous value 2
-  int              trigger_spell;   // Effect triggers this spell id
+  int              trigger_spell_id;// Effect triggers this spell id
   double           m_chain;         // Effect chain multiplier
   double           pp_combo_points; // Effect points per combo points
   double           real_ppl;        // Effect real points per level
   int              die_sides;       // Effect damage range
+  // Pointers for runtime linking
+  spell_data_t* spell;
+  spell_data_t* trigger_spell;
 };
 
 
@@ -104,6 +115,11 @@ struct talent_data_t {
   unsigned     col;         // Talent column
   unsigned     row;         // Talent row
   unsigned     rank_id[3];  // Talent spell rank identifiers for ranks 1..3
+
+  // Pointers for runtime linking
+  spell_data_t* spell1;
+  spell_data_t* spell2;
+  spell_data_t* spell3;
 
   static talent_data_t* list();
 };

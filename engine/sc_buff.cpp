@@ -950,7 +950,7 @@ new_buff_t::new_buff_t( player_t*          p,
       e_data[ i - 1 ] = player -> player_data.m_effects_index[ effect_id ];
 
       // Trigger spells will not be used in anything for now
-      if ( e_data[ i - 1 ] -> trigger_spell > 0 )
+      if ( e_data[ i - 1 ] -> trigger_spell_id > 0 )
         continue;
 
       effects++;
@@ -961,7 +961,7 @@ new_buff_t::new_buff_t( player_t*          p,
     {
       for ( int i = 0; i < MAX_EFFECTS; i++ ) 
       {
-        if ( ! e_data[ i ] || e_data[ i ] -> trigger_spell > 0 )
+        if ( ! e_data[ i ] || e_data[ i ] -> trigger_spell_id > 0 )
           continue;
         
         single = e_data[ i ];
