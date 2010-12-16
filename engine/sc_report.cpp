@@ -3916,28 +3916,41 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "                    <th class=\"right\">#</th>\n"
     "                    <th class=\"left\">action,conditions</th>\n"
     "                  </tr>\n" );
-  std::vector<std::string> action_names;
   i = 1;
-  int num_actions = util_t::string_split( action_names, p -> action_list_str, "/" );
-  for ( int j=0; j < num_actions; j++ )
+  for ( action_t* a = p -> action_list; a; a = a -> next )
   {
+    if ( a -> signature_str.empty() || ! a -> marker ) continue;
     util_t::fprintf( file,
       "                <tr" );
     if ( !( i & 1 ) ) {
       util_t::fprintf( file, " class=\"odd\"" );
     }
     util_t::fprintf( file, ">\n" );
-    std::string  enc_action = action_names[ j ]; encode_html(  enc_action );
+    std::string enc_action = a -> signature_str; encode_html( enc_action );
     util_t::fprintf( file,
-      "                    <th class=\"right\">%d</th>\n"
+      "                    <th class=\"right\">%c</th>\n"
       "                    <td class=\"left\">%s</td>\n"
       "                  </tr>\n",
-      j,
+      a -> marker,
       enc_action.c_str() );
     i++;
   }
   util_t::fprintf( file,
-    "                </table>\n"
+    "                </table>\n" );
+
+  std::string& seq = p -> iteration_sequence[ 0 ];
+  if ( seq.size() > 0 )
+  {
+    util_t::fprintf( file, "<div>\n<b>Sequence:</b>\n<ul>\n" );
+    for( int j=0; j < (int) seq.size(); j++ )
+    {
+      if( j % 50 == 0 ) util_t::fprintf( file, "%s<li> ", ( (j>0) ? "\n" : ""  ) );
+      util_t::fprintf( file, "%c", seq[ j ] );
+    }
+    util_t::fprintf( file, "<\ul>\n</div>\n" );
+  }
+
+  util_t::fprintf( file,
     "              </div>\n"
     "            </div>\n" );
 

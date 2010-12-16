@@ -1182,7 +1182,15 @@ void player_t::init_actions()
         a = create_action( action_name, action_options );
       }
 
-      if ( ! a )
+      if ( a )
+      {
+	a -> marker = (char) ( ( i < 10 ) ? ( '0' + i      ) : 
+			       ( i < 36 ) ? ( 'A' + i - 10 ) :
+                               ( i < 58 ) ? ( 'a' + i - 36 ) : '.' );
+
+	a -> signature_str = splits[ i ];
+      }
+      else
       {
         sim -> errorf( "Player %s unable to create action: %s\n", name(), splits[ i ].c_str() );
         sim -> cancel();
@@ -1206,6 +1214,14 @@ void player_t::init_actions()
   for ( action_t* action = action_list; action; action = action -> next )
   {
     action -> if_expr = action_expr_t::parse( action, action -> if_expr_str );
+  }
+
+  int capacity = std::max( 1200, (int) ( sim -> max_time / 2.0 ) );
+  iteration_sequence.resize( sim -> iterations );
+  for( int i=0; i < sim -> iterations; i++ ) 
+  {
+    iteration_sequence[ i ].reserve( capacity );
+    iteration_sequence[ i ] = "";
   }
 }
 
@@ -2479,6 +2495,7 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     total_foreground_actions++;
+    if ( action -> marker ) iteration_sequence[ sim -> current_iteration ] += action -> marker;
   }
 
   return action;

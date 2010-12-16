@@ -132,6 +132,7 @@ void action_t::_init_action_t()
   sync_action                    = NULL;
   observer                       = NULL;
   next                           = NULL;
+  marker                         = 0;
  
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -160,7 +161,7 @@ void action_t::_init_action_t()
 
   parse_data ( player -> player_data );
 
-  if ( player -> player_data.spell_exists(id) && ! player -> player_data.spell_is_level( id, player -> level ) && player -> player_data.spell_level(id) <= MAX_LEVEL)
+  if ( id && player -> player_data.spell_exists(id) && ! player -> player_data.spell_is_level( id, player -> level ) && player -> player_data.spell_level(id) <= MAX_LEVEL)
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );
     background = true; // prevent action from being executed
@@ -1575,10 +1576,9 @@ void action_t::check_spec( int necessary_spec )
 void action_t::check_min_level( int action_level )
 {
   if ( action_level <= player -> level ) return;
-  else
-  {
-    sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );
-  }
+
+  sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n", 
+		 player -> name(), name(), player -> level, action_level );
 
   background = true; // prevent action from being executed
 }
