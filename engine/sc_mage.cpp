@@ -3066,6 +3066,10 @@ void mage_t::init_actions()
       {
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
       }
+      else if ( primary_tree() == TREE_ARCANE )
+      {
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      }
       else
       {
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
@@ -3097,19 +3101,19 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       if ( level >= 50 ) action_list_str += "/mirror_image";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<20";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<60";
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3";
-      action_list_str += "/mana_gem,if=target.time_to_die<20";
+      action_list_str += "/mana_gem,if=target.time_to_die<60";
       action_list_str += "/mana_gem,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<20&mana_pct>5";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<60&mana_pct>5";
       if ( level >= 81 ) action_list_str += "/flame_orb";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<16&mana_pct>25)|mana_pct>94|buff.arcane_blast.stack<3";
-      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=25";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<16&mana_pct>25)|mana_pct>94|buff.arcane_blast.stack<4";
+      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=65";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
@@ -3153,7 +3157,7 @@ void mage_t::init_actions()
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
-      if ( level >= 68 ) action_list_str += "/mage_armor,if=mana_pct<15";
+      if ( level >= 68 ) action_list_str += "/mage_armor,if=mana_pct<30";
       if ( level >= 12 ) action_list_str += "/evocation,if=mana_pct<5&target.time_to_die>60";
       action_list_str += "/frostbolt";
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving

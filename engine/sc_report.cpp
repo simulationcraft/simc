@@ -2313,27 +2313,26 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     processed_actions.push_back( a -> name() );
     
     util_t::fprintf (file,
-      "                  <h4 class=\"toggle open\">Database details</h4>\n" );
+      "                  <h4>Database details</h4>\n" );
     util_t::fprintf (file,
-      "                  <div class=\"toggle-content\">\n"
-      "                    <div class=\"float\">\n"
-      "                      <h5>Static Values</h5>\n"
-      "                      <ul>\n"
-      "                        <li><span class=\"label\">id:</span>%i</li>\n"
-      "                        <li><span class=\"label\">school:</span>%s</li>\n"
-      "                        <li><span class=\"label\">resource:</span>%s</li>\n"
-      "                        <li><span class=\"label\">tree:</span>%s</li>\n"
-      "                        <li><span class=\"label\">range:</span>%.1f</li>\n"
-      "                        <li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
-      "                        <li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
-      "                        <li><span class=\"label\">base_cost:</span>%.1f</li>\n"
-      "                        <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-      "                        <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
-      "                        <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
-      "                        <li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-      "                      </ul>\n"
-      "                    </div>\n"
-      "                    <div class=\"float\">\n",
+      "                  <div class=\"float\">\n"
+      "                    <h5>Static Values</h5>\n"
+      "                    <ul>\n"
+      "                      <li><span class=\"label\">id:</span>%i</li>\n"
+      "                      <li><span class=\"label\">school:</span>%s</li>\n"
+      "                      <li><span class=\"label\">resource:</span>%s</li>\n"
+      "                      <li><span class=\"label\">tree:</span>%s</li>\n"
+      "                      <li><span class=\"label\">range:</span>%.1f</li>\n"
+      "                      <li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
+      "                      <li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
+      "                      <li><span class=\"label\">base_cost:</span>%.1f</li>\n"
+      "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+      "                    </ul>\n"
+      "                  </div>\n"
+      "                  <div class=\"float\">\n",
       a -> id,
       util_t::school_type_string( a-> school ),
       util_t::resource_type_string( a -> resource ),
@@ -2349,13 +2348,13 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     if( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
     {
       util_t::fprintf (file,
-        "                      <h5>Direct Damage</h5>\n"
-        "                      <ul>\n"
-        "                        <li><span class=\"label\">may_crit:</span>%s</li>\n"
-        "                        <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
-        "                        <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
-        "                        <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
-        "                      </ul>\n",
+        "                    <h5>Direct Damage</h5>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">may_crit:</span>%s</li>\n"
+        "                      <li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
+        "                      <li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
+        "                    </ul>\n",
         a -> may_crit?"true":"false",
         a -> direct_power_mod,
         a -> base_dd_min,
@@ -2364,17 +2363,17 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     if( a -> num_ticks )
     {
       util_t::fprintf (file,
-        "                      <h5>Damage Over Time</h5>\n"
-        "                      <ul>\n"
-        "                        <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
-        "                        <li><span class=\"label\">tick_zero:</span>%s</li>\n"
-        "                        <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
-        "                        <li><span class=\"label\">base_td:</span>%.2f</li>\n"
-        "                        <li><span class=\"label\">num_ticks:</span>%i</li>\n"
-        "                        <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
-        "                        <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
-        "                        <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
-        "                      </ul>\n",
+        "                    <h5>Damage Over Time</h5>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
+        "                      <li><span class=\"label\">tick_zero:</span>%s</li>\n"
+        "                      <li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
+        "                      <li><span class=\"label\">base_td:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">num_ticks:</span>%i</li>\n"
+        "                      <li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
+        "                      <li><span class=\"label\">dot_behavior:</span>%s</li>\n"
+        "                    </ul>\n",
         a -> tick_may_crit?"true":"false",
         a -> tick_zero?"true":"false",
         a -> tick_power_mod,
@@ -2387,18 +2386,17 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     if( a -> weapon )
     {
       util_t::fprintf (file,
-        "                      <h5>Weapon</h5>\n"
-        "                      <ul>\n"
-        "                        <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
-        "                        <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
-        "                      </ul>\n",
+        "                    <h5>Weapon</h5>\n"
+        "                    <ul>\n"
+        "                      <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
+        "                      <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
+        "                    </ul>\n",
         a -> weapon_power_mod,
         a -> weapon_multiplier );
     }
     util_t::fprintf (file,
-      "                    </div>\n"
-      "                    <div class=\"clear\"></div>\n"
-      "                  </div>\n" );
+      "                  </div>\n"
+      "                  <div class=\"clear\"></div>\n" );
   }
 
 
@@ -3683,11 +3681,8 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
 
     util_t::fprintf( file,
       "              <tr class=\"details hide\">\n"
-      "                <td colspan=\"7\">\n",
-      b -> name(),
-      b -> player -> name() );
-
-    util_t::fprintf( file,
+      "                <td colspan=\"7\">\n"
+      "                  <h4>Database details</h4>\n"
       "                  <ul>\n"
       "                    <li><span class=\"label\">id:</span>%.i</li>\n"
       "                    <li><span class=\"label\">cooldown name:</span>%s</li>\n"
@@ -3696,7 +3691,9 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "                    <li><span class=\"label\">duration:</span>%.2f</li>\n"
       "                    <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
       "                    <li><span class=\"label\">default_chance:</span>%.2f</li>\n"
-      "                  </ul>\n",
+      "                  </ul>\n"
+      "                </td>\n"
+      "              </tr>\n",
       b -> s_id,
       b -> cooldown -> name_str.c_str(),
       b -> tooltip(),
@@ -3705,9 +3702,6 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       b -> cooldown -> duration,
       b -> default_chance );
 
-    util_t::fprintf( file,
-      "                </td>\n"
-      "              </tr>\n" );
     i++;
   }
   util_t::fprintf( file,
@@ -3742,6 +3736,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       util_t::fprintf( file,
         "                <tr class=\"details hide\">\n"
         "                  <td>\n"
+        "                    <h4>Database details</h4>\n"
         "                    <ul>\n"
         "                      <li><span class=\"label\">id:</span>%.i</li>\n"
         "                      <li><span class=\"label\">cooldown name:</span>%s</li>\n"
@@ -5049,7 +5044,7 @@ void report_t::print_html3( sim_t* sim )
       "      td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
       "      th.left, td.left, tr.left th, tr.left td { text-align: left; padding-right: 6px; }\n"
       "      th.right, td.right, tr.right th, tr.right td { text-align: right; padding-right: 6px; }\n"
-      "      tr.details td { padding-left: 15px; text-align: left; background-color: #fff; }\n"
+      "      tr.details td { padding: 0 0 15px 15px; text-align: left; background-color: #fff; }\n"
       "      tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
       "      tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
       "      tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
