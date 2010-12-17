@@ -291,9 +291,12 @@ class TalentDataGenerator(DataGenerator):
             fields += talent_tab.field('tab_page', 'mask_class', 'mask_pet_talent')
             fields += talent.field('talent_depend', 'depend_rank', 'col', 'row')
             fields += [ '{ %s }' % ', '.join(talent.field('id_rank_1', 'id_rank_2', 'id_rank_3')) ]
+            # Pad struct with empty pointers for direct rank based spell data access
+            fields += [ '0', '0', '0' ]
         
             s += '  { %s },\n' % (', '.join(fields))
 
+        s += '  { %s }\n' % ( ', '.join(([ '0' ] * 10) + [ '{ 0, 0, 0 }' ] + [ '0' ] * 3) )
         s += '};'
 
         return s
@@ -853,9 +856,12 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('var')
             else:
                 fields += [ '0' ]
+            # Pad struct with empty pointers for direct access to spell effect data
+            fields += [ '0', '0', '0' ]
             s += '  { %s },\n' % (', '.join(fields))
             
 
+        s += '  { %s }\n' % ( ', '.join([ '0' ] * 29 + [ ( '{ %s }' % ', '.join([ '0' ] * 3) ) ] + [ ( '{ %s }' % ', '.join([ '0' ] * 10) ) ] + [ '0' ] * 6) )
         s += '};\n\n'
         
         s += '#define __%sSPELLEFFECT%s_SIZE (%d)\n\n' % (
@@ -900,9 +906,12 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spellradius_db[effect.id_radius].field('radius_1')
             fields += self._spellradius_db[effect.id_radius_max].field('radius_1')
             fields += effect.field('base_value', 'misc_value', 'misc_value_2', 'trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
+            # Pad struct with empty pointers for direct spell data access
+            fields += [ '0', '0' ]
 
             s += '  { %s },\n' % (', '.join(fields))
 
+        s += '  { %s }\n' % ( ', '.join(([ '0' ] * 4)+ [ 'E_NONE, A_NONE' ] + [', '.join([ '0' ] * (len(fields) - 6))]))
         s += '};\n\n'
 
         #print stm
