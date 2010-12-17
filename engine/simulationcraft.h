@@ -75,26 +75,6 @@
 
 #include "data_definitions.hh"
 
-// Patch Specific Modeling ==================================================
-
-struct patch_t
-{
-  uint64_t mask;
-  uint64_t encode( int arch, int version, int revision ) { return arch*10000 + version*100 + revision; }
-  patch_t        ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
-  void set       ( int arch, int version, int revision ) {         mask = encode( arch, version, revision ); }
-  int  before    ( int arch, int version, int revision ) { return ( mask <  encode( arch, version, revision ) ) ? 1 : 0; }
-  int  after     ( int arch, int version, int revision ) { return ( mask >= encode( arch, version, revision ) ) ? 1 : 0; }
-  void decode( int* arch, int* version, int* revision )
-  {
-    uint64_t m = mask;
-    *revision = ( int ) m % 100; m /= 100;
-    *version  = ( int ) m % 100; m /= 100;
-    *arch     = ( int ) m % 100;
-  }
-  patch_t() { mask = encode( 4, 0, 3 ); }
-};
-
 #define SC_MAJOR_VERSION "403"
 #define SC_MINOR_VERSION "11"
 #define SC_USE_PTR ( 0 )
@@ -2239,8 +2219,6 @@ struct sim_t
   int         argc;
   char**      argv;
   sim_t*      parent;
-  patch_t     patch;
-  int         P404;
   event_t*    free_list;
   target_t*   target;
   target_t*   target_list;
@@ -2437,7 +2415,7 @@ struct sim_t
   int  thread_index;
   
   // Spell database access
-  spell_data_expr_t* sd;
+  spell_data_expr_t* spell_query;
 
   sim_t( sim_t* parent=0, int thrdID=0 );
   virtual ~sim_t();
@@ -3516,7 +3494,7 @@ struct action_t : public spell_id_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int P404, moving, vulnerable, invulnerable, wait_on_ready;
+  int moving, vulnerable, invulnerable, wait_on_ready;
   bool round_base_dmg;
   std::string if_expr_str;
   action_expr_t* if_expr;
@@ -3959,6 +3937,7 @@ struct proc_t
 
 struct report_t
 {
+  static void print_spell_query( sim_t* );
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );

@@ -120,7 +120,6 @@ void action_t::_init_action_t()
   max_time_to_die                = 0.0;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
-  P404                           = -1;
   moving                         = -1;
   vulnerable                     = 0;
   invulnerable                   = 0;
@@ -375,7 +374,6 @@ void action_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "P404",                   OPT_BOOL,   &P404                  },
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
     { "haste<",                 OPT_FLT,    &max_haste             },
     { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
@@ -1454,10 +1452,6 @@ bool action_t::ready()
 
   if ( player -> buffs.moving -> check() )
     if ( ! usable_moving && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
-      return false;
-
-  if ( P404 != -1 )
-    if ( P404 != sim -> P404 )
       return false;
 
   if ( moving != -1 )

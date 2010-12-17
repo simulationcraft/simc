@@ -14,13 +14,177 @@
 #include "sc_extra_data_ptr.inc"
 #endif
 
-talent_data_t* talent_data_t::list( bool ptr ) 
+// FIXME!!! Is there a more generic class other than spell_data_t to move this to?
+
+static bool use_ptr = false;
+
+bool spell_data_t::get_ptr()
+{
+  return use_ptr;
+}
+
+void spell_data_t::set_ptr( bool use )
+{
+#if SC_USE_PTR
+  use_ptr = use;
+#else
+  assert(!use);
+#endif
+}
+
+const char* spell_data_t::build_level()
+{
+#if SC_USE_PTR
+  return use_ptr ? "13316" : "13329";
+#else
+  return "13329";
+#endif
+}
+
+void spell_data_t::init()
+{
+  set_ptr( false );
+  spell_data_t::link();
+  spelleffect_data_t::link();
+  talent_data_t::link();
+
+#if SC_USE_PTR
+  set_ptr( true );
+  spell_data_t::link();
+  spelleffect_data_t::link();
+  talent_data_t::link();
+  set_ptr( false );
+#endif
+}
+
+spell_data_t* spell_data_t::list() 
 { 
 #if SC_USE_PTR
-  return ptr ? __ptr_talent_data : __talent_data; 
+  return use_ptr ? __ptr_spell_data : __spell_data; 
+#else
+  return __spell_data; 
+#endif
+}
+
+spelleffect_data_t* spelleffect_data_t::list() 
+{ 
+#if SC_USE_PTR
+  return use_ptr ? __ptr_spelleffect_data : __spelleffect_data; 
+#else
+  return __spelleffect_data; 
+#endif
+}
+
+talent_data_t* talent_data_t::list()
+{ 
+#if SC_USE_PTR
+  return use_ptr ? __ptr_talent_data : __talent_data; 
 #else
   return __talent_data; 
 #endif
+}
+
+void spell_data_t::link()
+{
+  spell_data_t* spell_data = spell_data_t::list();
+
+  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list();
+
+  for( int i=0; spell_data[ i ].name; i++ )
+  {
+    spell_data_t& sd = spell_data[ i ];
+
+    spelleffect_data_t** effects[] = { &( sd.effect1 ), &( sd.effect2 ), &( sd.effect3 ) };
+
+    for( int j=0; j < 3; j++ )
+    {
+      unsigned id = sd.effect[ j ];
+
+      if( id > 0 )
+      {
+	spelleffect_data_t** addr = effects[ j ];
+
+	for( int k=0; spelleffect_data[ k ].id; k++ )
+	{
+	  if( id == spelleffect_data[ k ].id )
+	  {
+	    *addr = spelleffect_data + k;
+	    break;
+	  }
+	}
+	assert( *addr );
+      }
+    }
+  }
+}
+
+void spelleffect_data_t::link()
+{
+  spell_data_t* spell_data = spell_data_t::list();
+
+  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list();
+
+  for( int i=0; spelleffect_data[ i ].id; i++ )
+  {
+    spelleffect_data_t& ed = spelleffect_data[ i ];
+
+    if( ed.spell_id > 0 )
+    {
+      for( int j=0; spell_data[ j ].name; j++ )
+      {
+	if( ed.spell_id == spell_data[ j ].id )
+	{
+	  ed.spell = spell_data + j;
+	  break;
+	}
+      }
+    }
+    if( ed.trigger_spell_id > 0 )
+    {
+      for( int j=0; spell_data[ j ].name; j++ )
+      {
+	if( ed.trigger_spell_id == spell_data[ j ].id )
+	{
+	  ed.trigger_spell = spell_data + j;
+	  break;
+	}
+      }
+    }
+  }
+}
+
+void talent_data_t::link()
+{ 
+  spell_data_t* spell_data = spell_data_t::list();
+
+  talent_data_t* talent_data = talent_data_t::list();
+
+  for( int i=0; talent_data[ i ].name; i++ )
+  {
+    talent_data_t& td = talent_data[ i ];
+
+    spell_data_t** rank_spells[] = { &( td.spell1 ), &( td.spell2 ), &( td.spell3 ) };
+
+    for( int j=0; j < 3; j++ )
+    {
+      unsigned id = td.rank_id[ j ];
+
+      if( id > 0 )
+      {
+	spell_data_t** addr = rank_spells[ j ];
+
+	for( int k=0; spell_data[ k ].name; k++ )
+	{
+	  if( id == spell_data[ k ].id )
+	  {
+	    *addr = spell_data + k;
+	    break;
+	  }
+	}
+	assert( *addr );
+      }
+    }
+  }
 }
 
 void sc_data_t::set_parent( sc_data_t* p, const bool ptr )

@@ -70,23 +70,15 @@ static bool need_to_save_profiles( sim_t* sim )
   return false;
 }
 
-// parse_patch ==============================================================
+// parse_ptr ================================================================
 
-static bool parse_patch( sim_t*             sim,
-                         const std::string& name,
-                         const std::string& value )
+static bool parse_ptr( sim_t*             sim,
+		       const std::string& name,
+		       const std::string& value )
 {
-  if ( name != "patch" ) return false;
+  if ( name != "ptr" ) return false;
 
-  int arch, version, revision;
-
-  if ( 3 != util_t::string_split( value, ".", "i i i", &arch, &version, &revision ) )
-  {
-    sim -> errorf( "Expected format: -patch=#.#.#\n" );
-    return false;
-  }
-
-  sim -> patch.set( arch, version, revision );
+  spell_data_t::set_ptr( atoi( value.c_str() ) != 0 );
 
   return true;
 }
@@ -396,11 +388,11 @@ static bool parse_rawr( sim_t*             sim,
 }
 
 static bool parse_spell_query( sim_t*             sim,
-                                 const std::string& name,
-                                 const std::string& value)
+			       const std::string& name,
+			       const std::string& value)
 {
-  sim -> sd = spell_data_expr_t::parse( sim, value );
-  return sim -> sd > 0;
+  sim -> spell_query = spell_data_expr_t::parse( sim, value );
+  return sim -> spell_query > 0;
 }
 
 } // ANONYMOUS NAMESPACE ===================================================
@@ -415,7 +407,7 @@ sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-    parent( p ), P404( false ),
+    parent( p ), 
     free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), max_player_level( -1 ), canceled( 0 ),
     queue_lag( 0.037 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
@@ -442,7 +434,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     path_str( "." ), output_file( stdout ), log_file( 0 ), csv_file( 0 ),
     armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
     report_precision( 4 ),report_pets_separately( false ), threads( 0 ), thread_handle( 0 ), thread_index( index ),
-    sd( 0 )
+    spell_query( 0 )
 {
   path_str += "|profiles";
   path_str += "|..";
@@ -543,8 +535,7 @@ sim_t::~sim_t()
   }
   if ( timing_wheel ) delete[] timing_wheel;
   
-  if ( sd )
-    delete sd;
+  if ( spell_query ) delete spell_query;
 }
 
 // sim_t::add_event ==========================================================
@@ -844,10 +835,8 @@ bool sim_t::init()
     deterministic_roll = 1;
   }
 
-  P404 = patch.after( 4, 0, 4 );
-
 #if SC_USE_PTR
-  if ( P404 )
+  if ( spell_data_t::get_ptr() )
   {
     sim_data.set_parent( &sim_t::ptr_data );
   }
@@ -1659,7 +1648,7 @@ void sim_t::create_options()
     { "max_time",                         OPT_FLT,    &( max_time                                 ) },
     { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
-    { "patch",                            OPT_FUNC,   ( void* ) ::parse_patch                       },
+    { "ptr",                              OPT_FUNC,   ( void* ) ::parse_ptr                         },
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     // @option_doc loc=global/lag title="Lag"
@@ -1863,7 +1852,7 @@ bool sim_t::parse_options( int    _argc,
       return false;
   }
 
-  if ( player_list == NULL && sd == NULL )
+  if ( player_list == NULL && spell_query == NULL )
   {
     errorf( "Nothing to sim!\n" );
     cancel();
@@ -1994,13 +1983,13 @@ double sim_t::progress( std::string& phase )
 
 int sim_t::main( int argc, char** argv )
 {
-  int arch = 0, version = 0, revision = 0;
-
   sim_signal_handler_t::init( this );
 
   thread_t::init();
 
   http_t::cache_load();
+
+  spell_data_t::init();
 
   if ( ! parse_options( argc, argv ) )
   {
@@ -2012,59 +2001,20 @@ int sim_t::main( int argc, char** argv )
 
   current_throttle = armory_throttle;
 
-  patch.decode(&arch, &version, &revision);
-
-  if ( vary_combat_length > 0.0 )
-  {
-    util_t::fprintf( output_file,
-                     "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, smooth_rng=%d )\n",
-                     arch, version, revision, iterations, max_time, vary_combat_length, optimal_raid, smooth_rng );
-  }
-  else
-  {
-    util_t::fprintf( output_file,
-                     "\nSimulationCraft for World of Warcraft release %d.%d.%d ( iterations=%d, max_time=%.0f, optimal_raid=%d, smooth_rng=%d )\n",
-                     arch, version, revision, iterations, max_time, optimal_raid, smooth_rng );
-  }
+  util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)\n",
+		   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
   fflush( output_file );
 
-  if ( need_to_save_profiles( this ) )
+  if ( spell_query )
+  {
+    spell_query -> evaluate();
+    report_t::print_spell_query( this );
+  }
+  else if ( need_to_save_profiles( this ) )
   {
     init();
     util_t::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     report_t::print_profiles( this );
-  }
-  // Spell query, dont simulate anything
-  else if ( sd )
-  {
-    P404 = patch.after( 4, 0, 4 );
-
-#if SC_USE_PTR
-    if ( P404 )
-      sim_data.set_parent( &sim_t::ptr_data );
-#endif
-
-    sd -> evaluate();
-
-    for ( std::vector<uint32_t>::const_iterator i = sd -> result_spell_list.begin(); i != sd -> result_spell_list.end(); i++ )
-    {
-      if ( sd -> data_type == DATA_TALENT )
-        util_t::fprintf( output_file, "%s", spell_info_t::talent_to_str( this, sim_data.m_talents_index[ *i ] ).c_str() );
-      else if ( sd -> data_type == DATA_EFFECT )
-      {
-        std::ostringstream sds;
-        if ( sim_data.m_spells_index[ sim_data.m_effects_index[ *i ] -> spell_id ] )
-        {
-          spell_info_t::effect_to_str( this, 
-            sim_data.m_spells_index[ sim_data.m_effects_index[ *i ] -> spell_id ], 
-            sim_data.m_effects_index[ *i ],
-            sds );
-        }
-        util_t::fprintf( output_file, "%s", sds.str().c_str() );
-      }
-      else
-        util_t::fprintf( output_file, "%s", spell_info_t::to_str( this, sim_data.m_spells_index[ *i ] ).c_str() );
-    }
   }
   else
   {
@@ -2073,6 +2023,11 @@ int sim_t::main( int argc, char** argv )
       util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
     }
+
+    util_t::fprintf( output_file,
+		     "\nSimulatiing... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, smooth_rng=%d )\n",
+		     iterations, max_time, vary_combat_length, optimal_raid, smooth_rng );
+    fflush( output_file );
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 

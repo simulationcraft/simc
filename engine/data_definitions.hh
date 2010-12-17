@@ -62,12 +62,21 @@ struct spell_data_t {
   const char * tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
   const char * desc_vars;          // Spell description variable stringblock, if present
+
   // Pointers for runtime linking
   spelleffect_data_t* effect1;
   spelleffect_data_t* effect2;
   spelleffect_data_t* effect3;
-};
 
+  static spell_data_t* list();
+  static void link();
+
+  // FIXME!!! Is there a more generic class other than spell_data_t to move this to?
+  static void set_ptr( bool );
+  static bool get_ptr();
+  static const char* build_level();
+  static void init();
+};
 
 // SpellEffect.dbc
 struct spelleffect_data_t {
@@ -96,9 +105,13 @@ struct spelleffect_data_t {
   double           pp_combo_points; // Effect points per combo points
   double           real_ppl;        // Effect real points per level
   int              die_sides;       // Effect damage range
+
   // Pointers for runtime linking
   spell_data_t* spell;
   spell_data_t* trigger_spell;
+
+  static spelleffect_data_t* list();
+  static void link();
 };
 
 
@@ -121,7 +134,8 @@ struct talent_data_t {
   spell_data_t* spell2;
   spell_data_t* spell3;
 
-  static talent_data_t* list( bool ptr=false );
+  static talent_data_t* list();
+  static void link();
 };
 
 #ifdef __OpenBSD__
