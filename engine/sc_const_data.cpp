@@ -14,6 +14,14 @@
 #include "sc_extra_data_ptr.inc"
 #endif
 
+talent_data_t* talent_data_t::list( bool ptr ) 
+{ 
+#if SC_USE_PTR
+  return ptr ? __ptr_talent_data : __talent_data; 
+#else
+  return __talent_data; 
+#endif
+}
 
 void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
 {
@@ -29,9 +37,9 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
 #if SC_USE_PTR
     if ( ptr )
     {
-      m_spells.create_copy( ( spell_data_t * ) __ptr_spell_data, sizeof( __ptr_spell_data ) / sizeof( spell_data_t ) );
-      m_effects.create_copy( ( spelleffect_data_t * ) __ptr_spelleffect_data, sizeof( __ptr_spelleffect_data ) / sizeof( spelleffect_data_t ) );
-      m_talents.create_copy( ( talent_data_t * ) __ptr_talent_data, sizeof( __ptr_talent_data ) / sizeof( talent_data_t ) );
+      m_spells.create_copy( ( spell_data_t * ) __ptr_spell_data, sizeof( __ptr_spell_data ) / sizeof( spell_data_t ) - 1 );
+      m_effects.create_copy( ( spelleffect_data_t * ) __ptr_spelleffect_data, sizeof( __ptr_spelleffect_data ) / sizeof( spelleffect_data_t ) - 1 );
+      m_talents.create_copy( ( talent_data_t * ) __ptr_talent_data, sizeof( __ptr_talent_data ) / sizeof( talent_data_t ) - 1 );
       m_melee_crit_base.create_copy( ( double * ) __ptr_gt_chance_to_melee_crit_base, sizeof( __ptr_gt_chance_to_melee_crit_base ) / sizeof( double ) );
       m_spell_crit_base.create_copy( ( double *) __ptr_gt_chance_to_spell_crit_base, sizeof( __ptr_gt_chance_to_spell_crit_base ) / sizeof( double ) );
       m_spell_scaling.create_copy( ( double * ) __ptr_gt_spell_scaling, MAX_LEVEL, sizeof( __ptr_gt_spell_scaling ) / ( MAX_LEVEL * sizeof( double ) ) );
@@ -56,9 +64,9 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
     else
     {
 #endif
-      m_spells.create_copy( ( spell_data_t * ) __spell_data, sizeof( __spell_data ) / sizeof( spell_data_t ) );
-      m_effects.create_copy( ( spelleffect_data_t * ) __spelleffect_data, sizeof( __spelleffect_data ) / sizeof( spelleffect_data_t ) );
-      m_talents.create_copy( ( talent_data_t * ) __talent_data, sizeof( __talent_data ) / sizeof( talent_data_t ) );
+      m_spells.create_copy( ( spell_data_t * ) __spell_data, sizeof( __spell_data ) / sizeof( spell_data_t ) - 1 );
+      m_effects.create_copy( ( spelleffect_data_t * ) __spelleffect_data, sizeof( __spelleffect_data ) / sizeof( spelleffect_data_t ) - 1 );
+      m_talents.create_copy( ( talent_data_t * ) __talent_data, sizeof( __talent_data ) / sizeof( talent_data_t ) - 1 );
       m_melee_crit_base.create_copy( ( double * ) __gt_chance_to_melee_crit_base, sizeof( __gt_chance_to_melee_crit_base ) / sizeof( double ) );
       m_spell_crit_base.create_copy( ( double *) __gt_chance_to_spell_crit_base, sizeof( __gt_chance_to_spell_crit_base ) / sizeof( double ) );
       m_spell_scaling.create_copy( ( double * ) __gt_spell_scaling, MAX_LEVEL, sizeof( __gt_spell_scaling ) / ( MAX_LEVEL * sizeof( double ) ) );
