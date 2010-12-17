@@ -63,9 +63,9 @@ struct spell_data_t {
   // SpellDescriptionVariables.dbc
   const char * desc_vars;          // Spell description variable stringblock, if present
   // Pointers for runtime linking
-  spelleffect_data_t* effect1;
-  spelleffect_data_t* effect2;
-  spelleffect_data_t* effect3;
+  //  spelleffect_data_t* effect1;
+  //  spelleffect_data_t* effect2;
+  //  spelleffect_data_t* effect3;
 };
 
 
@@ -97,8 +97,8 @@ struct spelleffect_data_t {
   double           real_ppl;        // Effect real points per level
   int              die_sides;       // Effect damage range
   // Pointers for runtime linking
-  spell_data_t* spell;
-  spell_data_t* trigger_spell;
+  //  spell_data_t* spell;
+  //  spell_data_t* trigger_spell;
 };
 
 
@@ -117,9 +117,9 @@ struct talent_data_t {
   unsigned     rank_id[3];  // Talent spell rank identifiers for ranks 1..3
 
   // Pointers for runtime linking
-  spell_data_t* spell1;
-  spell_data_t* spell2;
-  spell_data_t* spell3;
+  //  spell_data_t* spell1;
+  //  spell_data_t* spell2;
+  //  spell_data_t* spell3;
 
   static talent_data_t* list();
 };
