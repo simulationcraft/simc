@@ -872,8 +872,9 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
 
     p -> active_t10_4pc_caster_dot -> cancel();
   }
-   p -> active_t10_4pc_caster_dot -> base_td = dmg / dot -> num_ticks;
-   p -> active_t10_4pc_caster_dot -> execute();
+
+  p -> active_t10_4pc_caster_dot -> base_td = dmg / p -> active_t10_4pc_caster_dot -> num_ticks;
+  p -> active_t10_4pc_caster_dot -> execute();
 }
 
 // ==========================================================================
