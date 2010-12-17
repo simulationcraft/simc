@@ -181,7 +181,8 @@ void talent_data_t::link()
 	    break;
 	  }
 	}
-	assert( *addr );
+	// Apparently this can happen..... 
+	// assert( *addr )
       }
     }
   }

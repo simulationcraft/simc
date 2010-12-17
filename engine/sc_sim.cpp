@@ -73,8 +73,8 @@ static bool need_to_save_profiles( sim_t* sim )
 // parse_ptr ================================================================
 
 static bool parse_ptr( sim_t*             sim,
-		       const std::string& name,
-		       const std::string& value )
+                       const std::string& name,
+                       const std::string& value )
 {
   if ( name != "ptr" ) return false;
 
@@ -388,8 +388,8 @@ static bool parse_rawr( sim_t*             sim,
 }
 
 static bool parse_spell_query( sim_t*             sim,
-			       const std::string& name,
-			       const std::string& value)
+                               const std::string& name,
+                               const std::string& value)
 {
   sim -> spell_query = spell_data_expr_t::parse( sim, value );
   return sim -> spell_query > 0;
@@ -919,7 +919,6 @@ void sim_t::analyze_player( player_t* p )
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
     b -> analyze();
 
-
   p -> total_dmg = 0;
   p -> total_seconds /= iterations;
   p -> total_waiting /= iterations;
@@ -932,7 +931,6 @@ void sim_t::analyze_player( player_t* p )
     stats_list.push_back( s );
   }
 
-
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
@@ -941,22 +939,18 @@ void sim_t::analyze_player( player_t* p )
     }
   }
 
-
-
   int num_stats = ( int ) stats_list.size();
-    for ( int i=0; i < num_stats; i++ )
-    {
-      stats_t* s = stats_list[ i ];
+  for ( int i=0; i < num_stats; i++ )
+  {
+    stats_t* s = stats_list[ i ];
 
-      s -> analyze();
-      p -> total_dmg += s -> total_dmg;
-    }
+    s -> analyze();
+    p -> total_dmg += s -> total_dmg;
+  }
 
-    p -> dps = p -> total_dmg / p -> total_seconds;
-
+  p -> dps = p -> total_dmg / p -> total_seconds;
 
   if ( p -> total_seconds == 0 ) return;
-
 
   for ( int i=0; i < num_stats; i++ )
   {
@@ -966,7 +960,7 @@ void sim_t::analyze_player( player_t* p )
     s -> portion_dps = s -> portion_dmg * p -> dps;
   }
 
-  if ( !p -> quiet)
+  if ( ! p -> quiet )
   {
     players_by_rank.push_back( p );
     players_by_name.push_back( p );
@@ -977,10 +971,10 @@ void sim_t::analyze_player( player_t* p )
 
   int max_buckets = ( int ) p -> total_seconds;
 
-  // make the pet graphs the same length as owner's
+  // Make the pet graphs the same length as owner's
   if ( p -> is_pet() )
   {
-    player_t* o = dynamic_cast<pet_t*>(p)->owner;
+    player_t* o = p -> cast_pet() -> owner;
     max_buckets = ( int ) o -> total_seconds;
   }
 
@@ -1026,8 +1020,6 @@ void sim_t::analyze_player( player_t* p )
     }
   }
 
-
-
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
@@ -1037,8 +1029,6 @@ void sim_t::analyze_player( player_t* p )
       p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
     }
   }
-
-
 
   for ( int i=0; i < max_buckets; i++ )
   {
@@ -1059,13 +1049,12 @@ void sim_t::analyze_player( player_t* p )
     p -> timeline_dps[ i ] = window_dmg / window_size;
   }
 
-
-
   assert( p -> iteration_dps.size() >= ( size_t ) iterations );
 
   p -> dps_min = 1.0E+50;
   p -> dps_max = -1.0E+50;
   p -> dps_std_dev = 0.0;
+
   for ( int i=0; i < iterations; i++ )
   {
     double i_dps = p -> iteration_dps[ i ];
@@ -1074,10 +1063,9 @@ void sim_t::analyze_player( player_t* p )
     double delta = i_dps - p -> dps;
     p -> dps_std_dev += delta * delta;
   }
-  if ( p -> dps_min >= 1.0E+50 )
-    p -> dps_min = 0.0;
-  if ( p -> dps_max < 0.0 )
-    p -> dps_max = 0.0;
+
+  if ( p -> dps_min >= 1.0E+50 ) p -> dps_min = 0.0;
+  if ( p -> dps_max < 0.0      ) p -> dps_max = 0.0;
 
   p -> dps_std_dev /= iterations;
   p -> dps_std_dev = sqrt( p -> dps_std_dev );
@@ -1099,8 +1087,8 @@ void sim_t::analyze_player( player_t* p )
       p -> distribution_dps[ index ]++;
     }
   }
-
 }
+
 void sim_t::analyze()
 {
   if ( total_seconds == 0 ) return;
@@ -2002,7 +1990,7 @@ int sim_t::main( int argc, char** argv )
   current_throttle = armory_throttle;
 
   util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)\n",
-		   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
   fflush( output_file );
 
   if ( spell_query )
@@ -2025,8 +2013,8 @@ int sim_t::main( int argc, char** argv )
     }
 
     util_t::fprintf( output_file,
-		     "\nSimulatiing... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, smooth_rng=%d )\n",
-		     iterations, max_time, vary_combat_length, optimal_raid, smooth_rng );
+                     "\nSimulatiing... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, smooth_rng=%d )\n",
+                     iterations, max_time, vary_combat_length, optimal_raid, smooth_rng );
     fflush( output_file );
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

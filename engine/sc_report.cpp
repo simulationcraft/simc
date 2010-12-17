@@ -3938,21 +3938,24 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   util_t::fprintf( file,
     "                </table>\n" );
 
-  std::string& seq = p -> iteration_sequence[ p -> sim -> iterations - 1 ];
-  if ( seq.size() > 0 )
+  if( ! p -> iteration_sequence.empty() )
   {
-    util_t::fprintf( file, "<h3>Sample Sequence:</h3>\n<ul>\n" );
-    int size = (int) seq.size();
-    int line_length = 100;
-    int num_lines = 0;
-    while( line_length > 80 ) line_length = size / ++num_lines;
-    line_length++;
-    for( int j=0; j < size; j++ )
+    std::string& seq = p -> iteration_sequence[ p -> sim -> iterations - 1 ];
+    if ( seq.size() > 0 )
     {
-      if( j % line_length == 0 ) util_t::fprintf( file, "%s<li><tt>", ( j ? "</tt>\n" : "" ) );
-      util_t::fprintf( file, "%c", seq[ j ] );
+      util_t::fprintf( file, "<h3>Sample Sequence:</h3>\n<ul>\n" );
+      int size = (int) seq.size();
+      int line_length = 100;
+      int num_lines = 0;
+      while( line_length > 80 ) line_length = size / ++num_lines;
+      line_length++;
+      for( int j=0; j < size; j++ )
+      {
+        if( j % line_length == 0 ) util_t::fprintf( file, "%s<li><tt>", ( j ? "</tt>\n" : "" ) );
+        util_t::fprintf( file, "%c", seq[ j ] );
+      }
+      util_t::fprintf( file, "</tt>\n</ul>\n\n" );
     }
-    util_t::fprintf( file, "</tt>\n</ul>\n\n" );
   }
 
   util_t::fprintf( file,
@@ -4050,7 +4053,7 @@ static void print_wiki_raid_events( FILE * file, sim_t* sim )
 static void print_wiki_preamble( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file, "= !SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s) =\n", 
-		   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -4795,7 +4798,7 @@ void report_t::print_html( sim_t* sim )
   }
 
   util_t::fprintf( file, "<h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n", 
-		   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -4900,7 +4903,7 @@ void report_t::print_html2( sim_t* sim )
   }
 
   util_t::fprintf( file, "<h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n", 
-		   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -5105,7 +5108,7 @@ void report_t::print_html3( sim_t* sim )
         
         util_t::fprintf( file,
           "      <h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n\n",
-	  SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+          SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
         
         time_t rawtime;
         time ( &rawtime );
@@ -5492,10 +5495,10 @@ void report_t::print_spell_query( sim_t* sim )
       std::ostringstream sqs;
       if ( sim -> sim_data.m_spells_index[ sim -> sim_data.m_effects_index[ *i ] -> spell_id ] )
       {
-	spell_info_t::effect_to_str( sim, 
-				     sim -> sim_data.m_spells_index[ sim -> sim_data.m_effects_index[ *i ] -> spell_id ], 
-				     sim -> sim_data.m_effects_index[ *i ],
-				     sqs );
+        spell_info_t::effect_to_str( sim, 
+                                     sim -> sim_data.m_spells_index[ sim -> sim_data.m_effects_index[ *i ] -> spell_id ], 
+                                     sim -> sim_data.m_effects_index[ *i ],
+                                     sqs );
       }
       util_t::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
     }
