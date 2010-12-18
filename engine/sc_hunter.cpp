@@ -2593,6 +2593,7 @@ void hunter_t::init_glyphs()
     else if ( n == "steady_shot"                 ) glyphs.steady_shot -> enable();
     else if ( n == "kill_command"                ) glyphs.kill_command -> enable();
     // To prevent warnings....
+    else if ( n == "aspect_of_the_pack" ) ;
     else if ( n == "disengage"          ) ;
     else if ( n == "explosive_trap"     ) ;
     else if ( n == "feign_death"        ) ;
@@ -2600,6 +2601,7 @@ void hunter_t::init_glyphs()
     else if ( n == "frost_trap"         ) ;
     else if ( n == "mend_pet"           ) ;
     else if ( n == "mending"            ) ;
+    else if ( n == "misdirection"       ) ;
     else if ( n == "possessed_strength" ) ;
     else if ( n == "revive_pet"         ) ;
     else if ( n == "scare_beast"        ) ;
@@ -2608,9 +2610,8 @@ void hunter_t::init_glyphs()
     else if ( n == "wyvern_sting"       ) ;
     else if ( n == "ice_trap"           ) ;
     else if ( n == "scatter_shot"       ) ;
+    else if ( n == "silencing_shot"     ) ;
     else if ( n == "trap_launcher"      ) ;
-    else if ( n == "misdirection"       ) ;
-    else if ( n == "aspect_of_the_pack" ) ;
     else if ( ! sim -> parent ) 
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
