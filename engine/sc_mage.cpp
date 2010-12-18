@@ -3068,7 +3068,7 @@ void mage_t::init_actions()
       }
       else if ( primary_tree() == TREE_ARCANE )
       {
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
       }
       else
       {
@@ -3100,22 +3100,23 @@ void mage_t::init_actions()
     // Arcane
     if ( primary_tree() == TREE_ARCANE )
     {
-      if ( level >= 50 ) action_list_str += "/mirror_image";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<60";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3";
-      action_list_str += "/mana_gem,if=target.time_to_die<60";
-      action_list_str += "/mana_gem,if=cooldown.evocation.remains<16&buff.arcane_blast.stack>=3";
+      if ( level >= 50 ) action_list_str += "/mirror_image,if=target.time_to_die>=30";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<34";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
+      action_list_str += "/mana_gem,if=target.time_to_die<34";
+      action_list_str += "/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
+      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.tim_to_die>=15";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<60&mana_pct>5";
-      if ( level >= 81 ) action_list_str += "/flame_orb";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<34&mana_pct>5";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=cooldown.evocation.remains<16&mana_pct>25";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4";
-      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=65";
+      if ( level >= 20 ) action_list_str += "/buff.arcane_blast.stack<4&!buff.bloodlust.react";
+      if ( level >= 20 ) action_list_str += "/buff.arcane_blast.stack<3&buff.bloodlust.react";
+      if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=31";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
@@ -3130,11 +3131,12 @@ void mage_t::init_actions()
        {
          action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast_hs.ticking";
       }
-      if ( level >= 50) action_list_str += "/mirror_image";
+      if ( level >= 50) action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
-      if ( level >= 81 ) action_list_str += "/flame_orb";
+      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=12";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
+      action_list_str += "/pyroblast,if=(target.time_to_die<60|mana_pct>39)&!(dot.pyroblast_hs.ticking|dot.pyroblast.ticking)";
       action_list_str += "/fireball,if=target.time_to_die<60";
       action_list_str += "/fireball,if=mana_pct>39";
       action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
@@ -3148,9 +3150,9 @@ void mage_t::init_actions()
       if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30";
       if ( talents.frostfire_orb -> rank() && level >= 81 )
       {
-        action_list_str += "/frostfire_orb";
+        action_list_str += "/frostfire_orb,if=target.time_to_die>=12";
       }
-      if ( level >= 50) action_list_str += "/mirror_image";
+      if ( level >= 50) action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() && level >= 56)
@@ -3228,7 +3230,7 @@ void mage_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( talents.arcane_tactics -> rank() ) sim -> auras.arcane_tactics -> trigger();
+  sim -> auras.arcane_tactics -> trigger();
 }
 
 // mage_t::reset ============================================================
