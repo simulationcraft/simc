@@ -3321,7 +3321,9 @@ void rogue_t::init_glyphs()
     else if ( n == "vendetta"            ) glyphs.vendetta            -> enable();
     // To prevent warning messages....
     else if ( n == "blurred_speed"       ) ;
+    else if ( n == "blind"               ) ;
     else if ( n == "cloak_of_shadows"    ) ;
+    else if ( n == "crippling_poison"    ) ;
     else if ( n == "distract"            ) ;
     else if ( n == "fan_of_knives"       ) ;
     else if ( n == "garrote"             ) ;
