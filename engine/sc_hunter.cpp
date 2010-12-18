@@ -1014,7 +1014,7 @@ struct hunter_pet_spell_t : public spell_t
   void _init_hunter_pet_spell_t()
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-    hunter_t* o = p -> cast_hunter();
+    hunter_t* o = p -> owner -> cast_hunter();
     base_multiplier *= 1.05; // # Cunning, Ferocity and Tenacity pets now all have +5% damage
     if ( o -> race == RACE_ORC ) base_multiplier *= 1.05;
     base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
