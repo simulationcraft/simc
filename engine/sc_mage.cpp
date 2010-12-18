@@ -642,6 +642,8 @@ struct mirror_image_pet_t : public pet_t
       }
       sequences.push_back( front );
     }
+
+    pet_t::init_actions();
   }
 
   virtual double composite_spell_power( const school_type school ) SC_CONST
