@@ -3232,7 +3232,7 @@ void mage_t::combat_begin()
 {
   player_t::combat_begin();
 
-  sim -> auras.arcane_tactics -> trigger();
+  if ( talents.arcane_tactics -> rank() ) sim -> auras.arcane_tactics -> trigger();
 }
 
 // mage_t::reset ============================================================
