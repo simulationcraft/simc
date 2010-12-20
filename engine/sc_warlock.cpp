@@ -1286,9 +1286,6 @@ struct felguard_pet_t : public warlock_main_pet_t
       warlock_t*      o = p -> owner -> cast_warlock();
       aoe               = true;
       direct_power_mod  = 0.264;
-      base_spell_power_multiplier = 1.0;
-      base_attack_power_multiplier = 0.0;
-
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 2 ) / 100.0;
       if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> base_value();
