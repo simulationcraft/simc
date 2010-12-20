@@ -282,8 +282,6 @@ void SimulationCraftWindow::loadHistory()
     if( historyVersion != HISTORY_VERSION ) return;
     in >> historyWidth;
     in >> historyHeight;
-    in >> historyX;
-    in >> historyY;
     in >> historyMaximized;
     QStringList importHistory;
     in >> simulateCmdLineHistory;
@@ -328,8 +326,6 @@ void SimulationCraftWindow::saveHistory()
     out << QString( HISTORY_VERSION );
     out << (qint32) width();
     out << (qint32) height();
-    out << (qint32) x();
-    out << (qint32) y();
     out << (qint32) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
@@ -348,7 +344,7 @@ void SimulationCraftWindow::saveHistory()
 
 SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   : QWidget(parent), 
-    historyWidth(0), historyHeight(0), historyX(0), historyY(0), historyMaximized(1),
+    historyWidth(0), historyHeight(0), historyMaximized(1),
     visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
   cmdLineText = "";

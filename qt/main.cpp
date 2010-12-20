@@ -26,11 +26,9 @@ int main(int argc, char *argv[])
   }
 
   if( w.historyWidth  != 0 &&
-      w.historyHeight != 0 &&
-      w.historyX      != 0 &&
-      w.historyY      != 0 )
+      w.historyHeight != 0 )
   {
-    w.setGeometry( w.historyX, w.historyY, w.historyWidth, w.historyHeight );
+    w.resize( w.historyWidth, w.historyHeight );
   }
 
   if( w.historyMaximized )

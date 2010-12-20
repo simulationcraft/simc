@@ -25,7 +25,7 @@
 #define TAB_HISTORY    3
 #define TAB_CUSTOM     4
 
-#define HISTORY_VERSION "4.5"
+#define HISTORY_VERSION "4.6"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -77,7 +77,6 @@ class SimulationCraftWindow : public QWidget
 
 public:
     qint32 historyWidth, historyHeight;
-    qint32 historyX, historyY;
     qint32 historyMaximized;
     QWidget *customGearTab;
     QWidget *customTalentsTab;
