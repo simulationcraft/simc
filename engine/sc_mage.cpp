@@ -22,7 +22,6 @@ struct mage_t : public player_t
   dot_t* dots_ignite;
   dot_t* dots_living_bomb;
   dot_t* dots_pyroblast;
-  dot_t* dots_pyroblast_hs;
 
   // Buffs
   buff_t* buffs_arcane_blast;
@@ -231,7 +230,6 @@ struct mage_t : public player_t
     dots_ignite         = get_dot( "ignite"         );
     dots_living_bomb    = get_dot( "living_bomb"    );
     dots_pyroblast      = get_dot( "pyroblast"      );
-    dots_pyroblast_hs   = get_dot( "pyroblast_hs"      );
 
     // Cooldowns
     cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
@@ -1487,7 +1485,6 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( p -> dots_ignite         );
     base_td += calculate_dot_dps( p -> dots_living_bomb    );
     base_td += calculate_dot_dps( p -> dots_pyroblast      );
-    base_td += calculate_dot_dps( p -> dots_pyroblast_hs   );
     mage_spell_t::execute();
   }
 
@@ -2344,7 +2341,8 @@ struct pyroblast_hs_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    dot_behavior = DOT_REFRESH;
+    dot = p -> get_dot( "pyroblast" );
+//    dot_behavior = DOT_REFRESH;
   }
 
   virtual void execute()
@@ -3131,14 +3129,14 @@ void mage_t::init_actions()
       if ( talents.critical_mass -> rank() && level >= 26 ) action_list_str += "/scorch,debuff=1";
       if ( talents.combustion -> rank()   )
        {
-         action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast_hs.ticking";
+         action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
       if ( level >= 50) action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=12";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
-      action_list_str += "/pyroblast,if=(target.time_to_die<60|mana_pct>39)&!(dot.pyroblast_hs.ticking|dot.pyroblast.ticking)";
+      action_list_str += "/pyroblast,if=(target.time_to_die<60|mana_pct>39)&!dot.pyroblast.ticking";
       action_list_str += "/fireball,if=target.time_to_die<60";
       action_list_str += "/fireball,if=mana_pct>39";
       action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
