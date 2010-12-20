@@ -3426,6 +3426,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   std::string action_dpet_str                     = "";
   std::string action_dmg_str                      = "";
   std::string gains_str                           = "";
+  std::string scaling_dps_str                     = "";
   std::string scale_factors_str                   = "";
   std::string timeline_resource_str               = "";
   std::string timeline_dps_str                    = "";
@@ -3468,6 +3469,18 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     }
     gains_str = buffer;
   }
+  if ( ! p -> scaling_dps_chart.empty() )
+  {
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Scaling DPS Chart\" />\n", p -> scaling_dps_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">%s</span>\n", p -> scaling_dps_chart.c_str() );
+    }
+    scaling_dps_str = buffer;
+  }
   if ( ! p -> timeline_resource_chart.empty() )
   {
     if ( num_players == 1)
@@ -3504,7 +3517,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     }
     distribution_dps_str = buffer;
   }
-  if ( ( ! p -> scaling_dps_chart.empty() ) || ( ! p -> scale_factors_chart.empty() ) )
+  if ( ! p -> scale_factors_chart.empty() )
   {
     if ( num_players == 1)
     {
@@ -3530,6 +3543,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "              %s"
     "              %s"
     "              %s"
+    "              %s"
     "            </div>\n"
     "            <div class=\"charts\">\n"
     "              %s"
@@ -3544,6 +3558,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     action_dpet_str.c_str(),
     action_dmg_str.c_str(),
     gains_str.c_str(),
+    scaling_dps_str.c_str(),
     scale_factors_str.c_str(),
     timeline_resource_str.c_str(),
     timeline_dps_str.c_str(),
