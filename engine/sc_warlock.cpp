@@ -612,7 +612,7 @@ struct warlock_pet_t : public pet_t
     if ( stats2_avaiable != 13 )
       sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level);
 
-    initial_attack_power_per_strength = 1.0; // tested
+    initial_attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
     base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
     stamina_per_owner = 0.6496; // level invariant, tested
     intellect_per_owner = 0; // removed in cata, tested
@@ -632,7 +632,7 @@ struct warlock_pet_t : public pet_t
   {
     bool mana_force = ( force || resource_initial[ RESOURCE_MANA ] == 0 );
     player_t::init_resources( force );
-    if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * (level / 80) * 7.5;
+    if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * ( level / 80.0 ) * 7.5;
     resource_current[ RESOURCE_MANA ] = resource_max[ RESOURCE_MANA ] = resource_initial[ RESOURCE_MANA ];
   }
 
@@ -689,14 +689,14 @@ struct warlock_pet_t : public pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
-    sp += owner -> composite_spell_power( school ) * ( level / 80 ) * 0.5 * owner -> composite_spell_power_multiplier();
+    sp += owner -> composite_spell_power( school ) * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
     return sp;
   }
 
   virtual double composite_attack_power() SC_CONST
   {
     double ap = pet_t::composite_attack_power();
-    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80 ) * owner -> composite_spell_power_multiplier();
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
     return ap;
   }
 
@@ -1398,7 +1398,9 @@ struct felhunter_pet_t : public warlock_main_pet_t
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
       base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 3 ) / 100.0;
-      direct_power_mod   = 0.614; // from tooltip - assuming the 0.5 factor is not used, like for lash of pain and torment
+      direct_power_mod = 0.614; // tested in-game as of 2010/12/20
+      base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
+      base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
     }
 
     virtual void player_buff()
@@ -1474,7 +1476,9 @@ struct succubus_pet_t : public warlock_main_pet_t
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> base_value() );
-      direct_power_mod  = 0.612; // from the tooltip - tests show the 0.5 factor is not used
+      direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
+      base_dd_min *= 1.555; // only tested at level 85, applying base damage adjustment as a percentage
+      base_dd_max *= 1.555; // modifier in hopes of getting it "somewhat right" for other levels as well
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
