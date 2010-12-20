@@ -2182,6 +2182,12 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_spec( TREE_ELEMENTAL );
 
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
     cooldown -> duration += p -> glyph_thunder -> mod_additive( P_COOLDOWN );
     bonus                 = 
       p -> player_data.effect_base_value( id, E_ENERGIZE_PCT ) +
@@ -2216,6 +2222,12 @@ struct unleash_elements_t : public shaman_spell_t
   unleash_elements_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "unleash_elements", "Unleash Elements", player )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
     may_crit    = false;
     
     wind        = new unleash_wind_t( player );
