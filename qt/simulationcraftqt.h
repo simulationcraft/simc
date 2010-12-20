@@ -87,7 +87,7 @@ public:
     QTabWidget* importTab;
     QTabWidget* resultsTab;
     QTabWidget *createCustomProfileDock;
-    QComboBox* patchChoice;
+    QComboBox* versionChoice;
     QComboBox* latencyChoice;
     QComboBox* iterationsChoice;
     QComboBox* fightLengthChoice;

@@ -436,6 +436,7 @@ static void trigger_blood_frenzy( action_t* a )
   target_t* t = a -> target;
 
   // Don't alter the duration if it is set to 0 (override/optimal_raid)
+
   if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > 0 )
   {
     t -> debuffs.blood_frenzy_bleed -> buff_duration = a -> num_ticks * a -> base_tick_time;
@@ -447,14 +448,14 @@ static void trigger_blood_frenzy( action_t* a )
 
   double rank = p -> talents.blood_frenzy -> rank();
 
-  if ( rank * 2 >= t -> debuffs.blood_frenzy_bleed -> current_value )
+  if ( rank * 15 >= t -> debuffs.blood_frenzy_bleed -> current_value )
   {
-    t -> debuffs.blood_frenzy_bleed -> trigger( 1, rank * 2 );
+    t -> debuffs.blood_frenzy_bleed -> trigger( 1, rank * 15 );
     t -> debuffs.blood_frenzy_bleed -> source = p;
   }
-  if ( rank * 15 >= t -> debuffs.blood_frenzy_physical -> current_value )
+  if ( rank * 2 >= t -> debuffs.blood_frenzy_physical -> current_value )
   {
-    t -> debuffs.blood_frenzy_physical -> trigger( 1, rank * 15 );
+    t -> debuffs.blood_frenzy_physical -> trigger( 1, rank * 2 );
     t -> debuffs.blood_frenzy_physical -> source = p;
   }
 }

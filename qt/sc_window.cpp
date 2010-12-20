@@ -141,7 +141,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   QStringList tokens = encoding.split( ' ' );
   if( tokens.count() >= 12 )
   {
-           patchChoice->setCurrentIndex( tokens[  0 ].toInt() );
+         versionChoice->setCurrentIndex( tokens[  0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
      fightLengthChoice->setCurrentIndex( tokens[  2 ].toInt() );
    fightVarianceChoice->setCurrentIndex( tokens[  3 ].toInt() );
@@ -194,7 +194,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 QString SimulationCraftWindow::encodeOptions()
 {
   QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
-    .arg(         patchChoice->currentIndex() )
+    .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
@@ -471,7 +471,7 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 1, "4.0.3" ) );
+  globalsLayout->addRow(       "Version",       versionChoice = createChoice( 2, "Live", "PTR" ) );
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
@@ -800,7 +800,8 @@ void SimulationCraftWindow::createResultsTab()
 
 void SimulationCraftWindow::createToolTips()
 {
-  patchChoice->setToolTip( "4.0.3: Live\n" );
+  versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
+			     "PTR:  Use mechanics on PTR server" );
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
 				"1000:  Sufficient for DPS Analysis\n"
@@ -853,7 +854,7 @@ sim_t* SimulationCraftWindow::initSim()
     sim = new sim_t();
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
-    sim -> parse_option( "patch", patchChoice->currentText().toStdString() );
+    sim -> parse_option( "ptr", ( versionChoice->currentIndex() ? "1" : "0" ) );
   }
   return sim;
 }
@@ -1070,7 +1071,7 @@ void SimulationCraftWindow::startSim()
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
-  options += "patch=" + patchChoice->currentText() + "\n";
+  options += "ptr="; options += ( versionChoice->currentIndex() ? "1" : "0" ); options += "\n";
   options += "iterations=" + iterationsChoice->currentText() + "\n";
   if( iterationsChoice->currentText() == "10000" )
   {
