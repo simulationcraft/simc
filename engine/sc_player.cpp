@@ -13,7 +13,7 @@ struct dark_intent_callback_t : public action_callback_t
 {
   dark_intent_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     listener -> buffs.dark_intent_feedback -> trigger();
   }
@@ -2606,7 +2606,7 @@ double player_t::resource_loss( int       resource,
     last_cast = sim -> current_time;
   }
 
-  if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action );
+  if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action, (void*) &actual_amount );
 
   if ( sim -> debug ) log_t::output( sim, "Player %s loses %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
 
@@ -2623,6 +2623,7 @@ double player_t::resource_gain( int       resource,
   if ( sleeping ) return 0;
 
   double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
+
   if ( actual_amount > 0 )
   {
     resource_current[ resource ] += actual_amount;
@@ -2632,7 +2633,7 @@ double player_t::resource_gain( int       resource,
 
   if ( source ) source -> add( actual_amount, amount - actual_amount );
 
-  if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action );
+  if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action, (void*) &actual_amount );
 
   if ( sim -> log )
   {

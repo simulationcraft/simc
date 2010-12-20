@@ -3740,20 +3740,20 @@ struct action_callback_t
     }
   }
   virtual ~action_callback_t() {}
-  virtual void trigger( action_t* ) = 0;
+  virtual void trigger( action_t*, void* call_data=0 ) = 0;
   virtual void reset() {}
   virtual void activate() { active=true; }
   virtual void deactivate() { active=false; }
-  static void trigger( std::vector<action_callback_t*>& v, action_t* a )
+  static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
   {
     size_t size = v.size();
     for ( size_t i=0; i < size; i++ )
     {
       action_callback_t* cb = v[ i ];
-      if ( cb -> active ) cb -> trigger( a );
+      if ( cb -> active ) cb -> trigger( a, call_data );
     }
   }
-  static void   reset( std::vector<action_callback_t*>& v )
+  static void reset( std::vector<action_callback_t*>& v )
   {
     size_t size = v.size();
     for ( size_t i=0; i < size; i++ )

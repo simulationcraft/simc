@@ -528,7 +528,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   weapon_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, double ppm=0.0 ) :
     action_callback_t( p -> sim, p ), weapon(w), buff(b), PPM(ppm) {}
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if( a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
@@ -589,7 +589,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
   virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if( weapon && a -> weapon != weapon ) return;
 

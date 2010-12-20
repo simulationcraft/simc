@@ -961,7 +961,7 @@ void action_t::consume_resource()
     log_t::output( sim, "%s consumes %.1f %s for %s", player -> name(),
                    resource_consumed, util_t::resource_type_string( resource ), name() );
 
-  player -> resource_loss( resource, resource_consumed );
+  player -> resource_loss( resource, resource_consumed, this );
 
   stats -> consume_resource( resource_consumed );
 }

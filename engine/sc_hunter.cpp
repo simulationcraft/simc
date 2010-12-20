@@ -1974,16 +1974,16 @@ struct wild_quiver_trigger_t : public action_callback_t
   {
     rng = p -> get_rng( "wild_quiver" );
   }
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     hunter_t* p = listener -> cast_hunter();
     if ( ! a -> weapon ) return;
     if ( a -> weapon -> slot != SLOT_RANGED ) return;
     if ( rng -> roll( p -> composite_mastery() * 1.8 / 100.0 ) )
-      {
+    {
       attack -> execute();
       p -> procs_wild_quiver -> occur();
-      }
+    }
   }
 };
 
@@ -2799,7 +2799,7 @@ void hunter_t::init_unique_gear()
       {
         rng = p -> get_rng( "zods_repeating_longbow" );
       }
-      virtual void trigger( action_t* a )
+      virtual void trigger( action_t* a, void* call_data )
       {
         if ( ! a -> weapon ) return;
         if ( a -> weapon -> slot != SLOT_RANGED ) return;

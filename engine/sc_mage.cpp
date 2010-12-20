@@ -1770,7 +1770,7 @@ struct focus_magic_t : public mage_spell_t
     {
       focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-      virtual void trigger( action_t* a )
+      virtual void trigger( action_t* a, void* call_data )
       {
         listener -> cast_mage() -> buffs_focus_magic_feedback -> trigger();
       }

@@ -4344,7 +4344,7 @@ void death_knight_t::init_enchant()
 
     fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ) {}
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       weapon_t* w = a -> weapon;
       if ( ! w ) return;
@@ -4389,7 +4389,7 @@ void death_knight_t::init_enchant()
       razorice_damage_proc = new razorice_spell_t( p );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       weapon_t* w = a -> weapon;
       if ( ! w ) return;

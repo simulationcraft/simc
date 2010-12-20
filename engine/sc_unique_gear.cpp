@@ -40,7 +40,7 @@ struct stat_proc_callback_t : public action_callback_t
     buff -> expire();
   }
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if ( buff -> trigger( a ) )
     {
@@ -115,7 +115,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
   virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
 
-  virtual void trigger( action_t* a )
+  virtual void trigger( action_t* a, void* call_data )
   {
     if ( cooldown )
       if ( sim -> current_time < cooldown_ready )
@@ -177,7 +177,7 @@ static void register_black_bruise( item_t* item )
   {
     buff_t* buff;
     black_bruise_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ) {}
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       // FIXME! Can specials trigger the proc?
       // FIXME! Apparently both hands proc the buff even though only equipped in main hand
@@ -193,7 +193,7 @@ static void register_black_bruise( item_t* item )
     buff_t* buff;
     spell_t* spell;
     black_bruise_damage_t( player_t* p, buff_t* b, spell_t* s ) : action_callback_t( p -> sim, p ), buff( b ), spell( s ) {}
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       // FIXME! Can specials trigger the damage?
       // FIXME! What about melee attacks that do no weapon damage?
@@ -277,7 +277,7 @@ static void register_deathbringers_will( item_t* item )
       rng = p -> get_rng( "deathbringers_will_stat" );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if ( buff -> cooldown -> remains() > 0 ) return;
 
@@ -318,7 +318,7 @@ static void register_deathbringers_will( item_t* item )
         buff -> amount = heroic ? 700 : 600;
       }
 
-      stat_proc_callback_t::trigger( a );
+      stat_proc_callback_t::trigger( a, call_data );
     }
   };
 
@@ -365,7 +365,7 @@ static void register_empowered_deathbringer( item_t* item )
       rng  = p -> get_rng ( "empowered_deathbringer", RNG_DEFAULT );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if ( rng -> roll( 0.08 ) ) // FIXME!! Using 8% of -hits-
       {
@@ -417,7 +417,7 @@ static void register_raging_deathbringer( item_t* item )
       rng  = p -> get_rng ( "raging_deathbringer", RNG_DEFAULT );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if ( rng -> roll( 0.08 ) ) // FIXME!! Using 8% of -hits-
       {
@@ -449,7 +449,7 @@ static void register_fury_of_angerforge( item_t* item )
       blackwing_dragonkin = new stat_buff_t( p, "blackwing_dragonkin", STAT_STRENGTH, 1926, 1, 20.0, 120.0 );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if( ! a -> weapon ) return;
       if( a -> proc ) return;
@@ -489,7 +489,7 @@ static void register_heart_of_ignacious( item_t* item )
       haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, 20.0, 120.0 );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       buff -> trigger();
       if( buff -> stack() == buff -> max_stack )
@@ -566,12 +566,12 @@ static void register_nibelung( item_t* item )
       rng  = p -> get_rng ( "nibelung" );
     }
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if (   a -> aoe      ||
              a -> proc     ||
              a -> dual     ||
-             ! a -> harmful  ||
+           ! a -> harmful  ||
              a -> pseudo_pet )
         return;
 
@@ -625,7 +625,8 @@ static void register_shadowmourne( item_t* item )
 
     shadowmourne_trigger_t( player_t* p, buff_t* b1, buff_t* b2, spell_t* sp, int s ) : 
       action_callback_t( p -> sim, p ), buff_stacks( b1 ), buff_final( b2 ), spell( sp ), slot( s ) {}
-    virtual void trigger( action_t* a )
+
+    virtual void trigger( action_t* a, void* call_data )
     {
       // FIXME! Can specials trigger the proc?
       if ( ! a -> weapon ) return;
@@ -671,11 +672,11 @@ static void register_sorrowsong( item_t* item )
       stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 0.10, 10.0, 20.0 )
     {}
 
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if ( a -> target -> health_percentage() < 35 )
       {
-        stat_proc_callback_t::trigger( a );
+        stat_proc_callback_t::trigger( a, call_data );
       }
     }
   };
@@ -708,8 +709,11 @@ static void register_tiny_abom( item_t* item )
     double time_to_execute;
     bool manifesting_anger;
 
-    tiny_abom_trigger_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ), proc_name( "manifest_anger" ),
-        old_stats( p -> get_stats( "manifest_anger" ) ), first_stack_attack( NULL )
+    tiny_abom_trigger_t( player_t* p, buff_t* b ) : 
+      action_callback_t( p -> sim, p ), buff( b ), 
+      proc_name( "manifest_anger" ),
+      old_stats( p -> get_stats( "manifest_anger" ) ), 
+      first_stack_attack( NULL )
     {
       old_stats -> school = SCHOOL_PHYSICAL;
       manifesting_anger = false;
@@ -718,7 +722,7 @@ static void register_tiny_abom( item_t* item )
     {
       first_stack_attack = NULL;
     }
-    virtual void trigger( action_t* a )
+    virtual void trigger( action_t* a, void* call_data )
     {
       if ( manifesting_anger ) return;
       if ( ! a -> weapon ) return;
@@ -795,7 +799,56 @@ static void register_tyrandes_favorite_doll( item_t* item )
 
   item -> unique = true;
 
-  // TODO!
+  struct tyrandes_spell_t : public spell_t
+  {
+    tyrandes_spell_t( player_t* p, double max_mana ) :
+      spell_t( "tyrandes_doll", p, RESOURCE_NONE, SCHOOL_ARCANE )
+      {
+        trigger_gcd = 0;
+        base_dd_min = max_mana;
+        base_dd_max = max_mana;
+        may_crit = true;
+	aoe = true;
+        background = true;
+        base_spell_power_multiplier = 0;
+	cooldown -> duration = 60.0;
+        reset();
+      }
+  };
+
+  struct tyrandes_callback_t : public action_callback_t
+  {
+    double max_mana;
+    double mana_stored;
+    spell_t* discharge_spell;
+    gain_t* gain_source;
+
+    tyrandes_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), max_mana(4200), mana_stored(0)
+    {
+      discharge_spell = new tyrandes_spell_t( p, max_mana );
+      gain_source = p -> get_gain( "tyrandes_doll" );
+    }
+
+    virtual void reset() { action_callback_t::reset(); mana_stored=0; }
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      double mana_spent = *( (double*) call_data );
+
+      mana_stored += mana_spent * 0.20;
+      if( mana_stored > max_mana ) mana_stored = max_mana;
+
+      // FIXME! For now trigger as soon as the cooldown is up.
+      if( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= 0 ) )
+      {
+	discharge_spell -> execute();
+	a -> player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
+	mana_stored = 0;
+      }
+    }
+  };
+
+  p -> register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
 }
 
 // register_unheeded_warning ===========================================
