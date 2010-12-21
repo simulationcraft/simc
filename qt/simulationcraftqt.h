@@ -74,7 +74,7 @@ public:
 class SimulationCraftWindow : public QWidget
 {
     Q_OBJECT
-
+   
 public:
     qint32 historyWidth, historyHeight;
     qint32 historyMaximized;
@@ -249,8 +249,8 @@ protected:
     case TAB_IMPORT:
       if( mainWindow->importTab->currentIndex() == TAB_RAWR )
       {
-	mainWindow->rawrFileText = mainWindow->rawrCmdLineHistory.next( k ); 
-	setText( mainWindow->rawrFileText ); 
+        mainWindow->rawrFileText = mainWindow->rawrCmdLineHistory.next( k ); 
+        setText( mainWindow->rawrFileText ); 
       }
       break;
     case TAB_LOG:
