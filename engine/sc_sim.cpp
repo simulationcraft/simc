@@ -1237,8 +1237,7 @@ void sim_t::merge( sim_t& other_sim )
 
     for ( int i=0; i < other_sim.iterations; i++ )
     {
-      p -> iteration_dps.     push_back( other_p -> iteration_dps     [ i ] );
-      p -> iteration_sequence.push_back( other_p -> iteration_sequence[ i ] ); 
+      p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
     }
 
     int num_buckets = ( int ) std::min(       p -> timeline_resource.size(),

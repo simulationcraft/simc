@@ -1217,12 +1217,8 @@ void player_t::init_actions()
   }
 
   int capacity = std::max( 1200, (int) ( sim -> max_time / 2.0 ) );
-  iteration_sequence.resize( sim -> iterations );
-  for( int i=0; i < sim -> iterations; i++ ) 
-  {
-    iteration_sequence[ i ].reserve( capacity );
-    iteration_sequence[ i ] = "";
-  }
+  action_sequence.reserve( capacity );
+  action_sequence = "";
 }
 
 // player_t::init_rating ===================================================
@@ -2190,6 +2186,8 @@ void player_t::combat_begin()
   }
 
   if ( tank > 0 ) trigger_target_swings( this );
+
+  action_sequence = "";
 }
 
 // player_t::combat_end ====================================================
@@ -2495,7 +2493,7 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     total_foreground_actions++;
-    if ( action -> marker ) iteration_sequence[ sim -> current_iteration ] += action -> marker;
+    if ( action -> marker ) action_sequence += action -> marker;
   }
 
   return action;

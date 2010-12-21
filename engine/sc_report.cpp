@@ -3953,9 +3953,9 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   util_t::fprintf( file,
     "                </table>\n" );
 
-  if( ! p -> iteration_sequence.empty() )
+  if( ! p -> action_sequence.empty() )
   {
-    std::string& seq = p -> iteration_sequence[ p -> sim -> iterations - 1 ];
+    std::string& seq = p -> action_sequence;
     if ( seq.size() > 0 )
     {
       util_t::fprintf( file, "<h3>Sample Sequence:</h3>\n<ul>\n" );

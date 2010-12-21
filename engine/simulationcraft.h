@@ -2890,7 +2890,7 @@ struct player_t
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
   std::vector<int> distribution_dps;
-  std::vector<std::string> iteration_sequence;
+  std::string action_sequence;
   std::string action_dpet_chart, action_dmg_chart, gains_chart;
   std::string timeline_resource_chart, timeline_dps_chart, distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link;
