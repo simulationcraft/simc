@@ -3089,7 +3089,7 @@ void warrior_t::init_actions()
       action_list_str += "/mortal_strike";
       action_list_str += "/execute";
       action_list_str += "/overpower";
-      action_list_str += "/slam";
+      if ( glyphs.slam -> ok() ) action_list_str += "/slam";
       action_list_str += "/battle_shout,if=rage<30";
     }
     else if ( primary_tree() == TREE_FURY )
