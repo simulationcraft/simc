@@ -2100,14 +2100,21 @@ struct living_bomb_t : public mage_spell_t
     check_talent( p -> talents.living_bomb -> rank() );
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
-                           + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
-
     dot_behavior = DOT_REFRESH;
 
     explosion_spell = new living_bomb_explosion_t( p );
     explosion_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work 
     explosion_spell -> base_cost = base_cost;
+  }
+
+  virtual void target_debuff( int dmg_type )
+  {
+    // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
+    mage_t* p = player -> cast_mage();
+    spell_t::target_debuff( dmg_type );
+    target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
+                                 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
+                                 p -> mastery.flashburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery() );
   }
 
   virtual void last_tick()
@@ -2342,7 +2349,7 @@ struct pyroblast_hs_t : public mage_spell_t
     base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     dot = p -> get_dot( "pyroblast" );
-//    dot_behavior = DOT_REFRESH;
+    dot_behavior = DOT_REFRESH;
   }
 
   virtual void execute()
@@ -2687,7 +2694,7 @@ action_t* mage_t::create_action( const std::string& name,
 // mage_t::create_pet =======================================================
 
 pet_t* mage_t::create_pet( const std::string& pet_name,
-			   const std::string& pet_type )
+                           const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -3136,7 +3143,6 @@ void mage_t::init_actions()
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=12";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
-      action_list_str += "/pyroblast,if=(target.time_to_die<60|mana_pct>39)&!dot.pyroblast.ticking";
       action_list_str += "/fireball,if=target.time_to_die<60";
       action_list_str += "/fireball,if=mana_pct>39";
       action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
