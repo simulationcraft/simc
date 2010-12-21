@@ -4316,9 +4316,9 @@ void warlock_t::init_actions()
       } 
       else
       {
-        if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
+        if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
         action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
-        if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
+        if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
         action_list_str += "/life_tap,mana_percentage<=35";
         action_list_str += "/drain_life,interrupt=1";
       }
@@ -4369,7 +4369,8 @@ void warlock_t::init_actions()
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
       if ( level >= 50) action_list_str += "/summon_infernal";
-      action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down";
+      action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
+      if ( ! glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_felguard.down";
       if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/shadow_bolt";
 

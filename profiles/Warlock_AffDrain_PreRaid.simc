@@ -23,8 +23,8 @@ actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
 actions+=/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/summon_infernal
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
+actions+=/demon_soul,if=buff.shadow_trance.react
 actions+=/shadow_bolt,if=buff.shadow_trance.react
-actions+=/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up
 actions+=/life_tap,mana_percentage<=35
 actions+=/drain_life,interrupt=1
 actions+=/life_tap
