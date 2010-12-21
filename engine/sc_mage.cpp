@@ -3109,7 +3109,7 @@ void mage_t::init_actions()
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
       action_list_str += "/mana_gem,if=target.time_to_die<34";
       action_list_str += "/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
-      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.tim_to_die>=15";
+      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=15";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
