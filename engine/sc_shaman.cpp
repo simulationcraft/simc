@@ -3351,6 +3351,11 @@ struct unleash_elements_buff_t : public buff_t
     bonus       = s -> talent_elemental_weapons -> effect_base_value( 2 ) / 100.0;
   }
   
+  virtual double mod_additive( property_type_t p_type ) SC_CONST
+  {
+    return buff_t::mod_additive( p_type ) * ( 1.0 + bonus );
+  }
+  
   virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
   {
     return buff_t::base_value( type, sub_type, misc_value, misc_value2 ) * ( 1.0 + bonus );
@@ -3682,9 +3687,9 @@ void shaman_t::init_buffs()
   // Enhancement T10 2Piece Bonus
   buffs_elemental_rage          = new buff_t                 ( this, 70829,                                                    "elemental_rage"        );
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
-  buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery"     );
+  buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
   // Note the chance override, as the spell itself does not have a proc chance
-  buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery_buff", 1.0 );
+  buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery", 1.0 );
   buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry"                );
   buffs_lightning_shield        = new lightning_shield_buff_t( this, player_data.find_class_spell( type, "Lightning Shield" ), "lightning_shield"      );
   // Enhancement T10 4Piece Bonus
