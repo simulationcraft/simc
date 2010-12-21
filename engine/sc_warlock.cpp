@@ -2920,7 +2920,7 @@ struct life_tap_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    warlock_spell_t::execute();
 
     double life = p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 3 ) / 100.0;
     p -> resource_loss( RESOURCE_HEALTH, life );
@@ -3279,8 +3279,7 @@ struct metamorphosis_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
+    warlock_spell_t::execute();
     p -> buffs_metamorphosis -> trigger();
   }
 };
@@ -3514,7 +3513,7 @@ struct demon_soul_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    update_ready();
+    warlock_spell_t::execute();
     assert ( p -> active_pet );
 
     if ( p -> active_pet -> pet_type == PET_IMP )
