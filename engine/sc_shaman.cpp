@@ -4109,7 +4109,7 @@ void player_t::shaman_init( sim_t* sim )
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> buffs.bloodlust  = new buff_t( p, "bloodlust", 1, 40.0 );
-    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, 600.0 );
+    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, 600.0, 0, 0, true );
     p -> buffs.mana_tide  = new buff_t( p, "mana_tide", 16190 );
   }
 }

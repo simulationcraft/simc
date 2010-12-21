@@ -3662,15 +3662,30 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "              </tr>\n",
     n.c_str(),
     n.c_str() );
-  i = 1;
+
+  std::vector<buff_t*> dynamic_buffs;
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
+    if ( ! b -> quiet && b -> start_count && ! b -> constant )
+      dynamic_buffs.push_back( b );
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
+      if ( ! b -> quiet && b -> start_count && ! b -> constant )
+	dynamic_buffs.push_back( b );
+
+  for ( i=0; i < (int) dynamic_buffs.size(); i++ )
   {
-    if ( b -> quiet || ! b -> start_count || b -> constant )
-      continue;
+    buff_t* b = dynamic_buffs[ i ];
+
+    std::string buff_name = "";
+    if( b -> player -> is_pet() )
+    {
+      buff_name += b -> player -> name_str + "-";
+    }
+    buff_name += b -> name();
 
     util_t::fprintf( file,
       "              <tr" );
-    if ( !( i & 1 ) )
+    if ( i & 1 )
     {
       util_t::fprintf( file, " class=\"odd\"" );
     }
@@ -3684,15 +3699,13 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "                <td class=\"right\">%.0f%%</td>\n"
       "                <td class=\"right\">%.0f%%</td>\n"
       "              </tr>\n",
-      b -> name(),
-      b -> player -> name(),
-      b -> name(),
+      buff_name.c_str(),
       b -> avg_start,
       b -> avg_refresh,
       b -> avg_start_interval,
       b -> avg_trigger_interval,
       b -> uptime_pct,
-      b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+     ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct ) );
 
     util_t::fprintf( file,
       "              <tr class=\"details hide\">\n"
