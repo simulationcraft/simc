@@ -729,7 +729,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 
   int result = s -> result;
 
-  if ( sim -> smooth_rng && s -> result_is_hit() )
+  if ( sim -> smooth_rng )
   {
     // Decouple Hot Streak proc from actual crit to reduce wild swings during RNG smoothing.
     result = sim -> rng -> roll( s -> total_crit() ) ? RESULT_CRIT : RESULT_HIT;
@@ -1038,10 +1038,7 @@ void mage_spell_t::execute()
       p -> buffs_arcane_potency -> trigger();
     }
 
-    if ( result == RESULT_CRIT )
-    {
-      trigger_hot_streak( this );
-    }
+    trigger_hot_streak( this );
   }
 
   if ( ! p -> talents.hot_streak   -> ok() && 
