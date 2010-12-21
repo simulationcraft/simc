@@ -3118,8 +3118,8 @@ void mage_t::init_actions()
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,buff.arcane_blast.stack<4&!buff.bloodlust.react";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,buff.arcane_blast.stack<3&buff.bloodlust.react";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&buff.bloodlust.react";
       if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=31";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
