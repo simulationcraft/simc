@@ -219,7 +219,6 @@ struct warrior_t : public player_t
   war_mastery_t mastery;
 
   // Procs
-  proc_t* procs_deferred_deep_wounds;
   proc_t* procs_munched_deep_wounds;
   proc_t* procs_rolled_deep_wounds;
   proc_t* procs_parry_haste;
@@ -523,13 +522,21 @@ static void trigger_deep_wounds( action_t* a )
     }
   };
 
-  if ( ! p -> active_deep_wounds )
-    p -> active_deep_wounds = new deep_wounds_t( p );
+  if ( ! p -> active_deep_wounds ) p -> active_deep_wounds = new deep_wounds_t( p );
 
   if ( a -> weapon )
+  {
     p -> active_deep_wounds -> weapon = a -> weapon;
+  }
   else
+  {
     p -> active_deep_wounds -> weapon = &( p -> main_hand_weapon );
+  }
+
+  // Normally, we cache the base damage and then combine them with the multipliers at the point of damage.
+  // However, in this case we need to maintain remaining damage on refresh and the player-buff multipliers may change.
+  // So we neeed to push the player-buff multipliers into the damage bank and then make sure we only use
+  // the target-debuff multipliers at tick time.
 
   p -> active_deep_wounds -> player_buff();
 
@@ -549,17 +556,18 @@ static void trigger_deep_wounds( action_t* a )
 
   if ( sim -> aura_delay == 0 )
   {
-    // Do not model the delay, so no munch/roll, just defer.
+    // Do not model the delay, so no munch/roll.
+
+    p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
 
     if ( dot -> ticking )
     {
-      if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
-      p -> procs_deferred_deep_wounds -> occur();
-      p -> active_deep_wounds -> cancel();
+      p -> active_deep_wounds -> refresh_duration();
     }
-
-    p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
-    p -> active_deep_wounds -> execute();
+    else
+    {
+      p -> active_deep_wounds -> schedule_travel();
+    }
 
     trigger_blood_frenzy( p -> active_deep_wounds );
 
@@ -579,15 +587,16 @@ static void trigger_deep_wounds( action_t* a )
     {
       warrior_t* p = player -> cast_warrior();
 
+      p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
+
       if ( p -> active_deep_wounds -> dot -> ticking )
       {
-        if ( sim -> log ) log_t::output( sim, "Player %s defers Deep Wounds.", p -> name() );
-        p -> procs_deferred_deep_wounds -> occur();
-        p -> active_deep_wounds -> cancel();
+        p -> active_deep_wounds -> refresh_duration();
       }
-
-      p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
-      p -> active_deep_wounds -> execute();
+      else
+      {
+	p -> active_deep_wounds -> schedule_travel();
+      }
 
       trigger_blood_frenzy( p -> active_deep_wounds );
 
@@ -2962,7 +2971,6 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_deferred_deep_wounds    = get_proc( "deferred_deep_wounds"   );
   procs_munched_deep_wounds     = get_proc( "munched_deep_wounds"    );
   procs_rolled_deep_wounds      = get_proc( "rolled_deep_wounds"     );
   procs_parry_haste             = get_proc( "parry_haste"            );
