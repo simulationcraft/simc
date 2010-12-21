@@ -1019,7 +1019,7 @@ void sim_t::analyze_player( player_t* p )
       p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
     }
   }
-
+  /*
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
@@ -1029,7 +1029,7 @@ void sim_t::analyze_player( player_t* p )
       p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
     }
   }
-
+  */
   for ( int i=0; i < max_buckets; i++ )
   {
     double window_dmg  = p -> timeline_dmg[ i ];
