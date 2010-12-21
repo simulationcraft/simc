@@ -76,7 +76,7 @@
 #include "data_definitions.hh"
 
 #define SC_MAJOR_VERSION "403"
-#define SC_MINOR_VERSION "12"
+#define SC_MINOR_VERSION "13"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 ) 
 
