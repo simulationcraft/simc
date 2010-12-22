@@ -3971,18 +3971,10 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     std::string& seq = p -> action_sequence;
     if ( seq.size() > 0 )
     {
-      util_t::fprintf( file, "<h3>Sample Sequence:</h3>\n<ul>\n" );
-      int size = (int) seq.size();
-      int line_length = 100;
-      int num_lines = 0;
-      while( line_length > 80 ) line_length = size / ++num_lines;
-      line_length++;
-      for( int j=0; j < size; j++ )
-      {
-        if( j % line_length == 0 ) util_t::fprintf( file, "%s<li><tt>", ( j ? "</tt>\n" : "" ) );
-        util_t::fprintf( file, "%c", seq[ j ] );
-      }
-      util_t::fprintf( file, "</tt>\n</ul>\n\n" );
+      util_t::fprintf( file,
+        "                <h4 class=\"mt\">Sample Sequence</h4>\n"
+        "                <div class=\"sample-sequence\">%s</div>\n",
+        seq.c_str() );
     }
   }
 
@@ -5100,6 +5092,7 @@ void report_t::print_html3( sim_t* sim )
       "      tr.details td div.float h5 { margin-top: 4px; }\n"
       "      tr.details td div.float ul { margin: 0 0 12px 0; }\n"
       "      .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
+      "      .sample-sequence { width: 500px; word-wrap: break-word; outline: 1px solid #ddd; background: #fcfcfc; padding: 6px; font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n"
       "    </style>\n\n" );
         
         util_t::fprintf( file,
