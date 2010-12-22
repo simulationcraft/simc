@@ -5023,7 +5023,7 @@ void report_t::print_html3( sim_t* sim )
     util_t::fprintf( file,
       "    <style type=\"text/css\">\n"
       "      * { border: none; margin: 0; padding: 0; }\n"
-      "      body { padding: 10px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; }\n"
+      "      body { padding: 20px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; }\n"
       "      p { margin-top: 1em; }\n"
       "      h1, h2, h3, h4, h5, h6 { color: #777; margin-top: 1em; margin-bottom: 0.5em; }\n"
       "      h1, h2 { margin: 0; padding: 2px 2px 0 2px; }\n"
