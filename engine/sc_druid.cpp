@@ -3658,6 +3658,15 @@ void druid_t::init_scaling()
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
 
   scales_with[ STAT_WEAPON_SPEED  ] = 0;
+
+  // Balance of Power treats Spirit like Spell Hit Rating
+  if( talents.balance_of_power -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  {
+    double v = sim -> scaling -> scale_value;
+    invert_spirit_scaling = 1;
+    attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+  }
+
 }
 
 // druid_t::init_gains ======================================================
