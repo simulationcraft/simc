@@ -1828,7 +1828,7 @@ struct talent_t : spell_id_t
   // Future trimmed down access
   talent_data_t* td;
   spell_data_t* sd;
-  double chance, mod, value;
+  double chance, mod1, mod2, mod3, value;
   // unsigned rank;
 
   talent_t( player_t* p, const char* name, uint32_t id=0 );

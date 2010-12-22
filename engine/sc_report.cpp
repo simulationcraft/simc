@@ -2822,6 +2822,7 @@ static void print_html3_talents( FILE* file, player_t* p )
           "                    <tr>\n"
           "                      <th class=\"left\">%s</th>\n"
           "                      <th>Rank</th>\n"
+          "                      <th>Details</th>\n"
           "                    </tr>\n",
           util_t::talent_tree_string( p -> tree_type[ i ], false ) );
 
@@ -2831,14 +2832,17 @@ static void print_html3_talents( FILE* file, player_t* p )
       {
         talent_t* t = p -> talent_trees[ i ][ j ];
 
-        util_t::fprintf( file, 
-            "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
-
-        util_t::fprintf( file,
-            "                      <td class=\"left\">%s</td>\n"
-            "                      <td>%d</td>\n"
-            "                    </tr>\n",
-            t -> t_data -> name, t -> rank() );
+	util_t::fprintf( file, "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
+        util_t::fprintf( file, "                      <td class=\"left\">%s</td>\n", t -> t_data -> name );
+	util_t::fprintf( file, "                      <td>%d</td>\n", t -> rank() );
+	util_t::fprintf( file, "                      <td class=\"left\">" );
+	if( t -> chance ) util_t::fprintf( file, " C=%.0f%%", t -> chance * 100 );
+	if( t -> mod1   ) util_t::fprintf( file, " M1=%.3f", t -> mod1 );
+	if( t -> mod2   ) util_t::fprintf( file, " M1=%.3f", t -> mod2 );
+	if( t -> mod3   ) util_t::fprintf( file, " M1=%.3f", t -> mod3 );
+	if( t -> value  ) util_t::fprintf( file, " V=%.3f", t -> value );
+	util_t::fprintf( file, "</td>\n" );
+	util_t::fprintf( file, "                    </tr>\n" );
       } 
       util_t::fprintf( file,
           "                  </table>\n"

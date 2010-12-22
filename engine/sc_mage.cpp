@@ -305,11 +305,11 @@ struct mage_spell_t : public spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> talents.piercing_ice -> rank() )
     {
-      base_crit += p -> talents.piercing_ice -> effect_base_value( 1 ) / 100.0;
+      base_crit += p -> talents.piercing_ice -> mod1;
     }
     if ( p -> talents.enduring_winter -> rank() )
     {
-      base_cost *= 1.0 + p -> talents.enduring_winter -> effect_base_value( 1 ) / 100.0;
+      base_cost *= 1.0 + p -> talents.enduring_winter -> mod1;
     }
   }
 
@@ -911,7 +911,7 @@ static void trigger_replenishment( spell_t* s )
   if ( p -> sim -> current_time < p -> _cooldowns.enduring_winter ) // FIXME: This is no longer listed on the talent, is it still in effect?
     return;
 
-  if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> proc_chance() ) )
+  if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> chance ) )
     return;
 
   p -> trigger_replenishment();
@@ -2770,58 +2770,60 @@ void mage_t::init_glyphs()
 
 void mage_t::init_talents()
 {
+  talent_t* t=0;
+
   // Arcane
-  talents.arcane_concentration        = find_talent( "Arcane Concentration" );
-  talents.arcane_flows                = find_talent( "Arcane Flows" );
-  talents.arcane_potency              = find_talent( "Arcane Potency" );
-  talents.arcane_power                = find_talent( "Arcane Power" );
-  talents.arcane_tactics              = find_talent( "Arcane Tactics" );
-  talents.focus_magic                 = find_talent( "Focus Magic" );
-  talents.improved_arcane_explosion   = find_talent( "Improved Arcane Explosion" );
-  talents.improved_arcane_missiles    = find_talent( "Improved Arcane Missiles" );
-  talents.improved_counterspell       = find_talent( "Improved Counterspell" );
-  talents.improved_mana_gem           = find_talent( "Improved Mana Gem" );
-  talents.invocation                  = find_talent( "Invocation" );
-  talents.missile_barrage             = find_talent( "Missile Barrage" );
-  talents.nether_vortex               = find_talent( "Nether Vortex" );
-  talents.netherwind_presence         = find_talent( "Netherwind Presence" );
-  talents.presence_of_mind            = find_talent( "Presence of Mind" );
-  talents.slow                        = find_talent( "Slow" );
-  talents.torment_the_weak            = find_talent( "Torment the Weak" );
+  talents.arcane_concentration        = t = find_talent( "Arcane Concentration" ); 
+  talents.arcane_flows                = t = find_talent( "Arcane Flows" );
+  talents.arcane_potency              = t = find_talent( "Arcane Potency" );
+  talents.arcane_power                = t = find_talent( "Arcane Power" );
+  talents.arcane_tactics              = t = find_talent( "Arcane Tactics" );
+  talents.focus_magic                 = t = find_talent( "Focus Magic" );
+  talents.improved_arcane_explosion   = t = find_talent( "Improved Arcane Explosion" );
+  talents.improved_arcane_missiles    = t = find_talent( "Improved Arcane Missiles" );
+  talents.improved_counterspell       = t = find_talent( "Improved Counterspell" );
+  talents.improved_mana_gem           = t = find_talent( "Improved Mana Gem" );
+  talents.invocation                  = t = find_talent( "Invocation" );
+  talents.missile_barrage             = t = find_talent( "Missile Barrage" );
+  talents.nether_vortex               = t = find_talent( "Nether Vortex" );
+  talents.netherwind_presence         = t = find_talent( "Netherwind Presence" );
+  talents.presence_of_mind            = t = find_talent( "Presence of Mind" );
+  talents.slow                        = t = find_talent( "Slow" );
+  talents.torment_the_weak            = t = find_talent( "Torment the Weak" );
 
   // Fire
-  talents.blast_wave                  = find_talent( "Blast Wave" );
-  talents.combustion                  = find_talent( "Combustion" );
-  talents.critical_mass               = find_talent( "Critical Mass" );
-  talents.dragons_breath              = find_talent( "Dragon's Breath" );
-  talents.fire_power                  = find_talent( "Fire Power" );
-  talents.firestarter                 = find_talent( "Firestarter" );
-  talents.hot_streak                  = find_talent( "Hot Streak" );
-  talents.ignite                      = find_talent( "Ignite" );
-  talents.impact                      = find_talent( "Impact" );
-  talents.improved_fire_blast         = find_talent( "Improved Fire Blast" );
-  talents.improved_flamestrike        = find_talent( "Improved Flamestrike" );
-  talents.improved_hot_streak         = find_talent( "Improved Hot Streak" );
-  talents.improved_scorch             = find_talent( "Improved Scorch" );
-  talents.living_bomb                 = find_talent( "Living Bomb" );
-  talents.master_of_elements          = find_talent( "Master of Elements" );
-  talents.molten_fury                 = find_talent( "Molten Fury" );
+  talents.blast_wave                  = t = find_talent( "Blast Wave" );
+  talents.combustion                  = t = find_talent( "Combustion" );
+  talents.critical_mass               = t = find_talent( "Critical Mass" );
+  talents.dragons_breath              = t = find_talent( "Dragon's Breath" );
+  talents.fire_power                  = t = find_talent( "Fire Power" );
+  talents.firestarter                 = t = find_talent( "Firestarter" );
+  talents.hot_streak                  = t = find_talent( "Hot Streak" );
+  talents.ignite                      = t = find_talent( "Ignite" );
+  talents.impact                      = t = find_talent( "Impact" );
+  talents.improved_fire_blast         = t = find_talent( "Improved Fire Blast" );
+  talents.improved_flamestrike        = t = find_talent( "Improved Flamestrike" );
+  talents.improved_hot_streak         = t = find_talent( "Improved Hot Streak" );
+  talents.improved_scorch             = t = find_talent( "Improved Scorch" );
+  talents.living_bomb                 = t = find_talent( "Living Bomb" );
+  talents.master_of_elements          = t = find_talent( "Master of Elements" );
+  talents.molten_fury                 = t = find_talent( "Molten Fury" );
 
   // Frost
-  talents.brain_freeze                = find_talent( "Brain Freeze" );
-  talents.cold_snap                   = find_talent( "Cold Snap" );
-  talents.deep_freeze                 = find_talent( "Deep Freeze" );
-  talents.early_frost                 = find_talent( "Early Frost" );
-  talents.enduring_winter             = find_talent( "Enduring Winter" );
-  talents.fingers_of_frost            = find_talent( "Fingers of Frost" );
-  talents.frostfire_orb               = find_talent( "Frostfire Orb" );
-  talents.ice_barrier                 = find_talent( "Ice Barrier" );
-  talents.ice_floes                   = find_talent( "Ice Floes" );
-  talents.icy_veins                   = find_talent( "Icy Veins" );
-  talents.improved_freeze             = find_talent( "Improved Freeze" );
-  talents.piercing_ice                = find_talent( "Piercing Ice" );
-  talents.piercing_chill              = find_talent( "Piercing Chill" );
-  talents.shatter                     = find_talent( "Shatter" );
+  talents.brain_freeze                = t = find_talent( "Brain Freeze"     );
+  talents.cold_snap                   = t = find_talent( "Cold Snap"        );
+  talents.deep_freeze                 = t = find_talent( "Deep Freeze"      );
+  talents.early_frost                 = t = find_talent( "Early Frost"      );
+  talents.enduring_winter             = t = find_talent( "Enduring Winter"  ); t->mod1 = t->sd->effect1->base_value/100.0;  t->chance = t->sd->proc_chance/100.0;
+  talents.fingers_of_frost            = t = find_talent( "Fingers of Frost" );
+  talents.frostfire_orb               = t = find_talent( "Frostfire Orb"    );
+  talents.ice_barrier                 = t = find_talent( "Ice Barrier"      );
+  talents.ice_floes                   = t = find_talent( "Ice Floes"        );
+  talents.icy_veins                   = t = find_talent( "Icy Veins"        );
+  talents.improved_freeze             = t = find_talent( "Improved Freeze"  );
+  talents.piercing_ice                = t = find_talent( "Piercing Ice"     ); t->mod1 = t->sd->effect1->base_value/100.0;
+  talents.piercing_chill              = t = find_talent( "Piercing Chill"   );
+  talents.shatter                     = t = find_talent( "Shatter"          );
 
   player_t::init_talents();
 }
