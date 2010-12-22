@@ -17,6 +17,9 @@
 // FIXME!!! Is there a more generic class other than spell_data_t to move this to?
 
 static bool use_ptr = false;
+static spell_data_t       nil_sd;
+static spelleffect_data_t nil_sed;
+static talent_data_t      nil_td;
 
 bool spell_data_t::get_ptr()
 {
@@ -43,6 +46,21 @@ const char* spell_data_t::build_level()
 
 void spell_data_t::init()
 {
+  memset( &nil_sd,  0x00, sizeof( spell_data_t )       );
+  memset( &nil_sed, 0x00, sizeof( spelleffect_data_t ) );
+  memset( &nil_td,  0x00, sizeof( talent_data_t )      );
+
+  nil_sd.effect1 = &nil_sed;
+  nil_sd.effect2 = &nil_sed;
+  nil_sd.effect3 = &nil_sed;
+
+  nil_sed.spell         = &nil_sd;
+  nil_sed.trigger_spell = &nil_sd;
+
+  nil_td.spell1 = &nil_sd;
+  nil_td.spell2 = &nil_sd;
+  nil_td.spell3 = &nil_sd;
+
   set_ptr( false );
   spell_data_t::link();
   spelleffect_data_t::link();
@@ -84,6 +102,76 @@ talent_data_t* talent_data_t::list()
 #endif
 }
 
+spell_data_t* spell_data_t::nil() 
+{ 
+  return &nil_sd;
+}
+
+spelleffect_data_t* spelleffect_data_t::nil() 
+{ 
+  return &nil_sed;
+}
+
+talent_data_t* talent_data_t::nil() 
+{ 
+  return &nil_td;
+}
+
+spell_data_t* spell_data_t::find( unsigned id ) 
+{ 
+  spell_data_t* spell_data = spell_data_t::list();
+
+  for( int i=0; spell_data[ i ].name; i++ )
+    if( spell_data[ i ].id == id )
+      return spell_data + i;
+
+  return 0;
+}
+
+spelleffect_data_t* spelleffect_data_t::find( unsigned id ) 
+{ 
+  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list();
+
+  for( int i=0; spelleffect_data[ i ].id; i++ )
+    if( spelleffect_data[ i ].id == id )
+      return spelleffect_data + i;
+
+  return 0;
+}
+
+talent_data_t* talent_data_t::find( unsigned id ) 
+{ 
+  talent_data_t* talent_data = talent_data_t::list();
+
+  for( int i=0; talent_data[ i ].name; i++ )
+    if( talent_data[ i ].id == id )
+      return talent_data + i;
+
+  return 0;
+}
+
+spell_data_t* spell_data_t::find( const std::string& name ) 
+{ 
+  spell_data_t* spell_data = spell_data_t::list();
+
+  for( int i=0; spell_data[ i ].name; i++ )
+    if( name == spell_data[ i ].name )
+      return spell_data + i;
+
+  return 0;
+}
+
+talent_data_t* talent_data_t::find( const std::string& name ) 
+{ 
+  talent_data_t* talent_data = talent_data_t::list();
+
+  for( int i=0; talent_data[ i ].name; i++ )
+    if( name == talent_data[ i ].name )
+      return talent_data + i;
+
+  return 0;
+}
+
 void spell_data_t::link()
 {
   spell_data_t* spell_data = spell_data_t::list();
@@ -99,20 +187,18 @@ void spell_data_t::link()
     for( int j=0; j < 3; j++ )
     {
       unsigned id = sd.effect[ j ];
-
+      spelleffect_data_t** addr = effects[ j ];
+      *addr = spelleffect_data_t::nil();
       if( id > 0 )
       {
-	spelleffect_data_t** addr = effects[ j ];
-
-	for( int k=0; spelleffect_data[ k ].id; k++ )
-	{
-	  if( id == spelleffect_data[ k ].id )
-	  {
-	    *addr = spelleffect_data + k;
-	    break;
-	  }
-	}
-	assert( *addr );
+        for( int k=0; spelleffect_data[ k ].id; k++ )
+        {
+          if( id == spelleffect_data[ k ].id )
+          {
+            *addr = spelleffect_data + k;
+            break;
+          }
+        }
       }
     }
   }
@@ -128,26 +214,29 @@ void spelleffect_data_t::link()
   {
     spelleffect_data_t& ed = spelleffect_data[ i ];
 
+    ed.spell         = spell_data_t::nil();
+    ed.trigger_spell = spell_data_t::nil();
+
     if( ed.spell_id > 0 )
     {
       for( int j=0; spell_data[ j ].name; j++ )
       {
-	if( ed.spell_id == spell_data[ j ].id )
-	{
-	  ed.spell = spell_data + j;
-	  break;
-	}
+        if( ed.spell_id == spell_data[ j ].id )
+        {
+          ed.spell = spell_data + j;
+          break;
+        }
       }
     }
     if( ed.trigger_spell_id > 0 )
     {
       for( int j=0; spell_data[ j ].name; j++ )
       {
-	if( ed.trigger_spell_id == spell_data[ j ].id )
-	{
-	  ed.trigger_spell = spell_data + j;
-	  break;
-	}
+        if( ed.trigger_spell_id == spell_data[ j ].id )
+        {
+          ed.trigger_spell = spell_data + j;
+          break;
+        }
       }
     }
   }
@@ -168,21 +257,18 @@ void talent_data_t::link()
     for( int j=0; j < 3; j++ )
     {
       unsigned id = td.rank_id[ j ];
-
+      spell_data_t** addr = rank_spells[ j ];
+      *addr = spell_data_t::nil();
       if( id > 0 )
       {
-	spell_data_t** addr = rank_spells[ j ];
-
-	for( int k=0; spell_data[ k ].name; k++ )
-	{
-	  if( id == spell_data[ k ].id )
-	  {
-	    *addr = spell_data + k;
-	    break;
-	  }
-	}
-	// Apparently this can happen..... 
-	// assert( *addr )
+        for( int k=0; spell_data[ k ].name; k++ )
+        {
+          if( id == spell_data[ k ].id )
+          {
+            *addr = spell_data + k;
+            break;
+          }
+        }
       }
     }
   }

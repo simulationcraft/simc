@@ -69,6 +69,9 @@ struct spell_data_t {
   spelleffect_data_t* effect3;
 
   static spell_data_t* list();
+  static spell_data_t* nil();
+  static spell_data_t* find( unsigned );
+  static spell_data_t* find( const std::string& name );
   static void link();
 
   // FIXME!!! Is there a more generic class other than spell_data_t to move this to?
@@ -111,6 +114,8 @@ struct spelleffect_data_t {
   spell_data_t* trigger_spell;
 
   static spelleffect_data_t* list();
+  static spelleffect_data_t* nil();
+  static spelleffect_data_t* find( unsigned );
   static void link();
 };
 
@@ -135,6 +140,9 @@ struct talent_data_t {
   spell_data_t* spell3;
 
   static talent_data_t* list();
+  static talent_data_t* nil();
+  static talent_data_t* find( unsigned );
+  static talent_data_t* find( const std::string& name );
   static void link();
 };
 

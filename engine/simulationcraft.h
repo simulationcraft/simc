@@ -1825,6 +1825,12 @@ struct talent_t : spell_id_t
   const spell_id_t*    t_rank_spells[ MAX_RANK ];
   const spell_id_t*    t_default_rank;
 
+  // Future trimmed down access
+  talent_data_t* td;
+  spell_data_t* sd;
+  double chance, mod, value;
+  // unsigned rank;
+
   talent_t( player_t* p, const char* name, uint32_t id=0 );
   talent_t( const talent_t& copy );
   virtual ~talent_t();

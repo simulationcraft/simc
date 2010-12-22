@@ -14,8 +14,8 @@
 talent_t::talent_t( player_t* player, const char* name, uint32_t id ) : 
   spell_id_t( player, name, name ), t_data( 0 ), t_rank( 0 ), t_overridden( false )
 {
-  assert( s_player && name && s_player -> sim );
-  
+  assert( name && id && s_player && s_player -> sim );
+
   t_default_rank = new spell_id_t();
   const_cast< spell_id_t* >( t_default_rank ) -> s_enabled = false;
   for ( int i = 0; i < MAX_RANK; i++ )
@@ -27,6 +27,11 @@ talent_t::talent_t( player_t* player, const char* name, uint32_t id ) :
     t_enabled = s_player -> player_data.talent_is_enabled( t_data -> id );
     s_player -> player_data.talent_set_used( id, true );
   }
+
+  // Future trimmed down access
+  td = talent_data_t::find( id );
+  sd = spell_data_t::nil();
+  chance = mod = value = 0;
 }
 
 talent_t::talent_t( const talent_t& copy ) :
@@ -36,6 +41,13 @@ talent_t::talent_t( const talent_t& copy ) :
   t_default_rank = new spell_id_t();
   for ( int i = 0; i < MAX_RANK; i++ )
     t_rank_spells[ i ] = t_default_rank;
+
+  // Will this even be needed in the future???
+  td     = copy.td;
+  sd     = copy.sd;
+  chance = copy.chance;
+  mod    = copy.mod;
+  value  = copy.value;
 }
 
 talent_t::~talent_t()
@@ -82,8 +94,14 @@ uint32_t talent_t::spell_id( ) SC_CONST
   return s_player -> player_data.talent_rank_spell_id( t_data -> id, t_rank );
 }
 
-bool talent_t::set_rank( uint32_t value, bool overridden )
+bool talent_t::set_rank( uint32_t r, bool overridden )
 {
+  // Future trimmed down access
+  sd = ( ( r >= 3 ) ? td -> spell3 : 
+	 ( r == 2 ) ? td -> spell2 :
+	 ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
+  chance = mod = value = 0;
+
   if ( ! t_data || ! t_enabled )
   {
     if ( s_player -> sim -> debug ) 
@@ -91,7 +109,7 @@ bool talent_t::set_rank( uint32_t value, bool overridden )
     return false;
   }
 
-  if ( value > s_player -> player_data.talent_max_rank( t_data -> id ) )
+  if ( r > s_player -> player_data.talent_max_rank( t_data -> id ) )
   {
     if ( s_player -> sim -> debug ) 
       log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
@@ -103,7 +121,7 @@ bool talent_t::set_rank( uint32_t value, bool overridden )
   if ( ! t_overridden || overridden )
   {
     t_overridden = overridden;
-    t_rank       = value;
+    t_rank       = r;
     s_id         = rank_spell_id( t_rank );
 
     if ( t_enabled && t_rank > 0 && ! initialize() )
