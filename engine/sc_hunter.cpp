@@ -1307,15 +1307,11 @@ void hunter_attack_t::player_buff()
 
   attack_t::player_buff();
 
-
   if (  p -> buffs_beast_within -> up() )
-  {
     player_multiplier *= 1.0 + p -> buffs_beast_within -> effect_base_value( 2 ) / 100.0;
-  }
-  if ( p -> dots_serpent_sting -> ticking && p -> talents.noxious_stings -> rank() )
-  {
-    player_multiplier *= 1.0 + p -> talents.noxious_stings -> rank() * 0.05;
-  }
+
+  if ( p -> dots_serpent_sting -> ticking )
+    player_multiplier *= 1.0 + p -> talents.noxious_stings -> effect_base_value( 1 ) / 100.0;
 
   if ( p -> buffs_culling_the_herd -> up() )
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
@@ -1624,11 +1620,10 @@ struct cobra_shot_t : public hunter_attack_t
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
-    weapon_power_mod        = 0;
 
     direct_power_mod = 0.017;
-
   }
+  
   void execute()
   {
     hunter_attack_t::execute();
@@ -1793,6 +1788,8 @@ struct scatter_shot_t : public hunter_attack_t
     id = 19503;
   }
 };
+
+// TODO: Add 83077 to spell data
 struct serpent_sting_burst_t : public hunter_attack_t
 {
   serpent_sting_burst_t( player_t* player ) :
@@ -1826,8 +1823,9 @@ struct serpent_sting_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
-    tick_power_mod = 0.4;
+    tick_power_mod = 0.4 / num_ticks;
 
+    base_crit += p -> talents.improved_serpent_sting -> effect_base_value( 2 ) / 100.0;
     base_crit += p -> glyphs.serpent_sting -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 0.5;
@@ -1841,16 +1839,15 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_attack_t::execute();
     if ( result_is_hit() ) target -> debuffs.poisoned -> increment();
     hunter_t* p = player -> cast_hunter();
-    if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> rank() )
-        {
-          double t = p -> talents.improved_serpent_sting -> rank() * 0.30 * ( ceil( base_td ) + total_power() * tick_power_mod );
-          double n = hasted_num_ticks();
+    if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> ok() )
+    {
+      double t = ( p -> talents.improved_serpent_sting -> effect_base_value( 1 ) / 100.0 ) * 
+        ( ceil( base_td ) * hasted_num_ticks() + total_power() * 0.4 );
 
-
-          serpent_sting_burst -> base_dd_min    = t * n;
-          serpent_sting_burst -> base_dd_max    = t * n;
-          serpent_sting_burst -> execute();
-        }
+      serpent_sting_burst -> base_dd_min = t;
+      serpent_sting_burst -> base_dd_max = t;
+      serpent_sting_burst -> execute();
+    }
   }
 
   virtual void last_tick()
@@ -2998,14 +2995,14 @@ double hunter_t::agility() SC_CONST
 }
 
 double hunter_t::composite_player_multiplier( const school_type school ) SC_CONST
-     {
-       double m = player_t::composite_player_multiplier( school );
-       if ( (school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE )&& passive_spells.essence_of_the_viper -> ok() )
-       {
-         m *= 1.0 + 1.0 / 100.0 * composite_mastery();
-       }
-       return m;
-     }
+{
+  double m = player_t::composite_player_multiplier( school );
+  if ( (school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE ) && passive_spells.essence_of_the_viper -> ok() )
+  {
+    m *= 1.0 + 1.0 / 100.0 * composite_mastery();
+  }
+  return m;
+}
 
 // hunter_t::matching_gear_multiplier =====================================
 
@@ -3249,7 +3246,7 @@ void player_t::hunter_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS ) * 1.3 );
+    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS ) );
   }
 }
 
