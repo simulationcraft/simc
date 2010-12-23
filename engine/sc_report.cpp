@@ -3733,8 +3733,6 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       b -> buff_duration,
       b -> cooldown -> duration,
       b -> default_chance );
-
-    i++;
   }
   util_t::fprintf( file,
     "            </table>\n" );
