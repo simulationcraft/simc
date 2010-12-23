@@ -45,6 +45,7 @@ static enchant_data_t enchant_db[] =
   { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
   { "4179",  "Synapse Springs",                                           "synapse_springs"                },
   { "4175",  "Gnomish X-Ray Scope",                                       "gnomish_xray"                   },
+  { "4127",  "+145 Stamina and +55 Agility",                              "145sta_55agi"                   },
   { "4126",  "+190 Attack Power and +55 Crit Rating",                     "190AP_55Crit"                   },
   { "4124",  "+85 Stamina and +45 Agility",                               "85sta_45agi"                    },
   { "4122",  "+110 Attack Power and +45 Crit Rating",                     "110AP_45Crit"                   },
