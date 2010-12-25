@@ -4100,7 +4100,6 @@ void warlock_t::init_base()
   initial_attack_power_per_strength = 2.0;
   initial_spell_power_per_intellect = 1.0;
 
-  health_per_stamina = 10;
   mana_per_intellect = 15;
 
   resource_base[ RESOURCE_SOUL_SHARDS ] = 3;

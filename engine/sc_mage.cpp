@@ -2911,7 +2911,6 @@ void mage_t::init_base()
   base_attack_power = -10;
   initial_attack_power_per_strength = 1.0;
 
-  health_per_stamina = 10;
   mana_per_intellect = 15;
 
   diminished_kfactor    = 0.009830;

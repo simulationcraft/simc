@@ -1930,7 +1930,6 @@ void paladin_t::init_base()
   diminished_dodge_capi = 0.01523660;
   diminished_parry_capi = 0.01523660;
 
-  health_per_stamina = 10;
   mana_per_intellect = 15;
 
   switch ( primary_tree() )

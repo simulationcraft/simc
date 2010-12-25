@@ -2885,8 +2885,6 @@ void warrior_t::init_base()
     base_block += spec.sentinel -> effect_base_value( 3 ) / 100.0;
   }
 
-  health_per_stamina = 10;
-
   base_gcd = 1.5;
 
   if ( tank == -1 && primary_tree() == TREE_PROTECTION ) tank = 1;

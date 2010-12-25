@@ -3641,7 +3641,6 @@ void shaman_t::init_base()
   initial_attack_power_per_agility  = 2.0;
   initial_spell_power_per_intellect = 1.0;
 
-  health_per_stamina = 10;
   mana_per_intellect = 15;
 
   base_spell_crit  += talent_acuity -> base_value();

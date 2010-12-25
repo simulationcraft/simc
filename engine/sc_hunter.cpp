@@ -2657,7 +2657,6 @@ void hunter_t::init_base()
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 2.0;
 
-  health_per_stamina = 10;
   // FIXME! 
   base_focus_regen_per_second = 6;
   

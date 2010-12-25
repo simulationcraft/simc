@@ -3380,7 +3380,6 @@ void rogue_t::init_base()
 
   resource_base[ RESOURCE_ENERGY ] = 100 + spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
 
-  health_per_stamina      = 10;
   base_energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
 
   base_gcd = 1.0;

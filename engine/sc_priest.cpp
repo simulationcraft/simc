@@ -3042,7 +3042,6 @@ void priest_t::init_base()
   initial_attack_power_per_strength = 1.0;
   initial_spell_power_per_intellect = 1.0;
 
-  health_per_stamina = 10;
   mana_per_intellect = 15;
 
   diminished_kfactor    = 0.009830;

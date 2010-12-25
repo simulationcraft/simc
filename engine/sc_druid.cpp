@@ -3576,7 +3576,6 @@ void druid_t::init_base()
   resource_base[ RESOURCE_ENERGY ] = 100;
   resource_base[ RESOURCE_RAGE   ] = 100;
   mana_per_intellect           = 15;
-  health_per_stamina           = 10;
   base_energy_regen_per_second = 10;
   
   // Furor: +5/10/15% max mana
