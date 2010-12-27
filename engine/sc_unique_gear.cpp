@@ -121,9 +121,15 @@ struct discharge_proc_callback_t : public action_callback_t
       if ( sim -> current_time < cooldown_ready )
         return;
 
-    if ( proc_chance )
-      if ( ! rng -> roll( proc_chance ) )
-        return;
+    if ( proc_chance ) {
+      if ( proc_chance < 0 ) {
+	if ( ! rng -> roll( a -> ppm_proc_chance( -proc_chance ) ))
+	  return;
+      } else {
+	if ( ! rng -> roll( proc_chance ) )
+	  return;
+      }
+    }
 
     if ( cooldown )
       cooldown_ready = sim -> current_time + cooldown;
