@@ -673,7 +673,7 @@ struct shadow_fiend_pet_t : public pet_t
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
       direct_power_mod = 0.0064 * o -> level; 
-      if (harmful)base_spell_power_multiplier = 1.0;
+      if (harmful) base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
       base_dd_min = util_t::ability_rank( player -> level,  221.0,85,  197.0,82,  175.0,80,  1.0,0 );
       base_dd_max = util_t::ability_rank( player -> level,  271.0,85,  245.0,82,  222.0,80,  2.0,0 );
@@ -685,6 +685,10 @@ struct shadow_fiend_pet_t : public pet_t
       may_crit   = true;
       may_block  = false; // Technically it can be blocked on the first swing or if the rear isn't reachable
 
+      if ( o -> bugs )
+      {
+        base_crit_bonus = 0.5 + o -> constants.shadow_power_crit_value;
+      }
     }
     void assess_damage( double amount, int dmg_type )
     {
@@ -701,6 +705,8 @@ struct shadow_fiend_pet_t : public pet_t
     void player_buff()
     {
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      priest_t* o = p -> owner -> cast_priest();
+
       attack_t::player_buff();
       if ( p -> bad_swing )
         p -> bad_swing = false;
