@@ -1200,10 +1200,10 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "electrospark_heartstarter"   ) e = "567Int_20Dur_120Cd";
   else if ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
   else if ( name == "ephemeral_snowflake"         ) e = "464Haste_20Dur_120Cd";
-  else if ( name == "figurine_demon_panther"      ) e = "1425Agi_20Dur_120Cd";
-  else if ( name == "figurine_dream_owl"          ) e = "1425Spi_20Dur_120Cd";
-  else if ( name == "figurine_jeweled_serpent"    ) e = "1425Int_20Dur_120Cd";
-  else if ( name == "figurine_king_of_boars"      ) e = "1425Str_20Dur_120Cd";
+  else if ( name == "figurine__demon_panther"     ) e = "1425Agi_20Dur_120Cd";
+  else if ( name == "figurine__dream_owl"         ) e = "1425Spi_20Dur_120Cd";
+  else if ( name == "figurine__jeweled_serpent"   ) e = "1425Int_20Dur_120Cd";
+  else if ( name == "figurine__king_of_boars"     ) e = "1425Str_20Dur_120Cd";
   else if ( name == "impatience_of_youth"         ) e = "1605Str_20Dur_120Cd";
   else if ( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
   else if ( name == "maghias_misguided_quill"     ) e = "716SP_20Dur_120Cd";
