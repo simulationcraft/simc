@@ -3855,7 +3855,7 @@ void druid_t::init_actions()
       action_list_str += "/snapshot_stats";
       action_list_str += "/volcanic_potion,if=!in_combat";
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
+      action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
       action_list_str += "/innervate,if=mana_pct<50";
