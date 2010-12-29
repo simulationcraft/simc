@@ -1110,11 +1110,9 @@ struct melee_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( result != RESULT_MISS )
-      trigger_rage_gain( this );
-
     if ( result_is_hit() )
     {
+      trigger_rage_gain( this );
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
         p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect_base_value( 3 ), p -> gains_blood_frenzy );
@@ -1339,8 +1337,9 @@ struct cleave_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    warrior_t* p = player -> cast_warrior();    
-    p -> buffs_meat_cleaver -> trigger();
+    warrior_t* p = player -> cast_warrior();  
+    if ( result_is_hit() ) 
+      p -> buffs_meat_cleaver -> trigger();
   }
 
   virtual void player_buff()
@@ -1594,13 +1593,16 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_lambs_to_the_slaughter -> expire();
-    p -> buffs_lambs_to_the_slaughter -> trigger();
-    p -> buffs_battle_trance -> trigger();
-    if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
+    if ( result_is_hit() )
     {
-      double value = p -> talents.wrecking_crew -> rank() * 0.05;
-      p -> buffs_wrecking_crew -> trigger( 1, value );
+      p -> buffs_lambs_to_the_slaughter -> expire();
+      p -> buffs_lambs_to_the_slaughter -> trigger();
+      p -> buffs_battle_trance -> trigger();
+      if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
+      {
+        double value = p -> talents.wrecking_crew -> rank() * 0.05;
+        p -> buffs_wrecking_crew -> trigger( 1, value );
+      }
     }
   }
 
@@ -1945,7 +1947,8 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
     p -> buffs_sword_and_board -> expire();
-    p -> buffs_battle_trance -> trigger();
+    if ( result_is_hit() )
+      p -> buffs_battle_trance -> trigger();
   }
 
   virtual double cost() SC_CONST
@@ -2127,13 +2130,16 @@ struct whirlwind_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     warrior_attack_t::execute();
 
+    if ( result_is_hit() )
+      p -> buffs_meat_cleaver -> trigger();
+
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( p -> off_hand_weapon );
       warrior_attack_t::execute();
+      if ( result_is_hit() )
+        p -> buffs_meat_cleaver -> trigger();
     }
-
-    p -> buffs_meat_cleaver -> trigger();
 
     warrior_attack_t::consume_resource();
   }
