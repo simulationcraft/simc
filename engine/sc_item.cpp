@@ -578,8 +578,11 @@ bool item_t::decode_random_suffix()
       }
       else
       {
-        log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d twice, due to random suffix.", 
-          player -> name(), name(), stat );
+        if ( sim -> debug )
+        {
+          log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d twice, due to random suffix.", 
+            player -> name(), name(), stat );
+        }
       }
     }
   }
