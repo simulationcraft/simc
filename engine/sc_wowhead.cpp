@@ -1000,6 +1000,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     if ( js_t::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )
     {
       std::string    item_id = inventory_data[ 0 ];
+      std::string rsuffix_id = inventory_data[ 1 ];
       std::string enchant_id = inventory_data[ 2 ];
 
       std::string gem_ids[ 3 ];
@@ -1007,7 +1008,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 1 ] = inventory_data[ 5 ];
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
-      std::string addon_id, reforge_id, rsuffix_id;
+      std::string addon_id, reforge_id;
 
       if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {

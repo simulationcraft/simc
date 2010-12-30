@@ -511,7 +511,8 @@ bool item_t::decode_random_suffix()
   double                      stat_amount;
   std::vector<std::string>      stat_list;
 
-  if ( encoded_random_suffix_str.empty() || encoded_random_suffix_str == "" || encoded_random_suffix_str == "none" )
+  if ( encoded_random_suffix_str.empty() || encoded_random_suffix_str == "" || 
+       encoded_random_suffix_str == "none"  || encoded_random_suffix_str == "0" )
     return true;
     
   // We need the ilevel/quality data, otherwise we cannot figure out
