@@ -1006,13 +1006,13 @@ player_t* armory_t::download_player( sim_t* sim,
 
       bool success = false;
 
-      std::string enchant_id, addon_id, reforge_id, gem_ids[ 3 ];
+      std::string enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
       if ( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
            xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
            xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
            xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, gem_ids );
+        success = item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
       }
 
       if ( ! success )

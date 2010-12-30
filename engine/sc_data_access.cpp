@@ -1751,6 +1751,47 @@ bool sc_data_access_t::check_talent_name( const uint32_t talent_id, const char* 
   return util_t::str_compare_ci( talent_name_str( talent_id ), name );
 }
 
+const random_prop_data_t* sc_data_access_t::find_rand_property_data( unsigned ilevel ) SC_CONST
+{
+  const random_prop_data_t* p = 0;
+  
+  for ( unsigned i = 0; i < m_random_property_data.size(); i++ )
+  {
+    p = m_random_property_data.ptr( i );
+    if ( ilevel == p -> ilevel )
+      return p;
+  }
+  
+  return 0;
+}
+
+const random_suffix_data_t* sc_data_access_t::find_random_suffix( unsigned suffix_id ) SC_CONST
+{
+  const random_suffix_data_t* p = 0;
+  
+  for ( unsigned i = 0; i < m_random_suffixes.size(); i++ )
+  {
+    p = m_random_suffixes.ptr( i );
+    if ( suffix_id == p -> id )
+      return p;
+  }
+  
+  return 0;
+}
+
+const item_enchantment_data_t* sc_data_access_t::find_item_enchantment( unsigned enchant_id ) SC_CONST
+{
+  const item_enchantment_data_t* p = 0;
+  
+  for ( unsigned i = 0; i < m_item_enchantments.size(); i++ )
+  {
+    p = m_item_enchantments.ptr( i );
+    if ( enchant_id == p -> id )
+      return p;
+  }
+  
+  return 0;
+}
 
 /***************************** Static functions *************************************/
 double sc_data_access_t::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )

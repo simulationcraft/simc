@@ -1836,3 +1836,150 @@ class ItemSetListGenerator(SpellDataGenerator):
         s += '};\n'
 
         return s
+
+class RandomSuffixGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ItemRandomSuffix', 'SpellItemEnchantment' ]
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        ids = set()
+        # Let's do some modest filtering here, take only "stat" enchants, 
+        # and take out the test items as well
+        for id, data in self._itemrandomsuffix_db.iteritems():
+            # of the Test, of the Paladin Testing
+            if id == 46 or id == 48:
+                continue
+            
+            has_non_stat_enchant = False
+            # For now, naively presume type_1 of SpellItemEnchantment will tell us
+            # if it's a relevant enchantment for us (ie. a stat one )
+            for i in xrange(1,4):
+                item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
+                if not item_ench:
+                    continue
+                
+                if item_ench.type_1 != 5:
+                    has_non_stat_enchant = True
+                    break
+                
+            if has_non_stat_enchant:
+                continue
+            
+            ids.add( id )
+            
+        return list(ids)
+
+    def generate(self, ids = None):
+        # Sort keys
+        ids.sort()
+
+        s = '#define %sRAND_SUFFIX%s_SIZE (%d)\n\n' % (
+            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
+            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
+            len(ids)
+        )
+        s += '// Random "cataclysm" item suffixes, wow build %d\n' % self._options.build
+        s += 'static struct random_suffix_data_t __%srand_suffix%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
+        
+        for id in ids:
+            rs = self._itemrandomsuffix_db[id]
+            
+            fields  = rs.field('id', 'suffix')
+            fields += [ '{ %s }' % ', '.join(rs.field('id_property_1', 'id_property_2', 'id_property_3', 'id_property_4', 'id_property_5')) ]
+            fields += [ '{ %s }' % ', '.join(rs.field('property_pct_1', 'property_pct_2', 'property_pct_3', 'property_pct_4', 'property_pct_5')) ]
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '  { %s }\n' % ( ', '.join([ '0', '0' ] + [ '{ 0, 0, 0, 0, 0 }' ] * 2) )
+        s += '};\n'
+    
+        return s
+
+class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
+    def __init__(self, options):
+        RandomSuffixGenerator.__init__(self, options)
+
+    def filter(self):
+        sfx_ids = set(RandomSuffixGenerator.filter(self))
+        ids = set()
+        
+        for sfx_id in sorted(sfx_ids):
+            data = self._itemrandomsuffix_db[sfx_id]
+            for j in xrange(1, 6):
+                val = getattr(data, 'id_property_%d' % j )
+                if val > 0: ids.add( val )
+
+        return list(ids)
+
+    def generate(self, ids = None):
+        ids.sort()
+
+        s = '#define %sSPELL_ITEM_ENCH%s_SIZE (%d)\n\n' % (
+            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
+            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
+            len(ids)
+        )
+        s += '// Item enchantment data, wow build %d\n' % self._options.build
+        s += 'static struct item_enchantment_data_t __%sspell_item_ench%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+        for i in ids:
+            ench_data = self._spellitemenchantment_db[i]
+
+            fields = ench_data.field('id')
+            fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
+            fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
+            s += '  { %s }, // %s\n' % (', '.join(fields), ench_data.desc)
+
+        s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0}' ] * 2) )
+        s += '};\n'
+
+        return s
+
+class RandomPropertyPointsGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'RandPropPoints' ]
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        ids = [ ]
+
+        for ilevel, data in self._randproppoints_db.iteritems():
+            if ilevel >= 277 and ilevel <= 400:
+                ids.append(ilevel)
+
+        return ids
+
+    def generate(self, ids = None):
+        # Sort keys
+        ids.sort()
+        s = "#include \"data_definitions.hh\"\n\n"
+        s += '#define %sRAND_PROP_POINTS%s_SIZE (%d)\n\n' % (
+            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
+            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
+            len(ids)
+        )
+        s += '// Random property points for item levels 277-400, wow build %d\n' % self._options.build
+        s += 'static struct random_prop_data_t __%srand_prop_points%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+        for id in ids:
+            rpp = self._randproppoints_db[id]
+
+            fields = rpp.field('id')
+            fields += [ '{ %s }' % ', '.join(rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
+            fields += [ '{ %s }' % ', '.join(rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
+            fields += [ '{ %s }' % ', '.join(rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
+
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0 }' ] * 3) )
+        s += '};\n'
+
+        return s

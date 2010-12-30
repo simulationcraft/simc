@@ -119,8 +119,6 @@ struct spelleffect_data_t {
   static void link();
 };
 
-
-
 struct talent_data_t {
   const char * name;        // Talent name
   unsigned     id;          // Talent id
@@ -144,6 +142,26 @@ struct talent_data_t {
   static talent_data_t* find( unsigned );
   static talent_data_t* find( const std::string& name );
   static void link();
+};
+
+struct random_prop_data_t {
+  unsigned ilevel;
+  double   p_epic[5];
+  double   p_rare[5];
+  double   p_uncommon[5];
+};
+
+struct random_suffix_data_t {
+  unsigned    id;
+  const char* suffix;
+  unsigned    enchant_id[5];
+  unsigned    enchant_alloc[5];
+};
+
+struct item_enchantment_data_t {
+  unsigned id;
+  unsigned ench_type[3];
+  unsigned attr_type[3];
 };
 
 #ifdef __OpenBSD__

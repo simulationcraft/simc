@@ -11,7 +11,7 @@ parser.add_option("-o", "--out", dest = "output_type",
 parser.add_option("-t", "--type", dest = "type", 
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
-                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'glyph_list', 'class_flags', 'set_list' ]), 
+                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix', 'item_ench' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [85]", 
                   default = 85, action = "store", type = "int")
@@ -87,6 +87,27 @@ elif options.type == 'mastery_list':
     print g.generate(ids)
 elif options.type == 'spec_spell_list':
     g = dbc.generator.TalentSpecializationGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'random_property_points':
+    g = dbc.generator.RandomPropertyPointsGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'random_suffix':
+    g = dbc.generator.RandomSuffixGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'item_ench':
+    g = dbc.generator.SpellItemEnchantmentGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

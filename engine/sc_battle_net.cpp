@@ -265,7 +265,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     std::vector<std::string> tokens;
     int num_tokens = util_t::string_split( tokens, data_item_str, "&=" );
 
-    std::string id_str, enchant_id, addon_id, reforge_id, gem_ids[ 3 ];
+    std::string id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
     for( int i=0; i < num_tokens-1; i += 2 )
     {
       std::string& name  = tokens[ i ];
@@ -275,6 +275,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       else if( name == "e"  ) enchant_id   = value;
       else if( name == "ee" ) addon_id     = value;
       else if( name == "re" ) reforge_id   = value;
+      else if( name == "r"  ) rsuffix_id   = value;
     }
 
     xml_node_t* sockets_root_node = xml_t::get_node( slot_node, "span", "class", "sockets" );
@@ -291,7 +292,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     
     if( ! id_str.empty() )
     {
-      if( ! item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, gem_ids ) )
+      if( ! item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {
 	return 0;
       }

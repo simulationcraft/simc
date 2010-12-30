@@ -915,3 +915,12 @@ bool enchant_t::download_reforge( item_t&            item,
 
   return false;
 }
+
+// enchant_t::download_rsuffix ===============================================
+
+bool enchant_t::download_rsuffix( item_t&            item,
+                                  const std::string& rsuffix_id )
+{
+  item.armory_random_suffix_str = rsuffix_id;
+  return true;
+}

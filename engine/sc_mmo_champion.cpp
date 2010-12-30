@@ -393,6 +393,41 @@ static bool parse_item_armor_type( item_t&     item,
   return true;
 }
 
+// parse_item_level =========================================================
+
+static bool parse_item_level( item_t&     item,
+                              xml_node_t* node )
+{
+  item.armory_ilevel_str.clear();
+  
+  std::string info_str;
+  if ( ! get_tti_value( info_str, node, "tti-level" ) ) return false;
+  
+  size_t p_lvl = info_str.rfind( "Item Level " );
+  
+  if ( p_lvl == info_str.npos ) return false;
+  
+  p_lvl += strlen( "Item Level " );
+  
+  item.armory_ilevel_str = info_str.substr( p_lvl );
+  
+  return true;
+}
+
+// parse_quality ============================================================
+
+static bool parse_quality( item_t&     item,
+                           xml_node_t* node )
+{
+  item.armory_quality_str.clear();
+  
+  std::string info_str;
+  if ( ! get_tti_value( info_str, node, "tti-quality" ) ) return false;
+  
+  item.armory_ilevel_str = tolower( info_str );
+  
+  return true;
+}
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -508,6 +543,18 @@ bool mmo_champion_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_level( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_quality( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_armor_type( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine armor type for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -536,6 +583,7 @@ bool mmo_champion_t::download_slot( item_t&            item,
                                     const std::string& enchant_id,
                                     const std::string& addon_id,
                                     const std::string& reforge_id,
+                                    const std::string& rsuffix_id,
                                     const std::string  gem_ids[ 3 ],
                                     int cache_only )
 {
@@ -558,6 +606,18 @@ bool mmo_champion_t::download_slot( item_t&            item,
   if ( ! parse_item_heroic( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine heroic flag for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_level( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_quality( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -609,6 +669,12 @@ bool mmo_champion_t::download_slot( item_t&            item,
     //return false;
   }
 
+  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
+    return false;
+  }
+  
   return true;
 }
 

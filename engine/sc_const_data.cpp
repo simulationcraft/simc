@@ -5,6 +5,7 @@
 #include "sc_spell_data.inc"
 #include "sc_spell_lists.inc"
 #include "sc_extra_data.inc"
+#include "sc_item_data.inc"
 
 #if SC_USE_PTR
 #include "sc_scale_data_ptr.inc"
@@ -12,6 +13,7 @@
 #include "sc_spell_data_ptr.inc"
 #include "sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
+#include "sc_item_data_ptr.inc"
 #endif
 
 // FIXME!!! Is there a more generic class other than spell_data_t to move this to?
@@ -311,6 +313,10 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_base_mp5.create_copy( ( double * ) __ptr_gt_base_mp5, MAX_LEVEL, sizeof( __ptr_gt_base_mp5 ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_stats.create_copy( ( stat_data_t * ) __ptr_gt_class_stats_by_level, MAX_LEVEL, sizeof( __ptr_gt_class_stats_by_level ) / ( MAX_LEVEL * sizeof( stat_data_t ) ) );
       m_race_stats.create_copy( ( stat_data_t * ) __ptr_gt_race_stats, sizeof( __ptr_gt_race_stats ) / sizeof( stat_data_t ) );
+      
+      m_random_property_data.create_copy( ( random_property_data_t * ) __ptr_rand_prop_points_data, sizeof( __ptr_rand_prop_points_data ) / sizeof( random_property_data_t ) - 1 );
+      m_random_suffixes.create_copy( ( random_suffix_data_t * ) __ptr_rand_suffix_data, sizeof( __ptr_rand_suffix_data ) / sizeof( random_suffix_data_t ) - 1 );
+      m_item_enchantments.create_copy( ( item_enchantment_data_t * ) __ptr_spell_item_ench_data, sizeof( __ptr_spell_item_ench_data ) / sizeof( item_enchantment_data_t ) - 1 );
     }
     else
     {
@@ -338,6 +344,10 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_base_mp5.create_copy( ( double * ) __gt_base_mp5, MAX_LEVEL, sizeof( __gt_base_mp5 ) / ( MAX_LEVEL * sizeof( double ) ) );
       m_class_stats.create_copy( ( stat_data_t * ) __gt_class_stats_by_level, MAX_LEVEL, sizeof( __gt_class_stats_by_level ) / ( MAX_LEVEL * sizeof( stat_data_t ) ) );
       m_race_stats.create_copy( ( stat_data_t * ) __gt_race_stats, sizeof( __gt_race_stats ) / sizeof( stat_data_t ) );
+
+      m_random_property_data.create_copy( ( random_prop_data_t * ) __rand_prop_points_data, sizeof( __rand_prop_points_data ) / sizeof( random_prop_data_t ) - 1 );
+      m_random_suffixes.create_copy( ( random_suffix_data_t * ) __rand_suffix_data, sizeof( __rand_suffix_data ) / sizeof( random_suffix_data_t ) - 1 );
+      m_item_enchantments.create_copy( ( item_enchantment_data_t * ) __spell_item_ench_data, sizeof( __spell_item_ench_data ) / sizeof( item_enchantment_data_t ) - 1 );
 #if SC_USE_PTR
     }
 #endif

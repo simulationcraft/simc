@@ -59,6 +59,10 @@ void sc_data_t::m_copy( const sc_data_t& copy )
   m_base_mp5.copy_array( copy.m_base_mp5 );
   m_class_stats.copy_array( copy.m_class_stats );
   m_race_stats.copy_array( copy.m_race_stats );
+  
+  m_random_property_data.copy_array( copy.m_random_property_data );
+  m_random_suffixes.copy_array( copy.m_random_suffixes );
+  m_item_enchantments.copy_array( copy.m_item_enchantments );
 }
 
 void sc_data_t::create_spell_index()

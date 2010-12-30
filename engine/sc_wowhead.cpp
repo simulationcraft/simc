@@ -367,6 +367,47 @@ static bool parse_item_heroic( item_t&     item,
   return true;
 }
 
+// parse_item_quality =========================================================
+
+static bool parse_item_quality( item_t&     item,
+                                xml_node_t* node )
+{
+  std::string info_str;
+  
+  item.armory_quality_str.clear();
+  
+  if ( ! xml_t::get_value( info_str, node, "quality/id" ) )
+    return false;
+
+  // Let's just convert the quality id to text, and then 
+  // in decode() parse it into an integer
+  if ( info_str == "4" )
+    item.armory_quality_str = "epic";
+  else if ( info_str == "3" )
+    item.armory_quality_str = "rare";
+  else if ( info_str == "2" )
+    item.armory_quality_str = "uncommon";
+
+  return true;
+}
+
+// parse_item_level =========================================================
+
+static bool parse_item_level( item_t&     item,
+                              xml_node_t* node )
+{
+  std::string info_str;
+  
+  item.armory_ilevel_str.clear();
+  
+  if ( ! xml_t::get_value( info_str, node, "level/." ) )
+    return false;
+
+  item.armory_ilevel_str = info_str;
+
+  return true;
+}
+
 // parse_item_armor_type =========================================================
 
 static bool parse_item_armor_type( item_t&     item,
@@ -567,6 +608,18 @@ bool wowhead_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_quality( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+  
+  if ( ! parse_item_level( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_heroic( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine heroic flag for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -601,6 +654,7 @@ bool wowhead_t::download_slot( item_t&            item,
                                const std::string& enchant_id,
                                const std::string& addon_id,
                                const std::string& reforge_id,
+                               const std::string& rsuffix_id,
                                const std::string  gem_ids[ 3 ],
                                int cache_only )
 {
@@ -611,6 +665,18 @@ bool wowhead_t::download_slot( item_t&            item,
   {
     if ( ! cache_only )
       item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+  
+  if ( ! parse_item_quality( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+  
+  if ( ! parse_item_level( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -674,6 +740,12 @@ bool wowhead_t::download_slot( item_t&            item,
     //return false;
   }
 
+  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
+    return false;
+  }
+  
   return true;
 }
 
@@ -935,9 +1007,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 1 ] = inventory_data[ 5 ];
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
-      std::string addon_id, reforge_id;
+      std::string addon_id, reforge_id, rsuffix_id;
 
-      if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, gem_ids ) )
+      if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {
         return 0;
       }

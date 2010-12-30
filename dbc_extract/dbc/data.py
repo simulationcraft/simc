@@ -60,6 +60,17 @@ _DBC_FIELDS = {
           'id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4', 'id_spell_5', 
           'ofs_name_sfx'
     ],
+    'ItemRandomSuffix.dbc' : [
+          ( 'id','%4u' ),   'ofs_name_sfx',   'ofs_name_int',
+          ( 'id_property_1', '%5u' ),  ( 'id_property_2',  '%5u' ), ( 'id_property_3', '%5u' ),  ( 'id_property_4', '%5u' ),  ( 'id_property_5', '%5u' ),
+          ( 'property_pct_1', '%5u' ), ( 'property_pct_2', '%5u' ), ( 'property_pct_3', '%5u' ), ( 'property_pct_4', '%5u' ), ( 'property_pct_5', '%5u' )
+    ],
+    'RandPropPoints.dbc' : [
+          ( 'id', '%3u' ),
+          ( 'epic_points_1', '%4u' ), ( 'epic_points_2', '%4u' ), ( 'epic_points_3', '%4u' ), ( 'epic_points_4', '%4u' ), ( 'epic_points_5', '%4u' ),
+          ( 'rare_points_1', '%4u' ), ( 'rare_points_2', '%4u' ), ( 'rare_points_3', '%4u' ), ( 'rare_points_4', '%4u' ), ( 'rare_points_5', '%4u' ),
+          ( 'uncm_points_1', '%4u' ), ( 'uncm_points_2', '%4u' ), ( 'uncm_points_3', '%4u' ), ( 'uncm_points_4', '%4u' ), ( 'uncm_points_5', '%4u' ),
+    ],
     'SkillLine.dbc' : [
           'id',         'id_category',    'id_skill_cost', 'ofs_name', 'ofs_desc',
           'spell_icon', 'alternate_verb', 'can_link'
@@ -122,9 +133,12 @@ _DBC_FIELDS = {
         ( 'index', '%u' )
     ],
     'SpellItemEnchantment.dbc' : [
-          'id', 'charges', 'type_1', 'type_2', 'type_3', 'amount_1', 'amount_2', 'amount_3',
-          'amount_4', 'amount_5', 'amount_6', 'id_spell_1', 'id_spell_2', 'id_spell_3', 'ofs_desc',
-          'id_aura', 'slot', 'id_gem', 'enchantment_condition', 'req_skill', 'req_skill_value', 'unk_1', 'unk_2'
+          ( 'id', '%4u' ), 'charges', 
+          ( 'type_1', '%3u' ), ( 'type_2', '%3u' ), ( 'type_3', '%3u' ), 
+          'amount_1', 'amount_2', 'amount_3', 'amount_4', 'amount_5', 'amount_6', 
+          ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
+          'ofs_desc', 'id_aura', 'slot', 'id_gem', 'enchantment_condition', 
+          'req_skill', 'req_skill_value', 'unk_1', 'unk_2'
     ],
     'SpellLevels.dbc' : [
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
@@ -414,6 +428,41 @@ class TalentTab(DBCRecord):
         s += DBCRecord.__str__(self)
 
         return s
+
+class ItemRandomSuffix(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        if self.ofs_name_sfx != 0:
+            self.name_sfx = self._dbc_parser.get_string_block(self.ofs_name_sfx)
+        else:
+            self.name_sfx = ''
+
+        if self.ofs_name_int != 0:
+            self.name_int = self._dbc_parser.get_string_block(self.ofs_name_int)
+        else:
+            self.name_int = ''
+
+    def __str__(self):
+        s = ''
+
+        if self.name_sfx:
+            s += 'suffix=\"%s\" ' % self.name_sfx
+
+        if self.name_int:
+            s += 'internal_name=\"%s\" ' % self.name_int
+
+        s += DBCRecord.__str__(self)
+
+        return s
+
+    def field(self, *args):
+        f = DBCRecord.field(self, *args)
+
+        if 'suffix' in args:
+            f[args.index('suffix')] = '%-22s' % ('"%s"' % self.name_sfx)
+
+        return f
 
 class ItemRandomProperties(DBCRecord):
     def parse(self):

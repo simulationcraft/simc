@@ -1275,6 +1275,32 @@ race_type util_t::translate_race_id( int rid )
   return RACE_NONE;
 }
 
+// util_t::translate_item_mod ===============================================
+
+stat_type util_t::translate_item_mod( int stat )
+{
+  switch ( stat )
+  {
+    case ITEM_MOD_AGILITY: return STAT_AGILITY;
+    case ITEM_MOD_STRENGTH: return STAT_STRENGTH;
+    case ITEM_MOD_INTELLECT: return STAT_INTELLECT;
+    case ITEM_MOD_SPIRIT: return STAT_SPIRIT;
+    case ITEM_MOD_STAMINA: return STAT_STAMINA;
+    case ITEM_MOD_DODGE_RATING: return STAT_DODGE_RATING;
+    case ITEM_MOD_CRIT_RATING: return STAT_CRIT_RATING;
+    case ITEM_MOD_SPELL_POWER: return STAT_SPELL_POWER;
+    case ITEM_MOD_ATTACK_POWER: return STAT_ATTACK_POWER;
+    case ITEM_MOD_BLOCK_RATING: return STAT_BLOCK_RATING;
+    case ITEM_MOD_HASTE_RATING: return STAT_HASTE_RATING;
+    case ITEM_MOD_HIT_RATING: return STAT_HIT_RATING;
+    case ITEM_MOD_EXPERTISE_RATING: return STAT_EXPERTISE_RATING;
+    case ITEM_MOD_MASTERY_RATING: return STAT_MASTERY_RATING;
+    case ITEM_MOD_PARRY_RATING: return STAT_PARRY_RATING;
+  }
+  
+  return STAT_NONE;
+}
+
 // util_t::socket_gem_match ================================================
 
 bool util_t::socket_gem_match( int socket,

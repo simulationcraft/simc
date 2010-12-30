@@ -1290,6 +1290,9 @@ public:
   sc_array_t<double>              m_base_mp5;
   sc_array_t<stat_data_t>         m_class_stats;
   sc_array_t<stat_data_t>         m_race_stats;
+  sc_array_t<random_prop_data_t>  m_random_property_data;
+  sc_array_t<random_suffix_data_t> m_random_suffixes;
+  sc_array_t<item_enchantment_data_t> m_item_enchantments;
 
   spell_data_t**                  m_spells_index;
   spelleffect_data_t**            m_effects_index;
@@ -1484,6 +1487,11 @@ public:
   // Misc methods
   virtual bool          check_spell_name( const uint32_t spell_id, const char* name ) SC_CONST;
   virtual bool          check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST;
+  
+  // Item database methods, very initial implementation TODO: Do this better
+  virtual const random_prop_data_t* find_rand_property_data( unsigned ilevel ) SC_CONST;
+  virtual const random_suffix_data_t* find_random_suffix( unsigned suffix_id ) SC_CONST;
+  virtual const item_enchantment_data_t* find_item_enchantment( unsigned enchant_id ) SC_CONST;
 
   // Static methods
   static double         fmt_value( double, effect_type_t, effect_subtype_t );
@@ -1627,6 +1635,7 @@ struct util_t
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
   static race_type translate_race_id( int rid );
+  static stat_type translate_item_mod( int stat_mod );
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
@@ -2574,7 +2583,7 @@ struct item_t
 {
   sim_t* sim;
   player_t* player;
-  int slot;
+  int slot, quality, ilevel;
   bool unique, unique_enchant, unique_addon, is_heroic, is_matching_type, is_reforged;
   stat_type reforged_from;
   stat_type reforged_to;
@@ -2592,6 +2601,9 @@ struct item_t
   std::string option_heroic_str;
   std::string option_armor_type_str;
   std::string option_reforge_str;
+  std::string option_random_suffix_str;
+  std::string option_ilevel_str;
+  std::string option_quality_str;
   std::string options_str;
 
   // Armory Data
@@ -2605,6 +2617,9 @@ struct item_t
   std::string armory_heroic_str;
   std::string armory_armor_type_str;
   std::string armory_reforge_str;
+  std::string armory_ilevel_str;
+  std::string armory_quality_str;
+  std::string armory_random_suffix_str;
 
   // Encoded Data
   std::string id_str;
@@ -2619,6 +2634,9 @@ struct item_t
   std::string encoded_heroic_str;
   std::string encoded_armor_type_str;
   std::string encoded_reforge_str;
+  std::string encoded_ilevel_str;
+  std::string encoded_quality_str;
+  std::string encoded_random_suffix_str;
 
   // Extracted data
   gear_stats_t base_stats,stats;
@@ -2639,7 +2657,7 @@ struct item_t
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), unique( false ), unique_enchant( false ), unique_addon( false ), is_heroic( false ), is_matching_type( false ), is_reforged( false ) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ), unique_addon( false ), is_heroic( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   bool heroic() SC_CONST;
@@ -2648,6 +2666,7 @@ struct item_t
   const char* name() SC_CONST;
   const char* slot_name() SC_CONST;
   const char* armor_type();
+  int random_suffix_type() SC_CONST;
   weapon_t* weapon() SC_CONST;
   bool init();
   bool parse_options();
@@ -2661,12 +2680,16 @@ struct item_t
   bool decode_heroic();
   bool decode_armor_type();
   bool decode_reforge();
+  bool decode_random_suffix();
+  bool decode_ilevel();
+  bool decode_quality();
 
   static bool download_slot( item_t&, 
                              const std::string& item_id, 
                              const std::string& enchant_id, 
                              const std::string& addon_id, 
-                             const std::string& reforge_id, 
+                             const std::string& reforge_id,
+                             const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
@@ -3855,6 +3878,7 @@ struct enchant_t
   static bool download        ( item_t&, const std::string& enchant_id );
   static bool download_addon  ( item_t&, const std::string& addon_id   );
   static bool download_reforge( item_t&, const std::string& reforge_id );
+  static bool download_rsuffix( item_t&, const std::string& rsuffix_id );
 };
 
 // Consumable ================================================================
@@ -4101,6 +4125,7 @@ struct wowhead_t
                              const std::string& enchant_id, 
                              const std::string& addon_id, 
                              const std::string& reforge_id, 
+                             const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ], 
                              int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
@@ -4117,6 +4142,7 @@ struct mmo_champion_t
                              const std::string& enchant_id, 
                              const std::string& addon_id, 
                              const std::string& reforge_id, 
+                             const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ], 
                              int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
