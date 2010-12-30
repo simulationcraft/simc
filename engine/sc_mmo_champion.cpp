@@ -424,7 +424,7 @@ static bool parse_quality( item_t&     item,
   std::string info_str;
   if ( ! get_tti_value( info_str, node, "tti-quality" ) ) return false;
   
-  item.armory_ilevel_str = tolower( info_str );
+  item.armory_quality_str = tolower( info_str );
   
   return true;
 }
