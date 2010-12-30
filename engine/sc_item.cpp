@@ -390,7 +390,7 @@ bool item_t::decode_ilevel()
 
   long ilvl = strtol( encoded_ilevel_str.c_str(), 0, 10 );
   
-  if ( ilvl < 1 || ilvl == LONG_MAX ) return false;
+  if ( ilvl < 1 || ilvl == std::numeric_limits<long>::max() ) return false;
   
   ilevel = ilvl;
   
