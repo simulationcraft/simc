@@ -3420,6 +3420,8 @@ struct arcane_torrent_t : public action_t
         gain = player -> resource_max [ RESOURCE_MANA ] * 0.06;
         break;
       case RESOURCE_ENERGY:
+      case RESOURCE_FOCUS:
+      case RESOURCE_RAGE:
       case RESOURCE_RUNIC:
         gain = 15;
         break;
@@ -3449,8 +3451,10 @@ struct arcane_torrent_t : public action_t
           return true;
         break;
       case RESOURCE_ENERGY:
+      case RESOURCE_FOCUS:
+      case RESOURCE_RAGE:
       case RESOURCE_RUNIC:
-        if( player -> resource_max [ resource ] - player -> resource_current [ resource ] <= 15 )
+        if( player -> resource_max [ resource ] - player -> resource_current [ resource ] >= 15 )
           return true;
         break;
       default:
