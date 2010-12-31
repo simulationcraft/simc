@@ -1110,9 +1110,11 @@ struct melee_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( result_is_hit() )
-    {
+    if ( result != RESULT_MISS ) // Any attack that hits or is dodged/blocked/parried generates rage
       trigger_rage_gain( this );
+
+    if ( result_is_hit() )
+    {      
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
         p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect_base_value( 3 ), p -> gains_blood_frenzy );
