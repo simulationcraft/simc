@@ -3688,15 +3688,20 @@ void shaman_t::init_scaling()
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors;
+    scales_with[ STAT_SPIRIT                ] = 0;
   }
 
   // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
-  if( primary_tree() != TREE_ENHANCEMENT && talent_elemental_precision -> rank() && 
-    sim -> scaling -> scale_stat == STAT_SPIRIT )
+  if( talent_elemental_precision -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
   {
     double v = sim -> scaling -> scale_value;
-    invert_spirit_scaling = 1;
-    attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+    if ( ! sim -> scaling -> positive_scale_delta )
+    {
+      invert_spirit_scaling = 1;
+      attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+    }
+    else
+      attribute_initial[ ATTR_SPIRIT ] += v * 2;
   }
 
 }
