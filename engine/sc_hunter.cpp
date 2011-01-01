@@ -261,7 +261,6 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_call_of_the_wild;
   buff_t* buffs_culling_the_herd;
   buff_t* buffs_frenzy;
-  buff_t* buffs_monstrous_bite;
   buff_t* buffs_owls_focus;
   buff_t* buffs_rabid;
   buff_t* buffs_rabid_power_stack;
@@ -439,7 +438,6 @@ struct hunter_pet_t : public pet_t
     buffs_call_of_the_wild  = new buff_t( this, 53434, "call_of_the_wild" );
     buffs_culling_the_herd  = new buff_t( this, 70893, "culling_the_herd" );
     buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0 );
-    buffs_monstrous_bite    = new buff_t( this, "monstrous_bite",    3, 12.0 );
     buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, 0 );
     buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
     buffs_rabid_power_stack = new buff_t( this, "rabid_power_stack", 1,    0, 0.0);
@@ -846,8 +844,6 @@ struct hunter_pet_attack_t : public attack_t
 
     if ( p -> buffs_bestial_wrath -> up() ) player_multiplier *= 1.50;
 
-    player_multiplier *= 1.0 + p -> buffs_monstrous_bite -> stack() * 0.03;
-
     if ( p -> buffs_culling_the_herd -> up() )
     {
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
@@ -954,17 +950,11 @@ struct monstrous_bite_t : public hunter_pet_attack_t
     hunter_t* o = p -> owner -> cast_hunter();
 
     parse_options( NULL, options_str );
-
+    base_dd_min = base_dd_max = 0;
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
-  }
-
-  virtual void execute()
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    p -> buffs_monstrous_bite -> trigger();
   }
 };
 
