@@ -44,6 +44,7 @@ static enchant_data_t enchant_db[] =
   { "4187",  "Invisibility Field",                                        ""                               },
   { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
   { "4179",  "Synapse Springs",                                           "synapse_springs"                },
+  { "4176",  "R19 Threatfinder",                                          "88Hit"                          },
   { "4175",  "Gnomish X-Ray Scope",                                       "gnomish_xray"                   },
   { "4127",  "+145 Stamina and +55 Agility",                              "145sta_55agi"                   },
   { "4126",  "+190 Attack Power and +55 Crit Rating",                     "190AP_55Crit"                   },

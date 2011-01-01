@@ -949,22 +949,21 @@ struct claw_t : public hunter_pet_attack_t
 struct monstrous_bite_t : public hunter_pet_attack_t
 {
   monstrous_bite_t( hunter_pet_t* p, const std::string& options_str ) :
-    hunter_pet_attack_t( "monstrous_bite", 55499, p )
+    hunter_pet_attack_t( "monstrous_bite", 54680, p )
   {
     hunter_t* o = p -> owner -> cast_hunter();
 
     parse_options( NULL, options_str );
 
-    base_dd_min = base_dd_max = 107;
-    base_cost = 20;
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
+    school = SCHOOL_PHYSICAL;
+    stats -> school = SCHOOL_PHYSICAL;
   }
 
   virtual void execute()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_pet_attack_t::execute();
     p -> buffs_monstrous_bite -> trigger();
   }
 };
