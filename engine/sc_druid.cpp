@@ -3658,12 +3658,22 @@ void druid_t::init_scaling()
 
   scales_with[ STAT_WEAPON_SPEED  ] = 0;
 
+  if ( primary_tree() == TREE_FERAL )
+  {
+    scales_with[ STAT_SPIRIT ] = 0;
+  }
+
   // Balance of Power treats Spirit like Spell Hit Rating
   if( talents.balance_of_power -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
   {
     double v = sim -> scaling -> scale_value;
-    invert_spirit_scaling = 1;
-    attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+    if ( ! sim -> scaling -> positive_scale_delta )
+    {
+      invert_spirit_scaling = 1;
+      attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+    }
+    else
+      attribute_initial[ ATTR_SPIRIT ] += v * 2;
   }
 
 }

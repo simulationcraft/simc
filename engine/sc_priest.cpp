@@ -3086,8 +3086,13 @@ void priest_t::init_scaling()
   if ( ( talents.twisted_faith -> rank() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
   {   
     double v = sim -> scaling -> scale_value;
-    invert_spirit_scaling = 1;
-    attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+    if ( ! sim -> scaling -> positive_scale_delta )
+    {
+      invert_spirit_scaling = 1;
+      attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+    }
+    else
+      attribute_initial[ ATTR_SPIRIT ] += v * 2;
   }
 
 }
