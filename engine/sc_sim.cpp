@@ -207,6 +207,34 @@ static bool parse_player( sim_t*             sim,
 
     sim -> active_player = sim -> active_player -> create_pet( pet_name, pet_type );
   }
+  else if ( name == "copy" )
+  {
+    std::string::size_type cut_pt = value.find_first_of( "," );
+
+    player_t* source;
+    std::string player_name;
+
+    if ( cut_pt == value.npos )
+    {
+      source = sim -> active_player;
+      player_name = value;
+    }
+    else
+    {
+      source = sim -> find_player( value.substr( cut_pt + 1 ) );
+      player_name = value.substr( 0, cut_pt );
+    }
+
+    if ( source == 0 )
+    {
+      sim -> errorf( "Invalid source for profile copy - format is copy=target[,source], source defaults to active player." );
+      return false;
+    }
+
+
+    sim -> active_player = player_t::create( sim, util_t::player_type_string( source -> type ), player_name );
+    if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
+  }
   else
   {
     sim -> active_player = player_t::create( sim, name, value );
@@ -1756,6 +1784,7 @@ void sim_t::create_options()
     { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
     { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
     { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "copy",                             OPT_FUNC,   ( void* ) ::parse_player                      },
     { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },

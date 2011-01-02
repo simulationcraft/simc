@@ -670,6 +670,13 @@ void player_t::init_items()
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
   {
+    // If the item has been specified in options we want to start from scratch, forgetting about lingering stuff from profile copy
+    if ( items[ i ].options_str != "" )
+    {
+      items[ i ] = item_t(this, items[ i ].options_str);
+      items[ i ].slot = i;
+    }
+
     item_t& item = items[ i ];
 
     if ( ! item.init() )
@@ -4797,9 +4804,32 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
         profile_str += "\n";
       }
     }
+
   }
 
   return true;
+}
+
+// player_t::copy_from =================================================
+
+void player_t::copy_from( player_t* source )
+{
+  origin_str = source -> origin_str;
+  level = source -> level;
+  race_str = source -> race_str;
+  use_pre_potion = source -> use_pre_potion;
+  professions_str = source -> professions_str;
+  talents_str = source -> talents_str;
+  parse_talent_url( sim, "talents", talents_str );
+  glyphs_str = source -> glyphs_str;
+  action_list_str = source -> action_list_str;
+  int num_items = ( int ) items.size();
+  for ( int i=0; i < num_items; i++ )
+  {
+    items[ i ] = source -> items[ i ];
+    items[ i ].player = this;
+    items[ i ].options_str = "";
+  }
 }
 
 // player_t::create_options =================================================

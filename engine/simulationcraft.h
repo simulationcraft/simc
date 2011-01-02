@@ -3169,6 +3169,8 @@ struct player_t
 
   virtual void create_options();
   virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+  
+  virtual void copy_from( player_t* source );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      create_pets() { }
