@@ -234,7 +234,7 @@ void spelleffect_data_t::link()
     {
       for( int j=0; spell_data[ j ].name; j++ )
       {
-        if( ed.trigger_spell_id == spell_data[ j ].id )
+        if( ed.trigger_spell_id == (int) spell_data[ j ].id )
         {
           ed.trigger_spell = spell_data + j;
           break;

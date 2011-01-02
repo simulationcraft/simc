@@ -706,8 +706,6 @@ struct shadow_fiend_pet_t : public pet_t
     void player_buff()
     {
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
-      priest_t* o = p -> owner -> cast_priest();
-
       attack_t::player_buff();
       if ( p -> bad_swing )
         p -> bad_swing = false;
