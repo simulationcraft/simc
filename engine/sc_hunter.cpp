@@ -221,6 +221,7 @@ struct hunter_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_FOCUS; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+  virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c );
 
   // Event Tracking
@@ -3073,6 +3074,15 @@ bool hunter_t::create_profile( std::string& profile_str, int save_type )
   profile_str += "summon_pet=" + summon_pet_str + "\n";
 
   return true;
+}
+
+// hunter_t::copy_from ===================================================
+
+void hunter_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  hunter_t* p = source -> cast_hunter();
+  summon_pet_str = p -> summon_pet_str;
 }
 
 // hunter_t::armory_extensions ==============================================

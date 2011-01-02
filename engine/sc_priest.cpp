@@ -386,6 +386,7 @@ struct priest_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
+  virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
@@ -3700,6 +3701,19 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
   }
 
   return true;
+}
+
+
+// priest_t::copy_from ===================================================
+
+void priest_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  priest_t* p = source -> cast_priest();
+  power_infusion_target_str = p -> power_infusion_target_str;
+  use_shadow_word_death     = p -> use_shadow_word_death;
+  use_mind_blast            = p -> use_mind_blast;
+  healer                    = p -> healer;
 }
 
 // priest_t::decode_set =====================================================

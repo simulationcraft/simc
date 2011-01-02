@@ -400,6 +400,8 @@ struct warlock_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
+  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+  virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
@@ -4431,6 +4433,31 @@ void warlock_t::create_options()
   };
 
   option_t::copy( options, warlock_options );
+}
+
+// warlock_t::create_profile =================================================
+
+bool warlock_t::create_profile( std::string& profile_str, int save_type )
+{
+  player_t::create_profile( profile_str, save_type );
+
+  if ( save_type == SAVE_ALL )
+  {
+    if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
+    if ( ! dark_intent_target_str.empty() ) profile_str += "dark_intent_target=" + dark_intent_target_str + "\n";
+  }
+
+  return true;
+}
+
+// warlock_t::copy_from ===================================================
+
+void warlock_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  warlock_t* p = source -> cast_warlock();
+  dark_intent_target_str = p -> dark_intent_target_str;
+  use_pre_soulburn       = p -> use_pre_soulburn;
 }
 
 // warlock_t::decode_set ===================================================

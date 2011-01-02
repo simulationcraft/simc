@@ -264,6 +264,7 @@ struct mage_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
+  virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
@@ -3370,6 +3371,14 @@ bool mage_t::create_profile( std::string& profile_str, int save_type )
   }
 
   return true;
+}
+
+// mage_t::copy_from ===================================================
+
+void mage_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  focus_magic_target_str = source -> cast_mage() -> focus_magic_target_str;
 }
 
 // mage_t::decode_set =======================================================

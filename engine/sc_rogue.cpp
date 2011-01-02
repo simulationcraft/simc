@@ -386,6 +386,7 @@ struct rogue_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_ENERGY; }
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+  virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -3868,6 +3869,16 @@ bool rogue_t::create_profile( std::string& profile_str, int save_type )
   }
 
   return true;
+}
+
+// rogue_t::copy_from ===================================================
+
+void rogue_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  rogue_t* p = source -> cast_rogue();
+  critical_strike_intervals  = p -> critical_strike_intervals;
+  tricks_of_the_trade_target = p -> tricks_of_the_trade_target;
 }
 
 // rogue_t::decode_set =====================================================
