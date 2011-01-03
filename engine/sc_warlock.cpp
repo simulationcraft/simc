@@ -2005,9 +2005,16 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
+  }
+  
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+
     if ( p -> buffs_demon_soul_succubus -> up() )
     {
-      target_multiplier *= 1.0 + p -> buffs_demon_soul_succubus -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> buffs_demon_soul_succubus -> effect_base_value( 1 ) / 100.0;
     }
   }
 
@@ -2022,7 +2029,6 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> buffs_shadow_embrace -> trigger();
       target -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
       target -> debuffs.curse_of_elements -> source = p;
-      trigger_everlasting_affliction( this );
     }
   }
 
@@ -3395,10 +3401,10 @@ struct fel_flame_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
 
-        if ( p -> buffs_tier11_4pc_caster -> up() )
-        {
+    if ( p -> buffs_tier11_4pc_caster -> up() )
+    {
       player_crit += p -> buffs_tier11_4pc_caster -> effect_base_value( 1 ) / 100.0;
-        }
+    }
   }
 };
 
