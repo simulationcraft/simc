@@ -42,6 +42,7 @@ static enchant_data_t enchant_db[] =
   { "4189",  "+195 Stamina",                                              "195sta"                         },
   { "4188",  "Grounded Plasma Shield",                                    ""                               },
   { "4187",  "Invisibility Field",                                        ""                               },
+  { "4182",  "Spinal Healing Injector",                                   ""                               },
   { "4181",  "Tazik Shocker",                                             "tazik_shocker"                  },
   { "4179",  "Synapse Springs",                                           "synapse_springs"                },
   { "4176",  "R19 Threatfinder",                                          "88Hit"                          },
@@ -576,6 +577,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
         base_dd_max = dmg;
         may_crit = ( s != SCHOOL_DRAIN );
         background  = true;
+        proc = true;
         base_spell_power_multiplier = 0;
         reset();
       }
@@ -601,8 +603,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
         return;
 
     double chance = fixed_chance;
-
-    if( PPM > 0 )
+    if( weapon && PPM > 0 )
       chance = weapon -> proc_chance_on_swing( PPM ); // scales with haste
 
     if ( chance > 0 )
@@ -655,7 +656,7 @@ void enchant_t::init( player_t* p )
       action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_oh", p, ohw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
       p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
     }
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0, 0.10 );
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0.10 );
     p -> register_spell_result_callback ( RESULT_HIT_MASK, cb );
   }
   if ( mh_enchant == "berserking" )
