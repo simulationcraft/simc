@@ -128,11 +128,11 @@ void buff_t::parse_options( va_list vap )
     }
     else if( ! strcmp( parm, "reverse" ) )
     {
-      reverse = (bool) va_arg( vap, bool );
+      reverse = va_arg( vap, int ) ? true : false;
     }
     else if( ! strcmp( parm, "quiet" ) )
     {
-      quiet = (bool) va_arg( vap, bool );
+      quiet = va_arg( vap, int ) ? true : false;
     }
     else if( ! strcmp( parm, "rng" ) )
     {
