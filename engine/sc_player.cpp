@@ -2088,6 +2088,20 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
   return m;
 }
 
+// player_t::composite_player_td_multiplier ==============================
+
+double player_t::composite_player_td_multiplier( const school_type school ) SC_CONST
+{
+  double m = 1.0;
+
+  if ( buffs.dark_intent_feedback -> up() )
+  {
+    m *= 1.0 + 0.03 * buffs.dark_intent_feedback -> stack();
+  }
+
+  return m;
+}
+
 // player_t::strength() ====================================================
 
 double player_t::strength() SC_CONST
@@ -2732,34 +2746,38 @@ int player_t::normalize_by() SC_CONST
 
 // player_t::stat_gain ======================================================
 
-void player_t::stat_gain( int    stat,
-                          double amount )
+void player_t::stat_gain( int       stat,
+                          double    amount,
+			  gain_t*   gain,
+			  action_t* action )
 {
+  if( amount <= 0 ) return;
+  
   if ( sim -> log ) log_t::output( sim, "%s gains %.0f %s", name(), amount, util_t::stat_type_string( stat ) );
 
   switch ( stat )
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; attribute[ ATTR_STRENGTH  ] += amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; attribute[ ATTR_AGILITY   ] += amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; resource_max[ RESOURCE_HEALTH ] += amount * health_per_stamina; break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; resource_max[ RESOURCE_MANA   ] += amount * mana_per_intellect; break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; break;
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] += amount; attribute[ i ] += amount; } break;
 
-  case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount ); break;
-  case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount ); break;
-  case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount ); break;
-  case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount ); break;
-  case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount ); break;
-  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount ); break;
+  case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
+  case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
+  case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
+  case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
+  case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
+  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
 
-  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] += amount; break;
-  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] += amount; break;
-  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] += amount; break;
-  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] += amount; break;
-  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; break;
-  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] += amount; break;
+  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] += amount; resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
+  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] += amount; resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
+  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] += amount; resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
+  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] += amount; resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
+  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
+  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] += amount; resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:       stats.spell_power       += amount; spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
@@ -2805,34 +2823,48 @@ void player_t::stat_gain( int    stat,
 
 // player_t::stat_loss ======================================================
 
-void player_t::stat_loss( int    stat,
-                          double amount )
+void player_t::stat_loss( int       stat,
+                          double    amount,
+			  action_t* action )
 {
+  if( amount <= 0 ) return;
+  
   if ( sim -> log ) log_t::output( sim, "%s loses %.0f %s", name(), amount, util_t::stat_type_string( stat ) );
 
   switch ( stat )
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; attribute[ ATTR_STAMINA   ] -= amount; break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; attribute[ ATTR_INTELLECT ] -= amount; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, amount * health_per_stamina, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA,   amount * mana_per_intellect, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; attribute[ i ] -= amount; } break;
 
-  case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount ); break;
-  case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount ); break;
-  case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount ); break;
-  case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount ); break;
-  case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount ); break;
-  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC,  amount ); break;
+  case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount, action ); break;
+  case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount, action ); break;
+  case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount, action ); break;
+  case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount, action ); break;
+  case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount, action ); break;
+  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC,  amount, action ); break;
 
-  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] -= amount; resource_current[ RESOURCE_HEALTH ] = std::min( resource_current[ RESOURCE_HEALTH ], resource_max[ RESOURCE_HEALTH ] ); break;
-  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] -= amount; resource_current[ RESOURCE_MANA ]   = std::min( resource_current[ RESOURCE_MANA ],   resource_max[ RESOURCE_MANA ] );   break;
-  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] -= amount; resource_current[ RESOURCE_RAGE ]   = std::min( resource_current[ RESOURCE_RAGE ],   resource_max[ RESOURCE_RAGE ] );   break;
-  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] -= amount; resource_current[ RESOURCE_ENERGY ] = std::min( resource_current[ RESOURCE_ENERGY ], resource_max[ RESOURCE_ENERGY ] ); break;
-  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] -= amount; resource_current[ RESOURCE_FOCUS ]  = std::min( resource_current[ RESOURCE_FOCUS ],  resource_max[ RESOURCE_FOCUS ] );  break;
-  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] -= amount; resource_current[ RESOURCE_RUNIC ]  = std::min( resource_current[ RESOURCE_RUNIC ],  resource_max[ RESOURCE_RUNIC ] );  break;
+  case STAT_MAX_HEALTH:
+  case STAT_MAX_MANA:  
+  case STAT_MAX_RAGE:  
+  case STAT_MAX_ENERGY:
+  case STAT_MAX_FOCUS: 
+  case STAT_MAX_RUNIC: 
+  {
+    int r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
+	      ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
+	      ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
+	      ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
+	      ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC );
+    resource_max[ r ] -= amount;
+    double delta = resource_current[ r ] - resource_max[ r ];
+    if( delta > 0 ) resource_loss( r, delta, action );
+  }
+  break;
 
   case STAT_SPELL_POWER:       stats.spell_power       -= amount; spell_power[ SCHOOL_MAX ] -= amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration -= amount; spell_penetration         -= amount; break;
@@ -3912,12 +3944,14 @@ struct use_item_t : public action_t
       if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                     e.stat, e.max_stacks, e.amount, e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
+                                                     e.stat, e.max_stacks, e.stat_amount, 
+						     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
       }
       else if ( e.school )
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                          e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0.0/*cd*/ );
+                                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling, 
+							  e.proc_chance, 0.0/*cd*/ );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -3939,14 +3973,14 @@ struct use_item_t : public action_t
         }
       };
 
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.amount, e.school );
+      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school );
     }
     else if ( e.stat )
     {
       if( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
+      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
     }
     else assert( false );
 

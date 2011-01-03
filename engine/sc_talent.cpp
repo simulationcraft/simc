@@ -31,7 +31,8 @@ talent_t::talent_t( player_t* player, const char* name, uint32_t id ) :
   // Future trimmed down access
   td = talent_data_t::find( id );
   sd = spell_data_t::nil();
-  chance = mod1 = mod2 = mod3 = value = 0;
+  chance = mod1 = mod2 = mod3 = misc = 0;
+  trigger = 0;
 }
 
 talent_t::talent_t( const talent_t& copy ) :
@@ -43,13 +44,14 @@ talent_t::talent_t( const talent_t& copy ) :
     t_rank_spells[ i ] = t_default_rank;
 
   // Will this even be needed in the future???
-  td     = copy.td;
-  sd     = copy.sd;
-  chance = copy.chance;
-  mod1   = copy.mod1;
-  mod2   = copy.mod2;
-  mod3   = copy.mod3;
-  value  = copy.value;
+  td      = copy.td;
+  sd      = copy.sd;
+  chance  = copy.chance;
+  mod1    = copy.mod1;
+  mod2    = copy.mod2;
+  mod3    = copy.mod3;
+  misc    = copy.misc;
+  trigger = copy.trigger;
 }
 
 talent_t::~talent_t()
@@ -102,7 +104,8 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
   sd = ( ( r >= 3 ) ? td -> spell3 : 
 	 ( r == 2 ) ? td -> spell2 :
 	 ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
-  chance = mod1 = mod2 = mod3 = value = 0;
+  chance = mod1 = mod2 = mod3 = misc = 0;
+  trigger = 0;
   // rank = r;
 
   if ( ! t_data || ! t_enabled )

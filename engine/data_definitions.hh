@@ -70,7 +70,7 @@ struct spell_data_t {
 
   static spell_data_t* list();
   static spell_data_t* nil();
-  static spell_data_t* find( unsigned );
+  static spell_data_t* find( unsigned, const std::string& confirmation = std::string() );
   static spell_data_t* find( const std::string& name );
   static void link();
 
@@ -139,7 +139,7 @@ struct talent_data_t {
 
   static talent_data_t* list();
   static talent_data_t* nil();
-  static talent_data_t* find( unsigned );
+  static talent_data_t* find( unsigned, const std::string& confirmation = std::string() );
   static talent_data_t* find( const std::string& name );
   static void link();
 };

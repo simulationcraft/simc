@@ -593,6 +593,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* call_data )
   {
+    if( a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
 
     if ( cooldown )
@@ -642,15 +643,20 @@ void enchant_t::init( player_t* p )
   weapon_t* ohw = &( p -> off_hand_weapon );
   weapon_t* rw  = &( p -> ranged_weapon );
 
-  if ( mh_enchant == "avalanche" )
+  if ( mh_enchant == "avalanche" || oh_enchant == "avalanche" )
   {
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_mh", p, mhw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
-  }
-  if ( oh_enchant == "avalanche" )
-  {
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_oh", p, ohw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
-    p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+    if ( mh_enchant == "avalanche" )
+    {
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_mh", p, mhw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
+      p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+    }
+    if ( oh_enchant == "avalanche" )
+    {
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_oh", p, ohw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
+      p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
+    }
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0, 0.10 );
+    p -> register_spell_result_callback ( RESULT_HIT_MASK, cb );
   }
   if ( mh_enchant == "berserking" )
   {
@@ -685,17 +691,51 @@ void enchant_t::init( player_t* p )
       p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
     }
   }
-  if ( mh_enchant == "hurricane" )
+  if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
   {
-    buff_t* buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p,  mhw, buff ) );
-    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, NULL, buff ) );
-  }
-  if ( oh_enchant == "hurricane" )
-  {
-    buff_t* buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 45, 0.15, false, false, RNG_DISTRIBUTED );
-    p -> register_attack_result_callback    ( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p,  ohw, buff ) );
-    p -> register_spell_cast_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, NULL, buff ) );
+    buff_t *mh_buff=0, *oh_buff=0;
+    if ( mh_enchant == "hurricane" )
+    {
+      mh_buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+      p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/ ) );
+    }
+    if ( oh_enchant == "hurricane" )
+    {
+      oh_buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+      p -> register_attack_result_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/ ) );
+    }
+    // Custom proc is required for spell damage procs.
+    // If MH buff is up, then refresh it, else
+    // IF OH buff is up, then refresh it, else
+    // Trigger a new buff not associated with either MH or OH
+    // This means that it is possible to have three stacks
+    struct hurricane_spell_proc_callback_t : public action_callback_t
+    {
+      buff_t *mh_buff, *oh_buff, *s_buff;
+      hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb ) :
+	action_callback_t( p -> sim, p ), mh_buff(mhb), oh_buff(ohb)
+      {
+	s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, 12, 45.0 );
+      }
+      virtual void trigger( action_t* a, void* call_data )
+      {
+	if( a -> proc ) return;
+	if( s_buff -> cooldown -> remains() > 0 ) return;
+	if( ! s_buff -> rng -> roll( 0.15 ) ) return;
+	if( mh_buff && mh_buff -> check() )
+	{
+	  mh_buff -> trigger();
+	  s_buff -> cooldown -> start();
+	}
+	else if( oh_buff && oh_buff -> check() )
+	{
+	  oh_buff -> trigger();
+	  s_buff -> cooldown -> start();
+	}
+	else s_buff -> trigger();
+      }
+    };
+    p -> register_spell_result_callback( RESULT_HIT_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff ) );
   }
   if ( mh_enchant == "landslide" )
   {

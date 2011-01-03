@@ -58,7 +58,6 @@ void action_t::_init_action_t()
   base_dd_max                    = 0.0;
   base_td                        = 0.0;
   base_td_init                   = 0.0;
-  base_dd_multiplier             = 1.0;
   base_td_multiplier             = 1.0;
   base_dd_multiplier             = 1.0;
   base_multiplier                = 1.0;
@@ -66,6 +65,8 @@ void action_t::_init_action_t()
   base_crit                      = 0.0;
   base_penetration               = 0.0;
   player_multiplier              = 1.0;
+  player_td_multiplier           = 1.0;
+  player_dd_multiplier           = 1.0;
   player_hit                     = 0.0;
   player_crit                    = 0.0;
   player_penetration             = 0.0;
@@ -522,6 +523,8 @@ double action_t::travel_time()
 void action_t::player_buff()
 {
   player_multiplier              = 1.0;
+  player_dd_multiplier           = 1.0;
+  player_td_multiplier           = 1.0;
   player_hit                     = 0;
   player_crit                    = 0;
   player_crit_multiplier         = 1.0;
@@ -544,7 +547,9 @@ void action_t::player_buff()
     player_penetration = p -> composite_spell_penetration();
   }
 
-  player_multiplier = p -> composite_player_multiplier( school );
+  player_multiplier    = p -> composite_player_multiplier   ( school );
+  player_dd_multiplier = p -> composite_player_dd_multiplier( school );
+  player_td_multiplier = p -> composite_player_td_multiplier( school );
 
   if ( base_attack_power_multiplier > 0 )
   {
@@ -793,17 +798,6 @@ double action_t::total_power() SC_CONST
   if ( base_attack_power_multiplier > 0 ) power += total_attack_power();
 
   return power;
-}
-
-double action_t::total_td_multiplier() SC_CONST
-{
-    double mult = total_multiplier() * base_td_multiplier;
-    
-    if ( player -> buffs.dark_intent_feedback -> up() )
-    {
-      mult *= 1.0 + 0.03 * player -> buffs.dark_intent_feedback -> stack();
-    }
-    return mult;
 }
 
 // action_t::calculate_weapon_damage =========================================

@@ -64,8 +64,7 @@ struct druid_t : public player_t
 
       if ( p -> buffs_cat_form -> check() )
       {
-        p -> stat_gain( STAT_MAX_ENERGY, energy_value );
-        p -> resource_gain( RESOURCE_ENERGY, energy_value, p -> gains_primal_madness );
+        p -> stat_gain( STAT_MAX_ENERGY, energy_value, p -> gains_primal_madness );
       }
     }
 

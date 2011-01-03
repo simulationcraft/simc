@@ -13,6 +13,7 @@ struct token_t
   std::string full;
   std::string name;
   double value;
+  std::string value_str;
 };
 
 // parse_tokens =============================================================
@@ -40,7 +41,8 @@ static int parse_tokens( std::vector<token_t>& tokens,
     else
     {
       t.name = t.full.substr( index );
-      t.value = atof( t.full.substr( 0, index ).c_str() );
+      t.value_str = t.full.substr( 0, index );
+      t.value = atof( t.value_str.c_str() );
     }
   }
 
@@ -779,12 +781,19 @@ bool item_t::decode_special( special_effect_t& effect,
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       effect.stat = s;
-      effect.amount = t.value;
+      effect.stat_amount = t.value;
     }
     else if ( ( sc = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       effect.school = sc;
-      effect.amount = t.value;
+      effect.discharge_amount = t.value;
+
+      std::vector<std::string> splits;
+      if( 2 == util_t::string_split( splits, t.value_str, "+" ) )
+      {
+	effect.discharge_amount  = atof( splits[ 0 ].c_str() );
+	effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
+      }
     }
     else if ( t.name == "stacks" || t.name == "stack" )
     {

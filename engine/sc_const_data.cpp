@@ -119,13 +119,18 @@ talent_data_t* talent_data_t::nil()
   return &nil_td;
 }
 
-spell_data_t* spell_data_t::find( unsigned id ) 
+spell_data_t* spell_data_t::find( unsigned id, const std::string& confirmation ) 
 { 
   spell_data_t* spell_data = spell_data_t::list();
 
   for( int i=0; spell_data[ i ].name; i++ )
+  {
     if( spell_data[ i ].id == id )
+    {
+      if( ! confirmation.empty() ) assert( confirmation == spell_data[ i ].name );
       return spell_data + i;
+    }
+  }
 
   return 0;
 }
@@ -141,13 +146,18 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id )
   return 0;
 }
 
-talent_data_t* talent_data_t::find( unsigned id ) 
+talent_data_t* talent_data_t::find( unsigned id, const std::string& confirmation ) 
 { 
   talent_data_t* talent_data = talent_data_t::list();
 
   for( int i=0; talent_data[ i ].name; i++ )
+  {
     if( talent_data[ i ].id == id )
+    {
+      if( ! confirmation.empty() ) assert( confirmation == talent_data[ i ].name );
       return talent_data + i;
+    }
+  }
 
   return 0;
 }

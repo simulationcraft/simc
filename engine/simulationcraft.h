@@ -1837,7 +1837,8 @@ struct talent_t : spell_id_t
   // Future trimmed down access
   talent_data_t* td;
   spell_data_t* sd;
-  double chance, mod1, mod2, mod3, value;
+  spell_data_t* trigger;
+  double chance, mod1, mod2, mod3, misc;
   // unsigned rank;
 
   talent_t( player_t* p, const char* name, uint32_t id=0 );
@@ -2002,9 +2003,10 @@ struct buff_t : public spell_id_t
   bool reverse, constant, quiet;
   int aura_id;
   event_t* expiration;
+  int rng_type;
   rng_t* rng;
-  buff_t* next;
   cooldown_t* cooldown;
+  buff_t* next;
 
   buff_t() : sim( 0 ) {}
   virtual ~buff_t() { };
@@ -2019,15 +2021,19 @@ struct buff_t : public spell_id_t
           int max_stack=1, double buff_duration=0, double buff_cooldown=0,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
+  // Player Buff with extracted data
+  buff_t( player_t*, talent_t*, ... );
+  buff_t( player_t*, spell_data_t*, ... );
+
   // Player Buff as spell_id_t by name
   buff_t( player_t*, const std::string& name, const char* sname,
-                  double chance=-1, double duration=-1.0,
-                  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+	  double chance=-1, double duration=-1.0,
+	  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Player Buff as spell_id_t by id
   buff_t( player_t*, const uint32_t id, const std::string& name,
-                  double chance=-1, double duration=-1.0,
-                  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+	  double chance=-1, double duration=-1.0,
+	  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -2044,20 +2050,21 @@ struct buff_t : public spell_id_t
   void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
 
-  virtual void   start    ( int stacks=1, double value=-1.0 );
-          void   refresh  ( int stacks=0, double value=-1.0 );
-  virtual void   bump     ( int stacks=1, double value=-1.0 );
-  virtual void   override ( int stacks=1, double value=-1.0 );
-  virtual bool   may_react( int stacks=1 );
-  virtual int    stack_react();
-  virtual void   expire();
-  virtual void   predict();
-  virtual void   reset();
-  virtual void   aura_gain();
-  virtual void   aura_loss();
-  virtual void   merge( buff_t* other_buff );
-  virtual void   analyze();
-  virtual void   _init_buff_t();
+  virtual void start    ( int stacks=1, double value=-1.0 );
+          void refresh  ( int stacks=0, double value=-1.0 );
+  virtual void bump     ( int stacks=1, double value=-1.0 );
+  virtual void override ( int stacks=1, double value=-1.0 );
+  virtual bool may_react( int stacks=1 );
+  virtual int stack_react();
+  virtual void expire();
+  virtual void predict();
+  virtual void reset();
+  virtual void aura_gain();
+  virtual void aura_loss();
+  virtual void merge( buff_t* other_buff );
+  virtual void analyze();
+  virtual void init();
+  virtual void parse_options( va_list vap );
   virtual const char* name() { return name_str.c_str(); }
 
   action_expr_t* create_expression( action_t*, const std::string& type );
@@ -2065,6 +2072,8 @@ struct buff_t : public spell_id_t
 
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
+
+  virtual void _init_buff_t();
 };
 
 struct stat_buff_t : public buff_t
@@ -2648,11 +2657,13 @@ struct item_t
     int stat;
     school_type school;
     int max_stacks;
-    double amount, proc_chance, duration, cooldown, tick;
+    double stat_amount, discharge_amount, discharge_scaling;
+    double proc_chance, duration, cooldown, tick;
     bool reverse;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
-        max_stacks( 0 ), amount( 0 ), proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
+        max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ), 
+	proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
         tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
@@ -3112,7 +3123,9 @@ struct player_t
 
   virtual double matching_gear_multiplier( const attribute_type attr ) SC_CONST { return 0.0; }
 
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double composite_player_multiplier   ( const school_type school ) SC_CONST;
+  virtual double composite_player_dd_multiplier( const school_type school ) SC_CONST { return 1.0; }
+  virtual double composite_player_td_multiplier( const school_type school ) SC_CONST;
 
   virtual double strength() SC_CONST;
   virtual double agility() SC_CONST;
@@ -3137,8 +3150,8 @@ struct player_t
   virtual const char* primary_tree_name() SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
-  virtual void stat_gain( int stat, double amount );
-  virtual void stat_loss( int stat, double amount );
+  virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
+  virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
@@ -3490,7 +3503,8 @@ struct action_t : public spell_id_t
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   double base_execute_time, base_tick_time, base_cost;
   double base_dd_min, base_dd_max, base_td, base_td_init;
-  double base_dd_multiplier, base_td_multiplier;
+  double   base_dd_multiplier,   base_td_multiplier;
+  double player_dd_multiplier, player_td_multiplier;
   double   base_multiplier,   base_hit,   base_crit,   base_penetration;
   double player_multiplier, player_hit, player_crit, player_penetration;
   double target_multiplier, target_hit, target_crit, target_penetration;
@@ -3611,8 +3625,8 @@ struct action_t : public spell_id_t
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
-  virtual double total_dd_multiplier() SC_CONST { return total_multiplier() * base_dd_multiplier; }
-  virtual double total_td_multiplier() SC_CONST;
+  virtual double total_dd_multiplier() SC_CONST { return total_multiplier() * base_dd_multiplier * player_dd_multiplier; }
+  virtual double total_td_multiplier() SC_CONST { return total_multiplier() * base_td_multiplier * player_td_multiplier; }
 
   virtual action_expr_t* create_expression( const std::string& name );
 
@@ -3851,12 +3865,17 @@ struct unique_gear_t
                                                 double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
-                                                     int max_stacks, const school_type school, double min_dmg, double max_dmg,
-                                                     double proc_chance, double cooldown,
-                                                     int rng_type=RNG_DEFAULT );
+                                                     int max_stacks, const school_type school, double amount, double scaling,
+                                                     double proc_chance, double cooldown, int rng_type=RNG_DEFAULT );
 
-  static action_callback_t* register_stat_proc     ( item_t&, item_t::special_effect_t& );
+  static action_callback_t* register_stat_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
+							  int stat, int max_stacks, double stat_amount,
+							  const school_type school, double discharge_amount, double discharge_scaling,
+							  double proc_chance, double duration, double cooldown );
+
+  static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
+  static action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
 
   static bool get_equip_encoding( std::string& encoding,
                                   const std::string& item_name,

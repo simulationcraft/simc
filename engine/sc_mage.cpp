@@ -30,8 +30,6 @@ struct mage_t : public player_t
   buff_t* buffs_arcane_power;
   buff_t* buffs_brain_freeze;
   buff_t* buffs_clearcasting;
-  buff_t* buffs_combustion;
-  buff_t* buffs_early_frost;
   buff_t* buffs_fingers_of_frost;
   buff_t* buffs_focus_magic_feedback;
   buff_t* buffs_hot_streak;
@@ -57,6 +55,7 @@ struct mage_t : public player_t
 
   cooldown_t* cooldowns_deep_freeze;
   cooldown_t* cooldowns_fire_blast;
+  cooldown_t* cooldowns_early_frost;
 
   // Events
   event_t* ignite_delay_event;
@@ -96,6 +95,20 @@ struct mage_t : public player_t
   };
   glyphs_t glyphs;
 
+  // Options
+  std::string focus_magic_target_str;
+
+  // Spells
+  struct spells_t
+  {
+    spell_data_t* arcane_blast;
+    spell_data_t* arcane_missiles;
+    spell_data_t* hot_streak;
+    spell_data_t* mage_armor;
+    spell_data_t* molten_armor;
+  };
+  spells_t spells;
+
   // Mastery
   struct mastery_spells_t
   {
@@ -104,9 +117,6 @@ struct mage_t : public player_t
     mastery_t* mana_adept;
   };
   mastery_spells_t mastery;
-
-  // Options
-  std::string focus_magic_target_str;
 
   // Passive Spells
   struct passive_spells_t
@@ -122,6 +132,7 @@ struct mage_t : public player_t
   proc_t* procs_munched_ignite;
   proc_t* procs_rolled_ignite;
   proc_t* procs_mana_gem;
+  proc_t* procs_early_frost;
 
   // Random Number Generation
   rng_t* rng_arcane_missiles;
@@ -234,6 +245,7 @@ struct mage_t : public player_t
     // Cooldowns
     cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
     cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
+    cooldowns_early_frost = get_cooldown( "early_frost" );
 
     distance         = 40;
     mana_gem_charges =  3;
@@ -255,7 +267,6 @@ struct mage_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual void      interrupt();
   virtual void      combat_begin();
   virtual void      reset();
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -1036,7 +1047,7 @@ void mage_spell_t::execute()
     }
     if ( p -> buffs_clearcasting -> trigger() && p -> talents.arcane_potency -> rank() )
     {
-      p -> buffs_arcane_potency -> trigger();
+      p -> buffs_arcane_potency -> trigger( 2 );
     }
 
     trigger_hot_streak( this );
@@ -1233,19 +1244,24 @@ struct arcane_blast_t : public mage_spell_t
 
     double c = spell_t::cost();
 
-    c *= p -> buffs_arcane_blast -> stack() * p -> buffs_arcane_blast -> effect_base_value( 2 ) / 100.0;
-
+    if ( p -> buffs_arcane_blast -> check() )
+    {
+      c *= p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2 -> base_value / 100.0;
+    }
     if ( p -> buffs_arcane_power -> check() )
     {
       c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
     }
-
     return c;
   }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
+    for ( int i=0; i < 5; i++ )
+    {
+      p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast -> stack() );
+    }
     mage_spell_t::execute();
     p -> buffs_arcane_blast -> trigger();
     if ( ! target -> debuffs.snared() )
@@ -1262,7 +1278,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     double t = mage_spell_t::execute_time();
-    t += p -> buffs_arcane_blast -> stack() * p -> buffs_arcane_blast -> effect_base_value( 3 ) / 1000.0;
+    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3 -> base_value / 1000.0;
     return t;
   }
 
@@ -1270,7 +1286,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
-    double ab_stack_multiplier = p -> buffs_arcane_blast -> effect_base_value( 1 ) / 100.0;
+    double ab_stack_multiplier = p -> spells.arcane_blast -> effect1 -> base_value / 100.0;
     player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0 ) );
   }
 };
@@ -1517,6 +1533,13 @@ struct counterspell_t : public mage_spell_t
     may_miss = may_resist = false;
   }
 
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    mage_spell_t::execute();
+    p -> buffs_invocation -> trigger();
+  }
+  
   virtual bool ready()
   {
     if ( ! target -> debuffs.casting -> check() )
@@ -1835,9 +1858,10 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::schedule_execute();
-    if ( ! p -> buffs_early_frost -> check() )
+    if ( ! p -> cooldowns_early_frost -> remains() )
     {
-      p -> buffs_early_frost -> trigger();
+      p -> procs_early_frost -> occur();
+      p -> cooldowns_early_frost -> start( 15.0 );
     }
   }
 
@@ -1865,9 +1889,9 @@ struct frostbolt_t : public mage_spell_t
     double ct = mage_spell_t::execute_time();
     if ( p -> talents.early_frost -> rank() )
     {
-      if ( ! p -> buffs_early_frost -> check() )
+      if ( ! p -> cooldowns_early_frost -> remains() )
       {
-        ct += p -> talents.early_frost -> mod_additive( P_CAST_TIME );
+        ct += p -> talents.early_frost -> mod1;
       }
     }
     return ct;
@@ -1876,9 +1900,9 @@ struct frostbolt_t : public mage_spell_t
   virtual double gcd() SC_CONST 
   { 
     mage_t* p = player -> cast_mage();
-    if( p -> buffs_early_frost -> check() )
-      return 1.0;
-
+    if ( p -> talents.early_frost -> rank() )
+      if( ! p -> cooldowns_early_frost -> remains() )
+	return 1.0;
     return mage_spell_t::gcd(); 
   }
 };
@@ -2058,7 +2082,6 @@ struct icy_veins_t : public mage_spell_t
   {
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
-
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -2296,7 +2319,7 @@ struct presence_of_mind_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     p -> aura_gain( "Presence of Mind" );
     p -> last_foreground_action = fast_action;
-    p -> buffs_arcane_potency -> trigger();
+    p -> buffs_arcane_potency -> trigger( 2 );
     fast_action -> execute();
     p -> aura_loss( "Presence of Mind" );
     update_ready();
@@ -2774,7 +2797,7 @@ void mage_t::init_talents()
   talent_t* t=0;
 
   // Arcane
-  talents.arcane_concentration        = t = find_talent( "Arcane Concentration" ); 
+  talents.arcane_concentration        = t = find_talent( "Arcane Concentration" );   t->trigger = t->sd->effect1->trigger_spell;
   talents.arcane_flows                = t = find_talent( "Arcane Flows" );
   talents.arcane_potency              = t = find_talent( "Arcane Potency" );
   talents.arcane_power                = t = find_talent( "Arcane Power" );
@@ -2783,8 +2806,8 @@ void mage_t::init_talents()
   talents.improved_arcane_explosion   = t = find_talent( "Improved Arcane Explosion" );
   talents.improved_arcane_missiles    = t = find_talent( "Improved Arcane Missiles" );
   talents.improved_counterspell       = t = find_talent( "Improved Counterspell" );
-  talents.improved_mana_gem           = t = find_talent( "Improved Mana Gem" );
-  talents.invocation                  = t = find_talent( "Invocation" );
+  talents.improved_mana_gem           = t = find_talent( "Improved Mana Gem" );      t->mod1 = t->sd->effect1->base_value/100.0; 
+  talents.invocation                  = t = find_talent( "Invocation" );             t->trigger = t->sd->effect1->trigger_spell;
   talents.missile_barrage             = t = find_talent( "Missile Barrage" );
   talents.nether_vortex               = t = find_talent( "Nether Vortex" );
   talents.netherwind_presence         = t = find_talent( "Netherwind Presence" );
@@ -2811,20 +2834,20 @@ void mage_t::init_talents()
   talents.molten_fury                 = t = find_talent( "Molten Fury" );
 
   // Frost
-  talents.brain_freeze                = t = find_talent( "Brain Freeze"     );
-  talents.cold_snap                   = t = find_talent( "Cold Snap"        );
-  talents.deep_freeze                 = t = find_talent( "Deep Freeze"      );
-  talents.early_frost                 = t = find_talent( "Early Frost"      );
-  talents.enduring_winter             = t = find_talent( "Enduring Winter"  ); t->mod1 = t->sd->effect1->base_value/100.0;  t->chance = t->sd->proc_chance/100.0;
-  talents.fingers_of_frost            = t = find_talent( "Fingers of Frost" );
-  talents.frostfire_orb               = t = find_talent( "Frostfire Orb"    );
-  talents.ice_barrier                 = t = find_talent( "Ice Barrier"      );
-  talents.ice_floes                   = t = find_talent( "Ice Floes"        );
-  talents.icy_veins                   = t = find_talent( "Icy Veins"        );
-  talents.improved_freeze             = t = find_talent( "Improved Freeze"  );
-  talents.piercing_ice                = t = find_talent( "Piercing Ice"     ); t->mod1 = t->sd->effect1->base_value/100.0;
-  talents.piercing_chill              = t = find_talent( "Piercing Chill"   );
-  talents.shatter                     = t = find_talent( "Shatter"          );
+  talents.brain_freeze     = t = find_talent( "Brain Freeze"     ); t->trigger = t->sd->effect1->trigger_spell;
+  talents.cold_snap        = t = find_talent( "Cold Snap"        );
+  talents.deep_freeze      = t = find_talent( "Deep Freeze"      );
+  talents.early_frost      = t = find_talent( "Early Frost"      ); t->mod1   = t->sd->effect1->base_value/1000.0;
+  talents.enduring_winter  = t = find_talent( "Enduring Winter"  ); t->mod1   = t->sd->effect1->base_value/100.0; t->chance  = t->sd->proc_chance/100.0;
+  talents.fingers_of_frost = t = find_talent( "Fingers of Frost" ); t->chance = t->sd->effect1->base_value/100.0; t->trigger = t->sd->effect1->trigger_spell;
+  talents.frostfire_orb    = t = find_talent( "Frostfire Orb"    );
+  talents.ice_barrier      = t = find_talent( "Ice Barrier"      );
+  talents.ice_floes        = t = find_talent( "Ice Floes"        );
+  talents.icy_veins        = t = find_talent( "Icy Veins"        );
+  talents.improved_freeze  = t = find_talent( "Improved Freeze"  );
+  talents.piercing_ice     = t = find_talent( "Piercing Ice"     ); t->mod1 = t->sd->effect1->base_value/100.0;
+  talents.piercing_chill   = t = find_talent( "Piercing Chill"   );
+  talents.shatter          = t = find_talent( "Shatter"          );
 
   player_t::init_talents();
 }
@@ -2834,6 +2857,13 @@ void mage_t::init_talents()
 void mage_t::init_spells()
 {
   player_t::init_spells();
+
+  // Spell Data
+  spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast" );
+  spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles" );
+  spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak" );
+  spells.mage_armor      = spell_data_t::find(  6117, "Mage Armor" );
+  spells.molten_armor    = spell_data_t::find( 30482, "Molten Armor" );
 
   // Mastery
   mastery.flashburn                   = new mastery_t( this, "flashburn",  76595, TREE_FIRE );
@@ -2935,23 +2965,22 @@ void mage_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
-  buffs_arcane_blast         = new buff_t( this, 36032, "arcane_blast" );
-  buffs_arcane_missiles      = new buff_t( this, "arcane_missiles",      1, 20.0, 0.0, 0.40 );
-  buffs_arcane_potency       = new buff_t( this, talents.arcane_potency -> spell_id(), "arcane_potency" );
-  buffs_arcane_power         = new buff_t( this, talents.arcane_power -> spell_id(), "arcane_power" );
-  buffs_brain_freeze         = new buff_t( this, talents.brain_freeze -> effect_trigger_spell( 1 ), "brain_freeze", talents.brain_freeze -> proc_chance() );
-  buffs_clearcasting         = new buff_t( this, talents.arcane_concentration -> effect_trigger_spell( 1 ), "clearcasting", talents.arcane_concentration -> proc_chance(), 15.0 );
-  buffs_combustion           = new buff_t( this, "combustion",           3 );
-  buffs_early_frost          = new buff_t( this, "early_frost",          1, 15.0, 0, talents.early_frost -> rank() );
-  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost -> effect_trigger_spell( 1 ), "fingers_of_frost", talents.fingers_of_frost -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL ) / 100.0 );
+  buffs_arcane_blast         = new buff_t( this, spells.arcane_blast,          NULL );
+  buffs_arcane_missiles      = new buff_t( this, spells.arcane_missiles,       "chance", 0.40, NULL );
+  buffs_arcane_potency       = new buff_t( this, talents.arcane_potency,       "stacks", 2, NULL );
+  buffs_arcane_power         = new buff_t( this, talents.arcane_power,         "cooldown", 0.0, NULL ); // CD managed in action
+  buffs_brain_freeze         = new buff_t( this, talents.brain_freeze,         NULL );
+  buffs_clearcasting         = new buff_t( this, talents.arcane_concentration, "cooldown", 15.0, NULL );
+  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     NULL );
+  buffs_hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
+  buffs_icy_veins            = new buff_t( this, talents.icy_veins,            "cooldown", 0.0, NULL ); // CD managed in action
+  buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 10.0, NULL );
+  buffs_invocation           = new buff_t( this, talents.invocation,           NULL );
+  buffs_mage_armor           = new buff_t( this, spells.mage_armor,            NULL );
+  buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
+
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
-  buffs_hot_streak           = new buff_t( this, "hot_streak",           1, 10.0, 0 );
-  buffs_icy_veins            = new buff_t( this, talents.icy_veins -> spell_id(), "icy_veins" );
-  buffs_improved_mana_gem    = new buff_t( this, "improved_mana_gem",    1, 10.0, 0, talents.improved_mana_gem -> rank() );
-  buffs_invocation           = new buff_t( this, talents.invocation -> effect_trigger_spell( 1 ), "invocation" );
-  buffs_mage_armor           = new buff_t( this, "mage_armor", "Mage Armor"   );
-  buffs_molten_armor         = new buff_t( this, "molten_armor", "Molten Armor" );
   buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
   buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );  
 }
@@ -2979,6 +3008,7 @@ void mage_t::init_procs()
   procs_munched_ignite  = get_proc( "munched_ignite"  );
   procs_rolled_ignite   = get_proc( "rolled_ignite"   );
   procs_mana_gem        = get_proc( "mana_gem"        );
+  procs_early_frost     = get_proc( "early_frost"     );
 }
 
 // mage_t::init_uptimes =====================================================
@@ -3188,7 +3218,7 @@ double mage_t::composite_spell_power( const school_type school ) SC_CONST
 
   if ( buffs_improved_mana_gem -> check() )
   {
-    sp += talents.improved_mana_gem -> effect_base_value( 1 ) / 100.0 * resource_max[ RESOURCE_MANA ];
+    sp += talents.improved_mana_gem -> mod1 * resource_max[ RESOURCE_MANA ];
   }
 
   return sp;
@@ -3202,21 +3232,12 @@ double mage_t::composite_spell_crit() SC_CONST
 
   if ( buffs_molten_armor -> up() )
   {
-    c += buffs_molten_armor -> effect_base_value( 3 ) / 100.0 + glyphs.molten_armor -> effect_base_value( 1 ) / 100.0;
+    c += spells.molten_armor -> effect3 -> base_value / 100.0 + glyphs.molten_armor -> effect_base_value( 1 ) / 100.0;
   }
 
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
 
   return c;
-}
-
-// mage_t::interrupt ========================================================
-
-void mage_t::interrupt()
-{
-  player_t::interrupt();
-  
-  buffs_invocation -> trigger();
 }
 
 // mage_t::matching_gear_multiplier =========================================
@@ -3256,22 +3277,18 @@ void mage_t::regen( double periodicity )
 {
   mana_regen_while_casting  = 0;
 
+  player_t::regen( periodicity );
+
   if ( buffs_mage_armor -> up() )
   {
-    double gain_amount = resource_max[ RESOURCE_MANA ] * buffs_mage_armor -> effect_base_value( 2 ) / 100.0 / 5.0;
+    double gain_amount = resource_max[ RESOURCE_MANA ] * spells.mage_armor -> effect2 -> base_value / 100.0;
+    gain_amount *= periodicity / 5.0;
     gain_amount *= 1.0 + glyphs.mage_armor -> effect_base_value( 1 ) / 100.0;
 
     resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
   }
 
-  player_t::regen( periodicity );
-
   uptimes_water_elemental -> update( active_water_elemental != 0 );
-
-  for ( int i=0; i < 5; i++ )
-  {
-    uptimes_arcane_blast[ i ] -> update( i == buffs_arcane_blast -> stack() );
-  }
 }
 
 // mage_t::resource_gain ====================================================
