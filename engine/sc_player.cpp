@@ -510,7 +510,7 @@ bool player_t::init( sim_t* sim )
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if ( sim -> default_actions ) p -> action_list_str.clear();
+    if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
   }
