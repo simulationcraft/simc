@@ -339,7 +339,7 @@ static bool parse_item_name( item_t&            item,
   if ( pos != std::string::npos ) s.erase( pos );
 
   // The MMO-Champion names often have numbers embedded in the name.....
-  for ( int i=0; i < s.size(); i++ )
+  for ( int i=0; i < (int) s.size(); i++ )
   {
     if ( isdigit( s[ i ] ) )
     {
