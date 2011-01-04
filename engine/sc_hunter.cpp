@@ -2581,6 +2581,7 @@ void hunter_t::init_glyphs()
     else if ( n == "kill_command"                ) glyphs.kill_command -> enable();
     // To prevent warnings....
     else if ( n == "aspect_of_the_pack" ) ;
+    else if ( n == "concussive_shot"    ) ;
     else if ( n == "disengage"          ) ;
     else if ( n == "explosive_trap"     ) ;
     else if ( n == "feign_death"        ) ;

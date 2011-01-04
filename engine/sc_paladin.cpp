@@ -2040,7 +2040,7 @@ void paladin_t::init_glyphs()
     else if ( n == "hand_of_salvation"       ) ;
     else if ( n == "holy_wrath"              ) ;
     else if ( n == "light_of_dawn"           ) ;
-    else if ( n == "long_word"               ) ;
+    else if ( n == "the_long_word"           ) ;
     else if ( n == "rebuke"                  ) ;
     else if ( n == "turn_evil"               ) ;
     // minor glyphs
@@ -2262,7 +2262,7 @@ void paladin_t::init_actions()
       action_list_str += "/divine_plea";
       } break;
     default:
-      abort();
+      if ( ! quiet ) abort();
       break;
     }
     action_list_default = 1;
