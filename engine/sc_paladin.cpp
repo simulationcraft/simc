@@ -2040,6 +2040,7 @@ void paladin_t::init_glyphs()
     else if ( n == "hand_of_salvation"       ) ;
     else if ( n == "holy_wrath"              ) ;
     else if ( n == "light_of_dawn"           ) ;
+    else if ( n == "salvation"               ) ;
     else if ( n == "the_long_word"           ) ;
     else if ( n == "rebuke"                  ) ;
     else if ( n == "turn_evil"               ) ;
