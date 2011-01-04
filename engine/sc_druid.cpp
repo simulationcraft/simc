@@ -293,8 +293,8 @@ struct druid_t : public player_t
     talent_t* natures_swiftness;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
-        };
-        talents_t talents;
+  };
+  talents_t talents;
 
   struct glyphs_t
   {
@@ -1040,11 +1040,7 @@ struct claw_t : public druid_cat_attack_t
   claw_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "claw", 1082, player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
   }
 };
 
@@ -1059,11 +1055,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     if ( p -> talents.stampede -> rank() )
     {
@@ -1110,7 +1102,6 @@ struct feral_charge_cat_t : public druid_cat_attack_t
   }
 };
 
-
 // Ferocious Bite ===========================================================
 
 struct ferocious_bite_t : public druid_cat_attack_t
@@ -1123,11 +1114,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     base_multiplier      *= 1.0 + p -> talents.feral_aggression -> mod_additive( P_GENERIC );
@@ -1147,7 +1134,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
     if ( p -> glyphs.ferocious_bite )
     {
-      excess_energy     = 0;
+      excess_energy = 0;
     }
     else
     {
@@ -1155,11 +1142,11 @@ struct ferocious_bite_t : public druid_cat_attack_t
   
       if ( excess_energy > 35 )
       {
-        excess_energy     = 35;
+        excess_energy = 35;
       }
       else if ( excess_energy < 0 )
       {
-        excess_energy     = 0;
+        excess_energy = 0;
       }
     }
 
@@ -1218,11 +1205,7 @@ struct maim_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
     
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     requires_combo_points = true;
@@ -1247,11 +1230,7 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     adds_combo_points = 1; // Not in the DBC
     base_multiplier  *= 1.0 + p -> glyphs.mangle * 0.1;
@@ -1300,11 +1279,7 @@ struct pounce_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     requires_stealth = true;
     pounce_bleed     = new pounce_bleed_t( p );
@@ -1327,11 +1302,7 @@ struct rake_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     dot_behavior        = DOT_REFRESH;
     direct_power_mod    = 0.23;
@@ -1348,11 +1319,7 @@ struct ravage_t : public druid_cat_attack_t
   ravage_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "ravage", 6785, player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     requires_position = POSITION_BACK;
     requires_stealth  = true;
@@ -1435,11 +1402,7 @@ struct rip_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     ap_per_point          = 0.023;
@@ -1508,11 +1471,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     buff_value            = 0.50; // 30 in the DBC with no scaling factors
     harmful               = false;
@@ -1560,16 +1519,16 @@ struct shred_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     druid_cat_attack_t::execute();
-    if ( p -> glyphs.shred &&
-         p -> dots_rip -> ticking  &&
-         p -> dots_rip -> added_ticks < 4 )
-    {
-      // Glyph adds 1/1/2 ticks on execute
-      int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-      p -> dots_rip -> action -> extend_duration( extra_ticks );
-    }
     if ( result_is_hit() )
     {
+      if ( p -> glyphs.shred &&
+           p -> dots_rip -> ticking  &&
+           p -> dots_rip -> added_ticks < 4 )
+      {
+        // Glyph adds 1/1/2 ticks on execute
+        int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
+        p -> dots_rip -> action -> extend_duration( extra_ticks );
+      }
       trigger_infected_wounds( this );
     }
   }
@@ -1614,11 +1573,7 @@ struct skull_bash_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 3 ) / 1000.0;
   }
@@ -1639,11 +1594,7 @@ struct swipe_cat_t : public druid_cat_attack_t
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "swipe_cat", 62078, player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
     
     aoe = true;
   }
@@ -1658,11 +1609,7 @@ struct tigers_fury_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
 
@@ -1822,12 +1769,8 @@ struct feral_charge_bear_t : public druid_bear_attack_t
       druid_bear_attack_t( "feral_charge_bear", 16979, player ), stampede_haste( 0.0 ), stampede_duration( 0.0 )
   {
     druid_t* p = player -> cast_druid();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+  
+    parse_options( NULL, options_str );
 
     if ( p -> talents.stampede -> rank() )
     {
@@ -1879,11 +1822,7 @@ struct lacerate_t : public druid_bear_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL,     OPT_UNKNOWN, NULL       }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     direct_power_mod = 0.115;
     tick_power_mod   = 0.0077;
@@ -1920,11 +1859,7 @@ struct mangle_bear_t : public druid_bear_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> glyphs.mangle * 0.10;
   }
@@ -1950,11 +1885,7 @@ struct maul_t : public druid_bear_attack_t
   maul_t( druid_t* player, const std::string& options_str ) :
       druid_bear_attack_t( "maul",  6807, player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
   }
@@ -2005,11 +1936,7 @@ struct skull_bash_bear_t : public druid_bear_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 2 ) / 1000.0;
   }
@@ -2030,13 +1957,7 @@ struct swipe_bear_t : public druid_bear_attack_t
   swipe_bear_t( druid_t* player, const std::string& options_str ) :
       druid_bear_attack_t( "swipe_bear", 779, player )
   {
-    // druid_t* p = player -> cast_druid();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     aoe               = true;
     direct_power_mod  = extra_coeff();
@@ -2246,6 +2167,8 @@ struct bear_form_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
+    parse_options( NULL, options_str );
+
     // Override these as we can do it before combat
     trigger_gcd       = 0;
     base_execute_time = 0;
@@ -2310,11 +2233,7 @@ struct berserk_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.berserk -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
   }
@@ -2339,6 +2258,8 @@ struct cat_form_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     
+    parse_options( NULL, options_str );
+
     // Override for precombat casting
     trigger_gcd       = 0;
     base_execute_time = 0;
@@ -2402,11 +2323,7 @@ struct enrage_t : public druid_spell_t
   enrage_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "enrage", 5229, player )
   {
-    option_t options[] =
-    {
-      { NULL,    OPT_UNKNOWN, NULL      }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
   }
@@ -2441,11 +2358,7 @@ struct faerie_fire_feral_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );    
+    parse_options( NULL, options_str );    
     
     base_attack_power_multiplier = extra_coeff();
     base_spell_power_multiplier  = 0;
@@ -2478,11 +2391,7 @@ struct faerie_fire_t : public druid_spell_t
   faerie_fire_t( druid_t* player, const std::string& options_str ) :
       druid_spell_t( "faerie_fire", 770, player )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -2570,11 +2479,7 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
     
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
     num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
@@ -2622,6 +2527,8 @@ struct mark_of_the_wild_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
+    parse_options( NULL, options_str );
+
     trigger_gcd = 0;
     id          = 1126;
     base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
@@ -2659,11 +2566,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
     num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
@@ -2722,7 +2625,7 @@ struct moonfire_t : public druid_spell_t
 
   virtual double cost_reduction() SC_CONST
   {
-    // Costreduction from moonglow and lunar shower is additive
+    // Cost reduction from moonglow and lunar shower is additive
     druid_t* p = player -> cast_druid();
     double cr = druid_spell_t::cost_reduction();
     cr += ( -0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
@@ -2753,6 +2656,8 @@ struct moonkin_form_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.moonkin_form -> rank() );
 
+    parse_options( NULL, options_str );
+
     // Override these as we can precast before combat begins
     trigger_gcd       = 0;
     base_execute_time = 0;
@@ -2778,8 +2683,8 @@ struct moonkin_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    druid_t* d = player -> cast_druid();
-    return ! d -> buffs_moonkin_form -> check();
+    druid_t* p = player -> cast_druid();
+    return ! p -> buffs_moonkin_form -> check();
   }
 };
 
@@ -2796,6 +2701,8 @@ struct druids_swiftness_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.natures_swiftness -> rank() );
+
+    parse_options( NULL, options_str );
 
     if ( ! options_str.empty() )
     {
@@ -2971,11 +2878,7 @@ struct starfall_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.starfall -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     num_ticks      = 10;
     base_tick_time = 1.0;
@@ -2984,7 +2887,7 @@ struct starfall_t : public druid_spell_t
     if ( p -> glyphs.starfall )
       cooldown -> duration  -= 30;
 
-    may_miss = false; // The spell only triggers the buff
+    may_miss = false; // This spell only triggers the buff
 
     starfall_star = new starfall_star_t( p );
   }
@@ -3002,6 +2905,7 @@ struct starfall_t : public druid_spell_t
 struct starsurge_t : public druid_spell_t
 {
   cooldown_t* starfall_cd;
+
   starsurge_t( druid_t* player, const std::string& options_str ) :
       druid_spell_t( "starsurge", 78674, player ),
       starfall_cd( 0 )
@@ -3010,11 +2914,7 @@ struct starsurge_t : public druid_spell_t
     
     check_spec( TREE_BALANCE );
     
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
@@ -3066,6 +2966,8 @@ struct stealth_t : public spell_t
   stealth_t( player_t* player, const std::string& options_str ) :
       spell_t( "stealth", player )
   {
+    parse_options( NULL, options_str );
+
     trigger_gcd = 0;
     harmful     = false;
   }
@@ -3099,11 +3001,7 @@ struct sunfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.sunfire -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
     num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
@@ -3191,13 +3089,9 @@ struct treants_spell_t : public druid_spell_t
       druid_spell_t( "treants", 33831, player )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.force_of_nature -> rank() );
+    check_talent( p -> talents.force_of_nature -> ok() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
   }
@@ -3218,13 +3112,9 @@ struct typhoon_t : public druid_spell_t
       druid_spell_t( "typhoon", 50516, player )
   {
     druid_t* p = player -> cast_druid();
-    check_talent( p -> talents.typhoon -> rank() );
+    check_talent( p -> talents.typhoon -> ok() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     aoe               = true;
     base_dd_min       = p -> player_data.effect_min( effect_id( 2 ), p -> type, p -> level );
@@ -3378,7 +3268,7 @@ action_t* druid_t::create_action( const std::string& name,
 // druid_t::create_pet ======================================================
 
 pet_t* druid_t::create_pet( const std::string& pet_name,
-			    const std::string& pet_type )
+			                      const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -3548,8 +3438,8 @@ void druid_t::init_race()
   {
   case RACE_NIGHT_ELF:
   case RACE_TAUREN:
-  case RACE_WORGEN:
   case RACE_TROLL:
+  case RACE_WORGEN:  
     break;
   default:
     race = RACE_NIGHT_ELF;
@@ -3622,14 +3512,14 @@ void druid_t::init_buffs()
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
-  buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower -> rank() );
-  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> rank() );
+  buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower -> ok() );
+  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
   buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
   buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> proc_chance() );
-  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> rank() ); 
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> rank() ); 
+  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() ); 
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() ); 
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );  
@@ -3654,7 +3544,6 @@ void druid_t::init_buffs()
 void druid_t::init_items()
 {
   player_t::init_items();
-
 }
 
 // druid_t::init_scaling ====================================================
@@ -3684,7 +3573,6 @@ void druid_t::init_scaling()
     else
       attribute_initial[ ATTR_SPIRIT ] += v * 2;
   }
-
 }
 
 // druid_t::init_gains ======================================================
@@ -3977,7 +3865,7 @@ double druid_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
 
-  if ( buffs_cat_form  -> check() )
+  if ( buffs_bear_form -> check() || buffs_cat_form  -> check() )
   {
       ap += 2.0 * ( agility() - 10.0 );
   }
@@ -4154,6 +4042,7 @@ int druid_t::decode_set( item_t& item )
     if ( is_caster ) return SET_T10_CASTER;
     if ( is_melee  ) return SET_T10_MELEE;
   }
+
   if ( strstr( s, "stormriders" ) )
   {
     bool is_caster = ( strstr( s, "cover"         ) ||
