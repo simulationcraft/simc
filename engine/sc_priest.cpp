@@ -688,7 +688,8 @@ struct shadow_fiend_pet_t : public pet_t
 
       if ( o -> bugs )
       {
-        base_crit_bonus = 0.5 + o -> constants.shadow_power_crit_value;
+        base_crit_bonus = 1.0;
+        base_crit_multiplier = 1.333333;
       }
     }
     void assess_damage( double amount, int dmg_type )
@@ -1585,6 +1586,9 @@ struct mind_spike_t : public priest_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    // TO-DO: Hotfixed value from ingame.
+    direct_power_mod *= 1.50;
   }
 
   virtual void travel( int result, double dmg )
