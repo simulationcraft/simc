@@ -232,8 +232,6 @@ void scaling_t::analyze_stats()
 
     bool center = center_scale_delta && ! stat_may_cap( i );
 
-
-
     // 5 point stencil
     bool fivepstencil = five_point_stencil && ! stat_may_cap( i );
     if ( fivepstencil )

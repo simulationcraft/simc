@@ -3767,18 +3767,23 @@ void druid_t::init_actions()
       action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
-      action_list_str += "/innervate,if=mana_pct<50";
-      if ( talents.force_of_nature -> rank() )
-        action_list_str += "/treants,time>=5";
-      if ( talents.starfall -> rank() ) 
+      if ( talents.starfall -> rank() && glyphs.focus ) 
         action_list_str += "/starfall";
       if ( talents.sunfire -> rank() )
         action_list_str += "/sunfire,if=!ticking&!dot.moonfire.remains>0";
       action_list_str += "/moonfire,if=!ticking";
       if ( talents.sunfire -> rank() )
-        action_list_str += "&!dot.sunfire.remains>0&buff.lunar_eclipse.react";
+        action_list_str += "&!dot.sunfire.remains>0";
+      if ( set_bonus.tier11_4pc_caster() ) // refreshing moonfire right after eclipse locks in the crit
+        action_list_str += "&buff.lunar_eclipse.react";
+      if ( talents.starfall -> rank() && ! glyphs.focus )
+        action_list_str += "/starfall";
       action_list_str += "/insect_swarm,if=!ticking";
-      if ( primary_tree() == TREE_BALANCE ) action_list_str += "/starsurge";
+      if ( primary_tree() == TREE_BALANCE )
+        action_list_str += "/starsurge";
+      action_list_str += "/innervate,if=mana_pct<50";
+      if ( talents.force_of_nature -> rank() )
+        action_list_str += "/treants,time>=5";
       action_list_str += use_str;
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
