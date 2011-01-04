@@ -226,7 +226,7 @@ player_t::player_t( sim_t*             s,
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), bugs( true ), pri_tree( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
+    pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
     vengeance_factor( 0.0 ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
@@ -1252,7 +1252,7 @@ void player_t::init_talents()
     }
   }
 
-  pri_tree = primary_tab();
+  specialization = primary_tab();
 }
 
 // player_t::init_spells =================================================
@@ -2688,7 +2688,7 @@ bool player_t::resource_available( int    resource,
 
 int player_t::primary_tab()
 {
-  pri_tree = TALENT_TAB_NONE;
+  specialization = TALENT_TAB_NONE;
 
   int max_points = 0;
 
@@ -2696,15 +2696,15 @@ int player_t::primary_tab()
   {
     if ( talent_tab_points[ i ] > 0 )
     {
-      if( pri_tree == TALENT_TAB_NONE || ( talent_tab_points[ i ] > max_points ) )
+      if( specialization == TALENT_TAB_NONE || ( talent_tab_points[ i ] > max_points ) )
       {
-        pri_tree = i;
+        specialization = i;
         max_points = talent_tab_points[ i ];
       }
     }
   }
 
-  return pri_tree;
+  return specialization;
 }
 
 // player_t::primary_tree_name ==============================================
@@ -2718,10 +2718,10 @@ const char* player_t::primary_tree_name() SC_CONST
 
 int player_t::primary_tree() SC_CONST
 {
-  if ( pri_tree == TALENT_TAB_NONE )
+  if ( specialization == TALENT_TAB_NONE )
     return TREE_NONE;
 
-  return tree_type[ pri_tree ];
+  return tree_type[ specialization ];
 }
 
 // player_t::normalize_by ===================================================

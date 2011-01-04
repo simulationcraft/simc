@@ -109,8 +109,7 @@ void pet_t::init_base()
 
 void pet_t::init_talents()
 {
-
-   pri_tree = primary_tab();
+   specialization = primary_tab();
 }
 // pet_t::reset =============================================================
 

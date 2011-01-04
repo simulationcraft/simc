@@ -441,7 +441,7 @@ bool spell_id_t::ok() SC_CONST
     res = res & s_required_talent -> ok();
 
   if ( s_type == T_SPEC )
-    res = res & ( s_tree == s_player -> pri_tree );
+    res = res & ( s_tree == s_player -> specialization );
 
   return res;
 }

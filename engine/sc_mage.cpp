@@ -45,14 +45,6 @@ struct mage_t : public player_t
   buff_t* buffs_tier10_4pc;
 
   // Cooldowns
-  struct _cooldowns_t
-  {
-    double enduring_winter;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( _cooldowns_t ) ); }
-    _cooldowns_t() { reset(); }
-  };
-  _cooldowns_t _cooldowns;
-
   cooldown_t* cooldowns_deep_freeze;
   cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_early_frost;
@@ -98,7 +90,7 @@ struct mage_t : public player_t
   // Options
   std::string focus_magic_target_str;
 
-  // Spells
+  // Spell Data
   struct spells_t
   {
     spell_data_t* arcane_blast;
@@ -106,26 +98,16 @@ struct mage_t : public player_t
     spell_data_t* hot_streak;
     spell_data_t* mage_armor;
     spell_data_t* molten_armor;
+
+    spell_data_t* flashburn;
+    spell_data_t* frostburn;
+    spell_data_t* mana_adept;
+
+    spell_data_t* arcane_specialization;
+    spell_data_t* fire_specialization;
+    spell_data_t* frost_specialization;
   };
   spells_t spells;
-
-  // Mastery
-  struct mastery_spells_t
-  {
-    mastery_t* flashburn;
-    mastery_t* frostburn;
-    mastery_t* mana_adept;
-  };
-  mastery_spells_t mastery;
-
-  // Passive Spells
-  struct passive_spells_t
-  {
-    passive_spell_t* arcane_specialization;
-    passive_spell_t* fire_specialization;
-    passive_spell_t* frost_specialization;
-  };
-  passive_spells_t passive_spells;
 
   // Procs
   proc_t* procs_deferred_ignite;
@@ -805,7 +787,10 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   double ignite_dmg = dmg * p -> talents.ignite -> effect_base_value( 1 ) / 100.0;
 
-  ignite_dmg *= 1.0 + p -> mastery.flashburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+  if ( p -> specialization == MAGE_FIRE )
+  {
+    ignite_dmg *= 1.0 + p -> composite_mastery() * p -> spells.flashburn -> effect2 -> base_value / 10000.0;
+  }
 
   if ( sim -> merge_ignite ) // Does not report Ignite seperately.
   {
@@ -920,15 +905,10 @@ static void trigger_replenishment( spell_t* s )
   if ( ! p -> talents.enduring_winter -> rank() )
     return;
 
-  if ( p -> sim -> current_time < p -> _cooldowns.enduring_winter ) // FIXME: This is no longer listed on the talent, is it still in effect?
-    return;
-
   if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> chance ) )
     return;
 
   p -> trigger_replenishment();
-
-  p -> _cooldowns.enduring_winter = p -> sim -> current_time + 6.0;
 }
 
 // ==========================================================================
@@ -1128,55 +1108,60 @@ void mage_spell_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.molten_fury -> effect_base_value( 1 ) / 100.0;
     }
   }
-
   if ( p -> buffs_tier10_4pc -> up() )
   {
     player_multiplier *= 1.18;
   }
-
   if ( p -> buffs_invocation -> up() )
   {
     player_multiplier *= 1.0 + p -> talents.invocation -> effect_base_value( 1 ) / 100.0;
   }
-
   if ( p -> buffs_arcane_power -> up() )
   {
     player_multiplier *= 1.0 + p -> buffs_arcane_power -> value();
   }
-
   if ( p -> buffs_arcane_potency -> up() )
   {
     player_crit += p -> talents.arcane_potency -> effect_base_value( 1 ) / 100.0;
   }
-
-  double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
-  player_multiplier *= 1.0 + p -> mastery.mana_adept -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery() * mana_pct;  
-
+  if ( p -> specialization == MAGE_ARCANE )
+  {
+    double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
+    player_multiplier *= 1.0 +  mana_pct * p -> composite_mastery() * p -> spells.mana_adept -> effect2 -> base_value / 10000.0;  
+  }
   if ( school == SCHOOL_ARCANE )
   {
     if ( target -> debuffs.snared() && p -> talents.torment_the_weak -> rank() )
     {
       player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect_base_value( 1 ) / 100.0;
     }
-    
-    player_multiplier *= 1.0 + p -> passive_spells.arcane_specialization -> effect_base_value( 1 ) / 100.0;
-      
+    if ( p -> specialization == MAGE_ARCANE )
+    {
+      player_multiplier *= 1.0 + p -> spells.arcane_specialization -> effect1 -> base_value / 100.0;
+    }
   }
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROSTFIRE )
   {
-    player_multiplier *= 1.0 + p -> passive_spells.fire_specialization -> effect_base_value( 1 ) / 100.0;
-
+    if ( p -> specialization == MAGE_FIRE )
+    {
+      player_multiplier *= 1.0 + p -> spells.fire_specialization -> effect1 -> base_value / 100.0;
+    }
     player_multiplier *= 1.0 + p -> talents.fire_power -> effect_base_value( 1 ) / 100.0;
   }
   if ( school == SCHOOL_FROST || school == SCHOOL_FROSTFIRE )
   {
-    double m = p -> passive_spells.frost_specialization -> effect_base_value( 1 ) / 100.0;
-    player_multiplier *= 1.0 + m;
+    if ( p -> specialization == MAGE_FROST )
+    {
+      player_multiplier *= 1.0 + p -> spells.frost_specialization -> effect1 -> base_value / 100.0;
+    }
   } 
 
-  if( fof_frozen && p -> buffs_fingers_of_frost -> up() )
+  if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
   {
-    player_multiplier *= 1.0 + p -> mastery.frostburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+    if ( p -> specialization == MAGE_FROST )
+    {
+      player_multiplier *= 1.0 + p -> composite_mastery() * p -> spells.frostburn -> effect2 -> base_value / 10000.0;
+    }
 
     double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
 
@@ -1202,7 +1187,10 @@ void mage_spell_t::target_debuff( int dmg_type )
   {
     mage_t* p = player -> cast_mage();
 
-    target_multiplier *= 1.0 + p -> mastery.flashburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery();
+    if ( p -> specialization == MAGE_FIRE )
+    {
+      target_multiplier *= 1.0 + p -> composite_mastery() * p -> spells.flashburn -> effect2 -> base_value / 10000.0;
+    }
   }
 }
 
@@ -2133,9 +2121,13 @@ struct living_bomb_t : public mage_spell_t
     // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
     mage_t* p = player -> cast_mage();
     spell_t::target_debuff( dmg_type );
-    target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-                                 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
-                                 p -> mastery.flashburn -> effect_base_value( 2 ) / 10000.0 * p -> composite_mastery() );
+    double modifier = ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
+			p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
+    if ( p -> specialization == MAGE_FIRE )
+    {
+      modifier += p -> composite_mastery() * p -> spells.flashburn -> effect2 -> base_value / 10000.0;
+    }
+    target_multiplier *= 1.0 + modifier;
   }
 
   virtual void last_tick()
@@ -2858,23 +2850,19 @@ void mage_t::init_spells()
 {
   player_t::init_spells();
 
-  // Spell Data
   spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast" );
   spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles" );
   spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak" );
   spells.mage_armor      = spell_data_t::find(  6117, "Mage Armor" );
   spells.molten_armor    = spell_data_t::find( 30482, "Molten Armor" );
 
-  // Mastery
-  mastery.flashburn                   = new mastery_t( this, "flashburn",  76595, TREE_FIRE );
-  mastery.frostburn                   = new mastery_t( this, "frostburn",  76613, TREE_FROST );
-  mastery.mana_adept                  = new mastery_t( this, "mana_adept", 76547, TREE_ARCANE );
+  spells.flashburn  = spell_data_t::find( 76595, "Flashburn" );
+  spells.frostburn  = spell_data_t::find( 76613, "Frostburn" );
+  spells.mana_adept = spell_data_t::find( 76547, "Mana Adept" );
 
-  // Passives
-  passive_spells.arcane_specialization = new passive_spell_t( this, "arcane_specialization", "Arcane Specialization" );
-  passive_spells.fire_specialization   = new passive_spell_t( this, "fire_specialization",   "Fire Specialization" );
-  passive_spells.frost_specialization  = new passive_spell_t( this, "frost_specialization",  "Frost Specialization" );
-
+  spells.arcane_specialization = spell_data_t::find( 84671, "Arcane Specialization" );
+  spells.fire_specialization   = spell_data_t::find( 84668, "Fire Specialization" );
+  spells.frost_specialization  = spell_data_t::find( 84669, "Frost Specialization" );
 
   glyphs.arcane_barrage       = new glyph_t(this, "Glyph of Arcane Barrage");
   glyphs.arcane_blast         = new glyph_t(this, "Glyph of Arcane Blast");
@@ -3267,7 +3255,6 @@ void mage_t::reset()
   active_water_elemental = 0;
   ignite_delay_event = 0;
   rotation.reset();
-  _cooldowns.reset();
   mana_gem_charges = 3;
 }
 
