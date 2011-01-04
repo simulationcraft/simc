@@ -109,6 +109,18 @@ struct mage_t : public player_t
   };
   spells_t spells;
 
+  // Specializations
+  struct specializations_t
+  {
+    double arcane;
+    double fire;
+    double frost;
+    double flashburn;
+    double frostburn;
+    double mana_adept;
+  };
+  specializations_t specializations;
+
   // Procs
   proc_t* procs_deferred_ignite;
   proc_t* procs_munched_ignite;
@@ -789,7 +801,7 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   if ( p -> specialization == MAGE_FIRE )
   {
-    ignite_dmg *= 1.0 + p -> composite_mastery() * p -> spells.flashburn -> effect2 -> base_value / 10000.0;
+    ignite_dmg *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
   }
 
   if ( sim -> merge_ignite ) // Does not report Ignite seperately.
@@ -1124,44 +1136,30 @@ void mage_spell_t::player_buff()
   {
     player_crit += p -> talents.arcane_potency -> effect_base_value( 1 ) / 100.0;
   }
-  if ( p -> specialization == MAGE_ARCANE )
-  {
-    double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
-    player_multiplier *= 1.0 +  mana_pct * p -> composite_mastery() * p -> spells.mana_adept -> effect2 -> base_value / 10000.0;  
-  }
+
+  double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
+  player_multiplier *= 1.0 + mana_pct * p -> specializations.mana_adept * p -> composite_mastery();
+
   if ( school == SCHOOL_ARCANE )
   {
     if ( target -> debuffs.snared() && p -> talents.torment_the_weak -> rank() )
     {
       player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect_base_value( 1 ) / 100.0;
     }
-    if ( p -> specialization == MAGE_ARCANE )
-    {
-      player_multiplier *= 1.0 + p -> spells.arcane_specialization -> effect1 -> base_value / 100.0;
-    }
+    player_multiplier *= 1.0 + p -> specializations.arcane;
   }
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROSTFIRE )
   {
-    if ( p -> specialization == MAGE_FIRE )
-    {
-      player_multiplier *= 1.0 + p -> spells.fire_specialization -> effect1 -> base_value / 100.0;
-    }
+    player_multiplier *= 1.0 + p -> specializations.fire;
     player_multiplier *= 1.0 + p -> talents.fire_power -> effect_base_value( 1 ) / 100.0;
   }
   if ( school == SCHOOL_FROST || school == SCHOOL_FROSTFIRE )
   {
-    if ( p -> specialization == MAGE_FROST )
-    {
-      player_multiplier *= 1.0 + p -> spells.frost_specialization -> effect1 -> base_value / 100.0;
-    }
+    player_multiplier *= 1.0 + p -> specializations.frost;
   } 
-
   if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
   {
-    if ( p -> specialization == MAGE_FROST )
-    {
-      player_multiplier *= 1.0 + p -> composite_mastery() * p -> spells.frostburn -> effect2 -> base_value / 10000.0;
-    }
+    player_multiplier *= 1.0 + p -> specializations.frostburn * p -> composite_mastery();
 
     double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
 
@@ -1186,11 +1184,7 @@ void mage_spell_t::target_debuff( int dmg_type )
   if ( school == SCHOOL_FIRE && dmg_type == DMG_OVER_TIME )
   {
     mage_t* p = player -> cast_mage();
-
-    if ( p -> specialization == MAGE_FIRE )
-    {
-      target_multiplier *= 1.0 + p -> composite_mastery() * p -> spells.flashburn -> effect2 -> base_value / 10000.0;
-    }
+    target_multiplier *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
   }
 }
 
@@ -2121,13 +2115,9 @@ struct living_bomb_t : public mage_spell_t
     // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
     mage_t* p = player -> cast_mage();
     spell_t::target_debuff( dmg_type );
-    double modifier = ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-			p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
-    if ( p -> specialization == MAGE_FIRE )
-    {
-      modifier += p -> composite_mastery() * p -> spells.flashburn -> effect2 -> base_value / 10000.0;
-    }
-    target_multiplier *= 1.0 + modifier;
+    target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
+				 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 + 
+				 p -> specializations.flashburn * p -> composite_mastery() );
   }
 
   virtual void last_tick()
@@ -2786,6 +2776,8 @@ void mage_t::init_glyphs()
 
 void mage_t::init_talents()
 {
+  player_t::init_talents();
+
   talent_t* t=0;
 
   // Arcane
@@ -2840,8 +2832,6 @@ void mage_t::init_talents()
   talents.piercing_ice     = t = find_talent( "Piercing Ice"     ); t->mod1 = t->sd->effect1->base_value/100.0;
   talents.piercing_chill   = t = find_talent( "Piercing Chill"   );
   talents.shatter          = t = find_talent( "Shatter"          );
-
-  player_t::init_talents();
 }
 
 // mage_t::init_spells ======================================================
@@ -2863,6 +2853,24 @@ void mage_t::init_spells()
   spells.arcane_specialization = spell_data_t::find( 84671, "Arcane Specialization" );
   spells.fire_specialization   = spell_data_t::find( 84668, "Fire Specialization" );
   spells.frost_specialization  = spell_data_t::find( 84669, "Frost Specialization" );
+
+  memset( (void*) &specializations, 0x00, sizeof( specializations_t ) );
+
+  if ( specialization == MAGE_ARCANE )
+  {
+    specializations.arcane     = spells.arcane_specialization -> effect1 -> base_value / 100.0;
+    specializations.mana_adept = spells.mana_adept -> effect2 -> base_value / 10000.0;
+  }
+  else if ( specialization == MAGE_FIRE )
+  {
+    specializations.fire      = spells.fire_specialization -> effect1 -> base_value / 100.0;
+    specializations.flashburn = spells.flashburn -> effect2 -> base_value / 10000.0;
+  }
+  else if ( specialization == MAGE_FROST )
+  {
+    specializations.frost     = spells.frost_specialization -> effect1 -> base_value / 100.0;
+    specializations.frostburn = spells.frostburn -> effect2 -> base_value / 10000.0;
+  }
 
   glyphs.arcane_barrage       = new glyph_t(this, "Glyph of Arcane Barrage");
   glyphs.arcane_blast         = new glyph_t(this, "Glyph of Arcane Blast");
