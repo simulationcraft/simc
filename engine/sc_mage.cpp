@@ -742,9 +742,9 @@ static void trigger_hot_streak( mage_spell_t* s )
   }
   if ( result == RESULT_CRIT )
   {
-    // Reference: http://elitistjerks.com/f75/t104767-fire_cataclysm_discussion_updated_4_01_a/p12/#post1766032
+    // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
-    double hot_streak_chance = -1.7106 * s -> hot_streak_crit() + 0.7893;
+    double hot_streak_chance = -2.73 * s -> hot_streak_crit() + 0.95;
 
     if( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
     {

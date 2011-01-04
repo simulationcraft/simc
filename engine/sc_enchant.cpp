@@ -567,7 +567,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
       action_callback_t( p -> sim, p ),
       name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm ), cooldown( cd ), cooldown_ready( 0 )
   {
-    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
+    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_CYCLIC; // default is CYCLIC since discharge should not have duration
 
     struct discharge_spell_t : public spell_t
     {
@@ -588,7 +588,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     spell = new discharge_spell_t( name_str.c_str(), p, dmg, school );
 
     proc = p -> get_proc( name_str.c_str() );
-    rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
+    rng  = p -> get_rng ( name_str.c_str(), rng_type );
   }
 
   virtual void reset() { stacks=0; cooldown_ready=0; }
