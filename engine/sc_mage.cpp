@@ -2841,7 +2841,7 @@ void mage_t::init_spells()
   player_t::init_spells();
 
   spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast" );
-  spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles" );
+  spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles!" );
   spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak" );
   spells.mage_armor      = spell_data_t::find(  6117, "Mage Armor" );
   spells.molten_armor    = spell_data_t::find( 30482, "Molten Armor" );

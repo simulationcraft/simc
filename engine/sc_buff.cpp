@@ -186,6 +186,7 @@ void buff_t::init()
     tail = &( sim -> buff_list );
   }
 
+  buff_duration        = std::min( buff_duration, sim -> wheel_seconds - 2.0 );
   cooldown -> duration = std::min( buff_cooldown, sim -> wheel_seconds - 2.0 );
 
   while ( *tail && name_str > ( ( *tail ) -> name_str ) )
