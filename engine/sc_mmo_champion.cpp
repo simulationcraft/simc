@@ -335,7 +335,7 @@ static bool parse_item_name( item_t&            item,
   if ( ! xml_t::get_value( s, node, "title/." ) )
     return false;
 
-  std::string::size_type pos = s.find( " - " );
+  std::string::size_type pos = s.find( " - Items" ); // MMOC appends " - Items - Sigrie" to item names
   if ( pos != std::string::npos ) s.erase( pos );
 
   // The MMO-Champion names often have numbers embedded in the name.....
