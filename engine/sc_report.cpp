@@ -3074,14 +3074,14 @@ static void print_html2_player( FILE* file, player_t* p )
                            "<br>max_stacks: %.i"
                            "<br>duration: %.2f"
                            "<br>cooldown: %.2f"
-                           "<br>default_chance: %.2f",
+                           "<br>default_chance: %.2f%%",
                            b -> s_id,
                            b -> cooldown -> name_str.c_str(),
                            b -> tooltip(),
                            b -> max_stack,
                            b -> buff_duration,
                            b -> cooldown -> duration,
-                           b -> default_chance );
+                           b -> default_chance * 100 );
 
     util_t::fprintf( file, "</tr>\n" );
   }
@@ -3103,14 +3103,14 @@ static void print_html2_player( FILE* file, player_t* p )
                            "<br>max_stacks: %.i"
                            "<br>duration: %.2f"
                            "<br>cooldown: %.2f"
-                           "<br>default_chance: %.2f",
+                           "<br>default_chance: %.2f%%",
                            b -> s_id,
                            b -> cooldown -> name_str.c_str(),
                            b -> tooltip(),
                            b -> max_stack,
                            b -> buff_duration,
                            b -> cooldown -> duration,
-                           b -> default_chance );
+                           b -> default_chance * 100 );
 
     util_t::fprintf( file, "</tr>\n" );
   }
@@ -3722,7 +3722,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "                    <li><span class=\"label\">max_stacks:</span>%.i</li>\n"
       "                    <li><span class=\"label\">duration:</span>%.2f</li>\n"
       "                    <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-      "                    <li><span class=\"label\">default_chance:</span>%.2f</li>\n"
+      "                    <li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
       "                  </ul>\n"
       "                </td>\n"
       "              </tr>\n",
@@ -3732,7 +3732,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       b -> max_stack,
       b -> buff_duration,
       b -> cooldown -> duration,
-      b -> default_chance );
+      b -> default_chance * 100 );
   }
   util_t::fprintf( file,
     "            </table>\n" );
@@ -3774,7 +3774,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
         "                      <li><span class=\"label\">max_stacks:</span>%.i</li>\n"
         "                      <li><span class=\"label\">duration:</span>%.2f</li>\n"
         "                      <li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-        "                      <li><span class=\"label\">default_chance:</span>%.2f</li>\n"
+        "                      <li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
         "                    </ul>\n"
         "                  </td>\n"
         "                </tr>\n",
@@ -3784,7 +3784,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
         b -> max_stack,
         b -> buff_duration,
         b -> cooldown -> duration,
-        b -> default_chance );
+        b -> default_chance * 100 );
       i++;
     }
     util_t::fprintf( file,
