@@ -2821,7 +2821,6 @@ static void print_html3_talents( FILE* file, player_t* p )
           "                    <tr>\n"
           "                      <th class=\"left\">%s</th>\n"
           "                      <th>Rank</th>\n"
-          "                      <th>Details</th>\n"
           "                    </tr>\n",
           util_t::talent_tree_string( p -> tree_type[ i ], false ) );
 
@@ -2834,13 +2833,6 @@ static void print_html3_talents( FILE* file, player_t* p )
 	util_t::fprintf( file, "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
         util_t::fprintf( file, "                      <td class=\"left\">%s</td>\n", t -> t_data -> name );
 	util_t::fprintf( file, "                      <td>%d</td>\n", t -> rank() );
-	util_t::fprintf( file, "                      <td>" );
-	if( t -> chance ) util_t::fprintf( file, " %.0f%%", t -> chance * 100 );
-	if( t -> mod1   ) util_t::fprintf( file, " %.2f", t -> mod1 );
-	if( t -> mod2   ) util_t::fprintf( file, " %.2f", t -> mod2 );
-	if( t -> mod3   ) util_t::fprintf( file, " %.2f", t -> mod3 );
-	if( t -> misc   ) util_t::fprintf( file, " %.2f", t -> misc );
-	util_t::fprintf( file, "</td>\n" );
 	util_t::fprintf( file, "                    </tr>\n" );
       } 
       util_t::fprintf( file,
@@ -4074,7 +4066,7 @@ static void print_wiki_raid_events( FILE * file, sim_t* sim )
 static void print_wiki_preamble( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file, "= !SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s) =\n", 
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -4819,7 +4811,7 @@ void report_t::print_html( sim_t* sim )
   }
 
   util_t::fprintf( file, "<h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n", 
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -4924,7 +4916,7 @@ void report_t::print_html2( sim_t* sim )
   }
 
   util_t::fprintf( file, "<h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n", 
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -5130,7 +5122,7 @@ void report_t::print_html3( sim_t* sim )
         
         util_t::fprintf( file,
           "      <h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n\n",
-          SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+          SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
         
         time_t rawtime;
         time ( &rawtime );

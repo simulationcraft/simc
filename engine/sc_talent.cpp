@@ -11,47 +11,19 @@
 
 // talent_t::talent_t =======================================================
 
-talent_t::talent_t( player_t* player, const char* name, uint32_t id ) : 
-  spell_id_t( player, name, name ), t_data( 0 ), t_rank( 0 ), t_overridden( false )
+talent_t::talent_t( player_t* player, talent_data_t* _td ) : 
+  spell_id_t( player, _td->name ), t_data( 0 ), t_rank( 0 ), t_overridden( false ),
+  // Future trimmed down access
+  td( _td ), sd( spell_data_t::nil() ), trigger( 0 ), chance( 0 ), mod1( 0 )
 {
-  assert( name && id && s_player && s_player -> sim );
-
   t_default_rank = new spell_id_t();
   const_cast< spell_id_t* >( t_default_rank ) -> s_enabled = false;
   for ( int i = 0; i < MAX_RANK; i++ )
     t_rank_spells[ i ] = t_default_rank;
   
-  if ( id != 0 )
-  {
-    t_data = s_player->player_data.m_talents_index[ id ];
-    t_enabled = s_player -> player_data.talent_is_enabled( t_data -> id );
-    s_player -> player_data.talent_set_used( id, true );
-  }
-
-  // Future trimmed down access
-  td = talent_data_t::find( id );
-  sd = spell_data_t::nil();
-  chance = mod1 = mod2 = mod3 = misc = 0;
-  trigger = 0;
-}
-
-talent_t::talent_t( const talent_t& copy ) :
-  spell_id_t( copy ), t_data( copy.t_data ), t_rank( copy.t_rank ),
-  t_enabled( copy.t_enabled ), t_overridden( copy.t_overridden )
-{
-  t_default_rank = new spell_id_t();
-  for ( int i = 0; i < MAX_RANK; i++ )
-    t_rank_spells[ i ] = t_default_rank;
-
-  // Will this even be needed in the future???
-  td      = copy.td;
-  sd      = copy.sd;
-  chance  = copy.chance;
-  mod1    = copy.mod1;
-  mod2    = copy.mod2;
-  mod3    = copy.mod3;
-  misc    = copy.misc;
-  trigger = copy.trigger;
+  t_data = s_player->player_data.m_talents_index[ td->id ];
+  t_enabled = s_player -> player_data.talent_is_enabled( td->id );
+  s_player -> player_data.talent_set_used( td->id, true );
 }
 
 talent_t::~talent_t()
@@ -104,7 +76,7 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
   sd = ( ( r >= 3 ) ? td -> spell3 : 
 	 ( r == 2 ) ? td -> spell2 :
 	 ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
-  chance = mod1 = mod2 = mod3 = misc = 0;
+  chance = mod1 = 0;
   trigger = 0;
   // rank = r;
 
@@ -160,45 +132,6 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
     }
   }
   return true;
-}
-
-// talent_t::find_talent_id ===================================================
-
-uint32_t talent_t::find_talent_id( const char* name )
-{
-  uint32_t i_tab, talent_num, talent_id;
-
-  assert( s_player && name && name[ 0 ] );
-
-  if ( s_player -> is_pet() )
-  {
-    talent_num = 0;
-    while (  ( talent_id = s_player->player_data.talent_pet_get_id_by_num( s_player -> cast_pet() -> pet_type, talent_num ) ) != 0 )
-    {
-      if ( util_t::str_compare_ci( s_player -> player_data.talent_name_str( talent_id ), name ) )
-      {
-        return talent_id;
-      }
-      talent_num++;
-    }
-  }
-  else
-  {
-    for ( i_tab = 0; i_tab < MAX_TALENT_TABS; i_tab++ )
-    {
-      talent_num = 0;
-      while ( ( talent_id = s_player->player_data.talent_player_get_id_by_num( s_player -> type, i_tab, talent_num ) ) != 0 )
-      {
-        if ( util_t::str_compare_ci( s_player -> player_data.talent_name_str( talent_id ), name ) )
-        {
-          return talent_id;
-        }
-        talent_num++;
-      }
-    }
-  }
-  
-  return 0; 
 }
 
 uint32_t talent_t::max_rank() SC_CONST
@@ -1130,19 +1063,23 @@ passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const ch
 
 // Glyph basic object
 
-glyph_t::glyph_t( player_t* player, const char* t_name ) :
-  spell_id_t( player, t_name )
+glyph_t::glyph_t( player_t* player, spell_data_t* _sd ) :
+  spell_id_t( player, _sd->name ),
+  // Future trimmed down access
+  sd( _sd ), sd_enabled( spell_data_t::nil() )
 {
-  initialize( t_name );
+  initialize( sd->name );
+  if( s_token.substr( 0, 9 ) == "glyph_of_" ) s_token.erase( 0, 9 );
+  if( s_token.substr( 0, 7 ) == "glyph__"   ) s_token.erase( 0, 7 );
   s_enabled = false;
-  
-  s_player -> spell_list.push_back( this );
 }
 
 bool glyph_t::enable( bool override_value ) 
 {
+  sd_enabled = override_value ? sd : spell_data_t::nil();
+
   spell_id_t::enable( override_value );
-  
+
   if ( s_player -> sim -> debug ) 
     log_t::output( s_player -> sim, "Glyph Spell status: %s", to_str().c_str() );
 

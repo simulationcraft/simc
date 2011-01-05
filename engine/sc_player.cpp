@@ -358,8 +358,6 @@ player_t::player_t( sim_t*             s,
     tree_type[ i ] = TREE_NONE;
   }
 
-  spell_list.clear();
-
   player_data.set_parent( & sim -> sim_data );
 }
 
@@ -397,25 +395,21 @@ player_t::~player_t()
     rng_list = r -> next;
     delete r;
   }
-
   while ( dot_t* d = dot_list )
   {   
     dot_list = d -> next;
     delete d;
   }
-
   while ( buff_t* d = buff_list )
   {
     buff_list = d -> next;
     delete d;
   }
-
   while ( cooldown_t* d = cooldown_list )
   {
     cooldown_list = d -> next;
     delete d;
   }
-
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
     resource_gain_callbacks[ i ].clear();
@@ -437,22 +431,20 @@ player_t::~player_t()
   }
   tick_callbacks.clear();
 
-  while ( all_callbacks.size() )
-  {
-    action_callback_t* a = all_callbacks.back();
-    all_callbacks.pop_back();
-    delete a;
-  }
+  for( int i=all_callbacks.size()-1; i >= 0; i-- ) 
+    delete all_callbacks[ i ];
+  all_callbacks.clear();
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    while ( talent_trees[ i ].size() )
-    {
-      talent_t* t = talent_trees[ i ].back();
-      talent_trees[ i ].pop_back();
-      delete t;
-    }
+    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- ) 
+      delete talent_trees[ i ][ j ];
+    talent_trees[ i ].clear();
   }
+
+  for( int i=glyphs.size()-1; i >= 0; i-- ) 
+    delete glyphs[ i ];
+  glyphs.clear();
 
   while ( spell_list.size() )
   {
@@ -460,7 +452,6 @@ player_t::~player_t()
     spell_list.pop_back();
     delete s;
   }
-
   if ( sets )
     delete sets;
 }
@@ -588,8 +579,8 @@ void player_t::init()
   initialized = 1;
   init_talents();
   init_spells();
-  init_rating();
   init_glyphs();
+  init_rating();
   init_race();
   init_base();
   init_racials();
@@ -1253,6 +1244,21 @@ void player_t::init_talents()
   }
 
   specialization = primary_tab();
+}
+
+// player_t::init_glyphs ==================================================
+
+void player_t::init_glyphs()
+{
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+
+  for ( int i=0; i < num_glyphs; i++ )
+  {
+    glyph_t* g = find_glyph( glyph_names[ i ] );
+
+    if( g ) g -> enable();
+  }
 }
 
 // player_t::init_spells =================================================
@@ -4337,7 +4343,7 @@ void player_t::create_talents()
     {
       if( cid_mask & td.m_class )
       {
-        talent_t* t = new talent_t( this, td.name, td.id );
+        talent_t* t = new talent_t( this, &td );
         talent_trees[ td.tab_page ].push_back( t );
         option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
       }
@@ -4348,7 +4354,7 @@ void player_t::create_talents()
       {
 	if( td.m_pet & ( 1 << j ) )
 	{
-	  talent_t* t = new talent_t( this, td.name, td.id );
+	  talent_t* t = new talent_t( this, &td );
 	  talent_trees[ j ].push_back( t );
 	  option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
 	}
@@ -4377,7 +4383,7 @@ talent_t* player_t::find_talent( const std::string& n,
     {
       talent_t* t = talent_trees[ i ][ j ];
 
-      if( n == t -> t_data -> name )
+      if( n == t -> td -> name )
       {
         return t;
       }
@@ -4385,6 +4391,35 @@ talent_t* player_t::find_talent( const std::string& n,
   }
 
   sim -> errorf( "Player %s unable to find talent %s\n", name(), n.c_str() );
+  sim -> cancel();
+  return 0;
+}
+
+// player_t::create_glyphs ==================================================
+
+void player_t::create_glyphs()
+{
+  std::vector<unsigned> glyph_ids;
+  int num_glyphs = dbc_t::glyphs( glyph_ids, util_t::class_id( type ) );
+
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ] ) ) );
+  }
+}
+
+// player_t::find_glyph =====================================================
+
+glyph_t* player_t::find_glyph( const std::string& n )
+{
+  for( int i=glyphs.size()-1; i >= 0; i-- )
+  {
+    glyph_t* g = glyphs[ i ];
+    if( n == g -> sd -> name ) return g;
+    if( n == g -> s_token ) return g; // Armory-ized
+  }
+
+  sim -> errorf( "Player %s unable to find glyph %s\n", name(), n.c_str() );
   sim -> cancel();
   return 0;
 }

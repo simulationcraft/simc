@@ -245,6 +245,7 @@ struct mage_t : public player_t
     mana_gem_charges =  3;
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 
@@ -254,7 +255,6 @@ struct mage_t : public player_t
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_glyphs();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -2717,61 +2717,6 @@ void mage_t::create_pets()
   create_pet( "water_elemental" );  
 }
 
-// mage_t::init_glyphs ======================================================
-
-void mage_t::init_glyphs()
-{
-  //memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
-
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "arcane_barrage"    ) glyphs.arcane_barrage -> enable();
-    else if ( n == "arcane_blast"      ) glyphs.arcane_blast -> enable();
-    else if ( n == "arcane_brilliance" ) glyphs.arcane_brilliance -> enable();
-    else if ( n == "arcane_missiles"   ) glyphs.arcane_missiles -> enable();
-    else if ( n == "cone_of_cold"      ) glyphs.cone_of_cold -> enable();
-    else if ( n == "deep_freeze"       ) glyphs.deep_freeze -> enable();
-    else if ( n == "dragons_breath"    ) glyphs.dragons_breath -> enable();
-    else if ( n == "fireball"          ) glyphs.fireball -> enable();
-    else if ( n == "frostbolt"         ) glyphs.frostbolt -> enable();
-    else if ( n == "frostfire"         ) glyphs.frostfire -> enable();
-    else if ( n == "ice_lance"         ) glyphs.ice_lance -> enable();
-    else if ( n == "living_bomb"       ) glyphs.living_bomb -> enable();
-    else if ( n == "mage_armor"        ) glyphs.mage_armor -> enable();
-    else if ( n == "mirror_image"      ) glyphs.mirror_image -> enable();
-    else if ( n == "molten_armor"      ) glyphs.molten_armor -> enable();
-    else if ( n == "pyroblast"         ) glyphs.pyroblast -> enable();
-    else if ( n == "pyroblast_hs"      ) glyphs.pyroblast -> enable();
-    // To prevent warnings....
-    else if ( n == "arcane_power" ) ;
-    else if ( n == "armors"       ) ;
-    else if ( n == "blast_wave"   ) ;
-    else if ( n == "blink"        ) ;
-    else if ( n == "conjuring"    ) ;
-    else if ( n == "evocation"    ) ;
-    else if ( n == "frost_nova"   ) ;
-    else if ( n == "ice_barrier"  ) ;
-    else if ( n == "ice_block"    ) ;
-    else if ( n == "icy_veins"    ) ;
-    else if ( n == "invisibility" ) ;
-    else if ( n == "mana_shield"  ) ;
-    else if ( n == "the_monkey"   ) ;
-    else if ( n == "the_penguin"  ) ;
-    else if ( n == "polymorph"    ) ;
-    else if ( n == "slow"         ) ;
-    else if ( n == "slow_fall"    ) ;
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
-}
-
 // mage_t::init_talents =====================================================
 
 void mage_t::init_talents()
@@ -2872,22 +2817,22 @@ void mage_t::init_spells()
     specializations.frostburn = spells.frostburn -> effect2 -> base_value / 10000.0;
   }
 
-  glyphs.arcane_barrage       = new glyph_t(this, "Glyph of Arcane Barrage");
-  glyphs.arcane_blast         = new glyph_t(this, "Glyph of Arcane Blast");
-  glyphs.arcane_brilliance    = new glyph_t(this, "Glyph of Arcane Brilliance");
-  glyphs.arcane_missiles      = new glyph_t(this, "Glyph of Arcane Missiles");
-  glyphs.cone_of_cold         = new glyph_t(this, "Glyph of Cone of Cold");
-  glyphs.deep_freeze          = new glyph_t(this, "Glyph of Deep Freeze");
-  glyphs.dragons_breath       = new glyph_t(this, "Glyph of Dragon's Breath");
-  glyphs.fireball             = new glyph_t(this, "Glyph of Fireball");
-  glyphs.frostbolt            = new glyph_t(this, "Glyph of Frostbolt");
-  glyphs.frostfire            = new glyph_t(this, "Glyph of Frostfire");
-  glyphs.ice_lance            = new glyph_t(this, "Glyph of Ice Lance");
-  glyphs.living_bomb          = new glyph_t(this, "Glyph of Living Bomb");
-  glyphs.mage_armor           = new glyph_t(this, "Glyph of Mage Armor");
-  glyphs.mirror_image         = new glyph_t(this, "Glyph of Mirror Image");
-  glyphs.molten_armor         = new glyph_t(this, "Glyph of Molten Armor");
-  glyphs.pyroblast            = new glyph_t(this, "Glyph of Pyroblast");
+  glyphs.arcane_barrage       = find_glyph( "Glyph of Arcane Barrage" );
+  glyphs.arcane_blast         = find_glyph( "Glyph of Arcane Blast" );
+  glyphs.arcane_brilliance    = find_glyph( "Glyph of Arcane Brilliance" );
+  glyphs.arcane_missiles      = find_glyph( "Glyph of Arcane Missiles" );
+  glyphs.cone_of_cold         = find_glyph( "Glyph of Cone of Cold" );
+  glyphs.deep_freeze          = find_glyph( "Glyph of Deep Freeze" );
+  glyphs.dragons_breath       = find_glyph( "Glyph of Dragon's Breath" );
+  glyphs.fireball             = find_glyph( "Glyph of Fireball" );
+  glyphs.frostbolt            = find_glyph( "Glyph of Frostbolt" );
+  glyphs.frostfire            = find_glyph( "Glyph of Frostfire" );
+  glyphs.ice_lance            = find_glyph( "Glyph of Ice Lance" );
+  glyphs.living_bomb          = find_glyph( "Glyph of Living Bomb" );
+  glyphs.mage_armor           = find_glyph( "Glyph of Mage Armor" );
+  glyphs.mirror_image         = find_glyph( "Glyph of Mirror Image" );
+  glyphs.molten_armor         = find_glyph( "Glyph of Molten Armor" );
+  glyphs.pyroblast            = find_glyph( "Glyph of Pyroblast" );
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {

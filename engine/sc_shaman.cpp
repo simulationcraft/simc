@@ -194,13 +194,13 @@ struct shaman_t : public player_t
     flametongue_oh = 0;
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -3555,78 +3555,24 @@ void shaman_t::init_spells()
   mastery_enhanced_elements   = new mastery_t( this, "enhanced_elements",  77223, TREE_ENHANCEMENT );
   
   // Glyphs
-  glyph_feral_spirit          = new glyph_t( this, "Glyph of Feral Spirit" );
-  glyph_fire_elemental_totem  = new glyph_t( this, "Glyph of Fire Elemental Totem" );
-  glyph_flame_shock           = new glyph_t( this, "Glyph of Flame Shock" );
-  glyph_flametongue_weapon    = new glyph_t( this, "Glyph of Flametongue Weapon" );
-  glyph_lava_burst            = new glyph_t( this, "Glyph of Lava Burst" );
-  glyph_lava_lash             = new glyph_t( this, "Glyph of Lava Lash" );
-  glyph_lightning_bolt        = new glyph_t( this, "Glyph of Lightning Bolt" );
-  glyph_stormstrike           = new glyph_t( this, "Glyph of Stormstrike" );
-  glyph_water_shield          = new glyph_t( this, "Glyph of Water Shield" );
-  glyph_windfury_weapon       = new glyph_t( this, "Glyph of Windfury Weapon" );
+  glyph_feral_spirit          = find_glyph( "Glyph of Feral Spirit" );
+  glyph_fire_elemental_totem  = find_glyph( "Glyph of Fire Elemental Totem" );
+  glyph_flame_shock           = find_glyph( "Glyph of Flame Shock" );
+  glyph_flametongue_weapon    = find_glyph( "Glyph of Flametongue Weapon" );
+  glyph_lava_burst            = find_glyph( "Glyph of Lava Burst" );
+  glyph_lava_lash             = find_glyph( "Glyph of Lava Lash" );
+  glyph_lightning_bolt        = find_glyph( "Glyph of Lightning Bolt" );
+  glyph_stormstrike           = find_glyph( "Glyph of Stormstrike" );
+  glyph_water_shield          = find_glyph( "Glyph of Water Shield" );
+  glyph_windfury_weapon       = find_glyph( "Glyph of Windfury Weapon" );
   
-  glyph_chain_lightning       = new glyph_t( this, "Glyph of Chain Lightning" );
-  glyph_shocking              = new glyph_t( this, "Glyph of Shocking" );
-  glyph_thunder               = new glyph_t( this, "Glyph of Thunder" );
-  
-  glyph_thunderstorm          = new glyph_t( this, "Glyph of Thunderstorm" );
+  glyph_chain_lightning       = find_glyph( "Glyph of Chain Lightning" );
+  glyph_shocking              = find_glyph( "Glyph of Shocking" );
+  glyph_thunder               = find_glyph( "Glyph of Thunder" );
+
+  glyph_thunderstorm          = find_glyph( "Glyph of Thunderstorm" );
   
   sets                        = new set_bonus_array_t( this, set_bonuses );
-}
-
-// shaman_t::init_glyphs ======================================================
-
-void shaman_t::init_glyphs()
-{
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "chain_lightning"      ) glyph_chain_lightning -> enable();
-    else if ( n == "feral_spirit"         ) glyph_feral_spirit -> enable();
-    else if ( n == "fire_elemental_totem" ) glyph_fire_elemental_totem -> enable();
-    else if ( n == "flame_shock"          ) glyph_flame_shock -> enable();
-    else if ( n == "flametongue_weapon"   ) glyph_flametongue_weapon -> enable();
-    else if ( n == "lava_burst"           ) glyph_lava_burst -> enable();
-    else if ( n == "lava_lash"            ) glyph_lava_lash -> enable();
-    else if ( n == "lightning_bolt"       ) glyph_lightning_bolt -> enable();
-    else if ( n == "shocking"             ) glyph_shocking -> enable();
-    else if ( n == "stormstrike"          ) glyph_stormstrike -> enable();
-    else if ( n == "thunder"              ) glyph_thunder -> enable();
-    else if ( n == "thunderstorm"         ) glyph_thunderstorm -> enable();
-    else if ( n == "water_shield"         ) glyph_water_shield -> enable();
-    else if ( n == "windfury_weapon"      ) glyph_windfury_weapon -> enable();
-    // To prevent warnings....
-    else if ( n == "the_arctic_wolf"      ) ;
-    else if ( n == "astral_recall"        ) ;
-    else if ( n == "chain_heal"           ) ;
-    else if ( n == "earth_shield"         ) ;
-    else if ( n == "earthliving_weapon"   ) ;
-    else if ( n == "elemental_mastery"    ) ;
-    else if ( n == "fire_nova"            ) ;
-    else if ( n == "frost_shock"          ) ;
-    else if ( n == "ghost_wolf"           ) ;
-    else if ( n == "grounding_totem"      ) ;
-    else if ( n == "healing_stream_totem" ) ;
-    else if ( n == "healing_wave"         ) ;
-    else if ( n == "hex"                  ) ;
-    else if ( n == "lightning_shield"     ) ;
-    else if ( n == "renewed_life"         ) ;
-    else if ( n == "riptide"              ) ;
-    else if ( n == "shamanistic_rage"     ) ;
-    else if ( n == "stoneclaw_totem"      ) ;
-    else if ( n == "totemic_recall"       ) ;
-    else if ( n == "water_breathing"      ) ;
-    else if ( n == "water_walking"        ) ;
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
 }
 
 // shaman_t::init_race ======================================================

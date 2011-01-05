@@ -378,13 +378,13 @@ struct warlock_t : public player_t
     use_pre_soulburn = 0;
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -4013,80 +4013,25 @@ void warlock_t::init_spells()
   constants_pandemic_gcd              = 0.25;
 
   // Prime
-  glyphs.metamorphosis        = new glyph_t(this, "Glyph of Metamorphosis");
-  glyphs.conflagrate          = new glyph_t(this, "Glyph of Conflagrate");
-  glyphs.chaos_bolt           = new glyph_t(this, "Glyph of Chaos Bolt");
-  glyphs.corruption           = new glyph_t(this, "Glyph of Corruption");
-  glyphs.bane_of_agony        = new glyph_t(this, "Glyph of Bane of Agony");
-  glyphs.felguard             = new glyph_t(this, "Glyph of Felguard");
-  glyphs.haunt                = new glyph_t(this, "Glyph of Haunt");
-  glyphs.immolate             = new glyph_t(this, "Glyph of Immolate");
-  glyphs.imp                  = new glyph_t(this, "Glyph of Imp");
-  glyphs.lash_of_pain         = new glyph_t(this, "Glyph of Lash of Pain");
-  glyphs.incinerate           = new glyph_t(this, "Glyph of Incinerate");
-  glyphs.shadowburn           = new glyph_t(this, "Glyph of Shadowburn");
-  glyphs.unstable_affliction  = new glyph_t(this, "Glyph of Unstable Affliction");
+  glyphs.metamorphosis        = find_glyph( "Glyph of Metamorphosis" );
+  glyphs.conflagrate          = find_glyph( "Glyph of Conflagrate" );
+  glyphs.chaos_bolt           = find_glyph( "Glyph of Chaos Bolt" );
+  glyphs.corruption           = find_glyph( "Glyph of Corruption" );
+  glyphs.bane_of_agony        = find_glyph( "Glyph of Bane of Agony" );
+  glyphs.felguard             = find_glyph( "Glyph of Felguard" );
+  glyphs.haunt                = find_glyph( "Glyph of Haunt" );
+  glyphs.immolate             = find_glyph( "Glyph of Immolate" );
+  glyphs.imp                  = find_glyph( "Glyph of Imp" );
+  glyphs.lash_of_pain         = find_glyph( "Glyph of Lash of Pain" );
+  glyphs.incinerate           = find_glyph( "Glyph of Incinerate" );
+  glyphs.shadowburn           = find_glyph( "Glyph of Shadowburn" );
+  glyphs.unstable_affliction  = find_glyph( "Glyph of Unstable Affliction" );
 
   // Major
-  glyphs.life_tap             = new glyph_t(this, "Glyph of Life Tap");
-  glyphs.shadow_bolt          = new glyph_t(this, "Glyph of Shadow Bolt");
+  glyphs.life_tap             = find_glyph( "Glyph of Life Tap" );
+  glyphs.shadow_bolt          = find_glyph( "Glyph of Shadow Bolt" );
 
   sets                        = new set_bonus_array_t( this, set_bonuses );
-}
-
-// warlock_t::init_glyphs =====================================================
-
-void warlock_t::init_glyphs()
-{
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "chaos_bolt"          ) glyphs.chaos_bolt -> enable();
-    else if ( n == "conflagrate"         ) glyphs.conflagrate -> enable();
-    else if ( n == "corruption"          ) glyphs.corruption -> enable();
-    else if ( n == "bane_of_agony"       ) glyphs.bane_of_agony -> enable();
-    else if ( n == "felguard"            ) glyphs.felguard -> enable();
-    else if ( n == "felhunter"           );
-    else if ( n == "haunt"               ) glyphs.haunt -> enable();
-    else if ( n == "immolate"            ) glyphs.immolate -> enable();
-    else if ( n == "imp"                 ) glyphs.imp -> enable();
-    else if ( n == "incinerate"          ) glyphs.incinerate -> enable();
-    else if ( n == "life_tap"            ) glyphs.life_tap -> enable();
-    else if ( n == "metamorphosis"       ) glyphs.metamorphosis -> enable();
-    else if ( n == "searing_pain"        );
-    else if ( n == "shadow_bolt"         ) glyphs.shadow_bolt -> enable();
-    else if ( n == "shadow_burn"         ) glyphs.shadowburn -> enable();
-    else if ( n == "unstable_affliction" ) glyphs.unstable_affliction -> enable();
-    else if ( n == "lash_of_pain"        ) glyphs.lash_of_pain -> enable();
-    // minor glyphs, to prevent 'not-found' warning
-    else if ( n == "curse_of_exhaustion" ) ;
-    else if ( n == "curse_of_exhausion" )  ; // It's mis-spelt on the armory.
-    else if ( n == "drain_soul" )          ;
-    else if ( n == "enslave_demon" )       ;
-    else if ( n == "healthstone" )         ;
-    else if ( n == "health_funnel" )       ;
-    else if ( n == "howl_of_terror")       ;
-    else if ( n == "kilrogg" )             ;
-    else if ( n == "shadowflame" )         ;
-    else if ( n == "soul_link" )           ;
-    else if ( n == "souls" )               ;
-    else if ( n == "soulstone" )           ;
-    else if ( n == "unending_breath" )     ;
-    else if ( n == "voidwalker" )          ;
-    else if ( n == "ritual_of_souls" )     ;
-    else if ( n == "demonic_circle" )      ;
-    else if ( n == "soul_swap" )           ;
-    else if ( n == "eye_of_kilrogg" )      ;
-    else if ( n == "fear" )                ;
-    else if ( ! sim -> parent )
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
 }
 
 // warlock_t::init_race ======================================================

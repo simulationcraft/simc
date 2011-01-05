@@ -15,6 +15,15 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct dbc_t
+{
+  static void set_ptr( bool );
+  static bool get_ptr();
+  static const char* build_level();
+  static void init();
+  static int glyphs( std::vector<unsigned>& glyph_ids, int cid );
+};
+
 struct spell_data_t {
   const char * name;               // Spell name from Spell.dbc stringblock (enGB)
   unsigned     id;                 // Spell ID in dbc
@@ -73,12 +82,6 @@ struct spell_data_t {
   static spell_data_t* find( unsigned, const std::string& confirmation = std::string() );
   static spell_data_t* find( const std::string& name );
   static void link();
-
-  // FIXME!!! Is there a more generic class other than spell_data_t to move this to?
-  static void set_ptr( bool );
-  static bool get_ptr();
-  static const char* build_level();
-  static void init();
 };
 
 // SpellEffect.dbc

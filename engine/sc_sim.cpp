@@ -78,7 +78,7 @@ static bool parse_ptr( sim_t*             sim,
 {
   if ( name != "ptr" ) return false;
 
-  spell_data_t::set_ptr( atoi( value.c_str() ) != 0 );
+  dbc_t::set_ptr( atoi( value.c_str() ) != 0 );
 
   return true;
 }
@@ -873,7 +873,7 @@ bool sim_t::init()
   }
 
 #if SC_USE_PTR
-  if ( spell_data_t::get_ptr() )
+  if ( dbc_t::get_ptr() )
   {
     sim_data.set_parent( &sim_t::ptr_data );
   }
@@ -2004,7 +2004,7 @@ int sim_t::main( int argc, char** argv )
 
   http_t::cache_load();
 
-  spell_data_t::init();
+  dbc_t::init();
 
   if ( ! parse_options( argc, argv ) )
   {
@@ -2017,7 +2017,7 @@ int sim_t::main( int argc, char** argv )
   current_throttle = armory_throttle;
 
   util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)\n",
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( spell_data_t::get_ptr() ? "PTR" : "Live" ), spell_data_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
   fflush( output_file );
 
   if ( spell_query )

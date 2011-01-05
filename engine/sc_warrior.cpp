@@ -191,7 +191,6 @@ struct warrior_t : public player_t
     glyph_t* colossus_smash;
     glyph_t* command;
     glyph_t* devastate;
-    glyph_t* enduring_victory;
     glyph_t* heroic_throw;
     glyph_t* mortal_strike;
     glyph_t* overpower;
@@ -333,13 +332,13 @@ struct warrior_t : public player_t
     initial_rage = 0;
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -2748,27 +2747,25 @@ void warrior_t::init_spells()
   spec.sentinel                         = new passive_spell_t( this, "sentinel",                         29144 );
   spec.two_handed_weapon_specialization = new passive_spell_t( this, "two_handed_weapon_specialization", 12712 );
 
-  glyphs.battle              = new glyph_t( this, "Glyph of Battle" );
-  glyphs.berserker_rage      = new glyph_t( this, "Glyph of Berserker Rage" );
-  glyphs.bladestorm          = new glyph_t( this, "Glyph of Bladestorm" );
-  glyphs.bloodthirst         = new glyph_t( this, "Glyph of Bloodthirst" );
-  glyphs.bloody_healing      = new glyph_t( this, "Glyph of Bloody Healing" );
-  glyphs.cleaving            = new glyph_t( this, "Glyph of Cleaving" );
-  glyphs.colossus_smash      = new glyph_t( this, "Glyph of Colossus Smash" );
-  glyphs.command             = new glyph_t( this, "Glyph of Command" );
-  glyphs.devastate           = new glyph_t( this, "Glyph of Devastate" );
-  glyphs.enduring_victory    = new glyph_t( this, "Glyph of Enduring Victory " );
-  glyphs.heroic_throw        = new glyph_t( this, "Glyph of Heroic Throw" );
-  glyphs.mortal_strike       = new glyph_t( this, "Glyph of Mortal Strike" );
-  glyphs.overpower           = new glyph_t( this, "Glyph of Overpower" );
-  glyphs.raging_blow         = new glyph_t( this, "Glyph of Raging Blow" );
-  glyphs.resonating_power    = new glyph_t( this, "Glyph of Resonating Power" );
-  glyphs.revenge             = new glyph_t( this, "Glyph of Revenge" );
-  glyphs.shield_slam         = new glyph_t( this, "Glyph of Shield Slam" );
-  glyphs.shockwave           = new glyph_t( this, "Glyph of Shockwave" );
-  glyphs.slam                = new glyph_t( this, "Glyph of Slam" );
-  glyphs.sweeping_strikes    = new glyph_t( this, "Glyph of Sweeping Strikes" );
-  glyphs.victory_rush        = new glyph_t( this, "Glyph of Victory Rush" );
+  glyphs.battle              = find_glyph( "Glyph of Battle" );
+  glyphs.berserker_rage      = find_glyph( "Glyph of Berserker Rage" );
+  glyphs.bladestorm          = find_glyph( "Glyph of Bladestorm" );
+  glyphs.bloodthirst         = find_glyph( "Glyph of Bloodthirst" );
+  glyphs.bloody_healing      = find_glyph( "Glyph of Bloody Healing" );
+  glyphs.cleaving            = find_glyph( "Glyph of Cleaving" );
+  glyphs.command             = find_glyph( "Glyph of Command" );
+  glyphs.devastate           = find_glyph( "Glyph of Devastate" );
+  glyphs.heroic_throw        = find_glyph( "Glyph of Heroic Throw" );
+  glyphs.mortal_strike       = find_glyph( "Glyph of Mortal Strike" );
+  glyphs.overpower           = find_glyph( "Glyph of Overpower" );
+  glyphs.raging_blow         = find_glyph( "Glyph of Raging Blow" );
+  glyphs.resonating_power    = find_glyph( "Glyph of Resonating Power" );
+  glyphs.revenge             = find_glyph( "Glyph of Revenge" );
+  glyphs.shield_slam         = find_glyph( "Glyph of Shield Slam" );
+  glyphs.shockwave           = find_glyph( "Glyph of Shockwave" );
+  glyphs.slam                = find_glyph( "Glyph of Slam" );
+  glyphs.sweeping_strikes    = find_glyph( "Glyph of Sweeping Strikes" );
+  glyphs.victory_rush        = find_glyph( "Glyph of Victory Rush" );
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
@@ -2779,57 +2776,6 @@ void warrior_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// warrior_t::init_glyphs ===================================================
-
-void warrior_t::init_glyphs()
-{
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "battle"             ) glyphs.battle -> enable();
-    else if ( n == "berserker_rage"     ) glyphs.berserker_rage -> enable();
-    else if ( n == "bladestorm"         ) glyphs.bladestorm -> enable();
-    else if ( n == "bloodthirst"        ) glyphs.bloodthirst -> enable();
-    else if ( n == "bloody_healing"     ) glyphs.bloody_healing -> enable();
-    else if ( n == "cleaving"           ) glyphs.cleaving -> enable();
-    else if ( n == "command"            ) glyphs.command -> enable();
-    else if ( n == "devastate"          ) glyphs.devastate -> enable();
-    else if ( n == "enduring_victory"   ) glyphs.enduring_victory -> enable();
-    else if ( n == "heroic_throw"       ) glyphs.heroic_throw -> enable();
-    else if ( n == "mortal_strike"      ) glyphs.mortal_strike -> enable();
-    else if ( n == "overpower"          ) glyphs.overpower -> enable();
-    else if ( n == "raging_blow"        ) glyphs.raging_blow -> enable();
-    else if ( n == "resonating_power"   ) glyphs.resonating_power -> enable();
-    else if ( n == "revenge"            ) glyphs.revenge -> enable();
-    else if ( n == "shield_slam"        ) glyphs.shield_slam -> enable();
-    else if ( n == "shockwave"          ) glyphs.shockwave -> enable();
-    else if ( n == "slam"               ) glyphs.slam -> enable();
-    else if ( n == "sweeping_strikes"   ) glyphs.sweeping_strikes -> enable();
-    else if ( n == "victory_rush"       ) glyphs.victory_rush -> enable();
-    // To prevent warnings....
-    else if ( n == "colossus_smash"     ) ;
-    else if ( n == "death_wish"         ) ;
-    else if ( n == "demoralizing_shout" ) ;
-    else if ( n == "furious_sundering"  ) ;
-    else if ( n == "hamstring"          ) ;
-    else if ( n == "intervene"          ) ;
-    else if ( n == "intimidating_shout" ) ;
-    else if ( n == "long_charge"        ) ;
-    else if ( n == "rapid_charge"       ) ;
-    else if ( n == "spell_reflection"   ) ;
-    else if ( n == "sunder_armor"       ) ;
-    else if ( n == "thunder_clap"       ) ;
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
 }
 
 // warrior_t::init_race =====================================================
@@ -2946,7 +2892,7 @@ void warrior_t::init_buffs()
   buffs_sword_and_board           = new buff_t( this, "sword_and_board",           1,  5.0,   0, talents.sword_and_board -> proc_chance() );
   buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1,  9.0, 5.0, talents.taste_for_blood -> proc_chance() );
   buffs_thunderstruck             = new buff_t( this, "thunderstruck",             3, 20.0,   0, talents.thunderstruck -> proc_chance() );
-  buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 + glyphs.enduring_victory -> effect_base_value( 1 ) / 1000.0 );
+  buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
   buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0 );

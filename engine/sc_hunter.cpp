@@ -186,13 +186,13 @@ struct hunter_t : public player_t
     base_gcd = 1.0;
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_buffs();
@@ -2535,16 +2535,16 @@ void hunter_t::init_spells()
   passive_spells.wild_quiver = new mastery_t( this, "wild_quiver", "Wild Quiver", TREE_MARKSMANSHIP );
   passive_spells.essence_of_the_viper = new mastery_t( this, "essence_of_the_viper", "Essence of the Viper", TREE_SURVIVAL );
 
-  glyphs.aimed_shot = new glyph_t(this, "Glyph of Aimed Shot");
-  glyphs.arcane_shot = new glyph_t(this, "Glyph of Arcane Shot");
-  glyphs.bestial_wrath = new glyph_t(this, "Glyph of Bestial Wrath");
-  glyphs.chimera_shot = new glyph_t(this, "Glyph of Chimera Shot");
-  glyphs.explosive_shot = new glyph_t(this, "Glyph of Explosive Shot");
-  glyphs.kill_shot = new glyph_t(this, "Glyph of Kill Shot");
-  glyphs.rapid_fire = new glyph_t(this, "Glyph of Rapid Fire");
-  glyphs.serpent_sting = new glyph_t(this, "Glyph of Serpent Sting");
-  glyphs.steady_shot = new glyph_t(this, "Glyph of Steady Shot");
-  glyphs.kill_command = new glyph_t(this, "Glyph of Kill Command");
+  glyphs.aimed_shot     = find_glyph( "Glyph of Aimed Shot"     );
+  glyphs.arcane_shot    = find_glyph( "Glyph of Arcane Shot"    );
+  glyphs.bestial_wrath  = find_glyph( "Glyph of Bestial Wrath"  );
+  glyphs.chimera_shot   = find_glyph( "Glyph of Chimera Shot"   );
+  glyphs.explosive_shot = find_glyph( "Glyph of Explosive Shot" );
+  glyphs.kill_shot      = find_glyph( "Glyph of Kill Shot"      );
+  glyphs.rapid_fire     = find_glyph( "Glyph of Rapid Fire"     );
+  glyphs.serpent_sting  = find_glyph( "Glyph of Serpent Sting"  );
+  glyphs.steady_shot    = find_glyph( "Glyph of Steady Shot"    );
+  glyphs.kill_command   = find_glyph( "Glyph of Kill Command"   );
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
@@ -2555,56 +2555,6 @@ void hunter_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// hunter_t::init_glyphs ===================================================
-
-void hunter_t::init_glyphs()
-{
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "aimed_shot"                  ) glyphs.aimed_shot -> enable();
-    else if ( n == "arcane_shot"                 ) glyphs.arcane_shot -> enable();
-    else if ( n == "bestial_wrath"               ) glyphs.bestial_wrath -> enable();
-    else if ( n == "chimera_shot"                ) glyphs.chimera_shot -> enable();
-    else if ( n == "explosive_shot"              ) glyphs.explosive_shot -> enable();
-    else if ( n == "hunters_mark"                ) ;
-    else if ( n == "kill_shot"                   ) glyphs.kill_shot -> enable();
-    else if ( n == "rapid_fire"                  ) glyphs.rapid_fire -> enable();
-    else if ( n == "serpent_sting"               ) glyphs.serpent_sting -> enable();
-    else if ( n == "steady_shot"                 ) glyphs.steady_shot -> enable();
-    else if ( n == "kill_command"                ) glyphs.kill_command -> enable();
-    // To prevent warnings....
-    else if ( n == "aspect_of_the_pack" ) ;
-    else if ( n == "concussive_shot"    ) ;
-    else if ( n == "disengage"          ) ;
-    else if ( n == "explosive_trap"     ) ;
-    else if ( n == "feign_death"        ) ;
-    else if ( n == "freezing_trap"      ) ;
-    else if ( n == "frost_trap"         ) ;
-    else if ( n == "mend_pet"           ) ;
-    else if ( n == "mending"            ) ;
-    else if ( n == "misdirection"       ) ;
-    else if ( n == "possessed_strength" ) ;
-    else if ( n == "revive_pet"         ) ;
-    else if ( n == "scare_beast"        ) ;
-    else if ( n == "the_pack"           ) ;
-    else if ( n == "volley"             ) ;
-    else if ( n == "wyvern_sting"       ) ;
-    else if ( n == "ice_trap"           ) ;
-    else if ( n == "scatter_shot"       ) ;
-    else if ( n == "silencing_shot"     ) ;
-    else if ( n == "trap_launcher"      ) ;
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
 }
 
 // hunter_t::init_race ======================================================

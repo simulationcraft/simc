@@ -362,6 +362,7 @@ struct priest_t : public player_t
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 

@@ -347,6 +347,7 @@ struct death_knight_t : public player_t
     cooldowns_howling_blast = get_cooldown( "howling_blast" );
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 

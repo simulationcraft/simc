@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
   thread_t::init();
-  spell_data_t::init();
+  dbc_t::init();
 
   QApplication a(argc, argv);
 

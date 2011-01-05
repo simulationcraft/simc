@@ -348,6 +348,7 @@ struct rogue_t : public player_t
     tricks_of_the_trade_target = 0;
 
     create_talents();
+    create_glyphs();
     create_options();
   }
 
@@ -360,7 +361,6 @@ struct rogue_t : public player_t
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_glyphs();
   virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
@@ -3271,79 +3271,6 @@ action_expr_t* rogue_t::create_expression( action_t* a, const std::string& name_
   return player_t::create_expression( a, name_str );
 }
 
-// rogue_t::init_glyphs ======================================================
-
-void rogue_t::init_glyphs()
-{
-  glyphs.adrenaline_rush     = new glyph_t( this, "Glyph of Adrenaline Rush"     );
-  glyphs.ambush              = new glyph_t( this, "Glyph of Ambush"              );
-  glyphs.backstab            = new glyph_t( this, "Glyph of Backstab"            );
-  glyphs.blade_flurry        = new glyph_t( this, "Glyph of Blade Flurry"        );
-  glyphs.eviscerate          = new glyph_t( this, "Glyph of Eviscerate"          );
-  glyphs.expose_armor        = new glyph_t( this, "Glyph of Expose Armor"        );
-  glyphs.feint               = new glyph_t( this, "Glyph of Feint"               );
-  glyphs.hemorrhage          = new glyph_t( this, "Glyph of Hemorrhage"          );
-  glyphs.kick                = new glyph_t( this, "Glyph of Kick"                );
-  glyphs.killing_spree       = new glyph_t( this, "Glyph of Killing Spree"       );
-  glyphs.mutilate            = new glyph_t( this, "Glyph of Mutilate"            );
-  glyphs.preparation         = new glyph_t( this, "Glyph of Preparation"         );
-  glyphs.revealing_strike    = new glyph_t( this, "Glyph of Revealing Strike"    );
-  glyphs.rupture             = new glyph_t( this, "Glyph of Rupture"             );
-  glyphs.shadow_dance        = new glyph_t( this, "Glyph of Shadow Dance"        );
-  glyphs.sinister_strike     = new glyph_t( this, "Glyph of Sinister Strike"     );
-  glyphs.slice_and_dice      = new glyph_t( this, "Glyph of Slice and Dice"      );
-  glyphs.tricks_of_the_trade = new glyph_t( this, "Glyph of Tricks of the Trade" );
-  glyphs.vendetta            = new glyph_t( this, "Glyph of Vendetta"            );
-  
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "adrenaline_rush"     ) glyphs.adrenaline_rush     -> enable();
-    else if ( n == "ambush"              ) glyphs.ambush              -> enable();
-    else if ( n == "backstab"            ) glyphs.backstab            -> enable();
-    else if ( n == "blade_flurry"        ) glyphs.blade_flurry        -> enable();
-    else if ( n == "eviscerate"          ) glyphs.eviscerate          -> enable();
-    else if ( n == "expose_armor"        ) glyphs.expose_armor        -> enable();
-    else if ( n == "feint"               ) glyphs.feint               -> enable();
-    else if ( n == "hemorrhage"          ) glyphs.hemorrhage          -> enable();
-    else if ( n == "killing_spree"       ) glyphs.killing_spree       -> enable();
-    else if ( n == "mutilate"            ) glyphs.mutilate            -> enable();
-    else if ( n == "preparation"         ) glyphs.preparation         -> enable();
-    else if ( n == "revealing_strike"    ) glyphs.revealing_strike    -> enable();
-    else if ( n == "rupture"             ) glyphs.rupture             -> enable();
-    else if ( n == "shadow_dance"        ) glyphs.shadow_dance        -> enable();
-    else if ( n == "sinister_strike"     ) glyphs.sinister_strike     -> enable();
-    else if ( n == "slice_and_dice"      ) glyphs.slice_and_dice      -> enable();
-    else if ( n == "tricks_of_the_trade" ) glyphs.tricks_of_the_trade -> enable();
-    else if ( n == "vendetta"            ) glyphs.vendetta            -> enable();
-    // To prevent warning messages....
-    else if ( n == "blurred_speed"       ) ;
-    else if ( n == "blind"               ) ;
-    else if ( n == "cloak_of_shadows"    ) ;
-    else if ( n == "crippling_poison"    ) ;
-    else if ( n == "distract"            ) ;
-    else if ( n == "evasion"             ) ;
-    else if ( n == "fan_of_knives"       ) ;
-    else if ( n == "garrote"             ) ;
-    else if ( n == "kick"                ) ;
-    else if ( n == "pick_lock"           ) ;
-    else if ( n == "pick_pocket"         ) ;
-    else if ( n == "poisons"             ) ;
-    else if ( n == "safe_fall"           ) ;
-    else if ( n == "sap"                 ) ;
-    else if ( n == "sprint"              ) ;
-    else if ( n == "vanish"              ) ;
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
-}
-
 // rogue_t::init_race ======================================================
 
 void rogue_t::init_race()
@@ -3473,6 +3400,26 @@ void rogue_t::init_spells()
   mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
   mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
 
+  glyphs.adrenaline_rush     = find_glyph( "Glyph of Adrenaline Rush"     );
+  glyphs.ambush              = find_glyph( "Glyph of Ambush"              );
+  glyphs.backstab            = find_glyph( "Glyph of Backstab"            );
+  glyphs.blade_flurry        = find_glyph( "Glyph of Blade Flurry"        );
+  glyphs.eviscerate          = find_glyph( "Glyph of Eviscerate"          );
+  glyphs.expose_armor        = find_glyph( "Glyph of Expose Armor"        );
+  glyphs.feint               = find_glyph( "Glyph of Feint"               );
+  glyphs.hemorrhage          = find_glyph( "Glyph of Hemorrhage"          );
+  glyphs.kick                = find_glyph( "Glyph of Kick"                );
+  glyphs.killing_spree       = find_glyph( "Glyph of Killing Spree"       );
+  glyphs.mutilate            = find_glyph( "Glyph of Mutilate"            );
+  glyphs.preparation         = find_glyph( "Glyph of Preparation"         );
+  glyphs.revealing_strike    = find_glyph( "Glyph of Revealing Strike"    );
+  glyphs.rupture             = find_glyph( "Glyph of Rupture"             );
+  glyphs.shadow_dance        = find_glyph( "Glyph of Shadow Dance"        );
+  glyphs.sinister_strike     = find_glyph( "Glyph of Sinister Strike"     );
+  glyphs.slice_and_dice      = find_glyph( "Glyph of Slice and Dice"      );
+  glyphs.tricks_of_the_trade = find_glyph( "Glyph of Tricks of the Trade" );
+  glyphs.vendetta            = find_glyph( "Glyph of Vendetta"            );
+  
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P

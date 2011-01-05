@@ -372,9 +372,10 @@ enum weapon_type
 
 enum glyph_type
 {
-  GLYPH_MAJOR,
+  GLYPH_MAJOR=0,
   GLYPH_MINOR,
-  GLYPH_PRIME
+  GLYPH_PRIME,
+  GLYPH_MAX
 };
 
 enum slot_type   // these enum values match armory settings
@@ -1839,13 +1840,11 @@ struct talent_t : spell_id_t
   talent_data_t* td;
   spell_data_t* sd;
   spell_data_t* trigger;
-  double chance, mod1, mod2, mod3, misc;
+  double chance, mod1;
   // unsigned rank;
 
-  talent_t( player_t* p, const char* name, uint32_t id=0 );
-  talent_t( const talent_t& copy );
+  talent_t( player_t* p, talent_data_t* td );
   virtual ~talent_t();
-  virtual uint32_t talent_id() { return ( s_player && t_data ) ? t_data -> id : 0; };
   virtual bool set_rank( uint32_t value, bool overridden = false );
   virtual bool ok() SC_CONST;
   std::string to_str() SC_CONST;
@@ -1855,9 +1854,6 @@ struct talent_t : spell_id_t
   virtual uint32_t max_rank() SC_CONST;
   virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
   virtual const spell_id_t* rank_spell( uint32_t r = 0 ) SC_CONST;
-
-private:
-  virtual uint32_t find_talent_id( const char* name );
 };
 
 // Active Spell ID class
@@ -1884,8 +1880,12 @@ struct passive_spell_t : public spell_id_t
 
 struct glyph_t : public spell_id_t
 {
-  glyph_t( const passive_spell_t& copy ) : spell_id_t( copy ) { }
-  glyph_t( player_t* player = 0, const char* t_name = 0 );
+  // Future trimmed down access
+  spell_data_t* sd;
+  spell_data_t* sd_enabled;
+  int enabled() { return ( sd == sd_enabled ) ? 1 : 0; }
+
+  glyph_t( player_t* p, spell_data_t* sd );
   virtual ~glyph_t() {}
   
   virtual bool enable( bool override_value = true );
@@ -2773,9 +2773,10 @@ struct player_t
   std::vector<option_t> options;
 
   // Talent Parsing
+  int tree_type[ MAX_TALENT_TREES ];
   int talent_tab_points[ MAX_TALENT_TREES ];
   std::vector<talent_t*> talent_trees[ MAX_TALENT_TREES ];
-  int tree_type[ MAX_TALENT_TREES ];
+  std::vector<glyph_t*> glyphs;
 
   std::list<spell_id_t*> spell_list;
 
@@ -3056,7 +3057,7 @@ struct player_t
   virtual const char* id();
 
   virtual void init();
-  virtual void init_glyphs() {}
+  virtual void init_glyphs();
   virtual void init_base() = 0;
   virtual void init_items();
   virtual void init_meta_gem( gear_stats_t& );
@@ -3176,8 +3177,12 @@ struct player_t
   virtual bool parse_talent_trees( int talents[], const uint32_t size );
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
+
   virtual void create_talents();
+  virtual void create_glyphs();
+
   virtual talent_t* find_talent( const std::string& name, int tree = TALENT_TAB_NONE );
+  virtual glyph_t*  find_glyph ( const std::string& name );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 

@@ -16,19 +16,17 @@
 #include "sc_item_data_ptr.inc"
 #endif
 
-// FIXME!!! Is there a more generic class other than spell_data_t to move this to?
-
 static bool use_ptr = false;
 static spell_data_t       nil_sd;
 static spelleffect_data_t nil_sed;
 static talent_data_t      nil_td;
 
-bool spell_data_t::get_ptr()
+bool dbc_t::get_ptr()
 {
   return use_ptr;
 }
 
-void spell_data_t::set_ptr( bool use )
+void dbc_t::set_ptr( bool use )
 {
 #if SC_USE_PTR
   use_ptr = use;
@@ -37,7 +35,7 @@ void spell_data_t::set_ptr( bool use )
 #endif
 }
 
-const char* spell_data_t::build_level()
+const char* dbc_t::build_level()
 {
 #if SC_USE_PTR
   return use_ptr ? "13316" : "13329";
@@ -46,7 +44,7 @@ const char* spell_data_t::build_level()
 #endif
 }
 
-void spell_data_t::init()
+void dbc_t::init()
 {
   memset( &nil_sd,  0x00, sizeof( spell_data_t )       );
   memset( &nil_sed, 0x00, sizeof( spelleffect_data_t ) );
@@ -75,6 +73,20 @@ void spell_data_t::init()
   talent_data_t::link();
   set_ptr( false );
 #endif
+}
+
+int dbc_t::glyphs( std::vector<unsigned>& glyph_ids, int cid )
+{
+  for( int i=0; i < GLYPH_MAX; i++ )
+  {
+    for( int j=0; j < GLYPH_ABILITIES_SIZE; j++ )
+    {
+      unsigned id = __glyph_abilities_data[ cid ][ i ][ j ];
+      if( ! id ) break;
+      glyph_ids.push_back( id );
+    }
+  }
+  return glyph_ids.size();
 }
 
 spell_data_t* spell_data_t::list() 
