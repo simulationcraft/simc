@@ -1634,6 +1634,7 @@ struct util_t
   static int class_id( int type );
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
+  static int translate_class_str( std::string& s );
   static race_type translate_race_id( int rid );
   static stat_type translate_item_mod( int stat_mod );
   static bool socket_gem_match( int socket, int gem );
@@ -4129,6 +4130,14 @@ struct battle_net_t
                                     const std::string& name,
                                     const std::string& talents,
                                     int cache=0 );
+  static bool download_guild( sim_t* sim,
+                              const std::string& region,
+                              const std::string& server,
+                              const std::string& name,
+                              const std::vector<int>& ranks,
+                              int player_type = PLAYER_NONE,
+                              int max_rank=0,
+                              int cache=0 );
 };
 
 // Wowhead  ==================================================================

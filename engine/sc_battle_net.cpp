@@ -15,7 +15,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& name )
 {
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
-  xml_node_t* node = xml_t::download( sim, url, "", -1 );
+  xml_node_t* node = xml_t::download( sim, url, "", -1, sim -> current_throttle );
   if ( sim -> debug ) xml_t::print( node, sim -> output_file );
   return node;
 }
@@ -23,13 +23,13 @@ static xml_node_t* download_character_sheet( sim_t* sim,
 // download_character_talents ===============================================
 
 static xml_node_t* download_character_talents( sim_t* sim,
-					       const std::string& region,
-					       const std::string& server,
-					       const std::string& name,
-					       const char* p_s )
+                                               const std::string& region,
+                                               const std::string& server,
+                                               const std::string& name,
+                                               const char* p_s )
 {
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/talent/" + p_s;
-  xml_node_t* node = xml_t::download( sim, url, "", -1 );
+  xml_node_t* node = xml_t::download( sim, url, "", -1, sim -> current_throttle );
   if ( sim -> debug ) xml_t::print( node, sim -> output_file );
   return node;
 }
@@ -39,20 +39,24 @@ static xml_node_t* download_character_talents( sim_t* sim,
 // battle_net_t::download_player ===========================================
 
 player_t* battle_net_t::download_player( sim_t* sim,
-					 const std::string& region,
-					 const std::string& server,
-					 const std::string& name,
-					 const std::string& talents_description,
-					 int cache )
+                                         const std::string& region,
+                                         const std::string& server,
+                                         const std::string& name,
+                                         const std::string& talents_description,
+                                         int cache )
 {
   sim -> current_slot = 0;
   sim -> current_name = name;
 
-  xml_node_t* sheet_xml     = download_character_sheet  ( sim, region, server, name );
-  xml_node_t* p_talents_xml = download_character_talents( sim, region, server, name, "primary" );
-  xml_node_t* s_talents_xml = download_character_talents( sim, region, server, name, "secondary" );
+  xml_node_t* sheet_xml   = download_character_sheet( sim, region, server, name );
+  xml_node_t* talents_xml = 0;
 
-  if ( ! sheet_xml || ! p_talents_xml || ! s_talents_xml )
+  if ( util_t::str_compare_ci( talents_description, "primary"   ) )
+    talents_xml = download_character_talents( sim, region, server, name, "primary" );
+  else if ( util_t::str_compare_ci( talents_description, "secondary" ) )
+    talents_xml = download_character_talents( sim, region, server, name, "secondary" );
+  
+  if ( ! sheet_xml )
   {
     sim -> errorf( "Unable to download character %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
@@ -145,11 +149,6 @@ player_t* battle_net_t::download_player( sim_t* sim,
     }
   }
 
-  xml_node_t* talents_xml = 0;
-
-  if( util_t::str_compare_ci( talents_description, "primary"   ) ) talents_xml = p_talents_xml;
-  if( util_t::str_compare_ci( talents_description, "secondary" ) ) talents_xml = s_talents_xml;
-
   if( ! talents_xml )
   {
     xml_node_t* summary_talents_node = xml_t::get_node( sheet_xml, "div", "class", "summary-talents" );
@@ -168,20 +167,20 @@ player_t* battle_net_t::download_player( sim_t* sim,
       bool active = ( xml_t::get_value( active_str, anchor_node, "class" ) && active_str == "active" );
 
       if( ( util_t::str_compare_ci( talents_description,   "active" ) &&   active ) ||
-	  ( util_t::str_compare_ci( talents_description, "inactive" ) && ! active ) )
+          ( util_t::str_compare_ci( talents_description, "inactive" ) && ! active ) )
       {
-	talents_xml = ( primary ? p_talents_xml : s_talents_xml );
-	break;
+        talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ) );
+        break;
       }
       
       std::string build_str;
       if( xml_t::get_value( build_str, xml_t::get_node( anchor_node, "span", "class", "name" ), "." ) )
       {
-	if( util_t::str_compare_ci( talents_description, build_str ) )
-	{
-	  talents_xml = ( primary ? p_talents_xml : s_talents_xml );
-	  break;
-	}
+        if( util_t::str_compare_ci( talents_description, build_str ) )
+        {
+          talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ) );
+          break;
+        }
       }
     }
   }
@@ -189,7 +188,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   if( ! talents_xml )
   {
     sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory.\n", 
-		   region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
+      region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
     return 0;
   }
 
@@ -211,8 +210,10 @@ player_t* battle_net_t::download_player( sim_t* sim,
     sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
   }
+  else // HACK: We need primary_tree() to return something sensible, so we can filter out tanks/healers in guild download
+    p -> player_t::init_talents();
+  
   p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
-
   
   p -> glyphs_str = "";
 
@@ -304,3 +305,116 @@ player_t* battle_net_t::download_player( sim_t* sim,
   return p;
 }
 
+bool battle_net_t::download_guild( sim_t* sim,
+                                   const std::string& region,
+                                   const std::string& server,
+                                   const std::string& name,
+                                   const std::vector<int>& ranks,
+                                   int player_filter,
+                                   int max_rank,
+                                   int cache )
+{
+  std::string url_name = name;
+  std::string url_server = server;
+  util_t::urlencode( url_name );
+  util_t::urlencode( url_server );
+  std::string url = "http://" + region + ".battle.net/wow/en/guild/" + url_server + "/" + url_name + "/roster";
+
+  xml_node_t* node = xml_t::download( sim, url, "", ( cache ) ? 0 : -1, sim -> current_throttle );
+  xml_node_t* guild_info = xml_t::get_node( xml_t::get_node( node, "div", "id", "roster" ), "tbody" );
+  if ( ! guild_info ) return false;
+
+  if ( sim -> debug ) xml_t::print( guild_info, sim -> output_file );
+
+  std::vector<xml_node_t*> characters;
+  std::vector<std::string> character_names;
+  xml_t::get_nodes( characters, guild_info, "tr" );
+
+  // size() - 1 because last node is a "no results row" in the table
+  for ( unsigned i = 0; i < characters.size() - 1; i++ )
+  {
+    int c_level, c_rank, c_class;
+    std::string c_name, c_url, c_class_str;
+    
+    if ( ! xml_t::get_value( c_level, characters[ i ], "data-level" ) )
+      return false;
+
+    if ( ! xml_t::get_value( c_rank, xml_t::get_node( characters[ i ], "td", "class", "rank" ), "data-raw" ) )
+      return false;
+      
+    if ( ! xml_t::get_value( c_class_str, xml_t::get_node( characters[ i ], "td", "class", "cls" ), "data-raw" ) )
+      return false;
+    else
+      c_class = util_t::translate_class_str( c_class_str );
+
+    if ( ! xml_t::get_value( c_url, xml_t::get_node( xml_t::get_node( characters[ i ], "td", "class", "name" ), "a" ), "href" ) )
+      return false;
+    else // Urldecode the name, as xml_t::get_value seems to have issues with utf-8
+    {
+      size_t pos = 0;
+      c_url.erase( c_url.end() - 1 );
+
+      if ( ( pos = c_url.rfind( '/' ) ) == std::string::npos )
+      {
+        sim -> errorf("Could not find '/' in %s, no way to parse the player name.\n", c_url.c_str() );
+        return 0;
+      }
+      else
+      {
+        c_url = c_url.substr( pos + 1 );
+        c_name = util_t::format_text( util_t::urldecode( c_url ), sim -> input_is_utf8 );
+      }
+    }
+
+    // Then perform filtering based on level, rank and class filter
+    if ( c_level < 85 )
+      continue;
+
+    if ( ( max_rank > 0 ) && ( c_rank > max_rank ) )
+      continue;
+
+    if ( ( ranks.size() > 0 ) && ( std::find( ranks.begin(), ranks.end(), c_rank ) == ranks.end() ) )
+      continue;
+
+    if ( player_filter != PLAYER_NONE )
+      if ( player_filter != c_class )
+        continue;
+
+    character_names.push_back( c_name );
+  }
+
+  int num_characters = ( int ) character_names.size();
+  if ( num_characters > 0 )
+  {
+    std::sort( character_names.begin(), character_names.end() );
+
+    for ( int i = 0; i < num_characters; i++ )
+    {
+      std::string& character_name = character_names[ i ];
+
+      sim -> errorf( "Downloading character: %s\n", character_name.c_str() );
+      player_t* p = battle_net_t::download_player( sim, region, server, character_name, "active", cache );
+
+      if ( ! p )
+      {
+        sim -> errorf( "simulationcraft: Battle.net armory failed for '%s' ...\n", character_name.c_str() );
+        continue;
+      }
+
+      int tree = p -> primary_tree();
+      if ( tree == TREE_RESTORATION || tree == TREE_HOLY || tree == TREE_DISCIPLINE )
+      {
+        sim -> errorf( "Setting quiet=1 on healer %s\n", character_name.c_str() );
+        p -> quiet = true;
+      }
+      
+      if ( tree == TREE_PROTECTION || tree == TREE_BLOOD )
+      {
+        sim -> errorf( "Setting quiet=1 on tank %s\n", character_name.c_str() );
+        p -> quiet = true;
+      }
+    }
+  }
+
+  return true;
+}

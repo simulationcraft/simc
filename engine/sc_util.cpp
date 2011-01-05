@@ -260,6 +260,22 @@ const char* util_t::player_type_string( int type )
   return "unknown";
 }
 
+int util_t::translate_class_str( std::string& s )
+{
+  std::string fmt_s = armory_t::format( s );
+  if      ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
+  else if ( fmt_s == "druid"        ) return DRUID;
+  else if ( fmt_s == "hunter"       ) return HUNTER;
+  else if ( fmt_s == "mage"         ) return MAGE;
+  else if ( fmt_s == "paladin"      ) return PALADIN;
+  else if ( fmt_s == "priest"       ) return PRIEST;
+  else if ( fmt_s == "rogue"        ) return ROGUE;
+  else if ( fmt_s == "shaman"       ) return SHAMAN;
+  else if ( fmt_s == "warlock"      ) return WARLOCK;
+  else if ( fmt_s == "warrior"      ) return WARRIOR;
+  return PLAYER_NONE;
+}
+
 // util_t::pet_type_string =================================================
 
 const char* util_t::pet_type_string( int type )

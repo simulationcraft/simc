@@ -338,10 +338,19 @@ static bool parse_armory( sim_t*             sim,
       }
     }
 
+    sim -> input_is_utf8 = utf8::is_valid( guild_name.begin(), guild_name.end() ) && utf8::is_valid( server.begin(), server.end() );
+
     int player_type = PLAYER_NONE;
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
-    return armory_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
+    if ( region == "cn" || region == "tw" )
+    {
+      return armory_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
+    }
+    else
+    {
+      return battle_net_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
+    }
   }
 
   return false;
@@ -460,7 +469,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ), csv_file( 0 ),
-    armory_throttle( 2 ), current_throttle( 2 ), debug_exp( 0 ),
+    armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     report_precision( 4 ),report_pets_separately( false ), threads( 0 ), thread_handle( 0 ), thread_index( index ),
     spell_query( 0 )
 {

@@ -711,7 +711,7 @@ bool item_t::decode_enchant()
     else
     {
       sim -> errorf( "Player %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-      return false;
+      continue;
     }
   }
 
