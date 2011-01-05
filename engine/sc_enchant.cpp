@@ -558,14 +558,14 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   weapon_t* weapon;
   int stacks, max_stacks;
   double fixed_chance, PPM;
-  double cooldown, cooldown_ready;
+  cooldown_t* cooldown;
   spell_t* spell;
   proc_t* proc;
   rng_t* rng;
 
   weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, double cd=0, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
-      name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm ), cooldown( cd ), cooldown_ready( 0 )
+      name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_CYCLIC; // default is CYCLIC since discharge should not have duration
 
@@ -585,13 +585,16 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
       }
     };
 
+    cooldown = p -> get_cooldown( name_str );
+    cooldown -> duration = cd;
+
     spell = new discharge_spell_t( name_str.c_str(), p, dmg, school );
 
     proc = p -> get_proc( name_str.c_str() );
     rng  = p -> get_rng ( name_str.c_str(), rng_type );
   }
 
-  virtual void reset() { stacks=0; cooldown_ready=0; }
+  virtual void reset() { stacks=0; }
 
   virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
 
@@ -600,8 +603,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     if( a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown )
-      if ( sim -> current_time < cooldown_ready )
+    if ( cooldown -> remains() > 0 )
         return;
 
     double chance = fixed_chance;
@@ -612,8 +614,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
       if ( ! rng -> roll( chance ) )
         return;
 
-    if ( cooldown )
-      cooldown_ready = sim -> current_time + cooldown;
+    cooldown -> start();
 
     if ( ++stacks < max_stacks )
     {
@@ -648,17 +649,18 @@ void enchant_t::init( player_t* p )
 
   if ( mh_enchant == "avalanche" || oh_enchant == "avalanche" )
   {
+    // Reference: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p4/#post1832162
     if ( mh_enchant == "avalanche" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_mh", p, mhw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, mhw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, 0.01/*CD*/ );
       p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
     }
     if ( oh_enchant == "avalanche" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_oh", p, ohw, 1, SCHOOL_NATURE, 500, 0, 0, 5.0/*PPM*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, ohw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, 0.01/*CD*/ );
       p -> register_attack_result_callback( RESULT_HIT_MASK, cb );
     }
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0.10 );
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0.25/*FIXED*/, 0, 10.0/*CD*/ );
     p -> register_spell_result_callback ( RESULT_HIT_MASK, cb );
   }
   if ( mh_enchant == "berserking" )
