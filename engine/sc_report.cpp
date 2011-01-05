@@ -2512,7 +2512,6 @@ static void print_html3_stats (FILE* file, player_t* a )
       "                    <td class=\"right\">%.0f</td>\n"
       "                    <td class=\"right\">%.0f</td>\n"
       "                  </tr>\n",
-      a -> name(),
       a -> attribute_buffed[ ATTR_STRENGTH  ],
       a -> strength(),
       a -> stats.attribute[ ATTR_STRENGTH  ] );
