@@ -417,11 +417,14 @@ void SimulationCraftWindow::createWelcomeTab()
   QString welcomeFile = "Welcome.html";
 #ifdef Q_WS_MAC
   CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
-  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-  welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+  if ( fileRef )
+  {
+    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+    welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
 
-  CFRelease(fileRef);
-  CFRelease(macPath);
+    CFRelease(fileRef);
+    CFRelease(macPath);
+  }
 #endif
 
   QFile file( welcomeFile );
@@ -638,12 +641,16 @@ void SimulationCraftWindow::createBestInSlotTab()
 #ifndef Q_WS_MAC
   QDir dir = "profiles";
 #else
-  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("profiles"), 0, 0);
-  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-  QDir dir            = QString( CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding()) );
-	
-  CFRelease(fileRef);
-  CFRelease(macPath);
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
+  QDir dir;
+  if ( fileRef )
+  {
+    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+    dir            = QString( CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding()) );
+    
+    CFRelease(fileRef);
+    CFRelease(macPath);
+  }
 #endif
   dir.setSorting( QDir::Name );
   dir.setFilter( QDir::Files );
@@ -742,12 +749,15 @@ void SimulationCraftWindow::createExamplesTab()
   QString s = "# If you are seeing this text, then Examples.simc was unable to load.";
   QString exampleFile = "Examples.simc";
 #ifdef Q_WS_MAC
-  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Examples"), CFSTR("simc"), 0);
-  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-  exampleFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Examples" ), CFSTR( "simc" ), 0 );
+  if ( fileRef )
+  {
+    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+    exampleFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
 	
-  CFRelease(fileRef);
-  CFRelease(macPath);
+    CFRelease( fileRef );
+    CFRelease( macPath );
+  }
 #endif
 
   QFile file( exampleFile );
@@ -768,11 +778,14 @@ void SimulationCraftWindow::createResultsTab()
   QString legendFile = "Legend.html";
 #ifdef Q_WS_MAC
   CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Legend"), CFSTR("html"), 0);
-  CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-  legendFile          = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+  if ( fileRef )
+  {
+    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+    legendFile          = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
 	
-  CFRelease(fileRef);
-  CFRelease(macPath);
+    CFRelease(fileRef);
+    CFRelease(macPath);
+  }
 #endif
 	
   QFile file( legendFile );
