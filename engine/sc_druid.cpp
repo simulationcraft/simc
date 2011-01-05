@@ -202,6 +202,34 @@ struct druid_t : public player_t
   gain_t* gains_primal_madness;
   gain_t* gains_tigers_fury;
 
+  // Glyphs
+  struct glyphs_t
+  {
+    glyph_t* berserk;
+    glyph_t* ferocious_bite;
+    glyph_t* focus;
+    glyph_t* innervate;
+    glyph_t* insect_swarm;
+    glyph_t* lacerate;
+    glyph_t* mangle;
+    glyph_t* mark_of_the_wild;
+    glyph_t* maul;
+    glyph_t* monsoon;
+    glyph_t* moonfire;
+    glyph_t* rip;
+    glyph_t* savage_roar;
+    glyph_t* shred;
+    glyph_t* starfall;
+    glyph_t* starfire;
+    glyph_t* starsurge;
+    glyph_t* tigers_fury;
+    glyph_t* typhoon;
+    glyph_t* wrath;
+
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
+
   // Procs
   proc_t* procs_combo_points_wasted;
   proc_t* procs_fury_swipes;
@@ -296,33 +324,6 @@ struct druid_t : public player_t
   };
   talents_t talents;
 
-  struct glyphs_t
-  {
-    int berserk;
-    int ferocious_bite;
-    int focus;
-    int innervate;
-    int insect_swarm;
-    int lacerate;
-    int mangle;
-    int mark_of_the_wild;
-    int maul;
-    int monsoon;
-    int moonfire;
-    int rip;
-    int savage_roar;
-    int shred;
-    int starfall;
-    int starfire;
-    int starsurge;
-    int tigers_fury;
-    int typhoon;
-    int wrath;
-
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
-  };
-  glyphs_t glyphs;
-
   druid_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, DRUID, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -361,7 +362,6 @@ struct druid_t : public player_t
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_glyphs();
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_items();
@@ -1134,7 +1134,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     // Assume 100/35 = 2.857% per additional energy consumed
     
     // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
-    if ( p -> glyphs.ferocious_bite )
+    if ( p -> glyphs.ferocious_bite -> enabled() )
     {
       excess_energy = 0;
     }
@@ -1235,7 +1235,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     adds_combo_points = 1; // Not in the DBC
-    base_multiplier  *= 1.0 + p -> glyphs.mangle * 0.1;
+    base_multiplier  *= 1.0 + p -> glyphs.mangle -> enabled() * 0.1;
   }
 
   virtual void execute()
@@ -1413,7 +1413,7 @@ struct rip_t : public druid_cat_attack_t
     if ( p -> set_bonus.tier10_2pc_melee() )
       base_cost -= 10;
 
-    if ( p -> glyphs.rip )
+    if ( p -> glyphs.rip -> enabled() )
       base_multiplier *= 1.15;
   }
   
@@ -1479,7 +1479,7 @@ struct savage_roar_t : public druid_cat_attack_t
     harmful               = false;
     requires_combo_points = true;
         
-    if ( p -> glyphs.savage_roar )
+    if ( p -> glyphs.savage_roar -> enabled() )
       buff_value += 0.05;
   }
 
@@ -1523,7 +1523,7 @@ struct shred_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
     if ( result_is_hit() )
     {
-      if ( p -> glyphs.shred &&
+      if ( p -> glyphs.shred -> enabled() &&
            p -> dots_rip -> ticking  &&
            p -> dots_rip -> added_ticks < 4 )
       {
@@ -1557,7 +1557,7 @@ struct shred_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
 
     if ( extend_rip )
-      if ( ! p -> glyphs.shred ||
+      if ( ! p -> glyphs.shred -> enabled() ||
            ! p -> dots_rip -> ticking ||
            ( p -> dots_rip -> added_ticks == 4 ) )
         return false;
@@ -1615,7 +1615,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 
     harmful = false;
 
-    if ( p -> glyphs.tigers_fury ) 
+    if ( p -> glyphs.tigers_fury -> enabled() ) 
       cooldown -> duration -= 3.0;
   }
 
@@ -1829,7 +1829,7 @@ struct lacerate_t : public druid_bear_attack_t
     direct_power_mod = 0.115;
     tick_power_mod   = 0.0077;
     dot_behavior     = DOT_REFRESH;
-    base_crit       += p -> glyphs.lacerate * 0.05;
+    base_crit       += p -> glyphs.lacerate -> enabled() * 0.05;
   }
 
   virtual void execute()
@@ -1863,7 +1863,7 @@ struct mangle_bear_t : public druid_bear_attack_t
 
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + p -> glyphs.mangle * 0.10;
+    base_multiplier *= 1.0 + p -> glyphs.mangle -> enabled() * 0.10;
   }
 
   virtual void execute()
@@ -1898,7 +1898,7 @@ struct maul_t : public druid_bear_attack_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( p -> glyphs.maul && target -> adds_nearby )
+    if ( p -> glyphs.maul -> enabled() && target -> adds_nearby )
       druid_bear_attack_t::additional_damage( amount * 0.50, dmg_type );
   }
 
@@ -2497,7 +2497,7 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     // Glyph of Insect Swarm is Additive with Moonfury
-    additive_multiplier += ( p -> glyphs.insect_swarm ? 0.30 : 0.00 );
+    additive_multiplier += ( p -> glyphs.insect_swarm -> enabled() ? 0.30 : 0.00 );
     druid_spell_t::player_buff();
   }
 
@@ -2533,7 +2533,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     trigger_gcd = 0;
     id          = 1126;
-    base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild * 0.5;
+    base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild -> enabled() * 0.5;
     harmful     = false;
   }
 
@@ -2612,7 +2612,7 @@ struct moonfire_t : public druid_spell_t
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire * 0.20;
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> enabled() * 0.20;
 
     if ( result_is_hit() )
     {
@@ -2777,7 +2777,7 @@ struct starfire_t : public druid_spell_t
       {
         trigger_t10_4pc_caster( player, direct_dmg, school );
       }
-      if ( p -> glyphs.starfire )
+      if ( p -> glyphs.starfire -> enabled() )
       {
         if ( p -> dots_moonfire -> ticking )
           if ( p -> dots_moonfire -> added_ticks < 3 )
@@ -2807,7 +2807,7 @@ struct starfire_t : public druid_spell_t
 
     if ( extend_moonfire )
     {
-      if ( ! p -> glyphs.starfire ) return false;
+      if ( ! p -> glyphs.starfire -> enabled() ) return false;
       if ( ! p -> dots_moonfire -> ticking ) return false;
       if ( p -> dots_moonfire -> added_ticks > 2 ) return false;
     }
@@ -2872,7 +2872,7 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
         // Glyph of Focus is Additive with Moonfury
-        additive_multiplier += ( p -> glyphs.focus ? 0.10 : 0.00 );
+        additive_multiplier += ( p -> glyphs.focus -> enabled() ? 0.10 : 0.00 );
         druid_spell_t::player_buff();
       }
     };
@@ -2886,7 +2886,7 @@ struct starfall_t : public druid_spell_t
     base_tick_time = 1.0;
     hasted_ticks   = false;
 
-    if ( p -> glyphs.starfall )
+    if ( p -> glyphs.starfall -> enabled() )
       cooldown -> duration  -= 30;
 
     may_miss = false; // This spell only triggers the buff
@@ -2939,7 +2939,7 @@ struct starsurge_t : public druid_spell_t
 
       trigger_eclipse_energy_gain( this, gain );
 
-      if ( p -> glyphs.starsurge )
+      if ( p -> glyphs.starsurge -> enabled() )
         starfall_cd -> ready -= 5.0;
     }
   }
@@ -3047,7 +3047,7 @@ struct sunfire_t : public druid_spell_t
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire * 0.20;
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> enabled() * 0.20;
 
     if ( result_is_hit() )
     {
@@ -3124,9 +3124,9 @@ struct typhoon_t : public druid_spell_t
     base_multiplier  *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
     direct_power_mod  = p -> player_data.effect_coeff( effect_id( 2 ) );
 
-    if ( p -> glyphs.monsoon )
+    if ( p -> glyphs.monsoon -> enabled() )
       cooldown -> duration -= 3;
-    if ( p -> glyphs.typhoon )
+    if ( p -> glyphs.typhoon -> enabled() )
       base_cost *= 0.92;
   }
 };
@@ -3158,7 +3158,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     // Glyph of Wrath is additive with Moonfury
-    if ( p -> glyphs.wrath && p -> dots_insect_swarm -> ticking )
+    if ( p -> glyphs.wrath -> enabled() && p -> dots_insect_swarm -> ticking )
       additive_multiplier += 0.10;
 
     druid_spell_t::player_buff();
@@ -3349,6 +3349,8 @@ void druid_t::init_spells()
 {
   player_t::init_spells();
 
+  // Specializations
+  
   // Balance
   spec_moonfury         = new passive_spell_t( this, "moonfury",      16913 );
   mastery_total_eclipse = new mastery_t      ( this, "total_eclipse", 77492, TREE_BALANCE );
@@ -3359,6 +3361,29 @@ void druid_t::init_spells()
   mastery_razor_claws     = new mastery_t      ( this, "razor_claws",     77493, TREE_FERAL );
   mastery_savage_defender = new mastery_t      ( this, "savage_defender", 77494, TREE_FERAL );
 
+  // Glyphs
+  glyphs.berserk          = find_glyph( "Glyph of Berserk" );
+  glyphs.ferocious_bite   = find_glyph( "Glyph of Ferocious Bite" );
+  glyphs.focus            = find_glyph( "Glyph of Focus" );
+  glyphs.innervate        = find_glyph( "Glyph of Innervate" );
+  glyphs.insect_swarm     = find_glyph( "Glyph of Insect Swarm" );
+  glyphs.lacerate         = find_glyph( "Glyph of Lacerate" );
+  glyphs.mangle           = find_glyph( "Glyph of Mangle" );
+  glyphs.mark_of_the_wild = find_glyph( "Glyph of Mark of the Wild" );
+  glyphs.maul             = find_glyph( "Glyph of Maul" );
+  glyphs.monsoon          = find_glyph( "Glyph of Monsoon" );
+  glyphs.moonfire         = find_glyph( "Glyph of Moonfire" );
+  glyphs.rip              = find_glyph( "Glyph of Rip" );
+  glyphs.savage_roar      = find_glyph( "Glyph of Savage Roar" );
+  glyphs.shred            = find_glyph( "Glyph of Shred" );
+  glyphs.starfall         = find_glyph( "Glyph of Starfall" );
+  glyphs.starfire         = find_glyph( "Glyph of Starfire" );
+  glyphs.starsurge        = find_glyph( "Glyph of Starsurge" );
+  glyphs.tigers_fury      = find_glyph( "Glyph of Tiger's Fury" );
+  glyphs.typhoon          = find_glyph( "Glyph of Typhoon" );
+  glyphs.wrath            = find_glyph( "Glyph of Wrath" );
+
+  // Tier Bonuses
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P
@@ -3368,67 +3393,6 @@ void druid_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// druid_t::init_glyphs =====================================================
-
-void druid_t::init_glyphs()
-{
-  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
-
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "berserk"               ) glyphs.berserk = 1;
-    else if ( n == "ferocious_bite"        ) glyphs.ferocious_bite = 1;
-    else if ( n == "focus"                 ) glyphs.focus = 1;
-    else if ( n == "innervate"             ) glyphs.innervate = 1;
-    else if ( n == "insect_swarm"          ) glyphs.insect_swarm = 1;
-    else if ( n == "lacerate"              ) glyphs.lacerate = 1;
-    else if ( n == "mark_of_the_wild"      ) glyphs.mark_of_the_wild = 1;
-    else if ( n == "maul"                  ) glyphs.maul = 1;
-    else if ( n == "mangle"                ) glyphs.mangle = 1;
-    else if ( n == "monsoon"               ) glyphs.monsoon = 1;
-    else if ( n == "moonfire"              ) glyphs.moonfire = 1;
-    else if ( n == "rip"                   ) glyphs.rip = 1;
-    else if ( n == "savage_roar"           ) glyphs.savage_roar = 1;
-    else if ( n == "shred"                 ) glyphs.shred = 1;
-    else if ( n == "starfall"              ) glyphs.starfall = 1;
-    else if ( n == "starfire"              ) glyphs.starfire = 1;
-    else if ( n == "starsurge"             ) glyphs.starsurge = 1;
-    else if ( n == "tigers_fury"           ) glyphs.tigers_fury = 1;
-    else if ( n == "typhoon"               ) glyphs.typhoon = 1;
-    else if ( n == "wrath"                 ) glyphs.wrath = 1;
-    // minor glyphs, to prevent 'not-found' warning
-    else if ( n == "aquatic_form"          ) ;
-    else if ( n == "barkskin"              ) ;
-    else if ( n == "challenging_roar"      ) ;
-    else if ( n == "dash"                  ) ;
-    else if ( n == "entangling_roots"      ) ;
-    else if ( n == "faerie_fire"           ) ;
-    else if ( n == "feral_charge"          ) ;
-    else if ( n == "frenzied_regeneration" ) ;
-    else if ( n == "healing_touch"         ) ;
-    else if ( n == "hurricane"             ) ;
-    else if ( n == "lifebloom"             ) ;
-    else if ( n == "rake"                  ) ;
-    else if ( n == "rebirth"               ) ;
-    else if ( n == "regrowth"              ) ;
-    else if ( n == "rejuvenation"          ) ;
-    else if ( n == "solar_beam"            ) ;
-    else if ( n == "swiftmend"             ) ;
-    else if ( n == "thorns"                ) ;
-    else if ( n == "unburdened_rebirth"    ) ;
-    else if ( n == "wild_growth"           ) ;
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
 }
 
 // druid_t::init_base =======================================================
@@ -3492,7 +3456,7 @@ void druid_t::init_buffs()
   buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1 );
   buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1 );
   buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
-  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate);
+  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
   buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
   buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower -> ok() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
@@ -3749,7 +3713,7 @@ void druid_t::init_actions()
       action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
-      if ( talents.starfall -> rank() && glyphs.focus ) 
+      if ( talents.starfall -> rank() && glyphs.focus -> enabled() ) 
         action_list_str += "/starfall";
       if ( talents.sunfire -> rank() )
         action_list_str += "/sunfire,if=!ticking&!dot.moonfire.remains>0";
@@ -3758,7 +3722,7 @@ void druid_t::init_actions()
         action_list_str += "&!dot.sunfire.remains>0";
       if ( set_bonus.tier11_4pc_caster() ) // refreshing moonfire right after eclipse locks in the crit
         action_list_str += "&buff.lunar_eclipse.react";
-      if ( talents.starfall -> rank() && ! glyphs.focus )
+      if ( talents.starfall -> rank() && ! glyphs.focus -> enabled() )
         action_list_str += "/starfall";
       action_list_str += "/insect_swarm,if=!ticking";
       if ( primary_tree() == TREE_BALANCE )

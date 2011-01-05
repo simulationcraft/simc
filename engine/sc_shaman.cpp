@@ -170,7 +170,7 @@ struct shaman_t : public player_t
   
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_ORC;
+    if ( race == RACE_NONE ) race = RACE_TAUREN;
 
     tree_type[ SHAMAN_ELEMENTAL   ] = TREE_ELEMENTAL;
     tree_type[ SHAMAN_ENHANCEMENT ] = TREE_ENHANCEMENT;

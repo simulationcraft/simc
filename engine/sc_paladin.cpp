@@ -183,7 +183,7 @@ struct paladin_t : public player_t
 
   paladin_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_DWARF;
+    if ( race == RACE_NONE ) race = RACE_TAUREN;
 
     tree_type[ PALADIN_HOLY        ] = TREE_HOLY;
     tree_type[ PALADIN_PROTECTION  ] = TREE_PROTECTION;
