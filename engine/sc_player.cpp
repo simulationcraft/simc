@@ -836,7 +836,14 @@ void player_t::init_core()
 
 void player_t::init_race()
 {
-  race = util_t::parse_race_type( race_str );
+  if ( race_str.empty() )
+  {
+    race_str = util_t::race_type_string( race );
+  }
+  else
+  {
+    race = util_t::parse_race_type( race_str );
+  }
 }
 
 // player_t::init_racials ======================================================

@@ -310,6 +310,8 @@ struct warrior_t : public player_t
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
       player_t( sim, WARRIOR, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
+
     tree_type[ WARRIOR_ARMS       ] = TREE_ARMS;
     tree_type[ WARRIOR_FURY       ] = TREE_FURY;
     tree_type[ WARRIOR_PROTECTION ] = TREE_PROTECTION;
@@ -339,7 +341,6 @@ struct warrior_t : public player_t
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
@@ -2776,34 +2777,6 @@ void warrior_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// warrior_t::init_race =====================================================
-
-void warrior_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-    case RACE_DRAENEI:
-    case RACE_DWARF:
-    case RACE_HUMAN:
-    case RACE_NIGHT_ELF:
-    case RACE_GNOME:
-    case RACE_GOBLIN:
-    case RACE_ORC:
-    case RACE_TAUREN:
-    case RACE_TROLL:
-    case RACE_WORGEN:
-    case RACE_UNDEAD:
-    case RACE_BLOOD_ELF:
-      break;
-    default:
-      race = RACE_NIGHT_ELF;
-      race_str = util_t::race_type_string( race );
-  }
-
-  player_t::init_race();
 }
 
 // warrior_t::init_base =====================================================

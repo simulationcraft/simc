@@ -170,6 +170,8 @@ struct shaman_t : public player_t
   
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_ORC;
+
     tree_type[ SHAMAN_ELEMENTAL   ] = TREE_ELEMENTAL;
     tree_type[ SHAMAN_ENHANCEMENT ] = TREE_ENHANCEMENT;
     tree_type[ SHAMAN_RESTORATION ] = TREE_RESTORATION;
@@ -201,7 +203,6 @@ struct shaman_t : public player_t
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
@@ -3573,28 +3574,6 @@ void shaman_t::init_spells()
   glyph_thunderstorm          = find_glyph( "Glyph of Thunderstorm" );
   
   sets                        = new set_bonus_array_t( this, set_bonuses );
-}
-
-// shaman_t::init_race ======================================================
-
-void shaman_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-  case RACE_DRAENEI:
-  case RACE_DWARF:
-  case RACE_GOBLIN:
-  case RACE_TAUREN:
-  case RACE_ORC:
-  case RACE_TROLL:
-    break;
-  default:
-    race = RACE_ORC;
-    race_str = util_t::race_type_string( race );
-  }
-
-  player_t::init_race();
 }
 
 // shaman_t::init_base ========================================================

@@ -183,6 +183,8 @@ struct paladin_t : public player_t
 
   paladin_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_DWARF;
+
     tree_type[ PALADIN_HOLY        ] = TREE_HOLY;
     tree_type[ PALADIN_PROTECTION  ] = TREE_PROTECTION;
     tree_type[ PALADIN_RETRIBUTION ] = TREE_RETRIBUTION;
@@ -201,7 +203,6 @@ struct paladin_t : public player_t
     create_options();
   }
 
-  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -1884,27 +1885,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
 //if ( name == "retribution_aura"        ) return new retribution_aura_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
-}
-
-// paladin_t::init_race ======================================================
-
-void paladin_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-  case RACE_HUMAN:
-  case RACE_DWARF:
-  case RACE_DRAENEI:
-  case RACE_BLOOD_ELF:
-  case RACE_TAUREN:
-    break;
-  default:
-    race = RACE_DWARF;
-    race_str = util_t::race_type_string( race );
-  }
-
-  player_t::init_race();
 }
 
 // paladin_t::init_base =====================================================

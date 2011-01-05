@@ -321,6 +321,8 @@ struct death_knight_t : public player_t
   death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
     player_t( sim, DEATH_KNIGHT, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
+
     tree_type[ DEATH_KNIGHT_BLOOD  ] = TREE_BLOOD;
     tree_type[ DEATH_KNIGHT_FROST  ] = TREE_FROST;
     tree_type[ DEATH_KNIGHT_UNHOLY ] = TREE_UNHOLY;
@@ -357,7 +359,6 @@ struct death_knight_t : public player_t
   virtual void      init_spells();
   virtual void      init_actions();
   virtual void      init_enchant();
-  virtual void      init_race();
   virtual void      init_rng();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -4010,34 +4011,6 @@ void death_knight_t::init()
       ghoul -> type = PLAYER_GUARDIAN;
     }
   }
-}
-
-// death_knight_t::init_race ================================================
-
-void death_knight_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-  case RACE_BLOOD_ELF:
-  case RACE_DWARF:
-  case RACE_DRAENEI:
-  case RACE_GOBLIN:
-  case RACE_GNOME:
-  case RACE_HUMAN:
-  case RACE_NIGHT_ELF:
-  case RACE_ORC:
-  case RACE_TAUREN:
-  case RACE_TROLL:
-  case RACE_UNDEAD:
-  case RACE_WORGEN:
-    break;
-  default:
-    race = RACE_NIGHT_ELF;
-    race_str = util_t::race_type_string( race );
-  }
-
-  player_t::init_race();
 }
 
 void death_knight_t::init_rng()

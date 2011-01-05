@@ -325,6 +325,8 @@ struct druid_t : public player_t
 
   druid_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, DRUID, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
+
     tree_type[ DRUID_BALANCE     ] = TREE_BALANCE;
     tree_type[ DRUID_FERAL       ] = TREE_FERAL;
     tree_type[ DRUID_RESTORATION ] = TREE_RESTORATION;
@@ -360,7 +362,6 @@ struct druid_t : public player_t
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_glyphs();
-  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_items();
@@ -3428,26 +3429,6 @@ void druid_t::init_glyphs()
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
     }
   }
-}
-
-// druid_t::init_race ======================================================
-
-void druid_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-  case RACE_NIGHT_ELF:
-  case RACE_TAUREN:
-  case RACE_TROLL:
-  case RACE_WORGEN:  
-    break;
-  default:
-    race = RACE_NIGHT_ELF;
-    race_str = util_t::race_type_string( race );
-  }
-
-  player_t::init_race();
 }
 
 // druid_t::init_base =======================================================

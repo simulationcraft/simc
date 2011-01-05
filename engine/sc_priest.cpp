@@ -330,6 +330,8 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
+
     tree_type[ PRIEST_DISCIPLINE ] = TREE_DISCIPLINE;
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
@@ -368,7 +370,6 @@ struct priest_t : public player_t
 
   // Character Definition
   virtual void      init_glyphs();
-  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_uptimes();
@@ -3011,34 +3012,6 @@ void priest_t::init_glyphs()
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
     }
   }
-}
-
-// priest_t::init_race ======================================================
-
-void priest_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-  case RACE_HUMAN:
-  case RACE_DWARF:
-  case RACE_NIGHT_ELF:
-  case RACE_DRAENEI:
-  case RACE_GNOME:
-  case RACE_WORGEN:
-  case RACE_UNDEAD:
-  case RACE_TROLL:
-  case RACE_BLOOD_ELF:
-  case RACE_GOBLIN:
-  case RACE_TAUREN:
-    break;
-  default:
-    race = RACE_NIGHT_ELF;
-    race_str = util_t::race_type_string( race );
-    break;
-  }
-
-  player_t::init_race();
 }
 
 // priest_t::init_base =======================================================

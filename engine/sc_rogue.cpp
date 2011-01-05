@@ -320,6 +320,8 @@ struct rogue_t : public player_t
 
   rogue_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
   {
+    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
+
     tree_type[ ROGUE_ASSASSINATION ] = TREE_ASSASSINATION;
     tree_type[ ROGUE_COMBAT        ] = TREE_COMBAT;
     tree_type[ ROGUE_SUBTLETY      ] = TREE_SUBTLETY;
@@ -361,7 +363,6 @@ struct rogue_t : public player_t
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
-  virtual void      init_race();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -3269,32 +3270,6 @@ action_expr_t* rogue_t::create_expression( action_t* a, const std::string& name_
   }
 
   return player_t::create_expression( a, name_str );
-}
-
-// rogue_t::init_race ======================================================
-
-void rogue_t::init_race()
-{
-  race = util_t::parse_race_type( race_str );
-  switch ( race )
-  {
-    case RACE_BLOOD_ELF:
-    case RACE_DWARF:
-    case RACE_GOBLIN:
-    case RACE_GNOME:
-    case RACE_HUMAN:
-    case RACE_ORC:
-    case RACE_NIGHT_ELF:
-    case RACE_TROLL:
-    case RACE_WORGEN:
-    case RACE_UNDEAD:
-      break;
-    default:
-      race = RACE_NIGHT_ELF;
-      race_str = util_t::race_type_string( race );
-  }
-
-  player_t::init_race();
 }
 
 // rogue_t::init_base ========================================================
