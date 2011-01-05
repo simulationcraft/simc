@@ -82,7 +82,7 @@ struct druid_t : public player_t
   struct berserk_buff_t : public buff_t
   {
     berserk_buff_t( player_t* player ) : 
-      buff_t( player, "berserk", 1, 15.0 + ( player -> cast_druid() -> glyphs.berserk ? 5.0 : 0.0 ) )
+      buff_t( player, "berserk", 1, 15.0 + player -> cast_druid() -> glyphs.berserk -> mod_additive( P_DURATION ) )
     {
     }
 
@@ -1235,7 +1235,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     adds_combo_points = 1; // Not in the DBC
-    base_multiplier  *= 1.0 + p -> glyphs.mangle -> enabled() * 0.1;
+    base_multiplier  *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
   }
 
   virtual void execute()
@@ -1409,12 +1409,10 @@ struct rip_t : public druid_cat_attack_t
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     ap_per_point          = 0.023;
     requires_combo_points = true;
+    base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
 
     if ( p -> set_bonus.tier10_2pc_melee() )
       base_cost -= 10;
-
-    if ( p -> glyphs.rip -> enabled() )
-      base_multiplier *= 1.15;
   }
   
   virtual void execute()
@@ -1476,11 +1474,9 @@ struct savage_roar_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     buff_value            = 0.50; // 30 in the DBC with no scaling factors
+    buff_value           += p -> glyphs.savage_roar ->base_value() / 100.0;
     harmful               = false;
     requires_combo_points = true;
-        
-    if ( p -> glyphs.savage_roar -> enabled() )
-      buff_value += 0.05;
   }
 
   virtual void execute()
@@ -1614,9 +1610,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     harmful = false;
-
-    if ( p -> glyphs.tigers_fury -> enabled() ) 
-      cooldown -> duration -= 3.0;
+    cooldown -> duration += p -> glyphs.tigers_fury -> mod_additive( P_COOLDOWN );
   }
 
   virtual void execute()
@@ -1829,7 +1823,7 @@ struct lacerate_t : public druid_bear_attack_t
     direct_power_mod = 0.115;
     tick_power_mod   = 0.0077;
     dot_behavior     = DOT_REFRESH;
-    base_crit       += p -> glyphs.lacerate -> enabled() * 0.05;
+    base_crit       += p -> glyphs.lacerate -> mod_additive( P_CRIT );
   }
 
   virtual void execute()
@@ -1863,7 +1857,7 @@ struct mangle_bear_t : public druid_bear_attack_t
 
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + p -> glyphs.mangle -> enabled() * 0.10;
+    base_multiplier *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
   }
 
   virtual void execute()
@@ -1899,7 +1893,7 @@ struct maul_t : public druid_bear_attack_t
     druid_t* p = player -> cast_druid();
 
     if ( p -> glyphs.maul -> enabled() && target -> adds_nearby )
-      druid_bear_attack_t::additional_damage( amount * 0.50, dmg_type );
+      druid_bear_attack_t::additional_damage( amount * p -> glyphs.maul -> effect_base_value( 3 ) / 100.0, dmg_type );
   }
 
   virtual void execute()
@@ -2497,7 +2491,7 @@ struct insect_swarm_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     // Glyph of Insect Swarm is Additive with Moonfury
-    additive_multiplier += ( p -> glyphs.insect_swarm -> enabled() ? 0.30 : 0.00 );
+    additive_multiplier += p -> glyphs.insect_swarm -> mod_additive( P_TICK_DAMAGE );
     druid_spell_t::player_buff();
   }
 
@@ -2533,7 +2527,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     trigger_gcd = 0;
     id          = 1126;
-    base_cost  *= 1.0 - p -> glyphs.mark_of_the_wild -> enabled() * 0.5;
+    base_cost  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
   }
 
@@ -2612,7 +2606,7 @@ struct moonfire_t : public druid_spell_t
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> enabled() * 0.20;
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
 
     if ( result_is_hit() )
     {
@@ -2872,7 +2866,7 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
         // Glyph of Focus is Additive with Moonfury
-        additive_multiplier += ( p -> glyphs.focus -> enabled() ? 0.10 : 0.00 );
+        additive_multiplier += p -> glyphs.focus -> mod_additive( P_GENERIC );
         druid_spell_t::player_buff();
       }
     };
@@ -2885,9 +2879,7 @@ struct starfall_t : public druid_spell_t
     num_ticks      = 10;
     base_tick_time = 1.0;
     hasted_ticks   = false;
-
-    if ( p -> glyphs.starfall -> enabled() )
-      cooldown -> duration  -= 30;
+    cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
 
     may_miss = false; // This spell only triggers the buff
 
@@ -2938,9 +2930,7 @@ struct starsurge_t : public druid_spell_t
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
       trigger_eclipse_energy_gain( this, gain );
-
-      if ( p -> glyphs.starsurge -> enabled() )
-        starfall_cd -> ready -= 5.0;
+      starfall_cd -> ready -= p -> glyphs.starsurge -> base_value();
     }
   }
 
@@ -3047,7 +3037,7 @@ struct sunfire_t : public druid_spell_t
     player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> enabled() * 0.20;
+    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
 
     if ( result_is_hit() )
     {
@@ -3118,16 +3108,13 @@ struct typhoon_t : public druid_spell_t
 
     parse_options( NULL, options_str );
 
-    aoe               = true;
-    base_dd_min       = p -> player_data.effect_min( effect_id( 2 ), p -> type, p -> level );
-    base_dd_max       = p -> player_data.effect_max( effect_id( 2 ), p -> type, p -> level );
-    base_multiplier  *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
-    direct_power_mod  = p -> player_data.effect_coeff( effect_id( 2 ) );
-
-    if ( p -> glyphs.monsoon -> enabled() )
-      cooldown -> duration -= 3;
-    if ( p -> glyphs.typhoon -> enabled() )
-      base_cost *= 0.92;
+    aoe                   = true;
+    base_dd_min           = p -> player_data.effect_min( effect_id( 2 ), p -> type, p -> level );
+    base_dd_max           = p -> player_data.effect_max( effect_id( 2 ), p -> type, p -> level );
+    base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
+    direct_power_mod      = p -> player_data.effect_coeff( effect_id( 2 ) );
+    cooldown -> duration += p -> glyphs.monsoon -> mod_additive( P_COOLDOWN );
+    base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
 };
 
@@ -3158,8 +3145,8 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     // Glyph of Wrath is additive with Moonfury
-    if ( p -> glyphs.wrath -> enabled() && p -> dots_insect_swarm -> ticking )
-      additive_multiplier += 0.10;
+    if ( p -> dots_insect_swarm -> ticking )
+      additive_multiplier += p -> glyphs.wrath -> base_value() / 100.0;
 
     druid_spell_t::player_buff();
   }
