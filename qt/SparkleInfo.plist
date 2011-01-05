@@ -14,6 +14,8 @@
 	<string>simcqt</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.googlecode.simulationcraft</string>
+	<key>CFBundleVersion</key>
+	<string>VERSION-PARSE-HERE</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUEnableSystemProfiling</key>
