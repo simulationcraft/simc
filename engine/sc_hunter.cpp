@@ -1646,17 +1646,12 @@ struct explosive_shot_t : public hunter_attack_t
       lock_and_load( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-
     assert ( p -> primary_tree() == TREE_SURVIVAL );
-
     parse_options( NULL, options_str );
-
     base_cost -= p -> talents.efficiency -> rank() * 2;
-
+    base_crit += p -> glyphs.explosive_shot -> effect_base_value( 1 ) / 100.0;
     tick_power_mod = 0.273;
-
-    tick_zero      = true;
-
+    tick_zero = true;
   }
 
   virtual double cost() SC_CONST
@@ -3176,8 +3171,8 @@ void hunter_t::armory_extensions( const std::string& region,
 
       if( pet_family > num_families || pet_types[ pet_family ] == PET_NONE ) 
       {
-	sim -> errorf( "Hunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
-	continue;
+        sim -> errorf( "Hunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
+        continue;
       }
 
       hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
