@@ -3138,18 +3138,21 @@ void rogue_t::init_actions()
         action_list_str += "/slice_and_dice,if=combo_points>=3&buff.slice_and_dice.remains<2";
       }
       if ( talents.vendetta -> rank() )
+      {
+        action_list_str += "/rupture,if=!ticking&time<6";
         action_list_str += "/vendetta";
+      }
       // XXX tweak Rupture/Envenom priorities to raise Rupture (and Envenom) uptime
       action_list_str += "/rupture,if=!ticking&combo_points>=4&target.time_to_die>15&buff.slice_and_dice.remains>6";
       if ( talents.cold_blood -> rank() ) 
         action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,if=combo_points>=4&buff.envenom.down";
       action_list_str += "/envenom,if=combo_points>=4&energy>90";
-      action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<2";
-      action_list_str += "/backstab,if=combo_points<4&target.health_pct<35";
+      action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
+      action_list_str += "/backstab,if=combo_points<5&target.health_pct<35";
       action_list_str += "/mutilate,if=combo_points<4&target.health_pct>=35";
       if ( talents.overkill -> rank() ) 
-        action_list_str += "/vanish,if=time>30&energy>50";
+        action_list_str += "/vanish,if=time>30&energy>50&target.garrote.down";
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
