@@ -3820,7 +3820,8 @@ struct snapshot_stats_t : public action_t
   virtual bool ready()
   {
     if ( sim -> current_iteration > 0 ) return false;
-    return player -> attribute_buffed[ ATTRIBUTE_NONE ] == 0;
+    if ( player -> attribute_buffed[ ATTRIBUTE_NONE ] != 0 ) return false;
+    return action_t::ready();
   }
 };
 

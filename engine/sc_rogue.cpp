@@ -3550,7 +3550,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     if ( a )
     {
-      if ( ! a -> special || a -> aoe || a -> pseudo_pet || a -> proc )
+      if ( ! a -> special || a -> aoe || a -> pseudo_pet || a -> proc || a -> repeating )
         return;
 
       a -> player -> procs.hat_donor -> occur();

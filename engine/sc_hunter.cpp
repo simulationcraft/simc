@@ -826,6 +826,7 @@ struct hunter_pet_attack_t : public attack_t
         if ( special && p -> talents.culling_the_herd -> rank() )
         {
           p -> buffs_culling_the_herd -> trigger();
+	  p -> owner -> cast_hunter() -> buffs_culling_the_herd -> trigger();
         }
       }
     }
@@ -1318,16 +1319,16 @@ struct ranged_t : public hunter_attack_t
   // FIXME! Setting "special=true" would create the desired 2-roll effect,
   // but it would also triger Honor-Among-Thieves procs.......
   ranged_t( player_t* player, const char* name="ranged" ) :
-      hunter_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
+      hunter_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/true )
   {
     hunter_t* p = player -> cast_hunter();
 
-        weapon = &( p -> ranged_weapon );
-        base_execute_time = weapon -> swing_time;
+    weapon = &( p -> ranged_weapon );
+    base_execute_time = weapon -> swing_time;
 
-        may_crit    = true;
-        background  = true;
-        repeating   = true;
+    may_crit    = true;
+    background  = true;
+    repeating   = true;
   }
 
   virtual double execute_time() SC_CONST
@@ -1713,11 +1714,7 @@ struct kill_shot_t : public hunter_attack_t
 
     base_crit += p -> talents.sniper_training -> effect_base_value( 2 ) / 100.0;
 
-                normalize_weapon_speed = true;
-    if ( p -> glyphs.kill_shot -> ok() )
-    {
-      cooldown -> duration -= 6;
-    }
+    normalize_weapon_speed = true;
   }
 
   virtual void execute()
@@ -2794,20 +2791,12 @@ void hunter_t::init_actions()
       break;
     case TREE_SURVIVAL:
       action_list_str += "/aspect_of_the_hawk";
-      action_list_str += "/rapid_fire";
       action_list_str += "/serpent_sting,if=!ticking";
-      if ( talents.lock_and_load -> rank() )
-      {
-        action_list_str += "/explosive_shot,if=buff.lock_and_load.react&!ticking";
-        action_list_str += "/explosive_shot,if=!buff.lock_and_load.up&!ticking";
-      }
-      else if ( talents.lock_and_load -> rank() == 0 )
-      {
-        action_list_str += "/explosive_shot,if=!ticking";
-      }
+      action_list_str += "/rapid_fire";
+      action_list_str += "/explosive_shot,if=!ticking";
       action_list_str += "/kill_shot";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
-      action_list_str += "/arcane_shot,if=focus>=80";
+      action_list_str += "/arcane_shot,if=focus>=80&buff.lock_and_load.down";
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else
@@ -3169,7 +3158,8 @@ void player_t::hunter_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS ) );
+    double v = sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS );
+    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, v );
   }
 }
 
