@@ -3152,7 +3152,7 @@ void rogue_t::init_actions()
       action_list_str += "/backstab,if=combo_points<5&target.health_pct<35";
       action_list_str += "/mutilate,if=combo_points<4&target.health_pct>=35";
       if ( talents.overkill -> rank() ) 
-        action_list_str += "/vanish,if=time>30&energy>50&target.garrote.down";
+        action_list_str += "/vanish,if=time>30&energy>50";
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
