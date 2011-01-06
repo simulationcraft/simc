@@ -3022,6 +3022,7 @@ void hunter_t::armory_extensions( const std::string& region,
       /*50*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
       /*55*/ PET_SHALE_SPIDER, PET_NONE, PET_NONE, PET_NONE, PET_NONE
     };
+  int num_families = sizeof( pet_types ) / sizeof( pet_type_t );
 
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + character + "/pet";
   xml_node_t* pet_xml = xml_t::download( sim, url, "", -1 );
@@ -3082,7 +3083,11 @@ void hunter_t::armory_extensions( const std::string& region,
           all_zeros = false;
       if( all_zeros ) continue;
 
-      if( pet_types[ pet_family ] == PET_NONE ) continue;
+      if( pet_family > num_families || pet_types[ pet_family ] == PET_NONE ) 
+      {
+	sim -> errorf( "Hunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
+	continue;
+      }
 
       hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
 
