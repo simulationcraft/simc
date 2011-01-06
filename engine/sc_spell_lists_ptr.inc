@@ -1,7 +1,7 @@
-#define PTR_CLASS_ABILITY_SIZE (63)
+#define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13316
+// Class based active abilities, wow build 13449
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -225,7 +225,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 63 abilities
+    // Pet tree, 64 abilities
     {
       55749, // Acid Spit (Special Ability)
       90355, // Ancient Hysteria
@@ -289,6 +289,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       94022, // Trick (Bonus Ability)
       54706, // Venom Web Spray (Special Ability)
        4167, // Web (Special Ability)
+      96201, // Web Wrap (Special Ability)
       53508, // Wolverine Bite
     },
   },
@@ -644,7 +645,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warlock
   {
-    // Affliction tree, 18 abilities
+    // Affliction tree, 17 abilities
     {
         980, // Bane of Agony
         603, // Bane of Doom
@@ -656,7 +657,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       80398, // Dark Intent
        6789, // Death Coil
         689, // Drain Life
-       5138, // Drain Mana
        1120, // Drain Soul
        5782, // Fear
       48181, // Haunt
@@ -848,7 +848,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13316
+// Talent tree specialization abilities, wow build 13449
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1106,7 +1106,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13316
+// Class mastery abilities, wow build 13449
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1191,7 +1191,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13316
+// Racial abilities, wow build 13449
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1824,7 +1824,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13316
+// Glyph spells for classes, wow build 13449
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2043,12 +2043,12 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       55686, // Glyph of Inner Fire
       55691, // Glyph of Mass Dispel
       63248, // Glyph of Pain Suppression
+      55685, // Glyph of Prayer of Mending
       55688, // Glyph of Psychic Horror
       55676, // Glyph of Psychic Scream
       55690, // Glyph of Scourge Imprisonment
       55692, // Glyph of Smite
       63237, // Glyph of Spirit Tap
-      55685, // Glyph of Spirit of Redemption
           0,
     },
     // Minor Glyphs (6 spells)
@@ -2338,7 +2338,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13316
+// Tier item set bonuses for class, wow build 13449
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {

@@ -77,7 +77,7 @@
 
 #define SC_MAJOR_VERSION "403"
 #define SC_MINOR_VERSION "15"
-#define SC_USE_PTR ( 0 )
+#define SC_USE_PTR ( 1 )
 #define SC_BETA ( 1 ) 
 
 // Forward Declarations ======================================================
