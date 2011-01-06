@@ -1463,7 +1463,7 @@ struct arcane_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.042;
 
-    player_multiplier *= 1.0 + p -> glyphs.arcane_shot -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
   }
 
   virtual double cost() SC_CONST
@@ -1556,8 +1556,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
 
-    cooldown -> duration += p -> glyphs.chimera_shot -> effect_base_value( 1 ) / 1000.0;
-
+    cooldown -> duration += p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN );
   }
 
 
@@ -1646,7 +1645,7 @@ struct explosive_shot_t : public hunter_attack_t
     assert ( p -> primary_tree() == TREE_SURVIVAL );
     parse_options( NULL, options_str );
     base_cost += p -> talents.efficiency -> effect_base_value( 1 );
-    base_crit += p -> glyphs.explosive_shot -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
     tick_power_mod = 0.273;
     tick_zero = true;
   }
@@ -1703,7 +1702,7 @@ struct kill_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
     hunter_t* p = player -> cast_hunter();
-    if ( p -> cooldowns_glyph_kill_shot -> remains() == 0 )
+    if ( p -> glyphs.kill_shot -> enabled() && p -> cooldowns_glyph_kill_shot -> remains() == 0 )
     {
       cooldown -> reset();
       p -> cooldowns_glyph_kill_shot -> start();
@@ -1796,7 +1795,7 @@ struct serpent_sting_t : public hunter_attack_t
     tick_power_mod = 0.4 / num_ticks;
 
     base_crit += p -> talents.improved_serpent_sting -> effect_base_value( 2 ) / 100.0;
-    base_crit += p -> glyphs.serpent_sting -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> glyphs.serpent_sting -> mod_additive( P_CRIT );
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
@@ -1910,11 +1909,8 @@ struct steady_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-
-    if ( p -> glyphs.steady_shot -> ok() )
-    {
-      player_multiplier *= 1.10;
-    }
+    
+    player_multiplier *= 1.0 + p -> glyphs.steady_shot -> mod_additive( P_GENERIC );
     if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect_base_value( 2 ) )
     {
       player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
@@ -2152,8 +2148,7 @@ struct kill_command_t : public hunter_spell_t
     // FIX ME: Using this causes the pet to attack with Kill Command, needs to be reworked
 
     base_crit += p -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
-
-    base_cost += p -> glyphs.kill_command -> effect_base_value( 1 );
+    base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
   }
 
   virtual double cost() SC_CONST
@@ -2228,7 +2223,8 @@ struct rapid_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    p -> buffs_rapid_fire -> trigger( 1, ( p -> glyphs.rapid_fire -> ok() ? 0.50 : 0.40 ) );
+    double value = ( 40 + p -> glyphs.rapid_fire -> base_value() ) / 100.0;
+    p -> buffs_rapid_fire -> trigger( 1, value );
 
     hunter_spell_t::execute();
   }
