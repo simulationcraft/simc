@@ -312,11 +312,11 @@ struct mage_spell_t : public spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> talents.piercing_ice -> rank() )
     {
-      base_crit += p -> talents.piercing_ice -> mod1;
+      base_crit += p -> talents.piercing_ice -> sd->effect1->base_value/100.0;
     }
     if ( p -> talents.enduring_winter -> rank() )
     {
-      base_cost *= 1.0 + p -> talents.enduring_winter -> mod1;
+      base_cost *= 1.0 + p -> talents.enduring_winter -> sd->effect1->base_value/100.0;
     }
   }
 
@@ -918,7 +918,7 @@ static void trigger_replenishment( spell_t* s )
   if ( ! p -> talents.enduring_winter -> rank() )
     return;
 
-  if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> chance ) )
+  if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> sd->proc_chance/100.0 ) )
     return;
 
   p -> trigger_replenishment();
@@ -1874,7 +1874,7 @@ struct frostbolt_t : public mage_spell_t
     {
       if ( ! p -> cooldowns_early_frost -> remains() )
       {
-        ct += p -> talents.early_frost -> mod1;
+        ct += p -> talents.early_frost -> sd->effect1->base_value/1000.0;
       }
     }
     return ct;
@@ -2727,7 +2727,7 @@ void mage_t::init_talents()
   talent_t* t=0;
 
   // Arcane
-  talents.arcane_concentration        = t = find_talent( "Arcane Concentration" );   t->trigger = t->sd->effect1->trigger_spell;
+  talents.arcane_concentration        = t = find_talent( "Arcane Concentration" );
   talents.arcane_flows                = t = find_talent( "Arcane Flows" );
   talents.arcane_potency              = t = find_talent( "Arcane Potency" );
   talents.arcane_power                = t = find_talent( "Arcane Power" );
@@ -2736,8 +2736,8 @@ void mage_t::init_talents()
   talents.improved_arcane_explosion   = t = find_talent( "Improved Arcane Explosion" );
   talents.improved_arcane_missiles    = t = find_talent( "Improved Arcane Missiles" );
   talents.improved_counterspell       = t = find_talent( "Improved Counterspell" );
-  talents.improved_mana_gem           = t = find_talent( "Improved Mana Gem" );      t->mod1 = t->sd->effect1->base_value/100.0; 
-  talents.invocation                  = t = find_talent( "Invocation" );             t->trigger = t->sd->effect1->trigger_spell;
+  talents.improved_mana_gem           = t = find_talent( "Improved Mana Gem" );
+  talents.invocation                  = t = find_talent( "Invocation" );
   talents.missile_barrage             = t = find_talent( "Missile Barrage" );
   talents.nether_vortex               = t = find_talent( "Nether Vortex" );
   talents.netherwind_presence         = t = find_talent( "Netherwind Presence" );
@@ -2764,18 +2764,18 @@ void mage_t::init_talents()
   talents.molten_fury                 = t = find_talent( "Molten Fury" );
 
   // Frost
-  talents.brain_freeze     = t = find_talent( "Brain Freeze"     ); t->trigger = t->sd->effect1->trigger_spell;
+  talents.brain_freeze     = t = find_talent( "Brain Freeze"     );
   talents.cold_snap        = t = find_talent( "Cold Snap"        );
   talents.deep_freeze      = t = find_talent( "Deep Freeze"      );
-  talents.early_frost      = t = find_talent( "Early Frost"      ); t->mod1   = t->sd->effect1->base_value/1000.0;
-  talents.enduring_winter  = t = find_talent( "Enduring Winter"  ); t->mod1   = t->sd->effect1->base_value/100.0; t->chance  = t->sd->proc_chance/100.0;
-  talents.fingers_of_frost = t = find_talent( "Fingers of Frost" ); t->chance = t->sd->effect1->base_value/100.0; t->trigger = t->sd->effect1->trigger_spell;
+  talents.early_frost      = t = find_talent( "Early Frost"      );
+  talents.enduring_winter  = t = find_talent( "Enduring Winter"  );
+  talents.fingers_of_frost = t = find_talent( "Fingers of Frost" );
   talents.frostfire_orb    = t = find_talent( "Frostfire Orb"    );
   talents.ice_barrier      = t = find_talent( "Ice Barrier"      );
   talents.ice_floes        = t = find_talent( "Ice Floes"        );
   talents.icy_veins        = t = find_talent( "Icy Veins"        );
   talents.improved_freeze  = t = find_talent( "Improved Freeze"  );
-  talents.piercing_ice     = t = find_talent( "Piercing Ice"     ); t->mod1 = t->sd->effect1->base_value/100.0;
+  talents.piercing_ice     = t = find_talent( "Piercing Ice"     );
   talents.piercing_chill   = t = find_talent( "Piercing Chill"   );
   talents.shatter          = t = find_talent( "Shatter"          );
 }
@@ -2886,7 +2886,7 @@ void mage_t::init_buffs()
   buffs_arcane_power         = new buff_t( this, talents.arcane_power,         "cooldown", 0.0, NULL ); // CD managed in action
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze,         NULL );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration, "cooldown", 15.0, NULL );
-  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     NULL );
+  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     "chance", talents.fingers_of_frost->sd->effect1->base_value/100.0, NULL );
   buffs_hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
   buffs_icy_veins            = new buff_t( this, talents.icy_veins,            "cooldown", 0.0, NULL ); // CD managed in action
   buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 10.0, NULL );
@@ -3133,7 +3133,7 @@ double mage_t::composite_spell_power( const school_type school ) SC_CONST
 
   if ( buffs_improved_mana_gem -> check() )
   {
-    sp += talents.improved_mana_gem -> mod1 * resource_max[ RESOURCE_MANA ];
+    sp += resource_max[ RESOURCE_MANA ] * talents.improved_mana_gem->sd->effect1->base_value/100.0;
   }
 
   return sp;

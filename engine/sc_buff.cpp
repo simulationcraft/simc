@@ -61,7 +61,6 @@ buff_t::buff_t( player_t* p,
   if( talent -> rank() )
   {
     default_chance = talent -> sd -> proc_chance / 100.0;
-    if( talent -> chance ) default_chance = talent -> chance;
     if( default_chance <= 0 ) default_chance = 1.0;
 
     spell_data_t* spell = talent -> trigger ? talent -> trigger : talent -> sd;

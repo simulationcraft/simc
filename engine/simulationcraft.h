@@ -1840,7 +1840,6 @@ struct talent_t : spell_id_t
   talent_data_t* td;
   spell_data_t* sd;
   spell_data_t* trigger;
-  double chance, mod1;
   // unsigned rank;
 
   talent_t( player_t* p, talent_data_t* td );

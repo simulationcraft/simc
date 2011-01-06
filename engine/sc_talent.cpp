@@ -14,7 +14,7 @@
 talent_t::talent_t( player_t* player, talent_data_t* _td ) : 
   spell_id_t( player, _td->name ), t_data( 0 ), t_rank( 0 ), t_overridden( false ),
   // Future trimmed down access
-  td( _td ), sd( spell_data_t::nil() ), trigger( 0 ), chance( 0 ), mod1( 0 )
+  td( _td ), sd( spell_data_t::nil() ), trigger( 0 )
 {
   t_default_rank = new spell_id_t();
   const_cast< spell_id_t* >( t_default_rank ) -> s_enabled = false;
@@ -76,8 +76,10 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
   sd = ( ( r >= 3 ) ? td -> spell3 : 
 	 ( r == 2 ) ? td -> spell2 :
 	 ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
-  chance = mod1 = 0;
   trigger = 0;
+  if ( ! trigger && sd -> effect1 -> trigger_spell_id ) trigger = sd -> effect1 -> trigger_spell;
+  if ( ! trigger && sd -> effect2 -> trigger_spell_id ) trigger = sd -> effect2 -> trigger_spell;
+  if ( ! trigger && sd -> effect3 -> trigger_spell_id ) trigger = sd -> effect3 -> trigger_spell;
   // rank = r;
 
   if ( ! t_data || ! t_enabled )
