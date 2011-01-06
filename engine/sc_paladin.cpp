@@ -52,6 +52,7 @@ struct paladin_t : public player_t
   buff_t* buffs_hand_of_light;
   buff_t* buffs_ancient_power;
   buff_t* buffs_sacred_duty;
+  buff_t* buffs_divine_purpose;
 
   // Gains
   gain_t* gains_divine_plea;
@@ -265,7 +266,7 @@ static void trigger_hand_of_light( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if ( a -> sim -> roll( p -> get_hand_of_light() ) )
+  if ( !dbc_t::get_ptr() && a -> sim -> roll( p -> get_hand_of_light() ) )
   {
     p -> buffs_hand_of_light -> trigger();
   }
@@ -455,10 +456,20 @@ struct paladin_attack_t : public attack_t
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
     {
-      if ( p -> buffs_hand_of_light -> up() )
-        p -> buffs_hand_of_light -> expire();
+      if ( dbc_t::get_ptr() )
+      {
+        if ( p -> buffs_divine_purpose -> up() )
+          p -> buffs_divine_purpose -> expire();
+        else
+          p -> buffs_holy_power -> expire();
+      }
       else
-        p -> buffs_holy_power -> expire();
+      {
+        if ( p -> buffs_hand_of_light -> up() )
+          p -> buffs_hand_of_light -> expire();
+        else
+          p -> buffs_holy_power -> expire();
+      }
     }
     p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
@@ -646,7 +657,7 @@ struct divine_storm_t : public paladin_attack_t
     trigger_seal = false;
     spell_haste = true;
     aoe = true;
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     base_cooldown = cooldown->duration;
   }
@@ -763,7 +774,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
 
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     base_cooldown = cooldown->duration;
 
@@ -858,7 +869,7 @@ struct templars_verdict_t : public paladin_attack_t
 
     trigger_seal = true;
     uses_holy_power = true;
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     base_crit       +=     0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1 + 0.01 * p->talents.crusade->effect_base_value(2)
@@ -1245,7 +1256,7 @@ struct judgement_t : public paladin_attack_t
     };
     parse_options( options, options_str );
 
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     seal_of_justice       = new seal_of_justice_judgement_t      ( p );
     seal_of_insight       = new seal_of_insight_judgement_t      ( p );
@@ -1400,10 +1411,20 @@ struct paladin_spell_t : public spell_t
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
     {
-      if ( p -> buffs_hand_of_light -> up() )
-        p -> buffs_hand_of_light -> expire();
+      if ( dbc_t::get_ptr() )
+      {
+        if ( p -> buffs_divine_purpose -> up() )
+          p -> buffs_divine_purpose -> expire();
+        else
+          p -> buffs_holy_power -> expire();
+      }
       else
-        p -> buffs_holy_power -> expire();
+      {
+        if ( p -> buffs_hand_of_light -> up() )
+          p -> buffs_hand_of_light -> expire();
+        else
+          p -> buffs_holy_power -> expire();
+      }
     }
     p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
@@ -1588,7 +1609,7 @@ struct exorcism_t : public paladin_spell_t
 
     blazing_light_multiplier = 1.0 + 0.01 * p->talents.blazing_light->effect_base_value(1);
 
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
           
     may_crit = true;
     tick_may_crit = true;
@@ -1734,7 +1755,7 @@ struct holy_wrath_t : public paladin_spell_t
 
     direct_power_mod = 0.61;
 
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     base_crit += 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(2);
   }
@@ -1756,7 +1777,7 @@ struct inquisition_t : public paladin_spell_t
 
     uses_holy_power = true;
     harmful = false;
-    holy_power_chance = p->talents.divine_purpose->proc_chance();
+    holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
     base_duration = duration() * (1.0 + 0.01 * p->talents.inquiry_of_faith->effect_base_value(2));
   }
 
@@ -2136,7 +2157,16 @@ void paladin_t::init_buffs()
   buffs_zealotry               = new buff_t( this, talents.zealotry->spell_id(), "zealotry", 1 );
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", 1 );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", 1 );
-  buffs_hand_of_light          = new buff_t( this, "hand_of_light", 1, player_data.spell_duration( passives.hand_of_light->effect_trigger_spell(1) ) );
+  if ( dbc_t::get_ptr() )
+  {
+    buffs_hand_of_light        = 0;
+    buffs_divine_purpose       = new buff_t( this, "divine_purpose", 1, 8, 0, 0.01 * talents.divine_purpose->effect_base_value(1) );
+  }
+  else
+  {
+    buffs_hand_of_light        = new buff_t( this, "hand_of_light", 1, player_data.spell_duration( passives.hand_of_light->effect_trigger_spell(1) ) );
+    buffs_divine_purpose       = 0;
+  }
   buffs_ancient_power          = new buff_t( this, "ancient_power", -1 );
   buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty" );
 }
@@ -2514,14 +2544,16 @@ void paladin_t::combat_begin()
 
 bool paladin_t::has_holy_power(int power_needed) SC_CONST
 {
-  return buffs_hand_of_light -> check() || buffs_holy_power -> check() >= power_needed;
+  if ( dbc_t::get_ptr() ? buffs_divine_purpose -> check() : buffs_hand_of_light -> check() )
+    return true;
+  return buffs_holy_power -> check() >= power_needed;
 }
 
 // paladin_t::holy_power_stacks ==============================================
 
 int paladin_t::holy_power_stacks() SC_CONST
 {
-  if ( buffs_hand_of_light -> up() )
+  if ( dbc_t::get_ptr() ? buffs_divine_purpose -> up() : buffs_hand_of_light -> up() )
     return 3;
   else if ( buffs_holy_power -> up() )
     return buffs_holy_power -> check();
