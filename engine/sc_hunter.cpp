@@ -692,7 +692,7 @@ static void trigger_piercing_shots( action_t* a )
 
   struct piercing_shots_t : public attack_t
   {
-    piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, 63468 )
+    piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", 63468, p )
     {
       may_miss     = false;
       may_crit     = true;
@@ -2807,10 +2807,11 @@ void hunter_t::init_actions()
       }
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
       action_list_str += "/serpent_sting,if=!ticking";
+      action_list_str += "/arcane_shot,if=focus>=80";
       if ( level >=81 )
-        action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<=8";
-      action_list_str += "/arcane_shot,if=focus>=50|buff.lock_and_load.remains<gcd";
-      action_list_str += "/steady_shot";
+        action_list_str += "/cobra_shot";
+      else
+        action_list_str += "/steady_shot";
       break;
     default: break;
     }
