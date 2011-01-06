@@ -2795,7 +2795,7 @@ void hunter_t::init_actions()
     case TREE_SURVIVAL:
       action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/rapid_fire";
-      action_list_str += "/kill_shot";
+      action_list_str += "/serpent_sting,if=!ticking";
       if ( talents.lock_and_load -> rank() )
       {
         action_list_str += "/explosive_shot,if=buff.lock_and_load.react&!ticking";
@@ -2805,8 +2805,8 @@ void hunter_t::init_actions()
       {
         action_list_str += "/explosive_shot,if=!ticking";
       }
+      action_list_str += "/kill_shot";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
-      action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/arcane_shot,if=focus>=80";
       if ( level >=81 )
         action_list_str += "/cobra_shot";
