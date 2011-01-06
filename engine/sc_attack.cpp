@@ -262,7 +262,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( delta_level > 2 )
+  if ( delta_level > 2 && player -> position != POSITION_RANGED )
   {
     chance -= ( 0.03 + delta_level * 0.006 );
   }

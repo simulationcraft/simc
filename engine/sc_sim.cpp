@@ -456,7 +456,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
     armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
-    optimal_raid( 0 ), spell_crit_suppression( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ), default_actions( 0 ),
+    optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ), default_actions( 0 ),
     normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
     save_prefix_str( "save_" ),
@@ -1803,7 +1803,6 @@ void sim_t::create_options()
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
     { "default_server",                   OPT_STRING, &( default_server_str                       ) },
     { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
-    { "spell_crit_suppression",           OPT_BOOL,   &( spell_crit_suppression                   ) },
     // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
     { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
     { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },
