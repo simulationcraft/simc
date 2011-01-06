@@ -3155,7 +3155,6 @@ void player_t::hunter_init( sim_t* sim )
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
     t -> debuffs.hunters_mark  = new debuff_t( t, "hunters_mark",  1, 300.0 );
-    t -> debuffs.scorpid_sting = new debuff_t( t, "scorpid_sting", 1, 20.0  );
   }
 }
 

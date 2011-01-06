@@ -2310,7 +2310,6 @@ struct sim_t
     int bloodlust;
     int bloodlust_early;
     int brittle_bones;
-    int celerity;
     int communion;
     int critical_mass;
     int curse_of_elements;
@@ -2348,7 +2347,6 @@ struct sim_t
     int rampage;
     int replenishment;
     int savage_combat;
-    int scorpid_sting;
     int strength_of_earth;
     int strength_of_wrynn;
     int sunder_armor;
@@ -2367,7 +2365,6 @@ struct sim_t
     aura_t* abominations_might;
     aura_t* arcane_tactics;
     aura_t* battle_shout;
-    aura_t* celerity;
     aura_t* communion;
     aura_t* demonic_pact;
     aura_t* devotion_aura;
@@ -3390,7 +3387,6 @@ struct target_t
     debuff_t* master_poisoner;
     debuff_t* poisoned;
     debuff_t* savage_combat;
-    debuff_t* scorpid_sting;
     debuff_t* shattering_throw;
     debuff_t* slow;
     debuff_t* sunder_armor;

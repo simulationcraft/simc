@@ -493,8 +493,6 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 
 void raid_event_t::init( sim_t* sim )
 {
-  sim -> auras.celerity = new buff_t( sim, "celerity", 1 );
-
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, sim -> raid_events_str, "/\\" );
 
@@ -545,8 +543,6 @@ void raid_event_t::reset( sim_t* sim )
 
 void raid_event_t::combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.celerity ) sim -> auras.celerity -> override();
-
   int num_events = ( int ) sim -> raid_events.size();
   for ( int i=0; i < num_events; i++ )
   {

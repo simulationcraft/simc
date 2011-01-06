@@ -1914,11 +1914,7 @@ double player_t::composite_spell_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.05 );
     }
 
-    if ( sim -> auras.celerity -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
-    if ( ( race == RACE_GOBLIN ) )
+    if ( race == RACE_GOBLIN )
     {
       h *= 1 / ( 1.0 + 0.01 );
     }

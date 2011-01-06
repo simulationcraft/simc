@@ -1455,6 +1455,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.communion              = optimal_raid;
   overrides.critical_mass          = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
+  overrides.demonic_pact           = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
   overrides.ebon_plaguebringer     = optimal_raid;
@@ -1464,6 +1465,8 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
+  overrides.hemorrhage             = optimal_raid;
+  overrides.honor_among_thieves    = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
@@ -1480,7 +1483,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.rampage                = optimal_raid;
   overrides.replenishment          = optimal_raid;
   overrides.savage_combat          = optimal_raid;
-  overrides.scorpid_sting          = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
@@ -1705,20 +1707,20 @@ void sim_t::create_options()
     { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
     { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
     { "override.bloodlust_early",         OPT_INT,    &( overrides.bloodlust_early                ) },
-    { "override.celerity",                OPT_BOOL,   &( overrides.celerity                       ) },
     { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
     { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
     { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
+    { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
     { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
     { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
     { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
     { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
     { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
+    { "override.expode_armor",            OPT_BOOL,   &( overrides.expose_armor                   ) },
     { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
     { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
     { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
     { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
-    { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
     { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
     { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
     { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
@@ -1739,7 +1741,6 @@ void sim_t::create_options()
     { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
     { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
     { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
-    { "override.scorpid_sting",           OPT_BOOL,   &( overrides.scorpid_sting                  ) },
     { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
     { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
     { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
