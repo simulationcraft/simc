@@ -301,6 +301,7 @@ const char* util_t::pet_type_string( int type )
   case PET_GORILLA:		return "gorilla";
   case PET_RHINO:		return "rhino";
   case PET_SCORPID:		return "scorpid";
+  case PET_SHALE_SPIDER:	return "shale_spider";
   case PET_TURTLE:		return "turtle";
   case PET_WARP_STALKER:	return "warp_stalker";
   case PET_WORM:		return "worm";

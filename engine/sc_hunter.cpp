@@ -2412,6 +2412,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( pet_type == "crocolisk"    ) return new hunter_pet_t( sim, this, pet_name, PET_CROCOLISK    );
   if ( pet_type == "gorilla"      ) return new hunter_pet_t( sim, this, pet_name, PET_GORILLA      );
   if ( pet_type == "rhino"        ) return new hunter_pet_t( sim, this, pet_name, PET_RHINO        );
+  if ( pet_type == "shale_spider" ) return new hunter_pet_t( sim, this, pet_name, PET_SHALE_SPIDER );
   if ( pet_type == "scorpid"      ) return new hunter_pet_t( sim, this, pet_name, PET_SCORPID      );
   if ( pet_type == "turtle"       ) return new hunter_pet_t( sim, this, pet_name, PET_TURTLE       );
   if ( pet_type == "warp_stalker" ) return new hunter_pet_t( sim, this, pet_name, PET_WARP_STALKER );
@@ -3008,7 +3009,7 @@ void hunter_t::armory_extensions( const std::string& region,
 {
   // Pet support
   static pet_type_t pet_types[] =
-    { PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
+    { /* 0*/ PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
       /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
       /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
       /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
@@ -3017,7 +3018,9 @@ void hunter_t::armory_extensions( const std::string& region,
       /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
       /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
       /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
-      /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST
+      /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST, PET_NONE, PET_NONE, PET_NONE,
+      /*50*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
+      /*55*/ PET_SHALE_SPIDER, PET_NONE, PET_NONE, PET_NONE, PET_NONE
     };
 
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + character + "/pet";
@@ -3078,6 +3081,8 @@ void hunter_t::armory_extensions( const std::string& region,
         if( pet_talents[ j ] != '0' )
           all_zeros = false;
       if( all_zeros ) continue;
+
+      if( pet_types[ pet_family ] == PET_NONE ) continue;
 
       hunter_pet_t* pet = new hunter_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
 
