@@ -712,9 +712,6 @@ static void trigger_energy_refund( druid_cat_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( ! a -> adds_combo_points )
-    return;
-
   double energy_restored = a -> resource_consumed * 0.80;
 
   p -> resource_gain( RESOURCE_ENERGY, energy_restored, p -> gains_energy_refund );
