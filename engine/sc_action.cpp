@@ -1620,6 +1620,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_time_expr_t( this );
   }
+  if ( name_str == "cooldown" )
+  {
+    struct cooldown_expr_t : public action_expr_t
+    {
+      cooldown_expr_t( action_t* a ) : action_expr_t( a, "cooldown", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> cooldown -> duration; return TOK_NUM; }
+    };
+    return new cooldown_expr_t( this );
+  }
   if ( name_str == "tick_time" )
   {
     struct tick_time_expr_t : public action_expr_t
