@@ -357,6 +357,8 @@ player_t::player_t( sim_t*             s,
     talent_tab_points[ i ] = 0;
     tree_type[ i ] = TREE_NONE;
   }
+
+  player_data.set_parent( & sim -> sim_data );
 }
 
 // player_t::~player_t =====================================================
@@ -573,8 +575,6 @@ bool player_t::init( sim_t* sim )
 void player_t::init()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
-
-  player_data.set_parent( & sim -> sim_data );
 
   initialized = 1;
   init_talents();
