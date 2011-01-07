@@ -3466,7 +3466,7 @@ action_t* shaman_t::create_action( const std::string& name,
 // shaman_t::create_pet ======================================================
 
 pet_t* shaman_t::create_pet( const std::string& pet_name,
-			     const std::string& pet_type )
+                             const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 

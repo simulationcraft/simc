@@ -610,9 +610,9 @@ struct priest_heal_t : public spell_t
     priest_t* p = player -> cast_priest();
     h *= p -> constants.darkness_value;
     if ( p -> buffs_borrowed_time -> up() )
-      {
+    {
       h *= 1.0 / ( 1.0 + p -> talents.borrowed_time -> effect_base_value( 1 ) / 100.0 );
-      }
+    }
     return h;
   }
   virtual void execute()
@@ -630,9 +630,6 @@ struct priest_heal_t : public spell_t
     }
   }
 };
-
-
-
 
 // ==========================================================================
 // Pet Shadow Fiend
@@ -2121,14 +2118,9 @@ struct vampiric_touch_t : public priest_spell_t
 
     check_talent( p -> talents.vampiric_touch -> rank() );
 
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     parse_data( p -> player_data );
-
 
     base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
@@ -2942,7 +2934,7 @@ action_t* priest_t::create_action( const std::string& name,
 // priest_t::create_pet ======================================================
 
 pet_t* priest_t::create_pet( const std::string& pet_name,
-			     const std::string& pet_type )
+                             const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 

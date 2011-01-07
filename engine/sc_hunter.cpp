@@ -20,12 +20,6 @@ struct hunter_t : public player_t
   int           active_aspect;
   action_t*     active_piercing_shots;
 
-  dot_t* dots_serpent_sting;
-
-  cooldown_t* cooldowns_glyph_kill_shot;
-
-  proc_t* procs_wild_quiver;
-
   // Buffs
   buff_t* buffs_aspect_of_the_hawk;
   buff_t* buffs_beast_within;
@@ -45,6 +39,15 @@ struct hunter_t : public player_t
   buff_t* buffs_pre_improved_steady_shot;
   buff_t* buffs_sniper_training;
 
+  // Cooldowns
+  cooldown_t* cooldowns_glyph_kill_shot;
+
+  // Custom Parameters
+  std::string summon_pet_str;
+
+  // Dots
+  dot_t* dots_serpent_sting;
+
   // Gains
   gain_t* gains_glyph_of_arcane_shot;
   gain_t* gains_invigoration;
@@ -58,6 +61,9 @@ struct hunter_t : public player_t
   gain_t* gains_cobra_shot;
   gain_t* gains_tier11_4pc;
 
+  // Procs
+  proc_t* procs_thrill_of_the_hunt;
+  proc_t* procs_wild_quiver;  
 
   // Random Number Generation
   rng_t* rng_frenzy;
@@ -67,9 +73,7 @@ struct hunter_t : public player_t
   rng_t* rng_thrill_of_the_hunt;
   rng_t* rng_tier11_4pc;
 
-  // Custom Parameters
-  std::string summon_pet_str;
-
+  // Talents
   struct talents_t
   {
     // Beast Mastery
@@ -138,6 +142,7 @@ struct hunter_t : public player_t
   };
   talents_t talents;
 
+  // Glyphs
   struct glyphs_t
   {
     // Prime
@@ -156,6 +161,7 @@ struct hunter_t : public player_t
   };
   glyphs_t glyphs;
 
+  // Spells
   struct passive_spells_t
   {
     passive_spell_t* animal_handler;
@@ -167,7 +173,6 @@ struct hunter_t : public player_t
     mastery_t* essence_of_the_viper;
   };
   passive_spells_t passive_spells;
-
 
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
@@ -182,10 +187,12 @@ struct hunter_t : public player_t
     active_aspect          = ASPECT_NONE;
     active_piercing_shots  = 0;
 
-    dots_serpent_sting = get_dot("serpent_sting");
-
+    // Cooldowns
     cooldowns_glyph_kill_shot = get_cooldown("cooldowns_glyph_kill_shot");
     cooldowns_glyph_kill_shot -> duration = 6.0;
+
+    // Dots
+    dots_serpent_sting = get_dot("serpent_sting");
 
     ranged_attack = 0;
     summon_pet_str = "cat";
@@ -246,17 +253,17 @@ struct hunter_pet_t : public pet_t
     talent_t* spiked_collar;
     talent_t* wild_hunt;
 
-    // Ferocity
-    talent_t* call_of_the_wild;
-    talent_t* rabid;
-    talent_t* spiders_bite;
-    talent_t* shark_attack;
-
     // Cunning
     talent_t* feeding_frenzy;
     talent_t* owls_focus;
     talent_t* roar_of_recovery;
     talent_t* wolverine_bite;
+
+    // Ferocity
+    talent_t* call_of_the_wild;
+    talent_t* rabid;
+    talent_t* shark_attack;
+    talent_t* spiders_bite;    
   };
   talents_t talents;
 
@@ -269,13 +276,13 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_rabid;
   buff_t* buffs_rabid_power_stack;
   buff_t* buffs_savage_rend;
-  buff_t* buffs_wolverine_bite;
   buff_t* buffs_sic_em;
+  buff_t* buffs_wolverine_bite;
 
   // Gains
-  gain_t* gains_go_for_the_throat;
   gain_t* gains_fervor;
   gain_t* gains_focus_fire;
+  gain_t* gains_go_for_the_throat;
 
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
       pet_t( sim, owner, pet_name, pt )
@@ -448,8 +455,8 @@ struct hunter_pet_t : public pet_t
     buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
     buffs_rabid_power_stack = new buff_t( this, "rabid_power_stack", 1,    0, 0.0);
     buffs_savage_rend       = new buff_t( this, "savage_rend",       1, 30.0 );
-    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0 );
     buffs_sic_em            = new buff_t( this, "sic_em", 1, 12.0 );
+    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0 );    
 
     buffs_culling_the_herd -> current_value = talents.culling_the_herd -> rank();
   }
@@ -457,9 +464,9 @@ struct hunter_pet_t : public pet_t
   virtual void init_gains()
   {
     pet_t::init_gains();
-    gains_go_for_the_throat = get_gain( "go_for_the_throat" );
     gains_fervor            = get_gain( "fervor" );
     gains_focus_fire        = get_gain( "focus_fire" );
+    gains_go_for_the_throat = get_gain( "go_for_the_throat" );
   }
 
   virtual void init_actions()
@@ -571,7 +578,6 @@ struct hunter_pet_t : public pet_t
   }
 };
 
-
 // ==========================================================================
 // Hunter Attack
 // ==========================================================================
@@ -601,11 +607,13 @@ struct hunter_attack_t : public attack_t
   {
     _init_hunter_attack_t();
   }
+
   virtual void trigger_improved_steady_shot()
   {
     hunter_t* p = player -> cast_hunter();
     p -> buffs_pre_improved_steady_shot -> expire();
   }
+
   virtual void add_scope()
   {
     if ( player -> items[ weapon -> slot ].encoded_enchant_str == "scope" )
@@ -616,6 +624,7 @@ struct hunter_attack_t : public attack_t
       base_dd_max += scope_damage;
     }
   }
+
   virtual void execute()
   {
     attack_t::execute();
@@ -730,9 +739,9 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
 
   if ( p -> rng_thrill_of_the_hunt -> roll ( p -> talents.thrill_of_the_hunt -> proc_chance() ) )
   {
-    double gain = util_t::talent_rank(  p -> talents.thrill_of_the_hunt -> rank(), 3, 0.10, 0.20, 0.40 );
-    gain *= a -> resource_consumed;
+    double gain = a -> base_cost * p -> talents.thrill_of_the_hunt -> base_value() / 100.0;
   
+    p -> procs_thrill_of_the_hunt -> occur();
     p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
   }
 }
@@ -1643,8 +1652,10 @@ struct explosive_shot_t : public hunter_attack_t
       lock_and_load( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-    assert ( p -> primary_tree() == TREE_SURVIVAL );
+    check_spec ( TREE_SURVIVAL );
+
     parse_options( NULL, options_str );
+
     base_cost += p -> talents.efficiency -> effect_base_value( 1 );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
     tick_power_mod = 0.273;
@@ -1795,13 +1806,12 @@ struct serpent_sting_t : public hunter_attack_t
 
     tick_power_mod = 0.4 / num_ticks;
 
-    base_crit += p -> talents.improved_serpent_sting -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> talents.improved_serpent_sting -> mod_additive( P_CRIT );
     base_crit += p -> glyphs.serpent_sting -> mod_additive( P_CRIT );
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
     serpent_sting_burst = new serpent_sting_burst_t( p );
-
   }
 
   virtual void execute()
@@ -1837,7 +1847,6 @@ struct serpent_sting_t : public hunter_attack_t
       p -> buffs_tier10_4pc-> trigger();
     }
   }
-
 };
 
 // Silencing Shot Attack =========================================================
@@ -1851,13 +1860,11 @@ struct silencing_shot_t : public hunter_attack_t
 
     check_talent( p -> talents.silencing_shot -> rank() );
 
-
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = 0.0;
 
     normalize_weapon_speed = true;
-
   }
 };
 
@@ -2014,7 +2021,7 @@ struct bestial_wrath_t : public hunter_spell_t
     parse_options( NULL, options_str );
     check_talent( p -> talents.bestial_wrath -> rank() );
 
-    cooldown -> duration += p -> glyphs.bestial_wrath -> effect_base_value( 1 ) / 1000.0;
+    cooldown -> duration += p -> glyphs.bestial_wrath -> mod_additive( P_COOLDOWN );
     cooldown -> duration *=  ( 1.0 - p -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     harmful = false;
   }
@@ -2584,8 +2591,8 @@ void hunter_t::init_spells()
 {
   player_t::init_spells();
 
-  passive_spells.animal_handler = new passive_spell_t( this, "animal_handler", "Animal Handler" );
-  passive_spells.artisan_quiver = new passive_spell_t( this, "artisan_quiver", "Artisan Quiver" );
+  passive_spells.animal_handler    = new passive_spell_t( this, "animal_handler", "Animal Handler" );
+  passive_spells.artisan_quiver    = new passive_spell_t( this, "artisan_quiver", "Artisan Quiver" );
   passive_spells.into_the_wildness = new passive_spell_t( this, "into_the_wildness", "Into the Wildness" );
 
   passive_spells.master_of_beasts     = new mastery_t( this, "master_of_beasts", "Master of Beasts", TREE_BEAST_MASTERY );
@@ -2696,7 +2703,9 @@ void hunter_t::init_gains()
 void hunter_t::init_procs()
 {
   player_t::init_procs();
-  procs_wild_quiver = get_proc("wild_quiver");
+
+  procs_thrill_of_the_hunt = get_proc( "thrill_of_the_hunt" );
+  procs_wild_quiver        = get_proc( "wild_quiver"        );
 }
 
 // hunter_t::init_uptimes ====================================================
@@ -2971,19 +2980,16 @@ double hunter_t::composite_attack_haste() SC_CONST
 double hunter_t::agility() SC_CONST
 {
   double agi = player_t::agility();
-  if ( passive_spells.into_the_wildness -> ok() )
-  {
-    agi *= 1.15;
-  }
+  agi *= 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) / 100.0;
   return agi;
 }
 
 double hunter_t::composite_player_multiplier( const school_type school ) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school );
-  if ( (school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE ) && passive_spells.essence_of_the_viper -> ok() )
+  if (school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE )
   {
-    m *= 1.0 + 1.0 / 100.0 * composite_mastery();
+    m *= 1.0 + passive_spells.essence_of_the_viper -> base_value( E_APPLY_AURA, A_DUMMY ) * composite_mastery();
   }
   return m;
 }

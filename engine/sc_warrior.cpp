@@ -595,7 +595,7 @@ static void trigger_deep_wounds( action_t* a )
       }
       else
       {
-	p -> active_deep_wounds -> schedule_travel();
+        p -> active_deep_wounds -> schedule_travel();
       }
 
       trigger_blood_frenzy( p -> active_deep_wounds );
