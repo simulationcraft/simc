@@ -1442,9 +1442,10 @@ struct cold_snap_t : public mage_spell_t
 
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
 
-    cooldown_list.push_back( p -> get_cooldown( "cone_of_cold" ) );
-    cooldown_list.push_back( p -> get_cooldown( "deep_freeze"  ) );
-    cooldown_list.push_back( p -> get_cooldown( "icy_veins"    ) );
+    cooldown_list.push_back( p -> get_cooldown( "cone_of_cold"  ) );
+    cooldown_list.push_back( p -> get_cooldown( "deep_freeze"   ) );
+    cooldown_list.push_back( p -> get_cooldown( "frostfire_orb" ) );
+    cooldown_list.push_back( p -> get_cooldown( "icy_veins"     ) );
   }
 
   virtual void execute()
