@@ -1655,7 +1655,6 @@ struct util_t
   static int printf( const char *format,  ... );
   static int fprintf( FILE *stream, const char *format,  ... );
 
-
   static std::string& str_to_utf8( std::string& str );
   static std::string& str_to_latin1( std::string& str );
   static std::string& urlencode( std::string& str );
@@ -2029,13 +2028,13 @@ struct buff_t : public spell_id_t
 
   // Player Buff as spell_id_t by name
   buff_t( player_t*, const std::string& name, const char* sname,
-	  double chance=-1, double duration=-1.0,
-	  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+          double chance=-1, double duration=-1.0,
+          bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Player Buff as spell_id_t by id
   buff_t( player_t*, const uint32_t id, const std::string& name,
-	  double chance=-1, double duration=-1.0,
-	  bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+          double chance=-1, double duration=-1.0,
+          bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -2662,7 +2661,7 @@ struct item_t
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
         max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ), 
-	proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
+        proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
         tick( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
@@ -3872,9 +3871,9 @@ struct unique_gear_t
                                                      double proc_chance, double cooldown, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_stat_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
-							  int stat, int max_stacks, double stat_amount,
-							  const school_type school, double discharge_amount, double discharge_scaling,
-							  double proc_chance, double duration, double cooldown );
+                                                          int stat, int max_stacks, double stat_amount,
+                                                          const school_type school, double discharge_amount, double discharge_scaling,
+                                                          double proc_chance, double duration, double cooldown );
 
   static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
@@ -3899,6 +3898,7 @@ struct enchant_t
   static bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id );
   static bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id   );
   static bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
+  static int  get_reforge_id      ( stat_type stat_from, stat_type stat_to );
   static bool download        ( item_t&, const std::string& enchant_id );
   static bool download_addon  ( item_t&, const std::string& addon_id   );
   static bool download_reforge( item_t&, const std::string& reforge_id );
@@ -4163,6 +4163,13 @@ struct wowhead_t
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
   static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
+};
+
+// CharDev  ==================================================================
+
+struct chardev_t
+{
+  static player_t* download_player( sim_t* sim, const std::string& id );
 };
 
 // MMO Champion ==============================================================

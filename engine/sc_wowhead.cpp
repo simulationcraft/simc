@@ -5,8 +5,7 @@
 
 #include "simulationcraft.h"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // format_server =========================================================
 
@@ -165,8 +164,8 @@ static bool parse_gems( item_t&           item,
   if ( num_sockets < 3 )
   {
     if ( item.slot == SLOT_WRISTS ||
-	 item.slot == SLOT_HANDS  ||
-	 item.slot == SLOT_WAIST  )
+         item.slot == SLOT_HANDS  ||
+         item.slot == SLOT_WAIST  )
     {
       num_sockets++;
     }
@@ -860,7 +859,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n",
-		   type_str.c_str(), name_str.c_str(), id.c_str() );
+                   type_str.c_str(), name_str.c_str(), id.c_str() );
     return 0;
   }
 
@@ -947,7 +946,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
       if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
       {
-	return 0;
+        return 0;
       }
       if ( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
@@ -962,8 +961,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
       std::string& encoding = talent_encodings[ active_talents ];
       if ( ! p -> parse_talents_armory( encoding ) )
       {
-	sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
-	return 0;
+        sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
+        return 0;
       }
       p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + encoding;
     }
@@ -977,16 +976,16 @@ player_t* wowhead_t::download_player( sim_t* sim,
       int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ active_talents ], ":" );
       for ( int i=0; i < num_glyphs; i++ )
       {
-	std::string& glyph_id = glyph_ids[ i ];
-	if ( glyph_id == "0" ) continue;
-	std::string glyph_name;
+        std::string& glyph_id = glyph_ids[ i ];
+        if ( glyph_id == "0" ) continue;
+        std::string glyph_name;
 
-	if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
+        if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
         {
-	  return 0;
-	}
-	if ( i ) p -> glyphs_str += "/";
-	p -> glyphs_str += glyph_name;
+          return 0;
+        }
+        if ( i ) p -> glyphs_str += "/";
+        p -> glyphs_str += glyph_name;
       }
     }
   }

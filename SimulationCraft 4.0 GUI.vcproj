@@ -261,6 +261,10 @@
 				>
 			</File>
 			<File
+				RelativePath="engine\sc_chardev.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_chart.cpp"
 				>
 			</File>

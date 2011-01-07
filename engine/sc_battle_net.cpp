@@ -115,7 +115,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
-		   type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
+                   type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -188,7 +188,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   if( ! talents_xml )
   {
     sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory.\n", 
-      region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
+                   region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
     return 0;
   }
 
@@ -210,8 +210,11 @@ player_t* battle_net_t::download_player( sim_t* sim,
     sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
   }
-  else // HACK: We need primary_tree() to return something sensible, so we can filter out tanks/healers in guild download
+  else 
+  {
+    // HACK: We need primary_tree() to return something sensible, so we can filter out tanks/healers in guild download
     p -> player_t::init_talents();
+  }
   
   p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
   
@@ -231,11 +234,11 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
       if( cdata_str.compare( start, 9, "Glyph of " ) )
       {
-	start += 9;
+        start += 9;
       }
       else if( cdata_str.compare( start, 8, "Glyph - " ) )
       {
-	start += 9;
+        start += 9;
       }
       else continue;
 
@@ -295,7 +298,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     {
       if( ! item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {
-	return 0;
+        return 0;
       }
     }
   }

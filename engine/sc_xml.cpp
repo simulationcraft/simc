@@ -41,12 +41,11 @@ struct xml_cache_t
 
 static void* xml_mutex = 0;
 
-namespace   // ANONYMOUS NAMESPACE =========================================
-{
+namespace { // ANONYMOUS NAMESPACE =========================================
 
 // Forward Declarations ====================================================
 
-  static int create_children( sim_t* sim, xml_node_t* root, const std::string& input, std::string::size_type& index );
+static int create_children( sim_t* sim, xml_node_t* root, const std::string& input, std::string::size_type& index );
 
 // simplify_xml ============================================================
 
@@ -112,7 +111,7 @@ static bool parse_name( std::string&            name_str,
 // create_parameter ========================================================
 
 static void create_parameter( sim_t*                  sim,
-			      xml_node_t*             node,
+                              xml_node_t*             node,
                               const std::string&      input,
                               std::string::size_type& index )
 {
@@ -143,7 +142,7 @@ static void create_parameter( sim_t*                  sim,
 // create_node =============================================================
 
 static xml_node_t* create_node( sim_t*                  sim,
-				const std::string&      input,
+                                const std::string&      input,
                                 std::string::size_type& index )
 {
   char c = input[ index ];
@@ -187,7 +186,7 @@ static xml_node_t* create_node( sim_t*                  sim,
 // create_children =========================================================
 
 static int create_children( sim_t*                  sim,
-			    xml_node_t*             root,
+                            xml_node_t*             root,
                             const std::string&      input,
                             std::string::size_type& index )
 {
@@ -216,13 +215,13 @@ static int create_children( sim_t*                  sim,
           std::string::size_type finish = input.find( "]]", index );
           if ( finish == std::string::npos )
           {
-	    if( sim )
-	    {
-	      sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
-	      sim -> errorf( "%s\n", input.c_str() );
-	      sim -> cancel();
-	    }
-	    return 0;
+            if( sim )
+            {
+              sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
+              sim -> errorf( "%s\n", input.c_str() );
+              sim -> cancel();
+            }
+            return 0;
           }
           root -> parameters.push_back( xml_parm_t( "cdata", input.substr( index, finish-index ) ) );
           index = finish + 2;
@@ -236,8 +235,8 @@ static int create_children( sim_t*                  sim,
       }
       else
       {
-	xml_node_t* n = create_node( sim, input, index );
-	if( ! n ) return 0;
+        xml_node_t* n = create_node( sim, input, index );
+        if( ! n ) return 0;
         root -> children.push_back( n );
       }
     }
@@ -342,7 +341,7 @@ const char* xml_t::get_name( xml_node_t* node )
 // xml_t::download =========================================================
 
 xml_node_t* xml_t::download( sim_t*             sim,
-			     const std::string& url,
+                             const std::string& url,
                              const std::string& confirmation,
                              int64_t            timestamp,
                              int                throttle_seconds )
@@ -378,7 +377,7 @@ xml_node_t* xml_t::download( sim_t*             sim,
 // xml_t::download =========================================================
 
 xml_node_t* xml_t::download_cache( sim_t*             sim,
-				   const std::string& url,
+                                   const std::string& url,
                                    int64_t            timestamp )
 {
   thread_t::mutex_lock( xml_mutex );
@@ -497,8 +496,8 @@ xml_node_t* xml_t::get_node( xml_node_t*        root,
 
 xml_node_t* xml_t::get_node( xml_node_t*        root,
                              const std::string& path,
-			     const std::string& parm_name,
-			     const std::string& parm_value )
+                             const std::string& parm_name,
+                             const std::string& parm_value )
 {
   if( ! root ) return 0;
 
@@ -542,8 +541,8 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
 int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
                       xml_node_t*               root,
                       const std::string&        path,
-		      const std::string& parm_name,
-		      const std::string& parm_value )
+                      const std::string& parm_name,
+                      const std::string& parm_value )
 {
   if( ! root ) return 0;
 

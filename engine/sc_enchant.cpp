@@ -522,6 +522,18 @@ static enchant_data_t enchant_db[] =
 // Add-Ons use the same enchant data-base for now
 static enchant_data_t* addon_db = enchant_db;
 
+static const stat_type reforge_stats[] = { 
+  STAT_SPIRIT, 
+  STAT_DODGE_RATING,
+  STAT_PARRY_RATING,
+  STAT_HIT_RATING,
+  STAT_CRIT_RATING, 
+  STAT_HASTE_RATING,
+  STAT_EXPERTISE_RATING,
+  STAT_MASTERY_RATING, 
+  STAT_NONE 
+};
+
 // Weapon Stat Proc Callback ==================================================
 
 struct weapon_stat_proc_callback_t : public action_callback_t
@@ -718,26 +730,26 @@ void enchant_t::init( player_t* p )
     {
       buff_t *mh_buff, *oh_buff, *s_buff;
       hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb ) :
-	action_callback_t( p -> sim, p ), mh_buff(mhb), oh_buff(ohb)
+        action_callback_t( p -> sim, p ), mh_buff(mhb), oh_buff(ohb)
       {
-	s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, 12, 45.0 );
+        s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, 12, 45.0 );
       }
       virtual void trigger( action_t* a, void* call_data )
       {
-	if( a -> proc ) return;
-	if( s_buff -> cooldown -> remains() > 0 ) return;
-	if( ! s_buff -> rng -> roll( 0.15 ) ) return;
-	if( mh_buff && mh_buff -> check() )
-	{
-	  mh_buff -> trigger();
-	  s_buff -> cooldown -> start();
-	}
-	else if( oh_buff && oh_buff -> check() )
-	{
-	  oh_buff -> trigger();
-	  s_buff -> cooldown -> start();
-	}
-	else s_buff -> trigger();
+        if( a -> proc ) return;
+        if( s_buff -> cooldown -> remains() > 0 ) return;
+        if( ! s_buff -> rng -> roll( 0.15 ) ) return;
+        if( mh_buff && mh_buff -> check() )
+        {
+          mh_buff -> trigger();
+          s_buff -> cooldown -> start();
+        }
+        else if( oh_buff && oh_buff -> check() )
+        {
+          oh_buff -> trigger();
+          s_buff -> cooldown -> start();
+        }
+        else s_buff -> trigger();
       }
     };
     p -> register_spell_result_callback( RESULT_HIT_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff ) );
@@ -873,23 +885,24 @@ bool enchant_t::get_reforge_encoding( std::string& name,
 {
   name = encoding = "";
 
+  if ( reforge_id.empty() || reforge_id == "" || reforge_id == "0" )
+    return true;
+
   int start = 0;
   int target = atoi( reforge_id.c_str() );
   target %= 56;
   if( target == 0 ) target = 56;
   else if( target <= start ) return false;
 
-  const char* stats[] = { "spirit", "dodge", "parry", "hit", "crit", "haste", "exp", "mastery", NULL };
-
-  for( int i=0; stats[ i ]; i++ )
+  for( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
   {
-    for( int j=0; stats[ j ]; j++ )
+    for( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
     {
       if( i == j ) continue;
       if( ++start == target )
       {
-        std::string source_stat = stats[ i ];
-        std::string target_stat = stats[ j ];
+        std::string source_stat = util_t::stat_type_abbrev( reforge_stats[ i ] );
+        std::string target_stat = util_t::stat_type_abbrev( reforge_stats[ j ] );
 
         name += "Reforge " + source_stat + " to " + target_stat;
         encoding = source_stat + "_" + target_stat;
@@ -900,6 +913,39 @@ bool enchant_t::get_reforge_encoding( std::string& name,
   }
 
   return false;
+}
+
+// enchant_t::get_reforge_id ================================================
+
+int enchant_t::get_reforge_id( stat_type stat_from,
+                               stat_type stat_to )
+{
+  int index_from;
+  for( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )
+    if ( reforge_stats[ index_from ] == stat_from )
+      break;
+
+  int index_to;
+  for( index_to=0; reforge_stats[ index_to ] != STAT_NONE; index_to++ )
+    if ( reforge_stats[ index_to ] == stat_to )
+      break;
+  
+  int id=0;
+  for( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
+  {
+    for( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
+    {
+      if( i == j ) continue;
+      id++;
+      if( index_from == i &&
+          index_to   == j )
+      {
+        return id;
+      }
+    }
+  }
+
+  return 0;
 }
 
 // enchant_t::download ======================================================

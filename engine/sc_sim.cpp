@@ -406,6 +406,20 @@ static bool parse_wowhead( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
+// parse_chardev ============================================================
+
+static bool parse_chardev( sim_t*             sim,
+                           const std::string& name,
+                           const std::string& value )
+{
+  if ( name == "chardev" )
+  {
+    sim -> active_player = chardev_t::download_player( sim, value );
+  }
+
+  return sim -> active_player != 0;
+}
+
 // parse_rawr ===============================================================
 
 static bool parse_rawr( sim_t*             sim,
@@ -1798,6 +1812,7 @@ void sim_t::create_options()
     { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
+    { "chardev",                          OPT_FUNC,   ( void* ) ::parse_chardev                     },
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
     { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
