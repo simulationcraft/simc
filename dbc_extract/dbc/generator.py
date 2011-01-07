@@ -314,7 +314,7 @@ class SpellDataGenerator(DataGenerator):
     _spell_id_list = [
         (),
         (),
-        ( ( 54158, 0 ), ),     # Paladin "Judgement" damage portion on some Seals
+        ( ( 54158, 0 ), ( 90174, 0 ) ),     # Paladin "Judgement" damage portion on some Seals
         (),
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ) ), # Rogue poison effects
         ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs
