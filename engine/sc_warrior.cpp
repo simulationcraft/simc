@@ -2868,7 +2868,7 @@ void warrior_t::init_buffs()
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
-  buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0 );
+  buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0,   0, set_bonus.tier11_4pc_melee() );
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
 }
 
@@ -3112,7 +3112,9 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
   double mult = player_t::composite_attack_power_multiplier();
 
   if ( buffs_tier11_4pc_melee -> up() )
+  {
     mult *= 1.0 + 0.01 * buffs_tier11_4pc_melee -> stack();
+  }
   return mult;
 }
 
