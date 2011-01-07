@@ -4423,8 +4423,8 @@ glyph_t* player_t::find_glyph( const std::string& n )
     if( n == g -> s_token ) return g; // Armory-ized
   }
 
-  sim -> errorf( "Player %s unable to find glyph %s\n", name(), n.c_str() );
-  sim -> cancel();
+  sim -> errorf( "\nPlayer %s unable to find glyph %s\n", name(), n.c_str() );
+//sim -> cancel();
   return 0;
 }
 
