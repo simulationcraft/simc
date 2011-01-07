@@ -325,6 +325,7 @@ struct hunter_pet_t : public pet_t
     case PET_GORILLA:      return NULL;
     case PET_RHINO:        return NULL;
     case PET_SCORPID:      return NULL;
+    case PET_SHALE_SPIDER: return NULL;
     case PET_TURTLE:       return NULL;
     case PET_WARP_STALKER: return NULL;
     case PET_WORM:         return NULL;
@@ -2453,6 +2454,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( pet_type == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
   if ( pet_type == "core_hound"   ) return new hunter_pet_t( sim, this, pet_name, PET_CORE_HOUND   );
   if ( pet_type == "devilsaur"    ) return new hunter_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
+  if ( pet_type == "fox"          ) return new hunter_pet_t( sim, this, pet_name, PET_FOX          );
   if ( pet_type == "hyena"        ) return new hunter_pet_t( sim, this, pet_name, PET_HYENA        );
   if ( pet_type == "moth"         ) return new hunter_pet_t( sim, this, pet_name, PET_MOTH         );
   if ( pet_type == "raptor"       ) return new hunter_pet_t( sim, this, pet_name, PET_RAPTOR       );
@@ -3073,18 +3075,18 @@ void hunter_t::armory_extensions( const std::string& region,
 {
   // Pet support
   static pet_type_t pet_types[] =
-    { /* 0*/ PET_NONE, PET_WOLF, PET_CAT, PET_SPIDER, PET_BEAR,
-      /* 5*/ PET_BOAR, PET_CROCOLISK, PET_CARRION_BIRD, PET_CRAB, PET_GORILLA,
-      /*10*/ PET_NONE, PET_RAPTOR, PET_TALLSTRIDER, PET_NONE, PET_NONE,
-      /*15*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
-      /*20*/ PET_SCORPID, PET_TURTLE, PET_NONE, PET_NONE, PET_BAT,
-      /*25*/ PET_HYENA, PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE, PET_NONE,
-      /*30*/ PET_DRAGONHAWK, PET_RAVAGER, PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
-      /*35*/ PET_SERPENT, PET_NONE, PET_MOTH, PET_CHIMERA, PET_DEVILSAUR,
-      /*40*/ PET_NONE, PET_SILITHID, PET_WORM, PET_RHINO, PET_WASP,
-      /*45*/ PET_CORE_HOUND, PET_SPIRIT_BEAST, PET_NONE, PET_NONE, PET_NONE,
-      /*50*/ PET_NONE, PET_NONE, PET_NONE, PET_NONE, PET_NONE,
-      /*55*/ PET_SHALE_SPIDER, PET_NONE, PET_NONE, PET_NONE, PET_NONE
+    { /* 0*/ PET_NONE,         PET_WOLF,         PET_CAT,          PET_SPIDER,   PET_BEAR,
+      /* 5*/ PET_BOAR,         PET_CROCOLISK,    PET_CARRION_BIRD, PET_CRAB,     PET_GORILLA,
+      /*10*/ PET_NONE,         PET_RAPTOR,       PET_TALLSTRIDER,  PET_NONE,     PET_NONE,
+      /*15*/ PET_NONE,         PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
+      /*20*/ PET_SCORPID,      PET_TURTLE,       PET_NONE,         PET_NONE,     PET_BAT,
+      /*25*/ PET_HYENA,        PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE,     PET_NONE,
+      /*30*/ PET_DRAGONHAWK,   PET_RAVAGER,      PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
+      /*35*/ PET_SERPENT,      PET_NONE,         PET_MOTH,         PET_CHIMERA,  PET_DEVILSAUR,
+      /*40*/ PET_NONE,         PET_SILITHID,     PET_WORM,         PET_RHINO,    PET_WASP,
+      /*45*/ PET_CORE_HOUND,   PET_SPIRIT_BEAST, PET_NONE,         PET_NONE,     PET_NONE,
+      /*50*/ PET_FOX,          PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
+      /*55*/ PET_SHALE_SPIDER, PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE
     };
   int num_families = sizeof( pet_types ) / sizeof( pet_type_t );
 
@@ -3117,7 +3119,7 @@ void hunter_t::armory_extensions( const std::string& region,
 
     if( ! pet_js )
     {
-      sim -> errorf( "Hunter %s unable to download pet data from Armory\n", name() );
+      sim -> errorf( "\nHunter %s unable to download pet data from Armory\n", name() );
       sim -> cancel();
       return;
     }
@@ -3134,7 +3136,7 @@ void hunter_t::armory_extensions( const std::string& region,
           ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
           ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
       {
-        sim -> errorf( "Hunter %s unable to decode pet name/build/level/familyId\n", name() );
+        sim -> errorf( "\nHunter %s unable to decode pet name/build/level/familyId\n", name() );
         sim -> cancel();
         return;
       }
@@ -3149,7 +3151,7 @@ void hunter_t::armory_extensions( const std::string& region,
 
       if( pet_family > num_families || pet_types[ pet_family ] == PET_NONE ) 
       {
-        sim -> errorf( "Hunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
+        sim -> errorf( "\nHunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
         continue;
       }
 

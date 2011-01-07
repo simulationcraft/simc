@@ -166,6 +166,7 @@ enum pet_type_t
   PET_CAT,
   PET_CORE_HOUND,
   PET_DEVILSAUR,
+  PET_FOX,
   PET_HYENA,
   PET_MOTH,
   PET_RAPTOR,
