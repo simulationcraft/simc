@@ -20,10 +20,11 @@
 #define TAB_RESULTS   7
 
 #define TAB_BATTLE_NET 0
-#define TAB_RAWR       1
-#define TAB_BIS        2
-#define TAB_HISTORY    3
-#define TAB_CUSTOM     4
+#define TAB_CHAR_DEV   1
+#define TAB_RAWR       2
+#define TAB_BIS        3
+#define TAB_HISTORY    4
+#define TAB_CUSTOM     5
 
 #define HISTORY_VERSION "4.6"
 
@@ -103,8 +104,8 @@ public:
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
     QButtonGroup* plotsButtonGroup;
-    SimulationCraftWebView* armoryView;
     SimulationCraftWebView* battleNetView;
+    SimulationCraftWebView* charDevView;
     SimulationCraftWebView* visibleWebView;
     QPushButton* rawrButton;
     QLabel* rawrDir;
@@ -303,6 +304,10 @@ private slots:
       mainWindow->cmdLine->setText( s );
     }
   }
+  void linkClickedSlot( const QUrl& url )
+  {
+    setUrl( url );
+  }
 
 public:
   SimulationCraftWebView( SimulationCraftWindow* mw ) : 
@@ -311,6 +316,9 @@ public:
     connect( this, SIGNAL(loadProgress(int)),       this, SLOT(loadProgressSlot(int)) );
     connect( this, SIGNAL(loadFinished(bool)),      this, SLOT(loadFinishedSlot(bool)) );
     connect( this, SIGNAL(urlChanged(const QUrl&)), this, SLOT(urlChangedSlot(const QUrl&)) );
+
+    connect( page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClickedSlot(const QUrl&)) );
+    page() -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
   }
   virtual ~SimulationCraftWebView() {}
 };
@@ -342,7 +350,8 @@ public:
     QString profile;
     player_t* player;
 
-    void importArmory();
+    void importBattleNet();
+    void importCharDev();
     void importRawr();
 
     void start( sim_t* s, int t, const QString& u ) { sim=s; tab=t; url=u; profile=""; player=0; QThread::start(); }

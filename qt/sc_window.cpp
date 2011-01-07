@@ -581,6 +581,10 @@ void SimulationCraftWindow::createImportTab()
   battleNetView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab->addTab( battleNetView, "Battle.Net" );
 
+  charDevView = new SimulationCraftWebView( this );
+  charDevView->setUrl( QUrl( "http://chardev.org/?planner" ) );
+  importTab->addTab( charDevView, "CharDev" );
+
   createRawrTab();
   createBestInSlotTab();
 
@@ -886,7 +890,7 @@ void SimulationCraftWindow::deleteSim()
 // Import 
 // ==========================================================================
 
-void ImportThread::importArmory()
+void ImportThread::importBattleNet()
 {
   QString region, server, character;
   QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
@@ -932,6 +936,17 @@ void ImportThread::importArmory()
   }
 }
 
+void ImportThread::importCharDev()
+{
+  QString region, server, character;
+  QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
+  int count = tokens.count();
+  if( count > 0 )
+  {
+    player = chardev_t::download_player( sim, tokens[ count-1 ].toStdString() );
+  }
+}
+
 void ImportThread::importRawr()
 {
   player = rawr_t::load_player( sim, url.toStdString() );
@@ -941,8 +956,9 @@ void ImportThread::run()
 {
   switch( tab )
   {
-  case TAB_BATTLE_NET: importArmory(); break;
-  case TAB_RAWR:       importRawr();   break;
+  case TAB_BATTLE_NET: importBattleNet(); break;
+  case TAB_CHAR_DEV:   importCharDev();   break;
+  case TAB_RAWR:       importRawr();      break;
   default: assert(0);
   }
 
@@ -1266,10 +1282,16 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "battle.net" ) || cmdLine->text().count( ".wowarmory." ) )
+    if( cmdLine->text().count( "battle.net" ) || 
+	cmdLine->text().count( "wowarmory.com" ) )
     {
       battleNetView->setUrl( QUrl( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_BATTLE_NET );
+    }
+    else if( cmdLine->text().count( "chardev.org" ) )
+    {
+      charDevView->setUrl( QUrl( cmdLine->text() ) ); 
+      importTab->setCurrentIndex( TAB_CHAR_DEV );
     }
     else
     {
@@ -1296,6 +1318,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
     switch( importTab->currentIndex() )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
+    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
     break;
@@ -1486,10 +1509,16 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
   
-  if( url.count( ".battle.net" ) || url.count( ".wowarmory." ) )
+  if( url.count( "battle.net"    ) || 
+      url.count( "wowarmory.com" ) )
   {
     battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_BATTLE_NET );
+  }
+  else if( url.count( "chardev.org" ) )
+  {
+    charDevView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
+    importTab->setCurrentIndex( TAB_CHAR_DEV );
   }
   else
   {

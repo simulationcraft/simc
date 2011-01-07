@@ -1042,10 +1042,11 @@ const char* util_t::stat_type_string( int stat )
   case STAT_WEAPON_OFFHAND_DPS:    return "weapon_offhand_dps";
   case STAT_WEAPON_OFFHAND_SPEED:  return "weapon_offhand_speed";
 
-  case STAT_ARMOR:          return "armor";
-  case STAT_BONUS_ARMOR:    return "bonus_armor";
-  case STAT_DODGE_RATING:   return "dodge_rating";
-  case STAT_PARRY_RATING:   return "parry_rating";
+  case STAT_ARMOR:             return "armor";
+  case STAT_BONUS_ARMOR:       return "bonus_armor";
+  case STAT_RESILIENCE_RATING: return "resilience_rating";
+  case STAT_DODGE_RATING:      return "dodge_rating";
+  case STAT_PARRY_RATING:      return "parry_rating";
 
   case STAT_BLOCK_RATING: return "block_rating";
   case STAT_BLOCK_VALUE:  return "block_value";
@@ -1093,10 +1094,11 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_WEAPON_OFFHAND_DPS:    return "WOHdps";
   case STAT_WEAPON_OFFHAND_SPEED:  return "WOHspeed";
 
-  case STAT_ARMOR:          return "Armor";
-  case STAT_BONUS_ARMOR:    return "BArmor";
-  case STAT_DODGE_RATING:   return "Dodge";
-  case STAT_PARRY_RATING:   return "Parry";
+  case STAT_ARMOR:             return "Armor";
+  case STAT_BONUS_ARMOR:       return "BArmor";
+  case STAT_RESILIENCE_RATING: return "Resil";
+  case STAT_DODGE_RATING:      return "Dodge";
+  case STAT_PARRY_RATING:      return "Parry";
 
   case STAT_BLOCK_RATING: return "BlockR";
   case STAT_BLOCK_VALUE: return "BlockV";
@@ -1141,10 +1143,11 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_WEAPON_DPS:   return "__wdps";
   case STAT_WEAPON_SPEED: return "__wspeed";
 
-  case STAT_ARMOR:          return "armor";
-  case STAT_BONUS_ARMOR:    return "__armor"; // FIXME! Does wowhead distinguish "bonus" armor?
-  case STAT_DODGE_RATING:   return "dodgertng";
-  case STAT_PARRY_RATING:   return "parryrtng";
+  case STAT_ARMOR:             return "armor";
+  case STAT_BONUS_ARMOR:       return "__armor"; // FIXME! Does wowhead distinguish "bonus" armor?
+  case STAT_RESILIENCE_RATING: return "resiliencertng";
+  case STAT_DODGE_RATING:      return "dodgertng";
+  case STAT_PARRY_RATING:      return "parryrtng";
 
   case STAT_BLOCK_RATING: return "blockrtng";
   case STAT_BLOCK_VALUE: return "block";
