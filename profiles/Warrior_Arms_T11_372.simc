@@ -12,20 +12,21 @@ actions+=/stance,choose=battle,if=!in_combat
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
-actions+=/deadly_calm,if=rage<10
+actions+=/deadly_calm,if=rage<20
 actions+=/sweeping_strikes,if=target.adds>0
 actions+=/berserker_rage
 actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up
 actions+=/cleave,if=target.adds>0
-actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up|buff.incite.up)
+actions+=/heroic_strike,if=target.adds=0&(rage>65|buff.deadly_calm.up|buff.incite.up|buff.battle_trance.up)
 actions+=/overpower,if=buff.taste_for_blood.remains<1.5
-actions+=/rend,if=!ticking&target.health_pct>=20
+actions+=/rend,if=!ticking
 actions+=/colossus_smash,if=!buff.colossus_smash.up
 actions+=/mortal_strike
+actions+=/overpower,if=!buff.lambs_to_the_slaughter.up&rage>35&target.health_pct<20
 actions+=/execute
 actions+=/overpower
-actions+=/slam
-actions+=/battle_shout,if=rage<30
+actions+=/slam,if=cooldown.mortal_strike.remains>=1.5
+actions+=/battle_shout,if=rage<25
 head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,reforge=haste_crit,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery
 neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=mastery_crit
 shoulders=earthen_pauldrons,heroic=1,type=,stats=2669armor_266str_429sta_191haste_171hit,gems=40str_10haste,enchant=50str_25crit
@@ -58,3 +59,4 @@ ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste
 # meta_gem=enigmatic_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
+# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=mace2h_3.80speed_1872min_3476max,enchant=landslide

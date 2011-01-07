@@ -14,17 +14,17 @@ actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
 actions+=/recklessness
 actions+=/death_wish
-# Off-GCD actions need to be first with sufficient restrictions
-actions+=/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)
+actions+=/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20
 actions+=/cleave,if=target.adds>0
 actions+=/whirlwind,if=target.adds>0
 actions+=/colossus_smash
-actions+=/execute
+actions+=/inner_rage,if=target.health_pct<20
+actions+=/execute,if=buff.colossus_smash.up|buff.inner_rage.up
 actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
-actions+=/raging_blow
+actions+=/raging_blow,if=target.health_pct>=20
 actions+=/bloodthirst
 actions+=/slam,if=buff.bloodsurge.react
-actions+=/battle_shout,if=rage<30
+actions+=/battle_shout,if=rage<70
 head=earthen_helmet,heroic=1,type=,stats=2891armor_325str_578sta_257haste_197exp,reforge=haste_hit,gems=enigmatic_shadowspirit_20str_20crit_30str,enchant=60str_35mastery
 neck=rage_of_ages,heroic=1,stats=215str_322sta_143mastery_143hit,reforge=mastery_crit
 shoulders=earthen_pauldrons,heroic=1,type=,stats=2669armor_266str_429sta_191haste_171hit,reforge=haste_crit,gems=40str_10haste,enchant=50str_25crit

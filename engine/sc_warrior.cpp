@@ -3001,35 +3001,37 @@ void warrior_t::init_actions()
 
     if ( primary_tree() == TREE_ARMS )
     {
-      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<10";
+      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<20";
       if ( talents.sweeping_strikes -> ok() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
       action_list_str += "/cleave,if=target.adds>0";
-      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.deadly_calm.up|buff.incite.up)";
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>65|buff.deadly_calm.up|buff.incite.up|buff.battle_trance.up)";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
-      action_list_str += "/rend,if=!ticking&target.health_pct>=20";
+      action_list_str += "/rend,if=!ticking";
       if ( level >= 81 ) action_list_str += "/colossus_smash,if=!buff.colossus_smash.up";
       action_list_str += "/mortal_strike";
+      action_list_str += "/overpower,if=!buff.lambs_to_the_slaughter.up&rage>35&target.health_pct<20";
       action_list_str += "/execute";
       action_list_str += "/overpower";
-      if ( glyphs.slam -> ok() ) action_list_str += "/slam";
-      action_list_str += "/battle_shout,if=rage<30";
+      if ( glyphs.slam -> ok() ) action_list_str += "/slam,if=cooldown.mortal_strike.remains>=1.5";
+      action_list_str += "/battle_shout,if=rage<25";
     }
     else if ( primary_tree() == TREE_FURY )
     {
       action_list_str += "/recklessness";
       if ( talents.death_wish -> ok() ) action_list_str += "/death_wish";
-      action_list_str += "/heroic_strike,if=target.adds=0&(rage>50|buff.battle_trance.up|buff.incite.up)";
+      action_list_str += "/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20";
       action_list_str += "/cleave,if=target.adds>0";
       action_list_str += "/whirlwind,if=target.adds>0";      
       if ( level >= 81 ) action_list_str += "/colossus_smash";
-      action_list_str += "/execute";
+      if ( level >= 83 ) action_list_str += "/inner_rage,if=target.health_pct<20";
+      action_list_str += "/execute,if=buff.colossus_smash.up|buff.inner_rage.up";
       if ( talents.titans_grip -> ok() && talents.raging_blow -> ok() )
       {
         action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-        action_list_str += "/raging_blow";
+        action_list_str += "/raging_blow,if=target.health_pct>=20";
       }
       action_list_str += "/bloodthirst";
       action_list_str += "/slam,if=buff.bloodsurge.react";
@@ -3038,7 +3040,7 @@ void warrior_t::init_actions()
         action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
         action_list_str += "/raging_blow";
       }
-      action_list_str += "/battle_shout,if=rage<30";
+      action_list_str += "/battle_shout,if=rage<70";
       if (! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) 
         action_list_str += "/berserker_rage";
     }
