@@ -5048,7 +5048,7 @@ void report_t::print_html3( sim_t* sim )
       "      .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
       "      .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
       "      a.help { cursor: help; }\n"
-      "      .section { position: relative; width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: 25px; outline: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #ccc; -webkit-box-shadow: 4px 4px 4px #ccc; box-shadow: 4px 4px 4px #ccc; text-align: left; }\n"
+      "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: 25px; outline: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #ccc; -webkit-box-shadow: 4px 4px 4px #ccc; box-shadow: 4px 4px 4px #ccc; text-align: left; }\n"
       "      .section .toggle-content { padding: 0 0 20px 14px; }\n"
       "      #raid-summary .toggle-content { padding-bottom: 0px; }\n"
       "      ul.params { padding: 0; }\n"
