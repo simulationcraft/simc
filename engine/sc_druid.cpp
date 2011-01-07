@@ -541,13 +541,6 @@ struct treants_pet_t : public pet_t
       // Model the three Treants as one actor hitting 3x hard
       base_multiplier *= 3.0;
     }
-    
-    virtual void player_buff()
-    {
-      attack_t::player_buff();
-      // Trees have 5% crit
-      player_crit = .05;
-    }
   };
 
   melee_t* melee;
@@ -572,6 +565,7 @@ struct treants_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 65;
     attribute_base[ ATTR_SPIRIT    ] = 109;
 
+    base_attack_crit = .05;
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
 
