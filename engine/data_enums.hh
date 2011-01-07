@@ -92,7 +92,6 @@ enum property_type_t {
   P_MAX               = 29,
 };
 
-
 enum effect_type_t {
     E_NONE = 0,
     E_INSTAKILL = 1,

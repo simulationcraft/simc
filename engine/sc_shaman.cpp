@@ -235,7 +235,6 @@ struct shaman_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return talent_stormstrike -> rank() ? ROLE_HYBRID : ROLE_SPELL; }
   virtual void      combat_begin();
-  // virtual int       normalize_by() SC_CONST { return ( primary_tree() == TREE_ENHANCEMENT ) ? STAT_AGILITY : STAT_INTELLECT; }
 
   // Event Tracking
   virtual void regen( double periodicity );

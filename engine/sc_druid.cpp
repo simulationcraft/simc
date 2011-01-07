@@ -541,6 +541,13 @@ struct treants_pet_t : public pet_t
       // Model the three Treants as one actor hitting 3x hard
       base_multiplier *= 3.0;
     }
+    
+    virtual void player_buff()
+    {
+      attack_t::player_buff();
+      // Trees have 5% crit
+      player_crit = .05;
+    }
   };
 
   melee_t* melee;
@@ -549,16 +556,17 @@ struct treants_pet_t : public pet_t
       pet_t( sim, owner, pet_name ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 340;
-    main_hand_weapon.max_dmg    = 340;
+    main_hand_weapon.min_dmg    = 580;
+    main_hand_weapon.max_dmg    = 580;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 1.8;
+    main_hand_weapon.swing_time = 1.65;
   }
   virtual void init_base()
   {
     pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ] = 331;
+    // At 85 base AP of 932
+    attribute_base[ ATTR_STRENGTH  ] = 476;
     attribute_base[ ATTR_AGILITY   ] = 113;
     attribute_base[ ATTR_STAMINA   ] = 361;
     attribute_base[ ATTR_INTELLECT ] = 65;
@@ -577,11 +585,13 @@ struct treants_pet_t : public pet_t
   }
   virtual double composite_attack_hit() SC_CONST
   {
-    return owner -> composite_spell_hit();
+    // Testing shows melee hit affects this, not spell
+    return owner -> composite_attack_hit();
   }
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
+    // Hit scales that if they are hit capped, you're expertise capped.
+    return owner -> composite_attack_hit() * 26.0 / 17.0;
   }
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )
