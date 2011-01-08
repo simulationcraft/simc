@@ -469,7 +469,6 @@ struct priest_absorb_t : public spell_t
 
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
-    target = p -> heal_dummy;
     if ( !p -> healer )
     {
       sim -> errorf( "Player %s attempting to execute a heal spell, without being a healer.\n",
@@ -487,7 +486,6 @@ struct priest_absorb_t : public spell_t
     weapon_multiplier = 0.0;
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
-    target = p -> heal_dummy;
     if ( !p -> healer )
     {
       sim -> errorf( "Player %s attempting to execute a heal spell, without being a healer.\n",
@@ -548,7 +546,6 @@ struct priest_heal_t : public spell_t
 
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
-    target = p -> heal_dummy;
 
     if ( p -> talents.divine_aegis -> ok() )
     {
@@ -573,7 +570,6 @@ struct priest_heal_t : public spell_t
 
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
-    target = p -> heal_dummy;
 
     if ( p -> talents.divine_aegis -> ok() )
     {
@@ -2016,11 +2012,24 @@ struct chakra_t : public priest_spell_t
     return priest_spell_t::ready();
    }
 };
+// Smite Atonement Heal ========================================================
+
+struct atonement_t : public priest_heal_t
+{
+  atonement_t( player_t* player ) :
+    priest_heal_t( "atonement", player, 81751 )
+  {
+    proc       = true;
+    background = true;
+  }
+};
 
 // Smite Spell ================================================================
 
 struct smite_t : public priest_spell_t
 {
+  atonement_t* atonement;
+
   smite_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "smite", player, "Smite" )
   {
@@ -2035,9 +2044,13 @@ struct smite_t : public priest_spell_t
     base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
 
     // Holy_Evangelism
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
     base_cost      *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
     base_hit       += p -> glyphs.divine_accuracy ? 0.18 : 0.0;
+
+    if ( p -> talents.atonement -> rank() )
+    {
+      atonement = new atonement_t(p);
+    }
   }
 
   virtual void execute()
@@ -2062,12 +2075,32 @@ struct smite_t : public priest_spell_t
         // p -> buffs_chakra -> "add 4 seconds"
       }
         }
+
+    // Atonement
+    if ( atonement )
+    {
+      // Hotfix Cap from 5. Jan.
+      if ( direct_dmg * p -> talents.atonement -> rank() * 0.5 < p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
+      {
+        atonement -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+        atonement -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+      }
+      else
+      {
+        atonement -> base_dd_min = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+        atonement -> base_dd_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+      }
+
+      atonement -> round_base_dmg = false;
+      atonement -> execute();
+    }
   }
 
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
     priest_t* p = player -> cast_priest();
+    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
     if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite ) player_multiplier *= 1.20;
   }
 };
@@ -2231,8 +2264,7 @@ struct archangel_t : public priest_spell_t
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
-    consume_resource();
-    update_ready();
+    spell_t::execute();
   }
 
   virtual bool ready()
@@ -2286,8 +2318,7 @@ struct dark_archangel_t : public priest_spell_t
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_dark_evangelism -> expire();
     }
-    consume_resource();
-    update_ready();
+    spell_t::execute();
   }
 
   virtual bool ready()
@@ -3478,7 +3509,7 @@ void priest_t::init_values()
   cooldowns_shadow_fiend -> duration        = active_spells.shadow_fiend        -> cooldown() + 
                                               talents.veiled_shadows            -> effect_base_value( 2 ) / 1000.0;
 
-  cooldowns_archangel -> duration           = talents.archangel                 -> cooldown();
+  cooldowns_archangel -> duration           = talents.archangel                 -> effect_base_value( 2 );
   cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
   cooldowns_dark_archangel -> duration      = active_spells.dark_archangel      -> cooldown();
 

@@ -1,5 +1,6 @@
 #!./simc 
 
+queue_lag=0.5
 priest=Priest_Heal_Discipline_T11_372.simc
 origin=""
 level=85
@@ -11,12 +12,10 @@ glyphs=inner_fire/shadowfiend/shadow_protection/smite/levitate/holy_nova/penance
 actions=flask,type=draconic_mind
 actions+=/food,type=fish_feast
 actions+=/fortitude
-actions+=/inner_will
+actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/mana_potion,time>=200
-actions+=/shadow_fiend,trigger=10000
-actions+=/renew,if=!ticking
-actions+=/prayer_of_mending
+actions+=/shadow_fiend,trigger=30000
 actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/inner_focus
 actions+=/penance_heal
