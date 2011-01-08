@@ -32,6 +32,7 @@ struct paladin_t : public player_t
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
   action_t* active_seal_of_truth_dot;
+  action_t* active_hand_of_light_proc;
   action_t* ancient_fury_explosion;
 
   // Buffs
@@ -272,6 +273,17 @@ static void trigger_hand_of_light( action_t* a )
   }
 }
 
+static void trigger_hand_of_light_ptr( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if (dbc_t::get_ptr() && p->primary_tree() == TREE_RETRIBUTION)
+  {
+    p->active_hand_of_light_proc->base_dd_max = p->active_hand_of_light_proc->base_dd_min = a->direct_dmg;
+    p->active_hand_of_light_proc->execute();
+  }
+}
+
 // Retribution guardian of ancient kings pet
 // TODO: melee attack
 struct guardian_of_ancient_kings_ret_t : public pet_t
@@ -471,7 +483,8 @@ struct paladin_attack_t : public attack_t
           p -> buffs_holy_power -> expire();
       }
     }
-    p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
+    if ( ! dbc_t::get_ptr() )
+      p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
 };
 
@@ -550,6 +563,44 @@ struct auto_attack_t : public paladin_attack_t
   }
 };
 
+// Hand of Light proc ======================================================
+
+struct hand_of_light_proc_t : public attack_t
+{
+  hand_of_light_proc_t( paladin_t* p )
+    : attack_t( "hand_of_light", p, RESOURCE_NONE, SCHOOL_HOLY, TREE_RETRIBUTION, true )
+  {
+    may_crit = false;
+    may_miss = false;
+    may_dodge = false;
+    may_parry = false;
+    proc = true;
+    background = true;
+    trigger_gcd = 0;
+  }
+
+  virtual void player_buff()
+  {
+    attack_t::player_buff();
+    paladin_t* p = player -> cast_paladin();
+    // not *= since we don't want to double dip, just calling base to initialize variables
+    player_multiplier = p->get_hand_of_light();
+    if ( p -> buffs_inquisition -> up() )
+    {
+      player_multiplier *= 1.0 + 0.01 * p->player_data.effect_base_value(p->spells.inquisition->effect_id(1));
+    }
+  }
+
+  virtual void target_debuff(int dmg_type)
+  {
+    attack_t::target_debuff(dmg_type);
+    // not *= since we don't want to double dip, just calling base to initialize variables
+    target_multiplier = 1.0 + ( std::max( target -> debuffs.curse_of_elements  -> value(), 
+                                std::max( target -> debuffs.earth_and_moon     -> value(),
+                                          target -> debuffs.ebon_plaguebringer -> value() ) ) * 0.01 );
+  }
+};
+
 // Avengers Shield =========================================================
 
 struct avengers_shield_t : public paladin_attack_t
@@ -616,11 +667,15 @@ struct crusader_strike_t : public paladin_attack_t
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
     p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
-    if (result_is_hit() && p->talents.grand_crusader->rank())
+    if (result_is_hit())
     {
-      if (sim->roll(p->talents.grand_crusader->proc_chance()))
+      trigger_hand_of_light_ptr(this);
+      if (p->talents.grand_crusader->rank())
       {
-        p->get_cooldown("avengers_shield")->reset();
+        if (sim->roll(p->talents.grand_crusader->proc_chance()))
+        {
+          p->get_cooldown("avengers_shield")->reset();
+        }
       }
     }
   }
@@ -671,6 +726,16 @@ struct divine_storm_t : public paladin_attack_t
     }
 
     paladin_attack_t::update_ready();
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player->cast_paladin();
+    paladin_attack_t::execute();
+    if (result_is_hit())
+    {
+      trigger_hand_of_light_ptr(this);
+    }
   }
 };
 
@@ -882,6 +947,10 @@ struct templars_verdict_t : public paladin_attack_t
     paladin_t* p = player -> cast_paladin();
     weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.30, 0.90, 2.35 );
     paladin_attack_t::execute();
+    if (result_is_hit())
+    {
+      trigger_hand_of_light_ptr(this);
+    }
   }
 
   virtual bool ready()
@@ -2187,7 +2256,8 @@ void paladin_t::init_actions()
   active_seal_of_insight_proc       = new seal_of_insight_proc_t      ( this );
   active_seal_of_righteousness_proc = new seal_of_righteousness_proc_t( this );
   active_seal_of_truth_proc         = new seal_of_truth_proc_t        ( this );
-  active_seal_of_truth_dot          = new seal_of_truth_dot_t         ( this );  
+  active_seal_of_truth_dot          = new seal_of_truth_dot_t         ( this );
+  active_hand_of_light_proc         = new hand_of_light_proc_t        ( this );
   ancient_fury_explosion            = new ancient_fury_t(this);
 
   if ( action_list_str.empty() )
