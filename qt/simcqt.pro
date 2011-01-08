@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-09-15T10:38:16
 # -------------------------------------------------
-QT += webkit
+QT += webkit network
 TARGET = simcqt
 TEMPLATE = app
 SOURCES += \

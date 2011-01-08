@@ -75,6 +75,7 @@
 		44CB0981105EA1D500E98270 /* simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DD76F6C0486A84900D96B5E /* simc */; };
 		44F6B202107A84FF00763099 /* libsimc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C7A518106D4B7600A2271C /* libsimc.a */; };
 		44F6B20F107A861700763099 /* sc_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E3D1CB10545A7500677DEB /* sc_main.cpp */; };
+		6E4AFD6412D923CF00621EA4 /* sc_chardev.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E4AFD6312D923AC00621EA4 /* sc_chardev.cpp */; };
 		6E84EB761292F73F00976A2C /* sc_battle_net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB5E1292F40B00976A2C /* sc_battle_net.cpp */; };
 		6E84EB771292F73F00976A2C /* sc_const_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB5F1292F40B00976A2C /* sc_const_data.cpp */; };
 		6E84EB781292F73F00976A2C /* sc_data_access.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB601292F40B00976A2C /* sc_data_access.cpp */; };
@@ -96,7 +97,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 44C41689107BB68700242308 /* simcqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 859DE8E74F2D8B2D58ECA194;
+			remoteGlobalIDString = 931DB4ACA957802045178820;
 			remoteInfo = simcqt;
 		};
 		444CCF8F107DCCD300229DD2 /* PBXContainerItemProxy */ = {
@@ -201,6 +202,7 @@
 		44E3D1E710545A7500677DEB /* sc_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_xml.cpp; sourceTree = "<group>"; };
 		44E3D21810545A9800677DEB /* simulationcraft.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = simulationcraft.h; sourceTree = "<group>"; };
 		44E3D21C10545AD700677DEB /* READ_ME_FIRST.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = READ_ME_FIRST.txt; sourceTree = "<group>"; };
+		6E4AFD6312D923AC00621EA4 /* sc_chardev.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_chardev.cpp; sourceTree = "<group>"; };
 		6E539C0E129ECAC700472FA2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = qt/main.cpp; sourceTree = "<group>"; };
 		6E539C0F129ECAC700472FA2 /* sc_autoupdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sc_autoupdate.h; path = qt/sc_autoupdate.h; sourceTree = "<group>"; };
 		6E539C10129ECAC700472FA2 /* sc_mac_update.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = sc_mac_update.mm; path = qt/sc_mac_update.mm; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				44E3D1BA10545A7500677DEB /* sc_armory.cpp */,
 				44E3D1BB10545A7500677DEB /* sc_attack.cpp */,
 				44E3D1BC10545A7500677DEB /* sc_buff.cpp */,
+				6E4AFD6312D923AC00621EA4 /* sc_chardev.cpp */,
 				44E3D1BD10545A7500677DEB /* sc_chart.cpp */,
 				44E3D1BE10545A7500677DEB /* sc_consumable.cpp */,
 				44E3D1BF10545A7500677DEB /* sc_death_knight.cpp */,
@@ -519,6 +522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E84EB761292F73F00976A2C /* sc_battle_net.cpp in Sources */,
+				6E4AFD6412D923CF00621EA4 /* sc_chardev.cpp in Sources */,
 				6E84EB771292F73F00976A2C /* sc_const_data.cpp in Sources */,
 				6E84EB781292F73F00976A2C /* sc_data_access.cpp in Sources */,
 				6E84EB791292F73F00976A2C /* sc_data.cpp in Sources */,
