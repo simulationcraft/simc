@@ -97,7 +97,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  util_t::format_text( util_t::urldecode( name_str ), sim -> input_is_utf8 );
+  armory_t::format( name_str );
   armory_t::format( type_str );
   armory_t::format( race_str );
 
@@ -109,6 +109,9 @@ player_t* chardev_t::download_player( sim_t* sim,
                    type_str.c_str(), name_str.c_str(), id.c_str() );
     return 0;
   }
+
+  std::string origin_str = "http://chardev.org/?profile=" + id;
+  http_t::format( p -> origin_str, origin_str );
 
   js_node_t*    gear_root = js_t::get_child( profile_js, "1" );
   js_node_t* talents_root = js_t::get_child( profile_js, "2" );
