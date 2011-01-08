@@ -26,7 +26,7 @@
 #define TAB_HISTORY    4
 #define TAB_CUSTOM     5
 
-#define HISTORY_VERSION "4.6"
+#define HISTORY_VERSION "4.8"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -72,6 +72,16 @@ public:
   }
 };
 
+class PersistentCookieJar : public QNetworkCookieJar
+{
+public:
+  QString fileName;
+  PersistentCookieJar( const QString& fn ) : fileName(fn) {}
+  virtual ~PersistentCookieJar() {}
+  void load();
+  void save();
+};
+
 class SimulationCraftWindow : public QWidget
 {
     Q_OBJECT
@@ -107,6 +117,7 @@ public:
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* charDevView;
     SimulationCraftWebView* visibleWebView;
+    PersistentCookieJar* charDevCookies;
     QPushButton* rawrButton;
     QLabel* rawrDir;
     QByteArray rawrDialogState;

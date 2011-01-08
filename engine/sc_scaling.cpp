@@ -117,19 +117,17 @@ double scaling_t::progress( std::string& phase )
   phase  = "Scaling - ";
   phase += util_t::stat_type_abbrev( current_scaling_stat );
 
-  if ( ref_sim && delta_sim )
-  {
-    double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
+  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
 
-    double   ref_progress =   ref_sim -> current_iteration / (double)   ref_sim -> iterations;
-    double delta_progress = delta_sim -> current_iteration / (double) delta_sim -> iterations;
+  double divisor = num_scaling_stats * ( five_point_stencil ? 4.0 : 2.0 );
 
-    stat_progress += ( ref_progress + delta_progress ) / ( 2.0 * num_scaling_stats );
+  if ( ref_sim  ) stat_progress += ref_sim  -> current_iteration / ( ref_sim  -> iterations * divisor );
+  if ( ref_sim2 ) stat_progress += ref_sim2 -> current_iteration / ( ref_sim2 -> iterations * divisor );
 
-    return stat_progress;
-  }
+  if ( delta_sim  ) stat_progress += delta_sim  -> current_iteration / ( delta_sim  -> iterations * divisor );
+  if ( delta_sim2 ) stat_progress += delta_sim2 -> current_iteration / ( delta_sim2 -> iterations * divisor );
 
-  return 1.0;
+  return stat_progress;
 }
 
 // scaling_t::init_deltas ===================================================
@@ -144,10 +142,9 @@ void scaling_t::init_deltas()
     if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
   }
 
-
   if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 150 : 300;
 
-  if ( stats.attack_power             == 0 ) stats.attack_power             =  scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.attack_power == 0 ) stats.attack_power = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
   if ( stats.expertise_rating == 0 ) 
   {
@@ -230,13 +227,14 @@ void scaling_t::analyze_stats()
       fflush( stdout );
     }
 
-    bool center = center_scale_delta && ! stat_may_cap( i );
-
-    // 5 point stencil
     bool fivepstencil = five_point_stencil && ! stat_may_cap( i );
+
+    bool center = ( five_point_stencil || center_scale_delta ) && ! stat_may_cap( i );
+
+    ref_sim = center ? new sim_t( sim ) : baseline_sim;
+
     if ( fivepstencil )
     {
-      center = true;
       ref_sim2 = new sim_t( sim );
       ref_sim2 -> scaling -> scale_stat = i;
       ref_sim2 -> scaling -> scale_value = -scale_delta;
@@ -255,8 +253,6 @@ void scaling_t::analyze_stats()
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) delta_sim -> iterations = (int) (delta_sim -> iterations * scale_haste_iterations);
     delta_sim -> execute();
-
-    ref_sim = center ? new sim_t( sim ) : baseline_sim;
 
     if ( center )
     {
@@ -311,11 +307,14 @@ void scaling_t::analyze_stats()
       if (delta_sim2) report_t::print_text( sim -> output_file, delta_sim2, true );
     }
 
-    if ( ref_sim != baseline_sim && ref_sim != sim ) delete ref_sim;
-    delete delta_sim;
-    delete delta_sim2;
-    delete ref_sim2;
-    delta_sim = ref_sim = delta_sim2 = ref_sim2 = 0;
+    if ( ref_sim != baseline_sim && ref_sim != sim ) 
+    {
+      delete ref_sim;
+      ref_sim = 0;
+    }
+    delete delta_sim;  delta_sim  = 0;
+    delete delta_sim2; delta_sim2 = 0;
+    delete ref_sim2;   ref_sim2   = 0;
 
     remaining_scaling_stats--;
   }

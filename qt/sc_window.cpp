@@ -309,6 +309,7 @@ void SimulationCraftWindow::loadHistory()
 
 void SimulationCraftWindow::saveHistory()
 {
+  charDevCookies->save();
   http_t::cache_save();
   QFile file( "simc_history.dat" );
   if( file.open( QIODevice::WriteOnly ) )
@@ -581,7 +582,10 @@ void SimulationCraftWindow::createImportTab()
   battleNetView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab->addTab( battleNetView, "Battle.Net" );
 
+  charDevCookies = new PersistentCookieJar( "chardev.cookies" );
+  charDevCookies->load();
   charDevView = new SimulationCraftWebView( this );
+  charDevView->page()->networkAccessManager()->setCookieJar( charDevCookies );
   charDevView->setUrl( QUrl( "http://chardev.org/?planner" ) );
   importTab->addTab( charDevView, "CharDev" );
 
@@ -1591,4 +1595,44 @@ void SimulationCraftWindow::armoryRegionChanged( const QString& region )
   }
 
   battleNetView->setUrl( QUrl( importUrl ) );
+}
+
+void PersistentCookieJar::save()
+{
+  QFile file( fileName );
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    QDataStream out( &file );
+    QList<QNetworkCookie> cookies = allCookies();
+    qint32 count = (qint32) cookies.count();
+    out << count;
+    for( int i=0; i < count; i++ )
+    {
+      const QNetworkCookie& c = cookies.at( i );
+      out << c.name();
+      out << c.value();
+    }
+    file.close();
+  }
+}
+
+void PersistentCookieJar::load()
+{
+  QFile file( fileName );
+  if( file.open( QIODevice::ReadOnly ) )
+  {
+    QDataStream in( &file );
+    QList<QNetworkCookie> cookies;
+    qint32 count;
+    in >> count;
+    for( int i=0; i < count; i++ )
+    {
+      QByteArray name, value;
+      in >> name;
+      in >> value;
+      cookies.append( QNetworkCookie( name, value ) );
+    }
+    setAllCookies( cookies );
+    file.close();
+  }
 }
