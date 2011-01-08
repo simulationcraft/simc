@@ -80,6 +80,13 @@ static bool parse_ptr( sim_t*             sim,
 
   dbc_t::set_ptr( atoi( value.c_str() ) != 0 );
 
+#if SC_USE_PTR
+  if ( dbc_t::get_ptr() )
+  {
+    sim -> sim_data.set_parent( &sim_t::ptr_data );
+  }
+#endif
+
   return true;
 }
 
@@ -885,13 +892,6 @@ bool sim_t::init()
     average_range = 1;
     deterministic_roll = 1;
   }
-
-#if SC_USE_PTR
-  if ( dbc_t::get_ptr() )
-  {
-    sim_data.set_parent( &sim_t::ptr_data );
-  }
-#endif
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -2060,6 +2060,9 @@ int sim_t::main( int argc, char** argv )
     fflush( output_file );
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
+    
+    for ( player_t* p = player_list; p != 0; p = p -> next )
+      p -> player_data.set_parent( &( sim_data ) );
 
     if( execute() )
     {
