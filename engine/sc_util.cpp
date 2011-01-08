@@ -1320,6 +1320,7 @@ stat_type util_t::translate_item_mod( int item_mod )
   case ITEM_MOD_BLOCK_VALUE:         return STAT_BLOCK_VALUE;
   case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
   case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
+  case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
   }
   
   return STAT_NONE;
