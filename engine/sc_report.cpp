@@ -1546,7 +1546,7 @@ static void print_html2_raid_summary( FILE*  file, sim_t* sim )
 static void print_html3_raid_summary( FILE*  file, sim_t* sim )
 {
   util_t::fprintf( file,
-    "    <div id=\"raid-summary\" class=\"section\">\n\n" );
+    "    <div id=\"raid-summary\" class=\"section section-open\">\n\n" );
   util_t::fprintf( file,
     "      <h2 class=\"toggle open\">Raid Summary</h2>\n" );
   util_t::fprintf( file,
@@ -5016,7 +5016,7 @@ void report_t::print_html3( sim_t* sim )
     util_t::fprintf( file,
       "    <style type=\"text/css\">\n"
       "      * { border: none; margin: 0; padding: 0; }\n"
-      "      body { padding: 25px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; text-align: center; }\n"
+      "      body { padding: 5px 25px 25px 25px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; text-align: center; }\n"
       "      p { margin-top: 1em; }\n"
       "      h1, h2, h3, h4, h5, h6 { color: #777; margin-top: 1em; margin-bottom: 0.5em; }\n"
       "      h1, h2 { margin: 0; padding: 2px 2px 0 2px; }\n"
@@ -5048,7 +5048,8 @@ void report_t::print_html3( sim_t* sim )
       "      .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
       "      .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
       "      a.help { cursor: help; }\n"
-      "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: 25px; outline: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #ccc; -webkit-box-shadow: 4px 4px 4px #ccc; box-shadow: 4px 4px 4px #ccc; text-align: left; }\n"
+      "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: 0; outline: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }\n"
+      "      .section-open { margin-top: 25px; margin-bottom: 25px; }\n"
       "      .section .toggle-content { padding: 0 0 20px 14px; }\n"
       "      #raid-summary .toggle-content { padding-bottom: 0px; }\n"
       "      ul.params { padding: 0; }\n"
@@ -5063,7 +5064,7 @@ void report_t::print_html3( sim_t* sim )
       "      #masthead ul.toc li ul { padding-left: 18px; }\n"
       "      #masthead ul.toc li ul li { list-style-type: circle; font-size: 13px; }\n"
       "      .charts { margin: 10px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
-      "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; outline: 2px solid #eee; }\n"
+      "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; outline: 1px solid #ccc; -moz-box-shadow: 3px 3px 3px #ccc; -webkit-box-shadow: 3px 3px 3px #ccc; box-shadow: 3px 3px 3px #ccc; }\n"
       "      .talents div.float { width: auto; margin-right: 50px; }\n"
       "      table { border: 0; background-color: #eee; }\n"
       "      tr { background-color: #fff; }\n"
@@ -5120,7 +5121,7 @@ void report_t::print_html3( sim_t* sim )
         
         // Begin masthead section
         util_t::fprintf( file,
-          "    <div id=\"masthead\" class=\"section\">\n\n" );
+          "    <div id=\"masthead\" class=\"section section-open\">\n\n" );
         
         util_t::fprintf( file,
           "      <h1>SimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)</h1>\n\n",
@@ -5165,7 +5166,7 @@ void report_t::print_html3( sim_t* sim )
         
 #if SC_BETA
     util_t::fprintf( file,
-      "    <div id=\"notice\" class=\"section\">\n" );
+      "    <div id=\"notice\" class=\"section section-open\">\n" );
         util_t::fprintf( file,
           "      <h2>Beta Release</h2>\n" );
         int ii = 0;
@@ -5228,6 +5229,7 @@ void report_t::print_html3( sim_t* sim )
       "          var target = '';\n"
       "          e.preventDefault();\n"
       "          $(this).toggleClass('open');\n"
+      "          $(this).parent('.section').toggleClass('section-open');\n"
       "          $(this).next('.toggle-content').toggle(150);\n"
       "          $(this).next('.toggle-content').find('.charts').each(function() {\n"
       "            $(this).children('span').each(function() {\n"
