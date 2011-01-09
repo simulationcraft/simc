@@ -889,7 +889,6 @@ struct pet_melee_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     weapon = &( p -> main_hand_weapon );
-    weapon_power_mod *= 2.0; // Hunter pets scale with attack power 1 DPS per 7 AP
     base_execute_time = weapon -> swing_time;
     base_dd_min       = base_dd_max = 1;
     background        = true;
