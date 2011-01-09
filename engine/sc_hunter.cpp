@@ -935,7 +935,7 @@ struct claw_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "claw", 16827, p )
   {
     parse_options( NULL, options_str );
-    direct_power_mod=0.4;
+    direct_power_mod = 0.1952; // http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/ The scaling in this post matches in-game testing.
     base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
   }
 
@@ -1021,9 +1021,10 @@ struct wolverine_bite_t : public hunter_pet_attack_t
 
     parse_options( NULL, options_str );
 
-    base_dd_min = base_dd_max  = 5 * p -> level;
+    base_dd_min = base_dd_max  = 1;
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast   = true;
+    direct_power_mod = 0.10; // http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/ The scaling in this post matches in-game testing.
 
     may_dodge = may_block = may_parry = false;
   }
