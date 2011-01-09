@@ -483,9 +483,22 @@ bool item_t::decode_reforge()
 
   stat_type s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
   stat_type s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
-  if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) || ( base_stats.get_stat( s1 ) <= 0.0 ) || ( base_stats.get_stat( s2 ) > 0.0 ) )
+  if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
   {
-    sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", 
+		   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    return false;
+  }
+  if ( base_stats.get_stat( s1 ) <= 0.0 )
+  {
+    sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s does not have source stat on item.\n", 
+		   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    return false;
+  }
+  if ( base_stats.get_stat( s2 ) > 0.0 )
+  {
+    sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s already has target stat on item.\n", 
+		   player -> name(), encoded_reforge_str.c_str(), slot_name() );
     return false;
   }
 
