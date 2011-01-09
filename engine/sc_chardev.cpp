@@ -116,7 +116,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     js_t::get_value( item_id, slot_node, "0/0" );
     if( item_id.empty() ) continue;
 
-    std::string enchant_id, addon_id, rsuffix_id, gem_ids[ 3 ];
+    std::string enchant_id, addon_id, gem_ids[ 3 ];
     js_t::get_value( gem_ids[ 0 ], slot_node, "1/0" );
     js_t::get_value( gem_ids[ 1 ], slot_node, "2/0" );
     js_t::get_value( gem_ids[ 2 ], slot_node, "3/0" );
@@ -127,10 +127,28 @@ player_t* chardev_t::download_player( sim_t* sim,
     if ( js_t::get_value( reforge_from, slot_node, "5/0" ) &&
 	 js_t::get_value( reforge_to,   slot_node, "5/1" ) )
     {
-      std::stringstream ss;
-      ss << enchant_t::get_reforge_id( util_t::translate_item_mod( reforge_from ), 
-				       util_t::translate_item_mod( reforge_to   ) );
-      reforge_id = ss.str();
+      if ( ( reforge_from >= 0 ) && ( reforge_to >= 0 ) )
+      {
+	std::stringstream ss;
+	ss << enchant_t::get_reforge_id( util_t::translate_item_mod( reforge_from ), 
+					 util_t::translate_item_mod( reforge_to   ) );
+	reforge_id = ss.str();
+      }
+    }
+
+    std::string rsuffix_id;
+    int random_suffix;
+    if ( js_t::get_value( random_suffix, slot_node, "6" ) )
+    {
+      if ( random_suffix > 0 ) // random "property" ???
+      {
+      }
+      else if ( random_suffix < 0 ) // random "suffix"
+      {
+	std::stringstream ss;
+	ss << -random_suffix;
+	rsuffix_id = ss.str();
+      }
     }
 
     if( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
