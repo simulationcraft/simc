@@ -284,6 +284,16 @@ static void trigger_hand_of_light_ptr( action_t* a )
   }
 }
 
+static void trigger_divine_purpose_ptr( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if (dbc_t::get_ptr() && p->talents.divine_purpose->rank())
+  {
+    p->buffs_divine_purpose->trigger();
+  }
+}
+
 // Retribution guardian of ancient kings pet
 // TODO: melee attack
 struct guardian_of_ancient_kings_ret_t : public pet_t
@@ -357,24 +367,25 @@ struct paladin_attack_t : public attack_t
   bool spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
   double holy_power_chance;
   double jotp_haste;
+  bool trigger_dp;
 
   paladin_attack_t( const char* n, paladin_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true, bool use2hspec=true )
     : attack_t( n, p, RESOURCE_MANA, s, t, special ),
-      trigger_seal( false ), uses_holy_power(false), spell_haste(false), holy_power_chance(0.0), jotp_haste(1.0)
+      trigger_seal( false ), uses_holy_power(false), spell_haste(false), holy_power_chance(0.0), jotp_haste(1.0), trigger_dp(false)
   {
     initialize_(use2hspec);
   }
 
   paladin_attack_t(const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true)
     : attack_t(n, id, p, TREE_NONE, special),
-      trigger_seal(false), uses_holy_power(false), spell_haste(false), holy_power_chance(0.0), jotp_haste(1.0)
+      trigger_seal(false), uses_holy_power(false), spell_haste(false), holy_power_chance(0.0), jotp_haste(1.0), trigger_dp(false)
   {
     initialize_(use2hspec);
   }
 
   paladin_attack_t(const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true)
     : attack_t(n, sname, p, TREE_NONE, special),
-      trigger_seal(false), uses_holy_power(false), spell_haste(false), holy_power_chance(0.0), jotp_haste(1.0)
+      trigger_seal(false), uses_holy_power(false), spell_haste(false), holy_power_chance(0.0), jotp_haste(1.0), trigger_dp(false)
   {
     initialize_(use2hspec);
   }
@@ -443,6 +454,8 @@ struct paladin_attack_t : public attack_t
           p->buffs_ancient_power->trigger();
         }
       }
+      if ( trigger_dp )
+        trigger_divine_purpose_ptr( this );
     }
   }
   
@@ -712,6 +725,7 @@ struct divine_storm_t : public paladin_attack_t
     trigger_seal = false;
     spell_haste = true;
     aoe = true;
+    trigger_dp = true;
     holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     base_cooldown = cooldown->duration;
@@ -838,6 +852,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_parry = false;
     may_dodge = false;
     may_block = false;
+    trigger_dp = true;
 
     holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
@@ -934,6 +949,7 @@ struct templars_verdict_t : public paladin_attack_t
 
     trigger_seal = true;
     uses_holy_power = true;
+    trigger_dp = true;
     holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
     base_crit       +=     0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
@@ -1374,6 +1390,7 @@ struct judgement_t : public paladin_attack_t
       {
         p->buffs_sacred_duty->trigger(1, -1, p->talents.sacred_duty->proc_chance());
       }
+      trigger_divine_purpose_ptr(this);
     }
     trigger_judgements_of_the_wise( seal );
     trigger_judgements_of_the_bold( seal );
@@ -1401,21 +1418,22 @@ struct paladin_spell_t : public spell_t
   bool uses_holy_power;
   double holy_power_chance;
   double jotp_haste;
+  bool trigger_dp;
 
   paladin_spell_t(const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE)
-    : spell_t(n, p, RESOURCE_MANA, s, t), uses_holy_power(false), holy_power_chance(0.0), jotp_haste(1.0)
+    : spell_t(n, p, RESOURCE_MANA, s, t), uses_holy_power(false), holy_power_chance(0.0), jotp_haste(1.0), trigger_dp(false)
   {
     initialize_();
   }
 
   paladin_spell_t( const char* n, uint32_t id, paladin_t* p)
-    : spell_t(n, id, p), uses_holy_power(false), holy_power_chance(0.0), jotp_haste(1.0)
+    : spell_t(n, id, p), uses_holy_power(false), holy_power_chance(0.0), jotp_haste(1.0), trigger_dp(false)
   {
     initialize_();
   }
 
   paladin_spell_t(const char *n, const char *sname, paladin_t* p)
-    : spell_t(n, sname, p), uses_holy_power(false), holy_power_chance(0.0), jotp_haste(1.0)
+    : spell_t(n, sname, p), uses_holy_power(false), holy_power_chance(0.0), jotp_haste(1.0), trigger_dp(false)
   {
     initialize_();
   }
@@ -1472,6 +1490,8 @@ struct paladin_spell_t : public spell_t
     if ( result_is_hit() )
     {
       consume_and_gain_holy_power();
+      if (trigger_dp)
+        trigger_divine_purpose_ptr(this);
     }
   }
 
@@ -1684,6 +1704,7 @@ struct exorcism_t : public paladin_spell_t
     tick_may_crit = true;
     dot_behavior = DOT_REFRESH;
     hasted_ticks = false;
+    trigger_dp = true;
 
     direct_power_mod = 1.0;
     tick_power_mod = 0.2/3; // glyph of exorcism is 20% of damage over three ticks ... FIXME: or just base damage?
@@ -1821,6 +1842,7 @@ struct holy_wrath_t : public paladin_spell_t
 
     // aoe = true; FIXME disabled until we have meteor support
     may_crit = true;
+    trigger_dp = true;
 
     direct_power_mod = 0.61;
 
@@ -1862,6 +1884,7 @@ struct inquisition_t : public paladin_spell_t
     if ( p -> talents.holy_shield->rank() )
       p -> buffs_holy_shield -> trigger();
     consume_and_gain_holy_power();
+    trigger_divine_purpose_ptr(this);
   }
 
   virtual bool ready()
