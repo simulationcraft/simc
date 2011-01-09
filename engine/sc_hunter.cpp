@@ -288,9 +288,9 @@ struct hunter_pet_t : public pet_t
       pet_t( sim, owner, pet_name, pt )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 51.0; // FIXME only level 80 value
-    main_hand_weapon.max_dmg    = 78.0; // FIXME only level 80 value
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2; // FIXME only level 80 value
+    main_hand_weapon.min_dmg    = rating_t::interpolate( level, 0, 0, 51, 85 ); // FIXME needs level 60 and 70 values
+    main_hand_weapon.max_dmg    = rating_t::interpolate( level, 0, 0, 78, 134 ); // FIXME needs level 60 and 70 values
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
     stamina_per_owner = 0.45;
@@ -359,17 +359,17 @@ struct hunter_pet_t : public pet_t
     pet_t::init_base();
 
     hunter_t* o = owner -> cast_hunter();
-    attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331 );
-    attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113 );
+    attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331, 476 );
+    attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113, 438 );
     attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
     attribute_base[ ATTR_INTELLECT ] = 100; // FIXME
     attribute_base[ ATTR_SPIRIT    ] = 100; // FIXME
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5 );
+    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5, 0.01/243.6 );
 
-    base_attack_crit = 0.032;
+    base_attack_crit = 0.046; // Crit rate on gearless, talentless pet tested at 6.4%. Need further testing for confirmation. 
 
     resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resource_base[ RESOURCE_FOCUS ] = 100 + o -> talents.kindred_spirits -> effect_base_value( 1 );
@@ -421,9 +421,9 @@ struct hunter_pet_t : public pet_t
         talents.call_of_the_wild -> set_rank( 1, true );
         talents.rabid            -> set_rank( 1, true );
         talents.spiders_bite     -> set_rank( 3, true );
-        talents.shark_attack     -> set_rank( 1, true );
+        talents.shark_attack     -> set_rank( 2, true );
 
-        if( owner -> primary_tab() == HUNTER_BEAST_MASTERY )
+        if( owner -> primary_tab() == HUNTER_BEAST_MASTERY ) // Should reference the talent in question, if possible
         {
           talents.shark_attack -> set_rank( 2, true );
           talents.wild_hunt    -> set_rank( 2, true );
@@ -435,11 +435,7 @@ struct hunter_pet_t : public pet_t
         talents.owls_focus       -> set_rank( 2, true );
         talents.roar_of_recovery -> set_rank( 1, true );
         talents.wolverine_bite   -> set_rank( 1, true );
-
-        if( owner -> primary_tab() == HUNTER_BEAST_MASTERY )
-        {
-          talents.wild_hunt -> set_rank( 2, true );
-        }
+        talents.wild_hunt -> set_rank( 2, true );
       }
     }
   }
@@ -520,7 +516,9 @@ struct hunter_pet_t : public pet_t
 
     double ap = player_t::composite_attack_power();
 
-    ap += o -> composite_attack_power() * 0.22;
+    ap += o -> composite_attack_power() * 0.425;
+    if ( o -> buffs_aspect_of_the_hawk -> up() )
+      ap -= o -> buffs_aspect_of_the_hawk -> value() * 0.425; // Pets do not scale with Aspect of the Hawk AP
 
     return ap;
   }
@@ -541,6 +539,37 @@ struct hunter_pet_t : public pet_t
       mult *= 1.2;
 
     return mult;
+  }
+
+  virtual double composite_attack_crit() SC_CONST
+  {
+    hunter_t* o = owner -> cast_hunter();
+
+    double ac = attack_crit + attack_crit_per_agility * agility();
+
+    ac += o -> composite_attack_crit();
+
+    return ac;
+  }
+
+  virtual double composite_attack_haste() SC_CONST
+  {
+    hunter_t* o = owner -> cast_hunter();
+
+    double h = o -> composite_attack_haste();
+
+    // Pets do not scale with haste from certain buffs on the owner
+
+    if ( o -> buffs.bloodlust -> up() )
+      h *= 1.30;
+
+    if ( o -> buffs.berserking -> up() )
+      h *= 1.20;
+
+    if ( o -> buffs_rapid_fire -> up() )
+      h *= 1.0 + o -> buffs_rapid_fire -> value();
+
+    return h;
   }
 
   virtual double composite_spell_hit() SC_CONST
@@ -760,9 +789,7 @@ struct hunter_pet_attack_t : public attack_t
     hunter_t*     o = p -> owner -> cast_hunter();
     may_crit = true;
     
-    base_multiplier *= 1.05; // Cunning, Ferocity and Tenacity pets all have +5% damag
     if ( o -> race == RACE_ORC ) base_multiplier *= 1.05;
-    base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
     base_crit += p -> talents.spiders_bite -> rank() * 0.03;
 
     // Assume happy pet
@@ -796,21 +823,11 @@ struct hunter_pet_attack_t : public attack_t
   virtual void execute()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t* o = p -> owner -> cast_hunter();
 
     attack_t::execute();
 
-    if ( attack_t::cost() > 0 ) p -> buffs_sic_em -> expire();
     if ( result_is_hit() )
     {
-      if ( ! special )
-      {
-        o -> buffs_cobra_strikes -> decrement();
-        if ( o -> talents.frenzy -> ok() ) 
-          p -> buffs_frenzy -> trigger();
-        if ( result == RESULT_CRIT )
-          o -> resource_gain( RESOURCE_FOCUS, o -> talents.invigoration -> base_value(), o -> gains_invigoration );
-      }
       if ( p -> buffs_rabid -> check() )
       {
         p -> buffs_rabid_power_stack -> trigger();
@@ -820,11 +837,6 @@ struct hunter_pet_attack_t : public attack_t
         if ( p -> talents.wolverine_bite -> rank() )
         {
           p -> buffs_wolverine_bite -> trigger();
-        }
-        if ( special && p -> talents.culling_the_herd -> rank() )
-        {
-          p -> buffs_culling_the_herd -> trigger();
-          p -> owner -> cast_hunter() -> buffs_culling_the_herd -> trigger();
         }
       }
     }
@@ -844,36 +856,14 @@ struct hunter_pet_attack_t : public attack_t
     {
       player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
     }
-    if ( ! special )
-    {
-      if ( o -> buffs_cobra_strikes -> up() ) player_crit += o -> buffs_cobra_strikes -> effect_base_value( 1 ) / 100.0;
-    }
     if ( p -> talents.feeding_frenzy -> rank() && ( target -> health_percentage() < 35 ) )
     {
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy -> rank() * 0.08;
-    }
-    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
-    {
-      player_multiplier *= 1.0 + p -> talents.wild_hunt -> rank() * 0.60;
     }
     if ( o -> buffs_tier10_2pc -> up() )
     {
       player_multiplier *= 1.15;
     }
-  }
-
-  virtual double cost() SC_CONST
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    double c = attack_t::cost();
-    if ( c == 0 ) return 0;
-    if ( p -> buffs_sic_em -> up() )
-      c *= 1.0 + p -> owner ->cast_hunter() -> talents.sic_em -> base_value() / 100.0;
-    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
-    {
-      c *= 1.0 + p -> talents.wild_hunt -> rank() * 0.50;
-    }
-    return c;
   }
 };
 
@@ -887,6 +877,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     weapon = &( p -> main_hand_weapon );
+    weapon_power_mod *= 2.0; // Hunter pets scale with attack power 1 DPS per 7 AP
     base_execute_time = weapon -> swing_time;
     base_dd_min       = base_dd_max = 1;
     background        = true;
@@ -934,6 +925,59 @@ struct claw_t : public hunter_pet_attack_t
   {
     parse_options( NULL, options_str );
     direct_power_mod=0.4;
+    base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t* o     = p -> owner -> cast_hunter();
+    hunter_pet_attack_t::execute();
+
+    p -> buffs_sic_em -> expire();
+    o -> buffs_cobra_strikes -> decrement();
+    if ( o -> talents.frenzy -> ok() ) 
+      p -> buffs_frenzy -> trigger();
+    if ( result == RESULT_CRIT )
+    {
+      o -> resource_gain( RESOURCE_FOCUS, o -> talents.invigoration -> base_value(), o -> gains_invigoration );
+      if ( p -> talents.culling_the_herd -> rank() )
+      {
+        p -> buffs_culling_the_herd -> trigger();
+        o -> buffs_culling_the_herd -> trigger();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    hunter_pet_attack_t::player_buff();
+
+    if ( o -> buffs_cobra_strikes -> up() ) player_crit += o -> buffs_cobra_strikes -> effect_base_value( 1 ) / 100.0;
+
+    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
+    {
+      player_multiplier *= 1.0 + p -> talents.wild_hunt -> rank() * 0.60;
+    }
+  }
+
+  virtual double cost() SC_CONST
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t* o     = p -> owner -> cast_hunter();
+    double c = hunter_pet_attack_t::cost();
+    if ( c == 0 ) return 0;
+    if ( p -> buffs_owls_focus -> check() ) return 0;
+    if ( p -> buffs_sic_em -> up() )
+      c *= 1.0 + o -> talents.sic_em -> base_value() / 100.0;
+    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
+    {
+      c *= 1.0 + p -> talents.wild_hunt -> rank() * 0.50;
+    }
+    return c;
   }
 };
 
@@ -1001,9 +1045,7 @@ struct hunter_pet_spell_t : public spell_t
   {
     hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     hunter_t* o = p -> owner -> cast_hunter();
-    base_multiplier *= 1.05; // # Cunning, Ferocity and Tenacity pets now all have +5% damage
     if ( o -> race == RACE_ORC ) base_multiplier *= 1.05;
-    base_multiplier *= 1.0 + p -> talents.spiked_collar -> rank() * 0.03;
     base_crit += p -> talents.spiders_bite -> rank() * 0.03;
     base_multiplier *= 1.25; // Assume happy pet
   }
@@ -1018,15 +1060,6 @@ struct hunter_pet_spell_t : public spell_t
     spell_t( n, id, player )
   {
     _init_hunter_pet_spell_t();
-  }
-
-  virtual double cost() SC_CONST
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-
-    if ( p -> buffs_owls_focus -> check() ) return 0;
-
-    return spell_t::cost();
   }
 
   virtual void consume_resource()
@@ -1273,13 +1306,8 @@ double hunter_attack_t::cost() SC_CONST
 
 double hunter_attack_t::execute_time() SC_CONST
 {
-  hunter_t* p = player -> cast_hunter();
-
   double t = attack_t::execute_time();
   if ( t == 0  || base_execute_time < 0 ) return 0;
-
-
-  t *= 1.0 / ( 1.0 + p -> buffs_rapid_fire -> value() );
 
   return t;
 }
@@ -1405,7 +1433,6 @@ struct aimed_shot_t : public hunter_attack_t
     weapon_multiplier = effect_average( 2 ) / 100.0;
 
     normalize_weapon_speed = true;
-    // FIXME! #1 haste lowers cd!
   }
 
   virtual void player_buff()
@@ -2636,7 +2663,7 @@ void hunter_t::init_base()
   initial_attack_power_per_agility  = 2.0;
 
   // FIXME! 
-  base_focus_regen_per_second = 6;
+  base_focus_regen_per_second = 4;
   
   resource_base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect_base_value( 1 );
 
@@ -2972,6 +2999,7 @@ double hunter_t::composite_attack_haste() SC_CONST
 
   h *= 1.0 / ( 1.0 + talents.pathing -> effect_base_value( 1 ) / 100.0 );
   h *= 1.0 / ( 1.0 + buffs_focus_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
   if ( buffs_improved_steady_shot -> up() )
     h *= 1.0 / ( 1.0 + talents.improved_steady_shot -> base_value() / 100.0 );
   return h;
