@@ -2671,7 +2671,7 @@ void hunter_t::init_base()
 
   base_attack_power = level * 2 - 10;
 
-  initial_attack_power_per_strength = 1.0;
+  initial_attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
   initial_attack_power_per_agility  = 2.0;
 
   // FIXME! 
