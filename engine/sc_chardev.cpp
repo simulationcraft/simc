@@ -12,25 +12,11 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 static js_node_t* download_profile( sim_t* sim,
                                     const std::string& id )
 {
-  std::string url = "http://chardev.org/?profile=" + id;
-  std::string result;
+  std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
+  std::string profile_str;
 
-  if ( http_t::download( result, url ) )
+  if ( http_t::download( profile_str, url ) )
   {
-    std::string::size_type start = result.find( "g_profileId" );
-    std::string::size_type end = std::string::npos;
-
-    if ( start != std::string::npos ) start = result.find( "g_character", start );
-    if ( start != std::string::npos ) end = result.find( "\n", start );
-    if ( end   != std::string::npos ) end = result.rfind( ";", end );
-    if ( start == std::string::npos ) return 0;
-    if ( end   == std::string::npos ) return 0;
-
-    start += strlen( "g_character = " );
-    if ( start > end ) return 0;
-
-    std::string profile_str = result.substr( start, ( end - start ) );
-
     return js_t::create( sim, profile_str );
   }
 
@@ -137,21 +123,14 @@ player_t* chardev_t::download_player( sim_t* sim,
     js_t::get_value( enchant_id,   slot_node, "4/0" );
 
     std::string reforge_id;
-    int reforge_to, reforge_from;
-    if ( js_t::get_value( reforge_to, slot_node, "5/1" ) )
+    int reforge_from, reforge_to;
+    if ( js_t::get_value( reforge_from, slot_node, "5/0" ) &&
+	 js_t::get_value( reforge_to,   slot_node, "5/1" ) )
     {
-      std::string reforge_index;
-      if ( js_t::get_value( reforge_index, slot_node, "5/0" ) )
-      {
-        std::string reforge_path = "0/13/" + reforge_index + "/0";
-        if ( js_t::get_value( reforge_from, slot_node, reforge_path ) )
-        {
-          std::stringstream ss;
-          ss << enchant_t::get_reforge_id( util_t::translate_item_mod( reforge_from ), 
-                                           util_t::translate_item_mod( reforge_to   ) );
-          reforge_id = ss.str();
-        }
-      }
+      std::stringstream ss;
+      ss << enchant_t::get_reforge_id( util_t::translate_item_mod( reforge_from ), 
+				       util_t::translate_item_mod( reforge_to   ) );
+      reforge_id = ss.str();
     }
 
     if( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
