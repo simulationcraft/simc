@@ -2779,6 +2779,7 @@ void hunter_t::init_scaling()
 {
   player_t::init_scaling();
 
+  scales_with[ STAT_STRENGTH ]         = 0;
   scales_with[ STAT_EXPERTISE_RATING ] = 0;
 }
 
