@@ -572,6 +572,18 @@ struct hunter_pet_t : public pet_t
     return h;
   }
 
+  virtual double composite_attack_hit() SC_CONST
+  {
+    hunter_t* o = owner -> cast_hunter();
+    return o -> composite_attack_hit(); // Hunter pets' hit does not round down in cataclysm and scales with Heroic Presence (as of 12/21)
+  }
+
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    hunter_t* o = owner -> cast_hunter();
+    return ( ( 100.0 * o -> attack_hit ) * 26.0 / 8.0 ) / 100.0;
+  }
+
   virtual double composite_spell_hit() SC_CONST
   {
     return composite_attack_hit() * 17.0 / 8.0;
