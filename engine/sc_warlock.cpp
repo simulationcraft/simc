@@ -4236,7 +4236,6 @@ void warlock_t::init_actions()
 
     case TREE_AFFLICTION:
 
-      if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
@@ -4251,6 +4250,8 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react";
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
+      if ( level >= 75) action_list_str += "/shadowflame";
+      if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( talent_bane -> rank() == 3 )
@@ -4283,7 +4284,7 @@ void warlock_t::init_actions()
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
-      if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react";
+      if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react&((buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)&buff.bloodlust.down)|buff.empowered_imp.remains<(buff.bloodlust.remains+action.soul_fire.travel_time))";
       if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
