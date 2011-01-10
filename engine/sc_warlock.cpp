@@ -3749,7 +3749,7 @@ double warlock_t::composite_spell_haste() SC_CONST
     if ( buffs.bloodlust -> up() )
       buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
     else
-      h /=  1.0 + talent_improved_soul_fire -> effect_base_value( 1 ) / 100.0;
+      h *=  1.0 / ( 1.0 + talent_improved_soul_fire -> effect_base_value( 1 ) / 100.0 );
   }
 
   return h;
