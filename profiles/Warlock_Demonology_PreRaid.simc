@@ -1,11 +1,10 @@
 #!./simc 
 
 warlock=Warlock_Demonology_PreRaid
-origin="Warlock_Demonology_PreRaid.simc"
+origin="http://chardev.org/?profile=11885"
 level=85
-race=undead
+race=orc
 use_pre_potion=1
-professions=enchanting=525/inscription=525
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00000000000000000033222003103122122113122200000000000000
 glyphs=life_tap/shadow_bolt/immolate/lash_of_pain/metamorphosis
 actions=flask,type=draconic_mind
@@ -14,6 +13,7 @@ actions+=/fel_armor
 actions+=/summon_succubus
 actions+=/dark_intent
 actions+=/snapshot_stats
+actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
 actions+=/metamorphosis
 actions+=/soulburn,if=buff.metamorphosis.up&buff.bloodlust.down
@@ -32,34 +32,34 @@ actions+=/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down
 actions+=/demon_soul
 actions+=/shadow_bolt
 actions+=/life_tap
-head=crown_of_enfeebled_bodies,heroic=1,type=cloth,stats=242int_454sta_162crit_182haste_942armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20hit_30int,enchant=60int_35crit
-neck=lightning_flash_pendant,stats=190int_286sta_127crit_127mastery,reforge=mastery_hit
-shoulders=mantle_of_master_cho,heroic=1,type=cloth,stats=205int_337sta_150crit_130haste_870armor,reforge=crit_hit,gems=40int,enchant=130int_25haste
-chest=robes_of_orsis,type=cloth,stats=262int_454sta_172crit_192hit_1160armor,reforge=crit_haste,gems=40int_40int,enchant=20all
-waist=dreamless_belt,type=cloth,stats=233int_380sta_149hit_169mastery_704armor,reforge=mastery_haste,gems=40int_40int
-legs=breeches_of_mended_nightmares,type=cloth,stats=321int_512sta_214crit_216haste_1094armor,reforge=crit_hit,gems=40int_10haste,enchant=95int_80sta
-feet=desert_walker_sandals,type=cloth,stats=233int_380sta_149haste_169hit_860armor,gems=40int,enchant=35mastery
-wrists=sand_silk_wristband,heroic=1,type=cloth,stats=168int_252sta_112crit_112hit_507armor,reforge=crit_haste,enchant=50hit
-hands=flamebloom_gloves,type=cloth,stats=233int_380sta_169mastery_149haste_782armor,reforge=mastery_hit,gems=40int,enchant=65mastery
-finger1=band_of_rays,heroic=1,stats=168int_252sta_112crit_112hit,reforge=crit_haste,enchant=40int
-finger2=lavishly_jeweled_ring,heroic=1,stats=133int_252sta_112mastery_107hit,reforge=mastery_haste,gems=40int_10hit,enchant=40int
-trinket1=witching_hourglass,heroic=1,stats=285int,equip=onspellcast_1710haste_10%_15dur_75cd
-trinket2=gale_of_shadows,heroic=1,stats=285haste,reforge=haste_hit,equip=onspelltickdamage_17sp_20stack_15dur
-back=cloak_of_ancient_wisdom,stats=168int_252sta_112crit_112haste_580armor,reforge=crit_hit,enchant=50int
-main_hand=modguds_blade,heroic=1,stats=129int_194sta_86crit_86hit_1729sp,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_516min_958max
-off_hand=beautys_favorite_bone,heroic=1,stats=168int_252sta_98crit_120hit,reforge=crit_haste,enchant=100int
-ranged=wand_of_dark_worship,heroic=1,stats=95int_143sta_63crit_63haste,reforge=crit_hit
+head=helm_of_the_typhonic_beast,heroic=1,type=cloth,ilevel=346,quality=rare,stats=942armor_162hit_242int_182mastery_454sta,reforge=mastery_haste,gems=ember_shadowspirit_20haste_20int_30int,enchant=60int_35crit
+neck=lightning_flash_pendant,ilevel=359,quality=epic,stats=127crit_190int_127mastery_286sta,reforge=mastery_haste
+shoulders=mantle_of_master_cho,heroic=1,type=cloth,ilevel=346,quality=rare,stats=870armor_150crit_130haste_205int_337sta,gems=40int,enchant=130int_25haste
+chest=robes_of_orsis,type=cloth,ilevel=346,quality=rare,stats=1160armor_172crit_192hit_262int_454sta,reforge=crit_haste,gems=40int_40int,enchant=20all
+waist=dreamless_belt,type=cloth,ilevel=359,quality=epic,stats=704armor_149hit_233int_169mastery_380sta,reforge=mastery_haste,gems=40int_40int
+legs=breeches_of_mended_nightmares,type=cloth,ilevel=359,quality=epic,stats=1094armor_214crit_216haste_321int_512sta,gems=40int_10haste,enchant=95int_80sta
+feet=desert_walker_sandals,type=cloth,ilevel=359,quality=epic,stats=860armor_149haste_169hit_233int_380sta,gems=20haste_20int_10hit,enchant=35mastery
+wrists=sand_silk_wristband,heroic=1,type=cloth,ilevel=346,quality=rare,stats=507armor_112crit_112hit_168int_252sta,reforge=crit_haste,enchant=65haste
+hands=flamebloom_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_149haste_233int_169mastery_380sta,reforge=mastery_hit,gems=40int,enchant=50haste
+finger1=band_of_rays,heroic=1,ilevel=346,quality=rare,stats=112crit_112hit_168int_252sta,reforge=crit_haste,enchant=40int
+finger2=lavishly_jeweled_ring,heroic=1,ilevel=346,quality=rare,stats=107hit_133int_112mastery_252sta,reforge=mastery_haste,gems=40int_10hit,enchant=40int
+trinket1=stump_of_time,ilevel=359,quality=epic,stats=321hit,equip=onspellcast_1926sp_10%_15dur_75cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldirecthit_1200+10fire_1600int_30%_12dur_45cd
+back=shadow_of_perfect_bliss,heroic=1,ilevel=346,quality=rare,stats=580armor_128crit_85hit_168int_252sta,reforge=crit_haste,enchant=50int
+main_hand=modguds_blade,heroic=1,ilevel=346,quality=rare,stats=91crit_78hit_129int_1729sp_194sta,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_258min_480max
+off_hand=hermits_lamp,ilevel=346,quality=rare,stats=112haste_112hit_168int_252sta,enchant=100int
+ranged=corlas_baton,heroic=1,ilevel=346,quality=rare,stats=56hit_95int_68mastery_143sta,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=4880
-# gear_intellect=4232
+# gear_intellect=3927
 # gear_spirit=20
 # gear_spell_power=1729
-# gear_hit_rating=1636
-# gear_crit_rating=936
-# gear_haste_rating=1547
-# gear_mastery_rating=449
+# gear_hit_rating=1742
+# gear_crit_rating=898
+# gear_haste_rating=1577
+# gear_mastery_rating=728
 # gear_armor=7499
 # meta_gem=ember_shadowspirit
-# main_hand=modguds_blade,heroic=1,weapon=dagger_1.80speed_516min_958max,enchant=power_torrent
+# main_hand=modguds_blade,heroic=1,weapon=dagger_1.80speed_258min_480max,enchant=power_torrent

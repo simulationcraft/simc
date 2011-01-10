@@ -6,6 +6,7 @@ level=85
 race=orc
 use_pre_potion=1
 talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=00300000000000000023002000000000000003322200312201312211
+glyphs=life_tap/immolate/conflagrate/imp
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
