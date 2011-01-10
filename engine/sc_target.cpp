@@ -15,8 +15,8 @@ target_t::target_t( sim_t* s, const std::string& n ) :
     sim( s ), name_str( n ), next( 0 ), race( RACE_HUMANOID ), level( -1 ),
     initial_armor( -1 ), armor( 0 ), block_value( 100 ),
     attack_speed( 2.0 ), attack_damage( 2000 ), weapon_skill( 0 ),
-    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), total_dmg( 0 ),
-    adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 )
+    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
+    total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
   create_options();
@@ -105,7 +105,11 @@ double target_t::time_to_die() SC_CONST
 
 double target_t::health_percentage() SC_CONST
 {
-  if ( initial_health > 0 ) 
+  if ( fixed_health_percentage > 0 )
+  {
+    return fixed_health_percentage;
+  }
+  else if ( initial_health > 0 ) 
   {
     return 100.0 * current_health / initial_health;
   }
@@ -237,27 +241,25 @@ void target_t::create_options()
 {
   option_t target_options[] =
   {
-    // @option_doc loc=global/target/general title="Target General"
-    { "target_name",           OPT_STRING, &( name_str                          ) },
-    { "target_race",           OPT_STRING, &( race_str                          ) },
-    { "target_level",          OPT_INT,    &( level                             ) },
-    { "target_health",         OPT_FLT,    &( fixed_health                      ) },
-    { "target_id",             OPT_STRING, &( id_str                            ) },
-    { "target_adds",           OPT_INT,    &( initial_adds_nearby               ) },
-    // @option_doc loc=global/target/defense title="Target Defense"
-    { "target_resist_holy",    OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
-    { "target_resist_shadow",  OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
-    { "target_resist_arcane",  OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
-    { "target_resist_frost",   OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ] ) },
-    { "target_resist_fire",    OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
-    { "target_resist_nature",  OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
-    { "target_armor",          OPT_INT,    &( initial_armor                     ) },
-    { "target_block",          OPT_INT,    &( block_value                       ) },
-    // @option_doc loc=global/target/auto_attack title="Target Auto-Attack"
-    { "target_attack_speed",   OPT_FLT,    &( attack_speed                      ) },
-    { "target_attack_damage",  OPT_FLT,    &( attack_damage                     ) },
-    { "target_weapon_skill",   OPT_FLT,    &( weapon_skill                      ) },
-    { "target_resilience",     OPT_FLT,    &( resilience                        ) },
+    { "target_name",                    OPT_STRING, &( name_str                          ) },
+    { "target_race",                    OPT_STRING, &( race_str                          ) },
+    { "target_level",                   OPT_INT,    &( level                             ) },
+    { "target_health",                  OPT_FLT,    &( fixed_health                      ) },
+    { "target_id",                      OPT_STRING, &( id_str                            ) },
+    { "target_adds",                    OPT_INT,    &( initial_adds_nearby               ) },
+    { "target_resist_holy",             OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
+    { "target_resist_shadow",           OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
+    { "target_resist_arcane",           OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
+    { "target_resist_frost",            OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ] ) },
+    { "target_resist_fire",             OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
+    { "target_resist_nature",           OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
+    { "target_armor",                   OPT_INT,    &( initial_armor                     ) },
+    { "target_block",                   OPT_INT,    &( block_value                       ) },
+    { "target_attack_speed",            OPT_FLT,    &( attack_speed                      ) },
+    { "target_attack_damage",           OPT_FLT,    &( attack_damage                     ) },
+    { "target_weapon_skill",            OPT_FLT,    &( weapon_skill                      ) },
+    { "target_resilience",              OPT_FLT,    &( resilience                        ) },
+    { "target_fixed_health_percentage", OPT_FLT,    &( fixed_health_percentage           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

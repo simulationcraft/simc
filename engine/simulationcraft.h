@@ -3360,6 +3360,7 @@ struct target_t
   int block_value;
   double attack_speed, attack_damage, weapon_skill;
   double fixed_health, initial_health, current_health;
+  double fixed_health_percentage;
   double total_dmg;
   int adds_nearby, initial_adds_nearby;
   double resilience;
