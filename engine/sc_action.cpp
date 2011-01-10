@@ -1072,6 +1072,7 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
 
       dot -> action = this;
       dot -> num_ticks = hasted_num_ticks();
+      if ( dot -> ticking ) dot -> num_ticks++;
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
 
