@@ -579,13 +579,12 @@ struct treants_pet_t : public pet_t
   }
   virtual double composite_attack_hit() SC_CONST
   {
-    // Testing shows melee hit affects this, not spell
-    return owner -> composite_attack_hit();
+    return owner -> composite_spell_hit();
   }
   virtual double composite_attack_expertise() SC_CONST
   {
     // Hit scales that if they are hit capped, you're expertise capped.
-    return owner -> composite_attack_hit() * 26.0 / 17.0;
+    return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
   virtual void schedule_ready( double delta_time=0,
                                bool   waiting=false )

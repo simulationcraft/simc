@@ -744,11 +744,10 @@ struct divine_storm_t : public paladin_attack_t
 
   virtual void execute()
   {
-    paladin_t* p = player->cast_paladin();
     paladin_attack_t::execute();
-    if (result_is_hit())
+    if ( result_is_hit() )
     {
-      trigger_hand_of_light_ptr(this);
+      trigger_hand_of_light_ptr( this );
     }
   }
 };
