@@ -2061,9 +2061,6 @@ int sim_t::main( int argc, char** argv )
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
     
-    for ( player_t* p = player_list; p != 0; p = p -> next )
-      p -> player_data.set_parent( &( sim_data ) );
-
     if( execute() )
     {
       scaling -> analyze();

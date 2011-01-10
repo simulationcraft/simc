@@ -357,6 +357,8 @@ player_t::player_t( sim_t*             s,
     talent_tab_points[ i ] = 0;
     tree_type[ i ] = TREE_NONE;
   }
+  
+  player_data.set_parent( &( sim -> sim_data ) );
 }
 
 // player_t::~player_t =====================================================
