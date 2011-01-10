@@ -1616,7 +1616,7 @@ double player_t::composite_attack_power() SC_CONST
   ap += attack_power_per_agility  * agility();
 
   if ( tank && vengeance_factor )
-    ap += (std::min)(1.0, vengeance_factor) * 0.1 * resource_buffed[ RESOURCE_HEALTH ];
+    ap += (std::min)(1.0, vengeance_factor) * ( stamina() + 0.1 * resource_base[ RESOURCE_HEALTH ]);
 
   return ap;
 }
