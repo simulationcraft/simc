@@ -1651,6 +1651,7 @@ struct cobra_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     direct_power_mod = 0.017;
+    base_execute_time = 2.0;
   }
   
   void execute()
@@ -1917,10 +1918,11 @@ struct steady_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-                normalize_weapon_damage = true;
+    normalize_weapon_damage = true;
     normalize_weapon_speed  = true;
     
     direct_power_mod = 0.021;
+    base_execute_time = 2.0;
     weapon_multiplier = effect_average( 2 ) / 100.0;
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
