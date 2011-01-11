@@ -2709,6 +2709,10 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::travel( travel_result, travel_dmg);
     trigger_decimation( this, travel_result );
+
+    warlock_t* p = player -> cast_warlock();
+    if ( p -> ptr )
+      p -> buffs_shadow_embrace -> trigger();
   }
 
   virtual void player_buff()
@@ -3353,7 +3357,10 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( p -> buffs_tier11_4pc_caster -> up() )
     {
-      player_crit += p -> buffs_tier11_4pc_caster -> effect_base_value( 1 ) / 100.0;
+      if ( p -> ptr )
+        player_multiplier *= 4;
+      else
+        player_crit += p -> buffs_tier11_4pc_caster -> effect_base_value( 1 ) / 100.0;
     }
   }
 };
@@ -3779,13 +3786,22 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
   double fire_multiplier=1.0;
   double shadow_multiplier=1.0;
 
+
   // Fire
+  if ( ptr && buffs_improved_soul_fire -> up() )
+  {
+    fire_multiplier *=  1.0 / ( 1.0 + talent_improved_soul_fire -> rank() * 0.04 );
+  }
   fire_multiplier *= 1.0 + ( passive_spells.cataclysm -> effect_base_value( 1 ) / 100.0 );
   if ( mastery_spells.fiery_apocalypse -> ok() )
     fire_multiplier *= 1.0 + ( mastery_spells.fiery_apocalypse -> ok() * composite_mastery() * mastery_spells.fiery_apocalypse -> effect_base_value( 2 ) / 10000.0 );
   fire_multiplier *= 1.0 +  passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 ;
 
   // Shadow
+  if ( ptr && buffs_improved_soul_fire -> up() )
+  {
+    shadow_multiplier *=  1.0 / ( 1.0 + talent_improved_soul_fire -> rank() * 0.04 );
+  }
   shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 );
   shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
 
