@@ -2842,7 +2842,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( !p -> buffs.bloodlust -> up() || dbc_t::get_ptr() )
+      if ( !p -> buffs.bloodlust -> up() || p -> ptr )
         p -> buffs_improved_soul_fire -> trigger();
     }
   }
@@ -3744,7 +3744,7 @@ double warlock_t::composite_spell_haste() SC_CONST
 {
   double h = player_t::composite_spell_haste();
 
-  if ( ! dbc_t::get_ptr() && buffs_improved_soul_fire -> up() )
+  if ( ! ptr && buffs_improved_soul_fire -> up() )
   {
     if ( buffs.bloodlust -> up() )
       buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
@@ -3790,7 +3790,7 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
   shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
 
 
-  if ( dbc_t::get_ptr() && buffs_improved_soul_fire -> up() )
+  if ( ptr && buffs_improved_soul_fire -> up() )
   {
     fire_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 
     shadow_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 

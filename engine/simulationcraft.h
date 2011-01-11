@@ -2747,6 +2747,7 @@ struct set_bonus_array_t
 struct player_t
 {
   sim_t*      sim;
+  bool        ptr;
   std::string name_str, talents_str, glyphs_str, id_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;

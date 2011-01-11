@@ -271,7 +271,7 @@ static void trigger_hand_of_light( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if ( !dbc_t::get_ptr() && a -> sim -> roll( p -> get_hand_of_light() ) )
+  if ( !p -> ptr && a -> sim -> roll( p -> get_hand_of_light() ) )
   {
     p -> buffs_hand_of_light -> trigger();
   }
@@ -281,7 +281,7 @@ static void trigger_hand_of_light_ptr( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if (dbc_t::get_ptr() && p->primary_tree() == TREE_RETRIBUTION)
+  if ( p -> ptr && p->primary_tree() == TREE_RETRIBUTION)
   {
     p->active_hand_of_light_proc->base_dd_max = p->active_hand_of_light_proc->base_dd_min = a->direct_dmg;
     p->active_hand_of_light_proc->execute();
@@ -292,7 +292,7 @@ static void trigger_divine_purpose_ptr( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if (dbc_t::get_ptr() && p->talents.divine_purpose->rank())
+  if ( p -> ptr && p->talents.divine_purpose->rank())
   {
     p->buffs_divine_purpose->trigger();
   }
@@ -485,7 +485,7 @@ struct paladin_attack_t : public attack_t
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
     {
-      if ( dbc_t::get_ptr() )
+      if ( p -> ptr )
       {
         if ( p -> buffs_divine_purpose -> up() )
           p -> buffs_divine_purpose -> expire();
@@ -500,7 +500,7 @@ struct paladin_attack_t : public attack_t
           p -> buffs_holy_power -> expire();
       }
     }
-    if ( ! dbc_t::get_ptr() )
+    if ( ! p -> ptr )
       p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
 };
@@ -1504,7 +1504,7 @@ struct paladin_spell_t : public spell_t
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
     {
-      if ( dbc_t::get_ptr() )
+      if ( p -> ptr )
       {
         if ( p -> buffs_divine_purpose -> up() )
           p -> buffs_divine_purpose -> expire();
@@ -2258,7 +2258,7 @@ void paladin_t::init_buffs()
   buffs_zealotry               = new buff_t( this, talents.zealotry->spell_id(), "zealotry", 1 );
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", 1 );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", 1 );
-  if ( dbc_t::get_ptr() )
+  if ( ptr )
   {
     buffs_hand_of_light        = 0;
     buffs_divine_purpose       = new buff_t( this, "divine_purpose", 1, 8, 0, 0.01 * talents.divine_purpose->effect_base_value(1) );
@@ -2646,7 +2646,7 @@ void paladin_t::combat_begin()
 
 bool paladin_t::has_holy_power(int power_needed) SC_CONST
 {
-  if ( dbc_t::get_ptr() ? buffs_divine_purpose -> check() : buffs_hand_of_light -> check() )
+  if ( ptr ? buffs_divine_purpose -> check() : buffs_hand_of_light -> check() )
     return true;
   return buffs_holy_power -> check() >= power_needed;
 }
@@ -2655,7 +2655,7 @@ bool paladin_t::has_holy_power(int power_needed) SC_CONST
 
 int paladin_t::holy_power_stacks() SC_CONST
 {
-  if ( dbc_t::get_ptr() ? buffs_divine_purpose -> up() : buffs_hand_of_light -> up() )
+  if ( ptr ? buffs_divine_purpose -> up() : buffs_hand_of_light -> up() )
     return 3;
   else if ( buffs_holy_power -> up() )
     return buffs_holy_power -> check();

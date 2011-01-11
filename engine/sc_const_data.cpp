@@ -38,7 +38,7 @@ void dbc_t::set_ptr( bool use )
 const char* dbc_t::build_level()
 {
 #if SC_USE_PTR
-  return use_ptr ? "13316" : "13329";
+  return use_ptr ? "13449" : "13329";
 #else
   return "13329";
 #endif

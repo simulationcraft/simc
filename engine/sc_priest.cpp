@@ -2862,7 +2862,7 @@ double priest_t::empowered_shadows_amount() SC_CONST
 {
   double a = composite_mastery() * passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
 
-  if ( dbc_t::get_ptr() )
+  if ( ptr )
   {
     if ( bugs )
     {

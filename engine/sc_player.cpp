@@ -220,7 +220,7 @@ player_t::player_t( sim_t*             s,
                     player_type        t,
                     const std::string& n,
                     race_type          r ) :
-    sim( s ), name_str( n ),
+    sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
     next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ), tank( -1 ),
     party( 0 ), member( 0 ),
