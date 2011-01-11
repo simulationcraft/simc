@@ -2712,7 +2712,10 @@ struct incinerate_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     if ( p -> ptr )
-      p -> buffs_shadow_embrace -> trigger();
+    {
+      target -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
+      target -> debuffs.curse_of_elements -> source = p;
+    }
   }
 
   virtual void player_buff()
