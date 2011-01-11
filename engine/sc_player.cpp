@@ -4902,6 +4902,8 @@ void player_t::copy_from( player_t* source )
     items[ i ] = source -> items[ i ];
     items[ i ].player = this;
   }
+  gear = source -> gear;
+  enchant = source -> enchant;
 }
 
 // player_t::create_options =================================================
