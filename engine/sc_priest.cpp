@@ -404,6 +404,8 @@ struct priest_t : public player_t
 
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
+
+  virtual double    empowered_shadows_amount() SC_CONST;
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -1395,7 +1397,7 @@ struct mind_blast_t : public priest_spell_t
     player -> cast_priest() -> buffs_mind_melt -> expire();
     p -> buffs_mind_spike -> expire();
     p -> buffs_shadow_orb -> expire();
-    p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() *  p -> passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC ) );
+    p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
     if ( result_is_hit() )
     {
       p -> recast_mind_blast = 0;
@@ -1599,7 +1601,7 @@ struct mind_spike_t : public priest_spell_t
 
     p -> buffs_mind_melt  -> trigger( 1, 1.0 );
     p -> buffs_shadow_orb -> expire();
-    p -> buffs_empowered_shadow -> trigger( 1, p -> composite_mastery() *  p -> passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC ) );
+    p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
     p -> buffs_mind_spike -> trigger();
   }
 
@@ -2853,6 +2855,24 @@ struct penance_heal_t : public priest_heal_t
 // ==========================================================================
 // Priest Character Definition
 // ==========================================================================
+
+// priest_t::empowered_shadows_amount
+
+double priest_t::empowered_shadows_amount() SC_CONST
+{
+  double a = composite_mastery() * passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
+
+  if ( dbc_t::get_ptr() )
+  {
+    if ( bugs )
+    {
+      a *= 0.895;
+    }
+    a += 0.10;
+  }
+
+  return a;
+}
 
 // priest_t::composite_armor =========================================
 
