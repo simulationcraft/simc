@@ -2634,7 +2634,7 @@ void hunter_t::init_spells()
 
   passive_spells.animal_handler    = new passive_spell_t( this, "animal_handler", "Animal Handler" );
   passive_spells.artisan_quiver    = new passive_spell_t( this, "artisan_quiver", "Artisan Quiver" );
-  passive_spells.into_the_wildness = new passive_spell_t( this, "into_the_wildness", "Into the Wildness" );
+  passive_spells.into_the_wildness = new passive_spell_t( this, "into_the_wildness", "Into the Wilderness" );
 
   passive_spells.master_of_beasts     = new mastery_t( this, "master_of_beasts", "Master of Beasts", TREE_BEAST_MASTERY );
   passive_spells.wild_quiver          = new mastery_t( this, "wild_quiver", "Wild Quiver", TREE_MARKSMANSHIP );
@@ -3023,7 +3023,8 @@ double hunter_t::composite_attack_haste() SC_CONST
 double hunter_t::agility() SC_CONST
 {
   double agi = player_t::agility();
-  agi *= 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) / 100.0;
+  agi *= ( 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) / 100.0 );
+  //agi *= 1.15;
   return agi;
 }
 
