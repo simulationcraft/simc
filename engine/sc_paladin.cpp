@@ -183,6 +183,8 @@ struct paladin_t : public player_t
   };
   glyphs_t glyphs;
 
+  int ret_pvp_gloves;
+
   paladin_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_TAUREN;
@@ -199,6 +201,8 @@ struct paladin_t : public player_t
     active_seal_of_righteousness_proc = 0;
     active_seal_of_truth_proc         = 0;
     active_seal_of_truth_dot          = 0;
+
+    ret_pvp_gloves = 0;
 
     create_talents();
     create_glyphs();
@@ -669,7 +673,8 @@ struct crusader_strike_t : public paladin_attack_t
     assert(p->talents.crusade->effect_subtype(2) == A_ADD_PCT_MODIFIER);
     base_multiplier *= 1.0 + 0.01 * p->talents.crusade->effect_base_value(2)
                            + 0.01 * p->talents.wrath_of_the_lightbringer->effect_base_value(1) // TODO how do they stack?
-                           + 0.10 * p->set_bonus.tier11_2pc_tank();
+                           + 0.10 * p->set_bonus.tier11_2pc_tank()
+                           + 0.05 * p->ret_pvp_gloves;
 
     if (p->glyphs.ascetic_crusader) base_cost *= 0.70;
     if (p->glyphs.crusader_strike)  base_crit += 0.05;
@@ -2181,6 +2186,11 @@ int paladin_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
+
+  if ( item.slot == SLOT_HANDS && strstr( s, "gladiators_scaled_gauntlets" ) && item.ilevel > 140 )
+  {
+    ret_pvp_gloves = 1;
+  }
 
   bool is_melee = ( strstr( s, "helm"           ) || 
                     strstr( s, "shoulderplates" ) ||
