@@ -2947,6 +2947,10 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     p -> buffs_fel_armor -> trigger( 1, bonus_spell_power );
+    if ( p -> ptr ) {
+      p -> resource_max[ RESOURCE_MANA ] *= 1.1;
+      if ( ! p -> in_combat ) p -> resource_current[ RESOURCE_MANA ] = p -> resource_max[ RESOURCE_MANA ];
+    }
     warlock_spell_t::execute();
   }
 
