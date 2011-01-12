@@ -114,7 +114,9 @@ struct mage_t : public player_t
   {
     double arcane;
     double fire;
-    double frost;
+    double frost1;
+    double frost2;
+    double frost3;
     double flashburn;
     double frostburn;
     double mana_adept;
@@ -406,6 +408,10 @@ struct water_elemental_pet_t : public pet_t
     {
       may_crit             = true;
       base_crit_multiplier = 1.33;
+      if ( player -> ptr )
+      {
+        direct_power_mod     = 0.833;
+      }
     }
 
     virtual void player_buff()
@@ -1156,11 +1162,18 @@ void mage_spell_t::player_buff()
   }
   if ( school == SCHOOL_FROST || school == SCHOOL_FROSTFIRE )
   {
-    player_multiplier *= 1.0 + p -> specializations.frost;
+    player_multiplier *= 1.0 + p -> specializations.frost1;
   } 
   if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
   {
-    player_multiplier *= 1.0 + p -> specializations.frostburn * p -> composite_mastery();
+    if ( p -> ptr )
+    {
+      player_multiplier *= 1.0 + p -> specializations.frostburn * ( p -> composite_mastery() - 6 );
+    }
+    else
+    {
+      player_multiplier *= 1.0 + p -> specializations.frostburn * p -> composite_mastery();
+    }
 
     double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
 
@@ -1836,6 +1849,10 @@ struct frostbolt_t : public mage_spell_t
     may_chill = true;
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> ptr )
+    {
+      base_multiplier *= 1.0 + p -> specializations.frost3;
+    }
   }
 
   virtual void schedule_execute()
@@ -2053,6 +2070,10 @@ struct ice_lance_t : public mage_spell_t
     if ( p -> buffs_fingers_of_frost -> up() )
     {
       player_multiplier *= 2.0; // Built in bonus against frozen targets
+      if ( p -> ptr )
+      {
+        player_multiplier *= 1.15;
+      }
     }
   }
 };
@@ -2815,7 +2836,12 @@ void mage_t::init_spells()
   }
   else if ( specialization == MAGE_FROST )
   {
-    specializations.frost     = spells.frost_specialization -> effect1 -> base_value / 100.0;
+    specializations.frost1    = spells.frost_specialization -> effect1 -> base_value / 100.0;
+    if ( ptr )
+    {
+      specializations.frost2    = spells.frost_specialization -> effect2 -> base_value;
+      specializations.frost3    = spells.frost_specialization -> effect3 -> base_value / 100.0;
+    }
     specializations.frostburn = spells.frostburn -> effect2 -> base_value / 10000.0;
   }
 
