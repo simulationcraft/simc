@@ -1044,7 +1044,8 @@ struct devouring_plague_burst_t : public priest_spell_t
     priest_spell_t::player_buff();
 
     // IDP only crits for *1.5 not *2.0
-    player_crit_bonus_multiplier /= 1.0 + p -> constants.shadow_power_crit_value;
+    if ( p -> bugs )
+      player_crit_bonus_multiplier /= 1.0 + p -> constants.shadow_power_crit_value;
 
     if ( ! p -> bugs )
     {
@@ -1506,12 +1507,23 @@ struct mind_flay_t : public priest_spell_t
     m += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
     m += p -> buffs_empowered_shadow -> value();
 
+    if ( ! p -> ptr )
+    {
+      if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking )
+      {
+        player_multiplier *= 1.0 + 0.10;    
+      }
+    }
+    else
+    {
+      if ( p -> glyphs.mind_flay )
+      {
+        m += 0.10;
+      }
+    }
+
     player_multiplier *= m;
 
-    if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking )
-    {
-      player_multiplier *= 1.0 + 0.10;    
-    }
   }
 
   virtual void tick()
@@ -2864,10 +2876,6 @@ double priest_t::empowered_shadows_amount() SC_CONST
 
   if ( ptr )
   {
-    if ( bugs )
-    {
-      a *= 0.895;
-    }
     a += 0.10;
   }
 
