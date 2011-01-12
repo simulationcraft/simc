@@ -1542,11 +1542,11 @@ void extract_rune_cost( spell_id_t* spell, int* cost_blood, int* cost_frost, int
   // Rune costs appear to be in binary: 0a0b0c where 'c' is whether the ability
   // costs a blood rune, 'b' is whether it costs an unholy rune, and 'a'
   // is whether it costs a frost rune.
-
-  uint32_t spell_id = spell->spell_id();
+  
+  uint32_t spell_id = spell -> spell_id();
   assert( spell_id > 0 );
 
-  uint32_t rune_cost = spell->rune_cost();
+  uint32_t rune_cost = spell -> rune_cost();
   *cost_blood  =        rune_cost & 0x1;
   *cost_unholy = ( rune_cost >> 2 ) & 0x1;
   *cost_frost  = ( rune_cost >> 4 ) & 0x1;
@@ -2161,7 +2161,16 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      p -> buffs_sudden_doom -> trigger();
+      if ( p -> ptr )
+      {
+        if ( weapon -> slot == SLOT_MAIN_HAND ) // PPM modeled off Maelstrom for now
+          p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() * 2.0 ) );
+      }
+      else
+      {
+        p -> buffs_sudden_doom -> trigger();
+      }
+      
       trigger_blood_caked_blade( this );
       if ( p -> buffs_scent_of_blood -> up() )
       {
@@ -2593,9 +2602,11 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "dark_transformation", player->talents.dark_transformation->spell_id(), player )
+    death_knight_spell_t( "dark_transformation", player -> talents.dark_transformation -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
+
+    check_talent( p -> talents.dark_transformation -> rank() );
 
     option_t options[] =
     {
@@ -2604,7 +2615,8 @@ struct dark_transformation_t : public death_knight_spell_t
     parse_options( options, options_str );
 
     parse_data( p -> player_data );
-    extract_rune_cost( p->talents.dark_transformation, &cost_blood, &cost_frost, &cost_unholy );
+    if ( ! background ) // When we don't take the talent, we have no talent ID, and it asserts
+      extract_rune_cost( p -> talents.dark_transformation, &cost_blood, &cost_frost, &cost_unholy );
     base_cost = 0;
   }
 
@@ -4676,8 +4688,10 @@ double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_
 double death_knight_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
-  if ( talents.virulence -> rank() )
+  if ( ! ptr && talents.virulence -> rank() )
     hit += talents.virulence -> effect_base_value( 1 ) / 100.0;
+  if ( ptr )
+    hit += .09; // Not in Runic Empowerment's data yet
   return hit;
 }
 
