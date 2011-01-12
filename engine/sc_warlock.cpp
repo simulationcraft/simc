@@ -2934,8 +2934,12 @@ struct fel_armor_t : public warlock_spell_t
     bonus_spell_power = p -> buffs_fel_armor -> effect_min( 1 );
 
     // Model the passive health tick.....
-    base_tick_time = effect_period( 2 );
-    num_ticks = 1;
+    if ( ! p -> ptr )
+    {
+      base_tick_time = effect_period( 2 );
+      num_ticks = 1;
+    }
+
     usable_pre_combat = true;
   }
 
