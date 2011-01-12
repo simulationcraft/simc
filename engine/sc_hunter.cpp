@@ -1706,8 +1706,11 @@ struct cobra_shot_t : public hunter_attack_t
       hunter_t* p = player -> cast_hunter();
       if ( p -> dots_serpent_sting -> ticking ) p -> dots_serpent_sting -> action -> extend_duration( 2 );
       double focus = 9;
-      if ( target -> health_percentage() <= p -> talents.termination -> effect_base_value( 2 ) )
-        focus += p -> talents.termination -> effect_base_value( 1 );
+      if ( p -> talents.termination -> rank() )
+      {
+        if ( target -> health_percentage() <= p -> talents.termination -> effect_base_value( 2 ) )
+          focus += p -> talents.termination -> effect_base_value( 1 );
+      }
       p -> resource_gain( RESOURCE_FOCUS, focus, p -> gains_cobra_shot );
     }
   }
@@ -2179,7 +2182,7 @@ struct focus_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    double value = p -> active_pet -> buffs_frenzy -> stack() * p -> talents.focus_fire -> effect_base_value( 3 ) /100.0;
+    double value = p -> active_pet -> buffs_frenzy -> stack() * ( p -> talents.focus_fire -> effect_base_value( 3 ) /100.0 + p -> sets -> set ( SET_T11_2PC_MELEE ) -> ok() * 1 / 100.0 );
     p -> buffs_focus_fire -> trigger( 1, value );
 
     double gain = p -> talents.focus_fire -> effect_base_value( 2 );
@@ -2245,11 +2248,11 @@ struct kill_command_t : public hunter_spell_t
       hunter_spell_t( "kill_command", player, "Kill Command" )
   {
     hunter_t* p = player -> cast_hunter();
-
+    base_crit_multiplier = 1.33;
     parse_options( NULL, options_str );
 
     base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
-
+    base_crit += p -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
     may_crit=true;
 
     // hack for now:
@@ -2316,6 +2319,9 @@ struct kill_command_t : public hunter_spell_t
      hunter_t* p = player -> cast_hunter();
      if ( p -> buffs_killing_streak -> up() )
        player_multiplier *= 1.0 + p -> talents.killing_streak -> rank() * 0.1;
+
+     // Assume happy pet
+         player_multiplier *= 1.25;
    }
 
   virtual bool ready()
@@ -2958,7 +2964,7 @@ void hunter_t::init_actions()
       {
         action_list_str += "/bestial_wrath,if=!buff.rapid_fire.up&!buff.bloodlust.up";
       }
-      action_list_str += "/kill_command";
+
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=20";
       if ( talents.focus_fire -> ok() )
@@ -2967,9 +2973,8 @@ void hunter_t::init_actions()
         if ( talents.the_beast_within -> ok() )
           action_list_str += ",if=!buff.beast_within.up";
       }
-
-      action_list_str += "/arcane_shot,if=!buff.rapid_fire.up&!buff.bloodlust.up&focus>=";
-      action_list_str += ( glyphs.kill_command -> enabled() ) ? "37" : "40";          
+      action_list_str += "/kill_command,if=focus>=70";
+      action_list_str += "/arcane_shot,if=!buff.rapid_fire.up&!buff.bloodlust.up";
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
       else
