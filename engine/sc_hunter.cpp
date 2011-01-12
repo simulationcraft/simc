@@ -221,7 +221,6 @@ struct hunter_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
-  virtual double    agility() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual void      create_options();
@@ -947,8 +946,8 @@ struct claw_t : public hunter_pet_attack_t
 
     p -> buffs_sic_em -> expire();
     o -> buffs_cobra_strikes -> decrement();
-    if ( o -> talents.frenzy -> ok() ) 
-      p -> buffs_frenzy -> trigger();
+    if ( o -> talents.frenzy -> rank() )
+      p -> buffs_frenzy -> trigger( 1 );
     if ( result == RESULT_CRIT )
     {
       o -> resource_gain( RESOURCE_FOCUS, o -> talents.invigoration -> base_value(), o -> gains_invigoration );
@@ -1293,6 +1292,51 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     if ( o -> resource_current[ RESOURCE_FOCUS ] > 50 )
       return false;
     return hunter_pet_spell_t::ready();
+  }
+};
+struct pet_kill_command_t : public hunter_pet_spell_t
+{
+  pet_kill_command_t( player_t* player ) :
+      hunter_pet_spell_t( "kill_command", player, 83381 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+    background = true;
+
+    // FIX ME: Using this causes the pet to attack with Kill Command, needs to be reworked
+
+    base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_pet_spell_t::execute();
+    o -> buffs_killing_streak -> expire();
+
+    if ( result == RESULT_CRIT )
+    {
+      o -> buffs_killing_streak_crits -> increment();
+      if ( o ->buffs_killing_streak_crits -> stack() == 2 )
+      {
+        o -> buffs_killing_streak -> trigger();
+        o -> buffs_killing_streak_crits -> expire();
+      }
+    }
+    else
+    {
+      o -> buffs_killing_streak_crits -> expire();
+    }
+  }
+
+  virtual void player_buff()
+  {
+    hunter_pet_spell_t::player_buff();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+    if ( o -> buffs_killing_streak -> up() )
+      player_multiplier *= 1.0 + o -> talents.killing_streak -> rank() * 0.1;
   }
 };
 
@@ -2113,6 +2157,7 @@ struct fervor_t : public hunter_spell_t
 
 struct focus_fire_t : public hunter_spell_t
 {
+  bool five_stacks;
   focus_fire_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "focus_fire", player, 82692 )
   {
@@ -2120,7 +2165,12 @@ struct focus_fire_t : public hunter_spell_t
     
     check_talent( p -> talents.focus_fire -> ok() );
 
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "five_stacks", OPT_BOOL, &five_stacks },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
 
     harmful = false;
   }
@@ -2137,13 +2187,15 @@ struct focus_fire_t : public hunter_spell_t
     p               -> resource_gain( RESOURCE_FOCUS, gain, p               -> gains_focus_fire );
 
     hunter_spell_t::execute();
-    p -> buffs_focus_fire -> expire();
+    p -> active_pet -> buffs_frenzy -> expire();
   }
 
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
     if( ! p -> active_pet -> buffs_frenzy -> check() )
+      return false;
+    if ( five_stacks && p -> active_pet -> buffs_frenzy -> check() < 5 )
       return false;
     return hunter_spell_t::ready();
   }
@@ -2187,6 +2239,8 @@ struct hunters_mark_t : public hunter_spell_t
 
 struct kill_command_t : public hunter_spell_t
 {
+  pet_kill_command_t* pkc;
+
   kill_command_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "kill_command", player, "Kill Command" )
   {
@@ -2194,10 +2248,20 @@ struct kill_command_t : public hunter_spell_t
 
     parse_options( NULL, options_str );
 
-    // FIX ME: Using this causes the pet to attack with Kill Command, needs to be reworked
-
-    base_crit += p -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
     base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
+
+    may_crit=true;
+
+    // hack for now:
+    base_dd_min=849;
+    base_dd_max=849;
+    direct_power_mod=0.43;
+    base_spell_power_multiplier    = 0.0;
+    base_attack_power_multiplier   = 1.0;
+
+    // FIXME
+    //if ( p -> active_pet )
+    //pkc = new pet_kill_command_t( p -> active_pet );
   }
 
   virtual double cost() SC_CONST
@@ -2217,30 +2281,42 @@ struct kill_command_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_spell_t::execute();
+
+    // hack for now
     p -> buffs_killing_streak -> expire();
 
-    if ( result == RESULT_CRIT )
-    {
-      p -> buffs_killing_streak_crits -> increment();
-      if ( p ->buffs_killing_streak_crits -> stack() == 2 )
-      {
-        p -> buffs_killing_streak -> trigger();
-        p -> buffs_killing_streak_crits -> expire();
-      }
-    }
-    else
-    {
-      p -> buffs_killing_streak_crits -> expire();
-    }
+        if ( result == RESULT_CRIT )
+        {
+          p -> buffs_killing_streak_crits -> increment();
+          if ( p ->buffs_killing_streak_crits -> stack() == 2 )
+          {
+            p -> buffs_killing_streak -> trigger();
+            p -> buffs_killing_streak_crits -> expire();
+          }
+        }
+        else
+        {
+          p -> buffs_killing_streak_crits -> expire();
+        }
+
+
+    // Fixme
+    //if ( pkc )
+    //{
+    //pkc -> base_dd_min=849+0.43*total_power();
+    //pkc -> base_dd_max=849+0.43*total_power();
+    //pkc -> execute();
+    //}
   }
 
+  // hack for now
   virtual void player_buff()
-  {
-    hunter_spell_t::player_buff();
-    hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_killing_streak -> up() )
-      player_multiplier *= 1.0 + p -> talents.killing_streak -> rank() * 0.1;
-  }
+   {
+     hunter_spell_t::player_buff();
+     hunter_t* p = player -> cast_hunter();
+     if ( p -> buffs_killing_streak -> up() )
+       player_multiplier *= 1.0 + p -> talents.killing_streak -> rank() * 0.1;
+   }
 
   virtual bool ready()
   {
@@ -2669,6 +2745,8 @@ void hunter_t::init_base()
   player_t::init_base();
 
   attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + talents.hunting_party -> rank() * 0.02;
+  attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) / 100.0;
+
   attribute_multiplier_initial[ ATTR_STAMINA ]   *= 1.0 + talents.hunter_vs_wild -> rank() * 0.04;
 
   base_attack_power = level * 2 - 10;
@@ -2873,28 +2951,23 @@ void hunter_t::init_actions()
     {
     case TREE_BEAST_MASTERY:
       action_list_str += "/aspect_of_the_hawk";
+      action_list_str += "/serpent_sting,if=!ticking";
+      action_list_str += "/rapid_fire,if=!buff.bloodlust.up";
+      action_list_str += "/kill_shot";
       if ( talents.bestial_wrath -> rank() )
       {
-        action_list_str += "/kill_command,sync=bestial_wrath";
         action_list_str += "/bestial_wrath,if=!buff.rapid_fire.up&!buff.bloodlust.up";
       }
-      else
-      {
-        action_list_str += "/kill_command";
-      }      
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up";
-      if ( talents.the_beast_within -> ok() )
-        action_list_str += "&!buff.beast_within.up";
+      action_list_str += "/kill_command";
       if ( talents.fervor -> ok() )
-        action_list_str += "/fervor,if=focus<=40";
+        action_list_str += "/fervor,if=focus<=20";
       if ( talents.focus_fire -> ok() )
       {
         action_list_str += "/focus_fire";
         if ( talents.the_beast_within -> ok() )
           action_list_str += ",if=!buff.beast_within.up";
       }
-      action_list_str += "/kill_shot";
-      action_list_str += "/serpent_sting,if=!ticking";
+
       action_list_str += "/arcane_shot,if=!buff.rapid_fire.up&!buff.bloodlust.up&focus>=";
       action_list_str += ( glyphs.kill_command -> enabled() ) ? "37" : "40";          
       if ( level >= 81 )
@@ -2923,8 +2996,8 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
       action_list_str += "/explosive_shot,if=!ticking";
-      action_list_str += "/kill_shot";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
+      action_list_str += "/kill_shot";
       action_list_str += "/arcane_shot,if=focus>=80&buff.lock_and_load.down";
       if ( level >=81 )
         action_list_str += "/cobra_shot";
@@ -3018,14 +3091,6 @@ double hunter_t::composite_attack_haste() SC_CONST
   if ( buffs_improved_steady_shot -> up() )
     h *= 1.0 / ( 1.0 + talents.improved_steady_shot -> base_value() / 100.0 );
   return h;
-}
-
-double hunter_t::agility() SC_CONST
-{
-  double agi = player_t::agility();
-  agi *= ( 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) / 100.0 );
-  //agi *= 1.15;
-  return agi;
 }
 
 double hunter_t::composite_player_multiplier( const school_type school ) SC_CONST
