@@ -2541,6 +2541,8 @@ struct immolate_t : public warlock_spell_t
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
     base_td_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() + p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
+
+    if ( p -> ptr && p -> talent_inferno -> rank() ) num_ticks += 2;
   }
 
   virtual void execute()
@@ -3791,20 +3793,12 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
 
   // Fire
-  if ( ptr && buffs_improved_soul_fire -> up() )
-  {
-    fire_multiplier *=  1.0 / ( 1.0 + talent_improved_soul_fire -> rank() * 0.04 );
-  }
   fire_multiplier *= 1.0 + ( passive_spells.cataclysm -> effect_base_value( 1 ) / 100.0 );
   if ( mastery_spells.fiery_apocalypse -> ok() )
     fire_multiplier *= 1.0 + ( mastery_spells.fiery_apocalypse -> ok() * composite_mastery() * mastery_spells.fiery_apocalypse -> effect_base_value( 2 ) / 10000.0 );
   fire_multiplier *= 1.0 +  passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 ;
 
   // Shadow
-  if ( ptr && buffs_improved_soul_fire -> up() )
-  {
-    shadow_multiplier *=  1.0 / ( 1.0 + talent_improved_soul_fire -> rank() * 0.04 );
-  }
   shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 );
   shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
 
