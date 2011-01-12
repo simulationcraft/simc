@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13449
+// Class based active abilities, wow build 13482
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -147,7 +147,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       24275, // Hammer of Wrath
       84963, // Inquisition
       20271, // Judgement
-      85285, // Rebuke
+      96231, // Rebuke
       20066, // Repentance
        7294, // Retribution Aura
       31801, // Seal of Truth
@@ -848,7 +848,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13449
+// Talent tree specialization abilities, wow build 13482
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1106,7 +1106,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13449
+// Class mastery abilities, wow build 13482
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1148,8 +1148,8 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
   },
   // Class mastery abilities for Death Knight
   {
-    77515, // Blightcaller
     77513, // Blood Shield
+    77515, // Dreadblade
     77514, // Frozen Heart
         0,
   },
@@ -1191,7 +1191,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13449
+// Racial abilities, wow build 13482
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1727,6 +1727,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Warrior class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1735,6 +1736,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Paladin class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1743,6 +1745,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Hunter class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1751,6 +1754,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Rogue class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1759,6 +1763,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Priest class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1767,6 +1772,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Death Knight class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1775,6 +1781,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Shaman class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1783,6 +1790,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Mage class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1791,6 +1799,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Warlock class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1800,6 +1809,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
     // Racial abilities for Druid class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1824,7 +1834,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13449
+// Glyph spells for classes, wow build 13482
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2338,7 +2348,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13449
+// Tier item set bonuses for class, wow build 13482
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
