@@ -4592,6 +4592,15 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new max_mana_expr_t( a );
   }
+  if ( name_str == "ptr" )
+  {
+    struct ptr_expr_t : public action_expr_t
+    {
+      ptr_expr_t( action_t* a ) : action_expr_t( a, "ptr", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> ptr ? 1 : 0; return TOK_NUM; }
+    };
+    return new ptr_expr_t( a );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );

@@ -839,9 +839,9 @@ double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost() / 10; // Rage Costs are stored as * 10
-  if ( p -> buffs_deadly_calm   -> up() )             c  = 0;
-  if ( p -> buffs_inner_rage    -> check() )          c *= 1.50;
-  if ( p -> buffs_battle_trance -> check() && c > 5 ) c  = 0;
+  if ( p -> buffs_deadly_calm -> up()                 ) c  = 0;
+  if ( p -> buffs_inner_rage -> check() && ! p -> ptr ) c *= 1.50;
+  if ( p -> buffs_battle_trance -> check() && c > 5   ) c  = 0;
   return c;
 }
 
@@ -1004,7 +1004,7 @@ void warrior_attack_t::player_buff()
 
   // --- Buffs / Procs ---
 
-  if ( p -> buffs_inner_rage -> up() )
+  if ( ! p -> ptr && p -> buffs_inner_rage -> up() )
     player_multiplier *= 1.0 + p -> buffs_inner_rage -> effect_base_value(2) / 100.0;
 
   if ( p -> buffs_rude_interruption -> up() )
@@ -1353,6 +1353,13 @@ struct cleave_t : public warrior_attack_t
       player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
     }
   }
+
+  virtual void update_ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> ptr ) cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+    warrior_attack_t::update_ready();
+  }
 };
 
 // Colossus Smash ===========================================================
@@ -1569,6 +1576,13 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> buffs_incite -> up() )
       player_crit += 1.0;
   }
+
+  virtual void update_ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+    if ( p -> ptr ) cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+    warrior_attack_t::update_ready();
+  }
 };
 
 // Mortal Strike ============================================================
@@ -1719,6 +1733,12 @@ struct raging_blow_t : public warrior_attack_t
 
     id = 85288;
     parse_data( p -> player_data );
+
+    if ( p -> ptr )
+    {
+      // FIXME!!!  PTR has separate trigger spells for MH/OH.  Implement it right later....
+      weapon_multiplier = 1.45;
+    }
 
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
     stancemask = STANCE_BERSERKER;
@@ -2352,7 +2372,6 @@ struct deadly_calm_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_inner_rage -> check() )
       return false;
-
     return warrior_spell_t::ready();
   }
 };
@@ -2418,14 +2437,10 @@ struct inner_rage_t : public warrior_spell_t
 
   virtual bool ready()
   {
-    if ( ! warrior_spell_t::ready() )
-      return false;
-
     warrior_t* p = player -> cast_warrior();
     if ( p -> resource_current[ RESOURCE_RAGE ] < 75.0 )
       return false;
-
-    return true;
+    return warrior_spell_t::ready();
   }
 };
 
