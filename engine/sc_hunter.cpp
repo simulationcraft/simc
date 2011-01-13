@@ -1426,6 +1426,9 @@ struct ranged_t : public hunter_attack_t
     return hunter_attack_t::execute_time();
   }
 
+  virtual void trigger_improved_steady_shot()
+  { }
+
   virtual void execute()
   {
     hunter_attack_t::execute();
