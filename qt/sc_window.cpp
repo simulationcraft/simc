@@ -926,16 +926,19 @@ void ImportThread::importBattleNet()
   }
   else
   {
-    std::string talents = mainWindow->armorySpecChoice  ->currentText().toStdString();
-    QByteArray s = server.toUtf8(), c = character.toUtf8();
-    std::string cpp_s = s.constData(), cpp_c = c.constData();
-    if( region == "cn" || region == "tw" )
+    // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so 
+    // do it in a silly way as a workaround for now.
+    std::string talents = mainWindow->armorySpecChoice  ->currentText().toUtf8().constData(),
+                cpp_s   = server.toUtf8().constData(),
+                cpp_c   = character.toUtf8().constData(),
+                cpp_r   = region.toUtf8().constData();
+    if( cpp_r == "cn" || cpp_r == "tw" )
     {
-      player = armory_t::download_player( sim, region.toStdString(), cpp_s, cpp_c, talents );
+      player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
     }
     else
     {
-      player = battle_net_t::download_player( sim, region.toStdString(), cpp_s, cpp_c, talents );
+      player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
     }
   }
 }
@@ -947,13 +950,17 @@ void ImportThread::importCharDev()
   int count = tokens.count();
   if( count > 0 )
   {
-    player = chardev_t::download_player( sim, tokens[ count-1 ].toStdString() );
+    // Win7/x86_64 workaround
+    std::string c = tokens[ count-1 ].toUtf8().constData();
+    player = chardev_t::download_player( sim, c );
   }
 }
 
 void ImportThread::importRawr()
 {
-  player = rawr_t::load_player( sim, url.toStdString() );
+  // Win7/x86_64 workaround
+  std::string u = url.toUtf8().constData();
+  player = rawr_t::load_player( sim, u );
 }
 
 void ImportThread::run()
