@@ -4874,7 +4874,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     {
       item_t& item = items[ i ];
       if ( ! item.active() ) continue;
-      if ( item.unique || item.unique_enchant || ! item.encoded_weapon_str.empty() )
+      if ( item.unique || item.unique_enchant || item.unique_addon || ! item.encoded_weapon_str.empty() )
       {
         profile_str += "# ";
         profile_str += item.slot_name();
@@ -4883,6 +4883,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
         if ( item.heroic() ) profile_str += ",heroic=1";
         if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
         if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
+        if ( item.unique_addon   ) profile_str += ",addon="   + item.encoded_addon_str;
         profile_str += "\n";
       }
     }

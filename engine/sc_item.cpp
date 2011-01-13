@@ -737,6 +737,12 @@ bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
 
+  if( encoded_addon_str == "synapse_springs" )
+  {
+    unique_addon = true;
+    return true;
+  }
+
   std::string use_str;
   if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic() ) )
   {

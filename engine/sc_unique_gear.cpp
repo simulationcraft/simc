@@ -1381,7 +1381,6 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "pyrorocket"                   ) e = "1165Fire_45Cd";  // temporary for backwards compatibility
   else if ( name == "hand_mounted_pyro_rocket"     ) e = "1165Fire_45Cd";
   else if ( name == "hyperspeed_accelerators"      ) e = "240Haste_12Dur_60Cd";
-  else if ( name == "synapse_springs"              ) e = "480Int_12Dur_60Cd";
   else if ( name == "tazik_shocker"                ) e = "4800Nature_120Cd";
   else if ( name == "quickflip_deflection_plates"  ) e = "1500Armor_12Dur_60Cd";
 

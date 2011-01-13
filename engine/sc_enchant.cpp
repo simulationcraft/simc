@@ -641,6 +641,39 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   }
 };
 
+// register_synapse_springs =================================================
+
+static void register_synapse_springs( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique_addon = true;
+
+  int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTRIBUTE_NONE };
+  int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_NONE };
+
+  int    max_stat  = STAT_INTELLECT;
+  double max_value = -1;
+
+  if ( p -> ptr )
+  {
+    for ( int i=0; attr[ i ] != ATTRIBUTE_NONE; i++ )
+    {
+      if ( p -> attribute[ attr[ i ] ] > max_value )
+      {
+	max_value = p -> attribute[ attr[ i ] ];
+	max_stat = stat[ i ];
+      }
+    }
+  }
+
+  item -> use.name_str = "synapse_springs";
+  item -> use.stat = max_stat;
+  item -> use.stat_amount = 480.0;
+  item -> use.duration = 12.0;
+  item -> use.cooldown = 60.0;
+}
+
 // ==========================================================================
 // Enchant
 // ==========================================================================
@@ -833,6 +866,10 @@ void enchant_t::init( player_t* p )
     else if ( item.enchant.school )
     {
       unique_gear_t::register_discharge_proc( item, item.enchant );
+    }
+    else if ( item.encoded_addon_str == "synapse_springs" )
+    {
+      register_synapse_springs( &item );
     }
   }
 }
