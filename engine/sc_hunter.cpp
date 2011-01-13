@@ -244,6 +244,9 @@ struct hunter_t : public player_t
 
 struct hunter_pet_t : public pet_t
 {
+
+  action_t* kill_command;
+
   struct talents_t
   {
     // Common Talents
@@ -616,6 +619,8 @@ struct hunter_pet_t : public pet_t
     m *= 1.0 + talents.shark_attack -> rank() * 0.03;
     return m;
   }
+
+  virtual void      init_spells();
 };
 
 // ==========================================================================
@@ -1302,8 +1307,13 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
     background = true;
+    stats -> school = SCHOOL_PHYSICAL;
+    dual = true;
+    proc=true;
+    may_crit=true;
 
-    // FIX ME: Using this causes the pet to attack with Kill Command, needs to be reworked
+    base_dd_min=849;
+    base_dd_max=849;
 
     base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
   }
@@ -1328,6 +1338,7 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     {
       o -> buffs_killing_streak_crits -> expire();
     }
+    update_stats( DMG_DIRECT );
   }
 
   virtual void player_buff()
@@ -2248,23 +2259,14 @@ struct kill_command_t : public hunter_spell_t
       hunter_spell_t( "kill_command", player, "Kill Command" )
   {
     hunter_t* p = player -> cast_hunter();
-    base_crit_multiplier = 1.33;
+
     parse_options( NULL, options_str );
 
-    base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
-    base_crit += p -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
-    may_crit=true;
-
-    // hack for now:
-    base_dd_min=849;
-    base_dd_max=849;
-    direct_power_mod=0.43;
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
+    base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
 
-    // FIXME
-    //if ( p -> active_pet )
-    //pkc = new pet_kill_command_t( p -> active_pet );
+    harmful = false;
   }
 
   virtual double cost() SC_CONST
@@ -2285,44 +2287,12 @@ struct kill_command_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
     hunter_spell_t::execute();
 
-    // hack for now
-    p -> buffs_killing_streak -> expire();
-
-        if ( result == RESULT_CRIT )
-        {
-          p -> buffs_killing_streak_crits -> increment();
-          if ( p ->buffs_killing_streak_crits -> stack() == 2 )
-          {
-            p -> buffs_killing_streak -> trigger();
-            p -> buffs_killing_streak_crits -> expire();
-          }
-        }
-        else
-        {
-          p -> buffs_killing_streak_crits -> expire();
-        }
-
-
-    // Fixme
-    //if ( pkc )
-    //{
-    //pkc -> base_dd_min=849+0.43*total_power();
-    //pkc -> base_dd_max=849+0.43*total_power();
-    //pkc -> execute();
-    //}
+    if ( p -> active_pet )
+    {
+      p -> active_pet -> kill_command -> base_dd_adder = 0.43 * total_power();
+      p -> active_pet -> kill_command -> execute();
+    }
   }
-
-  // hack for now
-  virtual void player_buff()
-   {
-     hunter_spell_t::player_buff();
-     hunter_t* p = player -> cast_hunter();
-     if ( p -> buffs_killing_streak -> up() )
-       player_multiplier *= 1.0 + p -> talents.killing_streak -> rank() * 0.1;
-
-     // Assume happy pet
-         player_multiplier *= 1.25;
-   }
 
   virtual bool ready()
   {
@@ -2744,6 +2714,15 @@ void hunter_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
+// hunter_t::init_spells ===================================================
+
+void hunter_pet_t::init_spells()
+{
+  pet_t::init_spells();
+
+  kill_command = new pet_kill_command_t( this );
+}
+
 // hunter_t::init_base ========================================================
 
 void hunter_t::init_base()
@@ -2973,8 +2952,8 @@ void hunter_t::init_actions()
         if ( talents.the_beast_within -> ok() )
           action_list_str += ",if=!buff.beast_within.up";
       }
-      action_list_str += "/kill_command,if=focus>=70";
-      action_list_str += "/arcane_shot,if=!buff.rapid_fire.up&!buff.bloodlust.up";
+      action_list_str += "/kill_command";
+      action_list_str += "/arcane_shot,if=focus>=57";
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
       else
