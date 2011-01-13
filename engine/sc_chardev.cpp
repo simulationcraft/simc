@@ -75,11 +75,16 @@ player_t* chardev_t::download_player( sim_t* sim,
 
   std::string name_str, race_str, type_str;
 
-  if ( ! js_t::get_value( name_str, profile_js, "0/0"   ) ||
-       ! js_t::get_value( race_str, profile_js, "0/2/1" ) ||
+  if ( ! js_t::get_value( name_str, profile_js, "0/0" ) )
+  {
+    name_str = "chardev_";
+    name_str += id;
+  }
+
+  if ( ! js_t::get_value( race_str, profile_js, "0/2/1" ) ||
        ! js_t::get_value( type_str, profile_js, "0/3/1" ) )
   {
-    sim -> errorf( "Unable to extract player name/race/type from CharDev id %s.\n", id.c_str() );
+    sim -> errorf( "Unable to extract player race/type from CharDev id %s.\n", id.c_str() );
     return 0;
   }
 
@@ -121,7 +126,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     js_t::get_value( gem_ids[ 1 ], slot_node, "2/0" );
     js_t::get_value( gem_ids[ 2 ], slot_node, "3/0" );
     js_t::get_value( enchant_id,   slot_node, "4/0" );
-    js_t::get_value(   addon_id,   slot_node, "7/0" );
+    js_t::get_value(   addon_id,   slot_node, "7/0/0" );
 
     std::string reforge_id;
     int reforge_from, reforge_to;
