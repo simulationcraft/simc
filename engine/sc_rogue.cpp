@@ -583,9 +583,6 @@ static void trigger_combat_potency( rogue_attack_t* a )
 {
   weapon_t* w = a -> weapon;
 
-  if ( ! w || w -> slot != SLOT_OFF_HAND )
-    return;
-
   rogue_t* p = a -> player -> cast_rogue();
 
   if ( ! p -> talents.combat_potency -> rank() )
@@ -778,7 +775,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
       {
         main_gouche_t( rogue_t* p ) : rogue_attack_t( "main_gauche", p )
         {
-          weapon = &( p -> off_hand_weapon );
+          weapon = p -> ptr ? &( p -> main_hand_weapon ) : &( p -> off_hand_weapon );
 
           base_dd_min = base_dd_max = 1;
           background      = true;
@@ -794,9 +791,10 @@ static void trigger_main_gauche( rogue_attack_t* a )
         virtual void execute()
         {
           rogue_attack_t::execute();
-
           if ( result_is_hit() )
+	  {
             trigger_combat_potency( this );
+	  }
         }
       };
       p -> active_main_gauche = new main_gouche_t( p );
@@ -1231,8 +1229,10 @@ struct melee_t : public rogue_attack_t
     if ( result_is_hit() )
     {
       rogue_t* p = player -> cast_rogue();
-
-      trigger_combat_potency( this );
+      if ( weapon -> slot == SLOT_OFF_HAND )
+      {
+	trigger_combat_potency( this );
+      }
       p -> buffs_tier11_4pc -> trigger();
     }
       

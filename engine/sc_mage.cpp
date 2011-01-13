@@ -1168,7 +1168,7 @@ void mage_spell_t::player_buff()
   {
     if ( p -> ptr )
     {
-      player_multiplier *= 1.0 + p -> specializations.frostburn * ( p -> composite_mastery() - 6 );
+      player_multiplier *= 1.0 + p -> specializations.frostburn * ( p -> composite_mastery() + p -> specializations.frost2 );
     }
     else
     {
