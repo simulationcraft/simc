@@ -46,11 +46,9 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderThrough="simulationcraft.h"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
-				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -63,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="simc.exe"
 				AdditionalOptions="wininet.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -124,12 +123,13 @@
 				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;WINDOWS"
 				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
+				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4005;4996"
+				DisableSpecificWarnings="4005;4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -142,6 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="simc.exe"
 				AdditionalOptions="wininet.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
