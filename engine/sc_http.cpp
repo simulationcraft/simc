@@ -392,7 +392,7 @@ bool http_t::download( std::string& result,
   char buffer[2048];
   sprintf( buffer,
            "GET %s HTTP/1.0\r\n"
-           "User-Agent: Firefox/3.0\r\n"
+           "User-Agent: Firefox/3.6\r\n"
            "Accept: */*\r\n"
            "Host: %s\r\n"
            "Cookie: loginChecked=1\r\n"
