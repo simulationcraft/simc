@@ -792,9 +792,9 @@ static void trigger_main_gauche( rogue_attack_t* a )
         {
           rogue_attack_t::execute();
           if ( result_is_hit() )
-	  {
+          {
             trigger_combat_potency( this );
-	  }
+          }
         }
       };
       p -> active_main_gauche = new main_gouche_t( p );
@@ -1231,7 +1231,7 @@ struct melee_t : public rogue_attack_t
       rogue_t* p = player -> cast_rogue();
       if ( weapon -> slot == SLOT_OFF_HAND )
       {
-	trigger_combat_potency( this );
+        trigger_combat_potency( this );
       }
       p -> buffs_tier11_4pc -> trigger();
     }
@@ -2133,6 +2133,8 @@ struct rupture_t : public rogue_attack_t
 
   virtual void execute()
   {
+    rogue_t* p = player -> cast_rogue();
+
     // We have to save these values for refreshes by Serrated Baldes, so
     // we simply reset them to zeroes on each execute and check them in ::player_buff.
     tick_power_mod = 0.0;
@@ -2140,18 +2142,18 @@ struct rupture_t : public rogue_attack_t
     
     rogue_attack_t::execute();
     
-    rogue_t* p = player -> cast_rogue();
-    
     if ( result_is_hit() )
     {
-      num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
-
-      update_ready();
-
       p -> buffs_revealing_strike -> expire();
-
       trigger_restless_blades( this );
     }
+  }
+
+  virtual void travel( int travel_result, double travel_dmg )
+  {
+    rogue_t* p = player -> cast_rogue();
+    num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
+    rogue_attack_t::travel( travel_result, travel_dmg );
   }
 
   virtual void player_buff()

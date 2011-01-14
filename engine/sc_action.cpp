@@ -663,8 +663,8 @@ bool action_t::result_is_hit() SC_CONST
 bool action_t::result_is_miss() SC_CONST
 {
   return( result == RESULT_MISS   ||
-  result == RESULT_DODGE  ||
-  result == RESULT_RESIST );
+          result == RESULT_DODGE  ||
+          result == RESULT_RESIST );
 }
 
 // action_t::armor ==========================================================
@@ -1060,40 +1060,35 @@ void action_t::last_tick()
 
 void action_t::travel( int travel_result, double travel_dmg=0 )
 {
-  if ( result_is_hit() )
+  if ( direct_dmg > 0 )
   {
-    if ( direct_dmg > 0 )
+    assess_damage( travel_dmg, DMG_DIRECT );
+  }
+  if ( num_ticks > 0 )
+  {
+    if ( dot_behavior != DOT_REFRESH ) cancel();
+
+    dot -> action = this;
+    dot -> num_ticks = hasted_num_ticks();
+    dot -> current_tick = 0;
+    dot -> added_ticks = 0;
+    if ( dot -> ticking )
     {
-      assess_damage( travel_dmg, DMG_DIRECT );
-    }
-    if ( num_ticks > 0 )
-    {
-      if ( dot_behavior != DOT_REFRESH ) cancel();
-
-      dot -> action = this;
-      dot -> num_ticks = hasted_num_ticks();
-      dot -> current_tick = 0;
-      dot -> added_ticks = 0;
-      if ( dot -> ticking )
+      assert( dot -> tick_event );
+      if ( ! channeled )
       {
-        if ( ! channeled )
-        {
-          assert( dot -> tick_event );
-
-          // Recasting a dot while it's still ticking gives it an extra tick in total
-          dot -> num_ticks++;
-          dot -> recalculate_ready();
-
-          if ( sim -> debug )
-            log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
-                           player -> name(), dot -> ready, name(), dot -> name() );
-        }
-      }
-      else
-      {
-        schedule_tick();
+        // Recasting a dot while it's still ticking gives it an extra tick in total
+        dot -> num_ticks++;
       }
     }
+    else
+    {
+      schedule_tick();
+    }
+    dot -> recalculate_ready();
+    if ( sim -> debug )
+      log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
+                     player -> name(), dot -> ready, name(), dot -> name() );
   }
 }
 
@@ -1573,7 +1568,7 @@ void action_t::check_min_level( int action_level )
   if ( action_level <= player -> level ) return;
 
   sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n", 
-		 player -> name(), name(), player -> level, action_level );
+                 player -> name(), name(), player -> level, action_level );
 
   background = true; // prevent action from being executed
 }
