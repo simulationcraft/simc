@@ -1072,11 +1072,27 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
 
       dot -> action = this;
       dot -> num_ticks = hasted_num_ticks();
-      if ( dot -> ticking ) dot -> num_ticks++;
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
+      if ( dot -> ticking )
+      {
+        if ( ! channeled )
+        {
+          assert( dot -> tick_event );
 
-      if ( ! dot -> ticking ) schedule_tick();
+          // Recasting a dot while it's still ticking gives it an extra tick in total
+          dot -> num_ticks++;
+          dot -> recalculate_ready();
+
+          if ( sim -> debug )
+            log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
+                           player -> name(), dot -> ready, name(), dot -> name() );
+        }
+      }
+      else
+      {
+        schedule_tick();
+      }
     }
   }
 }
@@ -1320,17 +1336,7 @@ void action_t::update_ready()
   }
   if ( num_ticks )
   {
-    if ( dot -> ticking && ! channeled )
-    {
-      assert( dot -> tick_event );
-
-      dot -> recalculate_ready();
-
-      if ( sim -> debug )
-        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
-                       player -> name(), dot -> ready, name(), dot -> name() );
-    }
-    else if( result_is_miss() )
+    if( result_is_miss() )
     {
       if ( sim -> debug ) 
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
