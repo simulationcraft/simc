@@ -1888,7 +1888,7 @@ void death_knight_attack_t::consume_resource()
       double real_rp_gain = rp_gain;
       if ( p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.10;
+        real_rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_329 ) / 100.0;
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
@@ -2054,7 +2054,7 @@ void death_knight_spell_t::consume_resource()
       double real_rp_gain = rp_gain;
       if ( p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_ADD_FLAT_MODIFIER ) / 100.0;
+        real_rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_329 ) / 100.0;
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
@@ -3593,8 +3593,8 @@ struct presence_t : public death_knight_spell_t
     {
       double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
       if ( p -> talents.improved_frost_presence -> rank() )
-        fp_value += p -> talents.improved_frost_presence -> effect_base_value( 2 );
-      p -> buffs_frost_presence  -> trigger( 1, fp_value / 100.0 );
+        fp_value += p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0 ;
+      p -> buffs_frost_presence  -> trigger( 1, fp_value );
     }
     break;
     case PRESENCE_UNHOLY:
