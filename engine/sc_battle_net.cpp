@@ -51,17 +51,29 @@ player_t* battle_net_t::download_player( sim_t* sim,
   xml_node_t* sheet_xml   = download_character_sheet( sim, region, server, name );
   xml_node_t* talents_xml = 0;
 
-  if ( util_t::str_compare_ci( talents_description, "primary"   ) )
-    talents_xml = download_character_talents( sim, region, server, name, "primary" );
-  else if ( util_t::str_compare_ci( talents_description, "secondary" ) )
-    talents_xml = download_character_talents( sim, region, server, name, "secondary" );
-  
   if ( ! sheet_xml )
   {
-    sim -> errorf( "Unable to download character %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
+    sim -> errorf( "Unable to download character %s|%s|%s from the Armory: Is the Armory down or throttled?\n",
+		   region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
+  if ( xml_t::get_node( sheet_xml, "h3", ".", "Character Not Available" ) )
+  {
+    sim -> errorf( "Unable to download character %s|%s|%s from the Armory: Character Not Available\n", 
+		   region.c_str(), server.c_str(), name.c_str() );
+    return 0;
+  }
+
+  if ( util_t::str_compare_ci( talents_description, "primary" ) )
+  {
+    talents_xml = download_character_talents( sim, region, server, name, "primary" );
+  }
+  else if ( util_t::str_compare_ci( talents_description, "secondary" ) )
+  {
+    talents_xml = download_character_talents( sim, region, server, name, "secondary" );
+  }
+  
   xml_node_t* profile_info = xml_t::get_node( sheet_xml, "div", "class", "profile-info" );
   if ( ! profile_info )
   {
@@ -187,7 +199,14 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   if( ! talents_xml )
   {
-    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory.\n", 
+    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Is the Armory down or throttled?\n", 
+                   region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
+    return 0;
+  }
+
+  if ( xml_t::get_node( talents_xml, "h3", ".", "Character Not Available" ) )
+  {
+    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Character Not Available\n", 
                    region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
     return 0;
   }
