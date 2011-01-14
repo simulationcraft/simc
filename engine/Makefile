@@ -12,7 +12,6 @@
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
 MODULE     = simc
-LIBRARY    = libsimc.a
 OS         = UNIX
 
 # Any UNIX platform
@@ -127,30 +126,18 @@ SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 
 .PHONY:	all mostlyclean clean
 
-all: $(MODULE) $(LIBRARY)
+all: $(MODULE)
 
 install: all
 	$(COPY) $(MODULE) ..
-	$(COPY) $(LIBRARY) ..
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-$(LIBRARY): $(SRC_OBJ)
-	-@echo [$(MODULE)] Archiving $@
-	@$(AR) rv $@ $^
-
 $(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
-
-# Release targets (may use platform-specific cmds)
-
-REV=0
-tarball:
-	tar -cvf simc-r$(REV).tar $(SRC) Makefile *.simc
-	gzip simc-r$(REV).tar
 
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files
