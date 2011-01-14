@@ -686,8 +686,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   shaman_t* p = a -> player -> cast_shaman();
   spell_t* ft = 0;
   double m_ft = a -> weapon -> swing_time / 4.0;
-  double m_sp = 0.1539;
-  double m_ap = p -> primary_tree() == TREE_ENHANCEMENT ? 0.04611 : 0;
+  double m_coeff = 0.1539;
 
   if ( p -> cooldowns_flametongue_weapon -> remains() > 0 )
   {
@@ -705,11 +704,32 @@ static void trigger_flametongue_weapon( attack_t* a )
   ft -> base_dd_min      = m_ft * p -> player_data.effect_min( 8024, p -> level, E_DUMMY ) / 25.0;
   ft -> base_dd_max      = ft -> base_dd_min;
   ft -> direct_power_mod = 1.0;
-  ft -> base_spell_power_multiplier = m_sp * m_ft;
-  ft -> base_attack_power_multiplier = m_ap * m_ft;
+  // New Flametongue mechanics, as per http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p6/#post1839628
+  if ( p -> ptr )
+  {
+    if ( p -> primary_tree() == TREE_ENHANCEMENT )
+    {
+      ft -> base_spell_power_multiplier = 0;
+      // Offhand apparently divides the AP bonus in half:
+      if ( a -> weapon -> slot == SLOT_MAIN_HAND )
+        ft -> base_attack_power_multiplier = m_coeff * m_ft;
+      else
+        ft -> base_attack_power_multiplier = m_coeff / 2.0 * m_ft;
+    }
+    else
+    {
+      ft -> base_spell_power_multiplier = m_coeff * m_ft;
+      ft -> base_attack_power_multiplier = 0;
+    }
+  }
+  else
+  {
+    ft -> base_spell_power_multiplier = m_coeff * m_ft;
+    ft -> base_attack_power_multiplier = ( p -> primary_tree() == TREE_ENHANCEMENT ? 0.04611 : 0 ) * m_ft;
+  }
   
   // Add a very slight cooldown to flametongue weapon to prevent overly good results
-  // when using FT/FT combo and synced auto-attack. This should model in-game results 
+  // when using FT/FT combo and near-synced attacks. This should model in-game results 
   // decently as well. See EJ Shaman forum for more information.
   p -> cooldowns_flametongue_weapon -> start( 0.15 );
 
@@ -737,6 +757,8 @@ static void trigger_windfury_weapon( attack_t* a )
     p -> procs_windfury -> occur();
     wf -> execute();
     wf -> execute();
+    if ( p -> ptr )
+      wf -> execute();
   }
 }
 
@@ -3825,6 +3847,7 @@ void shaman_t::init_actions()
       }
       if ( ! set_bonus.tier10_4pc_melee() )
         action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
+      action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.1";
     }
     else
     {
