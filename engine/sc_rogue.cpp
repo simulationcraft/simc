@@ -1091,9 +1091,9 @@ double rogue_attack_t::total_multiplier() SC_CONST
   rogue_t* p = player -> cast_rogue();
 
   double add_mult = 0.0;
-  
+
   if ( requires_combo_points && p -> mastery_executioner -> ok() )
-    add_mult = p -> composite_mastery() * p -> mastery_executioner -> base_value( E_APPLY_AURA, A_DUMMY );
+    add_mult = p -> composite_mastery() * p -> mastery_executioner -> effect_coeff( 1 ) / 100.0;
   
   return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier; 
 }
