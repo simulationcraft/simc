@@ -2498,16 +2498,6 @@ struct vanish_t : public rogue_attack_t
 
     return rogue_attack_t::ready();
   }
-  
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    rogue_attack_t::execute();
-    
-    if ( p -> spec_master_of_subtlety -> ok() )
-      p -> buffs_master_of_subtlety -> trigger();
-  }
 };
 
 // Vendetta =================================================================
@@ -3059,7 +3049,8 @@ double rogue_t::composite_player_multiplier( const school_type school ) SC_CONST
   if ( buffs_bandits_guile -> check() )
     m *= 1.0 + buffs_bandits_guile -> value();
   
-  if ( buffs_master_of_subtlety -> check() )
+  if ( buffs_master_of_subtlety -> check() || 
+    ( spec_master_of_subtlety -> ok() && ( buffs_stealthed -> check() || buffs_vanish -> check() ) ) )
     m *= 1.0 + buffs_master_of_subtlety -> value();
 
   if ( buffs_killing_spree -> check() )
