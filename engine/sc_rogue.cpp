@@ -2977,7 +2977,8 @@ struct slice_and_dice_buff_t : public new_buff_t
     if ( remains_lt( new_duration ) )
     {
       buff_duration = new_duration;
-      return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
+      return new_buff_t::trigger( 1, 
+        base_value( E_APPLY_AURA, A_319 ) * ( 1.0 + p -> composite_mastery() * p -> mastery_executioner -> effect_coeff( 1 ) / 100.0 ) );
     }
     else
       return false;
