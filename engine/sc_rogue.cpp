@@ -3764,6 +3764,22 @@ double rogue_t::available() SC_CONST
 
 // rogue_t::create_options ================================================
 
+static bool parse_combo_points( sim_t* sim,
+                               const std::string& name,
+                               const std::string& points )
+{
+  if ( name != "initial_combo_points" ) return false;
+  
+  long cp = strtol( points.c_str(), 0, 10 );
+  
+  if ( cp > COMBO_POINTS_MAX || cp < 0 ) return false;
+  
+  rogue_t* r = sim -> active_player -> cast_rogue();
+  r -> combo_points -> add( cp, "initial_combo_points" );
+  
+  return true;
+}
+
 void rogue_t::create_options()
 {
   player_t::create_options();
@@ -3772,6 +3788,7 @@ void rogue_t::create_options()
   {
     { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str  ) },
     { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
+    { "initial_combo_points",       OPT_FUNC,   ( void * ) ::parse_combo_points     },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
