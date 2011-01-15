@@ -2551,19 +2551,20 @@ void paladin_t::regen( double periodicity )
 
   if ( buffs_divine_plea -> up() )
   {
-    double amount = periodicity * resource_max[ RESOURCE_MANA ] * 0.10 / buffs_divine_plea -> buff_duration;
+    double tick_amount = resource_max[ RESOURCE_MANA ] * spells.divine_plea->effect_base_value(1) * 0.01;
+    double amount = periodicity * tick_amount / 3;
     resource_gain( RESOURCE_MANA, amount, gains_divine_plea );
   }
   if ( buffs_judgements_of_the_wise -> up() )
   {
-    double mps = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect_base_value(1) * 0.01;
-    double amount = periodicity * mps / buffs_judgements_of_the_wise -> buff_duration;
+    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect_base_value(1) * 0.01;
+    double amount = periodicity * tot_amount / buffs_judgements_of_the_wise -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
-    double mps = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect_base_value(1) * 0.01;
-    double amount = periodicity * mps / buffs_judgements_of_the_bold -> buff_duration;
+    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect_base_value(1) * 0.01;
+    double amount = periodicity * tot_amount / buffs_judgements_of_the_bold -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
 }
