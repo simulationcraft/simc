@@ -225,6 +225,7 @@ struct shaman_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
+  virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -1562,12 +1563,6 @@ void shaman_spell_t::player_buff()
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
 
-  if ( p -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    player_crit += p -> glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-  
-  if ( p -> off_hand_weapon.type != WEAPON_NONE && p -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    player_crit += p -> glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-  
   // Can do this here, as elemental will not have access to 
   // stormstrike, and all nature spells will benefit from this for enhancement
   if ( school == SCHOOL_NATURE && p -> buffs_stormstrike -> up() )
@@ -4013,6 +4008,19 @@ double shaman_t::composite_player_multiplier( const school_type school ) SC_CONS
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
  
   return m; 
+}
+
+double shaman_t::composite_spell_crit() SC_CONST
+{
+  double v = player_t::composite_spell_crit();
+  
+  if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+    v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
+  
+  if ( off_hand_weapon.type != WEAPON_NONE && off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+    v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
+  
+  return v;
 }
 
 
