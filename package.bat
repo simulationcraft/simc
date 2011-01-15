@@ -1,4 +1,3 @@
-
 set dir=simc-403-22-win32
 set rev=r6289
 
@@ -13,4 +12,3 @@ xcopy Win32OpenSSL_Light-0_9_8m.exe %dir%
 
 xcopy simc.exe %dir%
 xcopy SimulationCraft.exe %dir%
-
