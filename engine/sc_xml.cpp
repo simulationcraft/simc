@@ -562,7 +562,7 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
     int num_children = ( int ) node -> children.size();
     for ( int i=0; i < num_children; i++ )
     {
-      get_nodes( nodes, node -> children[ i ], name_str );
+      get_nodes( nodes, node -> children[ i ], name_str, parm_name, parm_value );
     }
   }
 

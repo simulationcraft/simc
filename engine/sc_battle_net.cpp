@@ -236,32 +236,18 @@ player_t* battle_net_t::download_player( sim_t* sim,
   }
   
   p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
-  
-  p -> glyphs_str = "";
+  p ->  glyphs_str = "";
 
   xml_node_t* character_glyphs_node = xml_t::get_node( talents_xml, "div", "class", "character-glyphs" );
-  xml_node_t* glyph_script_node     = xml_t::get_node( character_glyphs_node, "script", "type", "text/javascript" );
-
-  if( xml_t::get_value( cdata_str, glyph_script_node, "cdata" ) )
+  std::vector<xml_node_t*> glyph_nodes;
+  int num_glyphs = xml_t::get_nodes( glyph_nodes, character_glyphs_node, "span", "class", "name" );
+  for( int i=0; i < num_glyphs; i++ )
   {
-    std::string::size_type index=0;
-
-    while( ( index = cdata_str.find( "\"Glyph", index ) ) != std::string::npos )
+    std::string glyph_name;
+    if( xml_t::get_value( glyph_name, glyph_nodes[ i ], "." ) )
     {
-      std::string::size_type start = index + 1;
-      index = cdata_str.find( "\"", start );
-
-      if( cdata_str.compare( start, 9, "Glyph of " ) )
-      {
-        start += 9;
-      }
-      else if( cdata_str.compare( start, 8, "Glyph - " ) )
-      {
-        start += 9;
-      }
-      else continue;
-
-      std::string glyph_name = cdata_str.substr( start, ( index - start ) );
+      if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+      else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
       armory_t::format( glyph_name );
       if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;      
