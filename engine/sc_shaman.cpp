@@ -1106,8 +1106,23 @@ struct stormstrike_attack_t : public shaman_attack_t
 
   virtual void execute()
   {
-    shaman_attack_t::execute();
-    trigger_static_shock( this );
+    shaman_t* p = player -> cast_shaman();
+
+    attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      if ( weapon -> buff_type == WINDFURY_IMBUE )
+        trigger_windfury_weapon( this );
+
+      if ( weapon -> buff_type == FLAMETONGUE_IMBUE )
+        trigger_flametongue_weapon( this );
+
+      if ( p -> rng_primal_wisdom -> roll( p -> spec_primal_wisdom -> proc_chance() ) )
+        p -> resource_gain( RESOURCE_MANA, 
+        p -> player_data.effect_base_value( 63375, E_ENERGIZE ) * p -> resource_base[ RESOURCE_MANA ], 
+        p -> gains_primal_wisdom );
+    }
   }
 };
 
@@ -1485,6 +1500,8 @@ struct stormstrike_t : public shaman_attack_t
       if ( stormstrike_oh ) stormstrike_oh -> execute();
     }
     
+    trigger_static_shock( this );
+
     update_ready();
   }
 };
