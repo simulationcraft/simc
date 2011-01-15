@@ -2498,6 +2498,16 @@ struct vanish_t : public rogue_attack_t
 
     return rogue_attack_t::ready();
   }
+  
+  virtual void execute()
+  {
+    rogue_t* p = player -> cast_rogue();
+
+    rogue_attack_t::execute();
+    
+    if ( p -> spec_master_of_subtlety -> ok() )
+      p -> buffs_master_of_subtlety -> trigger();
+  }
 };
 
 // Vendetta =================================================================
