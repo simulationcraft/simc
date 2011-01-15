@@ -3302,7 +3302,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       util_t::fprintf( file,
         "              <tr class=\"left\">\n"
         "                <th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
-        "                <td><a href=\"%s\">%s</a></td>\n"
+        "                <td><a href=\"%s\" rel=\"_blank\">%s</a></td>\n"
         "              </tr>\n",
         p -> origin_str.c_str(),
         enc_url.c_str() );
@@ -3313,7 +3313,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       util_t::fprintf( file,
         "              <tr class=\"left\">\n"
         "                <th>Talents</th>\n"
-        "                <td><a href=\"%s\">%s</a></td>\n"
+        "                <td><a href=\"%s\" rel=\"_blank\">%s</a></td>\n"
         "              </tr>\n",
         enc_url.c_str(),
         enc_url.c_str() );
@@ -3402,8 +3402,8 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
         "                <th>Gear Ranking</th>\n"
         "                <td colspan=\"%i\">\n"
         "                  <ul class=\"float\">\n"
-        "                    <li><a href=\"%s\">wowhead</a></li>\n"
-        "                    <li><a href=\"%s\">lootrank</a></li>\n"
+        "                    <li><a href=\"%s\" rel=\"_blank\">wowhead</a></li>\n"
+        "                    <li><a href=\"%s\" rel=\"_blank\">lootrank</a></li>\n"
         "                  </ul>\n"
         "                </td>\n"
         "              </tr>\n",
@@ -5216,11 +5216,14 @@ void report_t::print_html3( sim_t* sim )
         util_t::fprintf ( file,
           "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
         
-    // New javascript toggles
+    // Toggles; open external links in new window
     util_t::fprintf( file,
       "    <script type=\"text/javascript\">\n"
       "      jQuery.noConflict();\n"
       "      jQuery(document).ready(function($) {\n"
+      "        $('a[ rel=\"_blank\"]').each(function() {\n"
+      "          $(this).attr('target', '_blank');\n"
+      "        });\n"
       "        $('.toggle-content, .help-box').hide();\n"
       "        $('.open').next('.toggle-content').show();\n"
       "        $('.toggle').click(function(e) {\n"
@@ -5275,7 +5278,7 @@ void report_t::print_html3( sim_t* sim )
       "  </body>\n\n"
       "</html>\n" );
         
-        fclose( file );
+    fclose( file );
 }
 
 // report_t::print_wiki ======================================================
