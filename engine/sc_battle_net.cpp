@@ -235,7 +235,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     p -> player_t::init_talents();
   }
   
-  p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
+  p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + talents_encoding;
   p ->  glyphs_str = "";
 
   xml_node_t* character_glyphs_node = xml_t::get_node( talents_xml, "div", "class", "character-glyphs" );

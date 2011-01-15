@@ -5,7 +5,7 @@ origin="http://chardev.org/?profile=14192"
 level=85
 race=tauren
 use_pre_potion=1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=7&tal=302200300000000000023033200130230123210000000000000000000
+talents=http://www.wowhead.com/talent#shaman-302200300000000000023033200130230123210000000000000000000
 glyphs=chain_lightning/ghost_wolf/lightning_shield/renewed_life/astral_recall/water_walking/windfury_weapon/stormstrike/lava_lash
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast

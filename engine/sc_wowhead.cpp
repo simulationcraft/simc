@@ -927,7 +927,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encoding.c_str() );
       return 0;
     }
-    p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talent_encoding;
+    p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + talent_encoding;
     
     std::string glyph_encoding;
     if ( ! js_t::get_value( glyph_encoding, build, "glyphs" ) )
@@ -964,7 +964,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
         sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
         return 0;
       }
-      p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + encoding;
+      p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + encoding;
     }
 
     std::vector<std::string> glyph_encodings;

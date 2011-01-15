@@ -178,7 +178,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
   std::string cid_str = util_t::class_id_string( p -> type );
-  p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
+  p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + talents_encoding;
   
   p -> glyphs_str = "";
   std::vector<js_node_t*> glyph_nodes;
