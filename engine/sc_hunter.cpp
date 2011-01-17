@@ -31,13 +31,13 @@ struct hunter_t : public player_t
   buff_t* buffs_killing_streak;
   buff_t* buffs_killing_streak_crits;
   buff_t* buffs_lock_and_load;
+  buff_t* buffs_master_marksman;
+  buff_t* buffs_pre_improved_steady_shot;
   buff_t* buffs_rapid_fire;
+  buff_t* buffs_sniper_training;
   buff_t* buffs_trueshot_aura;
   buff_t* buffs_tier10_2pc;
   buff_t* buffs_tier10_4pc;
-  buff_t* buffs_master_marksman;
-  buff_t* buffs_pre_improved_steady_shot;
-  buff_t* buffs_sniper_training;
 
   // Cooldowns
   cooldown_t* cooldowns_glyph_kill_shot;
