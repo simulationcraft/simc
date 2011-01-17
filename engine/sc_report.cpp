@@ -1757,7 +1757,7 @@ static void print_html3_scale_factors( FILE*  file, sim_t* sim )
   util_t::fprintf( file,
     "        </table>\n" );
   if ( sim -> iterations < 10000 )
-    util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations are unlikely to be very accurate.</h3>");
+    util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations will vary from run to run.</h3>");
   util_t::fprintf( file,
     "      </div>\n"
     "    </div>\n\n" );
@@ -3426,7 +3426,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "            </table>\n" );
     }
     if ( sim -> iterations < 10000 )
-      util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations are unlikely to be very accurate.</h3>");
+      util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations will vary from run to run.</h3>");
   }
   util_t::fprintf( file,
     "          </div>\n"
