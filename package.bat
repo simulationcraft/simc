@@ -1,3 +1,7 @@
+
+REM This script is used for packaging a release built using MSVC 2008
+REM Update the "dir" and "rev" variables appropriately
+
 set dir=simc-403-22-win32
 set rev=r6289
 
