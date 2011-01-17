@@ -2494,7 +2494,7 @@ static void print_html3_stats (FILE* file, player_t* a )
   if ( a -> total_seconds > 0 )
   {
     util_t::fprintf( file,
-      "            <div class=\"player-section talents\">\n"
+      "            <div class=\"player-section stats\">\n"
       "              <h3 class=\"toggle\">Stats</h3>\n"
       "              <div class=\"toggle-content\">\n"
       "                <table>\n"
@@ -3779,10 +3779,11 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       i++;
     }
     util_t::fprintf( file,
-      "              </table>\n"
-      "            </div>\n"
-      "          </div>\n" );
+      "              </table>\n" );
   }
+  util_t::fprintf( file,
+    "            </div>\n"
+    "          </div>\n" );
 
   util_t::fprintf( file,
     "          <div class=\"player-section uptimes\">\n"
