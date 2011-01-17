@@ -787,7 +787,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
           may_glance      = false; // XXX: does not glance
           may_crit        = true;
           normalize_weapon_speed = true; // XXX: it's normalized
-		  proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
+          proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
 
           reset();
         }
@@ -3660,8 +3660,8 @@ void rogue_t::combat_begin()
             new ( sim ) critical_strike_t( sim, p, callback, interval );
           }
         };
-		if ( critical_strike_intervals[ i ] > 0.0 )
-			new ( sim ) critical_strike_t( sim, this, critical_strike_callbacks[ i ], critical_strike_intervals[ i ] );
+        if ( critical_strike_intervals[ i ] > 0.0 )
+          new ( sim ) critical_strike_t( sim, this, critical_strike_callbacks[ i ], critical_strike_intervals[ i ] );
       }
     }
   }
