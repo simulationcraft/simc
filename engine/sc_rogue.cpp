@@ -584,8 +584,6 @@ static void trigger_other_poisons( rogue_t* p, weapon_t* other_w )
 
 static void trigger_combat_potency( rogue_attack_t* a )
 {
-  weapon_t* w = a -> weapon;
-
   rogue_t* p = a -> player -> cast_rogue();
 
   if ( ! p -> talents.combat_potency -> rank() )

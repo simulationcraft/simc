@@ -727,14 +727,14 @@ static void trigger_enrage( attack_t* a )
     return;
 
   // FIXME - Needs a generic check for other enrage effects
-  if ( p -> buffs_death_wish -> check() || p -> buffs.unholy_frenzy -> check() )
+  if ( p -> buffs_death_wish -> check() || p -> buffs.unholy_frenzy -> check() || p -> buffs_berserker_rage -> check() )
     return;
 
   double enrage_value = p -> buffs_enrage -> effect_base_value( 1 ) / 100.0;
 
   if ( p -> mastery.unshackled_fury -> ok() )
   {
-    enrage_value *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+    enrage_value *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
   }
 
   p -> buffs_enrage -> trigger( 1, enrage_value);
