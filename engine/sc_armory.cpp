@@ -41,20 +41,20 @@ static void stat_search( std::string&              encoding_str,
       }
       else 
       {
-	if ( stat_tokens[ j ][ 0 ] == '!' )
-	{
-	  if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
-	  {
-	    match = false;
-	  }
-	}
-	else
-	{
-	  if ( stat_tokens[ j ] != description_tokens[ i + j ] )
-	  {
-	    match = false;
-	  }
-	}
+        if ( stat_tokens[ j ][ 0 ] == '!' )
+        {
+          if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
+          {
+            match = false;
+          }
+        }
+        else
+        {
+          if ( stat_tokens[ j ] != description_tokens[ i + j ] )
+          {
+            match = false;
+          }
+        }
       }
     }
 
@@ -591,13 +591,13 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
   stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
 
-  stat_search( encoding_str, splits, STAT_HASTE_RATING, 	"haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   	"ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   	"hit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  	"ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  	"critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  	"crit rating" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,	"mastery rating" );
+  stat_search( encoding_str, splits, STAT_HASTE_RATING,         "haste rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,           "ranged hit rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,           "hit rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "ranged critical strike" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "critical strike rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "crit rating" );
+  stat_search( encoding_str, splits, STAT_MASTERY_RATING,       "mastery rating" );
 
   stat_search( encoding_str, splits, STAT_BONUS_ARMOR,    "armor !penetration" );
   stat_search( encoding_str, splits, STAT_DODGE_RATING,   "dodge rating" );
@@ -610,12 +610,14 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 
 int armory_t::parse_meta_gem( const std::string& description )
 {
+  if ( description == "+54 Agility and 3% Increased Critical Damage"                      ) return META_AGILE_SHADOWSPIRIT;
   if ( description == "+32 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_EARTHSIEGE;
   if ( description == "+81 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_SHADOWSPIRIT;
   if ( description == "+21 Critical Strike Rating and +2% Mana"                           ) return META_BEAMING_EARTHSIEGE;
   if ( description == "+21 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSIEGE;
   if ( description == "+12 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSTORM;
   if ( description == "+54 Intellect and +2% Reduced Threat"                              ) return META_BRACING_SHADOWSPIRIT;
+  if ( description == "+54 Intellect and 3% Increased Critical Damage"                    ) return META_BURNING_SHADOWSPIRIT;
   if ( description == "+54 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SHADOWSPIRIT;
   if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFLARE;
   if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFIRE;
@@ -651,6 +653,7 @@ int armory_t::parse_meta_gem( const std::string& description )
   if ( description == "+18 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSTORM;
   if ( description == "+81 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_SHADOWSPIRIT;
   if ( description == "+81 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SHADOWSPIRIT;
+  if ( description == "+54 Strength and 3% Increased Critical Damage"                     ) return META_REVERBERATING_SHADOWSPIRIT;
   if ( description == "+22 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SKYFLARE;
   if ( description == "+12 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFIRE;
   if ( description == "+21 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFLARE;
@@ -667,7 +670,7 @@ int armory_t::parse_meta_gem( const std::string& description )
 // armory_t::download_servers ===============================================
 
 int armory_t::download_servers( std::vector<std::string>& servers,
-				const std::string& region )
+                                const std::string& region )
 {
   servers.clear();
 
@@ -677,9 +680,9 @@ int armory_t::download_servers( std::vector<std::string>& servers,
 // armory_t::download_guild =================================================
 
 int armory_t::download_guild( std::vector<std::string>& character_names,
-			      const std::string& region,
-			      const std::string& server,
-			      const std::string& name )
+                              const std::string& region,
+                              const std::string& server,
+                              const std::string& name )
 {
   // http://us.battle.net/wow/en/guild/llane/wicked%20legion/roster
 
@@ -848,7 +851,7 @@ player_t* armory_t::download_player( sim_t* sim,
        )
   {
     sim -> errorf( "Unable to determine class/name/level/race from armory xml for %s|%s|%s.\n",
-		   region.c_str(), server.c_str(), name.c_str() );
+                   region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
   armory_t::format( type_str );
@@ -866,7 +869,7 @@ player_t* armory_t::download_player( sim_t* sim,
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
-		   type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
+                   type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 

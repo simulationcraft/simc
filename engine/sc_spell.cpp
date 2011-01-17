@@ -85,11 +85,14 @@ void spell_t::player_buff()
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
 
-  if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||
-       p -> meta_gem == META_CHAOTIC_SKYFLARE      ||
-       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT  ||
-       p -> meta_gem == META_RELENTLESS_EARTHSIEGE ||
-       p -> meta_gem == META_RELENTLESS_EARTHSTORM )
+  if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
+       p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
+       p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
+       p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
+       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
+       p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
+       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
   {
     player_crit_multiplier *= 1.03;
   }

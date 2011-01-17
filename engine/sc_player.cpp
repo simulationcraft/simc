@@ -199,7 +199,7 @@ static bool parse_talent_url( sim_t* sim,
     bool all_digits = true;
     for( int i=url.size()-1; i >= 0 && all_digits; i-- )
       if( ! isdigit( url[ i ] ) )
-	  all_digits = false;
+          all_digits = false;
 
     if( all_digits )
     {
@@ -735,55 +735,58 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
 
-  if      ( meta_gem == META_AUSTERE_EARTHSIEGE        ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_AUSTERE_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE        ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_BRACING_EARTHSIEGE        ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_BRACING_EARTHSTORM        ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_BRACING_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_CHAOTIC_SHADOWSPIRIT      ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_CHAOTIC_SKYFIRE           ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_CHAOTIC_SKYFLARE          ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_DESTRUCTIVE_SHADOWSPIRIT  ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_DESTRUCTIVE_SKYFIRE       ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_DESTRUCTIVE_SKYFLARE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_EFFULGENT_SHADOWSPIRIT    ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_EMBER_SHADOWSPIRIT        ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_EMBER_SKYFIRE             ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_EMBER_SKYFLARE            ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_ENIGMATIC_SHADOWSPIRIT    ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_ENIGMATIC_SKYFLARE        ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_ENIGMATIC_STARFLARE       ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_ENIGMATIC_SKYFIRE         ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_ETERNAL_EARTHSIEGE        ) item_stats.dodge_rating += 21;
-  else if ( meta_gem == META_ETERNAL_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_FLEET_SHADOWSPIRIT        ) item_stats.mastery_rating += 54;
-  else if ( meta_gem == META_FORLORN_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_FORLORN_SKYFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_FORLORN_STARFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
-  else if ( meta_gem == META_IMPASSIVE_SHADOWSPIRIT    ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_IMPASSIVE_SKYFLARE        ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_IMPASSIVE_STARFLARE       ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE     ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM     ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE   ) item_stats.haste_rating += 21;
-  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER   ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE     ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_POWERFUL_EARTHSHATTER     ) item_stats.attribute[ ATTR_STAMINA ] += 26;
-  else if ( meta_gem == META_POWERFUL_EARTHSIEGE       ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_POWERFUL_EARTHSTORM       ) item_stats.attribute[ ATTR_STAMINA ] += 18;
-  else if ( meta_gem == META_POWERFUL_SHADOWSPIRIT     ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE     ) item_stats.attribute[ ATTR_AGILITY ] += 21;
-  else if ( meta_gem == META_RELENTLESS_EARTHSTORM     ) item_stats.attribute[ ATTR_AGILITY ] += 12;
-  else if ( meta_gem == META_REVITALIZING_SHADOWSPIRIT ) item_stats.attribute[ ATTR_SPIRIT  ] += 54;
-  else if ( meta_gem == META_REVITALIZING_SKYFLARE     ) item_stats.attribute[ ATTR_SPIRIT  ] += 22;
-  else if ( meta_gem == META_SWIFT_SKYFIRE             ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_SWIFT_SKYFLARE            ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_SWIFT_STARFLARE           ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_TIRELESS_STARFLARE        ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
-  else if ( meta_gem == META_TIRELESS_SKYFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER    ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
-  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE      ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  if      ( meta_gem == META_AGILE_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_AGILITY ] += 54;
+  else if ( meta_gem == META_AUSTERE_EARTHSIEGE         ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if ( meta_gem == META_AUSTERE_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_BEAMING_EARTHSIEGE         ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_BRACING_EARTHSIEGE         ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_BRACING_EARTHSTORM         ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_BRACING_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_BURNING_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_CHAOTIC_SHADOWSPIRIT       ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_CHAOTIC_SKYFIRE            ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_CHAOTIC_SKYFLARE           ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_DESTRUCTIVE_SHADOWSPIRIT   ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_DESTRUCTIVE_SKYFIRE        ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_DESTRUCTIVE_SKYFLARE       ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_EFFULGENT_SHADOWSPIRIT     ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_EMBER_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_EMBER_SKYFIRE              ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_EMBER_SKYFLARE             ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_ENIGMATIC_SHADOWSPIRIT     ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_ENIGMATIC_SKYFLARE         ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_ENIGMATIC_STARFLARE        ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_ENIGMATIC_SKYFIRE          ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_ETERNAL_EARTHSIEGE         ) item_stats.dodge_rating += 21;
+  else if ( meta_gem == META_ETERNAL_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_FLEET_SHADOWSPIRIT         ) item_stats.mastery_rating += 54;
+  else if ( meta_gem == META_FORLORN_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_FORLORN_SKYFLARE           ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_FORLORN_STARFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_IMPASSIVE_SHADOWSPIRIT     ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_IMPASSIVE_SKYFLARE         ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_IMPASSIVE_STARFLARE        ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE      ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM      ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE    ) item_stats.haste_rating += 21;
+  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER    ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE      ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_POWERFUL_EARTHSHATTER      ) item_stats.attribute[ ATTR_STAMINA ] += 26;
+  else if ( meta_gem == META_POWERFUL_EARTHSIEGE        ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if ( meta_gem == META_POWERFUL_EARTHSTORM        ) item_stats.attribute[ ATTR_STAMINA ] += 18;
+  else if ( meta_gem == META_POWERFUL_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE      ) item_stats.attribute[ ATTR_AGILITY ] += 21;
+  else if ( meta_gem == META_RELENTLESS_EARTHSTORM      ) item_stats.attribute[ ATTR_AGILITY ] += 12;
+  else if ( meta_gem == META_REVERBERATING_SHADOWSPIRIT ) item_stats.attribute[ ATTR_STRENGTH ] += 54;
+  else if ( meta_gem == META_REVITALIZING_SHADOWSPIRIT  ) item_stats.attribute[ ATTR_SPIRIT ] += 54;
+  else if ( meta_gem == META_REVITALIZING_SKYFLARE      ) item_stats.attribute[ ATTR_SPIRIT ] += 22;
+  else if ( meta_gem == META_SWIFT_SKYFIRE              ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_SWIFT_SKYFLARE             ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_SWIFT_STARFLARE            ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_TIRELESS_STARFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_TIRELESS_SKYFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER     ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE       ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
 
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
@@ -1195,11 +1198,11 @@ void player_t::init_actions()
 
       if ( a )
       {
-	a -> marker = (char) ( ( i < 10 ) ? ( '0' + i      ) : 
-			       ( i < 36 ) ? ( 'A' + i - 10 ) :
+        a -> marker = (char) ( ( i < 10 ) ? ( '0' + i      ) : 
+                               ( i < 36 ) ? ( 'A' + i - 10 ) :
                                ( i < 58 ) ? ( 'a' + i - 36 ) : '.' );
 
-	a -> signature_str = splits[ i ];
+        a -> signature_str = splits[ i ];
       }
       else
       {
@@ -2762,8 +2765,8 @@ int player_t::normalize_by() SC_CONST
 
 void player_t::stat_gain( int       stat,
                           double    amount,
-			  gain_t*   gain,
-			  action_t* action )
+                          gain_t*   gain,
+                          action_t* action )
 {
   if( amount <= 0 ) return;
   
@@ -2839,7 +2842,7 @@ void player_t::stat_gain( int       stat,
 
 void player_t::stat_loss( int       stat,
                           double    amount,
-			  action_t* action )
+                          action_t* action )
 {
   if( amount <= 0 ) return;
   
@@ -2870,10 +2873,10 @@ void player_t::stat_loss( int       stat,
   case STAT_MAX_RUNIC: 
   {
     int r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
-	      ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
-	      ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
-	      ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
-	      ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC );
+              ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
+              ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
+              ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
+              ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC );
     resource_max[ r ] -= amount;
     double delta = resource_current[ r ] - resource_max[ r ];
     if( delta > 0 ) resource_loss( r, delta, action );
@@ -3960,13 +3963,13 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                      e.stat, e.max_stacks, e.stat_amount, 
-						     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
+                                                     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
       }
       else if ( e.school )
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling, 
-							  e.proc_chance, 0.0/*cd*/ );
+                                                          e.proc_chance, 0.0/*cd*/ );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -4326,10 +4329,10 @@ struct compare_talents
     {
       if( l -> row == r -> row )
       {
-	if( l -> col == r -> col )
-	{
-	  return ( l -> id > r -> id ); // not a typo: Dive comes before Dash in pet talent string!
-	}
+        if( l -> col == r -> col )
+        {
+          return ( l -> id > r -> id ); // not a typo: Dive comes before Dash in pet talent string!
+        }
         return ( l -> col < r -> col );
       }
       return ( l -> row < r -> row );
@@ -4361,12 +4364,12 @@ void player_t::create_talents()
     {
       for( int j=0; j < MAX_TALENT_TREES; j++ )
       {
-	if( td.m_pet & ( 1 << j ) )
-	{
-	  talent_t* t = new talent_t( this, &td );
-	  talent_trees[ j ].push_back( t );
-	  option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
-	}
+        if( td.m_pet & ( 1 << j ) )
+        {
+          talent_t* t = new talent_t( this, &td );
+          talent_trees[ j ].push_back( t );
+          option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
+        }
       }
     }
   }
@@ -4381,7 +4384,7 @@ void player_t::create_talents()
 // player_t::find_talent ====================================================
 
 talent_t* player_t::find_talent( const std::string& n,
-				 int tree )
+                                 int tree )
 {
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
