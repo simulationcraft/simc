@@ -3398,6 +3398,16 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       util_t::fprintf( file,
         "              </tr>\n" );
       util_t::fprintf( file,
+        "              <tr>\n"
+        "                <th class=\"left\">Scale Deltas</th>\n" );
+      for ( int i=0; i < STAT_MAX; i++ )
+        if ( p -> scales_with[ i ] )
+          util_t::fprintf( file,
+            "                <td>%.0f</td>\n",
+            p -> sim -> scaling -> stats.get_stat( i ) );
+      util_t::fprintf( file,
+        "              </tr>\n" );
+      util_t::fprintf( file,
         "              <tr class=\"left\">\n"
         "                <th>Gear Ranking</th>\n"
         "                <td colspan=\"%i\">\n"
