@@ -726,8 +726,8 @@ static void trigger_enrage( attack_t* a )
   if ( ! p -> talents.enrage -> ok() )
     return;
 
-  // FIXME - Needs a generic check for other enrage effects
-  if ( p -> buffs_death_wish -> check() || p -> buffs.unholy_frenzy -> check() || p -> buffs_berserker_rage -> check() )
+  // FIXME - Appears to not proc when death wish is active, can proc when berserker rage is up, unsure on unholy frenzy
+  if ( p -> buffs_death_wish -> check() || p -> buffs.unholy_frenzy -> check() )
     return;
 
   double enrage_value = p -> buffs_enrage -> effect_base_value( 1 ) / 100.0;
