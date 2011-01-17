@@ -2395,15 +2395,16 @@ struct death_wish_t : public warrior_spell_t
     harmful = false;
     if ( p -> talents.intensify_rage -> ok() )
       cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0 );
-
-    enrage_bonus = p -> talents.death_wish -> effect_base_value( 1 ) / 100.0;
-    enrage_bonus *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0; 
   }
 
   virtual void execute()
   {
     warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
+
+    enrage_bonus = p -> talents.death_wish -> effect_base_value( 1 ) / 100.0;
+    enrage_bonus *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0; 
+
     p -> buffs_death_wish -> trigger( 1, enrage_bonus );
     p -> buffs_enrage -> expire();
   }
