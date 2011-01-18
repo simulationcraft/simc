@@ -1306,14 +1306,14 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 
   // Enchants
-  else if ( name == "lightweave"                          ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
-  else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave_2"                        ) e = "OnSpellCast_580Int_20%_15Dur_50Cd";
-  else if ( name == "lightweave_embroidery_2"             ) e = "OnSpellCast_580Int_20%_15Dur_50Cd";  
-  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_400Mana_35%_60Cd";
-  else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_800Mana_15%_45Cd";       // TO-DO: Confirm ICD.
-  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_400AP_20%_60Cd";
-  else if ( name == "swordguard_embroidery_2"             ) e = "OnAttackHit_1000AP_15%_45Cd";        // TO-DO: Confirm ICD.
+  else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
+  else if ( name == "lightweave_embroidery_old"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
+  else if ( name == "lightweave"                          ) e = "OnSpellCast_580Int_20%_15Dur_50Cd";
+  else if ( name == "lightweave_embroidery"               ) e = "OnSpellCast_580Int_20%_15Dur_50Cd";  
+  else if ( name == "darkglow_embroidery_old"             ) e = "OnSpellCast_400Mana_35%_60Cd";
+  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_15%_45Cd";       // TO-DO: Confirm ICD.
+  else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_60Cd";
+  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_1000AP_15%_45Cd";        // TO-DO: Confirm ICD.
 
   // DK Runeforges
   else if ( name == "rune_of_the_fallen_crusader"         ) e = "custom";
