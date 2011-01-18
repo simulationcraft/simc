@@ -670,7 +670,7 @@ static void register_synapse_springs( item_t* item )
   item -> use.name_str = "synapse_springs";
   item -> use.stat = max_stat;
   item -> use.stat_amount = 480.0;
-  item -> use.duration = 12.0;
+  item -> use.duration = ( p -> ptr ) ? 10.0 : 12.0;
   item -> use.cooldown = 60.0;
 }
 
