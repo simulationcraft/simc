@@ -4000,7 +4000,6 @@ struct report_t
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
-  static void print_html2( sim_t* );
   static void print_html3( sim_t* );
   static void print_wiki( sim_t* );
   static void print_xml( sim_t* );
