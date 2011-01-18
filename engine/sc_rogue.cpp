@@ -3556,7 +3556,12 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     if ( a )
     {
-      if ( ! a -> special || a -> aoe || a -> pseudo_pet || a -> proc || a -> repeating )
+      // only procs from specials; repeating is here for hunter autoshot, which doesn't proc it either
+      if ( ! a -> special || a -> repeating ) 
+        return;
+
+      // doesn't proc from pets (only tested for hunter pets though)
+      if (a -> player -> is_pet() || a -> pseudo_pet )
         return;
 
       a -> player -> procs.hat_donor -> occur();
