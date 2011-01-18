@@ -5,7 +5,7 @@ origin="http://chardev.org/?profile=11883"
 level=85
 race=orc
 use_pre_potion=1
-talents=http://www.wowarmory.com/talent-calc.xml?cid=9&tal=22312210301332132100000000000000000002302200000000000000
+talents=http://www.wowhead.com/talent#warlock-22312210301332132100000000000000000002302200000000000000
 glyphs=life_tap/shadow_bolt/corruption/haunt/lash_of_pain
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -28,6 +28,8 @@ actions+=/demon_soul,if=buff.shadow_trance.react
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/life_tap,mana_percentage<=35
 actions+=/drain_life,interrupt=1
+actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+actions+=/fel_flame,moving=1
 actions+=/life_tap
 head=helm_of_the_typhonic_beast,heroic=1,type=cloth,ilevel=346,quality=rare,stats=942armor_162hit_242int_182mastery_454sta,reforge=mastery_haste,gems=ember_shadowspirit_20haste_20int_30int,enchant=60int_35crit
 neck=lightning_flash_pendant,ilevel=359,quality=epic,stats=127crit_190int_127mastery_286sta,reforge=mastery_haste
@@ -41,7 +43,7 @@ hands=flamebloom_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_149has
 finger1=band_of_rays,heroic=1,ilevel=346,quality=rare,stats=112crit_112hit_168int_252sta,reforge=crit_haste,enchant=40int
 finger2=lavishly_jeweled_ring,heroic=1,ilevel=346,quality=rare,stats=107hit_133int_112mastery_252sta,reforge=mastery_haste,gems=40int_10hit,enchant=40int
 trinket1=stump_of_time,ilevel=359,quality=epic,stats=321hit,equip=onspellcast_1926sp_10%_15dur_75cd
-trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldirecthit_1200+10fire_1600int_30%_12dur_45cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shadow_of_perfect_bliss,heroic=1,ilevel=346,quality=rare,stats=580armor_128crit_85hit_168int_252sta,reforge=crit_haste,enchant=50int
 main_hand=modguds_blade,heroic=1,ilevel=346,quality=rare,stats=91crit_78hit_129int_1729sp_194sta,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_258min_480max
 off_hand=hermits_lamp,ilevel=346,quality=rare,stats=112haste_112hit_168int_252sta,enchant=100int

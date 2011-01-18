@@ -4362,7 +4362,11 @@ void warlock_t::init_actions()
       if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
     break;
-  }
+    }
+
+    // Movement
+    action_list_str += "/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct";
+    action_list_str += "/fel_flame,moving=1";
 
     action_list_str += "/life_tap"; // to use when no mana or nothing else is possible
 
