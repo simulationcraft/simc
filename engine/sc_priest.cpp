@@ -2032,7 +2032,7 @@ struct smite_t : public priest_spell_t
   atonement_t* atonement;
 
   smite_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "smite", player, "Smite" )
+      priest_spell_t( "smite", player, "Smite" ), atonement( 0 )
   {
     priest_t* p = player -> cast_priest();
 
