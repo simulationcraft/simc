@@ -1361,6 +1361,10 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     cooldown -> duration -= p -> talents.improved_mind_blast -> rank() * 0.5;
+
+    // TO-DO
+    if ( player -> ptr )
+      direct_power_mod = 0.8355 * 1.5;
   }
 
 
