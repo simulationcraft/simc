@@ -2044,7 +2044,13 @@ struct wild_quiver_shot_t : public ranged_t
   wild_quiver_shot_t( hunter_t* p ) : ranged_t( p, "wild_quiver_shot" )
   {
     repeating   = false;
+    proc = true;
   }
+  virtual void execute()
+   {
+     hunter_attack_t::execute();
+
+   }
 };
 
 struct wild_quiver_trigger_t : public action_callback_t
@@ -2062,6 +2068,7 @@ struct wild_quiver_trigger_t : public action_callback_t
     hunter_t* p = listener -> cast_hunter();
     if ( ! a -> weapon ) return;
     if ( a -> weapon -> slot != SLOT_RANGED ) return;
+    if ( a -> proc ) return;
     if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effect_coeff( 1 ) / 100.0 ) )
     {
       attack -> execute();
