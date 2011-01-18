@@ -6,24 +6,6 @@
 /*
  * Log Cataclysm
  *
- * Build 12942
- * 
- * 
- * Build 12857
- * - changed veiled shadows to 30s
- * - added sin and punishment
- *
- * Build 12803:
- * - changed darkness
- * - removed surge_of_light
- * - changed talent tree
- * - added Talent Holy Concentration
- * - added Shadowy Apparation
- * - finished Inner Will
- * - Mind Spike Debuff
- *
- *
- *
  * To do List:
  * Shadow:
  *
@@ -1597,7 +1579,8 @@ struct mind_spike_t : public priest_spell_t
     parse_options( options, options_str );
 
     // TO-DO: Hotfixed value from ingame.
-    direct_power_mod *= 1.50;
+    if ( ! player -> ptr )
+      direct_power_mod = 0.8355;
   }
 
   virtual void travel( int result, double dmg )
@@ -1886,7 +1869,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( p -> glyphs.shadow_word_death && ( target -> health_percentage() <= 25 ) )
     {
-      player_multiplier *= 3.0; // TO-DO: Need to check how this stacks properly.
+      player_multiplier *= 3.0;
     }
 
     player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
