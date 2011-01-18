@@ -64,6 +64,7 @@ struct hunter_t : public player_t
   // Procs
   proc_t* procs_thrill_of_the_hunt;
   proc_t* procs_wild_quiver;  
+  proc_t* procs_lock_and_load;
 
   // Random Number Generation
   rng_t* rng_frenzy;
@@ -414,6 +415,7 @@ struct hunter_pet_t : public pet_t
 
     if ( total_points == 0 )
     {
+      talents.serpent_swiftness -> set_rank( 2, true );
       talents.culling_the_herd  -> set_rank( 3, true );
       talents.serpent_swiftness -> set_rank( 3, true );
       talents.spiked_collar     -> set_rank( 3, true );
@@ -437,7 +439,7 @@ struct hunter_pet_t : public pet_t
         talents.owls_focus       -> set_rank( 2, true );
         talents.roar_of_recovery -> set_rank( 1, true );
         talents.wolverine_bite   -> set_rank( 1, true );
-        talents.wild_hunt -> set_rank( 2, true );
+        talents.wild_hunt        -> set_rank( 2, true );
       }
     }
   }
@@ -1471,7 +1473,7 @@ struct auto_shot_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs.moving -> check() ) return false;
+    if ( !p -> ptr && p -> buffs.moving -> check() ) return false;
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 
@@ -1571,6 +1573,10 @@ struct arcane_shot_t : public hunter_attack_t
     direct_power_mod = 0.042;
 
     player_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
+
+    // Temporary PTR Fix: Assuming 15% more total damage
+    if ( p -> ptr )
+      player_multiplier *= 1.15;
   }
 
   virtual double cost() SC_CONST
@@ -1631,7 +1637,8 @@ struct black_arrow_t : public hunter_attack_t
   {
     hunter_attack_t::tick();
     hunter_t* p = player -> cast_hunter();
-    p -> buffs_lock_and_load -> trigger( 2 );
+    if ( p -> buffs_lock_and_load -> trigger( 2 ) )
+      p -> procs_lock_and_load -> occur();
   }
 
   virtual void execute()
@@ -2055,7 +2062,7 @@ struct wild_quiver_trigger_t : public action_callback_t
     hunter_t* p = listener -> cast_hunter();
     if ( ! a -> weapon ) return;
     if ( a -> weapon -> slot != SLOT_RANGED ) return;
-    if ( rng -> roll( p -> composite_mastery() * /*p -> passive_spells.wild_quiver -> effect_base_value( 2 ) / 100.0*/ .018 ) )
+    if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effect_coeff( 1 ) / 100.0 ) )
     {
       attack -> execute();
       p -> procs_wild_quiver -> occur();
@@ -2813,6 +2820,7 @@ void hunter_t::init_procs()
 
   procs_thrill_of_the_hunt = get_proc( "thrill_of_the_hunt" );
   procs_wild_quiver        = get_proc( "wild_quiver"        );
+  procs_lock_and_load      = get_proc( "lock_and_load"      );
 }
 
 // hunter_t::init_uptimes ====================================================

@@ -4,9 +4,9 @@ hunter=Hunter_T11_MM_372
 level=85
 race=night_elf
 use_pre_potion=1
-professions=Enchanting=525/Leatherworking=525
+professions=Jewelcrafting=525/Leatherworking=525
 talents=http://www.wowhead.com/talent#ccbMZfMG0hRruroc
-glyphs=kill_shot/steady_shot/arcane_shot
+glyphs=kill_shot/steady_shot/chimera_shot
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/hunters_mark
@@ -25,35 +25,33 @@ actions+=/readiness,wait_for_rapid_fire=1
 actions+=/arcane_shot,if=focus>=30&buff.improved_steady_shot.up&cooldown.chimera_shot.remains>0
 actions+=/steady_shot
 head=lightningcharged_headguard,heroic=1,type=mail,stats=325agi_578sta_257crit_197mastery_2071armor,gems=fleet_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
-neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143mastery_143haste,reforge=haste_hit
-shoulders=lightningcharged_spaulders,heroic=1,type=mail,stats=266agi_429sta_191mastery_171hit_1911armor,gems=40agi_10mastery,enchant=50agi_25mastery
-chest=lightningcharged_tunic,heroic=1,type=mail,stats=345agi_578sta_257mastery_217haste_2548armor,reforge=haste_hit,gems=40agi_40agi,enchant=20str_20agi_20sta_20int_20spi
-waist=coil_of_tenthousand_screams,heroic=1,type=mail,stats=266agi_429sta_171crit_191haste_1433armor,reforge=haste_mastery,gems=40agi_10haste
-legs=twilight_scale_leggings,type=mail,stats=351agi_617sta_254crit_234mastery_2286armor,reforge=crit_hit,gems=40agi_20mastery_20hit_20agi_20mastery_30agi,enchant=190ap_55crit
-feet=moccasins_of_verdurous_glooms,type=mail,stats=233agi_380sta_149crit_169mastery_1673armor,gems=40agi,enchant=50hit
-wrists=chimaron_armguards,heroic=1,type=mail,stats=215agi_322sta_143crit_143hit_1115armor,reforge=crit_mastery,enchant=65haste
-hands=protohandlers_gauntlets,heroic=1,type=mail,stats=266agi_429sta_171crit_191mastery_1593armor,gems=20agi_20mastery_10mastery,enchant=65mastery
-finger1=lightning_conductor_band,heroic=1,stats=215agi_322sta_143crit_143hit,reforge=hit_mastery,enchant=40agi
-finger2=signet_of_the_elder_council,stats=190agi_286sta_127haste_127mastery,reforge=haste_hit,enchant=40agi
+neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143mastery_143haste
+shoulders=lightningcharged_spaulders,heroic=1,type=mail,stats=266agi_429sta_191mastery_171hit_1911armor,gems=67agi_10mastery,enchant=50agi_25mastery
+chest=lightningcharged_tunic,heroic=1,type=mail,stats=345agi_578sta_257mastery_217haste_2548armor,gems=67agi_20agi_20hit_20agi,enchant=20str_20agi_20sta_20int_20spi
+waist=coil_of_tenthousand_screams,heroic=1,type=mail,stats=266agi_429sta_171crit_191haste_1433armor,gems=67agi_40agi_10haste
+legs=twilight_scale_leggings,type=mail,stats=351agi_617sta_254crit_234mastery_2286armor,gems=40agi_20agi_20hit_20agi_20crit_30agi,enchant=190ap_55crit
+feet=boots_of_vertigo,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_429sta_191haste_171hit_1752armor,gems=20agi_20hit_10agi,enchant=35agi
+wrists=chimaron_armguards,heroic=1,type=mail,stats=215agi_322sta_143crit_143hit_1115armor,enchant=130agi
+hands=lightningcharged_gloves,heroic=1,type=mail,stats=266agi_429sta_191crit_171haste_1593armor,gems=20agi_20hit_10agi,enchant=65mastery
+finger1=lightning_conductor_band,heroic=1,stats=215agi_322sta_143crit_143hit
+finger2=signet_of_the_elder_council,stats=190agi_286sta_127haste_127mastery
 trinket1=essence_of_the_cyclone,heroic=1,stats=363agi,equip=onattackhit_2178crit_10%_10dur_45cd
 trinket2=prestors_talisman_of_machination,heroic=1,stats=363agi,equip=onattackhit_2178haste_10%_15dur_75cd
-back=cloak_of_biting_chill,heroic=1,stats=215agi_322sta_143crit_143mastery_673armor,enchant=65crit
-main_hand=fang_of_twilight,heroic=1,stats=165agi_248sta_110crit_110mastery,reforge=crit_hit,enchant=landslide,weapon=sword_2.60speed_950min_1764max
-off_hand=maimgors_bite,heroic=1,stats=165agi_248sta_110mastery_110hit,enchant=landslide,weapon=axe_2.60speed_950min_1764max
-ranged=themios_the_darkbringer,heroic=1,stats=121agi_181sta_81crit_81mastery,weapon=bow_2.90speed_1428min_2653max
+back=cloak_of_biting_chill,heroic=1,stats=215agi_322sta_143crit_143mastery_673armor,reforge=mastery_hit,enchant=65crit
+main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_578sta_257crit_257mastery,reforge=mastery_hit,enchant=130agi,weapon=staff_2.40speed_1182min_2195max
+ranged=dragonheart_piercer,heroic=1,stats=121agi_181sta_81crit_81haste,reforge=haste_mastery,weapon=crossbow_3.00speed_1478min_2744max,enchant=gnomish_xray
 # Gear Summary
 # gear_strength=20
-# gear_agility=4849
-# gear_stamina=5711
+# gear_agility=5293
+# gear_stamina=5842
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_hit_rating=918
-# gear_crit_rating=1540
-# gear_haste_rating=519
-# gear_mastery_rating=2387
-# gear_armor=15303
+# gear_hit_rating=867
+# gear_crit_rating=1780
+# gear_haste_rating=1134
+# gear_mastery_rating=1596
+# gear_armor=15382
 # meta_gem=fleet_shadowspirit
-# main_hand=fang_of_twilight,heroic=1,weapon=sword_2.60speed_950min_1764max,enchant=landslide
-# off_hand=maimgors_bite,heroic=1,weapon=axe_2.60speed_950min_1764max,enchant=landslide
-# ranged=themios_the_darkbringer,heroic=1,weapon=bow_2.90speed_1428min_2653max
+# main_hand=malevolence,heroic=1,weapon=staff_2.40speed_1182min_2195max
+# ranged=dragonheart_piercer,heroic=1,weapon=crossbow_3.00speed_1478min_2744max
