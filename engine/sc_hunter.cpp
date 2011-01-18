@@ -287,6 +287,9 @@ struct hunter_pet_t : public pet_t
   gain_t* gains_focus_fire;
   gain_t* gains_go_for_the_throat;
 
+  // Uptimes
+  uptime_t* uptimes_wild_hunt;
+
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
       pet_t( sim, owner, pet_name, pt )
   {
@@ -466,6 +469,13 @@ struct hunter_pet_t : public pet_t
     gains_fervor            = get_gain( "fervor" );
     gains_focus_fire        = get_gain( "focus_fire" );
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
+  }
+
+  virtual void init_uptimes()
+  {
+    pet_t::init_uptimes();
+
+    uptimes_wild_hunt  = get_uptime( "wild_hunt" );
   }
 
   virtual void init_actions()
@@ -978,8 +988,11 @@ struct claw_t : public hunter_pet_attack_t
 
     if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
     {
+      p -> uptimes_wild_hunt -> update(true);
       player_multiplier *= 1.0 + p -> talents.wild_hunt -> rank() * 0.60;
     }
+    else
+      p -> uptimes_wild_hunt -> update(false);
   }
 
   virtual double cost() SC_CONST
