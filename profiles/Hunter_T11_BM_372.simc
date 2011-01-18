@@ -22,7 +22,7 @@ actions+=/bestial_wrath
 actions+=/fervor,if=focus<=20
 actions+=/focus_fire,five_stacks=1,if=!buff.beast_within.up
 actions+=/kill_command
-actions+=/arcane_shot,if=focus>=59
+actions+=/arcane_shot,if=focus>=57
 actions+=/cobra_shot
 head=lightningcharged_headguard,heroic=1,type=mail,stats=325agi_578sta_257crit_197mastery_2071armor,gems=fleet_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143mastery_143haste
