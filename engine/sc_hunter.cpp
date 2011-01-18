@@ -425,12 +425,11 @@ struct hunter_pet_t : public pet_t
         talents.call_of_the_wild -> set_rank( 1, true );
         talents.rabid            -> set_rank( 1, true );
         talents.spiders_bite     -> set_rank( 3, true );
-        talents.shark_attack     -> set_rank( 2, true );
+        talents.wild_hunt        -> set_rank( 2, true );
 
         if( owner -> primary_tab() == HUNTER_BEAST_MASTERY ) // Should reference the talent in question, if possible
         {
           talents.shark_attack -> set_rank( 2, true );
-          talents.wild_hunt    -> set_rank( 2, true );
         }
       }
       else if ( tab == PET_TAB_CUNNING )
@@ -473,7 +472,9 @@ struct hunter_pet_t : public pet_t
   {
     if ( action_list_str.empty() )
     {
-      action_list_str = "auto_attack";
+
+      action_list_str += "/auto_attack";
+      action_list_str += "/snapshot_stats";
 
       if( talents.call_of_the_wild -> rank() )
       {
