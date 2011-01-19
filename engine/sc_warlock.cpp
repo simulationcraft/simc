@@ -1421,10 +1421,10 @@ struct felhunter_pet_t : public warlock_main_pet_t
 
 struct succubus_pet_t : public warlock_main_pet_t
 {
-  struct lash_of_pain_t : public warlock_pet_spell_t
+  struct lash_of_pain_t : public warlock_pet_attack_t
   {
     lash_of_pain_t( player_t* player ) :
-        warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
+        warlock_pet_attack_t( "lash_of_pain", player, "Lash of Pain" )
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> base_value() );
@@ -1436,7 +1436,7 @@ struct succubus_pet_t : public warlock_main_pet_t
 
     virtual void travel( int travel_result, double travel_dmg)
     {
-      warlock_pet_spell_t::travel(travel_result, travel_dmg);
+      warlock_pet_attack_t::travel(travel_result, travel_dmg);
       trigger_mana_feed ( this, travel_result );
     }
   };
