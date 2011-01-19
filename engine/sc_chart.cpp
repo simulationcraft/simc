@@ -1012,7 +1012,9 @@ const char* chart_t::timeline_dps( std::string& s,
 const char* chart_t::timeline_resource( std::string& s,
                                         player_t* p )
 {
-  if ( p -> primary_resource() == RESOURCE_NONE ) return 0;
+
+  if ( p -> primary_resource() == RESOURCE_NONE )
+    return 0;
 
   int max_buckets = ( int ) p -> timeline_resource.size();
   int max_points  = 600;
@@ -1070,6 +1072,73 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "chts=000000,20";
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( p -> primary_resource() ) ); s += buffer;
+
+  return s.c_str();
+}
+
+// chart_t::timeline_health ================================================
+
+const char* chart_t::timeline_health( std::string& s,
+                                        player_t* p )
+{
+  resource_type resource=RESOURCE_HEALTH;
+
+  int max_buckets = ( int ) p -> timeline_resource.size();
+  int max_points  = 600;
+  int increment   = 1;
+
+  if ( max_buckets <= 0 ) return 0;
+
+  if ( max_buckets <= max_points )
+  {
+    max_points = max_buckets;
+  }
+  else
+  {
+    increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
+  }
+
+  double resource_max=0;
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    if ( p -> timeline_health[ i ] > resource_max )
+    {
+      resource_max = p -> timeline_health[ i ];
+    }
+  }
+  double resource_range  = 60.0;
+  double resource_adjust = resource_range / resource_max;
+
+  char buffer[ 1024 ];
+
+  s = "http://chart.apis.google.com/chart?";
+  s += "chs=425x185";
+  s += "&amp;";
+  s += "cht=lc";
+  s += "&amp;";
+  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  s += "&amp;";
+  s += "chg=100,20";
+  s += "&amp;";
+  s += "chd=s:";
+  for ( int i=0; i < max_buckets; i += increment )
+  {
+    s += simple_encoding( ( int ) ( p -> timeline_health[ i ] * resource_adjust ) );
+  }
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", resource_range ); s += buffer;
+  s += "&amp;";
+  s += "chxt=x,y";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
+  s += "&amp;";
+  std::string formatted_name = p -> name_str;
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s|%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( resource ) ); s += buffer;
+  s += "&amp;";
+  s += "chts=000000,20";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( resource ) ); s += buffer;
 
   return s.c_str();
 }

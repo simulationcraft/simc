@@ -244,8 +244,10 @@ struct damage_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
-      if ( sim -> log ) log_t::output( sim, "%s takes raid damage.", p -> name() );
-      p -> resource_loss( RESOURCE_HEALTH, rng -> gauss( amount, amount_stddev ) );
+      double x = 0;
+      x = rng -> gauss( amount, amount_stddev );
+      if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid damage.", p -> name(), x );
+      p -> resource_loss( RESOURCE_HEALTH, x );
     }
   }
 };

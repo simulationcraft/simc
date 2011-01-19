@@ -2740,6 +2740,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   std::string scaling_dps_str                     = "";
   std::string scale_factors_str                   = "";
   std::string timeline_resource_str               = "";
+  std::string timeline_resource_health_str        = "";
   std::string timeline_dps_str                    = "";
   std::string distribution_dps_str                = "";
   std::string distribution_encounter_timeline_str = "";
@@ -2804,6 +2805,18 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     }
     timeline_resource_str = buffer;
   }
+  if ( ! p -> timeline_resource_health_chart.empty() )
+  {
+    if ( num_players == 1)
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Health Timeline Chart\" />\n", p -> timeline_resource_health_chart.c_str() );
+    }
+    else
+    {
+      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-health-timeline-resource\" title=\"Health Timeline Chart\">%s</span>\n", p -> timeline_resource_health_chart.c_str() );
+    }
+    timeline_resource_health_str = buffer;
+  }
   if ( ! p -> timeline_dps_chart.empty() )
   {
     if ( num_players == 1)
@@ -2862,6 +2875,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "              %s"
     "              %s"
     "              %s"
+    "              %s"
     "            </div>\n"
     "            <div class=\"clear\"></div>\n"
     "          </div>\n"
@@ -2872,6 +2886,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     scaling_dps_str.c_str(),
     scale_factors_str.c_str(),
     timeline_resource_str.c_str(),
+    timeline_resource_health_str.c_str(),
     timeline_dps_str.c_str(),
     distribution_dps_str.c_str(),
     distribution_encounter_timeline_str.c_str() );

@@ -503,7 +503,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   {
     infinite_resource[ i ] = false;
   }
-  infinite_resource[ RESOURCE_HEALTH ] = true;
 
   target = get_target( "Fluffy_Pillow" );
   scaling = new scaling_t( this );
@@ -1038,6 +1037,15 @@ void sim_t::analyze_player( player_t* p )
     p -> timeline_resource[ i ] /= divisor_timeline[ i ];
   }
 
+  num_buckets = ( int ) p -> timeline_health.size();
+
+  if ( num_buckets > max_buckets ) p -> timeline_health.resize( max_buckets );
+
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    p -> timeline_health[ i ] /= divisor_timeline[ i ];
+  }
+
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
     p -> resource_lost  [ i ] /= iterations;
@@ -1200,6 +1208,7 @@ void sim_t::analyze()
       chart_t::action_dmg       ( pet -> action_dmg_chart,        pet );
       chart_t::gains            ( pet -> gains_chart,             pet );
       chart_t::timeline_resource( pet -> timeline_resource_chart, pet );
+      chart_t::timeline_health  ( pet -> timeline_resource_health_chart, pet );
       chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
       chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
     }
@@ -1209,6 +1218,7 @@ void sim_t::analyze()
     chart_t::action_dmg       ( p -> action_dmg_chart,        p );
     chart_t::gains            ( p -> gains_chart,             p );
     chart_t::timeline_resource( p -> timeline_resource_chart, p );
+    chart_t::timeline_health  ( p -> timeline_resource_health_chart, p );
     chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
     chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
 
@@ -1287,6 +1297,14 @@ void sim_t::merge( sim_t& other_sim )
     for ( int i=0; i < num_buckets; i++ )
     {
       p -> timeline_resource[ i ] += other_p -> timeline_resource[ i ];
+    }
+
+    num_buckets = ( int ) std::min(       p -> timeline_health.size(),
+                                        other_p -> timeline_health.size() );
+
+    for ( int i=0; i < num_buckets; i++ )
+    {
+      p -> timeline_health[ i ] += other_p -> timeline_health[ i ];
     }
 
     for ( int i=0; i < RESOURCE_MAX; i++ )
