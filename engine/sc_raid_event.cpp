@@ -137,6 +137,7 @@ struct invulnerable_event_t : public raid_event_t
 struct movement_event_t : public raid_event_t
 {
   double move_to;
+  double move_distance;
   int players_only;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
@@ -145,6 +146,7 @@ struct movement_event_t : public raid_event_t
     option_t options[] =
     {
       { "to",           OPT_FLT,  &move_to      },
+      { "distance",     OPT_FLT,  &move_distance},
       { "players_only", OPT_BOOL, &players_only },
       { NULL, OPT_UNKNOWN, NULL }
     };
