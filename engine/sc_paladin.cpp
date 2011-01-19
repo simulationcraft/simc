@@ -2035,6 +2035,7 @@ void paladin_t::init_base()
   case TREE_HOLY:
     base_attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
     base_spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
+    mana_regen_while_casting = 0.50;
     break;
 
   case TREE_PROTECTION:
@@ -2372,6 +2373,28 @@ void paladin_t::init_actions()
       action_list_str += "/judgement";
       action_list_str += "/avengers_shield";
       action_list_str += "/holy_wrath";
+      action_list_str += "/consecration";
+      action_list_str += "/divine_plea";
+      } break;
+    case TREE_HOLY: {
+      if ( level > 80 )
+      {
+        action_list_str = "flask,type=steelskin/food,type=beer_basted_crocolisk";
+        action_list_str += "/earthen_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      }
+      else
+      {
+        action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
+        action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      }
+      action_list_str += "/seal_of_truth";
+      action_list_str += "/snapshot_stats";
+      action_list_str += "/auto_attack";
+      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      action_list_str += "/avenging_wrath";
+      action_list_str += "/judgement";
+      action_list_str += "/holy_wrath";
+      action_list_str += "/holy_shock";
       action_list_str += "/consecration";
       action_list_str += "/divine_plea";
       } break;
