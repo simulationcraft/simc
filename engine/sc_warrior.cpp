@@ -862,7 +862,7 @@ void warrior_attack_t::consume_resource()
     trigger_flurry( this, 3 );
   }
 
-  if ( special && ! background && p -> buffs_recklessness -> check() )
+  if ( special && ! background && p -> buffs_recklessness -> check() && ! p -> ptr )
   {
     p -> buffs_recklessness -> decrement();
   }
@@ -1011,7 +1011,7 @@ void warrior_attack_t::player_buff()
     player_multiplier *= 1.05;
 
   if ( special && p -> buffs_recklessness -> up() )
-    player_crit += 1.0;
+    player_crit += ( p -> ptr ) ? 0.5 : 1.0;
 
   if ( p -> buffs_hold_the_line -> up() )
     player_crit += 0.10;
@@ -2030,12 +2030,9 @@ struct slam_t : public warrior_attack_t
     id = 1464;
     parse_data( p -> player_data );
 
-    // Slam's values can't be derived by parse_data() for now.
-    normalize_weapon_speed      = true;
-    weapon                      = &( p -> main_hand_weapon );
-    base_dd_min                 = p -> player_data.effect_min( 462, p -> type, p -> level );
-    base_dd_max                 = p -> player_data.effect_max( 462, p -> type, p -> level );
-    weapon_multiplier = 1.25;
+    // Slam's values are stored in 50783
+    parse_effect_data( p -> player_data, 50783, 1 );
+    parse_effect_data( p -> player_data, 50783, 2 );
 
     base_crit                  += p -> glyphs.slam -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;

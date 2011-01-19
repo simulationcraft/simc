@@ -3152,7 +3152,7 @@ struct wild_mushroom_detonate_t : public druid_spell_t
 
       // Actual ability is 88751, all damage is in spell 78777
       uint32_t damage_id = 78777;
-      direct_power_mod   = p -> player_data.effect_coeff( damage_id, E_SCHOOL_DAMAGE  );
+      direct_power_mod   = p -> player_data.effect_coeff( damage_id, E_SCHOOL_DAMAGE );
       base_dd_min        = p -> player_data.effect_min( damage_id, p -> level, E_SCHOOL_DAMAGE );
       base_dd_max        = p -> player_data.effect_max( damage_id, p -> level, E_SCHOOL_DAMAGE );
       school             = spell_id_t::get_school_type( p -> player_data.spell_school_mask( damage_id ) );
