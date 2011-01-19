@@ -874,7 +874,7 @@ struct warlock_spell_t : public spell_t
     if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
     {
       if ( p -> ptr )
-        player_crit *= 1.0 + p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
+        player_crit += p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
       else
         player_crit_multiplier *= 1.0 + p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
     }
