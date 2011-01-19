@@ -1155,11 +1155,18 @@ QString SimulationCraftWindow::mergeOptions()
     options += "\n";
   }
   buttons = scalingButtonGroup->buttons();
-  options += "calculate_scale_factors=1\n";
+  OptionEntry* scaling = getScalingOptions();
+  for( int i=2; scaling[ i ].label; i++ )
+  {
+    if( buttons.at( i )->isChecked() )
+    {
+      options += "calculate_scale_factors=1\n";
+      break;
+    }
+  }
   if( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
   if( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
   options += "scale_only=none";
-  OptionEntry* scaling = getScalingOptions();
   for( int i=2; scaling[ i ].label; i++ )
   {
     if( buttons.at( i )->isChecked() )

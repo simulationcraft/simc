@@ -2726,9 +2726,9 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
         p -> gear_weights_lootrank_link.c_str() );
       util_t::fprintf( file,
       "            </table>\n" );
+      if ( sim -> iterations < 10000 )
+        util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations will vary from run to run.</h3>");
     }
-    if ( sim -> iterations < 10000 )
-      util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations will vary from run to run.</h3>");
   }
   util_t::fprintf( file,
     "          </div>\n"
