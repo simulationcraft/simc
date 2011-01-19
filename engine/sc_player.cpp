@@ -2133,6 +2133,7 @@ double player_t::composite_movement_speed() SC_CONST
   double speed = base_movement_speed;
 
   // From http://www.wowpedia.org/Movement_speed_effects
+  // Additional items looked up
 
   // Pursuit of Justice, Quickening: 8%/15%
 
@@ -2148,9 +2149,11 @@ double player_t::composite_movement_speed() SC_CONST
 
   // Druid: Dash: 50/60/70
 
-  // Mage: Blazing Speed: 50%
+  // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
+  //       Improved Blink: 35%/70% for 3 sec after blink
+  //       Glyph of Invisibility: 40% while invisible
 
-  // Body and Soulf: 30%/60%
+  // Body and Soul: 30%/60%
 
   // Rogue: Spring 70%
 
