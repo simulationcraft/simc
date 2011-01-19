@@ -2130,8 +2130,33 @@ double player_t::composite_player_td_multiplier( const school_type school ) SC_C
 
 double player_t::composite_movement_speed() SC_CONST
 {
+  double speed = base_movement_speed;
 
-  return base_movement_speed;
+  // From http://www.wowpedia.org/Movement_speed_effects
+
+  // Pursuit of Justice, Quickening: 8%/15%
+
+  // DK: Unholy Presence: 15%
+
+  // Druid: Feral Swiftness: 15%/30%
+
+  // Aspect of  the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
+
+  // Shaman Ghost Wolf: 30%, with Glyph 35%
+
+  // Druid: Travel Form 40%
+
+  // Druid: Dash: 50/60/70
+
+  // Mage: Blazing Speed: 50%
+
+  // Body and Soulf: 30%/60%
+
+  // Rogue: Spring 70%
+
+  // Swiftness Potion: 50%
+
+  return speed;
 }
 
 // player_t::strength() ====================================================
