@@ -871,7 +871,7 @@ struct warlock_spell_t : public spell_t
 
     spell_t::player_buff();
 
-    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
+    if ( execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION && p -> buffs_demon_soul_imp -> up() )
     {
       if ( p -> ptr )
         player_crit += p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
@@ -919,7 +919,7 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = player -> cast_warlock();
     spell_t::execute();
-    if ( p -> buffs_demon_soul_imp -> up() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
+    if ( ! p -> ptr && p -> buffs_demon_soul_imp -> check() && execute_time() > 0 && s_tree == WARLOCK_DESTRUCTION )
     {
       p -> buffs_demon_soul_imp -> decrement();
     }
