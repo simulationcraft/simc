@@ -604,7 +604,7 @@ const char* chart_t::action_dpet( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://2.chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 30 + 65 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chs=550x%d", num_stats * 30 + 65 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
@@ -680,7 +680,7 @@ const char* chart_t::action_dmg( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://3.chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", 200 + num_stats * 10 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_stats * 10 ); s += buffer;
   s += "&amp;";
   s += "cht=p";
   s += "&amp;";
@@ -817,7 +817,7 @@ const char* chart_t::scale_factors( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://4.chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_scaling_stats * 30 + 30 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_scaling_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
@@ -976,7 +976,7 @@ const char* chart_t::timeline_dps( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://5.chart.apis.google.com/chart?";
-  s += "chs=425x185";
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
@@ -1045,7 +1045,7 @@ const char* chart_t::timeline_resource( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://5.chart.apis.google.com/chart?";
-  s += "chs=425x185";
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
@@ -1112,7 +1112,7 @@ const char* chart_t::timeline_health( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://6.chart.apis.google.com/chart?";
-  s += "chs=425x185";
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";

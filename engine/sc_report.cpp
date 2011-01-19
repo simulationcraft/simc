@@ -2123,9 +2123,11 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
       util_t::fprintf (file,
         "                    <h5>Weapon</h5>\n"
         "                    <ul>\n"
+        "                      <li><span class=\"label\">normalized:</span>%s</li>\n"
         "                      <li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
         "                      <li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
         "                    </ul>\n",
+        a -> normalize_weapon_speed ? "true" : "false",
         a -> weapon_power_mod,
         a -> weapon_multiplier );
     }
