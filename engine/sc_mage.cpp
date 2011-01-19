@@ -1313,7 +1313,6 @@ struct arcane_brilliance_t : public mage_spell_t
       if ( p -> ooc_buffs() )
       {
         p -> buffs.arcane_brilliance -> trigger( 1, bonus );
-        p -> init_resources( true );
       }
     }
   }

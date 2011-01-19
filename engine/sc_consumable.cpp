@@ -16,6 +16,7 @@
 struct flask_t : public action_t
 {
   int type;
+  gain_t* gain;
 
   flask_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
@@ -40,56 +41,65 @@ struct flask_t : public action_t
       }
     }
     assert( type != FLASK_NONE );
+    gain = p -> get_gain( "flask" );
   }
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s uses Flask %s", player -> name(), util_t::flask_type_string( type ) );
-    player -> flask = type;
+    player_t* p = player;
+    if ( sim -> log ) log_t::output( sim, "%s uses Flask %s", p -> name(), util_t::flask_type_string( type ) );
+    p -> flask = type;
+    double intellect, stamina;
     switch ( type )
     {
     case FLASK_BLINDING_LIGHT:
-      player -> spell_power[ SCHOOL_ARCANE ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      player -> spell_power[ SCHOOL_HOLY   ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      player -> spell_power[ SCHOOL_NATURE ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      p -> spell_power[ SCHOOL_ARCANE ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      p -> spell_power[ SCHOOL_HOLY   ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      p -> spell_power[ SCHOOL_NATURE ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
       break;
     case FLASK_DISTILLED_WISDOM:
-      player -> stat_gain( STAT_INTELLECT, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 85 : 65 );
+      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 85 : 65;
+      p -> stat_gain( STAT_INTELLECT, intellect );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
       break;
     case FLASK_ENDLESS_RAGE:
-      player -> stat_gain( STAT_ATTACK_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 260 : 180 );
+      p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 260 : 180 );
       break;
     case FLASK_MIGHTY_RESTORATION:
-      player -> stat_gain( STAT_SPIRIT, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
       break;
     case FLASK_FROST_WYRM:
-      player -> stat_gain( STAT_SPELL_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
+      p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
       break;
     case FLASK_PURE_DEATH:
-      player -> spell_power[ SCHOOL_FIRE   ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      player -> spell_power[ SCHOOL_FROST  ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      player -> spell_power[ SCHOOL_SHADOW ] += ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      p -> spell_power[ SCHOOL_FIRE   ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      p -> spell_power[ SCHOOL_FROST  ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
+      p -> spell_power[ SCHOOL_SHADOW ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
       break;
     case FLASK_PURE_MOJO:
-      player -> stat_gain( STAT_MP5, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 65 : 45 );
+      p -> stat_gain( STAT_MP5, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 65 : 45 );
       break;
     case FLASK_RELENTLESS_ASSAULT:
-      player -> stat_gain( STAT_ATTACK_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 160 : 120 );
+      p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 160 : 120 );
       break;
     case FLASK_SUPREME_POWER:
-      player -> stat_gain( STAT_SPELL_POWER, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 93 : 70 );
+      p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 93 : 70 );
       break;
     case FLASK_STEELSKIN:
-      player -> stat_gain( STAT_STAMINA, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      stamina = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300;
+      p -> stat_gain( STAT_STAMINA, stamina );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * stamina, gain );
       break;
     case FLASK_DRACONIC_MIND:
-      player -> stat_gain( STAT_INTELLECT, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300;
+      p -> stat_gain( STAT_INTELLECT, intellect );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
       break;
     case FLASK_WINDS:
-      player -> stat_gain( STAT_AGILITY, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      p -> stat_gain( STAT_AGILITY, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
       break;
     case FLASK_TITANIC_STRENGTH:
-      player -> stat_gain( STAT_STRENGTH, ( player -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
       break;
 
     default: assert( 0 );
@@ -111,6 +121,7 @@ struct flask_t : public action_t
 struct food_t : public action_t
 {
   int type;
+  gain_t* gain;
 
   food_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
@@ -135,173 +146,202 @@ struct food_t : public action_t
       }
     }
     assert( type != FOOD_NONE );
+    gain = p -> get_gain( "food" );
   }
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s uses Food %s", player -> name(), util_t::food_type_string( type ) );
-    player -> food = type;
+    player_t* p = player;
+    if ( sim -> log ) log_t::output( sim, "%s uses Food %s", p -> name(), util_t::food_type_string( type ) );
+    p -> food = type;
     switch ( type )
     {
     case FOOD_BAKED_ROCKFISH:
-      player -> stat_gain( STAT_CRIT_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_CRIT_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_BASILISK_LIVERDOG:
-      player -> stat_gain( STAT_HASTE_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_HASTE_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_BEER_BASTED_CROCOLISK:
-      player -> stat_gain( STAT_STRENGTH, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_STRENGTH, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_BLACKBELLY_SUSHI:
-      player -> stat_gain( STAT_PARRY_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_PARRY_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_BLACKENED_BASILISK:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 );
+      p -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_BLACKENED_DRAGONFIN:
-      player -> stat_gain( STAT_AGILITY, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_AGILITY, 40 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_CROCOLISK_AU_GRATIN:
-      player -> stat_gain( STAT_EXPERTISE_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_EXPERTISE_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_CRUNCHY_SERPENT:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 );
+      p -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_DELICIOUS_SAGEFISH_TAIL:
-      player -> stat_gain( STAT_SPIRIT, 90 );
-      player -> stat_gain( STAT_SPIRIT, 90 );
+      p -> stat_gain( STAT_SPIRIT, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_DRAGONFIN_FILET:
-      player -> stat_gain( STAT_STRENGTH, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_STRENGTH, 40 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_FISH_FEAST:
-      player -> stat_gain( STAT_ATTACK_POWER, 80 );
-      player -> stat_gain( STAT_SPELL_POWER,  46 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_ATTACK_POWER, 80 );
+      p -> stat_gain( STAT_SPELL_POWER,  46 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_FORTUNE_COOKIE:
-      if ( player -> stats.dodge_rating > 0 )
+      if ( p -> stats.dodge_rating > 0 )
       {
-        player -> stat_gain( STAT_DODGE_RATING, 90 );
+        p -> stat_gain( STAT_DODGE_RATING, 90 );
       }
-      else if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_INTELLECT ] )
+      else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
-        if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
-          player -> stat_gain( STAT_STRENGTH, 90 );
+          p -> stat_gain( STAT_STRENGTH, 90 );
         }
         else
         {
-          player -> stat_gain( STAT_AGILITY, 90 );
+          p -> stat_gain( STAT_AGILITY, 90 );
         }
       }
-      else if ( player -> stats.attribute[ ATTR_INTELLECT ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
-        player -> stat_gain( STAT_INTELLECT, 90 );
+        p -> stat_gain( STAT_INTELLECT, 90 );
+	if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 90, gain );
       }
       else
       {
-        player -> stat_gain( STAT_AGILITY, 90 );
+        p -> stat_gain( STAT_AGILITY, 90 );
       }
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_GOLDEN_FISHSTICKS:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 );
+      p -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_GREAT_FEAST:
-      player -> stat_gain( STAT_ATTACK_POWER, 60 );
-      player -> stat_gain( STAT_SPELL_POWER,  35 );
-      player -> stat_gain( STAT_STAMINA, 30 );
+      p -> stat_gain( STAT_ATTACK_POWER, 60 );
+      p -> stat_gain( STAT_SPELL_POWER,  35 );
+      p -> stat_gain( STAT_STAMINA, 30 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 30 );
       break;
     case FOOD_GRILLED_DRAGON:
-      player -> stat_gain( STAT_HIT_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_HIT_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_HEARTY_RHINO:
-      player -> stat_gain( STAT_CRIT_RATING, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_CRIT_RATING, 40 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_IMPERIAL_MANTA_STEAK:
     case FOOD_VERY_BURNT_WORG:
-      player -> stat_gain( STAT_HASTE_RATING, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_HASTE_RATING, 40 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_LAVASCALE_FILLET:
-      player -> stat_gain( STAT_MASTERY_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_MASTERY_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_MEGA_MAMMOTH_MEAL:
     case FOOD_POACHED_NORTHERN_SCULPIN:
-      player -> stat_gain( STAT_ATTACK_POWER, 80 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_ATTACK_POWER, 80 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_MUSHROOM_SAUCE_MUDFISH:
-      player -> stat_gain( STAT_DODGE_RATING, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_DODGE_RATING, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_POACHED_BLUEFISH:
-      player -> stat_gain( STAT_SPELL_POWER, 23 );
-      player -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 );
+      p -> stat_gain( STAT_SPIRIT, 20 );
       break;
     case FOOD_RHINOLICIOUS_WORMSTEAK:
-      player -> stat_gain( STAT_EXPERTISE_RATING, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_EXPERTISE_RATING, 40 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
-      if ( player -> stats.dodge_rating > 0 )
+      if ( p -> stats.dodge_rating > 0 )
       {
-        player -> stat_gain( STAT_DODGE_RATING, 90 );
+        p -> stat_gain( STAT_DODGE_RATING, 90 );
       }
-      else if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_INTELLECT ] )
+      else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
-        if ( player -> stats.attribute[ ATTR_STRENGTH ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
-          player -> stat_gain( STAT_STRENGTH, 90 );
+          p -> stat_gain( STAT_STRENGTH, 90 );
         }
         else
         {
-          player -> stat_gain( STAT_AGILITY, 90 );
+          p -> stat_gain( STAT_AGILITY, 90 );
         }
       }
-      else if ( player -> stats.attribute[ ATTR_INTELLECT ] >= player -> stats.attribute[ ATTR_AGILITY ] )
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
-        player -> stat_gain( STAT_INTELLECT, 90 );
+        p -> stat_gain( STAT_INTELLECT, 90 );
+	if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 90, gain );
       }
       else
       {
-        player -> stat_gain( STAT_AGILITY, 90 );
+        p -> stat_gain( STAT_AGILITY, 90 );
       }
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_SEVERED_SAGEFISH_HEAD:
-      player -> stat_gain( STAT_INTELLECT, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_INTELLECT, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA,   p -> mana_per_intellect * 90, gain );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_SKEWERED_EEL:
-      player -> stat_gain( STAT_AGILITY, 90 );
-      player -> stat_gain( STAT_STAMINA, 90 );
+      p -> stat_gain( STAT_AGILITY, 90 );
+      p -> stat_gain( STAT_STAMINA, 90 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 90 );
       break;
     case FOOD_SMOKED_SALMON:
-      player -> stat_gain( STAT_SPELL_POWER, 35 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_SPELL_POWER, 35 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_SNAPPER_EXTREME:
-      player -> stat_gain( STAT_HIT_RATING, 40 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_HIT_RATING, 40 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     case FOOD_TENDER_SHOVELTUSK_STEAK:
-      player -> stat_gain( STAT_SPELL_POWER, 46 );
-      player -> stat_gain( STAT_STAMINA, 40 );
+      p -> stat_gain( STAT_SPELL_POWER, 46 );
+      p -> stat_gain( STAT_STAMINA, 40 );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * 40 );
       break;
     default: assert( 0 );
     }
