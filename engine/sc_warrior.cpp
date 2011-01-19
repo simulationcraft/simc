@@ -1314,11 +1314,26 @@ struct cleave_t : public warrior_attack_t
     parse_data( p -> player_data );
 
     aoe              = true;
-    base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
-                           + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+	
+	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+	if ( p -> ptr )
+	{
+		base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+	}
+	else
+	{	
+		base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
+                               + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+	}
 
     // Cleave's values can't be derived by parse_data() for now.
-    direct_power_mod = 0.562;
+	// 4.0.6 PTR - Cleave  damage has been reduced by 20%.
+	if ( p -> ptr )
+		direct_power_mod = 0.4496;
+	else 
+		direct_power_mod = 0.562;
+
     base_dd_min      = 6;
     base_dd_max      = 6;
   }
@@ -1424,6 +1439,13 @@ struct devastate_t : public warrior_attack_t
 
     id = 20243;
     parse_data( p -> player_data );
+
+	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+    if ( p -> ptr )
+    {
+	  base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+    }
 
     base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0;
     base_crit += p -> glyphs.devastate -> effect_base_value( 1 ) / 100.0;
@@ -1550,11 +1572,18 @@ struct heroic_strike_t : public warrior_attack_t
     id = 78;
     parse_data( p -> player_data );
 
+	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-    base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+	if ( !p -> ptr )
+		base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
     base_dd_max       = 8;
-    direct_power_mod  = 0.75;
+	
+	//4.0.6 PTR - Heroic Strike damage has been reduced by 20%.
+	if ( p -> ptr )
+		direct_power_mod = 0.6;
+	else
+		direct_power_mod  = 0.75;
   }
 
   virtual void execute()
@@ -1598,9 +1627,20 @@ struct mortal_strike_t : public warrior_attack_t
 
     id = 12294;
     parse_data( p -> player_data );
-
-    base_multiplier            *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
-                                      + p -> set_bonus.tier11_2pc_melee() * 0.05;
+	
+	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+	if ( p -> ptr )
+	{
+		base_multiplier            *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+										  + p -> set_bonus.tier11_2pc_melee() * 0.05
+										  + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+	}
+	else
+	{
+		base_multiplier            *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+										  + p -> set_bonus.tier11_2pc_melee() * 0.05;
+	}
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1734,12 +1774,14 @@ struct raging_blow_t : public warrior_attack_t
     id = 85288;
     parse_data( p -> player_data );
 
+	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     if ( p -> ptr )
     {
       // FIXME!!!  PTR has separate trigger spells for MH/OH.  Implement it right later....
       weapon_multiplier = 1.45;
+	  base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     }
-
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
     stancemask = STANCE_BERSERKER;
   }
@@ -2037,9 +2079,24 @@ struct slam_t : public warrior_attack_t
     base_crit                  += p -> glyphs.slam -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam -> effect_base_value( 1 ) / 1000.0;
+
     // FIXME: Confirm this is additive and not multiplicative
-    base_multiplier            *= 1.0 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0
-                                      + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, 
+	// Devastate, Victory Rush and Slam.  This was already improperly including War Academy.
+	// In addition to its current effects, Bloodsurge  now also causes the next Slam  to deal 20% more damage.
+	double base_multiplier_addends = 0;
+	if ( p -> ptr )
+	{
+		base_multiplier_addends = p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+		if ( p -> buffs_bloodsurge -> check() )
+			base_multiplier_addends += .2;
+	}
+	else 
+	{
+		base_multiplier_addends = p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0;
+	}
+
+	base_multiplier *= 1.0 + base_multiplier_addends;
   }
 
   virtual double haste() SC_CONST
