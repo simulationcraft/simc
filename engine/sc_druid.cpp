@@ -173,6 +173,7 @@ struct druid_t : public player_t
   buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_t11_4pc_melee;
+  buff_t* buffs_wild_mushroom;
   berserk_buff_t*        buffs_berserk;
   primal_madness_buff_t* buffs_primal_madness;
   tigers_fury_buff_t*    buffs_tigers_fury;
@@ -364,7 +365,6 @@ struct druid_t : public player_t
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_buffs();
-  virtual void      init_items();
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -3118,6 +3118,75 @@ struct typhoon_t : public druid_spell_t
   }
 };
 
+// Wild Mushroom ============================================================
+
+struct wild_mushroom_t : public druid_spell_t
+{
+  wild_mushroom_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "wild_mushroom", 88747, player )
+    {
+      parse_options( NULL, options_str );
+
+      harmful = false;
+    }
+
+    virtual void execute()
+    {
+      druid_spell_t::execute();
+
+      druid_t* p = player -> cast_druid();
+      p -> buffs_wild_mushroom -> increment();
+    }
+};
+
+// Wild Mushroom: Detonate ==================================================
+
+struct wild_mushroom_detonate_t : public druid_spell_t
+{
+  wild_mushroom_detonate_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "wild_mushroom_detonate", 88751, player )
+    {
+      druid_t* p = player -> cast_druid();
+
+      parse_options( NULL, options_str );
+
+      // Actual ability is 88751, all damage is in spell 78777
+      uint32_t damage_id = 78777;
+      direct_power_mod   = p -> player_data.effect_coeff( damage_id, E_SCHOOL_DAMAGE  );
+      base_dd_min        = p -> player_data.effect_min( damage_id, p -> level, E_SCHOOL_DAMAGE );
+      base_dd_max        = p -> player_data.effect_max( damage_id, p -> level, E_SCHOOL_DAMAGE );
+      school             = spell_id_t::get_school_type( p -> player_data.spell_school_mask( damage_id ) );
+      stats -> school    = school;
+      aoe                = true;
+    }
+
+    virtual void execute()
+    {
+      druid_spell_t::execute();
+
+      druid_t* p = player -> cast_druid();
+      p -> buffs_wild_mushroom -> expire();
+    }
+
+    virtual void player_buff()
+    {
+      druid_spell_t::player_buff();
+
+      druid_t* p = player -> cast_druid();
+      player_multiplier *= p -> buffs_wild_mushroom -> stack();
+    }
+
+    virtual bool ready()
+    {
+      druid_t* p = player -> cast_druid();
+
+      if ( ! p -> buffs_wild_mushroom -> stack() )
+          return false;
+
+      return druid_spell_t::ready();
+    }
+};
+
 // Wrath Spell ==============================================================
 
 struct wrath_t : public druid_spell_t
@@ -3198,7 +3267,7 @@ struct wrath_t : public druid_spell_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Druid Character Definition
@@ -3209,47 +3278,49 @@ struct wrath_t : public druid_spell_t
 action_t* druid_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
-  if ( name == "auto_attack"       ) return new       auto_attack_t( this, options_str );
-  if ( name == "berserk"           ) return new           berserk_t( this, options_str );
-  if ( name == "bear_form"         ) return new         bear_form_t( this, options_str );
-  if ( name == "cat_form"          ) return new          cat_form_t( this, options_str );
-  if ( name == "claw"              ) return new              claw_t( this, options_str );
-  if ( name == "enrage"            ) return new            enrage_t( this, options_str );
-  if ( name == "faerie_fire"       ) return new       faerie_fire_t( this, options_str );
-  if ( name == "faerie_fire_feral" ) return new faerie_fire_feral_t( this, options_str );
-  if ( name == "feral_charge_bear" ) return new feral_charge_bear_t( this, options_str );
-  if ( name == "feral_charge_cat"  ) return new  feral_charge_cat_t( this, options_str );
-  if ( name == "ferocious_bite"    ) return new    ferocious_bite_t( this, options_str );
-  if ( name == "insect_swarm"      ) return new      insect_swarm_t( this, options_str );
-  if ( name == "innervate"         ) return new         innervate_t( this, options_str );
-  if ( name == "lacerate"          ) return new          lacerate_t( this, options_str );
-  if ( name == "maim"              ) return new              maim_t( this, options_str );
-  if ( name == "mangle_bear"       ) return new       mangle_bear_t( this, options_str );
-  if ( name == "mangle_cat"        ) return new        mangle_cat_t( this, options_str );
-  if ( name == "mark_of_the_wild"  ) return new  mark_of_the_wild_t( this, options_str );
-  if ( name == "maul"              ) return new              maul_t( this, options_str );
-  if ( name == "moonfire"          ) return new          moonfire_t( this, options_str );
-  if ( name == "moonkin_form"      ) return new      moonkin_form_t( this, options_str );
-  if ( name == "natures_swiftness" ) return new  druids_swiftness_t( this, options_str );
-  if ( name == "pounce"            ) return new            pounce_t( this, options_str );
-  if ( name == "rake"              ) return new              rake_t( this, options_str );
-  if ( name == "ravage"            ) return new            ravage_t( this, options_str );
-  if ( name == "rip"               ) return new               rip_t( this, options_str );
-  if ( name == "savage_roar"       ) return new       savage_roar_t( this, options_str );
-  if ( name == "shred"             ) return new             shred_t( this, options_str );
-  if ( name == "skull_bash_bear"   ) return new   skull_bash_bear_t( this, options_str );
-  if ( name == "skull_bash_cat"    ) return new    skull_bash_cat_t( this, options_str );
-  if ( name == "starfire"          ) return new          starfire_t( this, options_str );
-  if ( name == "starfall"          ) return new          starfall_t( this, options_str );
-  if ( name == "starsurge"         ) return new         starsurge_t( this, options_str );
-  if ( name == "stealth"           ) return new           stealth_t( this, options_str );
-  if ( name == "sunfire"           ) return new           sunfire_t( this, options_str );
-  if ( name == "swipe_bear"        ) return new        swipe_bear_t( this, options_str );
-  if ( name == "swipe_cat"         ) return new         swipe_cat_t( this, options_str );
-  if ( name == "tigers_fury"       ) return new       tigers_fury_t( this, options_str );
-  if ( name == "treants"           ) return new     treants_spell_t( this, options_str );
-  if ( name == "typhoon"           ) return new           typhoon_t( this, options_str );
-  if ( name == "wrath"             ) return new             wrath_t( this, options_str );
+  if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
+  if ( name == "berserk"                ) return new                berserk_t( this, options_str );
+  if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
+  if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
+  if ( name == "claw"                   ) return new                   claw_t( this, options_str );
+  if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
+  if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
+  if ( name == "faerie_fire_feral"      ) return new      faerie_fire_feral_t( this, options_str );
+  if ( name == "feral_charge_bear"      ) return new      feral_charge_bear_t( this, options_str );
+  if ( name == "feral_charge_cat"       ) return new       feral_charge_cat_t( this, options_str );
+  if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
+  if ( name == "insect_swarm"           ) return new           insect_swarm_t( this, options_str );
+  if ( name == "innervate"              ) return new              innervate_t( this, options_str );
+  if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
+  if ( name == "maim"                   ) return new                   maim_t( this, options_str );
+  if ( name == "mangle_bear"            ) return new            mangle_bear_t( this, options_str );
+  if ( name == "mangle_cat"             ) return new             mangle_cat_t( this, options_str );
+  if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
+  if ( name == "maul"                   ) return new                   maul_t( this, options_str );
+  if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
+  if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
+  if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
+  if ( name == "pounce"                 ) return new                 pounce_t( this, options_str );
+  if ( name == "rake"                   ) return new                   rake_t( this, options_str );
+  if ( name == "ravage"                 ) return new                 ravage_t( this, options_str );
+  if ( name == "rip"                    ) return new                    rip_t( this, options_str );
+  if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
+  if ( name == "shred"                  ) return new                  shred_t( this, options_str );
+  if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
+  if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
+  if ( name == "starfire"               ) return new               starfire_t( this, options_str );
+  if ( name == "starfall"               ) return new               starfall_t( this, options_str );
+  if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
+  if ( name == "stealth"                ) return new                stealth_t( this, options_str );
+  if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
+  if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
+  if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
+  if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
+  if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
+  if ( name == "typhoon"                ) return new                typhoon_t( this, options_str );
+  if ( name == "wild_mushroom"          ) return new          wild_mushroom_t( this, options_str );
+  if ( name == "wild_mushroom_detonate" ) return new wild_mushroom_detonate_t( this, options_str );
+  if ( name == "wrath"                  ) return new                  wrath_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3455,10 +3526,9 @@ void druid_t::init_buffs()
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() ); 
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
-  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );  
+  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
+  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 0, true );
   
-  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-
   // simple
   buffs_bear_form    = new buff_t( this, "bear_form" );
   buffs_cat_form     = new buff_t( this, "cat_form" );
@@ -3470,13 +3540,6 @@ void druid_t::init_buffs()
   buffs_berserk        = new        berserk_buff_t( this );
   buffs_primal_madness = new primal_madness_buff_t( this );
   buffs_tigers_fury    = new    tigers_fury_buff_t( this );
-}
-
-// druid_t::init_items ======================================================
-
-void druid_t::init_items()
-{
-  player_t::init_items();
 }
 
 // druid_t::init_scaling ====================================================
