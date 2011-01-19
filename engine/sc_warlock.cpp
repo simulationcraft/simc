@@ -1431,6 +1431,8 @@ struct succubus_pet_t : public warlock_main_pet_t
       direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
       base_dd_min *= 1.555; // only tested at level 85, applying base damage adjustment as a percentage
       base_dd_max *= 1.555; // modifier in hopes of getting it "somewhat right" for other levels as well
+      base_attack_power_multiplier = 0.0;
+      base_spell_power_multiplier = 1.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
