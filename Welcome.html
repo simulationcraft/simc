@@ -35,7 +35,7 @@
         <li> <a href="#scale_factors"> Scale Factors</a> </li>
         <li> <a href="#plots"> Plots</a> </li>
         <li> <a href="#importing_from_the_armory"> Importing from the Armory</a> </li>
-        <li> <a href="#importing_from_wowhead"> Importing from Wowhead</a> </li>
+        <li> <a href="#importing_from_chardev"> Importing from CharDev</a> </li>
         <li> <a href="#importing_from_rawr"> Importing from Rawr</a> </li>
 	<li> <a href="#creating_a_custom_profile"> Creating A Custom Profile</a> </li>
         <li> <a href="#saving_results"> Saving Results</a> </li>
@@ -110,8 +110,11 @@
         applied to the <i>active</i> player and those that are applied globally.  The <i>Globals</i> section
         of the <i>Options</i> tab is dedicated to the more commonly changed global parameters.
       <ul>
-	  <li><b>Patch:</b> The mechanics of <i>World of Warcraft</i> are constantly changing.  SimulationCraft
-	      endeavors to model the two most recent patch levels.  Usually, this corresponds to <i>Live</i> and <i>PTR</i>.</li>
+	  <li><b>Version:</b> The mechanics of <i>World of Warcraft</i> are constantly changing.  SimulationCraft
+	      endeavors to model the two most recent patch levels.  This corresponds to <i>Live</i> and <i>PTR</i>.
+              The <i>Both</i> option will simulate two characters at once: One character will run with Live mechanics
+              and a second character with the name <i>EvilTwinPTR</i> will be run with PTR mechanics.  The results
+              will shown side-by-side for easy comparison.</li>
 	  <li><b>Latency:</b> During simulation we do not attempt to model the actual latency in all internet
 	      traffic, but rather how that latency manifests itself in terms of the inevitable gaps between player
 	      actions.  Rigorous testing has shown that these gaps differ greatly depending upon whether the
@@ -192,17 +195,17 @@
         command-line can be modified directly in the same manner as a normal web browswer.<b>The Armory tab defaults to
         US region.  See the <i>Options</i> tab to change the region to EU, TW, or CN.</b>
     </dd>
-    <dt><a name="importing_from_wowhead" /><h2>Importing from Wowhead (disabled until they support reforging)</h2></dt>
-    <dd>Characters can be downloaded from the Wowhead Profiler in two ways.  The first type of download is simply accessing
-        the Armory <i>mirror</i> that Wowhead maintains.  Select the <i>region</i> and <i>server</i> and then type in the
-        character name of interest.  Note that this mirror may not be up to date.  Press the <i>Resync</i> button to request
-        an update.
-        <p>The Wowhead Profiler also allows the creation of virtual characters.  These characters can be created from
-        scratch or they can be created from an existing profile using the <i>Save As</i> button.  This function does not
-        become available until you have logged into the Wowhead site.  Membership is free and easy to acquire.
-        <p>At present, Wowhead virtual characters are the only way to perform <i>what-if?</i> character analysis using a 
-        graphic user interface.  Talents, glyphs, gear, and gems can all be tweaked.  Just remember to press <i>Save</i> 
-        before importing the character into the <i>Simulate!</i> tab.</dd>
+    <dt><a name="importing_from_chardev" /><h2>Importing from CharDev</h2></dt>
+    <dd>SimulationCraft does not provide a graphical character sheet with which to experiment.  Instead we have integrated
+        with the CharDev character planner.  CharDev is a powerful profiling tool that strives to be both current and accurate.
+        <p>If you know the ID number of the profile you wish to simulate, one can simply type <b>chardev=ID</b> in the Simulate 
+        tab.  If you would like to view the ID before simulating, go to the Import/CharDev tab and change the address from 
+        <b>?planner</b> to <b>?profile=ID</b> and hit Enter.
+        <p>If you do not know the ID number of the profile, then you can use <b>Browse</b> under the Import/CharDev tab 
+        to search.  Note that to search within your own CharDev profiles you will need to log in first.
+        <p>Creating a new CharDev profile requires that you create an account at their site.  This is both free and painless.
+        Once you log in, you can seed a CharDev profile with a character from the Armory or you can start from scratch.
+        <b>Remember that you MUST save your profile after editting prior to Importing it into SimulationCraft.
     <dt><a name="importing_from_rawr" /><h2>Importing from Rawr</h2></dt>
     <dd>Rawr character XML files can be used to generate a SimulationCraft character profile.  While name, race, class,
         talents, glyphs, gear, and gems are all imported, <i>buff/debuff</i> settings and other module-specific settings
