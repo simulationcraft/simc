@@ -4274,7 +4274,7 @@ void report_t::print_html3( sim_t* sim )
         util_t::fprintf( file,
           "<!DOCTYPE html>\n\n" );
         util_t::fprintf( file,
-          "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n\n" );
+          "<html>\n\n" );
         
         util_t::fprintf( file,
           "  <head>\n\n" );
