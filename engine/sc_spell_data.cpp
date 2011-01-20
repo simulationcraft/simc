@@ -112,7 +112,7 @@ static std::string _class_strings[] = {
   "hunter",
   "rogue",
   "priest",
-  "death_knight",
+  "deathknight",
   "shaman",
   "mage",
   "warlock",

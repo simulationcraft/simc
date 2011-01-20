@@ -470,8 +470,6 @@ player_t* rawr_t::load_player( sim_t* sim,
   armory_t::format(  name_str );
   armory_t::format( class_str );
 
-  if ( class_str == "deathknight" ) class_str = "death_knight";
-
   race_type r = translate_rawr_race_str( race_str );
 
   player_t* p = player_t::create( sim, class_str, name_str, r );
@@ -508,7 +506,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   }
 
   p -> talents_str = "http://www.wowhead.com/talent#";
-  p -> talents_str += util_t::class_id_string( p -> type );
+  p -> talents_str += util_t::player_type_string( p -> type );
   p -> talents_str += "-" + talents_encoding;
 
   p -> glyphs_str = "";

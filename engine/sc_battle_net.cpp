@@ -110,8 +110,6 @@ player_t* battle_net_t::download_player( sim_t* sim,
     name_str = util_t::format_text( util_t::urldecode( name_str ), sim -> input_is_utf8 );
   }
 
-  std::string cid_str = util_t::class_id_string( util_t::parse_player_type( type_str ) );
-  
   armory_t::format( type_str );
   armory_t::format( race_str );
 
@@ -235,7 +233,9 @@ player_t* battle_net_t::download_player( sim_t* sim,
     p -> player_t::init_talents();
   }
   
-  p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + talents_encoding;
+  p -> talents_str = "http://www.wowhead.com/talent#";
+  p -> talents_str += util_t::player_type_string( p -> type );
+  p -> talents_str += "-" + talents_encoding;
   p ->  glyphs_str = "";
 
   xml_node_t* character_glyphs_node = xml_t::get_node( talents_xml, "div", "class", "character-glyphs" );

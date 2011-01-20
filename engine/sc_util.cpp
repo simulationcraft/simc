@@ -244,7 +244,7 @@ const char* util_t::player_type_string( int type )
   switch ( type )
   {
   case PLAYER_NONE:     return "none";
-  case DEATH_KNIGHT:    return "death_knight";
+  case DEATH_KNIGHT:    return "deathknight";
   case DRUID:           return "druid";
   case HUNTER:          return "hunter";
   case MAGE:            return "mage";
@@ -264,6 +264,7 @@ int util_t::translate_class_str( std::string& s )
 {
   std::string fmt_s = armory_t::format( s );
   if      ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
+  else if ( fmt_s == "deathknight"  ) return DEATH_KNIGHT;
   else if ( fmt_s == "druid"        ) return DRUID;
   else if ( fmt_s == "hunter"       ) return HUNTER;
   else if ( fmt_s == "mage"         ) return MAGE;

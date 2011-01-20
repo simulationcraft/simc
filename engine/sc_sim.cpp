@@ -1813,6 +1813,7 @@ void sim_t::create_options()
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
     // @option_doc loc=skip
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },
     { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
     { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                      },
     { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                      },

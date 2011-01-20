@@ -4484,7 +4484,7 @@ talent_t* player_t::find_talent( const std::string& n,
   }
 
   sim -> errorf( "Player %s unable to find talent %s\n", name(), n.c_str() );
-  sim -> cancel();
+//sim -> cancel();
   return 0;
 }
 
@@ -4991,8 +4991,22 @@ void player_t::copy_from( player_t* source )
   race_str = source -> race_str;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
-  talents_str = source -> talents_str;
-  parse_talent_url( sim, "talents", talents_str );
+  talents_str = "http://www.wowhead.com/talent#";
+  talents_str += util_t::player_type_string( type );
+  talents_str += "-";
+  // This is necessary because sometimes the talent trees change shape between live/ptr.
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    for( int j = talent_trees[ i ].size()-1; j >= 0; j-- )
+    {
+      talent_t* t = talent_trees[ i ][ j ];
+      talent_t* source_t = source -> find_talent( t -> td -> name );
+      if( source_t ) t -> set_rank( source_t -> rank() );
+      std::stringstream ss;
+      ss << t -> rank();
+      talents_str += ss.str();
+    }
+  }
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   int num_items = ( int ) items.size();
@@ -5141,7 +5155,7 @@ player_t* player_t::create( sim_t*             sim,
                             const std::string& name,
                             race_type r )
 {
-  if ( type == "death_knight" )
+  if ( type == "death_knight" || type == "deathknight" )
   {
     return player_t::create_death_knight( sim, name, r );
   }
