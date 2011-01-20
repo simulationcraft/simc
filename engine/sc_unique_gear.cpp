@@ -1361,6 +1361,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
   else if ( name == "sea_star"                    ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
   else if ( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
+  else if ( name == "shard_of_woe"                ) e = "1935Haste_10Dur_60Cd";
   else if ( name == "skardyns_grace"              ) e = ( heroic ? "1425Mastery_20Dur_120Cd" : "1260Mastery_20Dur_120Cd" );
   else if ( name == "sliver_of_pure_ice"          ) e = "1625Mana_120Cd";
   else if ( name == "soul_casket"                 ) e = "1926Sp_20Dur_120Cd";
