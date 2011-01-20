@@ -62,14 +62,63 @@ struct flask_t : public action_t
       p -> stat_gain( STAT_INTELLECT, intellect );
       if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
       break;
+    case FLASK_DRACONIC_MIND:
+      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300;
+      p -> stat_gain( STAT_INTELLECT, intellect );
+      if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
+      break;
     case FLASK_ENDLESS_RAGE:
       p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 260 : 180 );
+      break;
+   case FLASK_ENHANCEMENT:
+      if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
+      {
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+        {
+          p -> stat_gain( STAT_STRENGTH, 80 );
+        }
+        else
+        {
+          p -> stat_gain( STAT_AGILITY,80 );
+        }
+      }
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+      {
+        p -> stat_gain( STAT_INTELLECT, 80 );
+        if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 80, gain );
+      }
+      else
+      {
+        p -> stat_gain( STAT_AGILITY, 80 );
+      }
       break;
     case FLASK_MIGHTY_RESTORATION:
       p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
       break;
     case FLASK_FROST_WYRM:
       p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
+      break;
+    case FLASK_NORTH:
+      if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
+      {
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+        {
+          p -> stat_gain( STAT_STRENGTH, 40 );
+        }
+        else
+        {
+          p -> stat_gain( STAT_AGILITY, 40 );
+        }
+      }
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+      {
+        p -> stat_gain( STAT_INTELLECT, 40 );
+        if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 40, gain );
+      }
+      else
+      {
+        p -> stat_gain( STAT_AGILITY, 40 );
+      }
       break;
     case FLASK_PURE_DEATH:
       p -> spell_power[ SCHOOL_FIRE   ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
@@ -90,18 +139,12 @@ struct flask_t : public action_t
       p -> stat_gain( STAT_STAMINA, stamina );
       if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * stamina, gain );
       break;
-    case FLASK_DRACONIC_MIND:
-      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300;
-      p -> stat_gain( STAT_INTELLECT, intellect );
-      if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
+    case FLASK_TITANIC_STRENGTH:
+      p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
       break;
     case FLASK_WINDS:
       p -> stat_gain( STAT_AGILITY, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
       break;
-    case FLASK_TITANIC_STRENGTH:
-      p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
-      break;
-
     default: assert( 0 );
     }
   }
@@ -229,7 +272,7 @@ struct food_t : public action_t
       else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
         p -> stat_gain( STAT_INTELLECT, 90 );
-	if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 90, gain );
+        if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 90, gain );
       }
       else
       {
@@ -308,7 +351,7 @@ struct food_t : public action_t
       else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
         p -> stat_gain( STAT_INTELLECT, 90 );
-	if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 90, gain );
+        if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * 90, gain );
       }
       else
       {
