@@ -1640,6 +1640,7 @@ static void print_html3_scale_factors( FILE*  file, sim_t* sim )
 
 static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
 {
+  int num_players = ( int ) sim -> players_by_name.size();
   int show_dyn = 0;
   int show_con = 0;
   int i;
@@ -1656,7 +1657,13 @@ static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
   }
   
   util_t::fprintf( file,
-    "        <div id=\"auras-and-debuffs\" class=\"section grouped-last\">\n"
+    "        <div id=\"auras-and-debuffs\" class=\"section" );
+  if ( num_players == 1 )
+  {
+    util_t::fprintf( file, " grouped-first" );
+  }
+  util_t::fprintf ( file, " grouped-last\">\n" );
+  util_t::fprintf ( file,
     "          <h2 class=\"toggle\">Auras and Debuffs</h2>\n"
     "            <div class=\"toggle-content\">\n" );
 
@@ -1664,7 +1671,7 @@ static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
   {
     i = 0;
     util_t::fprintf( file,
-      "              <table class=\"mb\">\n"
+      "              <table class=\"sc mb\">\n"
       "                <tr>\n"
       "                  <th class=\"left\">Dynamic Buff</th>\n"
       "                  <th>Start</th>\n"
@@ -1711,7 +1718,7 @@ static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
   {
     i = 0;
     util_t::fprintf( file,
-      "              <table>\n"
+      "              <table class=\"sc\">\n"
       "                <tr>\n"
       "                  <th class=\"left\">Constant Buff</th>\n"
       "                </tr>\n" );
@@ -2544,6 +2551,10 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   if ( num_players > 1 && j == 0 )
   {
     util_t::fprintf( file, " grouped-first" );
+  }
+  else if ( num_players == 1 )
+  {
+    util_t::fprintf( file, " section-open" );
   }
   util_t::fprintf( file, "\">\n" );
   util_t::fprintf( file,
