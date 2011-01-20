@@ -3708,6 +3708,7 @@ struct heal_t : public spell_t
   double actual_heal, overheal;
   stats_t* overheal_stats;
 
+  void _init_heal_t();
   heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 

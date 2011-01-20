@@ -9,36 +9,42 @@
 // Heal
 // ==========================================================================
 
-// heal_t::heal_t ==========================================================
+// ==========================================================================
+// Created by philoptik@gmail.com
+//
+// heal_target is set to player for now.
+// ==========================================================================
 
+
+
+// heal_t::_init_heal_t == Heal Constructor Initializations =================
+
+  void heal_t::_init_heal_t()
+  {
+    may_crit          = true;
+    tick_may_crit     = true;
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
+    target=0;
+  }
+
+// heal_t::heal_t ======== Heal Constructor by Spell Name ===================
 
   heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
       spell_t( n, sname, player, t ), heal_target( player )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
-    dot_behavior      = DOT_REFRESH;
-    weapon_multiplier = 0.0;
-    target=0;
-
-    overheal_stats = player -> get_stats( name_str + "-overheal" );
-    overheal_stats -> school = school;
-    overheal_stats -> resource = resource;
+    _init_heal_t();
   }
+
+// heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
   heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
       spell_t( n, id, player, t ), heal_target( player )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
-    dot_behavior      = DOT_REFRESH;
-    weapon_multiplier = 0.0;
-    target=0;
-
-    overheal_stats = player -> get_stats( name_str + "-overheal" );
-    overheal_stats -> school = school;
-    overheal_stats -> resource = resource;
+    _init_heal_t();
   }
+
+// heal_t::player_buff ======================================================
 
   void heal_t::player_buff()
   {
@@ -84,7 +90,7 @@
                      name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
   }
 
-  // heal_t::target_debuff ==================================================
+// heal_t::target_debuff ====================================================
 
   void heal_t::target_debuff( int dmg_type )
   {
@@ -98,15 +104,12 @@
     target_penetration           = 0;
     target_dd_adder              = 0;
 
-
-
-
     if ( sim -> debug )
       log_t::output( sim, "heal_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                      name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
   }
 
-  // heal_t::haste ==========================================================
+// heal_t::haste ============================================================
 
   double heal_t::haste() SC_CONST
   {
@@ -115,7 +118,7 @@
     return h;
   }
 
-  // heal_t::execute =========================================================
+// heal_t::execute ===========================================================
 
   void heal_t::execute()
   {
@@ -135,19 +138,8 @@
 
     consume_resource();
 
-    if ( result_is_hit() )
-    {
-      direct_dmg = calculate_direct_damage();
-      schedule_travel();
-    }
-    else
-    {
-      if ( sim -> log )
-      {
-        log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
-        log_t::miss_event( this );
-      }
-    }
+    direct_dmg = calculate_direct_damage();
+    schedule_travel();
 
     update_ready();
 
@@ -158,13 +150,12 @@
     if ( repeating && ! proc ) schedule_execute();
   }
 
-  // heal_t::asses_damage ======================================================
+// heal_t::asses_damage ========================================================
 
   void heal_t::assess_damage( double amount,
                                 int    dmg_type )
   {
     actual_heal = heal_target -> resource_gain( RESOURCE_HEALTH, amount );
-
 
     if ( dmg_type == HEAL_DIRECT )
     {
@@ -213,11 +204,10 @@
 
   }
 
-  // heal_t::ready ==========================================================
+// heal_t::ready ============================================================
 
   bool heal_t::ready()
   {
-
     if ( player -> skill < 1.0 )
       if ( ! sim -> roll( player -> skill ) )
         return false;
@@ -270,11 +260,10 @@
     return true;
   }
 
-  // heal_t::caclulate_result ================================================
+// heal_t::caclulate_result ==================================================
 
   void heal_t::calculate_result()
   {
-
     direct_dmg = 0;
     result = RESULT_NONE;
 
@@ -296,7 +285,7 @@
     if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
   }
 
-  // heal_t::calculate_direct_damage =========================================
+// heal_t::calculate_direct_damage ===========================================
 
   double heal_t::calculate_direct_damage()
   {
@@ -333,7 +322,7 @@
     return dmg;
   }
 
-  // heal_t::calculate_tick_damage ===========================================
+// heal_t::calculate_tick_damage =============================================
 
   double heal_t::calculate_tick_damage()
   {
@@ -365,7 +354,7 @@
     return dmg;
   }
 
-  // heal_t::update_stats ===================================================
+// heal_t::update_stats =====================================================
 
   void heal_t::update_stats( int type )
   {
@@ -380,7 +369,7 @@
     else assert( 0 );
   }
 
-  // heal_t::travel ==========================================================
+// heal_t::travel ============================================================
 
   void heal_t::travel( int travel_result, double travel_dmg=0 )
   {
@@ -416,7 +405,7 @@
     }
   }
 
-  // heal_t::tick ===========================================================
+// heal_t::tick =============================================================
 
   void heal_t::tick()
   {
@@ -424,8 +413,6 @@
 
     result = RESULT_HIT;
 
-    // Older tests indicated that crit debuffs are calculated at the time of the cast, not the ticks.
-    // It's possible that this has now changed, but would require testing to be certain.
     double save_target_crit = target_crit;
 
     target_debuff( HEAL_OVER_TIME );
@@ -455,4 +442,3 @@
 
     update_stats( HEAL_OVER_TIME );
   }
-

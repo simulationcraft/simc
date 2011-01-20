@@ -454,13 +454,6 @@ struct priest_absorb_t : public spell_t
 
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
-    if ( !p -> healer )
-    {
-      sim -> errorf( "Player %s attempting to execute a heal spell, without being a healer.\n",
-                     player -> name() );
-
-      background = true; // prevent action from being executed
-    }
   }
   priest_absorb_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
       spell_t( n, id, player, t )
@@ -471,13 +464,6 @@ struct priest_absorb_t : public spell_t
     weapon_multiplier = 0.0;
     may_miss=may_resist=false;
     priest_t* p = player -> cast_priest();
-    if ( !p -> healer )
-    {
-      sim -> errorf( "Player %s attempting to execute a heal spell, without being a healer.\n",
-                     player -> name() );
-
-      background = true; // prevent action from being executed
-    }
   }
 
   virtual void player_buff()
