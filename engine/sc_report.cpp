@@ -1973,7 +1973,7 @@ static void print_html3_help_boxes( FILE*  file, sim_t* sim )
 
 // print_html3_action =========================================================
 
-static void print_html3_action( FILE* file, stats_t* s, player_t* p )
+static void print_html3_action( FILE* file, stats_t* s, player_t* p, int i )
 {
   double executes_divisor = s -> num_executes;
   double    ticks_divisor = s -> num_ticks;
@@ -1982,7 +1982,14 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
   util_t::fprintf( file,
-    "              <tr class=\"odd\">\n"
+    "              <tr" );
+  if ( i & 1 )
+  {
+    util_t::fprintf( file, " class=\"odd\"" );
+  }
+  util_t::fprintf( file, ">\n" );
+
+  util_t::fprintf( file,
     "                <td class=\"left small\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
@@ -2032,7 +2039,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p )
     s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
-    "                <td colspan=\"23\">\n" );
+    "                <td colspan=\"23\" class=\"filler\">\n" );
 
   std::vector<std::string> processed_actions;
 
@@ -2716,7 +2723,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       util_t::fprintf( file,
         "              <tr class=\"left\">\n"
         "                <th>Gear Ranking</th>\n"
-        "                <td colspan=\"%i\">\n"
+        "                <td colspan=\"%i\" class=\"filler\">\n"
         "                  <ul class=\"float\">\n"
         "                    <li><a href=\"%s\" rel=\"_blank\">wowhead</a></li>\n"
         "                    <li><a href=\"%s\" rel=\"_blank\">lootrank</a></li>\n"
@@ -2928,16 +2935,18 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "              <tr>\n"
     "                <th class=\"left small\">%s</th>\n"
     "                <th class=\"right small\">%.0f</th>\n"
-    "                <td colspan=\"21\"></td>\n"
+    "                <td colspan=\"21\" class=\"filler\"></td>\n"
     "              </tr>\n",
     n.c_str(),
     p -> dps );
 
+  i = 0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     if ( s -> num_executes > 0 || s -> total_dmg > 0 )
     {
-      print_html3_action( file, s, p );
+      print_html3_action( file, s, p, i );
+      i++;
     }
   }
 
@@ -2945,6 +2954,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   {
     bool first=true;
 
+    i = 0;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
       if ( s -> num_executes > 0 )
@@ -2956,12 +2966,13 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "              <tr>\n"
       "                <th class=\"left small\">pet - %s</th>\n"
       "                <th class=\"right small\">%.0f</th>\n"
-      "                <td colspan=\"21\"></td>\n"
+      "                <td colspan=\"21\" class=\"filler\"></td>\n"
       "              </tr>\n",
       pet -> name_str.c_str(),
       pet -> dps );
         }
-        print_html3_action( file, s, p );
+        print_html3_action( file, s, p, i );
+        i++;
       }
     }
   }
@@ -3037,7 +3048,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
 
     util_t::fprintf( file,
       "              <tr class=\"details hide\">\n"
-      "                <td colspan=\"7\">\n"
+      "                <td colspan=\"7\" class=\"filler\">\n"
       "                  <h4>Database details</h4>\n"
       "                  <ul>\n"
       "                    <li><span class=\"label\">id:</span>%.i</li>\n"
@@ -4317,6 +4328,7 @@ void report_t::print_html3( sim_t* sim )
       "      tr.details td div.float { width: 350px; }\n"
       "      tr.details td div.float h5 { margin-top: 4px; }\n"
       "      tr.details td div.float ul { margin: 0 0 12px 0; }\n"
+      "      td.filler { background-color: #ccc; }\n"
       "      .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
       "      .sample-sequence { width: 500px; word-wrap: break-word; outline: 1px solid #ddd; background: #fcfcfc; padding: 6px; font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n"
       "    </style>\n\n" );
