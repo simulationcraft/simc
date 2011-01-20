@@ -212,7 +212,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     s += "&amp;";
     s += "chtt=DPS+Ranking";
     s += "&amp;";
-    s += "chts=000000,20";
+    s += "chts=666666,18";
 
     images.push_back( s );
 
@@ -336,7 +336,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     }
     s += "chtt=Gear+Overview";
     s += "&amp;";
-    s += "chts=000000,20";
+    s += "chts=666666,18";
 
     images.push_back( s );
 
@@ -413,7 +413,7 @@ const char* chart_t::raid_downtime( std::string& s,
   s += "&amp;";
   s += "chtt=Raid+Down-Time";
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -463,7 +463,7 @@ const char* chart_t::raid_timeline( std::string& s,
   s += "&amp;";
   s += "chtt=Timeline+Distribution";
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -556,7 +556,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     	s += "chtt=Raid+Damage+Per+Execute+Time";
     	s += "&amp;";
     }
-    s += "chts=000000,20";
+    s += "chts=666666,18";
 
     images.push_back( s );
 
@@ -637,7 +637,7 @@ const char* chart_t::action_dpet( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s|Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -711,7 +711,7 @@ const char* chart_t::action_dmg( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Sources", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -774,7 +774,7 @@ const char* chart_t::gains( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+Gains", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -850,7 +850,7 @@ const char* chart_t::scale_factors( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale+Factors", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -939,7 +939,7 @@ const char* chart_t::scaling_dps( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Scaling", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -1002,7 +1002,7 @@ const char* chart_t::timeline_dps( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s|DPS+Timeline", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -1069,7 +1069,7 @@ const char* chart_t::timeline_resource( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s|%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( p -> primary_resource() ) ); s += buffer;
 
@@ -1136,7 +1136,7 @@ const char* chart_t::timeline_health( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s|%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( resource ) ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( resource ) ); s += buffer;
 
@@ -1190,7 +1190,7 @@ const char* chart_t::distribution_dps( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s|DPS+Distribution", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }

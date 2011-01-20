@@ -1656,7 +1656,7 @@ static void print_html3_auras_debuffs( FILE*  file, sim_t* sim )
   }
   
   util_t::fprintf( file,
-    "        <div id=\"auras-and-debuffs\" class=\"section\">\n"
+    "        <div id=\"auras-and-debuffs\" class=\"section grouped-last\">\n"
     "          <h2 class=\"toggle\">Auras and Debuffs</h2>\n"
     "            <div class=\"toggle-content\">\n" );
 
@@ -1973,24 +1973,38 @@ static void print_html3_help_boxes( FILE*  file, sim_t* sim )
 
 // print_html3_action =========================================================
 
-static void print_html3_action( FILE* file, stats_t* s, player_t* p, int i )
+static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
 {
   double executes_divisor = s -> num_executes;
   double    ticks_divisor = s -> num_ticks;
+  int id = 0;
 
   if ( executes_divisor <= 0 ) executes_divisor = 1;
   if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
   util_t::fprintf( file,
     "              <tr" );
-  if ( i & 1 )
+  if ( j & 1 )
   {
     util_t::fprintf( file, " class=\"odd\"" );
   }
   util_t::fprintf( file, ">\n" );
 
+  std::vector<std::string> processed_actions;
+  for ( action_t* a = s -> player -> action_list; a; a = a -> next )
+  {
+    if ( a -> stats != s ) continue;
+
+    bool found = false;
+    for ( int i=processed_actions.size()-1; i >= 0 && !found; i-- )
+      if ( processed_actions[ i ] == a -> name() )
+        found = true;
+        id = a -> id;
+    if( found ) break;
+  }
+
   util_t::fprintf( file,
-    "                <td class=\"left small\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
+    "                <td class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"spell=%i\">%s</a></td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
@@ -2014,6 +2028,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int i )
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "              </tr>\n",
+    id,
     s -> name_str.c_str(),
     s -> portion_dps,
     s -> portion_dmg * 100,
@@ -2040,8 +2055,6 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int i )
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
     "                <td colspan=\"23\" class=\"filler\">\n" );
-
-  std::vector<std::string> processed_actions;
 
   for ( action_t* a = s -> player -> action_list; a; a = a -> next )
   {
@@ -2163,7 +2176,7 @@ static void print_html3_stats (FILE* file, player_t* a )
       "            <div class=\"player-section stats\">\n"
       "              <h3 class=\"toggle\">Stats</h3>\n"
       "              <div class=\"toggle-content\">\n"
-      "                <table>\n"
+      "                <table class=\"sc\">\n"
       "                  <tr>\n"
       "                    <th></th>\n"
       "                    <th>Raid-Buffed</th>\n"
@@ -2483,7 +2496,7 @@ static void print_html3_talents( FILE* file, player_t* p )
     {
       util_t::fprintf( file,
           "                <div class=\"float\">\n"
-          "                  <table>\n"
+          "                  <table class=\"sc\">\n"
           "                    <tr>\n"
           "                      <th class=\"left\">%s</th>\n"
           "                      <th>Rank</th>\n"
@@ -2517,7 +2530,7 @@ static void print_html3_talents( FILE* file, player_t* p )
 
 // print_html3_player =========================================================
 
-static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
+static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
 {
   char buffer[ 4096 ];
   std::string n = p -> name();
@@ -2526,9 +2539,15 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   int i;
   
   util_t::fprintf( file,
-    "    <div id=\"%s\" class=\"player section\">\n"
-    "      <h2 class=\"toggle",
+    "    <div id=\"%s\" class=\"player section",
     n.c_str() );
+  if ( num_players > 1 && j == 0 )
+  {
+    util_t::fprintf( file, " grouped-first" );
+  }
+  util_t::fprintf( file, "\">\n" );
+  util_t::fprintf( file,
+    "      <h2 class=\"toggle" );
   if ( num_players == 1 )
   {
     util_t::fprintf( file, " open" );
@@ -2568,7 +2587,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   }
   util_t::fprintf( file,
     "          <div class=\"toggle-content\">\n"
-    "            <table>\n"
+    "            <table class=\"sc\">\n"
     "              <tr>\n"
     "                <th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
     "                <th><a href=\"#help-error\" class=\"help\">Error</a></th>\n"
@@ -2608,7 +2627,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   if ( !p -> is_pet() )
   {
     util_t::fprintf( file,
-      "            <table class=\"mt\">\n" );
+      "            <table class=\"sc mt\">\n" );
     if ( p -> origin_str.compare("unknown") )
     {
       std::string  enc_url = p -> origin_str; encode_html(  enc_url );
@@ -2663,7 +2682,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     {
       int colspan = 0;
       util_t::fprintf( file,
-        "            <table class=\"mt\">\n" );
+        "            <table class=\"sc mt\">\n" );
       util_t::fprintf( file,
         "              <tr>\n"
         "                <th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
@@ -2904,7 +2923,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "        <div class=\"player-section\">\n"
     "          <h3 class=\"toggle open\">Abilities</h3>\n"
     "          <div class=\"toggle-content\">\n"
-    "            <table>\n"
+    "            <table class=\"sc\">\n"
     "              <tr>\n"
     "                <th class=\"small\"></th>\n"
     "                <th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
@@ -2989,7 +3008,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     
   // Dynamic Buffs table
   util_t::fprintf( file,
-    "            <table class=\"mb\">\n"
+    "            <table class=\"sc mb\">\n"
     "              <tr>\n"
     "                <th class=\"left\"><a href=\"#help-dynamic-buffs\" class=\"help\">Dynamic Buffs</a></th>\n"
     "                <th>Start</th>\n"
@@ -3076,7 +3095,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
   if ( !p -> is_pet() )
   {
     util_t::fprintf( file,
-      "              <table>\n"
+      "              <table class=\"sc\">\n"
       "                <tr>\n"
       "                  <th class=\"left\"><a href=\"#help-constant-buffs\" class=\"help\">Constant Buffs</a></th>\n"
       "                </tr>\n" );
@@ -3133,7 +3152,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "          <div class=\"player-section uptimes\">\n"
     "            <h3 class=\"toggle\">Uptimes</h3>\n"
     "            <div class=\"toggle-content\">\n"
-    "              <table>\n"
+    "              <table class=\"sc\">\n"
     "                <tr>\n"
     "                  <th></th>\n"
     "                  <th>%%</th>\n"
@@ -3167,7 +3186,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "          <div class=\"player-section procs\">\n"
     "            <h3 class=\"toggle\">Procs</h3>\n"
     "            <div class=\"toggle-content\">\n"
-    "              <table>\n"
+    "              <table class=\"sc\">\n"
     "                <tr>\n"
     "                  <th></th>\n"
     "                  <th>Count</th>\n"
@@ -3206,7 +3225,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "          <div class=\"player-section gains\">\n"
     "            <h3 class=\"toggle\">Gains</h3>\n"
     "            <div class=\"toggle-content\">\n"
-    "              <table>\n"
+    "              <table class=\"sc\">\n"
     "                <tr>\n"
     "                  <th></th>\n"
     "                  <th>%s</th>\n"
@@ -3277,7 +3296,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     "            <div class=\"player-section action-priority-list\">\n"
     "              <h3 class=\"toggle\">Action Priority List</h3>\n"
     "              <div class=\"toggle-content\">\n"
-    "                <table>\n"
+    "                <table class=\"sc\">\n"
     "                  <tr>\n"
     "                    <th class=\"right\">#</th>\n"
     "                    <th class=\"left\">action,conditions</th>\n"
@@ -3332,7 +3351,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
       "            <div class=\"player-section gear-weights\">\n"
       "              <h3 class=\"toggle\">Gear Weights</h3>\n"
       "              <div class=\"toggle-content\">\n"
-      "                <table class=\"mb\">\n"
+      "                <table class=\"sc mb\">\n"
       "                  <tr class=\"left\">\n"
       "                    <th>Pawn Standard</th>\n"
       "                    <td>%s</td>\n"
@@ -3352,7 +3371,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p )
     if ( rhada_alt.size() > 10 ) rhada_alt.replace( 2, 8, "RhadaTip" );
 
     util_t::fprintf( file,
-      "                <table>\n"
+      "                <table class=\"sc\">\n"
       "                  <tr class=\"left\">\n"
       "                    <th>RhadaTip Standard</th>\n"
       "                    <td>%s</td>\n"
@@ -4289,8 +4308,10 @@ void report_t::print_html3( sim_t* sim )
       "      .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
       "      .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
       "      a.help { cursor: help; }\n"
-      "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: 0; outline: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }\n"
-      "      .section-open { margin-top: 25px; margin-bottom: 25px; }\n"
+      "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: -1px; border: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }\n"
+      "      .section-open { margin-top: 25px; margin-bottom: 25px; -moz-border-radius: 10px; -khtml-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }\n"
+      "      .grouped-first { -moz-border-radius-topright: 10px; -moz-border-radius-topleft: 10px; -khtml-border-top-right-radius: 10px; -khtml-border-top-left-radius: 10px; -webkit-border-top-right-radius: 10px; -webkit-border-top-left-radius: 10px; border-top-right-radius: 10px; border-top-left-radius: 10px; }\n"
+      "      .grouped-last { -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; -khtml-border-bottom-right-radius: 10px; -khtml-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }\n"
       "      .section .toggle-content { padding: 0 0 20px 14px; }\n"
       "      #raid-summary .toggle-content { padding-bottom: 0px; }\n"
       "      ul.params { padding: 0; }\n"
@@ -4298,38 +4319,38 @@ void report_t::print_html3( sim_t* sim )
       "      .player h2 { margin: 0; }\n"
       "      .player ul.params { position: relative; top: 2px; }\n"
       "      #masthead h2 { margin: 10px 0 5px 0; }\n"
-      "      #notice { outline: 1px solid #bb9999; background: #ffdddd; font-size: 12px; }\n"
+      "      #notice { border: 1px solid #ddbbbb; background: #ffdddd; font-size: 12px; }\n"
       "      #notice h2 { margin-bottom: 10px; }\n"
       "      #masthead ul.toc { padding: 0; }\n"
       "      #masthead ul.toc li { list-style-type: none; }\n"
       "      #masthead ul.toc li ul { padding-left: 18px; }\n"
       "      #masthead ul.toc li ul li { list-style-type: circle; font-size: 13px; }\n"
       "      .charts { margin: 10px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
-      "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; outline: 1px solid #ccc; -moz-box-shadow: 3px 3px 3px #ccc; -webkit-box-shadow: 3px 3px 3px #ccc; box-shadow: 3px 3px 3px #ccc; }\n"
+      "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; border: 1px solid #ccc; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; -moz-box-shadow: inset 1px 1px 4px #ccc; -webkit-box-shadow: inset 1px 1px 4px #ccc; box-shadow: inset 1px 1px 4px #ccc; }\n"
       "      .talents div.float { width: auto; margin-right: 50px; }\n"
-      "      table { border: 0; background-color: #eee; }\n"
-      "      tr { background-color: #fff; }\n"
-      "      tr.head { background-color: #aaa; color: #fff; }\n"
-      "      tr.odd { background-color: #f3f3f3; }\n"
-      "      th { padding: 2px 4px; text-align: center; background-color: #aaa; color: #fcfcfc; }\n"
-      "      th.small { padding: 2px 2px; font-size: 13px; }\n"
-      "      th a { color: #fff; text-decoration: underline; }\n"
-      "      th a:hover, th a:active { color: #f1f1ff; }\n"
-      "      td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
-      "      td.small { padding: 2px 2px; font-size: 12px; }\n"
-      "      th.left, td.left, tr.left th, tr.left td { text-align: left; padding-right: 6px; }\n"
-      "      th.right, td.right, tr.right th, tr.right td { text-align: right; padding-right: 6px; }\n"
-      "      tr.details td { padding: 0 0 15px 15px; text-align: left; background-color: #fff; }\n"
-      "      tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
-      "      tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
-      "      tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
-      "      tr.details td ul li span.tooltip { display: block; float: left; width: 190px; }\n"
-      "      tr.details td ul li span.tooltip-wider { display: block; float: left; width: 350px; }\n"
-      "      tr.details td div.float { width: 350px; }\n"
-      "      tr.details td div.float h5 { margin-top: 4px; }\n"
-      "      tr.details td div.float ul { margin: 0 0 12px 0; }\n"
-      "      td.filler { background-color: #ccc; }\n"
-      "      .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
+      "      table.sc { border: 0; background-color: #eee; }\n"
+      "      table.sc tr { background-color: #fff; }\n"
+      "      table.sc tr.head { background-color: #aaa; color: #fff; }\n"
+      "      table.sc tr.odd { background-color: #f3f3f3; }\n"
+      "      table.sc th { padding: 2px 4px; text-align: center; background-color: #aaa; color: #fcfcfc; }\n"
+      "      table.sc th.small { padding: 2px 2px; font-size: 12px; }\n"
+      "      table.sc th a { color: #fff; text-decoration: underline; }\n"
+      "      table.sc th a:hover, table.sc th a:active { color: #f1f1ff; }\n"
+      "      table.sc td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
+      "      table.sc td.small { padding: 2px 2px; font-size: 11px; }\n"
+      "      table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td { text-align: left; padding-right: 6px; }\n"
+      "      table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td { text-align: right; padding-right: 6px; }\n"
+      "      table.sc tr.details td { padding: 0 0 15px 15px; text-align: left; background-color: #fff; }\n"
+      "      table.sc tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
+      "      table.sc tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
+      "      table.sc tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
+      "      table.sc tr.details td ul li span.tooltip { display: block; float: left; width: 190px; }\n"
+      "      table.sc tr.details td ul li span.tooltip-wider { display: block; float: left; width: 350px; }\n"
+      "      table.sc tr.details td div.float { width: 350px; }\n"
+      "      table.sc tr.details td div.float h5 { margin-top: 4px; }\n"
+      "      table.sc tr.details td div.float ul { margin: 0 0 12px 0; }\n"
+      "      table.sc td.filler { background-color: #ccc; }\n"
+      "      table.sc .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
       "      .sample-sequence { width: 500px; word-wrap: break-word; outline: 1px solid #ddd; background: #fcfcfc; padding: 6px; font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n"
       "    </style>\n\n" );
         
@@ -4438,13 +4459,13 @@ void report_t::print_html3( sim_t* sim )
         
         for ( int i=0; i < num_players; i++ )
         {
-                print_html3_player( file, sim, sim -> players_by_name[ i ] );
+                print_html3_player( file, sim, sim -> players_by_name[ i ], i );
                 if ( sim -> report_pets_separately )
                 {
                         for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
                         {
                                 if ( pet -> summoned )
-                                        print_html3_player( file, sim, pet );
+                                        print_html3_player( file, sim, pet, 1 );
                         }
                 }
         }
@@ -4463,6 +4484,12 @@ void report_t::print_html3( sim_t* sim )
       "    <script type=\"text/javascript\">\n"
       "      jQuery.noConflict();\n"
       "      jQuery(document).ready(function($) {\n"
+      "        var pcol = document.location.protocol;\n"
+      "        if (pcol != 'file:') {\n"
+      "          var whtt = document.createElement(\"script\");\n"
+      "          whtt.src = pcol + \"//static.wowhead.com/widgets/power.js\";\n"
+      "          $('body').append(whtt);\n"
+      "        }\n"
       "        $('a[ rel=\"_blank\"]').each(function() {\n"
       "          $(this).attr('target', '_blank');\n"
       "        });\n"
@@ -4474,7 +4501,31 @@ void report_t::print_html3( sim_t* sim )
       "          var target = '';\n"
       "          e.preventDefault();\n"
       "          $(this).toggleClass('open');\n"
-      "          $(this).parent('.section').toggleClass('section-open');\n"
+      "          var section = $(this).parent('.section');\n"
+      "          if (section.attr('id') != 'masthead') {\n"
+      "            section.toggleClass('section-open');\n"
+      "          }\n"
+      "          if (section.attr('id') != 'masthead' && section.hasClass('section-open')) {\n"
+      "            section.removeClass('grouped-first');\n"
+      "            section.removeClass('grouped-last');\n"
+      "            if (!(section.next().hasClass('section-open'))) {\n"
+      "              section.next().addClass('grouped-first');\n"
+      "            }\n"
+      "            if (!(section.prev().hasClass('section-open'))) {\n"
+      "              section.prev().addClass('grouped-last');\n"
+      "            }\n"
+      "          } else if (section.attr('id') != 'masthead') {\n"
+      "            if (section.attr('id') == 'auras-and-debuffs' || section.next().hasClass('section-open')) {\n"
+      "              section.addClass('grouped-last');\n"
+      "            } else {\n"
+      "              section.next().removeClass('grouped-first');\n"
+      "            }\n"
+      "            if (section.prev().hasClass('section-open')) {\n"
+      "              section.addClass('grouped-first');\n"
+      "            } else {\n"
+      "              section.prev().removeClass('grouped-last');\n"
+      "            }\n"
+      "          }\n"
       "          $(this).next('.toggle-content').toggle(150);\n"
       "          $(this).next('.toggle-content').find('.charts').each(function() {\n"
       "            $(this).children('span').each(function() {\n"
