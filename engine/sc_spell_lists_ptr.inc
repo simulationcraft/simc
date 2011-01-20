@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13482
+// Class based active abilities, wow build 13529
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -374,7 +374,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        9484, // Shackle Undead
           0,
     },
-    // Holy tree, 21 abilities
+    // Holy tree, 20 abilities
     {
       32546, // Binding Heal
       14751, // Chakra
@@ -389,7 +389,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       14914, // Holy Fire
       15237, // Holy Nova
       88625, // Holy Word: Chastise
-      88684, // Holy Word: Serenity
       64901, // Hymn of Hope
       73325, // Leap of Faith
         724, // Lightwell
@@ -429,7 +428,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Death Knight
   {
-    // Blood tree, 14 abilities
+    // Blood tree, 15 abilities
     {
       48721, // Blood Boil
       48263, // Blood Presence
@@ -441,6 +440,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       77606, // Dark Simulacrum
       48743, // Death Pact
       49998, // Death Strike
+      66188, // Death Strike Off-Hand
       55050, // Heart Strike
       50842, // Pestilence
       48982, // Rune Tap
@@ -848,7 +848,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13482
+// Talent tree specialization abilities, wow build 13529
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1096,17 +1096,17 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
     },
     // Specialization abilities for Restoration tree
     {
+      96429, // Disentanglement
       87305, // Gift of Nature
       85101, // Meditation
       18562, // Swiftmend
-          0,
     },
   },
 };
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13482
+// Class mastery abilities, wow build 13529
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1191,7 +1191,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13482
+// Racial abilities, wow build 13529
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1834,7 +1834,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13482
+// Glyph spells for classes, wow build 13529
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2045,6 +2045,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     // Major Glyphs (15 spells)
     {
       55675, // Glyph of Circle of Healing
+      63248, // Glyph of Desperation
       55677, // Glyph of Dispel Magic
       63246, // Glyph of Divine Accuracy
       55684, // Glyph of Fade
@@ -2052,7 +2053,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       55683, // Glyph of Holy Nova
       55686, // Glyph of Inner Fire
       55691, // Glyph of Mass Dispel
-      63248, // Glyph of Pain Suppression
       55685, // Glyph of Prayer of Mending
       55688, // Glyph of Psychic Horror
       55676, // Glyph of Psychic Scream
@@ -2090,13 +2090,14 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Death Knight
   {
-    // Major Glyphs (12 spells)
+    // Major Glyphs (13 spells)
     {
       58623, // Glyph of Anti-Magic Shell
       59332, // Glyph of Blood Boil
       58673, // Glyph of Bone Shield
       58620, // Glyph of Chains of Ice
       63330, // Glyph of Dancing Rune Weapon
+      96279, // Glyph of Dark Succor
       62259, // Glyph of Death Grip
       63331, // Glyph of Hungering Cold
       58657, // Glyph of Pestilence
@@ -2348,7 +2349,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13482
+// Tier item set bonuses for class, wow build 13529
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -2611,7 +2612,7 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
     // Tier 11 bonuses (2 spells)
     {
       89923, // Lightning-Charged Battlegear - 2 Piece Bonus (Item - Hunter T11 2P Bonus)
-      89925, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
+      96411, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
           0,
     },
   },
