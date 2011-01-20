@@ -65,7 +65,7 @@ void stats_t::reset( action_t* a )
 void stats_t::add_time( double amount,
 			int    dmg_type )
 {
-  if ( dmg_type == DMG_DIRECT )
+  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT )
   {
     total_execute_time += amount;
   }
@@ -89,7 +89,7 @@ void stats_t::add_result( double amount,
   player -> iteration_dmg += amount;
   total_dmg += amount;
 
-  stats_results_t& r = ( dmg_type == DMG_DIRECT ) ? execute_results[ result ] : tick_results[ result ];
+  stats_results_t& r = ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT ) ? execute_results[ result ] : tick_results[ result ];
 
   r.count += 1;
   r.total_dmg += amount;
@@ -116,7 +116,7 @@ void stats_t::add( double amount,
 {
   add_result( amount, dmg_type, result );
 
-  if ( dmg_type == DMG_DIRECT )
+  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT )
   {
     num_executes++;
     total_execute_time += time;

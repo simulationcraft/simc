@@ -117,6 +117,7 @@
     <ClCompile Include="engine\sc_event.cpp" />
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sc_heal.cpp" />
     <ClCompile Include="engine\sc_http.cpp" />
     <ClCompile Include="engine\sc_hunter.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />

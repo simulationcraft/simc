@@ -78,6 +78,7 @@ SRC =\
 	sc_expressions.cpp	\
 	sc_event.cpp		\
 	sc_gear_stats.cpp	\
+	sc_heal.cpp         \
 	sc_hunter.cpp		\
 	sc_http.cpp		\
 	sc_item.cpp		\

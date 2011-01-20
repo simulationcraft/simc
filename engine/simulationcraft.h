@@ -123,6 +123,7 @@ struct scaling_t;
 struct shaman_t;
 struct sim_t;
 struct spell_t;
+struct heal_t;
 struct stats_t;
 struct talent_translation_t;
 struct target_t;
@@ -241,7 +242,7 @@ enum pet_type_t
   PET_MAX
 };
 
-enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1 };
+enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME };
 
 enum dot_behavior_type { DOT_CLIP=0, DOT_REFRESH };
 
@@ -3004,6 +3005,7 @@ struct player_t
     buff_t* wild_magic_potion_sp;
     buff_t* wild_magic_potion_crit;
     buff_t* furious_howl;
+    buff_t* inspiration;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
@@ -3696,6 +3698,33 @@ struct spell_t : public action_t
 
   virtual double miss_chance( int delta_level ) SC_CONST;
   virtual double crit_chance( int delta_level ) SC_CONST;
+};
+
+// Heal ======================================================================
+
+struct heal_t : public spell_t
+{
+  player_t* heal_target;
+  double actual_heal, overheal;
+  stats_t* overheal_stats;
+
+  heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
+  heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
+
+  virtual void player_buff();
+  virtual void target_debuff( int dmg_type );
+  virtual double haste() SC_CONST;
+  virtual void execute();
+  virtual void assess_damage( double amount,
+                                  int    dmg_type );
+  virtual bool ready();
+  virtual void calculate_result();
+  virtual double calculate_direct_damage();
+  virtual double calculate_tick_damage();
+  virtual void update_stats( int type );
+  virtual void travel( int travel_result, double travel_dmg );
+  virtual void tick();
+
 };
 
 // Sequence ==================================================================

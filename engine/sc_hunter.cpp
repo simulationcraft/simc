@@ -2973,14 +2973,14 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       if ( talents.bestial_wrath -> rank() )
       {
-        action_list_str += "/bestial_wrath,if=!buff.rapid_fire.up&!buff.bloodlust.up";
+        action_list_str += "/bestial_wrath";
       }
 
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=20";
       if ( talents.focus_fire -> ok() )
       {
-        action_list_str += "/focus_fire";
+        action_list_str += "/focus_fire,five_stacks=1";
         if ( talents.the_beast_within -> ok() )
           action_list_str += ",if=!buff.beast_within.up";
       }
@@ -3014,7 +3014,7 @@ void hunter_t::init_actions()
       action_list_str += "/explosive_shot,if=!ticking";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
       action_list_str += "/kill_shot";
-      action_list_str += "/arcane_shot,if=focus>=80&buff.lock_and_load.down";
+      action_list_str += "/arcane_shot,if=focus>=70&buff.lock_and_load.down";
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else

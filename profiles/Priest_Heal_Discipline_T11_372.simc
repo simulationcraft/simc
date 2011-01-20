@@ -1,13 +1,14 @@
 #!./simc 
 
-queue_lag=0.5
-priest=Priest_Heal_Discipline_T11_372.simc
+raid_events+=/damage,cooldown=30,amount=100000
+
+priest=Priest_Heal_Discipline_T11_372
 origin=""
 level=85
 race=night_elf
 use_pre_potion=-1
 professions=enchanting=450/tailoring=450
-talents=http://www.wowarmory.com/talent-calc.xml?cid=5&tal=23300322101320031202102300000000000000000000000000000000000000
+talents=http://www.wowhead.com/talent#priest-23300322101320031202103300200000000000000020000000000000000000
 glyphs=inner_fire/shadowfiend/shadow_protection/smite/levitate/holy_nova/penance/renew/power_word_shield
 actions=flask,type=draconic_mind
 actions+=/food,type=fish_feast
@@ -17,9 +18,10 @@ actions+=/snapshot_stats
 actions+=/mana_potion,time>=200
 actions+=/shadow_fiend,trigger=30000
 actions+=/power_word_shield,if=buff.weakened_soul.down
-actions+=/inner_focus
 actions+=/penance_heal
+actions+=/inner_focus
 actions+=/greater_heal
+#actions+=/prayer_of_healing
 head=helm_of_eldritch_authority,heroic=1,type=cloth,stats=325int_578sta_217spi_237haste_1093armor,reforge=spi_crit,gems=revitalizing_shadowspirit_40int_30haste,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit,reforge=spi_haste
 shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,stats=266int_429sta_171spi_191haste_1009armor,reforge=spi_crit,gems=40int_10haste,enchant=50int_25haste

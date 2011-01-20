@@ -290,6 +290,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\sc_heal.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_http.cpp"
 				>
 			</File>
