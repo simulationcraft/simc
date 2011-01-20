@@ -211,7 +211,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index + 1, 10, tmp_buffer2 );
   s << tmp_buffer;
   
-  if ( _effect_type_strings[ e -> type ] != 0 )
+  if ( e -> type < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) && 
+    _effect_type_strings[ e -> type ] != 0 )
   {
     s << _effect_type_strings[ e -> type ];
     // Put some nice handling on some effect types
@@ -235,7 +236,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
 
   if ( e -> subtype > 0 )
   {
-   if ( _effect_subtype_strings[ e -> subtype ] != 0 )
+   if (  e -> subtype < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) && 
+     _effect_subtype_strings[ e -> subtype ] != 0 )
    {
      s << " | " << _effect_subtype_strings[ e -> subtype ];
      switch ( e -> subtype )
@@ -259,7 +261,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
          break;
        case A_ADD_FLAT_MODIFIER:
        case A_ADD_PCT_MODIFIER:
-         if ( _property_type_strings[ e -> misc_value ] != 0 )
+         if ( e -> misc_value < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) && 
+           _property_type_strings[ e -> misc_value ] != 0 )
            s << ": " << _property_type_strings[ e -> misc_value ];
          break;
        default:
@@ -384,7 +387,8 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << std::endl;
   }
   
-  if ( spell -> cost > 0 || ( spell -> power_type == 5 && spell -> rune_cost > 0 ) )
+  if ( ( spell -> power_type + 2 ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) && 
+    ( spell -> cost > 0 || ( spell -> power_type == 5 && spell -> rune_cost > 0 ) ) )
   {
     s << "Resource     : ";
     if ( spell -> power_type != 5 && spell -> power_type != 6 && spell -> power_type != 1 )
