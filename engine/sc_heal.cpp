@@ -421,9 +421,8 @@
 
     if ( tick_may_crit )
     {
-      int delta_level = target -> level - player -> level;
 
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
+      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( 0 ) ) )
       {
         result = RESULT_CRIT;
         action_callback_t::trigger( player -> spell_result_callbacks[ RESULT_CRIT ], this );

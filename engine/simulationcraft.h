@@ -2758,6 +2758,7 @@ struct player_t
   int         index;
   player_type type;
   int         level, use_pre_potion, tank, party, member;
+  bool        healer;
   double      skill, initial_skill, distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
   rating_t    rating;

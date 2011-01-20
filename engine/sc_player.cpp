@@ -255,7 +255,7 @@ player_t::player_t( sim_t*             s,
     sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
     next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ), tank( -1 ),
-    party( 0 ), member( 0 ),
+    party( 0 ), member( 0 ), healer( false ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
@@ -1331,7 +1331,7 @@ void player_t::init_buffs()
   buffs.dark_intent          = new buff_t( this, 85767, "dark_intent" );
   buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
   buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
-  buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hmyn_of_hope" );
+  buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope" );
 
 
 
@@ -5021,6 +5021,7 @@ void player_t::create_options()
     { "level",                                OPT_INT,      &( level                                  ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
     { "tank",                                 OPT_INT,      &( tank                                   ) },
+    { "healer",                               OPT_BOOL,     &( healer                                 ) },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },

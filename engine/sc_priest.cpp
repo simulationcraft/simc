@@ -25,8 +25,6 @@
 
 struct priest_t : public player_t
 {
-  bool healer;
-
   // Buffs
   buff_t* buffs_empowered_shadow;
   buff_t* buffs_inner_fire;
@@ -116,6 +114,7 @@ struct priest_t : public player_t
     passive_spell_t* meditation_holy;
     passive_spell_t* meditation_disc;
     passive_spell_t* shield_discipline;
+    mastery_t*       echo_of_light;
     
     mastery_t*       shadow_orb_power;
     passive_spell_t* empowered_shadow;
@@ -200,6 +199,7 @@ struct priest_t : public player_t
   // Special
   std::queue<spell_t* > shadowy_apparition_free_list;
   std::list<spell_t* >  shadowy_apparition_active_list;
+  heal_t* heals_echo_of_light;
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
@@ -308,8 +308,6 @@ struct priest_t : public player_t
   int    recast_mind_blast;
   bool   was_sub_25;
 
-  target_t* heal_dummy;
-
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -318,13 +316,12 @@ struct priest_t : public player_t
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;
 
-    heal_dummy = sim -> get_target("heal_dummy");
-    healer = false;
-   
     use_shadow_word_death                = false;
     use_mind_blast                       = 1;
     recast_mind_blast                    = 0;
     was_sub_25                           = false;
+
+    heals_echo_of_light                  = 0;
 
     distance                             = 40;
 
@@ -578,6 +575,35 @@ struct priest_heal_t : public heal_t
           a -> heal_target -> buffs.inspiration -> trigger( 1, p -> talents.inspiration -> rank() * 5 );
   }
 };
+
+void trigger_echo_of_light( heal_t* a )
+{
+  struct echo_of_light_t : public priest_heal_t
+  {
+    echo_of_light_t( player_t* p ) :
+      priest_heal_t( "echo_of_light", p, 77485 )
+    {
+      base_tick_time = 1.0;
+      num_ticks = 6;
+      background = true;
+      tick_may_crit = false;
+      hasted_ticks = false;
+      reset();
+    }
+  };
+
+  priest_t* p = a -> player -> cast_priest();
+
+  if ( p -> passive_spells.echo_of_light -> ok() )
+  {
+    if ( ! p -> heals_echo_of_light ) p -> heals_echo_of_light = new echo_of_light_t( p );
+
+    // Fixme: Correct implementation!
+    p -> heals_echo_of_light -> base_td = a -> direct_dmg / 6.0 * p -> composite_mastery() * p -> passive_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0;
+
+    p -> heals_echo_of_light -> execute();
+  }
+}
 
 // ==========================================================================
 // Pet Shadow Fiend
@@ -2407,54 +2433,17 @@ struct renew_t : public priest_heal_t
 
     return c;
   }
-  virtual double gcd() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-    double t = priest_heal_t::gcd();
 
-    if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3) t -=0.5;
-
-    return t;
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-     double t = priest_heal_t::execute_time();
-
-     if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3) t -=0.5;
-
-     return t;
-  }
 
   virtual void player_buff()
   {
     priest_t* p = player -> cast_priest();
     priest_heal_t::player_buff();
 
-    if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3)
-      player_multiplier *= 1.10;
+    if ( p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 2)
+      player_multiplier *= 1.15;
   }
-  virtual void execute()
-  {
-    priest_heal_t::execute();
-    priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_chakra_pre -> up())
-    {
-      p -> buffs_chakra -> trigger( 1 , 3, 1.0 );
-
-      p -> buffs_chakra_pre -> expire();
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = 60.0;
-      p -> cooldowns_chakra -> start();
-    }
-
-    if ( p -> talents.state_of_mind -> ok() && p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 3)
-    {
-      p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
-    }
-  }
 };
 
 
@@ -2681,6 +2670,9 @@ struct prayer_of_healing_t : public priest_heal_t
     };
     parse_options( options, options_str );
 
+    // Fixme: 5x Multiplier for now
+    base_multiplier *= 5;
+
   }
 
   virtual void execute()
@@ -2690,6 +2682,29 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     p -> buffs_inner_focus -> expire();
     trigger_inspiration(this);
+    trigger_echo_of_light(this);
+
+    if ( da && result != RESULT_CRIT )
+    {
+      da -> base_dd_min = direct_dmg * 0.3;
+      da -> base_dd_max = direct_dmg * 0.3;
+      da -> execute();
+    }
+
+    if ( p -> buffs_chakra_pre -> up())
+        {
+          p -> buffs_chakra -> trigger( 1 , 2, 1.0 );
+
+          p -> buffs_chakra_pre -> expire();
+          p -> cooldowns_chakra -> reset();
+          p -> cooldowns_chakra -> duration = 60.0;
+          p -> cooldowns_chakra -> start();
+        }
+
+    if ( p -> talents.state_of_mind -> ok() && p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 2 )
+    {
+      p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
+    }
   }
 
   virtual void player_buff()
@@ -2699,6 +2714,9 @@ struct prayer_of_healing_t : public priest_heal_t
 
     if ( p -> buffs_inner_focus -> up() )
           player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
+
+    if ( p -> buffs_chakra -> up() && p -> buffs_chakra -> value() == 2 )
+      player_multiplier *= 1.15;
   }
 
   virtual double cost() SC_CONST
@@ -2729,6 +2747,9 @@ struct circle_of_healing_t : public priest_heal_t
     base_cost        *= 1.0
                         - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
+
+    // Fixme: 5x Multiplier for now
+    base_multiplier *= 5;
   }
   virtual double cost() SC_CONST
   {
@@ -2742,8 +2763,20 @@ struct circle_of_healing_t : public priest_heal_t
   }
   virtual void execute()
   {
+    priest_t* p = player -> cast_priest();
+    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration -= ( p -> buffs_chakra -> up() && p -> buffs_chakra -> value() == 2 ) ? 2.0 : 0.0;
     priest_heal_t::execute();
     trigger_inspiration(this);
+  }
+
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+
+    priest_t* p = player -> cast_priest();
+    if ( p -> buffs_chakra -> up() && p -> buffs_chakra -> value() == 2 )
+      player_multiplier *= 1.15;
   }
 
 };
@@ -2760,13 +2793,15 @@ struct prayer_of_mending_t : public priest_heal_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    base_multiplier *= 5;
     direct_power_mod = effect_coeff(1);
     base_dd_min = base_dd_max = effect_min(1);
 
     base_cost        *= 1.0
                         - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
     base_cost         = floor( base_cost );
+
+    // Fixme: 5x Multiplier for now
+    base_multiplier *= 5;
   }
   virtual double cost() SC_CONST
   {
@@ -2777,6 +2812,27 @@ struct prayer_of_mending_t : public priest_heal_t
     c  = floor( c );
 
     return c;
+  }
+
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    priest_t* p = player -> cast_priest();
+    if ( p -> buffs_chakra_pre -> up())
+        {
+          p -> buffs_chakra -> trigger( 1 , 2, 1.0 );
+
+          p -> buffs_chakra_pre -> expire();
+          p -> cooldowns_chakra -> reset();
+          p -> cooldowns_chakra -> duration = 60.0;
+          p -> cooldowns_chakra -> start();
+        }
+
+    if ( p -> talents.state_of_mind -> ok() && p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 2 )
+    {
+      p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
+    }
   }
 };
 
@@ -3314,7 +3370,7 @@ void priest_t::init_spells()
   passive_spells.shield_discipline    = new passive_spell_t( this, "shield_discipline", "Shield Discipline" );
 
   passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
-
+  passive_spells.echo_of_light        = new mastery_t( this, "echo_of_light", "Echo of Light", TREE_HOLY );
 
   // Shadow Mastery
   passive_spells.shadow_orb_power     = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
@@ -3484,11 +3540,11 @@ void priest_t::init_actions()
       }
       else
       {
-                                                         action_list_str += "/mana_potion";
-                                                         action_list_str += "/shadow_fiend,trigger=10000";
+                                                         action_list_str += "/mana_potion,trigger=30000";
+                                                         action_list_str += "/shadow_fiend,trigger=100000";
+                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
-                                                         action_list_str += "/renew,if=!ticking";
                                                          action_list_str += "/prayer_of_mending";
                                                          action_list_str += "/inner_focus";
                                                          action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
@@ -3762,7 +3818,6 @@ void priest_t::create_options()
     { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
     { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
     { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },
-    { "healer",                  OPT_BOOL,   &( healer                                     ) },
 
     { NULL, OPT_UNKNOWN, NULL }
   };
@@ -3796,6 +3851,8 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
     if ( healer )
     {
       profile_str += "healer=1\n";
+      // Event to give some damage to heal up
+      profile_str += "raid_events+=/damage,cooldown=30,amount=100000";
     }
   }
 
