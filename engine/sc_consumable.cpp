@@ -63,12 +63,12 @@ struct flask_t : public action_t
       if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
       break;
     case FLASK_DRACONIC_MIND:
-      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300;
+      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300;
       p -> stat_gain( STAT_INTELLECT, intellect );
       if ( ! p -> in_combat ) p -> stat_gain( STAT_MANA, p -> mana_per_intellect * intellect, gain );
       break;
     case FLASK_ENDLESS_RAGE:
-      p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 260 : 180 );
+      p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 244 : 180 );
       break;
    case FLASK_ENHANCEMENT:
       if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
@@ -92,11 +92,14 @@ struct flask_t : public action_t
         p -> stat_gain( STAT_AGILITY, 80 );
       }
       break;
-    case FLASK_MIGHTY_RESTORATION:
-      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+    case FLASK_FLOWING_WATER:
+      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
       break;
     case FLASK_FROST_WYRM:
       p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
+      break;
+    case FLASK_MIGHTY_RESTORATION:
+      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 109 : 62 );
       break;
     case FLASK_NORTH:
       if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
@@ -126,7 +129,7 @@ struct flask_t : public action_t
       p -> spell_power[ SCHOOL_SHADOW ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
       break;
     case FLASK_PURE_MOJO:
-      p -> stat_gain( STAT_MP5, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 65 : 45 );
+      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 137 : 90 );
       break;
     case FLASK_RELENTLESS_ASSAULT:
       p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 160 : 120 );
@@ -135,15 +138,15 @@ struct flask_t : public action_t
       p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 93 : 70 );
       break;
     case FLASK_STEELSKIN:
-      stamina = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300;
+      stamina = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300;
       p -> stat_gain( STAT_STAMINA, stamina );
       if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * stamina, gain );
       break;
     case FLASK_TITANIC_STRENGTH:
-      p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
       break;
     case FLASK_WINDS:
-      p -> stat_gain( STAT_AGILITY, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 400 : 300 );
+      p -> stat_gain( STAT_AGILITY, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
       break;
     default: assert( 0 );
     }

@@ -800,6 +800,7 @@ const char* util_t::flask_type_string( int flask )
   case FLASK_DRACONIC_MIND:      return "draconic_mind";
   case FLASK_ENDLESS_RAGE:       return "endless_rage";
   case FLASK_ENHANCEMENT:        return "enhancement";
+  case FLASK_FLOWING_WATER:      return "flowing_water";
   case FLASK_FROST_WYRM:         return "frost_wyrm";
   case FLASK_MIGHTY_RESTORATION: return "mighty_restoration";
   case FLASK_NORTH:              return "north";
