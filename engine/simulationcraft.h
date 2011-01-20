@@ -3006,6 +3006,7 @@ struct player_t
     buff_t* wild_magic_potion_crit;
     buff_t* furious_howl;
     buff_t* inspiration;
+    buff_t* hymn_of_hope;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
@@ -3029,6 +3030,7 @@ struct player_t
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
+    gain_t* hymn_of_hope;
     void reset() { memset( ( void* ) this, 0x00, sizeof( gains_t ) ); }
     gains_t() { reset(); }
   };

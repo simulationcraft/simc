@@ -19,6 +19,33 @@ struct dark_intent_callback_t : public action_callback_t
   }
 };
 
+struct hymn_of_hope_buff_t : public buff_t
+{
+  double mana_gain;
+  hymn_of_hope_buff_t( player_t* p, const uint32_t id, const std::string& n ) :
+    buff_t ( p, id, n )
+  {
+    mana_gain = 0;
+
+  }
+  virtual void start( int    stacks,
+                          double value )
+  {
+    buff_t::start( stacks, value );
+
+    // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
+    // Extra Mana is set by current max_mana, doesn't change when max_mana changes.
+    mana_gain = player -> resource_max[ RESOURCE_MANA ] * 0.15;
+    player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+    player -> stat_loss( STAT_MAX_MANA, mana_gain );
+  }
+};
+
 // has_foreground_actions ================================================
 
 static bool has_foreground_actions( player_t* p )
@@ -1304,6 +1331,7 @@ void player_t::init_buffs()
   buffs.dark_intent          = new buff_t( this, 85767, "dark_intent" );
   buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
   buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
+  buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hmyn_of_hope" );
 
 
 
@@ -1347,6 +1375,7 @@ void player_t::init_gains()
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
+  gains.hymn_of_hope           = get_gain( "hymn_of_hope_max_mana" );
 }
 
 // player_t::init_procs ====================================================

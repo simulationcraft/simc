@@ -50,7 +50,6 @@ struct priest_t : public player_t
   buff_t* buffs_grace;
   buff_t* buffs_weakened_soul;
   buff_t* buffs_inner_focus;
-  buff_t* buffs_hymn_of_hope;
 
   // Talents
 
@@ -453,7 +452,6 @@ struct priest_absorb_t : public spell_t
     weapon_multiplier = 0.0;
 
     may_miss=may_resist=false;
-    priest_t* p = player -> cast_priest();
   }
   priest_absorb_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
       spell_t( n, id, player, t )
@@ -463,7 +461,6 @@ struct priest_absorb_t : public spell_t
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
     may_miss=may_resist=false;
-    priest_t* p = player -> cast_priest();
   }
 
   virtual void player_buff()
@@ -594,7 +591,7 @@ struct shadow_fiend_pet_t : public pet_t
   bool bad_swing;
   double bad_spell_power;
   bool extra_tick;
-  
+
   struct shadowcrawl_t : public spell_t
   {
     shadowcrawl_t( player_t* player ) :
@@ -602,7 +599,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       may_miss = false;
     }
-      
+
     virtual void execute()
     {
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
@@ -622,7 +619,7 @@ struct shadow_fiend_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
-      direct_power_mod = 0.0064 * o -> level; 
+      direct_power_mod = 0.0064 * o -> level;
       if (harmful) base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
       base_dd_min = util_t::ability_rank( player -> level,  221.0,85,  197.0,82,  175.0,80,  1.0,0 );
@@ -647,9 +644,9 @@ struct shadow_fiend_pet_t : public pet_t
       priest_t* o = p -> owner -> cast_priest();
 
       attack_t::assess_damage( amount, dmg_type );
-      
-      o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] * 
-                          p -> mana_leech -> effect_base_value( 1 ) / 100.0, 
+
+      o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
+                          p -> mana_leech -> effect_base_value( 1 ) / 100.0,
                           o -> gains_shadow_fiend );
     }
     void player_buff()
@@ -671,7 +668,7 @@ struct shadow_fiend_pet_t : public pet_t
   melee_t* melee;
 
   shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ), 
+      pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ),
       bad_swing( false ), bad_spell_power( 0.0 ), extra_tick( false ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -721,7 +718,7 @@ struct shadow_fiend_pet_t : public pet_t
     buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl->duration() );
   }
   virtual double composite_spell_power( const school_type school ) SC_CONST
-  {  
+  {
     priest_t* p = owner -> cast_priest();
     double sp;
     if ( bad_swing )
@@ -736,7 +733,7 @@ struct shadow_fiend_pet_t : public pet_t
   }
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_spell_hit() * 26.0 / 17.0; 
+    return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
   virtual double composite_attack_crit() SC_CONST
   {
@@ -772,7 +769,7 @@ struct shadow_fiend_pet_t : public pet_t
     priest_t* p = owner -> cast_priest();
 
     pet_t::dismiss();
-  
+
     p -> buffs_shadowfiend -> expire();
   }
   virtual void schedule_ready( double delta_time=0,
@@ -835,8 +832,8 @@ void priest_spell_t::assess_damage( double amount,
   priest_t* p = player -> cast_priest();
 
   spell_t::assess_damage( amount, dmg_type );
-  
-  if ( p -> buffs_vampiric_embrace -> up() ) 
+
+  if ( p -> buffs_vampiric_embrace -> up() )
   {
     double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
     p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
@@ -854,9 +851,9 @@ void priest_spell_t::assess_damage( double amount,
     for ( int i=0; i < num_players; i++ )
     {
       player_t* q = p -> party_list[ i ];
-      
+
       q -> resource_gain( RESOURCE_HEALTH, a * 0.03, q -> gains.vampiric_embrace );
-    
+
       r = q -> pet_list;
 
       while ( r )
@@ -864,7 +861,7 @@ void priest_spell_t::assess_damage( double amount,
         r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
         r = r -> next_pet;
       }
-    }    
+    }
   }
 }
 
@@ -898,7 +895,7 @@ struct shadowy_apparition_t : public priest_spell_t
 
     if ( !result_is_hit() )
     {
-      // Cleanup. Re-add to free list.    
+      // Cleanup. Re-add to free list.
       p -> shadowy_apparition_active_list.remove( this );
       p -> shadowy_apparition_free_list.push( this );
     }
@@ -920,12 +917,12 @@ struct shadowy_apparition_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::player_buff();
-  
+
     if ( player -> bugs )
     {
       player_multiplier /= 1.0 + p -> constants.twisted_faith_static_value;
     }
-    
+
     player_multiplier *= 1.0 + p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
   }
 };
@@ -1012,7 +1009,7 @@ struct devouring_plague_burst_t : public priest_spell_t
     m += p -> buffs_empowered_shadow -> value();
 
     player_multiplier *= m;
-  } 
+  }
 };
 
 struct devouring_plague_t : public priest_spell_t
@@ -1074,7 +1071,7 @@ struct devouring_plague_t : public priest_spell_t
       {
         n = hasted_num_ticks();
       }
-    
+
       devouring_plague_burst -> base_dd_min    = t * n;
       devouring_plague_burst -> base_dd_max    = t * n;
       devouring_plague_burst -> dot_nt         = n;
@@ -1088,7 +1085,7 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::player_buff();
-    
+
     player_multiplier *= 1.0 + p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
                                p -> buffs_empowered_shadow -> value();
   }
@@ -1175,7 +1172,7 @@ struct dispersion_t : public priest_spell_t
     consumption_rate -= sf_regen / sf_cooldown_duration;
 
     if ( consumption_rate <= 0.00001 ) return false;
-    
+
     double future_mana = current_mana + sf_regen - consumption_rate * sf_cooldown_remains;
 
     if ( future_mana > max_mana ) future_mana = max_mana;
@@ -1272,7 +1269,7 @@ struct inner_fire_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    
+
     p -> buffs_inner_will       -> expire ();
     p -> buffs_inner_fire       -> start( 1, sp_value );
     p -> buffs_inner_fire_armor -> start( 1, armor_value );
@@ -1470,7 +1467,7 @@ struct mind_flay_t : public priest_spell_t
     {
       if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking )
       {
-        player_multiplier *= 1.0 + 0.10;    
+        player_multiplier *= 1.0 + 0.10;
       }
     }
     else
@@ -1529,7 +1526,7 @@ struct mind_flay_t : public priest_spell_t
         return false;
     }
 
-    // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast 
+    // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast
     // is about to come off it's cooldown.
     if ( mb_wait )
     {
@@ -1803,7 +1800,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> was_sub_25 = p -> glyphs.shadow_word_death && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) && 
+    p -> was_sub_25 = p -> glyphs.shadow_word_death && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) &&
                      ( target -> health_percentage() <= 25 );
 
     priest_spell_t::execute();
@@ -2177,7 +2174,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    
+
     p -> summon_pet( "shadow_fiend", duration() );
 
     update_ready();
@@ -2339,6 +2336,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     background  = true;
     may_crit    = true;
     direct_tick = true;
+    harmful = false;
     stats = player -> get_stats( "hymn_of_hope" );
   }
 
@@ -2349,8 +2347,8 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     p -> resource_gain( RESOURCE_MANA, 0.02 * p -> resource_max[ RESOURCE_MANA ], p -> gains_hymn_of_hope );
 
-    // FIXME: Implement the +15% max-mana of the buff
-    p -> buffs_hymn_of_hope -> trigger();
+    // Hymn of Hope only adds +x% of the current_max mana, it doesn't change if afterwards max_mana changes.
+    p -> buffs.hymn_of_hope -> trigger();
   }
 
 };
@@ -2366,6 +2364,8 @@ struct hymn_of_hope_t : public priest_spell_t
           { NULL, OPT_UNKNOWN, NULL }
         };
     parse_options( options, options_str );
+
+    harmful=false;
 
     hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
   }
@@ -2921,6 +2921,16 @@ struct penance_heal_t : public priest_heal_t
   update_time( DMG_OVER_TIME );
   }
 };
+
+struct holy_word_t : public priest_spell_t
+{
+  holy_word_t( player_t* player, const std::string& options_str ) :
+    priest_spell_t( "holy_word", player, SCHOOL_HOLY, TREE_HOLY )
+  {
+
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -3379,7 +3389,6 @@ void priest_t::init_buffs()
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_shadow_orb                 = new buff_t( this, "shadow_orb",      3, 60.0                                );
-  buffs_hymn_of_hope               = new buff_t( this, 64904, "hymn_of_hope" );
 }
 
 // priest_t::init_actions =====================================================
