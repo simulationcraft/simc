@@ -2884,6 +2884,7 @@ struct life_tap_t : public warlock_spell_t
     parse_options( options, options_str );
 
     harmful = false;
+    usable_moving = true;
 
     if ( p -> glyphs.life_tap -> ok() )
       trigger_gcd += p -> glyphs.life_tap -> effect_base_value( 1 ) / 1000.0;
