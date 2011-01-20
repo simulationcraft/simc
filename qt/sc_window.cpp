@@ -471,7 +471,7 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(       "Version",       versionChoice = createChoice( 2, "Live", "PTR" ) );
+  globalsLayout->addRow(       "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
   globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
   globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
@@ -818,7 +818,8 @@ void SimulationCraftWindow::createResultsTab()
 void SimulationCraftWindow::createToolTips()
 {
   versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
-			     "PTR:  Use mechanics on PTR server" );
+			     "PTR:  Use mechanics on PTR server"
+			     "Both: Create Evil Twin with PTR mechanics" );
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
 				"1000:  Sufficient for DPS Analysis\n"
@@ -871,7 +872,7 @@ sim_t* SimulationCraftWindow::initSim()
     sim = new sim_t();
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
-    sim -> parse_option( "ptr", ( versionChoice->currentIndex() ? "1" : "0" ) );
+    sim -> parse_option( "ptr", ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
   }
   return sim;
 }
@@ -1107,7 +1108,7 @@ void SimulationCraftWindow::startSim()
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
-  options += "ptr="; options += ( versionChoice->currentIndex() ? "1" : "0" ); options += "\n";
+  options += "ptr="; options += ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
   options += "iterations=" + iterationsChoice->currentText() + "\n";
   if( iterationsChoice->currentText() == "10000" )
   {
@@ -1194,6 +1195,12 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += cmdLine->text();
   options += "\n";
+  if( versionChoice->currentIndex() == 2 )
+  {
+    options += "ptr=1\n";
+    options += "copy=EvilTwinPTR\n";
+    options += "ptr=0\n";
+  }
   return options;
 }
 
