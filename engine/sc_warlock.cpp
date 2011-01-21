@@ -3854,7 +3854,7 @@ double warlock_t::composite_player_td_multiplier( const school_type school ) SC_
     }
     if ( buffs_demon_soul_felhunter -> up() )
     {
-      player_multiplier += 1.0 + buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
+      player_multiplier += buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
     }
   }
 
