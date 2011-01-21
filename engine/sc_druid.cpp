@@ -3782,7 +3782,7 @@ void druid_t::init_actions()
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
       if ( ptr )
-        action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom<3";
+        action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
     }
     action_list_default = 1;
   }
