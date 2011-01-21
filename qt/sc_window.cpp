@@ -459,19 +459,19 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(       "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
-  globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
-  globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
-  globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
-  globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
-  globalsLayout->addRow(   "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
-  globalsLayout->addRow( "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
-  globalsLayout->addRow(   "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
-  globalsLayout->addRow(              "", generateDebugOutput = new QCheckBox( "Generate debug output" ) );
+  globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
+  globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
+  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
+  globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout->addRow(           "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
+  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
+  globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
+  globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout->addRow(     "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
+  globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
+  globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
@@ -846,6 +846,10 @@ void SimulationCraftWindow::createToolTips()
 
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
+  debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
+			   "Gory details are very gory.  No documentation will be forthcoming.\n"
+			   "Due to the forced single iteration, no scale factor calculation." );
+  
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 }
@@ -861,8 +865,8 @@ sim_t* SimulationCraftWindow::initSim()
     sim = new sim_t();
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
-    sim -> parse_option( "ptr", ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
-    sim -> parse_option( "debug", generateDebugOutput->checkState() == Qt::CheckState::Checked ? "1" : "0" );
+    sim -> parse_option( "ptr",   ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
+    sim -> parse_option( "debug", ( (   debugChoice->currentIndex() == 2 ) ? "1" : "0" ) );
   }
   return sim;
 }
@@ -877,6 +881,7 @@ void SimulationCraftWindow::deleteSim()
     QFile logFile( "simc_log.txt" );
     logFile.open( QIODevice::ReadOnly );
     logText->appendPlainText( logFile.readAll() );
+    logText->moveCursor( QTextCursor::End );
     logFile.close();
   }
 }
@@ -1194,6 +1199,12 @@ QString SimulationCraftWindow::mergeOptions()
     options += "copy=EvilTwinPTR\n";
     options += "ptr=0\n";
   }
+  if( debugChoice->currentIndex() != 0 )
+  {
+    options += "log=1\n";
+    options += "scale_only=none\n";
+    options += "dps_plot_stat=none\n";
+  }
   return options;
 }
 
@@ -1224,8 +1235,8 @@ void SimulationCraftWindow::simulateFinished()
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
-    mainTab->setCurrentIndex( TAB_RESULTS );
     resultsView->setFocus();
+    mainTab->setCurrentIndex( debugChoice->currentIndex() ? TAB_LOG : TAB_RESULTS );
   }
   else
   {
