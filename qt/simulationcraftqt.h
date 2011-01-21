@@ -110,6 +110,7 @@ public:
     QComboBox* smoothRNGChoice;
     QComboBox* armoryRegionChoice;
     QComboBox* armorySpecChoice;
+    QCheckBox* generateDebugOutput;
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;

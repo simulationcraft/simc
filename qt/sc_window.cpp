@@ -471,6 +471,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow( "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
   globalsLayout->addRow(   "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow(              "", generateDebugOutput = new QCheckBox( "Generate debug output" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
@@ -861,6 +862,7 @@ sim_t* SimulationCraftWindow::initSim()
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
     sim -> parse_option( "ptr", ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
+    sim -> parse_option( "debug", generateDebugOutput->checkState() == Qt::CheckState::Checked ? "1" : "0" );
   }
   return sim;
 }
