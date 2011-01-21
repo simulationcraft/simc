@@ -2092,6 +2092,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
       "                      <li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
       "                      <li><span class=\"label\">base_crit:</span>%.2f</li>\n"
       "                      <li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+      "                      <li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
       "                    </ul>\n"
       "                  </div>\n"
       "                  <div class=\"float\">\n",
@@ -2106,7 +2107,8 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
       a -> cooldown -> duration,
       a -> base_execute_time,
       a -> base_crit,
-      a -> tooltip() );
+      a -> tooltip(),
+      a -> desc() );
     if( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
     {
       util_t::fprintf (file,

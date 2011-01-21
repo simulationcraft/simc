@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_Heal_Discipline_T11_372
+priest=Priest_Heal_Discipline_Single_T11_372
 origin="http://chardev.org/?profile=19842"
 level=85
 race=night_elf
@@ -18,12 +18,10 @@ actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger=100000
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/power_infusion
-#actions+=/prayer_of_mending
 actions+=/inner_focus
 actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/penance_heal
 actions+=/greater_heal
-#actions+=/prayer_of_healing
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
 shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_266int_171spi_429sta,gems=40int_10haste,enchant=50int_25haste

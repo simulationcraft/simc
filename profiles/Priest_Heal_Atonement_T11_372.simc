@@ -6,7 +6,7 @@ level=85
 race=night_elf
 use_pre_potion=-1
 professions=Enchanting=525/Jewelcrafting=525
-talents=http://www.wowhead.com/talent#bfGsMRcbcoMo0hZhb0b
+talents=http://www.wowhead.com/talent#bfGsMRc0cRMo0hZhb0b
 glyphs=smite/divine_accuracy
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -20,39 +20,35 @@ actions+=/shadow_fiend,trigger=100000
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/archangel,if=buff.holy_evangelism.stack>=5
 actions+=/holy_fire
+actions+=/penance_heal
 actions+=/smite
-head=crown_of_the_twilight_queen,type=cloth,stats=351int_617sta_244haste_264crit_1136armor,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
-neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit
-shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,stats=266int_429sta_171spi_191haste_1009armor,gems=67int_10haste,enchant=50int_25haste
-chest=mercurial_vestment,heroic=1,type=cloth,stats=345int_578sta_247crit_227haste_1346armor,gems=67int_20int_20spi_20int,enchant=20all
-waist=xtron_duct_tape,heroic=1,type=cloth,stats=266int_429sta_191spi_171crit_757armor,gems=20int_20haste_40int_10int
-legs=mercurial_leggings,heroic=1,type=cloth,stats=345int_578sta_217spi_257haste_1177armor,gems=20int_20haste_40int_20int,enchant=95int_55spi
-feet=treads_of_liquid_ice,heroic=1,type=cloth,stats=266int_429sta_171spi_191mastery_925armor,reforge=mastery_haste,gems=40int,enchant=35mastery
-wrists=bracers_of_the_dark_mother,type=cloth,stats=209int_344sta_133spi_153mastery_612armor,gems=40int,enchant=65haste
-hands=mercurial_gloves,heroic=1,type=cloth,stats=266int_429sta_171crit_191mastery_841armor,reforge=mastery_spi,gems=40int,enchant=65mastery
-finger1=security_measure_alpha,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_hit,enchant=40int
-finger2=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=mastery_spi,enchant=40int
-trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
-trinket2=heart_of_ignacious,heroic=1
-back=shroud_of_endless_grief,stats=209int_344sta_153mastery_133haste_699armor,reforge=mastery_spi,gems=67int,enchant=50int
-main_hand=twilights_hammer,heroic=1,stats=165int_248sta_110crit_110haste_2207sp,enchant=power_torrent,weapon=mace_2.30speed_840min_1560max
-off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,reforge=hit_spi,enchant=100int
-ranged=finkles_mixer_upper,heroic=1,stats=121int_181sta_81spi_81mastery,reforge=mastery_haste
+head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
+shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_266int_171spi_429sta,gems=40int_10haste,enchant=50int_25haste
+chest=mercurial_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_345int_227spi_578sta
+waist=xtron_duct_tape,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_266int_191spi_429sta,gems=20crit_20int_40int_10int
+legs=legwraps_of_the_greatest_son,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_247crit_345int_227spi_578sta,gems=40int_20crit_20int_20crit,enchant=95int_55spi
+feet=treads_of_liquid_ice,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_266int_191mastery_171spi_429sta,gems=20crit_20int_10int,enchant=30sta
+wrists=bracers_of_the_burningeye,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143spi_322sta,enchant=50haste
+hands=brackish_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_191haste_266int_171spi_429sta,gems=40int_10haste,enchant=50haste
+finger1=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta,enchant=40int
+finger2=planetary_band_of_the_fireflash,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143crit_143haste,enchant=40int,suffix=130
+trinket1=core_of_ripeness,ilevel=359,quality=epic,stats=321int,use=1926spi_20dur_120cd
+trinket2=fall_of_mortality,heroic=1,ilevel=372,quality=epic,stats=363int
+back=drape_of_the_twins,heroic=1,ilevel=372,quality=epic,stats=673armor_143haste_215int_143spi_322sta,enchant=lightweave_embroidery
+main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max
+off_hand=scepter_of_ice,heroic=1,ilevel=372,quality=epic,stats=215int_143mastery_143spi_322sta,enchant=100int
+ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta
 # Gear Summary
-# gear_strength=20
-# gear_agility=20
-# gear_stamina=5914
-# gear_intellect=5102
-# gear_spirit=1616
+# gear_stamina=5839
+# gear_intellect=5013
+# gear_spirit=2450
 # gear_spell_power=2207
-# gear_hit_rating=143
-# gear_crit_rating=1227
-# gear_haste_rating=1696
-# gear_mastery_rating=710
-# gear_armor=8502
-# meta_gem=ember_shadowspirit
-# tier11_2pc_caster=1
-# tier11_4pc_caster=1
-# trinket2=heart_of_ignacious,heroic=1
-# main_hand=twilights_hammer,heroic=1,weapon=mace_2.30speed_840min_1560max,enchant=power_torrent
+# gear_crit_rating=1450
+# gear_haste_rating=956
+# gear_mastery_rating=481
+# gear_armor=8410
+# meta_gem=revitalizing_shadowspirit
+# back=drape_of_the_twins,heroic=1,enchant=lightweave_embroidery_old
+# main_hand=andoros_fist_of_the_dragon_king,heroic=1,weapon=mace_1.80speed_82min_154max
 healer=1

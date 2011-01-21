@@ -850,6 +850,16 @@ action_expr_t* buff_t::create_expression( action_t* action,
     };
     return new buff_stack_expr_t( action, this );
   }
+  else if ( type == "value" )
+  {
+    struct buff_value_expr_t : public action_expr_t
+    {
+      buff_t* buff;
+      buff_value_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_value", TOK_NUM ), buff(b) {}
+      virtual int evaluate() { result_num = buff -> value(); return TOK_NUM; }
+    };
+    return new buff_value_expr_t( action, this );
+  }
   else if ( type == "react" )
   {
     struct buff_react_expr_t : public action_expr_t

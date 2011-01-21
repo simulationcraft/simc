@@ -197,7 +197,7 @@
         log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f heal (%s)",
                        player -> name(), name(),
                        dot -> current_tick, dot -> num_ticks,
-                       target -> name(), amount,
+                       heal_target -> name(), amount,
                        util_t::result_type_string( result ) );
         log_t::damage_event( this, amount, dmg_type );
       }
