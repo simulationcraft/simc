@@ -379,6 +379,7 @@ struct druid_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
@@ -2098,15 +2099,6 @@ void druid_spell_t::player_buff()
       player_multiplier *= 1.10;
   }
 
-  // Both eclipse buffs need their own checks
-  if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
-    if ( p -> buffs_eclipse_lunar -> up() )
-      player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
-
-  if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
-    if ( p -> buffs_eclipse_solar -> up() )
-      player_multiplier *= 1.25 * 1.0 + p -> composite_mastery() * p -> mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
-
   player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect_base_value( 2 ) / 100.0;
 
   // Add in Additive Multipliers
@@ -2581,7 +2573,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();    
     // Lunar Shower and BoG are additive with Moonfury and only apply to DD
-    additive_multiplier += util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+    additive_multiplier += p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
 
     druid_spell_t::player_buff();
@@ -2603,7 +2595,7 @@ struct moonfire_t : public druid_spell_t
     // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
     // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
     // then reapply moonfury and the glyph, to get an accurate number
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+    player_multiplier /= 1.0 + p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
     player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
@@ -2624,7 +2616,7 @@ struct moonfire_t : public druid_spell_t
     // Cost reduction from moonglow and lunar shower is additive
     druid_t* p = player -> cast_druid();
     double cr = druid_spell_t::cost_reduction();
-    cr += ( -0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
+    cr += ( p -> buffs_lunar_shower -> mod_additive ( P_RESOURCE_COST ) * p -> buffs_lunar_shower -> stack() );
     return cr;    
   }
 
@@ -3012,7 +3004,7 @@ struct sunfire_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();    
     // Lunar Shower and BoG are additive with Moonfury and only apply to DD
-    additive_multiplier += util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+    additive_multiplier += p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
 
     druid_spell_t::player_buff();
@@ -3034,7 +3026,7 @@ struct sunfire_t : public druid_spell_t
     // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
     // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
     // then reapply moonfury and the glyph, to get an accurate number
-    player_multiplier /= 1.0 + util_t::talent_rank( p -> talents.lunar_shower -> rank(), 3, 0.15 ) * p -> buffs_lunar_shower -> stack()
+    player_multiplier /= 1.0 + p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
                          + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
                          + p -> spec_moonfury -> mod_additive( P_GENERIC );
     player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
@@ -3055,7 +3047,7 @@ struct sunfire_t : public druid_spell_t
     // Costreduction from moonglow and lunar shower is additive
     druid_t* p = player -> cast_druid();
     double cr = druid_spell_t::cost_reduction();
-    cr += ( -0.10 * p -> buffs_lunar_shower -> stack() * p -> talents.lunar_shower -> rank() );
+    cr += ( p -> buffs_lunar_shower -> mod_additive( P_RESOURCE_COST ) * p -> buffs_lunar_shower -> stack() );
     return cr;    
   }
 
@@ -3511,31 +3503,34 @@ void druid_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_eclipse_lunar      = new buff_t( this, "lunar_eclipse"     , 1 );
-  buffs_eclipse_solar      = new buff_t( this, "solar_eclipse"     , 1 );
-  buffs_enrage             = new buff_t( this, "enrage"            , 1,  10.0 );
+  // These have either incorrect or no values in the DBC or don't really exist
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
-  buffs_lacerate           = new buff_t( this, "lacerate"          , 3,  15.0 );
-  buffs_lunar_shower       = new buff_t( this, "lunar_shower"      , 3,   3.0,     0, talents.lunar_shower -> ok() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
-  buffs_natures_swiftness  = new buff_t( this, "natures_swiftness" , 1, 180.0, 180.0 );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
-  buffs_shooting_stars     = new buff_t( this, "shooting_stars"    , 1,   8.0,     0, talents.shooting_stars -> proc_chance() );
-  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() ); 
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() ); 
+  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 0, true );
   
+  // buff_t ( sim, id, name, chance, duration, quiet, reverse, rng_type )
+  buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
+  buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
+  buffs_enrage             = new buff_t( this, player_data.find_class_spell( type, "Enrage" ), "enrage" );
+  buffs_lacerate           = new buff_t( this, player_data.find_class_spell( type, "Lacerate" ), "lacerate" );
+  buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
+  buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );
+  buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
+  
   // simple
-  buffs_bear_form    = new buff_t( this, "bear_form" );
-  buffs_cat_form     = new buff_t( this, "cat_form" );
+  buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
+  buffs_cat_form     = new buff_t( this, 768,   "cat_form" );
   buffs_combo_points = new buff_t( this, "combo_points", 5 );
-  buffs_moonkin_form = new buff_t( this, "moonkin_form" );
-  buffs_savage_roar  = new buff_t( this, "savage_roar" );
-  buffs_stealthed    = new buff_t( this, "stealthed" );
+  buffs_moonkin_form = new buff_t( this, 24858, "moonkin_form" );
+  buffs_savage_roar  = new buff_t( this, 52610, "savage_roar" );
+  buffs_stealthed    = new buff_t( this, 5215,  "stealthed" );
 
   buffs_berserk        = new        berserk_buff_t( this );
   buffs_primal_madness = new primal_madness_buff_t( this );
@@ -3761,6 +3756,8 @@ void druid_t::init_actions()
       action_list_str += "/volcanic_potion,if=!in_combat";
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
+      if ( ptr )
+        action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
       if ( talents.starfall -> rank() && glyphs.focus -> enabled() ) 
@@ -3784,6 +3781,8 @@ void druid_t::init_actions()
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
+      if ( ptr )
+        action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom<3";
     }
     action_list_default = 1;
   }
@@ -3838,7 +3837,8 @@ void druid_t::regen( double periodicity )
   }
   else if ( resource_type == RESOURCE_RAGE )
   {
-    if ( buffs_enrage -> up() ) resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
+    if ( buffs_enrage -> up() )
+      resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
 
     uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                                 resource_max    [ RESOURCE_RAGE ] );
@@ -3910,6 +3910,26 @@ double druid_t::composite_attack_crit() SC_CONST
   return floor( c * 10000.0 ) / 10000.0;
 }
 
+// druid_t::composite_player_multiplier =======================================
+
+double druid_t::composite_player_multiplier( const school_type school) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  // Both eclipse buffs need their own checks
+  if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
+    if ( buffs_eclipse_lunar -> up() )
+      m *= ( 1.0 + buffs_eclipse_lunar -> base_value() / 100.0 ) * 1.0 
+            + composite_mastery() * mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
+
+  if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
+    if ( buffs_eclipse_solar -> up() )
+      m *= ( 1.0 + buffs_eclipse_solar -> base_value() / 100.0 ) * 1.0
+            + composite_mastery() *  mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
+
+  return m;
+}
+
 // druid_t::composite_spell_hit =============================================
 
 double druid_t::composite_spell_hit() SC_CONST
@@ -3946,7 +3966,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
   }
   else if ( attr == ATTR_AGILITY && buffs_cat_form -> check() )
   {
-    if ( primary_tree() == TREE_FERAL)
+    if ( primary_tree() == TREE_FERAL )
       m *= 1.05;
   }
 
