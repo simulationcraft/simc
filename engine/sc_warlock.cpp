@@ -1821,15 +1821,17 @@ struct bane_of_doom_t : public warlock_spell_t
     }
   }
 
-  virtual void target_debuff( int dmg_type )
+  virtual double total_td_multiplier()
   {
-    action_t::target_debuff( DMG_DIRECT );
+    double m = warlock_spell_t::total_td_multiplier();
 
     warlock_t* p = player -> cast_warlock();
-    if ( p -> bugs && p -> buffs_demon_soul_felhunter -> up() )
+    if ( p -> bugs && p -> buffs_shadow_embrace -> check() )
     {
-      target_multiplier *=  1.0 + p -> buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
+      m /= 1.0 + p -> buffs_shadow_embrace -> check() * p -> buffs_shadow_embrace -> effect_base_value( 1 ) / 100.0;
     }
+
+    return m;
   }
 
   virtual double total_td_multiplier() SC_CONST
@@ -2215,8 +2217,14 @@ struct corruption_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
-    base_multiplier *= 1.0 + ( p -> talent_improved_corruption -> effect_base_value( 1 ) ) / 100.0;
     base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    player_td_multiplier += p -> talent_improved_corruption -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void tick()
@@ -3847,11 +3855,11 @@ double warlock_t::composite_player_td_multiplier( const school_type school ) SC_
     // Shadow TD
     if ( mastery_spells.potent_afflictions -> ok() )
     {
-      player_multiplier *= 1.0 + ( mastery_spells.potent_afflictions -> ok() *  composite_mastery()  * mastery_spells.potent_afflictions -> effect_base_value( 2 ) / 10000.0 );
+      player_multiplier += floor ( ( mastery_spells.potent_afflictions -> ok() *  composite_mastery()  * mastery_spells.potent_afflictions -> effect_base_value( 2 ) / 10000.0 ) * 1000 ) / 1000;
     }
     if ( buffs_demon_soul_felhunter -> up() )
     {
-      player_multiplier *=  1.0 + buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
+      player_multiplier += 1.0 + buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
     }
   }
 
