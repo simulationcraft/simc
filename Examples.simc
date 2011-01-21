@@ -25,6 +25,9 @@ guild=Wicked+Legion,region=us,server=llane,ranks=0/1/3/4/7
 # Downloading guild characters of a certain class
 guild=Wicked+Legion,region=us,server=llane,class=warlock
 
+# Downloading character from CharDev
+chardev=16146
+
 # Downloading character from Wowhead
 wowhead=us,llane,segv
 
