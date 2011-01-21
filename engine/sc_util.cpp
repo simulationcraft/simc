@@ -1740,9 +1740,10 @@ std::string& util_t::html_special_char_decode( std::string& str )
   {
     if ( str[ pos+1 ] == '#' )
     {
-      char encoding = (char) atoi( str.substr( pos+2, pos+5 ).c_str() );
-      str.erase( pos, 6 ); // example: &#039; becomes '
-      str += encoding;
+      std::string::size_type end = str.find( ';', pos + 2 );
+      char encoded = (char) atoi( str.substr( pos + 2, end ).c_str() );
+      str.erase( pos, end - pos + 1 );
+      str.insert( pos, 1, encoded );
     }
     else if ( 0 == str.compare( pos, 6, "&quot;" ) )
     {

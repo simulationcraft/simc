@@ -246,6 +246,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     std::string glyph_name;
     if( xml_t::get_value( glyph_name, glyph_nodes[ i ], "." ) )
     {
+      util_t::html_special_char_decode( glyph_name );
       if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
       else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
       armory_t::format( glyph_name );
