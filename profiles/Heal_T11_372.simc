@@ -1,0 +1,14 @@
+#!simc
+
+optimal_raid=1
+
+# Do some Damage!
+raid_events+=/damage,cooldown=4,amount=50000
+
+Priest_Heal_Discipline_T11_372.simc
+Priest_Heal_Atonement_T11_372.simc
+Priest_Heal_Holy_T11_372.simc
+
+# A profile to have an accurate fight length calculation
+Warlock_Affliction_T11_372.simc
+

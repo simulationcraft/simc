@@ -5035,7 +5035,7 @@ void player_t::create_options()
     { "level",                                OPT_INT,      &( level                                  ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
     { "tank",                                 OPT_INT,      &( tank                                   ) },
-    { "healer",                               OPT_BOOL,     &( healer                                 ) },
+    { "healer",                               OPT_INT,     &( healer                                 ) },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },

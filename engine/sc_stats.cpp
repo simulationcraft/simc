@@ -9,7 +9,7 @@
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
     name_str( n ), sim( p->sim ), player( p ), next( 0 ), school( SCHOOL_NONE ),
-    channeled( false ), analyzed( false ), initialized( false ),
+    channeled( false ), analyzed( false ), initialized( false ), quiet( false ),
     resource( RESOURCE_NONE ), resource_consumed( 0 ), last_execute( -1 )
 {
 }
@@ -20,6 +20,7 @@ void stats_t::init()
 {
   if ( initialized ) return;
   initialized = true;
+
 
   resource_consumed = 0;
 
@@ -116,7 +117,7 @@ void stats_t::add( double amount,
 {
   add_result( amount, dmg_type, result );
 
-  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT )
+  if ( dmg_type == DMG_DIRECT )
   {
     num_executes++;
     total_execute_time += time;
@@ -129,8 +130,27 @@ void stats_t::add( double amount,
     }
     last_execute = sim -> current_time;
   }
-  else
+  else if ( dmg_type == DMG_OVER_TIME )
   {
+    num_ticks++;
+    total_tick_time += time;
+  }
+  if ( ( dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) )
+  {
+    num_executes++;
+    total_execute_time += time;
+
+    if ( last_execute > 0 &&
+         last_execute != sim -> current_time )
+    {
+      num_intervals++;
+      total_intervals += sim -> current_time - last_execute;
+    }
+    last_execute = sim -> current_time;
+  }
+  else if ( dmg_type == HEAL_OVER_TIME )
+  {
+
     num_ticks++;
     total_tick_time += time;
   }

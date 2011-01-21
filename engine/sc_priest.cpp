@@ -236,6 +236,7 @@ struct priest_t : public player_t
     int smite;
     int renew;
     int power_word_shield;
+    int prayer_of_healing;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -438,10 +439,10 @@ struct priest_spell_t : public spell_t
   static void    add_more_shadowy_apparitions( player_t* player );
 };
 
-struct priest_absorb_t : public spell_t
+struct priest_absorb_t : public absorb_t
 {
   priest_absorb_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-      spell_t( n, sname, player, t )
+      absorb_t( n, player, sname, t )
   {
     may_crit          = false;
     tick_may_crit     = false;
@@ -451,7 +452,7 @@ struct priest_absorb_t : public spell_t
     may_miss=may_resist=false;
   }
   priest_absorb_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-      spell_t( n, id, player, t )
+    absorb_t( n, player, id, t )
   {
     may_crit          = false;
     tick_may_crit     = false;
@@ -462,14 +463,14 @@ struct priest_absorb_t : public spell_t
 
   virtual void player_buff()
   {
-    spell_t::player_buff();
+    absorb_t::player_buff();
     priest_t* p = player -> cast_priest();
     player_multiplier *= 1.0 + (  p -> composite_mastery() * p -> passive_spells.shield_discipline -> ok() * 2.5 / 100.0 );
   }
 
   virtual double haste() SC_CONST
   {
-    double h = spell_t::haste();
+    double h = absorb_t::haste();
     priest_t* p = player -> cast_priest();
     h *= p -> constants.darkness_value;
     if ( p -> buffs_borrowed_time -> up() )
@@ -481,7 +482,7 @@ struct priest_absorb_t : public spell_t
 
   virtual void execute()
   {
-    spell_t::execute();
+    absorb_t::execute();
     priest_t* p = player -> cast_priest();
     if ( execute_time() > 0 && p -> buffs_borrowed_time -> up() )
       p -> buffs_borrowed_time -> expire();
@@ -682,12 +683,6 @@ struct shadow_fiend_pet_t : public pet_t
       if ( p -> bad_swing )
         p -> bad_swing = false;
       player_multiplier *= 1.0 + p -> buffs_shadowcrawl -> value();
-    }
-    void update_stats( int type )
-    {
-      priest_t* o = player -> cast_pet() -> owner -> cast_priest();
-      if ( ! o -> healer )
-        attack_t::update_stats( type );
     }
   };
 
@@ -2567,7 +2562,8 @@ struct binding_heal_t : public priest_heal_t
 
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
 
-    // Add Selfheal
+    // FIXME: Add correct Selfheal
+    base_multiplier *= 2;
   }
 
   virtual void execute()
@@ -2657,18 +2653,32 @@ struct greater_heal_t : public priest_heal_t
     return c;
   }
 };
+struct glyph_prayer_of_healing_t : public priest_heal_t
+{
+  glyph_prayer_of_healing_t( player_t* player ) :
+      priest_heal_t( "glyph_prayer_of_healing", player, 56161 )
+  {
+    proc       = true;
+    background = true;
+  }
+};
 
 struct prayer_of_healing_t : public priest_heal_t
 {
+  glyph_prayer_of_healing_t* glyph;
 
   prayer_of_healing_t( player_t* player, const std::string& options_str ) :
-      priest_heal_t( "prayer_of_healing", player, "Prayer of Healing" )
+      priest_heal_t( "prayer_of_healing", player, "Prayer of Healing" ), glyph( 0 )
   {
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    priest_t* p = player -> cast_priest();
+    if ( p -> glyphs.prayer_of_healing )
+      glyph = new glyph_prayer_of_healing_t( p );
 
     // Fixme: 5x Multiplier for now
     base_multiplier *= 5;
@@ -2683,6 +2693,12 @@ struct prayer_of_healing_t : public priest_heal_t
     p -> buffs_inner_focus -> expire();
     trigger_inspiration(this);
     trigger_echo_of_light(this);
+
+    if ( glyph )
+    {
+      glyph -> base_td = direct_dmg / glyph -> num_ticks * 0.2 ;
+      glyph -> execute();
+    }
 
     if ( da && result != RESULT_CRIT )
     {
@@ -2972,7 +2988,7 @@ struct penance_heal_t : public priest_heal_t
   {
   if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
   penance_tick -> execute();
-  update_time( DMG_OVER_TIME );
+  update_time( HEAL_OVER_TIME );
   }
 };
 
@@ -3161,6 +3177,7 @@ void priest_t::init_glyphs()
     else if ( n == "smite"             ) glyphs.smite = 1;
     else if ( n == "renew"             ) glyphs.renew = 1;
     else if ( n == "power_word_shield" ) glyphs.power_word_shield = 1;
+    else if ( n == "prayer_of_healing" ) glyphs.prayer_of_healing = 1;
     // Just to prevent warnings....
     else if ( n == "circle_of_healing"    ) ;
     else if ( n == "dispel_magic"         ) ;
@@ -3175,7 +3192,6 @@ void priest_t::init_glyphs()
     else if ( n == "mass_dispel"          ) ;
     else if ( n == "pain_suppression"     ) ;
     else if ( n == "power_word_barrier"   ) ;
-    else if ( n == "prayer_of_healing"    ) ;
     else if ( n == "psychic_horror"       ) ;
     else if ( n == "psychic_scream"       ) ;
     else if ( n == "scourge_imprisonment" ) ;

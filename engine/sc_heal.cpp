@@ -26,6 +26,17 @@
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
     target=0;
+
+    // Sets Stats to quiet if player/owner is a Damage Dealer, otherwise to not quiet
+    if ( !player -> healer )
+      stats -> quiet = true;
+    else
+      stats -> quiet = false;
+    if ( player -> is_pet() )
+      if ( !player -> cast_pet() -> owner -> healer )
+        stats -> quiet = true;
+      else
+        stats -> quiet = false;
   }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
@@ -441,3 +452,318 @@
 
     update_stats( HEAL_OVER_TIME );
   }
+
+
+
+
+
+
+
+
+
+  // ==========================================================================
+  // Absorb
+  // ==========================================================================
+
+  // ==========================================================================
+  // Created by philoptik@gmail.com
+  //
+  // heal_target is set to player for now.
+  // dmg_type = ABSORB, all crits killed
+  // ==========================================================================
+
+
+
+  // absorb_t::_init_absorb_t == Absorb Constructor Initializations ===========
+
+    void absorb_t::_init_absorb_t()
+    {
+      weapon_multiplier = 0.0;
+      target=0;
+
+      // Sets Stats to quiet if player/owner is a Damage Dealer, otherwise to not quiet
+      if ( !player -> healer )
+          stats -> quiet = true;
+      else
+        stats -> quiet = false;
+      if ( player -> is_pet() )
+        if ( !player -> cast_pet() -> owner -> healer )
+          stats -> quiet = true;
+        else
+          stats -> quiet = false;
+    }
+
+  // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
+
+    absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) :
+        spell_t( n, sname, player, t ), heal_target( player )
+    {
+      _init_absorb_t();
+    }
+
+  // absorb_t::absorb_t ======== absorb Constructor by Spell ID =====================
+
+    absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) :
+        spell_t( n, id, player, t ), heal_target( player )
+    {
+      _init_absorb_t();
+    }
+
+  // absorb_t::player_buff ======================================================
+
+    void absorb_t::player_buff()
+    {
+      player_multiplier              = 1.0;
+      player_dd_multiplier           = 1.0;
+      player_td_multiplier           = 1.0;
+      player_hit                     = 0;
+      player_crit                    = 0;
+      player_crit_multiplier         = 1.0;
+      player_crit_bonus_multiplier   = 1.0;
+      player_penetration             = 0;
+      player_dd_adder                = 0;
+      player_spell_power             = 0;
+      player_attack_power            = 0;
+      player_spell_power_multiplier  = 1.0;
+      player_attack_power_multiplier = 1.0;
+
+
+      player_t* p = player;
+
+      player_hit  = p -> composite_spell_hit();
+
+      player_multiplier    = p -> composite_player_multiplier   ( school );
+      player_dd_multiplier = p -> composite_player_dd_multiplier( school );
+      player_td_multiplier = p -> composite_player_td_multiplier( school );
+
+      if ( base_spell_power_multiplier > 0 )
+      {
+        player_spell_power            = p -> composite_spell_power( school );
+        player_spell_power_multiplier = p -> composite_spell_power_multiplier();
+      }
+
+      player_haste = haste();
+
+      if ( sim -> debug )
+        log_t::output( sim, "absorb_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
+                       name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
+    }
+
+  // absorb_t::target_debuff ====================================================
+
+    void absorb_t::target_debuff( int dmg_type )
+    {
+      target_multiplier            = 1.0;
+      target_hit                   = 0;
+      target_crit                  = 0;
+      target_crit_multiplier       = 1.0;
+      target_crit_bonus_multiplier = 1.0;
+      target_attack_power          = 0;
+      target_spell_power           = 0;
+      target_penetration           = 0;
+      target_dd_adder              = 0;
+
+      if ( sim -> debug )
+        log_t::output( sim, "absorb_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    }
+
+  // absorb_t::haste ============================================================
+
+    double absorb_t::haste() SC_CONST
+    {
+      double h = spell_t::haste();
+
+      return h;
+    }
+
+  // absorb_t::execute ===========================================================
+
+    void absorb_t::execute()
+    {
+      if ( sim -> log && ! dual )
+      {
+        log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
+                       player -> resource_current[ player -> primary_resource() ] );
+      }
+
+      if ( observer ) *observer = 0;
+
+      player_buff();
+
+      target_debuff( ABSORB );
+
+      calculate_result();
+
+      consume_resource();
+
+      direct_dmg = calculate_direct_damage();
+      schedule_travel();
+
+      update_ready();
+
+      if ( ! dual ) update_stats( ABSORB );
+
+      if ( harmful ) player -> in_combat = true;
+
+      if ( repeating && ! proc ) schedule_execute();
+    }
+
+  // absorb_t::asses_damage ========================================================
+
+    void absorb_t::assess_damage( double amount,
+                                  int    dmg_type )
+    {
+      heal_target -> resource_gain( RESOURCE_HEALTH, amount );
+
+      if ( dmg_type == ABSORB )
+      {
+
+        if ( sim -> log )
+        {
+          log_t::output( sim, "%s %s adds absorb %s for %.0f (%s)",
+                         player -> name(), name(),
+                         heal_target -> name(), amount,
+                         util_t::result_type_string( result ) );
+        }
+        if ( sim -> csv_file )
+        {
+          fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
+                   sim->current_iteration, player->name(), name(), target->name(),
+                   util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
+        }
+
+        action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
+      }
+      else
+        assert( 0 );
+
+    }
+
+  // absorb_t::ready ============================================================
+
+    bool absorb_t::ready()
+    {
+      if ( player -> skill < 1.0 )
+        if ( ! sim -> roll( player -> skill ) )
+          return false;
+
+      if ( cooldown -> remains() > 0 )
+        return false;
+
+      if ( ! player -> resource_available( resource, cost() ) )
+        return false;
+
+      if ( min_current_time > 0 )
+        if ( sim -> current_time < min_current_time )
+          return false;
+
+      if ( max_current_time > 0 )
+        if ( sim -> current_time > max_current_time )
+          return false;
+
+      if ( max_haste > 0 )
+        if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )
+          return false;
+
+      if ( bloodlust_active > 0 )
+        if ( ! player -> buffs.bloodlust -> check() )
+          return false;
+
+      if ( bloodlust_active < 0 )
+        if ( player -> buffs.bloodlust -> check() )
+          return false;
+
+      if ( sync_action && ! sync_action -> ready() )
+        return false;
+
+      if ( player -> buffs.moving -> check() )
+        if ( ! usable_moving && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
+          return false;
+
+      if ( moving != -1 )
+        if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
+          return false;
+
+      if ( if_expr )
+      {
+        int result_type = if_expr -> evaluate();
+        if ( result_type == TOK_NUM     ) return if_expr -> result_num != 0;
+        if ( result_type == TOK_STR     ) return true;
+        if ( result_type == TOK_UNKNOWN ) return false;
+      }
+
+      return true;
+    }
+
+  // absorb_t::caclulate_result ==================================================
+
+    void absorb_t::calculate_result()
+    {
+      direct_dmg = 0;
+      result = RESULT_NONE;
+
+      if ( ! harmful ) return;
+
+      if ( result == RESULT_NONE )
+      {
+        result = RESULT_HIT;
+
+      }
+
+      if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+    }
+
+  // absorb_t::calculate_direct_damage ===========================================
+
+    double absorb_t::calculate_direct_damage()
+    {
+      double dmg = sim -> range( base_dd_min, base_dd_max );
+
+      if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
+
+      if ( dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
+
+      double base_direct_dmg = dmg;
+
+      dmg += base_dd_adder + player_dd_adder + target_dd_adder;
+
+      dmg += direct_power_mod * total_power();
+      dmg *= total_dd_multiplier();
+
+      double init_direct_dmg = dmg;
+
+
+      if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
+
+      if ( sim -> debug )
+      {
+        log_t::output( sim, "%s heal for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
+                       player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
+                       total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
+      }
+
+      return dmg;
+    }
+
+
+  // absorb_t::update_stats =====================================================
+
+    void absorb_t::update_stats( int type )
+    {
+      if ( type == ABSORB )
+      {
+        stats -> add( direct_dmg, type, result, time_to_execute );
+      }
+      else assert( 0 );
+    }
+
+  // absorb_t::travel ============================================================
+
+    void absorb_t::travel( int travel_result, double travel_dmg=0 )
+    {
+      if ( direct_dmg > 0 )
+      {
+        assess_damage( travel_dmg, ABSORB );
+      }
+    }

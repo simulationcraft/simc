@@ -155,6 +155,13 @@ void action_t::_init_action_t()
   stats = player -> get_stats( name_str );
   stats -> school = school;
   stats -> resource = resource;
+
+  // Sets all stats to quiet if player/owner is a healer
+  if ( player -> healer )
+      stats -> quiet = true;
+  if ( player -> is_pet() )
+    if ( player -> cast_pet() -> owner -> healer )
+      stats -> quiet = true;
   
   id = spell_id();
   tree = util_t::talent_tree(s_tree, player -> type );
@@ -1376,11 +1383,11 @@ void action_t::update_result( int type )
 
 void action_t::update_time( int type )
 {
-  if ( type == DMG_DIRECT )
+  if ( type == DMG_DIRECT || type == HEAL_DIRECT )
   {
     stats -> add_time( time_to_execute, type );
   }
-  else if ( type == DMG_OVER_TIME )
+  else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
   {
     stats -> add_time( time_to_tick, type );
   }

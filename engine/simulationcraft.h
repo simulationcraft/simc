@@ -242,7 +242,7 @@ enum pet_type_t
   PET_MAX
 };
 
-enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME };
+enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
 
 enum dot_behavior_type { DOT_CLIP=0, DOT_REFRESH };
 
@@ -3450,6 +3450,7 @@ struct stats_t
   bool channeled;
   bool analyzed;
   bool initialized;
+  bool quiet;
 
   int resource;
   double resource_consumed, resource_portion;
@@ -3731,6 +3732,31 @@ struct heal_t : public spell_t
   virtual void update_stats( int type );
   virtual void travel( int travel_result, double travel_dmg );
   virtual void tick();
+
+};
+
+// Absorb ======================================================================
+
+struct absorb_t : public spell_t
+{
+  player_t* heal_target;
+  stats_t* overheal_stats;
+
+  void _init_absorb_t();
+  absorb_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
+  absorb_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
+
+  virtual void player_buff();
+  virtual void target_debuff( int dmg_type );
+  virtual double haste() SC_CONST;
+  virtual void execute();
+  virtual void assess_damage( double amount,
+                                  int    dmg_type );
+  virtual bool ready();
+  virtual void calculate_result();
+  virtual double calculate_direct_damage();
+  virtual void update_stats( int type );
+  virtual void travel( int travel_result, double travel_dmg );
 
 };
 

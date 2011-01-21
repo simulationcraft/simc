@@ -995,6 +995,7 @@ void sim_t::analyze_player( player_t* p )
     stats_t* s = stats_list[ i ];
 
     s -> analyze();
+    if ( !s -> quiet )
     p -> total_dmg += s -> total_dmg;
   }
 

@@ -2576,12 +2576,13 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "          <li><b>Class:</b> %s</li>\n"
     "          <li><b>Tree:</b> %s</li>\n"
     "          <li><b>Level:</b> %d</li>\n"
+    "          <li><b>Healer:</b> %s</li>\n"
     "        </ul>\n"
     "        <div class=\"clear\"></div>\n",
     p -> race_str.c_str(),
     p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
     util_t::talent_tree_string( p -> primary_tree() ),
-    p -> level );
+    p -> level, p -> healer ? "Yes" : "No" );
 
   // Main player table
   util_t::fprintf( file,
