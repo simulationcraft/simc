@@ -2056,6 +2056,7 @@ struct buff_t : public spell_id_t
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
+  void   extend_duration( double seconds );
 
   virtual void start    ( int stacks=1, double value=-1.0 );
           void refresh  ( int stacks=0, double value=-1.0 );

@@ -490,21 +490,21 @@ struct priest_absorb_t : public spell_t
 
 struct priest_heal_t : public heal_t
 {
-
   struct divine_aegis_t : public priest_absorb_t
   {
     divine_aegis_t( player_t* player ) :
         priest_absorb_t( "divine_aegis", player, 47753 )
     {
-      proc       = true;
-      background = true;
-      direct_power_mod=0;
+      proc             = true;
+      background       = true;
+      direct_power_mod = 0;
     }
   };
+
   divine_aegis_t* da;
 
   priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-      heal_t( n, player, sname, t )
+      heal_t( n, player, sname, t ), da( 0 )
   {
 
     priest_t* p = player -> cast_priest();
@@ -516,7 +516,7 @@ struct priest_heal_t : public heal_t
   }
 
   priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-      heal_t( n, player, id, t )
+      heal_t( n, player, id, t ), da( 0 )
   {
 
     priest_t* p = player -> cast_priest();
@@ -2486,7 +2486,7 @@ struct _heal_t : public priest_heal_t
 
       if ( p -> talents.state_of_mind -> ok() )
       {
-        p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
+        p -> buffs_chakra -> extend_duration( 4 );
       }
     }
 
@@ -2703,7 +2703,7 @@ struct prayer_of_healing_t : public priest_heal_t
 
     if ( p -> talents.state_of_mind -> ok() && p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 2 )
     {
-      p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
+      p -> buffs_chakra -> extend_duration( 4 );
     }
   }
 
@@ -2803,6 +2803,7 @@ struct prayer_of_mending_t : public priest_heal_t
     // Fixme: 5x Multiplier for now
     base_multiplier *= 5;
   }
+
   virtual double cost() SC_CONST
   {
     priest_t* p = player -> cast_priest();
@@ -2820,33 +2821,30 @@ struct prayer_of_mending_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
     if ( p -> buffs_chakra_pre -> up())
-        {
-          p -> buffs_chakra -> trigger( 1 , 2, 1.0 );
+    {
+      p -> buffs_chakra -> trigger( 1 , 2, 1.0 );
 
-          p -> buffs_chakra_pre -> expire();
-          p -> cooldowns_chakra -> reset();
-          p -> cooldowns_chakra -> duration = 60.0;
-          p -> cooldowns_chakra -> start();
-        }
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = 60.0;
+      p -> cooldowns_chakra -> start();
+    }
 
     if ( p -> talents.state_of_mind -> ok() && p -> buffs_chakra -> check() && p -> buffs_chakra -> value() == 2 )
     {
-      p -> buffs_chakra -> expiration -> reschedule( p -> buffs_chakra -> expiration -> time + 4 );
+      p -> buffs_chakra -> extend_duration( 4 );
     }
   }
 };
 
 struct glyph_power_word_shield_t : public priest_heal_t
 {
-
   glyph_power_word_shield_t( player_t* player ) :
       priest_heal_t( "glyph_power_word_shield", player, 55672 )
   {
     proc       = true;
     background = true;
-
   }
-
 };
 
 struct power_word_shield_t : public priest_absorb_t

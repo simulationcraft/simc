@@ -516,6 +516,14 @@ void buff_t::decrement( int    stacks,
   }
 }
 
+// buff_t::extend_duration ==================================================
+
+void buff_t::extend_duration( double extra_seconds )
+{
+  assert( expiration );
+  expiration -> reschedule( expiration -> time + extra_seconds );
+}
+
 // buff_t::start ============================================================
 
 void buff_t::start( int    stacks,
