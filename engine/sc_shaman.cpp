@@ -687,7 +687,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   shaman_t* p = a -> player -> cast_shaman();
   spell_t* ft = 0;
   double m_ft = a -> weapon -> swing_time / 4.0;
-  double m_coeff = 0.1539;
+  double m_coeff = ( ! p -> ptr ) ? 0.1539 : 0.1253;
 
   if ( p -> cooldowns_flametongue_weapon -> remains() > 0 )
   {
@@ -711,11 +711,7 @@ static void trigger_flametongue_weapon( attack_t* a )
     if ( p -> primary_tree() == TREE_ENHANCEMENT )
     {
       ft -> base_spell_power_multiplier = 0;
-      // Offhand apparently divides the AP bonus in half:
-      if ( a -> weapon -> slot == SLOT_MAIN_HAND )
-        ft -> base_attack_power_multiplier = m_coeff * m_ft;
-      else
-        ft -> base_attack_power_multiplier = m_coeff / 2.0 * m_ft;
+      ft -> base_attack_power_multiplier = m_coeff * m_ft;
     }
     else
     {

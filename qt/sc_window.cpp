@@ -1053,7 +1053,10 @@ void SimulateThread::run()
 
   QList<QByteArray> lines;
   lines.append( "simc" );
-  for( int i=1; i < argc; i++ ) lines.append( stringList[ i-1 ].toAscii() );
+  for( int i=1; i < argc; i++ )
+  {
+    lines.append( stringList[ i-1 ].toUtf8().constData() );
+  }
   for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
   if( sim -> parse_options( argc, argv ) )
@@ -1209,9 +1212,13 @@ void SimulationCraftWindow::simulateFinished()
   }
   else if( file.open( QIODevice::ReadOnly ) )
   {
+    // Html results will _ALWAYS_ be utf-8, regardless of the input encoding
+    // so read them to the WebView through QTextStream
+    QTextStream s(&file);
+    s.setCodec("utf-8");
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SimulationCraftWebView* resultsView = new SimulationCraftWebView( this );
-    resultsHtml.append( file.readAll() );
+    resultsHtml.append( s.readAll() );
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );

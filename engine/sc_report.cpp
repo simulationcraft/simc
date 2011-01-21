@@ -2175,7 +2175,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
 static void print_html3_stats (FILE* file, player_t* a )
 {
   std::string n = a -> name();
-  util_t::str_to_utf8( n );
+  util_t::format_text( n, a -> sim -> input_is_utf8 );
 
   if ( a -> total_seconds > 0 )
   {
@@ -2490,7 +2490,7 @@ static void print_html3_stats (FILE* file, player_t* a )
 static void print_html3_talents( FILE* file, player_t* p )
 {
   std::string n = p -> name();
-  util_t::str_to_utf8( n );
+  util_t::format_text( n, p -> sim -> input_is_utf8 );
 
   if ( p -> total_seconds > 0 )
   {
@@ -2541,7 +2541,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
 {
   char buffer[ 4096 ];
   std::string n = p -> name();
-  util_t::str_to_utf8( n );
+  util_t::format_text( n, sim -> input_is_utf8 );
   int num_players = ( int ) sim -> players_by_name.size();
   int i;
   
