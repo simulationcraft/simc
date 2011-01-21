@@ -3102,7 +3102,7 @@ struct player_t
   virtual void combat_begin();
   virtual void combat_end();
 
-  virtual double composite_mastery() SC_CONST { return mastery; }
+  virtual double composite_mastery() SC_CONST { return floor( ( mastery * 100.0 ) + 0.5 ) / 100.0; }
 
   virtual double energy_regen_per_second() SC_CONST;
   virtual double focus_regen_per_second() SC_CONST;
