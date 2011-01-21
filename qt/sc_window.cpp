@@ -414,8 +414,7 @@ void SimulationCraftWindow::createCmdLine()
 
 void SimulationCraftWindow::createWelcomeTab()
 {
-  QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html & Welcome.png was unable to load.</div>";
-  QString welcomeFile = "Welcome.html";
+  QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 #ifdef Q_WS_MAC
   CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
   if ( fileRef )
@@ -427,21 +426,10 @@ void SimulationCraftWindow::createWelcomeTab()
     CFRelease(macPath);
   }
 #endif
+  QString url = "file:///" + welcomeFile;
 
-  QFile file( welcomeFile );
-  if( file.open( QIODevice::ReadOnly ) )
-  {
-    s = file.readAll();
-    file.close();
-  }
-
-  QTextBrowser* welcomeBanner = new QTextBrowser();
-#ifdef Q_WS_MAC
-  QFileInfo fi( welcomeFile );
-  welcomeBanner->setSearchPaths( QStringList( fi.path() ) ); 
-#endif
-  welcomeBanner->setHtml( s );
-  welcomeBanner->moveCursor( QTextCursor::Start );
+  QWebView* welcomeBanner = new QWebView();
+  welcomeBanner->setUrl( url );
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
  
