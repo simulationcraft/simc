@@ -2852,7 +2852,7 @@ struct power_word_shield_t : public priest_absorb_t
   glyph_power_word_shield_t* glyph_pws;
 
   power_word_shield_t( player_t* player, const std::string& options_str ) :
-      priest_absorb_t( "power_word_shield", player, 17 )
+      priest_absorb_t( "power_word_shield", player, 17 ), glyph_pws( 0 )
   {
     priest_t* p = player -> cast_priest();
     option_t options[] =
