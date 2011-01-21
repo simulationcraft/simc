@@ -1821,7 +1821,7 @@ struct bane_of_doom_t : public warlock_spell_t
     }
   }
 
-  virtual double total_td_multiplier()
+  virtual double total_td_multiplier() SC_CONST
   {
     double m = warlock_spell_t::total_td_multiplier();
 
@@ -1832,11 +1832,6 @@ struct bane_of_doom_t : public warlock_spell_t
     }
 
     return m;
-  }
-
-  virtual double total_td_multiplier() SC_CONST
-  {
-    return warlock_spell_t::total_dd_multiplier();
   }
 
   virtual void tick()
