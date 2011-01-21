@@ -2548,9 +2548,15 @@ struct immolate_t : public warlock_spell_t
     base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
-    base_td_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() + p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
 
     if ( p -> ptr && p -> talent_inferno -> rank() ) num_ticks += 2;
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::player_buff();
+    player_td_multiplier += ( p -> glyphs.immolate -> base_value() + p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
   }
 
   virtual void execute()
