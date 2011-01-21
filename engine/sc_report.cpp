@@ -1563,12 +1563,12 @@ static void print_html3_scale_factors( FILE*  file, sim_t* sim )
     sim -> report_precision = 2;
 
   util_t::fprintf( file,
-    "    <div id=\"raid-scale-factors\" class=\"section\">\n\n"
+    "    <div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
     "      <h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n"
     "      <div class=\"toggle-content\">\n" );
 
   util_t::fprintf( file,
-    "        <table>\n" );
+    "        <table class=\"sc\">\n" );
 
   std::string buffer;
   int num_players = ( int ) sim -> players_by_name.size();
@@ -2548,7 +2548,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
     "    <div id=\"%s\" class=\"player section",
     n.c_str() );
-  if ( num_players > 1 && j == 0 )
+  if ( num_players > 1 && j == 0 && ! sim -> scaling -> has_scale_factors() )
   {
     util_t::fprintf( file, " grouped-first" );
   }
