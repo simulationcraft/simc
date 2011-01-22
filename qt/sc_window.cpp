@@ -461,7 +461,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
-  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
+  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(           "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
@@ -473,7 +473,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   iterationsChoice->setCurrentIndex( 1 );
-  fightLengthChoice->setCurrentIndex( 1 );
+  fightLengthChoice->setCurrentIndex( 7 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
