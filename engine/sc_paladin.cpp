@@ -447,9 +447,15 @@ struct paladin_attack_t : public attack_t
         default:;
         }
 
-        if ( p -> talents.seals_of_command->rank() )
+        if ( p -> active_seal != SEAL_OF_INSIGHT && p -> talents.seals_of_command->rank() )
         {
           p -> active_seals_of_command_proc -> execute();
+        }
+
+        // TODO: does the censure stacking up happen before or after the SoT proc?
+        if ( p->ptr && p -> active_seal == SEAL_OF_TRUTH )
+        {
+          p -> active_seal_of_truth_dot -> execute();
         }
 
         // It seems like it's the seal-triggering attacks that stack up ancient power
@@ -536,7 +542,7 @@ struct melee_t : public paladin_attack_t
     {
       p -> buffs_the_art_of_war -> trigger();
 
-      if ( p -> active_seal == SEAL_OF_TRUTH )
+      if ( !p->ptr && p -> active_seal == SEAL_OF_TRUTH )
       {
         p -> active_seal_of_truth_dot -> execute();
       }
@@ -857,6 +863,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
     trigger_dp = true;
+    trigger_seal = p->ptr; // TODO: only SoT or all seals?
 
     holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
@@ -1288,9 +1295,8 @@ struct seal_of_truth_proc_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    if ( result_is_hit() )
+    if ( !p->ptr && result_is_hit() )
     {
-      // The seal of truth proc attack triggers seals of command at the moment, unclear if this is intended
       if ( p -> talents.seals_of_command->rank() )
       {
         p -> active_seals_of_command_proc -> execute();
@@ -1308,6 +1314,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
     may_parry = false;
     may_dodge = false;
     may_block = false;
+    trigger_seal = p->ptr;
     
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
@@ -1764,6 +1771,22 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_spell_t::execute();
+    if (p->ptr)
+    {
+      switch ( p -> active_seal )
+      {
+      case SEAL_OF_JUSTICE:       p -> active_seal_of_justice_proc       -> execute(); break;
+      case SEAL_OF_INSIGHT:       p -> active_seal_of_insight_proc       -> execute(); break;
+      case SEAL_OF_RIGHTEOUSNESS: p -> active_seal_of_righteousness_proc -> execute(); break;
+      case SEAL_OF_TRUTH:         if ( p -> buffs_censure -> stack() >= 1 ) p -> active_seal_of_truth_proc -> execute(); break;
+      default:;
+      }
+
+      if ( p -> active_seal != SEAL_OF_INSIGHT && p -> talents.seals_of_command->rank() )
+      {
+        p -> active_seals_of_command_proc -> execute();
+      }
+    }
     p -> buffs_the_art_of_war -> expire();
   }
 
@@ -2330,23 +2353,32 @@ void paladin_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
+      std::string hp_proc_str = ptr ? "divine_purpose" : "hand_of_light";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       if (spells.guardian_of_ancient_kings->ok())
         action_list_str += "/guardian_of_ancient_kings";
       action_list_str += "/avenging_wrath,if=buff.zealotry.down";
       action_list_str += "/zealotry,if=buff.avenging_wrath.down";
       if (spells.inquisition->ok())
-        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff.hand_of_light.react)";
-      action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-      action_list_str += "/hammer_of_wrath";
-      // CS before TV if <3 power, even with HoL up
+        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff."+hp_proc_str+".react)";
+      if (!ptr)
+      {
+        action_list_str += "/hammer_of_wrath";
+        action_list_str += "/exorcism,if=buff.the_art_of_war.react";
+      }
+      // CS before TV if <3 power, even with HoL/DP up
       action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
-      action_list_str += "/crusader_strike,if=buff.hand_of_light.react&(buff.hand_of_light.remains>2)&(buff.holy_power.react<3)";
-      action_list_str += "/templars_verdict,if=buff.hand_of_light.react";
+      action_list_str += "/crusader_strike,if=buff."+hp_proc_str+".react&(buff."+hp_proc_str+".remains>2)&(buff.holy_power.react<3)";
+      action_list_str += "/templars_verdict,if=buff."+hp_proc_str+".react";
       action_list_str += "/crusader_strike";
+      if (ptr)
+      {
+        action_list_str += "/hammer_of_wrath";
+        action_list_str += "/exorcism,if=buff.the_art_of_war.react";
+      }
       action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<2";
       // Don't delay CS too much
-      action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.75";
+      action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.5";
       action_list_str += "/judgement";
       action_list_str += "/holy_wrath";
       action_list_str += "/consecration";
