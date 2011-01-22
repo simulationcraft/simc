@@ -390,6 +390,7 @@ struct priest_t : public player_t
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
+  virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_player_td_multiplier( const school_type school ) SC_CONST;
 
@@ -489,11 +490,14 @@ struct priest_absorb_t : public absorb_t
   {
     double h = absorb_t::haste();
     priest_t* p = player -> cast_priest();
-    h *= p -> constants.darkness_value;
+    if ( ! p -> ptr )
+    {
+      h *= p -> constants.darkness_value;
+    }
     if ( p -> buffs_borrowed_time -> up() )
-      {
+    {
       h *= 1.0 / ( 1.0 + p -> talents.borrowed_time -> effect_base_value( 1 ) / 100.0 );
-      }
+    }
     return h;
   }
 
@@ -3298,6 +3302,21 @@ double priest_t::composite_spell_hit() SC_CONST
 
   return hit;
 }
+
+// priest_t::composite_spell_haste =============================================
+
+double priest_t::composite_spell_haste() SC_CONST
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( ptr )
+  {
+    h *= constants.darkness_value;
+  }
+
+  return h;
+}
+
 // priest_t::composite_player_multiplier =========================================
 
 double priest_t::composite_player_multiplier( const school_type school ) SC_CONST
