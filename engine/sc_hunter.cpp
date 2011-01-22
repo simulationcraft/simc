@@ -1193,13 +1193,11 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    base_dd_min = base_dd_max = 0;
-    base_cost = 0;
-    direct_power_mod = 0;
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
 
-    id=24844;
+    // FIXME: Implement target Debuff
+
   }
 };
 
@@ -1332,9 +1330,6 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
     base_dd_min = 926;
     base_dd_max = 926;
-    //Scales off hunter ap *0.43 using a base_dd_adder in the hunter portion
-    //so don't scale off pet ap
-    direct_power_mod = 0.0;
 
     base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
   }
