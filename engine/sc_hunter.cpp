@@ -532,8 +532,9 @@ struct hunter_pet_t : public pet_t
     double ap = player_t::composite_attack_power();
 
     ap += o -> composite_attack_power() * 0.425;
-    if ( o -> buffs_aspect_of_the_hawk -> up() )
-      ap -= o -> buffs_aspect_of_the_hawk -> value() * 0.425; // Pets do not scale with Aspect of the Hawk AP
+    //This is incorrect, pets do scale with AotH AP
+//    if ( o -> buffs_aspect_of_the_hawk -> up() )
+//      ap -= o -> buffs_aspect_of_the_hawk -> value() * 0.425; // Pets do not scale with Aspect of the Hawk AP
 
     return ap;
   }
@@ -1192,13 +1193,13 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    base_dd_min = base_dd_max = 100;
-    base_cost = 20;
-    direct_power_mod = 1.5 / 3.5;
+    base_dd_min = base_dd_max = 0;
+    base_cost = 0;
+    direct_power_mod = 0;
     cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
 
-    id = 25012;
+    id=24844;
   }
 };
 
@@ -1328,8 +1329,12 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     proc=true;
     may_crit=true;
 
-    base_dd_min=849;
-    base_dd_max=849;
+    //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
+    base_dd_min = 926;
+    base_dd_max = 926;
+    //Scales off hunter ap *0.43 using a base_dd_adder in the hunter portion
+    //so don't scale off pet ap
+    direct_power_mod = 0.0;
 
     base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
   }
@@ -1512,11 +1517,19 @@ struct aimed_shot_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.48;
+
+    if(!p->ptr)
+      direct_power_mod = 0.48;
+    else
+      direct_power_mod = 0.724;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
-    weapon_multiplier = effect_average( 2 ) / 100.0;
+    if(!p->ptr)
+      weapon_multiplier = effect_average( 2 ) / 100.0;
+    else
+      weapon_multiplier = 2.0;
+
 
     normalize_weapon_speed = true;
   }
@@ -1576,7 +1589,6 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     parse_options( NULL, options_str );
-
     base_cost += p -> talents.efficiency -> effect_base_value( 2);
 
     // To trigger ppm-based abilities
@@ -1584,13 +1596,13 @@ struct arcane_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = effect_average( 2 ) / 100.0;
 
-    direct_power_mod = 0.042;
+    if(!p->ptr)
+      direct_power_mod = 0.042;
+    else
+      direct_power_mod = 0.0483;
 
     player_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
 
-    // Temporary PTR Fix: Assuming 15% more total damage
-    if ( p -> ptr )
-      player_multiplier *= 1.15;
   }
 
   virtual double cost() SC_CONST
@@ -1644,7 +1656,6 @@ struct black_arrow_t : public hunter_attack_t
     base_dd_min=base_dd_max=0;
     tick_power_mod=extra_coeff();
 
-    // Figure out how damage is calculated.
   }
 
   virtual void tick()
@@ -1675,7 +1686,10 @@ struct chimera_shot_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.488;
+    if(!p->ptr)
+      direct_power_mod = 0.488;
+    else
+      direct_power_mod = 0.732;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1731,6 +1745,7 @@ struct cobra_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.017;
     base_execute_time = 2.0;
+
   }
   
   void execute()
@@ -1780,7 +1795,10 @@ struct explosive_shot_t : public hunter_attack_t
 
     base_cost += p -> talents.efficiency -> effect_base_value( 1 );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
-    tick_power_mod = 0.273;
+    if(!p->ptr)
+      tick_power_mod = 0.273;
+    else
+      tick_power_mod = 0.232;
     tick_zero = true;
   }
 
@@ -1828,6 +1846,7 @@ struct kill_shot_t : public hunter_attack_t
     direct_power_mod = 0.3;
 
     base_crit += p -> talents.sniper_training -> effect_base_value( 2 ) / 100.0;
+
 
     normalize_weapon_speed = true;
   }
@@ -1892,7 +1911,6 @@ struct scatter_shot_t : public hunter_attack_t
   }
 };
 
-// TODO: Add 83077 to spell data
 struct serpent_sting_burst_t : public hunter_attack_t
 {
   serpent_sting_burst_t( player_t* player ) :
@@ -2008,6 +2026,7 @@ struct steady_shot_t : public hunter_attack_t
     weapon_multiplier = effect_average( 2 ) / 100.0;
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
+
   }
 
   virtual void trigger_improved_steady_shot()
@@ -2284,8 +2303,6 @@ struct hunters_mark_t : public hunter_spell_t
 
 struct kill_command_t : public hunter_spell_t
 {
-  pet_kill_command_t* pkc;
-
   kill_command_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "kill_command", player, "Kill Command" )
   {

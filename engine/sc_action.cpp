@@ -295,7 +295,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       {
       case A_PERIODIC_DAMAGE:
         tick_power_mod   = pData.effect_coeff( effect );
-        base_td_init     = pData.effect_min ( effect, pData.spell_scaling_class( spell_id ), player -> level );
+        base_td_init     = pData.effect_average ( effect, pData.spell_scaling_class( spell_id ), player -> level );
         base_td          = base_td_init;
         base_tick_time   = pData.effect_period ( effect );
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
