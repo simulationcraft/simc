@@ -1048,11 +1048,6 @@ struct warlock_pet_melee_t : public attack_t
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
 
-    if ( o -> buffs_hand_of_guldan -> up() )
-    {
-      player_crit += 0.10;
-    }
-
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
       player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
