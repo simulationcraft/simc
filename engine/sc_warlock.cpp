@@ -2961,11 +2961,12 @@ struct life_tap_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     double life = p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 3 ) / 100.0;
+    double mana = life * effect_base_value( 2 ) / 100.0 * ( 1.0 + p -> talent_improved_life_tap -> base_value() / 100.0 );
     p -> resource_loss( RESOURCE_HEALTH, life );
-    p -> resource_gain( RESOURCE_MANA, life * effect_base_value( 2 ) / 100.0, p -> gains_life_tap );
+    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
     if ( p -> talent_mana_feed -> rank() && p -> active_pet)
     {
-      p -> active_pet -> resource_gain( RESOURCE_MANA, life * effect_base_value( 2 ) / 100.0 * p -> talent_mana_feed -> effect_base_value( 1 ) / 100.0, p -> active_pet -> gains_mana_feed );
+      p -> active_pet -> resource_gain( RESOURCE_MANA, mana * p -> talent_mana_feed -> effect_base_value( 1 ) / 100.0, p -> active_pet -> gains_mana_feed );
     }
   }
 
