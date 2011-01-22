@@ -1784,6 +1784,72 @@ void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t
   result.melee_crit = a.melee_crit + b.melee_crit;
 }
 
+double util_t::floor( double X, unsigned int decplaces )
+{
+  switch ( decplaces )
+  {
+  case 0: return ::floor( X );
+  case 1: return ::floor( X * 10.0 ) * 0.1;
+  case 2: return ::floor( X * 100.0 ) * 0.01;
+  case 3: return ::floor( X * 1000.0 ) * 0.001;
+  case 4: return ::floor( X * 10000.0 ) * 0.0001;
+  case 5: return ::floor( X * 100000.0 ) * 0.00001;
+  default:
+    double mult = 1000000.0;
+    double div = 0.000001;
+    for ( unsigned int i = 6; i < decplaces; i++ )
+    {
+      mult *= 10.0;
+      div *= 0.1;
+    }
+    return ::floor( X * mult ) * div;
+  }
+}
+
+double util_t::ceil( double X, unsigned int decplaces )
+{
+  switch ( decplaces )
+  {
+  case 0: return ::ceil( X );
+  case 1: return ::ceil( X * 10.0 ) * 0.1;
+  case 2: return ::ceil( X * 100.0 ) * 0.01;
+  case 3: return ::ceil( X * 1000.0 ) * 0.001;
+  case 4: return ::ceil( X * 10000.0 ) * 0.0001;
+  case 5: return ::ceil( X * 100000.0 ) * 0.00001;
+  default:
+    double mult = 1000000.0;
+    double div = 0.000001;
+    for ( unsigned int i = 6; i < decplaces; i++ )
+    {
+      mult *= 10.0;
+      div *= 0.1;
+    }
+    return ::ceil( X * mult ) * div;
+  }
+}
+
+double util_t::round( double X, unsigned int decplaces )
+{
+  switch ( decplaces )
+  {
+  case 0: return ::floor( X + 0.5 );
+  case 1: return ::floor( X * 10.0 + 0.5 ) * 0.1;
+  case 2: return ::floor( X * 100.0 + 0.5 ) * 0.01;
+  case 3: return ::floor( X * 1000.0 + 0.5 ) * 0.001;
+  case 4: return ::floor( X * 10000.0 + 0.5 ) * 0.0001;
+  case 5: return ::floor( X * 100000.0 + 0.5 ) * 0.00001;
+  default:
+    double mult = 1000000.0;
+    double div = 0.000001;
+    for ( unsigned int i = 6; i < decplaces; i++ )
+    {
+      mult *= 10.0;
+      div *= 0.1;
+    }
+    return ::floor( X * mult + 0.5 ) * div;
+  }
+}
+
 //-------------------------------
 // std::STRING   utils
 //-------------------------------

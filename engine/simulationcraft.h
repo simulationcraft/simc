@@ -1674,6 +1674,10 @@ struct util_t
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
 
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
+
+  static double floor( double X, unsigned int decplaces = 0 );
+  static double ceil( double X, unsigned int decplaces = 0 );
+  static double round( double X, unsigned int decplaces = 0 );
 };
 
 // Event =====================================================================
@@ -3102,7 +3106,7 @@ struct player_t
   virtual void combat_begin();
   virtual void combat_end();
 
-  virtual double composite_mastery() SC_CONST { return floor( ( mastery * 100.0 ) + 0.5 ) / 100.0; }
+  virtual double composite_mastery() SC_CONST { return floor( ( mastery * 100.0 ) + 0.5 ) * 0.01; }
 
   virtual double energy_regen_per_second() SC_CONST;
   virtual double focus_regen_per_second() SC_CONST;

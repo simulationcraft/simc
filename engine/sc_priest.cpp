@@ -391,6 +391,7 @@ struct priest_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_td_multiplier( const school_type school ) SC_CONST;
 
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
 
@@ -401,6 +402,7 @@ struct priest_t : public player_t
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 
   virtual double    empowered_shadows_amount() SC_CONST;
+  virtual double    shadow_orb_amount() SC_CONST;
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -1058,8 +1060,10 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
+    // TO-DO: Verify how Dark Intent interacts with burst dmg.
+
     // IDP only crits for *1.5 not *2.0
-    if ( p -> bugs )
+    if ( p -> bugs && ! p -> ptr )
       player_crit_bonus_multiplier /= 1.0 + p -> constants.shadow_power_crit_value;
 
     if ( ! p -> bugs )
@@ -1139,16 +1143,6 @@ struct devouring_plague_t : public priest_spell_t
       devouring_plague_burst -> round_base_dmg = false;
       devouring_plague_burst -> execute();
     }
-  }
-
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-
-    priest_spell_t::player_buff();
-
-    player_multiplier *= 1.0 + p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
-                               p -> buffs_empowered_shadow -> value();
   }
 
   virtual void tick()
@@ -1451,7 +1445,7 @@ struct mind_blast_t : public priest_spell_t
 
     player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
 
-    player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
+    player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * p -> shadow_orb_amount() );
   }
 
   virtual void target_debuff( int dmg_type )
@@ -1533,31 +1527,15 @@ struct mind_flay_t : public priest_spell_t
   virtual void player_buff()
   {
     priest_t* p = player -> cast_priest();
-    double m = 1.0;
 
     priest_spell_t::player_buff();
 
-    m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
-    m += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
-    m += p -> buffs_empowered_shadow -> value();
+    player_td_multiplier += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
 
-    if ( ! p -> ptr )
+    if ( p -> glyphs.mind_flay && ( p -> ptr || p -> dots_shadow_word_pain -> ticking ) )
     {
-      if ( p -> glyphs.mind_flay && p -> dots_shadow_word_pain -> ticking )
-      {
-        player_multiplier *= 1.0 + 0.10;
-      }
+      player_td_multiplier += 0.10;
     }
-    else
-    {
-      if ( p -> glyphs.mind_flay )
-      {
-        m += 0.10;
-      }
-    }
-
-    player_multiplier *= m;
-
   }
 
   virtual void tick()
@@ -1660,7 +1638,7 @@ struct mind_spike_t : public priest_spell_t
 
     player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
 
-    player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * ( p -> composite_mastery() * p -> constants.shadow_orb_mastery_value ) );
+    player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * p -> shadow_orb_amount() );
   }
 };
 
@@ -2004,14 +1982,8 @@ struct shadow_word_pain_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    double m = 1.0;
-
-    m += p -> constants.improved_shadow_word_pain_value;
-    m += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
-    m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
-    m += p -> buffs_empowered_shadow -> value();
-
-    player_multiplier *= m;
+    player_td_multiplier += p -> constants.improved_shadow_word_pain_value;
+    player_td_multiplier += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
   }
 
   virtual void tick()
@@ -2251,16 +2223,6 @@ struct vampiric_touch_t : public priest_spell_t
     {
       p -> recast_mind_blast = 1;
     }
-  }
-
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-
-    priest_spell_t::player_buff();
-
-    player_multiplier *= 1.0 + p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value +
-                               p -> buffs_empowered_shadow -> value();
   }
 };
 
@@ -3285,12 +3247,21 @@ struct lightwell_t : public priest_heal_t
 
 double priest_t::empowered_shadows_amount() SC_CONST
 {
-  double a = composite_mastery() * passive_spells.shadow_orb_power -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
+  double a = shadow_orb_amount();
 
   if ( ptr )
   {
     a += 0.10;
   }
+
+  return a;
+}
+
+// priest_t::shadow_orb_amount
+
+double priest_t::shadow_orb_amount() SC_CONST
+{
+  double a = composite_mastery() * constants.shadow_orb_mastery_value;
 
   return a;
 }
@@ -3353,6 +3324,20 @@ double priest_t::composite_player_multiplier( const school_type school ) SC_CONS
   }
 
   return m;
+}
+
+double priest_t::composite_player_td_multiplier( const school_type school ) SC_CONST
+{
+  double player_multiplier = player_t::composite_player_td_multiplier( school );
+
+  if ( school == SCHOOL_SHADOW )
+  {
+    // Shadow TD
+    player_multiplier += buffs_empowered_shadow -> value();
+    player_multiplier += buffs_dark_evangelism -> stack () * constants.dark_evangelism_damage_value;
+  }
+
+  return player_multiplier;
 }
 
 double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST

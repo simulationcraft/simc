@@ -33,10 +33,12 @@
     else
       stats -> quiet = false;
     if ( player -> is_pet() )
+    {
       if ( !player -> cast_pet() -> owner -> healer )
         stats -> quiet = true;
       else
         stats -> quiet = false;
+    }
   }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
@@ -483,14 +485,16 @@
 
       // Sets Stats to quiet if player/owner is a Damage Dealer, otherwise to not quiet
       if ( !player -> healer )
-          stats -> quiet = true;
+        stats -> quiet = true;
       else
         stats -> quiet = false;
       if ( player -> is_pet() )
+      {
         if ( !player -> cast_pet() -> owner -> healer )
           stats -> quiet = true;
         else
           stats -> quiet = false;
+      }
     }
 
   // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
