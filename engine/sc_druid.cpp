@@ -2768,6 +2768,9 @@ struct starfire_t : public druid_spell_t
         if ( p -> dots_moonfire -> ticking )
           if ( p -> dots_moonfire -> added_ticks < 3 )
             p -> dots_moonfire -> action -> extend_duration( 1 );
+        else if ( p -> dots_sunfire -> ticking )
+          if ( p -> dots_sunfire -> added_ticks < 3 )
+            p -> dots_sunfire -> action -> extend_duration( 1 );
       }
       // If Solar is up SF won't give you eclipse energy
       // This is probably to force druid to oscillate
