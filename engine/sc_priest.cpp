@@ -1077,6 +1077,11 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     m += p -> buffs_empowered_shadow -> value();
 
+    if ( ! p -> bugs )
+    {
+      m += 0.03 * p -> buffs.dark_intent_feedback -> stack();
+    }
+
     player_multiplier *= m;
   }
 };
