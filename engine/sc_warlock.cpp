@@ -1196,28 +1196,26 @@ struct imp_pet_t : public warlock_main_pet_t
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
-    virtual void travel( int travel_result, double travel_dmg);
-  };
-
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual void player_buff()
   {
-    double m = warlock_pet_t::composite_player_multiplier( school );
-
-    warlock_t* o = owner -> cast_warlock();
+    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
+    warlock_pet_spell_t::player_buff();
 
     if ( o -> race == RACE_ORC )
     {
       // Glyph is additive with orc racial
-      m  /= 1.05;
-      m *= 1.05 + o -> glyphs.imp -> base_value();
+      player_multiplier /= 1.05;
+      player_multiplier *= 1.05 + o -> glyphs.imp -> base_value();
     }
     else
     {
-      m *= 1.0 + o -> glyphs.imp -> base_value();
+      player_multiplier *= 1.0 + o -> glyphs.imp -> base_value();
     }
-
-    return m;
   }
+
+    virtual void travel( int travel_result, double travel_dmg);
+  };
 
   imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_main_pet_t( sim, owner, "imp", PET_IMP )
@@ -1262,7 +1260,6 @@ struct felguard_pet_t : public warlock_main_pet_t
       direct_power_mod  = 0.264;
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 2 ) / 100.0;
-      if ( o -> glyphs.felguard -> ok() ) base_multiplier *= 1.0 + o -> glyphs.felguard -> base_value();
     }
 
     virtual void execute()
@@ -1270,6 +1267,24 @@ struct felguard_pet_t : public warlock_main_pet_t
       warlock_pet_attack_t::execute();
       trigger_mana_feed ( this, result );
     }
+
+  virtual void player_buff()
+  {
+    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+    warlock_t* o = p -> owner -> cast_warlock();
+    warlock_pet_attack_t::player_buff();
+
+    if ( o -> race == RACE_ORC )
+    {
+      // Glyph is additive with orc racial
+      player_multiplier /= 1.05;
+      player_multiplier *= 1.05 + o -> glyphs.felguard -> base_value();
+    }
+    else
+    {
+      player_multiplier *= 1.0 + o -> glyphs.felguard -> base_value();
+    }
+  }
   };
 
   struct felstorm_tick_t : public warlock_pet_attack_t
@@ -1446,7 +1461,6 @@ struct succubus_pet_t : public warlock_main_pet_t
         warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
-      base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> base_value() );
       direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
       base_dd_min *= 1.555; // only tested at level 85, applying base damage adjustment as a percentage
       base_dd_max *= 1.555; // modifier in hopes of getting it "somewhat right" for other levels as well
@@ -1457,6 +1471,24 @@ struct succubus_pet_t : public warlock_main_pet_t
     {
       warlock_pet_spell_t::travel(travel_result, travel_dmg);
       trigger_mana_feed ( this, travel_result );
+    }
+
+    virtual void player_buff()
+    {
+      warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
+      warlock_t* o = p -> owner -> cast_warlock();
+      warlock_pet_spell_t::player_buff();
+
+      if ( o -> race == RACE_ORC )
+      {
+        // Glyph is additive with orc racial
+        player_multiplier /= 1.05;
+        player_multiplier *= 1.05 + o -> glyphs.lash_of_pain -> base_value();
+      }
+      else
+      {
+        player_multiplier *= 1.0 + o -> glyphs.lash_of_pain -> base_value();
+      }
     }
   };
 

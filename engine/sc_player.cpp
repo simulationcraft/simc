@@ -2200,9 +2200,12 @@ double player_t::composite_movement_speed() SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
-                           sim -> auras.horn_of_winter -> value() ),
-                           sim -> auras.battle_shout -> value() );
+  if ( ! is_pet() )
+  {
+    a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
+                             sim -> auras.horn_of_winter -> value() ),
+                             sim -> auras.battle_shout -> value() );
+  }
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
   return a;
 }
