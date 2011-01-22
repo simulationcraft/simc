@@ -6,11 +6,11 @@ level=85
 race=orc
 use_pre_potion=1
 talents=http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113122200000000000000
-glyphs=life_tap/shadow_bolt/metamorphosis/felguard/immolate
+glyphs=life_tap/shadow_bolt/metamorphosis/imp/immolate
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
-actions+=/summon_felguard
+actions+=/summon_imp
 actions+=/dark_intent
 actions+=/snapshot_stats
 actions+=/blood_fury
