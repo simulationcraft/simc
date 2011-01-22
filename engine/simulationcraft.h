@@ -3291,8 +3291,8 @@ struct player_t
   static void warrior_init        ( sim_t* sim );
   static void warrior_combat_begin( sim_t* sim );
   static void warrior_combat_end  ( sim_t* sim ) { assert( sim ); }
-
-  bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
+  
+  bool is_pet() SC_CONST { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }

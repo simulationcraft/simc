@@ -1671,7 +1671,7 @@ double player_t::composite_attack_crit() SC_CONST
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( ! is_pet() )
   {
     if ( sim -> auras.leader_of_the_pack -> check() 
       || sim -> auras.honor_among_thieves -> check() 
@@ -1953,7 +1953,7 @@ double player_t::composite_spell_haste() SC_CONST
 
     if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
 
-    if ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check())
+    if ( ! is_pet() && ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check() ) )
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }
@@ -2028,7 +2028,7 @@ double player_t::composite_spell_crit() SC_CONST
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( ! is_pet() )
   {
     if ( buffs.focus_magic -> check() ) sc += 0.03;
 
@@ -2078,13 +2078,16 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 {
   double m = attack_power_multiplier;
 
-  if ( sim -> auras.trueshot -> up() || buffs.blessing_of_might -> up() )
+  if ( ! is_pet() )
   {
-    m *= 1.10;
-  }
-  else
-  {
-    m *= 1.0 + std::max( sim -> auras.unleashed_rage -> value(), sim -> auras.abominations_might -> value() );
+    if ( sim -> auras.trueshot -> up() || buffs.blessing_of_might -> up() )
+    {
+      m *= 1.10;
+    }
+    else
+    {
+      m *= 1.0 + std::max( sim -> auras.unleashed_rage -> value(), sim -> auras.abominations_might -> value() );
+    }
   }
 
   return m;
@@ -2125,9 +2128,10 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    if ( sim -> auras.ferocious_inspiration -> up()
+    if ( ! is_pet() &&
+       ( sim -> auras.ferocious_inspiration -> up()
       || sim -> auras.communion             -> up()
-      || sim -> auras.arcane_tactics        -> up() )
+      || sim -> auras.arcane_tactics        -> up() ) )
     {
       m *= 1.03;
     }
@@ -2208,9 +2212,12 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
-                           sim -> auras.horn_of_winter -> value() ),
-                           sim -> auras.battle_shout -> value() );
+  if ( ! is_pet() )
+  {
+    a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
+                             sim -> auras.horn_of_winter -> value() ),
+                             sim -> auras.battle_shout -> value() );
+  }
   a *= composite_attribute_multiplier( ATTR_AGILITY );
   return a;
 }

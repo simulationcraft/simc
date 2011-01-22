@@ -623,7 +623,7 @@ struct warlock_pet_t : public pet_t
     intellect_per_owner = 0; // removed in cata, tested
 
     base_attack_crit                  += 0.0328; // seems to be level invariant, untested
-    base_spell_crit                   += 0.0092; // seems to be level invariant, untested
+    base_spell_crit                   += 0.0328; // seems to be level invariant, untested
     initial_attack_crit_per_agility   += 0.01 / 52.0; // untested
     initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
     health_per_stamina = 10.0; // untested!
@@ -1191,14 +1191,33 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_pet_spell_t( "firebolt", player, "Firebolt" )
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      base_multiplier *= 1.0 + ( o -> glyphs.imp -> base_value() );
-      direct_power_mod = 0.657; // tested in-game as of 2010/21/12
+      direct_power_mod = 0.649; // tested in-game as of 2011/01/22
       base_execute_time += o -> talent_dark_arts -> effect_base_value( 1 ) / 1000.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
     virtual void travel( int travel_result, double travel_dmg);
   };
+
+  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+
+    warlock_t* o = owner -> cast_warlock();
+
+    if ( o -> race == RACE_ORC )
+    {
+      // Glyph is additive with orc racial
+      m  /= 1.05;
+      m *= 1.05 + o -> glyphs.imp -> base_value();
+    }
+    else
+    {
+      m *= 1.0 + o -> glyphs.imp -> base_value();
+    }
+
+    return m;
+  }
 
   imp_pet_t( sim_t* sim, player_t* owner ) :
     warlock_main_pet_t( sim, owner, "imp", PET_IMP )
@@ -1421,24 +1440,22 @@ struct felhunter_pet_t : public warlock_main_pet_t
 
 struct succubus_pet_t : public warlock_main_pet_t
 {
-  struct lash_of_pain_t : public warlock_pet_attack_t
+  struct lash_of_pain_t : public warlock_pet_spell_t
   {
     lash_of_pain_t( player_t* player ) :
-        warlock_pet_attack_t( "lash_of_pain", player, "Lash of Pain" )
+        warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
       base_multiplier  *= 1.0 + ( o -> glyphs.lash_of_pain -> base_value() );
       direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
       base_dd_min *= 1.555; // only tested at level 85, applying base damage adjustment as a percentage
       base_dd_max *= 1.555; // modifier in hopes of getting it "somewhat right" for other levels as well
-      base_attack_power_multiplier = 0.0;
-      base_spell_power_multiplier = 1.0;
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
     virtual void travel( int travel_result, double travel_dmg)
     {
-      warlock_pet_attack_t::travel(travel_result, travel_dmg);
+      warlock_pet_spell_t::travel(travel_result, travel_dmg);
       trigger_mana_feed ( this, travel_result );
     }
   };
@@ -1469,6 +1486,18 @@ struct succubus_pet_t : public warlock_main_pet_t
    virtual double composite_attack_haste() SC_CONST
    {
      double h = player_t::composite_attack_haste();
+     return h;
+   }
+
+  virtual double composite_spell_crit() SC_CONST
+   {
+     double h = player_t::composite_spell_crit();
+     return h;
+   }
+
+   virtual double composite_attack_crit() SC_CONST
+   {
+     double h = player_t::composite_attack_crit();
      return h;
    }
 };
