@@ -1718,7 +1718,7 @@ struct exorcism_t : public paladin_spell_t
     trigger_dp = true;
 
     direct_power_mod = 1.0;
-    tick_power_mod = 0.2/3; // glyph of exorcism is 20% of damage over three ticks ... FIXME: or just base damage?
+    tick_power_mod = 0.2/3; // glyph of exorcism is 20% of damage over three ticks
     base_spell_power_multiplier = 0.344;
     base_attack_power_multiplier = 0.344;
     if ( ! p -> glyphs.exorcism )
@@ -1743,9 +1743,10 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_spell_t::player_buff();
     paladin_t* p = player->cast_paladin();
-    saved_multiplier = player_multiplier;
+    if (!p->ptr) saved_multiplier = player_multiplier;
     // blazing light should really be a base_multiplier, but since the DoT doesn't benefit from it
     // and art of war and blazing light stack additively, we're doing it here instead. Hooray.
+    // (Fixed on ptr)
     if ( p->buffs_the_art_of_war->up() )
     {
       player_multiplier *= (blazing_light_multiplier + 1);
@@ -1813,7 +1814,8 @@ struct exorcism_t : public paladin_spell_t
   {
     // Since the glyph DoT doesn't benefit from the AoW and blazing light multipliers,
     // we save it in player_buff() and restore it here. Rather hackish.
-    player_multiplier = saved_multiplier;
+    // (Fixed on ptr)
+    if (!player->ptr) player_multiplier = saved_multiplier;
     paladin_spell_t::tick();
   }
 };
