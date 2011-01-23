@@ -2277,7 +2277,6 @@ struct hunters_mark_t : public hunter_spell_t
 
     ap_bonus = effect_average( 2 );
     harmful = false;
-
   }
 
   virtual void execute()
@@ -2757,12 +2756,14 @@ void hunter_t::init_spells()
   glyphs.steady_shot    = find_glyph( "Glyph of Steady Shot"    );
   glyphs.kill_command   = find_glyph( "Glyph of Kill Command"   );
 
+  int t11_4s = ptr ? 96411 : 89925;
+
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
-    //  C2P    C4P    M2P         M4P            T2P    T4P
-    {     0,     0, 70727,               70730,     0,     0 }, // Tier10
-    {     0,     0, 89923, ptr ? 96411 : 89925,     0,     0 }, // Tier11
-    {     0,     0,     0,                   0,     0,     0 },
+    //  C2P    C4P    M2P    M4P    T2P    T4P
+    {     0,     0, 70727,  70730,     0,     0 }, // Tier10
+    {     0,     0, 89923, t11_4s,     0,     0 }, // Tier11
+    {     0,     0,     0,      0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -3343,7 +3344,7 @@ int hunter_t::decode_set( item_t& item )
   const char* s = item.name();
 
   if ( strstr( s, "ahnkahar_blood_hunter" ) ) return SET_T10_MELEE;
-  if ( strstr( s, "lightning_charged"     ) ) return SET_T11_MELEE;
+  if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
 
   return SET_NONE;
 }
