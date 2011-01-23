@@ -3096,7 +3096,7 @@ double hunter_t::composite_attack_power() SC_CONST
 
   if ( passive_spells.animal_handler -> ok() )
   {
-    ap *= 1.15;
+    ap *= ptr ? 1.25 : 1.15;
   }
 
   return ap;
