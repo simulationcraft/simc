@@ -1,7 +1,6 @@
 #!./simc 
 
 warlock=Warlock_Demonology_T11_372_PTR
-origin="http://chardev.org/?profile=21155"
 level=85
 race=orc
 use_pre_potion=1

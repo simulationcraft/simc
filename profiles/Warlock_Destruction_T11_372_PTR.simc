@@ -1,7 +1,6 @@
 #!./simc 
 
 warlock=Warlock_Destruction_T11_372_PTR
-origin="http://chardev.org/?profile=21462"
 level=85
 race=orc
 use_pre_potion=1
