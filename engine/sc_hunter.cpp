@@ -947,8 +947,6 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   }
 };
 
-// FIXME! I believe many of the talents that refer to "Basic Attacks" mean Claw/Bite
-// Right now those talents key off of "special" but perhaps they should be moved here.
 
 struct claw_t : public hunter_pet_attack_t
 {
@@ -979,6 +977,8 @@ struct claw_t : public hunter_pet_attack_t
         o -> buffs_culling_the_herd -> trigger();
       }
     }
+
+    p -> buffs_owls_focus -> trigger();
   }
 
   virtual void player_buff()
@@ -1005,7 +1005,10 @@ struct claw_t : public hunter_pet_attack_t
     hunter_t* o     = p -> owner -> cast_hunter();
     double c = hunter_pet_attack_t::cost();
     if ( c == 0 ) return 0;
-    if ( p -> buffs_owls_focus -> check() ) return 0;
+    if ( p -> buffs_owls_focus -> check() ) {
+      p -> buffs_owls_focus -> expire();
+      return 0;
+    }
     if ( p -> buffs_sic_em -> up() )
       c *= 1.0 + o -> talents.sic_em -> base_value() / 100.0;
     if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
@@ -1104,7 +1107,6 @@ struct hunter_pet_spell_t : public spell_t
     if ( base_cost > 0 )
     {
       hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      p -> buffs_owls_focus -> expire();
     }
   }
 
@@ -1112,7 +1114,6 @@ struct hunter_pet_spell_t : public spell_t
   {
     spell_t::execute();
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    p -> buffs_owls_focus -> trigger();
   }
 
   virtual void player_buff()
@@ -1334,6 +1335,7 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
     base_dd_min = 926;
     base_dd_max = 926;
+    base_crit_bonus = 1.0;
 
     base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
   }
