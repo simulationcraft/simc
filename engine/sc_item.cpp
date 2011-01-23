@@ -612,7 +612,7 @@ bool item_t::decode_random_suffix()
   // Append stats to the existing encoded stats string, as 
   // a simple suffix will not tell the user anything about 
   // the item
-  if ( ! encoded_stats_str.empty() )
+  if ( ! encoded_stats_str.empty() && stat_list.size() > 0 )
     encoded_stats_str += "_";
   
   for ( unsigned i = 0; i < stat_list.size(); i++ )
