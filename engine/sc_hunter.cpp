@@ -1600,7 +1600,7 @@ struct arcane_shot_t : public hunter_attack_t
     else
       direct_power_mod = 0.0483;
 
-    player_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
+    base_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
 
   }
 
