@@ -17,13 +17,13 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3
 actions+=/counterspell
 actions+=/mirror_image,if=target.time_to_die>=30
-actions+=/arcane_power,if=target.time_to_die<34
+actions+=/arcane_power,if=target.time_to_die<48
 actions+=/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3
-actions+=/mana_gem,if=target.time_to_die<34
+actions+=/mana_gem,if=target.time_to_die<48
 actions+=/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3
 actions+=/flame_orb,if=target.time_to_die>=15
 actions+=/presence_of_mind,arcane_blast
-actions+=/arcane_blast,if=target.time_to_die<34&mana_pct>5
+actions+=/arcane_blast,if=target.time_to_die<48&mana_pct>5
 actions+=/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2
 actions+=/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)
 actions+=/arcane_blast,if=mana_pct>94
@@ -34,37 +34,38 @@ actions+=/arcane_missiles
 actions+=/arcane_barrage
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
-head=firelords_hood,heroic=1,type=cloth,stats=1093armor_217haste_237mastery_325int_578sta,reforge=haste_hit,gems=chaotic_shadowspirit_20int_20hit_30crit,enchant=60int_35crit
-neck=valionas_medallion,heroic=1,stats=215int_322sta_143haste_143mastery,reforge=haste_hit
-shoulders=firelords_mantle,heroic=1,type=cloth,stats=1009armor_171hit_191haste_266int_429sta,reforge=haste_mastery,gems=40int_10haste,enchant=50int_25haste
-chest=shadowblaze_robes,heroic=1,type=cloth,stats=1346armor_217hit_257mastery_345int_578sta,gems=20int_20mastery_40int_20int,enchant=20all
-waist=belt_of_arcane_storms,heroic=1,type=cloth,stats=266int_429sta_191haste_171crit_757armor,reforge=crit_hit,gems=20hit_20mastery_40int_20haste
-legs=firelords_leggings,heroic=1,type=cloth,stats=1177armor_217hit_257haste_345int_578sta,reforge=haste_mastery,gems=20int_20mastery_40int_20int,enchant=95int_80sta
-feet=einhorns_galoshes,heroic=1,type=cloth,stats=266int_429sta_191haste_171mastery_925armor,reforge=haste_hit,gems=40int_10haste,enchant=35mastery
-wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,stats=215int_322sta_143crit_143hit_589armor,reforge=crit_mastery,enchant=65haste
-hands=firelords_gloves,heroic=1,type=cloth,stats=841armor_171crit_191mastery_266int_429sta,reforge=crit_hit,gems=20int_20mastery_10mastery,enchant=65mastery
-finger1=signet_of_the_fifth_circle,heroic=1,stats=215int_322sta_143mastery_143haste,reforge=haste_hit,enchant=40int
-finger2=band_of_secret_names,stats=190int_286sta_127mastery_127haste,reforge=haste_hit,enchant=40int
-trinket1=theralions_mirror,heroic=1,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
-trinket2=shard_of_woe
-back=shroud_of_endless_grief,heroic=1,stats=209int_344sta_153mastery_133haste_699armor,reforge=haste_hit,gems=20hit_20haste_10int,enchant=lightweave_embroidery
-main_hand=incineratus,heroic=1,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_hit
-off_hand=book_of_binding_will,heroic=1,stats=215int_322sta_143haste_143hit,enchant=100int
-ranged=theresas_booklight,heroic=1,stats=121int_181sta_81mastery_81hit
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=ember_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit
+shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,gems=40int_10haste,enchant=50int_25haste
+chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=crit_hit,gems=40int_20hit_20int_20int,enchant=20all
+waist=soul_breath_belt_of_the_flameblaze,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_429sta_266int_180mastery_180hit,reforge=mastery_haste,gems=40int_40int,suffix=228
+legs=firelords_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,gems=20haste_20int_40int_20int,enchant=95int_80sta
+feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_hit,gems=40int_10haste,enchant=50hit
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50hit
+hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=crit_hit,gems=40int,enchant=65mastery
+finger1=planetary_band_of_the_flameblaze,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143mastery_143hit,reforge=mastery_haste,enchant=40int,suffix=114
+finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit
+trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
+trinket2=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_hit,gems=20haste_20int_10int,enchant=lightweave_embroidery
+main_hand=stormwake_the_tempests_reach_of_the_flameblaze,heroic=1,ilevel=372,quality=epic,stats=2207sp_247sta_165int_110mastery_110hit,reforge=mastery_haste,enchant=power_torrent,weapon=sword_1.60speed_73min_137max,suffix=114
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=100int
+ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=5897
-# gear_intellect=4722
+# gear_stamina=5950
+# gear_intellect=4882
 # gear_spirit=20
 # gear_spell_power=2207
-# gear_hit_rating=1736
-# gear_crit_rating=629
-# gear_haste_rating=1439
-# gear_mastery_rating=1994
-# gear_armor=8436
-# meta_gem=chaotic_shadowspirit
+# gear_hit_rating=1747
+# gear_crit_rating=446
+# gear_haste_rating=2101
+# gear_mastery_rating=1013
+# gear_armor=8479
+# meta_gem=ember_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
+# trinket2=shard_of_woe,heroic=1
 # back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
-# main_hand=incineratus,heroic=1,enchant=power_torrent
+# main_hand=stormwake_the_tempests_reach_of_the_flameblaze,heroic=1,weapon=sword_1.60speed_73min_137max,enchant=power_torrent

@@ -3082,16 +3082,16 @@ void mage_t::init_actions()
     if ( primary_tree() == TREE_ARCANE )
     {
       if ( level >= 50 ) action_list_str += "/mirror_image,if=target.time_to_die>=30";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<34";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<48";
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
-      action_list_str += "/mana_gem,if=target.time_to_die<34";
+      action_list_str += "/mana_gem,if=target.time_to_die<48";
       action_list_str += "/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=15";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<34&mana_pct>5";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<48&mana_pct>5";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
