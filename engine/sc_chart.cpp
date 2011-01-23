@@ -130,6 +130,22 @@ static unsigned char simple_encoding( int number )
   return encoding[ number ];
 }
 
+static const char* chart_resource_type_string( int type )
+{
+  switch ( type )
+  {
+  case RESOURCE_NONE:         return "None";
+  case RESOURCE_HEALTH:       return "Health";
+  case RESOURCE_MANA:         return "Mana";
+  case RESOURCE_RAGE:         return "Rage";
+  case RESOURCE_ENERGY:       return "Energy";
+  case RESOURCE_FOCUS:        return "Focus";
+  case RESOURCE_RUNIC:        return "Runic Power";
+  case RESOURCE_SOUL_SHARDS:  return "Soul Shards";
+  }
+  return "Unknown";
+}
+
 #if 0
 static const char* extended_encoding( int number )
 {
@@ -169,6 +185,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 
   std::string s;
   char buffer[ 1024 ];
+  bool first = true;
 
   std::vector<player_t*> player_list = sim -> players_by_rank;
   int max_players = MAX_PLAYERS_PER_CHART;
@@ -178,7 +195,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     if ( num_players > max_players ) num_players = max_players;
 
     s = "http://0.chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_players * 20 + 30 ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_players * 20 + ( first ? 20 : 0 ) ); s += buffer;
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
@@ -210,12 +227,16 @@ int chart_t::raid_dps( std::vector<std::string>& images,
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
     }
     s += "&amp;";
-    s += "chtt=DPS+Ranking";
-    s += "&amp;";
+    if (first) 
+    {
+      s += "chtt=DPS+Ranking";
+      s += "&amp;";
+    }
     s += "chts=666666,18";
 
     images.push_back( s );
 
+    first = false;
     player_list.erase( player_list.begin(), player_list.begin() + num_players );
     num_players = ( int ) player_list.size();
     if ( num_players == 0 ) break;
@@ -519,7 +540,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     if ( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
     s = "http://2.chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 15 + 30 ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 15 + ( chart == 0 ? 20 : -10 ) ); s += buffer;
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
@@ -607,7 +628,7 @@ const char* chart_t::action_dpet( std::string& s,
   char buffer[ 1024 ];
 
   s = "http://2.chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=550x%d", num_stats * 30 + 65 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chs=550x%d", num_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
@@ -638,7 +659,7 @@ const char* chart_t::action_dpet( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=666666,18";
 
@@ -1005,7 +1026,7 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|DPS+Timeline", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=666666,18";
 
@@ -1072,7 +1093,7 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), chart_resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
   s += "chts=666666,18";
   s += "&amp;";
@@ -1087,7 +1108,6 @@ const char* chart_t::timeline_health( std::string& s,
                                         player_t* p )
 {
   resource_type resource=RESOURCE_HEALTH;
-
   int max_buckets = ( int ) p -> timeline_resource.size();
   int max_points  = 600;
   int increment   = 1;
@@ -1139,7 +1159,7 @@ const char* chart_t::timeline_health( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( resource ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), chart_resource_type_string( resource ) ); s += buffer;
   s += "&amp;";
   s += "chts=666666,18";
   s += "&amp;";
@@ -1193,7 +1213,7 @@ const char* chart_t::distribution_dps( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|DPS+Distribution", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
   s += "chts=666666,18";
 
