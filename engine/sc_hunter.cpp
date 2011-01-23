@@ -1326,6 +1326,7 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     dual = true;
     proc=true;
     may_crit=true;
+    trigger_gcd = 0.0;
 
     //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
     base_dd_min = 926;
@@ -1646,7 +1647,7 @@ struct black_arrow_t : public hunter_attack_t
     base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
 
-    if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() ) tick_zero = true;
+    if ( ! p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() ) tick_zero = true;
 
     base_dd_min=base_dd_max=0;
     tick_power_mod=extra_coeff();
@@ -1703,7 +1704,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     hunter_attack_t::execute();
 
-    if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
+    if ( ! p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
     {
       if ( p -> rng_tier11_4pc -> roll( p -> sets -> set ( SET_T11_4PC_MELEE ) -> proc_chance() ) )
         p -> resource_gain( RESOURCE_FOCUS, 25, p -> gains_tier11_4pc );
@@ -1740,7 +1741,8 @@ struct cobra_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.017;
     base_execute_time = 2.0;
-
+    if ( p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
+      base_execute_time -= 0.2;
   }
   
   void execute()
@@ -2018,6 +2020,8 @@ struct steady_shot_t : public hunter_attack_t
     
     direct_power_mod = 0.021;
     base_execute_time = 2.0;
+    if ( p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
+      base_execute_time -= 0.2;
     weapon_multiplier = effect_average( 2 ) / 100.0;
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -2238,7 +2242,7 @@ struct focus_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    double value = p -> active_pet -> buffs_frenzy -> stack() * ( p -> talents.focus_fire -> effect_base_value( 3 ) /100.0 + p -> sets -> set ( SET_T11_2PC_MELEE ) -> ok() * 1 / 100.0 );
+    double value = p -> active_pet -> buffs_frenzy -> stack() * ( p -> talents.focus_fire -> effect_base_value( 3 ) / 100.0 + ( p -> ptr ? 0 : p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() ) * 1 / 100.0 );
     p -> buffs_focus_fire -> trigger( 1, value );
 
     double gain = p -> talents.focus_fire -> effect_base_value( 2 );
@@ -2332,7 +2336,14 @@ struct kill_command_t : public hunter_spell_t
 
     if ( p -> active_pet )
     {
-      p -> active_pet -> kill_command -> base_dd_adder = 0.43 * total_power();
+      if ( ! p -> ptr )
+      {
+        p -> active_pet -> kill_command -> base_dd_adder = 0.43 * total_power();
+      }
+      else
+      {
+        p -> active_pet -> kill_command -> base_dd_adder = 0.516 * total_power();
+      }
       p -> active_pet -> kill_command -> execute();
     }
   }
@@ -2748,10 +2759,10 @@ void hunter_t::init_spells()
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P
-    {     0,     0, 70727, 70730,     0,     0 }, // Tier10
-    {     0,     0, 89923, 89925,     0,     0 }, // Tier11
-    {     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P    M2P         M4P            T2P    T4P
+    {     0,     0, 70727,               70730,     0,     0 }, // Tier10
+    {     0,     0, 89923, ptr ? 96411 : 89925,     0,     0 }, // Tier11
+    {     0,     0,     0,                   0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
