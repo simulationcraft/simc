@@ -20,16 +20,17 @@ actions+=/pool_energy,for_next=1
 actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up
 actions+=/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up
 actions+=/premeditation
-actions+=/garrote
-actions+=/ambush,if=combo_points<=2
+actions+=/ambush,if=combo_points<5
 actions+=/preparation,if=cooldown.vanish.remains>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/rupture,if=combo_points=5&!ticking
 actions+=/recuperate,if=combo_points=5&dot.rupture.remains>8&buff.slice_and_dice.remains>8
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
 actions+=/eviscerate,if=combo_points>=4&buff.shadow_dance.up
-actions+=/backstab,if=combo_points<4
+actions+=/backstab,if=combo_points<4&energy>60
 actions+=/backstab,if=cooldown.honor_among_thieves.remains>1.75
+#prevents energy capping if HaT doesn't proc
+actions+=/backstab,if=combo_points<5&energy>80&cooldown.honor_among_thieves.remains=0
 head=wind_dancers_helmet,type=leather,stats=281agi_1356armor_228crit_168hit_512sta,gems=relentless_earthsiege_30agi,enchant=60agi_35haste
 neck=amulet_of_dull_dreaming,stats=168agi_112crit_112haste_252sta
 shoulders=wind_dancers_spaulders,type=leather,stats=233agi_1252armor_149crit_169haste_380sta,gems=20hit_20exp_10agi,enchant=50agi_25mastery

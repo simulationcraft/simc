@@ -16,7 +16,7 @@ actions+=/auto_attack
 actions+=/stealth
 actions+=/kick
 actions+=/pool_energy,for_next=1
-actions+=/shadow_dance,if=time>10&energy>85&combo_points<=3&cooldown.shadowstep.remains<=6&!buff.find_weakness.up
+actions+=/shadow_dance,if=time>10&energy>85&combo_points<=3&!buff.find_weakness.up
 actions+=/pool_energy,for_next=1
 actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
 actions+=/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up
@@ -24,12 +24,13 @@ actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains
 actions+=/ambush,if=combo_points<=4
 actions+=/preparation,if=cooldown.vanish.remains>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
-#recuperate priority provides better dps then rupture if someone supplies bleed debuff
-actions+=/recuperate,if=combo_points=5&buff.recuperate.remains<3
 actions+=/rupture,if=combo_points=5&!ticking
+actions+=/recuperate,if=combo_points=5&buff.recuperate.remains<3
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
 actions+=/backstab,if=combo_points<3&energy>60
 actions+=/backstab,if=cooldown.honor_among_thieves.remains>1.75
+#prevents energy capping if HaT doesn't proc
+actions+=/backstab,if=combo_points<5&energy>80&cooldown.honor_among_thieves.remains=0
 head=wind_dancers_helmet,heroic=1,type=leather,stats=325agi_1439armor_257crit_197hit_578sta,gems=relentless_earthsiege_20agi_20hit_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143haste_143mastery,reforge=mastery_exp
 shoulders=wind_dancers_spaulders,heroic=1,type=leather,stats=266agi_1328armor_171crit_191haste_429sta,gems=40agi,enchant=50agi_25mastery
