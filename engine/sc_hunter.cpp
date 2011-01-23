@@ -1024,7 +1024,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
 
     parse_options( NULL, options_str );
     base_dd_min = base_dd_max = 0;
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
@@ -1043,7 +1043,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     parse_options( NULL, options_str );
 
     base_dd_min = base_dd_max  = 1;
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast   = true;
     direct_power_mod = 0.10; // http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/ The scaling in this post matches in-game testing.
 
@@ -1170,7 +1170,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
 
     froststorm_breath_tick = new froststorm_breath_tick_t( p );
@@ -1193,7 +1193,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
 
     // FIXME: Implement target Debuff
@@ -1213,7 +1213,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
   }
 
   virtual void execute()
@@ -1238,7 +1238,7 @@ struct furious_howl_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
 
     harmful = false;
   }
@@ -1264,7 +1264,7 @@ struct rabid_t : public hunter_pet_spell_t
     hunter_t*     o = p -> owner -> cast_hunter();
 
     parse_options( NULL, options_str );
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
 
   }
 
@@ -1294,7 +1294,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     base_cost      = 0;
     num_ticks      = 3;
     base_tick_time = 3;
-    cooldown -> duration *=  ( 1.0 - o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
 
     id = 53517;
@@ -2170,7 +2170,7 @@ struct bestial_wrath_t : public hunter_spell_t
     check_talent( p -> talents.bestial_wrath -> rank() );
 
     cooldown -> duration += p -> glyphs.bestial_wrath -> mod_additive( P_COOLDOWN );
-    cooldown -> duration *=  ( 1.0 - p -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     harmful = false;
   }
 
