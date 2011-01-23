@@ -964,9 +964,8 @@ struct claw_t : public hunter_pet_attack_t
     hunter_t* o     = p -> owner -> cast_hunter();
     hunter_pet_attack_t::execute();
 
-    //TODO: test if sic em procs and Owl's focus procs are both consumed by a
-    //single claw if they are up simultaneously
     p -> buffs_sic_em -> expire();
+    p -> buffs_owls_focus -> expire();
     o -> buffs_cobra_strikes -> decrement();
     if ( o -> talents.frenzy -> rank() )
       p -> buffs_frenzy -> trigger( 1 );
@@ -1007,10 +1006,7 @@ struct claw_t : public hunter_pet_attack_t
     hunter_t* o     = p -> owner -> cast_hunter();
     double c = hunter_pet_attack_t::cost();
     if ( c == 0 ) return 0;
-    if ( p -> buffs_owls_focus -> check() ) {
-      p -> buffs_owls_focus -> expire();
-      return 0;
-    }
+    if ( p -> buffs_owls_focus -> check() ) return 0;
     if ( p -> buffs_sic_em -> up() )
       c *= 1.0 + o -> talents.sic_em -> base_value() / 100.0;
     if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
