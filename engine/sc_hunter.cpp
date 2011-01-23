@@ -693,7 +693,10 @@ struct hunter_attack_t : public attack_t
       trigger_improved_steady_shot();
 
     if ( p -> buffs_pre_improved_steady_shot -> stack() == 2 )
+    {
       p -> buffs_improved_steady_shot -> trigger();
+      p -> buffs_pre_improved_steady_shot -> expire();
+    }
   }
 
   virtual double cost() SC_CONST;
