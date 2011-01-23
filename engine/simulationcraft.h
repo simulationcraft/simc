@@ -3717,14 +3717,13 @@ struct heal_t : public spell_t
 {
   player_t* heal_target;
   double actual_heal, overheal;
-  stats_t* overheal_stats;
 
   void _init_heal_t();
   heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
   virtual void player_buff();
-  virtual void target_debuff( int dmg_type );
+  void target_buff( int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_damage( double amount,
@@ -3736,6 +3735,9 @@ struct heal_t : public spell_t
   virtual void update_stats( int type );
   virtual void travel( int travel_result, double travel_dmg );
   virtual void tick();
+  virtual player_t* find_greatest_difference_player();
+  virtual player_t* find_lowest_player();
+  virtual void refresh_duration();
 
 };
 

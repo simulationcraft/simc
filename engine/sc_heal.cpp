@@ -26,6 +26,7 @@
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
     target=0;
+    heal_target = player;
 
     // Sets Stats to quiet if player/owner is a Damage Dealer, otherwise to not quiet
     if ( !player -> healer )
@@ -44,18 +45,21 @@
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
 
   heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
-      spell_t( n, sname, player, t ), heal_target( player )
+      spell_t( n, sname, player, t )
   {
     _init_heal_t();
   }
+
+
 
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
   heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
-      spell_t( n, id, player, t ), heal_target( player )
+      spell_t( n, id, player, t )
   {
     _init_heal_t();
   }
+
 
 // heal_t::player_buff ======================================================
 
@@ -103,9 +107,9 @@
                      name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
   }
 
-// heal_t::target_debuff ====================================================
+// heal_t::target_buff ====================================================
 
-  void heal_t::target_debuff( int dmg_type )
+  void heal_t::target_buff( int dmg_type )
   {
     target_multiplier            = 1.0;
     target_hit                   = 0;
@@ -118,7 +122,7 @@
     target_dd_adder              = 0;
 
     if ( sim -> debug )
-      log_t::output( sim, "heal_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+      log_t::output( sim, "heal_t::target_buff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                      name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
   }
 
@@ -145,14 +149,14 @@
 
     player_buff();
 
-    target_debuff( HEAL_DIRECT );
+    target_buff( HEAL_DIRECT );
 
     calculate_result();
 
-    consume_resource();
-
     direct_dmg = calculate_direct_damage();
     schedule_travel();
+
+    consume_resource();
 
     update_ready();
 
@@ -428,7 +432,7 @@
 
     double save_target_crit = target_crit;
 
-    target_debuff( HEAL_OVER_TIME );
+    target_buff( HEAL_OVER_TIME );
 
     target_crit = save_target_crit;
 
@@ -455,10 +459,59 @@
     update_stats( HEAL_OVER_TIME );
   }
 
+  player_t* heal_t::find_greatest_difference_player()
+  {
+    double diff=0;
+    double max=0;
+    player_t* max_player = player;
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      // No love for pet's right now
+      diff = p -> is_pet() ? 0 : p -> resource_max[ RESOURCE_HEALTH ] - p -> resource_current[ RESOURCE_HEALTH];
+      if ( diff > max )
+      {
+        max = diff;
+        max_player = p;
+      }
+    }
+    return max_player;
+  }
+
+  player_t* heal_t::find_lowest_player()
+  {
+    double diff=0;
+    double max=0;
+    player_t* max_player = player;
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      // No love for pet's right now
+      diff =  p -> is_pet() ? 0 : 1.0 / p -> resource_current[ RESOURCE_HEALTH];
+      if ( diff > max )
+      {
+        max = diff;
+        max_player = p;
+      }
+    }
+    return max_player;
+  }
 
 
+  void heal_t::refresh_duration()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s refreshes duration of %s", player -> name(), name() );
 
+    // Make sure this DoT is still ticking......
+    assert( dot -> tick_event );
 
+    player_buff();
+    target_buff( HEAL_OVER_TIME );
+
+    dot -> action = this;
+    dot -> current_tick = 0;
+    dot -> added_ticks = 0;
+    dot -> num_ticks = hasted_num_ticks();
+    dot -> recalculate_ready();
+  }
 
 
 

@@ -18,10 +18,10 @@ actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger=80000
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/lightwell
-actions+=/chakra,if=buff.chakra_buff.down
+actions+=/chakra,if=buff.chakra_sanctuary.down
+actions+=/prayer_of_healing,if=buff.chakra_pre.up
 actions+=/prayer_of_mending
-actions+=/circle_of_healing
-actions+=/holy_word,if=buff.chakra_buff.up&buff.chakra_buff.value=2
+actions+=/holy_word
 actions+=/prayer_of_healing,if=mana_pct>=30
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
@@ -36,7 +36,7 @@ finger1=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_21
 finger2=planetary_band_of_the_fireflash,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143crit_143haste,enchant=40int,suffix=130
 trinket1=core_of_ripeness,ilevel=359,quality=epic,stats=321int,use=1926spi_20dur_120cd
 trinket2=fall_of_mortality,heroic=1,ilevel=372,quality=epic,stats=363int
-back=drape_of_the_twins,heroic=1,ilevel=372,quality=epic,stats=673armor_143haste_215int_143spi_322sta,enchant=lightweave_embroidery_old
+back=drape_of_the_twins,heroic=1,ilevel=372,quality=epic,stats=673armor_143haste_215int_143spi_322sta,enchant=lightweave_embroidery
 main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max
 off_hand=scepter_of_ice,heroic=1,ilevel=372,quality=epic,stats=215int_143mastery_143spi_322sta,enchant=100int
 ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta

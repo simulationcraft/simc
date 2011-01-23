@@ -6,7 +6,7 @@ optimal_raid=1
 queue_lag=0.5
 
 # Do some Damage!
-raid_events+=/damage,cooldown=4,amount=50000
+raid_events+=/damage,cooldown=10,amount=80000
 
 Priest_Heal_D_Single_T11_372.simc
 Priest_Heal_D_AE_T11_372.simc
