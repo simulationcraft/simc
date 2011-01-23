@@ -964,6 +964,8 @@ struct claw_t : public hunter_pet_attack_t
     hunter_t* o     = p -> owner -> cast_hunter();
     hunter_pet_attack_t::execute();
 
+    //TODO: test if sic em procs and Owl's focus procs are both consumed by a
+    //single claw if they are up simultaneously
     p -> buffs_sic_em -> expire();
     o -> buffs_cobra_strikes -> decrement();
     if ( o -> talents.frenzy -> rank() )
@@ -1099,21 +1101,6 @@ struct hunter_pet_spell_t : public spell_t
     spell_t( n, id, player )
   {
     _init_hunter_pet_spell_t();
-  }
-
-  virtual void consume_resource()
-  {
-    spell_t::consume_resource();
-    if ( base_cost > 0 )
-    {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    }
-  }
-
-  virtual void execute()
-  {
-    spell_t::execute();
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
   }
 
   virtual void player_buff()
@@ -1326,7 +1313,8 @@ struct pet_kill_command_t : public hunter_pet_spell_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
     background = true;
-    stats -> school = SCHOOL_PHYSICAL;
+    stats->school = SCHOOL_PHYSICAL;
+    school = SCHOOL_PHYSICAL;
     dual = true;
     proc=true;
     may_crit=true;
