@@ -1,7 +1,7 @@
 #!./simc 
 
-mage=mage_frost_372
-origin="http://chardev.org/?profile=22000"
+mage=Mage_Frost_T11_372_PTR
+origin="http://chardev.org/?profile=22015"
 level=85
 race=undead
 use_pre_potion=1
@@ -31,15 +31,15 @@ actions+=/frostbolt
 actions+=/ice_lance,moving=1
 actions+=/fire_blast,moving=1
 head=firelords_hood,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_217haste_325int_237mastery_578sta,reforge=mastery_hit,gems=chaotic_shadowspirit_20hit_20int_30crit,enchant=60int_35crit
-neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta
-shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,reforge=haste_crit,gems=20hit_20int_10haste,enchant=50int_25haste
+neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=haste_hit
+shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,reforge=haste_crit,gems=40int_10haste,enchant=50int_25haste
 shirt=master_builders_shirt,ilevel=1
-chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=haste_hit,gems=20hit_20int_20hit_20int_20int,enchant=20all
-waist=soul_breath_belt_of_the_wildfire,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_429sta_266int_180hit_180crit,gems=20crit_20hit_20hit_20int_10int,suffix=227
-legs=firelords_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,reforge=haste_crit,gems=20crit_20hit_20hit_20int_20int,enchant=95int_80sta
-feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=haste_crit,gems=20hit_20int_10haste,enchant=50hit
+chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=haste_hit,gems=40int_20hit_20int_20int,enchant=20all
+waist=soul_breath_belt_of_the_wildfire,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_429sta_266int_180hit_180crit,gems=20crit_20hit_40int_10int,suffix=227
+legs=firelords_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,reforge=haste_crit,gems=20crit_20hit_40int_20int,enchant=95int_80sta
+feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_hit,gems=40int_10haste,enchant=50hit
 wrists=bracers_of_the_dark_pool,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143crit_143hit_215int_322sta,enchant=65crit
-hands=hands_of_the_twilight_council,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_191crit_171haste_266int_429sta,gems=20hit_20int_10crit,enchant=65mastery
+hands=hands_of_the_twilight_council,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_191crit_171haste_266int_429sta,gems=40int_10crit,enchant=65mastery
 finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
 finger2=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,enchant=40int,suffix=129
 trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,equip=onspellcrit_2178sp_30%_20dur_100cd
@@ -53,13 +53,13 @@ tabard=tabard_of_frost,ilevel=1,quality=epic
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5909
-# gear_intellect=4632
+# gear_intellect=4752
 # gear_spirit=20
 # gear_spell_power=2207
-# gear_hit_rating=1736
-# gear_crit_rating=2065
-# gear_haste_rating=1327
-# gear_mastery_rating=775
+# gear_hit_rating=1741
+# gear_crit_rating=1989
+# gear_haste_rating=1346
+# gear_mastery_rating=707
 # gear_armor=8410
 # meta_gem=chaotic_shadowspirit
 # tier11_2pc_caster=1
