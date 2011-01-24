@@ -453,7 +453,7 @@ struct hunter_pet_t : public pet_t
     buffs_call_of_the_wild  = new buff_t( this, 53434, "call_of_the_wild" );
     buffs_culling_the_herd  = new buff_t( this, 70893, "culling_the_herd" );
     buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0 );
-    buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, 0 );
+    buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, talents.owls_focus->rank() * 0.15 );
     buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
     buffs_rabid_power_stack = new buff_t( this, "rabid_power_stack", 1,    0, 0.0);
     buffs_savage_rend       = new buff_t( this, "savage_rend",       1, 30.0 );
@@ -492,7 +492,7 @@ struct hunter_pet_t : public pet_t
       }
       if( talents.roar_of_recovery -> rank() )
       {
-        action_list_str += "/roar_of_recovery";
+        action_list_str += "/roar_of_recovery,if=!buff.bloodlust.up";
       }
       if ( talents.rabid -> rank() )
       {
