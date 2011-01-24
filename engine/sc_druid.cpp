@@ -2793,16 +2793,25 @@ struct starfire_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
     druid_t* p = player -> cast_druid();
 
     if ( extend_moonfire )
     {
-      if ( ! p -> glyphs.starfire -> enabled() ) return false;
-      if ( ! p -> dots_moonfire -> ticking ) return false;
-      if ( p -> dots_moonfire -> added_ticks > 2 ) return false;
+      if ( ! p -> glyphs.starfire -> enabled() )
+        return false;
+
+      if ( p -> dots_moonfire -> ticking )
+      {
+        if ( p -> dots_moonfire -> added_ticks > 5 )
+          return false;
+      }
+      else if ( p -> dots_sunfire -> ticking )
+      {
+        if ( p -> dots_sunfire -> added_ticks > 5 )
+          return false;
+      }
+      else
+        return false;
     }
 
     if ( ! prev_str.empty() )
@@ -2814,7 +2823,7 @@ struct starfire_t : public druid_spell_t
         return false;
     }
 
-    return true;
+    return druid_spell_t::ready();
   }
 };
 
