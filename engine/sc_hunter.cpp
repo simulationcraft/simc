@@ -1502,13 +1502,13 @@ struct aimed_shot_mm_t : public hunter_attack_t
     check_spec ( TREE_MARKSMANSHIP );
 
     background = true;
-    dual = true;
     stats = player -> get_stats( "aimed_shot" );
 
     // Don't know why these values aren't 0 in the database.
-    base_cost = 0; base_execute_time = 0;
+    base_cost = 0;
+    base_execute_time = 0;
 
-    if(!p->ptr)
+    if( ! p -> ptr )
       direct_power_mod = 0.48;
     else
       direct_power_mod = 0.724;
@@ -1562,7 +1562,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     am_mm = new aimed_shot_mm_t( p );
 
-    if(!p->ptr)
+    if( ! p -> ptr )
       direct_power_mod = 0.48;
     else
       direct_power_mod = 0.724;
@@ -1571,6 +1571,14 @@ struct aimed_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     normalize_weapon_speed = true;
+  }
+
+  virtual double cost() SC_CONST
+  {
+    hunter_t* p = player -> cast_hunter();
+    if ( p -> buffs_fire -> may_react() ) return 0;
+    
+    return hunter_attack_t::cost();
   }
 
   virtual void player_buff()
@@ -1588,7 +1596,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     hunter_t* p = player -> cast_hunter();
 
-    if ( p -> buffs_fire -> up() )
+    if ( p -> buffs_fire -> may_react() )
       am_mm -> execute();
     else
     {
