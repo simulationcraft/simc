@@ -1,13 +1,13 @@
 #!./simc 
 
-priest=Priest_Heal_Holy_AE_T11_372
-origin=""
+priest=Priest_Heal_Discipline_PWS_T11_372
+origin="http://chardev.org/?profile=19842"
 level=85
 race=night_elf
-use_pre_potion=-1
+use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#bcbZfuRrRkMkMdohb
-glyphs=shadowfiend/renew/lightwell/prayer_of_healing
+talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
+glyphs=inner_fire/mass_dispel/levitate/power_word_shield/prayer_of_healing/penance
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
@@ -15,14 +15,11 @@ actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/use_item,name=core_of_ripeness
 actions+=/mana_potion,trigger=30000
-actions+=/shadow_fiend,trigger=80000
+actions+=/shadow_fiend,trigger=100000
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
-actions+=/lightwell
-actions+=/chakra,if=buff.chakra_sanctuary.down
-actions+=/prayer_of_healing,if=buff.chakra_pre.up
+actions+=/power_infusion
 actions+=/prayer_of_mending
-actions+=/holy_word
-actions+=/prayer_of_healing,if=mana_pct>=5
+actions+=/power_word_shield
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
 shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_266int_171spi_429sta,gems=40int_10haste,enchant=50int_25haste

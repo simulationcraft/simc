@@ -32,6 +32,7 @@ struct hunter_t : public player_t
   buff_t* buffs_killing_streak_crits;
   buff_t* buffs_lock_and_load;
   buff_t* buffs_master_marksman;
+  buff_t* buffs_fire;
   buff_t* buffs_pre_improved_steady_shot;
   buff_t* buffs_rapid_fire;
   buff_t* buffs_sniper_training;
@@ -1489,19 +1490,23 @@ struct auto_shot_t : public hunter_attack_t
   }
 };
 
-// Aimed Shot ===============================================================
+// Aimed Shot - Master Marksman ====================================================
 
-struct aimed_shot_t : public hunter_attack_t
+struct aimed_shot_mm_t : public hunter_attack_t
 {
-  aimed_shot_t( player_t* player, const std::string& options_str ) :
-      hunter_attack_t( "aimed_shot", player, "Aimed Shot" )
+  aimed_shot_mm_t( player_t* player ) :
+      hunter_attack_t( "aimed_shot_mm", player, 82928 )
   {
     hunter_t* p = player -> cast_hunter();
 
     check_spec ( TREE_MARKSMANSHIP );
 
-    parse_options( NULL, options_str );
+    background = true;
+    dual = true;
+    stats = player -> get_stats( "aimed_shot" );
 
+    // Don't know why these values aren't 0 in the database.
+    base_cost = 0; base_execute_time = 0;
 
     if(!p->ptr)
       direct_power_mod = 0.48;
@@ -1510,11 +1515,6 @@ struct aimed_shot_t : public hunter_attack_t
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
-    if(!p->ptr)
-      weapon_multiplier = effect_average( 2 ) / 100.0;
-    else
-      weapon_multiplier = 2.0;
-
 
     normalize_weapon_speed = true;
   }
@@ -1541,26 +1541,69 @@ struct aimed_shot_t : public hunter_attack_t
       trigger_piercing_shots( this );
       p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
     }
-    if ( p -> buffs_master_marksman -> check() == 5 )
-      p -> buffs_master_marksman -> expire();
+    if ( p -> buffs_fire -> up() )
+      p -> buffs_fire -> expire();
+  }
+};
+
+// Aimed Shot ===============================================================
+
+struct aimed_shot_t : public hunter_attack_t
+{
+  aimed_shot_mm_t* am_mm;
+  aimed_shot_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "aimed_shot", player, "Aimed Shot" ), am_mm( 0 )
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    check_spec ( TREE_MARKSMANSHIP );
+
+    parse_options( NULL, options_str );
+
+    am_mm = new aimed_shot_mm_t( p );
+
+    if(!p->ptr)
+      direct_power_mod = 0.48;
     else
+      direct_power_mod = 0.724;
+
+    weapon = &( p -> ranged_weapon );
+    assert( weapon -> group() == WEAPON_RANGED );
+
+    normalize_weapon_speed = true;
+  }
+
+  virtual void player_buff()
+  {
+    hunter_t* p = player -> cast_hunter();
+    hunter_attack_t::player_buff();
+    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect_base_value( 2 ) )
+    {
+      player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
+    }
+  }
+
+  virtual void execute()
+  {
+
+    hunter_t* p = player -> cast_hunter();
+
+    if ( p -> buffs_fire -> up() )
+      am_mm -> execute();
+    else
+    {
+      hunter_attack_t::execute();
       p -> ranged_attack -> cancel(); // Interrupt auto attack when it's not instant
-  }
+    }
 
-  virtual double cost() SC_CONST
-  {
-    hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_master_marksman -> check() == 5 )
-      return 0;
-    return hunter_attack_t::cost();
-  }
+    if ( result == RESULT_CRIT )
+    {
+      if ( p -> active_pet )
+        p -> active_pet -> buffs_sic_em -> trigger();
+      trigger_piercing_shots( this );
+      p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
+    }
 
-  virtual double execute_time() SC_CONST
-  {
-    hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_master_marksman -> check() == 5 )
-      return 0;
-    return hunter_attack_t::execute_time();
   }
 };
 
@@ -2530,6 +2573,27 @@ struct snipertraining_hunter_t : public event_t
   }
 };
 
+struct buff_master_marksman_t : public buff_t
+{
+  buff_master_marksman_t( player_t* p, const uint32_t id, const std::string& n, double chance ) :
+    buff_t( p, id, n, chance )
+  {
+
+  }
+  virtual void increment( int    stacks,
+                        double value )
+  {
+    if ( current_stack == 4 )
+    {
+      hunter_t* p = player -> cast_hunter();
+      p -> buffs_fire -> trigger();
+      expire();
+    }
+    else
+      buff_t::increment( stacks, value );
+  }
+};
+
 // hunter_pet_t::create_action =============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
@@ -2814,7 +2878,8 @@ void hunter_t::init_buffs()
   buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect_base_value( 1 ) / 100.0 );
-  buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
+  buffs_master_marksman             = new buff_master_marksman_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
+  buffs_fire                        = new buff_t( this, 82926, "fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );

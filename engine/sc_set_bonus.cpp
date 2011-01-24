@@ -37,6 +37,10 @@ int set_bonus_t::tier10_2pc_tank() SC_CONST { return ( count[ SET_T10_2PC_TANK ]
 
 int set_bonus_t::tier10_4pc_tank() SC_CONST { return ( count[ SET_T10_4PC_TANK ] > 0 || ( count[ SET_T10_4PC_TANK ] < 0 && count[ SET_T10_TANK ] >= 4 ) ) ? 1 : 0; }
 
+int set_bonus_t::tier10_2pc_heal() SC_CONST { return ( count[ SET_T10_2PC_HEAL ] > 0 || ( count[ SET_T10_2PC_HEAL ] < 0 && count[ SET_T10_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier10_4pc_heal() SC_CONST { return ( count[ SET_T10_4PC_HEAL ] > 0 || ( count[ SET_T10_4PC_HEAL ] < 0 && count[ SET_T10_HEAL ] >= 4 ) ) ? 1 : 0; }
+
 // set_bonus_t::tier11 =======================================================
 
 int set_bonus_t::tier11_2pc_caster() SC_CONST { return ( count[ SET_T11_2PC_CASTER ] > 0 || ( count[ SET_T11_2PC_CASTER ] < 0 && count[ SET_T11_CASTER ] >= 2 ) ) ? 1 : 0; }
@@ -50,6 +54,10 @@ int set_bonus_t::tier11_4pc_melee() SC_CONST { return ( count[ SET_T11_4PC_MELEE
 int set_bonus_t::tier11_2pc_tank() SC_CONST { return ( count[ SET_T11_2PC_TANK ] > 0 || ( count[ SET_T11_2PC_TANK ] < 0 && count[ SET_T11_TANK ] >= 2 ) ) ? 1 : 0; }
 
 int set_bonus_t::tier11_4pc_tank() SC_CONST { return ( count[ SET_T11_4PC_TANK ] > 0 || ( count[ SET_T11_4PC_TANK ] < 0 && count[ SET_T11_TANK ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_2pc_heal() SC_CONST { return ( count[ SET_T11_2PC_HEAL ] > 0 || ( count[ SET_T11_2PC_HEAL ] < 0 && count[ SET_T11_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier11_4pc_heal() SC_CONST { return ( count[ SET_T11_4PC_HEAL ] > 0 || ( count[ SET_T11_4PC_HEAL ] < 0 && count[ SET_T11_HEAL ] >= 4 ) ) ? 1 : 0; }
 
 // set_bonus_t::tier12 =======================================================
 
@@ -65,6 +73,10 @@ int set_bonus_t::tier12_2pc_tank() SC_CONST { return ( count[ SET_T12_2PC_TANK ]
 
 int set_bonus_t::tier12_4pc_tank() SC_CONST { return ( count[ SET_T12_4PC_TANK ] > 0 || ( count[ SET_T12_4PC_TANK ] < 0 && count[ SET_T12_TANK ] >= 4 ) ) ? 1 : 0; }
 
+int set_bonus_t::tier12_2pc_heal() SC_CONST { return ( count[ SET_T12_2PC_HEAL ] > 0 || ( count[ SET_T12_2PC_HEAL ] < 0 && count[ SET_T12_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier12_4pc_heal() SC_CONST { return ( count[ SET_T12_4PC_HEAL ] > 0 || ( count[ SET_T12_4PC_HEAL ] < 0 && count[ SET_T12_HEAL ] >= 4 ) ) ? 1 : 0; }
+
 // set_bonus_t::tier13 =======================================================
 
 int set_bonus_t::tier13_2pc_caster() SC_CONST { return ( count[ SET_T13_2PC_CASTER ] > 0 || ( count[ SET_T13_2PC_CASTER ] < 0 && count[ SET_T13_CASTER ] >= 2 ) ) ? 1 : 0; }
@@ -79,6 +91,10 @@ int set_bonus_t::tier13_2pc_tank() SC_CONST { return ( count[ SET_T13_2PC_TANK ]
 
 int set_bonus_t::tier13_4pc_tank() SC_CONST { return ( count[ SET_T13_4PC_TANK ] > 0 || ( count[ SET_T13_4PC_TANK ] < 0 && count[ SET_T13_TANK ] >= 4 ) ) ? 1 : 0; }
 
+int set_bonus_t::tier13_2pc_heal() SC_CONST { return ( count[ SET_T13_2PC_HEAL ] > 0 || ( count[ SET_T13_2PC_HEAL ] < 0 && count[ SET_T13_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier13_4pc_heal() SC_CONST { return ( count[ SET_T13_4PC_HEAL ] > 0 || ( count[ SET_T13_4PC_HEAL ] < 0 && count[ SET_T13_HEAL ] >= 4 ) ) ? 1 : 0; }
+
 // set_bonus_t::tier14 =======================================================
 
 int set_bonus_t::tier14_2pc_caster() SC_CONST { return ( count[ SET_T14_2PC_CASTER ] > 0 || ( count[ SET_T14_2PC_CASTER ] < 0 && count[ SET_T14_CASTER ] >= 2 ) ) ? 1 : 0; }
@@ -92,6 +108,10 @@ int set_bonus_t::tier14_4pc_melee() SC_CONST { return ( count[ SET_T14_4PC_MELEE
 int set_bonus_t::tier14_2pc_tank() SC_CONST { return ( count[ SET_T14_2PC_TANK ] > 0 || ( count[ SET_T14_2PC_TANK ] < 0 && count[ SET_T14_TANK ] >= 2 ) ) ? 1 : 0; }
 
 int set_bonus_t::tier14_4pc_tank() SC_CONST { return ( count[ SET_T14_4PC_TANK ] > 0 || ( count[ SET_T14_4PC_TANK ] < 0 && count[ SET_T14_TANK ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_2pc_heal() SC_CONST { return ( count[ SET_T14_2PC_HEAL ] > 0 || ( count[ SET_T14_2PC_HEAL ] < 0 && count[ SET_T14_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier14_4pc_heal() SC_CONST { return ( count[ SET_T14_4PC_HEAL ] > 0 || ( count[ SET_T14_4PC_HEAL ] < 0 && count[ SET_T14_HEAL ] >= 4 ) ) ? 1 : 0; }
 
 // set_bonus_t::decode ======================================================
 
@@ -169,6 +189,10 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N
         case 4:
         case 5:
           b = j + 3;
+          break;
+        case 6:
+        case 7:
+          b = j + 4;
           break;
         default:
           break;

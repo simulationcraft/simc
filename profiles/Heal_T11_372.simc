@@ -10,9 +10,11 @@ raid_events+=/damage,cooldown=10,amount=80000
 
 Priest_Heal_D_Single_T11_372.simc
 Priest_Heal_D_AE_T11_372.simc
+Priest_Heal_D_PWS_T11_372.simc
 Priest_Heal_Atonement_T11_372.simc
 Priest_Heal_H_Single_T11_372.simc
 Priest_Heal_H_AE_T11_372.simc
+Priest_Heal_H_Mixed_T11_372.simc
 
 # A profile to have an accurate fight length calculation
 Warlock_Affliction_T11_372.simc

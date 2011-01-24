@@ -411,9 +411,9 @@ enum slot_type   // these enum values match armory settings
 #define N_TIER 5
 #endif
 
-// Caster 2/4, Melee 2/4, Tank 2/4
+// Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #ifndef N_TIER_BONUS
-#define N_TIER_BONUS 6
+#define N_TIER_BONUS 8
 #endif
 
 enum set_type
@@ -422,18 +422,23 @@ enum set_type
   SET_T10_CASTER, SET_T10_2PC_CASTER, SET_T10_4PC_CASTER,
   SET_T10_MELEE,  SET_T10_2PC_MELEE,  SET_T10_4PC_MELEE,
   SET_T10_TANK,   SET_T10_2PC_TANK,   SET_T10_4PC_TANK,
+  SET_T10_HEAL,   SET_T10_2PC_HEAL,   SET_T10_4PC_HEAL,
   SET_T11_CASTER, SET_T11_2PC_CASTER, SET_T11_4PC_CASTER,
   SET_T11_MELEE,  SET_T11_2PC_MELEE,  SET_T11_4PC_MELEE,
   SET_T11_TANK,   SET_T11_2PC_TANK,   SET_T11_4PC_TANK,
+  SET_T11_HEAL,   SET_T11_2PC_HEAL,   SET_T11_4PC_HEAL,
   SET_T12_CASTER, SET_T12_2PC_CASTER, SET_T12_4PC_CASTER,
   SET_T12_MELEE,  SET_T12_2PC_MELEE,  SET_T12_4PC_MELEE,
   SET_T12_TANK,   SET_T12_2PC_TANK,   SET_T12_4PC_TANK,
+  SET_T12_HEAL,   SET_T12_2PC_HEAL,   SET_T12_4PC_HEAL,
   SET_T13_CASTER, SET_T13_2PC_CASTER, SET_T13_4PC_CASTER,
   SET_T13_MELEE,  SET_T13_2PC_MELEE,  SET_T13_4PC_MELEE,
   SET_T13_TANK,   SET_T13_2PC_TANK,   SET_T13_4PC_TANK,
+  SET_T13_HEAL,   SET_T13_2PC_HEAL,   SET_T13_4PC_HEAL,
   SET_T14_CASTER, SET_T14_2PC_CASTER, SET_T14_4PC_CASTER,
   SET_T14_MELEE,  SET_T14_2PC_MELEE,  SET_T14_4PC_MELEE,
   SET_T14_TANK,   SET_T14_2PC_TANK,   SET_T14_4PC_TANK,
+  SET_T14_HEAL,   SET_T14_2PC_HEAL,   SET_T14_4PC_HEAL,
   SET_MAX
 };
 
@@ -2058,7 +2063,7 @@ struct buff_t : public spell_id_t
   bool   remains_lt( double time );
   bool   trigger  ( action_t*, int stacks=1, double value=-1.0 );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
-  void   increment( int stacks=1, double value=-1.0 );
+  virtual void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
   void   extend_duration( player_t* p, double seconds );
 
@@ -2722,16 +2727,16 @@ struct item_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier10_2pc_caster() SC_CONST; int tier10_2pc_melee() SC_CONST; int tier10_2pc_tank() SC_CONST;
-  int tier10_4pc_caster() SC_CONST; int tier10_4pc_melee() SC_CONST; int tier10_4pc_tank() SC_CONST;
-  int tier11_2pc_caster() SC_CONST; int tier11_2pc_melee() SC_CONST; int tier11_2pc_tank() SC_CONST;
-  int tier11_4pc_caster() SC_CONST; int tier11_4pc_melee() SC_CONST; int tier11_4pc_tank() SC_CONST;
-  int tier12_2pc_caster() SC_CONST; int tier12_2pc_melee() SC_CONST; int tier12_2pc_tank() SC_CONST;
-  int tier12_4pc_caster() SC_CONST; int tier12_4pc_melee() SC_CONST; int tier12_4pc_tank() SC_CONST;
-  int tier13_2pc_caster() SC_CONST; int tier13_2pc_melee() SC_CONST; int tier13_2pc_tank() SC_CONST;
-  int tier13_4pc_caster() SC_CONST; int tier13_4pc_melee() SC_CONST; int tier13_4pc_tank() SC_CONST;
-  int tier14_2pc_caster() SC_CONST; int tier14_2pc_melee() SC_CONST; int tier14_2pc_tank() SC_CONST;
-  int tier14_4pc_caster() SC_CONST; int tier14_4pc_melee() SC_CONST; int tier14_4pc_tank() SC_CONST;
+  int tier10_2pc_caster() SC_CONST; int tier10_2pc_melee() SC_CONST; int tier10_2pc_tank() SC_CONST; int tier10_2pc_heal() SC_CONST;
+  int tier10_4pc_caster() SC_CONST; int tier10_4pc_melee() SC_CONST; int tier10_4pc_tank() SC_CONST; int tier10_4pc_heal() SC_CONST;
+  int tier11_2pc_caster() SC_CONST; int tier11_2pc_melee() SC_CONST; int tier11_2pc_tank() SC_CONST; int tier11_2pc_heal() SC_CONST;
+  int tier11_4pc_caster() SC_CONST; int tier11_4pc_melee() SC_CONST; int tier11_4pc_tank() SC_CONST; int tier11_4pc_heal() SC_CONST;
+  int tier12_2pc_caster() SC_CONST; int tier12_2pc_melee() SC_CONST; int tier12_2pc_tank() SC_CONST; int tier12_2pc_heal() SC_CONST;
+  int tier12_4pc_caster() SC_CONST; int tier12_4pc_melee() SC_CONST; int tier12_4pc_tank() SC_CONST; int tier12_4pc_heal() SC_CONST;
+  int tier13_2pc_caster() SC_CONST; int tier13_2pc_melee() SC_CONST; int tier13_2pc_tank() SC_CONST; int tier13_2pc_heal() SC_CONST;
+  int tier13_4pc_caster() SC_CONST; int tier13_4pc_melee() SC_CONST; int tier13_4pc_tank() SC_CONST; int tier13_4pc_heal() SC_CONST;
+  int tier14_2pc_caster() SC_CONST; int tier14_2pc_melee() SC_CONST; int tier14_2pc_tank() SC_CONST; int tier14_2pc_heal() SC_CONST;
+  int tier14_4pc_caster() SC_CONST; int tier14_4pc_melee() SC_CONST; int tier14_4pc_tank() SC_CONST; int tier14_4pc_heal() SC_CONST;
   int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();

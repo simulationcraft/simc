@@ -2594,6 +2594,9 @@ struct _heal_t : public priest_heal_t
 
     base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
+
+    // Check Spell when it's imported into the dbc
+    base_crit      += p -> sets -> set( SET_T11_2PC_HEAL ) -> mod_additive( P_CRIT );
   }
 
   virtual void execute()
@@ -3337,8 +3340,10 @@ struct holy_word_t : public priest_spell_t
 struct lightwell_hot_t : public priest_heal_t
 {
   int charges;
+  double consume_interval;
   lightwell_hot_t( player_t* player ) :
-    priest_heal_t( "lightwell_hot", player, 7001 ), charges( 0 )
+    priest_heal_t( "lightwell_hot", player, 7001 ),
+    charges( 0 ), consume_interval( 0.0 )
   {
     tick_power_mod = 0.308;
     base_multiplier *= 3 * 1.25;
@@ -3354,7 +3359,7 @@ struct lightwell_hot_t : public priest_heal_t
     if ( charges >= 0 )
     {
       // Assuming a Lightwell Charge is used every 10 seconds
-      execute_event = new ( sim ) action_execute_event_t( sim, this, 10.0 );
+      execute_event = new ( sim ) action_execute_event_t( sim, this, consume_interval );
       charges -= 1;
     }
 
@@ -3363,10 +3368,18 @@ struct lightwell_hot_t : public priest_heal_t
 struct lightwell_t : public priest_heal_t
 {
   lightwell_hot_t* lw_hot;
+  double consume_interval;
   lightwell_t( player_t* player, const std::string& options_str ) :
-    priest_heal_t( "lightwell", player, 724 ), lw_hot( 0 )
+    priest_heal_t( "lightwell", player, 724 ), lw_hot( 0 ), consume_interval( 10.0 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "consume_interval", OPT_FLT, &consume_interval },
+      { NULL,     OPT_UNKNOWN, NULL       }
+    };
+    parse_options( options, options_str );
+
+    assert( consume_interval > 0 && consume_interval < cooldown -> duration );
 
     priest_t* p = player -> cast_priest();
     check_talent( p -> talents.lightwell -> rank() );
@@ -3381,6 +3394,7 @@ struct lightwell_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
     lw_hot -> charges = 10;
+    lw_hot -> consume_interval = consume_interval;
     if ( p -> glyphs.lightwell )
       lw_hot -> charges += 5;
     lw_hot -> execute();
@@ -3857,12 +3871,13 @@ void priest_t::init_spells()
   active_spells.holy_archangel2       = new active_spell_t( this, "holy_archangel2", 81700 );
   active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
 
+  // T11: H2P = 89910, H4P = 89911
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P
-    { 70800, 70801,     0,     0,     0,     0 }, // Tier10
-    { 89915, 89922,     0,     0,     0,     0 }, // Tier11
-    {     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
+    { 70800, 70801,     0,     0,     0,     0,     0,     0 }, // Tier10
+    { 89915, 89922,     0,     0,     0,     0,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4387,6 +4402,7 @@ int priest_t::decode_set( item_t& item )
   const char* s = item.name();
 
   bool is_caster = false;
+  bool is_healer = false;
 
   if ( strstr( s, "crimson_acolyte" ) )
   {
@@ -4405,6 +4421,13 @@ int priest_t::decode_set( item_t& item )
                   strstr( s, "gloves"        ) ||
                   strstr( s, "leggings"      ) );
     if ( is_caster ) return SET_T11_CASTER;
+
+    is_healer = ( strstr( s, "cowl"          ) ||
+                  strstr( s, "mantle" ) ||
+                  strstr( s, "robes"      ) ||
+                  strstr( s, "handwraps"        ) ||
+                  strstr( s, "legwraps"      ) );
+    if ( is_healer ) return SET_T11_HEAL;
   }
 
   return SET_NONE;
