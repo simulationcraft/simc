@@ -276,7 +276,7 @@ bool item_t::init()
     if ( encoded_name_str != armory_name_str )
     {
       sim -> errorf( "Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
-		     player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
+                     player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
 
       encoded_name_str = armory_name_str;
     }
@@ -486,19 +486,19 @@ bool item_t::decode_reforge()
   if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
   {
     sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", 
-		   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+                   player -> name(), encoded_reforge_str.c_str(), slot_name() );
     return false;
   }
   if ( base_stats.get_stat( s1 ) <= 0.0 )
   {
     sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s does not have source stat on item.\n", 
-		   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+                   player -> name(), encoded_reforge_str.c_str(), slot_name() );
     return false;
   }
   if ( base_stats.get_stat( s2 ) > 0.0 )
   {
     sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s already has target stat on item.\n", 
-		   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+                   player -> name(), encoded_reforge_str.c_str(), slot_name() );
     return false;
   }
 
@@ -533,19 +533,25 @@ bool item_t::decode_random_suffix()
   // We need the ilevel/quality data, otherwise we cannot figure out
   // the random suffix point allocation.
   if ( ilevel == 0 || quality == 0 )
-    return false;
+  {
+    sim -> errorf( "Player %s with random suffix at slot %s requires both ilevel= and quality= information.\n", player -> name(), slot_name() );
+    return true;
+  }
 
   rsid = abs( strtol( encoded_random_suffix_str.c_str(), 0, 10 ) );
   ilevel_data = sim -> sim_data.find_rand_property_data( ilevel );
   suffix_data = sim -> sim_data.find_random_suffix( rsid );
   
   if ( ! ilevel_data || ! suffix_data )
-    return false;
-    
+  {
+    sim -> errorf( "Player %s unable to decode random suffix at slot %s due to missing DBC data.\n", player -> name(), slot_name() );
+    return true;
+  }
+
   if ( sim -> debug )
   {
     log_t::output( sim, "random_suffix: item=%s suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
-      name(), rsid, ilevel, quality, f );
+                   name(), rsid, ilevel, quality, f );
   }
   
   for ( int i = 0; i < 5; i++ )
@@ -810,8 +816,8 @@ bool item_t::decode_special( special_effect_t& effect,
       std::vector<std::string> splits;
       if( 2 == util_t::string_split( splits, t.value_str, "+" ) )
       {
-	      effect.discharge_amount  = atof( splits[ 0 ].c_str() );
-	      effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
+              effect.discharge_amount  = atof( splits[ 0 ].c_str() );
+              effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
       }
     }
     else if ( t.name == "stacks" || t.name == "stack" )
@@ -1184,12 +1190,12 @@ bool item_t::decode_weapon()
 // item_t::download_slot =============================================================
 
 bool item_t::download_slot( item_t& item, 
-			    const std::string& item_id, 
-			    const std::string& enchant_id, 
-			    const std::string& addon_id, 
-			    const std::string& reforge_id, 
-			    const std::string& rsuffix_id,
-			    const std::string gem_ids[ 3 ] )
+                            const std::string& item_id, 
+                            const std::string& enchant_id, 
+                            const std::string& addon_id, 
+                            const std::string& reforge_id, 
+                            const std::string& rsuffix_id,
+                            const std::string gem_ids[ 3 ] )
 {
   player_t* p = item.player;
   bool success = false;
@@ -1207,7 +1213,7 @@ bool item_t::download_slot( item_t& item,
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", 
-			p -> name(), item.slot_name() );
+                        p -> name(), item.slot_name() );
 
     success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
   }
@@ -1215,7 +1221,7 @@ bool item_t::download_slot( item_t& item,
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download slot '%s' info from mmo-champion.  Trying wowarmory....\n", 
-			p -> name(), item.slot_name() );
+                        p -> name(), item.slot_name() );
 
     success = armory_t::download_slot( item, item_id, 0 );
   }
@@ -1242,14 +1248,14 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download item '%s' info from mmo-champion.  Trying wowhead....\n", 
-			p -> name(), item.name() );
+                        p -> name(), item.name() );
 
     success = wowhead_t::download_item( item, item_id, 0 );
   }
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", 
-			p -> name(), item.name() );
+                        p -> name(), item.name() );
 
     success = armory_t::download_item( item, item_id, 0 );
   }
