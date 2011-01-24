@@ -173,8 +173,10 @@ static xml_node_t* create_node( sim_t*                  sim,
   {
     if( sim )
     {
-      sim -> errorf( "Unexpected character '%c' at index %d (%s)\n", c, ( int ) index, node -> name() );
-      sim -> errorf( "%s\n", input.c_str() );
+      int start = std::min( 0, ( (int) index - 32 ) );
+      sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n", 
+		     c, ( int ) index, node -> name(), input.substr( start, index-start ).c_str() );
+      fprintf( sim -> output_file, "%s\n", input.c_str() );
       sim -> cancel();
     }
     return 0;
@@ -247,7 +249,17 @@ static int create_children( sim_t*                  sim,
     else
     {
       std::string::size_type start = index;
-      while ( input[ index ] && input[ index ] != '<' ) index++;
+      while ( input[ index ] )
+      {
+	if ( input[ index ] == '<' )
+	{
+	  if ( isalpha( input[ index+ 1 ] ) ) break;
+	  if ( input[ index+1 ] == '/' ) break;
+	  if ( input[ index+1 ] == '?' ) break;
+	  if ( input[ index+1 ] == '!' ) break;
+	}
+	index++;
+      }
       root -> parameters.push_back( xml_parm_t( ".", input.substr( start, index-start ) ) );
     }
   }
