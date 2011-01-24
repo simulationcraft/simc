@@ -20,7 +20,7 @@ actions+=/serpent_sting,if=!ticking
 actions+=/rapid_fire
 actions+=/chimera_shot
 actions+=/kill_shot
-actions+=/aimed_shot,if=buff.fire.up
+actions+=/aimed_shot,if=buff.fire.react
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/arcane_shot,if=focus>=40&buff.improved_steady_shot.up&cooldown.chimera_shot.remains>0
 actions+=/steady_shot

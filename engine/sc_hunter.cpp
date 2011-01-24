@@ -3079,7 +3079,7 @@ void hunter_t::init_actions()
         action_list_str += "/chimera_shot";
       }
       action_list_str += "/kill_shot";
-      action_list_str += "/aimed_shot,if=buff.master_marksman.stack=5";
+      action_list_str += "/aimed_shot,if=buff.fire.react";
 
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=40&buff.improved_steady_shot.up&cooldown.chimera_shot.remains>0";
