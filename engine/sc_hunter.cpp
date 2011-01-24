@@ -1594,16 +1594,15 @@ struct aimed_shot_t : public hunter_attack_t
     {
       hunter_attack_t::execute();
       p -> ranged_attack -> cancel(); // Interrupt auto attack when it's not instant
-    }
 
-    if ( result == RESULT_CRIT )
-    {
-      if ( p -> active_pet )
-        p -> active_pet -> buffs_sic_em -> trigger();
-      trigger_piercing_shots( this );
-      p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
+      if ( result == RESULT_CRIT )
+      {
+        if ( p -> active_pet )
+          p -> active_pet -> buffs_sic_em -> trigger();
+        trigger_piercing_shots( this );
+        p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
+      }
     }
-
   }
 };
 
