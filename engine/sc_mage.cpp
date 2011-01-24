@@ -1406,7 +1406,7 @@ struct arcane_missiles_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if ( ! p -> buffs_arcane_missiles -> check() )
+    if ( ! p -> buffs_arcane_missiles -> may_react() )
       return false;
     return mage_spell_t::ready();
   }
