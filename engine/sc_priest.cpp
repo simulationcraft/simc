@@ -2166,10 +2166,10 @@ struct smite_t : public priest_spell_t
     }
 
     // Train of Thought
-    if ( p -> talents.train_of_thought -> ok() )
+    if ( p -> talents.train_of_thought -> rank() )
         {
-          if ( p -> cooldowns_penance -> remains() > 1.0 )
-            p -> cooldowns_penance -> ready -= 1.0;
+          if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 2 ) / 1000.0 )
+            p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 2 ) / 1000.0;
           else
             p -> cooldowns_penance -> reset();
         }
@@ -2497,11 +2497,30 @@ struct hymn_of_hope_t : public priest_spell_t
 
 // Experimental Heal Spells
 
+struct divine_touch_t : public priest_heal_t
+{
+  divine_touch_t( player_t* player ) :
+    priest_heal_t( "divine_touch", player, SCHOOL_HOLY, TREE_HOLY )
+  {
+    background = true;
+    dual       = true;
+    proc       = true;
 
+    stats = player -> get_stats( "renew" );
+  }
+
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    update_stats( HEAL_DIRECT );
+  }
+};
 struct renew_t : public priest_heal_t
 {
+  divine_touch_t* dt;
   renew_t( player_t* player, const std::string& options_str ) :
-      priest_heal_t( "renew", player, "Renew" )
+      priest_heal_t( "renew", player, "Renew" ), dt( 0 )
   {
     priest_t* p = player -> cast_priest();
     option_t options[] =
@@ -2516,10 +2535,25 @@ struct renew_t : public priest_heal_t
     base_multiplier *= 1.0 + p -> talents.improved_renew -> effect_base_value( 1 ) / 100.0;
 
     // Implement Divine Touch
+    if ( p -> talents.divine_touch -> rank() )
+      dt = new divine_touch_t( p );
 
     if ( p -> talents.rapid_renewal -> rank() )
       trigger_gcd -= 1.0;
   }
+
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    if ( dt )
+    {
+      priest_t* p = player -> cast_priest();
+      dt -> base_dd_min = dt -> base_dd_max = ( base_td + total_power() * tick_power_mod ) * hasted_num_ticks() * p -> talents.divine_touch -> effect_base_value( 1 ) / 100.0;
+      dt -> execute();
+    }
+  }
+
   virtual double cost() SC_CONST
   {
     priest_t* p = player -> cast_priest();
@@ -2746,10 +2780,10 @@ struct greater_heal_t : public priest_heal_t
     p -> buffs_grace -> trigger();
     p -> buffs_inner_focus -> expire();
 
-    if ( p -> talents.train_of_thought -> ok() )
+    if ( p -> talents.train_of_thought -> rank() )
     {
-      if ( p -> cooldowns_inner_focus -> remains() > 5.0 )
-        p -> cooldowns_inner_focus -> ready -= 5;
+      if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 1 ) )
+        p -> cooldowns_inner_focus -> ready -= p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 1 );
       else
         p -> cooldowns_inner_focus -> reset();
     }
