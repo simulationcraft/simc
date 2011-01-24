@@ -3903,7 +3903,8 @@ void priest_t::init_actions()
                                                          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       }
 
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1&buff.empowered_shadow.remains<=gcd+0.5";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
+      if ( ! ptr )                                       action_list_str += "&buff.empowered_shadow.remains<=gcd+0.5";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
@@ -3927,7 +3928,8 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
                                                          action_list_str += "/shadow_fiend";
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
+                                                         action_list_str += "/mind_blast";
+      if ( ! ptr )                                       action_list_str += ",if=buff.shadow_orb.stack>=1";
                                                          action_list_str += "/mind_flay";
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion,moving=1";
       if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1,if=mana_pct>10";
