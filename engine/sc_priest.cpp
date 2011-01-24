@@ -1771,6 +1771,8 @@ struct power_infusion_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
+    check_talent( p -> talents.power_infusion -> rank() );
+
     std::string target_str = p -> power_infusion_target_str;
     option_t options[] =
     {
@@ -1788,28 +1790,17 @@ struct power_infusion_t : public priest_spell_t
       power_infusion_target = sim -> find_player( target_str );
       assert ( power_infusion_target != 0 );
     }
-
-    trigger_gcd = 0;
   }
 
   virtual void execute()
   {
-    priest_t* p = player -> cast_priest();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-
-    if ( sim -> log ) log_t::output( sim, "%s grants %s Power Infusion", p -> name(), power_infusion_target -> name() );
+    priest_spell_t::execute();
 
     power_infusion_target -> buffs.power_infusion -> trigger();
-
-    consume_resource();
-    update_ready();
   }
 
   virtual bool ready()
   {
-    if ( ! priest_spell_t::ready() )
-      return false;
-
     if ( power_infusion_target == 0 )
       return false;
 
@@ -1819,7 +1810,7 @@ struct power_infusion_t : public priest_spell_t
     if ( power_infusion_target -> buffs.power_infusion -> check() )
       return false;
 
-    return true;
+    return priest_spell_t::ready();
   }
 };
 
@@ -2137,7 +2128,7 @@ struct smite_t : public priest_spell_t
 
     p -> buffs_surge_of_light -> trigger();
 
-    p -> buffs_holy_evangelism  -> trigger( 1, 1.0, 1.0 );
+    p -> buffs_holy_evangelism  -> trigger();
     if ( p -> buffs_chakra_pre -> up())
     {
       p -> buffs_chakra_chastise -> trigger();
@@ -2151,7 +2142,7 @@ struct smite_t : public priest_spell_t
     {
       if ( p -> buffs_chakra_chastise -> up() && p -> talents.state_of_mind -> rank() )
       {
-        p -> buffs_chakra_chastise -> extend_duration( 4 );
+        p -> buffs_chakra_chastise -> extend_duration( player, 4 );
       }
     }
 
@@ -2436,7 +2427,12 @@ struct inner_focus_t : public priest_spell_t
           { NULL, OPT_UNKNOWN, NULL }
         };
     parse_options( options, options_str );
-    may_miss=may_resist=false;
+
+    priest_t* p = player -> cast_priest();
+
+    harmful = false;
+
+    check_talent( p -> talents.inner_focus -> rank() );
 
   }
 
@@ -2514,7 +2510,7 @@ struct renew_t : public priest_heal_t
     };
     parse_options( options, options_str );
 
-    base_cost *= 1.0 - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
+    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
     base_multiplier *= 1.0 + p -> glyphs.renew * 0.10;
     base_multiplier *= 1.0 + p -> talents.improved_renew -> effect_base_value( 1 ) / 100.0;
@@ -2573,6 +2569,11 @@ struct _heal_t : public priest_heal_t
 
     p -> buffs_surge_of_light -> trigger();
 
+    if ( p -> buffs_chakra_serenity -> up() && p -> talents.state_of_mind -> rank() )
+    {
+      p -> buffs_chakra_serenity -> extend_duration( player, 4 );
+    }
+
     if ( p -> buffs_chakra_pre -> up())
     {
       p -> buffs_chakra_serenity -> trigger();
@@ -2583,12 +2584,15 @@ struct _heal_t : public priest_heal_t
       p -> cooldowns_chakra -> start();
     }
 
-    if ( p -> buffs_chakra_serenity -> up() && p -> talents.state_of_mind -> rank() )
-    {
-      p -> buffs_chakra_serenity -> extend_duration( 4 );
-    }
+
 
     p -> buffs_grace -> trigger();
+
+    if ( p -> talents.strength_of_soul -> rank() && p -> buffs_weakened_soul -> up() )
+    {
+     // Implement "early" buff rescheduling of Weakened Soul.
+    }
+
   }
 
   virtual void player_buff()
@@ -2852,7 +2856,7 @@ struct prayer_of_healing_t : public priest_heal_t
 
     if ( p -> talents.state_of_mind -> rank() && p -> buffs_chakra_sanctuary -> up() )
     {
-      p -> buffs_chakra_sanctuary -> extend_duration( 4 );
+      p -> buffs_chakra_sanctuary -> extend_duration( player, 4 );
     }
   }
 
@@ -2905,8 +2909,7 @@ struct circle_of_healing_t : public priest_heal_t
 
     check_talent( p -> talents.circle_of_healing -> rank() );
 
-    base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
+    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
 
     // Fixme: 5x Multiplier for now
@@ -2957,8 +2960,7 @@ struct prayer_of_mending_t : public priest_heal_t
     direct_power_mod = effect_coeff(1);
     base_dd_min = base_dd_max = effect_min(1);
 
-    base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
+    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
 
     // Fixme: 5x Multiplier for now
@@ -2993,7 +2995,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
     if ( p -> talents.state_of_mind -> rank() && p -> buffs_chakra_sanctuary -> up() )
     {
-      p -> buffs_chakra_sanctuary -> extend_duration( 4 );
+      p -> buffs_chakra_sanctuary -> extend_duration( player, 4 );
     }
   }
 };
@@ -3023,8 +3025,7 @@ struct power_word_shield_t : public priest_absorb_t
     };
     parse_options( options, options_str );
 
-    base_cost        *= 1.0
-                        - ( util_t::talent_rank( p -> talents.mental_agility -> rank(), 3, 0.04, 0.07, 0.10 ) );
+    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
     cooldown -> duration += p -> talents.soul_warding -> effect_base_value( 1 ) / 1000.0;
     base_multiplier *= 1.0 + p -> talents.improved_power_word_shield -> effect_base_value( 1 ) / 100.0;
@@ -3060,7 +3061,7 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = 0.2 * direct_dmg;
       glyph_pws -> execute();
     }
-    if ( p -> cooldowns_rapture -> remains() == 0)
+    if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> rank() * 0.015, p -> gains_rapture );
       p -> cooldowns_rapture -> start();
@@ -3194,14 +3195,17 @@ struct holy_word_sanctuary_t : public priest_heal_t
   }
 };
 
-struct holy_word_chastice_t : public priest_spell_t
+struct holy_word_chastise_t : public priest_spell_t
 {
-  holy_word_chastice_t( player_t* player ) :
-    priest_spell_t( "holy_word_chastice", player, 88625 )
+  holy_word_chastise_t( player_t* player ) :
+    priest_spell_t( "holy_word_chastise", player, 88625 )
   {
     background = true;
-
     priest_t* p = player -> cast_priest();
+
+    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
+    base_cost  = floor( base_cost );
+
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect_base_value( 1 ) / 100.0;
   }
 };
@@ -3212,6 +3216,11 @@ struct holy_word_serenity_t : public priest_heal_t
       priest_heal_t( "holy_word_serenity", player, 88684 )
   {
     priest_t* p = player -> cast_priest();
+    background = true;
+
+    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
+    base_cost  = floor( base_cost );
+
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -3227,19 +3236,18 @@ struct holy_word_serenity_t : public priest_heal_t
 struct holy_word_t : public priest_spell_t
 {
   holy_word_sanctuary_t* hw_sanctuary;
-  holy_word_chastice_t* hw_chastice;
+  holy_word_chastise_t* hw_chastise;
   holy_word_serenity_t* hw_serenity;
-  spell_t* active_holy_word;
-  bool sanctuary,chastice,serenity;
+  bool sanctuary,chastise,serenity;
   holy_word_t( player_t* player, const std::string& options_str ) :
     priest_spell_t( "holy_word", player, SCHOOL_HOLY, TREE_HOLY ),
-    hw_sanctuary( 0 ), hw_chastice( 0 ), hw_serenity( 0 ), active_holy_word( 0 ),
-    sanctuary(false), chastice(false), serenity(false)
+    hw_sanctuary( 0 ), hw_chastise( 0 ), hw_serenity( 0 ),
+    sanctuary(false), chastise(false), serenity(false)
   {
     option_t options[] =
     {
       { "sanctuary", OPT_BOOL, &sanctuary },
-      { "chastice" , OPT_BOOL, &chastice  },
+      { "chastise" , OPT_BOOL, &chastise  },
       { "serenity" , OPT_BOOL, &serenity  },
       { NULL,     OPT_UNKNOWN, NULL       }
     };
@@ -3248,39 +3256,46 @@ struct holy_word_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     hw_sanctuary = new holy_word_sanctuary_t( p );
-    hw_chastice  = new holy_word_chastice_t( p );
+    hw_chastise  = new holy_word_chastise_t( p );
     hw_serenity  = new holy_word_serenity_t( p );
 
-    active_holy_word = hw_chastice;
   }
 
   virtual void execute()
   {
+    priest_t* p = player -> cast_priest();
 
-    active_holy_word -> execute();
+    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> up() )
+      hw_serenity -> execute();
+
+    else if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> up() )
+      hw_sanctuary -> execute();
+
+    else
+      hw_chastise -> execute();
+
   }
   virtual bool ready()
   {
     priest_t* p = player -> cast_priest();
 
+    if ( ! priest_spell_t::ready() )
+      return false;
+
     if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> up() )
-      active_holy_word = hw_serenity;
-    else if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> up() )
-      active_holy_word = hw_sanctuary;
+      return hw_serenity -> ready();
     else
-      active_holy_word = hw_chastice;
+      if ( serenity )
+        return false;
 
-    if ( sanctuary && active_holy_word != hw_sanctuary )
-      return false;
-    if ( serenity && active_holy_word != hw_serenity )
-      return false;
-    if ( chastice && active_holy_word != hw_chastice )
-      return false;
+    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> up() )
+      return hw_sanctuary -> ready();
+    else
+      if ( sanctuary )
+        return false;
 
-    if ( ! active_holy_word -> ready() )
-      return false;
 
-    return priest_spell_t::ready();
+    return hw_chastise -> ready();
   }
 };
 
@@ -3845,7 +3860,7 @@ void priest_t::init_buffs()
   buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
   buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
   buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
-  buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time");
+  buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
   buffs_grace                      = new buff_t( this, talents.grace -> effect_trigger_spell( 1 ), "grace", talents.grace -> rank() );
   buffs_weakened_soul              = new buff_t( this, 6788, "weakened_soul" );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );

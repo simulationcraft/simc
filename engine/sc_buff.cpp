@@ -518,10 +518,19 @@ void buff_t::decrement( int    stacks,
 
 // buff_t::extend_duration ==================================================
 
-void buff_t::extend_duration( double extra_seconds )
+void buff_t::extend_duration( player_t* p, double extra_seconds )
 {
-  assert( expiration );
-  expiration -> reschedule( expiration -> time + extra_seconds );
+  if ( extra_seconds > 0)
+  {
+    assert( expiration );
+    assert ( expiration -> occurs() + extra_seconds < sim -> wheel_seconds );
+    expiration -> reschedule( expiration -> occurs() - sim -> current_time + extra_seconds );
+    if ( sim -> debug )
+    log_t::output( sim, "%s extendes %s by %.1f seconds. New expiration time: %.1f", p -> name(), name(), extra_seconds, expiration -> occurs() );
+  }
+  else
+    assert( 0 );
+
 }
 
 // buff_t::start ============================================================

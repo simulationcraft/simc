@@ -4671,7 +4671,7 @@ void death_knight_t::trigger_runic_empowerment()
   if ( talents.runic_corruption -> rank() )
   {
     if ( ptr && buffs_runic_corruption -> check() )
-      buffs_runic_corruption -> extend_duration( 3 );
+      buffs_runic_corruption -> extend_duration( this, 3 );
     else
       buffs_runic_corruption -> trigger();
     return;
