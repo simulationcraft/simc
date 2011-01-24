@@ -2344,7 +2344,7 @@ struct kill_command_t : public hunter_spell_t
     base_attack_power_multiplier   = 1.0;
     base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
 
-    harmful = false;
+    harmful = true;
   }
 
   virtual double cost() SC_CONST
