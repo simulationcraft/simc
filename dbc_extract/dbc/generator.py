@@ -328,6 +328,8 @@ class SpellDataGenerator(DataGenerator):
         ( ( 85692, 4 ), ),     # Warlock doomguard "Doom Bolt"
         (),
         ( ( 81070, 0 ), ),     # Euphoria mana feed for Balance droods
+        (),
+        ( ( 94472, 0 ), ),     # Priest Atonement-Crit
     ]
 
     # Class specific item sets, t6-t11 i guess ...
