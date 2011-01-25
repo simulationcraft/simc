@@ -317,7 +317,7 @@ class SpellDataGenerator(DataGenerator):
         ( ( 54158, 0 ), ( 90174, 0 ) ),     # Paladin "Judgement" damage portion on some Seals
         (),
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ) ), # Rogue poison effects
-        ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs
+        ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit
         ( ( 50401, 0 ), ( 70890, 0 ), ), # DK Razorice runeforge, weird Scourge Strike secondary effect
         ( ( 12470, 4 ), ( 13376, 4 ), ( 57984, 4 ) ),   # Shaman Greater Fire Elemental abilities
         ( 
@@ -328,8 +328,6 @@ class SpellDataGenerator(DataGenerator):
         ( ( 85692, 4 ), ),     # Warlock doomguard "Doom Bolt"
         (),
         ( ( 81070, 0 ), ),     # Euphoria mana feed for Balance droods
-        (),
-        ( ( 94472, 0 ), ),     # Priest Atonement-Crit
     ]
 
     # Class specific item sets, t6-t11 i guess ...
