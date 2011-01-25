@@ -4027,10 +4027,10 @@ void death_knight_t::init_spells()
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P
-    {     0,     0, 70655, 70656, 70650, 70652 }, // Tier10
-    {     0,     0, 90457, 90459, 90454, 90456 }, // Tier11
-    {     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
+    {     0,     0, 70655, 70656, 70650, 70652,     0,     0 }, // Tier10
+    {     0,     0, 90457, 90459, 90454, 90456,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

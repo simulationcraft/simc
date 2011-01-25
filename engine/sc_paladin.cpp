@@ -2517,10 +2517,10 @@ void paladin_t::init_spells()
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P
-    {     0,     0, 70765, 70762, 70758, 70761 }, // Tier10
-    {     0,     0, 90298, 90299, 90301, 90306 }, // Tier11
-    {     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
+    {     0,     0, 70765, 70762, 70758, 70761,     0,     0 }, // Tier10
+    {     0,     0, 90298, 90299, 90301, 90306,     0,     0 }, // Tier11
+    {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

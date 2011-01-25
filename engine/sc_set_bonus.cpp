@@ -198,9 +198,9 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N
           break;
       }
       
-      set_bonuses[ 1 + i * 9 + b ] = create_set_bonus( p, a_bonus[ i ][ j ] );
+      set_bonuses[ 1 + i * 12 + b ] = create_set_bonus( p, a_bonus[ i ][ j ] );
       
-      // if ( set_bonuses[ 1 + i * 9 + b ] )
+      // if ( set_bonuses[ 1 + i * 12 + b ] )
       //  log_t::output( p -> sim, "Initializing set bonus %u to slot %d", a_bonus[ i ][ j ], 1 + i * 9 + b );
     }
   }
@@ -229,11 +229,11 @@ set_bonus_array_t::~set_bonus_array_t()
 // count[ 38 ] > 0 || ( count[ 38 ] < 0 && count[ 37 ] >= 2 )
 bool set_bonus_array_t::has_set_bonus( set_type s ) SC_CONST
 {
-  int tier  = ( s - 1 ) / 9,
-      btype = ( ( s - 1 ) - tier * 9 ) / 3,
+  int tier  = ( s - 1 ) / 12,
+      btype = ( ( s - 1 ) - tier * 12 ) / 3,
       bonus = ( s - 1 ) % 3;
     
-  if ( p -> set_bonus.count[ s ] > 0 || ( p -> set_bonus.count[ s ] < 0 && p -> set_bonus.count[ 1 + tier * 9 + btype * 3 ] >= bonus * 2 ) )
+  if ( p -> set_bonus.count[ s ] > 0 || ( p -> set_bonus.count[ s ] < 0 && p -> set_bonus.count[ 1 + tier * 12 + btype * 3 ] >= bonus * 2 ) )
     return true;
       
   return false;
