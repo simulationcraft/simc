@@ -473,6 +473,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
     travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
     current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0 ),
+    fixed_time( false ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
@@ -715,31 +716,43 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
+    if ( ! fixed_time )
     {
-      target -> recalculate_health();
-      if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
-      delete e;
-      break;
-    }
-    if ( target -> initial_health != 0 )
-    {
-      if (  target -> current_health <= 0 )
+      if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
         target -> recalculate_health();
-        if ( debug ) log_t::output( this, "Target has died, ending simulation" );
+        if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
+        delete e;
+        break;
+      }
+      if ( target -> initial_health != 0 )
+      {
+        if (  target -> current_health <= 0 )
+        {
+          target -> recalculate_health();
+          if ( debug ) log_t::output( this, "Target has died, ending simulation" );
+          delete e;
+          break;
+        }
+      }
+      else // initial_health == 0
+      {
+        if ( current_time > ( expected_time / 2.0 ) )
+        {
+          if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
+          target -> recalculate_health();
+        }
+      }
+    }
+    else
+    {
+      if ( current_time > expected_time )
+      {
         delete e;
         break;
       }
     }
-    else // initial_health == 0
-    {
-      if ( current_time > ( expected_time / 2.0 ) )
-      {
-        if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
-        target -> recalculate_health();
-      }
-    }
+
     if ( e -> canceled )
     {
       if ( debug ) log_t::output( this, "Canceled event: %s", e -> name );
@@ -1700,6 +1713,7 @@ void sim_t::create_options()
     // @option_doc loc=global/general title="General"
     { "iterations",                       OPT_INT,    &( iterations                               ) },
     { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+    { "fixed_time",                       OPT_BOOL,   &( fixed_time                               ) },
     { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
     { "ptr",                              OPT_FUNC,   ( void* ) ::parse_ptr                         },
