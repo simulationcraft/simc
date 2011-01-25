@@ -3580,7 +3580,7 @@ double priest_t::spirit() SC_CONST
 {
   double spi = player_t::spirit();
 
-  if ( sets -> set( SET_T11_4PC_HEAL ) -> ok() & ( buffs_chakra_serenity -> up() || buffs_chakra_sanctuary -> up() || buffs_chakra_chastise -> up() ) )
+  if ( set_bonus.tier11_4pc_heal() & ( buffs_chakra_serenity -> up() || buffs_chakra_sanctuary -> up() || buffs_chakra_chastise -> up() ) )
     spi += 540;
 
   return spi;
@@ -3980,7 +3980,7 @@ void priest_t::init_buffs()
   buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
   buffs_surge_of_light             = new buff_t( this, 88688, "surge_of_light", passive_spells.surge_of_light -> proc_chance() );
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
-  buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", sets -> set( SET_T11_4PC_HEAL ) -> ok() );
+  buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
 }
 
 // priest_t::init_actions =====================================================

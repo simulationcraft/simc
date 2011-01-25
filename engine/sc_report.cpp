@@ -2779,7 +2779,10 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   for ( player_t* q = sim -> player_list; q; q = q -> next )
   {
     if ( q -> healer == true )
+    {
       healer_in_the_raid = true;
+      break;
+    }
   }
 
   std::string action_dpet_str                     = "";

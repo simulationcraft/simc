@@ -259,7 +259,7 @@ player_t::player_t( sim_t*             s,
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
-    vengeance_factor( 0.0 ), base_movement_speed( 7.0 ),
+    vengeance_factor( 0.0 ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
     // Haste
@@ -330,8 +330,15 @@ player_t::player_t( sim_t*             s,
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
+    // Gear
     sets( 0 ),
-    meta_gem( META_GEM_NONE ), matching_gear( false ), scaling_lag( 0 ), rng_list( 0 )
+    meta_gem( META_GEM_NONE ), matching_gear( false ),
+    // Scaling
+    scaling_lag( 0 ),
+    // Movement & Position
+    base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
+
+    rng_list( 0 )
 {
   if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
   player_t** last = &( sim -> player_list );
@@ -3456,6 +3463,30 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   }
 
   return rng;
+}
+
+// player_t::get_player_distance ===========================================
+
+double player_t::get_player_distance( player_t* p )
+{
+  // Euclidean Distance
+  double distance = 0;
+
+  distance = sqrt( ( p -> x_position - this -> x_position ) * ( p -> x_position - this -> x_position ) + ( p -> y_position - this -> y_position ) * ( p -> y_position - this -> y_position ) );
+
+  return distance;
+}
+
+// player_t::get_position_distance =========================================
+
+double player_t::get_position_distance( double m, double v )
+{
+  // Euclidean Distance
+  double distance = 0;
+
+  distance = sqrt( ( this -> x_position - m ) * ( this -> x_position - m ) + ( this -> y_position - v ) * ( this -> y_position - v ) );
+
+  return distance;
 }
 
 // player_t::target_swing ==================================================

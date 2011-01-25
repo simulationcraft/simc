@@ -2781,7 +2781,7 @@ struct player_t
   int         specialization;
   int         invert_spirit_scaling;
   double      vengeance_factor; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
-  double      base_movement_speed;
+
 
   // Data access
   sc_data_access_t player_data;
@@ -2977,6 +2977,10 @@ struct player_t
   double       scaling_lag;
   int          scales_with[ STAT_MAX ];
   double       over_cap[ STAT_MAX ];
+
+  // Movement & Position
+  double base_movement_speed;
+  double x_position, y_position;
 
   struct buffs_t
   {
@@ -3331,6 +3335,8 @@ struct player_t
   stats_t*    get_stats   ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
+  double      get_player_distance( player_t* p );
+  double      get_position_distance( double m=0, double v=0 );
 };
 
 // Pet =======================================================================
