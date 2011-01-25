@@ -640,7 +640,7 @@ void action_t::target_debuff( int dmg_type )
     // no spell power based debuffs at this time
   }
 
-  if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= 2.0;
+  if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= t -> debuffs.vulnerable -> value();
 
   if ( t -> resilience > 0 )
   {

@@ -495,9 +495,14 @@ sim_t::sim_t( sim_t* p, int index ) :
     spell_query( 0 )
 {
   path_str += "|profiles";
+  path_str += "|profiles_heal";
   path_str += "|..";
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles_heal";
+
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {

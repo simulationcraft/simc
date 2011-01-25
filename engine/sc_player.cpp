@@ -4999,6 +4999,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
+  healer = source -> healer;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
   talents_str = "http://www.wowhead.com/talent#";

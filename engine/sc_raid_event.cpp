@@ -258,16 +258,22 @@ struct damage_event_t : public raid_event_t
 
 struct vulnerable_event_t : public raid_event_t
 {
+  double multiplier;
   vulnerable_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "vulnerable" )
+      raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "multiplier",        OPT_FLT, &multiplier        },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
   }
   virtual void start()
   {
     target_t* t = sim -> target;
     raid_event_t::start();
-    t -> debuffs.vulnerable -> increment();
+    t -> debuffs.vulnerable -> increment( 1, multiplier );
   }
   virtual void finish()
   {
