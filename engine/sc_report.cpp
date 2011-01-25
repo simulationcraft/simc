@@ -2774,6 +2774,14 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "          </div>\n"
     "        </div>\n" );
 
+  // Check for healer's in the raid
+  bool healer_in_the_raid = false;
+  for ( player_t* q = sim -> player_list; q; q = q -> next )
+  {
+    if ( q -> healer == true )
+      healer_in_the_raid = true;
+  }
+
   std::string action_dpet_str                     = "";
   std::string action_dmg_str                      = "";
   std::string gains_str                           = "";
@@ -2845,7 +2853,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     }
     timeline_resource_str = buffer;
   }
-  if ( ! p -> timeline_resource_health_chart.empty() )
+  if ( ! p -> timeline_resource_health_chart.empty() && healer_in_the_raid )
   {
     if ( num_players == 1)
     {
