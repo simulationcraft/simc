@@ -2041,46 +2041,31 @@ struct recuperate_t : public rogue_attack_t
     rogue_attack_t( "recuperate", 73651, p )
   {
     requires_combo_points = true;
-
     base_tick_time = effect_period( 1 );
-
     parse_options( options_str );
+    dot_behavior = DOT_REFRESH;
   }
 
   virtual void execute()
   {
     rogue_t* p = player -> cast_rogue();
-
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
-
     num_ticks = 2 * p -> combo_points -> count;
-
-    p -> buffs_recuperate -> buff_duration = num_ticks * base_tick_time;
+    rogue_attack_t::execute();
     p -> buffs_recuperate -> trigger();
-    
-    consume_resource();
-
-    schedule_travel();
   }
 
   virtual void tick()
   {
     rogue_t* p = player -> cast_rogue();
-
     if ( p -> talents.energetic_recovery -> rank() )
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.energetic_recovery -> base_value(), p -> gains_recuperate );
   }
 
-  virtual bool ready()
+  virtual void last_tick()
   {
     rogue_t* p = player -> cast_rogue();
-
-    // do not allow execution when the buff is active for now
-    if ( p -> buffs_recuperate -> check() )
-      return false;
-
-    return rogue_attack_t::ready();
+    p -> buffs_recuperate -> expire();
+    rogue_attack_t::last_tick();
   }
 };
 
