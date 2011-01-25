@@ -4992,6 +4992,8 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1\n";
     if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1\n";
     if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1\n";
+    if ( set_bonus.tier10_2pc_heal()   ) profile_str += "# tier10_2pc_heal=1\n";
+    if ( set_bonus.tier10_4pc_heal()   ) profile_str += "# tier10_4pc_heal=1\n";
 
     if ( set_bonus.tier11_2pc_caster() ) profile_str += "# tier11_2pc_caster=1\n";
     if ( set_bonus.tier11_4pc_caster() ) profile_str += "# tier11_4pc_caster=1\n";
@@ -4999,6 +5001,8 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     if ( set_bonus.tier11_4pc_melee()  ) profile_str += "# tier11_4pc_melee=1\n";
     if ( set_bonus.tier11_2pc_tank()   ) profile_str += "# tier11_2pc_tank=1\n";
     if ( set_bonus.tier11_4pc_tank()   ) profile_str += "# tier11_4pc_tank=1\n";
+    if ( set_bonus.tier11_2pc_heal()   ) profile_str += "# tier11_2pc_heal=1\n";
+    if ( set_bonus.tier11_4pc_heal()   ) profile_str += "# tier11_4pc_heal=1\n";
 
     for ( int i=0; i < SLOT_MAX; i++ )
     {
