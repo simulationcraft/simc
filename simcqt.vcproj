@@ -278,13 +278,14 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_extract_data.inc"
+				RelativePath="engine\sc_extra_data.inc"
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_extract_data_ptr.inc"
+				RelativePath="engine\sc_extra_data_ptr.inc"
 				>
 			</File>
+
 			<File
 				RelativePath="engine\sc_gear_stats.cpp"
 				>
@@ -303,6 +304,14 @@
 			</File>
 			<File
 				RelativePath="engine\sc_item.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_item_data.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_item_data_ptr.inc"
 				>
 			</File>
 			<File

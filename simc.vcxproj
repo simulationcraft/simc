@@ -170,6 +170,8 @@
     <None Include="engine\utf8\unchecked.h" />
     <None Include="engine\sc_extra_data.inc" />
     <None Include="engine\sc_extra_data_ptr.inc" />
+    <None Include="engine\sc_item_data.inc" />
+    <None Include="engine\sc_item_data_ptr.inc" />
     <None Include="engine\sc_scale_data.inc">
       <FileType>Document</FileType>
     </None>
