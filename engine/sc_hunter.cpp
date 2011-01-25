@@ -2286,7 +2286,6 @@ struct focus_fire_t : public hunter_spell_t
 
     double gain = p -> talents.focus_fire -> effect_base_value( 2 );
     p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain, p -> active_pet -> gains_focus_fire );
-    p               -> resource_gain( RESOURCE_FOCUS, gain, p               -> gains_focus_fire );
 
     hunter_spell_t::execute();
     p -> active_pet -> buffs_frenzy -> expire();
