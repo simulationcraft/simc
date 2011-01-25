@@ -189,7 +189,10 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
   if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
-                     "  Tick=%.0f|%.0f|%.0f", s -> tick_results[ RESULT_HIT ].avg_dmg, s -> tick_results[ RESULT_HIT ].min_dmg, s -> tick_results[ RESULT_HIT ].max_dmg );
+                     "  Tick=%.0f|%.0f|%.0f", 
+		     s -> tick_results[ RESULT_HIT ].avg_dmg, 
+		     s -> tick_results[ RESULT_HIT ].min_dmg, 
+		     s -> tick_results[ RESULT_HIT ].max_dmg );
   }
   if ( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
@@ -199,6 +202,11 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                      s -> tick_results[ RESULT_CRIT ].min_dmg,
                      s -> tick_results[ RESULT_CRIT ].max_dmg,
                      s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
+  }
+
+  if ( s -> total_tick_time > 0 )
+  {
+    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time / s -> player -> total_seconds  );
   }
 
   util_t::fprintf( file, "\n" );
@@ -1050,6 +1058,7 @@ static void print_html_action( FILE* file, stats_t* s )
                    " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td>"
                    " <td align=right>%.1f%%</td> <td align=right>%.1f%%</td> <td>%.1f%%</td> <td align=right>%.1f%%</td>"
                    " <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f%%</td>"
+		   " <td align=right>%.1f%%</td>"
                    " </tr>\n",
                    s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
                    s -> num_executes, s -> frequency,
@@ -1066,7 +1075,8 @@ static void print_html_action( FILE* file, stats_t* s )
                    s -> tick_results[ RESULT_HIT  ].avg_dmg,
                    s -> tick_results[ RESULT_CRIT ].avg_dmg,
                    s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-                   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
+                   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor,
+		   100 * s -> total_tick_time / s -> player -> total_seconds );
 }
 
 
@@ -1273,6 +1283,7 @@ static void print_html_player( FILE* file, player_t* p )
                    " <th>DPE</th> <th>DPET</th> <th>DPR</th> <th> RPE </th> <th>Hit</th> <th>Crit</th> <th>Max</th> <th>Crit%%</th>"
                    " <th>M%%</th> <th>D%%</th> <th>P%%</th> <th>G%%</th>"
                    " <th>Ticks</th> <th>T-Hit</th> <th>T-Crit</th> <th>T-Crit%%</th> <th>T-M%%</th>"
+                   " <th>UpTime%%</th>"
                    " </tr>\n" );
 
   util_t::fprintf( file, " <tr> <th>%s</th> <th>%.0f</th> </tr>\n", p -> name(), p -> dps );
@@ -1959,6 +1970,13 @@ static void print_html3_help_boxes( FILE*  file, sim_t* sim )
     "      </div>\n"
     "    </div>\n"
 
+    "    <div id=\"help-ticks-uptime\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>UpTime%%</h3>\n"
+    "        <p>Percentage of total time that DoT is ticking on target.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
     "    <div id=\"help-timeline-distribution\">\n"
     "      <div class=\"help-box\">\n"
     "        <h3>Timeline Distribution</h3>\n"
@@ -2032,6 +2050,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
+    "                <td class=\"right small\">%.1f%%</td>\n"
     "              </tr>\n",
     id,
     s -> name_str.c_str(),
@@ -2056,7 +2075,8 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> tick_results[ RESULT_HIT  ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-    s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
+    s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor,
+    100 * s -> total_tick_time / s -> player -> total_seconds );
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
     "                <td colspan=\"23\" class=\"filler\">\n" );
@@ -2971,13 +2991,14 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "                <th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%%</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-M%%</a></th>\n"
+    "                <th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%%</a></th>\n"
     "              </tr>\n" );
 
   util_t::fprintf( file,
     "              <tr>\n"
     "                <th class=\"left small\">%s</th>\n"
     "                <th class=\"right small\">%.0f</th>\n"
-    "                <td colspan=\"21\" class=\"filler\"></td>\n"
+    "                <td colspan=\"22\" class=\"filler\"></td>\n"
     "              </tr>\n",
     n.c_str(),
     p -> dps );

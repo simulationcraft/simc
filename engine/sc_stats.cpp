@@ -150,7 +150,6 @@ void stats_t::add( double amount,
   }
   else if ( dmg_type == HEAL_OVER_TIME )
   {
-
     num_ticks++;
     total_tick_time += time;
   }
@@ -192,7 +191,6 @@ void stats_t::analyze()
     dpe  = total_dmg / num_executes;
     dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
     dpr  = ( resource_consumed > 0.0 ) ? ( total_dmg / resource_consumed ) : 0;
-
   }
 
   resource_consumed /= num_iterations;
