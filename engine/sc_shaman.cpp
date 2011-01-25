@@ -104,9 +104,6 @@ struct shaman_t : public player_t
   rng_t* rng_static_shock;
   rng_t* rng_windfury_weapon;
 
-  // Uptimes
-  uptime_t* uptime_flame_shock;
-
   // Talents
 
   // Elemental
@@ -218,7 +215,6 @@ struct shaman_t : public player_t
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_rng();
-  virtual void      init_uptimes();
   virtual void      init_actions();
   virtual void      interrupt();
   virtual void      clear_debuffs();
@@ -3773,15 +3769,6 @@ void shaman_t::init_rng()
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
-// shaman_t::init_uptimes ===================================================
-
-void shaman_t::init_uptimes()
-{
-  player_t::init_uptimes();
-
-  uptime_flame_shock = get_uptime( "flame_shock" );
-}
-
 // shaman_t::init_actions =====================================================
 
 void shaman_t::init_actions()
@@ -4071,8 +4058,6 @@ void shaman_t::regen( double periodicity )
 
     resource_gain( RESOURCE_MANA, water_shield_regen, gains_water_shield );
   }
-
-  uptime_flame_shock -> update( dot_flame_shock -> ticking );
 }
 
 // shaman_t::combat_begin =================================================

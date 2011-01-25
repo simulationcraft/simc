@@ -190,7 +190,6 @@ struct rogue_t : public player_t
   uptime_t* uptimes_bandits_guile[ 3 ];
   uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_poisoned;
-  uptime_t* uptimes_rupture;
 
   // Random Number Generation
   rng_t* rng_anesthetic_poison;
@@ -3448,7 +3447,6 @@ void rogue_t::init_uptimes()
 
   uptimes_energy_cap = get_uptime( "energy_cap" );
   uptimes_poisoned   = get_uptime( "poisoned"   );
-  uptimes_rupture    = get_uptime( "rupture" );
 }
 
 // rogue_t::init_rng =========================================================
@@ -3738,8 +3736,6 @@ void rogue_t::regen( double periodicity )
 
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                 resource_max    [ RESOURCE_ENERGY ] );
-
-  uptimes_rupture -> update( dots_rupture -> ticking );
 
   for ( int i = 0; i < 3; i++ )
     uptimes_bandits_guile[ i ] -> update( ( buffs_bandits_guile -> current_stack / 4 - 1 ) == i );

@@ -212,7 +212,6 @@ struct hunter_t : public player_t
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_unique_gear();
@@ -2926,13 +2925,6 @@ void hunter_t::init_procs()
   procs_thrill_of_the_hunt = get_proc( "thrill_of_the_hunt" );
   procs_wild_quiver        = get_proc( "wild_quiver"        );
   procs_lock_and_load      = get_proc( "lock_and_load"      );
-}
-
-// hunter_t::init_uptimes ====================================================
-
-void hunter_t::init_uptimes()
-{
-  player_t::init_uptimes();
 }
 
 // hunter_t::init_rng ========================================================

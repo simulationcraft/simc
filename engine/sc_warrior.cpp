@@ -303,9 +303,7 @@ struct warrior_t : public player_t
   talents_t talents;
 
   // Up-Times
-  uptime_t* uptimes_deep_wounds;
   uptime_t* uptimes_rage_cap;
-  uptime_t* uptimes_rend;
 
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
       player_t( sim, WARRIOR, name, r )
@@ -2979,9 +2977,7 @@ void warrior_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_deep_wounds = get_uptime( "deep_wounds" );
-  uptimes_rage_cap    = get_uptime( "rage_cap"    );
-  uptimes_rend        = get_uptime( "rend"        );
+  uptimes_rage_cap    = get_uptime( "rage_cap" );
 }
 
 // warrior_t::init_rng ======================================================
@@ -3230,8 +3226,6 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
 
-  uptimes_rend        -> update( dots_rend -> ticking );
-  uptimes_deep_wounds -> update( dots_deep_wounds -> ticking );
   uptimes_rage_cap    -> update( resource_current[ RESOURCE_RAGE ] ==
                                  resource_max    [ RESOURCE_RAGE] );
 }

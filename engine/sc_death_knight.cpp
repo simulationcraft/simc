@@ -315,10 +315,6 @@ struct death_knight_t : public player_t
   };
   talents_t talents;
 
-  // Up-Times
-  uptime_t* uptimes_blood_plague;
-  uptime_t* uptimes_frost_fever;
-
   death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
     player_t( sim, DEATH_KNIGHT, name, r )
   {
@@ -367,7 +363,6 @@ struct death_knight_t : public player_t
   virtual void      init_gains();
   virtual void      init_glyphs();
   virtual void      init_resources( bool force );
-  virtual void      init_uptimes();
   virtual void      init_values();
   double composite_pet_attack_crit();
   virtual double    composite_attack_haste() SC_CONST;
@@ -4396,16 +4391,6 @@ void death_knight_t::init_resources( bool force )
   resource_current[ RESOURCE_RUNIC ] = 0;
 }
 
-// death_knight_t::init_uptimes =============================================
-
-void death_knight_t::init_uptimes()
-{
-  player_t::init_uptimes();
-
-  uptimes_blood_plague       = get_uptime( "blood_plague" );
-  uptimes_frost_fever        = get_uptime( "frost_fever" );
-}
-
 // death_knight_t::init_values ==============================================
 
 void death_knight_t::init_values()
@@ -4588,9 +4573,6 @@ void death_knight_t::regen( double periodicity )
 
   if ( talents.butchery -> rank() )
     resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect_base_value( 2 ) / 10.0 / 5.0 / periodicity ), gains_butchery );
-
-  uptimes_blood_plague -> update( dots_blood_plague -> ticking );
-  uptimes_frost_fever  -> update( dots_frost_fever  -> ticking );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {

@@ -258,12 +258,7 @@ struct druid_t : public player_t
 
   // Up-Times
   uptime_t* uptimes_energy_cap;
-  uptime_t* uptimes_insect_swarm;
-  uptime_t* uptimes_moonfire;
   uptime_t* uptimes_rage_cap;
-  uptime_t* uptimes_rake;
-  uptime_t* uptimes_rip;
-  uptime_t* uptimes_sunfire;
 
   // Talents
   struct talents_t 
@@ -965,9 +960,6 @@ void druid_cat_attack_t::player_buff()
   
   if ( school == SCHOOL_BLEED )
     player_multiplier *= 1.0 + p -> mastery_razor_claws -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
-
-  p -> uptimes_rake -> update( p -> dots_rake -> ticking );
-  p -> uptimes_rip  -> update( p -> dots_rip  -> ticking );  
 }
 
 // druid_cat_attack_t::ready ================================================
@@ -2107,15 +2099,6 @@ void druid_spell_t::player_buff()
   additive_multiplier = 0.0;
 
   player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
-
-  // Only track these if we're not a cat/bear
-  if ( ! ( p -> buffs_cat_form -> check() || p -> buffs_bear_form -> check() ) )
-  {
-    p -> uptimes_insect_swarm -> update( p -> dots_insect_swarm -> ticking );
-    p -> uptimes_moonfire     -> update( p -> dots_moonfire     -> ticking );
-    if ( p -> talents.sunfire -> ok() )
-      p -> uptimes_sunfire      -> update( p -> dots_sunfire      -> ticking );
-  }
 }
 
 // Auto Attack =============================================================
@@ -3620,13 +3603,8 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  uptimes_energy_cap   = get_uptime( "energy_cap"   );
-  uptimes_insect_swarm = get_uptime( "insect_swarm" );
-  uptimes_moonfire     = get_uptime( "moonfire"     );  
-  uptimes_rage_cap     = get_uptime( "rage_cap"     );
-  uptimes_rake         = get_uptime( "rake"         );
-  uptimes_rip          = get_uptime( "rip"          );  
-  uptimes_sunfire      = get_uptime( "sunfire"      );
+  uptimes_energy_cap   = get_uptime( "energy_cap" );
+  uptimes_rage_cap     = get_uptime( "rage_cap"   );
 }
 
 // druid_t::init_rng ========================================================
