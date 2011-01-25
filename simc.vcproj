@@ -61,8 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="simc.exe"
 				AdditionalOptions="wininet.lib"
+				OutputFile="simc.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -142,8 +142,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="simc.exe"
 				AdditionalOptions="wininet.lib"
+				OutputFile="simc.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -284,6 +284,14 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_item.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_item_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_item_data_ptr.inc"
 			>
 		</File>
 		<File
