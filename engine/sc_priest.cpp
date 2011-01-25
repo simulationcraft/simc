@@ -2286,13 +2286,7 @@ struct vampiric_touch_t : public priest_spell_t
       priest_spell_t( "vampiric_touch", player, "Vampiric Touch" )
   {
     priest_t* p = player -> cast_priest();
-
-    check_talent( p -> talents.vampiric_touch -> rank() );
-
     parse_options( NULL, options_str );
-
-    parse_data( p -> player_data );
-
     base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
 
