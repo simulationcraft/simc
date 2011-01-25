@@ -25,7 +25,7 @@ actions+=/ambush,if=combo_points<=4
 actions+=/preparation,if=cooldown.vanish.remains>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&!ticking
-actions+=/recuperate,if=combo_points=5&buff.recuperate.remains<3
+actions+=/recuperate,if=combo_points=5&remains<3
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
 actions+=/backstab,if=combo_points<3&energy>60
 actions+=/backstab,if=cooldown.honor_among_thieves.remains>1.75

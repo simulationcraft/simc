@@ -24,7 +24,7 @@ actions+=/ambush,if=combo_points<5
 actions+=/preparation,if=cooldown.vanish.remains>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/rupture,if=combo_points=5&!ticking
-actions+=/recuperate,if=combo_points=5&dot.rupture.remains>8&buff.slice_and_dice.remains>8
+actions+=/recuperate,if=combo_points=5&remains<3&dot.rupture.remains>8&buff.slice_and_dice.remains>8
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
 actions+=/eviscerate,if=combo_points>=4&buff.shadow_dance.up
 actions+=/backstab,if=combo_points<4&energy>60

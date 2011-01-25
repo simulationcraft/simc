@@ -3181,7 +3181,7 @@ void rogue_t::init_actions()
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
       if ( talents.energetic_recovery -> rank() )
-        action_list_str += "/recuperate,if=combo_points=5&buff.recuperate.remains<3";
+        action_list_str += "/recuperate,if=combo_points=5&remains<3";
 
       action_list_str += "/rupture,if=combo_points=5&!ticking";
 
