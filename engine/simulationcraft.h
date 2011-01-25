@@ -1943,6 +1943,7 @@ struct raid_event_t
   double duration_max;
   double distance_min;
   double distance_max;
+  double saved_duration;
   rng_t* rng;
   std::vector<player_t*> affected_players;
 

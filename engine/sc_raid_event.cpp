@@ -141,7 +141,7 @@ struct movement_event_t : public raid_event_t
   int players_only;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "movement" ), move_to( 0 ), players_only( 0 )
+    raid_event_t( s, "movement" ), move_to( 0 ), move_distance( 0 ), players_only( 0 )
   {
     option_t options[] =
     {
@@ -151,6 +151,8 @@ struct movement_event_t : public raid_event_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    if ( move_distance ) name_str = "movement_distance";
+
   }
   virtual void start()
   {
@@ -160,22 +162,20 @@ struct movement_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> is_pet() && players_only ) continue;
-      p -> buffs.moving -> increment();
+      if ( move_distance )
+      {
+        p -> buffs.moving -> buff_duration = move_distance / p -> composite_movement_speed();
+        p -> buffs.moving -> trigger();
+      }
+      else
+      {
+        p -> buffs.moving -> buff_duration = saved_duration;
+        p -> buffs.moving -> trigger();
+      }
+
       if ( p -> sleeping ) continue;
       p -> interrupt();
     }
-  }
-  virtual void finish()
-  {
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
-    {
-      player_t* p = affected_players[ i ];
-      if ( p -> is_pet() && players_only ) continue;
-      p -> buffs.moving -> decrement();
-      if ( p -> sleeping ) continue;
-    }
-    raid_event_t::finish();
   }
 };
 
@@ -290,7 +290,7 @@ raid_event_t::raid_event_t( sim_t* s, const char* n ) :
     num_starts( 0 ), first( 0 ), last( 0 ),
     cooldown( 0 ), cooldown_stddev( 0 ), cooldown_min( 0 ), cooldown_max( 0 ),
     duration( 0 ), duration_stddev( 0 ), duration_min( 0 ), duration_max( 0 ),
-    distance_min( 0 ), distance_max( 0 )
+    distance_min( 0 ), distance_max( 0 ), saved_duration( 0 )
 {
   rng = ( sim -> deterministic_roll ) ? sim -> deterministic_rng : sim -> rng;
 }
@@ -396,15 +396,17 @@ void raid_event_t::schedule()
     }
     virtual void execute()
     {
+      raid_event -> saved_duration = raid_event -> duration_time();
+      double ct = raid_event -> cooldown_time();
+
       raid_event -> start();
 
-      double dt = raid_event -> duration_time();
-      double ct = raid_event -> cooldown_time();
-      if ( ct <= dt ) ct = dt + 0.01;
 
-      if ( dt > 0 )
+      if ( ct <= raid_event -> saved_duration ) ct = raid_event -> saved_duration + 0.01;
+
+      if ( raid_event -> saved_duration > 0 )
       {
-        new ( sim ) duration_event_t( sim, raid_event, dt );
+        new ( sim ) duration_event_t( sim, raid_event, raid_event -> saved_duration );
       }
       else raid_event -> finish();
 

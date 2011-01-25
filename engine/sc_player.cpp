@@ -1343,7 +1343,7 @@ void player_t::init_buffs()
 
 
   // Infinite-Stacking Buffs
-  buffs.moving  = new buff_t( this, "moving",  -1 );
+  buffs.moving  = new buff_t( this, "moving",  1 );
   buffs.stunned = new buff_t( this, "stunned", -1 );
 
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
