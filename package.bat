@@ -2,8 +2,8 @@
 REM This script is used for packaging a release built using MSVC 2008
 REM Update the "dir" and "rev" variables appropriately
 
-set dir=simc-403-26-win32
-set rev=r6416
+set dir=simc-403-27-win32
+set rev=r6503
 
 svn checkout https://simulationcraft.googlecode.com/svn/branches/cataclysm/ %dir% --username natehieter --revision %rev%
 
