@@ -856,6 +856,16 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC );
   }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+
+    if ( player -> ptr && result_is_hit() )
+    {
+      trigger_rolling_thunder( this );
+    }
+  }
 };
 
 struct chain_lightning_overload_t : public shaman_spell_t
@@ -884,6 +894,16 @@ struct chain_lightning_overload_t : public shaman_spell_t
     glyph_targets        = (int) p -> glyph_chain_lightning -> mod_additive( P_TARGET );
   }
   
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+
+    if ( player -> ptr && result_is_hit() )
+    {
+      trigger_rolling_thunder( this );
+    }
+  }
+
   virtual void assess_damage( double amount,
                                int    dmg_type )
   {
