@@ -1109,6 +1109,8 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     background           = true;
     may_miss             = false;
+    may_dodge            = false;
+    may_parry            = false;
     weapon               = w;
     
     weapon_multiplier   *= 1.0 + p -> talent_focused_strikes -> mod_additive( P_GENERIC );
