@@ -3272,7 +3272,9 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "              <table class=\"sc\">\n"
     "                <tr>\n"
     "                  <th></th>\n"
+    "                  <th>Count</th>\n"
     "                  <th>%s</th>\n"
+    "                  <th>Average</th>\n"
     "                  <th>Overflow</th>\n"
     "                </tr>\n",
     util_t::resource_type_string( p -> primary_resource() ) );
@@ -3291,10 +3293,14 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file,
         "                  <td class=\"left\">%s</td>\n"
         "                  <td class=\"right\">%.1f</td>\n"
+        "                  <td class=\"right\">%.1f</td>\n"
+        "                  <td class=\"right\">%.1f</td>\n"
         "                  <td class=\"right\">%.1f%%</td>\n"
         "                </tr>\n",
         g -> name(),
+        g -> count,
         g -> actual,
+        g -> actual / g -> count,
         overflow_pct );
       i++;
     }
