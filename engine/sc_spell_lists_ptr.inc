@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13529
+// Class based active abilities, wow build 13561
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -848,7 +848,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13529
+// Talent tree specialization abilities, wow build 13561
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1106,7 +1106,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13529
+// Class mastery abilities, wow build 13561
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1191,7 +1191,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13529
+// Racial abilities, wow build 13561
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1834,7 +1834,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13529
+// Glyph spells for classes, wow build 13561
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2349,7 +2349,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13529
+// Tier item set bonuses for class, wow build 13561
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -2531,13 +2531,14 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
       70765, // Lightsworn Battlegear - 2 Piece Bonus (Item - Paladin T10 Retribution 2P Bonus)
           0,
     },
-    // Tier 11 bonuses (4 spells)
+    // Tier 11 bonuses (6 spells)
     {
       90298, // Reinforced Sapphirium Battleplate - 2 Piece Bonus (Item - Paladin T11 Retribution 2P Bonus)
       90299, // Reinforced Sapphirium Battleplate - 4 Piece Bonus (Item - Paladin T11 Retribution 4P Bonus)
       90301, // Reinforced Sapphirium Battlearmor - 2 Piece Bonus (Item - Paladin T11 Protection 2P Bonus)
       90306, // Reinforced Sapphirium Battlearmor - 4 Piece Bonus (Item - Paladin T11 Protection 4P Bonus)
-          0,
+      90310, // Reinforced Sapphirium Regalia - 2 Piece Bonus (Item - Paladin T11 Holy 2P Bonus)
+      90313, // Reinforced Sapphirium Regalia - 4 Piece Bonus (Item - Paladin T11 Holy 4P Bonus)
     },
   },
   // Tier bonuses for Hunter
@@ -2760,8 +2761,10 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
       70801, // Crimson Acolyte's Regalia - 4 Piece Bonus (Item - Priest T10 Shadow 4P Bonus)
           0,
     },
-    // Tier 11 bonuses (2 spells)
+    // Tier 11 bonuses (4 spells)
     {
+      89910, // Mercurial Vestments - 2 Piece Bonus (Item - Priest T11 Healer 2P Bonus)
+      89911, // Mercurial Vestments - 4 Piece Bonus (Item - Priest T11 Healer 4P Bonus)
       89915, // Mercurial Regalia - 2 Piece Bonus (Item - Priest T11 Shadow 2P Bonus)
       89922, // Mercurial Regalia - 4 Piece Bonus (Item - Priest T11 Shadow 4P Bonus)
           0,
@@ -2914,13 +2917,14 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
       70832, // Frost Witch's Battlegear - 4 Piece Bonus (Item - Shaman T10 Enhancement 4P Bonus)
           0,
     },
-    // Tier 11 bonuses (4 spells)
+    // Tier 11 bonuses (6 spells)
     {
+      90494, // Vestments of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Restoration 2P Bonus)
+      90499, // Vestments of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Restoration 4P Bonus)
       90501, // Battlegear of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Enhancement 2P Bonus)
       90502, // Battlegear of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Enhancment 4P Bonus)
       90503, // Regalia of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Elemental 2P Bonus)
       90505, // Regalia of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Elemental 4P Bonus)
-          0,
     },
   },
   // Tier bonuses for Mage
@@ -3164,13 +3168,14 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
       70726, // Lasherweave Battlegear - 4 Piece Bonus (Item - Druid T10 Feral 4P Bonus)
           0,
     },
-    // Tier 11 bonuses (4 spells)
+    // Tier 11 bonuses (6 spells)
     {
+      90157, // Stormrider's Vestments - 2 Piece Bonus (Item - Druid T11 Restoration 2P Bonus)
+      90158, // Stormrider's Vestments - 4 Piece Bonus (Item - Druid T11 Restoration 4P Bonus)
       90160, // Stormrider's Regalia - 2 Piece Bonus (Item - Druid T11 Balance 2P Bonus)
       90162, // Stormrider's Battlegarb - 2 Piece Bonus (Item - Druid T11 Feral 2P Bonus)
       90163, // Stormrider's Regalia - 4 Piece Bonus (Item - Druid T11 Balance 4P Bonus)
       90165, // Stormrider's Battlegarb - 4 Piece Bonus (Item - Druid T11 Feral 4P Bonus)
-          0,
     },
   },
 };
