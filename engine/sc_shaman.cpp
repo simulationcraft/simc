@@ -1399,13 +1399,14 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_attack_t::execute();
-    trigger_static_shock( this );
 
     if ( result_is_hit() )
     {
       p -> buffs_searing_flames -> expire();
       if ( p -> active_searing_flames_dot ) 
         p -> active_searing_flames_dot -> cancel();
+      
+      trigger_static_shock( this );
     }
   }
 
@@ -1466,7 +1467,8 @@ struct primal_strike_t : public shaman_attack_t
   virtual void execute()
   {
     shaman_attack_t::execute();
-    trigger_static_shock( this );
+    if ( result_is_hit() )
+      trigger_static_shock( this );
   }
 };
 
@@ -1504,21 +1506,20 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
     
-    player_buff();
-    calculate_result();
-    consume_resource();
+    // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
+    // are handled by stormstrike_attack_t
+    attack_t::execute();
     
     if ( result_is_hit() )
     {
+
       p -> buffs_stormstrike -> trigger();
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
+
+      trigger_static_shock( this );
     }
     
-    trigger_static_shock( this );
-
-    update_ready();
-    update_stats( DMG_DIRECT );
   }
 };
 
