@@ -1096,13 +1096,11 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    // TO-DO: Verify how Dark Intent interacts with burst dmg.
-
-    // IDP only crits for *1.5 not *2.0
+    // IDP only crits for *1.5 not *2.0 on live
     if ( p -> bugs && ! p -> ptr )
       player_crit_bonus_multiplier /= 1.0 + p -> constants.shadow_power_crit_value;
 
-    if ( ! p -> bugs )
+    if ( p -> ptr )
     {
       m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     }
