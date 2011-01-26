@@ -4387,7 +4387,8 @@ void warlock_t::init_actions()
       {
         action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
       }
-      if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
+      if ( talent_shadowburn -> ok() ) action_list_str += "/shadowburn";
+      if ( level >= 64) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
 
     break;
 
