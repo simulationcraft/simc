@@ -1277,11 +1277,13 @@ struct bloodthirst_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod   = effect_min( 1 ) / 100.0;
+    // Include the weapon so we benefit from racials
+    weapon             = &( player -> main_hand_weapon );
+    weapon_multiplier  = 0;
 
+    direct_power_mod   = effect_min( 1 ) / 100.0;
     base_dd_min        = 0.0;
     base_dd_max        = 0.0;
-
     base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect_base_value( 1 ) / 100.0
                              + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
@@ -1476,15 +1478,23 @@ struct execute_t : public warrior_attack_t
     id = 5308;
     parse_data( p -> player_data );
 
-    base_dd_min       = 10;
-    base_dd_max       = 10;
+    // Include the weapon so we benefit from racials
+    weapon             = &( player -> main_hand_weapon );
+    weapon_multiplier  = 0;
+    base_dd_min        = 10;
+    base_dd_max        = 10;
     
     // Rage scaling is handled in player_buff()
 
     // Execute consumes rage no matter if it missed or not
-    aoe = true;
+    aoe = true; // FIX ME: is this still true and is there a better way to do it
 
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
+  }
+
+  virtual void assess_damage( double amount, int dmg_type )
+  {
+    // Flagged as an AoE to always consume rage, but not an aoe
   }
 
   virtual void consume_resource()
@@ -1569,6 +1579,9 @@ struct heroic_strike_t : public warrior_attack_t
 
     id = 78;
     parse_data( p -> player_data );
+    // Include the weapon so we benefit from racials
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
 
 	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
