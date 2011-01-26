@@ -213,6 +213,7 @@ struct warlock_t : public player_t
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
+  cooldown_t* cooldowns_glyph_of_shadowburn;
 
   // Talents
 
@@ -376,6 +377,8 @@ struct warlock_t : public player_t
     cooldowns_metamorphosis                   = get_cooldown ( "metamorphosis" );
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
+    cooldowns_glyph_of_shadowburn             = get_cooldown ( "glyph_of_shadowburn" );
+    cooldowns_glyph_of_shadowburn -> duration = player_data.spell_duration(91001);
 
     use_pre_soulburn = 0;
 
@@ -2214,9 +2217,10 @@ struct shadowburn_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if ( p -> glyphs.shadowburn -> ok() )
     {
-      if ( target -> health_percentage() < p -> glyphs.shadowburn -> effect_base_value( 1 ) )
+      if ( p -> cooldowns_glyph_of_shadowburn -> remains() == 0 && target -> health_percentage() < p -> glyphs.shadowburn -> effect_base_value( 1 ) )
       {
         cooldown -> reset();
+        p -> cooldowns_glyph_of_shadowburn -> start();
       }
     }
   }
