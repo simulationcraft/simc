@@ -1502,6 +1502,7 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
     
+    player_buff();
     calculate_result();
     consume_resource();
     
@@ -1515,6 +1516,7 @@ struct stormstrike_t : public shaman_attack_t
     trigger_static_shock( this );
 
     update_ready();
+    update_stats( DMG_DIRECT );
   }
 };
 
