@@ -22,7 +22,14 @@ void attack_t::_init_attack_t()
     may_block = false;
     may_parry = false;
   }
-  else if ( player -> position == POSITION_RANGED )
+  else if ( player -> position == POSITION_RANGED_FRONT )
+  {
+    may_block  = true;
+    may_dodge  = false;
+    may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
+    may_parry  = false;
+  }
+  else if ( player -> position == POSITION_RANGED_BACK )
   {
     may_block  = false;
     may_dodge  = false;
@@ -265,7 +272,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( delta_level > 2 && player -> position != POSITION_RANGED )
+  if ( delta_level > 2 && player -> position != ( POSITION_RANGED_FRONT || POSITION_RANGED_BACK ) )
   {
     chance -= ( 0.03 + delta_level * 0.006 );
   }

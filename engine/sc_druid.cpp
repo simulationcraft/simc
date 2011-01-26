@@ -1088,7 +1088,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    if ( p -> in_combat && ( p -> position != POSITION_RANGED ) )
+    if ( p -> in_combat && ( p -> position != ( POSITION_RANGED_FRONT || POSITION_RANGED_BACK ) ) )
     {
       return false;
     }
@@ -1792,7 +1792,7 @@ struct feral_charge_bear_t : public druid_bear_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    if ( p -> in_combat && ( p -> position != POSITION_RANGED ) )
+    if ( p -> in_combat && ( p -> position != ( POSITION_RANGED_FRONT || POSITION_RANGED_BACK ) ) )
     {
       return false;
     }

@@ -20,6 +20,7 @@ struct hunter_t : public player_t
   int           active_aspect;
   action_t*     active_piercing_shots;
 
+
   // Buffs
   buff_t* buffs_aspect_of_the_hawk;
   buff_t* buffs_beast_within;
@@ -45,6 +46,7 @@ struct hunter_t : public player_t
 
   // Custom Parameters
   std::string summon_pet_str;
+  std::string hunter_position;
 
   // Dots
   dot_t* dots_serpent_sting;
@@ -189,6 +191,8 @@ struct hunter_t : public player_t
     active_aspect          = ASPECT_NONE;
     active_piercing_shots  = 0;
 
+
+
     // Cooldowns
     cooldowns_glyph_kill_shot = get_cooldown("cooldowns_glyph_kill_shot");
     cooldowns_glyph_kill_shot -> duration = 6.0;
@@ -198,6 +202,7 @@ struct hunter_t : public player_t
 
     ranged_attack = 0;
     summon_pet_str = "cat";
+    hunter_position = "back";
     base_gcd = 1.0;
 
     create_talents();
@@ -2857,7 +2862,10 @@ void hunter_t::init_base()
   
   resource_base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect_base_value( 1 );
 
-  position = POSITION_RANGED;
+  if ( hunter_position == "front" )
+    position = POSITION_RANGED_FRONT;
+  else if ( hunter_position == "back" )
+      position = POSITION_RANGED_BACK;
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
@@ -3228,7 +3236,8 @@ void hunter_t::create_options()
 
   option_t hunter_options[] =
   {
-    { "summon_pet", OPT_STRING, &( summon_pet_str ) },
+    { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
+    { "position",   OPT_STRING, &( hunter_position ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3272,6 +3281,7 @@ void hunter_t::copy_from( player_t* source )
   player_t::copy_from( source );
   hunter_t* p = source -> cast_hunter();
   summon_pet_str = p -> summon_pet_str;
+  hunter_position = p -> hunter_position;
 }
 
 // hunter_t::armory_extensions ==============================================
