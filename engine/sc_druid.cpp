@@ -3206,7 +3206,7 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     // Glyph of Wrath is additive with Moonfury
     if ( p -> dots_insect_swarm -> ticking )
-      additive_multiplier += p -> glyphs.wrath -> base_value() / 100.0;
+      additive_multiplier += p -> glyphs.wrath -> effect_base_value( 1 ) / 100.0;
 
     druid_spell_t::player_buff();
   }
