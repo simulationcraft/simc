@@ -662,7 +662,10 @@ void player_t::init_base()
   initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
   base_mp5                         = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MP5 );
-  health_per_stamina = 14;
+
+  if ( level <= 80 ) health_per_stamina = 10;
+  else if ( level <= 85 ) health_per_stamina = ( level - 80) / 5 * 4 + 10;
+  else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
 }
 
 // player_t::init_items =====================================================
