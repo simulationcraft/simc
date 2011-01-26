@@ -32,7 +32,7 @@ actions+=/dispersion,moving=1
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
-head=mercurial_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_spi,gems=ember_shadowspirit_20int_20spi_30crit,enchant=60int_35crit
+head=mercurial_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_spi,gems=burning_shadowspirit_20int_20spi_30crit,enchant=60int_35crit
 neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
 shoulders=mercurial_shoulderwraps,type=cloth,ilevel=359,quality=epic,stats=938armor_169haste_233int_149spi_380sta,gems=67int_10haste,enchant=50int_25haste
 chest=mercurial_vestment,type=cloth,ilevel=359,quality=epic,stats=1251armor_218crit_198haste_301int_512sta,reforge=crit_spi,gems=67int_20int_20spi_20int,enchant=20all

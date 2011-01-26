@@ -32,7 +32,7 @@ actions+=/dispersion,moving=1
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
-head=helm_of_the_typhonic_beast,heroic=1,type=cloth,ilevel=346,quality=rare,stats=942armor_162hit_242int_182mastery_454sta,reforge=mastery_haste,gems=ember_shadowspirit_20haste_20int_30int,enchant=60int_35crit
+head=helm_of_the_typhonic_beast,heroic=1,type=cloth,ilevel=346,quality=rare,stats=942armor_162hit_242int_182mastery_454sta,reforge=mastery_haste,gems=burning_shadowspirit_20haste_20int_30int,enchant=60int_35crit
 neck=dorians_lost_necklace,ilevel=359,quality=epic,stats=134haste_190int_114mastery_286sta
 shoulders=kyrstel_mantle,heroic=1,type=cloth,ilevel=346,quality=rare,stats=870armor_111haste_205int_161spi_337sta,gems=67int,enchant=50int_25haste
 chest=robes_of_rampant_growth,heroic=1,type=cloth,ilevel=346,quality=rare,stats=1160armor_202crit_162haste_262int_454sta,reforge=crit_mastery,gems=20haste_20int_20int_20spi_20int,enchant=20all
