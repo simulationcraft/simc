@@ -1086,9 +1086,10 @@ struct feral_charge_cat_t : public druid_cat_attack_t
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
+    bool ranged = ( player -> position == POSITION_RANGED_FRONT || 
+		    player -> position == POSITION_RANGED_BACK );
 
-    if ( p -> in_combat && ( p -> position != ( POSITION_RANGED_FRONT || POSITION_RANGED_BACK ) ) )
+    if ( player -> in_combat && ! ranged )
     {
       return false;
     }
@@ -1790,9 +1791,10 @@ struct feral_charge_bear_t : public druid_bear_attack_t
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
+    bool ranged = ( player -> position == POSITION_RANGED_FRONT || 
+		    player -> position == POSITION_RANGED_BACK );
 
-    if ( p -> in_combat && ( p -> position != ( POSITION_RANGED_FRONT || POSITION_RANGED_BACK ) ) )
+    if ( player -> in_combat && ! ranged )
     {
       return false;
     }

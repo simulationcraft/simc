@@ -630,7 +630,10 @@ void action_t::target_debuff( int dmg_type )
 
   if ( base_attack_power_multiplier > 0 )
   {
-    if ( p -> position == ( POSITION_RANGED_FRONT || POSITION_RANGED_BACK ) )
+    bool ranged = ( player -> position == POSITION_RANGED_FRONT || 
+		    player -> position == POSITION_RANGED_BACK );
+
+    if ( ranged )
     {
       target_attack_power += t -> debuffs.hunters_mark -> value();
     }

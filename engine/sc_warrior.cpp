@@ -1773,68 +1773,87 @@ struct pummel_t : public warrior_attack_t
 
 // Raging Blow ==============================================================
 
-struct raging_blow_t : public warrior_attack_t
+struct raging_blow_strike_t : public warrior_attack_t
 {
-  raging_blow_t( warrior_t* p, const std::string& options_str ) :
+  raging_blow_strike_t( warrior_t* p ) :
       warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY )
   {
-    check_talent( p -> talents.raging_blow -> rank() );
-
-    parse_options( NULL, options_str );
-
-    id = 85288;
+    id = p -> ptr ? 96103 : 85288;
     parse_data( p -> player_data );
-
-	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+    base_cost = 0;
+    may_miss = may_dodge = may_parry = false;
+    background = true;
+    dual = true;
+    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     if ( p -> ptr )
     {
-      // FIXME!!!  PTR has separate trigger spells for MH/OH.  Implement it right later....
-      weapon_multiplier = 1.45;
-	  base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+      base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     }
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
-    stancemask = STANCE_BERSERKER;
-  }
-
-  // We run this attack again for off-hand but we don't re-consume
-  // so we do the consume() call once in execute.
-  virtual void consume_resource() { }
-
-  virtual void execute()
-  {
-    warrior_t* p = player -> cast_warrior();
-
-    weapon = &( p -> main_hand_weapon );
-    warrior_attack_t::execute();
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      weapon = &( p -> off_hand_weapon );
-      warrior_attack_t::execute();
-    }
-
-    // FIXME: The wording indicates it triggers even if you miss.
-    p -> buffs_tier11_4pc_melee -> trigger();
-
-    warrior_attack_t::consume_resource();
   }
 
   virtual void player_buff()
   {
-    warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
-    // Caution: additive
+    warrior_attack_t::player_buff();
     player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+  }
+};
+
+struct raging_blow_t : public warrior_attack_t
+{
+  raging_blow_strike_t* mh_strike;
+  raging_blow_strike_t* oh_strike;
+
+  raging_blow_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY ), mh_strike(0), oh_strike(0)
+  {
+    check_talent( p -> talents.raging_blow -> rank() );
+
+    id = 85288;
+    parse_data( p -> player_data );
+    base_dd_min = base_dd_max = 0;
+    weapon_multiplier = direct_power_mod = 0; 
+    stancemask = STANCE_BERSERKER;
+
+    parse_options( NULL, options_str );
+
+    mh_strike = new raging_blow_strike_t( p );
+    mh_strike -> weapon = &( p -> main_hand_weapon );
+
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_strike = new raging_blow_strike_t( p );
+      oh_strike -> weapon = &( p -> off_hand_weapon );
+    }
+  }
+
+  virtual void execute()
+  {
+    warrior_t* p = player -> cast_warrior();
+    attack_t::execute();
+    if ( result_is_hit() ) 
+    {
+      mh_strike -> execute();
+      mh_strike -> update_result( DMG_DIRECT );
+      if ( oh_strike ) 
+      {
+	oh_strike -> execute();
+	oh_strike -> update_result( DMG_DIRECT );
+      }
+    }
+    p -> buffs_tier11_4pc_melee -> trigger();
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( ! ( p -> buffs_death_wish     -> check() || p -> buffs_enrage        -> check()
-          || p -> buffs_berserker_rage -> check() || p -> buffs.unholy_frenzy -> check() ) )
+    if ( ! ( p -> buffs_berserker_rage -> check() || 
+	     p -> buffs_death_wish     -> check() || 
+	     p -> buffs_enrage         -> check() ||
+	     p -> buffs.unholy_frenzy  -> check() ) )
       return false;
-
     return warrior_attack_t::ready();
   }
 };
