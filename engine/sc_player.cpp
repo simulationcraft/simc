@@ -1117,7 +1117,7 @@ void player_t::init_professions()
     if ( 2 != util_t::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
     {
       prof_name  = splits[ i ];
-      prof_value = 450;
+      prof_value = 525;
     }
 
     int prof_type = util_t::parse_profession_type( prof_name );
@@ -1342,6 +1342,7 @@ void player_t::init_buffs()
   buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
   buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
   buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope" );
+  buffs.body_and_soul        = new buff_t( this, "body_and_soul", 1, 4.0 );
 
 
 
@@ -2174,6 +2175,9 @@ double player_t::composite_player_td_multiplier( const school_type school ) SC_C
 double player_t::composite_movement_speed() SC_CONST
 {
   double speed = base_movement_speed;
+
+  if ( buffs.body_and_soul -> up() )
+    speed *= 1.0 + buffs.body_and_soul -> value();
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up

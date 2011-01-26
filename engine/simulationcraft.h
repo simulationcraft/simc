@@ -3026,6 +3026,7 @@ struct player_t
     buff_t* furious_howl;
     buff_t* inspiration;
     buff_t* hymn_of_hope;
+    buff_t* body_and_soul;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;

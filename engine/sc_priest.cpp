@@ -92,6 +92,7 @@ struct priest_t : public player_t
     talent_t* tome_of_light;
     talent_t* rapid_renewal;
     talent_t* serendipity;
+    talent_t* body_and_soul;
     talent_t* chakra;
     talent_t* revelations;
     talent_t* test_of_faith;
@@ -401,6 +402,7 @@ struct priest_t : public player_t
   virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_player_td_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_movement_speed() SC_CONST;
 
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
 
@@ -2090,6 +2092,15 @@ struct atonement_nc_t : public priest_heal_t
     proc       = true;
     background = true;
   }
+
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> bugs && p -> buffs_grace -> up() )
+      player_multiplier /= 1.0 + p -> buffs_grace -> effect_base_value( 1 ) / 100.0;
+  }
 };
 
 // Smite non-crit Atonement Heal ========================================================
@@ -2103,13 +2114,24 @@ struct atonement_c_t : public priest_heal_t
     proc       = true;
     background = true;
   }
+
   virtual void calculate_result()
   {
     result = RESULT_CRIT;
   }
+
   virtual double total_crit_bonus() SC_CONST
   {
     return 0;
+  }
+
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> bugs && p -> buffs_grace -> up() )
+      player_multiplier /= 1.0 + p -> buffs_grace -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -2630,7 +2652,7 @@ struct _heal_t : public priest_heal_t
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
 
     // Check Spell when it's imported into the dbc
-    base_crit      += p -> sets -> set( SET_T11_2PC_HEAL ) -> mod_additive( P_CRIT );
+    base_crit      += p -> set_bonus.tier11_2pc_heal() * 0.05;
   }
 
   virtual void execute()
@@ -2694,12 +2716,15 @@ struct flash_heal_t : public priest_heal_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    may_crit = ! p -> buffs_surge_of_light -> up();
+    may_crit = ( ! p -> buffs_surge_of_light -> up() || p -> ptr );
     priest_heal_t::execute();
 
+    // Assuming a SoL Flash Heal can't proc SoL
+    if ( p -> ptr && ! p -> buffs_surge_of_light -> up() )
+      p -> buffs_surge_of_light -> trigger();
 
     p -> buffs_grace -> trigger();
-    p -> buffs_serendipity -> trigger( 1 );
+    p -> buffs_serendipity -> trigger();
     p -> buffs_inner_focus -> expire();
     p -> buffs_surge_of_light -> expire();
     trigger_inspiration(this);
@@ -2815,6 +2840,10 @@ struct greater_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     p -> buffs_grace -> trigger();
     p -> buffs_inner_focus -> expire();
+    p -> buffs_serendipity -> expire();
+
+    if ( p -> ptr )
+      p -> buffs_surge_of_light -> trigger();
 
     if ( p -> talents.train_of_thought -> rank() )
     {
@@ -2899,6 +2928,7 @@ struct prayer_of_healing_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
     p -> buffs_inner_focus -> expire();
+    p -> buffs_serendipity -> expire();
     trigger_inspiration(this);
 
     if ( glyph )
@@ -3128,17 +3158,24 @@ struct power_word_shield_t : public priest_absorb_t
     p -> buffs_borrowed_time -> trigger();
     p -> buffs_weakened_soul -> trigger();
 
+    // Glyph
     if ( glyph_pws )
     {
 
       glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = 0.2 * direct_dmg;
       glyph_pws -> execute();
     }
+
+    // Rapture
     if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> rank() * 0.015, p -> gains_rapture );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02 * p -> talents.rapture -> rank(), p -> gains_rapture );
       p -> cooldowns_rapture -> start();
     }
+
+    // Body and Soul
+    if ( p -> talents.body_and_soul -> rank() )
+      heal_target -> buffs.body_and_soul -> trigger( 1, p -> talents.body_and_soul -> effect_base_value( 1 ) / 100.0 );
   }
 
 };
@@ -3559,6 +3596,16 @@ double priest_t::composite_player_td_multiplier( const school_type school ) SC_C
   return player_multiplier;
 }
 
+double priest_t::composite_movement_speed() SC_CONST
+{
+  double speed = player_t::composite_movement_speed();
+
+  if ( buffs_inner_will -> up() )
+    speed *= 1.0 + buffs_inner_will -> effect_base_value( 2 ) / 100 + talents.inner_sanctum -> effect_base_value( 2 ) / 100.0;
+
+  return speed;
+}
+
 double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   if ( attr == ATTR_INTELLECT )
@@ -3839,6 +3886,7 @@ void priest_t::init_talents()
   talents.tome_of_light               = find_talent( "Tome of Light" );
   talents.rapid_renewal               = find_talent( "Rapid Renewal" );
   talents.serendipity                 = find_talent( "Serendipity" );
+  talents.body_and_soul               = find_talent( "Body and Soul" );
   talents.chakra                      = find_talent( "Chakra" );
   talents.revelations                 = find_talent( "Revelations" );
   talents.test_of_faith               = find_talent( "Test of Faith" );
@@ -3946,7 +3994,7 @@ void priest_t::init_buffs()
   buffs_empowered_shadow           = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
   buffs_inner_fire                 = new buff_t( this, "inner_fire"                                              );
   buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
-  buffs_inner_will                 = new buff_t( this, "inner_will"                                              );
+  buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
   buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
   buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
   buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 15.0, 0, 1.0             );
@@ -4467,9 +4515,9 @@ int priest_t::decode_set( item_t& item )
     if ( is_caster ) return SET_T11_CASTER;
 
     is_healer = ( strstr( s, "cowl"          ) ||
-                  strstr( s, "mantle" ) ||
-                  strstr( s, "robes"      ) ||
-                  strstr( s, "handwraps"        ) ||
+                  strstr( s, "mantle"        ) ||
+                  strstr( s, "robes"         ) ||
+                  strstr( s, "handwraps"     ) ||
                   strstr( s, "legwraps"      ) );
     if ( is_healer ) return SET_T11_HEAL;
   }
