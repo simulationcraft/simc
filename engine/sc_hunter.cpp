@@ -1682,6 +1682,8 @@ struct black_arrow_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
+    may_block = false;
+
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
     cooldown -> duration -= p -> talents.resourcefulness -> rank() * 2;
@@ -1833,6 +1835,8 @@ struct explosive_shot_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
+    may_block = false;
+
     base_cost += p -> talents.efficiency -> effect_base_value( 1 );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
     if(!p->ptr)
@@ -1983,6 +1987,8 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     parse_options( NULL, options_str );
+
+    may_block = false;
 
     tick_power_mod = 0.4 / num_ticks;
 

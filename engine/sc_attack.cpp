@@ -263,7 +263,12 @@ double attack_t::glance_chance( int delta_level ) SC_CONST
 
 double attack_t::block_chance( int delta_level ) SC_CONST
 {
-  return 0.05 + delta_level * 0.005;
+  double chance;
+  if ( player -> position == POSITION_RANGED_FRONT )
+    chance = 0.05;
+  else
+    chance = 0.05 + delta_level * 0.005;
+  return chance;
 }
 
 // attack_t::crit_chance ====================================================
