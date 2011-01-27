@@ -853,11 +853,11 @@ struct lightning_bolt_overload_t : public shaman_spell_t
       p -> talent_concussion -> mod_additive( P_GENERIC );
   }
 
-  virtual void execute()
+  virtual void travel( int travel_result, double travel_dmg )
   {
-    shaman_spell_t::execute();
+    spell_t::travel( travel_result, travel_dmg );
 
-    if ( player -> ptr && result_is_hit() )
+    if ( player -> ptr && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) )
     {
       trigger_rolling_thunder( this );
     }
@@ -1956,21 +1956,6 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     p -> buffs_elemental_mastery_insta -> expire();
-
-    if ( result_is_hit() )
-    {
-      double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
-
-      if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
-        overload -> execute();
-
-      if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
-      {
-        double extra_ticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> active_flame_shock -> base_tick_time;
-        extra_ticks *= 1.0 / p -> active_flame_shock -> player_haste;
-        p -> active_flame_shock -> extend_duration( int( floor( extra_ticks + 0.5 ) ) );
-      }
-    }
   }
 
   virtual double execute_time() SC_CONST
@@ -2017,6 +2002,28 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     return true;
+  }
+  
+  virtual void travel( int travel_result, double travel_dmg )
+  {
+    shaman_t* p = player -> cast_shaman();
+    
+    spell_t::travel( travel_result, travel_dmg );
+
+    if ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT )
+    {
+      double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
+
+      if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
+        overload -> execute();
+
+      if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
+      {
+        double extra_ticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> active_flame_shock -> base_tick_time;
+        extra_ticks *= 1.0 / p -> active_flame_shock -> player_haste;
+        p -> active_flame_shock -> extend_duration( int( floor( extra_ticks + 0.5 ) ) );
+      }
+    }
   }
 };
 
@@ -2070,23 +2077,6 @@ struct lightning_bolt_t : public shaman_spell_t
     // Note, T10 elem 2PC bonus differs from the norm, the reduction is a positive number in spell data
     p -> cooldowns_elemental_mastery -> ready -= p -> sets -> set( SET_T10_2PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / 1000.0;
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
-    
-    if ( result_is_hit() )
-    {
-      trigger_rolling_thunder( this );
-
-      double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
-
-      if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
-        overload -> execute();
-
-      if ( p -> talent_telluric_currents -> rank() )
-      {
-        p -> resource_gain( RESOURCE_MANA,
-          direct_dmg * p -> talent_telluric_currents -> base_value() / 100.0, 
-          p -> gains_telluric_currents );
-      }
-    }
   }
   
   virtual double execute_time() SC_CONST
@@ -2125,6 +2115,30 @@ struct lightning_bolt_t : public shaman_spell_t
     cr += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_RESOURCE_COST );
 
     return cr;
+  }
+  
+  virtual void travel( int travel_result, double travel_dmg )
+  {
+    shaman_t* p = player -> cast_shaman();
+    
+    spell_t::travel( travel_result, travel_dmg );
+
+    if ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT )
+    {
+      trigger_rolling_thunder( this );
+
+      double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
+
+      if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
+        overload -> execute();
+
+      if ( p -> talent_telluric_currents -> rank() )
+      {
+        p -> resource_gain( RESOURCE_MANA,
+          direct_dmg * p -> talent_telluric_currents -> base_value() / 100.0, 
+          p -> gains_telluric_currents );
+      }
+    }
   }
 };
 
