@@ -1222,6 +1222,7 @@ void sim_t::analyze()
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
 
   raid_dps = total_dmg / total_seconds;
+  raid_hps = total_heal / total_seconds;
 
   chart_t::raid_dps     ( dps_charts,     this );
   chart_t::raid_dpet    ( dpet_charts,    this );

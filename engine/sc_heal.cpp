@@ -512,7 +512,7 @@
   // Created by philoptik@gmail.com
   //
   // heal_target is set to player for now.
-  // dmg_type = ABSORB_DIRECT, all crits killed
+  // dmg_type = ABSORB, all crits killed
   // ==========================================================================
 
 
