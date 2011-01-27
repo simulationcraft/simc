@@ -1864,6 +1864,13 @@ static void print_html3_help_boxes( FILE*  file, sim_t* sim )
     "      </div>\n"
     "    </div>\n"
 
+    "    <div id=\"help-block-pct\">\n"
+    "      <div class=\"help-box\">\n"
+    "        <h3>G%%</h3>\n"
+    "        <p>Percentage of executes that resulted in blocking blows.</p>\n"
+    "      </div>\n"
+    "    </div>\n"
+
     "    <div id=\"help-hit\">\n"
     "      <div class=\"help-box\">\n"
     "        <h3>Hit</h3>\n"
@@ -2045,6 +2052,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
+    "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
@@ -2071,6 +2079,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
     s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
     s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+    s -> execute_results[ RESULT_BLOCK  ].count * 100.0 / executes_divisor,
     s -> num_ticks,
     s -> tick_results[ RESULT_HIT  ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].avg_dmg,
@@ -2987,6 +2996,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "                <th class=\"small\"><a href=\"#help-dodge-pct\" class=\"help\">D%%</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-parry-pct\" class=\"help\">P%%</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%%</a></th>\n"
+    "                <th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%%</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
