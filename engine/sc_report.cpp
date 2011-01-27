@@ -140,9 +140,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> dpr,
                    s -> portion_dps );
 
-  double miss_pct = s -> num_executes > 0 ? s -> execute_results[ RESULT_MISS ].count / s -> num_executes : 0.0;
-
-  util_t::fprintf( file, "  Miss=%.2f%%", 100.0 * miss_pct );
+  util_t::fprintf( file, "  Miss=%.2f%%", s -> execute_results[ RESULT_MISS ].pct );
 
   if ( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
   {
@@ -155,35 +153,33 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                      s -> execute_results[ RESULT_CRIT ].avg_dmg,
                      s -> execute_results[ RESULT_CRIT ].min_dmg,
                      s -> execute_results[ RESULT_CRIT ].max_dmg,
-                     s -> execute_results[ RESULT_CRIT ].count * 100.0 / s -> num_executes );
+                     s -> execute_results[ RESULT_CRIT ].pct );
   }
   if ( s -> execute_results[ RESULT_GLANCE ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
                      "  Glance=%4.0f|%.1f%%",
                      s -> execute_results[ RESULT_GLANCE ].avg_dmg,
-                     s -> execute_results[ RESULT_GLANCE ].count * 100.0 / s -> num_executes );
+                     s -> execute_results[ RESULT_GLANCE ].pct );
   }
   if ( s -> execute_results[ RESULT_DODGE ].count > 0 )
   {
     util_t::fprintf( file,
                      "  Dodge=%.1f%%",
-                     s -> execute_results[ RESULT_DODGE ].count * 100.0 / s -> num_executes );
+                     s -> execute_results[ RESULT_DODGE ].pct );
   }
   if ( s -> execute_results[ RESULT_PARRY ].count > 0 )
   {
     util_t::fprintf( file,
                      "  Parry=%.1f%%",
-                     s -> execute_results[ RESULT_PARRY ].count * 100.0 / s -> num_executes );
+                     s -> execute_results[ RESULT_PARRY ].pct );
   }
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
 
-  double tick_miss_pct = s -> num_ticks > 0 ? s -> tick_results[ RESULT_MISS ].count / s -> num_ticks : 0.0;
-
   if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 || s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
-    util_t::fprintf( file, "  MissTick=%.1f%%", 100.0 * tick_miss_pct );
+    util_t::fprintf( file, "  MissTick=%.1f%%", s -> tick_results[ RESULT_MISS ].pct );
   }
 
   if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
@@ -201,7 +197,7 @@ static void print_action( FILE* file, stats_t* s, int max_name_length=0 )
                      s -> tick_results[ RESULT_CRIT ].avg_dmg,
                      s -> tick_results[ RESULT_CRIT ].min_dmg,
                      s -> tick_results[ RESULT_CRIT ].max_dmg,
-                     s -> tick_results[ RESULT_CRIT ].count * 100.0 / s -> num_ticks );
+                     s -> tick_results[ RESULT_CRIT ].pct );
   }
 
   if ( s -> total_tick_time > 0 )
@@ -1046,12 +1042,6 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
 
 static void print_html_action( FILE* file, stats_t* s )
 {
-  double executes_divisor = s -> num_executes;
-  double    ticks_divisor = s -> num_ticks;
-
-  if ( executes_divisor <= 0 ) executes_divisor = 1;
-  if (    ticks_divisor <= 0 )    ticks_divisor = 1;
-
   util_t::fprintf( file,
                    " <tr>"
                    " <td>%s</td> <td align=right>%.0f</td> <td align=right>%.1f%%</td> <td align=right>%.1f</td> <td align=right>%.2fsec</td>"
@@ -1066,16 +1056,16 @@ static void print_html_action( FILE* file, stats_t* s )
                    s -> execute_results[ RESULT_HIT  ].avg_dmg,
                    s -> execute_results[ RESULT_CRIT ].avg_dmg,
                    s -> execute_results[ RESULT_CRIT ].max_dmg,
-                   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
-                   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
-                   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
-                   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
-                   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+                   s -> execute_results[ RESULT_CRIT ].pct,
+                   s -> execute_results[ RESULT_MISS ].pct,
+                   s -> execute_results[ RESULT_DODGE  ].pct,
+                   s -> execute_results[ RESULT_PARRY  ].pct,
+                   s -> execute_results[ RESULT_GLANCE ].pct,
                    s -> num_ticks,
                    s -> tick_results[ RESULT_HIT  ].avg_dmg,
                    s -> tick_results[ RESULT_CRIT ].avg_dmg,
-                   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-                   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor,
+                   s -> tick_results[ RESULT_CRIT ].pct,
+                   s -> tick_results[ RESULT_MISS ].pct,
 		   100 * s -> total_tick_time / s -> player -> total_seconds );
 }
 
@@ -2005,12 +1995,7 @@ static void print_html3_help_boxes( FILE*  file, sim_t* sim )
 
 static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
 {
-  double executes_divisor = s -> num_executes;
-  double    ticks_divisor = s -> num_ticks;
   int id = 0;
-
-  if ( executes_divisor <= 0 ) executes_divisor = 1;
-  if (    ticks_divisor <= 0 )    ticks_divisor = 1;
 
   util_t::fprintf( file,
     "              <tr" );
@@ -2020,17 +2005,11 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
   }
   util_t::fprintf( file, ">\n" );
 
-  std::vector<std::string> processed_actions;
   for ( action_t* a = s -> player -> action_list; a; a = a -> next )
   {
     if ( a -> stats != s ) continue;
-
-    bool found = false;
-    for ( int i=processed_actions.size()-1; i >= 0 && !found; i-- )
-      if ( processed_actions[ i ] == a -> name() )
-        found = true;
-        id = a -> id;
-    if( found ) break;
+    id = a -> id;
+    if ( ! a -> background ) break;
   }
 
   util_t::fprintf( file,
@@ -2074,22 +2053,23 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> execute_results[ RESULT_HIT  ].avg_dmg,
     s -> execute_results[ RESULT_CRIT ].avg_dmg,
     s -> execute_results[ RESULT_CRIT ].max_dmg ? s -> execute_results[ RESULT_CRIT ].max_dmg : s -> execute_results[ RESULT_HIT ].max_dmg,
-    s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
-    s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
-    s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
-    s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
-    s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
-    s -> execute_results[ RESULT_BLOCK  ].count * 100.0 / executes_divisor,
+    s -> execute_results[ RESULT_CRIT ].pct,
+    s -> execute_results[ RESULT_MISS ].pct,
+    s -> execute_results[ RESULT_DODGE  ].pct,
+    s -> execute_results[ RESULT_PARRY  ].pct,
+    s -> execute_results[ RESULT_GLANCE ].pct,
+    s -> execute_results[ RESULT_BLOCK  ].pct,
     s -> num_ticks,
     s -> tick_results[ RESULT_HIT  ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].avg_dmg,
-    s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-    s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor,
+    s -> tick_results[ RESULT_CRIT ].pct,
+    s -> tick_results[ RESULT_MISS ].pct,
     100 * s -> total_tick_time / s -> player -> total_seconds );
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
     "                <td colspan=\"23\" class=\"filler\">\n" );
 
+  std::vector<std::string> processed_actions;
   for ( action_t* a = s -> player -> action_list; a; a = a -> next )
   {
     if ( a -> stats != s ) continue;
@@ -3655,12 +3635,6 @@ static void print_wiki_auras_debuffs( FILE*  file, sim_t* sim )
 
 static void print_wiki_action( FILE* file, stats_t* s )
 {
-  double executes_divisor = s -> num_executes;
-  double    ticks_divisor = s -> num_ticks;
-
-  if ( executes_divisor <= 0 ) executes_divisor = 1;
-  if (    ticks_divisor <= 0 )    ticks_divisor = 1;
-
   util_t::fprintf( file,
                    "||%s||%.0f||%.1f%%||%.1f||%.2fsec||%.0f||%.0f||%.1f||%.0f||%.0f||%.0f||%.1f%%||%.1f%%||%.1f%%||%.1f%%||%.1f%%||%.0f||%.0f||%.0f||%.1f%%||%.1f%%||\n",
                    s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
@@ -3669,16 +3643,16 @@ static void print_wiki_action( FILE* file, stats_t* s )
                    s -> execute_results[ RESULT_HIT  ].avg_dmg,
                    s -> execute_results[ RESULT_CRIT ].avg_dmg,
                    s -> execute_results[ RESULT_CRIT ].max_dmg,
-                   s -> execute_results[ RESULT_CRIT ].count * 100 / executes_divisor,
-                   s -> execute_results[ RESULT_MISS ].count * 100 / executes_divisor,
-                   s -> execute_results[ RESULT_DODGE  ].count * 100.0 / executes_divisor,
-                   s -> execute_results[ RESULT_PARRY  ].count * 100.0 / executes_divisor,
-                   s -> execute_results[ RESULT_GLANCE ].count * 100.0 / executes_divisor,
+                   s -> execute_results[ RESULT_CRIT ].pct,
+                   s -> execute_results[ RESULT_MISS ].pct,
+                   s -> execute_results[ RESULT_DODGE  ].pct,
+                   s -> execute_results[ RESULT_PARRY  ].pct,
+                   s -> execute_results[ RESULT_GLANCE ].pct,
                    s -> num_ticks,
                    s -> tick_results[ RESULT_HIT  ].avg_dmg,
                    s -> tick_results[ RESULT_CRIT ].avg_dmg,
-                   s -> tick_results[ RESULT_CRIT ].count * 100.0 / ticks_divisor,
-                   s -> tick_results[ RESULT_MISS ].count * 100.0 / ticks_divisor );
+                   s -> tick_results[ RESULT_CRIT ].pct,
+                   s -> tick_results[ RESULT_MISS ].pct );
 }
 
 // print_wiki_player =========================================================

@@ -38,14 +38,17 @@ void stats_t::init()
     execute_results[ i ].max_dmg   = 0;
     execute_results[ i ].avg_dmg   = 0;
     execute_results[ i ].total_dmg = 0;
+    execute_results[ i ].pct       = 0;
 
     tick_results[ i ].count     = 0;
     tick_results[ i ].min_dmg   = FLT_MAX;
     tick_results[ i ].max_dmg   = 0;
     tick_results[ i ].avg_dmg   = 0;
     tick_results[ i ].total_dmg = 0;
+    tick_results[ i ].pct       = 0;
   }
 
+  num_execute_results = num_tick_results = 0;
   num_executes = num_ticks = 0;
   total_execute_time = total_tick_time = 0;
   total_dmg = portion_dmg = 0;
@@ -90,13 +93,24 @@ void stats_t::add_result( double amount,
   player -> iteration_dmg += amount;
   total_dmg += amount;
 
-  stats_results_t& r = ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) ? execute_results[ result ] : tick_results[ result ];
+  stats_results_t* r = 0;
 
-  r.count += 1;
-  r.total_dmg += amount;
+  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) 
+  {
+    r = &( execute_results[ result ] );
+    num_execute_results++;
+  }
+  else
+  {
+    r = &( tick_results[ result ] );
+    num_tick_results++;
+  }
 
-  if ( amount < r.min_dmg ) r.min_dmg = amount;
-  if ( amount > r.max_dmg ) r.max_dmg = amount;
+  r -> count += 1;
+  r -> total_dmg += amount;
+
+  if ( amount < r -> min_dmg ) r -> min_dmg = amount;
+  if ( amount > r -> max_dmg ) r -> max_dmg = amount;
 
   int index = ( int ) ( sim -> current_time );
   if ( index >= num_buckets )
@@ -171,7 +185,7 @@ void stats_t::analyze()
       stats_results_t& r = execute_results[ i ];
 
       r.avg_dmg = r.total_dmg / r.count;
-
+      r.pct = 100.0 * r.count / (double) num_execute_results;
       r.count     /= num_iterations;
       r.total_dmg /= num_iterations;
     }
@@ -180,6 +194,7 @@ void stats_t::analyze()
       stats_results_t& r = tick_results[ i ];
 
       r.avg_dmg = r.total_dmg / r.count;
+      r.pct = 100.0 * r.count / (double) num_tick_results;
       r.count     /= num_iterations;
       r.total_dmg /= num_iterations;
     }
@@ -245,12 +260,14 @@ void stats_t::analyze()
 
 void stats_t::merge( stats_t* other )
 {
-  resource_consumed  += other -> resource_consumed;
-  num_executes       += other -> num_executes;
-  num_ticks          += other -> num_ticks;
-  total_execute_time += other -> total_execute_time;
-  total_tick_time    += other -> total_tick_time;
-  total_dmg          += other -> total_dmg;
+  resource_consumed   += other -> resource_consumed;
+  num_execute_results += other -> num_execute_results;
+  num_tick_results    += other -> num_tick_results;
+  num_executes        += other -> num_executes;
+  num_ticks           += other -> num_ticks;
+  total_execute_time  += other -> total_execute_time;
+  total_tick_time     += other -> total_tick_time;
+  total_dmg           += other -> total_dmg;
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {

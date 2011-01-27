@@ -3476,6 +3476,7 @@ struct stats_t
   int resource;
   double resource_consumed, resource_portion;
   double frequency, num_executes, num_ticks;
+  double num_execute_results, num_tick_results;
   double total_execute_time, total_tick_time;
   double total_dmg, portion_dmg;
   double dps, portion_dps, dpe, dpet, dpr, rpe;
@@ -3484,7 +3485,7 @@ struct stats_t
 
   struct stats_results_t
   {
-    double count, min_dmg, max_dmg, avg_dmg, total_dmg;
+    double count, min_dmg, max_dmg, avg_dmg, total_dmg, pct;
   };
   stats_results_t execute_results[ RESULT_MAX ];
   stats_results_t    tick_results[ RESULT_MAX ];

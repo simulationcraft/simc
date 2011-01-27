@@ -1933,19 +1933,13 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     dual        = true;
     background  = true;
+    may_miss = may_dodge = may_parry = false;
 
     base_multiplier  *= 1.0 + p -> talents.opportunity -> mod_additive( P_GENERIC );
     base_crit        += p -> talents.puncturing_wounds -> effect_base_value( 2 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
-    if ( p -> set_bonus.tier11_2pc_melee() )
-      base_crit += .05;
-  }
-
-  virtual void execute()
-  {
-    rogue_attack_t::execute();
-    update_stats( DMG_DIRECT );
+    if ( p -> set_bonus.tier11_2pc_melee() ) base_crit += .05;
   }
 
   virtual void player_buff()
@@ -1963,16 +1957,26 @@ struct mutilate_strike_t : public rogue_attack_t
 
 struct mutilate_t : public rogue_attack_t
 {
-  attack_t* strike;
+  attack_t* mh_strike;
+  attack_t* oh_strike;
   
   mutilate_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "mutilate", p -> spec_mutilate -> spell_id(), p )
+    rogue_attack_t( "mutilate", p -> spec_mutilate -> spell_id(), p ), mh_strike(0), oh_strike(0)
   {
-    strike = new mutilate_strike_t( p );
+    may_crit = false;
+    
+    if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
+	 p ->  off_hand_weapon.type != WEAPON_DAGGER )
+    {
+      sim -> errorf( "Player %s attempting to execute Mutilate without two daggers equipped.", p -> name() );
+      sim -> cancel();
+    }
 
-    // so it passes ready checks
-    weapon = &( player -> main_hand_weapon );
-    requires_weapon = WEAPON_DAGGER;
+    mh_strike = new mutilate_strike_t( p );
+    mh_strike -> weapon = &( p -> main_hand_weapon );
+
+    oh_strike = new mutilate_strike_t( p );
+    oh_strike -> weapon = &( p -> off_hand_weapon );
 
     base_cost += p -> glyphs.mutilate -> mod_additive( P_RESOURCE_COST );
 
@@ -1982,39 +1986,27 @@ struct mutilate_t : public rogue_attack_t
   virtual void execute()
   {    
     rogue_t* p = player -> cast_rogue();
-
-    result = RESULT_HIT;
-
-    consume_resource();
-    
-    strike -> weapon = &( p -> main_hand_weapon );
-    strike -> execute();
-
-    if ( strike -> result_is_hit() )
+    attack_t::execute();
+    if( result_is_hit() )
     {
-      int main_hand_result = strike -> result;
-      
-      strike -> weapon = &( p -> off_hand_weapon );
-      strike -> execute();
+      mh_strike -> execute();
+      mh_strike -> update_result( DMG_DIRECT );
+
+      oh_strike -> execute();
+      oh_strike -> update_result( DMG_DIRECT );
       
       add_combo_points();
 
-      if ( main_hand_result == RESULT_CRIT || strike -> result == RESULT_CRIT )
+      if ( mh_strike -> result == RESULT_CRIT || 
+	   oh_strike -> result == RESULT_CRIT )
+      {
         trigger_seal_fate( this );
+      }
     }
     else
+    {
       trigger_energy_refund( this );
-
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    // Mutilate NEEDS a dagger in the off-hand!
-    if ( player -> off_hand_weapon.type != WEAPON_DAGGER )
-      return false;
-
-    return rogue_attack_t::ready();
+    }
   }
 };
 

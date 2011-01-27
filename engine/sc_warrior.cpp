@@ -1486,15 +1486,7 @@ struct execute_t : public warrior_attack_t
     
     // Rage scaling is handled in player_buff()
 
-    // Execute consumes rage no matter if it missed or not
-    aoe = true; // FIX ME: is this still true and is there a better way to do it
-
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
-  }
-
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    // Flagged as an AoE to always consume rage, but not an aoe
   }
 
   virtual void consume_resource()
@@ -1773,9 +1765,9 @@ struct pummel_t : public warrior_attack_t
 
 // Raging Blow ==============================================================
 
-struct raging_blow_strike_t : public warrior_attack_t
+struct raging_blow_attack_t : public warrior_attack_t
 {
-  raging_blow_strike_t( warrior_t* p ) :
+  raging_blow_attack_t( warrior_t* p ) :
       warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY )
   {
     id = p -> ptr ? 96103 : 85288;
@@ -1803,29 +1795,33 @@ struct raging_blow_strike_t : public warrior_attack_t
 
 struct raging_blow_t : public warrior_attack_t
 {
-  raging_blow_strike_t* mh_strike;
-  raging_blow_strike_t* oh_strike;
+  raging_blow_attack_t* mh_attack;
+  raging_blow_attack_t* oh_attack;
 
   raging_blow_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY ), mh_strike(0), oh_strike(0)
+    warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY ), mh_attack(0), oh_attack(0)
   {
     check_talent( p -> talents.raging_blow -> rank() );
 
     id = 85288;
     parse_data( p -> player_data );
+
+    // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
     weapon_multiplier = direct_power_mod = 0; 
-    stancemask = STANCE_BERSERKER;
+    may_crit = false;
 
     parse_options( NULL, options_str );
 
-    mh_strike = new raging_blow_strike_t( p );
-    mh_strike -> weapon = &( p -> main_hand_weapon );
+    stancemask = STANCE_BERSERKER;
+
+    mh_attack = new raging_blow_attack_t( p );
+    mh_attack -> weapon = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh_strike = new raging_blow_strike_t( p );
-      oh_strike -> weapon = &( p -> off_hand_weapon );
+      oh_attack = new raging_blow_attack_t( p );
+      oh_attack -> weapon = &( p -> off_hand_weapon );
     }
   }
 
@@ -1835,12 +1831,12 @@ struct raging_blow_t : public warrior_attack_t
     attack_t::execute();
     if ( result_is_hit() ) 
     {
-      mh_strike -> execute();
-      mh_strike -> update_result( DMG_DIRECT );
-      if ( oh_strike ) 
+      mh_attack -> execute();
+      mh_attack -> update_result( DMG_DIRECT );
+      if ( oh_attack ) 
       {
-	oh_strike -> execute();
-	oh_strike -> update_result( DMG_DIRECT );
+	oh_attack -> execute();
+	oh_attack -> update_result( DMG_DIRECT );
       }
     }
     p -> buffs_tier11_4pc_melee -> trigger();
@@ -2092,90 +2088,105 @@ struct shockwave_t : public warrior_attack_t
 
 // Slam =====================================================================
 
-struct slam_t : public warrior_attack_t
+struct slam_attack_t : public warrior_attack_t
 {
-  slam_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY )
+  slam_attack_t( warrior_t* p ) :
+    warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY )
   {
-    parse_options( NULL, options_str );
-
-    id = 1464;
+    id = 50783;
     parse_data( p -> player_data );
 
-    // Slam's values are stored in 50783
-    parse_effect_data( p -> player_data, 50783, 1 );
-    parse_effect_data( p -> player_data, 50783, 2 );
+    base_cost = 0;
+    may_miss = may_dodge = may_parry = false;
+    background = true;
+    dual = true;
 
     base_crit                  += p -> glyphs.slam -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam -> effect_base_value( 1 ) / 1000.0;
 
-    // FIXME: Confirm this is additive and not multiplicative
-	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, 
-	// Devastate, Victory Rush and Slam.  This was already improperly including War Academy.
-	// In addition to its current effects, Bloodsurge  now also causes the next Slam  to deal 20% more damage.
-	double base_multiplier_addends = 0;
-	if ( p -> ptr )
-	{
-		base_multiplier_addends = p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-		if ( p -> buffs_bloodsurge -> check() )
-			base_multiplier_addends += .2;
-	}
-	else 
-	{
-		base_multiplier_addends = p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0;
-	}
-
-	base_multiplier *= 1.0 + base_multiplier_addends;
+    // FIXME: Confirm this is additive and not multiplicative (wait for arch changes)
+    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, 
+    // Devastate, Victory Rush and Slam.  This was already improperly including War Academy.
+    // In addition to its current effects, Bloodsurge  now also causes the next Slam  to deal 20% more damage.
+    if ( p -> ptr )
+    {
+      weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
+      base_multiplier *= 1.0 + ( p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
+                                 p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0 );
+    }
+    else 
+    {
+      base_multiplier *= 1.0 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0;
+    }
   }
 
-  virtual double haste() SC_CONST
+  virtual void player_buff()
   {
-    // No haste for slam cast
-    return 1.0;
+    warrior_t* p = player -> cast_warrior();
+    warrior_attack_t::player_buff();
+    if ( p -> buffs_bloodsurge -> up() )
+    {
+      player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
+    }
   }
+};
+
+struct slam_t : public warrior_attack_t
+{
+  attack_t* mh_attack;
+  attack_t* oh_attack;
+
+  slam_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY ), mh_attack(0), oh_attack(0)
+  {
+    id = 1464;
+    parse_data( p -> player_data );
+    parse_options( NULL, options_str );
+    may_crit = false;
+
+    mh_attack = new slam_attack_t( p );
+    mh_attack -> weapon = &( p -> main_hand_weapon );
+
+    if ( p -> talents.single_minded_fury -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_attack = new slam_attack_t( p );
+      oh_attack -> weapon = &( p -> off_hand_weapon );
+    }
+  }
+
+  virtual double haste() SC_CONST { return 1.0; }
 
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-
     if ( p -> buffs_bloodsurge -> check() )
       return 0;
-
     return warrior_attack_t::cost();
   }
 
   virtual double execute_time() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-
     if ( p -> buffs_bloodsurge -> check() )
       return 0.0;
-
     return warrior_attack_t::execute_time();
   }
-
-  // We don't want to re-consume for off-hand hits with SMF.
-  virtual void consume_resource() { }
 
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
-    
-    // MH hit
-    weapon = &( p -> main_hand_weapon );
-    warrior_attack_t::execute();
-
-    if ( p -> talents.single_minded_fury -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
+    attack_t::execute();
+    if ( result_is_hit() ) 
     {
-      weapon = &( p -> off_hand_weapon );
-      warrior_attack_t::execute();
+      mh_attack -> execute();
+      mh_attack -> update_result( DMG_DIRECT );
+      if ( oh_attack ) 
+      {
+	oh_attack -> execute();
+	oh_attack -> update_result( DMG_DIRECT );
+      }
     }
-
-    // Stats
-    p -> buffs_bloodsurge -> up();
-
-    warrior_attack_t::consume_resource();
     p -> buffs_bloodsurge -> decrement();
   }
 };
