@@ -1515,7 +1515,7 @@ struct aimed_shot_mm_t : public hunter_attack_t
     if( ! p -> ptr )
       direct_power_mod = 0.48;
     else
-      direct_power_mod = 0.724;
+      direct_power_mod = 1.44;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1569,7 +1569,7 @@ struct aimed_shot_t : public hunter_attack_t
     if( ! p -> ptr )
       direct_power_mod = 0.48;
     else
-      direct_power_mod = 0.724;
+      direct_power_mod = 1.44;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -3079,16 +3079,17 @@ void hunter_t::init_actions()
       action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
-      //action_list_str += "/kill_command";
       if ( talents.chimera_shot -> rank() )
       {
         action_list_str += "/chimera_shot";
       }
+      action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5"
       action_list_str += "/kill_shot";
+      action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/aimed_shot,if=buff.fire.react";
 
-      action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/arcane_shot,if=focus>=40&buff.improved_steady_shot.up&cooldown.chimera_shot.remains>0";
+      action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
+      action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5"
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:

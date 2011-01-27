@@ -6,7 +6,7 @@ race=night_elf
 use_pre_potion=1
 professions=Jewelcrafting=525/Leatherworking=525
 talents=http://www.wowhead.com/talent#ccbMZfMG0hRruroc
-glyphs=kill_shot/steady_shot/chimera_shot
+glyphs=arcane_shot/steady_shot/chimera_shot
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/hunters_mark
@@ -19,10 +19,12 @@ actions+=/aspect_of_the_hawk
 actions+=/serpent_sting,if=!ticking
 actions+=/rapid_fire
 actions+=/chimera_shot
+actions+=/steady_shot,if=buff.improved_steady_shot.remains<5
 actions+=/kill_shot
-actions+=/aimed_shot,if=buff.fire.react
 actions+=/readiness,wait_for_rapid_fire=1
-actions+=/arcane_shot,if=focus>=40&buff.improved_steady_shot.up&cooldown.chimera_shot.remains>0
+actions+=/aimed_shot,if=buff.fire.react
+actions+=/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0
+actions+=/arcane_shot,if=cooldown.chimera_shot.remains>=5
 actions+=/steady_shot
 head=lightningcharged_headguard,heroic=1,type=mail,stats=325agi_578sta_257crit_197mastery_2071armor,gems=fleet_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,stats=215agi_322sta_143mastery_143haste
