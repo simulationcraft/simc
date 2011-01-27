@@ -929,7 +929,7 @@ double action_t::calculate_direct_damage()
 
   if ( result == RESULT_BLOCK )
   {
-    dmg -= target -> block_value;
+    dmg *= (1-target -> block_value);
     if ( dmg < 0 ) dmg = 0;
   }
 

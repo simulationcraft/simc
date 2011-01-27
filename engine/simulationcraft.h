@@ -3395,7 +3395,7 @@ struct target_t
   int level;
   int spell_resistance[ SCHOOL_MAX ];
   int initial_armor, armor;
-  int block_value;
+  double block_value;
   double attack_speed, attack_damage, weapon_skill;
   double fixed_health, initial_health, current_health;
   double fixed_health_percentage;

@@ -13,7 +13,7 @@
 
 target_t::target_t( sim_t* s, const std::string& n ) :
     sim( s ), name_str( n ), next( 0 ), race( RACE_HUMANOID ), level( -1 ),
-    initial_armor( -1 ), armor( 0 ), block_value( 100 ),
+    initial_armor( -1 ), armor( 0 ), block_value( 0.3 ),
     attack_speed( 3.0 ), attack_damage( 30000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
     total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 )
@@ -254,7 +254,7 @@ void target_t::create_options()
     { "target_resist_fire",             OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
     { "target_resist_nature",           OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
     { "target_armor",                   OPT_INT,    &( initial_armor                     ) },
-    { "target_block",                   OPT_INT,    &( block_value                       ) },
+    { "target_block",                   OPT_FLT,    &( block_value                       ) },
     { "target_attack_speed",            OPT_FLT,    &( attack_speed                      ) },
     { "target_attack_damage",           OPT_FLT,    &( attack_damage                     ) },
     { "target_weapon_skill",            OPT_FLT,    &( weapon_skill                      ) },
