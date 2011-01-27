@@ -272,10 +272,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  bool ranged = ( player -> position == POSITION_RANGED_FRONT || 
-		  player -> position == POSITION_RANGED_BACK );
-
-  if ( delta_level > 2 && ! ranged )
+  if ( delta_level > 2 )
   {
     chance -= ( 0.03 + delta_level * 0.006 );
   }
@@ -439,7 +436,7 @@ void attack_t::calculate_result()
     {
       result = RESULT_RESIST;
     }
-    else if ( special && may_crit ) // Specials are 2-roll calculations
+    else if ( special && may_crit && ( result == RESULT_HIT ) ) // Specials are 2-roll calculations
     {
       int delta_level = target -> level - player -> level;
 
