@@ -2107,6 +2107,7 @@ struct rupture_t : public rogue_attack_t
     // to stop seal fate procs
     may_crit              = false;
     requires_combo_points = true;
+    dot_behavior          = DOT_REFRESH;
     
     double base     = effect_average( 1 );
     double cp_bonus = effect_bonus( 1 );
@@ -3591,27 +3592,20 @@ void rogue_t::register_callbacks()
         p -> register_attack_direct_result_callback( RESULT_CRIT_MASK, cb );
       }
     }
-    else // Virtual Party
+ //   else // Virtual Party
+    if ( critical_strike_intervals.size() == 0 )
     {
       std::vector<std::string> intervals;
       int num_intervals = util_t::string_split( intervals, critical_strike_intervals_str, ",;|/" );
 
-      if ( num_intervals == 0 )
-      {
-        intervals.push_back( "1.0" );
-        num_intervals = 1;
-      }
-
-      while ( num_intervals < 4 )
-      {
-        intervals.push_back( intervals[ num_intervals-1 ] );
-        num_intervals++;
-      }
-
       for ( int i=0; i < num_intervals; i++ )
       {
-        critical_strike_intervals.push_back( atof( intervals[ i ].c_str() ) );
-        critical_strike_callbacks.push_back( new honor_among_thieves_callback_t( this ) );
+        double interval = atof( intervals[ i ].c_str() );
+		if (interval > 0.0)
+		{
+          critical_strike_intervals.push_back( interval );
+          critical_strike_callbacks.push_back( new honor_among_thieves_callback_t( this ) );
+		}
       }
     }
   }
@@ -3812,7 +3806,8 @@ void rogue_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   rogue_t* p = source -> cast_rogue();
-  critical_strike_intervals  = p -> critical_strike_intervals;
+  critical_strike_intervals_str = p -> critical_strike_intervals_str;
+
   tricks_of_the_trade_target = p -> tricks_of_the_trade_target;
 }
 
