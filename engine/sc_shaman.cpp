@@ -993,7 +993,6 @@ struct unleash_flame_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     background           = true;
-    may_miss             = false;
     proc                 = true;
     
     base_crit_bonus_multiplier *= 1.0 + 
@@ -1087,7 +1086,6 @@ struct unleash_wind_t : public shaman_attack_t
     {
       weapon = &( p -> main_hand_weapon );
       shaman_attack_t::execute();
-      p -> buffs_unleash_wind -> trigger( p -> buffs_unleash_wind -> initial_stacks() );
     }
     
     if ( p -> off_hand_weapon.type != WEAPON_NONE && 
@@ -1095,7 +1093,6 @@ struct unleash_wind_t : public shaman_attack_t
     {
       weapon = &( p -> off_hand_weapon );
       shaman_attack_t::execute();
-      p -> buffs_unleash_wind -> trigger( p -> buffs_unleash_wind -> initial_stacks() );
     }
   }
 };
@@ -2318,6 +2315,7 @@ struct unleash_elements_t : public shaman_spell_t
     parse_options( options, options_str );
 
     may_crit    = false;
+    may_miss    = false;
     
     wind        = new unleash_wind_t( player );
     flame       = new unleash_flame_t( player );
@@ -2325,12 +2323,24 @@ struct unleash_elements_t : public shaman_spell_t
 
   virtual void execute()
   {
-    shaman_spell_t::execute();
+    shaman_t* p = player -> cast_shaman();
+    spell_t::execute();
     
-    if ( result_is_hit() )
+    wind  -> execute();
+    flame -> execute();
+    
+    // You get the buffs, regardless of hit/miss
+    if ( p -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      p -> buffs_unleash_flame -> trigger();
+    else if ( p -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
+      p -> buffs_unleash_wind -> trigger( p -> buffs_unleash_wind -> initial_stacks() );
+      
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      wind  -> execute();
-      flame -> execute();
+      if ( p -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+        p -> buffs_unleash_flame -> trigger();
+      else if ( p -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
+        p -> buffs_unleash_wind -> trigger( p -> buffs_unleash_wind -> initial_stacks() );
     }
   }
 };
