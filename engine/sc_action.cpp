@@ -591,7 +591,6 @@ void action_t::target_debuff( int dmg_type )
   target_penetration           = 0;
   target_dd_adder              = 0;
 
-  player_t* p = player;
   target_t* t = target;
 
   if ( school == SCHOOL_PHYSICAL ||
