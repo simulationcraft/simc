@@ -1070,7 +1070,6 @@ struct unleash_wind_t : public shaman_attack_t
     shaman_attack_t( "unleash_wind", 73681, player )
   {
     background           = true;
-    may_miss             = false;
     proc                 = true;
     
     // Don't cooldown here, unleash elements will handle it
