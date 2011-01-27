@@ -3753,6 +3753,7 @@ struct heal_t : public spell_t
   virtual void update_stats( int type );
   virtual void travel( int travel_result, double travel_dmg );
   virtual void tick();
+  virtual void last_tick();
   virtual player_t* find_greatest_difference_player();
   virtual player_t* find_lowest_player();
   virtual void refresh_duration();

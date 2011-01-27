@@ -2682,7 +2682,7 @@ struct _heal_t : public priest_heal_t
 
     if ( p -> talents.strength_of_soul -> rank() && p -> buffs_weakened_soul -> up() )
     {
-     // Implement "early" buff rescheduling of Weakened Soul.
+     p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect_base_value( 1 ) );
     }
 
   }

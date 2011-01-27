@@ -5,6 +5,25 @@
 
 #include "simulationcraft.h"
 
+namespace
+{
+  struct expiration_t : public event_t
+  {
+    buff_t* buff;
+    double duration;
+    expiration_t( sim_t* sim, player_t* p, buff_t* b, double d ) : event_t( sim, p ), buff( b ),duration( d )
+    {
+      name = buff -> name();
+      sim -> add_event( this, duration );
+    }
+    virtual void execute()
+    {
+      buff -> expiration = 0;
+      buff -> expire();
+    }
+  };
+}
+
 // ==========================================================================
 // BUFF
 // ==========================================================================
@@ -520,16 +539,31 @@ void buff_t::decrement( int    stacks,
 
 void buff_t::extend_duration( player_t* p, double extra_seconds )
 {
-  if ( extra_seconds > 0)
+  if ( extra_seconds > 0 )
   {
     assert( expiration );
     assert ( expiration -> occurs() + extra_seconds < sim -> wheel_seconds );
     expiration -> reschedule( expiration -> occurs() - sim -> current_time + extra_seconds );
     if ( sim -> debug )
-    log_t::output( sim, "%s extendes %s by %.1f seconds. New expiration time: %.1f", p -> name(), name(), extra_seconds, expiration -> occurs() );
+      log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f", p -> name(), name(), extra_seconds, expiration -> occurs() );
   }
-  else
-    assert( 0 );
+  else if ( extra_seconds < 0 )
+  {
+    assert( expiration );
+    if ( expiration -> occurs() - sim -> current_time + extra_seconds < 0 )
+    {
+      if ( sim -> debug )
+          log_t::output( sim, "%s can't extend buff %s by %.1f seconds. New expiration would be in the past", p -> name(), name(), extra_seconds );
+    }
+    else
+    {
+      double save_expiration_time = expiration -> occurs();
+      event_t::cancel( expiration );
+      expiration = new ( sim ) expiration_t( sim, player, this, save_expiration_time - sim -> current_time + extra_seconds );
+      if ( sim -> debug )
+        log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f", p -> name(), name(), extra_seconds, expiration -> occurs() );
+    }
+  }
 
 }
 
@@ -557,22 +591,8 @@ void buff_t::start( int    stacks,
 
   if ( buff_duration > 0 )
   {
-    struct expiration_t : public event_t
-    {
-      buff_t* buff;
-      expiration_t( sim_t* sim, player_t* p, buff_t* b ) : event_t( sim, p ), buff( b )
-      {
-        name = buff -> name();
-        sim -> add_event( this, buff -> buff_duration );
-      }
-      virtual void execute()
-      {
-        buff -> expiration = 0;
-        buff -> expire();
-      }
-    };
 
-    expiration = new ( sim ) expiration_t( sim, player, this );
+    expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
   }
 }
 

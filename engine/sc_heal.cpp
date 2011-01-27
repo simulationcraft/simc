@@ -447,6 +447,20 @@
     update_stats( HEAL_OVER_TIME );
   }
 
+// heal_t::last_tick =======================================================
+
+  void heal_t::last_tick()
+  {
+    if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), heal_target -> name() );
+
+    dot -> ticking = 0;
+    time_to_tick = 0;
+
+    if ( observer ) *observer = 0;
+  }
+
+// heal_t::find_greatest_difference_player ==================================
+
   player_t* heal_t::find_greatest_difference_player()
   {
     double diff=0;
