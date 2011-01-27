@@ -121,7 +121,7 @@ SRC =\
 
 SRC_H   := $(filter %.h,   $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
-OBJ_DIR = .
+OBJ_DIR = ../
 OBJ_EXT = o
 SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 

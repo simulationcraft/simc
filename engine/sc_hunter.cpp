@@ -1077,6 +1077,61 @@ struct wolverine_bite_t : public hunter_pet_attack_t
   }
 };
 
+// Kill Command (pet) ======================================================
+
+struct pet_kill_command_t : public hunter_pet_attack_t
+{
+  pet_kill_command_t( hunter_pet_t* p ) :
+      hunter_pet_attack_t( "kill_command", 83381, p )
+  {
+    hunter_t*     o = p -> owner -> cast_hunter();
+    background = true;
+    dual = true;
+    proc=true;
+    trigger_gcd = 0.0;
+    stats->school = SCHOOL_PHYSICAL;
+    school = SCHOOL_PHYSICAL;
+
+    //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
+    base_dd_min = 926;
+    base_dd_max = 926;
+
+    base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+    hunter_pet_attack_t::execute();
+    o -> buffs_killing_streak -> expire();
+
+    if ( result == RESULT_CRIT )
+    {
+      o -> buffs_killing_streak_crits -> increment();
+      if ( o ->buffs_killing_streak_crits -> stack() == 2 )
+      {
+        o -> buffs_killing_streak -> trigger();
+        o -> buffs_killing_streak_crits -> expire();
+      }
+    }
+    else
+    {
+      o -> buffs_killing_streak_crits -> expire();
+    }
+    update_stats( DMG_DIRECT );
+  }
+
+  virtual void player_buff()
+  {
+    hunter_pet_attack_t::player_buff();
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+    if ( o -> buffs_killing_streak -> up() )
+      player_multiplier *= 1.0 + o -> talents.killing_streak -> rank() * 0.1;
+  }
+};
+
 // =========================================================================
 // Hunter Pet Spells
 // =========================================================================
@@ -1206,6 +1261,8 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     parse_options( NULL, options_str );
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -1306,62 +1363,6 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     return hunter_pet_spell_t::ready();
   }
 };
-struct pet_kill_command_t : public hunter_pet_spell_t
-{
-  pet_kill_command_t( player_t* player ) :
-      hunter_pet_spell_t( "kill_command", player, 83381 )
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-    background = true;
-    stats->school = SCHOOL_PHYSICAL;
-    school = SCHOOL_PHYSICAL;
-    dual = true;
-    proc=true;
-    may_crit=true;
-    trigger_gcd = 0.0;
-
-    //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
-    base_dd_min = 926;
-    base_dd_max = 926;
-    base_crit_bonus = 1.0;
-
-    base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
-  }
-
-  virtual void execute()
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-    hunter_pet_spell_t::execute();
-    o -> buffs_killing_streak -> expire();
-
-    if ( result == RESULT_CRIT )
-    {
-      o -> buffs_killing_streak_crits -> increment();
-      if ( o ->buffs_killing_streak_crits -> stack() == 2 )
-      {
-        o -> buffs_killing_streak -> trigger();
-        o -> buffs_killing_streak_crits -> expire();
-      }
-    }
-    else
-    {
-      o -> buffs_killing_streak_crits -> expire();
-    }
-    update_stats( DMG_DIRECT );
-  }
-
-  virtual void player_buff()
-  {
-    hunter_pet_spell_t::player_buff();
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-    if ( o -> buffs_killing_streak -> up() )
-      player_multiplier *= 1.0 + o -> talents.killing_streak -> rank() * 0.1;
-  }
-};
-
 
 
 // =========================================================================
