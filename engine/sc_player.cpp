@@ -169,10 +169,33 @@ static void trigger_target_swings( player_t* p )
     }
     virtual void execute()
     {
-      if ( sim -> log )
-        log_t::output( sim, "%s swings at %s", sim -> target -> name(), player -> name() );
+      int result = player -> target_swing();
 
-      player -> target_swing();
+      if ( sim -> log )
+        log_t::output( sim, "%s swings at %s (%s)",
+        sim -> target -> name(), player -> name(), util_t::result_type_string( result ) );
+
+      // Very simple Boss Damage calculation
+      double damage = 0;
+      if ( result == RESULT_HIT || result == RESULT_BLOCK || result == RESULT_CRIT )
+      damage = sim -> rng -> gauss(sim -> target -> attack_damage, 0.25);
+
+      if ( result == RESULT_CRIT )
+        damage *= 2.0;
+
+      if ( result == RESULT_BLOCK )
+        damage *= 0.7;
+
+
+
+      if ( damage > 0 )
+      {
+        player -> resource_loss( RESOURCE_HEALTH, damage );
+        if ( sim -> log )
+              log_t::output( sim, "%s does %.1f damage to %s (%s)",
+              sim -> target -> name(), damage, player -> name(), util_t::result_type_string( result ) );
+      }
+
 
       player -> target_auto_attack = new ( sim ) target_swing_event_t( sim, player, sim -> target -> attack_speed );
     }
@@ -1007,7 +1030,7 @@ void player_t::init_defense()
   initial_block_value       = base_block_value + initial_stats.block_value;
   initial_dodge_per_agility = player_data.dodge_scale( type, level );
 
-  if ( tank > 0 ) position = POSITION_FRONT;
+  if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
 }
 
 // player_t::init_weapon ===================================================
@@ -1440,7 +1463,7 @@ void player_t::init_scaling()
     int role = primary_role();
 
     int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
-    int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
+    int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) || ( role == ROLE_HEAL ) ) ? 1 : 0;
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
@@ -1670,7 +1693,7 @@ double player_t::composite_attack_power() SC_CONST
   ap += attack_power_per_strength * strength();
   ap += attack_power_per_agility  * agility();
 
-  if ( tank && vengeance_factor )
+  if ( primary_role() == ROLE_TANK && vengeance_factor )
     ap += (std::min)(1.0, vengeance_factor) * ( stamina() + 0.1 * resource_base[ RESOURCE_HEALTH ]);
 
   return ap;
@@ -2320,7 +2343,7 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
-  if ( tank > 0 ) trigger_target_swings( this );
+  if ( primary_role() == ROLE_TANK ) trigger_target_swings( this );
 
   action_sequence = "";
 }
@@ -2829,6 +2852,18 @@ int player_t::primary_tab()
   return specialization;
 }
 
+// player_t::primary_role ===================================================
+
+int player_t::primary_role() SC_CONST
+{
+  if ( healer )
+    return ROLE_HEAL;
+  if ( tank )
+    return ROLE_TANK;
+
+  return ROLE_HYBRID;
+}
+
 // player_t::primary_tree_name ==============================================
 
 const char* player_t::primary_tree_name() SC_CONST
@@ -2855,7 +2890,7 @@ int player_t::normalize_by() SC_CONST
     return sim -> normalized_stat; 
   }
 
-  if ( primary_role() == ROLE_SPELL )
+  if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return STAT_INTELLECT;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE )
     return STAT_AGILITY;
@@ -3925,7 +3960,7 @@ struct snapshot_stats_t : public action_t
     int delta_level = sim -> target -> level - p -> level;
     double spell_hit_extra=0, attack_hit_extra=0, expertise_extra=0;
 
-    if ( role == ROLE_SPELL || role == ROLE_HYBRID )
+    if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
       if ( ! spell ) spell = new spell_t( "snapshot_spell", p );
       spell -> background = true;
@@ -3935,7 +3970,7 @@ struct snapshot_stats_t : public action_t
       if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.spell_hit;
     }
 
-    if ( role == ROLE_ATTACK || role == ROLE_HYBRID )
+    if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
       if ( ! attack ) attack = new attack_t( "snapshot_attack", p );
       attack -> background = true;
@@ -5042,6 +5077,7 @@ void player_t::copy_from( player_t* source )
   level = source -> level;
   race_str = source -> race_str;
   healer = source -> healer;
+  tank = source -> tank;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
   talents_str = "http://www.wowhead.com/talent#";
@@ -5088,7 +5124,7 @@ void player_t::create_options()
     { "level",                                OPT_INT,      &( level                                  ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
     { "tank",                                 OPT_INT,      &( tank                                   ) },
-    { "healer",                               OPT_INT,     &( healer                                 ) },
+    { "healer",                               OPT_INT,      &( healer                                 ) },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },

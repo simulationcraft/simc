@@ -487,7 +487,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
     buff_list( 0 ), aura_delay( 0.15 ),cooldown_list( 0 ), replenishment_targets( 0 ),
-    raid_dps( 0 ), total_dmg( 0 ),
+    raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ), csv_file( 0 ),
@@ -1011,10 +1011,11 @@ void sim_t::analyze_player( player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
+    bool add_stat = s -> type == STATS_DMG && p -> primary_role() != ROLE_HEAL || ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB) && p -> primary_role() == ROLE_HEAL;
 
     s -> analyze();
-    if ( !s -> quiet )
-    p -> total_dmg += s -> total_dmg;
+    if ( add_stat & ! s -> quiet)
+      p -> total_dmg += s -> total_dmg;
   }
 
   p -> dps = p -> total_dmg / p -> total_seconds;
@@ -1036,7 +1037,13 @@ void sim_t::analyze_player( player_t* p )
   }
 
   // Avoid double-counting of pet damage
-  if ( ! p -> is_pet() ) total_dmg += p -> total_dmg;
+  if ( ! p -> is_pet() )
+  {
+    if ( p -> primary_role() == ROLE_HEAL )
+      total_heal += p -> total_dmg;
+    else
+      total_dmg += p -> total_dmg;
+  }
 
   int max_buckets = ( int ) p -> total_seconds;
 
@@ -1072,6 +1079,7 @@ void sim_t::analyze_player( player_t* p )
   }
 
   p -> dpr = p -> total_dmg / p -> resource_lost[ p -> primary_resource() ];
+
   p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
   p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
 
@@ -1088,13 +1096,15 @@ void sim_t::analyze_player( player_t* p )
   p -> timeline_dmg.insert( p -> timeline_dmg.begin(), max_buckets, 0 );
   p -> timeline_dps.insert( p -> timeline_dps.begin(), max_buckets, 0 );
 
+
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
-
+    bool add_stat = s -> type == STATS_DMG && p -> primary_role() != ROLE_HEAL || ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB) && p -> primary_role() == ROLE_HEAL;
     for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
     {
-      p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+      if ( add_stat )
+        p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
     }
   }
 

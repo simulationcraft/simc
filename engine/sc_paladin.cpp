@@ -229,7 +229,7 @@ struct paladin_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
+  virtual int       primary_role() SC_CONST;
   virtual void      regen( double periodicity );
   virtual int       target_swing();
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -2066,7 +2066,6 @@ void paladin_t::init_base()
     break;
 
   case TREE_PROTECTION:
-    tank = 1;
     attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + passives.touched_by_the_light->base_value(E_APPLY_AURA, A_MOD_TOTAL_STAT_PERCENTAGE);
     // effect is actually on JotW since there's not room for more effects on TbtL
     base_spell_hit += passives.judgements_of_the_wise->base_value(E_APPLY_AURA, A_MOD_SPELL_HIT_CHANCE);
@@ -2526,6 +2525,17 @@ void paladin_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
+// paladin_t::primary_role ===============================================
+
+int paladin_t::primary_role() SC_CONST
+{
+  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION )
+    return ROLE_TANK;
+  if ( player_t::primary_role() == ROLE_HEAL || primary_tree() == TREE_HOLY )
+    return ROLE_HEAL;
+
+  return ROLE_HYBRID;
+}
 // paladin_t::composite_attack_expertise =================================
 
 double paladin_t::composite_attack_expertise() SC_CONST

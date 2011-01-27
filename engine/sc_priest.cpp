@@ -395,7 +395,7 @@ struct priest_t : public player_t
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual int       primary_role() SC_CONST;
   virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
@@ -3507,6 +3507,16 @@ double priest_t::shadow_orb_amount() SC_CONST
   return a;
 }
 
+// priest_t::primary_role
+
+int priest_t::primary_role() SC_CONST
+{
+  if ( player_t::primary_role() == ROLE_HEAL )
+    return ROLE_HEAL;
+
+  return ROLE_SPELL;
+}
+
 // priest_t::composite_armor =========================================
 
 double priest_t::composite_armor() SC_CONST
@@ -4106,7 +4116,7 @@ void priest_t::init_actions()
     // DISCIPLINE
     case TREE_DISCIPLINE:
       // DAMAGE DEALER
-      if ( !healer )
+      if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion";
                                                          action_list_str += "/shadow_fiend,trigger_pct=20";
@@ -4134,7 +4144,7 @@ void priest_t::init_actions()
     // HOLY
     case TREE_HOLY:
       // DAMAGE DEALER
-      if ( !healer )
+      if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion";
                                                          action_list_str += "/shadow_fiend,trigger_pct=20";

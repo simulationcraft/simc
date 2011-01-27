@@ -244,6 +244,8 @@ enum pet_type_t
 
 enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
 
+enum stats_type { STATS_DMG, STATS_HEAL, STATS_ABSORB };
+
 enum dot_behavior_type { DOT_CLIP=0, DOT_REFRESH };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
@@ -630,7 +632,7 @@ enum profession_type
   PROFESSION_MAX
 };
 
-enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_MAX };
+enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_HEAL, ROLE_MAX };
 
 enum rng_type
 {
@@ -1611,6 +1613,7 @@ struct util_t
   static const char* pet_type_string           ( int type );
   static const char* profession_type_string    ( int type );
   static const char* race_type_string          ( int type );
+  static const char* role_type_string          ( int type );
   static const char* resource_type_string      ( int type );
   static const char* result_type_string        ( int type );
   static const char* school_type_string        ( int type );
@@ -2422,7 +2425,7 @@ struct sim_t
   report_t*  report;
   scaling_t* scaling;
   plot_t*    plot;
-  double     raid_dps, total_dmg, total_seconds, elapsed_cpu_seconds;
+  double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds;
   int        merge_ignite;
   int        report_progress;
   std::string reference_player_str;
@@ -3176,7 +3179,7 @@ struct player_t
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual bool   resource_available( int resource, double cost ) SC_CONST;
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
-  virtual int    primary_role() SC_CONST     { return ROLE_HYBRID; }
+  virtual int    primary_role() SC_CONST;
   virtual int    primary_tree() SC_CONST;
   virtual int    primary_tab();
   virtual const char* primary_tree_name() SC_CONST;
@@ -3465,6 +3468,7 @@ struct stats_t
   player_t* player;
   stats_t* next;
   school_type school;
+  stats_type type;
   bool channeled;
   bool analyzed;
   bool initialized;

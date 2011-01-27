@@ -155,13 +155,6 @@ void action_t::_init_action_t()
   stats = player -> get_stats( name_str );
   stats -> school = school;
   stats -> resource = resource;
-
-  // Sets all stats to quiet if player/owner is a healer
-  if ( player -> healer )
-      stats -> quiet = true;
-  if ( player -> is_pet() )
-    if ( player -> cast_pet() -> owner -> healer )
-      stats -> quiet = true;
   
   id = spell_id();
   tree = util_t::talent_tree(s_tree, player -> type );

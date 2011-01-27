@@ -27,19 +27,8 @@
     weapon_multiplier = 0.0;
     target=0;
     heal_target = player;
+    stats -> type = STATS_HEAL;
 
-    // Sets Stats to quiet if player/owner is a Damage Dealer, otherwise to not quiet
-    if ( !player -> healer )
-      stats -> quiet = true;
-    else
-      stats -> quiet = false;
-    if ( player -> is_pet() )
-    {
-      if ( !player -> cast_pet() -> owner -> healer )
-        stats -> quiet = true;
-      else
-        stats -> quiet = false;
-    }
   }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
@@ -59,7 +48,6 @@
   {
     _init_heal_t();
   }
-
 
 // heal_t::player_buff ======================================================
 
@@ -524,7 +512,7 @@
   // Created by philoptik@gmail.com
   //
   // heal_target is set to player for now.
-  // dmg_type = ABSORB, all crits killed
+  // dmg_type = ABSORB_DIRECT, all crits killed
   // ==========================================================================
 
 
@@ -536,18 +524,7 @@
       weapon_multiplier = 0.0;
       target=0;
 
-      // Sets Stats to quiet if player/owner is a Damage Dealer, otherwise to not quiet
-      if ( !player -> healer )
-        stats -> quiet = true;
-      else
-        stats -> quiet = false;
-      if ( player -> is_pet() )
-      {
-        if ( !player -> cast_pet() -> owner -> healer )
-          stats -> quiet = true;
-        else
-          stats -> quiet = false;
-      }
+      stats -> type = STATS_ABSORB;
     }
 
   // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============

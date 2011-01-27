@@ -193,6 +193,21 @@ const char* util_t::race_type_string( int type )
   return "unknown";
 }
 
+// util_t::role_type_string ================================================
+
+const char* util_t::role_type_string( int role )
+{
+  switch ( role )
+  {
+  case ROLE_SPELL:     return "Spell";
+  case ROLE_HYBRID:    return "Hybrid";
+  case ROLE_ATTACK:    return "Attack";
+  case ROLE_TANK:      return "Tank";
+  case ROLE_HEAL:      return "Heal";
+  }
+  return "unknown";
+}
+
 // util_t::parse_race_type =================================================
 
 race_type util_t::parse_race_type( const std::string& name )

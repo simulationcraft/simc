@@ -2583,6 +2583,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   {
     util_t::fprintf( file, " open" );
   }
+
   util_t::fprintf( file, "\">%s&nbsp;:&nbsp;%.0fdps</h2>\n",
     n.c_str(),
     p -> dps );
@@ -2596,13 +2597,13 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "          <li><b>Class:</b> %s</li>\n"
     "          <li><b>Tree:</b> %s</li>\n"
     "          <li><b>Level:</b> %d</li>\n"
-    "          <li><b>Healer:</b> %s</li>\n"
+    "          <li><b>Role:</b> %s</li>\n"
     "        </ul>\n"
     "        <div class=\"clear\"></div>\n",
     p -> race_str.c_str(),
     p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
     util_t::talent_tree_string( p -> primary_tree() ),
-    p -> level, p -> healer ? "Yes" : "No" );
+    p -> level, util_t::role_type_string( p -> primary_role() ) );
 
   // Main player table
   util_t::fprintf( file,
@@ -2798,7 +2799,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   bool healer_in_the_raid = false;
   for ( player_t* q = sim -> player_list; q; q = q -> next )
   {
-    if ( q -> healer == true )
+    if ( q -> primary_role() == ROLE_HEAL == true )
     {
       healer_in_the_raid = true;
       break;

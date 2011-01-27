@@ -360,7 +360,7 @@ struct warrior_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
-  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual int       primary_role() SC_CONST;
   virtual int       target_swing();
 };
 
@@ -2914,7 +2914,6 @@ void warrior_t::init_base()
 
   base_gcd = 1.5;
 
-  if ( tank == -1 && primary_tree() == TREE_PROTECTION ) tank = 1;
 
 }
 
@@ -3286,6 +3285,16 @@ double warrior_t::resource_loss( int       resource,
   }
 
   return actual_amount;
+}
+
+// warrior_t::primary_role() ================================================
+
+int warrior_t::primary_role() SC_CONST
+{
+  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION )
+    return ROLE_TANK;
+
+  return ROLE_ATTACK;
 }
 
 // warrior_t::target_swing ==================================================

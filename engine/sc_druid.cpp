@@ -3647,7 +3647,7 @@ void druid_t::init_actions()
 
     if ( primary_tree() == TREE_FERAL )
     {
-      if ( tank > 0 )
+      if ( primary_role() == ROLE_TANK )
       {
         if ( level > 80 )
         {
@@ -4084,10 +4084,14 @@ int druid_t::decode_set( item_t& item )
 
 int druid_t::primary_role() SC_CONST
 {
+  if ( player_t::primary_role() == ROLE_TANK )
+      return ROLE_TANK;
+    if ( player_t::primary_role() == ROLE_HEAL || primary_tree() == TREE_RESTORATION )
+      return ROLE_HEAL;
+
   switch ( primary_tree() )
   {
-  case TREE_BALANCE:     
-  case TREE_RESTORATION:
+  case TREE_BALANCE:
     return ROLE_SPELL;
   case TREE_FERAL:
     return ROLE_ATTACK;
@@ -4101,7 +4105,7 @@ int druid_t::primary_role() SC_CONST
 int druid_t::primary_resource() SC_CONST
 {
   if ( talents.moonkin_form -> rank() ) return RESOURCE_MANA;
-  if ( tank > 0 ) return RESOURCE_RAGE;
+  if ( primary_role() == ROLE_TANK ) return RESOURCE_RAGE;
   return RESOURCE_ENERGY;
 }
 
