@@ -2135,7 +2135,7 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( p -> talent_telluric_currents -> rank() )
       {
         p -> resource_gain( RESOURCE_MANA,
-          direct_dmg * p -> talent_telluric_currents -> base_value() / 100.0, 
+          travel_dmg * p -> talent_telluric_currents -> base_value() / 100.0, 
           p -> gains_telluric_currents );
       }
     }
