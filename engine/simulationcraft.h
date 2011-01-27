@@ -632,7 +632,7 @@ enum profession_type
   PROFESSION_MAX
 };
 
-enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_TANK, ROLE_HYBRID, ROLE_HEAL, ROLE_MAX };
+enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_HYBRID, ROLE_DMG, ROLE_TANK, ROLE_HEAL, ROLE_MAX };
 
 enum rng_type
 {
@@ -2770,12 +2770,11 @@ struct player_t
   sim_t*      sim;
   bool        ptr;
   std::string name_str, talents_str, glyphs_str, id_str;
-  std::string region_str, server_str, origin_str;
+  std::string region_str, server_str, origin_str, role;
   player_t*   next;
   int         index;
   player_type type;
-  int         level, use_pre_potion, tank, party, member;
-  bool        healer;
+  int         level, use_pre_potion, party, member;
   double      skill, initial_skill, distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
   rating_t    rating;

@@ -230,7 +230,7 @@ struct shaman_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return talent_stormstrike -> rank() ? ROLE_HYBRID : ROLE_SPELL; }
+  virtual int       primary_role() SC_CONST;
   virtual void      combat_begin();
 
   // Event Tracking
@@ -4141,6 +4141,25 @@ int shaman_t::decode_set( item_t& item )
   }
 
   return SET_NONE;
+}
+
+// shaman_t::primary_role ===================================================
+
+int shaman_t::primary_role() SC_CONST
+{
+  if ( primary_tree() == TREE_RESTORATION )
+  {
+    if ( player_t::primary_role() == ROLE_SPELL )
+        return ROLE_SPELL;
+
+    return ROLE_HEAL;
+  }
+  else if ( primary_tree() == TREE_ENHANCEMENT )
+    return ROLE_HYBRID;
+  else if ( primary_tree() == TREE_ELEMENTAL )
+    return ROLE_SPELL;
+
+  return ROLE_NONE;
 }
 
 // ==========================================================================

@@ -3514,6 +3514,12 @@ int priest_t::primary_role() SC_CONST
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
+  if ( player_t::primary_role() == ROLE_SPELL )
+    return ROLE_SPELL;
+
+  if ( primary_tree() == TREE_DISCIPLINE || primary_tree() == TREE_HOLY )
+    return ROLE_HEAL;
+
   return ROLE_SPELL;
 }
 
@@ -4464,12 +4470,6 @@ bool priest_t::create_profile( std::string& profile_str, int save_type )
     { 
       temp_str = util_t::to_string( use_mind_blast );
       profile_str += "use_mind_blast=" + temp_str + "\n"; 
-    }
-    if ( healer )
-    {
-      profile_str += "healer=1\n";
-      // Event to give some damage to heal up
-      profile_str += "raid_events+=/damage,cooldown=30,amount=100000";
     }
   }
 

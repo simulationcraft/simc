@@ -3494,7 +3494,6 @@ void druid_t::init_base()
 
   base_gcd = 1.5;
 
-  //if ( tank == -1 && talents.is_tank_spec() -> rank ) tank = 1;
 }
 
 // druid_t::init_buffs ======================================================
@@ -4084,27 +4083,39 @@ int druid_t::decode_set( item_t& item )
 
 int druid_t::primary_role() SC_CONST
 {
-  if ( player_t::primary_role() == ROLE_TANK )
-      return ROLE_TANK;
-    if ( player_t::primary_role() == ROLE_HEAL || primary_tree() == TREE_RESTORATION )
-      return ROLE_HEAL;
 
-  switch ( primary_tree() )
+  if ( primary_tree() == TREE_BALANCE )
   {
-  case TREE_BALANCE:
     return ROLE_SPELL;
-  case TREE_FERAL:
-    return ROLE_ATTACK;
-  default:
-    return ROLE_NONE;
   }
+
+  else if ( primary_tree() == TREE_FERAL )
+  {
+    if ( player_t::primary_role() == ROLE_TANK )
+        return ROLE_TANK;
+
+    // Implement Automatic Tank detection
+
+    return ROLE_ATTACK;
+  }
+
+  else if ( primary_tree() == TREE_RESTORATION )
+  {
+    if ( player_t::primary_role() == ROLE_SPELL )
+      return ROLE_SPELL;
+
+    return ROLE_HEAL;
+  }
+
+  return ROLE_NONE;
+
 }
 
 // druid_t::primary_resource ================================================
 
 int druid_t::primary_resource() SC_CONST
 {
-  if ( talents.moonkin_form -> rank() ) return RESOURCE_MANA;
+  if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL ) return RESOURCE_MANA;
   if ( primary_role() == ROLE_TANK ) return RESOURCE_RAGE;
   return RESOURCE_ENERGY;
 }

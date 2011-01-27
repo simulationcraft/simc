@@ -916,7 +916,6 @@ static void register_tyrandes_favorite_doll( item_t* item )
 
 static void register_unheeded_warning( item_t* item )
 {
-  player_t* p = item -> player;
 
   item -> unique = true;
 

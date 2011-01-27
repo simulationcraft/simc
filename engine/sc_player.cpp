@@ -276,9 +276,9 @@ player_t::player_t( sim_t*             s,
                     const std::string& n,
                     race_type          r ) :
     sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
-    region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ), tank( -1 ),
-    party( 0 ), member( 0 ), healer( false ),
+    region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ), role( "unknown" ),
+    next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ),
+    party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
@@ -2856,9 +2856,11 @@ int player_t::primary_tab()
 
 int player_t::primary_role() SC_CONST
 {
-  if ( healer )
+  if ( role == "dmg" || role == "dps" )
+    return ROLE_DMG;
+  if ( role == "heal" || role == "healer" )
     return ROLE_HEAL;
-  if ( tank )
+  if ( role == "tank" )
     return ROLE_TANK;
 
   return ROLE_HYBRID;
@@ -5076,8 +5078,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
-  healer = source -> healer;
-  tank = source -> tank;
+  role = source -> role;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
   talents_str = "http://www.wowhead.com/talent#";
@@ -5123,8 +5124,7 @@ void player_t::create_options()
     { "race",                                 OPT_STRING,   &( race_str                               ) },
     { "level",                                OPT_INT,      &( level                                  ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
-    { "tank",                                 OPT_INT,      &( tank                                   ) },
-    { "healer",                               OPT_INT,      &( healer                                 ) },
+    { "role",                                 OPT_STRING,   &( role                                   ) },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },
