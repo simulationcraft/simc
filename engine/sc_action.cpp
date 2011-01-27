@@ -872,6 +872,7 @@ double action_t::calculate_direct_damage()
   if ( dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
 
   double base_direct_dmg = dmg;
+  double weapon_dmg = 0;
   
   dmg += base_dd_adder + player_dd_adder + target_dd_adder;
 
@@ -881,6 +882,7 @@ double action_t::calculate_direct_damage()
     // e.g. Obliterate, Shred, Backstab
     dmg += calculate_weapon_damage();
     dmg *= weapon_multiplier;
+    weapon_dmg = dmg;
   }
   dmg += direct_power_mod * total_power();
   dmg *= total_dd_multiplier();
@@ -937,9 +939,9 @@ double action_t::calculate_direct_damage()
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
-                   player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
-                   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
+    log_t::output( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f w_mult=%.2f",
+                   player -> name(), name(), dmg, init_direct_dmg, weapon_dmg, base_direct_dmg, direct_power_mod,
+                   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier, weapon_multiplier );
   }
 
   return dmg;
