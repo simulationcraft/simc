@@ -48,7 +48,7 @@ trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=
 back=haunt_of_flies,ilevel=359,quality=epic,stats=625armor_127crit_127haste_190int_286sta,enchant=lightweave_embroidery
 main_hand=twilights_hammer,ilevel=359,quality=epic,stats=97crit_97haste_146int_1954sp_219sta,reforge=crit_spi,enchant=power_torrent,weapon=mace_1.70speed_42min_80max
 off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=100int
-ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_72mastery_72spi_161sta
+ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_72mastery_72spi_161sta,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
@@ -58,8 +58,8 @@ ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_72mastery_72spi_
 # gear_spell_power=1954
 # gear_hit_rating=177
 # gear_crit_rating=623
-# gear_haste_rating=2172
-# gear_mastery_rating=580
+# gear_haste_rating=2200
+# gear_mastery_rating=552
 # gear_armor=7817
 # meta_gem=ember_shadowspirit
 # tier11_2pc_caster=1
