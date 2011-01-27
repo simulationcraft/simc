@@ -493,7 +493,7 @@ struct hunter_pet_t : public pet_t
 
       if( talents.call_of_the_wild -> rank() )
       {
-        action_list_str += "/call_of_the_wild,if=buff.bloodlust.up";
+        action_list_str += "/call_of_the_wild";
       }
       if( talents.roar_of_recovery -> rank() )
       {
@@ -3083,13 +3083,13 @@ void hunter_t::init_actions()
       {
         action_list_str += "/chimera_shot";
       }
-      action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5"
+      action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5";
       action_list_str += "/kill_shot";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/aimed_shot,if=buff.fire.react";
 
       action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
-      action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5"
+      action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5";
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:
