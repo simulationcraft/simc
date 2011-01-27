@@ -3131,7 +3131,7 @@ void rogue_t::init_actions()
         action_list_str += "/vendetta";
       }
       // XXX tweak Rupture/Envenom priorities to raise Rupture (and Envenom) uptime
-      action_list_str += "/rupture,if=!ticking&combo_points>=4&target.time_to_die>15&buff.slice_and_dice.remains>6";
+      action_list_str += "/rupture,if=!ticking&buff.slice_and_dice.remains>6";
       if ( talents.cold_blood -> rank() ) 
         action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,if=combo_points>=4&buff.envenom.down";
@@ -3150,8 +3150,8 @@ void rogue_t::init_actions()
       if ( talents.killing_spree -> rank() )
         action_list_str += "/killing_spree,if=energy<20&buff.slice_and_dice.remains>5";
       action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
-      action_list_str += "/eviscerate,if=combo_points=5&buff.slice_and_dice.remains>7&dot.rupture.remains>6";
-      action_list_str += "/eviscerate,if=combo_points>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>5";
+      action_list_str += "/eviscerate,if=combo_points=5&buff.slice_and_dice.remains>7&dot.rupture.remains>0";
+      action_list_str += "/eviscerate,if=combo_points>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>0";
       action_list_str += "/eviscerate,if=combo_points=5&target.time_to_die<10";
       action_list_str += "/revealing_strike,if=combo_points=4&buff.slice_and_dice.remains>8";
       action_list_str += "/sinister_strike,if=combo_points<5";
