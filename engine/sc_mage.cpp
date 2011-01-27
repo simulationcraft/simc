@@ -89,6 +89,7 @@ struct mage_t : public player_t
 
   // Options
   std::string focus_magic_target_str;
+  double max_ignite_refresh;
 
   // Spell Data
   struct spells_t
@@ -245,8 +246,9 @@ struct mage_t : public player_t
     cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
     cooldowns_early_frost = get_cooldown( "early_frost" );
 
-    distance         = 40;
+    distance = 40;
     mana_gem_charges =  3;
+    max_ignite_refresh = 4.0;
 
     create_talents();
     create_glyphs();
@@ -803,7 +805,17 @@ static void trigger_ignite( spell_t* s, double dmg )
       may_resist    = true;
       tick_may_crit = false;
       hasted_ticks  = false;
+      dot_behavior  = DOT_REFRESH;
       reset();
+    }
+    virtual void travel( int travel_result, double ignite_dmg )
+    {
+      mage_spell_t::travel( travel_result, 0 );
+      base_td = ignite_dmg / dot -> num_ticks;
+    }
+    virtual double travel_time() 
+    { 
+      return sim -> gauss( 0.4, 0.1 );
     }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
@@ -834,67 +846,27 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
   }
 
-  // The Ignite SPELL_AURA_APPLIED does not actually occur immediately.
-  // There is a short delay which can result in "munched" or "rolled" ticks.
-
-  if ( sim -> aura_delay == 0 )
+  if ( p -> max_ignite_refresh > 0 &&
+       p -> max_ignite_refresh < dot -> remains() )
   {
-    // Do not model the delay, so no munch/roll.
-
-    p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
-
-    if ( dot -> ticking )
-    {
-      p -> active_ignite -> refresh_duration();
-    }
-    else
-    {
-      p -> active_ignite -> schedule_travel();
-    }
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
+    p -> procs_munched_ignite -> occur();
     return;
   }
 
-  struct ignite_delay_t : public event_t
-  {
-    double ignite_dmg;
-
-    ignite_delay_t( sim_t* sim, player_t* p, double dmg ) : event_t( sim, p ), ignite_dmg( dmg )
-    {
-      name = "Ignite Delay";
-      sim -> add_event( this, sim -> gauss( sim -> aura_delay, sim -> aura_delay * 0.25 ) );
-    }
-    virtual void execute()
-    {
-      mage_t* p = player -> cast_mage();
-
-      p -> active_ignite -> base_td = ignite_dmg / p -> active_ignite -> num_ticks;
-
-      if ( p -> active_ignite -> dot -> ticking )
-      {
-        p -> active_ignite -> refresh_duration();
-      }
-      else
-      {
-        p -> active_ignite -> schedule_travel();
-      }
-      if ( p -> ignite_delay_event == this ) p -> ignite_delay_event = 0;
-    }
-  };
-
-  if ( p -> ignite_delay_event ) 
+  if ( p -> active_ignite -> travel_event ) 
   {
     // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite.", p -> name() );
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
     p -> procs_munched_ignite -> occur();
-    event_t::cancel( p -> ignite_delay_event );
   }
+  
+  p -> active_ignite -> direct_dmg = ignite_dmg;
+  p -> active_ignite -> schedule_travel();
 
-  p -> ignite_delay_event = new ( sim ) ignite_delay_t( sim, p, ignite_dmg );
-
-  if ( dot -> ticking )
+  if ( p -> active_ignite -> travel_event && dot -> ticking ) 
   {
-    if ( dot -> tick_event -> occurs() < 
-         p -> ignite_delay_event -> occurs() )
+    if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
     {
       // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
       // both tick -and- get rolled into the next Ignite.
@@ -3313,7 +3285,8 @@ void mage_t::create_options()
 
   option_t mage_options[] =
   {
-    { "focus_magic_target", OPT_STRING, &( focus_magic_target_str ) },
+    { "focus_magic_target",  OPT_STRING, &( focus_magic_target_str ) },
+    { "max_ignite_refresh",  OPT_FLT,    &( max_ignite_refresh     ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3340,6 +3313,7 @@ void mage_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   focus_magic_target_str = source -> cast_mage() -> focus_magic_target_str;
+  max_ignite_refresh     = source -> cast_mage() -> max_ignite_refresh;
 }
 
 // mage_t::decode_set =======================================================

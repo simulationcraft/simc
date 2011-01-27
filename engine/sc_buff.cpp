@@ -539,32 +539,38 @@ void buff_t::decrement( int    stacks,
 
 void buff_t::extend_duration( player_t* p, double extra_seconds )
 {
+  assert( expiration );
+  assert( extra_seconds < sim -> wheel_seconds );
+
   if ( extra_seconds > 0 )
   {
-    assert( expiration );
-    assert ( expiration -> occurs() + extra_seconds < sim -> wheel_seconds );
-    expiration -> reschedule( expiration -> occurs() - sim -> current_time + extra_seconds );
+    expiration -> reschedule( expiration -> remains() + extra_seconds );
+
     if ( sim -> debug )
-      log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f", p -> name(), name(), extra_seconds, expiration -> occurs() );
+      log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f", 
+		     p -> name(), name(), extra_seconds, expiration -> occurs() );
   }
   else if ( extra_seconds < 0 )
   {
-    assert( expiration );
-    if ( expiration -> occurs() - sim -> current_time + extra_seconds < 0 )
+    double reschedule_time = expiration -> remains() + extra_seconds;
+
+    if ( reschedule_time < 0 )
     {
       if ( sim -> debug )
-          log_t::output( sim, "%s can't extend buff %s by %.1f seconds. New expiration would be in the past", p -> name(), name(), extra_seconds );
+          log_t::output( sim, "%s can't extend buff %s by %.1f seconds. New expiration would be in the past!", 
+			 p -> name(), name(), extra_seconds );
     }
     else
     {
-      double save_expiration_time = expiration -> occurs();
       event_t::cancel( expiration );
-      expiration = new ( sim ) expiration_t( sim, player, this, save_expiration_time - sim -> current_time + extra_seconds );
+
+      expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
+
       if ( sim -> debug )
-        log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f", p -> name(), name(), extra_seconds, expiration -> occurs() );
+        log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f", 
+		       p -> name(), name(), extra_seconds, expiration -> occurs() );
     }
   }
-
 }
 
 // buff_t::start ============================================================

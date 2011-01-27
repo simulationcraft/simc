@@ -1688,46 +1688,8 @@ struct util_t
   static double round( double X, unsigned int decplaces = 0 );
 };
 
-// Event =====================================================================
-
-struct event_t
-{
-  event_t*  next;
-  sim_t*    sim;
-  player_t* player;
-  uint32_t  id;
-  double    time;
-  double    reschedule_time;
-  int       canceled;
-  const char* name;
-  event_t( sim_t* s, player_t* p=0, const char* n=0 ) :
-      next( 0 ), sim( s ), player( p ), reschedule_time( 0 ), canceled( 0 ), name( n )
-  {
-    if ( ! name ) name = "unknown";
-  }
-  double occurs() SC_CONST { return reschedule_time != 0 ? reschedule_time : time; }
-  virtual void reschedule( double new_time );
-  virtual void execute() { util_t::printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
-  virtual ~event_t() {}
-  static void cancel( event_t*& e ) { if ( e ) { e -> canceled = 1;                 e=0; } }
-  static void  early( event_t*& e ) { if ( e ) { e -> canceled = 1; e -> execute(); e=0; } }
-  // Simple free-list memory manager.
-  static void* operator new( size_t, sim_t* );
-  static void* operator new( size_t ) throw();  // DO NOT USE!
-  static void  operator delete( void* );
-  static void  operator delete( void*, sim_t* ) {}
-  static void deallocate( event_t* e );
-};
-
-struct event_compare_t
-{
-  bool operator () ( event_t* lhs, event_t* rhs ) SC_CONST
-  {
-    return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
-  }
-};
-
 // Spell information struct, holding static functions to output spell data in a human readable form
+
 struct spell_info_t
 {
   static std::string to_str( sim_t* sim, const spell_data_t* spell );
@@ -2566,6 +2528,46 @@ struct plot_t
   void analyze_stats();
   double progress( std::string& phase );
   void create_options();
+};
+
+// Event =====================================================================
+
+struct event_t
+{
+  event_t*  next;
+  sim_t*    sim;
+  player_t* player;
+  uint32_t  id;
+  double    time;
+  double    reschedule_time;
+  int       canceled;
+  const char* name;
+  event_t( sim_t* s, player_t* p=0, const char* n=0 ) :
+      next( 0 ), sim( s ), player( p ), reschedule_time( 0 ), canceled( 0 ), name( n )
+  {
+    if ( ! name ) name = "unknown";
+  }
+  double occurs()  SC_CONST { return ( reschedule_time != 0 ) ? reschedule_time : time; }
+  double remains() SC_CONST { return occurs() - sim -> current_time; }
+  virtual void reschedule( double new_time );
+  virtual void execute() { util_t::printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
+  virtual ~event_t() {}
+  static void cancel( event_t*& e ) { if ( e ) { e -> canceled = 1;                 e=0; } }
+  static void  early( event_t*& e ) { if ( e ) { e -> canceled = 1; e -> execute(); e=0; } }
+  // Simple free-list memory manager.
+  static void* operator new( size_t, sim_t* );
+  static void* operator new( size_t ) throw();  // DO NOT USE!
+  static void  operator delete( void* );
+  static void  operator delete( void*, sim_t* ) {}
+  static void deallocate( event_t* e );
+};
+
+struct event_compare_t
+{
+  bool operator () ( event_t* lhs, event_t* rhs ) SC_CONST
+  {
+    return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
+  }
 };
 
 // Gear Rating Conversions ===================================================

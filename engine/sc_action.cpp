@@ -1064,7 +1064,7 @@ void action_t::last_tick()
 
 void action_t::travel( int travel_result, double travel_dmg=0 )
 {
-  if ( direct_dmg > 0 )
+  if ( travel_dmg > 0 )
   {
     assess_damage( travel_dmg, DMG_DIRECT );
   }

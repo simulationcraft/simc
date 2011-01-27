@@ -4881,7 +4881,7 @@ action_expr_t* player_t::create_expression( action_t* a,
             result_num = 9999;
             player_t* p = action -> player;
             attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
-            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> occurs() - action -> sim -> current_time;
+            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> remains();
             return TOK_NUM;
           }
         };
