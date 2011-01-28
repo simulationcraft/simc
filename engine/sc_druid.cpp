@@ -3256,18 +3256,14 @@ struct wrath_t : public druid_spell_t
         // Wrath's second effect base value is positive in the DBC files
         
         // CURRENT BUGS ON LIVE: 
-        // #1 Euphoria seems to have a 16% chance, instead of the listed 24%
-        // #2 Euphoria does not proc, if a proc would lead to eclipse, this is
-        // so fucked up
+        // #1 Euphoria does not proc, if you are 35 or more into the side
+        // your bar currently moves
 
         int gain = - effect_base_value( 2 );
         if ( p -> bugs )
         {
-          // Assume -73 + -27 => Eclipse => Not possible due to Bug#2
-          // Only managed 8 times to get to -73 in my testruns, never had a -26
-          // proc
           if ( ! p -> buffs_eclipse_solar -> check() 
-            && p -> eclipse_bar_value > -73 
+            && p -> eclipse_bar_value > -35
             && p -> rng_euphoria -> roll( 0.16 ) )
           {
             gain *= 2;
@@ -3282,9 +3278,11 @@ struct wrath_t : public druid_spell_t
         }
         else
         {
+          
           // How it SHOULD behave :(
           if ( ! p -> buffs_eclipse_solar -> check() 
-            && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
+            && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
+            && !( p -> bugs && p -> eclipse_bar_value <= -35 ) )
           {
             gain *= 2;
             if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
