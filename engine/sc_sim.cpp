@@ -1011,7 +1011,7 @@ void sim_t::analyze_player( player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
-    bool add_stat = ( s -> type == STATS_DMG ) && ( p -> primary_role() != ROLE_HEAL ) ||
+    bool add_stat = ( ( s -> type == STATS_DMG ) && ( p -> primary_role() != ROLE_HEAL ) ) ||
                     ( ( ( s -> type == STATS_HEAL ) || ( s -> type == STATS_ABSORB ) ) && ( p -> primary_role() == ROLE_HEAL ) );
 
     s -> analyze();
@@ -1101,7 +1101,7 @@ void sim_t::analyze_player( player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
-    bool add_stat = ( s -> type == STATS_DMG && p -> primary_role() != ROLE_HEAL ) ||
+    bool add_stat = ( ( s -> type == STATS_DMG ) && ( p -> primary_role() != ROLE_HEAL ) ) ||
                     ( ( ( s -> type == STATS_HEAL ) || ( s -> type == STATS_ABSORB ) ) && ( p -> primary_role() == ROLE_HEAL ) );
     for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
     {
