@@ -509,6 +509,13 @@ struct mirror_image_pet_t : public pet_t
       background        = true;
     }
 
+    virtual void player_buff()
+    {
+      spell_t::player_buff();
+      mage_t* o = player -> cast_pet() -> owner -> cast_mage();
+      player_multiplier *= 1.0 + o ->  buffs_arcane_blast -> stack() * o -> spells.arcane_blast -> effect1 -> base_value / 100.0;
+    }
+
     virtual void execute()
     {
       spell_t::execute();
@@ -815,7 +822,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     }
     virtual double travel_time() 
     { 
-      return sim -> gauss( 0.4, 0.1 );
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
