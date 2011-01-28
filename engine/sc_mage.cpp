@@ -513,7 +513,9 @@ struct mirror_image_pet_t : public pet_t
     {
       spell_t::player_buff();
       mage_t* o = player -> cast_pet() -> owner -> cast_mage();
-      player_multiplier *= 1.0 + o ->  buffs_arcane_blast -> stack() * o -> spells.arcane_blast -> effect1 -> base_value / 100.0;
+      double ab_stack_multiplier = o -> spells.arcane_blast -> effect1 -> base_value / 100.0;
+      double ab_glyph_multiplier = o -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + o ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ab_glyph_multiplier );
     }
 
     virtual void execute()
@@ -1266,7 +1268,8 @@ struct arcane_blast_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
     double ab_stack_multiplier = p -> spells.arcane_blast -> effect1 -> base_value / 100.0;
-    player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ( p -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0 ) );
+    double ab_glyph_multiplier = p -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ab_glyph_multiplier );
   }
 };
 
