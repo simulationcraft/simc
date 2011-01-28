@@ -2764,28 +2764,15 @@ struct starfire_t : public druid_spell_t
 
       if ( ! p -> buffs_eclipse_solar -> check() )
       {
-        // CURRENT BUGS ON LIVE: 
-        // #1 Euphoria seems to have a 16% chance, instead of the listed 24%
-        // #2 Euphoria does not proc, if a proc would lead to eclipse, this is
-        // so fucked up
+        // BUG (FEATURE?) ON LIVE 
+        // #1 Euphoria does not proc, if you are 35 or more into the side the
+        // Eclipse bar is moving towards, >=35 for Starfire/towards Solar
         int gain = effect_base_value( 2 );
-        if ( p -> bugs )
+        if ( ! p -> buffs_eclipse_lunar -> check() 
+          && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
+          && !( p -> bugs && p -> eclipse_bar_value >= 35 ) )
         {
-          if ( ! p -> buffs_eclipse_lunar -> check()
-            && p -> eclipse_bar_value < 80 
-            && p -> rng_euphoria -> roll( 0.16 ) )
-          {
-            gain *= 2;
-          }
-        }
-        else
-        {
-          // How it SHOULD behave :(
-          if ( ! p -> buffs_eclipse_lunar -> check() 
-            && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
-          {
-            gain *= 2;
-          }
+          gain *= 2;
         }
         trigger_eclipse_energy_gain( this, gain );
       }
@@ -3254,45 +3241,23 @@ struct wrath_t : public druid_spell_t
         // negliable chance to need 15 Wrath!
         
         // Wrath's second effect base value is positive in the DBC files
-        
-        // CURRENT BUGS ON LIVE: 
-        // #1 Euphoria does not proc, if you are 35 or more into the side
-        // your bar currently moves
-
         int gain = - effect_base_value( 2 );
-        if ( p -> bugs )
+        
+        // BUG (FEATURE?) ON LIVE 
+        // #1 Euphoria does not proc, if you are 35 or more into the side the
+        // Eclipse bar is moving towards, <=-35 for Wrath/towards Lunar
+        if ( ! p -> buffs_eclipse_solar -> check() 
+          && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
+          && !( p -> bugs && p -> eclipse_bar_value <= -35 ) )
         {
-          if ( ! p -> buffs_eclipse_solar -> check() 
-            && p -> eclipse_bar_value > -35
-            && p -> rng_euphoria -> roll( 0.16 ) )
-          {
-            gain *= 2;
-            if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
-              gain += 1;
-          }
-          else 
-          {
-            if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
-              gain += 1;
-          }
+          gain *= 2;
+          if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
+            gain += 1;
         }
-        else
+        else 
         {
-          
-          // How it SHOULD behave :(
-          if ( ! p -> buffs_eclipse_solar -> check() 
-            && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
-            && !( p -> bugs && p -> eclipse_bar_value <= -35 ) )
-          {
-            gain *= 2;
-            if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
-              gain += 1;
-          }
-          else 
-          {
-            if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
-              gain += 1;
-          }
+          if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
+            gain += 1;
         }
         trigger_eclipse_energy_gain( this, gain );
       }
