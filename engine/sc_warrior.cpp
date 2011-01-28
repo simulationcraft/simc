@@ -3191,9 +3191,10 @@ void warrior_t::combat_begin()
   {
     buffs_battle_stance -> trigger();
   }
-
   if ( talents.rampage -> ok() )
+  {
     sim -> auras.rampage -> trigger();
+  }
 }
 
 // warrior_t::reset =========================================================
@@ -3272,8 +3273,8 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
 
-  uptimes_rage_cap    -> update( resource_current[ RESOURCE_RAGE ] ==
-                                 resource_max    [ RESOURCE_RAGE] );
+  uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
+			      resource_max    [ RESOURCE_RAGE] );
 }
 
 // warrior_t::resource_loss =================================================

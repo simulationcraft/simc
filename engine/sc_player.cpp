@@ -2802,7 +2802,7 @@ double player_t::resource_gain( int       resource,
 
   if ( sim -> log )
   {
-    log_t::output( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)",
+    log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
                    name(), actual_amount, amount,
                    util_t::resource_type_string( resource ), source ? source -> name() : "unknown",
                    resource_current[ resource ] );
