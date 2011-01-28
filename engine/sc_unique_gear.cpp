@@ -916,11 +916,52 @@ static void register_tyrandes_favorite_doll( item_t* item )
 
 static void register_unheeded_warning( item_t* item )
 {
-
+  player_t* p = item -> player;
+  
   item -> unique = true;
 
-  // TODO!
-}
+  struct uhw_buff_t : public buff_t
+  {
+    double bonus_dmg;
+
+    uhw_buff_t( player_t* p ) : buff_t( p, "unheeded_warning", 1, 10.0, 50.0, 0.10 ), bonus_dmg( 680 ) { }
+
+    virtual bool trigger( int stacks, double value, double chance )
+    {
+      bool success = buff_t::trigger( stacks, value, chance );
+      if( success )
+      {
+	player -> main_hand_weapon.bonus_dmg += bonus_dmg;
+	player ->  off_hand_weapon.bonus_dmg += bonus_dmg;
+      }
+      return success;
+    }
+
+    virtual void expire()
+    {
+      player -> main_hand_weapon.bonus_dmg -= bonus_dmg;
+      player ->  off_hand_weapon.bonus_dmg -= bonus_dmg;
+      buff_t::expire();
+    }
+  };
+
+  struct uhw_callback_t : public action_callback_t
+  {
+    buff_t* buff;
+
+    uhw_callback_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ) {}
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      if ( a -> weapon && ! a -> proc )
+      {
+	buff -> trigger();
+      }
+    }
+  };
+
+  p -> register_attack_result_callback( RESULT_HIT_MASK, new uhw_callback_t( p, new uhw_buff_t( p ) ) );
+};
 
 // ==========================================================================
 // unique_gear_t::init

@@ -2470,12 +2470,15 @@ void player_t::reset()
 
   main_hand_weapon.buff_type  = 0;
   main_hand_weapon.buff_value = 0;
+  main_hand_weapon.bonus_dmg  = 0;
 
   off_hand_weapon.buff_type  = 0;
   off_hand_weapon.buff_value = 0;
+  off_hand_weapon.bonus_dmg  = 0;
 
   ranged_weapon.buff_type  = 0;
   ranged_weapon.buff_value = 0;
+  ranged_weapon.bonus_dmg  = 0;
 
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;

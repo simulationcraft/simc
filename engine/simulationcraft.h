@@ -2598,13 +2598,14 @@ struct weapon_t
   int    slot;
   int    buff_type;
   double buff_value;
+  double bonus_dmg;
 
   int    group() SC_CONST;
   double normalized_weapon_speed() SC_CONST;
   double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) SC_CONST;
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, school_type s=SCHOOL_PHYSICAL ) :
-      type(t), school(s), damage(d), min_dmg(d), max_dmg(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0) { }
+    type(t), school(s), damage(d), min_dmg(d), max_dmg(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0), bonus_dmg(0) { }
 };
 
 // Item ======================================================================
