@@ -3187,15 +3187,6 @@ struct summon_infernal_t : public summon_pet_t
     p -> cooldowns_doomguard -> start();
     summon_pet_t::execute();
   }
-
-  virtual bool ready()
-  {
-    warlock_t* p = player -> cast_warlock();
-    if ( !p -> buffs_metamorphosis -> check() && !p -> bugs)
-      return false;
-
-    return summon_pet_t::ready();
-  }
 };
 
 // Summon Doomguard2 Spell =========================================================
@@ -3328,7 +3319,7 @@ struct metamorphosis_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
-    p -> buffs_metamorphosis -> trigger();
+    p -> buffs_metamorphosis -> trigger( 1, p -> composite_mastery() );
   }
 };
 
@@ -3854,7 +3845,7 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
   if ( buffs_metamorphosis -> up() )
   {
-    player_multiplier *= 1.0 + buffs_metamorphosis -> effect_base_value( 3 ) / 100.0 + ( mastery_spells.master_demonologist -> ok() * composite_mastery() * mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
+    player_multiplier *= 1.0 + buffs_metamorphosis -> effect_base_value( 3 ) / 100.0 + ( mastery_spells.master_demonologist -> ok() * buffs_metamorphosis -> value() * mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
   }
 
   player_multiplier *= 1.0 + ( talent_demonic_pact -> effect_base_value( 3 ) / 100.0 );
