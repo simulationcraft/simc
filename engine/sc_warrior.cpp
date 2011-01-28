@@ -1768,7 +1768,7 @@ struct pummel_t : public warrior_attack_t
 struct raging_blow_attack_t : public warrior_attack_t
 {
   raging_blow_attack_t( warrior_t* p ) :
-      warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "raging_blow_attack", p, SCHOOL_PHYSICAL, TREE_FURY )
   {
     id = p -> ptr ? 96103 : 85288;
     parse_data( p -> player_data );
@@ -1783,6 +1783,8 @@ struct raging_blow_attack_t : public warrior_attack_t
       base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     }
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
+
+    stats = p -> get_stats( "raging_blow" );
   }
 
   virtual void player_buff()
@@ -2091,7 +2093,7 @@ struct shockwave_t : public warrior_attack_t
 struct slam_attack_t : public warrior_attack_t
 {
   slam_attack_t( warrior_t* p ) :
-    warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY )
+    warrior_attack_t( "slam_attack", p, SCHOOL_PHYSICAL, TREE_FURY )
   {
     id = 50783;
     parse_data( p -> player_data );
@@ -2119,6 +2121,8 @@ struct slam_attack_t : public warrior_attack_t
     {
       base_multiplier *= 1.0 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0;
     }
+
+    stats = p -> get_stats( "slam" );
   }
 
   virtual void player_buff()
