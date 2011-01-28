@@ -1520,7 +1520,7 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    p -> buffs_lambs_to_the_slaughter -> expire();
+    if( ! p -> ptr ) p -> buffs_lambs_to_the_slaughter -> expire();
     if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
     {
       p -> buffs_executioner_talent -> trigger();
@@ -1543,8 +1543,8 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      // Note: additive, be careful of interactions with player_buff().
-      player_multiplier *= 1.0 + p -> talents.lambs_to_the_slaughter -> rank() * 0.10;
+      int stack = p -> ptr ? p -> buffs_lambs_to_the_slaughter -> stack() : p -> talents.lambs_to_the_slaughter -> rank();
+      player_multiplier *= 1.0 + stack * 0.10;
     }
   }
 
@@ -1652,9 +1652,9 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
+    if( ! p -> ptr ) p -> buffs_lambs_to_the_slaughter -> expire();
     if ( result_is_hit() )
     {
-      p -> buffs_lambs_to_the_slaughter -> expire();
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
       if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
@@ -1671,7 +1671,8 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      player_multiplier *= 1.0 + p -> talents.lambs_to_the_slaughter -> rank() * 0.10;
+      int stack = p -> ptr ? p -> buffs_lambs_to_the_slaughter -> stack() : p -> talents.lambs_to_the_slaughter -> rank();
+      player_multiplier *= 1.0 + stack * 0.10;
     }
   }
 };
@@ -1708,8 +1709,8 @@ struct overpower_t : public warrior_attack_t
     p -> buffs_taste_for_blood -> up();
     warrior_attack_t::execute();
     p -> buffs_overpower -> expire();
-    p -> buffs_lambs_to_the_slaughter -> expire();
     p -> buffs_taste_for_blood -> expire();
+    if( ! p -> ptr ) p -> buffs_lambs_to_the_slaughter -> expire();
 
     // FIXME: The wording indicates it triggers even if you miss.
     p -> buffs_tier11_4pc_melee -> trigger();
@@ -1721,7 +1722,8 @@ struct overpower_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      player_multiplier *= 1.0 + p -> talents.lambs_to_the_slaughter -> rank() * 0.10;
+      int stack = p -> ptr ? p -> buffs_lambs_to_the_slaughter -> stack() : p -> talents.lambs_to_the_slaughter -> rank();
+      player_multiplier *= 1.0 + stack * 0.10;
     }
   }
 
@@ -2969,7 +2971,7 @@ void warrior_t::init_buffs()
   buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 0.0, talents.incite -> proc_chance() );
   buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
-  buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    1, 15.0,  0, talents.lambs_to_the_slaughter -> proc_chance() );
+  buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    ( ptr ? 3 : 1 ), 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
   buffs_revenge                   = new buff_t( this, "revenge",                   1,  5.0 );
