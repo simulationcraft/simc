@@ -242,13 +242,14 @@ struct druid_t : public player_t
   rng_t* rng_fury_swipes;
   rng_t* rng_blood_in_the_water;
   rng_t* rng_primal_fury;
+  rng_t* rng_wrath_eclipsegain;
   
   // Tree specialization passives
   // Balance
   passive_spell_t* spec_moonfury;
   mastery_t* mastery_total_eclipse; // Mastery
-  double eclipse_bar_value; // Tracking the current value of the eclipse bar
-  int    eclipse_bar_direction; // Tracking the current direction of the eclipse bar
+  int eclipse_bar_value; // Tracking the current value of the eclipse bar
+  int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
   
   // Feral
   passive_spell_t* spec_aggression;
@@ -637,7 +638,7 @@ static void trigger_eclipse_proc( druid_t* p )
 
 // trigger_eclipse_energy_gain ==============================================
 
-static void trigger_eclipse_energy_gain( spell_t* s, double gain )
+static void trigger_eclipse_energy_gain( spell_t* s, int gain )
 {
   if ( gain == 0 ) return;
   
@@ -658,7 +659,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
       return;
   }
 
-  double old_eclipse_bar_value = p -> eclipse_bar_value;
+  int old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
 
   if ( p -> eclipse_bar_value < 0 ) 
@@ -677,7 +678,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, double gain )
       p -> eclipse_bar_value = 100;
   }
   
-  double actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
+  int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
   if ( s -> sim -> log )
   {
     log_t::output( s -> sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
@@ -775,7 +776,6 @@ static void trigger_omen_of_clarity( action_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  if ( a -> aoe ) return;
   if ( a -> proc ) return;
 
   if ( p -> buffs_omen_of_clarity -> trigger() )
@@ -2761,15 +2761,31 @@ struct starfire_t : public druid_spell_t
             p -> dots_sunfire -> action -> extend_duration( 2 );
         }
       }
-      // If Solar is up SF won't give you eclipse energy
-      // This is probably to force druid to oscillate
+
       if ( ! p -> buffs_eclipse_solar -> check() )
       {
-        double gain = effect_base_value( 2 );
-        if ( ! p -> buffs_eclipse_lunar -> check() 
-          && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
+        // CURRENT BUGS ON LIVE: 
+        // #1 Euphoria seems to have a 16% chance, instead of the listed 24%
+        // #2 Euphoria does not proc, if a proc would lead to eclipse, this is
+        // so fucked up
+        int gain = effect_base_value( 2 );
+        if ( p -> bugs )
         {
-          gain *= 2;
+          if ( ! p -> buffs_eclipse_lunar -> check()
+            && p -> eclipse_bar_value < 80 
+            && p -> rng_euphoria -> roll( 0.16 ) )
+          {
+            gain *= 2;
+          }
+        }
+        else
+        {
+          // How it SHOULD behave :(
+          if ( ! p -> buffs_eclipse_lunar -> check() 
+            && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
+          {
+            gain *= 2;
+          }
         }
         trigger_eclipse_energy_gain( this, gain );
       }
@@ -2829,7 +2845,6 @@ struct starfall_t : public druid_spell_t
         druid_t* p = player -> cast_druid();
 
         background = true;
-        proc       = true;
         dual       = true;
         stats      = player -> get_stats( "starfall" );
 
@@ -2919,7 +2934,7 @@ struct starsurge_t : public druid_spell_t
     {
       // gain is positive for p -> eclipse_bar_direction==0
       // else it is towards p -> eclipse_bar_direction
-      double gain = effect_base_value( 2 );
+      int gain = effect_base_value( 2 );
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
       trigger_eclipse_energy_gain( this, gain );
@@ -3228,12 +3243,58 @@ struct wrath_t : public druid_spell_t
 
       if ( ! p -> buffs_eclipse_lunar -> check() )
       {
-        // It actualy is 13.3333, SF and W have the exact same eclipse gain per second
-        double gain = -(40.0/3.0); 
-        if ( ! p -> buffs_eclipse_solar -> check() 
-          && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
+        // Wrath's Eclipse gain is a bit tricky, as it is NOT just 40/3 or 
+        // rather 40/3*2 in case of Euphoria procs. This is how it behaves:
+        // 66.6% for -13 Eclipse / -27 if Euphoria proc
+        // 33.3% for -14 Eclipse / -26 if Euphoria proc
+        // This gives averages of -13.33 and -26.66, but as Power's are tracked
+        // as an integer internally, you can't recieve fractions. To get from
+        // Solar into Lunar you need to get -200 energy, this means 15 Wrath
+        // on average, but because the gains are not fractions you have a not
+        // negliable chance to need 15 Wrath!
+        
+        // Wrath's second effect base value is positive in the DBC files
+        
+        // CURRENT BUGS ON LIVE: 
+        // #1 Euphoria seems to have a 16% chance, instead of the listed 24%
+        // #2 Euphoria does not proc, if a proc would lead to eclipse, this is
+        // so fucked up
+
+        int gain = - effect_base_value( 2 );
+        if ( p -> bugs )
         {
-          gain *= 2;
+          // Assume -73 + -27 => Eclipse => Not possible due to Bug#2
+          // Only managed 8 times to get to -73 in my testruns, never had a -26
+          // proc
+          if ( ! p -> buffs_eclipse_solar -> check() 
+            && p -> eclipse_bar_value > -73 
+            && p -> rng_euphoria -> roll( 0.16 ) )
+          {
+            gain *= 2;
+            if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
+              gain += 1;
+          }
+          else 
+          {
+            if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
+              gain += 1;
+          }
+        }
+        else
+        {
+          // How it SHOULD behave :(
+          if ( ! p -> buffs_eclipse_solar -> check() 
+            && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) ) )
+          {
+            gain *= 2;
+            if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
+              gain += 1;
+          }
+          else 
+          {
+            if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
+              gain += 1;
+          }
         }
         trigger_eclipse_energy_gain( this, gain );
       }
@@ -3618,6 +3679,7 @@ void druid_t::init_rng()
   rng_euphoria            = get_rng( "euphoria"           );
   rng_fury_swipes         = get_rng( "fury_swipes"        );  
   rng_primal_fury         = get_rng( "primal_fury"        );
+  rng_wrath_eclipsegain   = get_rng( "wrath_eclipsegain"  );
 }
 
 // druid_t::init_actions ====================================================
