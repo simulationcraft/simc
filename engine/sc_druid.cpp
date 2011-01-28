@@ -2765,12 +2765,12 @@ struct starfire_t : public druid_spell_t
       if ( ! p -> buffs_eclipse_solar -> check() )
       {
         // BUG (FEATURE?) ON LIVE 
-        // #1 Euphoria does not proc, if you are 35 or more into the side the
-        // Eclipse bar is moving towards, >=35 for Starfire/towards Solar
+        // #1 Euphoria does not proc, if you are more than 35 into the side the
+        // Eclipse bar is moving towards, >35 for Starfire/towards Solar
         int gain = effect_base_value( 2 );
         if ( ! p -> buffs_eclipse_lunar -> check() 
           && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
-          && !( p -> bugs && p -> eclipse_bar_value >= 35 ) )
+          && !( p -> bugs && p -> eclipse_bar_value > 35 ) )
         {
           gain *= 2;
         }
@@ -3244,11 +3244,11 @@ struct wrath_t : public druid_spell_t
         int gain = - effect_base_value( 2 );
         
         // BUG (FEATURE?) ON LIVE 
-        // #1 Euphoria does not proc, if you are 35 or more into the side the
-        // Eclipse bar is moving towards, <=-35 for Wrath/towards Lunar
+        // #1 Euphoria does not proc, if you are more than 35 into the side the
+        // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
         if ( ! p -> buffs_eclipse_solar -> check() 
           && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
-          && !( p -> bugs && p -> eclipse_bar_value <= -35 ) )
+          && !( p -> bugs && p -> eclipse_bar_value < -35 ) )
         {
           gain *= 2;
           if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
