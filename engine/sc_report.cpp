@@ -2788,7 +2788,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   bool healer_in_the_raid = false;
   for ( player_t* q = sim -> player_list; q; q = q -> next )
   {
-    if ( q -> primary_role() == ROLE_HEAL == true )
+    if ( q -> primary_role() == ROLE_HEAL )
     {
       healer_in_the_raid = true;
       break;

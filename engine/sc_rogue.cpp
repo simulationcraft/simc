@@ -1985,7 +1985,6 @@ struct mutilate_t : public rogue_attack_t
 
   virtual void execute()
   {    
-    rogue_t* p = player -> cast_rogue();
     attack_t::execute();
     if( result_is_hit() )
     {
@@ -1998,7 +1997,7 @@ struct mutilate_t : public rogue_attack_t
       add_combo_points();
 
       if ( mh_strike -> result == RESULT_CRIT || 
-	   oh_strike -> result == RESULT_CRIT )
+           oh_strike -> result == RESULT_CRIT )
       {
         trigger_seal_fate( this );
       }
