@@ -564,12 +564,14 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
   }
 
-  if ( p -> max_deep_wounds_refresh > 0 &&
-       p -> max_deep_wounds_refresh < dot -> remains() )
+  if ( p -> max_deep_wounds_refresh > 0 )
   {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
-    p -> procs_munched_deep_wounds -> occur();
-    return;
+    if( ( p -> max_deep_wounds_refresh + sim -> aura_delay ) < dot -> remains() )
+    {
+      if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
+      p -> procs_munched_deep_wounds -> occur();
+      return;
+    }
   }
 
   if ( p -> active_deep_wounds -> travel_event ) 

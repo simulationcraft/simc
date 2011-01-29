@@ -852,12 +852,14 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
   }
 
-  if ( p -> max_ignite_refresh > 0 &&
-       p -> max_ignite_refresh < dot -> remains() )
+  if ( p -> max_ignite_refresh > 0 )
   {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
-    p -> procs_munched_ignite -> occur();
-    return;
+    if( (  p -> max_ignite_refresh + sim -> aura_delay ) < dot -> remains() )
+    {
+      if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
+      p -> procs_munched_ignite -> occur();
+      return;
+    }
   }
 
   if ( p -> active_ignite -> travel_event ) 
