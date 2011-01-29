@@ -49,9 +49,6 @@ struct mage_t : public player_t
   cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_early_frost;
 
-  // Events
-  event_t* ignite_delay_event;
-
   // Gains
   gain_t* gains_clearcasting;
   gain_t* gains_empowered_fire;
@@ -3198,7 +3195,6 @@ void mage_t::reset()
 {
   player_t::reset();
   active_water_elemental = 0;
-  ignite_delay_event = 0;
   rotation.reset();
   mana_gem_charges = 3;
 }

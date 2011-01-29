@@ -80,6 +80,7 @@ struct warrior_t : public player_t
 {
   bool instant_flurry_haste;
   int initial_rage;
+  double max_deep_wounds_refresh;
 
   // Active
   action_t* active_deep_wounds;
@@ -163,9 +164,6 @@ struct warrior_t : public player_t
   // Dots
   dot_t* dots_deep_wounds;
   dot_t* dots_rend;
-
-  // Events
-  event_t* deep_wounds_delay_event;
 
   // Gains
   gain_t* gains_anger_management;
@@ -330,6 +328,7 @@ struct warrior_t : public player_t
 
     instant_flurry_haste = true;
     initial_rage = 0;
+    max_deep_wounds_refresh = 6.0;
 
     create_talents();
     create_glyphs();
@@ -362,6 +361,7 @@ struct warrior_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
   virtual int       primary_role() SC_CONST;
   virtual int       target_swing();
+  virtual void      copy_from( player_t* source );
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -490,6 +490,9 @@ static void trigger_deep_wounds( action_t* a )
       may_crit = false;
       base_tick_time = 1.0;
       num_ticks = 6;
+      tick_may_crit = false;
+      hasted_ticks  = false;
+      dot_behavior  = DOT_REFRESH;
       reset(); // required since construction occurs after player_t::init()
 
       id = 12834;
@@ -510,6 +513,18 @@ static void trigger_deep_wounds( action_t* a )
     virtual double total_td_multiplier() SC_CONST
     {
       return target_multiplier;
+    }
+
+    virtual void travel( int travel_result, double deep_wounds_dmg )
+    {
+      warrior_attack_t::travel( travel_result, 0 );
+      base_td = deep_wounds_dmg / dot -> num_ticks;
+      trigger_blood_frenzy( this );
+    }
+
+    virtual double travel_time() 
+    { 
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
 
     virtual void tick()
@@ -549,76 +564,31 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
   }
 
-  // The Deep Wounds SPELL_AURA_APPLIED does not actually occur immediately.
-  // There is a short delay which can result in "munched" or "rolled" ticks.
-
-  if ( sim -> aura_delay == 0 )
+  if ( p -> max_deep_wounds_refresh > 0 &&
+       p -> max_deep_wounds_refresh < dot -> remains() )
   {
-    // Do not model the delay, so no munch/roll.
-
-    p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
-
-    if ( dot -> ticking )
-    {
-      p -> active_deep_wounds -> refresh_duration();
-    }
-    else
-    {
-      p -> active_deep_wounds -> schedule_travel();
-    }
-
-    trigger_blood_frenzy( p -> active_deep_wounds );
-
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
+    p -> procs_munched_deep_wounds -> occur();
     return;
   }
 
-  struct deep_wounds_delay_t : public event_t
+  if ( p -> active_deep_wounds -> travel_event ) 
   {
-    double deep_wounds_dmg;
-
-    deep_wounds_delay_t( sim_t* sim, warrior_t* p, double dmg ) : event_t( sim, p ), deep_wounds_dmg( dmg )
-    {
-      name = "Deep Wounds Delay";
-      sim -> add_event( this, sim -> gauss( sim -> aura_delay, sim -> aura_delay * 0.25 ) );
-    }
-    virtual void execute()
-    {
-      warrior_t* p = player -> cast_warrior();
-
-      p -> active_deep_wounds -> base_td = deep_wounds_dmg / p -> active_deep_wounds -> num_ticks;
-
-      if ( p -> active_deep_wounds -> dot -> ticking )
-      {
-        p -> active_deep_wounds -> refresh_duration();
-      }
-      else
-      {
-        p -> active_deep_wounds -> schedule_travel();
-      }
-
-      trigger_blood_frenzy( p -> active_deep_wounds );
-
-      if ( p -> deep_wounds_delay_event == this ) p -> deep_wounds_delay_event = 0;
-    }
-  };
-
-  if ( p -> deep_wounds_delay_event )
-  {
-    // There is an SPELL_AURA_APPLIED already in the queue.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Deep Wounds.", p -> name() );
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Deep Wounds due to Aura Delay.", p -> name() );
     p -> procs_munched_deep_wounds -> occur();
   }
+  
+  p -> active_deep_wounds -> direct_dmg = deep_wounds_dmg;
+  p -> active_deep_wounds -> schedule_travel();
 
-  p -> deep_wounds_delay_event = new ( sim ) deep_wounds_delay_t( sim, p, deep_wounds_dmg );
-
-  if ( dot -> ticking )
+  if ( p -> active_deep_wounds -> travel_event && dot -> ticking ) 
   {
-    if ( dot -> tick_event -> occurs() <
-         p -> deep_wounds_delay_event -> occurs() )
+    if ( dot -> tick_event -> occurs() < p -> active_deep_wounds -> travel_event -> occurs() )
     {
-      // Deep Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep Wounds will
-      // both tick -and- get rolled into the next Deep Wounds.
-      if ( sim -> log ) log_t::output( sim, "Player %s rolls Deep Wounds.", p -> name() );
+      // Deep_Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep_Wounds will
+      // both tick -and- get rolled into the next Deep_Wounds.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Deep_Wounds.", p -> name() );
       p -> procs_rolled_deep_wounds -> occur();
     }
   }
@@ -3205,7 +3175,6 @@ void warrior_t::reset()
 {
   player_t::reset();
   active_stance = STANCE_BATTLE;
-  deep_wounds_delay_event = 0;
 }
 
 // warrior_t::interrupt =====================================================
@@ -3370,12 +3339,24 @@ void warrior_t::create_options()
 
   option_t warrior_options[] =
   {
-    { "initial_rage", OPT_INT, &initial_rage },
-    { "instant_flurry_haste", OPT_BOOL, &instant_flurry_haste },
+    { "initial_rage",            OPT_INT,  &initial_rage            },
+    { "instant_flurry_haste",    OPT_BOOL, &instant_flurry_haste    },
+    { "max_deep_wounds_refresh", OPT_FLT,  &max_deep_wounds_refresh },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
   option_t::copy( options, warrior_options );
+}
+
+// warrior_t::copy_from ===================================================
+
+void warrior_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  warrior_t* p = source -> cast_warrior();
+  initial_rage            = p -> initial_rage;
+  instant_flurry_haste    = p -> instant_flurry_haste;
+  max_deep_wounds_refresh = p -> max_deep_wounds_refresh;
 }
 
 // warrior_t::decode_set ====================================================

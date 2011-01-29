@@ -3756,6 +3756,8 @@ static bool parse_combo_points( sim_t* sim,
   return true;
 }
 
+// rogue_t::copy_options ===================================================
+
 void rogue_t::create_options()
 {
   player_t::create_options();
@@ -3798,8 +3800,7 @@ void rogue_t::copy_from( player_t* source )
   player_t::copy_from( source );
   rogue_t* p = source -> cast_rogue();
   critical_strike_intervals_str = p -> critical_strike_intervals_str;
-
-  tricks_of_the_trade_target = p -> tricks_of_the_trade_target;
+  tricks_of_the_trade_target    = p -> tricks_of_the_trade_target;
 }
 
 // rogue_t::decode_set =====================================================
