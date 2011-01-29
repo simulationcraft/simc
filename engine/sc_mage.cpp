@@ -1227,7 +1227,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p -> buffs_arcane_blast -> check() )
     {
-      c *= p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2 -> base_value / 100.0;
+      c += c * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2 -> base_value / 100.0;
     }
     if ( p -> buffs_arcane_power -> check() )
     {
