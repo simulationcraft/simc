@@ -1,7 +1,7 @@
 
 QT += core gui network webkit
 
-LIBS += libwsock32
+win32:LIBS += libwsock32
 
 TARGET = ../SimulationCraft
 
@@ -30,6 +30,7 @@ SOURCES += engine/sc_enchant.cpp
 SOURCES += engine/sc_event.cpp
 SOURCES += engine/sc_expressions.cpp
 SOURCES += engine/sc_gear_stats.cpp
+SOURCES += engine/sc_heal.cpp
 SOURCES += engine/sc_http.cpp
 SOURCES += engine/sc_hunter.cpp
 SOURCES += engine/sc_item.cpp
