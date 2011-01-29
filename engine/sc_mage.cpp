@@ -2243,6 +2243,13 @@ struct mirror_image_t : public mage_spell_t
     p -> summon_pet( "mirror_image_3" );
     p -> buffs_tier10_4pc -> trigger();
   }
+
+  virtual double gcd() SC_CONST 
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> ptr && p -> buffs_arcane_power -> check() ) return 0;
+    return mage_spell_t::gcd();
+  }  
 };
 
 // Molten Armor Spell =======================================================
