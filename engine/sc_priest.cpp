@@ -3,20 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-/*
- * Log Cataclysm
- *
- * To do List:
- * Shadow:
- *
- * Other:
- * - Talent Revelations
- * - Talent Twirling Light
- * - Spell Holy Word: Chastice
- * - Spell Chakra Cooldown
- * - Talent State of Mind: implement function to increase/refresh duration of chakra by 4s
- */
-
 #include "simulationcraft.h"
 
 // ==========================================================================
@@ -101,21 +87,21 @@ struct priest_t : public player_t
 
 
     // Shadow
-    talent_t* darkness; //                    complete 12803
-    talent_t* improved_devouring_plague; //   complete 12803
-    talent_t* improved_mind_blast; //         complete 12803
-    talent_t* mind_melt; //                   complete 12803
-    talent_t* dispersion; //                  complete 12803
-    talent_t* improved_shadow_word_pain; //   complete 12803
-    talent_t* pain_and_suffering; //          complete 12803
-    talent_t* masochism; //                   new 12857
-    talent_t* shadow_form; //                 complete 12803
-    talent_t* twisted_faith; //               complete 12803
-    talent_t* veiled_shadows; //              complete 12803
-    talent_t* harnessed_shadows; //           complete 12803  
-    talent_t* shadowy_apparition; //          done: talent function 12803
-    talent_t* vampiric_embrace; //            complete 12803
-    talent_t* vampiric_touch; //              complete 12803
+    talent_t* darkness;
+    talent_t* improved_devouring_plague;
+    talent_t* improved_mind_blast;
+    talent_t* mind_melt;
+    talent_t* dispersion;
+    talent_t* improved_shadow_word_pain;
+    talent_t* pain_and_suffering;
+    talent_t* masochism;
+    talent_t* shadow_form;
+    talent_t* twisted_faith;
+    talent_t* veiled_shadows;
+    talent_t* harnessed_shadows;
+    talent_t* shadowy_apparition;
+    talent_t* vampiric_embrace;
+    talent_t* vampiric_touch;
     talent_t* sin_and_punishment;
     talent_t* phantasm;
     talent_t* paralysis;
@@ -2473,6 +2459,8 @@ struct dark_archangel_t : public priest_spell_t
    }
 };
 
+// Inner Focus Spell ===============================================
+
 struct inner_focus_t : public priest_spell_t
 {
   inner_focus_t( player_t* player, const std::string& options_str ) :
@@ -2499,6 +2487,9 @@ struct inner_focus_t : public priest_spell_t
     p -> buffs_inner_focus -> trigger();
   }
 };
+
+// Hymn of Hope Spell ===========================================
+
 struct hymn_of_hope_tick_t : public priest_spell_t
 {
   hymn_of_hope_tick_t( player_t* player ) :
@@ -2525,6 +2516,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
   }
 
 };
+
 struct hymn_of_hope_t : public priest_spell_t
 {
   hymn_of_hope_tick_t* hymn_of_hope_tick;
@@ -2551,7 +2543,7 @@ struct hymn_of_hope_t : public priest_spell_t
     }
 };
 
-// Experimental Heal Spells
+// Renew Spell ===================================================
 
 struct divine_touch_t : public priest_heal_t
 {
@@ -2572,6 +2564,7 @@ struct divine_touch_t : public priest_heal_t
     update_stats( HEAL_DIRECT );
   }
 };
+
 struct renew_t : public priest_heal_t
 {
   divine_touch_t* dt;
@@ -2633,7 +2626,7 @@ struct renew_t : public priest_heal_t
 
 };
 
-
+// Heal Spell =================================================
 
 struct _heal_t : public priest_heal_t
 {
@@ -2696,6 +2689,8 @@ struct _heal_t : public priest_heal_t
 
   }
 };
+
+// Flash Heal Spell ====================================================
 
 struct flash_heal_t : public priest_heal_t
 {
@@ -2766,6 +2761,8 @@ struct flash_heal_t : public priest_heal_t
    }
 };
 
+// Binding Heal Spell ===================================================
+
 struct binding_heal_t : public priest_heal_t
 {
 
@@ -2815,6 +2812,8 @@ struct binding_heal_t : public priest_heal_t
     return c;
   }
 };
+
+// Greater Heal Spell =============================================
 
 struct greater_heal_t : public priest_heal_t
 {
@@ -2890,6 +2889,9 @@ struct greater_heal_t : public priest_heal_t
     return c;
   }
 };
+
+// Prayer of Healing Spell ========================================
+
 struct glyph_prayer_of_healing_t : public priest_heal_t
 {
   glyph_prayer_of_healing_t( player_t* player ) :
@@ -3000,6 +3002,8 @@ struct prayer_of_healing_t : public priest_heal_t
   }
 };
 
+// Circle of Healing =======================================================
+
 struct circle_of_healing_t : public priest_heal_t
 {
 
@@ -3046,6 +3050,8 @@ struct circle_of_healing_t : public priest_heal_t
   }
 
 };
+
+// Prayer of Mending Spell ================================================
 
 struct prayer_of_mending_t : public priest_heal_t
 {
@@ -3102,6 +3108,8 @@ struct prayer_of_mending_t : public priest_heal_t
     }
   }
 };
+
+// Power Word: Shield Spell ==============================================
 
 struct glyph_power_word_shield_t : public priest_heal_t
 {
@@ -3181,7 +3189,7 @@ struct power_word_shield_t : public priest_absorb_t
 };
 
 
-// Penance Spell ===============================================================
+// Penance Heal Spell ===============================================================
 
 struct penance_heal_tick_t : public priest_heal_t
 {
@@ -3262,6 +3270,9 @@ struct penance_heal_t : public priest_heal_t
     return c;
   }
 };
+
+// Holy Word Spell =========================================================
+
 struct holy_word_sanctuary_tick_t : public priest_heal_t
 {
   holy_word_sanctuary_tick_t( player_t* player ) :
@@ -3413,6 +3424,7 @@ struct holy_word_t : public priest_spell_t
   }
 };
 
+// Lightwell Spell ===================================================
 
 struct lightwell_hot_t : public priest_heal_t
 {
@@ -3885,6 +3897,7 @@ void priest_t::init_talents()
   talents.borrowed_time               = find_talent( "Borrowed Time" );
   talents.strength_of_soul            = find_talent( "Strength of Soul" );
   talents.divine_aegis                = find_talent( "Divine Aegis" );
+  // Pain Supression
   talents.train_of_thought            = find_talent( "Train of Thought" );
   talents.grace                       = find_talent( "Grace" );
   talents.power_word_barrier          = find_talent( "Power Word: Barrier" );
@@ -3894,6 +3907,7 @@ void priest_t::init_talents()
   talents.improved_renew              = find_talent( "Improved Renew" );
   talents.empowered_healing           = find_talent( "Empowered Healing" );
   talents.divine_fury                 = find_talent( "Divine Fury" );
+  // Desperate Prayer
   talents.surge_of_light              = find_talent( "Surge of Light" );
   talents.inspiration                 = find_talent( "Inspiration" );
   talents.divine_touch                = find_talent( "Divine Touch" );
@@ -3911,22 +3925,22 @@ void priest_t::init_talents()
 
 
   // Shadow
-  talents.darkness                    = find_talent( "Darkness" ); //           complete 12803
-  talents.improved_devouring_plague   = find_talent( "Improved Devouring Plague" );  //   complete 12803
-  talents.improved_mind_blast         = find_talent( "Improved Mind Blast" ); //     complete 12803
-  talents.mind_melt                   = find_talent( "Mind Melt" ); //           complete 12803
-  talents.dispersion                  = find_talent( "Dispersion" ); //           complete 12803
-  talents.improved_shadow_word_pain   = find_talent( "Improved Shadow Word: Pain" ); //   complete 12803
-  talents.pain_and_suffering          = find_talent( "Pain and Suffering" ); //       complete 12803
-  talents.masochism                   = find_talent( "Masochism" ); // new 12857
+  talents.darkness                    = find_talent( "Darkness" );
+  talents.improved_devouring_plague   = find_talent( "Improved Devouring Plague" );
+  talents.improved_mind_blast         = find_talent( "Improved Mind Blast" );
+  talents.mind_melt                   = find_talent( "Mind Melt" );
+  talents.dispersion                  = find_talent( "Dispersion" );
+  talents.improved_shadow_word_pain   = find_talent( "Improved Shadow Word: Pain" );
+  talents.pain_and_suffering          = find_talent( "Pain and Suffering" );
+  talents.masochism                   = find_talent( "Masochism" );
 
-  talents.shadow_form                 = find_talent( "Shadowform" ); //         complete 12803
-  talents.twisted_faith               = find_talent( "Twisted Faith" ); //         complete 12803
-  talents.veiled_shadows              = find_talent( "Veiled Shadows" ); //         complete 12803
-  talents.harnessed_shadows           = find_talent( "Harnessed Shadows" ); //        complete 12803  
-  talents.shadowy_apparition          = find_talent( "Shadowy Apparition" ); //       done: talent function 12803
-  talents.vampiric_embrace            = find_talent( "Vampiric Embrace" ); //       complete 12803
-  talents.vampiric_touch              = find_talent( "Vampiric Touch" ); //         complete 12803
+  talents.shadow_form                 = find_talent( "Shadowform" );
+  talents.twisted_faith               = find_talent( "Twisted Faith" );
+  talents.veiled_shadows              = find_talent( "Veiled Shadows" );
+  talents.harnessed_shadows           = find_talent( "Harnessed Shadows" );
+  talents.shadowy_apparition          = find_talent( "Shadowy Apparition" );
+  talents.vampiric_embrace            = find_talent( "Vampiric Embrace" );
+  talents.vampiric_touch              = find_talent( "Vampiric Touch" );
   talents.sin_and_punishment          = find_talent( "Sin and Punishment" );
   talents.paralysis                   = find_talent( "Paralysis" );
   talents.phantasm                    = find_talent( "Phantasm" );
@@ -3946,9 +3960,9 @@ void priest_t::init_spells()
 
   passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment" );
   passive_spells.spiritual_healing    = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
-  passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power" ); //             done: talent function 12803          incomplete: link with main talent tree
-  passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", 95861 ); //           done: talent function 12803
-  passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation" ); //           done: talent function 12803
+  passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power" );
+  passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", 95861 );
+  passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation" );
 
   passive_spells.shield_discipline    = new passive_spell_t( this, "shield_discipline", "Shield Discipline" );
 
