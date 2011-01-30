@@ -5,6 +5,7 @@ origin="http://chardev.org/?profile=19782"
 level=85
 race=troll
 use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231
 glyphs=spirit_tap/mind_flay/shadow_word_death/shadow_word_pain
 actions=flask,type=draconic_mind
@@ -54,14 +55,14 @@ ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_72mastery_72spi_
 # gear_agility=20
 # gear_stamina=5171
 # gear_intellect=4338
-# gear_spirit=1586
+# gear_spirit=1587
 # gear_spell_power=1954
 # gear_hit_rating=155
 # gear_crit_rating=196
 # gear_haste_rating=2224
 # gear_mastery_rating=917
 # gear_armor=7817
-# meta_gem=ember_shadowspirit
+# meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # back=ritssyns_ruminous_drape,enchant=lightweave_embroidery

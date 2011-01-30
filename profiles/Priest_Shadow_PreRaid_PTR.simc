@@ -5,6 +5,7 @@ origin="http://chardev.org/?profile=22524"
 level=85
 race=troll
 use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231
 glyphs=spirit_tap/fading/fortitude/levitate/mind_flay/shadow_word_death/shadow_word_pain
 actions=flask,type=draconic_mind
@@ -53,13 +54,13 @@ ranged=wand_of_untainted_power,heroic=1,ilevel=346,quality=rare,stats=63haste_95
 # gear_agility=20
 # gear_stamina=4934
 # gear_intellect=3811
-# gear_spirit=963
+# gear_spirit=964
 # gear_spell_power=1955
 # gear_hit_rating=773
 # gear_crit_rating=365
 # gear_haste_rating=1754
 # gear_mastery_rating=1279
 # gear_armor=7499
-# meta_gem=ember_shadowspirit
+# meta_gem=burning_shadowspirit
 # back=solar_wind_cloak,heroic=1,enchant=lightweave_embroidery
 # main_hand=chelleys_staff_of_dark_mending,weapon=staff_2.40speed_443min_666max,enchant=power_torrent

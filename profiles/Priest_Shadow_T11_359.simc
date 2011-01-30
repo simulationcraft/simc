@@ -5,6 +5,7 @@ origin="http://chardev.org/?profile=22470"
 level=85
 race=troll
 use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231
 glyphs=spirit_tap/fading/fortitude/levitate/mind_flay/shadow_word_death/shadow_word_pain
 actions=flask,type=draconic_mind
@@ -54,7 +55,7 @@ ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_72mastery_72spi_
 # gear_agility=20
 # gear_stamina=5171
 # gear_intellect=4358
-# gear_spirit=1571
+# gear_spirit=1572
 # gear_spell_power=1954
 # gear_hit_rating=177
 # gear_crit_rating=623
