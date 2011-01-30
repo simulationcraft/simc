@@ -696,7 +696,7 @@ static void trigger_enrage( attack_t* a )
   if ( ! p -> talents.enrage -> ok() )
     return;
 
-  // FIXME - Appears to not proc when death wish is active, can proc when berserker rage is up, unsure on unholy frenzy
+  // Can't proc while DW is active as of 403
   if ( p -> buffs_death_wish -> check() )
     return;
 
@@ -1285,29 +1285,24 @@ struct cleave_t : public warrior_attack_t
     id = 845;
     parse_data( p -> player_data );
 
-    aoe              = true;
-	
-	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
-	if ( p -> ptr )
-	{
-		base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-	}
-	else
-	{	
-		base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
-                               + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-	}
-
     // Cleave's values can't be derived by parse_data() for now.
-	// 4.0.6 PTR - Cleave  damage has been reduced by 20%.
-	if ( p -> ptr )
-		direct_power_mod = 0.4496;
-	else 
-		direct_power_mod = 0.562;
-
+    // 4.0.6 PTR - Cleave  damage has been reduced by 20%.
+    direct_power_mod = ( p -> ptr ) ? 0.4496 : 0.562;
     base_dd_min      = 6;
     base_dd_max      = 6;
+    aoe              = true;
+
+    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+    if ( p -> ptr )
+    {
+      base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+    }
+    else
+    {   
+      base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
+                             + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+    }
   }
 
   virtual void assess_damage( double amount, int dmg_type )
@@ -1412,11 +1407,11 @@ struct devastate_t : public warrior_attack_t
     id = 20243;
     parse_data( p -> player_data );
 
-	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     if ( p -> ptr )
     {
-	  base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+      base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     }
 
     base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0;
@@ -1547,18 +1542,13 @@ struct heroic_strike_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
 
-	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-	if ( !p -> ptr )
-		base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+    if ( ! p -> ptr )
+      base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
     base_dd_max       = 8;
-	
-	//4.0.6 PTR - Heroic Strike damage has been reduced by 20%.
-	if ( p -> ptr )
-		direct_power_mod = 0.6;
-	else
-		direct_power_mod  = 0.75;
+    direct_power_mod  = ( p -> ptr ) ? 0.6 : 0.75;
   }
 
   virtual void execute()
@@ -1602,20 +1592,20 @@ struct mortal_strike_t : public warrior_attack_t
 
     id = 12294;
     parse_data( p -> player_data );
-	
-	// 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-	// It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
-	if ( p -> ptr )
-	{
-		base_multiplier            *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
-										  + p -> set_bonus.tier11_2pc_melee() * 0.05
-										  + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-	}
-	else
-	{
-		base_multiplier            *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
-										  + p -> set_bonus.tier11_2pc_melee() * 0.05;
-	}
+   
+    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
+    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
+    if ( p -> ptr )
+    {
+      base_multiplier *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+                             + p -> set_bonus.tier11_2pc_melee() * 0.05
+                             + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+    }
+    else
+    {
+      base_multiplier *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+                             + p -> set_bonus.tier11_2pc_melee() * 0.05;
+    }
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1811,8 +1801,8 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack -> update_result( DMG_DIRECT );
       if ( oh_attack ) 
       {
-	oh_attack -> execute();
-	oh_attack -> update_result( DMG_DIRECT );
+        oh_attack -> execute();
+        oh_attack -> update_result( DMG_DIRECT );
       }
     }
     p -> buffs_tier11_4pc_melee -> trigger();
@@ -1822,9 +1812,9 @@ struct raging_blow_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     if ( ! ( p -> buffs_berserker_rage -> check() || 
-	     p -> buffs_death_wish     -> check() || 
-	     p -> buffs_enrage         -> check() ||
-	     p -> buffs.unholy_frenzy  -> check() ) )
+             p -> buffs_death_wish     -> check() || 
+             p -> buffs_enrage         -> check() ||
+             p -> buffs.unholy_frenzy  -> check() ) )
       return false;
     return warrior_attack_t::ready();
   }
@@ -2123,6 +2113,10 @@ struct slam_t : public warrior_attack_t
     parse_options( NULL, options_str );
     may_crit = false;
 
+    // Ensure we include racial expertise
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
     mh_attack = new slam_attack_t( p );
     mh_attack -> weapon = &( p -> main_hand_weapon );
 
@@ -2161,8 +2155,8 @@ struct slam_t : public warrior_attack_t
       mh_attack -> update_result( DMG_DIRECT );
       if ( oh_attack ) 
       {
-	oh_attack -> execute();
-	oh_attack -> update_result( DMG_DIRECT );
+        oh_attack -> execute();
+        oh_attack -> update_result( DMG_DIRECT );
       }
     }
     p -> buffs_bloodsurge -> decrement();
@@ -3247,7 +3241,7 @@ void warrior_t::regen( double periodicity )
   }
 
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-			      resource_max    [ RESOURCE_RAGE] );
+                              resource_max    [ RESOURCE_RAGE] );
 }
 
 // warrior_t::resource_loss =================================================
