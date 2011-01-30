@@ -3038,7 +3038,7 @@ void mage_t::init_actions()
             action_list_str += "/use_item,name=";
             action_list_str += items[ i ].name();
           }
-          if ( items[ i ].name() == "shard_of_woe" )
+          if ( ! strcmp( items[ i ].name(), "shard_of_woe" ) )
           {
           	action_list_str += ",if=cooldown.evocation.remains<26";
           	action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains<86";
