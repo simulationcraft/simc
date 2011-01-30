@@ -3023,6 +3023,12 @@ void mage_t::init_actions()
 
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
+    if ( level > 80 )
+    {
+      action_list_str += "/volcanic_potion,if=!in_combat";
+    }
+    // Counterspell
+    action_list_str += "/counterspell";
     // Usable Items
     int num_items = ( int ) items.size();
         for ( int i=0; i < num_items; i++ )
@@ -3032,18 +3038,22 @@ void mage_t::init_actions()
             action_list_str += "/use_item,name=";
             action_list_str += items[ i ].name();
           }
+          if ( items[ i ].name() == "shard_of_woe" )
+          {
+          	action_list_str += ",if=cooldown.evocation.remains<26";
+          	action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains<86";
+          }
         }
     //Potions
     if ( level > 80 )
     {
-      action_list_str += "/volcanic_potion,if=!in_combat";
       if ( primary_tree() == TREE_FROST )
       {
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
       }
       else if ( primary_tree() == TREE_ARCANE )
       {
-        action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
+        action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
       }
       else
       {
@@ -3055,8 +3065,6 @@ void mage_t::init_actions()
       action_list_str += "/speed_potion,if=!in_combat";
       action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
     }
-    // Counterspell
-    action_list_str += "/counterspell";
     // Race Abilities
     if ( race == RACE_TROLL )
     {
@@ -3075,17 +3083,17 @@ void mage_t::init_actions()
     // Arcane
     if ( primary_tree() == TREE_ARCANE )
     {
-      if ( level >= 50 ) action_list_str += "/mirror_image,if=target.time_to_die>=30";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<48";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
-      action_list_str += "/mana_gem,if=target.time_to_die<48";
-      action_list_str += "/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack>=3";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<40";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
+      action_list_str += "/mana_gem,if=target.time_to_die<40";
+      action_list_str += "/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
+      if ( level >= 50 ) action_list_str += "/mirror_image,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=15";
       if ( talents.presence_of_mind -> rank() && level >= 20 )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<48&mana_pct>5";
+      if ( level >= 20 ) action_list_str += "/arcane_blast,if=target.time_to_die<40&mana_pct>5";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
