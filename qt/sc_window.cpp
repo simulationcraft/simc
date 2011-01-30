@@ -474,6 +474,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
+  fightVarianceChoice->setCurrentIndex( 2 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
