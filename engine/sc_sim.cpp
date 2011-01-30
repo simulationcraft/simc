@@ -1647,6 +1647,8 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 
 double sim_t::iteration_adjust()
 {
+  if ( iterations <= 1 )
+    return 0.0;
   return 2.0 * ( ( current_iteration / (double) iterations ) - 0.5 );
 }
 
