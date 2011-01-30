@@ -1569,8 +1569,10 @@ struct aimed_shot_t : public hunter_attack_t
 
     if( ! p -> ptr )
       direct_power_mod = 0.48;
-    else
+    else {
       direct_power_mod = 1.44;
+      base_execute_time = 2.90;
+    }
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
