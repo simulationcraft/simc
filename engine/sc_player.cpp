@@ -559,12 +559,14 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug ) log_t::output( sim, "Initializing Players." );
 
   bool too_quiet = true;
+  bool zero_dds = true;
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
+    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && !p -> is_pet() ) zero_dds = false;
   }
 
   if ( too_quiet && ! sim -> debug )
@@ -572,6 +574,10 @@ bool player_t::init( sim_t* sim )
     sim -> errorf( "No active players in sim!" );
     return false;
   }
+
+  if ( zero_dds && ! sim -> debug )
+    sim -> fixed_time = true;
+
 
   if ( sim -> debug ) log_t::output( sim, "Building Parties." );
 
@@ -2755,15 +2761,15 @@ double player_t::resource_loss( int       resource,
 
   if ( sim -> infinite_resource[ resource ] == 0 )
   {
-    resource_current[ resource ] -= amount;
-    actual_amount = amount;
+    actual_amount = std::min( amount, resource_current[ resource ] );
+    resource_current[ resource ] -= actual_amount;
   }
   else
   {
     actual_amount = 0;
   }
 
-  resource_lost[ resource ] += amount;
+  resource_lost[ resource ] += actual_amount;
 
   if ( resource == RESOURCE_MANA )
   {
@@ -2772,7 +2778,7 @@ double player_t::resource_loss( int       resource,
 
   if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action, (void*) &actual_amount );
 
-  if ( sim -> debug ) log_t::output( sim, "Player %s loses %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
+  if ( sim -> debug ) log_t::output( sim, "Player %s loses %.2f (%.2f) %s", name(), actual_amount, amount, util_t::resource_type_string( resource ) );
 
   return actual_amount;
 }

@@ -1195,6 +1195,7 @@ void sim_t::analyze()
     b -> analyze();
 
   total_dmg = 0;
+  total_heal = 0;
   total_seconds /= iterations;
 
   for ( player_t* p = player_list; p; p = p -> next )

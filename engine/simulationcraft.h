@@ -3735,25 +3735,29 @@ struct spell_t : public action_t
 
 struct heal_t : public spell_t
 {
-  player_t* heal_target;
-  double actual_heal, overheal;
+  std::vector<player_t*> heal_target;
+  std::string target_str;
+
+  // Reporting
+  double total_heal, actual_heal, overheal;
 
   void _init_heal_t();
   heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
   virtual void player_buff();
-  void target_buff( int dmg_type );
+  virtual void target_buff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
-  virtual void assess_damage( double amount,
+  virtual void assess_heal( player_t* t, double amount,
                                   int    dmg_type );
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual void update_stats( int type );
-  virtual void travel( int travel_result, double travel_dmg );
+  virtual void schedule_travel_heal( player_t* );
+  virtual void travel_heal( player_t*, int travel_result, double travel_dmg );
   virtual void tick();
   virtual void last_tick();
   virtual player_t* find_greatest_difference_player();
@@ -3766,24 +3770,28 @@ struct heal_t : public spell_t
 
 struct absorb_t : public spell_t
 {
-  player_t* heal_target;
-  stats_t* overheal_stats;
+  std::vector<player_t*> heal_target;
+  std::string target_str;
+
+  // Reporting
+  double total_heal, actual_heal, overheal;
 
   void _init_absorb_t();
   absorb_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   absorb_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
   virtual void player_buff();
-  virtual void target_debuff( int dmg_type );
+  virtual void target_buff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
-  virtual void assess_damage( double amount,
-                                  int    dmg_type );
+  virtual void assess_heal( player_t* t, double amount,
+                                    int    dmg_type );
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual void update_stats( int type );
-  virtual void travel( int travel_result, double travel_dmg );
+  virtual void schedule_travel_heal( player_t* );
+  virtual void travel_heal( player_t*, int travel_result, double travel_dmg );
 
 };
 
@@ -3943,6 +3951,18 @@ struct action_travel_event_t : public event_t
   int result;
   double damage;
   action_travel_event_t( sim_t* sim, action_t* a, double time_to_travel );
+  virtual void execute();
+};
+
+// Heal Travel Event =======================================================
+
+struct heal_travel_event_t : public event_t
+{
+  heal_t* action;
+  player_t* target;
+  int result;
+  double damage;
+  heal_travel_event_t( sim_t* sim, player_t* p, heal_t* a, double time_to_travel );
   virtual void execute();
 };
 

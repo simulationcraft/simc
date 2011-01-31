@@ -211,6 +211,7 @@ void stats_t::analyze()
   resource_consumed /= num_iterations;
 
   num_executes /= num_iterations;
+  num_execute_results /= num_iterations;
   num_ticks    /= num_iterations;
 
   rpe = resource_consumed / num_executes;

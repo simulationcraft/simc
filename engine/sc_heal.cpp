@@ -21,12 +21,21 @@
 
   void heal_t::_init_heal_t()
   {
-    may_crit          = true;
-    tick_may_crit     = true;
+
+    player_t* p = sim -> find_player( "Fluffy_Tank" );
+    if ( p ) heal_target.push_back( p );
+    else heal_target.push_back( player );
+
+    target=0;
+    target_str = "";
+    total_heal = actual_heal = overheal = 0;
+
+
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
-    target=0;
-    heal_target = player;
+    may_crit          = true;
+    tick_may_crit     = true;
+
     stats -> type = STATS_HEAL;
 
   }
@@ -97,7 +106,7 @@
 
 // heal_t::target_buff ====================================================
 
-  void heal_t::target_buff( int dmg_type )
+  void heal_t::target_buff( player_t* t, int dmg_type )
   {
     target_multiplier            = 1.0;
     target_hit                   = 0;
@@ -137,12 +146,17 @@
 
     player_buff();
 
-    target_buff( HEAL_DIRECT );
+    total_heal = 0;
 
-    calculate_result();
+    for ( unsigned int i = 0; i < heal_target.size(); i++ )
+    {
+      target_buff( heal_target[i], HEAL_DIRECT );
 
-    direct_dmg = calculate_direct_damage();
-    schedule_travel();
+      calculate_result();
+
+      direct_dmg = calculate_direct_damage();
+      schedule_travel_heal( heal_target[i] );
+    }
 
     consume_resource();
 
@@ -157,26 +171,27 @@
 
 // heal_t::asses_damage ========================================================
 
-  void heal_t::assess_damage( double amount,
+  void heal_t::assess_heal( player_t* t, double amount,
                                 int    dmg_type )
   {
-    actual_heal = heal_target -> resource_gain( RESOURCE_HEALTH, amount );
+    total_heal += amount;
+    actual_heal += t -> resource_gain( RESOURCE_HEALTH, amount, 0, this );
+
 
     if ( dmg_type == HEAL_DIRECT )
     {
-      overheal = direct_dmg - actual_heal;
 
       if ( sim -> log )
       {
         log_t::output( sim, "%s %s heals %s for %.0f (%s)",
                        player -> name(), name(),
-                       heal_target -> name(), amount,
+                       t -> name(), amount,
                        util_t::result_type_string( result ) );
       }
       if ( sim -> csv_file )
       {
         fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
-                 sim->current_iteration, player->name(), name(), target->name(),
+                 sim->current_iteration, player->name(), name(), t->name(),
                  util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
       }
 
@@ -191,7 +206,7 @@
         log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f heal (%s)",
                        player -> name(), name(),
                        dot -> current_tick, dot -> num_ticks,
-                       heal_target -> name(), amount,
+                       heal_target[0] -> name(), amount,
                        util_t::result_type_string( result ) );
         log_t::damage_event( this, amount, dmg_type );
       }
@@ -365,22 +380,44 @@
   {
     if ( type == HEAL_DIRECT )
     {
-      stats -> add( direct_dmg, type, result, time_to_execute );
+      stats -> add( 0, type, result, time_to_execute );
     }
     else if ( type == HEAL_OVER_TIME )
     {
-      stats -> add( tick_dmg, type, result, time_to_tick );
+      stats -> add( 0, type, result, time_to_tick );
     }
     else assert( 0 );
   }
 
+  // heal_t::schedule_travel ===============================================
+
+  void heal_t::schedule_travel_heal( player_t* p )
+  {
+    time_to_travel = travel_time();
+
+    if ( time_to_travel == 0 )
+    {
+      travel_heal( p, result, direct_dmg );
+    }
+    else
+    {
+      if ( sim -> log )
+      {
+        log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
+      }
+
+      travel_event = new ( sim ) heal_travel_event_t( sim, p, this, time_to_travel );
+    }
+  }
+
 // heal_t::travel ============================================================
 
-  void heal_t::travel( int travel_result, double travel_dmg=0 )
+  void heal_t::travel_heal( player_t* t, int travel_result, double travel_dmg=0 )
   {
-    if ( direct_dmg > 0 )
+    if ( travel_dmg > 0 )
     {
-      assess_damage( travel_dmg, HEAL_DIRECT );
+      assess_heal( t, travel_dmg, HEAL_DIRECT );
+      stats -> add_result( travel_dmg, HEAL_DIRECT, travel_result );
     }
     if ( num_ticks > 0 )
     {
@@ -420,7 +457,7 @@
 
     double save_target_crit = target_crit;
 
-    target_buff( HEAL_OVER_TIME );
+    target_buff( heal_target[0], HEAL_OVER_TIME );
 
     target_crit = save_target_crit;
 
@@ -440,7 +477,9 @@
 
     tick_dmg = calculate_tick_damage();
 
-    assess_damage( tick_dmg, HEAL_OVER_TIME );
+    stats -> add_result( tick_dmg, HEAL_OVER_TIME, result );
+
+    assess_heal( heal_target[0], tick_dmg, HEAL_OVER_TIME );
 
     action_callback_t::trigger( player -> tick_callbacks, this );
 
@@ -451,7 +490,7 @@
 
   void heal_t::last_tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), heal_target -> name() );
+    if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), heal_target[0] -> name() );
 
     dot -> ticking = 0;
     time_to_tick = 0;
@@ -506,7 +545,7 @@
     assert( dot -> tick_event );
 
     player_buff();
-    target_buff( HEAL_OVER_TIME );
+    target_buff( heal_target[0], HEAL_OVER_TIME );
 
     dot -> action = this;
     dot -> current_tick = 0;
@@ -535,8 +574,15 @@
 
     void absorb_t::_init_absorb_t()
     {
-      weapon_multiplier = 0.0;
+      player_t* p = sim -> find_player( "Fluffy_Tank" );
+          if ( p ) heal_target.push_back( p );
+          else heal_target.push_back( player );
+
       target=0;
+      target_str = "";
+      total_heal = actual_heal = overheal = 0;
+
+      weapon_multiplier = 0.0;
 
       stats -> type = STATS_ABSORB;
     }
@@ -544,7 +590,7 @@
   // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
 
     absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) :
-        spell_t( n, sname, player, t ), heal_target( player )
+        spell_t( n, sname, player, t )
     {
       _init_absorb_t();
     }
@@ -552,7 +598,7 @@
   // absorb_t::absorb_t ======== absorb Constructor by Spell ID =====================
 
     absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) :
-        spell_t( n, id, player, t ), heal_target( player )
+        spell_t( n, id, player, t )
     {
       _init_absorb_t();
     }
@@ -578,8 +624,6 @@
 
       player_t* p = player;
 
-      player_hit  = p -> composite_spell_hit();
-
       player_multiplier    = p -> composite_player_multiplier   ( school );
       player_dd_multiplier = p -> composite_player_dd_multiplier( school );
       player_td_multiplier = p -> composite_player_td_multiplier( school );
@@ -597,9 +641,9 @@
                        name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
     }
 
-  // absorb_t::target_debuff ====================================================
+  // absorb_t::target_debu ====================================================
 
-    void absorb_t::target_debuff( int dmg_type )
+    void absorb_t::target_buff( player_t* t, int dmg_type )
     {
       target_multiplier            = 1.0;
       target_hit                   = 0;
@@ -639,14 +683,17 @@
 
       player_buff();
 
-      target_debuff( ABSORB );
+      for ( unsigned int i = 0; i < heal_target.size(); i++ )
+      {
+         target_buff( heal_target[i], HEAL_DIRECT );
 
-      calculate_result();
+         calculate_result();
+
+         direct_dmg = calculate_direct_damage();
+         schedule_travel_heal( heal_target[i] );
+       }
 
       consume_resource();
-
-      direct_dmg = calculate_direct_damage();
-      schedule_travel();
 
       update_ready();
 
@@ -657,32 +704,33 @@
       if ( repeating && ! proc ) schedule_execute();
     }
 
-  // absorb_t::asses_damage ========================================================
+// absorb_t::asses_heal ========================================================
 
-    void absorb_t::assess_damage( double amount,
+    void absorb_t::assess_heal( player_t* t, double amount,
                                   int    dmg_type )
     {
-      heal_target -> resource_gain( RESOURCE_HEALTH, amount );
+      total_heal += amount;
+      actual_heal += t -> resource_gain( RESOURCE_HEALTH, amount, 0, this );
 
       if ( dmg_type == ABSORB )
       {
-
         if ( sim -> log )
         {
-          log_t::output( sim, "%s %s adds absorb %s for %.0f (%s)",
+          log_t::output( sim, "%s %s heals %s for %.0f (%s)",
                          player -> name(), name(),
-                         heal_target -> name(), amount,
+                         t -> name(), amount,
                          util_t::result_type_string( result ) );
         }
         if ( sim -> csv_file )
         {
           fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
-                   sim->current_iteration, player->name(), name(), target->name(),
+                   sim->current_iteration, player->name(), name(), t->name(),
                    util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
         }
 
         action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
       }
+
       else
         assert( 0 );
 
@@ -801,17 +849,37 @@
     {
       if ( type == ABSORB )
       {
-        stats -> add( direct_dmg, type, result, time_to_execute );
+        stats -> add( 0, type, result, time_to_execute );
       }
       else assert( 0 );
     }
 
-  // absorb_t::travel ============================================================
+    // absorb_t::schedule_travel ===============================================
 
-    void absorb_t::travel( int travel_result, double travel_dmg=0 )
-    {
-      if ( direct_dmg > 0 )
+      void absorb_t::schedule_travel_heal( player_t* p )
       {
-        assess_damage( travel_dmg, ABSORB );
+        time_to_travel = travel_time();
+
+        travel_heal( p, result, direct_dmg );
+
+     /*   else
+        {
+          if ( sim -> log )
+          {
+            log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
+          }
+
+          travel_event = new ( sim ) heal_travel_event_t( sim, p, this, time_to_travel );
+        }*/
       }
-    }
+
+    // absorb_t::travel ============================================================
+
+      void absorb_t::travel_heal( player_t* t, int travel_result, double travel_dmg=0 )
+      {
+        if ( travel_dmg > 0 )
+        {
+          assess_heal( t, travel_dmg, ABSORB );
+          stats -> add_result( travel_dmg, ABSORB, travel_result );
+        }
+      }

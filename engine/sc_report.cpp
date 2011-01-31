@@ -2017,7 +2017,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
-    "                <td class=\"right small\">%.1f</td>\n"
+    "                <td class=\"right small\">%.1f/%.1f</td>\n"
     "                <td class=\"right small\">%.2fsec</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
@@ -2044,7 +2044,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> portion_dps,
     s -> portion_dmg * 100,
     s -> resource_portion * 100,
-    s -> num_executes,
+    s -> num_executes, s -> num_execute_results,
     s -> frequency,
     s -> dpe,
     s -> dpet,
