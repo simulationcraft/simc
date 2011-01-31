@@ -4155,8 +4155,7 @@ int druid_t::target_swing()
 
   if ( result == RESULT_HIT    ||
        result == RESULT_CRIT   ||
-       result == RESULT_GLANCE ||
-       result == RESULT_BLOCK  )
+       result == RESULT_GLANCE )
   {
     resource_gain( RESOURCE_RAGE, 100.0, gains_incoming_damage );  // FIXME! Assume it caps rage every time.
   }
@@ -4167,20 +4166,7 @@ int druid_t::target_swing()
       resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
     }
   }
-  if ( result == RESULT_PARRY )
-  {
-    if ( main_hand_attack && main_hand_attack -> execute_event )
-    {
-      double swing_time = main_hand_attack -> time_to_execute;
-      double max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
-      if ( max_reschedule > 0 )
-      {
-        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
-        procs_parry_haste -> occur();
-      }
-    }
-  }
   return result;
 }
 
