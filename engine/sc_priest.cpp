@@ -1754,12 +1754,15 @@ struct power_infusion_t : public priest_spell_t
     check_talent( p -> talents.power_infusion -> rank() );
 
     std::string target_str = p -> power_infusion_target_str;
+
     option_t options[] =
     {
       { "target", OPT_STRING, &target_str },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
+    harmful = false;
 
     if ( target_str.empty() )
     {
@@ -2333,23 +2336,31 @@ struct archangel_t : public priest_spell_t
 
     check_talent( p -> talents.archangel -> rank() );
 
-    option_t options[] =
-        {
-          { NULL, OPT_UNKNOWN, NULL }
-        };
-    parse_options( options, options_str );
-
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-    if ( p -> buffs_holy_evangelism -> up())
+
+    double delta = p -> buffs_holy_evangelism -> last_trigger - p -> buffs_dark_evangelism -> last_trigger;
+
+    if ( p -> buffs_holy_evangelism -> up() && delta > 0)
     {
+      cooldown -> duration = p -> player_data.effect_base_value( p -> player_data.spell_effect_id( 87151, 2 ) );
       p -> buffs_holy_archangel -> trigger( p -> buffs_holy_evangelism -> stack() , 1.0, 1.0 );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
+
+    else if ( p -> buffs_dark_evangelism -> up() && delta < 0 )
+    {
+      cooldown -> duration = p -> player_data.effect_base_value( p -> player_data.spell_effect_id( 87151, 3 ) );
+      p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
+      p -> buffs_dark_evangelism -> expire();
+    }
+
     spell_t::execute();
   }
 
@@ -2357,13 +2368,10 @@ struct archangel_t : public priest_spell_t
    {
     priest_t* p = player -> cast_priest();
 
-    if ( ! priest_spell_t::ready() )
-         return false;
-    if ( ! p -> buffs_holy_evangelism -> up() )
+    if ( ! ( p -> buffs_holy_evangelism -> up() || p -> buffs_dark_evangelism -> up() ) )
        return false;
 
-    return true;
-
+    return priest_spell_t::ready();
    }
 };
 
@@ -2378,11 +2386,7 @@ struct dark_archangel_t : public priest_spell_t
 
     check_talent( p -> talents.archangel -> rank() );
 
-    option_t options[] =
-        {
-          { NULL, OPT_UNKNOWN, NULL }
-        };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     static rank_t ranks[] =
     {
