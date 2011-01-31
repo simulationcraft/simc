@@ -2913,7 +2913,7 @@ void mage_t::init_buffs()
   buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     "chance", talents.fingers_of_frost->sd->effect1->base_value/100.0, NULL );
   buffs_hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
   buffs_icy_veins            = new buff_t( this, talents.icy_veins,            "cooldown", 0.0, NULL ); // CD managed in action
-  buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 10.0, NULL );
+  buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 15.0, NULL );
   buffs_invocation           = new buff_t( this, talents.invocation,           NULL );
   buffs_mage_armor           = new buff_t( this, spells.mage_armor,            NULL );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
