@@ -482,6 +482,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
     save_prefix_str( "save_" ),
+    input_is_utf8( false ),
     sim_data( &sim_t::base_data ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),

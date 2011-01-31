@@ -2308,7 +2308,8 @@ struct shadow_fiend_spell_t : public priest_spell_t
   int trigger_pct;
 
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "shadow_fiend", player, "Shadowfiend" ), trigger( 0 )
+      priest_spell_t( "shadow_fiend", player, "Shadowfiend" ), trigger( 0 ),
+      trigger_pct( 0 )
   {
     check_min_level( 66 );
 
