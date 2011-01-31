@@ -33,7 +33,7 @@ struct hunter_t : public player_t
   buff_t* buffs_killing_streak_crits;
   buff_t* buffs_lock_and_load;
   buff_t* buffs_master_marksman;
-  buff_t* buffs_fire;
+  buff_t* buffs_master_marksman_fire;
   buff_t* buffs_pre_improved_steady_shot;
   buff_t* buffs_rapid_fire;
   buff_t* buffs_sniper_training;
@@ -1499,24 +1499,17 @@ struct auto_shot_t : public hunter_attack_t
 
 struct aimed_shot_mm_t : public hunter_attack_t
 {
-  aimed_shot_mm_t( player_t* player ) :
+  aimed_shot_mm_t( player_t* player, const std::string& options_str=std::string() ) :
       hunter_attack_t( "aimed_shot_mm", player, 82928 )
   {
     hunter_t* p = player -> cast_hunter();
-
     check_spec ( TREE_MARKSMANSHIP );
-
-    background = true;
-    stats = player -> get_stats( "aimed_shot" );
+    if( ! options_str.empty() ) parse_options( NULL, options_str );
 
     // Don't know why these values aren't 0 in the database.
     base_cost = 0;
     base_execute_time = 0;
-
-    if( ! p -> ptr )
-      direct_power_mod = 0.48;
-    else
-      direct_power_mod = 1.44;
+    direct_power_mod = ( p -> ptr ) ? 1.44 : 0.48;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1536,9 +1529,8 @@ struct aimed_shot_mm_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
     hunter_t* p = player -> cast_hunter();
-    
+    hunter_attack_t::execute();
     if ( result == RESULT_CRIT )
     {
       if ( p -> active_pet )
@@ -1546,8 +1538,15 @@ struct aimed_shot_mm_t : public hunter_attack_t
       trigger_piercing_shots( this );
       p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
     }
-    if ( p -> buffs_fire -> up() )
-      p -> buffs_fire -> expire();
+    p -> buffs_master_marksman_fire -> expire();
+  }
+
+  virtual bool ready()
+  {
+    hunter_t* p = player -> cast_hunter();
+    if( ! p -> buffs_master_marksman_fire -> may_react() )
+      return false;
+    return hunter_attack_t::ready();
   }
 };
 
@@ -1555,37 +1554,44 @@ struct aimed_shot_mm_t : public hunter_attack_t
 
 struct aimed_shot_t : public hunter_attack_t
 {
-  aimed_shot_mm_t* am_mm;
+  aimed_shot_mm_t* as_mm;
   aimed_shot_t( player_t* player, const std::string& options_str ) :
-      hunter_attack_t( "aimed_shot", player, "Aimed Shot" ), am_mm( 0 )
+      hunter_attack_t( "aimed_shot", player, "Aimed Shot" ), as_mm( 0 )
   {
     hunter_t* p = player -> cast_hunter();
-
     check_spec ( TREE_MARKSMANSHIP );
-
     parse_options( NULL, options_str );
 
-    am_mm = new aimed_shot_mm_t( p );
-
-    if( ! p -> ptr )
-      direct_power_mod = 0.48;
-    else {
+    if( p -> ptr )
+    {
       direct_power_mod = 1.44;
       base_execute_time = 2.90;
+    }
+    else
+    {
+      direct_power_mod = 0.48;
     }
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
-
     normalize_weapon_speed = true;
+
+    as_mm = new aimed_shot_mm_t( p );
+    as_mm -> background = true;
   }
 
   virtual double cost() SC_CONST
   {
     hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_fire -> may_react() ) return 0;
-    
+    if ( p -> buffs_master_marksman_fire -> check() ) return 0;
     return hunter_attack_t::cost();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    hunter_t* p = player -> cast_hunter();
+    if ( p -> buffs_master_marksman_fire -> check() ) return 0;
+    return hunter_attack_t::execute_time();
   }
 
   virtual void player_buff()
@@ -1598,18 +1604,23 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
+  virtual void schedule_execute()
+  {
+    hunter_t* p = player -> cast_hunter();
+    hunter_attack_t::schedule_execute();
+    if ( time_to_execute > 0 ) p -> ranged_attack -> cancel();
+  }
+
   virtual void execute()
   {
-
     hunter_t* p = player -> cast_hunter();
-
-    if ( p -> buffs_fire -> may_react() )
-      am_mm -> execute();
+    if ( p -> buffs_master_marksman_fire -> check() )
+    {
+      as_mm -> execute();
+    }
     else
     {
       hunter_attack_t::execute();
-      p -> ranged_attack -> cancel(); // Interrupt auto attack when it's not instant
-
       if ( result == RESULT_CRIT )
       {
         if ( p -> active_pet )
@@ -2097,8 +2108,15 @@ struct steady_shot_t : public hunter_attack_t
         focus += p -> talents.termination -> effect_base_value( 1 );
 
       p -> resource_gain( RESOURCE_FOCUS, focus, p -> gains_steady_shot );
-      p -> buffs_master_marksman -> trigger();
 
+      if ( p -> buffs_master_marksman -> trigger() )
+      {
+	if ( p -> buffs_master_marksman -> stack() == 5 )
+	{
+	  p -> buffs_master_marksman_fire -> trigger();
+	  p -> buffs_master_marksman -> expire();
+	}
+      }
       if ( result == RESULT_CRIT )
       {
         trigger_piercing_shots( this );
@@ -2592,27 +2610,6 @@ struct snipertraining_hunter_t : public event_t
   }
 };
 
-struct buff_master_marksman_t : public buff_t
-{
-  buff_master_marksman_t( player_t* p, const uint32_t id, const std::string& n, double chance ) :
-    buff_t( p, id, n, chance )
-  {
-
-  }
-  virtual void increment( int    stacks,
-                        double value )
-  {
-    if ( current_stack == 4 )
-    {
-      hunter_t* p = player -> cast_hunter();
-      p -> buffs_fire -> trigger();
-      expire();
-    }
-    else
-      buff_t::increment( stacks, value );
-  }
-};
-
 // hunter_pet_t::create_action =============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
@@ -2639,6 +2636,7 @@ action_t* hunter_t::create_action( const std::string& name,
 {
   if ( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
+  if ( name == "aimed_shot_mm"         ) return new          aimed_shot_mm_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_hawk"    ) return new     aspect_of_the_hawk_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
@@ -2900,8 +2898,8 @@ void hunter_t::init_buffs()
   buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect_base_value( 1 ) / 100.0 );
-  buffs_master_marksman             = new buff_master_marksman_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
-  buffs_fire                        = new buff_t( this, 82926, "fire", 1 );
+  buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
+  buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
@@ -3095,10 +3093,16 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5";
       action_list_str += "/kill_shot";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/aimed_shot,if=buff.fire.react";
-
-      action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
-      action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5";
+      action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
+      if ( ptr )
+      {
+	action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>6|focus>=80|(focus>=60&(buff.rapid_fire.up|buff.bloodlust.up))";
+      }
+      else
+      {
+	action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
+	action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5";
+      }
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:

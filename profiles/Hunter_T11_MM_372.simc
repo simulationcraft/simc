@@ -22,7 +22,7 @@ actions+=/chimera_shot
 actions+=/steady_shot,if=buff.improved_steady_shot.remains<5
 actions+=/kill_shot
 actions+=/readiness,wait_for_rapid_fire=1
-actions+=/aimed_shot,if=buff.fire.react
+actions+=/aimed_shot,if=buff.master_marksman_fire.react
 actions+=/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0
 actions+=/arcane_shot,if=cooldown.chimera_shot.remains>=5
 actions+=/steady_shot
