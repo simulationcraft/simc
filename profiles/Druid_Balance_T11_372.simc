@@ -2,7 +2,7 @@
 
 druid=Druid_Balance_T11_372
 level=85
-race=night_elf
+race=troll
 use_pre_potion=1
 professions=Jewelcrafting/Blacksmithing
 talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=332332211200021110310200000000000000000000220301000000000000000
@@ -14,18 +14,21 @@ actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
-actions+=/faerie_fire,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)
+actions+=/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)
+actions+=/berserking
 actions+=/typhoon,moving=1
-actions+=/innervate,if=mana_pct<50
-actions+=/treants,time>=5
 actions+=/starfall
 actions+=/sunfire,if=!ticking&!dot.moonfire.remains>0
 actions+=/moonfire,if=!ticking&!dot.sunfire.remains>0&buff.lunar_eclipse.react
 actions+=/insect_swarm,if=!ticking
 actions+=/starsurge
+actions+=/innervate,if=mana_pct<50
+actions+=/treants,time>=5
 actions+=/starfire,if=eclipse_dir=1
 actions+=/wrath,if=eclipse_dir=-1
 actions+=/starfire
+actions+=/moonfire,moving=1
+actions+=/sunfire,moving=1
 head=stormriders_cover,heroic=1,type=leather,stats=325int_578sta_257crit_197haste_1439armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste
 shoulders=passive_resistor_spaulders,heroic=1,type=leather,stats=266int_429sta_171spi_191haste_1328armor,gems=67int_10spi,enchant=50int_25haste

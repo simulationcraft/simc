@@ -3685,6 +3685,7 @@ void druid_t::init_actions()
         action_list_str += "/bear_form";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
+        if ( race == RACE_TROLL ) action_list_str += "/berserking";
         action_list_str += "/skull_bash_bear";
         action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
         action_list_str += "/mangle_bear,debuff.mangle.remains<=0.5";
@@ -3732,6 +3733,7 @@ void druid_t::init_actions()
         {
           action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
+        if ( race == RACE_TROLL ) action_list_str += "/berserking";
         action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&(buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3)";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
         action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
@@ -3778,6 +3780,8 @@ void druid_t::init_actions()
       action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
       if ( ptr )
         action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
+      if ( race == RACE_TROLL )
+        action_list_str += "/berserking";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
       if ( talents.starfall -> rank() && glyphs.focus -> enabled() ) 
@@ -3803,6 +3807,8 @@ void druid_t::init_actions()
       action_list_str += "/starfire";
       if ( ptr )
         action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
+      action_list_str += "/moonfire,moving=1";
+      action_list_str += "/sunfire,moving=1";
     }
     action_list_default = 1;
   }
