@@ -2865,7 +2865,6 @@ struct player_t
   double base_parry,       initial_parry,       parry,       buffed_parry;
   double base_block,       initial_block,       block,       buffed_block;
   double armor_multiplier,  initial_armor_multiplier;
-  double armor_per_agility, initial_armor_per_agility;
   double dodge_per_agility, initial_dodge_per_agility;
   double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
   double armor_coeff;

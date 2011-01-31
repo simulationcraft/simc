@@ -326,7 +326,6 @@ player_t::player_t( sim_t*             s,
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
     base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
     armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
-    armor_per_agility( 0 ), initial_armor_per_agility( 0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
     diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
     armor_coeff( 0 ),
@@ -1690,8 +1689,8 @@ double player_t::composite_attack_power() SC_CONST
 {
   double ap = attack_power;
 
-  ap += attack_power_per_strength * strength();
-  ap += attack_power_per_agility  * agility();
+  ap += attack_power_per_strength * ( strength() - 10 );
+  ap += attack_power_per_agility  * ( agility() - 10 );
 
   if ( primary_role() == ROLE_TANK && vengeance_factor )
     ap += (std::min)(1.0, vengeance_factor) * ( stamina() + 0.1 * resource_base[ RESOURCE_HEALTH ]);
@@ -1745,8 +1744,6 @@ double player_t::composite_armor() SC_CONST
   a *= armor_multiplier;
 
   a += bonus_armor;
-
-  a += armor_per_agility * floor( agility() );
 
   if ( sim -> auras.devotion_aura -> check() )
     a += sim -> auras.devotion_aura -> value();
@@ -2449,7 +2446,6 @@ void player_t::reset()
   attack_crit_per_agility   = initial_attack_crit_per_agility;
 
   armor_multiplier  = initial_armor_multiplier;
-  armor_per_agility = initial_armor_per_agility;
   dodge_per_agility = initial_dodge_per_agility;
 
   resource_reduction = initial_resource_reduction;

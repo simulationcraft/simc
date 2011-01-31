@@ -3478,7 +3478,7 @@ void druid_t::init_base()
 
   initial_spell_power_per_spirit = 0.0;
 
-  base_attack_power = -20 + level * (level > 80 ? 3.0 : 2.0);
+  base_attack_power = level * (level > 80 ? 3.0 : 2.0);
 
   attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
   initial_attack_power_per_agility  = 0.0;
@@ -3911,7 +3911,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
   }
   if ( spec_aggression -> ok() )
   {
-    multiplier *= 1.0 + spec_aggression -> base_value() / 100.0;
+    multiplier *= 1.0 + spec_aggression -> base_value();
   }
   return multiplier;
 }
