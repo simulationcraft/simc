@@ -1101,7 +1101,7 @@ void action_t::travel( int travel_result, double travel_dmg=0 )
 void action_t::assess_damage( double amount,
                               int    dmg_type )
 {
-  target -> assess_damage( amount, school, dmg_type );
+  target -> assess_damage( amount, school, dmg_type, this, player );
 
   if ( dmg_type == DMG_DIRECT )
   {
@@ -1160,7 +1160,7 @@ void action_t::additional_damage( double amount,
                                   int    dmg_type )
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  target -> assess_damage( amount, school, dmg_type );
+  target -> assess_damage( amount, school, dmg_type, this, player );
   stats -> add_result( amount, dmg_type, result );
 }
 

@@ -41,7 +41,9 @@ const char* target_t::id()
 
 void target_t::assess_damage( double amount,
                               const school_type school,
-                              int    dmg_type )
+                              int    dmg_type,
+                              action_t* a,
+                              player_t* s )
 {
   total_dmg += amount;
 

@@ -3083,6 +3083,22 @@ void player_t::stat_loss( int       stat,
   }
 }
 
+// player_t::assess_damage ==================================================
+
+void player_t::assess_damage( double amount,
+                              const school_type school,
+                              int    dmg_type,
+                              action_t* a,
+                              player_t* s )
+{
+  resource_loss( RESOURCE_HEALTH, amount );
+
+  if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
+  {
+    if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
+  }
+}
+
 // player_t::summon_pet =====================================================
 
 void player_t::summon_pet( const char* pet_name,

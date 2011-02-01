@@ -3190,6 +3190,8 @@ struct player_t
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
+  virtual void assess_damage( double amount, const school_type school, int type, action_t* a, player_t* s );
+
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
 
@@ -3450,8 +3452,8 @@ struct target_t : public player_t
   virtual void combat_begin();
   virtual int primary_resource() SC_CONST;
   virtual int primary_role() SC_CONST;
-  virtual double target_t::composite_attack_haste() SC_CONST;
-  void assess_damage( double amount, const school_type school, int type );
+  virtual double composite_attack_haste() SC_CONST;
+  virtual void assess_damage( double amount, const school_type school, int type, action_t* a, player_t* s );
   void recalculate_health();
   double time_to_die() SC_CONST;
   double health_percentage() SC_CONST;
