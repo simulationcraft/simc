@@ -2635,15 +2635,15 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "            </table>\n",
     p -> dps,
     p -> dps_error,
-    p -> dps_error * 100 / p -> dps,
+    p -> dps ? p -> dps_error * 100 / p -> dps : 0,
     ( ( p -> dps_max - p -> dps_min ) / 2 ),
-    ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps,
+    p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0,
     p -> dpr,
     p -> rps_loss,
     p -> rps_gain,
     util_t::resource_type_string( p -> primary_resource() ),
-    100.0 * p -> total_waiting / p -> total_seconds,
-    60.0 * p -> total_foreground_actions / p -> total_seconds  );
+    p -> total_seconds ? 100.0 * p -> total_waiting / p -> total_seconds : 0,
+    p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0 );
 
   // Spec and gear
   if ( !p -> is_pet() )
@@ -3040,7 +3040,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     "        <div class=\"player-section buffs\">\n"
     "          <h3 class=\"toggle open\">Buffs</h3>\n"
     "          <div class=\"toggle-content\">\n" );
-    
+
   // Dynamic Buffs table
   util_t::fprintf( file,
     "            <table class=\"sc mb\">\n"
@@ -3063,7 +3063,7 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
     for ( buff_t* b = pet -> buff_list; b; b = b -> next )
       if ( ! b -> quiet && b -> start_count && ! b -> constant )
-	dynamic_buffs.push_back( b );
+        dynamic_buffs.push_back( b );
 
   for ( i=0; i < (int) dynamic_buffs.size(); i++ )
   {
@@ -3179,6 +3179,8 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
     util_t::fprintf( file,
       "              </table>\n" );
   }
+
+
   util_t::fprintf( file,
     "            </div>\n"
     "          </div>\n" );

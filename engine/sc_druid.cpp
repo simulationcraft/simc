@@ -4196,8 +4196,9 @@ void player_t::druid_init( sim_t* sim )
   sim -> auras.leader_of_the_pack = new aura_t( sim, "leader_of_the_pack" );
   sim -> auras.moonkin            = new aura_t( sim, "moonkin" );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> buffs.innervate        = new buff_t( p, "innervate",        1, 10.0 );
     p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
   }

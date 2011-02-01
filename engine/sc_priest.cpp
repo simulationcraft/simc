@@ -4646,8 +4646,9 @@ void player_t::priest_init( sim_t* sim )
 {
   sim -> auras.mind_quickening = new aura_t( sim, "mind_quickening", 1, 0.0 );
   
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, floor( sim -> sim_data.effect_min( 79104, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) ), !p -> is_pet() );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
     p -> buffs.inspiration    = new      buff_t( p, "inspiration", 1, 15.0, 0 );

@@ -362,6 +362,8 @@ player_t::player_t( sim_t*             s,
 
     rng_list( 0 )
 {
+  sim -> actor_list.push_back(this);
+
   if ( type != ENEMY )
   {
     if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
@@ -956,7 +958,8 @@ void player_t::init_spell()
 
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
-  mana_regen_base = player_data.spi_regen( type, level ); 
+  if ( type != ENEMY )
+    mana_regen_base = player_data.spi_regen( type, level );
 
   if ( level >= 61 )
   {
@@ -1013,7 +1016,8 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
-  base_dodge = player_data.dodge_base( type );
+  if ( type != ENEMY )
+    base_dodge = player_data.dodge_base( type );
 
   initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
   initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
@@ -1036,7 +1040,9 @@ void player_t::init_defense()
   initial_parry             = base_parry       + initial_stats.parry_rating / rating.parry;
   initial_block             = base_block       + initial_stats.block_rating / rating.block;
   initial_block_value       = base_block_value + initial_stats.block_value;
-  initial_dodge_per_agility = player_data.dodge_scale( type, level );
+
+  if ( type != ENEMY )
+    initial_dodge_per_agility = player_data.dodge_scale( type, level );
 
   if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
 }
@@ -2139,6 +2145,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
+
   // MotW / BoK
   // ... increasing Strength, Agility, Stamina, and Intellect by 5%
   if ( attr == ATTR_STRENGTH || attr ==  ATTR_AGILITY || attr ==  ATTR_STAMINA || attr ==  ATTR_INTELLECT )
@@ -2742,7 +2749,7 @@ void player_t::regen( double periodicity )
 
     timeline_resource[ index ] += resource_current[ resource_type ] * periodicity;
   }
-
+  if ( resource_type != RESOURCE_HEALTH )
   {
     int index = ( int ) sim -> current_time;
     int size = ( int ) timeline_health.size();

@@ -1692,6 +1692,19 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     return new miss_react_expr_t( this );
   }
 
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, name_str, "." );
+
+  if ( num_splits == 3 )
+   {
+     if ( splits[ 0 ] == "debuff" )
+     {
+       buff_t* buff = buff_t::find( target, splits[ 1 ] );
+       if ( ! buff ) return 0;
+       return buff -> create_expression( this, splits[ 2 ] );
+     }
+   }
+
   return player -> create_expression( this, name_str );
 }
 

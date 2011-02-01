@@ -2772,8 +2772,9 @@ void player_t::paladin_init( sim_t* sim )
   sim -> auras.communion              = new aura_t( sim, "communion",              1 );
   sim -> auras.devotion_aura          = new aura_t( sim, "devotion_aura",          1 );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> buffs.blessing_of_kings       = new buff_t( p, "blessing_of_kings",       !p -> is_pet() );
     p -> buffs.blessing_of_might       = new buff_t( p, "blessing_of_might",       !p -> is_pet() );
     p -> buffs.blessing_of_might_regen = new buff_t( p, "blessing_of_might_regen", !p -> is_pet() );

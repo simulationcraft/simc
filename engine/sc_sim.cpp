@@ -493,7 +493,10 @@ sim_t::sim_t( sim_t* p, int index ) :
     merge_ignite( 0 ), report_progress( 1 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ), csv_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
-    report_precision( 4 ),report_pets_separately( false ), threads( 0 ), thread_handle( 0 ), thread_index( index ),
+    // Report
+    report_precision( 4 ),report_pets_separately( false ), report_targets( false ),
+    // Multi-Threading
+    threads( 0 ), thread_handle( 0 ), thread_index( index ),
     spell_query( 0 )
 {
   path_str += "|profiles";
@@ -1020,7 +1023,8 @@ void sim_t::analyze_player( player_t* p )
       p -> total_dmg += s -> total_dmg;
   }
 
-  p -> dps = p -> total_dmg / p -> total_seconds;
+
+  p -> dps = p -> total_seconds ? p -> total_dmg / p -> total_seconds : 0;
 
   if ( p -> total_seconds == 0 ) return;
 
@@ -1198,8 +1202,9 @@ void sim_t::analyze()
   total_heal = 0;
   total_seconds /= iterations;
 
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
+    player_t* p = actor_list[i];
     analyze_player( p );
   }
 
@@ -1256,8 +1261,20 @@ void sim_t::analyze()
     chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
     chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
 
-
   }
+
+  for ( player_t* p = target_list; p; p = p -> next )
+    {
+      if ( p -> quiet ) continue;
+
+      chart_t::action_dpet      ( p -> action_dpet_chart,       p );
+      chart_t::action_dmg       ( p -> action_dmg_chart,        p );
+      chart_t::gains            ( p -> gains_chart,             p );
+      chart_t::timeline_resource( p -> timeline_resource_chart, p );
+      chart_t::timeline_health  ( p -> timeline_resource_health_chart, p );
+      chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
+      chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
+    }
 }
 
 // sim_t::iterate ===========================================================
@@ -1681,7 +1698,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
   }
   else if ( num_splits == 3 )
   {
-    if ( splits[ 0 ] == "aura" || splits[ 0 ] == "debuff" )
+    if ( splits[ 0 ] == "aura" )
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
       if ( ! buff ) return 0;
@@ -1845,8 +1862,6 @@ void sim_t::create_options()
     { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
     { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
     { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
-    { "report_precision",                 OPT_INT,    &( report_precision                         ) },
-    { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
     // @option_doc loc=skip
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
@@ -1897,6 +1912,11 @@ void sim_t::create_options()
     { "default_enchant_energy",                   OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ] ) },
     { "default_enchant_focus",                    OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ] ) },
     { "default_enchant_runic",                    OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ] ) },
+
+    // Report
+    { "report_precision",                 OPT_INT,    &( report_precision                         ) },
+    { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
+    { "report_targets",                   OPT_BOOL,   &( report_targets                           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

@@ -3841,8 +3841,9 @@ void player_t::rogue_init( sim_t* sim )
 {
   sim -> auras.honor_among_thieves = new aura_t( sim, "honor_among_thieves" );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> buffs.tricks_of_the_trade = new buff_t( p, "tricks_of_the_trade", 1, 6.0 );
   }
 

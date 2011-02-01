@@ -187,6 +187,7 @@ void buff_t::init()
   avg_start = 0;
   avg_refresh = 0;
   constant = false;
+  overridden = false;
   expiration = 0;
 
   buff_t** tail=0;
@@ -659,14 +660,22 @@ void buff_t::override( int    stacks,
                        double value )
 {
   if( max_stack == 0 ) return;
+  if ( sim -> debug )
+      log_t::output( sim, "%s tries to override buff %s", player -> name(), name() );
   if ( current_stack != 0 )
   {
-    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s.\n", name() );
+    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name(), player -> name() );
     assert( 0 );
   }
-  //assert( current_stack == 0 );
+
+
+
   buff_duration = 0;
   start( stacks, value );
+  overridden = true;
+
+  if ( sim -> debug )
+    log_t::output( sim, "%s overrides buff %s", player -> name(), name() );
 }
 
 // buff_t::expire ===========================================================
@@ -684,8 +693,8 @@ void buff_t::expire()
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
     uptime_sum += current_time - last_start;
   }
-  if ( sim -> target -> initial_health == 0 ||
-       sim -> target -> current_health > 0 ) 
+  if ( ( sim -> target -> initial_health == 0 ||
+       sim -> target -> current_health > 0 ) && !overridden )
   {
     constant = false;
   }
@@ -1025,7 +1034,7 @@ void stat_buff_t::expire()
 
 // debuff_t::debuff_t =======================================================
 
-debuff_t::debuff_t( target_t*          t,
+debuff_t::debuff_t( player_t*          p,
                     const std::string& n,
                     int                ms,
                     double             d,
@@ -1035,28 +1044,9 @@ debuff_t::debuff_t( target_t*          t,
                     bool               r,
                     int                rng_type,
                     int                id ) :
-  buff_t( t -> sim, n, ms, d, cd, ch, q, r, rng_type, id ), target( t )
+  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id )
 
 {
-}
-
-// debuff_t::aura_gain ======================================================
-
-void debuff_t::aura_gain()
-{
-  if ( sim -> log )
-  {
-    const char* s = ( max_stack < 0 ) ? name() : aura_str[ current_stack ].c_str();
-
-    target -> aura_gain( s, aura_id );
-  }
-}
-
-// debuff_t::aura_loss ======================================================
-
-void debuff_t::aura_loss()
-{
-  target -> aura_loss( name(), aura_id );
 }
 
 

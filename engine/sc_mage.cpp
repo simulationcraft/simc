@@ -3387,9 +3387,10 @@ void player_t::mage_init( sim_t* sim )
 {
   sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, 0.0 );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
-    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY ), !p -> is_pet() );
+    player_t* p = sim -> actor_list[i];
+    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> level < MAX_LEVEL ? p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY ) : 0, !p -> is_pet() );
     p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
   }
 

@@ -25,6 +25,7 @@ static const char* class_color( int type )
   case SHAMAN:       return "2459FF";
   case WARLOCK:      return "9482C9";
   case WARRIOR:      return "C79C6E";
+  case ENEMY:        return "FFFFFF";
   default: assert( 0 );
   }
   return 0;

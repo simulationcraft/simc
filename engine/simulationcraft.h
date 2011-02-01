@@ -1983,7 +1983,7 @@ struct buff_t : public spell_id_t
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double uptime_pct, benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
-  bool reverse, constant, quiet;
+  bool reverse, constant, quiet, overridden;
   int aura_id;
   event_t* expiration;
   int rng_type;
@@ -2079,12 +2079,9 @@ struct stat_buff_t : public buff_t
 
 struct debuff_t : public buff_t
 {
-  target_t* target;
-  debuff_t( target_t*, const std::string& name,
+  debuff_t( player_t*, const std::string& name,
             int max_stack=1, double buff_duration=0, double buff_cooldown=0,
             double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
-  virtual void aura_gain();
-  virtual void aura_loss();
 };
 
 typedef struct buff_t aura_t;
@@ -2253,6 +2250,7 @@ struct sim_t
   int         normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str;
   bool        input_is_utf8;
+  std::vector<player_t*> actor_list;
   
   // Data access
   static sc_data_access_t  base_data;
@@ -2413,6 +2411,7 @@ struct sim_t
   int debug_exp;
   int report_precision;
   bool report_pets_separately;
+  bool report_targets;
 
   // Multi-Threading
   int threads;
@@ -3438,14 +3437,20 @@ struct target_t : public player_t
   };
   debuffs_t debuffs;
 
+  // Reporting
+  std::vector<gain_t*> gains;
+
   target_t( sim_t* s, const std::string& n );
 
   virtual void init();
   virtual void init_base();
   virtual void init_actions();
+  virtual void init_gains();
   virtual void reset();
   virtual void combat_begin();
-  virtual void combat_end();
+  virtual int primary_resource() SC_CONST;
+  virtual int primary_role() SC_CONST;
+  virtual double target_t::composite_attack_haste() SC_CONST;
   void assess_damage( double amount, const school_type school, int type );
   void recalculate_health();
   double time_to_die() SC_CONST;
@@ -3453,6 +3458,9 @@ struct target_t : public player_t
   double base_armor() SC_CONST;
   void aura_gain( const char* name, int aura_id=0 );
   void aura_loss( const char* name, int aura_id=0 );
+
+  virtual action_t* create_action( const std::string& name,
+                                     const std::string& options_str );
   virtual void create_options();
   virtual const char* name() SC_CONST { return name_str.c_str(); }
   virtual const char* id();

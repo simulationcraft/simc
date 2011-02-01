@@ -70,6 +70,7 @@ void target_t::recalculate_health()
     current_health = total_dmg;
     initial_health = current_health * ( sim -> expected_time / sim -> current_time );
     fixed_health = initial_health;
+    resource_base[ RESOURCE_HEALTH ] = initial_health;
   }
   else
   {
@@ -81,6 +82,7 @@ void target_t::recalculate_health()
     if ( factor < 0.5 ) factor = 0.5;
 
     fixed_health *= factor;
+    resource_base[ RESOURCE_HEALTH ] *= factor;
   }
 
   if ( sim -> debug ) log_t::output( sim, "Target fixed health calculated to be %.0f", fixed_health );
@@ -180,31 +182,47 @@ void target_t::init()
 
 
   // Infinite-Stacking De-Buffs
-  debuffs.bleeding     = new debuff_t( this, "bleeding",     -1 );
-  debuffs.casting      = new debuff_t( this, "casting",      -1 );
-  debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
-  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
+  debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
+  debuffs.casting      = new debuff_t( this, "casting",      1 );
+  debuffs.invulnerable = new debuff_t( this, "invulnerable", 1 );
+  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   1 );
 
   initialized = 1;
-  init_base();
+  init_talents();
+  init_spells();
+  // init_glyphs();
+  // init_rating();
   init_race();
+  init_base();
+  // init_racials();
+  // init_items();
   init_core();
-  init_actions();
-  init_buffs();
+  init_spell();
+  init_attack();
+  init_defense();
+  //  init_weapon( &main_hand_weapon );
+  //  init_weapon( &off_hand_weapon );
+  //  init_weapon( &ranged_weapon );
+  // init_unique_gear();
+  // init_enchant();
+  // init_professions();
+  // init_consumables();
   init_scaling();
+  init_buffs();
+  init_actions();
+  init_gains();
+  init_procs();
+  init_uptimes();
+  init_rng();
+  init_stats();
+  init_values();
 }
 
 // target_t::init_base =====================================================
 
 void target_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = 100;
-  attribute_base[ ATTR_AGILITY   ] = 100;
-  attribute_base[ ATTR_STAMINA   ] = 100;
-  attribute_base[ ATTR_INTELLECT ] = 100;
-  attribute_base[ ATTR_SPIRIT    ] = 100;
-  resource_base[ RESOURCE_HEALTH ] = 100;
-  resource_base[ RESOURCE_MANA   ] = 100;
+  resource_base[ RESOURCE_HEALTH ] = 0;
 
   health_per_stamina = 10;
 }
@@ -214,8 +232,22 @@ void target_t::init_base()
 void target_t::init_actions()
 {
   action_list_str += "/snapshot_stats";
+  action_list_str += "/auto_attack";
 
   player_t::init_actions();
+}
+
+// target_t::init_gains =====================================================
+
+void target_t::init_gains()
+{
+  player_t::init_gains();
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    gains.push_back(get_gain( p -> name_str ) );
+  }
+
 }
 
 // target_t::reset ===========================================================
@@ -227,21 +259,38 @@ void target_t::reset()
   armor = initial_armor;
   current_health = initial_health = fixed_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
   adds_nearby = initial_adds_nearby;
+
+  player_t::reset();
 }
 
 // target_t::combat_begin ====================================================
 
 void target_t::combat_begin()
 {
-  if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
+  player_t::combat_begin();
 
-  action_sequence = "";
+  if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
 }
 
-// target_t::combat_end ======================================================
+// target_t::primary_resource ====================================================
 
-void target_t::combat_end()
+int target_t::primary_resource() SC_CONST
 {
+  return RESOURCE_HEALTH;
+}
+
+// target_t::primary_role ====================================================
+
+int target_t::primary_role() SC_CONST
+{
+  return ROLE_HYBRID;
+}
+
+// target_t::composite_attack_haste ========================================
+
+double target_t::composite_attack_haste() SC_CONST
+{
+  return attack_haste;
 
 }
 
@@ -254,6 +303,33 @@ bool target_t::debuffs_t::snared()
   if ( slow -> check() ) return true;
   if ( thunder_clap -> check() ) return true;
   return false;
+}
+
+struct auto_attack_t : public attack_t
+{
+  auto_attack_t( player_t* player, const std::string& options_str ) :
+      attack_t( "auto_attack", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+  {
+    parse_options( NULL, options_str );
+
+    base_dd_min = base_dd_max = 1;
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    return 3.0;
+  }
+};
+
+// shaman_t::create_action  =================================================
+
+action_t* target_t::create_action( const std::string& name,
+                                   const std::string& options_str )
+{
+  if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
+
+
+  return player_t::create_action( name, options_str );
 }
 
 // target_t::create_options ====================================================

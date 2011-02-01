@@ -4199,8 +4199,9 @@ void player_t::shaman_init( sim_t* sim )
   sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, 300.0 );
   sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> buffs.bloodlust  = new buff_t( p, "bloodlust", 1, 40.0 );
     p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, 600.0, 0, 1.0, true );
     p -> buffs.mana_tide  = new buff_t( p, "mana_tide", 16190 );
