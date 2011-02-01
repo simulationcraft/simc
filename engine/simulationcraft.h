@@ -155,6 +155,7 @@ enum player_type
   PLAYER_NONE=0,
   DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
   PLAYER_PET, PLAYER_GUARDIAN,
+  ENEMY,
   PLAYER_MAX
 };
 
@@ -3388,13 +3389,10 @@ struct pet_t : public player_t
 
 // Target ====================================================================
 
-struct target_t
+struct target_t : public player_t
 {
-  sim_t* sim;
-  std::string name_str, race_str, id_str;
   target_t* next;
-  int race;
-  int level;
+  int target_level;
   int spell_resistance[ SCHOOL_MAX ];
   int initial_armor, armor;
   double block_value;
@@ -3441,12 +3439,13 @@ struct target_t
   debuffs_t debuffs;
 
   target_t( sim_t* s, const std::string& n );
-  ~target_t();
 
-  void init();
-  void reset();
-  void combat_begin();
-  void combat_end();
+  virtual void init();
+  virtual void init_base();
+  virtual void init_actions();
+  virtual void reset();
+  virtual void combat_begin();
+  virtual void combat_end();
   void assess_damage( double amount, const school_type school, int type );
   void recalculate_health();
   double time_to_die() SC_CONST;
@@ -3454,9 +3453,9 @@ struct target_t
   double base_armor() SC_CONST;
   void aura_gain( const char* name, int aura_id=0 );
   void aura_loss( const char* name, int aura_id=0 );
-  void create_options();
-  const char* name() SC_CONST { return name_str.c_str(); }
-  const char* id();
+  virtual void create_options();
+  virtual const char* name() SC_CONST { return name_str.c_str(); }
+  virtual const char* id();
   static target_t* find(    sim_t*, const std::string& name );
   action_expr_t* create_expression( action_t*, const std::string& type );
 };

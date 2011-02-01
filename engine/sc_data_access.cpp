@@ -149,7 +149,7 @@ bool sc_data_access_t::spell_is_level( const uint32_t spell_id, const uint32_t l
   if ( !spell_id )
     return false;
 
-  assert( spell_exists( spell_id ) && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( spell_exists( spell_id ) && ( level > 0 ) );
 
   return ( level >= m_spells_index[ spell_id ]->spell_level );
 }

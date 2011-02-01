@@ -12,7 +12,8 @@
 // target_t::target_t =======================================================
 
 target_t::target_t( sim_t* s, const std::string& n ) :
-    sim( s ), name_str( n ), next( 0 ), race( RACE_HUMANOID ), level( -1 ),
+    player_t( s, ENEMY, n, RACE_HUMANOID ),
+    next( 0 ), target_level( -1 ),
     initial_armor( -1 ), armor( 0 ), block_value( 0.3 ),
     attack_speed( 3.0 ), attack_damage( 50000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
@@ -22,19 +23,15 @@ target_t::target_t( sim_t* s, const std::string& n ) :
   create_options();
 }
 
-// target_t::~target_t ======================================================
-
-target_t::~target_t()
-{
-}
-
 // target_t::id =============================================================
 
 const char* target_t::id()
 {
   if ( id_str.empty() )
   {
-    id_str = "0xF1300079AA001884,\"Heroic Training Dummy\",0x10a28";
+    char buffer[ 1024 ];
+    sprintf( buffer, "0xF1300079AA001884,\"%s\",0x10a28", name_str.c_str() );
+    id_str = buffer;
   }
 
   return id_str.c_str();
@@ -47,6 +44,8 @@ void target_t::assess_damage( double amount,
                               int    dmg_type )
 {
   total_dmg += amount;
+
+  resource_loss( RESOURCE_HEALTH, amount );
 
   if ( current_health > 0 )
   {
@@ -144,7 +143,7 @@ void target_t::aura_loss( const char* aura_name , int aura_id )
 
 void target_t::init()
 {
-  if ( level < 0 )
+  if ( target_level < 0 )
   {
     level = sim -> max_player_level + 3;
   }
@@ -179,24 +178,44 @@ void target_t::init()
 
   if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
 
-  if ( ! race_str.empty() )
-  {
-    for ( race = RACE_NONE; race < RACE_MAX; race++ )
-      if ( race_str == util_t::race_type_string( race ) )
-        break;
-
-    if ( race == RACE_MAX )
-    {
-      sim -> errorf( "'%s' is not a valid value for 'target_race'\n", race_str.c_str() );
-      sim -> cancel();
-    }
-  }
 
   // Infinite-Stacking De-Buffs
   debuffs.bleeding     = new debuff_t( this, "bleeding",     -1 );
   debuffs.casting      = new debuff_t( this, "casting",      -1 );
   debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
+
+  initialized = 1;
+  init_base();
+  init_race();
+  init_core();
+  init_actions();
+  init_buffs();
+  init_scaling();
+}
+
+// target_t::init_base =====================================================
+
+void target_t::init_base()
+{
+  attribute_base[ ATTR_STRENGTH  ] = 100;
+  attribute_base[ ATTR_AGILITY   ] = 100;
+  attribute_base[ ATTR_STAMINA   ] = 100;
+  attribute_base[ ATTR_INTELLECT ] = 100;
+  attribute_base[ ATTR_SPIRIT    ] = 100;
+  resource_base[ RESOURCE_HEALTH ] = 100;
+  resource_base[ RESOURCE_MANA   ] = 100;
+
+  health_per_stamina = 10;
+}
+
+// target_t::init_base =====================================================
+
+void target_t::init_actions()
+{
+  action_list_str += "/snapshot_stats";
+
+  player_t::init_actions();
 }
 
 // target_t::reset ===========================================================
@@ -216,13 +235,15 @@ void target_t::combat_begin()
 {
   if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
 
-
+  action_sequence = "";
 }
 
 // target_t::combat_end ======================================================
 
 void target_t::combat_end()
-{}
+{
+
+}
 
 // target_t::debuffs_t::snared ===============================================
 
@@ -243,7 +264,7 @@ void target_t::create_options()
   {
     { "target_name",                    OPT_STRING, &( name_str                          ) },
     { "target_race",                    OPT_STRING, &( race_str                          ) },
-    { "target_level",                   OPT_INT,    &( level                             ) },
+    { "target_level",                   OPT_INT,    &( target_level                             ) },
     { "target_health",                  OPT_FLT,    &( fixed_health                      ) },
     { "target_id",                      OPT_STRING, &( id_str                            ) },
     { "target_adds",                    OPT_INT,    &( initial_adds_nearby               ) },
@@ -349,5 +370,5 @@ action_expr_t* target_t::create_expression( action_t* action,
    }
 
 
-   return 0;
+   return player_t::create_expression( action, name_str );
 }

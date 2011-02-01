@@ -362,12 +362,15 @@ player_t::player_t( sim_t*             s,
 
     rng_list( 0 )
 {
-  if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
-  player_t** last = &( sim -> player_list );
-  while ( *last ) last = &( ( *last ) -> next );
-  *last = this;
-  next = 0;
-  index = ++( sim -> num_players );
+  if ( type != ENEMY )
+  {
+    if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
+    player_t** last = &( sim -> player_list );
+    while ( *last ) last = &( ( *last ) -> next );
+    *last = this;
+    next = 0;
+    index = ++( sim -> num_players );
+  }
 
   race_str = util_t::race_type_string( race );
 
