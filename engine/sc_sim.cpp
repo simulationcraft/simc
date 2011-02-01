@@ -1328,8 +1328,9 @@ void sim_t::merge( sim_t& other_sim )
     b -> merge( buff_t::find( &other_sim, b -> name() ) );
   }
 
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
+    player_t* p = actor_list[i];
     player_t* other_p = other_sim.find_player( p -> name() );
     assert( other_p );
 
@@ -1458,8 +1459,9 @@ bool sim_t::execute()
 
 player_t* sim_t::find_player( const std::string& name )
 {
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
+    player_t* p = actor_list[i];
     if ( name == p -> name() ) return p;
   }
   return 0;
