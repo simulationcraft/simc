@@ -974,6 +974,8 @@ void action_t::execute()
                    player -> resource_current[ player -> primary_resource() ] );
   }
 
+  if ( harmful ) player -> in_combat = true;
+
   if ( observer ) *observer = 0;
 
   player_buff();
@@ -1001,8 +1003,6 @@ void action_t::execute()
   update_ready();
 
   if ( ! dual ) update_stats( DMG_DIRECT );
-
-  if ( harmful ) player -> in_combat = true;
 
   if ( repeating && ! proc ) schedule_execute();
 }

@@ -3898,6 +3898,7 @@ struct action_callback_t
   virtual void deactivate() { active=false; }
   static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
   {
+    if ( ! a -> player -> in_combat ) return;
     size_t size = v.size();
     for ( size_t i=0; i < size; i++ )
     {
