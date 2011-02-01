@@ -989,7 +989,7 @@ void action_t::execute()
   if ( result_is_hit() )
   {
     direct_dmg = calculate_direct_damage();
-    schedule_travel();
+    schedule_travel( target );
   }
   else
   {
@@ -1243,7 +1243,7 @@ void action_t::schedule_tick()
 
 // action_t::schedule_travel ===============================================
 
-void action_t::schedule_travel()
+void action_t::schedule_travel( player_t* t )
 {
   time_to_travel = travel_time();
 
@@ -1258,7 +1258,7 @@ void action_t::schedule_travel()
       log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
     }
 
-    travel_event = new ( sim ) action_travel_event_t( sim, this, time_to_travel );
+    travel_event = new ( sim ) action_travel_event_t( sim, t, this, time_to_travel );
   }
 }
 

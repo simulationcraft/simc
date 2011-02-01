@@ -186,9 +186,10 @@ void dot_tick_event_t::execute()
 // action_travel_event_t::action_travel_event_t =============================
 
 action_travel_event_t::action_travel_event_t( sim_t*    sim,
+                                              player_t* t,
                                               action_t* a,
                                               double    time_to_travel ) :
-    event_t( sim, a -> player ), action( a )
+    event_t( sim, a -> player ), action( a ), target( t )
 {
   name   = "Action Travel";
   result = a -> result;

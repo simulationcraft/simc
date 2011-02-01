@@ -2568,7 +2568,7 @@ struct deadly_poison_t : public rogue_poison_t
         }
         else
         {
-          schedule_travel();
+          schedule_travel( target );
           apply_poison_debuff( p );
         }
       }

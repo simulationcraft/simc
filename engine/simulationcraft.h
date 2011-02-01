@@ -3644,7 +3644,7 @@ struct action_t : public spell_id_t
   virtual void   additional_damage( double amount, int dmg_type );
   virtual void   schedule_execute();
   virtual void   schedule_tick();
-  virtual void   schedule_travel();
+  virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( double time );
   virtual void   refresh_duration();
   virtual void   extend_duration( int extra_ticks );
@@ -3955,9 +3955,10 @@ struct dot_tick_event_t : public event_t
 struct action_travel_event_t : public event_t
 {
   action_t* action;
+  player_t* target;
   int result;
   double damage;
-  action_travel_event_t( sim_t* sim, action_t* a, double time_to_travel );
+  action_travel_event_t( sim_t* sim, player_t* t, action_t* a, double time_to_travel );
   virtual void execute();
 };
 
