@@ -40,7 +40,7 @@ chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armo
 waist=belt_of_arcane_storms,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_191haste_266int_429sta,reforge=haste_hit,gems=40int_40int
 legs=firelords_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,reforge=haste_crit,gems=20crit_20int_40int_20int,enchant=95int_80sta
 feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=haste_hit,gems=40int_10haste,enchant=50hit
-wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
 hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=mastery_hit,gems=40int,enchant=50haste
 finger1=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,enchant=40int,suffix=129
 finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
