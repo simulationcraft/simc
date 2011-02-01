@@ -5,7 +5,7 @@ level=85
 race=troll
 use_pre_potion=1
 professions=Jewelcrafting/Blacksmithing
-talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=332332211200021110310200000000000000000000220301000000000000000
+talents=http://www.wowhead.com/talent#druid-332332211200021110310200000000000000000000220301000000000000000
 glyphs=moonfire/insect_swarm/wrath/starfall/focus/innervate
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

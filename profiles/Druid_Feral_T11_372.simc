@@ -5,7 +5,7 @@ level=85
 race=troll
 use_pre_potion=1
 professions=Blacksmithing/Jewelcrafting
-talents=http://www.wowarmory.com/talent-calc.xml?cid=11&tal=000000000000000000002320322312011221202301020301000000000000000
+talents=http://www.wowhead.com/talent#druid-000000000000000000002320322312011221202301020301000000000000000
 glyphs=rip/shred/tigers_fury
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
