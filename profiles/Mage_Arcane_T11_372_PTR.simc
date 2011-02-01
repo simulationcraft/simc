@@ -1,11 +1,11 @@
 #!./simc 
 
-mage=Mage_Arcane_T11_372
+mage=Mage_Arcane_T11_372_PTR
 origin="http://chardev.org/?profile=28339"
 level=85
-race=undead
+race=troll
 use_pre_potion=1
-professions=enchanting=525/tailoring=525
+professions=tailoring=525/enchanting=525
 talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000
 glyphs=evocation/arcane_power/slow/mirror_image/arcane_brilliance/conjuring/arcane_blast/arcane_missiles/mage_armor
 actions=flask,type=draconic_mind
@@ -19,6 +19,7 @@ actions+=/counterspell
 actions+=/use_item,name=shard_of_woe,if=cooldown.evocation.remains<26
 actions+=/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86
 actions+=/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
+actions+=/berserking
 actions+=/arcane_power,if=target.time_to_die<40
 actions+=/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
 actions+=/mana_gem,if=target.time_to_die<40

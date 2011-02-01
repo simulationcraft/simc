@@ -3066,7 +3066,7 @@ void mage_t::init_actions()
       action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
     }
     // Race Abilities
-    if ( race == RACE_TROLL )
+    if ( race == RACE_TROLL && primary_tree() != TREE_FROST )
     {
       action_list_str += "/berserking";
     }
@@ -3135,6 +3135,10 @@ void mage_t::init_actions()
         action_list_str += "/frostfire_orb,if=target.time_to_die>=12";
       }
       if ( level >= 50) action_list_str += "/mirror_image,if=target.time_to_die>=25";
+      if ( race == RACE_TROLL )
+      {
+        action_list_str += "/berserking,if=buff.icy_veins.down&buff.bloodlust.down";
+      }
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() && level >= 56)
@@ -3143,7 +3147,7 @@ void mage_t::init_actions()
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
-      if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*6)<target.time_to_die";
+      if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*12)<target.time_to_die";
       if ( level >= 12 ) action_list_str += "/evocation,if=mana_pct<5&target.time_to_die>60";
       action_list_str += "/frostbolt";
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving
