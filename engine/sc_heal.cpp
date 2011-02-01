@@ -118,6 +118,9 @@
     target_penetration           = 0;
     target_dd_adder              = 0;
 
+    if ( t -> buffs.grace -> up() )
+      target_multiplier *= 1.0 + t -> buffs.grace -> value();
+
     if ( sim -> debug )
       log_t::output( sim, "heal_t::target_buff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                      name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
@@ -380,11 +383,11 @@
   {
     if ( type == HEAL_DIRECT )
     {
-      stats -> add( 0, type, result, time_to_execute );
+      stats -> add( 0, type, RESULT_HIT, time_to_execute );
     }
     else if ( type == HEAL_OVER_TIME )
     {
-      stats -> add( 0, type, result, time_to_tick );
+      stats -> add( 0, type, RESULT_HIT, time_to_tick );
     }
     else assert( 0 );
   }
@@ -555,8 +558,6 @@
   }
 
 
-
-
   // ==========================================================================
   // Absorb
   // ==========================================================================
@@ -575,8 +576,8 @@
     void absorb_t::_init_absorb_t()
     {
       player_t* p = sim -> find_player( "Fluffy_Tank" );
-          if ( p ) heal_target.push_back( p );
-          else heal_target.push_back( player );
+      if ( p ) heal_target.push_back( p );
+      else heal_target.push_back( player );
 
       target=0;
       target_str = "";
@@ -849,7 +850,7 @@
     {
       if ( type == ABSORB )
       {
-        stats -> add( 0, type, result, time_to_execute );
+        stats -> add( 0, type, RESULT_HIT, time_to_execute );
       }
       else assert( 0 );
     }
@@ -861,16 +862,6 @@
         time_to_travel = travel_time();
 
         travel_heal( p, result, direct_dmg );
-
-     /*   else
-        {
-          if ( sim -> log )
-          {
-            log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
-          }
-
-          travel_event = new ( sim ) heal_travel_event_t( sim, p, this, time_to_travel );
-        }*/
       }
 
     // absorb_t::travel ============================================================

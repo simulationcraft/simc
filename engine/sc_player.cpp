@@ -1371,6 +1371,7 @@ void player_t::init_buffs()
   buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
   buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope" );
   buffs.body_and_soul        = new buff_t( this, "body_and_soul", 1, 4.0 );
+  buffs.grace                = new buff_t( this, "grace", 3, 15.0 );
 
 
 

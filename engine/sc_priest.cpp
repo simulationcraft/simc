@@ -33,7 +33,6 @@ struct priest_t : public player_t
   buff_t* buffs_spirit_tap;
   buff_t* buffs_glyph_of_shadow_word_death;
   buff_t* buffs_borrowed_time;
-  buff_t* buffs_grace;
   buff_t* buffs_weakened_soul;
   buff_t* buffs_inner_focus;
   buff_t* buffs_serenity;
@@ -606,16 +605,13 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
     player_multiplier *= 1.0 + p -> passive_spells.spiritual_healing -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) ;
-    if ( p -> buffs_grace -> up() )
-      player_multiplier *= 1.0 + p -> buffs_grace -> effect_base_value( 1 ) / 100.0;
+
 
     if ( p -> buffs_serenity -> up() )
       player_crit += 0.10;
 
     if ( p -> buffs_holy_archangel -> up() )
       player_multiplier *= 1.0 + p -> buffs_holy_archangel -> stack() * 0.03;
-
-
   }
 
   virtual void target_buff( player_t* t, int dmg_type )
@@ -686,6 +682,14 @@ struct priest_heal_t : public heal_t
 
     if ( p -> talents.inspiration -> rank() && insp_result == RESULT_CRIT )
           t -> buffs.inspiration -> trigger( 1, p -> talents.inspiration -> rank() * 5 );
+  }
+
+  void trigger_grace( player_t* t )
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> talents.grace -> rank() )
+      t -> buffs.grace -> trigger( 1, p -> player_data.effect_base_value( p -> player_data.spell_effect_id( p -> talents.grace -> effect_trigger_spell( 1 ), 1 ) ) / 100.0 );
   }
 };
 
@@ -2029,7 +2033,7 @@ struct chakra_t : public priest_spell_t
 
   virtual void execute()
   {
-    cooldown -> duration = 1000;
+    cooldown -> duration = sim -> wheel_seconds;
     priest_spell_t::execute();
 
     priest_t* p = player -> cast_priest();
@@ -2057,13 +2061,13 @@ struct atonement_nc_t : public priest_heal_t
     background = true;
   }
 
-  virtual void player_buff()
+  virtual void target_buff( player_t* t, int dmg_type )
   {
-    priest_heal_t::player_buff();
+    priest_heal_t::target_buff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
-    if ( p -> bugs && p -> buffs_grace -> up() )
-      player_multiplier /= 1.0 + p -> buffs_grace -> effect_base_value( 1 ) / 100.0;
+    if ( p -> bugs && t -> buffs.grace -> up() )
+      target_multiplier /= 1.0 + t -> buffs.grace -> value();
   }
 };
 
@@ -2089,13 +2093,13 @@ struct atonement_c_t : public priest_heal_t
     return 0;
   }
 
-  virtual void player_buff()
+  virtual void target_buff( player_t* t, int dmg_type )
   {
-    priest_heal_t::player_buff();
+    priest_heal_t::target_buff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
-    if ( p -> bugs && p -> buffs_grace -> up() )
-      player_multiplier /= 1.0 + p -> buffs_grace -> effect_base_value( 1 ) / 100.0;
+    if ( p -> bugs && t -> buffs.grace -> up() )
+      target_multiplier /= 1.0 + t -> buffs.grace -> value();
   }
 };
 
@@ -2368,7 +2372,7 @@ struct archangel_t : public priest_spell_t
    {
     priest_t* p = player -> cast_priest();
 
-    if ( ! ( p -> buffs_holy_evangelism -> up() || p -> buffs_dark_evangelism -> up() ) )
+    if ( ! ( p -> buffs_holy_evangelism -> check() || p -> buffs_dark_evangelism -> check() ) )
        return false;
 
     return priest_spell_t::ready();
@@ -2417,7 +2421,7 @@ struct dark_archangel_t : public priest_spell_t
 
     if ( ! priest_spell_t::ready() )
          return false;
-    if ( ! p -> buffs_dark_evangelism -> up() )
+    if ( ! p -> buffs_dark_evangelism -> check() )
        return false;
 
     return true;
@@ -2443,6 +2447,7 @@ struct inner_focus_t : public priest_spell_t
 
   virtual void execute()
   {
+    cooldown -> duration = sim -> wheel_seconds;
     priest_t* p = player -> cast_priest();
     priest_spell_t::execute();
     p -> buffs_inner_focus -> trigger();
@@ -2598,10 +2603,9 @@ struct _heal_t : public priest_heal_t
     p -> buffs_surge_of_light -> trigger();
 
     if ( ! p -> ptr && p -> buffs_chakra_serenity -> up() && p -> talents.state_of_mind -> rank() )
-    {
       p -> buffs_chakra_serenity -> extend_duration( player, 4 );
-    }
 
+    // Trigger Chakra
     if ( p -> buffs_chakra_pre -> up())
     {
       p -> buffs_chakra_serenity -> trigger();
@@ -2620,19 +2624,21 @@ struct _heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     trigger_inspiration(travel_result, t );
-    p -> buffs_grace -> trigger();
+
+    trigger_grace( t );
+
+    // Strength of Soul
     if ( p -> talents.strength_of_soul -> rank() && p -> buffs_weakened_soul -> up() )
-       {
-        p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect_base_value( 1 ) );
-       }
+      p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect_base_value( 1 ) );
   }
 
-  virtual void player_buff()
+  virtual void target_buff( player_t* t, int dmg_type )
   {
-    priest_heal_t::player_buff();
+    priest_heal_t::target_buff( t, dmg_type );
     priest_t* p = player -> cast_priest();
-    if ( p -> buffs_grace -> up() || p -> buffs_weakened_soul -> up() )
-      player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
+
+    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+         player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -2652,34 +2658,67 @@ struct flash_heal_t : public priest_heal_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
+
     may_crit = ( ! p -> buffs_surge_of_light -> up() || p -> ptr );
+
     priest_heal_t::execute();
 
     // Assuming a SoL Flash Heal can't proc SoL
     if ( p -> ptr && ! p -> buffs_surge_of_light -> up() )
       p -> buffs_surge_of_light -> trigger();
 
-    p -> buffs_grace -> trigger();
     p -> buffs_serendipity -> trigger();
-    p -> buffs_inner_focus -> expire();
+
     p -> buffs_surge_of_light -> expire();
+
+    // Inner Focus
+    if ( p -> buffs_inner_focus -> up() )
+    {
+      // Inner Focus cooldown starts when consumed.
+      p -> cooldowns_inner_focus -> reset();
+      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> start();
+      p -> buffs_inner_focus -> expire();
+    }
+
+    // Chakra PTR
+    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    {
+      p -> buffs_chakra_serenity -> trigger();
+
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> start();
+     }
   }
 
   virtual void travel_heal( player_t* t, int travel_result, double travel_dmg )
   {
     priest_heal_t::travel_heal( t, travel_result, travel_dmg );
+
     trigger_inspiration(travel_result, t );
+
+    trigger_grace( t );
   }
 
   virtual void player_buff()
   {
     priest_heal_t::player_buff();
     priest_t* p = player -> cast_priest();
-    if ( p -> buffs_grace -> up() || p -> buffs_weakened_soul -> up() )
-      player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
 
     if ( p -> buffs_inner_focus -> up() )
       player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
+  }
+
+  virtual void target_buff( player_t* t, int dmg_type )
+  {
+    priest_heal_t::target_buff( t, dmg_type );
+    priest_t* p = player -> cast_priest();
+
+    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+         player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double cost() SC_CONST
@@ -2718,7 +2757,6 @@ struct binding_heal_t : public priest_heal_t
     parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
-
   }
 
   virtual void execute()
@@ -2742,12 +2780,34 @@ struct binding_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     p -> buffs_serendipity -> trigger( 1 );
-    p -> buffs_inner_focus -> expire();
+
+    // Inner Focus
+    if ( p -> buffs_inner_focus -> up() )
+    {
+      // Inner Focus cooldown starts when consumed.
+      p -> cooldowns_inner_focus -> reset();
+      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> start();
+      p -> buffs_inner_focus -> expire();
+    }
+
+    // Chakra PTR
+    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    {
+      p -> buffs_chakra_serenity -> trigger();
+
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> start();
+     }
   }
 
   virtual void travel_heal( player_t* t, int travel_result, double travel_dmg )
   {
     priest_heal_t::travel_heal( t, travel_result, travel_dmg );
+
     trigger_inspiration(travel_result, t );
   }
 
@@ -2783,17 +2843,38 @@ struct greater_heal_t : public priest_heal_t
     parse_options( NULL, options_str );
 
     base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
+
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
   }
 
   virtual void execute()
   {
     priest_heal_t::execute();
-
     priest_t* p = player -> cast_priest();
-    p -> buffs_grace -> trigger();
-    p -> buffs_inner_focus -> expire();
+
     p -> buffs_serendipity -> expire();
+
+    // Inner Focus
+    if ( p -> buffs_inner_focus -> up() )
+    {
+      // Inner Focus cooldown starts when consumed.
+      p -> cooldowns_inner_focus -> reset();
+      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> start();
+      p -> buffs_inner_focus -> expire();
+    }
+
+    // Chakra PTR
+    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    {
+      p -> buffs_chakra_serenity -> trigger();
+
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> start();
+     }
 
     if ( p -> ptr )
       p -> buffs_surge_of_light -> trigger();
@@ -2810,18 +2891,28 @@ struct greater_heal_t : public priest_heal_t
   virtual void travel_heal( player_t* t, int travel_result, double travel_dmg )
   {
     priest_heal_t::travel_heal( t, travel_result, travel_dmg );
+
     trigger_inspiration(travel_result, t );
+
+    trigger_grace( t );
   }
 
   virtual void player_buff()
   {
     priest_heal_t::player_buff();
     priest_t* p = player -> cast_priest();
-    if ( p -> buffs_grace -> up() || p -> buffs_weakened_soul -> up() )
-      player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
 
     if ( p -> buffs_inner_focus -> up() )
           player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
+  }
+
+  virtual void target_buff( player_t* t, int dmg_type )
+  {
+    priest_heal_t::target_buff( t, dmg_type );
+    priest_t* p = player -> cast_priest();
+
+    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+         player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double execute_time() SC_CONST
@@ -2893,7 +2984,15 @@ struct prayer_of_healing_t : public priest_heal_t
 
     priest_heal_t::execute();
 
-    p -> buffs_inner_focus -> expire();
+    if ( p -> buffs_inner_focus -> up() )
+    {
+      // Inner Focus cooldown starts when consumed.
+      p -> cooldowns_inner_focus -> reset();
+      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> start();
+      p -> buffs_inner_focus -> expire();
+    }
+
     p -> buffs_serendipity -> expire();
 
     if ( p -> buffs_chakra_pre -> up())
@@ -3129,10 +3228,13 @@ struct power_word_shield_t : public priest_absorb_t
     priest_t* p = player -> cast_priest();
     parse_options( NULL, options_str );
 
+    cooldown -> duration += p -> talents.soul_warding -> effect_base_value( 1 ) / 1000.0;
+
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
-    cooldown -> duration += p -> talents.soul_warding -> effect_base_value( 1 ) / 1000.0;
+
     base_multiplier *= 1.0 + p -> talents.improved_power_word_shield -> effect_base_value( 1 ) / 100.0;
+
     direct_power_mod = p -> ptr ? 0.87 : 0.418; // hardcoded into tooltip
 
     if ( p -> glyphs.power_word_shield )
@@ -3216,12 +3318,13 @@ struct penance_heal_tick_t : public priest_heal_t
     trigger_inspiration(travel_result, t );
   }
 
-  virtual void player_buff()
+  virtual void target_buff( player_t* t, int dmg_type)
   {
-    priest_heal_t::player_buff();
+    priest_heal_t::target_buff( t, dmg_type);
     priest_t* p = player -> cast_priest();
-    if ( p -> buffs_grace -> up() || p -> buffs_weakened_soul -> up() )
-      player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
+
+    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+         player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -3394,10 +3497,10 @@ struct holy_word_t : public priest_spell_t
     if ( ! priest_spell_t::ready() )
       return false;
 
-    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> up() )
+    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> check() )
       return hw_serenity -> ready();
 
-    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> up() )
+    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> check() )
       return hw_sanctuary -> ready();
 
     return hw_chastise -> ready();
@@ -4019,7 +4122,6 @@ void priest_t::init_buffs()
   buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
   buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
   buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
-  buffs_grace                      = new buff_t( this, talents.grace -> effect_trigger_spell( 1 ), "grace", talents.grace -> rank() );
   buffs_weakened_soul              = new buff_t( this, 6788, "weakened_soul" );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;

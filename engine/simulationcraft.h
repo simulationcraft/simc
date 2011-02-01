@@ -3031,6 +3031,7 @@ struct player_t
     buff_t* inspiration;
     buff_t* hymn_of_hope;
     buff_t* body_and_soul;
+    buff_t* grace;
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
@@ -3878,8 +3879,6 @@ struct dot_t
   }
   virtual const char* name() { return name_str.c_str(); }
 };
-
-// Action Callback ===========================================================
 
 struct action_callback_t
 {
