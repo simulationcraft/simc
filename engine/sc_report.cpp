@@ -2179,6 +2179,75 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
 
 }
 
+// print_html3_gear ============================================================
+
+static void print_html3_gear (FILE* file, player_t* a )
+{
+  if ( a -> total_seconds > 0 )
+  {
+    util_t::fprintf( file,
+      "            <div class=\"player-section gear\">\n"
+      "              <h3 class=\"toggle\">Gear</h3>\n"
+      "              <div class=\"toggle-content\">\n"
+      "                <table class=\"sc\">\n"
+      "                  <tr>\n"
+      "                    <th></th>\n"
+      "                    <th>Encoded</th>\n"
+      "                  </tr>\n" );
+
+    for ( int i=0; i < SLOT_MAX; i++ )
+    {
+      item_t& item = a -> items[ i ];
+
+      util_t::fprintf( file,
+        "                  <tr>\n"
+        "                    <th class=\"left\">%s</th>\n"
+        "                    <td class=\"left\">%s</td>\n"
+        "                  </tr>\n",
+        item.slot_name(),
+        item.active() ? item.options_str.c_str() : "empty" );
+    }
+
+    util_t::fprintf( file,
+      "                </table>\n"
+      "              </div>\n"
+      "            </div>\n" );
+  }
+}
+
+// print_html3_profile ============================================================
+
+static void print_html3_profile (FILE* file, player_t* a )
+{
+  if ( a -> total_seconds > 0 )
+  {
+    util_t::fprintf( file,
+      "            <div class=\"player-section profile\">\n"
+      "              <h3 class=\"toggle\">Profile</h3>\n"
+      "              <div class=\"toggle-content\">\n"
+      "                <table class=\"sc\">\n"
+      "                  <tr>\n"
+      "                    <th></th>\n"
+      "                  </tr>\n" );
+
+    std::string profile_str;
+
+    a -> create_profile( profile_str, SAVE_ALL, true );
+
+    util_t::fprintf( file,
+      "                  <tr>\n"
+      "                    <td class=\"left\">%s</th>\n"
+      "                  </tr>\n",
+      profile_str.c_str() );
+
+    util_t::fprintf( file,
+      "                </table>\n"
+      "              </div>\n"
+      "            </div>\n" );
+  }
+}
+
+
 // print_html3_stats ============================================================
 
 static void print_html3_stats (FILE* file, player_t* a )
@@ -3385,7 +3454,11 @@ static void print_html3_player( FILE* file, sim_t* sim, player_t* p, int j )
 
   print_html3_stats( file, p );
 
+  print_html3_gear( file, p );
+
   print_html3_talents( file, p );
+
+  print_html3_profile( file, p );
 
 
   if ( p -> sim -> scaling -> has_scale_factors() && !p -> is_pet() )

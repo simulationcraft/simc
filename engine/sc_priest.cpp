@@ -3092,7 +3092,7 @@ struct circle_of_healing_t : public priest_heal_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
 
-    unsigned int h = 0;
+    int h = 0;
     heal_target.clear();
     heal_target.push_back(find_lowest_player());
     for ( player_t* q = sim -> player_list; q; q = q -> next )

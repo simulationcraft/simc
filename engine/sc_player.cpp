@@ -4971,16 +4971,23 @@ action_expr_t* player_t::create_expression( action_t* a,
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, int save_type )
+bool player_t::create_profile( std::string& profile_str, int save_type, bool save_html )
 {
+  std::string term;
+
+  if ( save_html )
+    term = "<br>\n";
+  else
+    term = "\n";
+
   if ( save_type == SAVE_ALL )
   {
-    profile_str += "#!./simc \n\n";
+    profile_str += "#!./simc " + term + term;
   }
 
   if ( ! comment_str.empty() )
   {
-    profile_str += "# " + comment_str + "\n";
+    profile_str += "# " + comment_str + term;
   }
 
   if ( save_type == SAVE_ALL )
@@ -4988,15 +4995,15 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
     std::string pname = name_str;
     
     profile_str += util_t::player_type_string( type ); 
-    profile_str += "=" + util_t::format_text( pname, sim -> input_is_utf8 ) + "\n";
-    profile_str += "origin=\"" + origin_str + "\"\n";
-    profile_str += "level=" + util_t::to_string( level ) + "\n";
-    profile_str += "race=" + race_str + "\n";
-    profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + "\n";
+    profile_str += "=" + util_t::format_text( pname, sim -> input_is_utf8 ) + term;
+    profile_str += "origin=\"" + origin_str + "\"" + term;
+    profile_str += "level=" + util_t::to_string( level ) + term;
+    profile_str += "race=" + race_str + term;
+    profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
     {
-      profile_str += "professions=" + professions_str + "\n";
+      profile_str += "professions=" + professions_str + term;
     };
   }
 
@@ -5004,11 +5011,11 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
   {
     if ( talents_str.size() > 0 )
     {
-      profile_str += "talents=" + talents_str + "\n";
+      profile_str += "talents=" + talents_str + term;
     };
     if ( glyphs_str.size() > 0 )
     {
-      profile_str += "glyphs=" + glyphs_str + "\n";
+      profile_str += "glyphs=" + glyphs_str + term;
     }
   }
 
@@ -5022,7 +5029,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       {
         profile_str += "actions";
         profile_str += i ? "+=/" : "=";
-        profile_str += splits[ i ] + "\n";
+        profile_str += splits[ i ] + term;
       }
     }
   }
@@ -5036,12 +5043,12 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       if ( item.active() )
       {
         profile_str += item.slot_name();
-        profile_str += "=" + item.options_str + "\n";
+        profile_str += "=" + item.options_str + term;
       }
     }
     if ( ! items_str.empty() )
     {
-      profile_str += "items=" + items_str + "\n";
+      profile_str += "items=" + items_str + term;
     }
 
     profile_str += "# Gear Summary\n";
@@ -5052,33 +5059,33 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       {
         profile_str += "# gear_";
         profile_str += util_t::stat_type_string( i );
-        profile_str += "=" + util_t::to_string( value, 0 ) + "\n";
+        profile_str += "=" + util_t::to_string( value, 0 ) + term;
       }
     }
     if ( meta_gem != META_GEM_NONE )
     {
       profile_str += "# meta_gem=";
       profile_str += util_t::meta_gem_type_string( meta_gem );
-      profile_str += "\n";
+      profile_str += term;
     }
 
-    if ( set_bonus.tier10_2pc_caster() ) profile_str += "# tier10_2pc_caster=1\n";
-    if ( set_bonus.tier10_4pc_caster() ) profile_str += "# tier10_4pc_caster=1\n";
-    if ( set_bonus.tier10_2pc_melee()  ) profile_str += "# tier10_2pc_melee=1\n";
-    if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1\n";
-    if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1\n";
-    if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1\n";
-    if ( set_bonus.tier10_2pc_heal()   ) profile_str += "# tier10_2pc_heal=1\n";
-    if ( set_bonus.tier10_4pc_heal()   ) profile_str += "# tier10_4pc_heal=1\n";
+    if ( set_bonus.tier10_2pc_caster() ) profile_str += "# tier10_2pc_caster=1" + term;
+    if ( set_bonus.tier10_4pc_caster() ) profile_str += "# tier10_4pc_caster=1" + term;
+    if ( set_bonus.tier10_2pc_melee()  ) profile_str += "# tier10_2pc_melee=1" + term;
+    if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1" + term;
+    if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1" + term;
+    if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1" + term;
+    if ( set_bonus.tier10_2pc_heal()   ) profile_str += "# tier10_2pc_heal=1" + term;
+    if ( set_bonus.tier10_4pc_heal()   ) profile_str += "# tier10_4pc_heal=1" + term;
 
-    if ( set_bonus.tier11_2pc_caster() ) profile_str += "# tier11_2pc_caster=1\n";
-    if ( set_bonus.tier11_4pc_caster() ) profile_str += "# tier11_4pc_caster=1\n";
-    if ( set_bonus.tier11_2pc_melee()  ) profile_str += "# tier11_2pc_melee=1\n";
-    if ( set_bonus.tier11_4pc_melee()  ) profile_str += "# tier11_4pc_melee=1\n";
-    if ( set_bonus.tier11_2pc_tank()   ) profile_str += "# tier11_2pc_tank=1\n";
-    if ( set_bonus.tier11_4pc_tank()   ) profile_str += "# tier11_4pc_tank=1\n";
-    if ( set_bonus.tier11_2pc_heal()   ) profile_str += "# tier11_2pc_heal=1\n";
-    if ( set_bonus.tier11_4pc_heal()   ) profile_str += "# tier11_4pc_heal=1\n";
+    if ( set_bonus.tier11_2pc_caster() ) profile_str += "# tier11_2pc_caster=1" + term;
+    if ( set_bonus.tier11_4pc_caster() ) profile_str += "# tier11_4pc_caster=1" + term;
+    if ( set_bonus.tier11_2pc_melee()  ) profile_str += "# tier11_2pc_melee=1" + term;
+    if ( set_bonus.tier11_4pc_melee()  ) profile_str += "# tier11_4pc_melee=1" + term;
+    if ( set_bonus.tier11_2pc_tank()   ) profile_str += "# tier11_2pc_tank=1" + term;
+    if ( set_bonus.tier11_4pc_tank()   ) profile_str += "# tier11_4pc_tank=1" + term;
+    if ( set_bonus.tier11_2pc_heal()   ) profile_str += "# tier11_2pc_heal=1" + term;
+    if ( set_bonus.tier11_4pc_heal()   ) profile_str += "# tier11_4pc_heal=1" + term;
 
     for ( int i=0; i < SLOT_MAX; i++ )
     {
@@ -5094,7 +5101,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
         if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
         if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
         if ( item.unique_addon   ) profile_str += ",addon="   + item.encoded_addon_str;
-        profile_str += "\n";
+        profile_str += term;
       }
     }
 

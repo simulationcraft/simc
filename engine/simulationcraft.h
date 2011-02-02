@@ -3224,7 +3224,7 @@ struct player_t
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
   virtual void create_options();
-  virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL );
+  virtual bool create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   
   virtual void copy_from( player_t* source );
 
