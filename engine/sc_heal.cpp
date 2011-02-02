@@ -106,7 +106,7 @@
 
 // heal_t::target_buff ====================================================
 
-  void heal_t::target_buff( player_t* t, int dmg_type )
+  void heal_t::target_debuff( player_t* t, int dmg_type )
   {
     target_multiplier            = 1.0;
     target_hit                   = 0;
@@ -153,7 +153,7 @@
 
     for ( unsigned int i = 0; i < heal_target.size(); i++ )
     {
-      target_buff( heal_target[i], HEAL_DIRECT );
+      target_debuff( heal_target[i], HEAL_DIRECT );
 
       calculate_result();
 
@@ -460,7 +460,7 @@
 
     double save_target_crit = target_crit;
 
-    target_buff( heal_target[0], HEAL_OVER_TIME );
+    target_debuff( heal_target[0], HEAL_OVER_TIME );
 
     target_crit = save_target_crit;
 
@@ -548,7 +548,7 @@
     assert( dot -> tick_event );
 
     player_buff();
-    target_buff( heal_target[0], HEAL_OVER_TIME );
+    target_debuff( heal_target[0], HEAL_OVER_TIME );
 
     dot -> action = this;
     dot -> current_tick = 0;
@@ -644,7 +644,7 @@
 
   // absorb_t::target_debu ====================================================
 
-    void absorb_t::target_buff( player_t* t, int dmg_type )
+    void absorb_t::target_debuff( player_t* t, int dmg_type )
     {
       target_multiplier            = 1.0;
       target_hit                   = 0;
@@ -686,7 +686,7 @@
 
       for ( unsigned int i = 0; i < heal_target.size(); i++ )
       {
-         target_buff( heal_target[i], HEAL_DIRECT );
+         target_debuff( heal_target[i], HEAL_DIRECT );
 
          calculate_result();
 

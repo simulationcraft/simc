@@ -614,9 +614,9 @@ struct priest_heal_t : public heal_t
       player_multiplier *= 1.0 + p -> buffs_holy_archangel -> stack() * 0.03;
   }
 
-  virtual void target_buff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    heal_t::target_buff( t, dmg_type );
+    heal_t::target_debuff( t, dmg_type );
 
     priest_t* p = player -> cast_priest();
     if ( p -> talents.test_of_faith -> rank() )
@@ -2062,9 +2062,9 @@ struct atonement_nc_t : public priest_heal_t
     background = true;
   }
 
-  virtual void target_buff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    priest_heal_t::target_buff( t, dmg_type );
+    priest_heal_t::target_debuff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
     if ( p -> bugs && t -> buffs.grace -> up() )
@@ -2094,9 +2094,9 @@ struct atonement_c_t : public priest_heal_t
     return 0;
   }
 
-  virtual void target_buff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    priest_heal_t::target_buff( t, dmg_type );
+    priest_heal_t::target_debuff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
     if ( p -> bugs && t -> buffs.grace -> up() )
@@ -2633,9 +2633,9 @@ struct _heal_t : public priest_heal_t
       p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect_base_value( 1 ) );
   }
 
-  virtual void target_buff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    priest_heal_t::target_buff( t, dmg_type );
+    priest_heal_t::target_debuff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
     if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
@@ -2713,9 +2713,9 @@ struct flash_heal_t : public priest_heal_t
       player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
   }
 
-  virtual void target_buff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    priest_heal_t::target_buff( t, dmg_type );
+    priest_heal_t::target_debuff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
     if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
@@ -2907,9 +2907,9 @@ struct greater_heal_t : public priest_heal_t
           player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
   }
 
-  virtual void target_buff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    priest_heal_t::target_buff( t, dmg_type );
+    priest_heal_t::target_debuff( t, dmg_type );
     priest_t* p = player -> cast_priest();
 
     if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
@@ -3319,9 +3319,9 @@ struct penance_heal_tick_t : public priest_heal_t
     trigger_inspiration(travel_result, t );
   }
 
-  virtual void target_buff( player_t* t, int dmg_type)
+  virtual void target_debuff( player_t* t, int dmg_type)
   {
-    priest_heal_t::target_buff( t, dmg_type);
+    priest_heal_t::target_debuff( t, dmg_type);
     priest_t* p = player -> cast_priest();
 
     if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )

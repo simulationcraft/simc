@@ -3764,7 +3764,7 @@ struct heal_t : public spell_t
   heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
   virtual void player_buff();
-  virtual void target_buff( player_t* t, int dmg_type );
+  virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_heal( player_t* t, double amount,
@@ -3799,7 +3799,7 @@ struct absorb_t : public spell_t
   absorb_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
   virtual void player_buff();
-  virtual void target_buff( player_t* t, int dmg_type );
+  virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_heal( player_t* t, double amount,
