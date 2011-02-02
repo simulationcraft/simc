@@ -272,6 +272,7 @@ const char* util_t::player_type_string( int type )
   case PLAYER_PET:      return "pet";
   case PLAYER_GUARDIAN: return "guardian";
   case ENEMY:           return "enemy";
+  case ENEMY_ADD:       return "add";
   }
   return "unknown";
 }

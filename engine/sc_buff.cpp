@@ -660,22 +660,15 @@ void buff_t::override( int    stacks,
                        double value )
 {
   if( max_stack == 0 ) return;
-  if ( sim -> debug )
-      log_t::output( sim, "%s tries to override buff %s", player -> name(), name() );
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name(), player -> name() );
     assert( 0 );
   }
 
-
-
   buff_duration = 0;
   start( stacks, value );
   overridden = true;
-
-  if ( sim -> debug )
-    log_t::output( sim, "%s overrides buff %s", player -> name(), name() );
 }
 
 // buff_t::expire ===========================================================

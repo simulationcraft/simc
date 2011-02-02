@@ -364,7 +364,7 @@ player_t::player_t( sim_t*             s,
 {
   sim -> actor_list.push_back(this);
 
-  if ( type != ENEMY )
+  if ( type != ENEMY && type != ENEMY_ADD )
   {
     if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
     player_t** last = &( sim -> player_list );
@@ -960,7 +960,7 @@ void player_t::init_spell()
 
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
-  if ( type != ENEMY )
+  if ( type != ENEMY && type != ENEMY_ADD )
     mana_regen_base = player_data.spi_regen( type, level );
 
   if ( level >= 61 )
@@ -1018,7 +1018,7 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
-  if ( type != ENEMY )
+  if ( type != ENEMY && type != ENEMY_ADD )
     base_dodge = player_data.dodge_base( type );
 
   initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
@@ -1043,7 +1043,7 @@ void player_t::init_defense()
   initial_block             = base_block       + initial_stats.block_rating / rating.block;
   initial_block_value       = base_block_value + initial_stats.block_value;
 
-  if ( type != ENEMY )
+  if ( type != ENEMY && type != ENEMY_ADD )
     initial_dodge_per_agility = player_data.dodge_scale( type, level );
 
   if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
@@ -1322,7 +1322,7 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%.f", level,type );
+  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%s", level, util_t::player_type_string( type ) );
 
   rating.init( sim, player_data, level, type );
 }

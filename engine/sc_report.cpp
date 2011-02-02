@@ -4581,6 +4581,13 @@ void report_t::print_html3( sim_t* sim )
                                 if ( pet -> summoned )
                                         print_html3_player( file, sim, pet, 1 );
                         }
+                        if ( sim -> players_by_name[i] -> is_enemy() )
+                        {
+                          for ( add_t* add = sim -> players_by_name[ i ] -> cast_target() -> add_list; add; add = add -> next_add )
+                                                  {
+                                                          print_html3_player( file, sim, add, 1 );
+                                                  }
+                        }
                 }
         }
         

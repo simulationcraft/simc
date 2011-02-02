@@ -85,6 +85,7 @@
 struct action_t;
 struct action_callback_t;
 struct action_expr_t;
+struct add_t;
 struct alias_t;
 struct attack_t;
 struct base_stats_t;
@@ -155,7 +156,7 @@ enum player_type
   PLAYER_NONE=0,
   DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
   PLAYER_PET, PLAYER_GUARDIAN,
-  ENEMY,
+  ENEMY, ENEMY_ADD,
   PLAYER_MAX
 };
 
@@ -3351,6 +3352,7 @@ struct player_t
   
   bool is_pet() SC_CONST { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
   bool is_enemy() SC_CONST { return type == ENEMY; }
+  bool is_add() SC_CONST { return type == ENEMY_ADD; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
@@ -3364,6 +3366,7 @@ struct player_t
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
   target_t      * cast_target      () { assert( is_enemy()           ); return ( target_t      * ) this; }
+  add_t         * cast_add         () { assert( is_add()             ); return ( add_t         * ) this; }
 
   bool      in_gcd() SC_CONST { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
@@ -3444,12 +3447,12 @@ struct target_t : public player_t
   int adds_nearby, initial_adds_nearby;
   double resilience;
 
-
+  add_t* add_list;
 
   // Reporting
   std::vector<gain_t*> gains;
 
-  target_t( sim_t* s, const std::string& n );
+  target_t( sim_t* s, const std::string& n, player_type pt = ENEMY );
 
   virtual void init();
   virtual void init_base();
@@ -3475,7 +3478,32 @@ struct target_t : public player_t
   virtual const char* name() SC_CONST { return name_str.c_str(); }
   virtual const char* id();
   static target_t* find(    sim_t*, const std::string& name );
+  virtual void      create_adds();
+  virtual add_t*    create_add( const std::string& name );
+  virtual add_t*    find_add  ( const std::string& name );
   action_expr_t* create_expression( action_t*, const std::string& type );
+};
+
+// Add =======================================================================
+
+struct add_t : public target_t
+{
+  std::string full_name_str;
+  target_t* owner;
+  add_t* next_add;
+  double summon_time;
+  bool summoned;
+
+  void _init_add_t();
+  add_t( sim_t* sim, target_t* owner, const std::string& name );
+
+  virtual void init();
+  virtual void reset();
+  virtual void summon( double duration=0, double health=0 );
+  virtual void dismiss();
+  virtual bool ooc_buffs() { return false; }
+
+  virtual const char* name() SC_CONST { return full_name_str.c_str(); }
 };
 
 // Stats =====================================================================

@@ -1393,7 +1393,6 @@ double hunter_attack_t::execute_time() SC_CONST
 void hunter_attack_t::player_buff()
 {
   hunter_t* p = player -> cast_hunter();
-  //target_t* t = target;
 
   attack_t::player_buff();
 

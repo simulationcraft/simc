@@ -11,16 +11,22 @@
 
 // target_t::target_t =======================================================
 
-target_t::target_t( sim_t* s, const std::string& n ) :
-    player_t( s, ENEMY, n, RACE_HUMANOID ),
+target_t::target_t( sim_t* s, const std::string& n, player_type pt ) :
+    player_t( s, pt, n, RACE_HUMANOID ),
     next( 0 ), target_level( -1 ),
     initial_armor( -1 ), armor( 0 ), block_value( 0.3 ),
     attack_speed( 3.0 ), attack_damage( 50000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
-    total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 )
+    total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 ),
+    add_list( 0 )
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
   create_options();
+
+  target_t** last = &( sim -> target_list );
+  while ( *last ) last = &( ( *last ) -> next );
+  *last = this;
+  next = 0;
 
 }
 
@@ -237,7 +243,10 @@ void target_t::init_items()
 
 void target_t::init_actions()
 {
+  if ( !is_add() ) action_list_str += "/summon_add,name=Evil_Add,health=500000";
   action_list_str += "/auto_attack";
+
+
 
   player_t::init_actions();
 }
@@ -312,8 +321,8 @@ bool target_t::debuffs_t::snared()
 
 struct auto_attack_t : public attack_t
 {
-  auto_attack_t( player_t* player, const std::string& options_str ) :
-      attack_t( "auto_attack", player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+  auto_attack_t( player_t* p, const std::string& options_str ) :
+      attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
     parse_options( NULL, options_str );
 
@@ -333,12 +342,60 @@ struct auto_attack_t : public attack_t
   }
 };
 
+struct summon_add_t : public spell_t
+{
+  std::string name_str;
+  add_t* add_to_summon;
+  double health;
+
+  summon_add_t( target_t* p, const std::string& options_str ) :
+    spell_t( "summon_add", p, RESOURCE_MANA, SCHOOL_FIRE ),
+    name_str( "" ), add_to_summon( 0 ), health( 0 )
+  {
+    option_t options[] =
+    {
+      { "name",   OPT_STRING,    &name_str  },
+      { "health", OPT_FLT,       &health    },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    for ( add_t* add = p -> add_list; add; add = add -> next_add )
+        if ( name_str == add -> name_str )
+          add_to_summon = add;
+
+    cooldown -> duration = 100;
+  }
+
+
+  virtual void execute()
+  {
+    spell_t::execute();
+
+    assert( add_to_summon );
+
+    add_to_summon -> summon( 50, health );
+  }
+
+  virtual bool ready()
+  {
+    if ( ! add_to_summon )
+      return false;
+
+    if ( add_to_summon -> summoned )
+      return false;
+
+    return spell_t::ready();
+  }
+};
+
 // shaman_t::create_action  =================================================
 
 action_t* target_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
   if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
+  if ( name == "summon_add"              ) return new               summon_add_t( this, options_str );
 
 
   return player_t::create_action( name, options_str );
@@ -378,6 +435,40 @@ target_t* target_t::find( sim_t* sim,
   for ( target_t* t = sim -> target_list; t; t = t -> next )
     if ( name_str == t -> name() )
       return t;
+
+  return 0;
+}
+
+// target_t::create_add =====================================================
+
+add_t* target_t::create_add( const std::string& add_name )
+{
+  add_t* p = find_add( add_name );
+
+  if ( p ) return p;
+
+  if ( add_name == "Evil_Add"     ) return new    add_t( sim, this, add_name );
+
+  return 0;
+}
+
+// target_t::create_adds ====================================================
+
+void target_t::create_adds()
+{
+  if ( this -> is_add() )
+    return;
+
+  create_pet( "Evil_Add"  );
+}
+
+// target_t::find_add =======================================================
+
+add_t* target_t::find_add( const std::string& add_name )
+{
+  for ( add_t* p = add_list; p; p = p -> next_add )
+    if ( p -> name_str == add_name )
+      return p;
 
   return 0;
 }
@@ -455,3 +546,119 @@ action_expr_t* target_t::create_expression( action_t* action,
 
    return player_t::create_expression( action, name_str );
 }
+
+
+
+
+
+
+
+// ==========================================================================
+// Add
+// ==========================================================================
+
+// add_t::add_t =============================================================
+
+void add_t::_init_add_t()
+{
+  level = owner -> level;
+  full_name_str = owner -> name_str + "_" + name_str;
+
+  add_t** last = &( owner -> add_list );
+  while ( *last ) last = &( ( *last ) -> next_add );
+  *last = this;
+  next_add = 0;
+
+  party = owner -> party;
+
+  // By default, only report statistics in the context of the owner
+  quiet = 1;
+  player_data.set_parent( &( owner -> player_data ) );
+}
+
+add_t::add_t( sim_t*             s,
+              target_t*          o,
+              const std::string& n ) :
+    target_t( s, n, ENEMY_ADD ), owner( o ), next_add( 0 ), summoned( false )
+{
+  _init_add_t();
+}
+
+// add_t::init ==============================================================
+
+void add_t::init()
+{
+  target_t::init();
+  level = owner -> level;
+
+}
+
+// add_t::reset =============================================================
+
+void add_t::reset()
+{
+  target_t::reset();
+  sleeping = 1;
+  summoned = false;
+  summon_time = 0;
+}
+
+// add_t::summon ============================================================
+
+void add_t::summon( double duration, double health )
+{
+  if ( sim -> log )
+  {
+    log_t::output( sim, "%s summons %s.", owner -> name(), name() );
+    //log_t::summon_event( this );
+  }
+
+  distance = owner -> distance;
+  sleeping = 0;
+  init_resources( true );
+  summon_time = sim -> current_time;
+  summoned=true;
+  stat_gain( STAT_MAX_HEALTH, health );
+
+  if( duration > 0 )
+  {
+    struct expiration_t : public event_t
+    {
+      expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
+      {
+        sim -> add_event( this, duration );
+      }
+      virtual void execute()
+      {
+        player -> cast_add() -> dismiss();
+      }
+    };
+    new ( sim ) expiration_t( sim, this, duration );
+  }
+
+  schedule_ready();
+}
+
+// add_t::dismiss ===========================================================
+
+void add_t::dismiss()
+{
+  if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
+
+  readying = 0;
+  sleeping = 1;
+  summoned = false;
+
+  for ( action_t* a = action_list; a; a = a -> next )
+  {
+    a -> cancel();
+  }
+
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> expire();
+  }
+
+  sim -> cancel_events( this );
+}
+

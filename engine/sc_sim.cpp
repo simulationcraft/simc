@@ -952,6 +952,10 @@ bool sim_t::init()
 
   for ( target_t* t = target_list; t; t = t -> next )
   {
+    t -> create_adds();
+  }
+  for ( target_t* t = target_list; t; t = t -> next )
+  {
     t -> init();
   }
 
@@ -1256,6 +1260,17 @@ void sim_t::analyze()
       chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
       chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
     }
+   if ( p -> is_enemy() )
+     for ( add_t* add = p -> cast_target() -> add_list; add; add = add -> next_add )
+      {
+        chart_t::action_dpet      ( add -> action_dpet_chart,       add );
+        chart_t::action_dmg       ( add -> action_dmg_chart,        add );
+        chart_t::gains            ( add -> gains_chart,             add );
+        chart_t::timeline_resource( add -> timeline_resource_chart, add );
+        chart_t::timeline_health  ( add -> timeline_resource_health_chart, add );
+        chart_t::timeline_dps     ( add -> timeline_dps_chart,      add );
+        chart_t::distribution_dps ( add -> distribution_dps_chart,  add );
+      }
     if ( p -> quiet ) continue;
 
     chart_t::action_dpet      ( p -> action_dpet_chart,       p );
@@ -1499,16 +1514,6 @@ target_t* sim_t::get_target( const std::string& name )
   }
 
   t = new target_t( this, name );
-
-  target_t** tail = &target_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  t -> next = *tail;
-  *tail = t;
 
   return t;
 }
