@@ -2560,6 +2560,14 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::player_buff();
   }
 
+  void player_buff_tick()
+  {
+    // Lunar Shower and BoG are additive with Moonfury and only apply to DD
+    // So after the DD redo the player_buff w/o Lunar Shower and BotG
+    additive_multiplier += p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
+    druid_spell_t::player_buff();
+  }
+
   virtual void tick()
   {
     druid_spell_t::tick();
@@ -2573,13 +2581,8 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::execute();
 
     druid_t* p = player -> cast_druid();
-    // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
-    // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
-    // then reapply moonfury and the glyph, to get an accurate number
-    player_multiplier /= 1.0 + p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
-                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
-                         + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
+    // Recalculate all those multipliers w/o Lunar Shower/BotG
+    player_buff_tick();
 
     if ( result_is_hit() )
     {
@@ -2986,7 +2989,7 @@ struct sunfire_t : public druid_spell_t
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
-
+      
     starsurge_cd = p -> get_cooldown( "starsurge" );
   }
 
@@ -3000,6 +3003,14 @@ struct sunfire_t : public druid_spell_t
     druid_spell_t::player_buff();
   }
 
+  void player_buff_tick()
+  {
+    // Lunar Shower and BoG are additive with Moonfury and only apply to DD
+    // So after the DD redo the player_buff w/o Lunar Shower and BotG
+    additive_multiplier += p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
+    druid_spell_t::player_buff();
+  }
+
   virtual void tick()
   {
     druid_spell_t::tick();
@@ -3010,16 +3021,11 @@ struct sunfire_t : public druid_spell_t
 
   virtual void execute()
   {
-   druid_spell_t::execute();
+    druid_spell_t::execute();
 
     druid_t* p = player -> cast_druid();
-    // Damage bonus only applies to direct damage; Get rid of it for the ticks, hacky :<
-    // Since the bonsues are additive with moonfury, we get rid of all the additive bonuses
-    // then reapply moonfury and the glyph, to get an accurate number
-    player_multiplier /= 1.0 + p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
-                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0
-                         + p -> spec_moonfury -> mod_additive( P_GENERIC );
-    player_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_GENERIC ) + p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
+    // Recalculate all those multipliers w/o Lunar Shower/BotG
+    player_buff_tick();
 
     if ( result_is_hit() )
     {
