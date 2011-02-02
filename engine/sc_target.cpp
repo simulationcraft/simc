@@ -310,11 +310,18 @@ struct auto_attack_t : public attack_t
 
     base_dd_min = base_dd_max = 1;
 
+    player_t* q = sim -> find_player( "Fluffy_Tank" );
+    if ( q )
+    {
+      target = q;
+      base_dd_min = base_dd_max = 150000;
+    }
+    base_crit += 0.2;
   }
 
   virtual double execute_time() SC_CONST
   {
-    return 3.0;
+    return sim -> gauss( 3.0, 0.25 );
   }
 };
 

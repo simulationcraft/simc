@@ -190,7 +190,7 @@ static void trigger_target_swings( player_t* p )
 
       if ( damage > 0 )
       {
-        player -> resource_loss( RESOURCE_HEALTH, damage );
+        //player -> resource_loss( RESOURCE_HEALTH, damage );
         if ( sim -> log )
               log_t::output( sim, "%s does %.1f damage to %s (%s)",
               sim -> target -> name(), damage, player -> name(), util_t::result_type_string( result ) );

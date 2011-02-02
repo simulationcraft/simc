@@ -4677,15 +4677,12 @@ void player_t::death_knight_init( sim_t* sim )
   sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, sim -> sim_data.effect_min( 57330, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) );
   sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,   0.0 );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
-    p -> buffs.unholy_frenzy = new buff_t( p, "unholy_frenzy", 1, 30.0 );
-  }
-
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
-  {
-    t -> debuffs.brittle_bones      = new debuff_t( t, "brittle_bones",      1, 15.0 );
-    t -> debuffs.ebon_plaguebringer = new debuff_t( t, "ebon_plaguebringer", 1, 15.0 );
+    player_t* p = sim -> actor_list[i];
+    p -> buffs.unholy_frenzy        = new   buff_t( p, "unholy_frenzy",      1, 30.0 );
+    p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1, 15.0 );
+    p -> debuffs.ebon_plaguebringer = new debuff_t( p, "ebon_plaguebringer", 1, 15.0 );
   }
 }
 
