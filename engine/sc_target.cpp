@@ -83,10 +83,10 @@ void target_t::recalculate_health()
   }
   else
   {
-    double delta_time = sim -> current_time - sim -> expected_time;
-    delta_time /= sim -> current_iteration + 1; // dampening factor
+    double delta_dmg = fixed_health - total_dmg * ( sim -> expected_time / sim -> current_time );
+    delta_dmg /= sim -> current_iteration + 1; // dampening factor
 
-    double factor = 1 - ( delta_time / sim -> expected_time );
+    double factor = 1 - ( delta_dmg / ( total_dmg * ( sim -> expected_time / sim -> current_time ) )  );
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 
@@ -94,7 +94,7 @@ void target_t::recalculate_health()
     resource_base[ RESOURCE_HEALTH ] *= factor;
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Target fixed health calculated to be %.0f", fixed_health );
+  if ( sim -> debug ) log_t::output( sim, "Target %s fixed health calculated to be %.0f. Total Damage was %.0f", name(), fixed_health, total_dmg );
 }
 
 // target_t::time_to_die =====================================================

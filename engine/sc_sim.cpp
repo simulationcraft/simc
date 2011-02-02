@@ -720,6 +720,8 @@ void sim_t::combat( int iteration )
 
   combat_begin();
 
+  bool double_break = false;
+
   while ( event_t* e = next_event() )
   {
     current_time = e -> time;
@@ -728,29 +730,56 @@ void sim_t::combat( int iteration )
     {
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
-        target -> recalculate_health();
+        for ( target_t* t = target_list; t; t = t -> next )
+        {
+          if ( t -> is_add() )
+            continue;
+          t -> recalculate_health();
+        }
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
         delete e;
         break;
       }
-      if ( target -> initial_health != 0 )
+
+
+
+      for ( target_t* t = target_list; t; t = t -> next )
       {
-        if (  target -> current_health <= 0 )
+        if ( t -> is_add() )
+          continue;
+
+        if ( t -> initial_health != 0 )
         {
-          target -> recalculate_health();
-          if ( debug ) log_t::output( this, "Target has died, ending simulation" );
-          delete e;
-          break;
+          if (  t -> current_health <= 0 )
+          {
+            for ( target_t* q = target_list; q; q = q -> next )
+            {
+              if ( q -> is_add() )
+                continue;
+            q -> recalculate_health();
+            }
+            if ( debug ) log_t::output( this, "Target %s has died, ending simulation", t -> name() );
+            delete e;
+            double_break = true;
+            break;
+          }
+        }
+        else // initial_health == 0
+        {
+          if ( current_time > ( expected_time / 2.0 ) )
+          {
+            if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
+            for ( target_t* t = target_list; t; t = t -> next )
+            {
+              if ( t -> is_add() )
+                continue;
+              t -> recalculate_health();
+            }
+          }
         }
       }
-      else // initial_health == 0
-      {
-        if ( current_time > ( expected_time / 2.0 ) )
-        {
-          if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
-          target -> recalculate_health();
-        }
-      }
+      if ( double_break )
+        break;
     }
     else
     {
