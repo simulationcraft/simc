@@ -918,7 +918,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
       parse_data( p -> player_data );
 
       background       = true;
+
       aoe = 2;
+      base_add_multiplier = 0.75;
+
       trigger_gcd      = 0;
       base_multiplier *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07
                          + o -> glyphs.heart_strike          * 0.30;
