@@ -446,7 +446,7 @@ struct rogue_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( double amount, int dmg_type );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type );
   virtual double total_multiplier() SC_CONST;
   virtual double armor() SC_CONST;
 
@@ -1134,21 +1134,22 @@ bool rogue_attack_t::ready()
 
 // rogue_attack_t::assess_damage ===========================================
 
-void rogue_attack_t::assess_damage( double amount,
+void rogue_attack_t::assess_damage( player_t* t,
+                                    double amount,
                                     int    dmg_type )
 {
-  attack_t::assess_damage( amount, dmg_type );
+  attack_t::assess_damage( t, amount, dmg_type );
 
   rogue_t* p = player -> cast_rogue();
 
   // XXX: review, as not all of the damage is 'flurried' to an additional target
   // dots for example don't as far as I remember
-  if ( target -> is_enemy())
+  if ( t -> is_enemy())
   {
-    target_t* t = target -> cast_target();
+    target_t* q = t -> cast_target();
 
-    if ( p -> buffs_blade_flurry -> up() && t -> adds_nearby )
-      attack_t::additional_damage( amount, dmg_type );
+    if ( p -> buffs_blade_flurry -> up() && q -> adds_nearby )
+      attack_t::additional_damage( q, amount, dmg_type );
   }
 }
 

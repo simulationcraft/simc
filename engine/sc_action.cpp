@@ -1054,7 +1054,7 @@ void action_t::tick()
 
   tick_dmg = calculate_tick_damage();
 
-  assess_damage( tick_dmg, DMG_OVER_TIME );
+  assess_damage( target, tick_dmg, DMG_OVER_TIME );
 
   action_callback_t::trigger( player -> tick_callbacks, this );
 
@@ -1080,7 +1080,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
   if ( travel_dmg > 0 )
   {
-    assess_damage( travel_dmg, DMG_DIRECT );
+    assess_damage( t, travel_dmg, DMG_DIRECT );
   }
   if ( num_ticks > 0 )
   {
@@ -1112,10 +1112,11 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 
 // action_t::assess_damage ==================================================
 
-void action_t::assess_damage( double amount,
+void action_t::assess_damage( player_t* t,
+                              double amount,
                               int    dmg_type )
 {
-  target -> assess_damage( amount, school, dmg_type, this, player );
+  t -> assess_damage( amount, school, dmg_type, this, player );
 
   if ( dmg_type == DMG_DIRECT )
   {
@@ -1131,7 +1132,7 @@ void action_t::assess_damage( double amount,
     if ( sim -> csv_file )
     {
       fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
-               sim->current_iteration, player->name(), name(), target->name(),
+               sim->current_iteration, player->name(), name(), t->name(),
                util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
     }
 
@@ -1144,7 +1145,7 @@ void action_t::assess_damage( double amount,
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     target -> name(), amount,
+                     t -> name(), amount,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( result ) );
       log_t::damage_event( this, amount, dmg_type );
@@ -1152,22 +1153,22 @@ void action_t::assess_damage( double amount,
     if ( sim -> csv_file )
     {
       fprintf( sim -> csv_file, "%d;%s;%s;%s;tick_%s;%s;%.1f\n",
-               sim->current_iteration, player->name(), name(), target->name(),
+               sim->current_iteration, player->name(), name(), t->name(),
                util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
     }
 
     action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
-  if ( target -> is_enemy())
+  if ( t -> is_enemy())
   {
-    target_t* t = target -> cast_target();
+    target_t* q = t -> cast_target();
 
-    if ( aoe && t -> adds_nearby )
+    if ( aoe && q -> adds_nearby )
     {
       amount *= base_add_multiplier;
-      for ( int i=0; i < t -> adds_nearby && i < ( aoe > 0 ? aoe : 9 ); i++ )
+      for ( int i=0; i < q -> adds_nearby && i < ( aoe > 0 ? aoe : 9 ); i++ )
       {
-        additional_damage( amount, dmg_type );
+        additional_damage( q, amount, dmg_type );
       }
     }
   }
@@ -1175,11 +1176,12 @@ void action_t::assess_damage( double amount,
 
 // action_t::additional_damage =============================================
 
-void action_t::additional_damage( double amount,
+void action_t::additional_damage( player_t* t,
+                                  double amount,
                                   int    dmg_type )
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  target -> assess_damage( amount, school, dmg_type, this, player );
+  t -> assess_damage( amount, school, dmg_type, this, player );
   stats -> add_result( amount, dmg_type, result );
 }
 

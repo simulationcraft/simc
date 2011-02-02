@@ -412,7 +412,7 @@ struct warrior_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( double amount, int dmg_type );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type );
   virtual void   parse_options( option_t* options, const std::string& options_str );
 };
 
@@ -791,19 +791,19 @@ double warrior_attack_t::armor() SC_CONST
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( double amount, int dmg_type )
+void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type )
 {
-  attack_t::assess_damage( amount, dmg_type );
+  attack_t::assess_damage( t, amount, dmg_type );
 
   warrior_t* p = player -> cast_warrior();
 
-  if ( target -> is_enemy())
+  if ( t -> is_enemy())
   {
-    target_t* t = target -> cast_target();
+    target_t* q =  t -> cast_target();
 
-    if ( p -> buffs_sweeping_strikes -> up() && t -> adds_nearby )
+    if ( p -> buffs_sweeping_strikes -> up() && q -> adds_nearby )
     {
-      attack_t::additional_damage( amount, dmg_type );
+      attack_t::additional_damage( q, amount, dmg_type );
     }
   }
 }
@@ -1870,15 +1870,15 @@ struct revenge_t : public warrior_attack_t
     stancemask = STANCE_DEFENSE;
   }
 
-  virtual void assess_damage( double amount, int dmg_type )
+  virtual void assess_damage( player_t* t, double amount, int dmg_type )
   {
-    warrior_attack_t::assess_damage( amount, dmg_type );
+    warrior_attack_t::assess_damage( t, amount, dmg_type );
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> talents.improved_revenge -> ok() )
     {
       amount *= p -> talents.improved_revenge -> rank() * 0.50;
-      warrior_attack_t::additional_damage( amount, dmg_type );
+      warrior_attack_t::additional_damage( t, amount, dmg_type );
     }
   }
 

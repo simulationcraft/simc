@@ -837,7 +837,7 @@ static void trigger_ignite( spell_t* s, double dmg )
   {
     int result = s -> result;
     s -> result = RESULT_HIT;
-    s -> assess_damage( ignite_dmg, DMG_OVER_TIME );
+    s -> assess_damage( s -> target, ignite_dmg, DMG_OVER_TIME );
     s -> update_stats( DMG_OVER_TIME );
     s -> result = result;
     return;
@@ -1865,9 +1865,9 @@ struct frostbolt_t : public mage_spell_t
         int max_targets = p -> talents.piercing_chill -> rank();
         if ( target -> is_enemy())
         {
-          target_t* t = target -> cast_target();
+          target_t* q = target -> cast_target();
 
-          for ( int i=0; i < t -> adds_nearby && i < max_targets; i ++ )
+          for ( int i=0; i < q -> adds_nearby && i < max_targets; i ++ )
           {
             p -> buffs_fingers_of_frost -> trigger();
           }

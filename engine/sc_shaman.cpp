@@ -274,7 +274,6 @@ struct shaman_attack_t : public attack_t
   virtual void execute();
   virtual double cost() SC_CONST;
   virtual void player_buff();
-  virtual void assess_damage( double amount, int dmg_type );
   virtual double cost_reduction() SC_CONST;
   virtual void consume_resource();
 };
@@ -1192,13 +1191,6 @@ void shaman_attack_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
 }
 
-// shaman_attack_t::assess_damage ==========================================
-
-void shaman_attack_t::assess_damage( double amount,
-                                     int    dmg_type )
-{
-  attack_t::assess_damage( amount, dmg_type );
-}
 
 // shaman_attack_t::cost_reduction ====================================
 
@@ -2585,7 +2577,7 @@ struct shaman_totem_t : public shaman_spell_t
       if ( direct_dmg > 0 )
       {
         tick_dmg = direct_dmg;
-        assess_damage( tick_dmg, DMG_OVER_TIME );
+        assess_damage( target, tick_dmg, DMG_OVER_TIME );
       }
     }
     else
