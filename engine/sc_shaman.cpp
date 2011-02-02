@@ -853,9 +853,9 @@ struct lightning_bolt_overload_t : public shaman_spell_t
       p -> talent_concussion -> mod_additive( P_GENERIC );
   }
 
-  virtual void travel( int travel_result, double travel_dmg )
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
-    spell_t::travel( travel_result, travel_dmg );
+    spell_t::travel( t, travel_result, travel_dmg );
 
     if ( player -> ptr && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) )
     {
@@ -1986,11 +1986,11 @@ struct lava_burst_t : public shaman_spell_t
     return true;
   }
   
-  virtual void travel( int travel_result, double travel_dmg )
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
     
-    spell_t::travel( travel_result, travel_dmg );
+    spell_t::travel( t, travel_result, travel_dmg );
 
     if ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT )
     {
@@ -2099,11 +2099,11 @@ struct lightning_bolt_t : public shaman_spell_t
     return cr;
   }
   
-  virtual void travel( int travel_result, double travel_dmg )
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
     
-    spell_t::travel( travel_result, travel_dmg );
+    spell_t::travel( t, travel_result, travel_dmg );
 
     if ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT )
     {

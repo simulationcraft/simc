@@ -1076,7 +1076,7 @@ void action_t::last_tick()
 
 // action_t::travel ==========================================================
 
-void action_t::travel( int travel_result, double travel_dmg=0 )
+void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
   if ( travel_dmg > 0 )
   {
@@ -1268,7 +1268,7 @@ void action_t::schedule_travel( player_t* t )
 
   if ( time_to_travel == 0 )
   {
-    travel( result, direct_dmg );
+    travel( t, result, direct_dmg );
   }
   else
   {

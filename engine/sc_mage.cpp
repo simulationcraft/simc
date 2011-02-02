@@ -344,7 +344,7 @@ struct mage_spell_t : public spell_t
   virtual double cost() SC_CONST;
   virtual double haste() SC_CONST;
   virtual void   execute();
-  virtual void   travel( int travel_result, double travel_dmg );
+  virtual void   travel( player_t* t, int travel_result, double travel_dmg );
   virtual void   tick();
   virtual void   consume_resource();
   virtual void   player_buff();
@@ -814,9 +814,9 @@ static void trigger_ignite( spell_t* s, double dmg )
       dot_behavior  = DOT_REFRESH;
       reset();
     }
-    virtual void travel( int travel_result, double ignite_dmg )
+    virtual void travel( player_t* t, int travel_result, double ignite_dmg )
     {
-      mage_spell_t::travel( travel_result, 0 );
+      mage_spell_t::travel( t, travel_result, 0 );
       base_td = ignite_dmg / dot -> num_ticks;
     }
     virtual double travel_time()
@@ -1045,11 +1045,11 @@ void mage_spell_t::execute()
 
 // mage_spell_t::travel =====================================================
 
-void mage_spell_t::travel( int travel_result, double travel_dmg )
+void mage_spell_t::travel( player_t* t, int travel_result, double travel_dmg )
 {
   mage_t* p = player -> cast_mage();
 
-  spell_t::travel( travel_result, travel_dmg );
+  spell_t::travel( t, travel_result, travel_dmg );
 
   if ( travel_result == RESULT_CRIT )
   {
@@ -1963,7 +1963,7 @@ struct frostfire_bolt_t : public mage_spell_t
     consume_brain_freeze( this );
   }
 
-  virtual void travel( int travel_result, double travel_dmg )
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     mage_t* p = player -> cast_mage();
 
@@ -1974,7 +1974,7 @@ struct frostfire_bolt_t : public mage_spell_t
       double dot_dmg = calculate_direct_damage() * 0.03;
       base_td = dot_stack * dot_dmg / num_ticks;
     }
-    mage_spell_t::travel( travel_result, travel_dmg );
+    mage_spell_t::travel( t, travel_result, travel_dmg );
   }
 
   virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!

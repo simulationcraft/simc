@@ -2562,6 +2562,8 @@ struct moonfire_t : public druid_spell_t
 
   void player_buff_tick()
   {
+    druid_t* p = player -> cast_druid();
+
     // Lunar Shower and BoG are additive with Moonfury and only apply to DD
     // So after the DD redo the player_buff w/o Lunar Shower and BotG
     additive_multiplier += p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
@@ -2901,11 +2903,11 @@ struct starsurge_t : public druid_spell_t
     starfall_cd = p -> get_cooldown( "starfall" );
   }
   
-  virtual void travel( int    travel_result,
+  virtual void travel( player_t* t, int    travel_result,
                        double travel_dmg )
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::travel( travel_result, travel_dmg );
+    druid_spell_t::travel( t, travel_result, travel_dmg );
 
     if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
@@ -3005,6 +3007,8 @@ struct sunfire_t : public druid_spell_t
 
   void player_buff_tick()
   {
+    druid_t* p = player -> cast_druid();
+
     // Lunar Shower and BoG are additive with Moonfury and only apply to DD
     // So after the DD redo the player_buff w/o Lunar Shower and BotG
     additive_multiplier += p -> glyphs.moonfire -> mod_additive( P_TICK_DAMAGE );
@@ -3208,11 +3212,11 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::player_buff();
   }
 
-  virtual void travel( int    travel_result,
+  virtual void travel( player_t* t, int    travel_result,
                        double travel_dmg )
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::travel( travel_result, travel_dmg );
+    druid_spell_t::travel( t, travel_result, travel_dmg );
     if ( result_is_hit() )
     {
       if ( travel_result == RESULT_CRIT )

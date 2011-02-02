@@ -1253,14 +1253,14 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     player_multiplier *= p()->buffs_censure->stack();
   }
 
-  virtual void travel(int travel_result, double travel_dmg=0)
+  virtual void travel( player_t* t, int travel_result, double travel_dmg=0 )
   {
     if (result_is_hit())
     {
       p()->buffs_censure->trigger();
       player_buff(); // update with new stack of the debuff
     }
-    paladin_attack_t::travel(travel_result, travel_dmg);
+    paladin_attack_t::travel( t, travel_result, travel_dmg );
   }
 
   virtual void last_tick()

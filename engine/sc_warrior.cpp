@@ -515,9 +515,9 @@ static void trigger_deep_wounds( action_t* a )
       return target_multiplier;
     }
 
-    virtual void travel( int travel_result, double deep_wounds_dmg )
+    virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
     {
-      warrior_attack_t::travel( travel_result, 0 );
+      warrior_attack_t::travel( t, travel_result, 0 );
       base_td = deep_wounds_dmg / dot -> num_ticks;
       trigger_blood_frenzy( this );
     }

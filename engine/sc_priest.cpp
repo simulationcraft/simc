@@ -1010,11 +1010,11 @@ struct shadowy_apparition_t : public priest_spell_t
     }
   }
 
-  virtual void travel( int result, double dmg )
+  virtual void travel( player_t* t, int result, double dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::travel( result, dmg );
+    priest_spell_t::travel( t, result, dmg );
 
     // Cleanup. Re-add to free list.
     p -> shadowy_apparition_active_list.remove( this );
@@ -1639,11 +1639,11 @@ struct mind_spike_t : public priest_spell_t
       direct_power_mod = 0.8355;
   }
 
-  virtual void travel( int result, double dmg )
+  virtual void travel( player_t* t, int result, double dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::travel( result, dmg );
+    priest_spell_t::travel( t, result, dmg );
 
     for ( int i=0; i < 4; i++ )
     {
@@ -1897,11 +1897,11 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void travel( int result, double dmg )
+  virtual void travel( player_t* t, int result, double dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::travel( result, dmg );
+    priest_spell_t::travel( t, result, dmg );
 
     double health_loss = dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
 

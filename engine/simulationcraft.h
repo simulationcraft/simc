@@ -3649,7 +3649,7 @@ struct action_t : public spell_id_t
   virtual void   execute();
   virtual void   tick();
   virtual void   last_tick();
-  virtual void   travel( int result, double dmg );
+  virtual void   travel( player_t*, int result, double dmg );
   virtual void   assess_damage( double amount, int dmg_type );
   virtual void   additional_damage( double amount, int dmg_type );
   virtual void   schedule_execute();
