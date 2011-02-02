@@ -1085,7 +1085,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
   {
     hunter_t*     o = p -> owner -> cast_hunter();
     background = true;
-    dual = true;
     proc=true;
     trigger_gcd = 0.0;
     stats->school = SCHOOL_PHYSICAL;
@@ -1118,7 +1117,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     {
       o -> buffs_killing_streak_crits -> expire();
     }
-    update_stats( DMG_DIRECT );
   }
 
   virtual void player_buff()
@@ -1973,19 +1971,11 @@ struct serpent_sting_burst_t : public hunter_attack_t
   serpent_sting_burst_t( player_t* player ) :
     hunter_attack_t( "serpent_sting_burst", player, SCHOOL_NATURE, TREE_MARKSMANSHIP )
   {
-    dual       = true;
     proc       = true;
     background = true;
 
     // This helps log file and decouples the sooth RNG from the ticks.
     stats = player -> get_stats( "serpent_sting" );
-  }
-
-  virtual void execute()
-  {
-    hunter_attack_t::execute();
-
-    update_stats( DMG_DIRECT );
   }
 
 };

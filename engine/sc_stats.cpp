@@ -122,6 +122,49 @@ void stats_t::add_result( double amount,
   timeline_dmg[ index ] += amount;
 }
 
+// stats_t::add_execute =============================================================
+
+void stats_t::add_execute( int dmg_type,
+                           double time )
+{
+  if ( dmg_type == DMG_DIRECT )
+    {
+      num_executes++;
+      total_execute_time += time;
+
+      if ( last_execute > 0 &&
+           last_execute != sim -> current_time )
+      {
+        num_intervals++;
+        total_intervals += sim -> current_time - last_execute;
+      }
+      last_execute = sim -> current_time;
+    }
+    else if ( dmg_type == DMG_OVER_TIME )
+    {
+      num_ticks++;
+      total_tick_time += time;
+    }
+    if ( ( dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) )
+    {
+      num_executes++;
+      total_execute_time += time;
+
+      if ( last_execute > 0 &&
+           last_execute != sim -> current_time )
+      {
+        num_intervals++;
+        total_intervals += sim -> current_time - last_execute;
+      }
+      last_execute = sim -> current_time;
+    }
+    else if ( dmg_type == HEAL_OVER_TIME )
+    {
+      num_ticks++;
+      total_tick_time += time;
+    }
+}
+
 // stats_t::add =============================================================
 
 void stats_t::add( double amount,
@@ -131,42 +174,7 @@ void stats_t::add( double amount,
 {
   add_result( amount, dmg_type, result );
 
-  if ( dmg_type == DMG_DIRECT )
-  {
-    num_executes++;
-    total_execute_time += time;
-
-    if ( last_execute > 0 &&
-         last_execute != sim -> current_time )
-    {
-      num_intervals++;
-      total_intervals += sim -> current_time - last_execute;
-    }
-    last_execute = sim -> current_time;
-  }
-  else if ( dmg_type == DMG_OVER_TIME )
-  {
-    num_ticks++;
-    total_tick_time += time;
-  }
-  if ( ( dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) )
-  {
-    num_executes++;
-    total_execute_time += time;
-
-    if ( last_execute > 0 &&
-         last_execute != sim -> current_time )
-    {
-      num_intervals++;
-      total_intervals += sim -> current_time - last_execute;
-    }
-    last_execute = sim -> current_time;
-  }
-  else if ( dmg_type == HEAL_OVER_TIME )
-  {
-    num_ticks++;
-    total_tick_time += time;
-  }
+  add_execute( dmg_type, time );
 }
 
 // stats_t::analyze =========================================================

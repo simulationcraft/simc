@@ -1081,6 +1081,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
   if ( travel_dmg > 0 )
   {
     assess_damage( t, travel_dmg, DMG_DIRECT );
+    if ( ! dual ) stats -> add_result( travel_dmg, DMG_DIRECT, travel_result );
   }
   if ( num_ticks > 0 )
   {
@@ -1373,7 +1374,7 @@ void action_t::update_stats( int type )
 {
   if ( type == DMG_DIRECT )
   {
-    stats -> add( direct_dmg, type, result, time_to_execute );
+    stats -> add( 0, type, RESULT_HIT, time_to_execute );
   }
   else if ( type == DMG_OVER_TIME )
   {

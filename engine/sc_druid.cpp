@@ -2846,7 +2846,7 @@ struct starfall_t : public druid_spell_t
       {
         druid_spell_t::execute();
         tick_dmg = direct_dmg;
-        update_stats( DMG_DIRECT );
+        stats -> add( direct_dmg, DMG_DIRECT, result, time_to_execute );
       }
 
       virtual void player_buff()

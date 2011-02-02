@@ -3517,6 +3517,7 @@ struct stats_t
   void add( double amount, int dmg_type, int result, double time );
   void add_result( double amount, int dmg_type, int result );
   void add_time  ( double amount, int dmg_type );
+  void add_execute( int dmg_type, double time );
   void init();
   void reset( action_t* );
   void analyze();

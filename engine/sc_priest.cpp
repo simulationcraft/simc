@@ -1097,7 +1097,7 @@ struct devouring_plague_burst_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    update_stats( DMG_DIRECT );
+    stats -> add( direct_dmg, DMG_DIRECT, result, time_to_execute );
   }
 
   virtual void player_buff()
@@ -2018,206 +2018,6 @@ struct shadow_word_pain_t : public priest_spell_t
 };
 
 
-// Chakra_Pre Spell ======================================================
-
-struct chakra_t : public priest_spell_t
-{
-  chakra_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "chakra", player, "Chakra" )
-  {
-    parse_options( NULL, options_str );
-
-    priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.chakra -> rank() );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    cooldown -> duration = sim -> wheel_seconds;
-    priest_spell_t::execute();
-
-    priest_t* p = player -> cast_priest();
-    p -> buffs_chakra_pre -> trigger();
-  }
-
-  virtual bool ready()
-   {
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> buffs_chakra_pre -> up() )
-       return false;
-
-    return priest_spell_t::ready();
-   }
-};
-// Smite non-crit Atonement Heal ========================================================
-
-struct atonement_nc_t : public priest_heal_t
-{
-  atonement_nc_t( player_t* player ) :
-    priest_heal_t( "atonement", player, 81751 )
-  {
-    proc       = true;
-    background = true;
-  }
-
-  virtual void target_debuff( player_t* t, int dmg_type )
-  {
-    priest_heal_t::target_debuff( t, dmg_type );
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> bugs && t -> buffs.grace -> up() )
-      target_multiplier /= 1.0 + t -> buffs.grace -> value();
-  }
-};
-
-// Smite non-crit Atonement Heal ========================================================
-
-struct atonement_c_t : public priest_heal_t
-{
-  // Missusing ID 81751 for now, correct id is: 94472
-  atonement_c_t( player_t* player ) :
-    priest_heal_t( "atonement", player, 81751 )
-  {
-    proc       = true;
-    background = true;
-  }
-
-  virtual void calculate_result()
-  {
-    result = RESULT_CRIT;
-  }
-
-  virtual double total_crit_bonus() SC_CONST
-  {
-    return 0;
-  }
-
-  virtual void target_debuff( player_t* t, int dmg_type )
-  {
-    priest_heal_t::target_debuff( t, dmg_type );
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> bugs && t -> buffs.grace -> up() )
-      target_multiplier /= 1.0 + t -> buffs.grace -> value();
-  }
-};
-
-// Smite Spell ================================================================
-
-struct smite_t : public priest_spell_t
-{
-  atonement_nc_t* atonement_nc;
-  atonement_c_t* atonement_c;
-
-  smite_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "smite", player, "Smite" ),
-      atonement_nc( 0 ),atonement_c( 0 )
-  {
-    priest_t* p = player -> cast_priest();
-
-    parse_options( NULL, options_str );
-
-    base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
-
-    // Holy_Evangelism
-    base_cost      *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
-    base_hit       += p -> glyphs.divine_accuracy ? 0.18 : 0.0;
-
-    if ( p -> talents.atonement -> rank() )
-    {
-      atonement_nc = new atonement_nc_t( p );
-      atonement_c = new atonement_c_t( p );
-    }
-  }
-
-  virtual void execute()
-  {
-    priest_t* p = player -> cast_priest();
-
-    priest_spell_t::execute();
-
-    p -> buffs_surge_of_light -> trigger();
-    p -> buffs_holy_evangelism  -> trigger();
-
-    // State of Mind
-    if ( result_is_hit() && ! p -> ptr && p -> buffs_chakra_chastise -> up() && p -> talents.state_of_mind -> rank() )
-    {
-      p -> buffs_chakra_chastise -> extend_duration( player, 4 );
-    }
-
-    // Chakra
-    if ( p -> buffs_chakra_pre -> up())
-    {
-      p -> buffs_chakra_chastise -> trigger();
-
-      p -> buffs_chakra_pre -> expire();
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
-      p -> cooldowns_chakra -> start();
-    }
-
-    // Atonement
-    if ( atonement_nc && atonement_c)
-    {
-      if ( result == RESULT_CRIT )
-      {
-        // Assuming there is no cap for crits, since it's not clear how much it would be.
-        atonement_c -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
-        atonement_c -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
-        atonement_c -> round_base_dmg = false;
-        atonement_c -> execute();
-      }
-      else
-      {
-      // Hotfix Cap from 5. Jan.
-        if ( direct_dmg * p -> talents.atonement -> rank() * 0.5 < p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
-        {
-          atonement_nc -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
-          atonement_nc -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
-        }
-        else
-        {
-          atonement_nc -> base_dd_min = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
-          atonement_nc -> base_dd_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
-        }
-        atonement_nc -> round_base_dmg = false;
-        atonement_nc -> execute();
-      }
-    }
-
-    // Train of Thought
-    if ( p -> talents.train_of_thought -> rank() )
-        {
-          if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 2 ) / 1000.0 )
-            p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 2 ) / 1000.0;
-          else
-            p -> cooldowns_penance -> reset();
-        }
-  }
-
-  virtual void player_buff()
-  {
-    priest_spell_t::player_buff();
-    priest_t* p = player -> cast_priest();
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
-    if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite ) player_multiplier *= 1.20;
-  }
-
-  virtual double cost() SC_CONST
-  {
-    double c = priest_spell_t::cost();
-
-    priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * 0.03 );
-
-    return c;
-  }
-};
-
 // Vampiric Embrace Spell ======================================================
 
 struct vampiric_embrace_t : public priest_spell_t
@@ -2507,6 +2307,207 @@ struct hymn_of_hope_t : public priest_spell_t
     update_time( DMG_OVER_TIME );
   }
 };
+
+// Chakra_Pre Spell ======================================================
+
+struct chakra_t : public priest_spell_t
+{
+  chakra_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "chakra", player, "Chakra" )
+  {
+    parse_options( NULL, options_str );
+
+    priest_t* p = player -> cast_priest();
+    check_talent( p -> talents.chakra -> rank() );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    cooldown -> duration = sim -> wheel_seconds;
+    priest_spell_t::execute();
+
+    priest_t* p = player -> cast_priest();
+    p -> buffs_chakra_pre -> trigger();
+  }
+
+  virtual bool ready()
+   {
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> buffs_chakra_pre -> up() )
+       return false;
+
+    return priest_spell_t::ready();
+   }
+};
+// Smite non-crit Atonement Heal ========================================================
+
+struct atonement_nc_t : public priest_heal_t
+{
+  atonement_nc_t( player_t* player ) :
+    priest_heal_t( "atonement", player, 81751 )
+  {
+    proc       = true;
+    background = true;
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    priest_heal_t::target_debuff( t, dmg_type );
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> bugs && t -> buffs.grace -> up() )
+      target_multiplier /= 1.0 + t -> buffs.grace -> value();
+  }
+};
+
+// Smite non-crit Atonement Heal ========================================================
+
+struct atonement_c_t : public priest_heal_t
+{
+  // Missusing ID 81751 for now, correct id is: 94472
+  atonement_c_t( player_t* player ) :
+    priest_heal_t( "atonement", player, 81751 )
+  {
+    proc       = true;
+    background = true;
+  }
+
+  virtual void calculate_result()
+  {
+    result = RESULT_CRIT;
+  }
+
+  virtual double total_crit_bonus() SC_CONST
+  {
+    return 0;
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    priest_heal_t::target_debuff( t, dmg_type );
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> bugs && t -> buffs.grace -> up() )
+      target_multiplier /= 1.0 + t -> buffs.grace -> value();
+  }
+};
+
+// Smite Spell ================================================================
+
+struct smite_t : public priest_spell_t
+{
+  atonement_nc_t* atonement_nc;
+  atonement_c_t* atonement_c;
+
+  smite_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "smite", player, "Smite" ),
+      atonement_nc( 0 ),atonement_c( 0 )
+  {
+    priest_t* p = player -> cast_priest();
+
+    parse_options( NULL, options_str );
+
+    base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
+
+    // Holy_Evangelism
+    base_cost      *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
+    base_hit       += p -> glyphs.divine_accuracy ? 0.18 : 0.0;
+
+    if ( p -> talents.atonement -> rank() )
+    {
+      atonement_nc = new atonement_nc_t( p );
+      atonement_c = new atonement_c_t( p );
+    }
+  }
+
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_spell_t::execute();
+
+    p -> buffs_surge_of_light -> trigger();
+    p -> buffs_holy_evangelism  -> trigger();
+
+    // State of Mind
+    if ( result_is_hit() && ! p -> ptr && p -> buffs_chakra_chastise -> up() && p -> talents.state_of_mind -> rank() )
+    {
+      p -> buffs_chakra_chastise -> extend_duration( player, 4 );
+    }
+
+    // Chakra
+    if ( p -> buffs_chakra_pre -> up())
+    {
+      p -> buffs_chakra_chastise -> trigger();
+
+      p -> buffs_chakra_pre -> expire();
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> start();
+    }
+
+    // Atonement
+    if ( atonement_nc && atonement_c)
+    {
+      if ( result == RESULT_CRIT )
+      {
+        // Assuming there is no cap for crits, since it's not clear how much it would be.
+        atonement_c -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+        atonement_c -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+        atonement_c -> round_base_dmg = false;
+        atonement_c -> execute();
+      }
+      else
+      {
+      // Hotfix Cap from 5. Jan.
+        if ( direct_dmg * p -> talents.atonement -> rank() * 0.5 < p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
+        {
+          atonement_nc -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+          atonement_nc -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+        }
+        else
+        {
+          atonement_nc -> base_dd_min = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+          atonement_nc -> base_dd_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+        }
+        atonement_nc -> round_base_dmg = false;
+        atonement_nc -> execute();
+      }
+    }
+
+    // Train of Thought
+    if ( p -> talents.train_of_thought -> rank() )
+        {
+          if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 2 ) / 1000.0 )
+            p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> rank_spell() -> effect_base_value( 2 ) / 1000.0;
+          else
+            p -> cooldowns_penance -> reset();
+        }
+  }
+
+  virtual void player_buff()
+  {
+    priest_spell_t::player_buff();
+    priest_t* p = player -> cast_priest();
+    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite ) player_multiplier *= 1.20;
+  }
+
+  virtual double cost() SC_CONST
+  {
+    double c = priest_spell_t::cost();
+
+    priest_t* p = player -> cast_priest();
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * 0.03 );
+
+    return c;
+  }
+};
+
 
 // Renew Spell ===================================================
 

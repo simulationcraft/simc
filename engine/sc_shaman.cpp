@@ -2756,9 +2756,7 @@ struct magma_totem_t : public shaman_totem_t
     shaman_t* p = player -> cast_shaman();
     
     // Add a direct damage result as the "drop event" of the totem
-    direct_dmg = 0;
-    result     = RESULT_HIT;
-    update_stats( DMG_DIRECT );
+    stats -> add_execute( DMG_DIRECT, time_to_execute );
     
     if ( p -> talent_totemic_wrath -> rank() )
     {
@@ -2920,9 +2918,7 @@ struct searing_totem_t : public shaman_totem_t
     shaman_t* p = player -> cast_shaman();
     
     // Add a direct damage result as the "drop event" of the totem
-    direct_dmg = 0;
-    result     = RESULT_HIT;
-    update_stats( DMG_DIRECT );
+    stats -> add_execute( DMG_DIRECT, time_to_execute );
 
     if ( p -> talent_totemic_wrath -> rank() )
     {

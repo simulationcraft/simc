@@ -3691,7 +3691,6 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     virtual void execute()
     {
       warlock_spell_t::execute();
-      update_stats( DMG_DIRECT );
       warlock_t* p = player -> cast_warlock();
       if ( p -> buffs_soulburn -> up() && p -> talent_soulburn_seed_of_corruption -> rank() )
       {
