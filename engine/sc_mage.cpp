@@ -1890,7 +1890,7 @@ struct frostbolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> talents.early_frost -> rank() )
       if( ! p -> cooldowns_early_frost -> remains() )
-	return 1.0;
+  return 1.0;
     return mage_spell_t::gcd();
   }
 };
@@ -2129,8 +2129,8 @@ struct living_bomb_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     spell_t::target_debuff( dmg_type );
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-				 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
-				 p -> specializations.flashburn * p -> composite_mastery() );
+         p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
+         p -> specializations.flashburn * p -> composite_mastery() );
   }
 
   virtual void last_tick()
@@ -3040,8 +3040,8 @@ void mage_t::init_actions()
           }
           if ( ! strcmp( items[ i ].name(), "shard_of_woe" ) )
           {
-          	action_list_str += ",if=cooldown.evocation.remains<26";
-          	action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86";
+            action_list_str += ",if=cooldown.evocation.remains<26";
+            action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86";
           }
         }
     //Potions
@@ -3097,23 +3097,27 @@ void mage_t::init_actions()
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
+      bool has_shard = false;
       for ( int i=0; i < SLOT_MAX; i++ )
       {
         item_t& item = items[ i ];
-
         if ( strstr( item.name(), "shard_of_woe") )
         {
-            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react";
-            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&buff.bloodlust.react";
-            break;
-        }
-        else
-        {
-            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&!buff.bloodlust.react";
-            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<2&buff.bloodlust.react";
-            break;
+          has_shard = true;
+          break;
         }
       }
+      if ( has_shard == true )
+      {
+        if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react";
+        if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&buff.bloodlust.react";
+      }
+      else
+      {
+        if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&!buff.bloodlust.react";
+        if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<2&buff.bloodlust.react";
+      }
+
       if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=31";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
