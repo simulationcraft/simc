@@ -2502,7 +2502,7 @@ struct smite_t : public priest_spell_t
     double c = priest_spell_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check) * 0.03 );
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
 
     return c;
   }
