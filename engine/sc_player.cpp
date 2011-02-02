@@ -378,6 +378,8 @@ player_t::player_t( sim_t*             s,
 
   if ( is_pet() ) skill = 1.0;
 
+  for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
+
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
@@ -1402,6 +1404,13 @@ void player_t::init_buffs()
   buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_SPELL_POWER,  1200.0,            1, 25.0, 60.0 );
   buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
+
+
+  // Infinite-Stacking De-Buffs
+  debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
+  debuffs.casting      = new debuff_t( this, "casting",      1 );
+  debuffs.invulnerable = new debuff_t( this, "invulnerable", 1 );
+  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   1 );
 }
 
 // player_t::init_gains ====================================================
@@ -2916,6 +2925,14 @@ int player_t::normalize_by() SC_CONST
     return STAT_STRENGTH;
 
   return STAT_ATTACK_POWER;
+}
+
+// player_t::health_percentage() ===================================================
+
+double player_t::health_percentage() SC_CONST
+{
+  return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
+
 }
 
 
@@ -5270,6 +5287,12 @@ void player_t::create_options()
     { "flask",                                OPT_STRING, &( flask_str                                ) },
     { "food",                                 OPT_STRING, &( food_str                                 ) },
     { "vengeance_factor",                     OPT_FLT,    &( vengeance_factor                         ) },
+    { "player_resist_holy",                   OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ]        ) },
+    { "player_resist_shadow",                 OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ]        ) },
+    { "player_resist_arcane",                 OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ]        ) },
+    { "player_resist_frost",                  OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ]        ) },
+    { "player_resist_fire",                   OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ]        ) },
+    { "player_resist_nature",                 OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ]        ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

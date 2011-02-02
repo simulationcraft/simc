@@ -869,7 +869,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
         base_dd_min = max_mana;
         base_dd_max = max_mana;
         may_crit = true;
-	aoe = true;
+        aoe = -1;
         background = true;
         base_spell_power_multiplier = 0;
 	cooldown -> duration = 60.0;

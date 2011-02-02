@@ -1143,8 +1143,13 @@ void rogue_attack_t::assess_damage( double amount,
 
   // XXX: review, as not all of the damage is 'flurried' to an additional target
   // dots for example don't as far as I remember
-  if ( p -> buffs_blade_flurry -> up() && target -> adds_nearby )
-    attack_t::additional_damage( amount, dmg_type );
+  if ( target -> is_enemy())
+  {
+    target_t* t = target -> cast_target();
+
+    if ( p -> buffs_blade_flurry -> up() && t -> adds_nearby )
+      attack_t::additional_damage( amount, dmg_type );
+  }
 }
 
 // rogue_attack_t::add_combo_points ========================================
@@ -3844,16 +3849,12 @@ void player_t::rogue_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.tricks_of_the_trade = new buff_t( p, "tricks_of_the_trade", 1, 6.0 );
-  }
-
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
-  {
-    t -> debuffs.expose_armor    = new debuff_t( t, "expose_armor",     1 );
-    t -> debuffs.hemorrhage      = new debuff_t( t, "hemorrhage",       1, 60.0 );
-    t -> debuffs.master_poisoner = new debuff_t( t, "master_poisoner", -1 );
-    t -> debuffs.poisoned        = new debuff_t( t, "poisoned",        -1 );
-    t -> debuffs.savage_combat   = new debuff_t( t, "savage_combat",   -1 );
+    p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, 6.0 );
+    p -> debuffs.expose_armor       = new debuff_t( p, "expose_armor",     1 );
+    p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, 60.0 );
+    p -> debuffs.master_poisoner    = new debuff_t( p, "master_poisoner", -1 );
+    p -> debuffs.poisoned           = new debuff_t( p, "poisoned",        -1 );
+    p -> debuffs.savage_combat      = new debuff_t( p, "savage_combat",   -1 );
   }
 }
 

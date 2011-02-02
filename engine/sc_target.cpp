@@ -183,12 +183,6 @@ void target_t::init()
   if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
 
 
-  // Infinite-Stacking De-Buffs
-  debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
-  debuffs.casting      = new debuff_t( this, "casting",      1 );
-  debuffs.invulnerable = new debuff_t( this, "invulnerable", 1 );
-  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   1 );
-
   initialized = 1;
   init_talents();
   init_spells();
@@ -315,6 +309,7 @@ struct auto_attack_t : public attack_t
     parse_options( NULL, options_str );
 
     base_dd_min = base_dd_max = 1;
+
   }
 
   virtual double execute_time() SC_CONST
@@ -346,12 +341,7 @@ void target_t::create_options()
     { "target_health",                  OPT_FLT,    &( fixed_health                      ) },
     { "target_id",                      OPT_STRING, &( id_str                            ) },
     { "target_adds",                    OPT_INT,    &( initial_adds_nearby               ) },
-    { "target_resist_holy",             OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ] ) },
-    { "target_resist_shadow",           OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ] ) },
-    { "target_resist_arcane",           OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ] ) },
-    { "target_resist_frost",            OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ] ) },
-    { "target_resist_fire",             OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ] ) },
-    { "target_resist_nature",           OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ] ) },
+
     { "target_armor",                   OPT_INT,    &( initial_armor                     ) },
     { "target_block",                   OPT_FLT,    &( block_value                       ) },
     { "target_attack_speed",            OPT_FLT,    &( attack_speed                      ) },

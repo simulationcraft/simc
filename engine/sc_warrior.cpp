@@ -430,7 +430,7 @@ static void trigger_blood_frenzy( action_t* a )
   if ( ! p -> talents.blood_frenzy -> ok() )
     return;
 
-  target_t* t = a -> target;
+  player_t* t = a -> target;
 
   // Don't alter the duration if it is set to 0 (override/optimal_raid)
 
@@ -797,9 +797,14 @@ void warrior_attack_t::assess_damage( double amount, int dmg_type )
 
   warrior_t* p = player -> cast_warrior();
 
-  if ( p -> buffs_sweeping_strikes -> up() && target -> adds_nearby )
+  if ( target -> is_enemy())
   {
-    attack_t::additional_damage( amount, dmg_type );
+    target_t* t = target -> cast_target();
+
+    if ( p -> buffs_sweeping_strikes -> up() && t -> adds_nearby )
+    {
+      attack_t::additional_damage( amount, dmg_type );
+    }
   }
 }
 
@@ -1152,20 +1157,10 @@ struct bladestorm_tick_t : public warrior_attack_t
   {
     dual        = true;
     background  = true;
-    aoe         = true;
+    aoe         = -1;
     direct_tick = true;
+    aoe         = 4;
     stats       = p -> get_stats( "bladestorm" );
-  }
-
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    warrior_attack_t::assess_damage( amount, dmg_type );
-
-    // Assume it hits all nearby targets
-    for ( int i=0; i < target -> adds_nearby && i < 4; i ++ )
-    {
-      warrior_attack_t::additional_damage( amount, dmg_type );
-    }
   }
 
   virtual void execute()
@@ -1190,7 +1185,7 @@ struct bladestorm_t : public warrior_attack_t
     id = 46924;
     parse_data( p -> player_data );
 
-    aoe       = true;
+    aoe       = -1;
     harmful   = false;
     channeled = true;
     tick_zero = true;
@@ -1290,7 +1285,7 @@ struct cleave_t : public warrior_attack_t
     direct_power_mod = ( p -> ptr ) ? 0.4496 : 0.562;
     base_dd_min      = 6;
     base_dd_max      = 6;
-    aoe              = true;
+    aoe              = -1;
 
     // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
     // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
@@ -1303,19 +1298,8 @@ struct cleave_t : public warrior_attack_t
       base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
                              + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
     }
-  }
 
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    warrior_attack_t::assess_damage( amount, dmg_type );
-    warrior_t* p = player -> cast_warrior();
-
-    int ntargets = 1 +  p -> glyphs.cleaving -> effect_base_value( 1 );
-
-    for ( int i=0; i < target -> adds_nearby && i < ntargets; i ++ )
-    {
-      warrior_attack_t::additional_damage( amount, dmg_type );
-    }
+    aoe = 1 +  p -> glyphs.cleaving -> effect_base_value( 1 );
   }
 
   virtual void execute()
@@ -2175,7 +2159,7 @@ struct thunder_clap_t : public warrior_attack_t
     id = 6343;
     parse_data( p -> player_data );
 
-    aoe               = true;
+    aoe               = -1;
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -2205,7 +2189,7 @@ struct whirlwind_t : public warrior_attack_t
     id = 1680;
     parse_data( p -> player_data );
 
-    aoe               = true;
+    aoe               = -1;
     stancemask        = STANCE_BERSERKER;
   }
 
@@ -3426,13 +3410,14 @@ void player_t::warrior_init( sim_t* sim )
   sim -> auras.battle_shout = new aura_t( sim, "battle_shout", 1, 120.0 );
   sim -> auras.rampage      = new aura_t( sim, "rampage",      1, 0.0 );
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
-    t -> debuffs.blood_frenzy_bleed    = new debuff_t( t, "blood_frenzy_bleed",    1, 60.0 );
-    t -> debuffs.blood_frenzy_physical = new debuff_t( t, "blood_frenzy_physical", 1, 60.0 );
-    t -> debuffs.sunder_armor          = new debuff_t( t, "sunder_armor",          1, 30.0 );
-    t -> debuffs.thunder_clap          = new debuff_t( t, "thunder_clap",          1, 30.0 );
-    t -> debuffs.shattering_throw      = new debuff_t( t, "shattering_throw",      1 );
+    player_t* p = sim -> actor_list[i];
+    p -> debuffs.blood_frenzy_bleed    = new debuff_t( p, "blood_frenzy_bleed",    1, 60.0 );
+    p -> debuffs.blood_frenzy_physical = new debuff_t( p, "blood_frenzy_physical", 1, 60.0 );
+    p -> debuffs.sunder_armor          = new debuff_t( p, "sunder_armor",          1, 30.0 );
+    p -> debuffs.thunder_clap          = new debuff_t( p, "thunder_clap",          1, 30.0 );
+    p -> debuffs.shattering_throw      = new debuff_t( p, "shattering_throw",      1 );
   }
 }
 

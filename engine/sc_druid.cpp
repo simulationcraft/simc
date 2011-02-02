@@ -617,10 +617,8 @@ static void trigger_earth_and_moon( spell_t* s )
 
   if ( p -> talents.earth_and_moon -> rank() == 0 ) return;
 
-  target_t* t = s -> target;
-
-  t -> debuffs.earth_and_moon -> trigger( 1, 8 );
-  t -> debuffs.earth_and_moon -> source = p;
+  s -> target -> debuffs.earth_and_moon -> trigger( 1, 8 );
+  s -> target -> debuffs.earth_and_moon -> source = p;
 }
 
 // trigger_eclipse_proc =====================================================
@@ -1528,9 +1526,11 @@ struct shred_t : public druid_cat_attack_t
   virtual void player_buff()
   {
     druid_t*  p = player -> cast_druid();
-    target_t* t = target;
+    player_t* t = target;
 
     druid_cat_attack_t::player_buff();
+
+    // FIXME: Why are Target Debuffs in player_buff???
 
     if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
       player_multiplier *= 1.30;
@@ -1588,7 +1588,7 @@ struct swipe_cat_t : public druid_cat_attack_t
   {
     parse_options( NULL, options_str );
     
-    aoe = true;
+    aoe = -1;
   }
 };
 
@@ -1877,18 +1877,12 @@ struct maul_t : public druid_bear_attack_t
       druid_bear_attack_t( "maul",  6807, player )
   {
     parse_options( NULL, options_str );
+    druid_t*  p = player -> cast_druid();
 
     weapon = &( player -> main_hand_weapon );
-  }
-
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    druid_bear_attack_t::assess_damage( amount, dmg_type );
-
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> glyphs.maul -> enabled() && target -> adds_nearby )
-      druid_bear_attack_t::additional_damage( amount * p -> glyphs.maul -> effect_base_value( 3 ) / 100.0, dmg_type );
+    
+    aoe = 1;
+    base_add_multiplier = p -> glyphs.maul -> effect_base_value( 3 ) / 100.0;
   }
 
   virtual void execute()
@@ -1904,9 +1898,11 @@ struct maul_t : public druid_bear_attack_t
   virtual void player_buff()
   {
     druid_t*  p = player -> cast_druid();
-    target_t* t = target;
+    player_t* t = target;
 
     druid_bear_attack_t::player_buff();
+
+    // FIXME: What are target debuffs doing in player_buff???
 
     if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
       player_multiplier *= 1.30;
@@ -1950,7 +1946,7 @@ struct swipe_bear_t : public druid_bear_attack_t
   {
     parse_options( NULL, options_str );
 
-    aoe               = true;
+    aoe               = -1;
     direct_power_mod  = extra_coeff();
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -2837,17 +2833,8 @@ struct starfall_t : public druid_spell_t
 
         if ( p -> primary_tree() == TREE_BALANCE )
           base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-      }
-
-      virtual void assess_damage( double amount, int dmg_type )
-      {
-        druid_spell_t::assess_damage( amount, dmg_type );
-
-        // Starfall is an aoe, but limited to 20 stars, since 10 stars are used on single target,
-        // only let the other 10 hit one add
-        // damage will be the same assuming the add is up for the duration of starfall
-        if ( target -> adds_nearby )
-          druid_spell_t::additional_damage( amount, dmg_type );
+          
+        aoe = 1;
       }
 
       virtual void execute()
@@ -3103,7 +3090,7 @@ struct typhoon_t : public druid_spell_t
 
     parse_options( NULL, options_str );
 
-    aoe                   = true;
+    aoe                   = -1;
     base_dd_min           = p -> player_data.effect_min( effect_id( 2 ), p -> type, p -> level );
     base_dd_max           = p -> player_data.effect_max( effect_id( 2 ), p -> type, p -> level );
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
@@ -3152,7 +3139,7 @@ struct wild_mushroom_detonate_t : public druid_spell_t
       base_dd_max        = p -> player_data.effect_max( damage_id, p -> level, E_SCHOOL_DAMAGE );
       school             = spell_id_t::get_school_type( p -> player_data.spell_school_mask( damage_id ) );
       stats -> school    = school;
-      aoe                = true;
+      aoe                = -1;
     }
 
     virtual void execute()
@@ -4199,17 +4186,14 @@ void player_t::druid_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.innervate        = new buff_t( p, "innervate",        1, 10.0 );
-    p -> buffs.mark_of_the_wild = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
+    p -> buffs.innervate              = new buff_t( p, "innervate",        1, 10.0 );
+    p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
+    p -> debuffs.earth_and_moon       = new debuff_t( p, "earth_and_moon",       1,  12.0 );
+    p -> debuffs.faerie_fire          = new debuff_t( p, "faerie_fire",          3, 300.0 );
+    p -> debuffs.infected_wounds      = new debuff_t( p, "infected_wounds",      1,  12.0 );
+    p -> debuffs.mangle               = new debuff_t( p, "mangle",               1,  60.0 );
   }
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
-  {
-    t -> debuffs.earth_and_moon       = new debuff_t( t, "earth_and_moon",       1,  12.0 );
-    t -> debuffs.faerie_fire          = new debuff_t( t, "faerie_fire",          3, 300.0 );
-    t -> debuffs.infected_wounds      = new debuff_t( t, "infected_wounds",      1,  12.0 );
-    t -> debuffs.mangle               = new debuff_t( t, "mangle",               1,  60.0 );
-  }
 }
 
 // player_t::druid_combat_begin =============================================

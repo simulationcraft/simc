@@ -2869,6 +2869,7 @@ struct player_t
   double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
   double armor_coeff;
   double half_resistance_rating;
+  int spell_resistance[ SCHOOL_MAX ];
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -3036,6 +3037,41 @@ struct player_t
   };
   buffs_t buffs;
 
+  struct debuffs_t
+  {
+    debuff_t* bleeding;
+    debuff_t* blood_frenzy_bleed;
+    debuff_t* blood_frenzy_physical;
+    debuff_t* brittle_bones;
+    debuff_t* casting;
+    debuff_t* critical_mass;
+    debuff_t* curse_of_elements;
+    debuff_t* earth_and_moon;
+    debuff_t* ebon_plaguebringer;
+    debuff_t* expose_armor;
+    debuff_t* faerie_fire;
+    debuff_t* hemorrhage;
+    debuff_t* hunters_mark;
+    debuff_t* improved_shadow_bolt;
+    debuff_t* infected_wounds;
+    debuff_t* insect_swarm;
+    debuff_t* invulnerable;
+    debuff_t* judgements_of_the_just;
+    debuff_t* mangle;
+    debuff_t* master_poisoner;
+    debuff_t* poisoned;
+    debuff_t* savage_combat;
+    debuff_t* shattering_throw;
+    debuff_t* slow;
+    debuff_t* sunder_armor;
+    debuff_t* thunder_clap;
+    debuff_t* vulnerable;
+
+    debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
+    bool snared();
+  };
+  debuffs_t debuffs;
+
   struct gains_t
   {
     gain_t* arcane_torrent;
@@ -3187,6 +3223,8 @@ struct player_t
   virtual const char* primary_tree_name() SC_CONST;
   virtual int    normalize_by() SC_CONST;
 
+  virtual double health_percentage() SC_CONST;
+
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
@@ -3312,6 +3350,7 @@ struct player_t
   static void warrior_combat_end  ( sim_t* sim ) { assert( sim ); }
   
   bool is_pet() SC_CONST { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
+  bool is_enemy() SC_CONST { return type == ENEMY; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
@@ -3324,6 +3363,7 @@ struct player_t
   warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return ( warlock_t     * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
+  target_t      * cast_target      () { assert( is_enemy()           ); return ( target_t      * ) this; }
 
   bool      in_gcd() SC_CONST { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
@@ -3394,7 +3434,7 @@ struct target_t : public player_t
 {
   target_t* next;
   int target_level;
-  int spell_resistance[ SCHOOL_MAX ];
+
   int initial_armor, armor;
   double block_value;
   double attack_speed, attack_damage, weapon_skill;
@@ -3404,40 +3444,7 @@ struct target_t : public player_t
   int adds_nearby, initial_adds_nearby;
   double resilience;
 
-  struct debuffs_t
-  {
-    debuff_t* bleeding;
-    debuff_t* blood_frenzy_bleed;
-    debuff_t* blood_frenzy_physical;
-    debuff_t* brittle_bones;
-    debuff_t* casting;
-    debuff_t* critical_mass;
-    debuff_t* curse_of_elements;
-    debuff_t* earth_and_moon;
-    debuff_t* ebon_plaguebringer;
-    debuff_t* expose_armor;
-    debuff_t* faerie_fire;
-    debuff_t* hemorrhage;
-    debuff_t* hunters_mark;
-    debuff_t* improved_shadow_bolt;
-    debuff_t* infected_wounds;
-    debuff_t* insect_swarm;
-    debuff_t* invulnerable;
-    debuff_t* judgements_of_the_just;
-    debuff_t* mangle;
-    debuff_t* master_poisoner;
-    debuff_t* poisoned;
-    debuff_t* savage_combat;
-    debuff_t* shattering_throw;
-    debuff_t* slow;
-    debuff_t* sunder_armor;
-    debuff_t* thunder_clap;
-    debuff_t* vulnerable;
-    
-    debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
-    bool snared();
-  };
-  debuffs_t debuffs;
+
 
   // Reporting
   std::vector<gain_t*> gains;
@@ -3456,7 +3463,7 @@ struct target_t : public player_t
   virtual void assess_damage( double amount, const school_type school, int type, action_t* a, player_t* s );
   void recalculate_health();
   double time_to_die() SC_CONST;
-  double health_percentage() SC_CONST;
+  virtual double health_percentage() SC_CONST;
   double base_armor() SC_CONST;
   void aura_gain( const char* name, int aura_id=0 );
   void aura_loss( const char* name, int aura_id=0 );
@@ -3545,11 +3552,11 @@ struct action_t : public spell_id_t
   int type;
   std::string name_str;
   player_t* player;
-  target_t* target;
+  player_t* target;
   uint32_t id;
   school_type school;
-  int resource, tree, result;
-  bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, aoe, harmful, proc, pseudo_pet, auto_cast;
+  int resource, tree, result, aoe;
+  bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks, usable_moving;
   int dot_behavior;
@@ -3578,6 +3585,7 @@ struct action_t : public spell_id_t
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
+  double base_add_multiplier;
   bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];

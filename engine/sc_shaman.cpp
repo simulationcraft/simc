@@ -487,7 +487,7 @@ struct fire_elemental_pet_t : public pet_t
     fire_shield_t( player_t* player ) :
       fire_elemental_spell_t( player, "fire_shield" )
     {
-      aoe                       = true;
+      aoe                       = -1;
       background                = true;
       repeating                 = true;
       may_crit                  = true;
@@ -888,6 +888,9 @@ struct chain_lightning_overload_t : public shaman_spell_t
       p -> glyph_chain_lightning -> mod_additive( P_GENERIC );
 
     glyph_targets        = (int) p -> glyph_chain_lightning -> mod_additive( P_TARGET );
+    
+    base_add_multiplier = 0.7;
+    aoe = ( 2 + glyph_targets );
   }
   
   virtual void execute()
@@ -897,18 +900,6 @@ struct chain_lightning_overload_t : public shaman_spell_t
     if ( player -> ptr && result_is_hit() )
     {
       trigger_rolling_thunder( this );
-    }
-  }
-
-  virtual void assess_damage( double amount,
-                               int    dmg_type )
-  {
-    shaman_spell_t::assess_damage( amount, dmg_type );
-
-    for ( int i=0; i < target -> adds_nearby && i < ( 2 + glyph_targets ); i ++ )
-    {
-      amount *= 0.70;
-      shaman_spell_t::additional_damage( amount, dmg_type );
     }
   }
 };
@@ -1733,6 +1724,9 @@ struct chain_lightning_t : public shaman_spell_t
     glyph_targets        = (int) p -> glyph_chain_lightning -> mod_additive( P_TARGET );
       
     overload             = new chain_lightning_overload_t( player );
+    
+    base_add_multiplier = 0.7;
+    aoe = ( 2 + glyph_targets );
    }
 
   virtual void execute()
@@ -1805,18 +1799,6 @@ struct chain_lightning_t : public shaman_spell_t
 
     return cr;
   }
-
-  virtual void assess_damage( double amount,
-                               int    dmg_type )
-  {
-    shaman_spell_t::assess_damage( amount, dmg_type );
-
-    for ( int i=0; i < target -> adds_nearby && i < ( 2 + glyph_targets ); i ++ )
-    {
-      amount *= 0.70;
-      shaman_spell_t::additional_damage( amount, dmg_type );
-    }
-  }
 };
 
 // Elemental Mastery Spell ==================================================
@@ -1872,7 +1854,7 @@ struct fire_nova_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
-    aoe                   = true;
+    aoe                   = -1;
 
     m_additive            =  
       p -> talent_improved_fire_nova -> mod_additive( P_GENERIC ) +
@@ -2738,7 +2720,7 @@ struct magma_totem_t : public shaman_totem_t
     uint32_t trig_spell_id = 0;
     shaman_t*            p = player -> cast_shaman();
 
-    aoe               = true;
+    aoe               = -1;
     harmful           = true;
     may_crit          = true;
     // Magma Totem is not a real DoT, but rather a pet that is spawned.

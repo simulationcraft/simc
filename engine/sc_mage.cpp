@@ -363,7 +363,7 @@ struct water_elemental_pet_t : public pet_t
     freeze_t( player_t* player):
       spell_t( "freeze", 33395, player )
     {
-      aoe                  = true;
+      aoe                  = -1;
       may_crit             = true;
       base_crit_multiplier = 1.33;
       base_cost            = 0;
@@ -1313,7 +1313,7 @@ struct arcane_explosion_t : public mage_spell_t
   {
     check_spec( TREE_ARCANE );
     parse_options( NULL, options_str );
-    aoe = true;
+    aoe = -1;
     consumes_arcane_blast = true;
 
     if ( p -> talents.improved_arcane_explosion -> rank() )
@@ -1421,7 +1421,7 @@ struct blast_wave_t : public mage_spell_t
     mage_spell_t( "blast_wave", 11113, p )
   {
     parse_options( NULL, options_str );
-    aoe = true;
+    aoe = -1;
   }
 };
 
@@ -1494,7 +1494,7 @@ struct cone_of_cold_t : public mage_spell_t
     mage_spell_t( "cone_of_cold", 120, p )
   {
     parse_options( NULL, options_str );
-    aoe = true;
+    aoe = -1;
     base_multiplier *= 1.0 + p -> glyphs.cone_of_cold -> effect_base_value( 1 ) / 100.0;
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
 
@@ -1565,7 +1565,7 @@ struct dragons_breath_t : public mage_spell_t
     mage_spell_t( "dragons_breath", 31661, p )
   {
     parse_options( NULL, options_str );
-    aoe = true;
+    aoe = -1;
     cooldown -> duration += p -> glyphs.dragons_breath -> effect_base_value( 1 ) / 1000.0;
   }
 };
@@ -1681,7 +1681,7 @@ struct flame_orb_explosion_t : public mage_spell_t
     mage_spell_t( "flame_orb_explosion", 83619, p )
   {
     background = true;
-    aoe = true;
+    aoe = -1;
     dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
     stats = p -> get_stats( "flame_orb" );
@@ -1863,9 +1863,14 @@ struct frostbolt_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         int max_targets = p -> talents.piercing_chill -> rank();
-        for ( int i=0; i < target -> adds_nearby && i < max_targets; i ++ )
+        if ( target -> is_enemy())
         {
-          p -> buffs_fingers_of_frost -> trigger();
+          target_t* t = target -> cast_target();
+
+          for ( int i=0; i < t -> adds_nearby && i < max_targets; i ++ )
+          {
+            p -> buffs_fingers_of_frost -> trigger();
+          }
         }
       }
     }
@@ -1983,7 +1988,7 @@ struct frostfire_orb_explosion_t : public mage_spell_t
     mage_spell_t( "frostfire_orb_explosion", 83619, p )
   {
     background = true;
-    aoe = true;
+    aoe = -1;
     dual = true;
     school = SCHOOL_FROSTFIRE; // required since defaults to FIRE
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
@@ -2097,7 +2102,7 @@ struct living_bomb_explosion_t : public mage_spell_t
   living_bomb_explosion_t( mage_t* p ) :
     mage_spell_t( "living_bomb_explosion", 44461, p )
   {
-    aoe = true;
+    aoe = -1;
     dual = true;
     background = true;
     base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
@@ -2452,12 +2457,11 @@ struct scorch_t : public mage_spell_t
 
     if ( debuff )
     {
-      target_t* t = target;
 
-      if ( t -> debuffs.improved_shadow_bolt -> check() )
+      if ( target -> debuffs.improved_shadow_bolt -> check() )
         return false;
 
-      if ( t -> debuffs.critical_mass -> remains_gt( 6.0 ) )
+      if ( target -> debuffs.critical_mass -> remains_gt( 6.0 ) )
         return false;
     }
 
@@ -2608,7 +2612,7 @@ struct choose_rotation_t : public action_t
       {
         double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
 
-        if ( oom_time < target -> time_to_die() )
+        if ( oom_time < sim -> target -> time_to_die() )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
@@ -2626,7 +2630,7 @@ struct choose_rotation_t : public action_t
       {
         double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
 
-        if ( oom_time > target -> time_to_die() )
+        if ( oom_time > sim -> target -> time_to_die() )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
 
@@ -3411,13 +3415,10 @@ void player_t::mage_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> level < MAX_LEVEL ? p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY ) : 0, !p -> is_pet() );
     p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
+    p -> debuffs.critical_mass   = new debuff_t( p, "critical_mass", 1, 30.0 );
+    p -> debuffs.slow            = new debuff_t( p, "slow",          1, 15.0 );
   }
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
-  {
-    t -> debuffs.critical_mass = new debuff_t( t, "critical_mass", 1, 30.0 );
-    t -> debuffs.slow          = new debuff_t( t, "slow",          1, 15.0 );
-  }
 }
 
 // player_t::mage_combat_begin ==============================================

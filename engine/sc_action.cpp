@@ -19,6 +19,7 @@ void action_t::_init_action_t()
   target                         = s_player -> sim -> target;
   id                             = 0;
   result                         = RESULT_NONE;
+  aoe                            = 0;
   dual                           = false;
   binary                         = false;
   channeled                      = false;
@@ -26,7 +27,6 @@ void action_t::_init_action_t()
   sequence                       = false;
   direct_tick                    = false;
   repeating                      = false;
-  aoe                            = false;
   harmful                        = true;
   proc                           = false;
   pseudo_pet                     = false;
@@ -101,6 +101,7 @@ void action_t::_init_action_t()
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
+  base_add_multiplier            = 1.0;
   normalize_weapon_damage        = false;
   normalize_weapon_speed         = false;
   rng_travel                     = NULL;
@@ -584,7 +585,7 @@ void action_t::target_debuff( int dmg_type )
   target_penetration           = 0;
   target_dd_adder              = 0;
 
-  target_t* t = target;
+  player_t* t = target;
 
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
@@ -637,11 +638,16 @@ void action_t::target_debuff( int dmg_type )
 
   if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= t -> debuffs.vulnerable -> value();
 
-  if ( t -> resilience > 0 )
+  if ( target -> is_enemy())
   {
-    double percent_resil = t -> resilience / 94.3;
-    double damage_reduce = percent_resil * 2 * 0.01;
-    target_multiplier *= 1 - damage_reduce;
+    target_t* t = target -> cast_target();
+
+    if ( t -> resilience > 0 )
+    {
+      double percent_resil = t -> resilience / 94.3;
+      double damage_reduce = percent_resil * 2 * 0.01;
+      target_multiplier *= 1 - damage_reduce;
+    }
   }
 
   if ( sim -> debug )
@@ -673,9 +679,18 @@ bool action_t::result_is_miss() SC_CONST
 
 double action_t::armor() SC_CONST
 {
-  target_t* t = target;
+  player_t* t = target;
 
-  double adjusted_armor =  t -> base_armor();
+  double adjusted_armor;
+
+  if ( target -> is_enemy() )
+  {
+    target_t* t = target -> cast_target();
+    adjusted_armor =  t -> base_armor();
+  }
+  else
+    adjusted_armor = 0;
+
   double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
                            std::max( t -> debuffs.faerie_fire  -> stack() * t -> debuffs.faerie_fire -> value(),
                                      t -> debuffs.expose_armor -> value() ) );
@@ -694,7 +709,7 @@ double action_t::resistance() SC_CONST
 {
   if ( ! may_resist ) return 0;
   
-  target_t* t = target;
+  player_t* t = target;
   double resist=0;
 
   double penetration = base_penetration + player_penetration + target_penetration;
@@ -1144,12 +1159,17 @@ void action_t::assess_damage( double amount,
 
     action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
-
-  if ( aoe && target -> adds_nearby )
+  if ( target -> is_enemy())
   {
-    for ( int i=0; i < target -> adds_nearby && i < 9; i++ )
+    target_t* t = target -> cast_target();
+
+    if ( aoe && t -> adds_nearby )
     {
-      additional_damage( amount, dmg_type );
+      amount *= base_add_multiplier;
+      for ( int i=0; i < t -> adds_nearby && i < ( aoe > 0 ? aoe : 9 ); i++ )
+      {
+        additional_damage( amount, dmg_type );
+      }
     }
   }
 }
@@ -1395,7 +1415,7 @@ void action_t::update_time( int type )
 
 bool action_t::ready()
 {
-  target_t* t = target;
+  player_t* t = target;
 
   if ( player -> skill < 1.0 )
     if ( ! sim -> roll( player -> skill ) )
@@ -1413,22 +1433,6 @@ bool action_t::ready()
 
   if ( max_current_time > 0 )
     if ( sim -> current_time > max_current_time )
-      return false;
-
-  if ( min_time_to_die > 0 )
-    if ( target -> time_to_die() < min_time_to_die )
-      return false;
-
-  if ( max_time_to_die > 0 )
-    if ( target -> time_to_die() > max_time_to_die )
-      return false;
-
-  if ( min_health_percentage > 0 )
-    if ( target -> health_percentage() < min_health_percentage )
-      return false;
-
-  if ( max_health_percentage > 0 )
-    if ( target -> health_percentage() > max_health_percentage )
       return false;
 
   if ( max_haste > 0 )
@@ -1465,6 +1469,28 @@ bool action_t::ready()
   if ( invulnerable )
     if ( ! t -> debuffs.invulnerable -> check() )
       return false;
+
+  if ( target -> is_enemy())
+  {
+    target_t* t = target -> cast_target();
+
+    if ( min_time_to_die > 0 )
+      if ( t -> time_to_die() < min_time_to_die )
+        return false;
+
+    if ( max_time_to_die > 0 )
+      if ( t -> time_to_die() > max_time_to_die )
+        return false;
+
+    if ( min_health_percentage > 0 )
+      if ( t -> health_percentage() < min_health_percentage )
+        return false;
+
+    if ( max_health_percentage > 0 )
+      if ( t -> health_percentage() > max_health_percentage )
+        return false;
+
+  }
 
   if ( if_expr )
   {

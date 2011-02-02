@@ -771,8 +771,7 @@ static void trigger_piercing_shots( action_t* a )
     void player_buff() {}
     void target_debuff( int dmg_type )
     {
-      target_t* t = target;
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
+      if ( target -> debuffs.mangle -> up() || target -> debuffs.blood_frenzy_bleed -> up() || target -> debuffs.hemorrhage -> up() )
       {
         target_multiplier = 1.30;
       }
@@ -1942,7 +1941,7 @@ struct multi_shot_t : public hunter_attack_t
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
-    aoe = true;
+    aoe = -1;
 
     normalize_weapon_speed = true;
   }
@@ -3448,9 +3447,10 @@ void player_t::hunter_init( sim_t* sim )
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
-    t -> debuffs.hunters_mark  = new debuff_t( t, "hunters_mark",  1, 300.0 );
+    player_t* p = sim -> actor_list[i];
+    p -> debuffs.hunters_mark  = new debuff_t( p, "hunters_mark",  1, 300.0 );
   }
 }
 

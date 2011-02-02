@@ -1254,7 +1254,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
       warlock_t*      o = p -> owner -> cast_warlock();
-      aoe               = true;
+      aoe               = -1;
       direct_power_mod  = 0.264;
       weapon   = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 2 ) / 100.0;
@@ -1293,7 +1293,7 @@ struct felguard_pet_t : public warlock_main_pet_t
       direct_power_mod = 0.33; // hardcoded from the tooltip
       dual        = true;
       background  = true;
-      aoe         = true;
+      aoe         = -1;
       direct_tick = true;
       stats       = player -> get_stats( "felstorm" );
     }
@@ -1314,7 +1314,7 @@ struct felguard_pet_t : public warlock_main_pet_t
       warlock_pet_attack_t( "felstorm", 89751, player )
     {
       felguard_pet_t* p = ( felguard_pet_t* ) player -> cast_pet();
-      aoe       = true;
+      aoe       = -1;
       harmful   = false;
       tick_zero = true;
 
@@ -1593,7 +1593,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     {
       dual        = true;
       background  = true;
-      aoe         = true;
+      aoe         = -1;
       direct_tick = true;
       may_crit    = false;
       stats = player -> get_stats( "infernal_immolation" );
@@ -1727,7 +1727,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
 
 struct coe_debuff_t : public debuff_t
 {
-  coe_debuff_t( target_t* t ) : debuff_t( t, "curse_of_elements", 1, 300.0 )
+  coe_debuff_t( player_t* t ) : debuff_t( t, "curse_of_elements", 1, 300.0 )
     {}
 
   virtual void expire()
@@ -3157,7 +3157,7 @@ struct infernal_awakening_t : public warlock_spell_t
   infernal_awakening_t( player_t* player ) :
     warlock_spell_t( "Infernal_Awakening", player, 22703 )
   {
-    aoe        = true;
+    aoe        = -1;
     background = true;
     proc       = true;
     trigger_gcd= 0;
@@ -3249,7 +3249,7 @@ struct immolation_damage_t : public warlock_spell_t
   {
     dual        = true;
     background  = true;
-    aoe         = true;
+    aoe         = -1;
     direct_tick = true;
     may_crit    = false;
 
@@ -3599,7 +3599,7 @@ struct hellfire_tick_t : public warlock_spell_t
   {
     dual        = true;
     background  = true;
-    aoe         = true;
+    aoe         = -1;
     direct_tick = true;
 
     warlock_t* p = player -> cast_warlock();
@@ -3682,7 +3682,7 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
       proc       = true;
       background = true;
-      aoe        = true;
+      aoe        = -1;
 
       name_str = "seed_of_corruption_aoe";
     }
@@ -3753,7 +3753,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     {
     dual        = true;
     background  = true;
-    aoe         = true;
+    aoe         = -1;
     direct_tick = true;
 
     stats = player -> get_stats( "rain_of_fire" );
@@ -4542,10 +4542,11 @@ void player_t::warlock_init( sim_t* sim )
   sim -> auras.demonic_pact         = new aura_t( sim, "Demonic Pact", 1 );
   sim -> auras.fel_intelligence     = new aura_t( sim, "Fel Intelligence", 1 );
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
-    t -> debuffs.improved_shadow_bolt = new     debuff_t( t, "Shadow Mastery", 1, 30.0 );
-    t -> debuffs.curse_of_elements    = new coe_debuff_t( t );
+    player_t* p = sim -> actor_list[i];
+    p -> debuffs.improved_shadow_bolt = new     debuff_t( p, "Shadow Mastery", 1, 30.0 );
+    p -> debuffs.curse_of_elements    = new coe_debuff_t( p );
   }
 }
 

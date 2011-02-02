@@ -737,7 +737,7 @@ struct divine_storm_t : public paladin_attack_t
 
     trigger_seal = false;
     spell_haste = true;
-    aoe = true;
+    aoe = -1;
     trigger_dp = true;
     holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
@@ -1566,7 +1566,7 @@ struct consecration_tick_t : public paladin_spell_t
   consecration_tick_t( paladin_t* p )
     : paladin_spell_t( "consecration", 81297, p )
   {
-    aoe        = true;
+    aoe        = -1;
     dual       = true;
     background = true;
     may_crit   = true;
@@ -1871,7 +1871,7 @@ struct holy_wrath_t : public paladin_spell_t
     };
     parse_options( options, options_str );
 
-    // aoe = true; FIXME disabled until we have meteor support
+    // aoe = -1; FIXME disabled until we have meteor support
     may_crit = true;
     trigger_dp = true;
 
@@ -2775,14 +2775,10 @@ void player_t::paladin_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.blessing_of_kings       = new buff_t( p, "blessing_of_kings",       !p -> is_pet() );
-    p -> buffs.blessing_of_might       = new buff_t( p, "blessing_of_might",       !p -> is_pet() );
-    p -> buffs.blessing_of_might_regen = new buff_t( p, "blessing_of_might_regen", !p -> is_pet() );
-  }
-
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
-  {
-    t -> debuffs.judgements_of_the_just = new debuff_t( t, "judgements_of_the_just", 1, 20.0 );
+    p -> buffs.blessing_of_kings        = new buff_t( p, "blessing_of_kings",       !p -> is_pet() );
+    p -> buffs.blessing_of_might        = new buff_t( p, "blessing_of_might",       !p -> is_pet() );
+    p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", !p -> is_pet() );
+    p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, 20.0 );
   }
 }
 

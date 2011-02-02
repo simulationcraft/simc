@@ -768,7 +768,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background       = true;
       trigger_gcd      = 0;
-      aoe              = true;
+      aoe              = -1;
       may_crit         = true;
       direct_power_mod = 0.06;
       base_multiplier *= 0.50; // DRW penalty
@@ -918,6 +918,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       parse_data( p -> player_data );
 
       background       = true;
+      aoe = 2;
       trigger_gcd      = 0;
       base_multiplier *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07
                          + o -> glyphs.heart_strike          * 0.30;
@@ -929,17 +930,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       }
 
       reset();
-    }
-
-    virtual void assess_damage( double amount, int dmg_type )
-    {
-      attack_t::assess_damage( amount, dmg_type );
-
-      for ( int i=0; i < target -> adds_nearby && i < 2; i ++ )
-      {
-        amount *= 0.75;
-        attack_t::additional_damage( amount, dmg_type );
-      }
     }
 
     void target_debuff( int dmg_type )
@@ -1312,18 +1302,10 @@ struct ghoul_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 91778;
+      aoe = 2;
       parse_data( o -> player_data );
     }
 
-    virtual void assess_damage( double amount, int dmg_type )
-    {
-      ghoul_pet_attack_t::assess_damage( amount, dmg_type );
-
-      for ( int i=0; i < target -> adds_nearby && i < 2; i ++ )
-      {
-        ghoul_pet_attack_t::additional_damage( amount, dmg_type );
-      }
-    }
     virtual bool ready()
     {
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
@@ -1763,7 +1745,7 @@ static void trigger_brittle_bones( spell_t* s )
   if ( ! p -> talents.brittle_bones -> rank() )
     return;
 
-  target_t* t = s -> target;
+  player_t* t = s -> target;
 
   // Don't set duration if it's set to 0
   if ( t -> debuffs.brittle_bones -> buff_duration > 0 )
@@ -2313,7 +2295,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    aoe                = true;
+    aoe                = -1;
     extract_rune_cost( p->spells.blood_boil, &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod   = 0.08;
     player_multiplier *= 1.0 + p -> talents.crimson_scourge -> effect_base_value( 1 ) / 100.0;
@@ -2617,7 +2599,7 @@ struct death_and_decay_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    aoe              = true;
+    aoe              = -1;
     extract_rune_cost( p->spells.death_and_decay, &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
@@ -2911,17 +2893,9 @@ struct heart_strike_t : public death_knight_attack_t
 
     base_multiplier *= 1 + p -> set_bonus.tier10_2pc_melee() * 0.07
                        + p -> glyphs.heart_strike          * 0.30;
-  }
-
-  virtual void assess_damage( double amount, int dmg_type )
-  {
-    death_knight_attack_t::assess_damage( amount, dmg_type );
-
-    for ( int i=0; i < target -> adds_nearby && i < 2; i ++ )
-    {
-      amount *= 0.75;
-      death_knight_attack_t::additional_damage( amount, dmg_type );
-    }
+    
+    aoe = 2;                   
+    base_add_multiplier *= 0.75;
   }
 
   void execute()
@@ -2997,7 +2971,7 @@ struct howling_blast_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( p->talents.howling_blast, &cost_blood, &cost_frost, &cost_unholy );
-    aoe               = true;
+    aoe               = -1;
     direct_power_mod  = 0.4;
   }
 
