@@ -1348,7 +1348,7 @@ struct holy_fire_t : public priest_spell_t
     double c = priest_spell_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * 0.03 );
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
 
     return c;
   }
@@ -1490,7 +1490,7 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
     double a = priest_spell_t::execute_time();
-    a *= 1 - (p -> buffs_mind_melt -> stack() * ( p -> talents.mind_melt -> rank() * 0.25 ) );
+    a *= 1 - (p -> buffs_mind_melt -> check() * ( p -> talents.mind_melt -> rank() * 0.25 ) );
     return a;
   }
 };
@@ -1740,7 +1740,7 @@ struct penance_t : public priest_spell_t
     double c = priest_spell_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * 0.03 );
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
 
     return c;
   }
@@ -2502,7 +2502,7 @@ struct smite_t : public priest_spell_t
     double c = priest_spell_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * 0.03 );
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check) * 0.03 );
 
     return c;
   }
@@ -2729,10 +2729,10 @@ struct flash_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     double c = priest_heal_t::cost();
 
-    if ( p -> buffs_inner_focus -> up() )
+    if ( p -> buffs_inner_focus -> check() )
       c = 0;
 
-    if ( p -> buffs_surge_of_light -> up() )
+    if ( p -> buffs_surge_of_light -> check() )
       c = 0;
 
     return c;
@@ -2742,7 +2742,7 @@ struct flash_heal_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_surge_of_light -> up() )
+    if ( p -> buffs_surge_of_light -> check() )
       return 0;
 
     return priest_heal_t::execute_time();
@@ -2828,7 +2828,7 @@ struct binding_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     double c = priest_heal_t::cost();
 
-    if ( p -> buffs_inner_focus -> up() )
+    if ( p -> buffs_inner_focus -> check() )
       c = 0;
 
     return c;
@@ -2923,7 +2923,7 @@ struct greater_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     double c = priest_heal_t::execute_time();
 
-    if ( p -> buffs_serendipity -> up() )
+    if ( p -> buffs_serendipity -> check() )
       c *= 1.0 + p -> buffs_serendipity -> effect_base_value( 1 ) / 100.0;
 
     return c;
@@ -2934,9 +2934,9 @@ struct greater_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     double c = priest_heal_t::cost();
 
-    if ( p -> buffs_serendipity -> up() )
+    if ( p -> buffs_serendipity -> check() )
       c *= 1.0 + p -> buffs_serendipity -> effect_base_value( 2 ) / 100.0;
-    if ( p -> buffs_inner_focus -> up() )
+    if ( p -> buffs_inner_focus -> check() )
       c = 0;
 
     return c;
@@ -3059,7 +3059,7 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     double c = priest_heal_t::execute_time();
 
-    if ( p -> buffs_serendipity -> up() )
+    if ( p -> buffs_serendipity -> check() )
       c *= 1.0 + p -> buffs_serendipity -> effect_base_value( 1 ) / 100.0;
 
     return c;
@@ -3070,10 +3070,10 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     double c = priest_heal_t::cost();
 
-    if ( p -> buffs_serendipity -> up() )
+    if ( p -> buffs_serendipity -> check() )
       c *= 1.0 + p -> buffs_serendipity -> effect_base_value( 2 ) / 100.0;
 
-    if ( p -> buffs_inner_focus -> up() )
+    if ( p -> buffs_inner_focus -> check() )
       c = 0;
 
     return c;
@@ -3367,7 +3367,7 @@ struct penance_heal_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * 0.03 );
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
 
     return c;
   }
