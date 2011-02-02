@@ -614,15 +614,16 @@ struct hand_of_light_proc_t : public attack_t
     }
   }
 
-  virtual void target_debuff(int dmg_type)
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    attack_t::target_debuff(dmg_type);
+    attack_t::target_debuff( t, dmg_type );
     target_multiplier = 1.0;
+
     // TODO: The HoL proc isn't affected by CoE, unknown if this is a bug or intended.
     // not *= since we don't want to double dip, just calling base to initialize variables
-    //target_multiplier = 1.0 + ( std::max( target -> debuffs.curse_of_elements  -> value(), 
-    //                            std::max( target -> debuffs.earth_and_moon     -> value(),
-    //                                      target -> debuffs.ebon_plaguebringer -> value() ) ) * 0.01 );
+    //target_multiplier = 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
+    //                            std::max( t -> debuffs.earth_and_moon     -> value(),
+    //                                      t -> debuffs.ebon_plaguebringer -> value() ) ) * 0.01 );
   }
 };
 

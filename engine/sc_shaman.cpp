@@ -479,7 +479,7 @@ struct fire_elemental_pet_t : public pet_t
       player_crit = 0.03;
     }
     
-    virtual void target_debuff( int dmg_type ) { }
+    virtual void target_debuff( player_t* t, int dmg_type ) { }
   };
 
   struct fire_shield_t : public fire_elemental_spell_t
@@ -925,7 +925,7 @@ struct searing_flames_t : public shaman_spell_t
   
 
   // Don't double dip
-  virtual void target_debuff( int dmg_type ) { }
+  virtual void target_debuff( player_t* t, int dmg_type ) { }
   
   virtual double total_td_multiplier() SC_CONST
   {
@@ -2575,7 +2575,7 @@ struct shaman_totem_t : public shaman_spell_t
     if ( sim -> debug ) 
       log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
-    target_debuff( DMG_DIRECT );
+    target_debuff( target, DMG_DIRECT );
     calculate_result();
 
     if ( result_is_hit() )

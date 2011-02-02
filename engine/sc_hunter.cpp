@@ -769,9 +769,9 @@ static void trigger_piercing_shots( action_t* a )
       base_tick_time  = 1.0;
     }
     void player_buff() {}
-    void target_debuff( int dmg_type )
+    void target_debuff( player_t* t, int dmg_type )
     {
-      if ( target -> debuffs.mangle -> up() || target -> debuffs.blood_frenzy_bleed -> up() || target -> debuffs.hemorrhage -> up() )
+      if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
       {
         target_multiplier = 1.30;
       }

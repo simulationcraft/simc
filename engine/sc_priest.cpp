@@ -1477,10 +1477,11 @@ struct mind_blast_t : public priest_spell_t
     player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * p -> shadow_orb_amount() );
   }
 
-  virtual void target_debuff( int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
     priest_t* p = player -> cast_priest();
-    priest_spell_t::target_debuff( dmg_type );
+    priest_spell_t::target_debuff( t, dmg_type );
+
     target_crit       += p -> constants.mind_spike_crit_value * p -> buffs_mind_spike -> stack();
   }
 

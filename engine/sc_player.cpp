@@ -4016,7 +4016,7 @@ struct snapshot_stats_t : public action_t
       if ( ! spell ) spell = new spell_t( "snapshot_spell", p );
       spell -> background = true;
       spell -> player_buff();
-      spell -> target_debuff( DMG_DIRECT );
+      spell -> target_debuff( target, DMG_DIRECT );
       double chance = spell -> miss_chance( delta_level );
       if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.spell_hit;
     }
@@ -4026,7 +4026,7 @@ struct snapshot_stats_t : public action_t
       if ( ! attack ) attack = new attack_t( "snapshot_attack", p );
       attack -> background = true;
       attack -> player_buff();
-      attack -> target_debuff( DMG_DIRECT );
+      attack -> target_debuff( target, DMG_DIRECT );
       double chance = attack -> miss_chance( delta_level );
       if( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;

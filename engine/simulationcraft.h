@@ -3636,7 +3636,7 @@ struct action_t : public spell_id_t
   virtual int    hasted_num_ticks() SC_CONST;
   virtual double travel_time();
   virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
+  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   calculate_result() { assert( 0 ); }
   virtual bool   result_is_hit() SC_CONST;
   virtual bool   result_is_miss() SC_CONST;
@@ -3711,7 +3711,7 @@ struct attack_t : public action_t
   virtual double swing_haste() SC_CONST;
   virtual double execute_time() SC_CONST;
   virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
+  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual int    build_table( double* chances, int* results );
   virtual void   calculate_result();
   virtual void   execute();
@@ -3741,7 +3741,7 @@ struct spell_t : public action_t
   virtual double gcd() SC_CONST;
   virtual double execute_time() SC_CONST;
   virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
+  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   calculate_result();
   virtual void   execute();
 

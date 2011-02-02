@@ -573,7 +573,7 @@ void action_t::player_buff()
 
 // action_t::target_debuff ==================================================
 
-void action_t::target_debuff( int dmg_type )
+void action_t::target_debuff( player_t* t, int dmg_type )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;
@@ -585,7 +585,6 @@ void action_t::target_debuff( int dmg_type )
   target_penetration           = 0;
   target_dd_adder              = 0;
 
-  player_t* t = target;
 
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
@@ -995,7 +994,7 @@ void action_t::execute()
 
   player_buff();
 
-  target_debuff( DMG_DIRECT );
+  target_debuff( target, DMG_DIRECT );
 
   calculate_result();
 
@@ -1034,7 +1033,7 @@ void action_t::tick()
   // It's possible that this has now changed, but would require testing to be certain.
   double save_target_crit = target_crit;
 
-  target_debuff( DMG_OVER_TIME );
+  target_debuff( target, DMG_OVER_TIME );
 
   target_crit = save_target_crit;
 
@@ -1316,7 +1315,7 @@ void action_t::refresh_duration()
   assert( dot -> tick_event );
 
   player_buff();
-  target_debuff( DMG_OVER_TIME );
+  target_debuff( target, DMG_OVER_TIME );
 
   dot -> action = this;
   dot -> current_tick = 0;
@@ -1335,7 +1334,7 @@ void action_t::extend_duration( int extra_ticks )
   assert( dot -> tick_event );
 
   player_buff();
-  target_debuff( DMG_OVER_TIME );
+  target_debuff( target, DMG_OVER_TIME );
 
   dot -> action = this;
   dot -> added_ticks += extra_ticks;

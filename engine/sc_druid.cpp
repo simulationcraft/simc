@@ -853,7 +853,7 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
       reset();
     }
     void player_buff() {}
-    void target_debuff( int dmg_type ) {}
+    void target_debuff( player_t* t, int dmg_type ) {}
   };
 
   if ( ! p -> active_t10_4pc_caster_dot ) p -> active_t10_4pc_caster_dot = new t10_4pc_caster_dot_t( p );

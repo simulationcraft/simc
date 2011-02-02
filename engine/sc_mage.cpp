@@ -348,7 +348,7 @@ struct mage_spell_t : public spell_t
   virtual void   tick();
   virtual void   consume_resource();
   virtual void   player_buff();
-  virtual void   target_debuff( int dmg_type );
+  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual double hot_streak_crit() { return base_crit + player_crit; }
 };
 
@@ -1175,9 +1175,9 @@ void mage_spell_t::player_buff()
 
 // mage_spell_t::target_debuff ==============================================
 
-void mage_spell_t::target_debuff( int dmg_type )
+void mage_spell_t::target_debuff( player_t* t, int dmg_type )
 {
-  spell_t::target_debuff( dmg_type );
+  spell_t::target_debuff( t, dmg_type );
 
   if ( school == SCHOOL_FIRE && dmg_type == DMG_OVER_TIME )
   {
@@ -2128,11 +2128,12 @@ struct living_bomb_t : public mage_spell_t
     explosion_spell -> base_cost = base_cost;
   }
 
-  virtual void target_debuff( int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
     // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
     mage_t* p = player -> cast_mage();
-    spell_t::target_debuff( dmg_type );
+    spell_t::target_debuff( t, dmg_type );
+
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
          p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
          p -> specializations.flashburn * p -> composite_mastery() );

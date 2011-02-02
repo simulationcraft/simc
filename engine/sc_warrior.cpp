@@ -498,13 +498,13 @@ static void trigger_deep_wounds( action_t* a )
       id = 12834;
     }
 
-    virtual void target_debuff( int dmg_type )
+    virtual void target_debuff( player_t* t, int dmg_type )
     {
-      warrior_attack_t::target_debuff( dmg_type );
+      warrior_attack_t::target_debuff( t, dmg_type );
 
       // Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
-      if ( target -> debuffs.blood_frenzy_bleed  -> check() ||
-           target -> debuffs.savage_combat       -> check() )
+      if ( t -> debuffs.blood_frenzy_bleed  -> check() ||
+           t -> debuffs.savage_combat       -> check() )
       {
         target_multiplier /= 1.04;
       }

@@ -187,9 +187,9 @@ void attack_t::player_buff()
 
 // attack_t::target_debuff ==================================================
 
-void attack_t::target_debuff( int dmg_type )
+void attack_t::target_debuff( player_t* t, int dmg_type )
 {
-  action_t::target_debuff( dmg_type );
+  action_t::target_debuff( t, dmg_type );
 
   target_expertise = 0;
 }

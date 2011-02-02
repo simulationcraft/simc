@@ -887,11 +887,11 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::target_debuff ============================================
 
-  virtual void target_debuff( int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
     warlock_t* p = player -> cast_warlock();
 
-    spell_t::target_debuff( dmg_type );
+    spell_t::target_debuff( t, dmg_type );
 
     if ( p -> buffs_bane_of_havoc -> up() )
       target_multiplier *= ( 1.0 + p -> buffs_bane_of_havoc -> effect_base_value( 1 ) / 100.0 );

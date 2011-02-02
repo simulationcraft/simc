@@ -935,10 +935,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
       reset();
     }
 
-    void target_debuff( int dmg_type )
+    void target_debuff( player_t* t, int dmg_type )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      attack_t::target_debuff( dmg_type );
+      attack_t::target_debuff( t, dmg_type );
+
       target_multiplier *= 1 + p -> drw_diseases() * 0.1;
     }
 
@@ -1510,7 +1511,7 @@ struct death_knight_attack_t : public attack_t
   virtual void   execute();
   virtual void   player_buff();
   virtual double calculate_weapon_damage();
-  virtual void   target_debuff( int school );
+  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual bool   ready();
 };
 
@@ -1578,7 +1579,7 @@ struct death_knight_spell_t : public spell_t
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual void   player_buff();
-  virtual void   target_debuff( int school );
+  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual bool   ready();
 };
 
@@ -1726,10 +1727,11 @@ static void trigger_blood_caked_blade( action_t* a )
         reset();
       }
 
-      virtual void target_debuff( int dmg_type )
+      virtual void target_debuff( player_t* t, int dmg_type )
       {
-        death_knight_attack_t::target_debuff( dmg_type );
+        death_knight_attack_t::target_debuff( t, dmg_type );
         death_knight_t* p = player -> cast_death_knight();
+
         target_multiplier *= 0.25 + p -> diseases() * 0.125;
       }
     };
@@ -1813,7 +1815,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
       reset();
     }
 
-    void target_debuff( int dmg_type )
+    void target_debuff( player_t* t, int dmg_type )
     {
       // no debuff effect
     }
@@ -1989,10 +1991,11 @@ bool death_knight_attack_t::ready()
 
 // death_knight_attack_t::target_debuff =====================================
 
-void death_knight_attack_t::target_debuff( int dmg_type )
+void death_knight_attack_t::target_debuff( player_t* t, int dmg_type )
 {
-  attack_t::target_debuff( dmg_type );
+  attack_t::target_debuff( t, dmg_type );
   death_knight_t* p = player -> cast_death_knight();
+
   if ( dmg_type == SCHOOL_FROST  )
   {
     target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> value();
@@ -2085,12 +2088,13 @@ bool death_knight_spell_t::ready()
     return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
 }
 
-// death_knight_spell_t::target_debuff() ====================================
+// death_knight_spell_t::target_debuff ====================================
 
-void death_knight_spell_t::target_debuff( int dmg_type )
+void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
 {
-  spell_t::target_debuff( dmg_type );
+  spell_t::target_debuff( t, dmg_type );
   death_knight_t* p = player -> cast_death_knight();
+
   if ( dmg_type == SCHOOL_FROST  )
   {
     target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> value();
@@ -2394,10 +2398,11 @@ struct blood_strike_t : public death_knight_attack_t
     }
   }
 
-  virtual void target_debuff( int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type );
+    death_knight_attack_t::target_debuff( t, dmg_type );
+
     target_multiplier *= 1 + p -> diseases() * p -> spells.blood_strike -> effect_base_value( 3 ) / 100.0;
   }
 };
@@ -2915,10 +2920,11 @@ struct heart_strike_t : public death_knight_attack_t
     }
   }
 
-  void target_debuff( int dmg_type )
+  void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type );
+    death_knight_attack_t::target_debuff( t, dmg_type );
+
     target_multiplier *= 1 + p -> diseases() * effect_base_value( 3 ) / 100.0;
   }
 };
@@ -3232,10 +3238,11 @@ struct obliterate_t : public death_knight_attack_t
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 
-  virtual void target_debuff( int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::target_debuff( dmg_type );
+    death_knight_attack_t::target_debuff( t, dmg_type );
+
     target_multiplier *= 1 + p -> diseases() * 0.125;
   }
 };
@@ -3566,15 +3573,17 @@ struct scourge_strike_t : public death_knight_attack_t
                               + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
     }
 
-    virtual void target_debuff( int dmg_type )
+    virtual void target_debuff( player_t* t, int dmg_type )
     {
+      death_knight_spell_t::target_debuff( t, dmg_type );
       death_knight_t* p = player -> cast_death_knight();
+
       target_multiplier = p -> diseases() * 0.12;
 
       // Shadow portion doesn't benefit from EP, gets 8% from E&M and 6% from CoE...
-      if ( target -> debuffs.earth_and_moon -> up() )
+      if ( t -> debuffs.earth_and_moon -> up() )
         target_multiplier += 0.08;
-      else if ( target -> debuffs.curse_of_elements -> up() )
+      else if ( t -> debuffs.curse_of_elements -> up() )
         target_multiplier *= 1.06;
     }
   };
