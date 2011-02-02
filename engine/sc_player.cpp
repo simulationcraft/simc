@@ -287,8 +287,8 @@ player_t::player_t( sim_t*             s,
     race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
-    spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
-    attack_haste( 1.0 ), buffed_attack_haste( 0 ),
+    spell_haste( 1.0 ),  buffed_spell_haste( 1.0 ),
+    attack_haste( 1.0 ), buffed_attack_haste( 1.0 ),
     // Mastery
     mastery( 0 ), buffed_mastery ( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
     // Spell Mechanics

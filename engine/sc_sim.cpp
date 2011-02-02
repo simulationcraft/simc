@@ -515,6 +515,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   }
 
   target = get_target( "Fluffy_Pillow" );
+
+  // Second Target for testing
+  //get_target( "Very_Fluffy_Pillow" );
+
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
 
@@ -1239,8 +1243,9 @@ void sim_t::analyze()
   chart_t::raid_downtime( downtime_chart, this );
   chart_t::raid_timeline( timeline_chart, this );
 
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
+   player_t* p = actor_list[i];
    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
     {
       chart_t::action_dpet      ( pet -> action_dpet_chart,       pet );
@@ -1262,19 +1267,6 @@ void sim_t::analyze()
     chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
 
   }
-
-  for ( player_t* p = target_list; p; p = p -> next )
-    {
-      if ( p -> quiet ) continue;
-
-      chart_t::action_dpet      ( p -> action_dpet_chart,       p );
-      chart_t::action_dmg       ( p -> action_dmg_chart,        p );
-      chart_t::gains            ( p -> gains_chart,             p );
-      chart_t::timeline_resource( p -> timeline_resource_chart, p );
-      chart_t::timeline_health  ( p -> timeline_resource_health_chart, p );
-      chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
-      chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
-    }
 }
 
 // sim_t::iterate ===========================================================

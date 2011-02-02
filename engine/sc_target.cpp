@@ -21,6 +21,7 @@ target_t::target_t( sim_t* s, const std::string& n ) :
 {
   for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
   create_options();
+
 }
 
 // target_t::id =============================================================
@@ -152,37 +153,6 @@ void target_t::init()
     level = sim -> max_player_level + 3;
   }
 
-  if ( initial_armor < 0 ) 
-  {
-    // TO-DO: Fill in the blanks.
-    // For level 80+ at least it seems to pretty much follow a trend line of: armor = 280.26168*level - 12661.51713
-    switch ( level )
-    {
-    case 80: initial_armor = 9729; break; 
-    case 81: initial_armor = 10034; break; 
-    case 82: initial_armor = 10338; break; 
-    case 83: initial_armor = 10643; break; 
-    case 84: initial_armor = 10880; break; // Need real value
-    case 85: initial_armor = 11161; break; // Need real value
-    case 86: initial_armor = 11441; break; // Need real value
-    case 87: initial_armor = 11682; break;
-    case 88: initial_armor = 11977; break;
-    default: if ( level < 80 )
-               initial_armor = (int) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
-             break;
-    }
-  }
-
-  if( resilience > 0 )
-  {
-    // TO-DO: Needs work.
-    // 1414.5 current capped resilience
-    resilience = std::min(resilience, 1414.5);
-  }
-
-  if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
-
-
   initialized = 1;
   init_talents();
   init_spells();
@@ -191,16 +161,16 @@ void target_t::init()
   init_race();
   init_base();
   // init_racials();
-  // init_items();
+  init_items();
   init_core();
   init_spell();
   init_attack();
   init_defense();
-  //  init_weapon( &main_hand_weapon );
-  //  init_weapon( &off_hand_weapon );
-  //  init_weapon( &ranged_weapon );
-  // init_unique_gear();
-  // init_enchant();
+  init_weapon( &main_hand_weapon );
+  init_weapon( &off_hand_weapon );
+  init_weapon( &ranged_weapon );
+  init_unique_gear();
+  init_enchant();
   // init_professions();
   // init_consumables();
   init_scaling();
@@ -221,13 +191,52 @@ void target_t::init_base()
   resource_base[ RESOURCE_HEALTH ] = 0;
 
   health_per_stamina = 10;
+
+  if ( initial_armor < 0 )
+  {
+    // TO-DO: Fill in the blanks.
+    // For level 80+ at least it seems to pretty much follow a trend line of: armor = 280.26168*level - 12661.51713
+    switch ( level )
+    {
+    case 80: initial_armor = 9729; break;
+    case 81: initial_armor = 10034; break;
+    case 82: initial_armor = 10338; break;
+    case 83: initial_armor = 10643; break;
+    case 84: initial_armor = 10880; break; // Need real value
+    case 85: initial_armor = 11161; break; // Need real value
+    case 86: initial_armor = 11441; break; // Need real value
+    case 87: initial_armor = 11682; break;
+    case 88: initial_armor = 11977; break;
+    default: if ( level < 80 )
+               initial_armor = (int) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+             break;
+    }
+  }
+  player_t::base_armor = initial_armor;
+
+  if( resilience > 0 )
+  {
+    // TO-DO: Needs work.
+    // 1414.5 current capped resilience
+    resilience = std::min(resilience, 1414.5);
+  }
+
+  if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
+}
+
+// target_t::init_base =====================================================
+
+void target_t::init_items()
+{
+  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=sword2h_3.00speed_180000min_360000max";
+
+  player_t::init_items();
 }
 
 // target_t::init_base =====================================================
 
 void target_t::init_actions()
 {
-  action_list_str += "/snapshot_stats";
   action_list_str += "/auto_attack";
 
   player_t::init_actions();
@@ -314,9 +323,8 @@ struct auto_attack_t : public attack_t
     if ( q )
     {
       target = q;
-      base_dd_min = base_dd_max = 150000;
+      weapon = &( player -> main_hand_weapon );
     }
-    base_crit += 0.2;
   }
 
   virtual double execute_time() SC_CONST

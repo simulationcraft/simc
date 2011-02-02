@@ -3453,6 +3453,7 @@ struct target_t : public player_t
 
   virtual void init();
   virtual void init_base();
+  virtual void init_items();
   virtual void init_actions();
   virtual void init_gains();
   virtual void reset();
