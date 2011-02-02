@@ -359,6 +359,12 @@ void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
   if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%.f type=%.f",
 									 level, type );
 
+  if ( type == ENEMY )
+  {
+    memset( this, 1, sizeof( rating_t ) );
+  }
+  else
+  {
   spell_haste       = pData.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
   spell_hit         = pData.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
   spell_crit        = pData.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
@@ -373,6 +379,7 @@ void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
   parry             = pData.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
   block             = pData.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
   mastery           = pData.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
+  }
 }
 
 // rating_t::interpolate ======================================================

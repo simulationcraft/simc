@@ -187,7 +187,7 @@ void target_t::init()
   init_talents();
   init_spells();
   // init_glyphs();
-  // init_rating();
+  init_rating();
   init_race();
   init_base();
   // init_racials();
