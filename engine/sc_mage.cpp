@@ -635,11 +635,11 @@ struct mirror_image_pet_t : public pet_t
       if ( owner -> cast_mage() -> glyphs.mirror_image -> ok() && owner -> cast_mage() -> primary_tree() != TREE_FROST )
       {
         // Fire/Arcane Mages cast 9 Fireballs/Arcane Blasts
-        num_rotations = 9;    
+        num_rotations = 9;
         for ( int j=0; j < num_rotations; j++ )
         {
           if ( owner -> cast_mage() -> primary_tree() == TREE_FIRE )
-          {   
+          {
             front = new fireball_t ( this, front );
           }
           else
@@ -746,7 +746,7 @@ static void trigger_hot_streak( mage_spell_t* s )
   sim_t* sim = s -> sim;
   mage_t*  p = s -> player -> cast_mage();
 
-  if( ! s -> may_hot_streak ) 
+  if( ! s -> may_hot_streak )
     return;
 
   if ( ! p -> talents.hot_streak -> rank() )
@@ -803,7 +803,7 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   struct ignite_t : public mage_spell_t
   {
-    ignite_t( player_t* player ) : 
+    ignite_t( player_t* player ) :
       mage_spell_t( "ignite", 12654, player )
     {
       background    = true;
@@ -819,8 +819,8 @@ static void trigger_ignite( spell_t* s, double dmg )
       mage_spell_t::travel( travel_result, 0 );
       base_td = ignite_dmg / dot -> num_ticks;
     }
-    virtual double travel_time() 
-    { 
+    virtual double travel_time()
+    {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
@@ -862,17 +862,17 @@ static void trigger_ignite( spell_t* s, double dmg )
     }
   }
 
-  if ( p -> active_ignite -> travel_event ) 
+  if ( p -> active_ignite -> travel_event )
   {
     // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
     if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
     p -> procs_munched_ignite -> occur();
   }
-  
+
   p -> active_ignite -> direct_dmg = ignite_dmg;
   p -> active_ignite -> schedule_travel( s -> target );
 
-  if ( p -> active_ignite -> travel_event && dot -> ticking ) 
+  if ( p -> active_ignite -> travel_event && dot -> ticking )
   {
     if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
     {
@@ -998,7 +998,7 @@ void mage_spell_t::execute()
 
   p -> uptimes_dps_rotation -> update( p -> rotation.current == ROTATION_DPS );
   p -> uptimes_dpm_rotation -> update( p -> rotation.current == ROTATION_DPM );
-  
+
   spell_t::execute();
 
   if ( result == RESULT_CRIT )
@@ -1011,7 +1011,7 @@ void mage_spell_t::execute()
   if( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
 
   p -> buffs_arcane_potency -> decrement();
-  
+
   if( fof_frozen )
   {
     p -> buffs_fingers_of_frost -> decrement();
@@ -1036,7 +1036,7 @@ void mage_spell_t::execute()
     trigger_hot_streak( this );
   }
 
-  if ( ! p -> talents.hot_streak   -> ok() && 
+  if ( ! p -> talents.hot_streak   -> ok() &&
        ! p -> talents.brain_freeze -> ok() )
   {
     p -> buffs_arcane_missiles -> trigger();
@@ -1056,7 +1056,7 @@ void mage_spell_t::travel( int travel_result, double travel_dmg )
     trigger_ignite( this, direct_dmg );
   }
 
-  if( may_chill ) 
+  if( may_chill )
   {
     if( travel_result == RESULT_HIT ||
         travel_result == RESULT_CRIT )
@@ -1147,7 +1147,7 @@ void mage_spell_t::player_buff()
   if ( school == SCHOOL_FROST || school == SCHOOL_FROSTFIRE )
   {
     player_multiplier *= 1.0 + p -> specializations.frost1;
-  } 
+  }
   if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
   {
     if ( p -> ptr )
@@ -1520,7 +1520,7 @@ struct counterspell_t : public mage_spell_t
     mage_spell_t::execute();
     p -> buffs_invocation -> trigger();
   }
-  
+
   virtual bool ready()
   {
     if ( ! target -> debuffs.casting -> check() )
@@ -1757,7 +1757,7 @@ struct focus_magic_t : public mage_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-        
+
     if ( target_str.empty() )
     {
       // If no target specified, assume 100% up-time by forcing "buffs.focus_magic_feedback = 1"
@@ -1885,13 +1885,13 @@ struct frostbolt_t : public mage_spell_t
     return ct;
   }
 
-  virtual double gcd() SC_CONST 
-  { 
+  virtual double gcd() SC_CONST
+  {
     mage_t* p = player -> cast_mage();
     if ( p -> talents.early_frost -> rank() )
       if( ! p -> cooldowns_early_frost -> remains() )
 	return 1.0;
-    return mage_spell_t::gcd(); 
+    return mage_spell_t::gcd();
   }
 };
 
@@ -1918,17 +1918,17 @@ struct frostfire_bolt_t : public mage_spell_t
     }
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
   }
-  
-  virtual void reset() 
+
+  virtual void reset()
   {
     mage_spell_t::reset();
-    dot_stack=0; 
+    dot_stack=0;
   }
 
-  virtual void last_tick() 
+  virtual void last_tick()
   {
     mage_spell_t::last_tick();
-    dot_stack=0; 
+    dot_stack=0;
   }
 
   virtual double cost() SC_CONST
@@ -2119,7 +2119,7 @@ struct living_bomb_t : public mage_spell_t
     dot_behavior = DOT_REFRESH;
 
     explosion_spell = new living_bomb_explosion_t( p );
-    explosion_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work 
+    explosion_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work
     explosion_spell -> base_cost = base_cost;
   }
 
@@ -2129,7 +2129,7 @@ struct living_bomb_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     spell_t::target_debuff( dmg_type );
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-				 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 + 
+				 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
 				 p -> specializations.flashburn * p -> composite_mastery() );
   }
 
@@ -2178,10 +2178,10 @@ struct mana_gem_t : public action_t
       action_t( ACTION_USE, "mana_gem", p )
   {
     parse_options( NULL, options_str );
-    
+
     min = p -> player_data.effect_min( 16856, p -> player_data.spell_scaling_class( 27103 ), p -> level );
     max = p -> player_data.effect_max( 16856, p -> player_data.spell_scaling_class( 27103 ), p -> level );
-    
+
     if ( p -> level <= 80 )
     {
       min = 3330.0;
@@ -2246,12 +2246,12 @@ struct mirror_image_t : public mage_spell_t
     p -> buffs_tier10_4pc -> trigger();
   }
 
-  virtual double gcd() SC_CONST 
+  virtual double gcd() SC_CONST
   {
     mage_t* p = player -> cast_mage();
     if ( p -> ptr && p -> buffs_arcane_power -> check() ) return 0;
     return mage_spell_t::gcd();
-  }  
+  }
 };
 
 // Molten Armor Spell =======================================================
@@ -2352,7 +2352,7 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if( result_is_hit() ) 
+    if( result_is_hit() )
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
@@ -2384,7 +2384,7 @@ struct pyroblast_hs_t : public mage_spell_t
       p -> buffs_tier10_2pc -> trigger();
     }
     mage_spell_t::execute();
-    if( result_is_hit() ) 
+    if( result_is_hit() )
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
@@ -2438,7 +2438,7 @@ struct scorch_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if ( result_is_hit() ) 
+    if ( result_is_hit() )
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
@@ -2504,10 +2504,10 @@ struct time_warp_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    
+
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping || p -> buffs.exhaustion -> check() ) 
+      if ( p -> sleeping || p -> buffs.exhaustion -> check() )
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
@@ -2734,7 +2734,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 void mage_t::create_pets()
 {
   create_pet( "mirror_image_3"  );
-  create_pet( "water_elemental" );  
+  create_pet( "water_elemental" );
 }
 
 // mage_t::init_talents =====================================================
@@ -2859,7 +2859,7 @@ void mage_t::init_spells()
   glyphs.molten_armor         = find_glyph( "Glyph of Molten Armor" );
   glyphs.pyroblast            = find_glyph( "Glyph of Pyroblast" );
 
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 70752, 70748,     0,     0,     0,     0,     0,     0 }, // Tier10
@@ -2921,7 +2921,7 @@ void mage_t::init_buffs()
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
-  buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );  
+  buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );
 }
 
 // mage_t::init_gains =======================================================
@@ -3097,8 +3097,21 @@ void mage_t::init_actions()
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react";
-      if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&buff.bloodlust.react";
+      for ( int i=0; i < SLOT_MAX; i++ )
+      {
+        item_t& item = items[ i ];
+
+        if ( strstr( item.name(), "shard_of_woe") )
+        {
+            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react";
+            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&buff.bloodlust.react";
+        }
+        else
+        {
+            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&!buff.bloodlust.react";
+            if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<2&buff.bloodlust.react";
+        }
+      }
       if ( level >= 12 ) action_list_str += "/evocation,if=target.time_to_die>=31";
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage";
