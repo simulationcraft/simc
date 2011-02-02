@@ -1863,7 +1863,7 @@ struct frostbolt_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         int max_targets = p -> talents.piercing_chill -> rank();
-        if ( target -> is_enemy())
+        if ( target -> is_enemy() )
         {
           target_t* q = target -> cast_target();
 

@@ -365,20 +365,20 @@ void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
   }
   else
   {
-  spell_haste       = pData.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
-  spell_hit         = pData.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
-  spell_crit        = pData.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
-  attack_haste      = pData.combat_ratings(player_type ( type ), RATING_MELEE_HASTE, 	level);
-  attack_hit        = pData.combat_ratings(player_type ( type ), RATING_MELEE_HIT, 	level);
-  attack_crit       = pData.combat_ratings(player_type ( type ), RATING_MELEE_CRIT, 	level);
-  ranged_haste      = pData.combat_ratings(player_type ( type ), RATING_RANGED_HASTE, 	level);
-  ranged_hit        = pData.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
-  ranged_crit       = pData.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
-  expertise         = pData.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
-  dodge             = pData.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
-  parry             = pData.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
-  block             = pData.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
-  mastery           = pData.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
+    spell_haste       = pData.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
+    spell_hit         = pData.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
+    spell_crit        = pData.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
+    attack_haste      = pData.combat_ratings(player_type ( type ), RATING_MELEE_HASTE, 	level);
+    attack_hit        = pData.combat_ratings(player_type ( type ), RATING_MELEE_HIT, 	level);
+    attack_crit       = pData.combat_ratings(player_type ( type ), RATING_MELEE_CRIT, 	level);
+    ranged_haste      = pData.combat_ratings(player_type ( type ), RATING_RANGED_HASTE, 	level);
+    ranged_hit        = pData.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
+    ranged_crit       = pData.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
+    expertise         = pData.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
+    dodge             = pData.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
+    parry             = pData.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
+    block             = pData.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
+    mastery           = pData.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
   }
 }
 

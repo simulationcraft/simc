@@ -1523,23 +1523,17 @@ struct shred_t : public druid_cat_attack_t
     }
   }
 
-  virtual void player_buff()
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    druid_t*  p = player -> cast_druid();
-    player_t* t = target;
+    druid_cat_attack_t::target_debuff( t, dmg_type );
 
-    druid_cat_attack_t::player_buff();
-
-    // FIXME: Why are Target Debuffs in player_buff???
-
+    druid_t* p = player -> cast_druid();    
+    
     if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
-      player_multiplier *= 1.30;
+      target_multiplier *= 1.30;
 
-    if ( t -> debuffs.bleeding -> check() )
-    {
-      player_multiplier *= 1.0 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
-    }
-
+    if ( t -> debuffs.bleeding -> up() )
+      target_multiplier *= 1.0 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
   }
 
   virtual bool ready()

@@ -917,15 +917,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
       id = 55050;
       parse_data( p -> player_data );
 
-      background       = true;
-
-      aoe = 2;
+      background          = true;
+      aoe                 = 2;
       base_add_multiplier = 0.75;
-
-      trigger_gcd      = 0;
-      base_multiplier *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07
-                         + o -> glyphs.heart_strike          * 0.30;
-      base_multiplier *= 0.50; // DRW penalty
+      trigger_gcd         = 0;
+      base_multiplier    *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07
+                              + o -> glyphs.heart_strike          * 0.30;
+      base_multiplier    *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -3575,16 +3573,26 @@ struct scourge_strike_t : public death_knight_attack_t
 
     virtual void target_debuff( player_t* t, int dmg_type )
     {
-      death_knight_spell_t::target_debuff( t, dmg_type );
+      // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
+      // death_knight_spell_t::target_debuff( t, dmg_type );
+
       death_knight_t* p = player -> cast_death_knight();
 
       target_multiplier = p -> diseases() * 0.12;
 
-      // Shadow portion doesn't benefit from EP, gets 8% from E&M and 6% from CoE...
-      if ( t -> debuffs.earth_and_moon -> up() )
-        target_multiplier += 0.08;
-      else if ( t -> debuffs.curse_of_elements -> up() )
-        target_multiplier *= 1.06;
+      // Shadow portion doesn't benefit from EP, gets +8% from E&M and *6% from CoE on live
+      if ( p -> bugs )
+      {
+        if ( t -> debuffs.earth_and_moon -> up() )
+          target_multiplier += 0.08;
+        else if ( t -> debuffs.curse_of_elements -> up() )
+          target_multiplier *= 1.06;
+      }
+      else
+      {
+        if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
+          target_multiplier *= 1.08;
+      }
     }
   };
 
