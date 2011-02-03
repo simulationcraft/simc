@@ -494,7 +494,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     path_str( "." ), output_file( stdout ), log_file( 0 ), csv_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
-    report_precision( 4 ),report_pets_separately( false ), report_targets( false ),
+    report_precision( 4 ),report_pets_separately( false ), report_targets( true ),
     // Multi-Threading
     threads( 0 ), thread_handle( 0 ), thread_index( index ),
     spell_query( 0 )
@@ -1073,10 +1073,14 @@ void sim_t::analyze_player( player_t* p )
     s -> portion_dps = s -> portion_dmg * p -> dps;
   }
 
-  if ( ! p -> quiet )
+  if ( ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() )
   {
     players_by_rank.push_back( p );
     players_by_name.push_back( p );
+  }
+  if ( ! p -> quiet && ( p -> is_enemy() || p -> is_add() ) )
+  {
+    targets_by_name.push_back( p );
   }
 
   // Avoid double-counting of pet damage
@@ -1266,6 +1270,7 @@ void sim_t::analyze()
 
   std::sort( players_by_rank.begin(), players_by_rank.end(), compare_dps()  );
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
+  std::sort( targets_by_name.begin(), targets_by_name.end(), compare_name() );
 
   raid_dps = total_dmg / total_seconds;
   raid_hps = total_heal / total_seconds;
@@ -1798,8 +1803,7 @@ void sim_t::create_options()
     { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
     { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
-    { "html",                             OPT_STRING, &( html3_file_str                           ) },
-    { "html_old",                         OPT_STRING, &( html_file_str                            ) },
+    { "html",                             OPT_STRING, &( html_file_str                           ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "csv",                              OPT_STRING, &( csv_file_str                             ) },

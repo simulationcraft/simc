@@ -241,7 +241,7 @@ void target_t::init_items()
 
 void target_t::init_actions()
 {
-  if ( !is_add() ) action_list_str += "/summon_add,name=Evil_Add,health=500000";
+  if ( !is_add() ) action_list_str += "/summon_add,name=Evil_Add3,health=500000";
   action_list_str += "/auto_attack";
 
 
@@ -383,7 +383,7 @@ struct summon_add_t : public spell_t
     if ( ! add_to_summon )
       return false;
 
-    if ( add_to_summon -> summoned )
+    if ( !add_to_summon -> sleeping )
       return false;
 
     return spell_t::ready();
@@ -444,11 +444,14 @@ target_t* target_t::find( sim_t* sim,
 
 add_t* target_t::create_add( const std::string& add_name )
 {
-  add_t* p = find_add( add_name );
+  int i = 1;
+  for ( add_t* add = add_list; add; add = add -> next_add )
+    i++;
 
-  if ( p ) return p;
+  std::stringstream stream;
+  stream << "Evil_Add" << i;
 
-  if ( add_name == "Evil_Add"     ) return new    add_t( sim, this, add_name );
+  if ( add_name == "Evil_Add"     ) return new    add_t( sim, this, stream.str() );
 
   return 0;
 }
@@ -457,10 +460,11 @@ add_t* target_t::create_add( const std::string& add_name )
 
 void target_t::create_adds()
 {
-  if ( this -> is_add() )
+  if ( is_add() )
     return;
 
-  create_pet( "Evil_Add"  );
+  for ( int i = 0; i < 9; i++ )
+    create_add( "Evil_Add" );
 }
 
 // target_t::find_add =======================================================
@@ -600,7 +604,6 @@ void add_t::reset()
 {
   target_t::reset();
   sleeping = 1;
-  summoned = false;
   summon_time = 0;
 }
 
@@ -648,7 +651,6 @@ void add_t::dismiss()
 
   readying = 0;
   sleeping = 1;
-  summoned = false;
 
   for ( action_t* a = action_list; a; a = a -> next )
   {

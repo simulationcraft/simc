@@ -1097,7 +1097,7 @@ struct devouring_plague_burst_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    stats -> add( direct_dmg, DMG_DIRECT, result, time_to_execute );
+    stats -> add_result( direct_dmg, DMG_DIRECT, result );
   }
 
   virtual void player_buff()

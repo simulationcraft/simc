@@ -2393,6 +2393,7 @@ struct sim_t
   std::string reference_player_str;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
+  std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
   std::vector<std::string> dps_charts, gear_charts, dpet_charts;
   std::string downtime_chart;
@@ -2400,7 +2401,7 @@ struct sim_t
   std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
-  std::string output_file_str, log_file_str, html_file_str, html2_file_str, html3_file_str,  wiki_file_str, xml_file_str, csv_file_str;
+  std::string output_file_str, log_file_str, html_file_str,  wiki_file_str, xml_file_str, csv_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
@@ -3837,7 +3838,6 @@ struct absorb_t : public spell_t
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
-  virtual void update_stats( int type );
   virtual void schedule_travel_heal( player_t* );
   virtual void travel_heal( player_t*, int travel_result, double travel_dmg );
 
@@ -4163,7 +4163,6 @@ struct report_t
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
-  static void print_html3( sim_t* );
   static void print_wiki( sim_t* );
   static void print_xml( sim_t* );
   static void print_suite( sim_t* );

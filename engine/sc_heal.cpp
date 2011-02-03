@@ -159,13 +159,15 @@
 
       direct_dmg = calculate_direct_damage();
       schedule_travel_heal( heal_target[i] );
+
+      if ( ! dual ) stats -> add_result( direct_dmg, HEAL_DIRECT, result );
     }
 
     consume_resource();
 
     update_ready();
 
-    if ( ! dual ) update_stats( HEAL_DIRECT );
+    if ( ! dual ) stats -> add_execute( HEAL_DIRECT, time_to_execute );
 
     if ( harmful ) player -> in_combat = true;
 
@@ -381,13 +383,9 @@
 
   void heal_t::update_stats( int type )
   {
-    if ( type == HEAL_DIRECT )
+    if ( type == HEAL_OVER_TIME )
     {
-      stats -> add( 0, type, RESULT_HIT, time_to_execute );
-    }
-    else if ( type == HEAL_OVER_TIME )
-    {
-      stats -> add( 0, type, RESULT_HIT, time_to_tick );
+      stats -> add( tick_dmg, type, RESULT_HIT, time_to_tick );
     }
     else assert( 0 );
   }
@@ -420,7 +418,6 @@
     if ( travel_dmg > 0 )
     {
       assess_heal( t, travel_dmg, HEAL_DIRECT );
-      stats -> add_result( travel_dmg, HEAL_DIRECT, travel_result );
     }
     if ( num_ticks > 0 )
     {
@@ -479,8 +476,6 @@
     }
 
     tick_dmg = calculate_tick_damage();
-
-    stats -> add_result( tick_dmg, HEAL_OVER_TIME, result );
 
     assess_heal( heal_target[0], tick_dmg, HEAL_OVER_TIME );
 
@@ -692,13 +687,15 @@
 
          direct_dmg = calculate_direct_damage();
          schedule_travel_heal( heal_target[i] );
+
+         if ( ! dual ) stats -> add_result( direct_dmg, HEAL_DIRECT, result );
        }
 
       consume_resource();
 
       update_ready();
 
-      if ( ! dual ) update_stats( ABSORB );
+      if ( ! dual ) stats -> add_execute( ABSORB, time_to_execute );
 
       if ( harmful ) player -> in_combat = true;
 
@@ -844,17 +841,6 @@
     }
 
 
-  // absorb_t::update_stats =====================================================
-
-    void absorb_t::update_stats( int type )
-    {
-      if ( type == ABSORB )
-      {
-        stats -> add( 0, type, RESULT_HIT, time_to_execute );
-      }
-      else assert( 0 );
-    }
-
     // absorb_t::schedule_travel ===============================================
 
       void absorb_t::schedule_travel_heal( player_t* p )
@@ -871,6 +857,5 @@
         if ( travel_dmg > 0 )
         {
           assess_heal( t, travel_dmg, ABSORB );
-          stats -> add_result( travel_dmg, ABSORB, travel_result );
         }
       }
