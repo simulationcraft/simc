@@ -140,7 +140,6 @@ struct flask_t : public action_t
     case FLASK_STEELSKIN:
       stamina = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300;
       p -> stat_gain( STAT_STAMINA, stamina );
-      if ( ! p -> in_combat ) p -> stat_gain( STAT_HEALTH, p -> health_per_stamina * stamina, gain );
       break;
     case FLASK_TITANIC_STRENGTH:
       p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
