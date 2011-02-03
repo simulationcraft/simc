@@ -556,12 +556,6 @@ action_expr_t* target_t::create_expression( action_t* action,
    return player_t::create_expression( action, name_str );
 }
 
-
-
-
-
-
-
 // ==========================================================================
 // Add
 // ==========================================================================
@@ -599,7 +593,6 @@ void add_t::init()
 {
   target_t::init();
   level = owner -> level;
-
 }
 
 // add_t::reset =============================================================

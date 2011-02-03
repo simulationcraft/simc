@@ -178,15 +178,13 @@ static void trigger_target_swings( player_t* p )
       // Very simple Boss Damage calculation
       double damage = 0;
       if ( result == RESULT_HIT || result == RESULT_BLOCK || result == RESULT_CRIT )
-      damage = sim -> rng -> gauss(sim -> target -> attack_damage, 0.25);
+      damage = sim -> rng -> gauss( sim -> target -> attack_damage, 0.25 );
 
       if ( result == RESULT_CRIT )
         damage *= 2.0;
 
       if ( result == RESULT_BLOCK )
         damage *= 0.7;
-
-
 
       if ( damage > 0 )
       {
@@ -195,7 +193,6 @@ static void trigger_target_swings( player_t* p )
               log_t::output( sim, "%s does %.1f damage to %s (%s)",
               sim -> target -> name(), damage, player -> name(), util_t::result_type_string( result ) );
       }
-
 
       player -> target_auto_attack = new ( sim ) target_swing_event_t( sim, player, sim -> target -> attack_speed );
     }

@@ -165,6 +165,7 @@ struct druid_t : public player_t
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
   buff_t* buffs_pulverize;
+  buff_t* buffs_savage_defense;
   buff_t* buffs_savage_roar;
   buff_t* buffs_shooting_stars;
   buff_t* buffs_stampede_bear;
@@ -301,14 +302,14 @@ struct druid_t : public player_t
     talent_t* king_of_the_jungle;
     talent_t* leader_of_the_pack;
     talent_t* natural_reaction;
-    talent_t* nurturing_instict; // NYI as we don't simulate healing
+    talent_t* nurturing_instict; // NYI
     talent_t* predatory_strikes;
     talent_t* primal_fury;
     talent_t* primal_madness;
-    talent_t* pulverize; // NYI
+    talent_t* pulverize;
     talent_t* rend_and_tear;
     talent_t* stampede;
-    talent_t* survival_instincts; // NYI as we don't simulate damage
+    talent_t* survival_instincts; // NYI
     talent_t* thick_hide; // How does the +10% and +33%@bear stack etc
     
     // Resto
@@ -1679,6 +1680,9 @@ void druid_bear_attack_t::execute()
     if ( result == RESULT_CRIT )
     {
       trigger_primal_fury( this );
+      druid_t* p = player -> cast_druid();
+      double value = p -> composite_attack_power() * p -> player_data.effect_min( 62600, p -> level, E_JUMP2 );
+      p -> buffs_savage_defense -> trigger( 1, value );
     }
   }
 }
@@ -1711,6 +1715,10 @@ void druid_bear_attack_t::player_buff()
   if ( p -> talents.king_of_the_jungle -> rank() && p -> buffs_enrage -> up() )
   {
     player_multiplier *= 1.0 + p -> talents.king_of_the_jungle -> effect_base_value( 1 ) / 100.0;
+  }
+  if ( p -> buffs_pulverize -> up() )
+  {
+    player_crit += p -> buffs_pulverize -> value();
   }
 }
 
@@ -1910,6 +1918,42 @@ struct maul_t : public druid_bear_attack_t
     if ( t -> debuffs.bleeding -> check() )
     {
       player_multiplier *= 1.0 + p -> talents.rend_and_tear -> effect_base_value( 1 ) / 100.0;
+    }
+  }
+};
+
+// Pulverize ================================================================
+
+struct pulverize_t : public druid_bear_attack_t
+{
+  pulverize_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "pulverize", 80313, player )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.pulverize -> ok() );
+
+    parse_options( NULL, options_str );
+
+    weapon = &( player -> main_hand_weapon );
+    normalize_weapon_speed = false; // Override since bear weapon speed is already normalized
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    base_dd_adder = 450.0 * p -> buffs_lacerate -> stack();
+
+    druid_bear_attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      druid_t* p = player -> cast_druid();
+      if ( p -> dots_lacerate -> ticking )
+      {
+        p -> buffs_pulverize -> trigger( 1, p -> buffs_lacerate -> stack() * 0.03 );
+        p -> dots_lacerate -> action -> cancel();
+        p -> buffs_lacerate -> expire();
+      }
     }
   }
 };
@@ -3332,6 +3376,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
   if ( name == "pounce"                 ) return new                 pounce_t( this, options_str );
+  if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
   if ( name == "ravage"                 ) return new                 ravage_t( this, options_str );
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
@@ -3562,6 +3607,7 @@ void druid_t::init_buffs()
   buffs_lacerate           = new buff_t( this, player_data.find_class_spell( type, "Lacerate" ), "lacerate" );
   buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );
+  buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   
   // simple
@@ -3706,14 +3752,14 @@ void druid_t::init_actions()
         action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";  // Use on pull.
         action_list_str += "/enrage,time<=5"; // Use only at the start
         action_list_str += use_str;
+        action_list_str += "/maul,if=rage>=75";
         action_list_str += "/mangle_bear";
         action_list_str += "/lacerate,if=!ticking";
         action_list_str += "/thrash";
-        action_list_str += "/pulverize,if=buff.lacerate.stack=3";
+        action_list_str += "/pulverize,if=buff.lacerate.stack=3&buff.pulverize.remains<=2";
         action_list_str += "/lacerate,if=buff.lacerate.stack<3";
         if ( talents.berserk -> rank() ) action_list_str+="/berserk";        
         action_list_str += "/faerie_fire_feral";
-        action_list_str += "/lacerate";
       }
       else
       {
@@ -4188,18 +4234,20 @@ int druid_t::target_swing()
 
   if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
 
+  // FIX ME: Damage is currently not passed beyond anything after it's calculated in player_t::trigger_target_swing()
+  // double rage_gain = damage * 18.92 / resource_max[ RESOURCE_HEALTH ]; 
+  resource_gain( RESOURCE_RAGE, 30.0, gains_incoming_damage );  // FIXME - What is the formula for determining rage gain now
+
   if ( result == RESULT_HIT    ||
        result == RESULT_CRIT   ||
        result == RESULT_GLANCE )
   {
-    resource_gain( RESOURCE_RAGE, 20.0, gains_incoming_damage );  // FIXME - What is the formula for determining rage gain now
+    buffs_savage_defense -> expire(); // FIX ME: This should reduce damage by it's value before it expires
   }
-  if ( result == RESULT_DODGE )
+
+  if ( result == RESULT_DODGE && talents.natural_reaction -> rank() )
   {
-    if ( talents.natural_reaction -> rank() )
-    {
-      resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
-    }
+    resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
   }
 
   return result;
