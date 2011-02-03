@@ -4554,14 +4554,13 @@ void player_t::warlock_init( sim_t* sim )
 
 void player_t::warlock_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.demonic_pact )
-    sim -> auras.demonic_pact -> override();
+  if ( sim -> overrides.demonic_pact     ) sim -> auras.demonic_pact     -> override();
+  if ( sim -> overrides.fel_intelligence ) sim -> auras.fel_intelligence -> override();
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();
     if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 8 );
+    if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();    
   }
-
 }
 

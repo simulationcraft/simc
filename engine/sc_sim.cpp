@@ -1581,6 +1581,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.elemental_oath         = optimal_raid;
   overrides.expose_armor           = optimal_raid;
   overrides.faerie_fire            = optimal_raid;
+  overrides.fel_intelligence       = optimal_raid;
   overrides.ferocious_inspiration  = optimal_raid;
   overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;

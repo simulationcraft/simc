@@ -240,9 +240,10 @@ struct druid_t : public player_t
   proc_t* procs_primal_fury;
 
   // Random Number Generation
+  rng_t* rng_berserk;
+  rng_t* rng_blood_in_the_water;
   rng_t* rng_euphoria;
   rng_t* rng_fury_swipes;
-  rng_t* rng_blood_in_the_water;
   rng_t* rng_primal_fury;
   rng_t* rng_wrath_eclipsegain;
   
@@ -1816,17 +1817,20 @@ struct feral_charge_bear_t : public druid_bear_attack_t
 
 struct lacerate_t : public druid_bear_attack_t
 {
+  cooldown_t* mangle_bear_cooldown;
+
   lacerate_t( druid_t* player, const std::string& options_str ) :
-      druid_bear_attack_t( "lacerate",  33745, player )
+      druid_bear_attack_t( "lacerate",  33745, player ), mangle_bear_cooldown( 0 )
   {
     druid_t* p = player -> cast_druid();
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.115;
-    tick_power_mod   = 0.0077;
-    dot_behavior     = DOT_REFRESH;
-    base_crit       += p -> glyphs.lacerate -> mod_additive( P_CRIT );
+    direct_power_mod     = 0.115;
+    tick_power_mod       = 0.0077;
+    dot_behavior         = DOT_REFRESH;
+    base_crit           += p -> glyphs.lacerate -> mod_additive( P_CRIT );
+    mangle_bear_cooldown = p -> get_cooldown( "mangle_bear" );
   }
 
   virtual void execute()
@@ -1838,6 +1842,18 @@ struct lacerate_t : public druid_bear_attack_t
       p -> buffs_lacerate -> trigger();
       base_td_multiplier  = p -> buffs_lacerate -> current_stack;
       base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
+    }
+  }
+
+  virtual void tick()
+  {
+    druid_bear_attack_t::tick();
+
+    druid_t* p = player -> cast_druid();
+    if ( p -> talents.berserk -> ok() )
+    {
+      if ( p -> rng_berserk -> roll( 0.30 ) )
+        mangle_bear_cooldown -> reset();
     }
   }
 
@@ -1866,7 +1882,13 @@ struct mangle_bear_t : public druid_bear_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+
+    if ( p -> buffs_berserk -> up() )
+      aoe = 3;
+
     druid_bear_attack_t::execute();
+    
+    aoe = 0;
     if ( p -> buffs_berserk -> up() )
       cooldown -> reset();
     if ( result_is_hit() )
@@ -1903,22 +1925,17 @@ struct maul_t : public druid_bear_attack_t
     }
   }
 
-  virtual void player_buff()
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    druid_t*  p = player -> cast_druid();
-    player_t* t = target;
+    druid_bear_attack_t::target_debuff( t, dmg_type );
 
-    druid_bear_attack_t::player_buff();
-
-    // FIXME: What are target debuffs doing in player_buff???
-
+    druid_t* p = player -> cast_druid();    
+    
     if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
-      player_multiplier *= 1.30;
+      target_multiplier *= 1.30;
 
-    if ( t -> debuffs.bleeding -> check() )
-    {
-      player_multiplier *= 1.0 + p -> talents.rend_and_tear -> effect_base_value( 1 ) / 100.0;
-    }
+    if ( t -> debuffs.bleeding -> up() )
+      target_multiplier *= 1.0 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
   }
 };
 
@@ -3700,6 +3717,7 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
+  rng_berserk             = get_rng( "berserk"            );
   rng_blood_in_the_water  = get_rng( "blood_in_the_water" );
   rng_euphoria            = get_rng( "euphoria"           );
   rng_fury_swipes         = get_rng( "fury_swipes"        );  

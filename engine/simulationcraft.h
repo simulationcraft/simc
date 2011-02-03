@@ -2306,6 +2306,7 @@ struct sim_t
     int exhaustion;
     int expose_armor;
     int faerie_fire;
+    int fel_intelligence;
     int ferocious_inspiration;
     int flametongue_totem;
     int focus_magic;
@@ -2315,8 +2316,8 @@ struct sim_t
     int honor_among_thieves;
     int horn_of_winter;
     int hunters_mark;
-    int improved_icy_talons;
     int hunting_party;
+    int improved_icy_talons;
     int improved_shadow_bolt;
     int infected_wounds;
     int insect_swarm;
@@ -2354,12 +2355,13 @@ struct sim_t
     aura_t* demonic_pact;
     aura_t* devotion_aura;
     aura_t* elemental_oath;
+    aura_t* fel_intelligence;
     aura_t* ferocious_inspiration;
     aura_t* flametongue_totem;
     aura_t* honor_among_thieves;
     aura_t* horn_of_winter;
-    aura_t* improved_icy_talons;
     aura_t* hunting_party;
+    aura_t* improved_icy_talons;
     aura_t* leader_of_the_pack;
     aura_t* mana_spring_totem;
     aura_t* moonkin;
@@ -2370,7 +2372,6 @@ struct sim_t
     aura_t* unleashed_rage;
     aura_t* windfury_totem;
     aura_t* wrath_of_air;
-    aura_t* fel_intelligence;
     auras_t() { memset( (void*) this, 0x0, sizeof( auras_t ) ); }
   };
   auras_t auras;

@@ -1491,14 +1491,12 @@ struct stormstrike_t : public shaman_attack_t
     
     if ( result_is_hit() )
     {
-
       p -> buffs_stormstrike -> trigger();
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
 
       trigger_static_shock( this );
     }
-    
   }
 };
 
