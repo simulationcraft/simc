@@ -2054,7 +2054,7 @@ static void print_html3_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> execute_results[ RESULT_CRIT ].avg_dmg,
     s -> execute_results[ RESULT_CRIT ].max_dmg ? s -> execute_results[ RESULT_CRIT ].max_dmg : s -> execute_results[ RESULT_HIT ].max_dmg,
     s -> execute_results[ RESULT_CRIT ].pct,
-    s -> execute_results[ RESULT_MISS ].pct,
+    s -> execute_results[ RESULT_MISS ].count / s -> num_executes * 100.0,
     s -> execute_results[ RESULT_DODGE  ].pct,
     s -> execute_results[ RESULT_PARRY  ].pct,
     s -> execute_results[ RESULT_GLANCE ].pct,
