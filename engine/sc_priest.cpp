@@ -2203,6 +2203,8 @@ struct dark_archangel_t : public priest_spell_t
 
     trigger_gcd = 0;
     base_cost   = 0.0;
+
+    harmful = false;
   }
 
   virtual void execute()
