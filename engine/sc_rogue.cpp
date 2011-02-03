@@ -1556,6 +1556,8 @@ struct envenom_t : public rogue_attack_t
     if ( p -> mastery_potent_poisons -> ok() )
       add_mult = p -> composite_mastery() * p -> mastery_potent_poisons -> base_value( E_APPLY_AURA, A_DUMMY );
   
+    double m = 1.0;
+
     // Bandit's Guile (combat) - affects all damage done by rogue, stacks are reset when you strike other target with sinister strike/revealing strike
     if ( p -> buffs_bandits_guile -> check() )
       m *= 1.0 + p -> buffs_bandits_guile -> value();
