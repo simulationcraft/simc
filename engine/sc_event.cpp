@@ -211,38 +211,6 @@ void action_travel_event_t::execute()
     action -> travel_event = NULL;
 }
 
-// ==========================================================================
-// Heal Travel Event
-// ==========================================================================
-
-// heal_travel_event_t::heal_travel_event_t =============================
-
-heal_travel_event_t::heal_travel_event_t( sim_t*    sim,
-                                            player_t* p,
-                                            heal_t* a,
-                                            double    time_to_travel ) :
-    event_t( sim, a -> player ), action( a ), target( p )
-{
-  name   = "Heal Travel";
-  result = a -> result;
-  damage = a -> direct_dmg;
-
-  if ( sim -> debug )
-    log_t::output( sim, "New Action Travel Event: %s %s %.2f",
-                   player -> name(), a -> name(), time_to_travel );
-
-  sim -> add_event( this, time_to_travel );
-}
-
-// heal_travel_event_t::execute ===========================================
-
-void heal_travel_event_t::execute()
-{
-  action -> travel_heal( target, result, damage );
-  if ( action -> travel_event == this )
-    action -> travel_event = NULL;
-}
-
 // ===========================================================================
 // Regen Event
 // ===========================================================================

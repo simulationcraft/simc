@@ -212,7 +212,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
 static void print_text_actions( FILE* file, player_t* p )
 {
-  util_t::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
+  if ( ! p -> glyphs_str.empty() ) util_t::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
 
   util_t::fprintf( file, "  Priorities:\n" );
 
@@ -899,8 +899,8 @@ static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
   }
 
   util_t::fprintf( file, "\n" );
-  util_t::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
-  util_t::fprintf( file, "  Talents: %s\n",p -> talents_str.c_str() );
+  if ( p -> origin_str.compare("unknown") ) util_t::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
+  if ( ! p -> talents_str.empty() )util_t::fprintf( file, "  Talents: %s\n",p -> talents_str.c_str() );
   print_text_core_stats   ( file, p );
   print_text_spell_stats  ( file, p );
   print_text_attack_stats ( file, p );

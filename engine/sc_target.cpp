@@ -259,19 +259,6 @@ void target_t::init_actions()
   player_t::init_actions();
 }
 
-// target_t::init_gains =====================================================
-
-void target_t::init_gains()
-{
-  player_t::init_gains();
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    gains.push_back(get_gain( p -> name_str ) );
-  }
-
-}
-
 // target_t::reset ===========================================================
 
 void target_t::reset()

@@ -3453,16 +3453,12 @@ struct target_t : public player_t
 
   add_t* add_list;
 
-  // Reporting
-  std::vector<gain_t*> gains;
-
   target_t( sim_t* s, const std::string& n, player_type pt = ENEMY );
 
   virtual void init();
   virtual void init_base();
   virtual void init_items();
   virtual void init_actions();
-  virtual void init_gains();
   virtual void reset();
   virtual void combat_begin();
   virtual int primary_resource() SC_CONST;
@@ -3808,15 +3804,15 @@ struct heal_t : public spell_t
   virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
-  virtual void assess_heal( player_t* t, double amount,
+  virtual void assess_damage( player_t* t, double amount,
                                   int    dmg_type );
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual void update_stats( int type );
-  virtual void schedule_travel_heal( player_t* );
-  virtual void travel_heal( player_t*, int travel_result, double travel_dmg );
+  virtual void schedule_travel( player_t* );
+  virtual void travel( player_t*, int travel_result, double travel_dmg );
   virtual void tick();
   virtual void last_tick();
   virtual player_t* find_greatest_difference_player();
@@ -3843,13 +3839,13 @@ struct absorb_t : public spell_t
   virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
   virtual void execute();
-  virtual void assess_heal( player_t* t, double amount,
+  virtual void assess_damage( player_t* t, double amount,
                                     int    dmg_type );
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
-  virtual void schedule_travel_heal( player_t* );
-  virtual void travel_heal( player_t*, int travel_result, double travel_dmg );
+  virtual void schedule_travel( player_t* );
+  virtual void travel( player_t*, int travel_result, double travel_dmg );
 
 };
 
@@ -4009,18 +4005,6 @@ struct action_travel_event_t : public event_t
   int result;
   double damage;
   action_travel_event_t( sim_t* sim, player_t* t, action_t* a, double time_to_travel );
-  virtual void execute();
-};
-
-// Heal Travel Event =======================================================
-
-struct heal_travel_event_t : public event_t
-{
-  heal_t* action;
-  player_t* target;
-  int result;
-  double damage;
-  heal_travel_event_t( sim_t* sim, player_t* p, heal_t* a, double time_to_travel );
   virtual void execute();
 };
 

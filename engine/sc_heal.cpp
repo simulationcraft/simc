@@ -158,7 +158,7 @@
       calculate_result();
 
       direct_dmg = calculate_direct_damage();
-      schedule_travel_heal( heal_target[i] );
+      schedule_travel( heal_target[i] );
 
       if ( ! dual ) stats -> add_result( direct_dmg, HEAL_DIRECT, result );
     }
@@ -176,7 +176,7 @@
 
 // heal_t::asses_damage ========================================================
 
-  void heal_t::assess_heal( player_t* t, double amount,
+  void heal_t::assess_damage( player_t* t, double amount,
                                 int    dmg_type )
   {
     total_heal += amount;
@@ -392,13 +392,13 @@
 
   // heal_t::schedule_travel ===============================================
 
-  void heal_t::schedule_travel_heal( player_t* p )
+  void heal_t::schedule_travel( player_t* p )
   {
     time_to_travel = travel_time();
 
     if ( time_to_travel == 0 )
     {
-      travel_heal( p, result, direct_dmg );
+      travel( p, result, direct_dmg );
     }
     else
     {
@@ -407,17 +407,17 @@
         log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
       }
 
-      travel_event = new ( sim ) heal_travel_event_t( sim, p, this, time_to_travel );
+      travel_event = new ( sim ) action_travel_event_t( sim, p, this, time_to_travel );
     }
   }
 
 // heal_t::travel ============================================================
 
-  void heal_t::travel_heal( player_t* t, int travel_result, double travel_dmg=0 )
+  void heal_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
   {
     if ( travel_dmg > 0 )
     {
-      assess_heal( t, travel_dmg, HEAL_DIRECT );
+      assess_damage( t, travel_dmg, HEAL_DIRECT );
     }
     if ( num_ticks > 0 )
     {
@@ -477,7 +477,7 @@
 
     tick_dmg = calculate_tick_damage();
 
-    assess_heal( heal_target[0], tick_dmg, HEAL_OVER_TIME );
+    assess_damage( heal_target[0], tick_dmg, HEAL_OVER_TIME );
 
     action_callback_t::trigger( player -> tick_callbacks, this );
 
@@ -686,7 +686,7 @@
          calculate_result();
 
          direct_dmg = calculate_direct_damage();
-         schedule_travel_heal( heal_target[i] );
+         schedule_travel( heal_target[i] );
 
          if ( ! dual ) stats -> add_result( direct_dmg, HEAL_DIRECT, result );
        }
@@ -704,7 +704,7 @@
 
 // absorb_t::asses_heal ========================================================
 
-    void absorb_t::assess_heal( player_t* t, double amount,
+    void absorb_t::assess_damage( player_t* t, double amount,
                                   int    dmg_type )
     {
       total_heal += amount;
@@ -843,19 +843,19 @@
 
     // absorb_t::schedule_travel ===============================================
 
-      void absorb_t::schedule_travel_heal( player_t* p )
+      void absorb_t::schedule_travel( player_t* p )
       {
         time_to_travel = travel_time();
 
-        travel_heal( p, result, direct_dmg );
+        travel( p, result, direct_dmg );
       }
 
     // absorb_t::travel ============================================================
 
-      void absorb_t::travel_heal( player_t* t, int travel_result, double travel_dmg=0 )
+      void absorb_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
       {
         if ( travel_dmg > 0 )
         {
-          assess_heal( t, travel_dmg, ABSORB );
+          assess_damage( t, travel_dmg, ABSORB );
         }
       }
