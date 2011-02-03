@@ -18,13 +18,12 @@ actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger_pct=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/chakra,if=buff.chakra_serenity.down
-actions+=/heal,if=buff.chakra_pre.up
+actions+=/heal,if=buff.chakra_pre.up|buff.chakra_serenity.remains<10&cooldown.chakra.remains>2|dot.renew.remains<4
 actions+=/renew,if=!ticking
 actions+=/holy_word
-actions+=/heal,if=buff.chakra_serenity.remains<10&cooldown.chakra.remains>2|dot.renew.remains<4
 actions+=/flash_heal,if=buff.surge_of_light.react
 actions+=/flash_heal,if=buff.serendipity.stack<2&mana_pct>=20
-actions+=/greater_heal
+actions+=/greater_heal,if=buff.serendipity.stack=2
 actions+=/heal
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
@@ -55,4 +54,3 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # meta_gem=revitalizing_shadowspirit
 # back=drape_of_the_twins,heroic=1,enchant=lightweave_embroidery_old
 # main_hand=andoros_fist_of_the_dragon_king,heroic=1,weapon=mace_1.80speed_82min_154max
-healer=1
