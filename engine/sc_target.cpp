@@ -665,11 +665,13 @@ double add_t::resource_loss( int       resource,
                                 double    amount,
                                 action_t* action )
 {
-  target_t::resource_loss( resource, amount, action );
+  double d = target_t::resource_loss( resource, amount, action );
 
   if ( resource == RESOURCE_HEALTH && amount > resource_current[ resource ] )
   {
     if ( sim -> debug ) log_t::output( sim, "Add %s died, dismissing!", name() );
     dismiss();
   }
+
+  return d;
 }
