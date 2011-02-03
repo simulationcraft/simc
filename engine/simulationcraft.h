@@ -3464,7 +3464,13 @@ struct target_t : public player_t
   virtual void combat_begin();
   virtual int primary_resource() SC_CONST;
   virtual int primary_role() SC_CONST;
-  virtual double composite_attack_haste() SC_CONST;
+
+  // Overrides to composite function so that no one can complain about the report.
+  virtual double composite_attack_haste() SC_CONST{ return attack_haste; }
+  virtual double composite_tank_miss( const school_type school ) SC_CONST { return 0.0; }
+  virtual double composite_tank_crit( const school_type school ) SC_CONST { return 0.0; }
+  virtual double composite_mastery() SC_CONST { return 0.0; }
+
   virtual void assess_damage( double amount, const school_type school, int type, action_t* a, player_t* s );
   void recalculate_health();
   double time_to_die() SC_CONST;
@@ -3502,6 +3508,7 @@ struct add_t : public target_t
   virtual void reset();
   virtual void summon( double duration=0, double health=0 );
   virtual void dismiss();
+  virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual bool ooc_buffs() { return false; }
 
   virtual const char* name() SC_CONST { return full_name_str.c_str(); }

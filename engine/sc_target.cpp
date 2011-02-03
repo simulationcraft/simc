@@ -273,8 +273,10 @@ void target_t::reset()
 
   adds_nearby = initial_adds_nearby;
 
-  resource_base[ RESOURCE_HEALTH ] = current_health;
+  resource_base[ RESOURCE_HEALTH ] = fixed_health;
+
   player_t::reset();
+
 
 }
 
@@ -299,14 +301,6 @@ int target_t::primary_resource() SC_CONST
 int target_t::primary_role() SC_CONST
 {
   return ROLE_HYBRID;
-}
-
-// target_t::composite_attack_haste ========================================
-
-double target_t::composite_attack_haste() SC_CONST
-{
-  return attack_haste;
-
 }
 
 // target_t::debuffs_t::snared ===============================================
@@ -665,3 +659,17 @@ void add_t::dismiss()
   sim -> cancel_events( this );
 }
 
+// add_t::resource_loss =================================================
+
+double add_t::resource_loss( int       resource,
+                                double    amount,
+                                action_t* action )
+{
+  target_t::resource_loss( resource, amount, action );
+
+  if ( resource == RESOURCE_HEALTH && amount > resource_current[ resource ] )
+  {
+    if ( sim -> debug ) log_t::output( sim, "Add %s died, dismissing!", name() );
+    dismiss();
+  }
+}

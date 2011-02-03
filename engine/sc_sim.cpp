@@ -1086,10 +1086,13 @@ void sim_t::analyze_player( player_t* p )
   // Avoid double-counting of pet damage
   if ( ! p -> is_pet() )
   {
-    if ( p -> primary_role() == ROLE_HEAL )
-      total_heal += p -> total_dmg;
-    else
-      total_dmg += p -> total_dmg;
+    if ( ! p -> is_enemy() && ! p -> is_add() )
+    {
+      if ( p -> primary_role() == ROLE_HEAL )
+        total_heal += p -> total_dmg;
+      else
+        total_dmg += p -> total_dmg;
+    }
   }
 
   int max_buckets = ( int ) p -> total_seconds;
