@@ -1652,9 +1652,7 @@ struct fireball_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
       return 0;
-    // This must be removed when 13580 can be checked in!
-    if ( p -> ptr )
-      return 0.75 * mage_spell_t::cost();
+
     return mage_spell_t::cost();
   }
 
@@ -1941,9 +1939,7 @@ struct frostfire_bolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
       return 0;
-    // This must be removed when 13580 can be checked in!
-    if ( p -> ptr )
-      return 0.5 * mage_spell_t::cost();
+
     return mage_spell_t::cost();
   }
 
