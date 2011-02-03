@@ -184,6 +184,7 @@ struct druid_t : public player_t
 
   // DoTs
   dot_t* dots_insect_swarm;
+  dot_t* dots_lacerate;
   dot_t* dots_moonfire;
   dot_t* dots_rake;
   dot_t* dots_rip;
@@ -340,10 +341,11 @@ struct druid_t : public player_t
 
     distance = 30;
 
-    dots_rip          = get_dot( "rip"          );
-    dots_rake         = get_dot( "rake"         );
     dots_insect_swarm = get_dot( "insect_swarm" );
+    dots_lacerate     = get_dot( "lacerate"     );
     dots_moonfire     = get_dot( "moonfire"     );
+    dots_rake         = get_dot( "rake"         );
+    dots_rip          = get_dot( "rip"          );
     dots_sunfire      = get_dot( "sunfire"      );
 
     cat_melee_attack = 0;
@@ -367,6 +369,7 @@ struct druid_t : public player_t
   virtual void      init_uptimes();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void      combat_begin();
   virtual void      reset();
   virtual void      interrupt();
   virtual void      clear_debuffs();
@@ -1643,7 +1646,7 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 double druid_bear_attack_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  double c = attack_t::cost();
+  double c = attack_t::cost() / 10; // Rage Costs are stored as * 10;
   if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
   return c;
 }
@@ -1947,11 +1950,29 @@ struct swipe_bear_t : public druid_bear_attack_t
   }
 };
 
+// Thrash ===================================================================
+
+struct thrash_t : public druid_bear_attack_t
+{
+  thrash_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "thrash", 77758, player )
+  {
+    parse_options( NULL, options_str );
+    check_min_level( 81 );
+
+    aoe               = -1;
+    direct_power_mod  = 0.154;
+    tick_power_mod    = 0.026;
+    weapon            = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
+  }
+};
+
 // ==========================================================================
 // Druid Spell
 // ==========================================================================
 
-// druid_spell_t::parse_options ============================================
+// druid_spell_t::parse_options =============================================
 
 void druid_spell_t::parse_options( option_t*          options,
                                    const std::string& options_str )
@@ -2826,14 +2847,13 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
 
+        aoe        = 1;
         background = true;
         dual       = true;
         stats      = player -> get_stats( "starfall" );
 
         if ( p -> primary_tree() == TREE_BALANCE )
           base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-          
-        aoe = 1;
       }
 
       virtual void execute()
@@ -3324,6 +3344,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
+  if ( name == "thrash"                 ) return new                 thrash_t( this, options_str );
   if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
   if ( name == "typhoon"                ) return new                typhoon_t( this, options_str );
   if ( name == "wild_mushroom"          ) return new          wild_mushroom_t( this, options_str );
@@ -3486,6 +3507,7 @@ void druid_t::init_base()
 
   resource_base[ RESOURCE_ENERGY ] = 100;
   resource_base[ RESOURCE_RAGE   ] = 100;
+
   mana_per_intellect           = 15;
   base_energy_regen_per_second = 10;
   
@@ -3678,14 +3700,17 @@ void druid_t::init_actions()
         action_list_str += "/snapshot_stats";
         if ( race == RACE_TROLL ) action_list_str += "/berserking";
         action_list_str += "/skull_bash_bear";
-        action_list_str += "/faerie_fire_feral,debuff_only=1";  // Use on pull.
-        action_list_str += "/mangle_bear,debuff.mangle.remains<=0.5";
-        action_list_str += "/lacerate,if=dot.lacerate.remains<=6.9"; // This seems to be the sweet spot to prevent Lacerate falling off.
-        if ( talents.berserk -> rank() ) action_list_str+="/berserk";
+        action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";  // Use on pull.
+        action_list_str += "/enrage,time<=5"; // Use only at the start
         action_list_str += use_str;
         action_list_str += "/mangle_bear";
+        action_list_str += "/lacerate,if=!ticking";
+        action_list_str += "/thrash";
+        action_list_str += "/pulverize,if=buff.lacerate.stack=3";
+        action_list_str += "/lacerate,if=buff.lacerate.stack<3";
+        if ( talents.berserk -> rank() ) action_list_str+="/berserk";        
         action_list_str += "/faerie_fire_feral";
-        action_list_str += "/swipe_bear,berserk=0,lacerate_stack>=5";
+        action_list_str += "/lacerate";
       }
       else
       {
@@ -3875,6 +3900,16 @@ double druid_t::available() SC_CONST
   if ( energy > 25 ) return 0.1;
 
   return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
+}
+
+// druid_t::combat_being ====================================================
+
+void druid_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  // Start the fight with 0 rage
+  resource_current[ RESOURCE_RAGE ] = 0;
 }
 
 // druid_t::composite_attack_power ==========================================

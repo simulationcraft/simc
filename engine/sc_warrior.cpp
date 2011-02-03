@@ -2880,8 +2880,6 @@ void warrior_t::init_base()
   }
 
   base_gcd = 1.5;
-
-
 }
 
 // warrior_t::init_scaling ==================================================
