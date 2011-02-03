@@ -79,7 +79,6 @@ void target_t::recalculate_health()
     current_health = total_dmg;
     initial_health = current_health * ( sim -> expected_time / sim -> current_time );
     fixed_health = initial_health;
-    resource_base[ RESOURCE_HEALTH ] = initial_health;
   }
   else
   {
@@ -91,7 +90,6 @@ void target_t::recalculate_health()
     if ( factor < 0.5 ) factor = 0.5;
 
     fixed_health *= factor;
-    resource_base[ RESOURCE_HEALTH ] *= factor;
   }
 
   if ( sim -> debug ) log_t::output( sim, "Target %s fixed health calculated to be %.0f. Total Damage was %.0f", name(), fixed_health, total_dmg );
@@ -272,9 +270,12 @@ void target_t::reset()
   total_dmg = 0;
   armor = initial_armor;
   current_health = initial_health = fixed_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
+
   adds_nearby = initial_adds_nearby;
 
+  resource_base[ RESOURCE_HEALTH ] = current_health;
   player_t::reset();
+
 }
 
 // target_t::combat_begin ====================================================

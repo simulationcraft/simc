@@ -994,29 +994,34 @@ void action_t::execute()
 
   player_buff();
 
-  target_debuff( target, DMG_DIRECT );
-
-  calculate_result();
-
   consume_resource();
 
-  if ( result_is_hit() )
+  // Target dependent, may be executed multiple times.
   {
-    direct_dmg = calculate_direct_damage();
-    schedule_travel( target );
-  }
-  else
-  {
-    if ( sim -> log )
+    target_debuff( target, DMG_DIRECT );
+
+    calculate_result();
+
+    if ( result_is_hit() )
     {
-      log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
-      log_t::miss_event( this );
+      direct_dmg = calculate_direct_damage();
+      schedule_travel( target );
     }
+    else
+    {
+      if ( sim -> log )
+      {
+        log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
+        log_t::miss_event( this );
+      }
+    }
+
+    if ( ! dual ) stats -> add_result( direct_dmg, DMG_DIRECT, result );
   }
 
   update_ready();
 
-  if ( ! dual ) update_stats( DMG_DIRECT );
+  if ( ! dual ) stats -> add_execute( DMG_DIRECT, time_to_execute );
 
   if ( repeating && ! proc ) schedule_execute();
 }
@@ -1081,7 +1086,6 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
   if ( travel_dmg > 0 )
   {
     assess_damage( t, travel_dmg, DMG_DIRECT );
-    if ( ! dual ) stats -> add_result( travel_dmg, DMG_DIRECT, travel_result );
   }
   if ( num_ticks > 0 )
   {
@@ -1372,11 +1376,7 @@ void action_t::update_ready()
 
 void action_t::update_stats( int type )
 {
-  if ( type == DMG_DIRECT )
-  {
-    stats -> add( 0, type, result, time_to_execute );
-  }
-  else if ( type == DMG_OVER_TIME )
+  if ( type == DMG_OVER_TIME )
   {
     stats -> add( tick_dmg, type, result, time_to_tick );
   }
