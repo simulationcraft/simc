@@ -2143,6 +2143,8 @@ struct archangel_t : public priest_spell_t
     check_talent( p -> talents.archangel -> rank() );
 
     parse_options( NULL, options_str );
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -2178,57 +2180,6 @@ struct archangel_t : public priest_spell_t
        return false;
 
     return priest_spell_t::ready();
-   }
-};
-
-// Archangel Spell ======================================================
-
-struct dark_archangel_t : public priest_spell_t
-{
-  dark_archangel_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "dark_archangel", player, SCHOOL_HOLY, TREE_DISCIPLINE )
-  {
-    priest_t* p = player -> cast_priest();
-
-    check_talent( p -> talents.archangel -> rank() );
-
-    parse_options( NULL, options_str );
-
-    static rank_t ranks[] =
-    {
-      { 1, 1, 0, 0, 0, 0.00 },
-      { 0, 0, 0, 0, 0, 0 }
-    };
-    init_rank( ranks );
-
-    trigger_gcd = 0;
-    base_cost   = 0.0;
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    priest_t* p = player -> cast_priest();
-    if ( p -> buffs_dark_evangelism -> up())
-    {
-      p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
-      p -> buffs_dark_evangelism -> expire();
-    }
-    spell_t::execute();
-  }
-
-  virtual bool ready()
-   {
-    priest_t* p = player -> cast_priest();
-
-    if ( ! priest_spell_t::ready() )
-         return false;
-    if ( ! p -> buffs_dark_evangelism -> check() )
-       return false;
-
-    return true;
    }
 };
 
@@ -3761,7 +3712,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
-  if ( name == "dark_archangel"         ) return new dark_archangel_t        ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
   if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
   if ( name == "inner_focus"            ) return new inner_focus_t           ( this, options_str );
@@ -4113,8 +4063,8 @@ void priest_t::init_buffs()
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
   buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
   buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
-  buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 15.0, 0, 1.0             );
-  buffs_holy_evangelism            = new buff_t( this, "holy_evangelism",            5, 15.0, 0, 1.0             );
+  buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 20.0, 0, 1.0             );
+  buffs_holy_evangelism            = new buff_t( this, "holy_evangelism",            5, 20.0, 0, 1.0             );
   buffs_dark_archangel             = new buff_t( this, "dark_archangel",             5, 18.0                     );
   buffs_holy_archangel             = new buff_t( this, "holy_archangel",             5, 18.0                     );
   buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
@@ -4202,7 +4152,7 @@ void priest_t::init_actions()
 
       if ( talents.archangel -> ok() ) 
       {              
-                                                         action_list_str += "/dark_archangel,if=buff.dark_evangelism.stack>=5";
+                                                         action_list_str += "/archangel,if=buff.dark_evangelism.stack>=5";
         if ( talents.vampiric_touch -> rank() )          action_list_str += "&dot.vampiric_touch.remains>5";
                                                          action_list_str += "&dot.devouring_plague.remains>5";
       }
