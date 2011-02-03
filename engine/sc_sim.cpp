@@ -1806,7 +1806,7 @@ void sim_t::create_options()
     { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
     { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
-    { "html",                             OPT_STRING, &( html_file_str                           ) },
+    { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "csv",                              OPT_STRING, &( csv_file_str                             ) },

@@ -186,9 +186,9 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
   {
     util_t::fprintf( file,
                      "  Tick=%.0f|%.0f|%.0f", 
-		     s -> tick_results[ RESULT_HIT ].avg_dmg, 
-		     s -> tick_results[ RESULT_HIT ].min_dmg, 
-		     s -> tick_results[ RESULT_HIT ].max_dmg );
+                     s -> tick_results[ RESULT_HIT ].avg_dmg, 
+                     s -> tick_results[ RESULT_HIT ].min_dmg, 
+                     s -> tick_results[ RESULT_HIT ].max_dmg );
   }
   if ( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
@@ -2097,10 +2097,10 @@ static void print_html_talents( FILE* file, player_t* p )
       {
         talent_t* t = p -> talent_trees[ i ][ j ];
 
-	util_t::fprintf( file, "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
+        util_t::fprintf( file, "                    <tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
         util_t::fprintf( file, "                      <td class=\"left\">%s</td>\n", t -> t_data -> name );
-	util_t::fprintf( file, "                      <td>%d</td>\n", t -> rank() );
-	util_t::fprintf( file, "                    </tr>\n" );
+        util_t::fprintf( file, "                      <td>%d</td>\n", t -> rank() );
+        util_t::fprintf( file, "                    </tr>\n" );
       }
       util_t::fprintf( file,
           "                  </table>\n"

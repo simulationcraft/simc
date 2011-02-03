@@ -1127,8 +1127,8 @@ bool rogue_attack_t::ready()
 
   //Killing Spree blocks all rogue actions for duration
   if ( p -> buffs_killing_spree -> up() )
-	  if ((special == true) && (proc == false))
-		return false;
+    if ((special == true) && (proc == false))
+      return false;
 
   if ( requires_weapon != WEAPON_NONE )
     if ( ! weapon || weapon -> type != requires_weapon )
@@ -2009,7 +2009,7 @@ struct mutilate_t : public rogue_attack_t
     may_crit = false;
     
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
-	 p ->  off_hand_weapon.type != WEAPON_DAGGER )
+         p ->  off_hand_weapon.type != WEAPON_DAGGER )
     {
       sim -> errorf( "Player %s attempting to execute Mutilate without two daggers equipped.", p -> name() );
       sim -> cancel();
@@ -3626,11 +3626,11 @@ void rogue_t::register_callbacks()
       for ( int i=0; i < num_intervals; i++ )
       {
         double interval = atof( intervals[ i ].c_str() );
-		if (interval > 0.0)
-		{
+        if (interval > 0.0)
+        {
           critical_strike_intervals.push_back( interval );
           critical_strike_callbacks.push_back( new honor_among_thieves_callback_t( this ) );
-		}
+        }
       }
     }
   }
