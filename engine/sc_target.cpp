@@ -82,10 +82,20 @@ void target_t::recalculate_health()
   }
   else
   {
+    double delta_time = sim -> current_time - sim -> expected_time;
+    delta_time /= sim -> current_iteration + 1; // dampening factor
+    double time_factor = ( delta_time / sim -> expected_time );
+
     double delta_dmg = fixed_health - total_dmg * ( sim -> expected_time / sim -> current_time );
     delta_dmg /= sim -> current_iteration + 1; // dampening factor
+    double dmg_factor = ( delta_dmg / ( total_dmg * ( sim -> expected_time / sim -> current_time ) )  );
 
-    double factor = 1 - ( delta_dmg / ( total_dmg * ( sim -> expected_time / sim -> current_time ) )  );
+    double factor = 1.0;
+    if ( fabs( time_factor ) > fabs( dmg_factor ) )
+      factor = 1- time_factor;
+    else
+      factor = 1 - dmg_factor;
+
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 

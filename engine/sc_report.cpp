@@ -883,7 +883,7 @@ static void print_text_hat_donors( FILE* file, sim_t* sim )
 static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
 {
   util_t::fprintf( file, "\n%s: %s %s %s %s %d\n",
-                   p -> is_enemy() ? "Target" : "Player",
+                   p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
                    p -> name(), p -> race_str.c_str(),
                    util_t::player_type_string( p -> type ),
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
