@@ -88,7 +88,7 @@ void stats_t::add_result( double amount,
   // Check for DoT application
   if( amount == 0 )
     if( result == RESULT_HIT || result == RESULT_CRIT )
-      { num_execute_results++; return; }
+      return;
 
   player -> iteration_dmg += amount;
   total_dmg += amount;
