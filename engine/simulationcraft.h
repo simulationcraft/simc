@@ -2316,6 +2316,7 @@ struct sim_t
     int horn_of_winter;
     int hunters_mark;
     int improved_icy_talons;
+    int hunting_party;
     int improved_shadow_bolt;
     int infected_wounds;
     int insect_swarm;
@@ -2358,6 +2359,7 @@ struct sim_t
     aura_t* honor_among_thieves;
     aura_t* horn_of_winter;
     aura_t* improved_icy_talons;
+    aura_t* hunting_party;
     aura_t* leader_of_the_pack;
     aura_t* mana_spring_totem;
     aura_t* moonkin;

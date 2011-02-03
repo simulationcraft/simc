@@ -1589,6 +1589,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.horn_of_winter         = optimal_raid;
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
+  overrides.hunting_party          = optimal_raid;
   overrides.improved_shadow_bolt   = optimal_raid;
   overrides.infected_wounds        = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
@@ -1847,6 +1848,7 @@ void sim_t::create_options()
     { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
     { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
     { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
+    { "override.hunting_party",           OPT_BOOL,   &( overrides.hunting_party                  ) },
     { "override.improved_shadow_bolt",    OPT_BOOL,   &( overrides.improved_shadow_bolt           ) },
     { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
     { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },

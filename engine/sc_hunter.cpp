@@ -1486,7 +1486,7 @@ struct auto_shot_t : public hunter_attack_t
   virtual double execute_time() SC_CONST
   {
     double h = 1.0;
-    h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
+    h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party -> value(), std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) ) );
     return hunter_attack_t::execute_time() * h;
   }
 };
@@ -1897,7 +1897,7 @@ struct kill_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     weapon_multiplier = effect_average( 2 ) / 100.0;
-    direct_power_mod = 0.3;
+    direct_power_mod = (p->ptr) ? 0.45 : 0.3;
 
     base_crit += p -> talents.sniper_training -> effect_base_value( 2 ) / 100.0;
 
@@ -3124,6 +3124,9 @@ void hunter_t::combat_begin()
   if ( talents.ferocious_inspiration -> rank() )
     sim -> auras.ferocious_inspiration -> trigger();
 
+  if ( talents.hunting_party -> rank() )
+    sim -> auras.hunting_party -> trigger( 1, 0.10, 1);
+
   buffs_sniper_training -> trigger();
   new (sim) snipertraining_hunter_t( this );
 }
@@ -3435,6 +3438,7 @@ void player_t::hunter_init( sim_t* sim )
 
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
+  sim -> auras.hunting_party = new aura_t( sim, "hunting_party" );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -3451,6 +3455,7 @@ void player_t::hunter_combat_begin( sim_t* sim )
 
   if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
+  if ( sim -> overrides.hunting_party ) sim -> auras.hunting_party -> override( 1, 0.10);
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
