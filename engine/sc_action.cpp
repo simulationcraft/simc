@@ -1374,7 +1374,7 @@ void action_t::update_stats( int type )
 {
   if ( type == DMG_DIRECT )
   {
-    stats -> add( 0, type, RESULT_HIT, time_to_execute );
+    stats -> add( 0, type, result, time_to_execute );
   }
   else if ( type == DMG_OVER_TIME )
   {
