@@ -2000,7 +2000,7 @@ double druid_spell_t::cost_reduction() SC_CONST
 double druid_spell_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
+  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() ) return 0;
   double c = spell_t::cost();
   c *= 1.0 + cost_reduction();
   if ( c < 0 ) c = 0.0;  
