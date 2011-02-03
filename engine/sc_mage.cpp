@@ -3032,19 +3032,19 @@ void mage_t::init_actions()
     action_list_str += "/counterspell";
     // Usable Items
     int num_items = ( int ) items.size();
-        for ( int i=0; i < num_items; i++ )
-        {
-          if ( items[ i ].use.active() )
-          {
-            action_list_str += "/use_item,name=";
-            action_list_str += items[ i ].name();
-          }
-          if ( ! strcmp( items[ i ].name(), "shard_of_woe" ) )
-          {
-            action_list_str += ",if=cooldown.evocation.remains<26";
-            action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86";
-          }
-        }
+    for ( int i=0; i < num_items; i++ )
+    {
+      if ( items[ i ].use.active() )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
+      }
+      if ( ! strcmp( items[ i ].name(), "shard_of_woe" ) )
+      {
+        action_list_str += ",if=cooldown.evocation.remains<26";
+        action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86";
+      }
+    }
     //Potions
     if ( level > 80 )
     {

@@ -824,7 +824,7 @@ static void trigger_rage_gain( druid_bear_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
 
-  double rage_gain = 0;
+  double rage_gain = 16.0;
 
   p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gains_bear_melee );
 }
@@ -1737,10 +1737,13 @@ struct bear_melee_t : public druid_bear_attack_t
   virtual void execute()
   {
     druid_bear_attack_t::execute();
+
+    if ( result != RESULT_MISS )
+      trigger_rage_gain( this );
+
     if ( result_is_hit() )
     {
       trigger_fury_swipes( this );
-      trigger_rage_gain( this );
       trigger_omen_of_clarity( this );
     }
   }
@@ -4189,7 +4192,7 @@ int druid_t::target_swing()
        result == RESULT_CRIT   ||
        result == RESULT_GLANCE )
   {
-    resource_gain( RESOURCE_RAGE, 100.0, gains_incoming_damage );  // FIXME! Assume it caps rage every time.
+    resource_gain( RESOURCE_RAGE, 20.0, gains_incoming_damage );  // FIXME - What is the formula for determining rage gain now
   }
   if ( result == RESULT_DODGE )
   {
