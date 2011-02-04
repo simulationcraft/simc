@@ -1,7 +1,11 @@
 #!simc
 
+html=Hunter_Live.html
+wiki=Hunter_Live.wiki
+ptr=0
 optimal_raid=1
 
 Hunter_T11_MM_372.simc
 Hunter_T11_S_372.simc
 Hunter_T11_BM_372.simc
+Hunter_T11_MM_372_AimedFocusDump.simc

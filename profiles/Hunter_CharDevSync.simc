@@ -1,0 +1,4 @@
+#!./simc
+chardev=33314 name=Hunter_T11_BM_372 save=Hunter_T11_BM_372.simc
+chardev=33311 name=Hunter_T11_MM_372 save=Hunter_T11_MM_372.simc
+chardev=33303 name=Hunter_T11_S_372 save=Hunter_T11_S_372.simc
