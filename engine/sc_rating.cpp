@@ -356,7 +356,7 @@ static const _stat_list_t warrior_stats[] =
 
 void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
 {
-  if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%.f type=%s",
+  if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%d type=%s",
 									 level, util_t::player_type_string( type ) );
 
   if ( type == ENEMY || type == ENEMY_ADD )

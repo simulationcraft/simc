@@ -1323,7 +1323,7 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%.f type=%s", level, util_t::player_type_string( type ) );
+  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%d type=%s", level, util_t::player_type_string( type ) );
 
   rating.init( sim, player_data, level, type );
 }
