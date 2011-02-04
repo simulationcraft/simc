@@ -2298,6 +2298,7 @@ struct sim_t
     int communion;
     int critical_mass;
     int curse_of_elements;
+    int lightning_breath;
     int dark_intent;
     int demonic_pact;
     int devotion_aura;
@@ -3053,6 +3054,7 @@ struct player_t
     debuff_t* casting;
     debuff_t* critical_mass;
     debuff_t* curse_of_elements;
+    debuff_t* lightning_breath;
     debuff_t* earth_and_moon;
     debuff_t* ebon_plaguebringer;
     debuff_t* expose_armor;
@@ -3320,6 +3322,11 @@ struct player_t
   static void hunter_init        ( sim_t* sim );
   static void hunter_combat_begin( sim_t* sim );
   static void hunter_combat_end  ( sim_t* sim ) { assert( sim ); }
+
+  // Raid-wide Hunter Pet buff maintenance
+  static void hunter_pet_init        ( sim_t* sim );
+  static void hunter_pet_combat_begin( sim_t* sim );
+  static void hunter_pet_combat_end  ( sim_t* sim ) { assert( sim ); }
 
   // Raid-wide Mage buff maintenance
   static void mage_init        ( sim_t* sim );

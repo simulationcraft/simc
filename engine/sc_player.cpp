@@ -556,6 +556,7 @@ bool player_t::init( sim_t* sim )
   player_t::death_knight_init( sim );
   player_t::druid_init       ( sim );
   player_t::hunter_init      ( sim );
+  player_t::hunter_pet_init  ( sim );
   player_t::mage_init        ( sim );
   player_t::paladin_init     ( sim );
   player_t::priest_init      ( sim );
@@ -2324,6 +2325,7 @@ void player_t::combat_begin( sim_t* sim )
   player_t::death_knight_combat_begin( sim );
   player_t::druid_combat_begin       ( sim );
   player_t::hunter_combat_begin      ( sim );
+  player_t::hunter_pet_combat_begin  ( sim );
   player_t::mage_combat_begin        ( sim );
   player_t::paladin_combat_begin     ( sim );
   player_t::priest_combat_begin      ( sim );

@@ -1607,6 +1607,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.infected_wounds        = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
+  overrides.lightning_breath       = optimal_raid;
   overrides.mana_spring_totem      = optimal_raid;
   overrides.mangle                 = optimal_raid;
   overrides.mark_of_the_wild       = optimal_raid;
@@ -1866,6 +1867,7 @@ void sim_t::create_options()
     { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
     { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
     { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
+    { "override.lightning_breath",        OPT_BOOL,   &( overrides.lightning_breath               ) },
     { "override.mana_spring_totem",       OPT_BOOL,   &( overrides.mana_spring_totem              ) },
     { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
     { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },

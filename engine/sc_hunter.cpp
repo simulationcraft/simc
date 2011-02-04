@@ -350,7 +350,7 @@ struct hunter_pet_t : public pet_t
     case PET_BAT:          return NULL;
     case PET_BIRD_OF_PREY: return NULL;
     case PET_CHIMERA:      return "froststorm_breath";
-    case PET_DRAGONHAWK:   return NULL;
+    case PET_DRAGONHAWK:   return "lightning_breath";
     case PET_NETHER_RAY:   return NULL;
     case PET_RAVAGER:      return NULL;
     case PET_SERPENT:      return NULL;
@@ -1227,6 +1227,21 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 
 // Wind Serpent Lightning Breath ================================================
 
+struct lightning_breath_debuff_t : public debuff_t
+{
+  lightning_breath_debuff_t( player_t* t) : debuff_t( t, "lightning_breath", 1, 45.0 )
+  {}
+
+  virtual void expire()
+  { 
+    if( player )
+    {
+      player = 0;
+    }
+    debuff_t::expire();
+  }
+};
+
 struct lightning_breath_t : public hunter_pet_spell_t
 {
   lightning_breath_t( player_t* player, const std::string& options_str ) :
@@ -1239,10 +1254,20 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
-
-    // FIXME: Implement target Debuff
-
   }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      target -> debuffs.lightning_breath -> expire();
+      target -> debuffs.lightning_breath -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.lightning_breath -> source = p;
+    }
+  }
+
 };
 
 // Call of the Wild ===========================================================
@@ -3426,8 +3451,6 @@ int hunter_t::decode_set( item_t& item )
 
 player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_type r )
 {
-  //sim -> errorf( "Hunter Module isn't avaiable at the moment." );
-
   return new hunter_t( sim, name, r );
   return NULL;
 }
@@ -3453,8 +3476,6 @@ void player_t::hunter_init( sim_t* sim )
 
 void player_t::hunter_combat_begin( sim_t* sim )
 {
-
-
   if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
   if ( sim -> overrides.hunting_party ) sim -> auras.hunting_party -> override( 1, 0.10);
@@ -3466,3 +3487,23 @@ void player_t::hunter_combat_begin( sim_t* sim )
   }
 }
 
+// player_t::hunter_pet_init =================================================
+
+void player_t::hunter_pet_init( sim_t* sim )
+{
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[i];
+    p -> debuffs.lightning_breath  = new lightning_breath_debuff_t( p );
+  }
+}
+
+// player_t::hunter_pet_combat_begin =========================================
+
+void player_t::hunter_pet_combat_begin( sim_t* sim )
+{
+  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  {
+    if ( sim -> overrides.lightning_breath ) t -> debuffs.hunters_mark -> override( 1, 8 );
+  }
+}
