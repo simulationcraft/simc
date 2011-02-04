@@ -3455,12 +3455,10 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_typ
   return NULL;
 }
 
-
 // player_t::hunter_init ====================================================
 
 void player_t::hunter_init( sim_t* sim )
 {
-
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
   sim -> auras.hunting_party         = new aura_t( sim, "hunting_party" );
@@ -3469,6 +3467,7 @@ void player_t::hunter_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> debuffs.hunters_mark  = new debuff_t( p, "hunters_mark",  1, 300.0 );
+    p -> debuffs.lightning_breath  = new lightning_breath_debuff_t( p );
   }
 }
 
@@ -3484,26 +3483,6 @@ void player_t::hunter_combat_begin( sim_t* sim )
   {
     double v = sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS );
     if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, v );
-  }
-}
-
-// player_t::hunter_pet_init =================================================
-
-void player_t::hunter_pet_init( sim_t* sim )
-{
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> debuffs.lightning_breath  = new lightning_breath_debuff_t( p );
-  }
-}
-
-// player_t::hunter_pet_combat_begin =========================================
-
-void player_t::hunter_pet_combat_begin( sim_t* sim )
-{
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.lightning_breath ) t -> debuffs.hunters_mark -> override( 1, 8 );
+    if ( sim -> overrides.lightning_breath ) t -> debuffs.lightning_breath -> override( 1, 8 );
   }
 }

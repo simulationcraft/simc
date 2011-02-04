@@ -3323,11 +3323,6 @@ struct player_t
   static void hunter_combat_begin( sim_t* sim );
   static void hunter_combat_end  ( sim_t* sim ) { assert( sim ); }
 
-  // Raid-wide Hunter Pet buff maintenance
-  static void hunter_pet_init        ( sim_t* sim );
-  static void hunter_pet_combat_begin( sim_t* sim );
-  static void hunter_pet_combat_end  ( sim_t* sim ) { assert( sim ); }
-
   // Raid-wide Mage buff maintenance
   static void mage_init        ( sim_t* sim );
   static void mage_combat_begin( sim_t* sim );
