@@ -466,7 +466,7 @@ sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
 
 sim_t::sim_t( sim_t* p, int index ) :
     parent( p ), 
-    free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), max_player_level( -1 ), canceled( 0 ),
+    free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), max_player_level( -1 ), canceled( 0 ),
     queue_lag( 0.037 ), queue_lag_stddev( 0 ),
     gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
     channel_lag( 0.250 ), channel_lag_stddev( 0 ),
@@ -1375,7 +1375,7 @@ void sim_t::merge( sim_t& other_sim )
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
     player_t* p = actor_list[i];
-    player_t* other_p = other_sim.find_player( p -> name() );
+    player_t* other_p = other_sim.find_player( p -> index );
     assert( other_p );
 
     p -> total_seconds += other_p -> total_seconds;
@@ -1507,6 +1507,18 @@ player_t* sim_t::find_player( const std::string& name )
   {
     player_t* p = actor_list[i];
     if ( name == p -> name() ) return p;
+  }
+  return 0;
+}
+
+// sim_t::find_player =======================================================
+
+player_t* sim_t::find_player( int index )
+{
+  for ( unsigned int i = 0; i < actor_list.size(); i++ )
+  {
+    player_t* p = actor_list[i];
+    if ( index == p -> index ) return p;
   }
   return 0;
 }

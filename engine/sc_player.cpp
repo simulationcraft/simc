@@ -370,6 +370,10 @@ player_t::player_t( sim_t*             s,
     next = 0;
     index = ++( sim -> num_players );
   }
+  else
+  {
+    index = - ( ++( sim -> num_enemies ) );
+  }
 
   race_str = util_t::race_type_string( race );
 

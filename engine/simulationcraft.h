@@ -2231,6 +2231,7 @@ struct sim_t
   player_t*   player_list;
   player_t*   active_player;
   int         num_players;
+  int         num_enemies;
   int         max_player_level;
   int         canceled;
   double      queue_lag, queue_lag_stddev;
@@ -2462,6 +2463,7 @@ struct sim_t
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   double    iteration_adjust();
   player_t* find_player( const std::string& name );
+  player_t* find_player( int index );
   cooldown_t* get_cooldown( const std::string& name );
   target_t* get_target( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
