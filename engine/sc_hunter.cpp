@@ -3452,7 +3452,6 @@ int hunter_t::decode_set( item_t& item )
 player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_type r )
 {
   return new hunter_t( sim, name, r );
-  return NULL;
 }
 
 // player_t::hunter_init ====================================================
@@ -3475,9 +3474,9 @@ void player_t::hunter_init( sim_t* sim )
 
 void player_t::hunter_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.trueshot_aura )         sim -> auras.trueshot -> override();
+  if ( sim -> overrides.trueshot_aura         ) sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
-  if ( sim -> overrides.hunting_party ) sim -> auras.hunting_party -> override( 1, 0.10);
+  if ( sim -> overrides.hunting_party         ) sim -> auras.hunting_party -> override( 1, 0.10);
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {

@@ -2298,7 +2298,6 @@ struct sim_t
     int communion;
     int critical_mass;
     int curse_of_elements;
-    int lightning_breath;
     int dark_intent;
     int demonic_pact;
     int devotion_aura;
@@ -2325,6 +2324,7 @@ struct sim_t
     int insect_swarm;
     int judgements_of_the_just;
     int leader_of_the_pack;
+    int lightning_breath;
     int mana_spring_totem;
     int mangle;
     int mark_of_the_wild;
@@ -3054,7 +3054,6 @@ struct player_t
     debuff_t* casting;
     debuff_t* critical_mass;
     debuff_t* curse_of_elements;
-    debuff_t* lightning_breath;
     debuff_t* earth_and_moon;
     debuff_t* ebon_plaguebringer;
     debuff_t* expose_armor;
@@ -3066,6 +3065,7 @@ struct player_t
     debuff_t* insect_swarm;
     debuff_t* invulnerable;
     debuff_t* judgements_of_the_just;
+    debuff_t* lightning_breath;
     debuff_t* mangle;
     debuff_t* master_poisoner;
     debuff_t* poisoned;

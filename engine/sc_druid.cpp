@@ -396,6 +396,7 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
+  virtual void      assess_damage( double amount, const school_type school, int dmg_type, action_t* a, player_t* s );
   virtual int       target_swing();
 
   // Utilities
@@ -1682,8 +1683,7 @@ void druid_bear_attack_t::execute()
     {
       trigger_primal_fury( this );
       druid_t* p = player -> cast_druid();
-      double value = p -> composite_attack_power() * p -> player_data.effect_min( 62600, p -> level, E_JUMP2 );
-      p -> buffs_savage_defense -> trigger( 1, value );
+      p -> buffs_savage_defense -> trigger( 1, p -> composite_attack_power() * 0.35 );
     }
   }
 }
@@ -4244,6 +4244,29 @@ int druid_t::primary_resource() SC_CONST
   return RESOURCE_ENERGY;
 }
 
+// druid_t::assess_damage ===================================================
+
+void druid_t::assess_damage( double amount,
+                              const school_type school,
+                              int    dmg_type,
+                              action_t* a,
+                              player_t* s )
+{
+  // This needs to use unmitigated damage, which amount currently is
+  // FIX ME: Rage gains need to trigger on every attempt to poke the bear
+  double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ]; 
+  resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
+
+  if ( school == SCHOOL_PHYSICAL && buffs_savage_defense -> up() )
+  {
+    amount -= buffs_savage_defense -> value();
+    if ( amount < 0 ) amount = 0;
+    buffs_savage_defense -> expire();
+  }
+
+  player_t::assess_damage( amount, school, dmg_type, a, s );
+}
+
 // druid_t::target_swing ====================================================
 
 int druid_t::target_swing()
@@ -4251,17 +4274,6 @@ int druid_t::target_swing()
   int result = player_t::target_swing();
 
   if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
-
-  // FIX ME: Damage is currently not passed beyond anything after it's calculated in player_t::trigger_target_swing()
-  // double rage_gain = damage * 18.92 / resource_max[ RESOURCE_HEALTH ]; 
-  resource_gain( RESOURCE_RAGE, 30.0, gains_incoming_damage );  // FIXME - What is the formula for determining rage gain now
-
-  if ( result == RESULT_HIT    ||
-       result == RESULT_CRIT   ||
-       result == RESULT_GLANCE )
-  {
-    buffs_savage_defense -> expire(); // FIX ME: This should reduce damage by it's value before it expires
-  }
 
   if ( result == RESULT_DODGE && talents.natural_reaction -> rank() )
   {
