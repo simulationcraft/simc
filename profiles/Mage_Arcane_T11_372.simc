@@ -16,7 +16,7 @@ actions+=/mage_armor
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/counterspell
-actions+=/mirror_image
+actions+=/mirror_image,if=target.time_to_die>=30
 actions+=/use_item,name=shard_of_woe,if=cooldown.evocation.remains<26
 actions+=/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86
 actions+=/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4

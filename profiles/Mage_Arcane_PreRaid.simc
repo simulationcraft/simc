@@ -17,7 +17,7 @@ actions+=/mage_armor
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/counterspell
-actions+=/mirror_image
+actions+=/mirror_image,if=target.time_to_die>=30
 actions+=/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
 actions+=/blood_fury,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
 actions+=/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20
