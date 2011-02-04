@@ -3067,15 +3067,15 @@ void mage_t::init_actions()
       action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
     }
     // Race Abilities
-    if ( race == RACE_TROLL && primary_tree() != TREE_FROST )
+    if ( race == RACE_TROLL && primary_tree() == TREE_FIRE )
     {
       action_list_str += "/berserking";
     }
-    else if ( race == RACE_BLOOD_ELF )
+    else if ( race == RACE_BLOOD_ELF && primary_tree() != TREE_ARCANE )
     {
       action_list_str += "/arcane_torrent";
     }
-    else if ( race == RACE_ORC )
+    else if ( race == RACE_ORC && primary_tree() != TREE_ARCANE )
     {
       action_list_str += "/blood_fury";
     }
@@ -3084,6 +3084,19 @@ void mage_t::init_actions()
     // Arcane
     if ( primary_tree() == TREE_ARCANE )
     {
+      //Special handling for Race Abilities
+      if ( race == RACE_BLOOD_ELF )
+      {
+        action_list_str += "/arcane_torrent,if=mana_pct<75";
+      }
+      else if ( race == RACE_ORC )
+      {
+        action_list_str += "/blood_fury,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
+      }
+      else if ( race == RACE_TROLL )
+      {
+        action_list_str += "/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
+      }
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<40";
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
       action_list_str += "/mana_gem,if=target.time_to_die<40";
@@ -3098,6 +3111,7 @@ void mage_t::init_actions()
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
       if ( level >= 20 ) action_list_str += "/arcane_blast,if=mana_pct>94";
+      //Switch conserve rotation to AB4 in case of Shard of Woe
       bool has_shard = false;
       for ( int i=0; i < SLOT_MAX; i++ )
       {

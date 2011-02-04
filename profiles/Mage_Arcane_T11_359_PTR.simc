@@ -1,11 +1,11 @@
 #!./simc
 
-mage=Mage_Arcane_T11_359
+mage=Mage_Arcane_T11_359_PTR
 origin="http://chardev.org/?profile=28344"
 level=85
-race=undead
+race=gnome
 use_pre_potion=1
-professions=enchanting=525/tailoring=525
+professions=tailoring=525/enchanting=525
 talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000
 glyphs=evocation/arcane_power/slow/mirror_image/arcane_brilliance/conjuring/arcane_blast/arcane_missiles/mage_armor
 actions=flask,type=draconic_mind
@@ -17,6 +17,9 @@ actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/counterspell
 actions+=/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
+actions+=/blood_fury,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
+actions+=/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20
+actions+=/arcane_torrent,if=mana_pct<75
 actions+=/arcane_power,if=target.time_to_die<40
 actions+=/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
 actions+=/mana_gem,if=target.time_to_die<40
