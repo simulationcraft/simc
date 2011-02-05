@@ -201,7 +201,7 @@ struct hunter_t : public player_t
     dots_serpent_sting = get_dot("serpent_sting");
 
     ranged_attack = 0;
-    summon_pet_str = "cat";
+    summon_pet_str = "";
     hunter_position = "back";
     base_gcd = 1.0;
 
@@ -3109,14 +3109,14 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
-      if ( ptr )
+      if ( ptr && ! glyphs.arcane_shot -> ok() )
       {
-	action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>6|focus>=80|(focus>=60&(buff.rapid_fire.up|buff.bloodlust.up))";
+        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>6|focus>=80|(focus>=60&(buff.rapid_fire.up|buff.bloodlust.up))";
       }
       else
       {
-	action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
-	action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5";
+        action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
+        action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5";
       }
       action_list_str += "/steady_shot";
       break;
@@ -3132,9 +3132,15 @@ void hunter_t::init_actions()
         action_list_str += "/cobra_shot";
       else
         action_list_str += "/steady_shot";
+
+      if ( summon_pet_str.empty() )
+        summon_pet_str = "wind_serpent";
       break;
     default: break;
     }
+
+    if ( summon_pet_str.empty() )
+      summon_pet_str = "cat";
 
     action_list_default = 1;
   }

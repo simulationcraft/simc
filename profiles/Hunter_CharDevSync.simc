@@ -1,5 +1,19 @@
 #!./simc
-chardev=33314 name=Hunter_T11_BM_372 save=Hunter_T11_BM_372.simc
-chardev=33311 name=Hunter_T11_MM_372 save=Hunter_T11_MM_372.simc
-chardev=33303 name=Hunter_T11_S_372 save=Hunter_T11_S_372.simc
-chardev=33607 name=Hunter_T11_MM_372_AimedFocusDump save=Hunter_T11_MM_372_AimedFocusDump.simc
+
+ptr=1
+
+chardev=34113 name=Hunter_BM_T11_372 save=Hunter_BM_T11_372_PTR.simc
+head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+wrists=chimaron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
+
+chardev=34115 name=Hunter_MM_T11_372_Arcane save=Hunter_MM_T11_372_Arcane_PTR.simc
+head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+wrists=chimaron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
+
+chardev=34116 name=Hunter_SV_T11_372 save=Hunter_SV_T11_372_PTR.simc
+head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+wrists=chimaron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
+
+chardev=34117 name=Hunter_MM_T11_372 save=Hunter_MM_T11_372_PTR.simc
+head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+wrists=chimaron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi

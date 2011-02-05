@@ -1,9 +1,9 @@
 #!./simc 
 
-hunter=Hunter_T11_BM_372
-origin="http://chardev.org/?profile=33314"
+hunter=Hunter_BM_T11_372
+origin="http://chardev.org/?profile=34113"
 level=85
-race=worgen
+race=orc
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#hunter-2330230311320112121230200000000000000003000000000000000000
@@ -15,6 +15,7 @@ actions+=/summon_pet
 actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_shot
 actions+=/snapshot_stats
+actions+=/blood_fury,time>=10
 actions+=/aspect_of_the_hawk
 actions+=/serpent_sting,if=!ticking
 actions+=/rapid_fire,if=!buff.bloodlust.up
@@ -43,17 +44,17 @@ main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_257crit_257m
 ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_81haste_181sta,enchant=gnomish_xray,weapon=crossbow_3.00speed_1688min_2533max
 # Gear Summary
 # gear_strength=20
-# gear_agility=5241
+# gear_agility=5345
 # gear_stamina=5838
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_hit_rating=966
-# gear_crit_rating=2424
+# gear_crit_rating=2305
 # gear_haste_rating=1349
 # gear_mastery_rating=596
 # gear_armor=15326
-# meta_gem=destructive_shadowspirit
+# meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # main_hand=malevolence,heroic=1,weapon=staff_2.40speed_1350min_2027max
