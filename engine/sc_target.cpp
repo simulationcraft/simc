@@ -260,13 +260,10 @@ void target_t::init_actions()
         continue;
       action_list_str += "/auto_attack,target=";
       action_list_str += q -> name_str;
-
     }
-
   }
+
   action_list_str += "/auto_attack";
-
-
 
   player_t::init_actions();
 }
