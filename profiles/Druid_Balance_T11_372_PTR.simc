@@ -6,7 +6,7 @@ level=85
 race=troll
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
-talents=http://ptr.wowhead.com/talent#0IfRdRMMkouZrcd
+talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
 glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/starsurge/insect_swarm/moonfire
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -35,12 +35,12 @@ actions+=/sunfire,moving=1
 head=stormriders_cover,heroic=1,type=leather,ilevel=372,quality=epic,stats=1439armor_257crit_197haste_325int_578sta,reforge=crit_spi,gems=burning_shadowspirit_54int_20int_20spi_30int,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
 shoulders=stormriders_shoulderwraps,heroic=1,type=leather,ilevel=372,quality=epic,stats=1328armor_171haste_266int_191mastery_429sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=50int_25haste
-chest=scorched_wormling_vest,heroic=1,type=leather,ilevel=372,quality=epic,stats=1771armor_345int_257mastery_217spi_578sta,reforge=mastery_haste,gems=40int_40int,enchant=20all
+chest=scorched_wormling_vest,heroic=1,type=leather,ilevel=372,quality=epic,stats=1771armor_345int_257mastery_217spi_578sta,reforge=mastery_haste,gems=67int_67int,enchant=20all
 waist=belt_of_the_nightmare,heroic=1,type=leather,ilevel=372,quality=epic,stats=996armor_191crit_266int_171spi_429sta,reforge=crit_haste,gems=40int_40int
 legs=stormriders_leggings,heroic=1,type=leather,ilevel=372,quality=epic,stats=1550armor_257haste_345int_217spi_578sta,gems=40int_20int_20spi_20int,enchant=95int_55spi
 feet=nightmare_riders_boots,heroic=1,type=leather,ilevel=379,quality=epic,stats=1257armor_266int_204mastery_164spi_458sta,reforge=mastery_haste,gems=20int_20spi_40int_20int,enchant=35mastery
 wrists=manacles_of_the_sleeping_beast,heroic=1,type=leather,ilevel=372,quality=epic,stats=775armor_215int_143mastery_143spi_322sta,reforge=mastery_haste,enchant=50int
-hands=stormriders_gloves,heroic=1,type=leather,ilevel=372,quality=epic,stats=1107armor_191crit_171haste_266int_429sta,reforge=crit_spi,gems=40int_10crit,enchant=50haste
+hands=stormriders_gloves,heroic=1,type=leather,ilevel=372,quality=epic,stats=1107armor_191crit_171haste_266int_429sta,reforge=crit_spi,gems=67int_10crit,enchant=50haste
 finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta
 finger2=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta,reforge=crit_haste
 trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,reforge=crit_haste,equip=onspellcrit_2178sp_30%_20dur_100cd
@@ -53,7 +53,7 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5862
-# gear_intellect=4568
+# gear_intellect=4649
 # gear_spirit=1591
 # gear_spell_power=2207
 # gear_hit_rating=143
