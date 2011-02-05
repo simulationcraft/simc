@@ -2157,8 +2157,8 @@ int sim_t::main( int argc, char** argv )
 
   current_throttle = armory_throttle;
 
-  util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft 4.x %s (build level %s)\n",
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
+  util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.3" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
   fflush( output_file );
 
   if ( spell_query )
