@@ -4,9 +4,9 @@ html=Hunter_PTR.html
 ptr=1
 optimal_raid=1
 iterations=10000
-calculate_scale_factors=1
+#calculate_scale_factors=1
 
-Hunter_T11_MM_372.simc
-Hunter_T11_S_372.simc
-Hunter_T11_BM_372.simc
-Hunter_T11_MM_372_AimedFocusDump.simc
+Hunter_T11_MM_372_PTR.simc
+Hunter_T11_S_372_PTR.simc
+Hunter_T11_BM_372_PTR.simc
+Hunter_T11_MM_372_AimedFocusDump_PTR.simc

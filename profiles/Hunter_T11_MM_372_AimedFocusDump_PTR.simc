@@ -1,9 +1,9 @@
 #!./simc 
 
-hunter=Hunter_T11_MM_372_AimedFocusDump
+hunter=Hunter_T11_MM_372_AimedCast
 origin="http://chardev.org/?profile=33607"
 level=85
-race=night_elf
+race=worgen
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#hunter-0230030000000000000230232103211023122102000000000000000000
