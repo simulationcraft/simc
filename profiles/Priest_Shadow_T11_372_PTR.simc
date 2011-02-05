@@ -33,7 +33,7 @@ actions+=/dispersion,moving=1
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_spi,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta
 shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_266int_171spi_429sta,gems=67int_10haste,enchant=50int_25haste
 chest=mercurial_vestment,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=crit_spi,gems=67int_20int_20spi_20int,enchant=20all
