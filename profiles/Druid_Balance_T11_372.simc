@@ -29,7 +29,7 @@ actions+=/wrath,if=eclipse_dir=-1
 actions+=/starfire
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
-head=stormriders_cover,heroic=1,type=leather,stats=325int_578sta_257crit_197haste_1439armor,reforge=crit_hit,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+head=stormriders_cover,heroic=1,type=leather,stats=325int_578sta_257crit_197haste_1439armor,reforge=crit_hit,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,stats=215int_322sta_143spi_143crit,reforge=crit_haste
 shoulders=passive_resistor_spaulders,heroic=1,type=leather,stats=266int_429sta_171spi_191haste_1328armor,gems=67int_10spi,enchant=50int_25haste
 chest=stormriders_vestment,heroic=1,type=leather,stats=345int_578sta_227crit_247mastery_1771armor,reforge=crit_haste,gems=20int_20spi_20int_20mastery_20int,enchant=20all
