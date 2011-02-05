@@ -2,24 +2,24 @@
 
 optimal_raid=1
 
-Death_Knight_Frost_1h_T11_372.simc
-Death_Knight_Frost_2h_T11_372.simc
-Death_Knight_Unholy_1h_T11_372.simc
-Death_Knight_Unholy_2h_T11_372.simc
+Death_Knight_Frost_1h_T11_372_PTR.simc
+Death_Knight_Frost_2h_T11_372_PTR.simc
+Death_Knight_Unholy_1h_T11_372_PTR.simc
+Death_Knight_Unholy_2h_T11_372_PTR.simc
 
 Druid_Balance_T11_372_PTR.simc
 Druid_Feral_T11_372.simc
 
-Hunter_T11_MM_372_PTR.simc
-Hunter_T11_MM_372_AimedFocusDump_PTR.simc
-Hunter_T11_S_372_PTR.simc
-Hunter_T11_BM_372_PTR.simc
+Hunter_MM_T11_372_PTR.simc
+Hunter_MM_T11_372_Arcane_PTR.simc
+Hunter_SV_T11_372_PTR.simc
+Hunter_BM_T11_372_PTR.simc
 
-Mage_Arcane_T11_372.simc
-Mage_Fire_T11_372.simc
-Mage_Fire_Frostfire_T11_372.simc
+Mage_Arcane_T11_372_PTR.simc
+Mage_Fire_T11_372_PTR.simc
+Mage_Fire_Frostfire_T11_372_PTR.simc
 Mage_Frost_T11_372_PTR.simc
-Mage_Frost_Frostfire_T11_372.simc
+Mage_Frost_Frostfire_T11_372_PTR.simc
 
 Paladin_Retribution_T11_372_PTR.simc
 
