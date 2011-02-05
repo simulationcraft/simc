@@ -227,7 +227,7 @@ void target_t::init_base()
              break;
     }
   }
-  player_t::base_armor = initial_armor;
+
 
   if( resilience > 0 )
   {
@@ -243,7 +243,7 @@ void target_t::init_base()
 
 void target_t::init_items()
 {
-  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=sword2h_3.00speed_180000min_360000max";
+  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=sword2h_3.00speed_60000min_180000max";
 
   player_t::init_items();
 }
@@ -252,7 +252,18 @@ void target_t::init_items()
 
 void target_t::init_actions()
 {
-  if ( !is_add() ) action_list_str += "/summon_add,name=Evil_Add3,health=500000";
+  if ( !is_add() )
+  {
+    for ( player_t* q = sim -> player_list; q; q = q -> next )
+    {
+      if ( q -> primary_role() != ROLE_TANK )
+        continue;
+      action_list_str += "/auto_attack,target=";
+      action_list_str += q -> name_str;
+
+    }
+
+  }
   action_list_str += "/auto_attack";
 
 
@@ -267,6 +278,7 @@ void target_t::reset()
   if ( sim -> debug ) log_t::output( sim, "Reseting target %s", name() );
   total_dmg = 0;
   armor = initial_armor;
+  player_t::base_armor = initial_armor;
   current_health = initial_health = fixed_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
 
   adds_nearby = initial_adds_nearby;
@@ -318,20 +330,24 @@ struct auto_attack_t : public attack_t
       attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
     parse_options( NULL, options_str );
+    cooldown = player -> get_cooldown( target -> name() + name_str );
+    stats = player -> get_stats( target -> name() + name_str );
+    stats -> school = school;
+    name_str = target -> name() + name_str;
+    cooldown -> duration = 3.0;
+    min_gcd=0.0;
 
     base_dd_min = base_dd_max = 1;
 
-    player_t* q = sim -> find_player( "Fluffy_Tank" );
-    if ( q )
+    if ( player -> is_enemy() && target != player)
     {
-      target = q;
       weapon = &( player -> main_hand_weapon );
     }
   }
 
   virtual double execute_time() SC_CONST
   {
-    return sim -> gauss( 3.0, 0.25 );
+    return 0;
   }
 };
 
@@ -594,13 +610,14 @@ void add_t::reset()
 
 // add_t::summon ============================================================
 
-void add_t::summon( double duration, double health )
+void add_t::summon( double duration, double health)
 {
   if ( sim -> log )
   {
     log_t::output( sim, "%s summons %s.", owner -> name(), name() );
     //log_t::summon_event( this );
   }
+
 
   distance = owner -> distance;
   sleeping = 0;

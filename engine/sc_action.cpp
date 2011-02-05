@@ -423,6 +423,7 @@ void action_t::parse_options( option_t*          options,
   if ( ! target_str.empty() )
   {
     player_t* p = sim -> find_player( target_str );
+
     if ( p )
       target = p;
   }
@@ -699,7 +700,7 @@ double action_t::armor() SC_CONST
     adjusted_armor =  t -> base_armor();
   }
   else
-    adjusted_armor = 0;
+    adjusted_armor = target -> composite_armor();
 
   double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
                            std::max( t -> debuffs.faerie_fire  -> stack() * t -> debuffs.faerie_fire -> value(),
