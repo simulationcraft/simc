@@ -4848,6 +4848,18 @@ action_expr_t* player_t::create_expression( action_t* a,
       }
     }
   }
+  else if ( splits[ 0 ] == "owner" )
+  {
+    if ( is_pet() )
+    {
+      pet_t* pet = ( pet_t* ) this;
+
+      if ( pet-> owner )
+      {
+        return pet -> owner -> create_expression( a, name_str.substr( 6 ) );
+      }
+    }
+  }
   else if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "buff" )
