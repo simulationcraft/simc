@@ -43,8 +43,8 @@ wrists=electron_inductor_coils,heroic=1,type=plate,stats=215str_322sta_143haste_
 hands=magma_plated_gauntlets,heroic=1,type=plate,stats=266str_429sta_191haste_171mastery_2224armor,gems=20str_20hit_40str_10str,enchant=50str,reforge=mastery_crit
 finger1=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_crit
 finger2=cataclysm_world_drop_epic_strength_dps_ring,stats=190str_286sta_127haste_127mastery,reforge=mastery_crit
-trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_10%_15dur_60cd
-trinket2=heart_of_rage,heroic=1,stats=363exp,equip=onattackhit_2178str_10%_20dur_60cd
+trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_10%_15dur_50cd
+trinket2=heart_of_rage,heroic=1,stats=363exp,equip=onattackhit_2178str_10%_20dur_100cd
 back=glittering_epidermis,heroic=1,stats=215str_322sta_143crit_143haste_673armor,enchant=65crit
 main_hand=lava_spine,heroic=1,stats=165str_248sta_110crit_110haste,enchant=rune_of_the_fallen_crusader,weapon=sword_2.60speed_949min_1764max
 off_hand=lava_spine,heroic=1,stats=165str_248sta_110crit_110haste,enchant=rune_of_razorice,weapon=sword_2.60speed_949min_1764max

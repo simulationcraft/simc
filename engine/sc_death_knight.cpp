@@ -518,7 +518,7 @@ struct army_ghoul_pet_t : public pet_t
   struct army_ghoul_pet_attack_t : public attack_t
   {
     army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL ) :
-      attack_t( n, player, RESOURCE_ENERGY, SCHOOL_PHYSICAL )
+      attack_t( n, player, r, SCHOOL_PHYSICAL )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
@@ -2038,7 +2038,7 @@ void death_knight_spell_t::consume_resource()
       {
         real_rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0;
       }
-      p -> resource_gain( resource, real_rp_gain, p -> gains_rune_abilities );
+      p -> resource_gain( RESOURCE_RUNIC, real_rp_gain, p -> gains_rune_abilities );
     }
   }
   else
@@ -2158,7 +2158,7 @@ struct melee_t : public death_knight_attack_t
       trigger_blood_caked_blade( this );
       if ( p -> buffs_scent_of_blood -> up() )
       {
-        p -> resource_gain( resource, 10, p -> gains_scent_of_blood );
+        p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_scent_of_blood );
         p -> buffs_scent_of_blood -> decrement();
       }
       // KM: 1/2/3 PPM proc, only auto-attacks
@@ -2168,7 +2168,7 @@ struct melee_t : public death_knight_attack_t
 
       if ( p -> rng_might_of_the_frozen_wastes -> roll( p -> talents.might_of_the_frozen_wastes -> proc_chance() ) )
       {
-        p -> resource_gain( resource, sim -> sim_data.effect_base_value( 81331, E_ENERGIZE, A_NONE ), p -> gains_might_of_the_frozen_wastes );
+        p -> resource_gain( RESOURCE_RUNIC, sim -> sim_data.effect_base_value( 81331, E_ENERGIZE, A_NONE ), p -> gains_might_of_the_frozen_wastes );
       }
     }
   }
@@ -2611,11 +2611,12 @@ struct death_and_decay_t : public death_knight_spell_t
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
     base_tick_time   = 1.0;
-    num_ticks        = 10;
+    num_ticks        = 11;
+    tick_zero        = true;
     if ( p -> glyphs.death_and_decay )
       num_ticks     += 5;
     if ( p -> talents.morbidity -> rank() )
-      base_multiplier *= 1.0 + p -> talents.morbidity -> rank() / 100.0;
+      base_multiplier *= 1.0 + p -> talents.morbidity -> rank() / 10.0;
   }
 };
 
@@ -4096,7 +4097,7 @@ void death_knight_t::init_actions()
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
-        action_list_str += "/pillar_of_frost,if=cooldown.blood_tap.remains>=58"; //Forces Pillar of Frost to only be used in combination with Blood Tap
+        action_list_str += "/pillar_of_frost";
       if ( talents.howling_blast -> rank() && talents.rime -> rank() )
         action_list_str += "/howling_blast,if=buff.rime.react";
       action_list_str += "/raise_dead,time>=5";
@@ -4117,8 +4118,6 @@ void death_knight_t::init_actions()
       action_list_str += "/auto_attack";
       if ( talents.unholy_frenzy -> rank() )
         action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
-      if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       if ( talents.dark_transformation -> rank() )
@@ -4128,12 +4127,17 @@ void death_knight_t::init_actions()
         action_list_str += "/summon_gargoyle,time<=60";
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
       }
+      action_list_str += "/death_and_decay,if=death=4";
+      action_list_str += "/death_and_decay,if=unholy=2";
       action_list_str += "/scourge_strike,if=death=4";
       action_list_str += "/scourge_strike,if=unholy=2";
       action_list_str += "/festering_strike,if=blood=2&frost=2";
       action_list_str += "/death_coil,if=runic_power>90";
       if ( talents.sudden_doom -> rank() )
         action_list_str += "/death_coil,if=buff.sudden_doom.react";
+      if ( level > 81 )
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
+      action_list_str += "/death_and_decay";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
       action_list_str += "/death_coil";
