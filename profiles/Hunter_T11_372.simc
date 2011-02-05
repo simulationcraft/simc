@@ -1,9 +1,12 @@
 #!simc
 
-html=Hunter_Live.html
-wiki=Hunter_Live.wiki
-ptr=0
+threads=2
+html=Hunter_PTR.html
+#wiki=Hunter_Live.wiki
+ptr=1
 optimal_raid=1
+iterations=30000
+calculate_scale_factors=1
 
 Hunter_T11_MM_372.simc
 Hunter_T11_S_372.simc
