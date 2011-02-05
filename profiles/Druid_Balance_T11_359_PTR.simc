@@ -32,7 +32,7 @@ actions+=/starfire
 actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
-head=stormriders_cover,type=leather,ilevel=359,quality=epic,stats=1356armor_228crit_168haste_281int_512sta,reforge=crit_spi,gems=bracing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+head=stormriders_cover,type=leather,ilevel=359,quality=epic,stats=1356armor_228crit_168haste_281int_512sta,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
 shoulders=stormriders_shoulderwraps,type=leather,ilevel=359,quality=epic,stats=1252armor_149haste_233int_169mastery_380sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=50int_25haste
 chest=scorched_wormling_vest,type=leather,ilevel=359,quality=epic,stats=1669armor_301int_228mastery_188spi_512sta,reforge=mastery_haste,gems=67int_67int,enchant=20all
@@ -61,7 +61,7 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 # gear_haste_rating=2298
 # gear_mastery_rating=757
 # gear_armor=10222
-# meta_gem=bracing_shadowspirit
+# meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # back=drape_of_the_twins,enchant=lightweave_embroidery
