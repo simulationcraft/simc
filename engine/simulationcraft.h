@@ -3237,7 +3237,7 @@ struct player_t
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
-  virtual void assess_damage( double amount, const school_type school, int type, action_t* a, player_t* s );
+  virtual void assess_damage( double amount, const school_type school, int type, int result, action_t* a, player_t* s );
 
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
@@ -3474,7 +3474,8 @@ struct target_t : public player_t
   virtual double composite_tank_crit( const school_type school ) SC_CONST { return 0.0; }
   virtual double composite_mastery() SC_CONST { return 0.0; }
 
-  virtual void assess_damage( double amount, const school_type school, int type, action_t* a, player_t* s );
+  virtual void assess_damage( double amount, const school_type school,
+                              int type, int travel_result, action_t* a, player_t* s );
   void recalculate_health();
   double time_to_die() SC_CONST;
   virtual double health_percentage() SC_CONST;
@@ -3653,6 +3654,7 @@ struct action_t : public spell_id_t
   action_t* next;
   char marker;
   std::string signature_str;
+  std::string target_str;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const active_spell_t& s, int t=TREE_NONE, bool special=false );
@@ -3691,8 +3693,8 @@ struct action_t : public spell_id_t
   virtual void   tick();
   virtual void   last_tick();
   virtual void   travel( player_t*, int result, double dmg );
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type );
-  virtual void   additional_damage( player_t* t, double amount, int dmg_type );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
+  virtual void   additional_damage( player_t* t, double amount, int dmg_type, int travel_result );
   virtual void   schedule_execute();
   virtual void   schedule_tick();
   virtual void   schedule_travel( player_t* t );
@@ -3809,7 +3811,7 @@ struct heal_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                                  int    dmg_type );
+                                  int    dmg_type, int travel_result );
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
@@ -3844,7 +3846,7 @@ struct absorb_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                                    int    dmg_type );
+                                    int    dmg_type, int travel_result );
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();

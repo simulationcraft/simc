@@ -177,7 +177,7 @@
 // heal_t::asses_damage ========================================================
 
   void heal_t::assess_damage( player_t* t, double amount,
-                                int    dmg_type )
+                                int    dmg_type, int travel_result )
   {
     total_heal += amount;
     actual_heal += t -> resource_gain( RESOURCE_HEALTH, amount, 0, this );
@@ -417,7 +417,7 @@
   {
     if ( travel_dmg > 0 )
     {
-      assess_damage( t, travel_dmg, HEAL_DIRECT );
+      assess_damage( t, travel_dmg, HEAL_DIRECT, travel_result );
     }
     if ( num_ticks > 0 )
     {
@@ -477,7 +477,7 @@
 
     tick_dmg = calculate_tick_damage();
 
-    assess_damage( heal_target[0], tick_dmg, HEAL_OVER_TIME );
+    assess_damage( heal_target[0], tick_dmg, HEAL_OVER_TIME, result );
 
     action_callback_t::trigger( player -> tick_callbacks, this );
 
@@ -705,7 +705,7 @@
 // absorb_t::asses_heal ========================================================
 
     void absorb_t::assess_damage( player_t* t, double amount,
-                                  int    dmg_type )
+                                  int    dmg_type, int travel_result )
     {
       total_heal += amount;
       actual_heal += t -> resource_gain( RESOURCE_HEALTH, amount, 0, this );
@@ -856,6 +856,6 @@
       {
         if ( travel_dmg > 0 )
         {
-          assess_damage( t, travel_dmg, ABSORB );
+          assess_damage( t, travel_dmg, ABSORB, travel_result );
         }
       }

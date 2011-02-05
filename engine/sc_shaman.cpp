@@ -2575,7 +2575,7 @@ struct shaman_totem_t : public shaman_spell_t
       if ( direct_dmg > 0 )
       {
         tick_dmg = direct_dmg;
-        assess_damage( target, tick_dmg, DMG_OVER_TIME );
+        assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
       }
     }
     else

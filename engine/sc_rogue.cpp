@@ -446,7 +446,7 @@ struct rogue_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
   virtual double total_multiplier() SC_CONST;
   virtual double armor() SC_CONST;
 
@@ -1158,9 +1158,10 @@ bool rogue_attack_t::ready()
 
 void rogue_attack_t::assess_damage( player_t* t,
                                     double amount,
-                                    int    dmg_type )
+                                    int    dmg_type,
+                                    int travel_result )
 {
-  attack_t::assess_damage( t, amount, dmg_type );
+  attack_t::assess_damage( t, amount, dmg_type, travel_result );
 
   rogue_t* p = player -> cast_rogue();
 
@@ -1171,7 +1172,7 @@ void rogue_attack_t::assess_damage( player_t* t,
     target_t* q = t -> cast_target();
 
     if ( p -> buffs_blade_flurry -> up() && q -> adds_nearby )
-      attack_t::additional_damage( q, amount, dmg_type );
+      attack_t::additional_damage( q, amount, dmg_type, travel_result );
   }
 }
 

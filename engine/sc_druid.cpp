@@ -396,7 +396,8 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
-  virtual void      assess_damage( double amount, const school_type school, int dmg_type, action_t* a, player_t* s );
+  virtual void      assess_damage( double amount, const school_type school, int dmg_type,
+                                   int travel_result, action_t* a, player_t* s );
   virtual int       target_swing();
 
   // Utilities
@@ -4249,6 +4250,7 @@ int druid_t::primary_resource() SC_CONST
 void druid_t::assess_damage( double amount,
                               const school_type school,
                               int    dmg_type,
+                              int travel_result,
                               action_t* a,
                               player_t* s )
 {
@@ -4264,7 +4266,7 @@ void druid_t::assess_damage( double amount,
     buffs_savage_defense -> expire();
   }
 
-  player_t::assess_damage( amount, school, dmg_type, a, s );
+  player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
 }
 
 // druid_t::target_swing ====================================================

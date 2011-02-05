@@ -3106,6 +3106,7 @@ void player_t::stat_loss( int       stat,
 void player_t::assess_damage( double amount,
                               const school_type school,
                               int    dmg_type,
+                              int result,
                               action_t* a,
                               player_t* s )
 {

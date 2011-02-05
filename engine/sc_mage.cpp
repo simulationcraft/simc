@@ -837,7 +837,7 @@ static void trigger_ignite( spell_t* s, double dmg )
   {
     int result = s -> result;
     s -> result = RESULT_HIT;
-    s -> assess_damage( s -> target, ignite_dmg, DMG_OVER_TIME );
+    s -> assess_damage( s -> target, ignite_dmg, DMG_OVER_TIME, s -> result );
     s -> update_stats( DMG_OVER_TIME );
     s -> result = result;
     return;

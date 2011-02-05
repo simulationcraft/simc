@@ -134,6 +134,7 @@ void action_t::_init_action_t()
   observer                       = NULL;
   next                           = NULL;
   marker                         = 0;
+  target_str                     = "";
  
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -393,6 +394,7 @@ void action_t::parse_options( option_t*          options,
     { "travel_speed",           OPT_FLT,    &travel_speed          },
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
+    { "target",                 OPT_STRING, &target_str            },
     { NULL,                     0,          NULL                   }
   };
 
@@ -415,6 +417,14 @@ void action_t::parse_options( option_t*          options,
   {
     sim -> errorf( "%s %s: Unable to parse options str '%s'.\n", player -> name(), name(), options_str.c_str() );
     sim -> cancel();
+  }
+
+  // FIXME: Move into constructor when parse_action is called from there.
+  if ( ! target_str.empty() )
+  {
+    player_t* p = sim -> find_player( target_str );
+    if ( p )
+      target = p;
   }
 }
 
@@ -1060,7 +1070,7 @@ void action_t::tick()
 
   tick_dmg = calculate_tick_damage();
 
-  assess_damage( target, tick_dmg, DMG_OVER_TIME );
+  assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
 
   action_callback_t::trigger( player -> tick_callbacks, this );
 
@@ -1086,7 +1096,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
   if ( travel_dmg > 0 )
   {
-    assess_damage( t, travel_dmg, DMG_DIRECT );
+    assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
   }
   if ( num_ticks > 0 )
   {
@@ -1120,9 +1130,9 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 
 void action_t::assess_damage( player_t* t,
                               double amount,
-                              int    dmg_type )
+                              int    dmg_type, int travel_result )
 {
-  t -> assess_damage( amount, school, dmg_type, this, player );
+  t -> assess_damage( amount, school, dmg_type, travel_result, this, player );
 
   if ( dmg_type == DMG_DIRECT )
   {
@@ -1174,7 +1184,7 @@ void action_t::assess_damage( player_t* t,
       amount *= base_add_multiplier;
       for ( int i=0; i < q -> adds_nearby && i < ( aoe > 0 ? aoe : 9 ); i++ )
       {
-        additional_damage( q, amount, dmg_type );
+        additional_damage( q, amount, dmg_type, travel_result );
       }
     }
   }
@@ -1184,11 +1194,12 @@ void action_t::assess_damage( player_t* t,
 
 void action_t::additional_damage( player_t* t,
                                   double amount,
-                                  int    dmg_type )
+                                  int    dmg_type,
+                                  int travel_result )
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  t -> assess_damage( amount, school, dmg_type, this, player );
-  stats -> add_result( amount, dmg_type, result );
+  t -> assess_damage( amount, school, dmg_type, travel_result, this, player );
+  stats -> add_result( amount, dmg_type, travel_result );
 }
 
 // action_t::schedule_execute ==============================================

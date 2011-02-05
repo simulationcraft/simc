@@ -449,7 +449,7 @@ struct priest_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
 
   static void    trigger_shadowy_apparition( player_t* player );
   static void    add_more_shadowy_apparitions( player_t* player );
@@ -753,12 +753,12 @@ struct shadow_fiend_pet_t : public pet_t
         base_crit_multiplier = 1.333333;
       }
     }
-    void assess_damage( player_t* t, double amount, int dmg_type )
+    void assess_damage( player_t* t, double amount, int dmg_type, int travel_result )
     {
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
       priest_t* o = p -> owner -> cast_priest();
 
-      attack_t::assess_damage( t, amount, dmg_type );
+      attack_t::assess_damage( t, amount, dmg_type, travel_result );
 
       o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                           p -> mana_leech -> effect_base_value( 1 ) / 100.0,
@@ -937,11 +937,12 @@ void priest_spell_t::player_buff()
 
 void priest_spell_t::assess_damage( player_t* t,
                                     double amount,
-                                    int    dmg_type )
+                                    int    dmg_type,
+                                    int travel_result )
 {
   priest_t* p = player -> cast_priest();
 
-  spell_t::assess_damage( t, amount, dmg_type );
+  spell_t::assess_damage( t, amount, dmg_type, travel_result );
 
   if ( p -> buffs_vampiric_embrace -> up() )
   {

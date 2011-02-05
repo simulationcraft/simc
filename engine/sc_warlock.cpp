@@ -1909,9 +1909,10 @@ struct bane_of_doom_t : public warlock_spell_t
 
   virtual void assess_damage( player_t* t,
                               double amount,
-                              int    dmg_type )
+                              int    dmg_type,
+                              int travel_result )
   {
-    warlock_spell_t::assess_damage( t, amount, DMG_DIRECT );
+    warlock_spell_t::assess_damage( t, amount, DMG_DIRECT, travel_result );
   }
 };
 

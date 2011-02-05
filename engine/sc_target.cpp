@@ -49,6 +49,7 @@ const char* target_t::id()
 void target_t::assess_damage( double amount,
                               const school_type school,
                               int    dmg_type,
+                              int travel_result,
                               action_t* a,
                               player_t* s )
 {
