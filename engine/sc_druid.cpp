@@ -3296,7 +3296,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( t, travel_result, travel_dmg );
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
     {
       if ( travel_result == RESULT_CRIT )
       {
