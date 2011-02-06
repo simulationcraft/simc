@@ -269,11 +269,6 @@ double attack_t::block_chance( int delta_level ) SC_CONST
   double chance = 0.05;
   if ( target -> is_enemy() || target -> is_add() )
     chance += delta_level * 0.002;
-  else
-  {
-    if ( player -> position != POSITION_RANGED_FRONT )
-      chance += delta_level * 0.005;
-  }
   return chance;
 }
 
