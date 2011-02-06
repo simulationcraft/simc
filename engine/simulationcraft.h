@@ -270,7 +270,7 @@ enum result_type
 {
   RESULT_NONE=0,
   RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY,
-  RESULT_BLOCK, RESULT_GLANCE, RESULT_CRIT,  RESULT_HIT,
+  RESULT_BLOCK, RESULT_CRIT_BLOCK, RESULT_GLANCE, RESULT_CRIT,  RESULT_HIT,
   RESULT_MAX
 };
 
@@ -531,7 +531,7 @@ enum stat_type
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
-  STAT_BLOCK_RATING, STAT_BLOCK_VALUE,
+  STAT_BLOCK_RATING,
   STAT_MAX
 };
 
@@ -2867,7 +2867,6 @@ struct player_t
   event_t* target_auto_attack;
   double base_armor,       initial_armor,       armor,       buffed_armor;
   double base_bonus_armor, initial_bonus_armor, bonus_armor;
-  double base_block_value, initial_block_value, block_value, buffed_block_value;
   double base_miss,        initial_miss,        miss,        buffed_miss, buffed_crit;
   double base_dodge,       initial_dodge,       dodge,       buffed_dodge;
   double base_parry,       initial_parry,       parry,       buffed_parry;
@@ -3187,7 +3186,6 @@ struct player_t
 
 
   virtual double composite_armor()                 SC_CONST;
-  virtual double composite_block_value()           SC_CONST;
   virtual double composite_tank_miss( const school_type school ) SC_CONST;
   virtual double composite_tank_dodge()            SC_CONST;
   virtual double composite_tank_parry()            SC_CONST;
@@ -3447,7 +3445,6 @@ struct target_t : public player_t
   int target_level;
 
   int initial_armor, armor;
-  double block_value;
   double attack_speed, attack_damage, weapon_skill;
   double fixed_health, initial_health, current_health;
   double fixed_health_percentage;

@@ -482,9 +482,8 @@ static void print_text_attack_stats( FILE* file, player_t* p )
 static void print_text_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
-                   "  Defense Stats:  armor=%.0f|%.0f(%.0f)  blockv=%.0f|%.0f(%.0f)  miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
+                   "  Defense Stats:  armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
                    p -> buffed_armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
-                   p -> buffed_block_value, p -> composite_block_value(), p -> stats.block_value,
                    100 * p -> buffed_miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
                    100 * p -> buffed_dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
                    100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
@@ -1982,17 +1981,6 @@ static void print_html_stats (FILE* file, player_t* a )
       a -> buffed_armor,
       a -> composite_armor(),
        ( a -> stats.armor + a -> stats.bonus_armor ) );
-
-    util_t::fprintf( file,
-      "                  <tr class=\"odd\">\n"
-      "                    <th class=\"left\">Block Value</th>\n"
-      "                    <td class=\"right\">%.0f</td>\n"
-      "                    <td class=\"right\">%.0f</td>\n"
-      "                    <td class=\"right\">%.0f</td>\n"
-      "                  </tr>\n",
-      a -> buffed_block_value,
-      a -> composite_block_value(),
-      a -> stats.block_value );
 
     util_t::fprintf( file,
       "                  <tr>\n"
@@ -3501,7 +3489,6 @@ static void print_wiki_player( FILE* file, player_t* p )
   util_t::fprintf( file, "|| *Expertise*         || %.2f || %.2f || %.0f ||\n", 100 * p -> buffed_attack_expertise,   100 * p -> composite_attack_expertise(),   p -> stats.expertise_rating );
 
   util_t::fprintf( file, "|| *Armor*       || %.0f || %.0f || %.0f ||\n",     p -> buffed_armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ) );
-  util_t::fprintf( file, "|| *Block Value* || %.0f || %.0f || %.0f ||\n",     p -> buffed_block_value, p -> composite_block_value(), p -> stats.block_value );
   util_t::fprintf( file, "|| *Tank-Miss*   || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ), 0.0  );
   util_t::fprintf( file, "|| *Tank-Dodge*  || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating );
   util_t::fprintf( file, "|| *Tank-Parry*  || %.2f%% || %.2f%% || %.0f ||\n", 100 * p -> buffed_parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating );

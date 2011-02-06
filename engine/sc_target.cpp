@@ -14,7 +14,7 @@
 target_t::target_t( sim_t* s, const std::string& n, player_type pt ) :
     player_t( s, pt, n, RACE_HUMANOID ),
     next( 0 ), target_level( -1 ),
-    initial_armor( -1 ), armor( 0 ), block_value( 0.3 ),
+    initial_armor( -1 ), armor( 0 ),
     attack_speed( 3.0 ), attack_damage( 50000 ), weapon_skill( 0 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
     total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 ),
@@ -203,9 +203,9 @@ void target_t::init()
 
 void target_t::init_base()
 {
-  resource_base[ RESOURCE_HEALTH ] = 0;
 
   health_per_stamina = 10;
+
 
   if ( initial_armor < 0 )
   {
@@ -227,6 +227,7 @@ void target_t::init_base()
              break;
     }
   }
+  player_t::base_armor = initial_armor;
 
 
   if( resilience > 0 )
@@ -239,11 +240,11 @@ void target_t::init_base()
   if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
 }
 
-// target_t::init_base =====================================================
+// target_t::init_items =====================================================
 
 void target_t::init_items()
 {
-  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=sword2h_3.00speed_60000min_180000max";
+  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=axe2h_3.00speed_80000min_100000max";
 
   player_t::init_items();
 }
@@ -252,6 +253,7 @@ void target_t::init_items()
 
 void target_t::init_actions()
 {
+  action_list_str += "/snapshot_stats";
   if ( !is_add() )
   {
     for ( player_t* q = sim -> player_list; q; q = q -> next )
@@ -307,7 +309,7 @@ int target_t::primary_resource() SC_CONST
 
 int target_t::primary_role() SC_CONST
 {
-  return ROLE_HYBRID;
+  return ROLE_TANK;
 }
 
 // target_t::debuffs_t::snared ===============================================
@@ -327,12 +329,13 @@ struct auto_attack_t : public attack_t
       attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
     parse_options( NULL, options_str );
-    cooldown = player -> get_cooldown( target -> name() + name_str );
-    stats = player -> get_stats( target -> name() + name_str );
+    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+    stats = player -> get_stats( name_str + "_" + target -> name() );
     stats -> school = school;
-    name_str = target -> name() + name_str;
+    name_str = name_str + "_" + target -> name();
     cooldown -> duration = 3.0;
     min_gcd=0.0;
+    may_crit = true;
 
     base_dd_min = base_dd_max = 1;
 
@@ -415,13 +418,11 @@ void target_t::create_options()
   {
     { "target_name",                    OPT_STRING, &( name_str                          ) },
     { "target_race",                    OPT_STRING, &( race_str                          ) },
-    { "target_level",                   OPT_INT,    &( target_level                             ) },
+    { "target_level",                   OPT_INT,    &( target_level                      ) },
     { "target_health",                  OPT_FLT,    &( fixed_health                      ) },
     { "target_id",                      OPT_STRING, &( id_str                            ) },
     { "target_adds",                    OPT_INT,    &( initial_adds_nearby               ) },
-
     { "target_armor",                   OPT_INT,    &( initial_armor                     ) },
-    { "target_block",                   OPT_FLT,    &( block_value                       ) },
     { "target_attack_speed",            OPT_FLT,    &( attack_speed                      ) },
     { "target_attack_damage",           OPT_FLT,    &( attack_damage                     ) },
     { "target_weapon_skill",            OPT_FLT,    &( weapon_skill                      ) },
@@ -592,8 +593,9 @@ add_t::add_t( sim_t*             s,
 
 void add_t::init()
 {
-  target_t::init();
   level = owner -> level;
+  target_t::init();
+
 }
 
 // add_t::reset =============================================================

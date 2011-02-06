@@ -317,7 +317,6 @@ player_t::player_t( sim_t*             s,
     target_auto_attack( 0 ),
     base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
     base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ),
-    base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), buffed_block_value( 0 ),
     base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),        buffed_miss( 0 ), buffed_crit( 0 ),
     base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),       buffed_dodge( 0 ),
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
@@ -1042,7 +1041,6 @@ void player_t::init_defense()
   initial_dodge             = base_dodge       + initial_stats.dodge_rating / rating.dodge;
   initial_parry             = base_parry       + initial_stats.parry_rating / rating.parry;
   initial_block             = base_block       + initial_stats.block_rating / rating.block;
-  initial_block_value       = base_block_value + initial_stats.block_value;
 
   if ( type != ENEMY && type != ENEMY_ADD )
     initial_dodge_per_agility = player_data.dodge_scale( type, level );
@@ -1081,7 +1079,7 @@ void player_t::init_resources( bool force )
 {
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
   // Code simplified on the assumption that the minimum player level is 60.
-  double adjust = is_pet() ? 0 : 20;
+  double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : 20;
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -1527,7 +1525,6 @@ void player_t::init_scaling()
     scales_with[ STAT_PARRY_RATING   ] = 0;
 
     scales_with[ STAT_BLOCK_RATING ] = 0;
-    scales_with[ STAT_BLOCK_VALUE  ] = 0;
 
     if ( sim -> scaling -> scale_stat != STAT_NONE )
     {
@@ -1631,7 +1628,6 @@ void player_t::init_scaling()
       case STAT_PARRY_RATING:   initial_parry       += v; break;
 
       case STAT_BLOCK_RATING: initial_block       += v; break;
-      case STAT_BLOCK_VALUE:  initial_block_value += v; break;
 
 
       case STAT_MAX: break;
@@ -1730,7 +1726,7 @@ double player_t::composite_attack_crit() SC_CONST
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
-  if ( ! is_pet() )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     if ( sim -> auras.leader_of_the_pack -> check() 
       || sim -> auras.honor_among_thieves -> check() 
@@ -1771,7 +1767,7 @@ double player_t::composite_armor() SC_CONST
 
   a += bonus_armor;
 
-  if ( sim -> auras.devotion_aura -> check() )
+  if ( sim -> auras.devotion_aura -> check() && ! is_enemy() && ! is_add() )
     a += sim -> auras.devotion_aura -> value();
 
   if ( buffs.stoneform -> check() ) a *= 1.10;
@@ -1896,32 +1892,7 @@ double player_t::composite_tank_block() SC_CONST
 {
   double b = block;
 
-  double delta = 5.0 * ( level - sim -> target -> level );
-
-  if( delta > 0 )
-  {
-    b += delta * 0.0004;
-  }
-  else
-  {
-    b += delta * 0.0002;
-  }
-
-  if      ( b > 1.0 ) b = 1.0;
-  else if ( b < 0.0 ) b = 0.0;
-
   return b;
-}
-
-// player_t::composite_block_value ===================================
-
-double player_t::composite_block_value() SC_CONST
-{
-  double bv = block_value;
-
-  bv += strength() / 2.0;
-
-  return bv;
 }
 
 // player_t::composite_tank_crit ==========================================
@@ -2002,7 +1973,7 @@ double player_t::composite_spell_haste() SC_CONST
 {
   double h = spell_haste;
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
     if ( buffs.dark_intent -> check() ) h *= 1.0 / 1.03;
     if (      buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
@@ -2085,7 +2056,7 @@ double player_t::composite_spell_crit() SC_CONST
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
-  if ( ! is_pet() )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     if ( buffs.focus_magic -> check() ) sc += 0.03;
 
@@ -2261,7 +2232,7 @@ double player_t::composite_movement_speed() SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  if ( ! is_pet() )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter -> value() ),
@@ -2276,7 +2247,7 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  if ( ! is_pet() )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter -> value() ),
@@ -2460,7 +2431,6 @@ void player_t::reset()
   dodge              = initial_dodge;
   parry              = initial_parry;
   block              = initial_block;
-  block_value        = initial_block_value;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
@@ -3003,7 +2973,6 @@ void player_t::stat_gain( int       stat,
   case STAT_PARRY_RATING:   stats.parry_rating   += amount; parry       += amount / rating.parry;   break;
 
   case STAT_BLOCK_RATING: stats.block_rating += amount; block       += amount / rating.block; break;
-  case STAT_BLOCK_VALUE:  stats.block_value  += amount; block_value += amount;                break;
 
   case STAT_MASTERY_RATING:
     stats.mastery_rating += amount;
@@ -3090,7 +3059,6 @@ void player_t::stat_loss( int       stat,
   case STAT_PARRY_RATING:   stats.parry_rating   -= amount; parry       -= amount / rating.parry;   break;
 
   case STAT_BLOCK_RATING: stats.block_rating -= amount; block       -= amount / rating.block; break;
-  case STAT_BLOCK_VALUE:  stats.block_value  -= amount; block_value -= amount;                break;
 
   case STAT_MASTERY_RATING:
     stats.mastery_rating -= amount;
@@ -4002,7 +3970,6 @@ struct snapshot_stats_t : public action_t
     p -> buffed_attack_crit        = p -> composite_attack_crit();
 
     p -> buffed_armor       = p -> composite_armor();
-    p -> buffed_block_value = p -> composite_block_value();
     p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
     p -> buffed_dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
     p -> buffed_parry       = p -> composite_tank_parry() - p -> diminished_parry();

@@ -957,7 +957,13 @@ double action_t::calculate_direct_damage()
 
   if ( result == RESULT_BLOCK )
   {
-    dmg *= (1-target -> block_value);
+    dmg *= ( 1 - 0.3 );
+    if ( dmg < 0 ) dmg = 0;
+  }
+
+  if ( result == RESULT_CRIT_BLOCK )
+  {
+    dmg *= ( 1 - 0.6 );
     if ( dmg < 0 ) dmg = 0;
   }
 

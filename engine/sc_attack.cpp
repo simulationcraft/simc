@@ -258,18 +258,22 @@ double attack_t::parry_chance( int source_level, int target_level ) SC_CONST
 
 double attack_t::glance_chance( int delta_level ) SC_CONST
 {
-  return ( delta_level + 1 ) * 0.06;
+  int i = delta_level > 0 ? 1 : -1;
+  return i * ( fabs( delta_level ) + 1 ) * 0.06;
 }
 
 // attack_t::block_chance ===================================================
 
 double attack_t::block_chance( int delta_level ) SC_CONST
 {
-  double chance;
-  if ( player -> position == POSITION_RANGED_FRONT )
-    chance = 0.05;
+  double chance = 0.05;
+  if ( target -> is_enemy() || target -> is_add() )
+    chance += delta_level * 0.002;
   else
-    chance = 0.05 + delta_level * 0.005;
+  {
+    if ( player -> position != POSITION_RANGED_FRONT )
+      chance += delta_level * 0.005;
+  }
   return chance;
 }
 
@@ -279,7 +283,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( delta_level > 2 )
+  if ( fabs(delta_level) > 2 )
   {
     chance -= ( 0.03 + delta_level * 0.006 );
   }
@@ -300,14 +304,15 @@ int attack_t::build_table( double* chances,
 
   int delta_level = target -> level - player -> level;
 
-  if ( may_miss   )   miss =   miss_chance( delta_level );
-  if ( may_dodge  )  dodge =  dodge_chance( player -> level, target -> level );
-  if ( may_parry  )  parry =  parry_chance( player -> level, target -> level );
+  if ( may_miss   )   miss =   miss_chance( delta_level ) + target -> composite_tank_miss( school );
+  if ( may_dodge  )  dodge =  dodge_chance( player -> level, target -> level ) + target -> composite_tank_dodge();
+  if ( may_parry  )  parry =  parry_chance( player -> level, target -> level ) + target -> composite_tank_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
-  if ( may_block && target -> block_value > 0 )
+  if ( may_block )
   {
-    block = block_chance( delta_level );
+    block = block_chance( delta_level ) + target -> composite_tank_block();
+
   }
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations

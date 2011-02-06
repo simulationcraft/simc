@@ -1073,7 +1073,6 @@ const char* util_t::stat_type_string( int stat )
   case STAT_PARRY_RATING:      return "parry_rating";
 
   case STAT_BLOCK_RATING: return "block_rating";
-  case STAT_BLOCK_VALUE:  return "block_value";
 
   case STAT_MASTERY_RATING: return "mastery_rating";
 
@@ -1125,7 +1124,6 @@ const char* util_t::stat_type_abbrev( int stat )
   case STAT_PARRY_RATING:      return "Parry";
 
   case STAT_BLOCK_RATING: return "BlockR";
-  case STAT_BLOCK_VALUE: return "BlockV";
 
   case STAT_MASTERY_RATING: return "Mastery";
 
@@ -1174,7 +1172,6 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_PARRY_RATING:      return "parryrtng";
 
   case STAT_BLOCK_RATING: return "blockrtng";
-  case STAT_BLOCK_VALUE: return "block";
 
   case STAT_MASTERY_RATING: return "mastrtng";
 
@@ -1341,7 +1338,6 @@ stat_type util_t::translate_item_mod( int item_mod )
   case ITEM_MOD_ATTACK_POWER:        return STAT_ATTACK_POWER;
   case ITEM_MOD_RANGED_ATTACK_POWER: return STAT_ATTACK_POWER;
   case ITEM_MOD_SPELL_POWER:         return STAT_SPELL_POWER;
-  case ITEM_MOD_BLOCK_VALUE:         return STAT_BLOCK_VALUE;
   case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
   case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
   case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
