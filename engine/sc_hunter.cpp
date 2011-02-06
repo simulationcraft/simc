@@ -203,6 +203,7 @@ struct hunter_t : public player_t
     ranged_attack = 0;
     summon_pet_str = "";
     hunter_position = "back";
+    distance = 40;
     base_gcd = 1.0;
 
     create_talents();
@@ -328,7 +329,7 @@ struct hunter_pet_t : public pet_t
     case PET_CARRION_BIRD: return NULL;
     case PET_CAT:          return NULL;
     case PET_CORE_HOUND:   return NULL;
-    case PET_DEVILSAUR:    return "monstrous_bite";
+    case PET_DEVILSAUR:    return "furious_howl";
     case PET_HYENA:        return NULL;
     case PET_MOTH:         return NULL;
     case PET_RAPTOR:       return NULL;
@@ -1578,6 +1579,7 @@ struct aimed_shot_mm_t : public hunter_attack_t
 struct aimed_shot_t : public hunter_attack_t
 {
   aimed_shot_mm_t* as_mm;
+  int casted;
   aimed_shot_t( player_t* player, const std::string& options_str ) :
       hunter_attack_t( "aimed_shot", player, "Aimed Shot" ), as_mm( 0 )
   {
@@ -1598,6 +1600,8 @@ struct aimed_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     normalize_weapon_speed = true;
+    
+    casted = 0;
 
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
@@ -1631,13 +1635,18 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::schedule_execute();
-    if ( time_to_execute > 0 ) p -> ranged_attack -> cancel();
+    if ( time_to_execute > 0 ) {
+      p -> ranged_attack -> cancel();
+      casted = 1;
+    } else {
+      casted = 0;
+    }
   }
 
   virtual void execute()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_master_marksman_fire -> check() )
+    if ( !casted )
     {
       as_mm -> execute();
     }
@@ -2112,6 +2121,24 @@ struct steady_shot_t : public hunter_attack_t
     p -> buffs_pre_improved_steady_shot -> trigger( 1 );
   }
 
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    hunter_t* p = player -> cast_hunter();
+    hunter_attack_t::travel( t, travel_result, travel_dmg);
+
+    if ( result_is_hit() && ! p -> buffs_master_marksman_fire -> check() )
+    {
+      if ( p -> buffs_master_marksman -> trigger() )
+      {
+        if ( p -> buffs_master_marksman -> stack() == 5 )
+        {
+          p -> buffs_master_marksman_fire -> trigger();
+          p -> buffs_master_marksman -> expire();
+        }
+      }
+    }
+  }
+
   void execute()
   {
     hunter_attack_t::execute();
@@ -2124,14 +2151,6 @@ struct steady_shot_t : public hunter_attack_t
 
       p -> resource_gain( RESOURCE_FOCUS, focus, p -> gains_steady_shot );
 
-      if ( p -> buffs_master_marksman -> trigger() )
-      {
-	if ( p -> buffs_master_marksman -> stack() == 5 )
-	{
-	  p -> buffs_master_marksman_fire -> trigger();
-	  p -> buffs_master_marksman -> expire();
-	}
-      }
       if ( result == RESULT_CRIT )
       {
         trigger_piercing_shots( this );
