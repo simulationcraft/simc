@@ -1,0 +1,14 @@
+chardev=11857 name=Warlock_AffDrain_T11_359 save=Warlock_AffDrain_T11_359.simc
+chardev=11849 name=Warlock_Affliction_T11_359 save=Warlock_Affliction_T11_359.simc
+chardev=11853 name=Warlock_Demonology_T11_359 save=Warlock_Demonology_T11_359.simc
+chardev=11144 name=Warlock_Destruction_T11_359 save=Warlock_Destruction_T11_359.simc
+
+chardev=11883 name=Warlock_AffDrain_PreRaid save=Warlock_AffDrain_PreRaid.simc
+chardev=11882 name=Warlock_Affliction_PreRaid save=Warlock_Affliction_PreRaid.simc
+chardev=11885 name=Warlock_Demonology_PreRaid save=Warlock_Demonology_PreRaid.simc
+chardev=11879 name=Warlock_Destruction_PreRaid save=Warlock_Destruction_PreRaid.simc
+
+chardev=11962 name=Warlock_AffDrain_T11_372 save=Warlock_AffDrain_T11_372.simc
+chardev=11959 name=Warlock_Affliction_T11_372 save=Warlock_Affliction_T11_372.simc
+chardev=11963 name=Warlock_Demonology_T11_372 save=Warlock_Demonology_T11_372.simc
+chardev=11905 name=Warlock_Destruction_T11_372 save=Warlock_Destruction_T11_372.simc

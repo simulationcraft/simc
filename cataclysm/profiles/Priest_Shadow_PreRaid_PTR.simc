@@ -1,0 +1,66 @@
+#!./simc 
+
+priest=Priest_Shadow_PreRaid_PTR
+origin="http://chardev.org/?profile=22524"
+level=85
+race=troll
+use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231
+glyphs=spirit_tap/fading/fortitude/levitate/mind_flay/shadow_word_death/shadow_word_pain
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/fortitude
+actions+=/inner_fire
+actions+=/shadow_form
+actions+=/vampiric_embrace
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/mind_blast,if=buff.shadow_orb.stack>=1
+actions+=/berserking
+actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react
+actions+=/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+0.5)&miss_react
+actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+0.5
+actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+0.5)&miss_react
+actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
+actions+=/archangel,if=buff.dark_evangelism.stack>=5&dot.vampiric_touch.remains>5&dot.devouring_plague.remains>5
+actions+=/shadow_word_death,health_percentage<=25
+actions+=/shadow_fiend
+actions+=/mind_blast
+actions+=/mind_flay
+actions+=/dispersion,moving=1
+actions+=/devouring_plague,moving=1,if=mana_pct>10
+actions+=/shadow_word_death,moving=1
+actions+=/dispersion
+head=helm_of_the_typhonic_beast,heroic=1,type=cloth,ilevel=346,quality=rare,stats=942armor_162hit_242int_182mastery_454sta,reforge=mastery_haste,gems=burning_shadowspirit_20haste_20int_30int,enchant=60int_35crit
+neck=dorians_lost_necklace,ilevel=359,quality=epic,stats=134haste_190int_114mastery_286sta
+shoulders=kyrstel_mantle,heroic=1,type=cloth,ilevel=346,quality=rare,stats=870armor_111haste_205int_161spi_337sta,gems=67int,enchant=50int_25haste
+chest=robes_of_rampant_growth,heroic=1,type=cloth,ilevel=346,quality=rare,stats=1160armor_202crit_162haste_262int_454sta,reforge=crit_mastery,gems=20haste_20int_20int_20spi_20int,enchant=20all
+waist=belt_of_the_depths,type=cloth,ilevel=359,quality=epic,stats=704armor_165haste_233int_152spi_380sta,gems=20int_20spi_67int_10int
+legs=breeches_of_mended_nightmares,type=cloth,ilevel=359,quality=epic,stats=1094armor_214crit_216haste_321int_512sta,reforge=crit_mastery,gems=67int_10haste,enchant=95int_55spi
+feet=desert_walker_sandals,type=cloth,ilevel=359,quality=epic,stats=860armor_149haste_169hit_233int_380sta,gems=40int,enchant=35mastery
+wrists=baron_ashburys_cuffs,heroic=1,type=cloth,ilevel=346,quality=rare,stats=507armor_168int_112mastery_112spi_252sta,enchant=50int
+hands=flamebloom_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_149haste_233int_169mastery_380sta,gems=20int_20spi_10int,enchant=65mastery
+finger1=signet_of_high_arcanist_savor,ilevel=359,quality=epic,stats=131crit_121hit_190int_286sta,reforge=crit_mastery
+finger2=ring_of_the_boy_emperor,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta
+trinket1=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+trinket2=stump_of_time,ilevel=359,quality=epic,stats=321hit,equip=onspellcast_1926sp_10%_15dur_75cd
+back=solar_wind_cloak,heroic=1,ilevel=346,quality=rare,stats=580armor_112haste_168int_112spi_252sta,enchant=lightweave_embroidery
+main_hand=chelleys_staff_of_dark_mending,ilevel=359,quality=epic,stats=341int_228mastery_228spi_1955sp_512sta,reforge=mastery_haste,enchant=power_torrent,weapon=staff_2.40speed_443min_666max
+ranged=wand_of_untainted_power,heroic=1,ilevel=346,quality=rare,stats=63haste_95int_63spi_143sta
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=4934
+# gear_intellect=3811
+# gear_spirit=964
+# gear_spell_power=1955
+# gear_hit_rating=773
+# gear_crit_rating=365
+# gear_haste_rating=1754
+# gear_mastery_rating=1279
+# gear_armor=7499
+# meta_gem=burning_shadowspirit
+# back=solar_wind_cloak,heroic=1,enchant=lightweave_embroidery
+# main_hand=chelleys_staff_of_dark_mending,weapon=staff_2.40speed_443min_666max,enchant=power_torrent

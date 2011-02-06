@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D963926C-4A85-4600-8626-51FA12FDF5C1}</ProjectGuid>
+    <RootNamespace>simc</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PrecompiledHeaderFile>simulationcraft.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="engine\sc_action.cpp" />
+    <ClCompile Include="engine\sc_armory.cpp" />
+    <ClCompile Include="engine\sc_attack.cpp" />
+    <ClCompile Include="engine\sc_battle_net.cpp" />
+    <ClCompile Include="engine\sc_buff.cpp" />
+    <ClCompile Include="engine\sc_chardev.cpp" />
+    <ClCompile Include="engine\sc_chart.cpp" />
+    <ClCompile Include="engine\sc_const_data.cpp" />
+    <ClCompile Include="engine\sc_consumable.cpp" />
+    <ClCompile Include="engine\sc_data.cpp" />
+    <ClCompile Include="engine\sc_data_access.cpp" />
+    <ClCompile Include="engine\sc_death_knight.cpp" />
+    <ClCompile Include="engine\sc_druid.cpp" />
+    <ClCompile Include="engine\sc_enchant.cpp" />
+    <ClCompile Include="engine\sc_event.cpp" />
+    <ClCompile Include="engine\sc_expressions.cpp" />
+    <ClCompile Include="engine\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sc_heal.cpp" />
+    <ClCompile Include="engine\sc_http.cpp" />
+    <ClCompile Include="engine\sc_hunter.cpp" />
+    <ClCompile Include="engine\sc_item.cpp" />
+    <ClCompile Include="engine\sc_js.cpp" />
+    <ClCompile Include="engine\sc_log.cpp" />
+    <ClCompile Include="engine\sc_mage.cpp" />
+    <ClCompile Include="engine\sc_main.cpp" />
+    <ClCompile Include="engine\sc_mmo_champion.cpp" />
+    <ClCompile Include="engine\sc_option.cpp" />
+    <ClCompile Include="engine\sc_paladin.cpp" />
+    <ClCompile Include="engine\sc_pet.cpp" />
+    <ClCompile Include="engine\sc_player.cpp" />
+    <ClCompile Include="engine\sc_plot.cpp" />
+    <ClCompile Include="engine\sc_priest.cpp" />
+    <ClCompile Include="engine\sc_raid_event.cpp" />
+    <ClCompile Include="engine\sc_rating.cpp" />
+    <ClCompile Include="engine\sc_rawr.cpp" />
+    <ClCompile Include="engine\sc_report.cpp" />
+    <ClCompile Include="engine\sc_rng.cpp" />
+    <ClCompile Include="engine\sc_rogue.cpp" />
+    <ClCompile Include="engine\sc_scaling.cpp" />
+    <ClCompile Include="engine\sc_sequence.cpp" />
+    <ClCompile Include="engine\sc_set_bonus.cpp" />
+    <ClCompile Include="engine\sc_shaman.cpp" />
+    <ClCompile Include="engine\sc_sim.cpp" />
+    <ClCompile Include="engine\sc_spell.cpp" />
+    <ClCompile Include="engine\sc_spell_data.cpp" />
+    <ClCompile Include="engine\sc_spell_info.cpp" />
+    <ClCompile Include="engine\sc_stats.cpp" />
+    <ClCompile Include="engine\sc_talent.cpp" />
+    <ClCompile Include="engine\sc_target.cpp" />
+    <ClCompile Include="engine\sc_thread.cpp" />
+    <ClCompile Include="engine\sc_unique_gear.cpp" />
+    <ClCompile Include="engine\sc_util.cpp" />
+    <ClCompile Include="engine\sc_warlock.cpp" />
+    <ClCompile Include="engine\sc_warrior.cpp" />
+    <ClCompile Include="engine\sc_weapon.cpp" />
+    <ClCompile Include="engine\sc_wowhead.cpp" />
+    <ClCompile Include="engine\sc_xml.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine\simulationcraft.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="engine\data_definitions.hh" />
+    <None Include="engine\data_enums.hh" />
+    <None Include="engine\utf8.h" />
+    <None Include="engine\utf8\checked.h" />
+    <None Include="engine\utf8\core.h" />
+    <None Include="engine\utf8\unchecked.h" />
+    <None Include="engine\sc_extra_data.inc" />
+    <None Include="engine\sc_extra_data_ptr.inc" />
+    <None Include="engine\sc_item_data.inc" />
+    <None Include="engine\sc_item_data_ptr.inc" />
+    <None Include="engine\sc_scale_data.inc">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="engine\sc_scale_data_ptr.inc">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="engine\sc_spell_data.inc">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="engine\sc_spell_data_ptr.inc">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="engine\sc_spell_lists.inc" />
+    <None Include="engine\sc_spell_lists_ptr.inc" />
+    <None Include="engine\sc_talent_data.inc" />
+    <None Include="engine\sc_talent_data_ptr.inc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
