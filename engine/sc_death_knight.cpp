@@ -2146,7 +2146,7 @@ struct melee_t : public death_knight_attack_t
       if ( p -> ptr )
       {
         if ( weapon -> slot == SLOT_MAIN_HAND ) // PPM modeled off Maelstrom for now
-          p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() * 2.0 ) );
+          p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() * 1.0 ) );
         if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
           p -> buffs_crimson_scourge -> trigger();
       }
