@@ -2081,6 +2081,10 @@ struct slam_attack_t : public warrior_attack_t
     {
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
     }
+    if ( p -> ptr && p -> buffs_lambs_to_the_slaughter -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
+    }
   }
 };
 
@@ -2144,17 +2148,6 @@ struct slam_t : public warrior_attack_t
       }
     }
     p -> buffs_bloodsurge -> decrement();
-  }
-
-  virtual void player_buff()
-  {
-    warrior_attack_t::player_buff();
-    warrior_t* p = player -> cast_warrior();
-
-    if ( p -> ptr && p -> buffs_lambs_to_the_slaughter -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
-    }
   }
 };
 
