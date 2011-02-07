@@ -686,7 +686,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
   if ( s -> sim -> log )
   {
-    log_t::output( s -> sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
+    log_t::output( s -> sim, "%s gains %d (%d) %s from %s (%d)",
                    p -> name(), actual_gain, gain,
                    "Eclipse", s -> name(),
                    p -> eclipse_bar_value );
