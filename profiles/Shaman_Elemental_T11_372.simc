@@ -3,11 +3,11 @@
 shaman=Shaman_Elemental_T11_372
 origin="http://chardev.org/?profile=14385"
 level=85
-race=tauren
+race=troll
 use_pre_potion=1
 professions=alchemy=525/enchanting=525
 talents=http://www.wowhead.com/talent#shaman-303202321223110132120300220000000000000000000000000000000
-glyphs=chain_lightning/thunder/lightning_shield/renewed_life/astral_recall/thunderstorm/flame_shock/lightning_bolt/lava_burst
+glyphs=chain_lightning/thunder/healing_stream_totem/thunderstorm/astral_recall/renewed_life/flame_shock/lightning_bolt/lava_burst
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/flametongue_weapon,weapon=main
@@ -19,6 +19,7 @@ actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
 actions+=/wind_shear
 actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,time_to_die<=60
+actions+=/berserking
 actions+=/elemental_mastery
 actions+=/flame_shock,if=!ticking
 actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05

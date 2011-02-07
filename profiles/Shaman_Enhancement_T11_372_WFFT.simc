@@ -3,11 +3,11 @@
 shaman=Shaman_Enhancement_T11_372_WFFT
 origin="http://chardev.org/?profile=14192"
 level=85
-race=tauren
+race=troll
 use_pre_potion=1
 professions=alchemy=525/enchanting=525
 talents=http://www.wowhead.com/talent#shaman-302200300000000000023033200130230123210000000000000000000
-glyphs=chain_lightning/ghost_wolf/lightning_shield/renewed_life/astral_recall/water_walking/windfury_weapon/stormstrike/lava_lash
+glyphs=chain_lightning/lightning_shield/ghost_wolf/renewed_life/astral_recall/water_walking/windfury_weapon/lava_lash/stormstrike
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/windfury_weapon,weapon=main
@@ -22,6 +22,7 @@ actions+=/auto_attack
 actions+=/wind_shear
 actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,time_to_die<=60
+actions+=/berserking
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react
 actions+=/searing_totem
 actions+=/lava_lash
