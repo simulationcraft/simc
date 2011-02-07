@@ -1,7 +1,7 @@
-#!./simc
+#!./simc 
 
 mage=Mage_Arcane_T11_372_PTR
-origin="http://chardev.org/?profile=28339"
+origin="http://chardev.org/?profile=35357"
 level=85
 race=gnome
 use_pre_potion=1
@@ -19,9 +19,6 @@ actions+=/counterspell
 actions+=/use_item,name=shard_of_woe,if=cooldown.evocation.remains<26
 actions+=/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86
 actions+=/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
-actions+=/blood_fury,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
-actions+=/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20
-actions+=/arcane_torrent,if=mana_pct<75
 actions+=/arcane_power,if=target.time_to_die<40
 actions+=/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4
 actions+=/mana_gem,if=target.time_to_die<40
@@ -40,7 +37,7 @@ actions+=/arcane_missiles
 actions+=/arcane_barrage
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=ember_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit
 shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,gems=40int_10haste,enchant=50int_25haste
 chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=crit_hit,gems=40int_20hit_20int_20int,enchant=20all
@@ -61,15 +58,15 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5913
-# gear_intellect=4897
+# gear_intellect=4887
 # gear_spirit=21
 # gear_spell_power=2207
-# gear_hit_rating=1708
+# gear_hit_rating=1658
 # gear_crit_rating=446
 # gear_haste_rating=2066
 # gear_mastery_rating=1053
 # gear_armor=8479
-# meta_gem=ember_shadowspirit
+# meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # trinket2=shard_of_woe,heroic=1
