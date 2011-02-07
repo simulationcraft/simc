@@ -258,8 +258,7 @@ double attack_t::parry_chance( int source_level, int target_level ) SC_CONST
 
 double attack_t::glance_chance( int delta_level ) SC_CONST
 {
-  int i = delta_level > 0 ? 1 : -1;
-  return i * ( abs( delta_level ) + 1 ) * 0.06;
+  return (  delta_level  + 1 ) * 0.06;
 }
 
 // attack_t::block_chance ===================================================
