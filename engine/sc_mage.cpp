@@ -3198,7 +3198,7 @@ void mage_t::init_actions()
         if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*15)<target.time_to_die";
       }
       if ( level >= 12 ) action_list_str += "/evocation,if=mana_pct<5&target.time_to_die>60";
-      if ( glyphs.frostbolt )
+      if ( glyphs.frostbolt -> ok() )
       {
         action_list_str += "/frostbolt";
       }
