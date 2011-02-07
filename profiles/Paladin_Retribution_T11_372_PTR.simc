@@ -1,12 +1,13 @@
 #!./simc 
 
 paladin=Paladin_Retribution_T11_372_PTR
+origin="http://chardev.org/?profile=35838"
 level=85
-race=tauren
+race=human
 use_pre_potion=1
-professions=Enchanting=525/Jewelcrafting=525
-talents=http://www.wowarmory.com/talent-calc.xml?cid=2&tal=203002000000000000000200000000000000000023203213211113012301
-glyphs=templars_verdict/exorcism/seal_of_truth/the_ascetic_crusader/hammer_of_wrath
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
+glyphs=the_ascetic_crusader/hammer_of_wrath/templars_verdict/exorcism/seal_of_truth
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/seal_of_truth
@@ -30,19 +31,36 @@ actions+=/judgement
 actions+=/holy_wrath
 actions+=/consecration
 actions+=/divine_plea
-head=reinforced_sapphirium_helmet,heroic=1,type=plate,stats=325str_578sta_257haste_197exp_2891armor,reforge=exp_mastery,gems=reverberating_shadowspirit_20str_20haste_30str,enchant=60str_35mastery
-neck=gift_of_nadun,stats=190str_286sta_127haste_127crit,reforge=haste_mastery
-shoulders=reinforced_sapphirium_pauldrons,heroic=1,type=plate,stats=266str_429sta_191haste_171hit_2669armor,gems=67str_10haste,enchant=50str_25crit,reforge=haste_mastery
-chest=reinforced_sapphirium_battleplate,heroic=1,type=plate,stats=345str_578sta_257crit_217haste_3559armor,gems=67str_20str_20hit_20str,enchant=20all
-waist=belt_of_absolute_zero,heroic=1,type=plate,stats=266str_429sta_191crit_171hit_2002armor,gems=67str_40str_10hit,reforge=crit_mastery
-legs=terrastras_legguards,heroic=1,type=plate,stats=345str_578sta_257haste_217hit_3114armor,gems=20str_20haste_20str_20haste_20haste,enchant=190ap_55crit,reforge=haste_mastery
-feet=treads_of_savage_beatings,heroic=1,type=plate,stats=266str_429sta_191crit_171haste_2447armor,gems=20str_20haste_10crit,enchant=50haste,reforge=haste_mastery
-wrists=bracers_of_the_matredor,type=plate,stats=229str_344sta_113haste_153crit_1589armor,gems=20str_20haste_10str,enchant=50str,reforge=haste_mastery
-hands=reinforced_sapphirium_gauntlets,heroic=1,type=plate,stats=266str_429sta_191haste_171mastery_2224armor,reforge=mastery_exp,gems=40str,enchant=50str
-finger1=dargonaxs_signet,stats=229str_344sta_113crit_153mastery,reforge=mastery_exp,gems=20str_20haste_10haste,enchant=40str
-finger2=ring_of_rivalry,heroic=1,stats=215str_322sta_143haste_143mastery,reforge=mastery_exp,enchant=40str
-trinket1=crushing_weight,heroic=1,stats=363str,equip=onattackhit_2178haste_10%_15dur_60cd
-trinket2=license_to_slay,stats=321hit,equip=onattackhit_38str_10stack_15dur
-back=glittering_epidermis,heroic=1,stats=215str_322sta_143crit_143haste_673armor,enchant=65crit,reforge=haste_mastery
-main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,stats=385str_578sta_257crit_257hit,enchant=landslide,weapon=sword2h_3.80speed_1658min_3079max,reforge=crit_mastery
-ranged=relic_of_aggramar,stats=107str_161sta_72crit_72exp,gems=40str,reforge=crit_mastery
+head=dragon_bone_warhelm,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_135exp_325mastery_578sta_293str,gems=reverberating_shadowspirit_40str_45sta,enchant=60str_35mastery
+neck=rage_of_ages,heroic=1,ilevel=372,quality=epic,stats=143hit_143mastery_322sta_215str
+shoulders=reinforced_sapphirium_pauldrons,heroic=1,type=plate,ilevel=372,quality=epic,stats=2669armor_191haste_171hit_429sta_266str,reforge=haste_mastery,gems=40str_10haste,enchant=50str_25crit
+chest=reinforced_sapphirium_battleplate,heroic=1,type=plate,ilevel=372,quality=epic,stats=3559armor_257crit_217haste_578sta_345str,reforge=haste_mastery,gems=40str_20agi_20hit_20str,enchant=20all
+waist=sky_strider_belt_of_the_faultline,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_429sta_266str_180haste_180mastery,reforge=haste_hit,gems=20mastery_20str_67str_10str,suffix=223
+legs=reinforced_sapphirium_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_217hit_257mastery_578sta_345str,gems=40str_40str,enchant=190ap_55crit
+feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_171exp_191mastery_429sta_266str,gems=40str,enchant=50mastery
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_mastery,gems=20mastery_20str_67str_10str,enchant=50str
+hands=reinforced_sapphirium_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191haste_171mastery_429sta_266str,reforge=haste_hit,gems=40str_67str,enchant=50str
+finger1=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,reforge=crit_hit,gems=20mastery_20str_10str
+finger2=ring_of_rivalry,heroic=1,ilevel=372,quality=epic,stats=143haste_143mastery_322sta_215str,reforge=haste_hit
+trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_50cd
+trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_mastery,equip=onattackhit_2178str_10%_20dur_100cd
+back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,reforge=haste_mastery,enchant=65crit
+main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,ilevel=372,quality=epic,stats=257crit_257hit_578sta_385str,reforge=hit_exp,enchant=landslide,weapon=sword2h_3.80speed_2138min_3209max
+ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107str,reforge=crit_hit,gems=40str
+# Gear Summary
+# gear_strength=4920
+# gear_agility=40
+# gear_stamina=5908
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=190
+# gear_expertise_rating=698
+# gear_hit_rating=984
+# gear_crit_rating=1067
+# gear_haste_rating=719
+# gear_mastery_rating=2117
+# gear_armor=21168
+# meta_gem=reverberating_shadowspirit
+# tier11_2pc_melee=1
+# tier11_4pc_melee=1
+# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=sword2h_3.80speed_2138min_3209max,enchant=landslide
