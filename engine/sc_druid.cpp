@@ -3338,12 +3338,12 @@ struct wrath_t : public druid_spell_t
         {
           gain *= 2;
           if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
-            gain += 1;
+            gain -= 1;
         }
         else 
         {
           if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
-            gain += 1;
+            gain -= 1;
         }
         trigger_eclipse_energy_gain( this, gain );
       }
