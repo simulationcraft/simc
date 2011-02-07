@@ -2409,7 +2409,7 @@ struct flame_shock_t : public shaman_spell_t
     parse_options( options, options_str );
 
     tick_may_crit         = true;
-
+    dot_behavior          = DOT_REFRESH;
     m_dd_additive         = 
       p -> talent_concussion -> mod_additive( P_GENERIC );
                                   
@@ -3706,8 +3706,8 @@ void shaman_t::init_buffs()
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
   buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
   // Note the chance override, as the spell itself does not have a proc chance
-  buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery", 1.0 );
-  buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry"                );
+  buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery",         1.0 );
+  buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() );
   buffs_lightning_shield        = new lightning_shield_buff_t( this, player_data.find_class_spell( type, "Lightning Shield" ), "lightning_shield"      );
   // Enhancement T10 4Piece Bonus
   buffs_maelstrom_power         = new maelstrom_power_t      ( this, 70831,                                                    "maelstrom_power"       );
@@ -3800,11 +3800,7 @@ void shaman_t::init_actions()
       
       action_list_str += "/flametongue_weapon,weapon=off";
       action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
-      if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
-      if ( level > 80 )
-        action_list_str += "/tolvir_potion,if=!in_combat";
-      else
-        action_list_str += "/speed_potion,if=!in_combat";
+      action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
@@ -3827,11 +3823,6 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
 
-      if ( level > 80 )
-        action_list_str += "/tolvir_potion,if=buff.bloodlust.react";
-      else
-        action_list_str += "/speed_potion,if=buff.bloodlust.react";
-        
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
       
       if ( set_bonus.tier10_4pc_melee() )
@@ -3850,6 +3841,7 @@ void shaman_t::init_actions()
       action_list_str += "/flame_shock,if=!ticking";
       action_list_str += "/earth_shock";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
+      if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/fire_nova";
       if ( level <= 80 || set_bonus.tier10_2pc_melee() )
       {
@@ -3867,11 +3859,7 @@ void shaman_t::init_actions()
       action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       action_list_str += "/snapshot_stats";
-      
-      if ( level > 80 )
-        action_list_str += "/volcanic_potion,if=!in_combat";
-      else
-        action_list_str += "/speed_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react";
       
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,time_to_die<=60";
@@ -3891,16 +3879,6 @@ void shaman_t::init_actions()
       else if ( race == RACE_TROLL )
       {
         action_list_str += "/berserking";
-      }
-      
-      if ( level > 80 )
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react";
-      else
-      {
-        if ( set_bonus.tier10_2pc_caster() )
-          action_list_str += "/wild_magic_potion,if=buff.bloodlust.react";
-        else
-          action_list_str += "/speed_potion";
       }
       
       if ( talent_elemental_mastery -> rank() )
