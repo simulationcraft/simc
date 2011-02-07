@@ -3342,9 +3342,6 @@ struct wrath_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
     druid_t* p = player -> cast_druid();
 
     if ( ! prev_str.empty() )
@@ -3356,7 +3353,7 @@ struct wrath_t : public druid_spell_t
         return false;
     }
 
-    return true;
+    return druid_spell_t::ready();
   }
 };
 
@@ -3554,18 +3551,15 @@ void druid_t::init_base()
 {
   player_t::init_base();
 
-  initial_spell_power_per_spirit = 0.0;
-
-  base_attack_power = level * (level > 80 ? 3.0 : 2.0);
+  base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
-  initial_attack_power_per_agility  = 0.0;
   initial_attack_power_per_strength = 2.0;
   initial_spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
   base_miss    = 0.05;
-  initial_armor_multiplier  = 1.0 + util_t::talent_rank( talents.thick_hide -> rank(), 3, 0.04, 0.07, 0.10 );
+  initial_armor_multiplier  = 1.0 + talents.thick_hide -> effect_base_value( 1 ) / 100.0;
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_capi = 0.008555;
@@ -3596,7 +3590,6 @@ void druid_t::init_base()
   }
 
   base_gcd = 1.5;
-
 }
 
 // druid_t::init_buffs ======================================================
@@ -3833,16 +3826,17 @@ void druid_t::init_actions()
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += "/savage_roar,if=target.time_to_die>=9&buff.combo_points.stack>=5&dot.rip.ticking&dot.rip.remains<=12&@(dot.rip.remains-buff.savage_roar.remains)<=3";
         action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&buff.combo_points.stack>=5)|target.time_to_die<=1";
-        action_list_str += "/ferocious_bite,if=level<=80&buff.combo_points.stack>=5&dot.rip.remains>=8.0&buff.savage_roar.remains>=4.0";
-        action_list_str += "/ferocious_bite,if=level>80&buff.combo_points.stack>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
+        if ( level <= 80 )
+        {
+          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8.0&buff.savage_roar.remains>=4.0";
+        }
+        else
+        {
+          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
+        }
         action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health_pct>25";
         action_list_str += "/ravage,if=buff.stampede_cat.up&!buff.omen_of_clarity.react&buff.tigers_fury.up";
-        action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.stack<3";
-        action_list_str += "/shred,if=buff.combo_points.stack<=4&dot.rake.remains>3.0&dot.rip.remains>3.0&(time_to_max_energy<=2.0|(buff.berserk.up&energy>=20))";
-        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/shred,if=target.time_to_die<=dot.rake.duration";
-        action_list_str += "/shred,if=buff.combo_points.stack=0&(buff.savage_roar.remains<=2.0|dot.rake.remains>=5.0)";
-        action_list_str += "/shred,if=!dot.rip.ticking|time_to_max_energy<=1.0";
+        action_list_str += "/shred";
       }
     }
     else
