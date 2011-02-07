@@ -1989,13 +1989,13 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int result, double dmg )
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::travel( t, result, dmg );
+    priest_spell_t::travel( t, travel_result, travel_dmg );
 
-    double health_loss = dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
+    double health_loss = travel_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
 
     p -> resource_loss( RESOURCE_HEALTH, health_loss );
 
@@ -2693,7 +2693,7 @@ struct _heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
 
     trigger_grace( t );
 
@@ -2771,7 +2771,7 @@ struct flash_heal_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
 
     trigger_grace( t );
   }
@@ -2886,7 +2886,7 @@ struct binding_heal_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
   }
 
   virtual void player_buff()
@@ -2976,7 +2976,7 @@ struct greater_heal_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
 
     trigger_grace( t );
   }
@@ -3110,7 +3110,7 @@ struct prayer_of_healing_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
 
     // Glyph
     if ( glyph )
@@ -3230,7 +3230,7 @@ struct circle_of_healing_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
   }
 
   virtual void player_buff()
@@ -3441,7 +3441,7 @@ struct penance_heal_tick_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    trigger_inspiration(travel_result, t );
+    trigger_inspiration( travel_result, t );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type)

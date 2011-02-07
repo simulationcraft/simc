@@ -2036,7 +2036,11 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::travel( t, travel_result, travel_dmg );
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       trigger_decimation( this, travel_result );
       trigger_impending_doom( this );
@@ -2162,7 +2166,11 @@ struct chaos_bolt_t : public warlock_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_spell_t::travel( t, travel_result, travel_dmg );
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       trigger_soul_leech( this );
     }
@@ -2184,7 +2192,11 @@ struct death_coil_t : public warlock_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_spell_t::travel( t, travel_result, travel_dmg);
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
     }
@@ -2208,7 +2220,11 @@ struct shadowburn_t : public warlock_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_spell_t::travel( t, travel_result, travel_dmg );
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       trigger_soul_leech( this );
     }
@@ -2335,7 +2351,11 @@ struct drain_life_t : public warlock_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_spell_t::travel( t, travel_result, travel_dmg );
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       trigger_everlasting_affliction( this );
     }
@@ -2587,7 +2607,11 @@ struct haunt_t : public warlock_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_spell_t::travel( t, travel_result, travel_dmg );
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       warlock_t* p = player -> cast_warlock();
       p -> buffs_haunted -> trigger();
@@ -2732,7 +2756,11 @@ struct conflagrate_t : public warlock_spell_t
    {
      warlock_t* p = player -> cast_warlock();
      warlock_spell_t::travel( t, travel_result, travel_dmg );
-     if ( result_is_hit() )
+     if ( travel_result == RESULT_HIT    ||
+          travel_result == RESULT_CRIT   ||
+          travel_result == RESULT_GLANCE ||
+          travel_result == RESULT_BLOCK  ||
+          travel_result == RESULT_NONE )
      {
        p -> buffs_backdraft -> trigger( 3 );
      }
@@ -2921,7 +2949,11 @@ struct soul_fire_t : public warlock_spell_t
     warlock_spell_t::travel( t, travel_result, travel_dmg );
 
 
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       warlock_t* p = player -> cast_warlock();
       trigger_decimation( this, travel_result );
@@ -3381,7 +3413,11 @@ struct hand_of_guldan_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::travel( t, travel_result, travel_dmg );
 
-    if ( result_is_hit() )
+    if ( travel_result == RESULT_HIT    ||
+         travel_result == RESULT_CRIT   ||
+         travel_result == RESULT_GLANCE ||
+         travel_result == RESULT_BLOCK  ||
+         travel_result == RESULT_NONE )
     {
       p -> buffs_hand_of_guldan -> trigger();
       trigger_impending_doom( this );
