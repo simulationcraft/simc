@@ -3153,7 +3153,7 @@ void mage_t::init_actions()
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=12";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
-      if ( glyphs.frostfire )
+      if ( glyphs.frostfire -> ok() )
       {
         action_list_str += "/frostfire_bolt,if=target.time_to_die<60";
         action_list_str += "/frostfire_bolt,if=mana_pct>39";
@@ -3189,7 +3189,7 @@ void mage_t::init_actions()
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
-      if ( glyphs.frostbolt )
+      if ( glyphs.frostbolt -> ok() )
       {
         if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*12)<target.time_to_die";
       }
