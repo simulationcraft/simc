@@ -3153,8 +3153,16 @@ void mage_t::init_actions()
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=12";
       if ( level >= 26 ) action_list_str += "/scorch,if=mana_pct<5";
-      action_list_str += "/fireball,if=target.time_to_die<60";
-      action_list_str += "/fireball,if=mana_pct>39";
+      if ( glyphs.frostfire )
+      {
+        action_list_str += "/frostfire_bolt,if=target.time_to_die<60";
+        action_list_str += "/frostfire_bolt,if=mana_pct>39";
+      }
+      else
+      {
+        action_list_str += "/fireball,if=target.time_to_die<60";
+        action_list_str += "/fireball,if=mana_pct>39";
+      }
       action_list_str += "/scorch,if=mana_pct<95&cooldown.evocation.remains>60";
       if ( level >= 12 ) action_list_str += "/evocation";
       if ( level >= 26 ) action_list_str += "/scorch"; // This can be free, so cast it last
@@ -3181,9 +3189,24 @@ void mage_t::init_actions()
       }
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       if ( level >= 28 ) action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
-      if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*12)<target.time_to_die";
+      if ( glyphs.frostbolt )
+      {
+        if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*12)<target.time_to_die";
+      }
+      else
+      {
+        if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*15)<target.time_to_die";
+      }
       if ( level >= 12 ) action_list_str += "/evocation,if=mana_pct<5&target.time_to_die>60";
-      action_list_str += "/frostbolt";
+      if ( glyphs.frostbolt )
+      {
+        action_list_str += "/frostbolt";
+      }
+      else
+      {
+        action_list_str += "/frostbolt,if=!cooldown.early_frost.remains";
+        action_list_str += "/frostfire_bolt";
+      }
       if ( level >= 28 ) action_list_str += "/ice_lance,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
