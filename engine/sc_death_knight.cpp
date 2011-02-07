@@ -3581,8 +3581,8 @@ struct scourge_strike_t : public death_knight_attack_t
 
       target_multiplier = p -> diseases() * 0.12;
 
-      // Shadow portion doesn't benefit from EP, gets +8% from E&M and *6% from CoE on live
-      if ( p -> bugs )
+      // Shadow portion doesn't benefit from EP, gets +8% from E&M and *6% from CoE on live, this was fixed on the PTR
+      if ( ! p -> ptr )
       {
         if ( t -> debuffs.earth_and_moon -> up() )
           target_multiplier += 0.08;

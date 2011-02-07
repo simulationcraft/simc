@@ -1306,8 +1306,8 @@ struct rake_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     dot_behavior        = DOT_REFRESH;
-    direct_power_mod    = 0.23;
-    tick_power_mod      = 0.14; // 0.42 / 3 ticks
+    direct_power_mod    = 0.0207;
+    tick_power_mod      = 0.378 / 3.0;
     num_ticks          += p -> talents.endless_carnage -> rank();
     base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
@@ -1406,7 +1406,7 @@ struct rip_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
-    ap_per_point          = 0.023;
+    ap_per_point          = 0.0207;
     requires_combo_points = true;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
 
@@ -1472,7 +1472,7 @@ struct savage_roar_t : public druid_cat_attack_t
 
     parse_options( NULL, options_str );
 
-    buff_value            = 0.50; // 30 in the DBC with no scaling factors
+    buff_value            = effect_base_value( 2 ) / 100.0;
     buff_value           += p -> glyphs.savage_roar ->base_value() / 100.0;
     harmful               = false;
     requires_combo_points = true;
@@ -1827,8 +1827,8 @@ struct lacerate_t : public druid_bear_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod     = 0.115;
-    tick_power_mod       = 0.0077;
+    direct_power_mod     = 0.0766;
+    tick_power_mod       = 0.00512;
     dot_behavior         = DOT_REFRESH;
     base_crit           += p -> glyphs.lacerate -> mod_additive( P_CRIT );
     mangle_bear_cooldown = p -> get_cooldown( "mangle_bear" );
@@ -1914,6 +1914,7 @@ struct maul_t : public druid_bear_attack_t
     
     aoe = 1;
     base_add_multiplier = p -> glyphs.maul -> effect_base_value( 3 ) / 100.0;
+    // FIX ME: DBC data points to base scaling, tooltip states AP scaling like Heroic Strike
   }
 
   virtual void execute()
@@ -2742,8 +2743,6 @@ struct moonkin_form_t : public druid_spell_t
     p -> buffs_moonkin_form -> start();
 
     sim -> auras.moonkin -> trigger();
-
-    p -> armor_multiplier += 2.2;
   }
 
   virtual bool ready()
@@ -3880,8 +3879,6 @@ void druid_t::init_actions()
       action_list_str += "/moonfire,if=!ticking";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
-      if ( set_bonus.tier11_4pc_caster() ) // refreshing moonfire right after eclipse locks in the crit
-        action_list_str += "&buff.lunar_eclipse.react";
       if ( talents.starfall -> rank() && ! glyphs.focus -> enabled() )
         action_list_str += "/starfall";
       action_list_str += "/insect_swarm,if=!ticking";
