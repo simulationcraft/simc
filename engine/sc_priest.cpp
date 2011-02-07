@@ -245,6 +245,7 @@ struct priest_t : public player_t
     int prayer_of_healing;
     int lightwell;
     int circle_of_healing;
+    int prayer_of_mending;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -1703,6 +1704,26 @@ struct mind_spike_t : public priest_spell_t
     // TO-DO: Hotfixed value from ingame.
     if ( ! player -> ptr )
       direct_power_mod = 0.8355;
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    priest_t* p = player -> cast_priest();
+
+    // Chakra PTR
+    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    {
+      p -> buffs_chakra_chastise -> trigger();
+
+      p -> buffs_chakra_pre -> expire();
+
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
+      p -> cooldowns_chakra -> start();
+    }
   }
 
   virtual void travel( player_t* t, int result, double dmg )
@@ -3291,6 +3312,16 @@ struct prayer_of_mending_t : public priest_heal_t
       p -> buffs_chakra_sanctuary -> extend_duration( player, 4 );
     }
   }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    priest_heal_t::target_debuff( t, dmg_type );
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> glyphs.prayer_of_mending && t == heal_target[1] )
+      target_multiplier *= 1.60;
+  }
 };
 
 // Power Word: Shield Spell ==============================================
@@ -3442,6 +3473,13 @@ struct penance_heal_t : public priest_heal_t
     base_execute_time = 0.0;
     num_ticks         = 2;
     base_tick_time    = 1.0;
+
+    if ( p -> ptr )
+    {
+      // FIXME: hardcoded for now.
+      base_cost *= 1.07;
+      base_cost         = floor( base_cost );
+    }
 
     cooldown -> duration  -= ( p -> glyphs.penance * 2 );
 
@@ -3938,6 +3976,8 @@ void priest_t::init_glyphs()
     else if ( n == "prayer_of_healing" ) glyphs.prayer_of_healing = 1;
     else if ( n == "lightwell"         ) glyphs.lightwell = 1;
     else if ( n == "circle_of_healing" ) glyphs.circle_of_healing = 1;
+    else if ( n == "prayer_of_mending" )
+      if ( ptr ) glyphs.prayer_of_mending = 1;
     // Just to prevent warnings....
     else if ( n == "dispel_magic"         ) ;
     else if ( n == "fade"                 ) ;
