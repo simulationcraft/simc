@@ -3120,18 +3120,18 @@ void hunter_t::init_actions()
     case TREE_MARKSMANSHIP:
       action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/serpent_sting,if=!ticking";
-      action_list_str += "/rapid_fire";
       if ( talents.chimera_shot -> rank() )
       {
-        action_list_str += "/chimera_shot";
+        action_list_str += "/chimera_shot,if=target.health_pct<=80|dot.serpent_sting.remains<3|time<5";
       }
-      action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5";
-      action_list_str += "/kill_shot";
+      action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
+      action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
+      action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
       if ( ptr && ! glyphs.arcane_shot -> ok() )
       {
-        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>6|focus>=80|(focus>=60&(buff.rapid_fire.up|buff.bloodlust.up))";
+        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|(target.health_pct>80&(dot.serpent_sting.remains>=5|focus>=65))";
       }
       else
       {
