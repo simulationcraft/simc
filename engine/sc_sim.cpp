@@ -983,14 +983,15 @@ bool sim_t::init()
   {
     t -> create_adds();
   }
-  for ( target_t* t = target_list; t; t = t -> next )
-  {
-    t -> init();
-  }
 
   raid_event_t::init( this );
 
   if ( ! player_t::init( this ) ) return false;
+
+  for ( target_t* t = target_list; t; t = t -> next )
+  {
+    t -> init();
+  }
 
   if ( report_precision < 0 ) report_precision = 3;
 
