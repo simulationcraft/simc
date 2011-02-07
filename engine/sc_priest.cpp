@@ -1385,11 +1385,6 @@ struct holy_fire_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
-
-    // FIXME: Holy_Evangelism
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
-    base_cost      *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
-    base_cost = floor( base_cost );
   }
 
   virtual void player_buff()
@@ -1398,7 +1393,7 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
   }
 
   virtual double cost() SC_CONST
@@ -1408,6 +1403,8 @@ struct holy_fire_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
+
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
 
     return c;
   }
@@ -1763,7 +1760,7 @@ struct penance_tick_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
   }
 };
 
@@ -1788,11 +1785,6 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    // FIXME: Holy_Evangelism
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
-    base_cost      *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_mana_value );
-    base_cost = floor( base_cost );
-
     cooldown -> duration  -= ( p -> glyphs.penance * 2 );
 
     penance_tick = new penance_tick_t( p );
@@ -1813,7 +1805,8 @@ struct penance_t : public priest_spell_t
     double c = priest_spell_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
+
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
 
     return c;
   }
@@ -2534,7 +2527,7 @@ struct smite_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    target_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
 
     if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite )
       player_multiplier *= 1.20;
@@ -2545,6 +2538,7 @@ struct smite_t : public priest_spell_t
     double c = priest_spell_t::cost();
 
     priest_t* p = player -> cast_priest();
+
     c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
 
     return c;
@@ -3469,7 +3463,9 @@ struct penance_heal_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     priest_t* p = player -> cast_priest();
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
+
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
+
 
     return c;
   }
