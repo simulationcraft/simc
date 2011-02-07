@@ -248,7 +248,7 @@ void target_t::init_base()
 
 void target_t::init_items()
 {
-  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=axe2h_3.00speed_80000min_100000max";
+  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=axe2h_3.00speed_100000min_120000max";
 
   player_t::init_items();
 }
