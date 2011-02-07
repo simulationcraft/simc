@@ -351,6 +351,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
+  virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      reset();
   virtual void      interrupt();
   virtual void      regen( double periodicity );
@@ -360,7 +361,7 @@ struct warrior_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
   virtual int       primary_role() SC_CONST;
-  virtual void      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
+  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
   virtual void      copy_from( player_t* source );
 };
 
@@ -1166,7 +1167,7 @@ struct bladestorm_tick_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    tick_dmg = direct_dmg;
+    actual_tick_dmg = actual_direct_dmg;
     update_stats( DMG_OVER_TIME );
   }
 };
@@ -3217,6 +3218,18 @@ double warrior_t::composite_tank_block() SC_CONST
   return b;
 }
 
+// warrior_t::composite_tank_crit ==========================================
+
+double warrior_t::composite_tank_crit( const school_type school ) SC_CONST
+{
+  double c = player_t::composite_tank_crit( school );
+
+  if ( school == SCHOOL_PHYSICAL && talents.bastion_of_defense -> rank() )
+    c += talents.bastion_of_defense -> effect_base_value( 1 ) / 100.0;
+
+  return c;
+}
+
 // warrior_t::regen =========================================================
 
 void warrior_t::regen( double periodicity )
@@ -3270,7 +3283,7 @@ int warrior_t::primary_role() SC_CONST
 
 // warrior_t::assess_damage ==================================================
 
-void warrior_t::assess_damage( double amount,
+double warrior_t::assess_damage( double amount,
     const school_type school,
     int    dmg_type,
     int result,
@@ -3313,6 +3326,8 @@ void warrior_t::assess_damage( double amount,
       }
     }
   }
+
+  return player_t::assess_damage( amount, school, dmg_type, result, a, s );
 }
 
 // warrior_t::create_options ================================================

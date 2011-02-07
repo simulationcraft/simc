@@ -1850,32 +1850,7 @@ double player_t::composite_tank_block() SC_CONST
 
 double player_t::composite_tank_crit( const school_type school ) SC_CONST
 {
-  double c = 0;
-
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    c = 0.05 + 0.002 * ( sim -> target -> level - level );
-
-    double delta = 5.0 * ( level - sim -> target -> level );
-
-    if( delta > 0 )
-    {
-      c -= delta * 0.0004;
-    }
-    else
-    {
-      c -= delta * 0.0002;
-    }
-  }
-  else
-  {
-    c = 0.05;
-  }
-
-  if      ( c > 1.0 ) c = 1.0;
-  else if ( c < 0.0 ) c = 0.0;
-
-  return c;
+  return 0;
 }
 
 // player_t::diminished_dodge ========================================
@@ -3020,19 +2995,21 @@ void player_t::stat_loss( int       stat,
 
 // player_t::assess_damage ==================================================
 
-void player_t::assess_damage( double amount,
+double player_t::assess_damage( double amount,
                               const school_type school,
                               int    dmg_type,
                               int result,
                               action_t* a,
                               player_t* s )
 {
-  resource_loss( RESOURCE_HEALTH, amount );
+  double actual_amount = resource_loss( RESOURCE_HEALTH, amount );
 
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
   {
     if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
   }
+
+  return actual_amount;
 }
 
 // player_t::summon_pet =====================================================

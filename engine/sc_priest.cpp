@@ -1753,7 +1753,7 @@ struct penance_tick_t : public priest_spell_t
   virtual void execute()
   {
     priest_spell_t::execute();
-    tick_dmg = direct_dmg;
+    actual_tick_dmg = actual_direct_dmg;
     update_stats( DMG_OVER_TIME );
   }
 
@@ -3492,7 +3492,7 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
   virtual void execute()
   {
     priest_heal_t::execute();
-    tick_dmg = direct_dmg;
+    actual_tick_dmg = actual_direct_dmg;
     update_stats( HEAL_OVER_TIME );
   }
 };

@@ -28,6 +28,7 @@ target_t::target_t( sim_t* s, const std::string& n, player_type pt ) :
   *last = this;
   next = 0;
 
+
 }
 
 // target_t::id =============================================================
@@ -46,7 +47,7 @@ const char* target_t::id()
 
 // target_t::assess_damage ==================================================
 
-void target_t::assess_damage( double amount,
+double target_t::assess_damage( double amount,
                               const school_type school,
                               int    dmg_type,
                               int travel_result,
@@ -67,6 +68,8 @@ void target_t::assess_damage( double amount,
     }
     else if ( sim -> debug ) log_t::output( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
+
+  return amount;
 }
 
 // target_t::recalculate_health ==============================================
@@ -206,6 +209,7 @@ void target_t::init_base()
 
   health_per_stamina = 10;
 
+  base_attack_crit = 0.05;
 
   if ( initial_armor < 0 )
   {
@@ -312,6 +316,17 @@ int target_t::primary_role() SC_CONST
   return ROLE_TANK;
 }
 
+// target_t::composite_tank_block ==================================================
+
+double target_t::composite_tank_block() SC_CONST
+{
+  double b = player_t::composite_tank_block();
+
+  b += 0.05;
+
+  return b;
+}
+
 // target_t::debuffs_t::snared ===============================================
 
 bool target_t::debuffs_t::snared()
@@ -335,6 +350,7 @@ struct auto_attack_t : public attack_t
     name_str = name_str + "_" + target -> name();
     cooldown -> duration = 3.0;
     min_gcd=0.0;
+    trigger_gcd = 0.0;
     may_crit = true;
 
     base_dd_min = base_dd_max = 1;
@@ -349,6 +365,7 @@ struct auto_attack_t : public attack_t
   {
     return 0;
   }
+
 };
 
 struct summon_add_t : public spell_t

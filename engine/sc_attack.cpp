@@ -265,14 +265,12 @@ double attack_t::glance_chance( int delta_level ) SC_CONST
 
 double attack_t::block_chance( int delta_level ) SC_CONST
 {
-  double chance = 0.05;
+  // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
+  // % is 5%, and not 5% + delta_level * 0.5%.
+  // Moved 5% to target_t::composite_tank_block
 
-  if ( target -> is_enemy() || target -> is_add() )
-    chance += delta_level * 0.005;
-  else
-    chance += delta_level * 0.002;
-
-  return chance;
+  // FIXME: Test Target -> Player
+  return 0;
 }
 
 // attack_t::crit_chance ====================================================
@@ -281,13 +279,21 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( abs(delta_level) > 2 )
+  if ( target -> is_enemy() || target -> is_add() )
   {
+    if ( delta_level > 2 )
+    {
     chance -= ( 0.03 + delta_level * 0.006 );
+    }
+    else
+    {
+    chance -= ( delta_level * 0.002 );
+    }
   }
   else
   {
-    chance -= ( delta_level * 0.002 );
+    // FIXME: Assume 0.2% per level
+    chance -= delta_level * 0.002;
   }
 
   return chance;
@@ -315,7 +321,7 @@ int attack_t::build_table( double* chances,
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations
   {
-    crit = crit_chance( delta_level );
+    crit = crit_chance( delta_level ) + target -> composite_tank_crit( school );
   }
 
   if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit=%.3f",

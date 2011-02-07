@@ -1199,7 +1199,7 @@ struct froststorm_breath_tick_t : public hunter_pet_spell_t
   virtual void execute()
     {
       hunter_pet_spell_t::execute();
-      tick_dmg = direct_dmg;
+      actual_tick_dmg = actual_direct_dmg;
       update_stats( DMG_OVER_TIME );
     }
 };

@@ -1920,7 +1920,7 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    tick_dmg = direct_dmg;
+    actual_tick_dmg = actual_direct_dmg;
 
     update_stats( DMG_OVER_TIME );
   }

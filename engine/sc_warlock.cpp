@@ -1301,7 +1301,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     virtual void execute()
     {
       warlock_pet_attack_t::execute();
-      tick_dmg = direct_dmg;
+      actual_tick_dmg = actual_direct_dmg;
       update_stats( DMG_OVER_TIME );
     }
   };
@@ -1603,7 +1603,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     virtual void execute()
     {
       warlock_pet_spell_t::execute();
-      tick_dmg = direct_dmg;
+      actual_tick_dmg = actual_direct_dmg;
       update_stats( DMG_OVER_TIME );
     }
   };
@@ -1913,6 +1913,7 @@ struct bane_of_doom_t : public warlock_spell_t
                               int travel_result )
   {
     warlock_spell_t::assess_damage( t, amount, DMG_DIRECT, travel_result );
+    actual_tick_dmg = actual_direct_dmg;
   }
 };
 
@@ -3261,7 +3262,7 @@ struct immolation_damage_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    tick_dmg = direct_dmg;
+    actual_tick_dmg = actual_direct_dmg;
     update_stats( DMG_OVER_TIME );
   }
 };
@@ -3612,7 +3613,7 @@ struct hellfire_tick_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    tick_dmg = direct_dmg;
+    actual_tick_dmg = actual_direct_dmg;
     update_stats( DMG_OVER_TIME );
   }
 };
@@ -3763,7 +3764,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     virtual void execute()
     {
       warlock_spell_t::execute();
-      tick_dmg = direct_dmg;
+      actual_tick_dmg = actual_direct_dmg;
       update_stats( DMG_OVER_TIME );
     }
 };

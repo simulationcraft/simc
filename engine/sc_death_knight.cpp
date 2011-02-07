@@ -372,10 +372,11 @@ struct death_knight_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_tank_parry() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual void      reset();
-  virtual void      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
+  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -384,7 +385,7 @@ struct death_knight_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
-  virtual int       primary_role() SC_CONST { return ROLE_ATTACK; }
+  virtual int       primary_role() SC_CONST;
   virtual void      trigger_runic_empowerment();
 
   int diseases()
@@ -4429,18 +4430,19 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::asses_damage =============================================
 
-void death_knight_t::assess_damage( double amount,
+double death_knight_t::assess_damage( double amount,
     const school_type school,
     int    dmg_type,
     int result,
     action_t* a,
     player_t* s )
 {
-  player_t::assess_damage( amount, school, dmg_type, result, a, s );
+  double actual_amount = player_t::assess_damage( amount, school, dmg_type, result, a, s );
 
   if ( result != RESULT_MISS )
     buffs_scent_of_blood -> trigger();
 
+  return actual_amount;
 }
 
 
@@ -4556,6 +4558,31 @@ double death_knight_t::composite_player_multiplier( const school_type school ) S
     m *= 1.0 + mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * composite_mastery();
 
   return m;
+}
+
+// death_knight_t::composite_tank_crit ==========================================
+
+double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
+{
+  double c = player_t::composite_tank_crit( school );
+
+  if ( school == SCHOOL_PHYSICAL && talents.improved_blood_presence -> rank() )
+    c += talents.improved_blood_presence -> effect_base_value( 2 ) / 100.0;
+
+  return c;
+}
+
+// death_knight_t::primary_role ====================================================
+
+int death_knight_t::primary_role() SC_CONST
+{
+
+  if ( player_t::primary_role() == ROLE_TANK )
+    return ROLE_TANK;
+
+  // Implement Automatic Tank detection
+
+  return ROLE_ATTACK;
 }
 
 // death_knight_t::interrupt ================================================

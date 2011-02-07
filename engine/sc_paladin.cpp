@@ -123,7 +123,7 @@ struct paladin_t : public player_t
     talent_t* toughness;
     talent_t* improved_hammer_of_justice;
     talent_t* hallowed_ground;
-    int sanctuary;
+    talent_t* sanctuary;
     talent_t* hammer_of_the_righteous;
     talent_t* wrath_of_the_lightbringer;
     talent_t* reckoning;
@@ -225,13 +225,14 @@ struct paladin_t : public player_t
   virtual double    composite_attack_expertise() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
+  virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST;
   virtual void      regen( double periodicity );
-  virtual void      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
+  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -1585,7 +1586,7 @@ struct consecration_tick_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( result_is_hit() )
     {
-      tick_dmg = direct_dmg;     
+      actual_tick_dmg = actual_direct_dmg;
     }
     update_stats( DMG_OVER_TIME );
   }
@@ -2456,6 +2457,7 @@ void paladin_t::init_talents()
   talents.judgements_of_the_just    = find_talent( "Judgements of the Just" );
   talents.improved_hammer_of_justice= find_talent( "Improved Hammer of Justice" );
   talents.hallowed_ground           = find_talent( "Hallowed Ground" );
+  talents.sanctuary                 = find_talent( "Sanctuary" );
   talents.hammer_of_the_righteous   = find_talent( "Hammer of the Righteous" );
   talents.wrath_of_the_lightbringer = find_talent( "Wrath of the Lightbringer" );
   talents.shield_of_the_righteous   = find_talent( "Shield of the Righteous" );
@@ -2465,6 +2467,7 @@ void paladin_t::init_talents()
   talents.shield_of_the_templar     = find_talent( "Shield of the Templar" );
   talents.reckoning                 = find_talent( "Reckoning" );
   talents.toughness                 = find_talent( "Toughness" );
+
   // Ret
   talents.crusade            = find_talent( "Crusade" );
   talents.rule_of_law        = find_talent( "Rule of Law" );
@@ -2591,6 +2594,18 @@ double paladin_t::composite_tank_block() SC_CONST
   return b;
 }
 
+// paladin_t::composite_tank_crit ==========================================
+
+double paladin_t::composite_tank_crit( const school_type school ) SC_CONST
+{
+  double c = player_t::composite_tank_crit( school );
+
+  if ( school == SCHOOL_PHYSICAL && talents.sanctuary -> rank() )
+    c += talents.sanctuary -> effect_base_value( 3 ) / 100.0;
+
+  return c;
+}
+
 // paladin_t::matching_gear_multiplier =====================================
 
 double paladin_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
@@ -2644,7 +2659,7 @@ void paladin_t::regen( double periodicity )
 
 // paladin_t::assess_damage ==================================================
 
-void paladin_t::assess_damage( double amount,
+double paladin_t::assess_damage( double amount,
     const school_type school,
     int    dmg_type,
     int result,
@@ -2670,6 +2685,8 @@ void paladin_t::assess_damage( double amount,
       }
     }
   }
+
+  return player_t::assess_damage( amount, school, dmg_type, result, a, s );
 }
 
 // paladin_t::get_cooldown ===================================================

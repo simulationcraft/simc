@@ -3234,7 +3234,7 @@ struct player_t
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
-  virtual void assess_damage( double amount, const school_type school, int type, int result, action_t* a, player_t* s );
+  virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a, player_t* s );
 
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
@@ -3467,9 +3467,10 @@ struct target_t : public player_t
   virtual double composite_attack_haste() SC_CONST{ return attack_haste; }
   virtual double composite_tank_miss( const school_type school ) SC_CONST { return 0.0; }
   virtual double composite_tank_crit( const school_type school ) SC_CONST { return 0.0; }
+  virtual double composite_tank_block() SC_CONST;
   virtual double composite_mastery() SC_CONST { return 0.0; }
 
-  virtual void assess_damage( double amount, const school_type school,
+  virtual double assess_damage( double amount, const school_type school,
                               int type, int travel_result, action_t* a, player_t* s );
   void recalculate_health();
   double time_to_die() SC_CONST;
@@ -3618,7 +3619,7 @@ struct action_t : public spell_id_t
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double player_haste;
   double resource_consumed;
-  double direct_dmg, tick_dmg;
+  double direct_dmg, tick_dmg, actual_direct_dmg, actual_tick_dmg;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;

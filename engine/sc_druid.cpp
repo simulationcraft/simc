@@ -396,7 +396,7 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
-  virtual void      assess_damage( double amount, const school_type school, int dmg_type,
+  virtual double      assess_damage( double amount, const school_type school, int dmg_type,
                                    int travel_result, action_t* a, player_t* s );
 
   // Utilities
@@ -4125,7 +4125,6 @@ double druid_t::composite_tank_crit( const school_type school ) SC_CONST
   if ( school == SCHOOL_PHYSICAL )
   {
     c += talents.thick_hide -> effect_base_value( 3 ) / 100.0;
-    if ( c < 0 ) c = 0;
   }
 
   return c;
@@ -4252,7 +4251,7 @@ int druid_t::primary_resource() SC_CONST
 
 // druid_t::assess_damage ===================================================
 
-void druid_t::assess_damage( double amount,
+double druid_t::assess_damage( double amount,
                               const school_type school,
                               int    dmg_type,
                               int travel_result,
@@ -4262,6 +4261,11 @@ void druid_t::assess_damage( double amount,
   if ( travel_result == RESULT_DODGE && talents.natural_reaction -> rank() )
   {
     resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
+  }
+
+  if ( talents.natural_reaction -> rank() )
+  {
+    amount *= 1.0 + talents.natural_reaction -> effect_base_value( 3 ) / 100.0;
   }
 
 
@@ -4278,7 +4282,7 @@ void druid_t::assess_damage( double amount,
     buffs_savage_defense -> expire();
   }
 
-  player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
+  return player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
 }
 
 // ==========================================================================

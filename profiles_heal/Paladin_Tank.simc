@@ -1,6 +1,6 @@
 #!./simc 
 
-paladin=Fluffy_Tank
+paladin=Paladin_Tank
 origin="http://eu.battle.net/wow/en/character/eredar/vanos/advanced"
 level=85
 race=human
