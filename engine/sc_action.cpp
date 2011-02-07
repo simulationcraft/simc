@@ -1047,13 +1047,9 @@ void action_t::tick()
 
   result = RESULT_HIT;
 
-  // Older tests indicated that crit debuffs are calculated at the time of the cast, not the ticks.
-  // It's possible that this has now changed, but would require testing to be certain.
-  double save_target_crit = target_crit;
+  player_tick();
 
   target_debuff( target, DMG_OVER_TIME );
-
-  target_crit = save_target_crit;
 
   if ( tick_may_crit )
   {

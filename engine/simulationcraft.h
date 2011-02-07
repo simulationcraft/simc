@@ -3674,6 +3674,7 @@ struct action_t : public spell_id_t
   virtual int    hasted_num_ticks() SC_CONST;
   virtual double travel_time();
   virtual void   player_buff();
+  virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   calculate_result() { assert( 0 ); }
   virtual bool   result_is_hit() SC_CONST;

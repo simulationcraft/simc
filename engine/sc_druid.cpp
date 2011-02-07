@@ -517,6 +517,7 @@ struct druid_spell_t : public spell_t
   virtual double execute_time() SC_CONST;
   virtual double haste() SC_CONST;
   virtual void   parse_options( option_t*, const std::string& options_str );
+  virtual void   player_tick();
   virtual void   player_buff();
   virtual void   schedule_execute();
 };
@@ -2141,6 +2142,17 @@ void druid_spell_t::consume_resource()
       p -> buffs_omen_of_clarity -> expire();
     }
   }
+}
+
+// druid_spell_t::player_tick ==============================================
+
+void druid_spell_t::player_tick()
+{
+  druid_t* p = player -> cast_druid();
+
+  player_crit = p -> composite_spell_crit();
+
+  player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
 }
 
 // druid_spell_t::player_buff ==============================================
