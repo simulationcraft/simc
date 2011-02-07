@@ -3006,7 +3006,10 @@ struct starsurge_t : public druid_spell_t
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
       trigger_eclipse_energy_gain( this, gain );
-      starfall_cd -> ready -= p -> glyphs.starsurge -> base_value();
+      if ( p -> glyphs.starsurge -> ok() )
+      {
+        starfall_cd -> ready -= p -> glyphs.starsurge -> base_value();
+      }
     }
   }
 
