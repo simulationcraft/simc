@@ -259,7 +259,7 @@ double attack_t::parry_chance( int source_level, int target_level ) SC_CONST
 double attack_t::glance_chance( int delta_level ) SC_CONST
 {
   int i = delta_level > 0 ? 1 : -1;
-  return i * ( fabs( delta_level ) + 1 ) * 0.06;
+  return i * ( abs( delta_level ) + 1 ) * 0.06;
 }
 
 // attack_t::block_chance ===================================================
@@ -278,7 +278,7 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( fabs(delta_level) > 2 )
+  if ( abs(delta_level) > 2 )
   {
     chance -= ( 0.03 + delta_level * 0.006 );
   }
