@@ -154,53 +154,6 @@ static void replenish_raid( player_t* provider )
   }
 }
 
-// trigger_target_swings ====================================================
-
-static void trigger_target_swings( player_t* p )
-{
-  assert( p -> sim -> target -> attack_speed > 0 );
-
-  struct target_swing_event_t : public event_t
-  {
-    target_swing_event_t( sim_t* sim, player_t* player, double interval ) : event_t( sim, player )
-    {
-      name = "Target Swing";
-      sim -> add_event( this, interval );
-    }
-    virtual void execute()
-    {
-      int result = player -> target_swing();
-
-      if ( sim -> log )
-        log_t::output( sim, "%s swings at %s (%s)",
-        sim -> target -> name(), player -> name(), util_t::result_type_string( result ) );
-
-      // Very simple Boss Damage calculation
-      double damage = 0;
-      if ( result == RESULT_HIT || result == RESULT_BLOCK || result == RESULT_CRIT )
-      damage = sim -> rng -> gauss( sim -> target -> attack_damage, 0.25 );
-
-      if ( result == RESULT_CRIT )
-        damage *= 2.0;
-
-      if ( result == RESULT_BLOCK )
-        damage *= 0.7;
-
-      if ( damage > 0 )
-      {
-        //player -> resource_loss( RESOURCE_HEALTH, damage );
-        if ( sim -> log )
-              log_t::output( sim, "%s does %.1f damage to %s (%s)",
-              sim -> target -> name(), damage, player -> name(), util_t::result_type_string( result ) );
-      }
-
-      player -> target_auto_attack = new ( sim ) target_swing_event_t( sim, player, sim -> target -> attack_speed );
-    }
-  };
-
-  p -> target_auto_attack = new ( p -> sim ) target_swing_event_t( p -> sim, p, p -> sim -> target -> attack_speed );
-}
-
 // parse_talent_url =========================================================
 
 static bool parse_talent_url( sim_t* sim,
@@ -1026,14 +979,12 @@ void player_t::init_defense()
   initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
   initial_stats.parry_rating   = gear.parry_rating   + enchant.parry_rating   + ( is_pet() ? 0 : sim -> enchant.parry_rating );
   initial_stats.block_rating   = gear.block_rating   + enchant.block_rating   + ( is_pet() ? 0 : sim -> enchant.block_rating );
-  initial_stats.block_value    = gear.block_value    + enchant.block_value    + ( is_pet() ? 0 : sim -> enchant.block_value );
 
   if ( initial_stats.armor          < 0 ) initial_stats.armor          = 0;
   if ( initial_stats.bonus_armor    < 0 ) initial_stats.bonus_armor    = 0;
   if ( initial_stats.dodge_rating   < 0 ) initial_stats.dodge_rating   = 0;
   if ( initial_stats.parry_rating   < 0 ) initial_stats.parry_rating   = 0;
   if ( initial_stats.block_rating   < 0 ) initial_stats.block_rating   = 0;
-  if ( initial_stats.block_value    < 0 ) initial_stats.block_value    = 0;
 
   initial_armor             = base_armor       + initial_stats.armor;
   initial_bonus_armor       = base_bonus_armor + initial_stats.bonus_armor;
@@ -1981,7 +1932,7 @@ double player_t::composite_spell_haste() SC_CONST
 
     if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
 
-    if ( ! is_pet() && ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check() ) )
+    if ( ! is_pet() && ! is_enemy() && ! is_add() && ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check() ) )
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }
@@ -2035,7 +1986,7 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
 double player_t::composite_spell_power_multiplier() SC_CONST
 {
   double m = spell_power_multiplier;
-  if ( type != PLAYER_GUARDIAN )
+  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
     if ( sim -> auras.demonic_pact -> check() )
     {
@@ -2108,11 +2059,11 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 
   if ( ! is_pet() )
   {
-    if ( sim -> auras.trueshot -> up() || buffs.blessing_of_might -> up() )
+    if ( ( sim -> auras.trueshot -> up() && ! is_enemy() && ! is_add() ) || buffs.blessing_of_might -> up() )
     {
       m *= 1.10;
     }
-    else
+    else if ( ! is_enemy() && ! is_add() )
     {
       m *= 1.0 + std::max( sim -> auras.unleashed_rage -> value(), sim -> auras.abominations_might -> value() );
     }
@@ -2157,7 +2108,7 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    if ( ! is_pet() &&
+    if ( ! is_pet() && ! is_enemy() && ! is_add() &&
        ( sim -> auras.ferocious_inspiration -> up()
       || sim -> auras.communion             -> up()
       || sim -> auras.arcane_tactics        -> up() ) )
@@ -2337,8 +2288,6 @@ void player_t::combat_begin()
   {
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
-
-  if ( primary_role() == ROLE_TANK ) trigger_target_swings( this );
 
   action_sequence = "";
 }
@@ -2703,7 +2652,7 @@ void player_t::regen( double periodicity )
       }
 
       double bow = buffs.blessing_of_might_regen -> current_value;
-      double ms  = sim -> auras.mana_spring_totem -> current_value;
+      double ms  = ( ! is_enemy() && ! is_add() ) ? sim -> auras.mana_spring_totem -> current_value : 0;
 
       if ( ms > bow )
       {
@@ -3550,31 +3499,6 @@ double player_t::get_position_distance( double m, double v )
   distance = sqrt( ( this -> x_position - m ) * ( this -> x_position - m ) + ( this -> y_position - v ) * ( this -> y_position - v ) );
 
   return distance;
-}
-
-// player_t::target_swing ==================================================
-
-int player_t::target_swing()
-{
-  double roll = sim -> rng -> real();
-  double chance = 0;
-
-  chance += ( composite_tank_miss( SCHOOL_PHYSICAL ) );
-  if ( roll <= chance ) return RESULT_MISS;
-
-  chance += ( composite_tank_dodge() - diminished_dodge() );
-  if ( roll <= chance ) return RESULT_DODGE;
-
-  chance += ( composite_tank_parry() - diminished_parry() );
-  if ( roll <= chance ) return RESULT_PARRY;
-
-  chance += composite_tank_block();
-  if ( roll <= chance ) return RESULT_BLOCK;
-
-  chance += composite_tank_crit( SCHOOL_PHYSICAL );
-  if ( roll <= chance ) return RESULT_CRIT;
-
-  return RESULT_HIT;
 }
 
 // Chosen Movement Actions
@@ -5238,7 +5162,6 @@ void player_t::create_options()
     { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]           ) },
     { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]           ) },
     { "gear_armor",                           OPT_FLT,  &( gear.armor                                 ) },
-    { "gear_block_value",                     OPT_FLT,  &( gear.block_value                           ) },
     { "gear_mastery_rating",                  OPT_FLT,  &( gear.mastery_rating                        ) },
     // Stat Enchants
     { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]        ) },
@@ -5251,7 +5174,6 @@ void player_t::create_options()
     { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                       ) },
     { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                   ) },
     { "enchant_armor",                        OPT_FLT,  &( enchant.armor                              ) },
-    { "enchant_block_value",                  OPT_FLT,  &( enchant.block_value                        ) },
     { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                       ) },
     { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                         ) },
     { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                        ) },

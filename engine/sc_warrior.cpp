@@ -360,7 +360,7 @@ struct warrior_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
   virtual int       primary_role() SC_CONST;
-  virtual int       target_swing();
+  virtual void      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
   virtual void      copy_from( player_t* source );
 };
 
@@ -2868,7 +2868,7 @@ void warrior_t::init_base()
   base_parry   = 0.05;
   base_block   = 0.05;
 
-  base_block += composite_mastery() * mastery.critical_block -> effect_base_value( 3 ) / 10000.0;
+
 
   if ( talents.toughness -> ok() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect_base_value( 1 ) / 100.0;
@@ -3210,7 +3210,9 @@ double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 double warrior_t::composite_tank_block() SC_CONST
 {
   double b = player_t::composite_tank_block();
-  if ( buffs_shield_block -> check() )
+  b += composite_mastery() * mastery.critical_block -> effect_base_value( 3 ) / 10000.0;
+
+  if ( buffs_shield_block -> up() )
     b = 1.0;
   return b;
 }
@@ -3266,14 +3268,15 @@ int warrior_t::primary_role() SC_CONST
   return ROLE_ATTACK;
 }
 
-// warrior_t::target_swing ==================================================
+// warrior_t::assess_damage ==================================================
 
-int warrior_t::target_swing()
+void warrior_t::assess_damage( double amount,
+    const school_type school,
+    int    dmg_type,
+    int result,
+    action_t* a,
+    player_t* s )
 {
-  int result = player_t::target_swing();
-
-  if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
-
   if ( result == RESULT_HIT    ||
        result == RESULT_CRIT   ||
        result == RESULT_GLANCE ||
@@ -3310,7 +3313,6 @@ int warrior_t::target_swing()
       }
     }
   }
-  return result;
 }
 
 // warrior_t::create_options ================================================

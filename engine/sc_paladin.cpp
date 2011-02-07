@@ -231,7 +231,7 @@ struct paladin_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST;
   virtual void      regen( double periodicity );
-  virtual int       target_swing();
+  virtual void      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -2642,13 +2642,15 @@ void paladin_t::regen( double periodicity )
   }
 }
 
-// paladin_t::target_swing ==================================================
+// paladin_t::assess_damage ==================================================
 
-int paladin_t::target_swing()
+void paladin_t::assess_damage( double amount,
+    const school_type school,
+    int    dmg_type,
+    int result,
+    action_t* a,
+    player_t* s )
 {
-  int result = player_t::target_swing();
-
-  if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
 
   if ( result == RESULT_BLOCK )
   {
@@ -2668,7 +2670,6 @@ int paladin_t::target_swing()
       }
     }
   }
-  return result;
 }
 
 // paladin_t::get_cooldown ===================================================

@@ -1955,7 +1955,6 @@ struct gear_stats_t
   double dodge_rating;
   double parry_rating;
   double block_rating;
-  double block_value;
   double mastery_rating;
 
   gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
@@ -3241,7 +3240,6 @@ struct player_t
   virtual void dismiss_pet( const char* name );
 
   virtual bool ooc_buffs() { return true; }
-  virtual int  target_swing();
 
   virtual void register_callbacks();
   virtual void register_resource_gain_callback       ( int resource, action_callback_t* );

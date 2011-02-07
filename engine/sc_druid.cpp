@@ -398,7 +398,6 @@ struct druid_t : public player_t
   virtual int       primary_role() SC_CONST;
   virtual void      assess_damage( double amount, const school_type school, int dmg_type,
                                    int travel_result, action_t* a, player_t* s );
-  virtual int       target_swing();
 
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
@@ -4248,6 +4247,13 @@ void druid_t::assess_damage( double amount,
                               action_t* a,
                               player_t* s )
 {
+  if ( travel_result == RESULT_DODGE && talents.natural_reaction -> rank() )
+  {
+    resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
+  }
+
+
+
   // This needs to use unmitigated damage, which amount currently is
   // FIX ME: Rage gains need to trigger on every attempt to poke the bear
   double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ]; 
@@ -4261,22 +4267,6 @@ void druid_t::assess_damage( double amount,
   }
 
   player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
-}
-
-// druid_t::target_swing ====================================================
-
-int druid_t::target_swing()
-{
-  int result = player_t::target_swing();
-
-  if ( sim -> log ) log_t::output( sim, "%s swing result: %s", sim -> target -> name(), util_t::result_type_string( result ) );
-
-  if ( result == RESULT_DODGE && talents.natural_reaction -> rank() )
-  {
-    resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
-  }
-
-  return result;
 }
 
 // ==========================================================================

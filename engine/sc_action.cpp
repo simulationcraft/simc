@@ -694,13 +694,7 @@ double action_t::armor() SC_CONST
 
   double adjusted_armor;
 
-  if ( target -> is_enemy() )
-  {
-    target_t* t = target -> cast_target();
-    adjusted_armor =  t -> base_armor();
-  }
-  else
-    adjusted_armor = target -> composite_armor();
+  adjusted_armor = target -> composite_armor();
 
   double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
                            std::max( t -> debuffs.faerie_fire  -> stack() * t -> debuffs.faerie_fire -> value(),
@@ -1023,7 +1017,7 @@ void action_t::execute()
     if ( result_is_hit() )
     {
       direct_dmg = calculate_direct_damage();
-      schedule_travel( target );
+
     }
     else
     {
@@ -1033,6 +1027,7 @@ void action_t::execute()
         log_t::miss_event( this );
       }
     }
+    schedule_travel( target );
 
     if ( ! dual ) stats -> add_result( direct_dmg, DMG_DIRECT, result );
   }
@@ -1101,7 +1096,7 @@ void action_t::last_tick()
 
 void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
-  if ( travel_dmg > 0 )
+  if ( ! ( base_dd_min == 0 && base_dd_max == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) )
   {
     assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
   }
@@ -1491,8 +1486,17 @@ bool action_t::ready()
     if ( ! t -> debuffs.invulnerable -> check() )
       return false;
 
+  if ( min_health_percentage > 0 )
+    if ( t -> health_percentage() < min_health_percentage )
+      return false;
+
+  if ( max_health_percentage > 0 )
+    if ( t -> health_percentage() > max_health_percentage )
+      return false;
+
   if ( target -> is_enemy())
   {
+
     target_t* t = target -> cast_target();
 
     if ( min_time_to_die > 0 )
@@ -1501,14 +1505,6 @@ bool action_t::ready()
 
     if ( max_time_to_die > 0 )
       if ( t -> time_to_die() > max_time_to_die )
-        return false;
-
-    if ( min_health_percentage > 0 )
-      if ( t -> health_percentage() < min_health_percentage )
-        return false;
-
-    if ( max_health_percentage > 0 )
-      if ( t -> health_percentage() > max_health_percentage )
         return false;
 
   }

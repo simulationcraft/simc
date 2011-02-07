@@ -375,7 +375,7 @@ struct death_knight_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual void      reset();
-  virtual int       target_swing();
+  virtual void      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4427,15 +4427,20 @@ void death_knight_t::combat_begin()
     sim -> auras.abominations_might -> trigger( 1, am_value );
 }
 
-// death_knight_t::target_swing =============================================
+// death_knight_t::asses_damage =============================================
 
-int death_knight_t::target_swing()
+void death_knight_t::assess_damage( double amount,
+    const school_type school,
+    int    dmg_type,
+    int result,
+    action_t* a,
+    player_t* s )
 {
-  int result = player_t::target_swing();
+  player_t::assess_damage( amount, school, dmg_type, result, a, s );
 
-  buffs_scent_of_blood -> trigger();
+  if ( result != RESULT_MISS )
+    buffs_scent_of_blood -> trigger();
 
-  return result;
 }
 
 

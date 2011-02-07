@@ -602,7 +602,7 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_BONUS_ARMOR,    "armor !penetration" );
   stat_search( encoding_str, splits, STAT_DODGE_RATING,   "dodge rating" );
   stat_search( encoding_str, splits, STAT_PARRY_RATING,   "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block rating" );
+  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block_rating" );
 }
 
 // armory_t::parse_meta_gem =================================================
