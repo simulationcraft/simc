@@ -218,21 +218,24 @@ player_t* chardev_t::download_player( sim_t* sim,
   }
 
   p -> professions_str = "";
-  std::vector<js_node_t*> skill_nodes;
-  int num_skills = js_t::get_children( skill_nodes, professions_root );
-  for ( int i=0; i < num_skills; i++ )
+  if ( professions_root )
   {
-    int skill_id;
-    std::string skill_level;
-   
-    if ( js_t::get_value( skill_id, skill_nodes[ i ], "0" ) &&
-         js_t::get_value( skill_level, skill_nodes[ i ], "1" ) )
-    {      
-      std::string skill_name_str = util_t::profession_type_string( translate_profession( skill_id ) );
-      if ( i ) p -> professions_str += "/";
-      p -> professions_str += skill_name_str + "=" + skill_level;
+    std::vector<js_node_t*> skill_nodes;
+    int num_skills = js_t::get_children( skill_nodes, professions_root );
+    for ( int i=0; i < num_skills; i++ )
+    {
+      int skill_id;
+      std::string skill_level;
+     
+      if ( js_t::get_value( skill_id, skill_nodes[ i ], "0" ) &&
+           js_t::get_value( skill_level, skill_nodes[ i ], "1" ) )
+      {      
+        std::string skill_name_str = util_t::profession_type_string( translate_profession( skill_id ) );
+        if ( i ) p -> professions_str += "/";
+        p -> professions_str += skill_name_str + "=" + skill_level;
+      }
     }
-  }  
+  }
 
   return p;
 }
