@@ -2072,6 +2072,11 @@ static void print_html_talents( FILE* file, player_t* p )
 
     for ( int i = 0; i < MAX_TALENT_TREES; i++ )
     {
+      int tree_size = p -> talent_trees[ i ].size();
+
+      if ( tree_size == 0 )
+        continue;
+
       util_t::fprintf( file,
           "                <div class=\"float\">\n"
           "                  <table class=\"sc\">\n"
@@ -2081,7 +2086,7 @@ static void print_html_talents( FILE* file, player_t* p )
           "                    </tr>\n",
           util_t::talent_tree_string( p -> tree_type[ i ], false ) );
 
-      int tree_size = p -> talent_trees[ i ].size();
+
 
       for ( int j=0; j < tree_size; j++ )
       {
