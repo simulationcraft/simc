@@ -711,6 +711,30 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   }
 }
 
+// trigger_eclipse_gain_delay ===============================================
+
+static void trigger_eclipse_gain_delay( spell_t* s, int gain )
+{
+  struct eclipse_delay_t : public event_t
+  {
+    spell_t* s;
+    int g;
+    eclipse_delay_t ( spell_t* spell, int gain ) :
+      event_t( spell -> sim, spell -> player ), s( spell ), g( gain )
+    {
+      name = "Eclipse gain delay";
+      sim -> add_event( this, sim -> aura_delay );
+    }
+  
+    virtual void execute()
+    {
+      trigger_eclipse_energy_gain( s, g );
+    }
+  };
+  new ( s -> sim ) eclipse_delay_t( s, gain );
+}
+
+
 // trigger_energy_refund ====================================================
 
 static void trigger_energy_refund( druid_cat_attack_t* a )
@@ -2541,6 +2565,7 @@ struct insect_swarm_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     parse_options( NULL, options_str );
+    may_crit = false;
     
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
     num_ticks   += (int) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 ); 
@@ -2843,13 +2868,13 @@ struct starfire_t : public druid_spell_t
       {
         if ( p -> dots_moonfire -> ticking )
         {
-          if ( p -> dots_moonfire -> added_ticks < 6 )
-            p -> dots_moonfire -> action -> extend_duration( 2 );
+          if ( p -> dots_moonfire -> added_ticks < 9 )
+            p -> dots_moonfire -> action -> extend_duration( 3 );
         }
         else if ( p -> dots_sunfire -> ticking )
         {
-          if ( p -> dots_sunfire -> added_ticks < 6 )
-            p -> dots_sunfire -> action -> extend_duration( 2 );
+          if ( p -> dots_sunfire -> added_ticks < 9 )
+            p -> dots_sunfire -> action -> extend_duration( 3 );
         }
       }
 
@@ -2865,7 +2890,8 @@ struct starfire_t : public druid_spell_t
         {
           gain *= 2;
         }
-        trigger_eclipse_energy_gain( this, gain );
+        //trigger_eclipse_energy_gain( this, gain );
+        trigger_eclipse_gain_delay( this, gain );
       }
     }
   }
@@ -2957,6 +2983,7 @@ struct starfall_t : public druid_spell_t
     hasted_ticks   = false;
     cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
 
+    may_crit = false;
     may_miss = false; // This spell only triggers the buff
 
     starfall_star = new starfall_star_t( p );
@@ -3005,7 +3032,8 @@ struct starsurge_t : public druid_spell_t
       int gain = effect_base_value( 2 );
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
-      trigger_eclipse_energy_gain( this, gain );
+      //trigger_eclipse_energy_gain( this, gain );
+      trigger_eclipse_gain_delay( this, gain );
       if ( p -> glyphs.starsurge -> ok() )
       {
         starfall_cd -> ready -= p -> glyphs.starsurge -> base_value();
@@ -3348,7 +3376,8 @@ struct wrath_t : public druid_spell_t
           if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
             gain -= 1;
         }
-        trigger_eclipse_energy_gain( this, gain );
+        //trigger_eclipse_energy_gain( this, gain );
+        trigger_eclipse_gain_delay( this, gain );
       }
     }
   }
@@ -3869,8 +3898,7 @@ void druid_t::init_actions()
       action_list_str += "/volcanic_potion,if=!in_combat";
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
-      if ( ptr )
-        action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
+      action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       if ( race == RACE_TROLL )
         action_list_str += "/berserking";
       if ( talents.typhoon -> rank() ) 
@@ -3894,8 +3922,7 @@ void druid_t::init_actions()
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
-      if ( ptr )
-        action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
+      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
     }
