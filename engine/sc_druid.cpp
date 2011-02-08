@@ -151,6 +151,7 @@ struct druid_t : public player_t
   };
 
   // Buffs
+  buff_t* buffs_barkskin;
   buff_t* buffs_bear_form;
   buff_t* buffs_cat_form;
   buff_t* buffs_combo_points;
@@ -171,6 +172,7 @@ struct druid_t : public player_t
   buff_t* buffs_stampede_bear;
   buff_t* buffs_stampede_cat;
   buff_t* buffs_stealthed;
+  buff_t* buffs_survival_instincts;
   buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_t11_4pc_melee;
@@ -2273,7 +2275,28 @@ struct auto_attack_t : public action_t
   }
 };
 
-// Bear Form Spell ========================================================
+// Barkskin =================================================================
+
+struct barkskin_t : public druid_spell_t
+{
+  barkskin_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "barkskin", 22812, player )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    druid_t* p = player -> cast_druid();
+    p -> buffs_barkskin -> trigger( 1, effect_base_value( 2 ) / 100.0 );
+  }
+};
+
+// Bear Form Spell ==========================================================
 
 struct bear_form_t : public druid_spell_t
 {
@@ -3218,6 +3241,40 @@ struct sunfire_t : public druid_spell_t
   }
 };
 
+// Survival Instincts =======================================================
+
+struct survival_instincts_t : public druid_spell_t
+{
+  survival_instincts_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "survival_instincts", 61336, player )
+  {
+    druid_t* p = player -> cast_druid();
+    check_talent( p -> talents.survival_instincts -> ok() );
+
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    druid_t* p = player -> cast_druid();
+    p -> buffs_survival_instincts -> trigger( 1, -0.5 ); // DBC value is 60 for some reason
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+    
+    if ( ! ( p -> buffs_cat_form -> check() || p -> buffs_bear_form -> check() ) )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Treants Spell ============================================================
 
 struct treants_spell_t : public druid_spell_t
@@ -3444,6 +3501,7 @@ action_t* druid_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
+  if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
@@ -3480,6 +3538,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
   if ( name == "stealth"                ) return new                stealth_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
+  if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
   if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
@@ -3689,6 +3748,7 @@ void druid_t::init_buffs()
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
   
   // buff_t ( sim, id, name, chance, duration, quiet, reverse, rng_type )
+  buffs_barkskin           = new buff_t( this, 22812, "barkskin" );
   buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
   buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
   buffs_enrage             = new buff_t( this, player_data.find_class_spell( type, "Enrage" ), "enrage" );
@@ -3697,7 +3757,8 @@ void druid_t::init_buffs()
   buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );
   buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
-  
+  buffs_survival_instincts = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
+
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
   buffs_cat_form     = new buff_t( this, 768,   "cat_form" );
@@ -3839,6 +3900,8 @@ void druid_t::init_actions()
         if ( race == RACE_TROLL ) action_list_str += "/berserking";
         action_list_str += "/skull_bash_bear";
         action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";  // Use on pull.
+        action_list_str += "/survival_instincts"; // For now use it on CD
+        action_list_str += "/barkskin"; // For now use it on CD
         action_list_str += "/enrage,time<=5"; // Use only at the start
         action_list_str += use_str;
         action_list_str += "/maul,if=rage>=75";
@@ -4329,6 +4392,11 @@ double druid_t::assess_damage( double amount,
     resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
   }
 
+  // This needs to use unmitigated damage, which amount currently is
+  // FIX ME: Rage gains need to trigger on every attempt to poke the bear
+  double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
+  resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
+
   if ( SCHOOL_SPELL_MASK & ( int64_t( 1 ) << school ) && talents.perseverance -> ok() )
   {
     amount *= 1.0 + talents.perseverance -> effect_base_value( 1 ) / 100.0;
@@ -4339,14 +4407,19 @@ double druid_t::assess_damage( double amount,
     amount *= 1.0 + talents.natural_reaction -> effect_base_value( 3 ) / 100.0;
   }
  
+  if ( buffs_barkskin -> up() )
+  {
+    amount *= 1.0 + buffs_barkskin -> value();
+  }
+
+  if ( buffs_survival_instincts -> up() )
+  {
+    amount *= 1.0 + buffs_survival_instincts -> value();
+  }
+
   // To benefit from -10% physical damage before SD is taken into account, debug=1 will look funny though
   amount = player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
-
-  // This needs to use unmitigated damage, which amount currently is
-  // FIX ME: Rage gains need to trigger on every attempt to poke the bear
-  double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ]; 
-  resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
-
+  
   if ( school == SCHOOL_PHYSICAL && buffs_savage_defense -> up() )
   {
     amount -= buffs_savage_defense -> value();
