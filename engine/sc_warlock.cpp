@@ -4336,7 +4336,6 @@ void warlock_t::init_actions()
     {
 
     case TREE_AFFLICTION:
-      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react";
@@ -4347,7 +4346,6 @@ void warlock_t::init_actions()
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( talent_bane -> rank() == 3 )
       {
-        if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
         action_list_str += "/life_tap,mana_percentage<=35";
         action_list_str += "/soulburn";
         if ( talent_improved_soul_fire -> ok() && level >= 54)
@@ -4365,16 +4363,15 @@ void warlock_t::init_actions()
         {
           action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
-        if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+        if ( level >= 85 ) action_list_str += "/demon_soul";
         action_list_str += "/shadow_bolt";
       } 
       else
       {
         action_list_str += "/soulburn";
         if ( level >= 54) action_list_str += "/soul_fire,if=buff.soulburn.up";
-        if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
+        if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
         action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
-        if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
         action_list_str += "/life_tap,mana_percentage<=5";
          if ( talent_improved_soul_fire -> ok() && level >= 54)
         {
@@ -4386,10 +4383,6 @@ void warlock_t::init_actions()
           {
             action_list_str += "/soul_fire,if=buff.soulburn.up";
           }
-        }
-        else
-        {
-          action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
         action_list_str += "/drain_life,interrupt=1";
       }
