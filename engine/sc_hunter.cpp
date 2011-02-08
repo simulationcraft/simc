@@ -3071,6 +3071,8 @@ void hunter_t::init_actions()
     action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura -> rank() ) action_list_str += "/trueshot_aura";
     action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+    if ( glyphs.aimed_shot -> ok() )
+      action_list_str += "|buff.rapid_fire.react";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
@@ -3084,7 +3086,7 @@ void hunter_t::init_actions()
     }
     switch ( race )
     {
-    case RACE_ORC:       action_list_str += "/blood_fury,time>=10";     break;
+    case RACE_ORC:       action_list_str += glyphs.aimed_shot -> ok() ? "/blood_fury,if=dot.serpent_sting.ticking" : "/blood_fury,time>=10";     break;
     case RACE_TROLL:     action_list_str += "/berserking,time>=10";     break;
     case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
     default: break;
@@ -3119,14 +3121,27 @@ void hunter_t::init_actions()
     case TREE_MARKSMANSHIP:
       action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/serpent_sting,if=!ticking";
-      if ( talents.chimera_shot -> rank() )
+      if ( glyphs.arcane_shot -> ok() )
       {
-        action_list_str += "/chimera_shot,if=target.health_pct<=80|dot.serpent_sting.remains<3|time<5";
+        action_list_str += "/rapid_fire";
+        if ( talents.chimera_shot -> rank() )
+          action_list_str += "/chimera_shot";
+        action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5";
+        action_list_str += "/kill_shot";
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
       }
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
-      action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
-      action_list_str += "/kill_shot";
+      else
+      {
+        if ( talents.chimera_shot -> rank() )
+        {
+          action_list_str += "/chimera_shot,if=target.health_pct<=80|dot.serpent_sting.remains<3|time<5";
+        }
+        action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
+        action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
+        action_list_str += "/kill_shot";
+      }
+
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
       if ( ptr && ! glyphs.arcane_shot -> ok() )
       {

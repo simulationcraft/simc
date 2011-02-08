@@ -6,8 +6,8 @@ level=85
 race=orc
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#cMhMZfMGouRMuroc
-glyphs=steady_shot/rapid_fire/aimed_shot
+talents=http://www.wowhead.com/talent#hunter-0230020000000000000230232003212023122103000000000000000000
+glyphs=steady_shot/aimed_shot/rapid_fire
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/hunters_mark
