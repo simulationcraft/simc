@@ -533,6 +533,9 @@ void buff_t::decrement( int    stacks,
   {
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
+    if ( sim -> debug )
+      log_t::output( sim, "%s decrements buff %s by %d to %d stacks", 
+		     player -> name(), name(), stacks, current_stack );
   }
 }
 
