@@ -3673,7 +3673,7 @@ struct action_t : public spell_id_t
   virtual double gcd() SC_CONST;
   virtual double execute_time() SC_CONST { return base_execute_time; }
   virtual double tick_time() SC_CONST;
-  virtual int    hasted_num_ticks() SC_CONST;
+  virtual int    hasted_num_ticks( double d=-1 ) SC_CONST;
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}
@@ -3699,6 +3699,7 @@ struct action_t : public spell_id_t
   virtual void   reschedule_execute( double time );
   virtual void   refresh_duration();
   virtual void   extend_duration( int extra_ticks );
+  virtual void   extend_duration_seconds( double extra_ticks );
   virtual void   update_ready();
   virtual void   update_stats( int type );
   virtual void   update_result( int type );
@@ -3904,6 +3905,7 @@ struct dot_t
   std::string name_str;
   event_t* tick_event;
   int num_ticks, current_tick, added_ticks, ticking;
+  double added_seconds;
   double ready;
   double miss_time;
   dot_t* next;
@@ -3911,9 +3913,9 @@ struct dot_t
   dot_t( const std::string& n, player_t* p ) : 
     player(p), action(0), name_str(n), tick_event(0),
     num_ticks(0), current_tick(0), added_ticks(0), ticking(0),
-    ready(-1), miss_time(-1), next(0) {}
+    added_seconds( 0.0 ), ready(-1), miss_time(-1), next(0) {}
   virtual ~dot_t() {}
-  virtual void reset() { tick_event=0; current_tick=0; added_ticks=0; ticking=0; ready=-1; miss_time=-1; }
+  virtual void reset() { tick_event=0; current_tick=0; added_ticks=0; ticking=0; added_seconds=0.0; ready=-1; miss_time=-1; }
   virtual void recalculate_ready()
   {
     // Extending a DoT does not interfere with the next tick event.  To determine the 

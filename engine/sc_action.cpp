@@ -1037,8 +1037,6 @@ void action_t::execute()
       }
     }
 
-
-
   }
 
   update_ready();
@@ -1376,6 +1374,40 @@ void action_t::extend_duration( int extra_ticks )
   dot -> added_ticks += extra_ticks;
   dot -> num_ticks += extra_ticks;
   dot -> recalculate_ready();
+}
+
+// action_t::extend_duration_seconds =========================================
+
+void action_t::extend_duration_seconds( double extra_seconds )
+{
+
+  // Make sure this DoT is still ticking......
+  assert( dot -> tick_event );
+  
+  // Treat extra_ticks as 'seconds added' instead of 'ticks added'
+  // Duration left needs to be calculated with old haste for tick_time()
+  // First we need the number of ticks remaining after the next one =>
+  // ( num_ticks - current_tick ) - 1
+  int remaining_ticks = dot -> num_ticks - dot -> current_tick - 1;
+  // Multiply with tick_time() for the duration left after the next tick
+  double duration_left = remaining_ticks * tick_time();
+  // Add the added seconds
+  duration_left += extra_seconds;
+  
+  // Switch to new haste values and calculate resulting ticks
+  player_buff();
+  target_debuff( target, DMG_OVER_TIME );
+  int new_remaining_ticks = hasted_num_ticks( duration_left );
+  
+  dot -> action = this;
+  dot -> added_seconds += extra_seconds;
+  dot -> num_ticks += ( new_remaining_ticks - remaining_ticks );
+  if ( sim -> log ) 
+    log_t::output( sim, "%s extends duration of %s by %.1f second(s). Now %d ticks total, %d remaining", 
+                  player -> name(), name(), extra_seconds, dot -> num_ticks, new_remaining_ticks );
+  
+  dot -> recalculate_ready();
+
 }
 
 // action_t::update_ready ====================================================
@@ -1794,7 +1826,7 @@ double action_t::tick_time() SC_CONST
   return t;
 }
 
-int action_t::hasted_num_ticks() SC_CONST
+int action_t::hasted_num_ticks( double d ) SC_CONST
 {
   if ( ! hasted_ticks ) return num_ticks;
 
@@ -1803,7 +1835,8 @@ int action_t::hasted_num_ticks() SC_CONST
   // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
   // It's important that we're accurate here so that we model haste breakpoints correctly.
 
-  double d = num_ticks * base_tick_time;
+  if ( d < 0 )
+    d = num_ticks * base_tick_time;
 
   double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
 
