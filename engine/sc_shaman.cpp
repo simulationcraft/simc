@@ -682,7 +682,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   shaman_t* p = a -> player -> cast_shaman();
   spell_t* ft = 0;
   double m_ft = a -> weapon -> swing_time / 4.0;
-  double m_coeff = ( ! p -> ptr ) ? 0.1539 : 0.1253;
+  double m_coeff = 0.1253;
 
   if ( p -> cooldowns_flametongue_weapon -> remains() > 0 )
   {
@@ -701,23 +701,15 @@ static void trigger_flametongue_weapon( attack_t* a )
   ft -> base_dd_max      = ft -> base_dd_min;
   ft -> direct_power_mod = 1.0;
   // New Flametongue mechanics, as per http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p6/#post1839628
-  if ( p -> ptr )
+  if ( p -> primary_tree() == TREE_ENHANCEMENT )
   {
-    if ( p -> primary_tree() == TREE_ENHANCEMENT )
-    {
-      ft -> base_spell_power_multiplier = 0;
-      ft -> base_attack_power_multiplier = m_coeff * m_ft;
-    }
-    else
-    {
-      ft -> base_spell_power_multiplier = m_coeff * m_ft;
-      ft -> base_attack_power_multiplier = 0;
-    }
+    ft -> base_spell_power_multiplier = 0;
+    ft -> base_attack_power_multiplier = m_coeff * m_ft;
   }
   else
   {
     ft -> base_spell_power_multiplier = m_coeff * m_ft;
-    ft -> base_attack_power_multiplier = ( p -> primary_tree() == TREE_ENHANCEMENT ? 0.04611 : 0 ) * m_ft;
+    ft -> base_attack_power_multiplier = 0;
   }
   
   // Add a very slight cooldown to flametongue weapon to prevent overly good results
@@ -749,8 +741,7 @@ static void trigger_windfury_weapon( attack_t* a )
     p -> procs_windfury -> occur();
     wf -> execute();
     wf -> execute();
-    if ( p -> ptr )
-      wf -> execute();
+    wf -> execute();
   }
 }
 
@@ -856,7 +847,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     spell_t::travel( t, travel_result, travel_dmg );
 
-    if ( player -> ptr && result_is_hit( travel_result ) )
+    if ( result_is_hit( travel_result ) )
     {
       trigger_rolling_thunder( this );
     }
@@ -896,7 +887,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( player -> ptr && result_is_hit() )
+    if ( result_is_hit() )
     {
       trigger_rolling_thunder( this );
     }

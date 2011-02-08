@@ -1,6 +1,6 @@
 #!./simc 
 
-druid=Druid_Feral_T11_372_hitcap_PTR
+druid=Druid_Feral_T11_372_hitcap
 origin="http://chardev.org/?profile=35430"
 level=85
 race=worgen

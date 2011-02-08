@@ -273,28 +273,18 @@ static void trigger_hand_of_light( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if ( !p -> ptr && a -> sim -> roll( p -> get_hand_of_light() ) )
-  {
-    p -> buffs_hand_of_light -> trigger();
-  }
-}
-
-static void trigger_hand_of_light_ptr( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-
-  if ( p -> ptr && p->primary_tree() == TREE_RETRIBUTION)
+  if ( p->primary_tree() == TREE_RETRIBUTION)
   {
     p->active_hand_of_light_proc->base_dd_max = p->active_hand_of_light_proc->base_dd_min = a->direct_dmg;
     p->active_hand_of_light_proc->execute();
   }
 }
 
-static void trigger_divine_purpose_ptr( action_t* a )
+static void trigger_divine_purpose( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if ( p -> ptr && p->talents.divine_purpose->rank())
+  if ( p->talents.divine_purpose->rank())
   {
     p->buffs_divine_purpose->trigger();
   }
@@ -455,7 +445,7 @@ struct paladin_attack_t : public attack_t
         }
 
         // TODO: does the censure stacking up happen before or after the SoT proc?
-        if ( p->ptr && p -> active_seal == SEAL_OF_TRUTH )
+        if ( p -> active_seal == SEAL_OF_TRUTH )
         {
           p -> active_seal_of_truth_dot -> execute();
         }
@@ -467,7 +457,7 @@ struct paladin_attack_t : public attack_t
         }
       }
       if ( trigger_dp )
-        trigger_divine_purpose_ptr( this );
+        trigger_divine_purpose( this );
     }
   }
   
@@ -493,23 +483,11 @@ struct paladin_attack_t : public attack_t
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
     {
-      if ( p -> ptr )
-      {
-        if ( p -> buffs_divine_purpose -> up() )
-          p -> buffs_divine_purpose -> expire();
-        else
-          p -> buffs_holy_power -> expire();
-      }
+      if ( p -> buffs_divine_purpose -> up() )
+        p -> buffs_divine_purpose -> expire();
       else
-      {
-        if ( p -> buffs_hand_of_light -> up() )
-          p -> buffs_hand_of_light -> expire();
-        else
-          p -> buffs_holy_power -> expire();
-      }
+        p -> buffs_holy_power -> expire();
     }
-    if ( ! p -> ptr )
-      p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
 };
 
@@ -543,12 +521,6 @@ struct melee_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_the_art_of_war -> trigger();
-
-      if ( !p->ptr && p -> active_seal == SEAL_OF_TRUTH )
-      {
-        p -> active_seal_of_truth_dot -> execute();
-      }
-
       trigger_hand_of_light( this );
     }
     if ( !proc && p -> buffs_reckoning -> up() )
@@ -698,7 +670,7 @@ struct crusader_strike_t : public paladin_attack_t
     p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
     if (result_is_hit())
     {
-      trigger_hand_of_light_ptr(this);
+      trigger_hand_of_light(this);
       if (p->talents.grand_crusader->rank())
       {
         if (sim->roll(p->talents.grand_crusader->proc_chance()))
@@ -763,7 +735,7 @@ struct divine_storm_t : public paladin_attack_t
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
-      trigger_hand_of_light_ptr( this );
+      trigger_hand_of_light( this );
     }
   }
 };
@@ -868,7 +840,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
     trigger_dp = true;
-    trigger_seal = p->ptr; // TODO: only SoT or all seals?
+    trigger_seal = 1; // TODO: only SoT or all seals?
 
     holy_power_chance = 0.01 * p->talents.divine_purpose->effect_base_value(1);
 
@@ -981,7 +953,7 @@ struct templars_verdict_t : public paladin_attack_t
     paladin_attack_t::execute();
     if (result_is_hit())
     {
-      trigger_hand_of_light_ptr(this);
+      trigger_hand_of_light(this);
     }
   }
 
@@ -1296,18 +1268,6 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     paladin_attack_t::player_buff();
     player_multiplier *= p -> buffs_censure -> stack() * 0.2;
   }
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
-    if ( !p->ptr && result_is_hit() )
-    {
-      if ( p -> talents.seals_of_command->rank() )
-      {
-        p -> active_seals_of_command_proc -> execute();
-      }
-    }
-  }
 };
 
 struct seal_of_truth_judgement_t : public paladin_attack_t
@@ -1319,7 +1279,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
     may_parry = false;
     may_dodge = false;
     may_block = false;
-    trigger_seal = p->ptr;
+    trigger_seal = 1;
     
     base_crit       +=       0.01 * p->talents.arbiter_of_the_light->effect_base_value(1);
     base_multiplier *= 1.0 + 0.10 * p->set_bonus.tier10_4pc_melee()
@@ -1406,7 +1366,7 @@ struct judgement_t : public paladin_attack_t
       {
         p->buffs_sacred_duty->trigger(1, -1, p->talents.sacred_duty->proc_chance());
       }
-      trigger_divine_purpose_ptr(this);
+      trigger_divine_purpose(this);
     }
     trigger_judgements_of_the_wise( seal );
     trigger_judgements_of_the_bold( seal );
@@ -1507,7 +1467,7 @@ struct paladin_spell_t : public spell_t
     {
       consume_and_gain_holy_power();
       if (trigger_dp)
-        trigger_divine_purpose_ptr(this);
+        trigger_divine_purpose(this);
     }
   }
 
@@ -1516,20 +1476,10 @@ struct paladin_spell_t : public spell_t
     paladin_t* p = player -> cast_paladin();
     if ( uses_holy_power )
     {
-      if ( p -> ptr )
-      {
-        if ( p -> buffs_divine_purpose -> up() )
-          p -> buffs_divine_purpose -> expire();
-        else
-          p -> buffs_holy_power -> expire();
-      }
+      if ( p -> buffs_divine_purpose -> up() )
+        p -> buffs_divine_purpose -> expire();
       else
-      {
-        if ( p -> buffs_hand_of_light -> up() )
-          p -> buffs_hand_of_light -> expire();
-        else
-          p -> buffs_holy_power -> expire();
-      }
+        p -> buffs_holy_power -> expire();
     }
     p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
   }
@@ -1748,10 +1698,7 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_spell_t::player_buff();
     paladin_t* p = player->cast_paladin();
-    if (!p->ptr) saved_multiplier = player_multiplier;
-    // blazing light should really be a base_multiplier, but since the DoT doesn't benefit from it
-    // and art of war and blazing light stack additively, we're doing it here instead. Hooray.
-    // (Fixed on ptr)
+
     if ( p->buffs_the_art_of_war->up() )
     {
       player_multiplier *= (blazing_light_multiplier + 1);
@@ -1777,21 +1724,18 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_spell_t::execute();
-    if (p->ptr)
+    switch ( p -> active_seal )
     {
-      switch ( p -> active_seal )
-      {
-      case SEAL_OF_JUSTICE:       p -> active_seal_of_justice_proc       -> execute(); break;
-      case SEAL_OF_INSIGHT:       p -> active_seal_of_insight_proc       -> execute(); break;
-      case SEAL_OF_RIGHTEOUSNESS: p -> active_seal_of_righteousness_proc -> execute(); break;
-      case SEAL_OF_TRUTH:         if ( p -> buffs_censure -> stack() >= 1 ) p -> active_seal_of_truth_proc -> execute(); break;
-      default:;
-      }
+    case SEAL_OF_JUSTICE:       p -> active_seal_of_justice_proc       -> execute(); break;
+    case SEAL_OF_INSIGHT:       p -> active_seal_of_insight_proc       -> execute(); break;
+    case SEAL_OF_RIGHTEOUSNESS: p -> active_seal_of_righteousness_proc -> execute(); break;
+    case SEAL_OF_TRUTH:         if ( p -> buffs_censure -> stack() >= 1 ) p -> active_seal_of_truth_proc -> execute(); break;
+    default:;
+    }
 
-      if ( p -> active_seal != SEAL_OF_INSIGHT && p -> talents.seals_of_command->rank() )
-      {
-        p -> active_seals_of_command_proc -> execute();
-      }
+    if ( p -> active_seal != SEAL_OF_INSIGHT && p -> talents.seals_of_command->rank() )
+    {
+      p -> active_seals_of_command_proc -> execute();
     }
     p -> buffs_the_art_of_war -> expire();
   }
@@ -1817,10 +1761,6 @@ struct exorcism_t : public paladin_spell_t
 
   virtual void tick()
   {
-    // Since the glyph DoT doesn't benefit from the AoW and blazing light multipliers,
-    // we save it in player_buff() and restore it here. Rather hackish.
-    // (Fixed on ptr)
-    if (!player->ptr) player_multiplier = saved_multiplier;
     paladin_spell_t::tick();
   }
 };
@@ -1918,7 +1858,7 @@ struct inquisition_t : public paladin_spell_t
     if ( p -> talents.holy_shield->rank() )
       p -> buffs_holy_shield -> trigger();
     consume_and_gain_holy_power();
-    trigger_divine_purpose_ptr(this);
+    trigger_divine_purpose(this);
   }
 
   virtual bool ready()
@@ -2289,16 +2229,8 @@ void paladin_t::init_buffs()
   buffs_zealotry               = new buff_t( this, talents.zealotry->spell_id(), "zealotry", 1 );
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", 1 );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", 1 );
-  if ( ptr )
-  {
-    buffs_hand_of_light        = 0;
-    buffs_divine_purpose       = new buff_t( this, "divine_purpose", 1, 8, 0, 0.01 * talents.divine_purpose->effect_base_value(1) );
-  }
-  else
-  {
-    buffs_hand_of_light        = new buff_t( this, "hand_of_light", 1, player_data.spell_duration( passives.hand_of_light->effect_trigger_spell(1) ) );
-    buffs_divine_purpose       = 0;
-  }
+  buffs_hand_of_light          = 0;
+  buffs_divine_purpose         = new buff_t( this, "divine_purpose", 1, 8, 0, 0.01 * talents.divine_purpose->effect_base_value(1) );
   buffs_ancient_power          = new buff_t( this, "ancient_power", -1 );
   buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty" );
 }
@@ -2360,7 +2292,7 @@ void paladin_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      std::string hp_proc_str = ptr ? "divine_purpose" : "hand_of_light";
+      std::string hp_proc_str = "divine_purpose";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       if (spells.guardian_of_ancient_kings->ok())
         action_list_str += "/guardian_of_ancient_kings";
@@ -2368,21 +2300,11 @@ void paladin_t::init_actions()
       action_list_str += "/zealotry,if=buff.avenging_wrath.down";
       if (spells.inquisition->ok())
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff."+hp_proc_str+".react)";
-      if (!ptr)
-      {
-        action_list_str += "/hammer_of_wrath";
-        action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-      }
       // CS before TV if <3 power, even with HoL/DP up
       action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
       action_list_str += "/crusader_strike,if=buff."+hp_proc_str+".react&(buff."+hp_proc_str+".remains>2)&(buff.holy_power.react<3)";
       action_list_str += "/templars_verdict,if=buff."+hp_proc_str+".react";
       action_list_str += "/crusader_strike";
-      if (ptr)
-      {
-        action_list_str += "/hammer_of_wrath";
-        action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-      }
       action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<2";
       // Don't delay CS too much
       action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.5";
@@ -2748,7 +2670,7 @@ void paladin_t::combat_begin()
 
 bool paladin_t::has_holy_power(int power_needed) SC_CONST
 {
-  if ( ptr ? buffs_divine_purpose -> check() : buffs_hand_of_light -> check() )
+  if ( buffs_divine_purpose -> check() )
     return true;
   return buffs_holy_power -> check() >= power_needed;
 }
@@ -2757,7 +2679,7 @@ bool paladin_t::has_holy_power(int power_needed) SC_CONST
 
 int paladin_t::holy_power_stacks() SC_CONST
 {
-  if ( ptr ? buffs_divine_purpose -> up() : buffs_hand_of_light -> up() )
+  if ( buffs_divine_purpose -> up() )
     return 3;
   else if ( buffs_holy_power -> up() )
     return buffs_holy_power -> check();

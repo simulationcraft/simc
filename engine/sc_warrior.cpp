@@ -819,7 +819,6 @@ double warrior_attack_t::cost() SC_CONST
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost() / 10; // Rage Costs are stored as * 10
   if ( p -> buffs_deadly_calm -> up()                 ) c  = 0;
-  if ( p -> buffs_inner_rage -> check() && ! p -> ptr ) c *= 1.50;
   if ( p -> buffs_battle_trance -> check() && c > 5   ) c  = 0;
   return c;
 }
@@ -839,11 +838,6 @@ void warrior_attack_t::consume_resource()
   {
     // Triggered here so it's applied between melee hits and next schedule.
     trigger_flurry( this, 3 );
-  }
-
-  if ( special && ! background && p -> buffs_recklessness -> check() && ! p -> ptr )
-  {
-    p -> buffs_recklessness -> decrement();
   }
 
   // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
@@ -983,14 +977,11 @@ void warrior_attack_t::player_buff()
 
   // --- Buffs / Procs ---
 
-  if ( ! p -> ptr && p -> buffs_inner_rage -> up() )
-    player_multiplier *= 1.0 + p -> buffs_inner_rage -> effect_base_value(2) / 100.0;
-
   if ( p -> buffs_rude_interruption -> up() )
     player_multiplier *= 1.05;
 
   if ( special && p -> buffs_recklessness -> up() )
-    player_crit += ( p -> ptr ) ? 0.5 : 1.0;
+    player_crit += 0.5;
 
   if ( p -> buffs_hold_the_line -> up() )
     player_crit += 0.10;
@@ -1284,24 +1275,12 @@ struct cleave_t : public warrior_attack_t
     id = 845;
     parse_data( p -> player_data );
 
-    // Cleave's values can't be derived by parse_data() for now.
-    // 4.0.6 PTR - Cleave  damage has been reduced by 20%.
-    direct_power_mod = ( p -> ptr ) ? 0.4496 : 0.562;
+    direct_power_mod = 0.4496;
     base_dd_min      = 6;
     base_dd_max      = 6;
     aoe              = -1;
 
-    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
-    if ( p -> ptr )
-    {
-      base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-    }
-    else
-    {   
-      base_multiplier *= 1.0 + p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0
-                             + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-    }
+    base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
 
     aoe = 1 +  p -> glyphs.cleaving -> effect_base_value( 1 );
   }
@@ -1327,7 +1306,7 @@ struct cleave_t : public warrior_attack_t
   virtual void update_ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> ptr ) cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+    cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
     warrior_attack_t::update_ready();
   }
 };
@@ -1395,12 +1374,7 @@ struct devastate_t : public warrior_attack_t
     id = 20243;
     parse_data( p -> player_data );
 
-    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
-    if ( p -> ptr )
-    {
-      base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-    }
+    base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
 
     base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0;
     base_crit += p -> glyphs.devastate -> effect_base_value( 1 ) / 100.0;
@@ -1475,7 +1449,6 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    if( ! p -> ptr ) p -> buffs_lambs_to_the_slaughter -> expire();
     if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
     {
       p -> buffs_executioner_talent -> trigger();
@@ -1498,7 +1471,7 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      int stack = p -> ptr ? p -> buffs_lambs_to_the_slaughter -> stack() : p -> talents.lambs_to_the_slaughter -> rank();
+      int stack = p -> buffs_lambs_to_the_slaughter -> stack();
       player_multiplier *= 1.0 + stack * 0.10;
     }
   }
@@ -1530,13 +1503,10 @@ struct heroic_strike_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-    if ( ! p -> ptr )
-      base_multiplier  *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_dd_min       = 8;
     base_dd_max       = 8;
-    direct_power_mod  = ( p -> ptr ) ? 0.6 : 0.75;
+    direct_power_mod  = 0.6;
   }
 
   virtual void execute()
@@ -1562,7 +1532,7 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void update_ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> ptr ) cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+    cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
     warrior_attack_t::update_ready();
   }
 };
@@ -1581,19 +1551,9 @@ struct mortal_strike_t : public warrior_attack_t
     id = 12294;
     parse_data( p -> player_data );
    
-    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
-    if ( p -> ptr )
-    {
-      base_multiplier *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
-                             + p -> set_bonus.tier11_2pc_melee() * 0.05
-                             + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-    }
-    else
-    {
-      base_multiplier *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
-                             + p -> set_bonus.tier11_2pc_melee() * 0.05;
-    }
+    base_multiplier *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+                           + p -> set_bonus.tier11_2pc_melee() * 0.05
+                           + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
   }
@@ -1602,7 +1562,6 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
-    if( ! p -> ptr ) p -> buffs_lambs_to_the_slaughter -> expire();
     if ( result_is_hit() )
     {
       p -> buffs_lambs_to_the_slaughter -> trigger();
@@ -1621,7 +1580,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      int stack = p -> ptr ? p -> buffs_lambs_to_the_slaughter -> stack() : p -> talents.lambs_to_the_slaughter -> rank();
+      int stack = p -> buffs_lambs_to_the_slaughter -> stack();
       player_multiplier *= 1.0 + stack * 0.10;
     }
   }
@@ -1660,7 +1619,6 @@ struct overpower_t : public warrior_attack_t
     warrior_attack_t::execute();
     p -> buffs_overpower -> expire();
     p -> buffs_taste_for_blood -> expire();
-    if( ! p -> ptr ) p -> buffs_lambs_to_the_slaughter -> expire();
 
     // FIXME: The wording indicates it triggers even if you miss.
     p -> buffs_tier11_4pc_melee -> trigger();
@@ -1672,7 +1630,7 @@ struct overpower_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      int stack = p -> ptr ? p -> buffs_lambs_to_the_slaughter -> stack() : p -> talents.lambs_to_the_slaughter -> rank();
+      int stack = p -> buffs_lambs_to_the_slaughter -> stack();
       player_multiplier *= 1.0 + stack * 0.10;
     }
   }
@@ -1722,18 +1680,13 @@ struct raging_blow_attack_t : public warrior_attack_t
   raging_blow_attack_t( warrior_t* p ) :
       warrior_attack_t( "raging_blow_attack", p, SCHOOL_PHYSICAL, TREE_FURY )
   {
-    id = p -> ptr ? 96103 : 85288;
+    id = 96103;
     parse_data( p -> player_data );
     base_cost = 0;
     may_miss = may_dodge = may_parry = false;
     background = true;
     dual = true;
-    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. 
-    // It now buffs Mortal Strike, Raging Blow, Devastate, Victory Rush and Slam.
-    if ( p -> ptr )
-    {
-      base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-    }
+    base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
 
     stats = p -> get_stats( "raging_blow" );
@@ -2053,20 +2006,9 @@ struct slam_attack_t : public warrior_attack_t
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
     base_execute_time          += p -> talents.improved_slam -> effect_base_value( 1 ) / 1000.0;
 
-    // FIXME: Confirm this is additive and not multiplicative (wait for arch changes)
-    // 4.0.6 PTR - War Academy no longer buffs Heroic Strike or Cleave. It now buffs Mortal Strike, Raging Blow, 
-    // Devastate, Victory Rush and Slam.  This was already improperly including War Academy.
-    // In addition to its current effects, Bloodsurge  now also causes the next Slam  to deal 20% more damage.
-    if ( p -> ptr )
-    {
-      weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
-      base_multiplier *= 1.0 + ( p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
-                                 p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0 );
-    }
-    else 
-    {
-      base_multiplier *= 1.0 + p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0;
-    }
+    weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
+    base_multiplier *= 1.0 + ( p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
+                               p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0 );
 
     stats = p -> get_stats( "slam" );
   }
@@ -2079,7 +2021,7 @@ struct slam_attack_t : public warrior_attack_t
     {
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
     }
-    if ( p -> ptr && p -> buffs_lambs_to_the_slaughter -> up() )
+    if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
       player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
     }
@@ -2921,7 +2863,7 @@ void warrior_t::init_buffs()
   buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 0.0, talents.incite -> proc_chance() );
   buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
-  buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    ( ptr ? 3 : 1 ), 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
+  buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    3, 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
   buffs_revenge                   = new buff_t( this, "revenge",                   1,  5.0 );

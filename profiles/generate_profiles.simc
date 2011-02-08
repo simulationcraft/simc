@@ -4,8 +4,6 @@
 # Meta-profile to generate all the BiS profiles in one file. #
 ##############################################################
 
-Globals_T10.simc
-
 optimal_raid=1
 
 
@@ -13,49 +11,49 @@ optimal_raid=1
 ############################
 # Death Knights            #
 ############################
-
+Death_Knight_CharDevSync.simc
 
 ############################
 # Druids                   #
 ############################
-
+Druid_CharDevSync.simc
 
 ############################
 # Hunters                  #
 ############################
-
+Hunter_CharDevSync.simc
 
 ############################
 # Mages                    #
 ############################
-
+Mage_CharDevSync.simc
 
 ############################
 # Paladins                 #
 ############################
-
+Paladin_CharDevSync.simc
 
 #############################
 # Priests                   #
 #############################
-
+Priest_CharDevSync.simc
 
 #############################
 # Rogues                    #
 #############################
-
+Rogue_CharDevSync.simc
 
 #############################
 # Shamans                   #
 #############################
-
+Shaman_CharDevSync.simc
 
 #############################
 # Warlocks                  #
 #############################
-
+Warlock_CharDevSync.simc
 
 #############################
 # Warriors                  #
 #############################
-
+Warrior_CharDevSync.simc

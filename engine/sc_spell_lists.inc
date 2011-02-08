@@ -1,7 +1,7 @@
-#define CLASS_ABILITY_SIZE (63)
+#define CLASS_ABILITY_SIZE (64)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13329
+// Class based active abilities, wow build 13596
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -147,7 +147,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       24275, // Hammer of Wrath
       84963, // Inquisition
       20271, // Judgement
-      85285, // Rebuke
+      96231, // Rebuke
       20066, // Repentance
        7294, // Retribution Aura
       31801, // Seal of Truth
@@ -225,7 +225,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19386, // Wyvern Sting
           0,
     },
-    // Pet tree, 63 abilities
+    // Pet tree, 64 abilities
     {
       55749, // Acid Spit (Special Ability)
       90355, // Ancient Hysteria
@@ -289,6 +289,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       94022, // Trick (Bonus Ability)
       54706, // Venom Web Spray (Special Ability)
        4167, // Web (Special Ability)
+      96201, // Web Wrap (Special Ability)
       53508, // Wolverine Bite
     },
   },
@@ -373,7 +374,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        9484, // Shackle Undead
           0,
     },
-    // Holy tree, 21 abilities
+    // Holy tree, 20 abilities
     {
       32546, // Binding Heal
       14751, // Chakra
@@ -388,7 +389,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       14914, // Holy Fire
       15237, // Holy Nova
       88625, // Holy Word: Chastise
-      88684, // Holy Word: Serenity
       64901, // Hymn of Hope
       73325, // Leap of Faith
         724, // Lightwell
@@ -428,7 +428,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // Blood tree, 14 abilities
+    // Blood tree, 15 abilities
     {
       48721, // Blood Boil
       48263, // Blood Presence
@@ -440,6 +440,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       77606, // Dark Simulacrum
       48743, // Death Pact
       49998, // Death Strike
+      66188, // Death Strike Off-Hand
       55050, // Heart Strike
       50842, // Pestilence
       48982, // Rune Tap
@@ -644,7 +645,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // Affliction tree, 18 abilities
+    // Affliction tree, 17 abilities
     {
         980, // Bane of Agony
         603, // Bane of Doom
@@ -656,7 +657,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       80398, // Dark Intent
        6789, // Death Coil
         689, // Drain Life
-       5138, // Drain Mana
        1120, // Drain Soul
        5782, // Fear
       48181, // Haunt
@@ -848,7 +848,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13329
+// Talent tree specialization abilities, wow build 13596
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1096,17 +1096,17 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     },
     // Specialization abilities for Restoration tree
     {
+      96429, // Disentanglement
       87305, // Gift of Nature
       85101, // Meditation
       18562, // Swiftmend
-          0,
     },
   },
 };
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13329
+// Class mastery abilities, wow build 13596
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1148,8 +1148,8 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   },
   // Class mastery abilities for Death Knight
   {
-    77515, // Blightcaller
     77513, // Blood Shield
+    77515, // Dreadblade
     77514, // Frozen Heart
         0,
   },
@@ -1191,7 +1191,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13329
+// Racial abilities, wow build 13596
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1727,6 +1727,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Warrior class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1735,6 +1736,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Paladin class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1743,6 +1745,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Hunter class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1751,6 +1754,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Rogue class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1759,6 +1763,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Priest class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1767,6 +1772,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Death Knight class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1775,6 +1781,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Shaman class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1783,6 +1790,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Mage class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1791,6 +1799,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Warlock class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1800,6 +1809,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
     // Racial abilities for Druid class
     {
       68976, // Aberration
+      68992, // Darkflight
       94293, // Enable Worgen Altered Form
       69001, // Transform: Worgen
       68975, // Viciousness
@@ -1824,7 +1834,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13329
+// Glyph spells for classes, wow build 13596
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2035,6 +2045,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     // Major Glyphs (15 spells)
     {
       55675, // Glyph of Circle of Healing
+      63248, // Glyph of Desperation
       55677, // Glyph of Dispel Magic
       63246, // Glyph of Divine Accuracy
       55684, // Glyph of Fade
@@ -2042,13 +2053,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       55683, // Glyph of Holy Nova
       55686, // Glyph of Inner Fire
       55691, // Glyph of Mass Dispel
-      63248, // Glyph of Pain Suppression
+      55685, // Glyph of Prayer of Mending
       55688, // Glyph of Psychic Horror
       55676, // Glyph of Psychic Scream
       55690, // Glyph of Scourge Imprisonment
       55692, // Glyph of Smite
       63237, // Glyph of Spirit Tap
-      55685, // Glyph of Spirit of Redemption
           0,
     },
     // Minor Glyphs (6 spells)
@@ -2080,13 +2090,14 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Death Knight
   {
-    // Major Glyphs (12 spells)
+    // Major Glyphs (13 spells)
     {
       58623, // Glyph of Anti-Magic Shell
       59332, // Glyph of Blood Boil
       58673, // Glyph of Bone Shield
       58620, // Glyph of Chains of Ice
       63330, // Glyph of Dancing Rune Weapon
+      96279, // Glyph of Dark Succor
       62259, // Glyph of Death Grip
       63331, // Glyph of Hungering Cold
       58657, // Glyph of Pestilence
@@ -2338,7 +2349,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13329
+// Tier item set bonuses for class, wow build 13596
 static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
   {
     {
@@ -2602,7 +2613,7 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
     // Tier 11 bonuses (2 spells)
     {
       89923, // Lightning-Charged Battlegear - 2 Piece Bonus (Item - Hunter T11 2P Bonus)
-      89925, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
+      96411, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
           0,
     },
   },

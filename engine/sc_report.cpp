@@ -3044,7 +3044,7 @@ static void print_wiki_raid_events( FILE * file, sim_t* sim )
 static void print_wiki_preamble( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file, "= !SimulationCraft %s-%s for World of Warcraft %s %s (build level %s) =\n", 
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.3" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.6" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
 
   time_t rawtime;
   time ( &rawtime );
@@ -3893,7 +3893,7 @@ void report_t::print_html( sim_t* sim )
         
         util_t::fprintf( file,
           "      <h1>SimulationCraft %s-%s for World of Warcraft %s %s (build level %s)</h1>\n\n",
-          SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.3" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
+          SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.6" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
         
         time_t rawtime;
         time ( &rawtime );

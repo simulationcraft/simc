@@ -876,10 +876,7 @@ struct warlock_spell_t : public spell_t
 
     if ( base_execute_time > 0 && s_tree == WARLOCK_DESTRUCTION && p -> buffs_demon_soul_imp -> up() )
     {
-      if ( p -> ptr )
-        player_crit += p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
-      else
-        player_crit_multiplier *= 1.0 + p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
     }
 
     if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME ) player_multiplier *= 1.0 + trigger_deaths_embrace( this );
@@ -914,18 +911,6 @@ struct warlock_spell_t : public spell_t
     }
 
     return spell_t::total_td_multiplier() * shadow_td_multiplier;
-  }
-
-  // warlock_spell_t::execute ==================================================
-
-  virtual void execute()
-  {
-    warlock_t* p = player -> cast_warlock();
-    spell_t::execute();
-    if ( ! p -> ptr && p -> buffs_demon_soul_imp -> check() && base_execute_time > 0 && s_tree == WARLOCK_DESTRUCTION )
-    {
-      p -> buffs_demon_soul_imp -> decrement();
-    }
   }
 
   virtual double cost() SC_CONST
@@ -2615,7 +2600,7 @@ struct immolate_t : public warlock_spell_t
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
 
-    if ( p -> ptr && p -> talent_inferno -> rank() ) num_ticks += 2;
+    if ( p -> talent_inferno -> rank() ) num_ticks += 2;
   }
 
   virtual void player_buff()
@@ -2793,7 +2778,7 @@ struct incinerate_t : public warlock_spell_t
     trigger_decimation( this, travel_result );
 
     warlock_t* p = player -> cast_warlock();
-    if ( result_is_hit( travel_result ) && p -> ptr )
+    if ( result_is_hit( travel_result ) )
     {
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
       t -> debuffs.curse_of_elements -> source = p;
@@ -2931,8 +2916,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
-      if ( !p -> buffs.bloodlust -> up() || p -> ptr )
-        p -> buffs_improved_soul_fire -> trigger();
+      p -> buffs_improved_soul_fire -> trigger();
     }
   }
 };
@@ -3014,11 +2998,13 @@ struct fel_armor_t : public warlock_spell_t
 
     // Model the passive health tick.....
     // FIXME: For PTR need to add new healing mechanic
+#if 0
     if ( ! p -> ptr )
     {
       base_tick_time = effect_period( 2 );
       num_ticks = 1;
     }
+#endif
 
     usable_pre_combat = true;
   }
@@ -3440,10 +3426,7 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( p -> buffs_tier11_4pc_caster -> up() )
     {
-      if ( p -> ptr )
-        player_multiplier *= 4;
-      else
-        player_crit += p -> buffs_tier11_4pc_caster -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 4;
     }
   }
 };
@@ -3838,15 +3821,6 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
 double warlock_t::composite_spell_haste() SC_CONST
 {
   double h = player_t::composite_spell_haste();
-
-  if ( ! ptr && buffs_improved_soul_fire -> up() )
-  {
-    if ( buffs.bloodlust -> up() )
-      buffs_improved_soul_fire -> expire(); // hack to drop imp._soul_fire when bloodlust is triggered
-    else
-      h *=  1.0 / ( 1.0 + talent_improved_soul_fire -> effect_base_value( 1 ) / 100.0 );
-  }
-
   return h;
 }
 
@@ -3886,7 +3860,7 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
   shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
 
 
-  if ( ptr && buffs_improved_soul_fire -> up() )
+  if ( buffs_improved_soul_fire -> up() )
   {
     fire_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 
     shadow_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 

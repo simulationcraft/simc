@@ -775,7 +775,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
       {
         main_gouche_t( rogue_t* p ) : rogue_attack_t( "main_gauche", p )
         {
-          weapon = p -> ptr ? &( p -> main_hand_weapon ) : &( p -> off_hand_weapon );
+          weapon = &( p -> main_hand_weapon );
 
           base_dd_min = base_dd_max = 1;
           background      = true;

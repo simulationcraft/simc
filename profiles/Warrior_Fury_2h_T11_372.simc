@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_Fury_2h_T11_372
-origin="http://chardev.org/?profile=27448"
+origin="http://chardev.org/?profile=36611"
 level=85
 race=worgen
 use_pre_potion=1
@@ -26,14 +26,14 @@ actions+=/raging_blow,if=target.health_pct>=20
 actions+=/bloodthirst
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/battle_shout,if=rage<70
-head=earthen_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_crit,gems=chaotic_shadowspirit_20mastery_20str_30str,enchant=60str_35mastery
+head=earthen_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_crit,gems=reverberating_shadowspirit_20crit_20str_30str,enchant=60str_35mastery
 neck=rage_of_ages,heroic=1,ilevel=372,quality=epic,stats=143hit_143mastery_322sta_215str,reforge=hit_crit
 shoulders=pauldrons_of_the_great_ettin,heroic=1,type=plate,ilevel=372,quality=epic,stats=2669armor_191crit_171mastery_429sta_266str,gems=20hit_20str_10str,enchant=50str_25crit
 chest=earthen_battleplate,heroic=1,type=plate,ilevel=372,quality=epic,stats=3559armor_257crit_217haste_578sta_345str,reforge=haste_exp,gems=40str_20hit_20str_20str,enchant=20all
-waist=belt_of_absolute_zero,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_191crit_171hit_429sta_266str,gems=40str_40str_10hit
+waist=belt_of_absolute_zero,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_191crit_171hit_429sta_266str,reforge=hit_mastery,gems=40str_40str_10hit
 legs=earthen_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_217hit_257mastery_578sta_345str,reforge=hit_exp,gems=40str_40str,enchant=190ap_55crit
-feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_171exp_191mastery_429sta_266str,gems=20hit_20str_10str,enchant=35mastery
-wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_mastery,gems=20crit_20str_10str,enchant=65crit
+feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_171exp_191mastery_429sta_266str,reforge=mastery_crit,gems=20hit_20str_10str,enchant=35mastery
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_mastery,gems=20crit_20str_10str,enchant=50str
 hands=earthen_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191haste_171mastery_429sta_266str,reforge=haste_crit,gems=20hit_20str_10str,enchant=50str
 finger1=cloudburst_ring_of_the_earthshaker,heroic=1,ilevel=372,quality=epic,stats=321sta_214str_143hit_143crit,reforge=hit_exp,suffix=120
 finger2=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,gems=20crit_20str_10str
@@ -44,19 +44,19 @@ main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,ilevel=372,q
 off_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,ilevel=372,quality=epic,stats=257crit_257hit_578sta_385str,reforge=hit_mastery,enchant=landslide,weapon=sword2h_3.80speed_2138min_3209max
 ranged=crossfire_carbine,heroic=1,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_107str,reforge=exp_crit,weapon=gun_3.00speed_1309min_2432max
 # Gear Summary
-# gear_strength=4678
+# gear_strength=4782
 # gear_agility=20
 # gear_stamina=6440
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=781
-# gear_hit_rating=874
-# gear_crit_rating=2714
+# gear_hit_rating=806
+# gear_crit_rating=2691
 # gear_haste_rating=657
-# gear_mastery_rating=1554
+# gear_mastery_rating=1526
 # gear_armor=21168
-# meta_gem=chaotic_shadowspirit
+# meta_gem=reverberating_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # trinket1=fury_of_angerforge

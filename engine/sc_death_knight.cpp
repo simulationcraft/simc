@@ -1232,11 +1232,11 @@ struct ghoul_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> buffs_shadow_infusion -> check() )
       {
-        player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * ( ( o -> ptr ) ? 0.08 : 0.10 );
+        player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * ( 0.08 );
       }
       if ( o -> buffs_dark_transformation -> check() )
       {
-        player_multiplier *= ( o -> ptr ) ? 1.8 : 2;
+        player_multiplier *= 1.8;
       }
       if ( o -> buffs_frost_presence -> check() )
       {
@@ -2066,8 +2066,7 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> mastery.frozen_heart -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
   }
 
-  if ( p -> ptr )
-    player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
+  player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
 
   if ( sim -> debug )
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
@@ -2144,17 +2143,10 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      if ( p -> ptr )
-      {
-        if ( weapon -> slot == SLOT_MAIN_HAND ) // PPM modeled off Maelstrom for now
-          p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() * 1.0 ) );
-        if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
-          p -> buffs_crimson_scourge -> trigger();
-      }
-      else
-      {
-        p -> buffs_sudden_doom -> trigger();
-      }
+      if ( weapon -> slot == SLOT_MAIN_HAND ) // PPM modeled off Maelstrom for now
+        p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() * 1.0 ) );
+      if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
+        p -> buffs_crimson_scourge -> trigger();
       
       trigger_blood_caked_blade( this );
       if ( p -> buffs_scent_of_blood -> up() )
@@ -2344,21 +2336,10 @@ struct blood_plague_t : public death_knight_spell_t
     tick_power_mod   = 0.055 * 1.15;
     dot_behavior     = DOT_REFRESH;
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
-    if ( p -> ptr )
-      base_multiplier  *= 1.0 + p -> talents.virulence -> effect_base_value( 1 ) / 100.0;
+    base_multiplier  *= 1.0 + p -> talents.virulence -> effect_base_value( 1 ) / 100.0;
     may_miss         = false;
     hasted_ticks     = false;
     reset(); // Not a real action
-  }
-
-  virtual void player_buff()
-  {
-    death_knight_spell_t::player_buff();
-    death_knight_t* p = player -> cast_death_knight();
-    if ( p -> mastery.blightcaller -> ok() && ! p -> ptr )
-    {
-      player_multiplier *= 1.0 + p -> mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
-    }
   }
 };
 
@@ -2804,8 +2785,7 @@ struct frost_fever_t : public death_knight_spell_t
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
                         + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
-    if ( p -> ptr )
-      base_multiplier  *= 1.0 + p -> talents.virulence -> effect_base_value( 1 ) / 100.0;
+    base_multiplier  *= 1.0 + p -> talents.virulence -> effect_base_value( 1 ) / 100.0;
     reset(); // Not a real action
   }
 
@@ -2821,16 +2801,6 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_spell_t::extend_duration( extra_ticks );
 
     trigger_brittle_bones( this );
-  }
-
-  virtual void player_buff()
-  {
-    death_knight_spell_t::player_buff();
-    death_knight_t* p = player -> cast_death_knight();
-    if ( p -> mastery.blightcaller -> ok() && ! p -> ptr )
-    {
-      player_multiplier *= 1.0 + p -> mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
-    }
   }
 };
 
@@ -3352,12 +3322,6 @@ struct plague_strike_t : public death_knight_attack_t
     }
     if ( result_is_hit() )
     {
-      if ( p -> dots_blood_plague -> ticking ) 
-      {
-        if ( ! p -> ptr ) 
-          p -> buffs_blood_swarm -> trigger();
-      }
-
       if ( ! p -> blood_plague ) p -> blood_plague = new blood_plague_t( p );
 
       p -> blood_plague -> execute();
@@ -3582,19 +3546,8 @@ struct scourge_strike_t : public death_knight_attack_t
 
       target_multiplier = p -> diseases() * 0.12;
 
-      // Shadow portion doesn't benefit from EP, gets +8% from E&M and *6% from CoE on live, this was fixed on the PTR
-      if ( ! p -> ptr )
-      {
-        if ( t -> debuffs.earth_and_moon -> up() )
-          target_multiplier += 0.08;
-        else if ( t -> debuffs.curse_of_elements -> up() )
-          target_multiplier *= 1.06;
-      }
-      else
-      {
-        if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
-          target_multiplier *= 1.08;
-      }
+      if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
+        target_multiplier *= 1.08;
     }
   };
 
@@ -4329,9 +4282,9 @@ void death_knight_t::init_buffs()
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_blood_presence      = new buff_t( this, "blood_presence" );
-  buffs_blood_swarm         = new buff_t( this, "blood_swarm",                                        1,  10.0,  0.0, ( ptr ) ? 0 : talents.crimson_scourge -> rank() * 0.50 );
+  buffs_blood_swarm         = new buff_t( this, "blood_swarm",                                        1,  10.0,  0.0, 0 );
   buffs_bone_shield         = new buff_t( this, "bone_shield",                                        3, 300.0 );
-  buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", ( ptr ) ? talents.crimson_scourge -> proc_chance() : 0 );
+  buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
   buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer",                                 1,  21.0 + talents.epidemic -> mod_additive( P_DURATION ), 0.0, 1.0, true );
@@ -4342,7 +4295,7 @@ void death_knight_t::init_buffs()
   buffs_runic_corruption    = new buff_t( this, "runic_corruption",                                   1,   3.0,  0.0, talents.runic_corruption -> effect_base_value( 1 ) / 100.0 );
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
-  buffs_sudden_doom         = new buff_t( this, "sudden_doom",                                        1,  10.0,  0.0, ( ptr ) ? 1.0 : talents.sudden_doom -> proc_chance() );
+  buffs_sudden_doom         = new buff_t( this, "sudden_doom",                                        1,  10.0,  0.0, 1.0 );
   buffs_tier10_4pc_melee    = new buff_t( this, "tier10_4pc_melee",                                   1,  15.0,  0.0, set_bonus.tier10_4pc_melee() );
   buffs_tier11_4pc_melee    = new buff_t( this, "tier11_4pc_melee",                                   3,  30.0,  0.0, set_bonus.tier11_4pc_melee() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
@@ -4526,10 +4479,7 @@ double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_
 double death_knight_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
-  if ( ! ptr && talents.virulence -> rank() )
-    hit += talents.virulence -> effect_base_value( 1 ) / 100.0;
-  if ( ptr )
-    hit += .09; // Not in Runic Empowerment's data yet
+  hit += .09; // Not in Runic Empowerment's data yet
   return hit;
 }
 
@@ -4554,7 +4504,7 @@ double death_knight_t::composite_player_multiplier( const school_type school ) S
   m *= 1.0 + buffs_frost_presence -> value();
   m *= 1.0 + buffs_bone_shield -> value();
 
-  if ( ptr && school == SCHOOL_SHADOW )
+  if ( school == SCHOOL_SHADOW )
     m *= 1.0 + mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * composite_mastery();
 
   return m;
@@ -4682,7 +4632,7 @@ void death_knight_t::trigger_runic_empowerment()
 {
   if ( talents.runic_corruption -> rank() )
   {
-    if ( ptr && buffs_runic_corruption -> check() )
+    if ( buffs_runic_corruption -> check() )
       buffs_runic_corruption -> extend_duration( this, 3 );
     else
       buffs_runic_corruption -> trigger();

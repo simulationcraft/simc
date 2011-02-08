@@ -501,11 +501,6 @@ struct priest_absorb_t : public absorb_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( ! p -> ptr )
-    {
-      h *= p -> constants.darkness_value;
-    }
-
     if ( p -> buffs_borrowed_time -> up() )
     {
       h *= 1.0 / ( 1.0 + p -> talents.borrowed_time -> effect_base_value( 1 ) / 100.0 );
@@ -1140,15 +1135,7 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     double m = 1.0;
 
-    // IDP only crits for *1.5 not *2.0 on live
-    if ( p -> bugs && ! p -> ptr )
-      player_crit_bonus_multiplier /= 1.0 + p -> constants.shadow_power_crit_value;
-
-    if ( p -> ptr )
-    {
-      m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
-    }
-
+    m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
     m += p -> buffs_empowered_shadow -> value();
 
     if ( ! p -> bugs )
@@ -1618,7 +1605,7 @@ struct mind_flay_t : public priest_spell_t
 
     player_td_multiplier += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
 
-    if ( p -> glyphs.mind_flay && ( p -> ptr || p -> dots_shadow_word_pain -> ticking ) )
+    if ( p -> glyphs.mind_flay )
     {
       player_td_multiplier += 0.10;
     }
@@ -1688,9 +1675,6 @@ struct mind_spike_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    // TO-DO: Hotfixed value from ingame.
-    if ( ! player -> ptr )
-      direct_power_mod = 0.8355;
   }
 
   virtual void execute()
@@ -1699,8 +1683,7 @@ struct mind_spike_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    // Chakra PTR
-    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    if ( p -> buffs_chakra_pre -> up() )
     {
       p -> buffs_chakra_chastise -> trigger();
 
@@ -3698,10 +3681,7 @@ double priest_t::empowered_shadows_amount() SC_CONST
 {
   double a = shadow_orb_amount();
 
-  if ( ptr )
-  {
-    a += 0.10;
-  }
+  a += 0.10;
 
   return a;
 }
@@ -3770,11 +3750,7 @@ double priest_t::composite_spell_haste() SC_CONST
 {
   double h = player_t::composite_spell_haste();
 
-  if ( ptr )
-  {
-    h *= constants.darkness_value;
-  }
-
+  h *= constants.darkness_value;
   return h;
 }
 
@@ -4295,7 +4271,6 @@ void priest_t::init_actions()
       }
 
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
-      if ( ! ptr )                                       action_list_str += "&buff.empowered_shadow.remains<=gcd+0.5";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
@@ -4320,7 +4295,6 @@ void priest_t::init_actions()
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
                                                          action_list_str += "/shadow_fiend";
                                                          action_list_str += "/mind_blast";
-      if ( ! ptr )                                       action_list_str += ",if=buff.shadow_orb.stack>=1";
                                                          action_list_str += "/mind_flay";
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion,moving=1";
       if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1,if=mana_pct>10";

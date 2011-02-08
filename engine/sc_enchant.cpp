@@ -655,22 +655,19 @@ static void register_synapse_springs( item_t* item )
   int    max_stat  = STAT_INTELLECT;
   double max_value = -1;
 
-  if ( p -> ptr )
+  for ( int i=0; attr[ i ] != ATTRIBUTE_NONE; i++ )
   {
-    for ( int i=0; attr[ i ] != ATTRIBUTE_NONE; i++ )
+    if ( p -> attribute[ attr[ i ] ] > max_value )
     {
-      if ( p -> attribute[ attr[ i ] ] > max_value )
-      {
-	max_value = p -> attribute[ attr[ i ] ];
-	max_stat = stat[ i ];
-      }
+      max_value = p -> attribute[ attr[ i ] ];
+      max_stat = stat[ i ];
     }
   }
 
   item -> use.name_str = "synapse_springs";
   item -> use.stat = max_stat;
   item -> use.stat_amount = 480.0;
-  item -> use.duration = ( p -> ptr ) ? 10.0 : 12.0;
+  item -> use.duration = 10.0;
   item -> use.cooldown = 60.0;
 }
 
