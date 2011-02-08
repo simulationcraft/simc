@@ -1935,8 +1935,6 @@ struct killing_spree_t : public rogue_attack_t
   {
     add_trigger_buff( p -> buffs_killing_spree );
     
-    base_dd_min = base_dd_max = 1;
-    //channeled = true;
     num_ticks = 5;
     base_tick_time = effect_period( 1 );
 
