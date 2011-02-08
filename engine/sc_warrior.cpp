@@ -519,8 +519,11 @@ static void trigger_deep_wounds( action_t* a )
     virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
     {
       warrior_attack_t::travel( t, travel_result, 0 );
-      base_td = deep_wounds_dmg / dot -> num_ticks;
-      trigger_blood_frenzy( this );
+      if ( result_is_hit( travel_result ) )
+      {
+        base_td = deep_wounds_dmg / dot -> num_ticks;
+        trigger_blood_frenzy( this );
+      }
     }
 
     virtual double travel_time() 

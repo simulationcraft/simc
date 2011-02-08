@@ -782,7 +782,7 @@ struct shadow_fiend_pet_t : public pet_t
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
       priest_t* o = p -> owner -> cast_priest();
 
-      if ( travel_result_is_hit( travel_result ) )
+      if ( result_is_hit( travel_result ) )
         o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                           p -> mana_leech -> effect_base_value( 1 ) / 100.0,
                           o -> gains_shadow_fiend );
@@ -985,7 +985,7 @@ void priest_spell_t::assess_damage( player_t* t,
 
   spell_t::assess_damage( t, amount, dmg_type, travel_result );
 
-  if ( p -> buffs_vampiric_embrace -> up() && travel_result_is_hit( travel_result ) )
+  if ( p -> buffs_vampiric_embrace -> up() && result_is_hit( travel_result ) )
   {
     double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
     p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
@@ -1039,20 +1039,6 @@ struct shadowy_apparition_t : public priest_spell_t
     }
 
     reset();
-  }
-
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-
-    priest_t* p = player -> cast_priest();
-
-    if ( !result_is_hit() )
-    {
-      // Cleanup. Re-add to free list.
-      p -> shadowy_apparition_active_list.remove( this );
-      p -> shadowy_apparition_free_list.push( this );
-    }
   }
 
   virtual void travel( player_t* t, int result, double dmg )
@@ -1727,21 +1713,24 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int result, double dmg )
+  virtual void travel( player_t* t, int travel_result, double dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::travel( t, result, dmg );
+    priest_spell_t::travel( t, travel_result, dmg );
 
-    for ( int i=0; i < 4; i++ )
+    if ( result_is_hit( travel_result ) )
     {
-      p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
-    }
+      for ( int i=0; i < 4; i++ )
+      {
+        p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs_shadow_orb -> stack() );
+      }
 
-    p -> buffs_mind_melt  -> trigger( 1, 1.0 );
-    p -> buffs_shadow_orb -> expire();
-    p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
-    p -> buffs_mind_spike -> trigger();
+      p -> buffs_mind_melt  -> trigger( 1, 1.0 );
+      p -> buffs_shadow_orb -> expire();
+      p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
+      p -> buffs_mind_spike -> trigger();
+    }
   }
 
   virtual void player_buff()

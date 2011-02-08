@@ -1398,7 +1398,8 @@ struct felhunter_pet_t : public warlock_main_pet_t
     virtual void travel( player_t* t, int travel_result, double travel_dmg )
     {
       warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
-      trigger_mana_feed ( this, travel_result );
+      if ( result_is_hit( travel_result ) )
+        trigger_mana_feed ( this, travel_result );
     }
   };
 
@@ -1468,7 +1469,8 @@ struct succubus_pet_t : public warlock_main_pet_t
     virtual void travel( player_t* t, int travel_result, double travel_dmg )
     {
       warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
-      trigger_mana_feed ( this, travel_result );
+      if ( result_is_hit( travel_result ) )
+        trigger_mana_feed ( this, travel_result );
     }
 
     virtual void player_buff()
@@ -1549,7 +1551,8 @@ struct voidwalker_pet_t : public warlock_main_pet_t
     virtual void travel( player_t* t, int travel_result, double travel_dmg )
     {
       warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
-      trigger_mana_feed ( this, travel_result ); // untested
+      if ( result_is_hit( travel_result ) )
+        trigger_mana_feed ( this, travel_result ); // untested
     }
   };
 
@@ -2790,7 +2793,7 @@ struct incinerate_t : public warlock_spell_t
     trigger_decimation( this, travel_result );
 
     warlock_t* p = player -> cast_warlock();
-    if ( p -> ptr )
+    if ( result_is_hit( travel_result ) && p -> ptr )
     {
       t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
       t -> debuffs.curse_of_elements -> source = p;
@@ -3724,10 +3727,13 @@ struct seed_of_corruption_t : public warlock_spell_t
    {
      warlock_t* p = player -> cast_warlock();
      warlock_spell_t::travel( t, travel_result, travel_dmg );
-     dot_damage_done = t -> total_dmg;
-     if ( p -> dots_corruption -> ticking )
+     if ( result_is_hit( travel_result ) )
      {
-       p -> dots_corruption -> action -> cancel();
+       dot_damage_done = t -> total_dmg;
+       if ( p -> dots_corruption -> ticking )
+       {
+         p -> dots_corruption -> action -> cancel();
+       }
      }
   }
 
@@ -3804,9 +3810,12 @@ void imp_pet_t::firebolt_t::travel( player_t* t, int travel_result, double trave
   warlock_pet_spell_t::travel( t, travel_result, travel_dmg);
   warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
 
-  if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
-  trigger_burning_embers ( this, travel_dmg );
-  trigger_mana_feed ( this, travel_result );
+  if ( result_is_hit( travel_result ) )
+  {
+    if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
+    trigger_burning_embers ( this, travel_dmg );
+    trigger_mana_feed ( this, travel_result );
+  }
 }
 
 // ==========================================================================

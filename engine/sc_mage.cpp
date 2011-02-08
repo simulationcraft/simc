@@ -817,6 +817,8 @@ static void trigger_ignite( spell_t* s, double dmg )
     virtual void travel( player_t* t, int travel_result, double ignite_dmg )
     {
       mage_spell_t::travel( t, travel_result, 0 );
+
+      // FIXME: Is a is_hit check necessary here?
       base_td = ignite_dmg / dot -> num_ticks;
     }
     virtual double travel_time()
@@ -1962,7 +1964,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    if ( p -> glyphs.frostfire -> ok() )
+    if ( p -> glyphs.frostfire -> ok() && result_is_hit( travel_result ) )
     {
       if( dot_stack < 3 ) dot_stack++;
       result = RESULT_HIT;
