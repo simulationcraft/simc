@@ -683,11 +683,13 @@ bool action_t::result_is_hit( int r ) SC_CONST
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss() SC_CONST
+bool action_t::result_is_miss( int r ) SC_CONST
 {
-  return( result == RESULT_MISS   ||
-          result == RESULT_DODGE  ||
-          result == RESULT_RESIST );
+  if ( r == RESULT_UNKNOWN ) r = result;
+
+  return( r == RESULT_MISS   ||
+          r == RESULT_DODGE  ||
+          r == RESULT_RESIST );
 }
 
 // action_t::armor ==========================================================

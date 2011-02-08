@@ -268,10 +268,10 @@ enum resource_type
 
 enum result_type
 {
+  RESULT_UNKNOWN=-1,
   RESULT_NONE=0,
   RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY,
   RESULT_BLOCK, RESULT_CRIT_BLOCK, RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
-  RESULT_UNKNOWN,
   RESULT_MAX
 };
 
@@ -3679,8 +3679,8 @@ struct action_t : public spell_id_t
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   calculate_result() { assert( 0 ); }
-  virtual bool   result_is_hit( int r=RESULT_UNKNOWN ) SC_CONST;
-  virtual bool   result_is_miss() SC_CONST;
+  virtual bool   result_is_hit ( int r=RESULT_UNKNOWN ) SC_CONST;
+  virtual bool   result_is_miss( int r=RESULT_UNKNOWN ) SC_CONST;
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual double calculate_weapon_damage();

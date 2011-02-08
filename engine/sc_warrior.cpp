@@ -3079,9 +3079,8 @@ void warrior_t::init_actions()
       action_list_str += "/rend,if=!ticking";
       if ( level >= 81 ) action_list_str += "/colossus_smash,if=!buff.colossus_smash.up";
       action_list_str += "/mortal_strike";
-      action_list_str += "/overpower,if=!buff.lambs_to_the_slaughter.up&rage>35&target.health_pct<20";
-      action_list_str += "/execute";
       action_list_str += "/overpower";
+      action_list_str += "/execute";
       if ( glyphs.slam -> ok() ) action_list_str += "/slam,if=cooldown.mortal_strike.remains>=1.5";
       action_list_str += "/battle_shout,if=rage<25";
     }
