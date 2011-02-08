@@ -415,6 +415,7 @@ struct rogue_attack_t : public attack_t
   int  requires_position;
   bool requires_stealth;
   bool requires_combo_points;
+  bool affected_by_killing_spree;
 
   // we now track how much CPs can an action give us
   int adds_combo_points;
@@ -921,6 +922,7 @@ void rogue_attack_t::_init_rogue_attack_t()
   may_crit       = true;
   tick_may_crit = true;
   hasted_ticks  = false;
+  affected_by_killing_spree = true;
 
   // reset some damage related stuff ::parse_data set which we will overwhire anyway in actual spell ctors/executes
   direct_power_mod = 0.0;
@@ -1105,13 +1107,17 @@ double rogue_attack_t::total_multiplier() SC_CONST
 
   // Killing Spree (combat) - affects all direct damage (but you cannot use specials while it is up)
   // affects deadly poison ticks
-  // TODO: Add Exception: DOESN'T affect rupture/garrote ticks
-  if ( p -> buffs_killing_spree -> check() )
+  // Exception: DOESN'T affect rupture/garrote ticks
+  if ( p -> buffs_killing_spree -> check() && affected_by_killing_spree )
     m *= 1.0 + p -> buffs_killing_spree -> value();
 
   // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
   if ( p -> sim -> target -> debuffs.bleeding -> check() )
     m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
+
+  // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
+  if ( p -> buffs_vendetta -> check() )
+    m *= 1.0 + p -> buffs_vendetta -> value();
   
   return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier * m; 
 }
@@ -1558,6 +1564,7 @@ struct envenom_t : public rogue_attack_t
       add_mult = p -> composite_mastery() * p -> mastery_potent_poisons -> base_value( E_APPLY_AURA, A_DUMMY );
   
     double m = 1.0;
+    // dynamic damage modifiers:
 
     // Bandit's Guile (combat) - affects all damage done by rogue, stacks are reset when you strike other target with sinister strike/revealing strike
     if ( p -> buffs_bandits_guile -> check() )
@@ -1565,12 +1572,17 @@ struct envenom_t : public rogue_attack_t
 
     // Killing Spree (combat) - affects all direct damage (but you cannot use specials while it is up)
     // affects deadly poison ticks
-    if ( p -> buffs_killing_spree -> check() )
+    // Exception: DOESN'T affect rupture/garrote ticks
+    if ( p -> buffs_killing_spree -> check() && affected_by_killing_spree )
       m *= 1.0 + p -> buffs_killing_spree -> value();
 
     // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
     if ( p -> sim -> target -> debuffs.bleeding -> check() )
       m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
+
+    // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
+    if ( p -> buffs_vendetta -> check() )
+      m *= 1.0 + p -> buffs_vendetta -> value();
 
     return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier * m; 
   }
@@ -1771,6 +1783,8 @@ struct garrote_t : public rogue_attack_t
   garrote_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "garrote", 703, p )
   {
+    affected_by_killing_spree = false;
+
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -2133,6 +2147,8 @@ struct rupture_t : public rogue_attack_t
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", 1943, p )
   {
+    affected_by_killing_spree = false;
+
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -2552,7 +2568,27 @@ double rogue_poison_t::total_multiplier() SC_CONST
   if ( p -> mastery_potent_poisons -> ok() )
     add_mult = p -> composite_mastery() * p -> mastery_potent_poisons -> base_value( E_APPLY_AURA, A_DUMMY );
   
-  return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier; 
+  double m = 1.0;
+  // dynamic damage modifiers:
+
+  // Bandit's Guile (combat) - affects all damage done by rogue, stacks are reset when you strike other target with sinister strike/revealing strike
+  if ( p -> buffs_bandits_guile -> check() )
+    m *= 1.0 + p -> buffs_bandits_guile -> value();
+
+  // Killing Spree (combat) - affects all direct damage (but you cannot use specials while it is up)
+  // affects deadly poison ticks
+  if ( p -> buffs_killing_spree -> check() )
+    m *= 1.0 + p -> buffs_killing_spree -> value();
+
+  // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
+  if ( p -> sim -> target -> debuffs.bleeding -> check() )
+    m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
+
+  // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
+  if ( p -> buffs_vendetta -> check() )
+    m *= 1.0 + p -> buffs_vendetta -> value();
+
+  return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier * m; 
 }
 
 // Deadly Poison ============================================================
@@ -3072,9 +3108,6 @@ double rogue_t::composite_player_multiplier( const school_type school ) SC_CONST
     ( spec_master_of_subtlety -> ok() && ( buffs_stealthed -> check() || buffs_vanish -> check() ) ) )
     m *= 1.0 + buffs_master_of_subtlety -> value();
 
-  if ( buffs_vendetta -> check() )
-    m *= 1.0 + buffs_vendetta -> value();
-
   return m;
 }
 
@@ -3190,7 +3223,7 @@ void rogue_t::init_actions()
       if ( talents.shadow_dance -> rank() )
       {
         action_list_str += "/pool_energy,for_next=1";
-        action_list_str += "/shadow_dance,if=energy>85&combo_points<5";
+        action_list_str += "/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down";
       }
       action_list_str += "/pool_energy,for_next=1";
       action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
