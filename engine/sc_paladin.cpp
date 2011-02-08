@@ -26,64 +26,66 @@ struct paladin_t : public player_t
 {
   // Active
   int       active_seal;
-  action_t* active_seals_of_command_proc;
-  action_t* active_seal_of_justice_proc;
-  action_t* active_seal_of_insight_proc;
-  action_t* active_seal_of_righteousness_proc;
-  action_t* active_seal_of_truth_proc;
-  action_t* active_seal_of_truth_dot;
   action_t* active_hand_of_light_proc;
+  action_t* active_seal_of_insight_proc;
+  action_t* active_seal_of_justice_proc;
+  action_t* active_seal_of_righteousness_proc;
+  action_t* active_seal_of_truth_dot;
+  action_t* active_seal_of_truth_proc;
+  action_t* active_seals_of_command_proc;
   action_t* ancient_fury_explosion;
 
   // Buffs
+  buff_t* buffs_ancient_power;
   buff_t* buffs_avenging_wrath;
+  buff_t* buffs_censure;
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
-  buff_t* buffs_holy_shield;
-  buff_t* buffs_judgements_of_the_pure;
-  buff_t* buffs_reckoning;
-  buff_t* buffs_censure;
-  buff_t* buffs_the_art_of_war;
-
-  buff_t* buffs_holy_power;
-  buff_t* buffs_inquisition;
-  buff_t* buffs_zealotry;
-  buff_t* buffs_judgements_of_the_wise;
-  buff_t* buffs_judgements_of_the_bold;
-  buff_t* buffs_hand_of_light;
-  buff_t* buffs_ancient_power;
-  buff_t* buffs_sacred_duty;
   buff_t* buffs_divine_purpose;
+  buff_t* buffs_holy_power;
+  buff_t* buffs_holy_shield;
+  buff_t* buffs_inquisition;
+  buff_t* buffs_judgements_of_the_bold;
+  buff_t* buffs_judgements_of_the_pure;
+  buff_t* buffs_judgements_of_the_wise;
+  buff_t* buffs_reckoning;
+  buff_t* buffs_sacred_duty;
+  buff_t* buffs_the_art_of_war;
+  buff_t* buffs_zealotry;
 
   // Gains
   gain_t* gains_divine_plea;
-  gain_t* gains_judgements_of_the_wise;
   gain_t* gains_judgements_of_the_bold;
+  gain_t* gains_judgements_of_the_wise;
+  gain_t* gains_sanctuary;
   gain_t* gains_seal_of_command_glyph;
   gain_t* gains_seal_of_insight;
-  gain_t* gains_sanctuary;
 
-  // Procs
-  proc_t* procs_parry_haste;
-
-  pet_t* guardian_of_ancient_kings;
-
+  // Passives
   struct passives_t
   {
-    passive_spell_t* touched_by_the_light;
-    passive_spell_t* vengeance;
     mastery_t* divine_bulwark;
-    passive_spell_t* sheath_of_light;
-    passive_spell_t* two_handed_weapon_spec;
     mastery_t* hand_of_light;
     passive_spell_t* judgements_of_the_bold; // passive stuff is hidden here because spells
     passive_spell_t* judgements_of_the_wise; // can only have three effects
     passive_spell_t* plate_specialization;
+    passive_spell_t* sheath_of_light;
+    passive_spell_t* touched_by_the_light;
+    passive_spell_t* two_handed_weapon_spec;
+    passive_spell_t* vengeance;
     passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
   };
   passives_t passives;
 
-  struct spells_t {
+  // Pets
+  pet_t* guardian_of_ancient_kings;
+
+  // Procs
+  proc_t* procs_parry_haste;
+
+  // Spells
+  struct spells_t
+  {
     active_spell_t* avenging_wrath;
     active_spell_t* divine_favor;
     active_spell_t* divine_plea;
@@ -93,76 +95,80 @@ struct paladin_t : public player_t
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
 
+  // Talents
   struct talents_t
   {
     // holy
-    talent_t* arbiter_of_the_light;
-    int protector_of_the_innocent;
-    talent_t* judgements_of_the_pure;
-    int clarity_of_purpose;
-    int last_word;
-    talent_t* blazing_light;
-    int denounce;
-    talent_t* divine_favor;
-    int infusion_of_light;
-    int daybreak;
-    int enlightened_judgements;
-    int beacon_of_light;
-    int speed_of_light;
-    int sacred_cleansing;
-    int conviction;
     int aura_mastery;
-    int paragon_of_virtue;
-    int tower_of_radiance;
+    int beacon_of_light;
     int blessed_life;
+    int clarity_of_purpose;
+    int conviction;
+    int daybreak;
+    int denounce;
+    int enlightened_judgements;
+    int infusion_of_light;
+    int last_word;
     int light_of_dawn;
+    int paragon_of_virtue;
+    int protector_of_the_innocent;
+    int sacred_cleansing;
+    int speed_of_light;
+    int tower_of_radiance;
+    talent_t* arbiter_of_the_light;
+    talent_t* blazing_light;
+    talent_t* divine_favor;
+    talent_t* judgements_of_the_pure;
+
     // prot
-    int divinity;
-    talent_t* seals_of_the_pure;
-    int eternal_glory;
-    talent_t* judgements_of_the_just;
-    talent_t* toughness;
-    talent_t* improved_hammer_of_justice;
-    talent_t* hallowed_ground;
-    talent_t* sanctuary;
-    talent_t* hammer_of_the_righteous;
-    talent_t* wrath_of_the_lightbringer;
-    talent_t* reckoning;
-    talent_t* shield_of_the_righteous;
-    talent_t* grand_crusader;
-    int vindication;
-    talent_t* holy_shield;
-    int guarded_by_the_light;
-    int divine_guardian;
-    talent_t* sacred_duty;
-    talent_t* shield_of_the_templar;
     int ardent_defender;
+    int divine_guardian;
+    int divinity;
+    int eternal_glory;
+    int guarded_by_the_light;
+    int vindication;
+    talent_t* grand_crusader;
+    talent_t* hallowed_ground;
+    talent_t* hammer_of_the_righteous;
+    talent_t* holy_shield;
+    talent_t* improved_hammer_of_justice;
+    talent_t* judgements_of_the_just;
+    talent_t* reckoning;
+    talent_t* sacred_duty;
+    talent_t* sanctuary;
+    talent_t* seals_of_the_pure;
+    talent_t* shield_of_the_righteous;
+    talent_t* shield_of_the_templar;
+    talent_t* toughness;
+    talent_t* wrath_of_the_lightbringer;
+
     // ret
+    int acts_of_sacrifice;
     int eye_for_an_eye;
-    talent_t* crusade;
-    int improved_judgement;
     int guardians_favor;
-    talent_t* rule_of_law;
-    int pursuit_of_justice;
-    talent_t* communion; // damage aura NYI
-    talent_t* the_art_of_war;
+    int improved_judgement;
     int long_arm_of_the_law;
-    talent_t* divine_storm;
+    int pursuit_of_justice;
     int rebuke;
+    int repentance;
+    int selfless_healer;
+    talent_t* communion; // damage aura NYI
+    talent_t* crusade;
+    talent_t* divine_purpose;
+    talent_t* divine_storm;
+    talent_t* inquiry_of_faith;
+    talent_t* rule_of_law;
+    talent_t* sanctified_wrath;
     talent_t* sanctity_of_battle;
     talent_t* seals_of_command;
-    talent_t* sanctified_wrath;
-    int selfless_healer;
-    int repentance;
-    talent_t* divine_purpose;
-    talent_t* inquiry_of_faith;
-    int acts_of_sacrifice;
+    talent_t* the_art_of_war;
     talent_t* zealotry;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
+  // Glyphs
   struct glyphs_t
   {
     // prime
@@ -174,12 +180,13 @@ struct paladin_t : public player_t
     int seal_of_truth;
     int shield_of_the_righteous;
     int templars_verdict;
+
     // major
     int ascetic_crusader;
     int consecration;
     int focused_shield;
     int hammer_of_wrath;
-    // minor
+
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
   glyphs_t glyphs;
@@ -336,7 +343,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   virtual void init_base()
   {
     pet_t::init_base();
-    melee = new melee_t(this);
+    melee = new melee_t( this );
   }
 
   virtual void dismiss()
@@ -670,7 +677,7 @@ struct crusader_strike_t : public paladin_attack_t
     p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
     if (result_is_hit())
     {
-      trigger_hand_of_light(this);
+      trigger_hand_of_light( this );
       if (p->talents.grand_crusader->rank())
       {
         if (sim->roll(p->talents.grand_crusader->proc_chance()))
@@ -953,7 +960,7 @@ struct templars_verdict_t : public paladin_attack_t
     paladin_attack_t::execute();
     if (result_is_hit())
     {
-      trigger_hand_of_light(this);
+      trigger_hand_of_light( this );
     }
   }
 
@@ -1366,7 +1373,7 @@ struct judgement_t : public paladin_attack_t
       {
         p->buffs_sacred_duty->trigger(1, -1, p->talents.sacred_duty->proc_chance());
       }
-      trigger_divine_purpose(this);
+      trigger_divine_purpose( this );
     }
     trigger_judgements_of_the_wise( seal );
     trigger_judgements_of_the_bold( seal );
@@ -1467,7 +1474,7 @@ struct paladin_spell_t : public spell_t
     {
       consume_and_gain_holy_power();
       if (trigger_dp)
-        trigger_divine_purpose(this);
+        trigger_divine_purpose( this );
     }
   }
 
@@ -1858,7 +1865,7 @@ struct inquisition_t : public paladin_spell_t
     if ( p -> talents.holy_shield->rank() )
       p -> buffs_holy_shield -> trigger();
     consume_and_gain_holy_power();
-    trigger_divine_purpose(this);
+    trigger_divine_purpose( this );
   }
 
   virtual bool ready()
@@ -2229,7 +2236,6 @@ void paladin_t::init_buffs()
   buffs_zealotry               = new buff_t( this, talents.zealotry->spell_id(), "zealotry", 1 );
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", 1 );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", 1 );
-  buffs_hand_of_light          = 0;
   buffs_divine_purpose         = new buff_t( this, "divine_purpose", 1, 8, 0, 0.01 * talents.divine_purpose->effect_base_value(1) );
   buffs_ancient_power          = new buff_t( this, "ancient_power", -1 );
   buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty" );
@@ -2253,7 +2259,7 @@ void paladin_t::init_actions()
   active_seal_of_truth_proc         = new seal_of_truth_proc_t        ( this );
   active_seal_of_truth_dot          = new seal_of_truth_dot_t         ( this );
   active_hand_of_light_proc         = new hand_of_light_proc_t        ( this );
-  ancient_fury_explosion            = new ancient_fury_t(this);
+  ancient_fury_explosion            = new ancient_fury_t( this );
 
   if ( action_list_str.empty() )
   {

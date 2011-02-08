@@ -94,7 +94,6 @@ struct death_knight_t : public player_t
 
   // Buffs
   buff_t* buffs_blood_presence;
-  buff_t* buffs_blood_swarm;
   buff_t* buffs_bloodworms;
   buff_t* buffs_bone_shield;
   buff_t* buffs_crimson_scourge;
@@ -427,7 +426,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   // Full runes don't regen.
   if ( state == STATE_FULL ) return;
   // If the other rune is already regening, we don't.
-  if ( state == STATE_DEPLETED && paired_rune->state == STATE_REGENERATING ) return;
+  if ( state == STATE_DEPLETED && paired_rune -> state == STATE_REGENERATING ) return;
 
   // We only regenerate if our pair is full or depleted.
   assert( paired_rune -> state != STATE_REGENERATING );
@@ -466,7 +465,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   else
     state = STATE_REGENERATING;
 
-  if ( overflow > 0.0 && (paired_rune->state == STATE_REGENERATING || paired_rune->state == STATE_DEPLETED) ) {
+  if ( overflow > 0.0 && (paired_rune -> state == STATE_REGENERATING || paired_rune -> state == STATE_DEPLETED) ) {
     paired_rune -> value = std::min( 1.0, paired_rune -> value + overflow );
     if ( paired_rune -> value >= 1.0 )
       paired_rune -> state = STATE_FULL;
@@ -1714,7 +1713,7 @@ static void trigger_blood_caked_blade( action_t* a )
     struct bcb_t : public death_knight_attack_t
     {
       bcb_t( death_knight_t* player ) :
-        death_knight_attack_t( "blood_caked_blade", player->talents.blood_caked_blade->spell_id(), player )
+        death_knight_attack_t( "blood_caked_blade", player -> talents.blood_caked_blade -> spell_id(), player )
       {
         may_crit       = false;
         background     = true;
@@ -1800,7 +1799,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   struct unholy_blight_t : public death_knight_spell_t
   {
     unholy_blight_t( death_knight_t* player ) :
-      death_knight_spell_t( "unholy_blight", player->talents.unholy_blight->spell_id(), player )
+      death_knight_spell_t( "unholy_blight", player -> talents.unholy_blight -> spell_id(), player )
     {
       base_tick_time = 1.0;
       num_ticks      = 10;
@@ -2143,8 +2142,8 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      if ( weapon -> slot == SLOT_MAIN_HAND ) // PPM modeled off Maelstrom for now
-        p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() * 1.0 ) );
+      if ( weapon -> slot == SLOT_MAIN_HAND )
+        p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
       if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
         p -> buffs_crimson_scourge -> trigger();
       
@@ -2228,7 +2227,7 @@ struct auto_attack_t : public death_knight_attack_t
 struct army_of_the_dead_t : public death_knight_spell_t
 {
   army_of_the_dead_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "army_of_the_dead", player->spells.army_of_the_dead->spell_id(), player )
+    death_knight_spell_t( "army_of_the_dead", player -> spells.army_of_the_dead -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2236,7 +2235,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     harmful     = false;
     channeled   = true;
-    extract_rune_cost( p->spells.army_of_the_dead, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.army_of_the_dead, &cost_blood, &cost_frost, &cost_unholy );
   }
 
   virtual void execute()
@@ -2287,14 +2286,14 @@ struct army_of_the_dead_t : public death_knight_spell_t
 struct blood_boil_t : public death_knight_spell_t
 {
   blood_boil_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "blood_boil", player->spells.blood_boil->spell_id(), player )
+    death_knight_spell_t( "blood_boil", player -> spells.blood_boil -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
     aoe                = -1;
-    extract_rune_cost( p->spells.blood_boil, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.blood_boil, &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod   = 0.08;
     player_multiplier *= 1.0 + p -> talents.crimson_scourge -> effect_base_value( 1 ) / 100.0;
   }
@@ -2302,7 +2301,7 @@ struct blood_boil_t : public death_knight_spell_t
   virtual double cost() SC_CONST
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_blood_swarm -> up() || p -> buffs_crimson_scourge -> up() ) // Blood swarm is live version of the buff
+    if ( p -> buffs_crimson_scourge -> up() )
       return 0;
     
     return death_knight_spell_t::cost();
@@ -2324,7 +2323,7 @@ struct blood_boil_t : public death_knight_spell_t
 struct blood_plague_t : public death_knight_spell_t
 {
   blood_plague_t( death_knight_t* player ) :
-    death_knight_spell_t( "blood_plague", player->spells.blood_plague->spell_id(), player )
+    death_knight_spell_t( "blood_plague", player -> spells.blood_plague -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2348,13 +2347,13 @@ struct blood_plague_t : public death_knight_spell_t
 struct blood_strike_t : public death_knight_attack_t
 {
   blood_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "blood_strike", player->spells.blood_strike->spell_id(), player )
+    death_knight_attack_t( "blood_strike", player -> spells.blood_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.blood_strike, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.blood_strike, &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> passives.blood_of_the_north -> ok() || p -> passives.reaping -> ok() )
       convert_runes = 1.0;
@@ -2392,7 +2391,7 @@ struct blood_strike_t : public death_knight_attack_t
 struct blood_tap_t : public death_knight_spell_t
 {
   blood_tap_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "blood_tap", player->spells.blood_tap->spell_id(), player )
+    death_knight_spell_t( "blood_tap", player -> spells.blood_tap -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2463,7 +2462,7 @@ struct blood_tap_t : public death_knight_spell_t
 struct bone_shield_t : public death_knight_spell_t
 {
   bone_shield_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "bone_shield", player->talents.bone_shield->spell_id(), player )
+    death_knight_spell_t( "bone_shield", player -> talents.bone_shield -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.bone_shield -> rank() );
@@ -2521,7 +2520,7 @@ struct bone_shield_t : public death_knight_spell_t
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   dancing_rune_weapon_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", player->talents.dancing_rune_weapon->spell_id(), player )
+    death_knight_spell_t( "dancing_rune_weapon", player -> talents.dancing_rune_weapon -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.dancing_rune_weapon -> rank() );
@@ -2581,14 +2580,14 @@ struct dark_transformation_t : public death_knight_spell_t
 struct death_and_decay_t : public death_knight_spell_t
 {
   death_and_decay_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "death_and_decay", player->spells.death_and_decay->spell_id(), player )
+    death_knight_spell_t( "death_and_decay", player -> spells.death_and_decay -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
     aoe              = -1;
-    extract_rune_cost( p->spells.death_and_decay, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.death_and_decay, &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
@@ -2708,7 +2707,7 @@ struct death_strike_t : public death_knight_attack_t
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "empower_rune_weapon", player->spells.empower_rune_weapon->spell_id(), player )
+    death_knight_spell_t( "empower_rune_weapon", player -> spells.empower_rune_weapon -> spell_id(), player )
   {
     parse_options( NULL, options_str );
   }
@@ -2731,13 +2730,13 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 struct festering_strike_t : public death_knight_attack_t
 {
   festering_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "festering_strike", player->spells.festering_strike->spell_id(), player )
+    death_knight_attack_t( "festering_strike", player -> spells.festering_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.festering_strike, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.festering_strike, &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> passives.reaping -> ok() )
     {
       convert_runes = 1.0;
@@ -2769,7 +2768,7 @@ struct festering_strike_t : public death_knight_attack_t
 struct frost_fever_t : public death_knight_spell_t
 {
   frost_fever_t( death_knight_t* player ) :
-    death_knight_spell_t( "frost_fever", player->spells.frost_fever->spell_id(), player )
+    death_knight_spell_t( "frost_fever", player -> spells.frost_fever -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2809,7 +2808,7 @@ struct frost_fever_t : public death_knight_spell_t
 struct frost_strike_t : public death_knight_attack_t
 {
   frost_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "frost_strike", player->spells.frost_strike->spell_id(), player )
+    death_knight_attack_t( "frost_strike", player -> spells.frost_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_spec( TREE_FROST );
@@ -2906,7 +2905,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   double bonus;
 
   horn_of_winter_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "horn_of_winter", player->spells.horn_of_winter->spell_id(), player )
+    death_knight_spell_t( "horn_of_winter", player -> spells.horn_of_winter -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2942,7 +2941,7 @@ struct horn_of_winter_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", player->talents.howling_blast->spell_id(), player )
+    death_knight_spell_t( "howling_blast", player -> talents.howling_blast -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.howling_blast -> rank() );
@@ -3020,13 +3019,13 @@ struct howling_blast_t : public death_knight_spell_t
 struct icy_touch_t : public death_knight_spell_t
 {
   icy_touch_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "icy_touch", player->spells.icy_touch->spell_id(), player )
+    death_knight_spell_t( "icy_touch", player -> spells.icy_touch -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.icy_touch, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.icy_touch, &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod = 0.2;
   }
 
@@ -3100,7 +3099,7 @@ struct icy_touch_t : public death_knight_spell_t
 struct mind_freeze_t : public death_knight_spell_t
 {
   mind_freeze_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "mind_freeze",  player->spells.mind_freeze->spell_id(), player )
+    death_knight_spell_t( "mind_freeze",  player -> spells.mind_freeze -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3126,13 +3125,13 @@ struct mind_freeze_t : public death_knight_spell_t
 struct necrotic_strike_t : public death_knight_attack_t
 {
   necrotic_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "necrotic_strike", player->spells.necrotic_strike->spell_id(), player )
+    death_knight_attack_t( "necrotic_strike", player -> spells.necrotic_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.necrotic_strike, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.necrotic_strike, &cost_blood, &cost_frost, &cost_unholy );
   }
 };
 
@@ -3141,13 +3140,13 @@ struct necrotic_strike_t : public death_knight_attack_t
 struct obliterate_t : public death_knight_attack_t
 {
   obliterate_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "obliterate", player->spells.obliterate->spell_id(), player )
+    death_knight_attack_t( "obliterate", player -> spells.obliterate -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.obliterate, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.obliterate, &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> passives.blood_rites -> ok() )
       convert_runes = 1.0;
 
@@ -3222,7 +3221,7 @@ struct obliterate_t : public death_knight_attack_t
 struct outbreak_t : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "outbreak", player->spells.outbreak->spell_id(), player )
+    death_knight_spell_t( "outbreak", player -> spells.outbreak -> spell_id(), player )
   {
     parse_options( NULL, options_str );
   }
@@ -3247,13 +3246,13 @@ struct outbreak_t : public death_knight_spell_t
 struct pestilence_t : public death_knight_spell_t
 {
   pestilence_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "pestilence", player->spells.pestilence->spell_id(), player )
+    death_knight_spell_t( "pestilence", player -> spells.pestilence -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.pestilence, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.pestilence, &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> passives.blood_of_the_north -> ok() || p -> passives.reaping -> ok() )
       convert_runes = 1.0;
@@ -3273,7 +3272,7 @@ struct pestilence_t : public death_knight_spell_t
 struct pillar_of_frost_t : public death_knight_spell_t
 {
   pillar_of_frost_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "pillar_of_frost", player->talents.pillar_of_frost->spell_id(), player )
+    death_knight_spell_t( "pillar_of_frost", player -> talents.pillar_of_frost -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.pillar_of_frost -> rank() );
@@ -3297,13 +3296,13 @@ struct pillar_of_frost_t : public death_knight_spell_t
 struct plague_strike_t : public death_knight_attack_t
 {
   plague_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "plague_strike", player->spells.plague_strike->spell_id(), player )
+    death_knight_attack_t( "plague_strike", player -> spells.plague_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->spells.plague_strike, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.plague_strike, &cost_blood, &cost_frost, &cost_unholy );
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -3433,7 +3432,7 @@ struct presence_t : public death_knight_spell_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", player->spells.raise_dead->spell_id(), player )
+    death_knight_spell_t( "raise_dead", player -> spells.raise_dead -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3472,7 +3471,7 @@ struct raise_dead_t : public death_knight_spell_t
 struct rune_strike_t : public death_knight_attack_t
 {
   rune_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "rune_strike", player->spells.rune_strike->spell_id(), player )
+    death_knight_attack_t( "rune_strike", player -> spells.rune_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     
@@ -3552,14 +3551,14 @@ struct scourge_strike_t : public death_knight_attack_t
   };
 
   scourge_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "scourge_strike", player->spells.scourge_strike->spell_id(), player )
+    death_knight_attack_t( "scourge_strike", player -> spells.scourge_strike -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
     scourge_strike_shadow = new scourge_strike_shadow_t( player );
-    extract_rune_cost( p->spells.scourge_strike, &cost_blood, &cost_frost, &cost_unholy );
+    extract_rune_cost( p -> spells.scourge_strike, &cost_blood, &cost_frost, &cost_unholy );
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1
                        + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
@@ -3581,7 +3580,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
 {
 
   summon_gargoyle_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "summon_gargoyle", player->talents.summon_gargoyle->spell_id(), player )
+    death_knight_spell_t( "summon_gargoyle", player -> talents.summon_gargoyle -> spell_id(), player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.summon_gargoyle -> rank() );
@@ -4282,7 +4281,6 @@ void death_knight_t::init_buffs()
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_blood_presence      = new buff_t( this, "blood_presence" );
-  buffs_blood_swarm         = new buff_t( this, "blood_swarm",                                        1,  10.0,  0.0, 0 );
   buffs_bone_shield         = new buff_t( this, "bone_shield",                                        3, 300.0 );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
