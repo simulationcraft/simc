@@ -61,6 +61,7 @@ struct paladin_t : public player_t
   gain_t* gains_judgements_of_the_bold;
   gain_t* gains_seal_of_command_glyph;
   gain_t* gains_seal_of_insight;
+  gain_t* gains_sanctuary;
 
   // Procs
   proc_t* procs_parry_haste;
@@ -2109,6 +2110,7 @@ void paladin_t::init_gains()
   gains_judgements_of_the_bold = get_gain( "judgements_of_the_bold" );
   gains_seal_of_command_glyph  = get_gain( "seal_of_command_glyph"  );
   gains_seal_of_insight        = get_gain( "seal_of_insight"        );
+  gains_sanctuary              = get_gain( "sanctuary"              );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2666,6 +2668,14 @@ double paladin_t::assess_damage( double amount,
     action_t* a,
     player_t* s )
 {
+
+  if ( talents.sanctuary -> rank() )
+  {
+    amount *= 1.0 - talents.sanctuary -> effect_base_value( 1 ) / 100.0;
+
+    if ( result == RESULT_DODGE || result == RESULT_BLOCK )
+      resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, gains_sanctuary );
+  }
 
   if ( result == RESULT_BLOCK )
   {

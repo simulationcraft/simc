@@ -1025,7 +1025,7 @@ void action_t::execute()
     if ( result_is_hit() )
     {
       direct_dmg = calculate_direct_damage();
-      schedule_travel( target );
+
     }
     else
     {
@@ -1036,6 +1036,7 @@ void action_t::execute()
         log_t::miss_event( this );
       }
     }
+    schedule_travel( target );
 
   }
 
@@ -1104,7 +1105,10 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 
   assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
 
-  if ( ! dual ) stats -> add_result( actual_direct_dmg, DMG_DIRECT, result );
+  if ( ! dual )
+    // Check for Dot Application.
+    if ( ! ( num_ticks > 0 && travel_dmg == 0 && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) ) )
+      stats -> add_result( actual_direct_dmg, DMG_DIRECT, result );
 
   if ( num_ticks > 0 )
   {
