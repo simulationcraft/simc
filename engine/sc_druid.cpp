@@ -2870,11 +2870,15 @@ struct starfire_t : public druid_spell_t
         {
           if ( p -> dots_moonfire -> added_seconds < 9.0 )
             p -> dots_moonfire -> action -> extend_duration_seconds( 3.0 );
+          else
+            p -> dots_moonfire -> action -> extend_duration_seconds( 0.0 );
         }
         else if ( p -> dots_sunfire -> ticking )
         {
           if ( p -> dots_sunfire -> added_seconds < 9.0 )
             p -> dots_sunfire -> action -> extend_duration_seconds( 3.0 );
+          else
+            p -> dots_sunfire -> action -> extend_duration_seconds( 0.0 );
         }
       }
 
