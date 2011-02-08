@@ -312,7 +312,7 @@ struct druid_t : public player_t
     talent_t* pulverize;
     talent_t* rend_and_tear;
     talent_t* stampede;
-    talent_t* survival_instincts; // NYI
+    talent_t* survival_instincts;
     talent_t* thick_hide; // How does the +10% and +33%@bear stack etc
     
     // Resto
