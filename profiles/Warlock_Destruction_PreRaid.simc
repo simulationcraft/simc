@@ -17,16 +17,18 @@ actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
 actions+=/demon_soul
 actions+=/soulburn,if=buff.bloodlust.down
-actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.soulburn.up&!in_flight
-actions+=/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react
+actions+=/soul_fire,if=buff.soulburn.up
+actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8
 actions+=/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
 actions+=/conflagrate
 actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
 actions+=/shadowflame
+actions+=/soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)
 actions+=/chaos_bolt
-actions+=/soul_fire,if=buff.empowered_imp.react&((buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)&buff.bloodlust.down)|buff.empowered_imp.remains<(buff.bloodlust.remains+action.soul_fire.travel_time))
 actions+=/summon_infernal
-actions+=/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight
+actions+=/soulburn,if=buff.bloodlust.down
+actions+=/soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight
 actions+=/shadowburn
 actions+=/incinerate
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
@@ -46,7 +48,7 @@ finger2=lavishly_jeweled_ring,heroic=1,ilevel=346,quality=rare,stats=107hit_133i
 trinket1=stump_of_time,ilevel=359,quality=epic,stats=321hit,equip=onspellcast_1926sp_10%_15dur_75cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shadow_of_perfect_bliss,heroic=1,ilevel=346,quality=rare,stats=580armor_128crit_85hit_168int_252sta,reforge=crit_haste,enchant=50int
-main_hand=modguds_blade,heroic=1,ilevel=346,quality=rare,stats=91crit_78hit_129int_1729sp_194sta,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_258min_480max
+main_hand=modguds_blade,heroic=1,ilevel=346,quality=rare,stats=91crit_78hit_129int_1729sp_194sta,reforge=crit_haste,enchant=power_torrent,weapon=dagger_1.80speed_64min_121max
 off_hand=hermits_lamp,ilevel=346,quality=rare,stats=112haste_112hit_168int_252sta,enchant=100int
 ranged=corlas_baton,heroic=1,ilevel=346,quality=rare,stats=56hit_95int_68mastery_143sta,reforge=mastery_haste
 # Gear Summary
@@ -62,4 +64,4 @@ ranged=corlas_baton,heroic=1,ilevel=346,quality=rare,stats=56hit_95int_68mastery
 # gear_mastery_rating=728
 # gear_armor=7499
 # meta_gem=ember_shadowspirit
-# main_hand=modguds_blade,heroic=1,weapon=dagger_1.80speed_258min_480max,enchant=power_torrent
+# main_hand=modguds_blade,heroic=1,weapon=dagger_1.80speed_64min_121max,enchant=power_torrent

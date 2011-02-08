@@ -1,9 +1,11 @@
 #!./simc 
 
 warlock=Warlock_Demonology_T11_359_PTR
+origin="http://chardev.org/?profile=36741"
 level=85
 race=orc
 use_pre_potion=1
+professions=enchanting=525/inscription=525
 talents=http://www.wowhead.com/talent#IZIrbcourRdoIbb
 glyphs=life_tap/shadow_bolt/metamorphosis/imp/immolate
 actions=flask,type=draconic_mind
@@ -44,9 +46,9 @@ hands=grips_of_the_failed_immortal,type=cloth,ilevel=359,quality=epic,stats=782a
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,ilevel=359,quality=epic,stats=127crit_127haste_190int_286sta,reforge=crit_hit,enchant=40int
 trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_hit,equip=onspellcrit_1926sp_30%_20dur_100cd
-trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldirecthit_1200+10fire_1600int_30%_12dur_45cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=50int
-main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
+main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_45min_84max
 off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
 ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_haste
 # Gear Summary
@@ -58,10 +60,10 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # gear_spell_power=1954
 # gear_hit_rating=1742
 # gear_crit_rating=625
-# gear_haste_rating=2035
-# gear_mastery_rating=817
+# gear_haste_rating=1996
+# gear_mastery_rating=856
 # gear_armor=7817
 # meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
-# main_hand=incineratus,weapon=dagger_1.80speed_291min_541max,enchant=power_torrent
+# main_hand=incineratus,weapon=dagger_1.80speed_45min_84max,enchant=power_torrent

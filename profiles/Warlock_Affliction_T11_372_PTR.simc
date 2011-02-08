@@ -1,9 +1,11 @@
 #!./simc 
 
 warlock=Warlock_Affliction_T11_372_PTR
+origin="http://chardev.org/?profile=36750"
 level=85
 race=orc
 use_pre_potion=1
+professions=enchanting=525/inscription=525
 talents=http://ptr.wowhead.com/talent#IrurohsGcdsZI
 glyphs=life_tap/shadow_bolt/corruption/imp/haunt
 actions=flask,type=draconic_mind
@@ -39,8 +41,8 @@ legs=shadowflame_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177
 feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_hit,gems=40int_10haste,enchant=50hit
 wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
 hands=shadowflame_handwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=crit_hit,gems=40int,enchant=50haste
-finger1=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,reforge=crit_haste,enchant=40int,suffix=129
-finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
+finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
+finger2=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,reforge=crit_haste,enchant=40int,suffix=129
 trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,reforge=crit_hit,equip=onspellcrit_2178sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_hit,gems=20haste_20int_10int,enchant=50int

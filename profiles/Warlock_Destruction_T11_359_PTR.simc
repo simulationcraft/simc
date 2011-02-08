@@ -1,9 +1,11 @@
 #!./simc 
 
 warlock=Warlock_Destruction_T11_359_PTR
+origin="http://chardev.org/?profile=36743"
 level=85
 race=orc
 use_pre_potion=1
+professions=enchanting=525/inscription=525
 talents=http://ptr.wowhead.com/talent#I0hZf0bZIbbfRbsRdo
 glyphs=life_tap/immolate/conflagrate/imp
 actions=flask,type=draconic_mind
@@ -45,9 +47,9 @@ hands=grips_of_the_failed_immortal,type=cloth,ilevel=359,quality=epic,stats=782a
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,ilevel=359,quality=epic,stats=127crit_127haste_190int_286sta,reforge=crit_hit,enchant=40int
 trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_hit,equip=onspellcrit_1926sp_30%_20dur_100cd
-trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldirecthit_1200+10fire_1600int_30%_12dur_45cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=50int
-main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
+main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_45min_84max
 off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
 ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_haste
 # Gear Summary
@@ -65,4 +67,4 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
-# main_hand=incineratus,weapon=dagger_1.80speed_291min_541max,enchant=power_torrent
+# main_hand=incineratus,weapon=dagger_1.80speed_45min_84max,enchant=power_torrent
