@@ -1256,11 +1256,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg=0 )
   {
-    if ( travel_result == RESULT_HIT    ||
-         travel_result == RESULT_CRIT   ||
-         travel_result == RESULT_GLANCE ||
-         travel_result == RESULT_BLOCK  ||
-         travel_result == RESULT_NONE )
+    if ( result_is_hit( travel_result ) )
     {
       p()->buffs_censure->trigger();
       player_buff(); // update with new stack of the debuff

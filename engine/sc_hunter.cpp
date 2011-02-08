@@ -2126,8 +2126,7 @@ struct steady_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::travel( t, travel_result, travel_dmg);
 
-    if ( ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT || travel_result == RESULT_BLOCK )
-      && ! p -> buffs_master_marksman_fire -> check() )
+    if ( result_is_hit( travel_result ) && ! p -> buffs_master_marksman_fire -> check() )
     {
       if ( p -> buffs_master_marksman -> trigger() )
       {

@@ -856,7 +856,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     spell_t::travel( t, travel_result, travel_dmg );
 
-    if ( player -> ptr && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) )
+    if ( player -> ptr && result_is_hit( travel_result ) )
     {
       trigger_rolling_thunder( this );
     }
@@ -1982,7 +1982,7 @@ struct lava_burst_t : public shaman_spell_t
     
     spell_t::travel( t, travel_result, travel_dmg );
 
-    if ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT )
+    if ( result_is_hit( travel_result ) )
     {
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
 
@@ -2095,7 +2095,7 @@ struct lightning_bolt_t : public shaman_spell_t
     
     spell_t::travel( t, travel_result, travel_dmg );
 
-    if ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT )
+    if ( result_is_hit( travel_result ) )
     {
       trigger_rolling_thunder( this );
 

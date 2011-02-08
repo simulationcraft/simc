@@ -2998,7 +2998,7 @@ struct starsurge_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( t, travel_result, travel_dmg );
 
-    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    if ( result_is_hit( travel_result ) )
     {
       // gain is positive for p -> eclipse_bar_direction==0
       // else it is towards p -> eclipse_bar_direction
@@ -3309,7 +3309,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_t* p = player -> cast_druid();
     druid_spell_t::travel( t, travel_result, travel_dmg );
-    if ( travel_result == RESULT_CRIT || travel_result == RESULT_HIT )
+    if ( result_is_hit( travel_result ) )
     {
       if ( travel_result == RESULT_CRIT )
       {

@@ -1058,8 +1058,7 @@ void mage_spell_t::travel( player_t* t, int travel_result, double travel_dmg )
 
   if( may_chill )
   {
-    if( travel_result == RESULT_HIT ||
-        travel_result == RESULT_CRIT )
+    if( result_is_hit( travel_result ) )
     {
       p -> buffs_fingers_of_frost -> trigger();
     }

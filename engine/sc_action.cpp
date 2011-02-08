@@ -670,13 +670,15 @@ void action_t::target_debuff( player_t* t, int dmg_type )
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit() SC_CONST
+bool action_t::result_is_hit( int r ) SC_CONST
 {
-  return( result == RESULT_HIT    ||
-          result == RESULT_CRIT   ||
-          result == RESULT_GLANCE ||
-          result == RESULT_BLOCK  ||
-          result == RESULT_NONE   );
+  if ( r == RESULT_UNKNOWN ) r = result;
+
+  return( r == RESULT_HIT    ||
+          r == RESULT_CRIT   ||
+          r == RESULT_GLANCE ||
+          r == RESULT_BLOCK  ||
+          r == RESULT_NONE   );
 }
 
 // action_t::result_is_miss =================================================
