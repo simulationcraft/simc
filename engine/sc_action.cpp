@@ -1025,17 +1025,18 @@ void action_t::execute()
     if ( result_is_hit() )
     {
       direct_dmg = calculate_direct_damage();
-
+      schedule_travel( target );
     }
     else
     {
+      target -> assess_damage( 0, school, DMG_DIRECT, result, this, player );
       if ( sim -> log )
       {
         log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
         log_t::miss_event( this );
       }
     }
-    schedule_travel( target );
+
 
 
   }
@@ -1102,10 +1103,9 @@ void action_t::last_tick()
 
 void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
-  if ( ! ( base_dd_min == 0 && base_dd_max == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) )
-  {
-    assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
-  }
+
+  assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
+
   if ( ! dual ) stats -> add_result( actual_direct_dmg, DMG_DIRECT, result );
 
   if ( num_ticks > 0 )
@@ -1146,26 +1146,29 @@ void action_t::assess_damage( player_t* t,
 
   if ( dmg_type == DMG_DIRECT )
   {
+
     actual_direct_dmg = t -> assess_damage( amount, school, dmg_type, travel_result, this, player );
 
-
-    if ( sim -> log )
+    if ( amount > 0)
     {
-      log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     target -> name(), amount,
-                     util_t::school_type_string( school ),
-                     util_t::result_type_string( result ) );
-      log_t::damage_event( this, amount, dmg_type );
-    }
-    if ( sim -> csv_file )
-    {
-      fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
-               sim->current_iteration, player->name(), name(), t->name(),
-               util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
-    }
+      if ( sim -> log )
+      {
+        log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       target -> name(), amount,
+                       util_t::school_type_string( school ),
+                       util_t::result_type_string( result ) );
+        log_t::damage_event( this, amount, dmg_type );
+      }
+      if ( sim -> csv_file )
+      {
+        fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
+                 sim->current_iteration, player->name(), name(), t->name(),
+                 util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
+      }
 
-    action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
+      action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
+    }
   }
   else // DMG_OVER_TIME
   {

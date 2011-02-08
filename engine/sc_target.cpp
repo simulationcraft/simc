@@ -170,6 +170,8 @@ void target_t::init()
   {
     level = sim -> max_player_level + 3;
   }
+  else
+    level = target_level;
 
   initialized = 1;
   init_talents();
