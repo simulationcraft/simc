@@ -3191,7 +3191,7 @@ void rogue_t::init_actions()
       if ( talents.shadow_dance -> rank() )
       {
         action_list_str += "/pool_energy,for_next=1";
-        action_list_str += "/shadow_dance,if=time>10&energy>85&combo_points<=3&!buff.find_weakness.up";
+        action_list_str += "/shadow_dance,if=energy>85&combo_points<5";
       }
       action_list_str += "/pool_energy,for_next=1";
       action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
@@ -3200,27 +3200,26 @@ void rogue_t::init_actions()
       if ( talents.premeditation -> rank() )
         action_list_str += "/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2";
 
-      action_list_str += "/ambush,if=combo_points<5";
+      action_list_str += "/ambush,if=combo_points<=4";
 
       if ( talents.preparation -> rank() )
         action_list_str += "/preparation,if=cooldown.vanish.remains>60";
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
+      action_list_str += "/rupture,if=combo_points=5&!ticking";
+
       if ( talents.energetic_recovery -> rank() )
         action_list_str += "/recuperate,if=combo_points=5&remains<3";
 
-      action_list_str += "/rupture,if=combo_points=5&!ticking";
-
-
-      action_list_str += "/eviscerate,if=combo_points=5&dot.rupture.remains>0";
+      action_list_str += "/eviscerate,if=combo_points=5&dot.rupture.remains>1";
 
       // if ( talents.hemorrhage -> rank() )
 
       action_list_str += "/backstab,if=combo_points<3&energy>60";
-      action_list_str += "/backstab,if=cooldown.honor_among_thieves.remains>1.75&energy>60";
+      action_list_str += "/backstab,if=cooldown.honor_among_thieves.remains>1.75";
       //preventing energy capping if HaT procs don't align right, or if we're running rogue solo without any HaT donors
-      action_list_str += "/backstab,if=combo_points<5&energy>80";
+      action_list_str += "/backstab,if=combo_points<5&energy>80&cooldown.honor_among_thieves.remains=0";
     }
     else
     {
