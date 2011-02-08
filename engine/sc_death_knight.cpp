@@ -4736,6 +4736,7 @@ void player_t::death_knight_init( sim_t* sim )
     p -> buffs.unholy_frenzy        = new   buff_t( p, "unholy_frenzy",      1, 30.0 );
     p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1, 15.0 );
     p -> debuffs.ebon_plaguebringer = new debuff_t( p, "ebon_plaguebringer", 1, 15.0 );
+    p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, 21.0 );
   }
 }
 
@@ -4753,5 +4754,6 @@ void player_t::death_knight_combat_begin( sim_t* sim )
   {
     if ( sim -> overrides.brittle_bones      ) t -> debuffs.brittle_bones      -> override( 1, 0.04 );
     if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
+    if ( sim -> overrides.scarlet_fever      ) t -> debuffs.scarlet_fever      -> override();
   }
 }

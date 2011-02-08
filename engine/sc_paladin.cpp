@@ -2808,6 +2808,7 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_might        = new buff_t( p, "blessing_of_might",       !p -> is_pet() );
     p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", !p -> is_pet() );
     p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, 20.0 );
+    p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, 30.0 );
   }
 }
 
@@ -2838,5 +2839,6 @@ void player_t::paladin_combat_begin( sim_t* sim )
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
+    if ( sim -> overrides.vindication            ) t -> debuffs.vindication            -> override();
   }
 }

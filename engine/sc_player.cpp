@@ -3002,6 +3002,17 @@ double player_t::assess_damage( double amount,
                               action_t* a,
                               player_t* s )
 {
+  if ( school == SCHOOL_PHYSICAL )
+  {
+    if ( s -> debuffs.demoralizing_roar  -> up() ||
+         s -> debuffs.demoralizing_shout -> up() ||
+         s -> debuffs.scarlet_fever      -> up() ||
+         s -> debuffs.vindication        -> up() )
+    {
+      amount *= 0.90;
+    }
+  }
+
   double actual_amount = resource_loss( RESOURCE_HEALTH, amount );
 
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 )

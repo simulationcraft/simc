@@ -319,6 +319,7 @@ struct druid_t : public player_t
     talent_t* heart_of_the_wild;
     talent_t* master_shapeshifter;
     talent_t* natures_swiftness;
+    talent_t* perseverance;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -1779,6 +1780,35 @@ struct bear_melee_t : public druid_bear_attack_t
     {
       trigger_fury_swipes( this );
       trigger_omen_of_clarity( this );
+    }
+  }
+};
+
+// Demoralizing Roar ========================================================
+
+struct demoralizing_roar_t : public druid_bear_attack_t
+{
+  demoralizing_roar_t( druid_t* player, const std::string& options_str ) :
+      druid_bear_attack_t( "demoralizing_roar", 99, player )
+  {
+    parse_options( NULL, options_str );
+
+    may_dodge  = false;
+    may_parry  = false;
+    may_block  = false;
+    may_glance = false;
+  }
+
+  virtual void execute()
+  {
+    druid_bear_attack_t::execute();
+
+    druid_t* p = player -> cast_druid();
+
+    if ( ! p -> sim -> overrides.demoralizing_roar )
+    {
+      target -> debuffs.demoralizing_roar -> trigger();
+      target -> debuffs.demoralizing_roar -> source = p;
     }
   }
 };
@@ -3250,7 +3280,7 @@ struct wild_mushroom_t : public druid_spell_t
       druid_spell_t::execute();
 
       druid_t* p = player -> cast_druid();
-      p -> buffs_wild_mushroom -> increment();
+      p -> buffs_wild_mushroom -> trigger();
     }
 };
 
@@ -3418,6 +3448,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "claw"                   ) return new                   claw_t( this, options_str );
+  if ( name == "demoralizing_roar"      ) return new      demoralizing_roar_t( this, options_str );
   if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "faerie_fire_feral"      ) return new      faerie_fire_feral_t( this, options_str );
@@ -3521,6 +3552,7 @@ void druid_t::init_talents()
   talents.nurturing_instict     = find_talent( "Nurturing Instinct" );
   talents.owlkin_frenzy         = find_talent( "Owlkin Frenzy" );
   talents.predatory_strikes     = find_talent( "Predatory Strikes" );
+  talents.perseverance          = find_talent( "Perseverance" );
   talents.primal_fury           = find_talent( "Primal Fury" );
   talents.primal_madness        = find_talent( "Primal Madness" );
   talents.pulverize             = find_talent( "Pulverize" );
@@ -3598,12 +3630,12 @@ void druid_t::init_base()
 
   base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
   initial_attack_power_per_strength = 2.0;
   initial_spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
-  base_miss    = 0.05;
+  base_miss = 0.05;
   initial_armor_multiplier  = 1.0 + talents.thick_hide -> effect_base_value( 1 ) / 100.0;
 
   diminished_kfactor    = 0.009720;
@@ -3654,7 +3686,7 @@ void druid_t::init_buffs()
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
-  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 0, true );
+  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
   
   // buff_t ( sim, id, name, chance, duration, quiet, reverse, rng_type )
   buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
@@ -3811,6 +3843,7 @@ void druid_t::init_actions()
         action_list_str += use_str;
         action_list_str += "/maul,if=rage>=75";
         action_list_str += "/mangle_bear";
+        action_list_str += "/demoralizing_roar,if=!debuff.demoralizing_roar.up";
         action_list_str += "/lacerate,if=!ticking";
         action_list_str += "/thrash";
         action_list_str += "/pulverize,if=buff.lacerate.stack=3&buff.pulverize.remains<=2";
@@ -4005,7 +4038,7 @@ double druid_t::available() SC_CONST
   return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
 }
 
-// druid_t::combat_being ====================================================
+// druid_t::combat_begin ====================================================
 
 void druid_t::combat_begin()
 {
@@ -4013,6 +4046,9 @@ void druid_t::combat_begin()
 
   // Start the fight with 0 rage
   resource_current[ RESOURCE_RAGE ] = 0;
+
+  // Moonkins can precast 3 wild mushrooms without aggroing the boss
+  buffs_wild_mushroom -> trigger( 3 );
 }
 
 // druid_t::composite_attack_power ==========================================
@@ -4293,12 +4329,18 @@ double druid_t::assess_damage( double amount,
     resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
   }
 
+  if ( SCHOOL_SPELL_MASK & ( int64_t( 1 ) << school ) && talents.perseverance -> ok() )
+  {
+    amount *= 1.0 + talents.perseverance -> effect_base_value( 1 ) / 100.0;
+  }
+
   if ( talents.natural_reaction -> rank() )
   {
     amount *= 1.0 + talents.natural_reaction -> effect_base_value( 3 ) / 100.0;
   }
-
-
+ 
+  // To benefit from -10% physical damage before SD is taken into account, debug=1 will look funny though
+  amount = player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
 
   // This needs to use unmitigated damage, which amount currently is
   // FIX ME: Rage gains need to trigger on every attempt to poke the bear
@@ -4312,7 +4354,7 @@ double druid_t::assess_damage( double amount,
     buffs_savage_defense -> expire();
   }
 
-  return player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
+  return amount;
 }
 
 // ==========================================================================
@@ -4340,6 +4382,7 @@ void player_t::druid_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     p -> buffs.innervate              = new buff_t( p, "innervate",        1, 10.0 );
     p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
+    p -> debuffs.demoralizing_roar    = new debuff_t( p, "demoralizing_roar",    1,  30.0 );
     p -> debuffs.earth_and_moon       = new debuff_t( p, "earth_and_moon",       1,  12.0 );
     p -> debuffs.faerie_fire          = new debuff_t( p, "faerie_fire",          3, 300.0 );
     p -> debuffs.infected_wounds      = new debuff_t( p, "infected_wounds",      1,  12.0 );
@@ -4365,6 +4408,7 @@ void player_t::druid_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
+    if ( sim -> overrides.demoralizing_roar    ) t -> debuffs.demoralizing_roar    -> override();
     if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
     if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3, 0.04 );
     if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();

@@ -3430,9 +3430,10 @@ void player_t::warrior_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     p -> debuffs.blood_frenzy_bleed    = new debuff_t( p, "blood_frenzy_bleed",    1, 60.0 );
     p -> debuffs.blood_frenzy_physical = new debuff_t( p, "blood_frenzy_physical", 1, 60.0 );
+    p -> debuffs.demoralizing_shout    = new debuff_t( p, "demoralizing_shout",    1, 30.0 );
+    p -> debuffs.shattering_throw      = new debuff_t( p, "shattering_throw",      1 );
     p -> debuffs.sunder_armor          = new debuff_t( p, "sunder_armor",          1, 30.0 );
     p -> debuffs.thunder_clap          = new debuff_t( p, "thunder_clap",          1, 30.0 );
-    p -> debuffs.shattering_throw      = new debuff_t( p, "shattering_throw",      1 );
   }
 }
 
@@ -3449,6 +3450,7 @@ void player_t::warrior_combat_begin( sim_t* sim )
   {
     if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
     if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );
+    if ( sim -> overrides.demoralizing_shout    ) t -> debuffs.demoralizing_shout    -> override();
     if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override( 3 );
     if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();
   }

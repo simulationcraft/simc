@@ -2300,6 +2300,8 @@ struct sim_t
     int curse_of_elements;
     int dark_intent;
     int demonic_pact;
+    int demoralizing_roar;
+    int demoralizing_shout;
     int devotion_aura;
     int earth_and_moon;
     int ebon_plaguebringer;
@@ -2335,12 +2337,14 @@ struct sim_t
     int rampage;
     int replenishment;
     int savage_combat;
+    int scarlet_fever;
     int strength_of_earth;
     int strength_of_wrynn;
     int sunder_armor;
     int thunder_clap;
     int trueshot_aura;
     int unleashed_rage;
+    int vindication;
     int windfury_totem;
     int wrath_of_air;
     overrides_t() { memset( ( void* ) this, 0x0, sizeof( overrides_t ) ); }
@@ -3005,15 +3009,23 @@ struct player_t
     buff_t* blood_fury_ap;
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
-    buff_t* destruction_potion;
-    buff_t* focus_magic;
+    buff_t* body_and_soul;
     buff_t* dark_intent;
+    buff_t* dark_intent_feedback;
+    buff_t* destruction_potion;
+    buff_t* earthen_potion;
     buff_t* exhaustion;
+    buff_t* focus_magic;
     buff_t* fortitude;
+    buff_t* furious_howl;
+    buff_t* golemblood_potion;
+    buff_t* grace;
     buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
+    buff_t* hymn_of_hope;
     buff_t* indestructible_potion;
     buff_t* innervate;
+    buff_t* inspiration;
     buff_t* mana_tide;
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
@@ -3025,21 +3037,14 @@ struct player_t
     buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* strength_of_wrynn;
-    buff_t* dark_intent_feedback;
     buff_t* stunned;
+    buff_t* tolvir_potion;
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
-    buff_t* earthen_potion;
-    buff_t* golemblood_potion;
     buff_t* volcanic_potion;
-    buff_t* tolvir_potion;
-    buff_t* wild_magic_potion_sp;
     buff_t* wild_magic_potion_crit;
-    buff_t* furious_howl;
-    buff_t* inspiration;
-    buff_t* hymn_of_hope;
-    buff_t* body_and_soul;
-    buff_t* grace;
+    buff_t* wild_magic_potion_sp;
+
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
@@ -3053,6 +3058,8 @@ struct player_t
     debuff_t* casting;
     debuff_t* critical_mass;
     debuff_t* curse_of_elements;
+    debuff_t* demoralizing_roar;
+    debuff_t* demoralizing_shout;
     debuff_t* earth_and_moon;
     debuff_t* ebon_plaguebringer;
     debuff_t* expose_armor;
@@ -3069,10 +3076,12 @@ struct player_t
     debuff_t* master_poisoner;
     debuff_t* poisoned;
     debuff_t* savage_combat;
+    debuff_t* scarlet_fever;
     debuff_t* shattering_throw;
     debuff_t* slow;
     debuff_t* sunder_armor;
     debuff_t* thunder_clap;
+    debuff_t* vindication;
     debuff_t* vulnerable;
 
     debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }

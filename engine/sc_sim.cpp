@@ -1588,6 +1588,8 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.critical_mass          = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.demonic_pact           = optimal_raid;
+  overrides.demoralizing_roar      = optimal_raid;
+  overrides.demoralizing_shout     = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
   overrides.ebon_plaguebringer     = optimal_raid;
@@ -1618,11 +1620,13 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.rampage                = optimal_raid;
   overrides.replenishment          = optimal_raid;
   overrides.savage_combat          = optimal_raid;
+  overrides.scarlet_fever          = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
   overrides.unleashed_rage         = optimal_raid;
+  overrides.vindication            = optimal_raid;
   overrides.windfury_totem         = optimal_raid;
   overrides.wrath_of_air           = optimal_raid;
 }
@@ -1847,6 +1851,8 @@ void sim_t::create_options()
     { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
     { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
     { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
+    { "override.demoralizing_roar",       OPT_BOOL,   &( overrides.demoralizing_roar              ) },
+    { "override.demoralizing_shout",      OPT_BOOL,   &( overrides.demoralizing_shout             ) },
     { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
     { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
     { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
@@ -1878,12 +1884,14 @@ void sim_t::create_options()
     { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
     { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
     { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
+    { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
     { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
     { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
     { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
     { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
     { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
     { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },
+    { "override.vindication",             OPT_BOOL,   &( overrides.vindication                    ) },
     { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
     { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
     // @option_doc loc=global/regen title="Regen"
