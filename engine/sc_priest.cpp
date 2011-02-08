@@ -3976,8 +3976,7 @@ void priest_t::init_glyphs()
     else if ( n == "prayer_of_healing" ) glyphs.prayer_of_healing = 1;
     else if ( n == "lightwell"         ) glyphs.lightwell = 1;
     else if ( n == "circle_of_healing" ) glyphs.circle_of_healing = 1;
-    else if ( n == "prayer_of_mending" )
-      if ( ptr ) glyphs.prayer_of_mending = 1;
+    else if ( n == "prayer_of_mending" ) glyphs.prayer_of_mending = 1;
     // Just to prevent warnings....
     else if ( n == "dispel_magic"         ) ;
     else if ( n == "fade"                 ) ;
