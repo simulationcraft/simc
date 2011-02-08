@@ -829,7 +829,6 @@ void SimulationCraftWindow::createToolTips()
 				"Helter Skelter:\n"
 				"    Movement, Stuns, Interrupts,\n"
 				"    Target-Switching (every 2min)\n"
-				"    Three Adds (for 20sec every 1min)\n"
 				"    Distraction (10% -skill every other 45sec" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
@@ -1125,7 +1124,6 @@ QString SimulationCraftWindow::mergeOptions()
     options += "raid_events+=/movement,cooldown=30,duration=5\n";
     options += "raid_events+=/stun,cooldown=60,duration=2\n";
     options += "raid_events+=/invulnerable,cooldown=120,duration=3\n";
-    options += "raid_events+=/adds,count=3,cooldown=60,duration=20\n";
     options += "raid_events+=/distraction,skill=0.2,cooldown=90,duration=45\n";
   }
   options += "target_race=" + targetRaceChoice->currentText() + "\n";
