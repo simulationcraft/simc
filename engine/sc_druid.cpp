@@ -2948,7 +2948,6 @@ struct starfall_t : public druid_spell_t
       {
         druid_t* p = player -> cast_druid();
 
-        aoe        = 1;
         background = true;
         dual       = true;
         stats      = player -> get_stats( "starfall" );
@@ -2978,8 +2977,8 @@ struct starfall_t : public druid_spell_t
 
     parse_options( NULL, options_str );
 
-    num_ticks      = 10;
-    base_tick_time = 1.0;
+    num_ticks      = 20;
+    base_tick_time = 0.5;
     hasted_ticks   = false;
     cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
 
