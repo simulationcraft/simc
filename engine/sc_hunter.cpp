@@ -1505,7 +1505,6 @@ struct auto_shot_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( !p -> ptr && p -> buffs.moving -> check() ) return false;
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 
@@ -1533,7 +1532,7 @@ struct aimed_shot_mm_t : public hunter_attack_t
     // Don't know why these values aren't 0 in the database.
     base_cost = 0;
     base_execute_time = 0;
-    direct_power_mod = ( p -> ptr ) ? 1.44 : 0.48;
+    direct_power_mod =  1.44;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1587,15 +1586,8 @@ struct aimed_shot_t : public hunter_attack_t
     check_spec ( TREE_MARKSMANSHIP );
     parse_options( NULL, options_str );
 
-    if( p -> ptr )
-    {
-      direct_power_mod = 1.44;
-      base_execute_time = 2.90;
-    }
-    else
-    {
-      direct_power_mod = 0.48;
-    }
+    direct_power_mod = 1.44;
+    base_execute_time = 2.90;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1681,10 +1673,7 @@ struct arcane_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = effect_average( 2 ) / 100.0;
 
-    if(!p->ptr)
-      direct_power_mod = 0.042;
-    else
-      direct_power_mod = 0.0483;
+    direct_power_mod = 0.0483;
 
     base_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
 
@@ -1738,8 +1727,6 @@ struct black_arrow_t : public hunter_attack_t
     base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
 
-    if ( ! p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() ) tick_zero = true;
-
     base_dd_min=base_dd_max=0;
     tick_power_mod=extra_coeff();
 
@@ -1773,10 +1760,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
-    if(!p->ptr)
-      direct_power_mod = 0.488;
-    else
-      direct_power_mod = 0.732;
+    direct_power_mod = 0.732;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1795,11 +1779,6 @@ struct chimera_shot_t : public hunter_attack_t
 
     hunter_attack_t::execute();
 
-    if ( ! p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
-    {
-      if ( p -> rng_tier11_4pc -> roll( p -> sets -> set ( SET_T11_4PC_MELEE ) -> proc_chance() ) )
-        p -> resource_gain( RESOURCE_FOCUS, 25, p -> gains_tier11_4pc );
-    }
     if ( result_is_hit() )
     {
       if ( result == RESULT_CRIT )
@@ -1832,7 +1811,7 @@ struct cobra_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.017;
     base_execute_time = 2.0;
-    if ( p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
+    if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
       base_execute_time -= 0.2;
   }
   
@@ -1885,10 +1864,7 @@ struct explosive_shot_t : public hunter_attack_t
 
     base_cost += p -> talents.efficiency -> effect_base_value( 1 );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
-    if(!p->ptr)
-      tick_power_mod = 0.273;
-    else
-      tick_power_mod = 0.232;
+    tick_power_mod = 0.232;
     tick_zero = true;
   }
 
@@ -1933,7 +1909,7 @@ struct kill_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     weapon_multiplier = effect_average( 2 ) / 100.0;
-    direct_power_mod = ( p -> ptr ) ? 0.45 : 0.3;
+    direct_power_mod = 0.45;
 
     base_crit += p -> talents.sniper_training -> effect_base_value( 2 ) / 100.0;
 
@@ -2107,7 +2083,7 @@ struct steady_shot_t : public hunter_attack_t
     
     direct_power_mod = 0.021;
     base_execute_time = 2.0;
-    if ( p -> ptr && p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
+    if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
       base_execute_time -= 0.2;
     weapon_multiplier = effect_average( 2 ) / 100.0;
     weapon = &( p -> ranged_weapon );
@@ -2346,7 +2322,7 @@ struct focus_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    double value = p -> active_pet -> buffs_frenzy -> stack() * ( p -> talents.focus_fire -> effect_base_value( 3 ) / 100.0 + ( p -> ptr ? 0 : p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() ) * 1 / 100.0 );
+    double value = p -> active_pet -> buffs_frenzy -> stack() * ( p -> talents.focus_fire -> effect_base_value( 3 ) / 100.0 );
     p -> buffs_focus_fire -> trigger( 1, value );
 
     double gain = p -> talents.focus_fire -> effect_base_value( 2 );
@@ -2438,14 +2414,7 @@ struct kill_command_t : public hunter_spell_t
 
     if ( p -> active_pet )
     {
-      if ( ! p -> ptr )
-      {
-        p -> active_pet -> kill_command -> base_dd_adder = 0.43 * total_power();
-      }
-      else
-      {
-        p -> active_pet -> kill_command -> base_dd_adder = 0.516 * total_power();
-      }
+      p -> active_pet -> kill_command -> base_dd_adder = 0.516 * total_power();
       p -> active_pet -> kill_command -> execute();
     }
   }
@@ -2860,13 +2829,11 @@ void hunter_t::init_spells()
   glyphs.steady_shot    = find_glyph( "Glyph of Steady Shot"    );
   glyphs.kill_command   = find_glyph( "Glyph of Kill Command"   );
 
-  int t11_4s = ptr ? 96411 : 89925;
-
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P     H2P    H4P
     {     0,     0, 70727,  70730,     0,     0,     0,     0 }, // Tier10
-    {     0,     0, 89923, t11_4s,     0,     0,     0,     0 }, // Tier11
+    {     0,     0, 89923,  96411,     0,     0,     0,     0 }, // Tier11
     {     0,     0,     0,      0,     0,     0,     0,     0 },
   };
 
@@ -3143,7 +3110,7 @@ void hunter_t::init_actions()
       }
 
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
-      if ( ptr && ! glyphs.arcane_shot -> ok() )
+      if ( ! glyphs.arcane_shot -> ok() )
       {
         action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|(target.health_pct>80&(dot.serpent_sting.remains>=5|focus>=65))";
       }
@@ -3229,7 +3196,7 @@ double hunter_t::composite_attack_power() SC_CONST
 
   if ( passive_spells.animal_handler -> ok() )
   {
-    ap *= ptr ? 1.25 : 1.15;
+    ap *= 1.25;
   }
 
   return ap;
