@@ -4332,66 +4332,93 @@ void warlock_t::init_actions()
         action_list_str += "/wild_magic_potion,if=buff.bloodlust.react|!in_combat";
     }
 
-    if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
-
     switch ( primary_tree() )
     {
 
     case TREE_AFFLICTION:
-
-      action_list_str += "/soulburn,if=buff.bloodlust.down";
-      if ( talent_improved_soul_fire -> ok() && level >= 54)
-      {
-        if ( talent_emberstorm -> ok() )
-        {
-          action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
-        } else
-        {
-          action_list_str += "/soul_fire,if=buff.soulburn.up";
-        }
-      }
+      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
+      action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react";
-      action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
-      action_list_str += "/unstable_affliction,if=(!ticking|dot.unstable_affliction.remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
-      if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
+      if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
+      if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( talent_bane -> rank() == 3 )
       {
         if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
         action_list_str += "/life_tap,mana_percentage<=35";
+        action_list_str += "/soulburn";
+        if ( talent_improved_soul_fire -> ok() && level >= 54)
+        {
+          if ( talent_emberstorm -> ok() )
+          {
+            action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
+          } 
+          else
+          {
+            action_list_str += "/soul_fire,if=buff.soulburn.up";
+          }
+        }
+        else
+        {
+          action_list_str += "/soul_fire,if=buff.soulburn.up";
+        }
         if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
         action_list_str += "/shadow_bolt";
       } 
       else
       {
+        action_list_str += "/soulburn";
+        if ( level >= 54) action_list_str += "/soul_fire,if=buff.soulburn.up";
         if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
         action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
         if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/drain_life,interrupt=1,if=buff.demon_soul_felhunter.up";
-        action_list_str += "/life_tap,mana_percentage<=35";
+        action_list_str += "/life_tap,mana_percentage<=5";
+         if ( talent_improved_soul_fire -> ok() && level >= 54)
+        {
+          if ( talent_emberstorm -> ok() )
+          {
+            action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
+          } 
+          else
+          {
+            action_list_str += "/soul_fire,if=buff.soulburn.up";
+          }
+        }
+        else
+        {
+          action_list_str += "/soul_fire,if=buff.soulburn.up";
+        }
         action_list_str += "/drain_life,interrupt=1";
       }
 
     break;
 
     case TREE_DESTRUCTION:
+      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
-        action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.soulburn.up&!in_flight";
+        action_list_str += "/soul_fire,if=buff.soulburn.up";
       }
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
+      if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
       action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75) action_list_str += "/shadowflame";
-      if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
-      if ( level >= 54) action_list_str += "/soul_fire,if=buff.empowered_imp.react&((buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)&buff.bloodlust.down)|buff.empowered_imp.remains<(buff.bloodlust.remains+action.soul_fire.travel_time))";
-      if ( level >= 50) action_list_str += "/summon_infernal";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
-        action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
+        action_list_str += "/soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)";
+      }
+      if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
+      if ( level >= 50) action_list_str += "/summon_infernal";
+      action_list_str += "/soulburn,if=buff.bloodlust.down";
+      if ( talent_improved_soul_fire -> ok() && level >= 54)
+      {
+        action_list_str += "/soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight";
       }
       if ( talent_shadowburn -> ok() ) action_list_str += "/shadowburn";
       if ( level >= 64) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
@@ -4400,29 +4427,29 @@ void warlock_t::init_actions()
 
     case TREE_DEMONOLOGY:
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
+      if ( level >= 60 ) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=20&miss_react";
+      action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
+      action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
+      if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
+      if ( level >= 75 ) action_list_str += "/shadowflame";
+      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
+      if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
+      if ( level >= 54) action_list_str += "/soulburn";
       if ( level >= 54) {
         if ( talent_improved_soul_fire -> ok() )
         {
-          action_list_str += "/soulburn,if=buff.metamorphosis.up&buff.bloodlust.down";
           action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight&miss_react";
         } else {
-          action_list_str += "/soulburn,if=buff.metamorphosis.up";
-          action_list_str += "/soul_fire,if=buff.soulburn.up";
+          action_list_str += "/soul_fire,if=buff.decimation.react|buff.soulburn.up";
         }
       }
-      if ( level >= 60 ) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=20&miss_react";
-      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan,if=(dot.immolate.remains<cast_time+travel_time)";
-      action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
-      action_list_str += "/corruption,if=(dot.corruption.remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
-      if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
-      if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
-      if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.react";
+
+
       if ( level >= 50) action_list_str += "/summon_infernal";
       action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
-      if ( ! glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_felguard.down";
-      if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( ! glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
       action_list_str += "/shadow_bolt";
 
     break;
