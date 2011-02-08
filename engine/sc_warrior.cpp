@@ -1869,17 +1869,11 @@ struct revenge_t : public warrior_attack_t
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
                             + p -> glyphs.revenge -> effect_base_value( 1 ) / 100.0;
     stancemask = STANCE_DEFENSE;
-  }
 
-  virtual void assess_damage( player_t* t, double amount, int dmg_type, int travel_result )
-  {
-    warrior_attack_t::assess_damage( t, amount, dmg_type, travel_result );
-    warrior_t* p = player -> cast_warrior();
-
-    if ( p -> talents.improved_revenge -> ok() )
+    if ( p -> talents.improved_revenge -> rank() )
     {
-      amount *= p -> talents.improved_revenge -> rank() * 0.50;
-      warrior_attack_t::additional_damage( t, amount, dmg_type, travel_result );
+      aoe = 1;
+      base_add_multiplier = p -> talents.improved_revenge -> rank() * 0.50;
     }
   }
 

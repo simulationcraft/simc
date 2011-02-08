@@ -782,7 +782,8 @@ struct shadow_fiend_pet_t : public pet_t
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
       priest_t* o = p -> owner -> cast_priest();
 
-      o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
+      if ( travel_result_is_hit( travel_result ) )
+        o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                           p -> mana_leech -> effect_base_value( 1 ) / 100.0,
                           o -> gains_shadow_fiend );
     }
@@ -984,7 +985,7 @@ void priest_spell_t::assess_damage( player_t* t,
 
   spell_t::assess_damage( t, amount, dmg_type, travel_result );
 
-  if ( p -> buffs_vampiric_embrace -> up() )
+  if ( p -> buffs_vampiric_embrace -> up() && travel_result_is_hit( travel_result ) )
   {
     double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
     p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
