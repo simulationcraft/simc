@@ -2474,12 +2474,6 @@ struct smite_t : public priest_spell_t
 
     p -> buffs_holy_evangelism  -> trigger();
 
-    // State of Mind
-    if ( result_is_hit() && ! p -> ptr && p -> buffs_chakra_chastise -> up() && p -> talents.state_of_mind -> rank() )
-    {
-      p -> buffs_chakra_chastise -> extend_duration( player, 4 );
-    }
-
     // Chakra
     if ( p -> buffs_chakra_pre -> up())
     {
@@ -2489,7 +2483,7 @@ struct smite_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
       p -> cooldowns_chakra -> start();
     }
 
@@ -2659,10 +2653,6 @@ struct _heal_t : public priest_heal_t
 
     p -> buffs_surge_of_light -> trigger();
 
-    // State of Mind
-    if ( ! p -> ptr && p -> buffs_chakra_serenity -> up() && p -> talents.state_of_mind -> rank() )
-      p -> buffs_chakra_serenity -> extend_duration( player, 4 );
-
     // Trigger Chakra
     if ( p -> buffs_chakra_pre -> up())
     {
@@ -2672,7 +2662,7 @@ struct _heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -2721,12 +2711,10 @@ struct flash_heal_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    may_crit = ( ! p -> buffs_surge_of_light -> up() || p -> ptr );
-
     priest_heal_t::execute();
 
     // Assuming a SoL Flash Heal can't proc SoL
-    if ( p -> ptr && ! p -> buffs_surge_of_light -> up() )
+    if ( ! p -> buffs_surge_of_light -> up() )
       p -> buffs_surge_of_light -> trigger();
 
     p -> buffs_serendipity -> trigger();
@@ -2743,8 +2731,8 @@ struct flash_heal_t : public priest_heal_t
       p -> buffs_inner_focus -> expire();
     }
 
-    // Chakra PTR
-    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    // Chakra
+    if ( p -> buffs_chakra_pre -> up() )
     {
       p -> buffs_chakra_serenity -> trigger();
 
@@ -2752,7 +2740,7 @@ struct flash_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
       p -> cooldowns_chakra -> start();
      }
   }
@@ -2858,8 +2846,8 @@ struct binding_heal_t : public priest_heal_t
       p -> buffs_inner_focus -> expire();
     }
 
-    // Chakra PTR
-    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    // Chakra
+    if ( p -> buffs_chakra_pre -> up() )
     {
       p -> buffs_chakra_serenity -> trigger();
 
@@ -2867,7 +2855,7 @@ struct binding_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
       p -> cooldowns_chakra -> start();
      }
   }
@@ -2926,6 +2914,8 @@ struct greater_heal_t : public priest_heal_t
 
     p -> buffs_serendipity -> expire();
 
+    p -> buffs_surge_of_light -> trigger();
+
     // Inner Focus
     if ( p -> buffs_inner_focus -> up() )
     {
@@ -2936,8 +2926,8 @@ struct greater_heal_t : public priest_heal_t
       p -> buffs_inner_focus -> expire();
     }
 
-    // Chakra PTR
-    if ( p -> buffs_chakra_pre -> up() && p -> ptr )
+    // Chakra
+    if ( p -> buffs_chakra_pre -> up() )
     {
       p -> buffs_chakra_serenity -> trigger();
 
@@ -2945,12 +2935,9 @@ struct greater_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
       p -> cooldowns_chakra -> start();
-     }
-
-    if ( p -> ptr )
-      p -> buffs_surge_of_light -> trigger();
+    }
 
     // Train of Thought
     if ( p -> talents.train_of_thought -> rank() )
@@ -3078,22 +3065,17 @@ struct prayer_of_healing_t : public priest_heal_t
 
     // Chakra
     if ( p -> buffs_chakra_pre -> up())
-      {
-        p -> buffs_chakra_sanctuary -> trigger();
-
-        p -> buffs_chakra_pre -> expire();
-
-        p -> cooldowns_chakra -> reset();
-        p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-        p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
-        p -> cooldowns_chakra -> start();
-      }
-
-    // State of Mind
-    if ( ! p -> ptr && p -> buffs_chakra_sanctuary -> up() && p -> talents.state_of_mind -> rank() )
     {
-      p -> buffs_chakra_sanctuary -> extend_duration( player, 4 );
+      p -> buffs_chakra_sanctuary -> trigger();
+
+      p -> buffs_chakra_pre -> expire();
+
+      p -> cooldowns_chakra -> reset();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
+      p -> cooldowns_chakra -> start();
     }
+
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -3292,14 +3274,8 @@ struct prayer_of_mending_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> ptr ? p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0 : 0;
+      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect_base_value( 1 ) / 1000.0;
       p -> cooldowns_chakra -> start();
-    }
-
-    // State of Mind
-    if ( ! p -> ptr && p -> buffs_chakra_sanctuary -> up() && p -> talents.state_of_mind -> rank() )
-    {
-      p -> buffs_chakra_sanctuary -> extend_duration( player, 4 );
     }
   }
 
@@ -3345,7 +3321,7 @@ struct power_word_shield_t : public priest_absorb_t
 
     base_multiplier *= 1.0 + p -> talents.improved_power_word_shield -> effect_base_value( 1 ) / 100.0;
 
-    direct_power_mod = p -> ptr ? 0.87 : 0.418; // hardcoded into tooltip
+    direct_power_mod = 0.87; // hardcoded into tooltip
 
     if ( p -> glyphs.power_word_shield )
     {
@@ -3464,12 +3440,10 @@ struct penance_heal_t : public priest_heal_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    if ( p -> ptr )
-    {
-      // FIXME: hardcoded for now.
-      base_cost *= 1.07;
-      base_cost         = floor( base_cost );
-    }
+    // FIXME: hardcoded 4.0.6 changes for now.
+    base_cost *= 1.07;
+    base_cost         = floor( base_cost );
+
 
     cooldown -> duration  -= ( p -> glyphs.penance * 2 );
 
