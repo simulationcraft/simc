@@ -23,6 +23,8 @@ actions+=/templars_verdict,if=buff.holy_power.react==3
 actions+=/crusader_strike,if=buff.divine_purpose.react&(buff.divine_purpose.remains>2)&(buff.holy_power.react<3)
 actions+=/templars_verdict,if=buff.divine_purpose.react
 actions+=/crusader_strike
+actions+=/hammer_of_wrath
+actions+=/exorcism,if=buff.the_art_of_war.react
 actions+=/judgement,if=buff.judgements_of_the_pure.remains<2
 actions+=/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.5
 actions+=/judgement

@@ -528,7 +528,6 @@ struct melee_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_the_art_of_war -> trigger();
-      trigger_hand_of_light( this );
     }
     if ( !proc && p -> buffs_reckoning -> up() )
     {
@@ -1655,7 +1654,6 @@ struct exorcism_t : public paladin_spell_t
 {
   int art_of_war;
   int undead_demon;
-  double saved_multiplier;
   double blazing_light_multiplier;
 
   exorcism_t( paladin_t* p, const std::string& options_str )
@@ -2311,6 +2309,8 @@ void paladin_t::init_actions()
       action_list_str += "/crusader_strike,if=buff."+hp_proc_str+".react&(buff."+hp_proc_str+".remains>2)&(buff.holy_power.react<3)";
       action_list_str += "/templars_verdict,if=buff."+hp_proc_str+".react";
       action_list_str += "/crusader_strike";
+      action_list_str += "/hammer_of_wrath";
+      action_list_str += "/exorcism,if=buff.the_art_of_war.react";
       action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<2";
       // Don't delay CS too much
       action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.5";
