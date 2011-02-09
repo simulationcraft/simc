@@ -1118,6 +1118,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
     dot -> num_ticks = hasted_num_ticks();
     dot -> current_tick = 0;
     dot -> added_ticks = 0;
+    dot -> added_seconds = 0;
     if ( dot -> ticking )
     {
       assert( dot -> tick_event );
@@ -1358,6 +1359,7 @@ void action_t::refresh_duration()
   dot -> action = this;
   dot -> current_tick = 0;
   dot -> added_ticks = 0;
+  dot -> added_seconds = 0;
   dot -> num_ticks = hasted_num_ticks();
   dot -> recalculate_ready();
 }
