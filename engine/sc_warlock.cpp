@@ -1446,8 +1446,12 @@ struct succubus_pet_t : public warlock_main_pet_t
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
       direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
-      base_dd_min *= 1.555; // only tested at level 85, applying base damage adjustment as a percentage
-      base_dd_max *= 1.555; // modifier in hopes of getting it "somewhat right" for other levels as well
+      if ( o -> level == 85 )
+      {
+        // only tested at level 85
+        base_dd_min = 283; 
+        base_dd_max = 314;
+      }
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
@@ -1494,29 +1498,6 @@ struct succubus_pet_t : public warlock_main_pet_t
     return warlock_main_pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_spell_haste() SC_CONST
-   {
-     double h = player_t::composite_spell_haste();
-     return h;
-   }
-
-   virtual double composite_attack_haste() SC_CONST
-   {
-     double h = player_t::composite_attack_haste();
-     return h;
-   }
-
-  virtual double composite_spell_crit() SC_CONST
-   {
-     double h = player_t::composite_spell_crit();
-     return h;
-   }
-
-   virtual double composite_attack_crit() SC_CONST
-   {
-     double h = player_t::composite_attack_crit();
-     return h;
-   }
 };
 
 // ==========================================================================
