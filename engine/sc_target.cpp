@@ -260,6 +260,7 @@ void target_t::init_items()
 void target_t::init_actions()
 {
   action_list_str += "/snapshot_stats";
+  action_list_str += "/auto_attack";
   if ( !is_add() )
   {
     for ( player_t* q = sim -> player_list; q; q = q -> next )
@@ -270,8 +271,6 @@ void target_t::init_actions()
       action_list_str += q -> name_str;
     }
   }
-
-  action_list_str += "/auto_attack";
 
   player_t::init_actions();
 }

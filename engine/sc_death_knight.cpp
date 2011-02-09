@@ -3400,7 +3400,10 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p -> active_presence )
     {
-    case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> trigger(); break;
+    case PRESENCE_BLOOD:
+      p -> buffs_blood_presence  -> trigger();
+      p -> armor_multiplier += p -> buffs_blood_presence -> effect_base_value( 1 ) / 100.0;
+    break;
     case PRESENCE_FROST:
     {
       double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
@@ -3873,6 +3876,7 @@ void death_knight_t::init_talents()
   talents.blood_caked_blade           = find_talent( "Blood-Caked Blade" );
   talents.blood_parasite              = find_talent( "Blood Parasite" );
   talents.bone_shield                 = find_talent( "Bone Shield" );
+  talents.toughness                   = find_talent( "Toughness" );
   talents.butchery                    = find_talent( "Butchery" );
   talents.crimson_scourge             = find_talent( "Crimson Scourge" );
   talents.dancing_rune_weapon         = find_talent( "Dancing Rune Weapon" );
@@ -3897,7 +3901,7 @@ void death_knight_t::init_talents()
   talents.rime                        = find_talent( "Rime" );
   talents.runic_power_mastery         = find_talent( "Runic Power Mastery" );
   talents.threat_of_thassarian        = find_talent( "Threat of Thassarian" );
-  talents.toughness                   = find_talent( "Toughness" );
+
 
   // Unholy
   talents.dark_transformation         = find_talent( "Dark Transformation" );
@@ -4280,7 +4284,7 @@ void death_knight_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_blood_presence      = new buff_t( this, "blood_presence" );
+  buffs_blood_presence      = new buff_t( this, 48263, "blood_presence" );
   buffs_bone_shield         = new buff_t( this, "bone_shield",                                        3, 300.0 );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
@@ -4388,6 +4392,9 @@ double death_knight_t::assess_damage( double amount,
     action_t* a,
     player_t* s )
 {
+  if ( buffs_blood_presence -> check() )
+    amount  *= 1.0 - player_data.effect_base_value( player_data.spell_effect_id( 61261, 1 ) ) / 100.0;
+
   double actual_amount = player_t::assess_damage( amount, school, dmg_type, result, a, s );
 
   if ( result != RESULT_MISS )
@@ -4446,6 +4453,10 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
       m *= 1.0 + passives.unholy_might -> effect_base_value( 1 ) / 100.0;
     }
   }
+
+  if ( attr == ATTR_STAMINA )
+    if ( buffs_blood_presence -> check() )
+      m *= 1.0 + buffs_blood_presence -> effect_base_value( 3 ) / 100.0;
 
   return m;
 }
