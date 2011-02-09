@@ -7,6 +7,7 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+#if SC_BETA
 // beta warning messages
 static const char* beta_warnings[] =
 {
@@ -20,6 +21,7 @@ static const char* beta_warnings[] =
   "Beta! Beta! Beta! Beta! Beta! Beta!",
   0
 };
+#endif
 
 // player_type_string ========================================================
 
