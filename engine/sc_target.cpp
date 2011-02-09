@@ -250,7 +250,7 @@ void target_t::init_base()
 
 void target_t::init_items()
 {
-  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=axe2h_3.00speed_100000min_120000max";
+  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=axe2h_3.00speed_180000min_240000max";
 
   player_t::init_items();
 }
@@ -260,7 +260,9 @@ void target_t::init_items()
 void target_t::init_actions()
 {
   action_list_str += "/snapshot_stats";
-  action_list_str += "/auto_attack";
+
+  bool tank = false;
+
   if ( !is_add() )
   {
     for ( player_t* q = sim -> player_list; q; q = q -> next )
@@ -269,8 +271,12 @@ void target_t::init_actions()
         continue;
       action_list_str += "/auto_attack,target=";
       action_list_str += q -> name_str;
+      tank = true;
+      break;
     }
   }
+  if ( !tank )
+    action_list_str += "/auto_attack";
 
   player_t::init_actions();
 }
@@ -349,9 +355,7 @@ struct auto_attack_t : public attack_t
     stats = player -> get_stats( name_str + "_" + target -> name() );
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
-    cooldown -> duration = 3.0;
-    min_gcd=0.0;
-    trigger_gcd = 0.0;
+    base_execute_time = 2.0;
     may_crit = true;
 
     base_dd_min = base_dd_max = 1;
@@ -361,11 +365,11 @@ struct auto_attack_t : public attack_t
       weapon = &( player -> main_hand_weapon );
     }
   }
-
+/*
   virtual double execute_time() SC_CONST
   {
     return 0;
-  }
+  }*/
 
 };
 
