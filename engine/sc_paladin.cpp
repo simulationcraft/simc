@@ -673,9 +673,11 @@ struct crusader_strike_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
+    
     if ( result_is_hit() )
     {
+      if ( result != RESULT_BLOCK )
+        p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
       trigger_hand_of_light( this );
       if ( p -> talents.grand_crusader->rank() )
       {
