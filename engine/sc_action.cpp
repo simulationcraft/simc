@@ -1012,8 +1012,6 @@ void action_t::execute()
 
   player_buff();
 
-  consume_resource();
-
   // Target dependent, may be executed multiple times.
   {
     target_debuff( target, DMG_DIRECT );
@@ -1025,20 +1023,20 @@ void action_t::execute()
     if ( result_is_hit() )
     {
       direct_dmg = calculate_direct_damage();
-
     }
     else
     {
-      target -> assess_damage( 0, school, DMG_DIRECT, result, this, player );
       if ( sim -> log )
       {
         log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
         log_t::miss_event( this );
       }
     }
-    schedule_travel( target );
 
+    schedule_travel( target );
   }
+
+  consume_resource();
 
   update_ready();
 
@@ -1107,8 +1105,11 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 
   if ( ! dual )
     // Check for Dot Application.
-    if ( ! ( num_ticks > 0 && travel_dmg == 0 && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) ) )
-      stats -> add_result( actual_direct_dmg, DMG_DIRECT, result );
+    if (  ( num_ticks > 0 && travel_dmg == 0 && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) ) )
+      // Adding all Dot Applications as Hit, because many class modules let everything crit nowadays.
+      stats -> add_result( 0, DMG_DIRECT, RESULT_HIT );
+    else
+      stats -> add_result( actual_direct_dmg, DMG_DIRECT, travel_result );
 
   if ( num_ticks > 0 && result_is_hit( travel_result ) )
   {
