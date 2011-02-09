@@ -1094,27 +1094,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     base_multiplier     *= 1.0 +
       p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
-
-  virtual void execute()
-  {
-    shaman_t* p = player -> cast_shaman();
-
-    attack_t::execute();
-
-    if ( result_is_hit() )
-    {
-      if ( weapon -> buff_type == WINDFURY_IMBUE )
-        trigger_windfury_weapon( this );
-
-      if ( weapon -> buff_type == FLAMETONGUE_IMBUE )
-        trigger_flametongue_weapon( this );
-
-      if ( p -> rng_primal_wisdom -> roll( p -> spec_primal_wisdom -> proc_chance() ) )
-        p -> resource_gain( RESOURCE_MANA, 
-        p -> player_data.effect_base_value( 63375, E_ENERGIZE ) * p -> resource_base[ RESOURCE_MANA ], 
-        p -> gains_primal_wisdom );
-    }
-  }
 };
 
 // =========================================================================
@@ -1131,10 +1110,11 @@ void shaman_attack_t::execute()
 
   if ( result_is_hit() && ! proc )
   {
-    int mwstack = p -> buffs_maelstrom_weapon -> check();
-    
-    if ( p -> buffs_maelstrom_weapon -> trigger( 1, -1, 
-      weapon -> proc_chance_on_swing( p -> talent_maelstrom_weapon -> rank() * 2.0 ) ) )
+    int   mwstack = p -> buffs_maelstrom_weapon -> check();
+    double chance = weapon -> proc_chance_on_swing( 
+      util_t::talent_rank( p -> talent_maelstrom_weapon -> rank(), 3, 3.0, 6.0, 10.0 ) );
+  
+    if ( p -> buffs_maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
       if ( mwstack == p -> buffs_maelstrom_weapon -> max_stack )
         p -> procs_wasted_mw -> occur();
