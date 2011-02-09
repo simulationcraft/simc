@@ -3535,8 +3535,7 @@ struct scourge_strike_t : public death_knight_attack_t
       background        = true;
       trigger_gcd       = 0;
       weapon_multiplier = 0;
-      base_multiplier  *= 1.0 + p -> glyphs.scourge_strike * 0.3
-                              + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
+      base_multiplier  *= 1.0 + p -> glyphs.scourge_strike * 0.3;
     }
 
     virtual void target_debuff( player_t* t, int dmg_type )
@@ -3546,11 +3545,12 @@ struct scourge_strike_t : public death_knight_attack_t
 
       death_knight_t* p = player -> cast_death_knight();
 
-      target_multiplier = p -> diseases() * 0.12;
+      target_multiplier = p -> diseases() * 0.18;
 
       if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
         target_multiplier *= 1.08;
     }
+
   };
 
   scourge_strike_t( death_knight_t* player, const std::string& options_str ) :
@@ -3572,7 +3572,12 @@ struct scourge_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
-      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = direct_dmg;
+      // We divide out our composite_player_multiplier here because we
+      // don't want to double dip; in particular, 3% damage from ret
+      // paladins, arcane mages, and beastmaster hunters do not affect
+      // scourge_strike_shadow.
+      double modified_dd = direct_dmg / player -> player_t::composite_player_multiplier( SCHOOL_SHADOW );
+      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = modified_dd;
       scourge_strike_shadow -> execute();
     }
   }
