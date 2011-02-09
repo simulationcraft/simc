@@ -7,6 +7,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+#define MAX_PLAYERS_PER_CHART 20
+
 // Colors returned by this function are defined as http://www.wowwiki.com/Class_colors
 static const char* class_color( int type )
 {
@@ -15,7 +17,7 @@ static const char* class_color( int type )
   case PLAYER_NONE:  return "FFFFFF";
   case DEATH_KNIGHT: return "C41F3B";
   case DRUID:        return "FF7D0A";
-  case HUNTER:       return "ABD473";
+  case HUNTER:       return "336600";
   case MAGE:         return "69CCF0";
   case PALADIN:      return "F58CBA";
   case PRIEST:       return "C0C0C0";
@@ -23,6 +25,8 @@ static const char* class_color( int type )
   case SHAMAN:       return "2459FF";
   case WARLOCK:      return "9482C9";
   case WARRIOR:      return "C79C6E";
+  case ENEMY:        return "FFFFFF";
+  case ENEMY_ADD:    return "FCFFFF";
   default: assert( 0 );
   }
   return 0;
@@ -45,16 +49,20 @@ static const char* school_color( int type )
 {
   switch ( type )
   {
-  case SCHOOL_ARCANE:    return class_color( MAGE );
-  case SCHOOL_BLEED:     return "C55D54"; // Half way between DK "red" and Warrior "brown"
-  case SCHOOL_CHAOS:     return class_color( DEATH_KNIGHT );
-  case SCHOOL_FIRE:      return class_color( DEATH_KNIGHT );
-  case SCHOOL_FROST:     return class_color( SHAMAN );
-  case SCHOOL_FROSTFIRE: return class_color( SHAMAN );
-  case SCHOOL_HOLY:      return class_color( PRIEST );
-  case SCHOOL_NATURE:    return class_color( HUNTER );
-  case SCHOOL_PHYSICAL:  return class_color( WARRIOR );
-  case SCHOOL_SHADOW:    return class_color( WARLOCK );
+  case SCHOOL_ARCANE:     	return class_color( MAGE );
+  case SCHOOL_BLEED:      	return "C55D54"; // Half way between DK "red" and Warrior "brown"
+  case SCHOOL_CHAOS:      	return class_color( DEATH_KNIGHT );
+  case SCHOOL_FIRE:       	return class_color( DEATH_KNIGHT );
+  case SCHOOL_FROST:      	return class_color( SHAMAN );
+  case SCHOOL_FROSTFIRE:  	return class_color( SHAMAN );
+  case SCHOOL_HOLY:       	return class_color( PRIEST );
+  case SCHOOL_NATURE:     	return class_color( HUNTER );
+  case SCHOOL_PHYSICAL:   	return class_color( WARRIOR );
+  case SCHOOL_SHADOW:     	return class_color( WARLOCK );
+  case SCHOOL_SPELLSTORM: 	return "8AD0B1"; // Half way between Hunter "green" and Mage "blue" (spellstorm = arcane/nature damage)
+  case SCHOOL_SHADOWFROST: 	return "000066"; // Shadowfrost???
+  case SCHOOL_SHADOWFLAME:	return "435133";
+  case SCHOOL_SHADOWSTRIKE: return "0099CC";
   default: assert( 0 );
   }
   return 0;
@@ -89,8 +97,8 @@ static const char* stat_color( int type )
     case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
     case STAT_CRIT_RATING:              return class_color( PALADIN );
     case STAT_HASTE_RATING:             return class_color( SHAMAN );
+    case STAT_MASTERY_RATING:           return class_text_color( ROGUE );
     case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
-    case STAT_ARMOR_PENETRATION_RATING: return class_text_color( ROGUE );
     case STAT_SPELL_PENETRATION:        return class_text_color( PRIEST );
     default:                            return ( 0 );
   }
@@ -122,6 +130,42 @@ static unsigned char simple_encoding( int number )
   static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   return encoding[ number ];
+}
+
+static const char* chart_resource_type_string( int type )
+{
+  switch ( type )
+  {
+  case RESOURCE_NONE:         return "None";
+  case RESOURCE_HEALTH:       return "Health";
+  case RESOURCE_MANA:         return "Mana";
+  case RESOURCE_RAGE:         return "Rage";
+  case RESOURCE_ENERGY:       return "Energy";
+  case RESOURCE_FOCUS:        return "Focus";
+  case RESOURCE_RUNIC:        return "Runic Power";
+  case RESOURCE_SOUL_SHARDS:  return "Soul Shards";
+  }
+  return "Unknown";
+}
+
+static const char* get_chart_base_url()
+{
+  static int round_robin = -1;
+  static const char* base_urls[] = {
+    "http://0.chart.apis.google.com/chart?",
+    "http://1.chart.apis.google.com/chart?",
+    "http://2.chart.apis.google.com/chart?",
+    "http://3.chart.apis.google.com/chart?",
+    "http://4.chart.apis.google.com/chart?",
+    "http://5.chart.apis.google.com/chart?",
+    "http://6.chart.apis.google.com/chart?",
+    "http://7.chart.apis.google.com/chart?",
+    "http://8.chart.apis.google.com/chart?",
+    "http://9.chart.apis.google.com/chart?",
+  };
+  round_robin = ( round_robin + 1 ) % ( sizeof( base_urls ) / sizeof( base_urls[ 0 ] ) );
+  
+  return base_urls[ round_robin ];
 }
 
 #if 0
@@ -163,16 +207,17 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 
   std::string s;
   char buffer[ 1024 ];
+  bool first = true;
 
   std::vector<player_t*> player_list = sim -> players_by_rank;
-  int max_players = 25;
+  int max_players = MAX_PLAYERS_PER_CHART;
 
   while ( true )
   {
     if ( num_players > max_players ) num_players = max_players;
 
-    s = "http://chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=450x%d", num_players * 20 + 30 ); s += buffer;
+    s = get_chart_base_url();
+    snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_players * 20 + ( first ? 20 : 0 ) ); s += buffer;
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
@@ -200,16 +245,20 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     {
       player_t* p = player_list[ i ];
       std::string formatted_name = p -> name_str;
-      armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+      util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
     }
     s += "&amp;";
-    s += "chtt=DPS+Ranking";
-    s += "&amp;";
-    s += "chts=000000,20";
+    if (first) 
+    {
+      s += "chtt=DPS+Ranking";
+      s += "&amp;";
+    }
+    s += "chts=666666,18";
 
     images.push_back( s );
 
+    first = false;
     player_list.erase( player_list.begin(), player_list.begin() + num_players );
     num_players = ( int ) player_list.size();
     if ( num_players == 0 ) break;
@@ -258,7 +307,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   bool first;
 
   std::vector<player_t*> player_list = sim -> players_by_rank;
-  int max_players = 25;
+  int max_players = MAX_PLAYERS_PER_CHART;
 
   while ( true )
   {
@@ -268,8 +317,8 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     if ( num_players <= 12 ) height += 70;
 
-    s = "http://chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=450x%d", height ); s += buffer;
+    s = get_chart_base_url();
+    snprintf( buffer, sizeof( buffer ), "chs=525x%d", height ); s += buffer;
     s += "&amp;";
     s += "cht=bhs";
     s += "&amp;";
@@ -306,7 +355,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     for ( int i = num_players-1; i >= 0; i-- )
     {
       std::string formatted_name = player_list[ i ] -> name_str;
-      armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+      util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
 
       s += "|";
       s += formatted_name.c_str();
@@ -330,7 +379,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     }
     s += "chtt=Gear+Overview";
     s += "&amp;";
-    s += "chts=000000,20";
+    s += "chts=666666,18";
 
     images.push_back( s );
 
@@ -372,7 +421,7 @@ const char* chart_t::raid_downtime( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
+  s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_waiting * 30 + 30 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
@@ -401,13 +450,13 @@ const char* chart_t::raid_downtime( std::string& s,
   {
     player_t* p = waiting_list[ i ];
     std::string formatted_name = p -> name_str;
-    armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+    util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
     snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
   }
   s += "&amp;";
   s += "chtt=Raid+Down-Time";
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -434,7 +483,7 @@ const char* chart_t::raid_timeline( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
+  s = get_chart_base_url();
   s += "chs=525x130";
   s += "&amp;";
   s += "cht=bvs";
@@ -457,7 +506,7 @@ const char* chart_t::raid_timeline( std::string& s,
   s += "&amp;";
   s += "chtt=Timeline+Distribution";
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -486,6 +535,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
 
     for ( stats_t* st = p -> stats_list; st; st = st -> next )
     {
+      if ( st -> quiet ) continue;
       if ( st -> total_dmg <= 0 ) continue;
       if ( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
       if ( st -> num_executes < 5 ) continue;
@@ -511,8 +561,8 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
   {
     if ( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
-    s = "http://chart.apis.google.com/chart?";
-    snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 15 + 30 ); s += buffer;
+    s = get_chart_base_url();
+    snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 15 + ( chart == 0 ? 20 : -10 ) ); s += buffer;
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
@@ -539,15 +589,18 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     {
       stats_t* st = stats_list[ i ];
       std::string formatted_name = st -> player -> name_str;
-      armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+      util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
 
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
                 st -> dpet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ), i ); s += buffer;
     }
     s += "&amp;";
-    s += "chtt=Raid+Damage+Per+Execute+Time";
-    s += "&amp;";
-    s += "chts=000000,20";
+    if (chart==0)
+    {
+    	s += "chtt=Raid+Damage+Per+Execute+Time";
+    	s += "&amp;";
+    }
+    s += "chts=666666,18";
 
     images.push_back( s );
 
@@ -568,6 +621,7 @@ const char* chart_t::action_dpet( std::string& s,
 
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
+    if ( st -> quiet ) continue;
     if ( st -> total_dmg <= 0 ) continue;
     if ( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
     if ( st -> dpet > ( 5 * p -> dps ) ) continue;
@@ -579,6 +633,7 @@ const char* chart_t::action_dpet( std::string& s,
   {
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
+      if ( st -> quiet ) continue;
       if ( st -> total_dmg <= 0 ) continue;
       if ( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
       if ( st -> dpet > ( 10 * p -> dps ) ) continue;
@@ -594,8 +649,8 @@ const char* chart_t::action_dpet( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 30 + 65 ); s += buffer;
+  s = get_chart_base_url();
+  snprintf( buffer, sizeof( buffer ), "chs=550x%d", num_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
@@ -625,10 +680,10 @@ const char* chart_t::action_dpet( std::string& s,
   }
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s|Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -650,6 +705,7 @@ const char* chart_t::action_dmg( std::string& s,
 
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
+    if ( st -> quiet ) continue;
     if ( st -> total_dmg <= 0 ) continue;
     stats_list.push_back( st );
   }
@@ -658,6 +714,7 @@ const char* chart_t::action_dmg( std::string& s,
   {
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
+      if ( st -> quiet ) continue;
       if ( st -> total_dmg <= 0 ) continue;
       stats_list.push_back( st );
     }
@@ -670,8 +727,8 @@ const char* chart_t::action_dmg( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", 200 + num_stats * 10 ); s += buffer;
+  s = get_chart_base_url();
+  snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_stats * 10 ); s += buffer;
   s += "&amp;";
   s += "cht=p";
   s += "&amp;";
@@ -698,9 +755,11 @@ const char* chart_t::action_dmg( std::string& s,
     s += stats_list[ i ] -> name_str.c_str();
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Sources", p -> name() ); s += buffer;
+  std::string formatted_name = p -> name();
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Sources", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -735,7 +794,7 @@ const char* chart_t::gains( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
+  s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
   s += "&amp;";
   s += "cht=p";
@@ -760,10 +819,10 @@ const char* chart_t::gains( std::string& s,
   }
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+Gains", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -805,8 +864,8 @@ const char* chart_t::scale_factors( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_scaling_stats * 30 + 30 ); s += buffer;
+  s = get_chart_base_url();
+  snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_scaling_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
@@ -836,10 +895,10 @@ const char* chart_t::scale_factors( std::string& s,
   }
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale+Factors", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -869,7 +928,7 @@ const char* chart_t::scaling_dps( std::string& s,
   
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
+  s = get_chart_base_url();
   s += "chs=600x300";
   s += "&amp;";
   s += "cht=lc";
@@ -925,10 +984,10 @@ const char* chart_t::scaling_dps( std::string& s,
   s += "chg=5,10,1,3";
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Scaling", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -964,8 +1023,8 @@ const char* chart_t::timeline_dps( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
-  s += "chs=425x130";
+  s = get_chart_base_url();
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
@@ -988,10 +1047,10 @@ const char* chart_t::timeline_dps( std::string& s,
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * p -> dps / dps_max ); s += buffer;
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -1001,7 +1060,9 @@ const char* chart_t::timeline_dps( std::string& s,
 const char* chart_t::timeline_resource( std::string& s,
                                         player_t* p )
 {
-  if ( p -> primary_resource() == RESOURCE_NONE ) return 0;
+
+  if ( p -> primary_resource() == RESOURCE_NONE )
+    return 0;
 
   int max_buckets = ( int ) p -> timeline_resource.size();
   int max_points  = 600;
@@ -1031,8 +1092,8 @@ const char* chart_t::timeline_resource( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
-  s += "chs=425x150";
+  s = get_chart_base_url();
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
@@ -1053,12 +1114,78 @@ const char* chart_t::timeline_resource( std::string& s,
   snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), util_t::resource_type_string( p -> primary_resource() ) ); s += buffer;
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), chart_resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( p -> primary_resource() ) ); s += buffer;
+
+  return s.c_str();
+}
+
+// chart_t::timeline_health ================================================
+
+const char* chart_t::timeline_health( std::string& s,
+                                        player_t* p )
+{
+  resource_type resource=RESOURCE_HEALTH;
+  int max_buckets = ( int ) p -> timeline_resource.size();
+  int max_points  = 600;
+  int increment   = 1;
+
+  if ( max_buckets <= 0 ) return 0;
+
+  if ( max_buckets <= max_points )
+  {
+    max_points = max_buckets;
+  }
+  else
+  {
+    increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
+  }
+
+  double resource_max=0;
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    if ( p -> timeline_health[ i ] > resource_max )
+    {
+      resource_max = p -> timeline_health[ i ];
+    }
+  }
+  double resource_range  = 60.0;
+  double resource_adjust = resource_range / resource_max;
+
+  char buffer[ 1024 ];
+
+  s = get_chart_base_url();
+  s += "chs=525x185";
+  s += "&amp;";
+  s += "cht=lc";
+  s += "&amp;";
+  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  s += "&amp;";
+  s += "chg=100,20";
+  s += "&amp;";
+  s += "chd=s:";
+  for ( int i=0; i < max_buckets; i += increment )
+  {
+    s += simple_encoding( ( int ) ( p -> timeline_health[ i ] * resource_adjust ) );
+  }
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", resource_range ); s += buffer;
+  s += "&amp;";
+  s += "chxt=x,y";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|max=%.0f", max_buckets, resource_max ); s += buffer;
+  s += "&amp;";
+  std::string formatted_name = p -> name_str;
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), chart_resource_type_string( resource ) ); s += buffer;
+  s += "&amp;";
+  s += "chts=666666,18";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( resource ) ); s += buffer;
 
   return s.c_str();
 }
@@ -1081,8 +1208,8 @@ const char* chart_t::distribution_dps( std::string& s,
 
   char buffer[ 1024 ];
 
-  s = "http://chart.apis.google.com/chart?";
-  s += "chs=525x130";
+  s = get_chart_base_url();
+  s += "chs=525x185";
   s += "&amp;";
   s += "cht=bvs";
   s += "&amp;";
@@ -1107,10 +1234,10 @@ const char* chart_t::distribution_dps( std::string& s,
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( p -> dps - p -> dps_min ) / ( p -> dps_max - p -> dps_min ) ); s += buffer;
   s += "&amp;";
   std::string formatted_name = p -> name_str;
-  armory_t::format( formatted_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=000000,20";
+  s += "chts=666666,18";
 
   return s.c_str();
 }
@@ -1158,14 +1285,18 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   case RACE_NIGHT_ELF:
   case RACE_HUMAN: 
   case RACE_GNOME: 
-  case RACE_DWARF: 
+  case RACE_DWARF:
+  case RACE_WORGEN:
   case RACE_DRAENEI: s += "&amp;F=A"; break;
+
 
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_UNDEAD:
   case RACE_BLOOD_ELF:
+  case RACE_GOBLIN:
   case RACE_TAUREN: s += "&amp;F=H"; break;
+  default: break;
   }
 
   for ( int i=0; i < STAT_MAX; i++ )
@@ -1184,11 +1315,11 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_SPELL_POWER:              name = "spd";  break;
     case STAT_ATTACK_POWER:             name = "map";  break;
     case STAT_EXPERTISE_RATING:         name = "Exp";  break;
-    case STAT_ARMOR_PENETRATION_RATING: name = "arp";  break;
     case STAT_HIT_RATING:               name = "mhit"; break;
     case STAT_CRIT_RATING:              name = "mcr";  break;
     case STAT_HASTE_RATING:             name = "mh";   break;
-    case STAT_ARMOR:                    name = "Arm";   break;
+    case STAT_MASTERY_RATING:           name = "Mr";   break;
+    case STAT_ARMOR:                    name = "Arm";  break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
     case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
@@ -1256,11 +1387,11 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_SPELL_POWER:              id = 123; break;
     case STAT_ATTACK_POWER:             id = 77;  break;
     case STAT_EXPERTISE_RATING:         id = 117; break;
-    case STAT_ARMOR_PENETRATION_RATING: id = 114; break;
     case STAT_HIT_RATING:               id = 119; break;
     case STAT_CRIT_RATING:              id = 96;  break;
     case STAT_HASTE_RATING:             id = 103; break;
     case STAT_ARMOR:                    id = 41;  break;
+    case STAT_MASTERY_RATING:                  id = 170; break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
     }
@@ -1342,10 +1473,10 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*20 > maxR ) maxR = value*20; break;
     case STAT_ATTACK_POWER:             name = "Ap";               if ( value*20 > maxR ) maxR = value*20; break;
     case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_ARMOR_PENETRATION_RATING: name = "ArmorPenetration"; if ( value*20 > maxR ) maxR = value*20; break;
     case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;
+    case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value*20 > maxY ) maxY = value*20; break;
     case STAT_ARMOR:                    name = "Armor";            break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;

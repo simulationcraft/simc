@@ -11,14 +11,37 @@
 
 // spell_t::spell_t ==========================================================
 
-spell_t::spell_t( const char* n, player_t* p, int r, int s, int t ) :
-    action_t( ACTION_SPELL, n, p, r, s, t, true )
+void spell_t::_init_spell_t()
 {
   may_miss = may_resist = true;
   base_spell_power_multiplier = 1.0;
   base_crit_bonus = 0.5;
-  trigger_gcd = p -> base_gcd;
   min_gcd = 1.0;
+  hasted_ticks = true;
+}
+
+spell_t::spell_t( const active_spell_t& s, int t ) :
+  action_t( ACTION_SPELL, s, t, true )
+{
+  _init_spell_t();
+}
+
+spell_t::spell_t( const char* n, player_t* p, int r, const school_type s, int t ) :
+    action_t( ACTION_SPELL, n, p, r, s, t, true )
+{
+  _init_spell_t();
+}
+
+spell_t::spell_t( const char* name, const char* sname, player_t* p, int t ) :
+    action_t( ACTION_SPELL, name, sname, p, t, true )
+{
+  _init_spell_t();
+}
+
+spell_t::spell_t( const char* name, const uint32_t id, player_t* p, int t ) :
+    action_t( ACTION_SPELL, name, id, p, t, true )
+{
+  _init_spell_t();
 }
 
 // spell_t::haste ============================================================
@@ -32,7 +55,7 @@ double spell_t::haste() SC_CONST
 
 double spell_t::gcd() SC_CONST
 {
-  double t = trigger_gcd;
+  double t = action_t::gcd();
   if ( t == 0 ) return 0;
 
   t *= haste();
@@ -51,16 +74,6 @@ double spell_t::execute_time() SC_CONST
   return t;
 }
 
-// spell_t::tick_time ========================================================
-
-double spell_t::tick_time() SC_CONST
-{
-  double t = base_tick_time;
-  assert( snapshot_haste > 0.0 );
-  if ( channeled || ( scale_ticks_with_haste() > 0 ) ) t *= snapshot_haste;
-  return t;
-}
-
 // spell_t::player_buff ======================================================
 
 void spell_t::player_buff()
@@ -72,10 +85,14 @@ void spell_t::player_buff()
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
 
-  if ( p -> meta_gem == META_CHAOTIC_SKYFIRE       ||
-       p -> meta_gem == META_CHAOTIC_SKYFLARE      ||
-       p -> meta_gem == META_RELENTLESS_EARTHSIEGE ||
-       p -> meta_gem == META_RELENTLESS_EARTHSTORM )
+  if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
+       p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
+       p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
+       p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
+       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
+       p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
+       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
   {
     player_crit_multiplier *= 1.03;
   }
@@ -86,17 +103,13 @@ void spell_t::player_buff()
 
 // spell_t::target_debuff =====================================================
 
-void spell_t::target_debuff( int dmg_type )
+void spell_t::target_debuff( player_t* t, int dmg_type )
 {
-  action_t::target_debuff( dmg_type );
+  action_t::target_debuff( t, dmg_type );
 
-  target_t* t = sim -> target;
 
-  target_hit += std::max( t -> debuffs.improved_faerie_fire -> value(), t -> debuffs.misery -> value() ) * 0.01;
-
-  int crit_debuff = std::max( std::max( t -> debuffs.winters_chill -> stack(), 
-                                        t -> debuffs.improved_scorch -> stack() *  5 ),
-                                        t -> debuffs.improved_shadow_bolt -> stack() * 5 );
+  int crit_debuff = std::max( t -> debuffs.critical_mass        -> stack() * 5,
+                              t -> debuffs.improved_shadow_bolt -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 
   if ( sim -> debug )
@@ -133,9 +146,9 @@ double spell_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
         
-  if ( ! player -> is_pet() && delta_level > 2 && sim -> spell_crit_suppression )
+  if ( ! player -> is_pet() && delta_level > 2 )
   {
-    chance -= 0.03;
+    chance -= delta_level * 0.006;
   }
         
   return chance;
@@ -145,7 +158,7 @@ double spell_t::crit_chance( int delta_level ) SC_CONST
 
 void spell_t::calculate_result()
 {
-  int delta_level = sim -> target -> level - player -> level;
+  int delta_level = target -> level - player -> level;
 
   direct_dmg = 0;
   result = RESULT_NONE;
@@ -195,9 +208,17 @@ void spell_t::execute()
     if ( ! direct_tick )
     {
       action_callback_t::trigger( player -> spell_cast_result_callbacks[ result ], this );
+      if ( harmful )
+      {
+        action_callback_t::trigger( player -> harmful_cast_result_callbacks[ result ], this );
+      }
+    }
+
+    if ( direct_tick || ( !proc && ( base_dd_max > 0.0 ) ) )
+    {
+      action_callback_t::trigger( player -> spell_direct_result_callbacks[ result ], this );
     }
 
     action_callback_t::trigger( player -> spell_result_callbacks       [ result ], this );
-    action_callback_t::trigger( player -> spell_direct_result_callbacks[ result ], this );
   }
 }

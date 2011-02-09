@@ -1,0 +1,69 @@
+#!./simc 
+
+mage=Mage_Frost_Frostfire_T11_372
+origin="http://chardev.org/?profile=35390"
+level=85
+race=troll
+use_pre_potion=1
+professions=tailoring=525/enchanting=525
+talents=http://www.wowhead.com/talent#mage-0020000000000000000002303000000000000000002323021013311301221
+glyphs=ice_barrier/evocation/blink/slow_fall/conjuring/arcane_brilliance/ice_lance/frostfire/deep_freeze
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/arcane_brilliance
+actions+=/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down
+actions+=/water_elemental
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/counterspell
+actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/mana_gem,if=mana_deficit>12500
+actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30
+actions+=/frostfire_orb,if=target.time_to_die>=12
+actions+=/mirror_image,if=target.time_to_die>=25
+actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
+actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down
+actions+=/deep_freeze
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
+actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
+actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
+actions+=/mage_armor,if=(mana_pct*15)<target.time_to_die
+actions+=/evocation,if=mana_pct<5&target.time_to_die>60
+actions+=/frostbolt,if=!cooldown.early_frost.remains
+actions+=/frostfire_bolt
+actions+=/ice_lance,moving=1
+actions+=/fire_blast,moving=1
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit
+shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,reforge=haste_crit,gems=20hit_20int_10haste,enchant=50int_25haste
+chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=haste_hit,gems=40int_20hit_20int_20int,enchant=20all
+waist=belt_of_arcane_storms,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_191haste_266int_429sta,reforge=haste_hit,gems=40int_40int
+legs=firelords_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,reforge=haste_crit,gems=20crit_20int_40int_20int,enchant=95int_80sta
+feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=haste_hit,gems=40int_10haste,enchant=50hit
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
+hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=mastery_hit,gems=40int,enchant=50haste
+finger1=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,enchant=40int,suffix=129
+finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
+trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,equip=onharmfulcast_2178sp_30%_20dur_100cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_hit,gems=20crit_20int_10int,enchant=lightweave_embroidery
+main_hand=stormwake_the_tempests_reach_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=2207sp_247sta_165int_110hit_110crit,enchant=power_torrent,weapon=sword_1.60speed_73min_137max,suffix=129
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,reforge=haste_crit,enchant=40int
+ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_crit
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5950
+# gear_intellect=4529
+# gear_spirit=21
+# gear_spell_power=2207
+# gear_hit_rating=1741
+# gear_crit_rating=1807
+# gear_haste_rating=1527
+# gear_mastery_rating=873
+# gear_armor=8479
+# meta_gem=burning_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
+# main_hand=stormwake_the_tempests_reach_of_the_wildfire,heroic=1,weapon=sword_1.60speed_73min_137max,enchant=power_torrent

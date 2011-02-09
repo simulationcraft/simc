@@ -137,17 +137,16 @@ void option_t::save( FILE* file )
 
 // option_t::add ============================================================
 
-void option_t::add( std::vector<option_t>& opt_vector,
-		    const                  char* name,
-		    int                    type,
-		    void*                  address )
+void option_t::add( std::vector<option_t>& options,
+                    const                  char* name,
+                    int                    type,
+                    void*                  address )
 {
-  int size = opt_vector.size();
-  opt_vector.resize( size+1 );
-
-  opt_vector[ size ].name    = name;
-  opt_vector[ size ].type    = type;
-  opt_vector[ size ].address = address;
+  int size = ( int ) options.size();
+  options.resize( size+1 );
+  options[ size ].name = name;
+  options[ size ].type = type;
+  options[ size ].address = address;
 }
 
 // option_t::copy ===========================================================
@@ -188,8 +187,15 @@ bool option_t::parse( sim_t*             sim,
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case OPT_FUNC: return ( ( option_function_t ) address )( sim, n, v );
-    case OPT_LIST:   ( ( std::vector<std::string>* ) address ) -> push_back( v ); break;
+    case OPT_LIST:  
+      ( ( std::vector<std::string>* ) address ) -> push_back( v ); 
+      break;
+    case OPT_FUNC: 
+      return ( ( option_function_t ) address )( sim, n, v );
+    case OPT_TALENT_RANK:   
+      return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ), true );
+    case OPT_SPELL_ENABLED: 
+      return ( ( struct spell_id_t *) address)->enable( atoi( v.c_str() ) != 0 );
     case OPT_DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );
       if ( address ) sim -> errorf( "Please use option '%s' instead.\n", ( char* ) address );
@@ -280,11 +286,23 @@ bool option_t::parse_file( sim_t* sim,
                            FILE*  file )
 {
   char buffer[ 1024 ];
+  bool first = true;
   while ( fgets( buffer, 1024, file ) )
   {
-    if ( *buffer == '#' ) continue;
-    if ( only_white_space( buffer ) ) continue;
-    option_t::parse_line( sim, buffer );
+    char *b = buffer;
+    if ( first )
+    {
+      // Skip the Windows UTF-8 magic cookie.
+      uint32_t len = strlen( b );
+      if ( ( len >= 3 ) && ( (unsigned char) b[ 0 ] == 0xEF ) && ( (unsigned char) b[ 1 ] == 0xBB ) && ( (unsigned char) b[ 2 ] == 0xBF ) )
+      {
+        b += 3;
+      }
+      first = false;
+    }
+    if ( *b == '#' ) continue;
+    if ( only_white_space( b ) ) continue;
+    option_t::parse_line( sim, b );
   }
   return true;
 }
@@ -348,6 +366,7 @@ bool option_t::parse_token( sim_t*       sim,
     if ( ! file )
     {
       sim -> errorf( "Unable to open input parameter file '%s'\n", value.c_str() );
+      return false;
     }
     sim -> active_files.push_back( token );
     parse_file( sim, file );

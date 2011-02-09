@@ -355,6 +355,7 @@ static const char* translate_glyph_name( player_t* p,
     case 33: return "command";
     default: return 0;
     }
+  default: break;
   }
 
   return 0;
@@ -388,7 +389,7 @@ static const char* translate_inventory_id( int slot )
   return "unknown";
 }
 
-static int translate_rawr_race_str( const std::string& name )
+static race_type translate_rawr_race_str( const std::string& name )
 {
   if ( ! name.compare( "Human"    ) ) return RACE_HUMAN;
   if ( ! name.compare( "Orc"      ) ) return RACE_ORC;
@@ -400,6 +401,8 @@ static int translate_rawr_race_str( const std::string& name )
   if ( ! name.compare( "Troll"    ) ) return RACE_TROLL;
   if ( ! name.compare( "BloodElf" ) ) return RACE_BLOOD_ELF;
   if ( ! name.compare( "Draenei"  ) ) return RACE_DRAENEI;
+  if ( ! name.compare( "Worgen"   ) ) return RACE_WORGEN;
+  if ( ! name.compare( "Goblin"   ) ) return RACE_GOBLIN;
 
   return RACE_NONE;
 }
@@ -468,11 +471,9 @@ player_t* rawr_t::load_player( sim_t* sim,
   armory_t::format(  name_str );
   armory_t::format( class_str );
 
-  if ( class_str == "deathknight" ) class_str = "death_knight";
+  race_type r = translate_rawr_race_str( race_str );
 
-  int race_type = translate_rawr_race_str( race_str );
-
-  player_t* p = player_t::create( sim, class_str, name_str, race_type );
+  player_t* p = player_t::create( sim, class_str, name_str, r );
   sim -> active_player = p;
   if ( ! p )
   {
@@ -505,9 +506,9 @@ player_t* rawr_t::load_player( sim_t* sim,
     return 0;
   }
 
-  p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=";
-  p -> talents_str += util_t::class_id_string( p -> type );
-  p -> talents_str += "&tal=" + talents_encoding;
+  p -> talents_str = "http://www.wowhead.com/talent#";
+  p -> talents_str += util_t::player_type_string( p -> type );
+  p -> talents_str += "-" + talents_encoding;
 
   p -> glyphs_str = "";
   for ( int i=0; glyphs_encoding[ i ]; i++ )
@@ -546,7 +547,9 @@ player_t* rawr_t::load_player( sim_t* sim,
         return 0;
       }
 
-      bool success = item_t::download_slot( item, item_id, enchant_id, gem_ids );
+      std::string addon_id, reforge_id, rsuffix_id;
+
+      bool success = item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
 
       if ( ! success )
       {

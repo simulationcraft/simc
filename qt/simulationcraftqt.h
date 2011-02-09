@@ -19,13 +19,14 @@
 #define TAB_LOG       6
 #define TAB_RESULTS   7
 
-#define TAB_ARMORY     0
-#define TAB_WOWHEAD    1
+#define TAB_BATTLE_NET 0
+#define TAB_CHAR_DEV   1
 #define TAB_RAWR       2
 #define TAB_BIS        3
 #define TAB_HISTORY    4
+#define TAB_CUSTOM     5
 
-#define HISTORY_VERSION "2.4"
+#define HISTORY_VERSION "4.9"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -71,14 +72,32 @@ public:
   }
 };
 
+class PersistentCookieJar : public QNetworkCookieJar
+{
+public:
+  QString fileName;
+  PersistentCookieJar( const QString& fn ) : fileName(fn) {}
+  virtual ~PersistentCookieJar() {}
+  void load();
+  void save();
+};
+
 class SimulationCraftWindow : public QWidget
 {
     Q_OBJECT
-
+   
 public:
+    qint32 historyWidth, historyHeight;
+    qint32 historyMaximized;
+    QWidget *customGearTab;
+    QWidget *customTalentsTab;
+    QWidget *customGlyphsTab;
     QTabWidget* mainTab;
     QTabWidget* optionsTab;
-    QComboBox* patchChoice;
+    QTabWidget* importTab;
+    QTabWidget* resultsTab;
+    QTabWidget *createCustomProfileDock;
+    QComboBox* versionChoice;
     QComboBox* latencyChoice;
     QComboBox* iterationsChoice;
     QComboBox* fightLengthChoice;
@@ -91,30 +110,32 @@ public:
     QComboBox* smoothRNGChoice;
     QComboBox* armoryRegionChoice;
     QComboBox* armorySpecChoice;
+    QComboBox* debugChoice;
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
     QButtonGroup* plotsButtonGroup;
-    QTabWidget* importTab;
-    SimulationCraftWebView* armoryView;
-    SimulationCraftWebView* wowheadView;
+    SimulationCraftWebView* battleNetView;
+    SimulationCraftWebView* charDevView;
     SimulationCraftWebView* visibleWebView;
+    PersistentCookieJar* charDevCookies;
     QPushButton* rawrButton;
     QLabel* rawrDir;
     QByteArray rawrDialogState;
     QListWidget* rawrList;
     QListWidget* historyList;
     QTreeWidget* bisTree;
+    QString bisProfilePath;
     SimulationCraftTextEdit* simulateText;
     SimulationCraftTextEdit* overridesText;
     QPlainTextEdit* logText;
-    QTabWidget* resultsTab;
     QPushButton* backButton;
     QPushButton* forwardButton;
     SimulationCraftCommandLine* cmdLine;
     QProgressBar* progressBar;
     QPushButton* mainButton;
     QGroupBox* cmdLineGroupBox;
+    QGroupBox* createCustomCharData;
 
     QTimer* timer;
     ImportThread* importThread;
@@ -165,6 +186,7 @@ public:
     void createImportTab();
     void createRawrTab();
     void createBestInSlotTab();
+    void createCustomTab();
     void createSimulateTab();
     void createOverridesTab();
     void createExamplesTab();
@@ -187,6 +209,7 @@ private slots:
     void mainTabChanged( int index );
     void importTabChanged( int index );
     void resultsTabChanged( int index );
+    void resultsTabCloseRequest( int index );
     void rawrButtonClicked( bool checked=false );
     void rawrDoubleClicked( QListWidgetItem* item );
     void historyDoubleClicked( QListWidgetItem* item );
@@ -239,8 +262,8 @@ protected:
     case TAB_IMPORT:
       if( mainWindow->importTab->currentIndex() == TAB_RAWR )
       {
-	mainWindow->rawrFileText = mainWindow->rawrCmdLineHistory.next( k ); 
-	setText( mainWindow->rawrFileText ); 
+        mainWindow->rawrFileText = mainWindow->rawrCmdLineHistory.next( k ); 
+        setText( mainWindow->rawrFileText ); 
       }
       break;
     case TAB_LOG:
@@ -293,6 +316,10 @@ private slots:
       mainWindow->cmdLine->setText( s );
     }
   }
+  void linkClickedSlot( const QUrl& url )
+  {
+    setUrl( url );
+  }
 
 public:
   SimulationCraftWebView( SimulationCraftWindow* mw ) : 
@@ -301,6 +328,9 @@ public:
     connect( this, SIGNAL(loadProgress(int)),       this, SLOT(loadProgressSlot(int)) );
     connect( this, SIGNAL(loadFinished(bool)),      this, SLOT(loadFinishedSlot(bool)) );
     connect( this, SIGNAL(urlChanged(const QUrl&)), this, SLOT(urlChangedSlot(const QUrl&)) );
+
+    connect( page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClickedSlot(const QUrl&)) );
+    page() -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
   }
   virtual ~SimulationCraftWebView() {}
 };
@@ -332,8 +362,8 @@ public:
     QString profile;
     player_t* player;
 
-    void importArmory();
-    void importWowhead();
+    void importBattleNet();
+    void importCharDev();
     void importRawr();
 
     void start( sim_t* s, int t, const QString& u ) { sim=s; tab=t; url=u; profile=""; player=0; QThread::start(); }

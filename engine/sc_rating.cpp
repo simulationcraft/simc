@@ -28,10 +28,13 @@ static const _stat_list_t race_stats[] =
   { RACE_TROLL,     { 21, 22, 20, 16, 21, 0.0 } },
   { RACE_BLOOD_ELF, { 17, 22, 20, 23, 18, 0.0 } },
   { RACE_DRAENEI,   { 21, 17, 20, 20, 22, 0.0 } },
+  { RACE_WORGEN,    { 23, 22, 20, 16, 19, 0.0 } },
+  { RACE_GOBLIN,    { 17, 22, 20, 23, 20, 0.0 } },
   { RACE_NONE, { 0 } }
 };
 
 //         Str    Agi  Sta   Int   Spi  Health    Mana  Crit/Agi Crit/Int Ddg/Agi   MeleCrit  SpellCrit
+// Level 81-85 some stats extrapolated most are just the same as with 80
 
 static const _stat_list_t death_knight_stats[] =
 {
@@ -56,6 +59,11 @@ static const _stat_list_t death_knight_stats[] =
   {	78, {  149,   88,  134,   14,   37,   7199,    100,  0.0187,  0.0000,  0.0157,  3.16649,  0.0000 } },
   {	79, {  152,   90,  137,   15,   38,   7646,    100,  0.0174,  0.0000,  0.0139,  3.16649,  0.0000 } },
   {	80, {  155,   92,  140,   15,   39,   8121,    100,  0.0161,  0.0000,  0.0098,  3.16649,  0.0000 } },
+  {	81, {  158,   94,  143,   15,   39,   8121,    100,  0.0161,  0.0000,  0.0098,  3.16649,  0.0000 } },
+  {	82, {  161,   96,  146,   15,   40,   8121,    100,  0.0161,  0.0000,  0.0098,  3.16649,  0.0000 } },
+  {	83, {  164,   98,  149,   15,   41,   8121,    100,  0.0161,  0.0000,  0.0098,  3.16649,  0.0000 } },
+  {	84, {  167,  100,  152,   15,   41,   8121,    100,  0.0161,  0.0000,  0.0098,  3.16649,  0.0000 } },
+  {	85, {  170,  102,  155,   15,   42,   8121,    100,  0.0161,  0.0000,  0.0098,  3.16649,  0.0000 } },
   { 0, { 0 } }
 };
 
@@ -82,6 +90,11 @@ static const _stat_list_t druid_stats[] =
   {	78, {   67,   60,   75,  118,  133,   6423,   3270,  0.0138,  0.0069,  0.0273,  7.48769,  1.84532 } },
   {	79, {   68,   61,   76,  121,  136,   6902,   3383,  0.0128,  0.0064,  0.0254,  7.48769,  1.84532 } },
   {	80, {   69,   62,   78,  123,  139,   7417,   3496,  0.0120,  0.0060,  0.0232,  7.48769,  1.84532 } },
+  {	81, {   70,   63,   78,  123,  139,   7417,   3496,  0.0120,  0.0060,  0.0232,  7.48769,  1.84532 } },
+  {	82, {   71,   64,   78,  123,  139,   7417,   3496,  0.0120,  0.0060,  0.0232,  7.48769,  1.84532 } },
+  {	83, {   72,   65,   78,  123,  139,   7417,   3496,  0.0120,  0.0060,  0.0232,  7.48769,  1.84532 } },
+  {	84, {   73,   66,   78,  123,  139,   7417,   3496,  0.0120,  0.0060,  0.0232,  7.48769,  1.84532 } },
+  {	85, {   74,   67,   78,  123,  139,   7417,   3496,  0.0120,  0.0060,  0.0232,  7.48769,  1.84532 } },
   { 0, { 0 } }
 };
 
@@ -108,6 +121,11 @@ static const _stat_list_t hunter_stats[] =
   {	78, {   52,  155,  104,   67,   74,   6343,   4713,  0.0139,  0.0070,  0.0175, -1.53580,  3.60183 } },
   {	79, {   53,  158,  106,   68,   76,   6816,   4880,  0.0129,  0.0065,  0.0192, -1.53580,  3.60183 } },
   {	80, {   54,  161,  108,   70,   77,   7324,   5046,  0.0120,  0.0060,  0.0173, -1.53580,  3.60183 } },
+  {	81, {   55,  161,  108,   70,   77,   7324,   5046,  0.0120,  0.0060,  0.0173, -1.53580,  3.60183 } },
+  {	82, {   56,  161,  108,   70,   77,   7324,   5046,  0.0120,  0.0060,  0.0173, -1.53580,  3.60183 } },
+  {	83, {   57,  161,  108,   70,   77,   7324,   5046,  0.0120,  0.0060,  0.0173, -1.53580,  3.60183 } },
+  {	84, {   58,  161,  108,   70,   77,   7324,   5046,  0.0120,  0.0060,  0.0173, -1.53580,  3.60183 } },
+  {	85, {   59,  161,  108,   70,   77,   7324,   5046,  0.0120,  0.0060,  0.0173, -1.53580,  3.60183 } },
   { 0, { 0 } }
 };
 
@@ -134,6 +152,11 @@ static const _stat_list_t mage_stats[] =
   {	78, {   15,   22,   37,  155,  148,   6030,   3063,  0.0227,  0.0070,  0.0227,  3.45472,  0.90105 } },
   {	79, {   15,   23,   38,  158,  151,   6480,   3165,  0.0209,  0.0065,  0.0208,  3.45472,  0.90105 } },
   {	80, {   16,   23,   39,  161,  154,   6963,   3268,  0.0196,  0.0060,  0.0197,  3.45472,  0.90105 } },
+  {	81, {   16,   23,   39,  161,  154,   6963,   3268,  0.0196,  0.0060,  0.0197,  3.45472,  0.90105 } },
+  {	82, {   16,   23,   39,  161,  154,   6963,   3268,  0.0196,  0.0060,  0.0197,  3.45472,  0.90105 } },
+  {	83, {   16,   23,   39,  161,  154,   6963,   3268,  0.0196,  0.0060,  0.0197,  3.45472,  0.90105 } },
+  {	84, {   16,   23,   39,  161,  154,   6963,   3268,  0.0196,  0.0060,  0.0197,  3.45472,  0.90105 } },
+  {	85, {   16,   23,   39,  161,  154,   6963,   3268,  0.0196,  0.0060,  0.0197,  3.45472,  0.90105 } },
   { 0, { 0 } }
 };
 
@@ -160,6 +183,11 @@ static const _stat_list_t paladin_stats[] =
   {	78, {  126,   67,  118,   75,   82,   6005,   4106,  0.0221,  0.0070,  0.0224,  3.27401,  3.33764 } },
   {	79, {  128,   68,  121,   76,   83,   6453,   4250,  0.0206,  0.0065,  0.0202,  3.27401,  3.33764 } },
   {	80, {  131,   70,  123,   78,   85,   6934,   4394,  0.0192,  0.0060,  0.0191,  3.27401,  3.33764 } },
+  {	81, {  131,   70,  123,   78,   85,   6934,   4394,  0.0192,  0.0060,  0.0191,  3.27401,  3.33764 } },
+  {	82, {  131,   70,  123,   78,   85,   6934,   4394,  0.0192,  0.0060,  0.0191,  3.27401,  3.33764 } },
+  {	83, {  131,   70,  123,   78,   85,   6934,   4394,  0.0192,  0.0060,  0.0191,  3.27401,  3.33764 } },
+  {	84, {  131,   70,  123,   78,   85,   6934,   4394,  0.0192,  0.0060,  0.0191,  3.27401,  3.33764 } },
+  {	85, {  131,   70,  123,   78,   85,   6934,   4394,  0.0192,  0.0060,  0.0191,  3.27401,  3.33764 } },
   { 0, { 0 } }
 };
 
@@ -186,6 +214,11 @@ static const _stat_list_t priest_stats[] =
   {	78, {   22,   30,   45,  148,  155,   6028,   3615,  0.0223,  0.0070,  0.0223,  3.17418,  1.24036 } },
   {	79, {   23,   30,   46,  151,  158,   6477,   3739,  0.0207,  0.0065,  0.0207,  3.17418,  1.24036 } },
   {	80, {   23,   31,   47,  154,  161,   6960,   3863,  0.0192,  0.0060,  0.0192,  3.17418,  1.24036 } },
+  {	81, {   23,   31,   47,  154,  161,   6960,   5398,  0.0192,  0.0060,  0.0192,  3.17418,  1.24036 } }, // correct mana values
+  {	82, {   23,   31,   47,  154,  161,   6960,   7544,  0.0192,  0.0060,  0.0192,  3.17418,  1.24036 } }, // correct mana values
+  {	83, {   23,   31,   47,  154,  161,   6960,  10543,  0.0192,  0.0060,  0.0192,  3.17418,  1.24036 } }, // correct mana values
+  {	84, {   23,   31,   47,  154,  161,   6960,  13000,  0.0192,  0.0060,  0.0192,  3.17418,  1.24036 } },
+  {	85, {   23,   31,   47,  154,  161,   6960,  18000,  0.0192,  0.0060,  0.0192,  3.17418,  1.24036 } },
   { 0, { 0 } }
 };
 
@@ -212,6 +245,11 @@ static const _stat_list_t rogue_stats[] =
   {	78, {   89,  163,   82,   22,   45,   6585,    100,  0.0139,  0.0000,  0.0271, -0.29560,  0.0000 } },
   {	79, {   91,  166,   83,   23,   46,   7076,    100,  0.0129,  0.0000,  0.0251, -0.29560,  0.0000 } },
   {	80, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
+  {	81, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
+  {	82, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
+  {	83, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
+  {	84, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
+  {	85, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
   { 0, { 0 } }
 }; 
 
@@ -238,6 +276,11 @@ static const _stat_list_t shaman_stats[] =
   {	78, {   96,   52,  111,  104,  118,   6028,   4108,  0.0139,  0.0070,  0.0221,  2.92384,  2.20283 } },
   {	79, {   98,   53,  114,  106,  121,   6477,   4252,  0.0129,  0.0065,  0.0206,  2.92384,  2.20283 } },
   {	80, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
+  {	81, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
+  {	82, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
+  {	83, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
+  {	84, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
+  {	85, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
   { 0, { 0 } }
 }; 
 
@@ -264,6 +307,11 @@ static const _stat_list_t warlock_stats[] =
   {	78, {   37,   45,   67,  133,  141,   6204,   3608,  0.0231,  0.0070,  0.0224,  2.61372,  1.70458 } },
   {	79, {   38,   46,   68,  136,  144,   6667,   3732,  0.0213,  0.0065,  0.0207,  2.61372,  1.70458 } },
   {	80, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
+  {	81, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
+  {	82, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
+  {	83, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
+  {	84, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
+  {	85, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
   { 0, { 0 } }
 }; 
 
@@ -290,107 +338,48 @@ static const _stat_list_t warrior_stats[] =
   {	78, {  148,   89,  133,   15,   37,   7199,    100,  0.0186,  0.0000,  0.0156,  3.17876,  0.0000 } },
   {	79, {  151,   91,  136,   15,   38,   7646,    100,  0.0173,  0.0000,  0.0147,  3.17876,  0.0000 } },
   {	80, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
+  {	81, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
+  {	82, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
+  {	83, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
+  {	84, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
+  {	85, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
   { 0, { 0 } }
 }; 
 
 
-// rating_60 =================================================================
 
-static rating_t& rating_60( sim_t* sim )
-{
-  static rating_t r;
 
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 1000;
-    r.spell_hit         =  800;
-    r.spell_crit        = 1400;
-    r.attack_haste      = 1000;
-    r.attack_hit        = 1000;
-    r.attack_crit       = 1400;
-    r.expertise         =  250;
-    r.armor_penetration = 426.8292514;
-    r.defense           =  1.5;
-    r.dodge             = 1380;
-    r.parry             = 1380;
-    r.block             =  500;
-  }
-
-  return r;
-}
-
-// rating_70 =================================================================
-
-static rating_t& rating_70( sim_t* sim )
-{
-  static rating_t r;
-
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 1576.923275;
-    r.spell_hit         = 1261.538506;
-    r.spell_crit        = 2207.692337;
-    r.attack_haste      = 1576.923275;
-    r.attack_hit        = 1576.923275;
-    r.attack_crit       = 2207.692337;
-    r.expertise         =  394.230819;
-    r.armor_penetration = 673.0768897;
-    r.defense           = 2.365385056;
-    r.dodge             = 2176.153945;
-    r.parry             = 2176.153945;
-    r.block             = 788.4614944;
-  }
-
-  return r;
-}
-
-// rating_80 =================================================================
-
-static rating_t& rating_80( sim_t* sim )
-{
-  static rating_t r;
-
-  if ( r.spell_haste == 0 )
-  {
-    r.spell_haste       = 100.0/0.030500;
-    r.spell_hit         =  80.0/0.030500;
-    r.spell_crit        = 140.0/0.030500;
-    r.attack_haste      = 100.0/0.030500;
-    r.attack_hit        = 100.0/0.030500;
-    r.attack_crit       = 140.0/0.030500;
-    r.expertise         =  25.0/0.030500;
-    r.armor_penetration = 1399.572719;
-    r.defense           = 4.918498039;
-    r.dodge             = 4525.018692;
-    r.parry             = 4525.018692;
-    r.block             = 1639.499474;
-  }
-
-  return r;
-}
 
 } // ANONYMOUS NAMESPACE =====================================================
 
 // rating_t::init ============================================================
 
-void rating_t::init( sim_t* sim, int level )
+void rating_t::init( sim_t* sim, sc_data_access_t& pData, int level, int type )
 {
-  rating_t& r_60 = rating_60( sim );
-  rating_t& r_70 = rating_70( sim );
-  rating_t& r_80 = rating_80( sim );
+  if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%d type=%s",
+									 level, util_t::player_type_string( type ) );
 
-  spell_haste       = interpolate( level, r_60.spell_haste,       r_70.spell_haste,       r_80.spell_haste       );
-  spell_hit         = interpolate( level, r_60.spell_hit,         r_70.spell_hit,         r_80.spell_hit         );
-  spell_crit        = interpolate( level, r_60.spell_crit,        r_70.spell_crit,        r_80.spell_crit        );
-  attack_haste      = interpolate( level, r_60.attack_haste,      r_70.attack_haste,      r_80.attack_haste      );
-  attack_hit        = interpolate( level, r_60.attack_hit,        r_70.attack_hit,        r_80.attack_hit        );
-  attack_crit       = interpolate( level, r_60.attack_crit,       r_70.attack_crit,       r_80.attack_crit       );
-  expertise         = interpolate( level, r_60.expertise,         r_70.expertise,         r_80.expertise         );
-  armor_penetration = interpolate( level, r_60.armor_penetration, r_70.armor_penetration, r_80.armor_penetration );
-  defense           = interpolate( level, r_60.defense,           r_70.defense,           r_80.defense           );
-  dodge             = interpolate( level, r_60.dodge  ,           r_70.dodge,             r_80.dodge             );
-  parry             = interpolate( level, r_60.parry,             r_70.parry,             r_80.parry             );
-  block             = interpolate( level, r_60.block,             r_70.block,             r_80.block             );
+  if ( type == ENEMY || type == ENEMY_ADD )
+  {
+    memset( this, 1, sizeof( rating_t ) );
+  }
+  else
+  {
+    spell_haste       = pData.combat_ratings(player_type ( type ), RATING_SPELL_HASTE, 	level);
+    spell_hit         = pData.combat_ratings(player_type ( type ), RATING_SPELL_HIT, 	level);
+    spell_crit        = pData.combat_ratings(player_type ( type ), RATING_SPELL_CRIT, 	level);
+    attack_haste      = pData.combat_ratings(player_type ( type ), RATING_MELEE_HASTE, 	level);
+    attack_hit        = pData.combat_ratings(player_type ( type ), RATING_MELEE_HIT, 	level);
+    attack_crit       = pData.combat_ratings(player_type ( type ), RATING_MELEE_CRIT, 	level);
+    ranged_haste      = pData.combat_ratings(player_type ( type ), RATING_RANGED_HASTE, 	level);
+    ranged_hit        = pData.combat_ratings(player_type ( type ), RATING_RANGED_HIT, 	level);
+    ranged_crit       = pData.combat_ratings(player_type ( type ), RATING_RANGED_CRIT, 	level);
+    expertise         = pData.combat_ratings(player_type ( type ), RATING_EXPERTISE, 	level);
+    dodge             = pData.combat_ratings(player_type ( type ), RATING_DODGE, 		level);
+    parry             = pData.combat_ratings(player_type ( type ), RATING_PARRY, 		level);
+    block             = pData.combat_ratings(player_type ( type ), RATING_BLOCK, 		level);
+    mastery           = pData.combat_ratings(player_type ( type ), RATING_MASTERY, 		level) / 100;
+  }
 }
 
 // rating_t::interpolate ======================================================
@@ -398,8 +387,10 @@ void rating_t::init( sim_t* sim, int level )
 double rating_t::interpolate( int    level,
                               double val_60,
                               double val_70,
-                              double val_80 )
+                              double val_80,
+                              double val_85 )
 {
+  if ( val_85 < 0 ) val_85 = val_80; // TODO
   if ( level <= 60 )
   {
     return val_60;
@@ -408,9 +399,13 @@ double rating_t::interpolate( int    level,
   {
     return val_70;
   }
-  else if ( level >= 80 )
+  else if ( level == 80 )
   {
     return val_80;
+  }
+  else if ( level >= 85 )
+  {
+    return val_85;
   }
   else if ( level < 70 )
   {
@@ -418,11 +413,17 @@ double rating_t::interpolate( int    level,
     double adjust = ( level - 60 ) / 10.0;
     return val_60 + adjust * ( val_70 - val_60 );
   }
-  else // ( level < 80 )
+  else if ( level < 80 )
   {
     // Assume linear progression for now.
     double adjust = ( level - 70 ) / 10.0;
     return val_70 + adjust * ( val_80 - val_70 );
+  }
+  else // ( level < 85 )
+  {
+    // Assume linear progression for now.
+    double adjust = ( level - 80 ) / 5.0;
+    return val_80 + adjust * ( val_85 - val_80 );
   }
   assert( 0 );
   return 0;
@@ -430,91 +431,29 @@ double rating_t::interpolate( int    level,
 
 // rating_t::get_attribute_base ================================================
 
-double rating_t::get_attribute_base( sim_t* sim, int level, int class_type, int race, int stat_type )
+double rating_t::get_attribute_base( sim_t* sim, sc_data_access_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type )
 {
-  double race_value             = 0.0;
-  double class_value            = 0.0;
-  double r                      = 0.0;
-  const _stat_list_t* stat_list = 0;
-
-  if ( level < 60 || level > 80 )
-  {
-    return 0.0;
-  }
-
-  if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
-  {
-    return 0.0;
-  }
-
-  switch ( class_type )
-  {
-  case DEATH_KNIGHT: stat_list = death_knight_stats; break;
-  case DRUID:        stat_list = druid_stats;        break;
-  case HUNTER:       stat_list = hunter_stats;       break;
-  case MAGE:         stat_list = mage_stats;         break;
-  case PALADIN:      stat_list = paladin_stats;      break;
-  case PRIEST:       stat_list = priest_stats;       break;
-  case ROGUE:        stat_list = rogue_stats;        break;
-  case SHAMAN:       stat_list = shaman_stats;       break;
-  case WARLOCK:      stat_list = warlock_stats;      break;
-  case WARRIOR:      stat_list = warrior_stats;      break;
-  default: assert(0);
-  };
-  
-
-  int i;
-
-  if ( ( stat_type >= BASE_STAT_STRENGTH ) && ( stat_type <= BASE_STAT_SPIRIT ) )
-  {
-    for ( i = 0; race_stats[ i ].id != 0; i++ )
-    {
-      if ( race == race_stats[ i ].id )
-      {
-        race_value = race_stats[ i ].stats[ stat_type ];
-        break;
-      }
-    }
-  }
-
-  for ( i = 0; stat_list[ i ].id != 0; i++ )
-  {
-    if ( level == stat_list[ i ].id )
-    {
-      class_value = stat_list[ i ].stats[ stat_type ];
-      break;
-    }
-  }
-
-  if ( ( stat_type == BASE_STAT_INTELLECT ) && ( race == RACE_GNOME ) )
-  {
-    class_value = floor( class_value * 1.05 );
-  }
-  else if ( race == RACE_TAUREN )
-  {
-    if ( stat_type == BASE_STAT_HEALTH )
-    {
-      class_value = floor( class_value * 1.05 );
-    }
-  }
-
-  r = race_value + class_value;
-
-  if ( ( stat_type == BASE_STAT_SPIRIT ) && ( race == RACE_HUMAN ) )
-  {
-    r = floor( r * 1.03 );
-  }
+  double res                       = 0.0;
 
   switch ( stat_type )
   {
-  case BASE_STAT_MELEE_CRIT_PER_AGI:
-  case BASE_STAT_SPELL_CRIT_PER_INT:
-  case BASE_STAT_DODGE_PER_AGI:
-  case BASE_STAT_MELEE_CRIT:
-  case BASE_STAT_SPELL_CRIT:
-    r /= 100.0;
-    break;
+  case BASE_STAT_STRENGTH:           res = pData.race_stats( race, STAT_STRENGTH ) + pData.class_stats( class_type, level, STAT_STRENGTH ); break;
+  case BASE_STAT_AGILITY:            res = pData.race_stats( race, STAT_AGILITY ) + pData.class_stats( class_type, level, STAT_AGILITY ); break;
+  case BASE_STAT_STAMINA:            res = pData.race_stats( race, STAT_STAMINA ) + pData.class_stats( class_type, level, STAT_STAMINA ); break;
+  case BASE_STAT_INTELLECT:          res = pData.race_stats( race, STAT_INTELLECT ) + pData.class_stats( class_type, level, STAT_INTELLECT ); break;
+  case BASE_STAT_SPIRIT:             res = pData.race_stats( race, STAT_SPIRIT ) + pData.class_stats( class_type, level, STAT_SPIRIT ); 
+                                     if ( race == RACE_HUMAN ) res *= 1.03; break;
+  case BASE_STAT_HEALTH:             res = pData.class_stats( class_type, level, STAT_HEALTH ); break;
+  case BASE_STAT_MANA:               res = pData.class_stats( class_type, level, STAT_MANA ); break;
+  case BASE_STAT_MELEE_CRIT_PER_AGI: res = pData.melee_crit_scale( class_type, level ); break;
+  case BASE_STAT_SPELL_CRIT_PER_INT: res = pData.spell_crit_scale( class_type, level ); break;
+  case BASE_STAT_DODGE_PER_AGI:      res = pData.dodge_scale( class_type, level ); break;
+  case BASE_STAT_MELEE_CRIT:         res = pData.melee_crit_base( class_type ); break;
+  case BASE_STAT_SPELL_CRIT:         res = pData.spell_crit_base( class_type ); break;
+  case BASE_STAT_MP5:                res = pData.base_mp5( class_type, level ); break;
+  case BASE_STAT_SPI_REGEN:          res = pData.spi_regen( class_type, level ); break;
+  default: break;
   }
 
-  return r;
+  return res;
 }

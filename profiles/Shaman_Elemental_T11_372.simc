@@ -1,0 +1,64 @@
+#!./simc 
+
+shaman=Shaman_Elemental_T11_372
+origin="http://chardev.org/?profile=14385"
+level=85
+race=troll
+use_pre_potion=1
+professions=alchemy=525/enchanting=525
+talents=http://www.wowhead.com/talent#shaman-303202321223110132120300220000000000000000000000000000000
+glyphs=chain_lightning/thunder/healing_stream_totem/thunderstorm/astral_recall/renewed_life/flame_shock/lightning_bolt/lava_burst
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/flametongue_weapon,weapon=main
+actions+=/lightning_shield
+actions+=/mana_spring_totem
+actions+=/wrath_of_air_totem
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
+actions+=/wind_shear
+actions+=/bloodlust,health_percentage<=25
+actions+=/bloodlust,time_to_die<=60
+actions+=/berserking
+actions+=/elemental_mastery
+actions+=/flame_shock,if=!ticking
+actions+=/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05
+actions+=/earth_shock,if=buff.lightning_shield.stack=9
+actions+=/fire_elemental_totem
+actions+=/searing_totem
+actions+=/chain_lightning,if=target.adds>2
+actions+=/lightning_bolt
+actions+=/thunderstorm
+head=headpiece_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2071armor_197haste_325int_257mastery_578sta,reforge=mastery_hit,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit
+neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta
+shoulders=shoulderwraps_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1911armor_191crit_266int_171mastery_429sta,reforge=crit_hit,gems=20haste_20int_10int,enchant=50int_25haste
+chest=circuit_design_breastplate,heroic=1,type=mail,ilevel=372,quality=epic,stats=2548armor_345int_257mastery_217spi_578sta,reforge=mastery_hit,gems=40int_40hit_20int,enchant=20all
+waist=lightning_well_belt_of_the_feverflare,heroic=1,type=mail,ilevel=372,quality=epic,stats=1433armor_429sta_266int_180haste_180mastery,gems=20hit_20int_40int_10int,suffix=230
+legs=kilt_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2230armor_257haste_345int_217spi_578sta,gems=20haste_20int_20hit_20int_20int,enchant=95int_55spi
+feet=boots_of_azgalada,heroic=1,type=mail,ilevel=379,quality=epic,stats=1796armor_266int_194mastery_174spi_458sta,reforge=mastery_hit,gems=20haste_20int_40int_20int,enchant=50mastery
+wrists=chaos_beast_bracers,heroic=1,type=mail,ilevel=372,quality=epic,stats=1115armor_215int_143mastery_143spi_322sta,reforge=mastery_hit,enchant=50int
+hands=gloves_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1593armor_191crit_171haste_266int_429sta,reforge=crit_hit,gems=20hit_20int_10int,enchant=65mastery
+finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
+finger2=planetary_band_of_the_feverflare,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143haste_143mastery,reforge=mastery_hit,enchant=40int,suffix=138
+trinket1=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+trinket2=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,gems=20haste_20int_10int,enchant=30int
+main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
+ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_161sta,reforge=crit_hit,gems=40int
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5861
+# gear_intellect=4926
+# gear_spirit=826
+# gear_spell_power=2207
+# gear_hit_rating=919
+# gear_crit_rating=309
+# gear_haste_rating=1817
+# gear_mastery_rating=1834
+# gear_armor=15396
+# meta_gem=burning_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_82min_154max,enchant=power_torrent

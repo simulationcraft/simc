@@ -41,20 +41,20 @@ static void stat_search( std::string&              encoding_str,
       }
       else 
       {
-	if ( stat_tokens[ j ][ 0 ] == '!' )
-	{
-	  if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
-	  {
-	    match = false;
-	  }
-	}
-	else
-	{
-	  if ( stat_tokens[ j ] != description_tokens[ i + j ] )
-	  {
-	    match = false;
-	  }
-	}
+        if ( stat_tokens[ j ][ 0 ] == '!' )
+        {
+          if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
+          {
+            match = false;
+          }
+        }
+        else
+        {
+          if ( stat_tokens[ j ] != description_tokens[ i + j ] )
+          {
+            match = false;
+          }
+        }
       }
     }
 
@@ -106,7 +106,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& name,
                                              int cache )
 {
-  std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
+  std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?locale=en_US&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
   if ( ! node )
@@ -131,7 +131,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
                                                const std::string& name,
                                                int   cache )
 {
-  std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?r=" + server + "&n=" + name;
+  std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?locale=en_US&r=" + server + "&n=" + name;
   xml_node_t* node = xml_t::download( sim, url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> current_throttle );
 
   if ( ! node )
@@ -244,6 +244,29 @@ static bool parse_item_heroic( item_t& item,
   return true;
 }
 
+// parse_item_heroic ========================================================
+
+static bool parse_item_armor_type( item_t& item,
+                                   xml_node_t* node )
+{
+  item.armory_armor_type_str.clear();
+
+  xml_node_t* equip_data = xml_t::get_node( node, "equipData" );
+
+  if ( equip_data )
+  {
+    if ( ! xml_t::get_value( item.armory_armor_type_str, equip_data, "subclassName/." ) ) return false;
+  }
+  else
+  {
+    return false;
+  }
+
+  armory_t::format( item.armory_armor_type_str );
+
+  return true;
+}
+
 // parse_item_stats =========================================================
 
 static bool parse_item_stats( item_t& item,
@@ -265,7 +288,6 @@ static bool parse_item_stats( item_t& item,
 
   if ( xml_t::get_value( value, xml, "bonusAttackPower/."      ) ) s += "_" + value + "ap";
   if ( xml_t::get_value( value, xml, "bonusExpertiseRating/."  ) ) s += "_" + value + "exp";
-  if ( xml_t::get_value( value, xml, "bonusArmorPenetration/." ) ) s += "_" + value + "arpen";
 
   if ( xml_t::get_value( value, xml, "bonusHitRating/."   ) ) s += "_" + value + "hit";
   if ( xml_t::get_value( value, xml, "bonusCritRating/."  ) ) s += "_" + value + "crit";
@@ -303,6 +325,20 @@ static bool parse_item_stats( item_t& item,
 
   if ( item.sim -> debug && ! s.empty() )
     log_t::output( item.sim, "%s %s %s armory_stats=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
+
+  return true;
+}
+
+// parse_item_reforge =========================================================
+
+static bool parse_item_reforge( item_t& item,
+                              xml_node_t* xml )
+{
+  item.armory_reforge_str.clear();
+
+  // TO-DO
+
+  armory_t::format( item.armory_reforge_str );
 
   return true;
 }
@@ -392,9 +428,16 @@ static bool parse_item_enchant( item_t& item,
   {
     std::string& s = item.armory_enchant_str;
 
-    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave";  }
-    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow";    }
-    else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_pyrorocket";  }
+    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave_embroidery_2";   }
+    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow_embroidery_2";     }
+    else if ( enchant == "Swordguard Embroidery"    ) { s += "_swordguard_embroidery_2"; }
+    else if ( enchant == "Avalanche"                ) { s += "_avalanche";   }
+    else if ( enchant == "Elemental Slayer"         ) { s += "_elemental_slayer"; }
+    else if ( enchant == "Hurricane"                ) { s += "_hurricane";   }
+    else if ( enchant == "Landslide"                ) { s += "_landslide";   }
+    else if ( enchant == "Power Torrent"            ) { s += "_power_torrent"; }
+    else if ( enchant == "Windwalk"                 ) { s += "_windwalk";    }
+    else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_hand_mounted_pyro_rocket";  }
     else if ( enchant == "Berserking"               ) { s += "_berserking";  }
     else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
     else if ( enchant == "Executioner"              ) { s += "_executioner"; }
@@ -412,6 +455,53 @@ static bool parse_item_enchant( item_t& item,
 
     if ( item.sim -> debug && ! s.empty() )
       log_t::output( item.sim, "%s %s %s armory_enchant=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
+  }
+
+  return true;
+}
+
+// parse_item_enchant =======================================================
+
+static bool parse_item_addon( item_t& item,
+                                xml_node_t* xml )
+{
+  item.armory_addon_str.clear();
+
+  std::string enchant;
+
+  // TO-DO: support when armory updated
+
+  if ( xml_t::get_value( enchant, xml, "addon/." ) )  
+  {
+    std::string& s = item.armory_addon_str;
+
+    if      ( enchant == "Lightweave Embroidery"    ) { s += "_lightweave_embroidery_2";   }
+    else if ( enchant == "Darkglow Embroidery"      ) { s += "_darkglow_embroidery_2";     }
+    else if ( enchant == "Swordguard Embroidery"    ) { s += "_swordguard_embroidery_2"; }
+    else if ( enchant == "Avalanche"                ) { s += "_avalanche";   }
+    else if ( enchant == "Elemental Slayer"         ) { s += "_elemental_slayer"; }
+    else if ( enchant == "Hurricane"                ) { s += "_hurricane";   }
+    else if ( enchant == "Landslide"                ) { s += "_landslide";   }
+    else if ( enchant == "Power Torrent"            ) { s += "_power_torrent"; }
+    else if ( enchant == "Windwalk"                 ) { s += "_windwalk";    }
+    else if ( enchant == "Hand-Mounted Pyro Rocket" ) { s += "_hand_mounted_pyro_rocket";  }
+    else if ( enchant == "Berserking"               ) { s += "_berserking";  }
+    else if ( enchant == "Mongoose"                 ) { s += "_mongoose";    }
+    else if ( enchant == "Executioner"              ) { s += "_executioner"; }
+    else if ( enchant == "Spellsurge"               ) { s += "_spellsurge";  }
+    else
+    {
+      armory_t::fuzzy_stats( s, enchant );
+    }
+
+    if ( ! s.empty() )
+    {
+      s.erase( 0, 1 );
+      armory_t::format( s );
+    }
+
+    if ( item.sim -> debug && ! s.empty() )
+      log_t::output( item.sim, "%s %s %s armory_addon=%s", item.player -> name(), item.slot_name(), item.name(), s.c_str() );
   }
 
   return true;
@@ -500,42 +590,127 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 
   stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
   stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
-  stat_search( encoding_str, splits, STAT_ARMOR_PENETRATION_RATING, "armor penetration rating" );
 
-  stat_search( encoding_str, splits, STAT_HASTE_RATING, "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,   "hit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,  "crit rating" );
+  stat_search( encoding_str, splits, STAT_HASTE_RATING,         "haste rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,           "ranged hit rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,           "hit rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "ranged critical strike" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "critical strike rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "crit rating" );
+  stat_search( encoding_str, splits, STAT_MASTERY_RATING,       "mastery rating" );
 
   stat_search( encoding_str, splits, STAT_BONUS_ARMOR,    "armor !penetration" );
-  stat_search( encoding_str, splits, STAT_DEFENSE_RATING, "defense rating" );
   stat_search( encoding_str, splits, STAT_DODGE_RATING,   "dodge rating" );
   stat_search( encoding_str, splits, STAT_PARRY_RATING,   "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_VALUE,    "block value of your shield" );
+  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block_rating" );
 }
 
 // armory_t::parse_meta_gem =================================================
 
 int armory_t::parse_meta_gem( const std::string& description )
 {
-  if ( description == "+32 Stamina and 2% Increased Armor Value from Items"         ) return META_AUSTERE_EARTHSIEGE;
-  if ( description == "+21 Critical Strike Rating and +2% Mana"                     ) return META_BEAMING_EARTHSIEGE;
-  if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFLARE;
-  if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage" ) return META_CHAOTIC_SKYFIRE;
-  if ( description == "+25 Spell Power and +2% Intellect"                           ) return META_EMBER_SKYFLARE;
-  if ( description == "+21 Defense Rating and +5% Shield Block Value"               ) return META_ETERNAL_EARTHSIEGE;
-  if ( description == "+21 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSIEGE;
-  if ( description == "+12 Intellect and Chance to restore mana on spellcast"       ) return META_INSIGHTFUL_EARTHSTORM;
-  if ( description == "+21 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSIEGE;
-  if ( description == "+12 Agility and 3% Increased Critical Damage"                ) return META_RELENTLESS_EARTHSTORM;
-  if ( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFLARE;
-  if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_STARFLARE;
-  if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration"  ) return META_ENIGMATIC_SKYFIRE;
+  if ( description == "+54 Agility and 3% Increased Critical Damage"                      ) return META_AGILE_SHADOWSPIRIT;
+  if ( description == "+32 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_EARTHSIEGE;
+  if ( description == "+81 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and +2% Mana"                           ) return META_BEAMING_EARTHSIEGE;
+  if ( description == "+21 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSIEGE;
+  if ( description == "+12 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSTORM;
+  if ( description == "+54 Intellect and +2% Reduced Threat"                              ) return META_BRACING_SHADOWSPIRIT;
+  if ( description == "+54 Intellect and 3% Increased Critical Damage"                    ) return META_BURNING_SHADOWSPIRIT;
+  if ( description == "+54 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFLARE;
+  if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFIRE;
+  if ( description == "+54 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SHADOWSPIRIT;
+  if ( description == "+14 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SKYFIRE;
+  if ( description == "+25 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SKYFLARE;
+  if ( description == "+81 Stamina and Reduce Spell Damage Taken by 2%"                   ) return META_EFFULGENT_SHADOWSPIRIT;
+  if ( description == "+54 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SHADOWSPIRIT;
+  if ( description == "+12 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SKYFIRE;
+  if ( description == "+21 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SKYFLARE;
+  if ( description == "+54 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_STARFLARE;
+  if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFIRE;
+  if ( description == "+21 Dodge Rating and +1% Shield Block Value"                       ) return META_ETERNAL_EARTHSIEGE;
+  if ( description == "+81 Stamina and +5% Shield Block Value"                            ) return META_ETERNAL_SHADOWSPIRIT;
+  if ( description == "+54 Mastery Rating and Minor Run Speed Increase"                   ) return META_FLEET_SHADOWSPIRIT;
+  if ( description == "+54 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SHADOWSPIRIT;
+  if ( description == "+21 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SKYFLARE;
+  if ( description == "+17 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_STARFLARE;
+  if ( description == "+54 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_SHADOWSPIRIT;
+  if ( description == "+21 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_STARFLARE;
+  if ( description == "+21 Intellect and Chance to restore mana on spellcast"             ) return META_INSIGHTFUL_EARTHSIEGE;
+  if ( description == "+12 Intellect and Chance to restore mana on spellcast"             ) return META_INSIGHTFUL_EARTHSTORM;
+  if ( description == "+21 Haste Rating and Sometimes Heal on Your Crits"                 ) return META_INVIGORATING_EARTHSIEGE;
+  if ( description == "+21 Agility and 3% Increased Critical Damage"                      ) return META_RELENTLESS_EARTHSIEGE;
+  if ( description == "+12 Agility and 3% Increased Critical Damage"                      ) return META_RELENTLESS_EARTHSTORM;
+  if ( description == "+21 Critical Strike Rating and Stun Duration Reduced by 10%"       ) return META_PERSISTENT_EARTHSIEGE;
+  if ( description == "+17 Critical Strike Rating and Stun Duration Reduced by 10%"       ) return META_PERSISTENT_EARTHSHATTER;
+  if ( description == "+32 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSIEGE;
+  if ( description == "+26 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSHATTER;
+  if ( description == "+18 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSTORM;
+  if ( description == "+81 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_SHADOWSPIRIT;
+  if ( description == "+81 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SHADOWSPIRIT;
+  if ( description == "+54 Strength and 3% Increased Critical Damage"                     ) return META_REVERBERATING_SHADOWSPIRIT;
+  if ( description == "+22 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SKYFLARE;
+  if ( description == "+12 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFIRE;
+  if ( description == "+21 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFLARE;
+  if ( description == "+17 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_STARFLARE;
+  if ( description == "Chance to Increase Melee/Ranged Attack Speed"                      ) return META_THUNDERING_SKYFLARE; //FIXME: Assuming the best one for now, since there's no way to tell by just the description
+  if ( description == "+17 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_STARFLARE;
+  if ( description == "+21 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_SKYFLARE;
+  if ( description == "+21 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSIEGE;
+  if ( description == "+17 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSHATTER;
 
   return META_GEM_NONE;
+}
+
+// armory_t::download_servers ===============================================
+
+int armory_t::download_servers( std::vector<std::string>& servers,
+                                const std::string& region )
+{
+  servers.clear();
+
+  return servers.size();
+}
+
+// armory_t::download_guild =================================================
+
+int armory_t::download_guild( std::vector<std::string>& character_names,
+                              const std::string& region,
+                              const std::string& server,
+                              const std::string& name )
+{
+  // http://us.battle.net/wow/en/guild/llane/wicked%20legion/roster
+
+  std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
+
+  xml_node_t* guild_info = xml_t::download( NULL, url, "</members>", -1 );
+  if ( ! guild_info ) return 0;
+
+  xml_node_t* members = xml_t::get_node( guild_info, "members" );
+  if ( ! members ) return 0;
+
+  std::vector<xml_node_t*> characters;
+  int num_characters = xml_t::get_nodes( characters, members, "character" );
+  for ( int i=0; i < num_characters; i++ )
+  {
+    std::string character_name;
+    int character_level;
+
+    if ( xml_t::get_value( character_name,  characters[ i ], "name"  ) &&
+         xml_t::get_value( character_level, characters[ i ], "level" ) )
+    {
+      if ( character_level < 80 )
+        continue;
+
+      character_names.push_back( character_name );
+    }
+  }
+
+  return character_names.size();
 }
 
 // armory_t::download_guild =================================================
@@ -549,20 +724,14 @@ bool armory_t::download_guild( sim_t* sim,
                                int max_rank,
                                int cache )
 {
-  std::string guild_name = name;
-  util_t::format_name( guild_name );
-
-  std::string formatted_guild_name = guild_name;
-  armory_t::format( formatted_guild_name, FORMAT_GUILD_NAME_MASK | FORMAT_ASCII_MASK );
-
-  std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + formatted_guild_name;
+  std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
   xml_node_t* guild_info = xml_t::download( sim, url, "</members>", ( cache ? 0 : -1 ), sim -> current_throttle );
   if ( ! guild_info )
   {
     sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
 
-    sim -> errorf( "Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
+    sim -> errorf( "Unable to download guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return false;
   }
   sim -> current_throttle = sim -> armory_throttle;
@@ -572,7 +741,7 @@ bool armory_t::download_guild( sim_t* sim,
   xml_node_t* members = xml_t::get_node( guild_info, "members" );
   if ( ! members )
   {
-    sim -> errorf( "Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), guild_name.c_str() );
+    sim -> errorf( "Unable to determine members for guild %s|%s|%s from the Armory.\n", region.c_str(), server.c_str(), name.c_str() );
     return false;
   }
 
@@ -606,8 +775,6 @@ bool armory_t::download_guild( sim_t* sim,
         if ( player_filter != player_type )
           continue;
 
-      armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-
       character_names.push_back( character_name );
     }
   }
@@ -622,7 +789,7 @@ bool armory_t::download_guild( sim_t* sim,
       std::string& character_name = character_names[ i ];
       std::string  formatted_name = character_name;
 
-      util_t::format_name( formatted_name );
+      util_t::format_text( formatted_name, sim -> input_is_utf8 );
 
       sim -> errorf( "Downloading character: %s\n", formatted_name.c_str() );
       player_t* p = armory_t::download_player( sim, region, server, character_name, "active", cache );
@@ -663,11 +830,8 @@ player_t* armory_t::download_player( sim_t* sim,
   sim -> current_slot = 0;
   sim -> current_name = name;
 
-  std::string temp_name = name;
-  armory_t::format( temp_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
-
-  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, temp_name, cache );
-  xml_node_t* talents_xml = download_character_talents( sim, region, server, temp_name, cache );
+  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name, cache );
+  xml_node_t* talents_xml = download_character_talents( sim, region, server, name, cache );
 
   if ( ! sheet_xml || ! talents_xml )
   {
@@ -686,27 +850,25 @@ player_t* armory_t::download_player( sim_t* sim,
        )
   {
     sim -> errorf( "Unable to determine class/name/level/race from armory xml for %s|%s|%s.\n",
-		   region.c_str(), server.c_str(), name.c_str() );
+                   region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
   armory_t::format( type_str );
-  armory_t::format( name_str, FORMAT_CHAR_NAME_MASK | FORMAT_UTF8_MASK );
-  util_t::format_name( name_str );
   armory_t::format( race_str );
 
-  int race_type = util_t::parse_race_type( race_str );
+  race_type r = util_t::parse_race_type( race_str );
 
   if( ! talents_description.empty() && ( talents_description != "active" ) )
   {
     name_str += "_" + talents_description;
   }
 
-  player_t* p = player_t::create( sim, type_str, name_str, race_type );
+  player_t* p = player_t::create( sim, type_str, name_str, r );
   sim -> active_player = p;
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from armory %s|%s|%s.\n",
-		   type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
+                   type_str.c_str(), name_str.c_str(), region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -714,7 +876,7 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> region_str = region;
   p -> server_str = server;
 
-  std::string temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + temp_name;
+  std::string temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
   http_t::format( p -> origin_str, temp_origin_str );
 
   std::string last_modified;
@@ -803,7 +965,9 @@ player_t* armory_t::download_player( sim_t* sim,
         sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
         return 0;
       }
-      p -> talents_str = "http://www.wowarmory.com/talent-calc.xml?cid=" + cid_str + "&tal=" + talents_encoding;
+      p -> talents_str = "http://www.wowhead.com/talent#";
+      p -> talents_str += util_t::player_type_string( p -> type );
+      p -> talents_str += "-" + talents_encoding;
 
       p -> glyphs_str = "";
       std::vector<xml_node_t*> glyph_nodes;
@@ -846,13 +1010,13 @@ player_t* armory_t::download_player( sim_t* sim,
 
       bool success = false;
 
-      std::string enchant_id, gem_ids[ 3 ];
+      std::string enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
       if ( xml_t::get_value( enchant_id,   item_nodes[ i ], "permanentenchant" ) &&
            xml_t::get_value( gem_ids[ 0 ], item_nodes[ i ], "gem0Id"           ) &&
            xml_t::get_value( gem_ids[ 1 ], item_nodes[ i ], "gem1Id"           ) &&
            xml_t::get_value( gem_ids[ 2 ], item_nodes[ i ], "gem2Id"           ) )
       {
-        success = item_t::download_slot( item, id_str, enchant_id, gem_ids );
+        success = item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
       }
 
       if ( ! success )
@@ -865,7 +1029,7 @@ player_t* armory_t::download_player( sim_t* sim,
     else return 0;
   }
 
-  if ( p ) p -> armory( sheet_xml, talents_xml );
+  p -> armory_extensions( region, server, name );
 
   return p;
 }
@@ -898,9 +1062,21 @@ bool armory_t::download_slot( item_t& item,
     return false;
   }
 
+  if ( ! parse_item_armor_type( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse armor type for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, slot_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_reforge( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse reforge for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -913,6 +1089,12 @@ bool armory_t::download_slot( item_t& item,
   if ( ! parse_item_enchant( item, slot_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_addon( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse addon for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -953,6 +1135,12 @@ bool armory_t::download_item( item_t& item,
     return false;
   }
 
+  if ( ! parse_item_armor_type( item, item_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse armor type for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, item_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse stats for item \"%s\" at slot %s.\n", p -> name(), item.name(), item.slot_name() );
@@ -979,10 +1167,10 @@ std::string& armory_t::format( std::string& name, int format_type )
   switch ( format_type & FORMAT_CONVERT_MASK )
   {
   case FORMAT_UTF8_MASK:
-    util_t::utf8_binary_to_hex( name );
+    util_t::urlencode( name );
     break;
   case FORMAT_ASCII_MASK:
-    util_t::ascii_binary_to_utf8_hex( name );
+    util_t::str_to_utf8( name );
     break;
   }
 

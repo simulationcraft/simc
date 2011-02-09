@@ -13,6 +13,7 @@ struct token_t
   std::string full;
   std::string name;
   double value;
+  std::string value_str;
 };
 
 // parse_tokens =============================================================
@@ -40,7 +41,8 @@ static int parse_tokens( std::vector<token_t>& tokens,
     else
     {
       t.name = t.full.substr( index );
-      t.value = atof( t.full.substr( 0, index ).c_str() );
+      t.value_str = t.full.substr( 0, index );
+      t.value = atof( t.value_str.c_str() );
     }
   }
 
@@ -100,7 +102,9 @@ static int parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-    sim(p->sim), player(p), slot(SLOT_NONE), unique(false), unique_enchant(false), is_heroic( false ), options_str(o)
+    sim(p->sim), player(p), slot(SLOT_NONE), quality( 0 ), ilevel( 0 ), unique(false), unique_enchant(false), unique_addon( false ), is_heroic( false ), is_matching_type( false ), 
+    is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
+    options_str(o)
 {
 }
 
@@ -121,6 +125,22 @@ bool item_t::heroic() SC_CONST
   return is_heroic;
 }
 
+// item_t::matching_type ===========================================================
+
+bool item_t::matching_type()
+{
+  if ( slot == SLOT_NONE ) return false;
+  return is_matching_type;
+}
+
+// item_t::reforged ===========================================================
+
+bool item_t::reforged() SC_CONST
+{
+  if ( slot == SLOT_NONE ) return false;
+  return is_reforged;
+}
+
 // item_t::name =============================================================
 
 const char* item_t::name() SC_CONST
@@ -135,6 +155,13 @@ const char* item_t::name() SC_CONST
 const char* item_t::slot_name() SC_CONST
 {
   return util_t::slot_type_string( slot );
+}
+
+// item_t::slot_name ========================================================
+
+const char* item_t::armor_type()
+{
+  return util_t::armor_type_string( player -> type, slot );
 }
 
 // item_t::weapon ===========================================================
@@ -166,28 +193,40 @@ bool item_t::parse_options()
 
   option_t options[] =
   {
-    { "id",      OPT_STRING, &option_id_str      },
-    { "stats",   OPT_STRING, &option_stats_str   },
-    { "gems",    OPT_STRING, &option_gems_str    },
-    { "enchant", OPT_STRING, &option_enchant_str },
-    { "equip",   OPT_STRING, &option_equip_str   },
-    { "use",     OPT_STRING, &option_use_str     },
-    { "weapon",  OPT_STRING, &option_weapon_str  },
-    { "heroic",  OPT_STRING, &option_heroic_str  },
+    { "id",      OPT_STRING, &option_id_str            },
+    { "stats",   OPT_STRING, &option_stats_str         },
+    { "gems",    OPT_STRING, &option_gems_str          },
+    { "enchant", OPT_STRING, &option_enchant_str       },
+    { "addon",   OPT_STRING, &option_addon_str         },
+    { "equip",   OPT_STRING, &option_equip_str         },
+    { "use",     OPT_STRING, &option_use_str           },
+    { "weapon",  OPT_STRING, &option_weapon_str        },
+    { "heroic",  OPT_STRING, &option_heroic_str        },
+    { "type",    OPT_STRING, &option_armor_type_str    },
+    { "reforge", OPT_STRING, &option_reforge_str       },
+    { "suffix",  OPT_STRING, &option_random_suffix_str },
+    { "ilevel",  OPT_STRING, &option_ilevel_str        },
+    { "quality", OPT_STRING, &option_quality_str       },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
   option_t::parse( sim, option_name_str.c_str(), options, remainder );
 
-  armory_t::format( option_name_str    );
-  armory_t::format( option_id_str      );
-  armory_t::format( option_stats_str   );
-  armory_t::format( option_gems_str    );
-  armory_t::format( option_enchant_str );
-  armory_t::format( option_equip_str   );
-  armory_t::format( option_use_str     );
-  armory_t::format( option_weapon_str  );
-  armory_t::format( option_heroic_str  );
+  armory_t::format( option_name_str          );
+  armory_t::format( option_id_str            );
+  armory_t::format( option_stats_str         );
+  armory_t::format( option_gems_str          );
+  armory_t::format( option_enchant_str       );
+  armory_t::format( option_addon_str         );
+  armory_t::format( option_equip_str         );
+  armory_t::format( option_use_str           );
+  armory_t::format( option_weapon_str        );
+  armory_t::format( option_heroic_str        );
+  armory_t::format( option_armor_type_str    );
+  armory_t::format( option_reforge_str       );
+  armory_t::format( option_random_suffix_str );
+  armory_t::format( option_ilevel_str        );
+  armory_t::format( option_quality_str       );
 
   return true;
 }
@@ -202,13 +241,19 @@ void item_t::encode_options()
 
   o = encoded_name_str;
 
-  if ( heroic() )                      { o += ",heroic=1";                           }
-  if ( ! encoded_stats_str.empty()   ) { o += ",stats=";   o += encoded_stats_str;   }
-  if ( ! encoded_gems_str.empty()    ) { o += ",gems=";    o += encoded_gems_str;    }
-  if ( ! encoded_enchant_str.empty() ) { o += ",enchant="; o += encoded_enchant_str; }
-  if ( ! encoded_equip_str.empty()   ) { o += ",equip=";   o += encoded_equip_str;   }
-  if ( ! encoded_use_str.empty()     ) { o += ",use=";     o += encoded_use_str;     }
-  if ( ! encoded_weapon_str.empty()  ) { o += ",weapon=";  o += encoded_weapon_str;  }
+  if ( heroic() )                            { o += ",heroic=1";                                 }
+  if ( armor_type() )                        { o += ",type=";    o += encoded_armor_type_str;    }
+  if ( ! encoded_ilevel_str.empty()        ) { o += ",ilevel=";  o += encoded_ilevel_str;        }
+  if ( ! encoded_quality_str.empty()       ) { o += ",quality="; o += encoded_quality_str;       }
+  if ( ! encoded_stats_str.empty()         ) { o += ",stats=";   o += encoded_stats_str;         }
+  if ( ! encoded_reforge_str.empty()       ) { o += ",reforge="; o += encoded_reforge_str;       }
+  if ( ! encoded_gems_str.empty()          ) { o += ",gems=";    o += encoded_gems_str;          }
+  if ( ! encoded_enchant_str.empty()       ) { o += ",enchant="; o += encoded_enchant_str;       }
+  if ( ! encoded_addon_str.empty()         ) { o += ",addon=";   o += encoded_addon_str;         }
+  if ( ! encoded_equip_str.empty()         ) { o += ",equip=";   o += encoded_equip_str;         }
+  if ( ! encoded_use_str.empty()           ) { o += ",use=";     o += encoded_use_str;           }
+  if ( ! encoded_weapon_str.empty()        ) { o += ",weapon=";  o += encoded_weapon_str;        }
+  if ( ! encoded_random_suffix_str.empty() ) { o += ",suffix=";  o += encoded_random_suffix_str; }
 }
 
 // item_t::init =============================================================
@@ -231,7 +276,7 @@ bool item_t::init()
     if ( encoded_name_str != armory_name_str )
     {
       sim -> errorf( "Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
-		     player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
+                     player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
 
       encoded_name_str = armory_name_str;
     }
@@ -240,32 +285,55 @@ bool item_t::init()
   if( encoded_name_str != "empty" &&
       encoded_name_str != "none" )
   {
-    id_str              = armory_id_str;
-    encoded_stats_str   = armory_stats_str;
-    encoded_gems_str    = armory_gems_str;
-    encoded_enchant_str = armory_enchant_str;
-    encoded_weapon_str  = armory_weapon_str;
-    encoded_heroic_str  = armory_heroic_str;
+    id_str                    = armory_id_str;
+    encoded_stats_str         = armory_stats_str;
+    encoded_reforge_str       = armory_reforge_str;
+    encoded_gems_str          = armory_gems_str;
+    encoded_enchant_str       = armory_enchant_str;
+    encoded_addon_str         = armory_addon_str;
+    encoded_weapon_str        = armory_weapon_str;
+    encoded_heroic_str        = armory_heroic_str;
+    encoded_armor_type_str    = armory_armor_type_str;
+    encoded_ilevel_str        = armory_ilevel_str;
+    encoded_quality_str       = armory_quality_str;
+    encoded_random_suffix_str = armory_random_suffix_str;
   }
 
   if ( ! option_heroic_str.empty()  ) encoded_heroic_str  = option_heroic_str;
 
   if ( ! decode_heroic()  ) return false;
 
+  if ( ! option_armor_type_str.empty() ) encoded_armor_type_str = option_armor_type_str;
+
+  if ( ! decode_armor_type() ) return false;
+  
+  if ( ! option_ilevel_str.empty() ) encoded_ilevel_str = option_ilevel_str;
+  
+  if ( ! decode_ilevel() ) return false;
+
+  if ( ! option_quality_str.empty() ) encoded_quality_str = option_quality_str;
+  
+  if ( ! decode_quality() ) return false;
+
   unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), id_str );
   unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), id_str );
 
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
+  if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
   if ( ! option_gems_str.empty()    ) encoded_gems_str    = option_gems_str;
   if ( ! option_enchant_str.empty() ) encoded_enchant_str = option_enchant_str;
+  if ( ! option_addon_str.empty()   ) encoded_addon_str   = option_addon_str;
   if ( ! option_weapon_str.empty()  ) encoded_weapon_str  = option_weapon_str;
+  if ( ! option_random_suffix_str.empty() ) encoded_random_suffix_str = option_random_suffix_str;
 
 
-  if ( ! decode_stats()   ) return false;
-  if ( ! decode_gems()    ) return false;
-  if ( ! decode_enchant() ) return false;
-  if ( ! decode_weapon()  ) return false;
-  if ( ! decode_heroic()  ) return false;
+  if ( ! decode_stats()         ) return false;
+  if ( ! decode_gems()          ) return false;
+  if ( ! decode_enchant()       ) return false;
+  if ( ! decode_addon()         ) return false;
+  if ( ! decode_weapon()        ) return false;
+  if ( ! decode_random_suffix() ) return false;
+  if ( ! decode_reforge()       ) return false;
 
   if ( ! option_equip_str.empty() ) encoded_equip_str = option_equip_str;
   if ( ! option_use_str.empty()   ) encoded_use_str   = option_use_str;
@@ -284,6 +352,66 @@ bool item_t::decode_heroic()
 {
   is_heroic = ! ( encoded_heroic_str.empty() || ( encoded_heroic_str == "0" ) || ( encoded_heroic_str == "no" ) );
 
+  return true;
+}
+
+// item_t::decode_heroic ====================================================
+
+bool item_t::decode_armor_type()
+{
+  // Cloth classes don't actually check the gear. They just get their bonus even if naked.
+  switch ( player -> type )
+  {
+    case MAGE:
+    case PRIEST:
+    case WARLOCK:
+      is_matching_type = true;
+      return true;
+    default:
+      break;
+  }
+  if( encoded_name_str == "empty" ||
+      encoded_name_str == "none"  ||
+      encoded_name_str == "" )
+  {
+    is_matching_type = armor_type() == NULL;
+  }
+  else
+  {
+    is_matching_type = encoded_armor_type_str.empty() || ( armor_type() == NULL ) || ( armor_type() == encoded_armor_type_str );
+  }
+
+  return true;
+}
+
+// item_t::decode_ilevel ====================================================
+
+bool item_t::decode_ilevel()
+{
+  if ( encoded_ilevel_str.empty() ) return true;
+
+  long ilvl = strtol( encoded_ilevel_str.c_str(), 0, 10 );
+  
+  if ( ilvl < 1 || ilvl == std::numeric_limits<long>::max() ) return false;
+  
+  ilevel = ilvl;
+  
+  return true;
+}
+
+// item_t::decode_quality ===================================================
+
+bool item_t::decode_quality()
+{
+  if ( encoded_quality_str.empty() ) return true;
+  
+  if ( encoded_quality_str == "epic" )
+    quality = 4;
+  else if ( encoded_quality_str == "rare" )
+    quality = 3;
+  else if ( encoded_quality_str == "uncommon" )
+    quality = 2;
+  
   return true;
 }
 
@@ -320,6 +448,7 @@ bool item_t::decode_stats()
           s = STAT_BONUS_ARMOR;
         }
       }
+      base_stats.add_stat( s, t.value );
       stats.add_stat( s, t.value );
     }
     else
@@ -329,6 +458,177 @@ bool item_t::decode_stats()
     }
   }
 
+  return true;
+}
+
+// item_t::decode_reforge =====================================================
+
+bool item_t::decode_reforge()
+{
+  is_reforged = false;
+
+  if ( encoded_reforge_str == "none" ) return true;
+
+  std::vector<token_t> tokens;
+  int num_tokens = parse_tokens( tokens, encoded_reforge_str );
+
+  if ( num_tokens <= 0 )
+    return true;
+
+  if ( num_tokens != 2 )
+  {
+    sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    return false;
+  }
+
+  stat_type s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
+  stat_type s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
+  if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
+  {
+    sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", 
+                   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    return false;
+  }
+  if ( base_stats.get_stat( s1 ) <= 0.0 )
+  {
+    sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s does not have source stat on item.\n", 
+                   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    return false;
+  }
+  if ( base_stats.get_stat( s2 ) > 0.0 )
+  {
+    sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s already has target stat on item.\n", 
+                   player -> name(), encoded_reforge_str.c_str(), slot_name() );
+    return false;
+  }
+
+  reforged_from = s1;
+  reforged_to   = s2;
+
+  double amount = floor( base_stats.get_stat( reforged_from ) * 0.4 );
+  stats.add_stat( reforged_from, -amount );
+  stats.add_stat( reforged_to,    amount );
+
+  is_reforged   = true;
+  return true;
+}
+
+// item_t::decode_random_suffix =============================================
+
+bool item_t::decode_random_suffix()
+{
+  long                               rsid; 
+  const random_suffix_data_t* suffix_data = 0;
+  const random_prop_data_t*   ilevel_data = 0;
+  const item_enchantment_data_t* enchant_data = 0;
+  int                                   f = random_suffix_type();
+  unsigned                     enchant_id;
+  double                      stat_amount;
+  std::vector<std::string>      stat_list;
+
+  if ( encoded_random_suffix_str.empty() || encoded_random_suffix_str == "" || 
+       encoded_random_suffix_str == "none"  || encoded_random_suffix_str == "0" )
+    return true;
+    
+  // We need the ilevel/quality data, otherwise we cannot figure out
+  // the random suffix point allocation.
+  if ( ilevel == 0 || quality == 0 )
+  {
+    sim -> errorf( "Player %s with random suffix at slot %s requires both ilevel= and quality= information.\n", player -> name(), slot_name() );
+    return true;
+  }
+
+  rsid = abs( strtol( encoded_random_suffix_str.c_str(), 0, 10 ) );
+  ilevel_data = sim -> sim_data.find_rand_property_data( ilevel );
+  suffix_data = sim -> sim_data.find_random_suffix( rsid );
+  
+  if ( ! ilevel_data || ! suffix_data )
+  {
+    sim -> errorf( "Player %s unable to decode random suffix at slot %s due to missing DBC data.\n", player -> name(), slot_name() );
+    return true;
+  }
+
+  if ( sim -> debug )
+  {
+    log_t::output( sim, "random_suffix: item=%s suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
+                   name(), rsid, ilevel, quality, f );
+  }
+  
+  for ( int i = 0; i < 5; i++ )
+  {
+    if ( ! ( enchant_id = suffix_data -> enchant_id[ i ] ) )
+      continue;
+    
+    if ( ! ( enchant_data = sim -> sim_data.find_item_enchantment( enchant_id ) ) )
+      continue;
+
+    // Calculate amount of points
+    if ( quality == 4 ) // Epic
+      stat_amount = ilevel_data -> p_epic[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+    else if ( quality == 3 ) // Rare
+      stat_amount = ilevel_data -> p_rare[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+    else if ( quality == 2 ) // Uncommon
+      stat_amount = ilevel_data -> p_uncommon[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+    else // Impossible choices, so bogus data, skip
+      continue;
+
+    // Loop through enchantment stats, adding valid ones to the stats of the item.
+    // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
+    for ( int j = 0; j < 3; j++ )
+    {
+      if ( enchant_data -> attr_type[ j ] == 0 ) continue;
+
+      stat_type stat = util_t::translate_item_mod( enchant_data -> attr_type[ j ] );
+
+      if ( stat == STAT_NONE ) continue;
+      
+      // Make absolutely sure we do not add stats twice
+      if ( base_stats.get_stat( stat ) == 0 )
+      {
+        base_stats.add_stat( stat, static_cast< int >( stat_amount ) );
+        stats.add_stat( stat, static_cast< int >( stat_amount ) );
+        
+        std::string stat_str = util_t::stat_type_abbrev( stat );
+        stat_str = tolower( stat_str );
+        char statbuf[32];
+        snprintf( statbuf, sizeof( statbuf ), "%d%s", static_cast< int >( stat_amount ), stat_str.c_str() );
+        stat_list.push_back( statbuf );
+      
+        if ( sim -> debug ) 
+          log_t::output( sim, "random_suffix: stat=%d (%s) stat_amount=%f", stat, stat_str.c_str(), stat_amount );
+      }
+      else
+      {
+        if ( sim -> debug )
+        {
+          log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d twice, due to random suffix.", 
+            player -> name(), name(), stat );
+        }
+      }
+    }
+  }
+  
+  // Append random suffix to name only if it's not "hardcoded"
+  if ( option_name_str.empty() )
+  {
+    std::string name_str = suffix_data -> suffix;
+    encoded_name_str += "_" + armory_t::format( name_str );
+  }
+  
+  // Append stats to the existing encoded stats string, as 
+  // a simple suffix will not tell the user anything about 
+  // the item
+  if ( ! encoded_stats_str.empty() && stat_list.size() > 0 )
+    encoded_stats_str += "_";
+  
+  for ( unsigned i = 0; i < stat_list.size(); i++ )
+  {
+    encoded_stats_str += stat_list[ i ];
+    
+    if ( i < stat_list.size() - 1 )
+      encoded_stats_str += "_";
+  }
+  
   return true;
 }
 
@@ -383,38 +683,32 @@ bool item_t::decode_enchant()
 {
   if ( encoded_enchant_str == "none" ) return true;
 
-  if( encoded_enchant_str == "berserking"  ||
-      encoded_enchant_str == "executioner" ||
-      encoded_enchant_str == "mongoose"    ||
-      encoded_enchant_str == "spellsurge"  ) 
+  if( encoded_enchant_str == "berserking"       ||
+      encoded_enchant_str == "executioner"      ||
+      encoded_enchant_str == "mongoose"         ||
+      encoded_enchant_str == "avalanche"        ||
+      encoded_enchant_str == "elemental_slayer" ||
+      encoded_enchant_str == "hurricane"        ||
+      encoded_enchant_str == "landslide"        ||
+      encoded_enchant_str == "power_torrent"    ||
+      encoded_enchant_str == "windwalk"         ||
+      encoded_enchant_str == "spellsurge"       ||
+      encoded_enchant_str == "gnomish_xray"      )
   {
     unique_enchant = true;
     return true;
   }
 
-  std::string hidden_str;
-  if( unique_gear_t::get_hidden_encoding( hidden_str, encoded_enchant_str, heroic() ) )
+  if ( encoded_enchant_str == "lightweave_embroidery" ||
+       encoded_enchant_str == "lightweave_embroidery_old" ||
+       encoded_enchant_str == "lightweave" ||
+       encoded_enchant_str == "lightweave_old" ||
+       encoded_enchant_str == "swordguard_embroidery" ||
+       encoded_enchant_str == "swordguard_embroidery_old" ||
+       encoded_enchant_str == "darkglow_embroidery" ||
+       encoded_enchant_str == "darkglow_embroidery_old" )
   {
-    std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, hidden_str );
-
-    for ( int i=0; i < num_tokens; i++ )
-    {
-      token_t& t = tokens[ i ];
-      int s;
-
-      if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
-      {
-        stats.add_stat( s, t.value );
-      }
-      else
-      {
-        sim -> errorf( "Player %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-        return false;
-      }
-    }
-    unique_enchant = true;
-    enchant.name_str = encoded_enchant_str;
+    stats.add_stat( STAT_SPIRIT, 1 );
   }
 
   std::string use_str;
@@ -448,6 +742,56 @@ bool item_t::decode_enchant()
     else
     {
       sim -> errorf( "Player %s has unknown 'enchant=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      continue;
+    }
+  }
+
+  return true;
+}
+
+// item_t::decode_addon ===================================================
+
+bool item_t::decode_addon()
+{
+  if ( encoded_addon_str == "none" ) return true;
+
+  if( encoded_addon_str == "synapse_springs" )
+  {
+    unique_addon = true;
+    return true;
+  }
+
+  std::string use_str;
+  if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic() ) )
+  {
+    unique_addon = true;
+    use.name_str = encoded_addon_str;
+    return decode_special( use, use_str );
+  }
+
+  std::string equip_str;
+  if( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic() ) )
+  {
+    unique_addon = true;
+    addon.name_str = encoded_addon_str;
+    return decode_special( addon, equip_str );
+  }
+
+  std::vector<token_t> tokens;
+  int num_tokens = parse_tokens( tokens, encoded_addon_str );
+
+  for ( int i=0; i < num_tokens; i++ )
+  {
+    token_t& t = tokens[ i ];
+    int s;
+
+    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
+    {
+      stats.add_stat( s, t.value );
+    }
+    else
+    {
+      sim -> errorf( "Player %s has unknown 'addon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
       return false;
     }
   }
@@ -469,16 +813,24 @@ bool item_t::decode_special( special_effect_t& effect,
   {
     token_t& t = tokens[ i ];
     int s;
+    school_type sc;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       effect.stat = s;
-      effect.amount = t.value;
+      effect.stat_amount = t.value;
     }
-    else if ( ( s = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if ( ( sc = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
-      effect.school = s;
-      effect.amount = t.value;
+      effect.school = sc;
+      effect.discharge_amount = t.value;
+
+      std::vector<std::string> splits;
+      if( 2 == util_t::string_split( splits, t.value_str, "+" ) )
+      {
+              effect.discharge_amount  = atof( splits[ 0 ].c_str() );
+              effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
+      }
     }
     else if ( t.name == "stacks" || t.name == "stack" )
     {
@@ -566,67 +918,67 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_ARCANE);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_ARCANE);
     }
     else if ( t.full == "onbleeddamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_BLEED);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_BLEED);
     }
     else if ( t.full == "onchaosdamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_CHAOS);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_CHAOS);
     }
     else if ( t.full == "onfiredamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_FIRE);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FIRE);
     }
     else if ( t.full == "onfrostdamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_FROST);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FROST);
     }
     else if ( t.full == "onfrostfiredamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_FROSTFIRE);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FROSTFIRE);
     }
     else if ( t.full == "onholydamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_HOLY);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_HOLY);
     }
     else if ( t.full == "onnaturedamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_NATURE);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_NATURE);
     }
     else if ( t.full == "onphysicaldamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_PHYSICAL);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_PHYSICAL);
     }
     else if ( t.full == "onshadowdamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_SHADOW);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_SHADOW);
     }
     else if ( t.full == "ondraindamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = (1 << SCHOOL_DRAIN);
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_DRAIN);
     }
     else if ( t.full == "ontick" )
     {
@@ -735,6 +1087,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_ATTACK_DIRECT;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
+    else if ( t.full == "onharmfulcast" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_HARMFUL_CAST;
+      effect.trigger_mask = RESULT_ALL_MASK;
+    }
     else
     {
       sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
@@ -760,7 +1118,8 @@ bool item_t::decode_weapon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int type, school;
+    int type;
+    school_type school;
 
     if ( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {
@@ -842,33 +1201,39 @@ bool item_t::decode_weapon()
 
 // item_t::download_slot =============================================================
 
-bool item_t::download_slot( item_t& item, const std::string& item_id, const std::string& enchant_id, const std::string gem_ids[ 3 ] )
+bool item_t::download_slot( item_t& item, 
+                            const std::string& item_id, 
+                            const std::string& enchant_id, 
+                            const std::string& addon_id, 
+                            const std::string& reforge_id, 
+                            const std::string& rsuffix_id,
+                            const std::string gem_ids[ 3 ] )
 {
   player_t* p = item.player;
   bool success = false;
 
   // Check URL caches
-  success =      wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, 1 ) ||
-            mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 1 ) ||
+  success =      wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 ) ||
+            mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 ) ||
                   armory_t::download_slot( item, item_id, 1 );
 
   if ( success )
     return true;
 
-  success = wowhead_t::download_slot( item, item_id, enchant_id, gem_ids, 0 );
+  success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
 
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", 
-			p -> name(), item.slot_name() );
+                        p -> name(), item.slot_name() );
 
-    success = mmo_champion_t::download_slot( item, item_id, enchant_id, gem_ids, 0 );
+    success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
   }
 
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download slot '%s' info from mmo-champion.  Trying wowarmory....\n", 
-			p -> name(), item.slot_name() );
+                        p -> name(), item.slot_name() );
 
     success = armory_t::download_slot( item, item_id, 0 );
   }
@@ -895,14 +1260,14 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download item '%s' info from mmo-champion.  Trying wowhead....\n", 
-			p -> name(), item.name() );
+                        p -> name(), item.name() );
 
     success = wowhead_t::download_item( item, item_id, 0 );
   }
   if ( ! success )
   {
     item.sim -> errorf( "Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", 
-			p -> name(), item.name() );
+                        p -> name(), item.name() );
 
     success = armory_t::download_item( item, item_id, 0 );
   }
@@ -963,4 +1328,89 @@ int item_t::parse_gem( item_t&            item,
   gem_type = mmo_champion_t::parse_gem( item, gem_id, 0 );
 
   return gem_type;
+}
+
+// item_t::random_suffix_type ===========================================
+
+int item_t::random_suffix_type() SC_CONST
+{
+  int f = -1;
+  weapon_t* w;
+
+  if ( ( w = weapon() ) )
+  {
+    switch ( w -> type )
+    {
+      // Two-hand weapons use the first point allocation budget
+      case WEAPON_AXE_2H:
+      case WEAPON_MACE_2H:
+      case WEAPON_POLEARM:
+      case WEAPON_SWORD_2H:
+      case WEAPON_STAFF:
+      {
+        f = 0;
+        break;
+      }
+      // Various ranged types use the fifth point allocation budget
+      case WEAPON_BOW:
+      case WEAPON_CROSSBOW:
+      case WEAPON_GUN:
+      case WEAPON_THROWN:
+      case WEAPON_WAND:
+      {
+        f = 4;
+        break;
+      }
+      // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
+      default:
+      {
+        f = 3;
+        break;
+      }
+    }
+  }
+  // Armor handling goes by slot
+  else
+  {
+    switch ( slot )
+    {
+      case SLOT_HEAD:
+      case SLOT_CHEST:
+      case SLOT_LEGS:
+      {
+        f = 0;
+        break;
+      }
+      case SLOT_SHOULDERS:
+      case SLOT_WAIST:
+      case SLOT_FEET:
+      case SLOT_HANDS:
+      case SLOT_TRINKET_1:
+      case SLOT_TRINKET_2:
+      {
+        f = 1;
+        break;
+      }
+      case SLOT_NECK:
+      case SLOT_WRISTS:
+      case SLOT_FINGER_1:
+      case SLOT_FINGER_2:
+      case SLOT_OFF_HAND: // Shields, off hand items
+      case SLOT_BACK:
+      {
+        f = 2;
+        break;
+      }
+      // Ranged non-weapons are relics, which do not have a point allocation
+      case SLOT_RANGED:
+      case SLOT_TABARD:
+      {
+        return f;
+      }
+      default:
+        return f;
+    }
+  }
+  
+  return f;
 }

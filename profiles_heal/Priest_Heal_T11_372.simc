@@ -1,0 +1,18 @@
+#!simc
+
+optimal_raid=1
+
+# Healers aren't Damage Dealers, they tend to pause between heals
+queue_lag=0.3
+
+# Do some Damage!
+raid_events+=/damage,cooldown=500,amount=400000,first=5
+
+Priest_Discipline_Single_T11_372.simc
+Priest_Discipline_AE_T11_372.simc
+Priest_Discipline_PWS_T11_372.simc
+Priest_Holy_Single_T11_372.simc
+Priest_Holy_AE_T11_372.simc
+Priest_Holy_Mixed_T11_372.simc
+
+Fluffy_Tank.simc

@@ -5,6 +5,9 @@
 
 #include "simulationcraftqt.h"
 #include <QtWebKit>
+#ifdef Q_WS_MAC
+#include <CoreFoundation/CoreFoundation.h>
+#endif
 
 // ==========================================================================
 // Utilities
@@ -23,25 +26,19 @@ static OptionEntry* getBuffOptions()
     {
       { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
       { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                                                },
-      { "Heroic Presence",       "override.heroic_presence",        "Draenei Heroic Presence Racial"                                             },
       { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
-      { "Attack Power",          "override.blessing_of_might",      "Battle Shout\nBlessing of Might"                                            },
-      { "Attack Power (%)",      "override.trueshot_aura",          "Abomination's Might\nTrueshot Aura\nUnleashed Rage"                         },
+      { "Attack Power (%)",      "override.blessing_of_might",      "Blessing of Might\nAbomination's Might\nTrueshot Aura\nUnleashed Rage"      },
       { "Bloodlust",             "override.bloodlust",              "Bloodlust\nHeroism"                                                         },
-      { "All Damage",            "override.sanctified_retribution", "Arcane Empowerment\nFerocious Inspiration\nSanctified Retribution"          },
-      { "All Haste",             "override.swift_retribution",      "Improved Moonkin Form\nSwift Retribution"                                   },
+      { "All Damage",            "override.communion",              "Arcane Tactics\nFerocious Inspiration\nCommunion"                           },
       { "Intellect",             "override.arcane_brilliance",      "Arcane Intellect"                                                           },
-      { "Mana Regen",            "override.blessing_of_wisdom",     "Blessing of Wisdom\nMana Spring Totem"                                      },
-      { "Melee Critical Strike", "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
+      { "Critical Strike",       "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
+      { "Mana Regen",            "override.mana_spring_totem",      "Blessing of Might\nMana Spring Totem"                                       },
       { "Melee Haste",           "override.windfury_totem",         "Improved Icy Talons\nWindfury Totem"                                        },
       { "Replenishment",         "override.replenishment",          "Hunting Party\nImproved Soul Leech\nJudgements of the Wise\nVampiric Touch" },
-      { "Spell Critical Strike", "override.moonkin_aura",           "Elemental Oath\nMoonkin Aura"                                               },
       { "Spell Haste",           "override.wrath_of_air",           "Wrath of Air Totem"                                                         },
-      { "Spell Power",           "override.totem_of_wrath",         "Demonic Pact\nFlametongue Totem\nTotem of Wrath"                            },
-      { "Spirit",                "override.divine_spirit",          "Divine Spirit\nFel Intelligence"                                            },
+      { "Spell Power",           "override.demonic_pact",           "Demonic Pact\nTotemic Wrath"                                                },
       { "Stamina",               "override.fortitude",              "Power Word: Fortitude"                                                      },
-      { "Stat Add",              "override.mark_of_the_wild",       "Mark of the Wild"                                                           },
-      { "Stat Multiplier",       "override.blessing_of_kings",      "Blessing of Kings"                                                          },
+      { "Stat Multiplier",       "override.blessing_of_kings",      "Blessing of Kings\nMark of the Wild"                                        },
       { NULL, NULL, NULL }
     };
   return options;
@@ -52,21 +49,15 @@ static OptionEntry* getDebuffOptions()
   static OptionEntry options[] =
     {
       { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                        },
-      { "Armor (Major)",          "override.sunder_armor",          "Acid Spit\nExpose Armor\nSunder Armor"                            },
-      { "Armor (Minor)",          "override.faerie_fire",           "Curse of Weakness\nFaerie Fire"                                   },
+      { "Armor Reduction",        "override.sunder_armor",          "Acid Spit\nExpose Armor\nSunder Armor"                            },
       { "Boss Attack Speed Slow", "override.thunder_clap",          "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
-      { "Boss Hit Reduction",     "override.insect_swarm",          "Insect Swarm\nScorpid Sting"                                      },
       { "Bleed Damage",           "override.mangle",                "Mangle\nTrauma"                                                   },
       { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                     },
-      { "Critical Strike",        "override.master_poisoner",       "Heart of the Crusader\nMaster Poisoner\nTotem of Wrath"           },
-      { "Disease Damage",         "override.crypt_fever",           "Crypt Fever"                                                      },
-      { "Mana Restore",           "override.judgement_of_wisdom",   "Judgement of Wisdom"                                              },
-      { "Physical Damage",        "override.blood_frenzy",          "Blood Frenzy\nSavage Combat"                                      },
+      { "Physical Damage",        "override.blood_frenzy_physical", "Blood Frenzy\nSavage Combat"                                      },
       { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                     },
       { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                    },
-      { "Spell Critical Strike",  "override.improved_scorch",       "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
+      { "Spell Critical Strike",  "override.critical_mass",         "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
       { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
-      { "Spell Hit",              "override.misery",                "Improved Faerie Fire\nMisery"                                     },
       { NULL, NULL, NULL }
     };
   return options;
@@ -87,10 +78,10 @@ static OptionEntry* getScalingOptions()
       { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
       { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
       { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
-      { "Analyze Armor Penetration Rating", "arpen",    "Calculate scale factors for Armor Penetration Rating" },
       { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
       { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
       { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+      { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
       { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
 	  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
       { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
@@ -104,19 +95,19 @@ static OptionEntry* getPlotOptions()
 {
   static OptionEntry options[] =
     {
-      { "Plot DPS per Strength",                 "str",   "Generate DPS curve for Strength"                 },
-      { "Plot DPS per Agility",                  "agi",   "Generate DPS curve for Agility"                  },
-      { "Plot DPS per Stamina",                  "sta",   "Generate DPS curve for Stamina"                  },
-      { "Plot DPS per Intellect",                "int",   "Generate DPS curve for Intellect"                },
-      { "Plot DPS per Spirit",                   "spi",   "Generate DPS curve for Spirit"                   },
-      { "Plot DPS per Spell Power",              "sp",    "Generate DPS curve for Spell Power"              },
-      { "Plot DPS per Attack Power",             "ap",    "Generate DPS curve for Attack Power"             },
-      { "Plot DPS per Expertise Rating",         "exp",   "Generate DPS curve for Expertise Rating"         },
-      { "Plot DPS per Armor Penetration Rating", "arpen", "Generate DPS curve for Armor Penetration Rating" },
-      { "Plot DPS per Hit Rating",               "hit",   "Generate DPS curve for Hit Rating"               },
-      { "Plot DPS per Crit Rating",              "crit",  "Generate DPS curve for Crit Rating"              },
-      { "Plot DPS per Haste Rating",             "haste", "Generate DPS curve for Haste Rating"             },
-      { "Plot DPS per Weapon DPS",               "wdps",  "Generate DPS curve for Weapon DPS"               },
+      { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
+      { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
+      { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
+      { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
+      { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
+      { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
+      { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
+      { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
+      { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
+      { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
+      { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
+      { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
+      { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
       { NULL, NULL, NULL }
     };
   return options;
@@ -148,21 +139,20 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 13 )
+  if( tokens.count() >= 12 )
   {
-           patchChoice->setCurrentIndex( tokens[  0 ].toInt() );
-         latencyChoice->setCurrentIndex( tokens[  1 ].toInt() );
-      iterationsChoice->setCurrentIndex( tokens[  2 ].toInt() );
-     fightLengthChoice->setCurrentIndex( tokens[  3 ].toInt() );
-   fightVarianceChoice->setCurrentIndex( tokens[  4 ].toInt() );
-            addsChoice->setCurrentIndex( tokens[  5 ].toInt() );
-      fightStyleChoice->setCurrentIndex( tokens[  6 ].toInt() );
-      targetRaceChoice->setCurrentIndex( tokens[  7 ].toInt() );
-     playerSkillChoice->setCurrentIndex( tokens[  8 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[  9 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[ 10 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 11 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 12 ].toInt() );
+         versionChoice->setCurrentIndex( tokens[  0 ].toInt() );
+      iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
+     fightLengthChoice->setCurrentIndex( tokens[  2 ].toInt() );
+   fightVarianceChoice->setCurrentIndex( tokens[  3 ].toInt() );
+            addsChoice->setCurrentIndex( tokens[  4 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[  5 ].toInt() );
+      targetRaceChoice->setCurrentIndex( tokens[  6 ].toInt() );
+     playerSkillChoice->setCurrentIndex( tokens[  7 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[  8 ].toInt() );
+       smoothRNGChoice->setCurrentIndex( tokens[  9 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ 10 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 11 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -175,7 +165,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry* scaling = getScalingOptions();
   OptionEntry*   plots = getPlotOptions();
 
-  for(int i = 13; i < tokens.count(); i++)
+  for(int i = 12; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -194,8 +184,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      {
        if( ! opt_value[ 0 ].compare( options[ opt ].option ) )
        {
-	 buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-	 break;
+         buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
+         break;
        }
      }
    }
@@ -203,9 +193,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13" )
-    .arg(         patchChoice->currentIndex() )
-    .arg(       latencyChoice->currentIndex() )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
+    .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
@@ -276,7 +265,7 @@ void SimulationCraftWindow::updateSimProgress()
   if( mainTab->currentIndex() != TAB_IMPORT &&
       mainTab->currentIndex() != TAB_RESULTS )
   {
-    progressBar->setFormat( simPhase.c_str() );
+    progressBar->setFormat( QString::fromUtf8( simPhase.c_str() ) );
     progressBar->setValue( simProgress );
   }
 }
@@ -291,6 +280,9 @@ void SimulationCraftWindow::loadHistory()
     QString historyVersion;
     in >> historyVersion;
     if( historyVersion != HISTORY_VERSION ) return;
+    in >> historyWidth;
+    in >> historyHeight;
+    in >> historyMaximized;
     QStringList importHistory;
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
@@ -305,7 +297,6 @@ void SimulationCraftWindow::loadHistory()
     for( int i=0; i < count; i++ )
     {
       QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
-      //item->setFont( QFont( "fixed" ) );
       historyList->addItem( item );
     }
 
@@ -318,6 +309,7 @@ void SimulationCraftWindow::loadHistory()
 
 void SimulationCraftWindow::saveHistory()
 {
+  charDevCookies->save();
   http_t::cache_save();
   QFile file( "simc_history.dat" );
   if( file.open( QIODevice::WriteOnly ) )
@@ -333,6 +325,9 @@ void SimulationCraftWindow::saveHistory()
 
     QDataStream out( &file );
     out << QString( HISTORY_VERSION );
+    out << (qint32) width();
+    out << (qint32) height();
+    out << (qint32) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
@@ -349,12 +344,19 @@ void SimulationCraftWindow::saveHistory()
 // ==========================================================================
 
 SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
-  : QWidget(parent), visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
+  : QWidget(parent), 
+    historyWidth(0), historyHeight(0), historyMaximized(1),
+    visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
   cmdLineText = "";
+#ifndef Q_WS_MAC
   logFileText = "log.txt";
   resultsFileText = "results.html";
-
+#else
+  logFileText = QDir::currentPath() + QDir::separator() + "log.txt";
+  resultsFileText = QDir::currentPath() + QDir::separator() + "results.html";
+#endif
+	
   mainTab = new QTabWidget();
   createWelcomeTab();
   createOptionsTab();
@@ -412,22 +414,22 @@ void SimulationCraftWindow::createCmdLine()
 
 void SimulationCraftWindow::createWelcomeTab()
 {
-  QString s = "<div align=center><h1>Welcome to SimulationCraft!</h1>If you are seeing this text, then Welcome.html was unable to load.</div>";
-
-  QFile file( "Welcome.html" );
-  if( !file.exists() )
+  QString welcomeFile = QDir::currentPath() + "/Welcome.html";
+#ifdef Q_WS_MAC
+  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
+  if ( fileRef )
   {
-    file.setFileName( "simcqt.app/Contents/Resources/Welcome.html" );
-  }
-  if( file.open( QIODevice::ReadOnly ) )
-  {
-    s = file.readAll();
-    file.close();
-  }
+    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+    welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
 
-  QTextBrowser* welcomeBanner = new QTextBrowser();
-  welcomeBanner->setHtml( s );
-  welcomeBanner->moveCursor( QTextCursor::Start );
+    CFRelease(fileRef);
+    CFRelease(macPath);
+  }
+#endif
+  QString url = "file:///" + welcomeFile;
+
+  QWebView* welcomeBanner = new QWebView();
+  welcomeBanner->setUrl( url );
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
  
@@ -457,21 +459,22 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout->addRow(         "Patch",         patchChoice = createChoice( 1, "3.3.3" ) );
-  globalsLayout->addRow(       "Latency",       latencyChoice = createChoice( 2, "Low", "High" ) );
-  globalsLayout->addRow(    "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
-  globalsLayout->addRow(  "Length (sec)",   fightLengthChoice = createChoice( 3, "100", "300", "500" ) );
-  globalsLayout->addRow(   "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(          "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
-  globalsLayout->addRow(   "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
-  globalsLayout->addRow(   "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout->addRow(  "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout->addRow(       "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow(    "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
-  globalsLayout->addRow( "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
-  globalsLayout->addRow(   "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
+  globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
+  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
+  globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout->addRow(           "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
+  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
+  globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
+  globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout->addRow(     "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
+  globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
+  globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   iterationsChoice->setCurrentIndex( 1 );
-  fightLengthChoice->setCurrentIndex( 1 );
+  fightLengthChoice->setCurrentIndex( 7 );
+  fightVarianceChoice->setCurrentIndex( 2 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
@@ -487,7 +490,7 @@ void SimulationCraftWindow::createBuffsTab()
   for( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
-    if ( i>2 ) checkBox->setChecked( true );
+    if ( i>1 ) checkBox->setChecked( true );
     checkBox->setToolTip( buffs[ i ].tooltip );
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );
@@ -565,14 +568,17 @@ void SimulationCraftWindow::createImportTab()
   importTab = new QTabWidget();
   mainTab->addTab( importTab, "Import" );
 
-  armoryView = new SimulationCraftWebView( this );
-  armoryView->setUrl( QUrl( "http://us.wowarmory.com" ) );
-  importTab->addTab( armoryView, "Armory" );
+  battleNetView = new SimulationCraftWebView( this );
+  battleNetView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
+  importTab->addTab( battleNetView, "Battle.Net" );
 
-  wowheadView = new SimulationCraftWebView( this );
-  wowheadView->setUrl( QUrl( "http://www.wowhead.com/profiles" ) );
-  importTab->addTab( wowheadView, "Wowhead" );
-  
+  charDevCookies = new PersistentCookieJar( "chardev.cookies" );
+  charDevCookies->load();
+  charDevView = new SimulationCraftWebView( this );
+  charDevView->page()->networkAccessManager()->setCookieJar( charDevCookies );
+  charDevView->setUrl( QUrl( "http://chardev.org/?planner" ) );
+  importTab->addTab( charDevView, "CharDev" );
+
   createRawrTab();
   createBestInSlotTab();
 
@@ -584,6 +590,9 @@ void SimulationCraftWindow::createImportTab()
   connect( rawrList,    SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(   rawrDoubleClicked(QListWidgetItem*)) );
   connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
   connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
+
+  // Commenting out until it is more fleshed out.
+  // createCustomTab();
 }
 
 void SimulationCraftWindow::createRawrTab()
@@ -608,137 +617,66 @@ void SimulationCraftWindow::createRawrTab()
 
 void SimulationCraftWindow::createBestInSlotTab()
 {
-  QStringList headerLabels( "Player Class" ); headerLabels += QString( "URL" );
+  QStringList headerLabels( "Player Class" ); headerLabels += QString( "Profile" );
 
   bisTree = new QTreeWidget();
-  bisTree->setColumnCount( 2 );
+  bisTree->setColumnCount( 1 );
   bisTree->setHeaderLabels( headerLabels );
   importTab->addTab( bisTree, "BiS" );
 
-  const int T9=0, T10=1, TMAX=2;
-  const char* TNAMES[] = { "T9", "T10" };
-  QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TMAX ];
+  const int TIER_MAX=2;
+  const char* tierNames[] = { "PreRaid", "T11" };
+  QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
     QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
-    //top->setFont( 0, QFont( "fixed" ) );
     bisTree->addTopLevelItem( top );
-    for( int j=0; j < TMAX; j++ )
+    for( int j=0; j < TIER_MAX; j++ )
     {
-      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( TNAMES[ j ] ) ) );
-      //rootItems[ i ][ j ]->setFont( 0, QFont( "fixed" ) );
+      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
     }
   }
-
-  struct bis_entry_t { int type; int tier; const char* name; int site; const char* id; };
-
-  bis_entry_t bisList[] = 
-    {
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_51_00_20",      TAB_WOWHEAD, "18101892" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_53_18",      TAB_WOWHEAD, "18133139" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_03_51_17",      TAB_WOWHEAD, "18133075" },
-      { DEATH_KNIGHT,  T9, "Death_Knight_T9_00_17_54",      TAB_WOWHEAD, "20992958" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20",     TAB_WOWHEAD, "21203256" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_51_00_20_GoD", TAB_WOWHEAD, "21203314" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_53_18",     TAB_WOWHEAD, "21203260" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_14_00_57",     TAB_WOWHEAD, "21203277" },
-      { DEATH_KNIGHT, T10, "Death_Knight_T10_00_17_54",     TAB_WOWHEAD, "21203280" },
-
-      { DRUID,      T9, "Druid_T9_00_55_16",                TAB_WOWHEAD, "14717965" },
-      { DRUID,      T9, "Druid_T9_00_55_16_M",              TAB_WOWHEAD, "14726081" },
-      { DRUID,      T9, "Druid_T9_58_00_13",                TAB_WOWHEAD, "14187592" },
-      { DRUID,     T10, "Druid_T10_00_55_16",               TAB_WOWHEAD, "21284121" },
-      { DRUID,     T10, "Druid_T10_00_55_16_M",             TAB_WOWHEAD, "21284118" },
-      { DRUID,     T10, "Druid_T10_58_00_13",               TAB_WOWHEAD, "21284122" },
-
-      { HUNTER,     T9, "Hunter_T9_02_18_51",               TAB_WOWHEAD, "14649679" },
-      { HUNTER,     T9, "Hunter_T9_01_18_52_HP",            TAB_WOWHEAD, "21156704" },
-      { HUNTER,     T9, "Hunter_T9_07_57_07",               TAB_WOWHEAD, "14189960" },
-      { HUNTER,     T9, "Hunter_T9_07_57_07_HM",            TAB_WOWHEAD, "14651857" },
-      { HUNTER,     T9, "Hunter_T9_53_14_04",               TAB_WOWHEAD, "14663160" },
-      { HUNTER,    T10, "Hunter_T10_53_14_04",              TAB_WOWHEAD, "21284132" },
-      { HUNTER,    T10, "Hunter_T10_07_57_07",              TAB_WOWHEAD, "21284133" },
-      { HUNTER,    T10, "Hunter_T10_07_57_07_HM",           TAB_WOWHEAD, "21284135" },
-      { HUNTER,    T10, "Hunter_T10_06_14_51",              TAB_WOWHEAD, "21284137" },
-      { HUNTER,    T10, "Hunter_T10_03_15_53_HP",           TAB_WOWHEAD, "21284138" },
-
-      { MAGE,       T9, "Mage_T9_00_53_18",                 TAB_WOWHEAD, "14306487" },
-      { MAGE,       T9, "Mage_T9_18_00_53",                 TAB_WOWHEAD, "14306485" },
-      { MAGE,       T9, "Mage_T9_20_51_00",                 TAB_WOWHEAD, "14306481" },
-      { MAGE,       T9, "Mage_T9_57_03_11",                 TAB_WOWHEAD, "14306468" },
-      { MAGE,      T10, "Mage_T10_00_53_18",                TAB_WOWHEAD, "21284296" },
-      { MAGE,      T10, "Mage_T10_18_00_53",                TAB_WOWHEAD, "21284292" },
-      { MAGE,      T10, "Mage_T10_20_51_00",                TAB_WOWHEAD, "21284285" },
-      { MAGE,      T10, "Mage_T10_57_03_11",                TAB_WOWHEAD, "21284284" },
-
-      { PALADIN,    T9, "Paladin_T9_05_11_55",              TAB_WOWHEAD, "16421920" },
-      { PALADIN,   T10, "Paladin_T10_05_11_55",             TAB_WOWHEAD, "16266770" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_H",           TAB_WOWHEAD, "20977380" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_N",           TAB_WOWHEAD, "20966865" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_HA",          TAB_WOWHEAD, "20980773" },
-      { PALADIN,   T10, "Paladin_T10_09_05_57_HAA",         TAB_WOWHEAD, "20983668" },
-
-      { PRIEST,     T9, "Priest_T9_13_00_58_232",           TAB_WOWHEAD, "13043846" },
-      { PRIEST,     T9, "Priest_T9_13_00_58_245",           TAB_WOWHEAD, "13043847" },
-      { PRIEST,     T9, "Priest_T9_13_00_58_258",           TAB_WOWHEAD, "13043848" },
-      { PRIEST,     T9, "Priest_T9_13_00_58_258",           TAB_WOWHEAD, "13043848" },
-      { PRIEST,    T10, "Priest_T10_13_00_58_264",          TAB_WOWHEAD, "18052647" },
-      { PRIEST,    T10, "Priest_T10_13_00_58_277",          TAB_WOWHEAD, "20704178" },
-
-      { ROGUE,      T9, "Rogue_T9_08_20_43",                TAB_WOWHEAD, "14562456" },
-      { ROGUE,      T9, "Rogue_T9_20_51_00",                TAB_WOWHEAD, "20631652" },
-      { ROGUE,      T9, "Rogue_T9_51_18_02",                TAB_WOWHEAD, "18612609" },
-      { ROGUE,      T9, "Rogue_T9_51_18_02_R",              TAB_WOWHEAD, "21162157" },
-      { ROGUE,     T10, "Rogue_T10_20_51_00",               TAB_WOWHEAD, "21162773" },
-      { ROGUE,     T10, "Rogue_T10_51_18_02",               TAB_WOWHEAD, "21162321" },
-      { ROGUE,     T10, "Rogue_T10_51_18_02_R",             TAB_WOWHEAD, "21162335" },
-
-      { SHAMAN,     T9, "Shaman_T9_16_55_00_258",           TAB_WOWHEAD, "14635667" },
-      { SHAMAN,     T9, "Shaman_T9_20_51_00_258",           TAB_WOWHEAD, "14635698" },
-      { SHAMAN,     T9, "Shaman_T9_57_14_00_245",           TAB_WOWHEAD, "14636463" },
-      { SHAMAN,     T9, "Shaman_T9_57_14_00_258",           TAB_WOWHEAD, "14636542" },
-      { SHAMAN,     T9, "Shaman_T9_57_14_00_258_ToW",       TAB_WOWHEAD, "14731192" },
-      { SHAMAN,    T10, "Shaman_T10_19_52_00",              TAB_WOWHEAD, "20837779" },
-      { SHAMAN,    T10, "Shaman_T10_57_14_00",              TAB_WOWHEAD, "20837754" },
-      { SHAMAN,    T10, "Shaman_T10_57_14_00_ToW",          TAB_WOWHEAD, "20837752" },
-
-      { WARLOCK,    T9, "Warlock_T9_00_13_58",              TAB_WOWHEAD, "13808359" },
-      { WARLOCK,    T9, "Warlock_T9_00_18_53",              TAB_WOWHEAD, "18859553" },
-      { WARLOCK,    T9, "Warlock_T9_55_00_16",              TAB_WOWHEAD, "15214160" },
-      { WARLOCK,    T9, "Warlock_T9_56_00_15",              TAB_WOWHEAD, "20850306" },
-      { WARLOCK,    T9, "Warlock_T9_00_56_15",              TAB_WOWHEAD, "18859247" },
-      { WARLOCK,   T10, "Warlock_T10_00_13_58",             TAB_WOWHEAD, "20850049" },
-      { WARLOCK,   T10, "Warlock_T10_00_18_53",             TAB_WOWHEAD, "20983226" },
-      { WARLOCK,   T10, "Warlock_T10_55_00_16",             TAB_WOWHEAD, "20850045" },
-      { WARLOCK,   T10, "Warlock_T10_56_00_15",             TAB_WOWHEAD, "20983156" },
-      { WARLOCK,   T10, "Warlock_T10_00_56_15",             TAB_WOWHEAD, "20983242" },
-
-      { WARRIOR,    T9, "Warrior_T9_19_52_00",              TAB_WOWHEAD, "13110966" },
-      { WARRIOR,    T9, "Warrior_T9_54_17_00_A",            TAB_WOWHEAD, "13111680" },
-      { WARRIOR,    T9, "Warrior_T9_54_17_00_M",            TAB_WOWHEAD, "13112110" },
-      { WARRIOR,    T9, "Warrior_T9_54_17_00_S",            TAB_WOWHEAD, "13112036" },
-      { WARRIOR,   T10, "Warrior_T10_19_52_00_277",         TAB_WOWHEAD, "21169162" },
-      { WARRIOR,   T10, "Warrior_T10_55_08_08_277",         TAB_WOWHEAD, "21169165" },
-      { WARRIOR,   T10, "Warrior_T10_19_52_00_264",         TAB_WOWHEAD, "21169160" },
-
-      { PLAYER_NONE, TMAX, NULL, -1, NULL }
-    };
-
-  for( int i=0; bisList[ i ].type != PLAYER_NONE; i++ )
+#ifndef Q_WS_MAC
+  QDir dir = QString( "profiles" );
+#else
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
+  QDir dir;
+  if ( fileRef )
   {
-    bis_entry_t& b = bisList[ i ];
-    QString url = "";
-    switch( b.site )
+    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+    dir            = QString( CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding()) );
+    
+    CFRelease(fileRef);
+    CFRelease(macPath);
+  }
+#endif
+  dir.setSorting( QDir::Name );
+  dir.setFilter( QDir::Files );
+  dir.setNameFilters( QStringList( "*.simc" ) );
+  bisProfilePath = dir.absolutePath() + "/";
+  bisProfilePath = QDir::toNativeSeparators( bisProfilePath );
+
+  QStringList profileList = dir.entryList();
+  int numProfiles = profileList.count();
+  for( int i=0; i < numProfiles; i++ )
+  {
+    QString& profile = profileList[ i ];
+
+    int player = PLAYER_MAX;
+    for( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
+      if( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
+	player = j;
+
+    int tier = TIER_MAX;
+    for( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
+      if( profile.contains( tierNames[ j ] ) )
+	tier = j;
+
+    if( player != PLAYER_MAX && tier != TIER_MAX )
     {
-    case TAB_WOWHEAD: url += "http://www.wowhead.com/profile="; break;
-    default: assert(0);
+      QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( profile ) );
+      rootItems[ player ][ tier ]->addChild( item );
     }
-    url += b.id;
-    QStringList labels = QStringList( b.name ); labels += url;
-    QTreeWidgetItem* item = new QTreeWidgetItem( labels );
-    //item->setFont( 0, QFont( "fixed" ) );
-    //item->setFont( 1, QFont( "fixed" ) );
-    rootItems[ b.type ][ b.tier ]->addChild( item );
   }
 
   bisTree->setColumnWidth( 0, 300 );
@@ -746,11 +684,41 @@ void SimulationCraftWindow::createBestInSlotTab()
   connect( bisTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(bisDoubleClicked(QTreeWidgetItem*,int)) );
 }
 
+void SimulationCraftWindow::createCustomTab()
+{
+  //In Dev - Character Retrieval Boxes & Buttons
+  //In Dev - Load & Save Profile Buttons
+  //In Dev - Profiler Slots, Talent & Glyph Layout
+  QHBoxLayout* customLayout = new QHBoxLayout();
+  QGroupBox* customGroupBox = new QGroupBox();
+  customGroupBox->setLayout( customLayout );
+  importTab->addTab( customGroupBox, "Custom Profile" );
+  customLayout->addWidget( createCustomCharData = new QGroupBox(tr("Character Data")), 1 );
+  createCustomCharData->setObjectName(QString::fromUtf8("createCustomCharData"));
+  customLayout->addWidget( createCustomProfileDock = new QTabWidget(), 1 );
+  createCustomProfileDock->setObjectName(QString::fromUtf8("createCustomProfileDock"));
+  createCustomProfileDock->setAcceptDrops(true);
+  customGearTab = new QWidget();
+  customGearTab->setObjectName(QString::fromUtf8("customGearTab"));
+  createCustomProfileDock->addTab(customGearTab, QString());
+  customTalentsTab = new QWidget();
+  customTalentsTab->setObjectName(QString::fromUtf8("customTalentsTab"));
+  createCustomProfileDock->addTab(customTalentsTab, QString());
+  customGlyphsTab = new QWidget();
+  customGlyphsTab->setObjectName(QString::fromUtf8("customGlyphsTab"));
+  createCustomProfileDock->addTab(customGlyphsTab, QString());
+  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customGearTab), QApplication::translate("createCustomTab", "Gear", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customGearTab), QApplication::translate("createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customTalentsTab), QApplication::translate("createCustomTab", "Talents", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customTalentsTab), QApplication::translate("createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customGlyphsTab), QApplication::translate("createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8));
+  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customGlyphsTab), QApplication::translate("createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8));
+}
+
 void SimulationCraftWindow::createSimulateTab()
 {
   simulateText = new SimulationCraftTextEdit();
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  //simulateText->document()->setDefaultFont( QFont( "fixed" ) );
   simulateText->setPlainText( defaultSimulateText() );
   mainTab->addTab( simulateText, "Simulate" );
 }
@@ -777,12 +745,20 @@ void SimulationCraftWindow::createLogTab()
 void SimulationCraftWindow::createExamplesTab()
 {
   QString s = "# If you are seeing this text, then Examples.simc was unable to load.";
-
-  QFile file( "Examples.simc" );
-  if( !file.exists() )
+  QString exampleFile = "Examples.simc";
+#ifdef Q_WS_MAC
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Examples" ), CFSTR( "simc" ), 0 );
+  if ( fileRef )
   {
-    file.setFileName( "simcqt.app/Contents/Resources/Examples.simc" );
+    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+    exampleFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
+	
+    CFRelease( fileRef );
+    CFRelease( macPath );
   }
+#endif
+
+  QFile file( exampleFile );
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
@@ -797,12 +773,20 @@ void SimulationCraftWindow::createExamplesTab()
 void SimulationCraftWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
-
-  QFile file( "Legend.html" );
-  if( !file.exists() )
+  QString legendFile = "Legend.html";
+#ifdef Q_WS_MAC
+  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Legend"), CFSTR("html"), 0);
+  if ( fileRef )
   {
-    file.setFileName( "simcqt.app/Contents/Resources/Legend.html" );
+    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
+    legendFile          = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+	
+    CFRelease(fileRef);
+    CFRelease(macPath);
   }
+#endif
+	
+  QFile file( legendFile );
   if( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
@@ -814,18 +798,18 @@ void SimulationCraftWindow::createResultsTab()
   legendBanner->moveCursor( QTextCursor::Start );
 
   resultsTab = new QTabWidget();
+  resultsTab->setTabsClosable( true );
   resultsTab->addTab( legendBanner, "Legend" );
-  connect( resultsTab, SIGNAL(currentChanged(int)), this, SLOT(resultsTabChanged(int)) );
+  connect( resultsTab, SIGNAL(currentChanged(int)),    this, SLOT(resultsTabChanged(int))      );
+  connect( resultsTab, SIGNAL(tabCloseRequested(int)), this, SLOT(resultsTabCloseRequest(int)) );
   mainTab->addTab( resultsTab, "Results" );
 }
 
 void SimulationCraftWindow::createToolTips()
 {
-  patchChoice->setToolTip( "3.3.3: Live\n"
-			   "unknown: PTR" );
-
-  latencyChoice->setToolTip( "Low:  queue=0.075  gcd=0.150  channel=0.250\n"
-			     "High: queue=0.150  gcd=0.300  channel=0.500" );
+  versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
+			     "PTR:  Use mechanics on PTR server"
+			     "Both: Create Evil Twin with PTR mechanics" );
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
 				"1000:  Sufficient for DPS Analysis\n"
@@ -845,7 +829,6 @@ void SimulationCraftWindow::createToolTips()
 				"Helter Skelter:\n"
 				"    Movement, Stuns, Interrupts,\n"
 				"    Target-Switching (every 2min)\n"
-				"    Three Adds (for 20sec every 1min)\n"
 				"    Distraction (10% -skill every other 45sec" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
@@ -863,6 +846,10 @@ void SimulationCraftWindow::createToolTips()
 
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
+  debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
+			   "Gory details are very gory.  No documentation will be forthcoming.\n"
+			   "Due to the forced single iteration, no scale factor calculation." );
+  
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 }
@@ -878,7 +865,8 @@ sim_t* SimulationCraftWindow::initSim()
     sim = new sim_t();
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
-    sim -> parse_option( "patch", patchChoice->currentText().toStdString() );
+    sim -> parse_option( "ptr",   ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
+    sim -> parse_option( "debug", ( (   debugChoice->currentIndex() == 2 ) ? "1" : "0" ) );
   }
   return sim;
 }
@@ -893,6 +881,7 @@ void SimulationCraftWindow::deleteSim()
     QFile logFile( "simc_log.txt" );
     logFile.open( QIODevice::ReadOnly );
     logText->appendPlainText( logFile.readAll() );
+    logText->moveCursor( QTextCursor::End );
     logFile.close();
   }
 }
@@ -901,7 +890,7 @@ void SimulationCraftWindow::deleteSim()
 // Import 
 // ==========================================================================
 
-void ImportThread::importArmory()
+void ImportThread::importBattleNet()
 {
   QString region, server, character;
   QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
@@ -911,15 +900,20 @@ void ImportThread::importArmory()
     QString& t = tokens[ i ];
     if( t == "http" )
     {
-      region = tokens[ i+1 ];
+      region = tokens[ ++i ];
     }
-    else if( t == "r" )
+    else if( t == "r" ) // old armory
     {
-      server = tokens[ i+1 ];
+      server = tokens[ ++i ];
     }
-    else if( t == "n" || t == "cn" )
+    else if( t == "n" || t == "cn" ) // old armory
     {
-      character = tokens[ i+1 ];
+      character = tokens[ ++i ];
+    }
+    else if( t == "character" && (i<count-2) ) // new battle.net
+    {
+      server    = tokens[ ++i ];
+      character = tokens[ ++i ];
     }
   }
   if( region.isEmpty() || server.isEmpty() || character.isEmpty() )
@@ -928,55 +922,50 @@ void ImportThread::importArmory()
   }
   else
   {
-    std::string talents = mainWindow->armorySpecChoice  ->currentText().toStdString();
-    player = armory_t::download_player( sim, region.toStdString(), server.toStdString(), character.toStdString(), talents );
+    // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so 
+    // do it in a silly way as a workaround for now.
+    std::string talents = mainWindow->armorySpecChoice  ->currentText().toUtf8().constData(),
+                cpp_s   = server.toUtf8().constData(),
+                cpp_c   = character.toUtf8().constData(),
+                cpp_r   = region.toUtf8().constData();
+    if( cpp_r == "cn" || cpp_r == "tw" )
+    {
+      player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+    }
+    else
+    {
+      player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+    }
   }
 }
 
-void ImportThread::importWowhead()
+void ImportThread::importCharDev()
 {
-  QString id;
-  QStringList tokens = url.split( QRegExp( "[/?&=]" ), QString::SkipEmptyParts );
+  QString region, server, character;
+  QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
   int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
+  if( count > 0 )
   {
-    if( tokens[ i ] == "profile" )
-    {
-      id = tokens[ i+1 ];
-      break;
-    }
-  }
-  if( id.isEmpty() )
-  {
-    fprintf( sim->output_file, "Import from Wowhead requires use of Profiler!\n" );
-  }
-  else
-  {
-    tokens = id.split( '.', QString::SkipEmptyParts );
-    count = tokens.count();
-    if( count == 1 )
-    {
-      player = wowhead_t::download_player( sim, id.toStdString() );
-    }
-    else if( count == 3 )
-    {
-      player = wowhead_t::download_player( sim, tokens[ 0 ].toStdString(), tokens[ 1 ].toStdString(), tokens[ 2 ].toStdString() ); 
-    }
+    // Win7/x86_64 workaround
+    std::string c = tokens[ count-1 ].toUtf8().constData();
+    player = chardev_t::download_player( sim, c );
   }
 }
 
 void ImportThread::importRawr()
 {
-  player = rawr_t::load_player( sim, url.toStdString() );
+  // Win7/x86_64 workaround
+  std::string u = url.toUtf8().constData();
+  player = rawr_t::load_player( sim, u );
 }
 
 void ImportThread::run()
 {
   switch( tab )
   {
-  case TAB_ARMORY:     importArmory();     break;
-  case TAB_WOWHEAD:    importWowhead();    break;
-  case TAB_RAWR:       importRawr();       break;
+  case TAB_BATTLE_NET: importBattleNet(); break;
+  case TAB_CHAR_DEV:   importCharDev();   break;
+  case TAB_RAWR:       importRawr();      break;
   default: assert(0);
   }
 
@@ -985,7 +974,7 @@ void ImportThread::run()
     sim->init();
     std::string buffer="";
     player->create_profile( buffer );
-    profile = buffer.c_str();
+    profile = QString::fromUtf8( buffer.c_str() );
   }
 }
 
@@ -1022,7 +1011,7 @@ void SimulationCraftWindow::importFinished()
     simulateText->setPlainText( importThread->profile );
     simulateTextHistory.add( importThread->profile );
 
-    QString label = importThread->player->name_str.c_str();
+    QString label = QString::fromUtf8( importThread->player->name_str.c_str() );
     while( label.size() < 20 ) label += " ";
     label += importThread->player->origin_str.c_str();
 
@@ -1071,7 +1060,10 @@ void SimulateThread::run()
 
   QList<QByteArray> lines;
   lines.append( "simc" );
-  for( int i=1; i < argc; i++ ) lines.append( stringList[ i-1 ].toAscii() );
+  for( int i=1; i < argc; i++ )
+  {
+    lines.append( stringList[ i-1 ].toUtf8().constData() );
+  }
   for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
   if( sim -> parse_options( argc, argv ) )
@@ -1114,15 +1106,7 @@ void SimulationCraftWindow::startSim()
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
-  options += "patch=" + patchChoice->currentText() + "\n";
-  if( latencyChoice->currentText() == "Low" )
-  {
-    options += "queue_lag=0.075  gcd_lag=0.150  channel_lag=0.250\n";
-  }
-  else
-  {
-    options += "queue_lag=0.150  gcd_lag=0.300  channel_lag=0.500\n";
-  }
+  options += "ptr="; options += ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
   options += "iterations=" + iterationsChoice->currentText() + "\n";
   if( iterationsChoice->currentText() == "10000" )
   {
@@ -1140,7 +1124,6 @@ QString SimulationCraftWindow::mergeOptions()
     options += "raid_events+=/movement,cooldown=30,duration=5\n";
     options += "raid_events+=/stun,cooldown=60,duration=2\n";
     options += "raid_events+=/invulnerable,cooldown=120,duration=3\n";
-    options += "raid_events+=/adds,count=3,cooldown=60,duration=20\n";
     options += "raid_events+=/distraction,skill=0.2,cooldown=90,duration=45\n";
   }
   options += "target_race=" + targetRaceChoice->currentText() + "\n";
@@ -1170,11 +1153,18 @@ QString SimulationCraftWindow::mergeOptions()
     options += "\n";
   }
   buttons = scalingButtonGroup->buttons();
-  options += "calculate_scale_factors=1\n";
+  OptionEntry* scaling = getScalingOptions();
+  for( int i=2; scaling[ i ].label; i++ )
+  {
+    if( buttons.at( i )->isChecked() )
+    {
+      options += "calculate_scale_factors=1\n";
+      break;
+    }
+  }
   if( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
   if( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
   options += "scale_only=none";
-  OptionEntry* scaling = getScalingOptions();
   for( int i=2; scaling[ i ].label; i++ )
   {
     if( buttons.at( i )->isChecked() )
@@ -1202,6 +1192,18 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += cmdLine->text();
   options += "\n";
+  if( versionChoice->currentIndex() == 2 )
+  {
+    options += "ptr=1\n";
+    options += "copy=EvilTwinPTR\n";
+    options += "ptr=0\n";
+  }
+  if( debugChoice->currentIndex() != 0 )
+  {
+    options += "log=1\n";
+    options += "scale_only=none\n";
+    options += "dps_plot_stat=none\n";
+  }
   return options;
 }
 
@@ -1212,7 +1214,7 @@ void SimulationCraftWindow::simulateFinished()
   simProgress = 100;
   progressBar->setFormat( simPhase.c_str() );
   progressBar->setValue( simProgress );
-  QFile file( sim->html_file_str.c_str() );
+  QFile file( sim -> html_file_str.c_str() );
   deleteSim();
   if( ! simulateThread->success )
   {
@@ -1222,14 +1224,18 @@ void SimulationCraftWindow::simulateFinished()
   }
   else if( file.open( QIODevice::ReadOnly ) )
   {
+    // Html results will _ALWAYS_ be utf-8, regardless of the input encoding
+    // so read them to the WebView through QTextStream
+    QTextStream s(&file);
+    s.setCodec("utf-8");
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SimulationCraftWebView* resultsView = new SimulationCraftWebView( this );
-    resultsHtml.append( file.readAll() );
+    resultsHtml.append( s.readAll() );
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
-    mainTab->setCurrentIndex( TAB_RESULTS );
     resultsView->setFocus();
+    mainTab->setCurrentIndex( debugChoice->currentIndex() ? TAB_LOG : TAB_RESULTS );
   }
   else
   {
@@ -1284,8 +1290,7 @@ void SimulationCraftWindow::saveResults()
 void SimulationCraftWindow::closeEvent( QCloseEvent* e ) 
 { 
   saveHistory();
-  armoryView->stop();
-  wowheadView->stop();
+  battleNetView->stop();
   QCoreApplication::quit();
   e->accept();
 }
@@ -1309,15 +1314,16 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "wowarmory" ) )
+    if( cmdLine->text().count( "battle.net" ) || 
+	cmdLine->text().count( "wowarmory.com" ) )
     {
-      armoryView->setUrl( QUrl( cmdLine->text() ) ); 
-      importTab->setCurrentIndex( TAB_ARMORY );
+      battleNetView->setUrl( QUrl( cmdLine->text() ) ); 
+      importTab->setCurrentIndex( TAB_BATTLE_NET );
     }
-    else if( cmdLine->text().count( "wowhead" ) )
+    else if( cmdLine->text().count( "chardev.org" ) )
     {
-      wowheadView->setUrl( QUrl( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_WOWHEAD );
+      charDevView->setUrl( QUrl( cmdLine->text() ) ); 
+      importTab->setCurrentIndex( TAB_CHAR_DEV );
     }
     else
     {
@@ -1343,8 +1349,8 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
   case TAB_IMPORT:
     switch( importTab->currentIndex() )
     {
-    case TAB_ARMORY:     startImport( TAB_ARMORY,     cmdLine->text() ); break;
-    case TAB_WOWHEAD:    startImport( TAB_WOWHEAD,    cmdLine->text() ); break;
+    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
+    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
     }
     break;
@@ -1470,6 +1476,7 @@ void SimulationCraftWindow::importTabChanged( int index )
 {
   if( index == TAB_RAWR ||
       index == TAB_BIS  ||
+      index == TAB_CUSTOM  ||
       index == TAB_HISTORY )
   {
     visibleWebView = 0;
@@ -1509,6 +1516,19 @@ void SimulationCraftWindow::resultsTabChanged( int index )
   }
 }
 
+void SimulationCraftWindow::resultsTabCloseRequest( int index )
+{
+  if( index <= 0 )
+  {
+    // Ignore attempts to close Legend
+  }
+  else
+  {
+    resultsTab->removeTab( index );
+    resultsHtml.removeAt( index-1 );
+  }
+}
+
 void SimulationCraftWindow::rawrDoubleClicked( QListWidgetItem* item )
 {
   rawrFileText = rawrDir->text();
@@ -1520,16 +1540,17 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
 {
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
-
-  if( url.count( ".wowarmory." ) )
+  
+  if( url.count( "battle.net"    ) || 
+      url.count( "wowarmory.com" ) )
   {
-    armoryView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
-    importTab->setCurrentIndex( TAB_ARMORY );
+    battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
+    importTab->setCurrentIndex( TAB_BATTLE_NET );
   }
-  else if( url.count( ".wowhead." ) )
+  else if( url.count( "chardev.org" ) )
   {
-    wowheadView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
-    importTab->setCurrentIndex( TAB_WOWHEAD );
+    charDevView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
+    importTab->setCurrentIndex( TAB_CHAR_DEV );
   }
   else
   {
@@ -1541,20 +1562,21 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
 {
   col=0;
 
-  if( item->columnCount() == 1 ) return;
+  QString profile = item->text( 0 );
 
-  QString url = item->text( 1 );
+  QString s = "Unable to import profile "; s += profile;
+  
+  QFile file( bisProfilePath + profile );
+  if( file.open( QIODevice::ReadOnly ) )
+  {
+    s = file.readAll();
+    file.close();
+  }
 
-  if( url.count( ".wowarmory." ) )
-  {
-    armoryView->setUrl( url );
-    importTab->setCurrentIndex( TAB_ARMORY );
-  }
-  else if( url.count( ".wowhead." ) )
-  {
-    wowheadView->setUrl( url );
-    importTab->setCurrentIndex( TAB_WOWHEAD );
-  }
+  simulateText->setPlainText( s );
+  simulateTextHistory.add( s );
+  mainTab->setCurrentIndex( TAB_SIMULATE );
+  simulateText->setFocus();
 }
 
 void SimulationCraftWindow::allBuffsChanged( bool checked )
@@ -1589,7 +1611,56 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 
 void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 {
+  QString importUrl = "http://" + region;
 
-  QString s = "http://" + region + ".wowarmory.com";
-  armoryView->setUrl( QUrl( s ) );
+  if( region == "cn" || region == "tw" )
+  {
+    importUrl += ".wowarmory.com";
+  }
+  else
+  {
+    importUrl += ".battle.net/wow/en";
+  }
+
+  battleNetView->setUrl( QUrl( importUrl ) );
+}
+
+void PersistentCookieJar::save()
+{
+  QFile file( fileName );
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    QDataStream out( &file );
+    QList<QNetworkCookie> cookies = allCookies();
+    qint32 count = (qint32) cookies.count();
+    out << count;
+    for( int i=0; i < count; i++ )
+    {
+      const QNetworkCookie& c = cookies.at( i );
+      out << c.name();
+      out << c.value();
+    }
+    file.close();
+  }
+}
+
+void PersistentCookieJar::load()
+{
+  QFile file( fileName );
+  if( file.open( QIODevice::ReadOnly ) )
+  {
+    QDataStream in( &file );
+    QList<QNetworkCookie> cookies;
+    qint32 count;
+    in >> count;
+    for( int i=0; i < count; i++ )
+    {
+      QByteArray name, value;
+      in >> name;
+      in >> value;
+      cookies.append( QNetworkCookie( name, value ) );
+    }
+    setAllCookies( cookies );
+    file.close();
+  }
 }

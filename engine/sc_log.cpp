@@ -44,17 +44,20 @@ static int school_id( int school )
 {
   switch ( school )
   {
-  case SCHOOL_ARCANE:    return 0x40;
-  case SCHOOL_BLEED:     return 0x01;
-  case SCHOOL_CHAOS:     return 0x02;
-  case SCHOOL_FIRE:      return 0x04;
-  case SCHOOL_FROST:     return 0x10;
-  case SCHOOL_FROSTFIRE: return 0x14;
-  case SCHOOL_HOLY:      return 0x02;
-  case SCHOOL_NATURE:    return 0x08;
-  case SCHOOL_PHYSICAL:  return 0x01;
-  case SCHOOL_SHADOW:    return 0x20;
-  default:               return 0x01;
+  case SCHOOL_ARCANE:     	return 0x40;
+  case SCHOOL_BLEED:      	return 0x01;
+  case SCHOOL_CHAOS:      	return 0x02;
+  case SCHOOL_FIRE:       	return 0x04;
+  case SCHOOL_FROST:      	return 0x10;
+  case SCHOOL_FROSTFIRE:  	return 0x14;
+  case SCHOOL_HOLY:       	return 0x02;
+  case SCHOOL_NATURE:     	return 0x08;
+  case SCHOOL_PHYSICAL:   	return 0x01;
+  case SCHOOL_SHADOW:     	return 0x20;
+  case SCHOOL_SPELLSTORM: 	return 0x48;
+  case SCHOOL_SHADOWFROST: 	return 0x30;
+  case SCHOOL_SHADOWFLAME:	return 0x24;
+  default:                	return 0x01;
   }
   return -1;
 }
@@ -70,6 +73,7 @@ static int resource_id( int resource )
   case  RESOURCE_ENERGY: return 3;
   case  RESOURCE_FOCUS:  return 2;
   case  RESOURCE_RUNIC:  return 6;
+  case  RESOURCE_RUNE:   return 7;
   }
   assert( 0 );
   return -1;
@@ -167,14 +171,14 @@ void log_t::damage_event( action_t* a,
 
   if ( is_swing( a ) )
   {
-    util_t::fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> sim -> target -> id() );
+    util_t::fprintf( a -> sim -> log_file, "SWING_DAMAGE,%s,%s", a -> player -> id(), a -> target -> id() );
   }
   else
   {
     util_t::fprintf( a -> sim -> log_file, "%s,%s,%s,%d,\"%s\",0x%X",
                      ( ( dmg_type == DMG_DIRECT ) ? "SPELL_DAMAGE" : "SPELL_PERIODIC_DAMAGE" ),
                      a -> player -> id(),
-                     a -> sim -> target -> id(),
+                     a -> target -> id(),
                      ( a -> id ? a -> id : default_id( a -> sim, a -> name() ) ),
                      a -> name(),
                      school_id( a -> school ) );
@@ -184,8 +188,8 @@ void log_t::damage_event( action_t* a,
                    ",%d,0,%d,%d,0,%d,%s,%s,nil\n",
                    ( int ) dmg,
                    school_id( a -> school ),
-                   ( int ) a -> resisted_dmg,
-                   ( int ) a -> blocked_dmg,
+                   ( int ) 0 /*resisted_dmg*/,
+                   ( int ) 0 /*blocked_dmg*/,
                    ( ( a -> result == RESULT_CRIT   ) ? "1" : "nil" ),
                    ( ( a -> result == RESULT_GLANCE ) ? "1" : "nil" ) );
 

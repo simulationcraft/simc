@@ -1,0 +1,74 @@
+#!./simc 
+
+rogue=Rogue_Subtlety_T11_359
+origin="http://chardev.org/?profile=36366"
+level=85
+race=troll
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000331032321310012321
+glyphs=expose_armor/backstab/shadow_dance/slice_and_dice
+actions=flask,type=winds
+actions+=/food,type=seafood_magnifique_feast
+actions+=/apply_poison,main_hand=instant,off_hand=deadly
+actions+=/snapshot_stats
+actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30
+actions+=/auto_attack
+actions+=/stealth
+actions+=/kick
+actions+=/berserking
+actions+=/pool_energy,for_next=1
+actions+=/shadow_dance,if=energy>85&combo_points<5
+actions+=/pool_energy,for_next=1
+actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
+actions+=/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up
+actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
+actions+=/ambush,if=combo_points<=4
+actions+=/preparation,if=cooldown.vanish.remains>60
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
+actions+=/rupture,if=combo_points=5&!ticking
+actions+=/recuperate,if=combo_points=5&remains<3
+actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
+actions+=/backstab,if=combo_points<3&energy>60
+actions+=/backstab,if=cooldown.honor_among_thieves.remains>1.75
+actions+=/backstab,if=combo_points<5&energy>80&cooldown.honor_among_thieves.remains=0
+head=wind_dancers_helmet,type=leather,ilevel=359,quality=epic,stats=281agi_1356armor_228crit_168hit_512sta,reforge=crit_haste,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
+neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_127haste_127mastery_286sta,reforge=mastery_exp
+shoulders=wind_dancers_spaulders,type=leather,ilevel=359,quality=epic,stats=233agi_1252armor_149crit_169haste_380sta,reforge=crit_exp,gems=40agi,enchant=50agi_25mastery
+chest=wind_dancers_tunic,type=leather,ilevel=359,quality=epic,stats=301agi_1669armor_188exp_228haste_512sta,gems=40agi_20agi_20hit_20agi,enchant=20all
+waist=dispersing_belt,type=leather,ilevel=359,quality=epic,stats=233agi_939armor_149crit_169haste_380sta,reforge=crit_exp,gems=40agi_67agi
+legs=aberrations_leggings,type=leather,ilevel=359,quality=epic,stats=301agi_1460armor_228crit_188haste_512sta,reforge=haste_exp,gems=40agi_40agi,enchant=190ap_55crit
+feet=treads_of_fleeting_joy,type=leather,ilevel=359,quality=epic,stats=233agi_1148armor_149crit_169haste_380sta,reforge=crit_exp,gems=40agi,enchant=25agi
+wrists=parasitic_bands,type=leather,ilevel=359,quality=epic,stats=190agi_730armor_127crit_127mastery_286sta,reforge=mastery_haste,gems=67agi,enchant=50agi
+hands=wind_dancers_gloves,type=leather,ilevel=359,quality=epic,stats=233agi_1043armor_169haste_149hit_380sta,reforge=hit_exp,gems=40agi_67agi_10haste,enchant=50haste
+finger1=gilnean_ring_of_ruination,ilevel=359,quality=epic,stats=190agi_138haste_108hit_286sta,reforge=hit_exp
+finger2=mistral_circle_of_the_windflurry,ilevel=359,quality=epic,stats=285sta_190agi_126crit_126haste,reforge=crit_exp,suffix=135
+trinket1=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_5000nature_1ppm
+trinket2=fluid_death,ilevel=359,quality=epic,stats=321hit,reforge=hit_haste,equip=onattackhit_38agi_10stack_15dur
+back=viewless_wings,ilevel=359,quality=epic,stats=190agi_625armor_127crit_127hit_286sta,reforge=crit_haste,enchant=22agi
+main_hand=organic_lifeform_inverter,ilevel=359,quality=epic,stats=146agi_97exp_97mastery_219sta,reforge=mastery_haste,enchant=landslide,weapon=dagger_1.80speed_665min_999max
+off_hand=uhnagh_fash_the_darkest_betrayal,ilevel=359,quality=epic,stats=146agi_97crit_97haste_219sta,reforge=crit_exp,enchant=landslide,weapon=dagger_1.40speed_453min_842max
+ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,reforge=crit_exp,weapon=crossbow_3.00speed_1496min_2245max
+# Gear Summary
+# gear_strength=20
+# gear_agility=4337
+# gear_stamina=5104
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=190
+# gear_expertise_rating=805
+# gear_hit_rating=683
+# gear_crit_rating=1073
+# gear_haste_rating=2029
+# gear_mastery_rating=238
+# gear_armor=10222
+# meta_gem=agile_shadowspirit
+# tier11_2pc_melee=1
+# tier11_4pc_melee=1
+# main_hand=organic_lifeform_inverter,weapon=dagger_1.80speed_665min_999max,enchant=landslide
+# off_hand=uhnagh_fash_the_darkest_betrayal,weapon=dagger_1.40speed_453min_842max,enchant=landslide
+# ranged=dragonheart_piercer,weapon=crossbow_3.00speed_1496min_2245max
+# When using this profile with a real raid AND party setups, this parameter will be ignored.
+# These values represent the avg donor intervals (unlimited by cooldown) of the Rogues's party members.
+# This does not affect HAT procs generated by the Rogue himself.
+critical_strike_intervals=1.50/1.75/2.0/2.25

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.h"
+#include "utf8.h"
 
 // Cross-Platform Support for HTTP-Download =================================
 
@@ -201,6 +202,7 @@ void http_t::cache_clear()
   thread_t::mutex_unlock( cache_mutex );
 }
 
+
 // http_t::cache_get ========================================================
 
 bool http_t::cache_get( std::string&       result,
@@ -314,29 +316,13 @@ std::string& http_t::format( std::string& encoded_url,
                              const std::string& url )
 {
   encoded_url.clear();
+  bool is_utf8 = utf8::is_valid( url.begin(), url.end() );
+  encoded_url = url;
 
-  int size = ( int ) url.size();
-  for ( int i=0; i < size; i++ )
-  {
-    char c = url[ i ];
-
-    if ( c == '+' || c == ' ' )
-    {
-      encoded_url += "%20";
-    }
-    else if ( c == '\'' )
-    {
-      encoded_url += "%27";
-    }
-    else if ( ( unsigned char ) c > 127 )
-    {
-      std::string temp = "";
-      temp += c;
-      util_t::ascii_binary_to_utf8_hex( temp );
-      encoded_url += temp;
-    }
-    else encoded_url += c;
-  }
+  if ( is_utf8 )
+    util_t::urlencode( encoded_url );
+  else
+    util_t::urlencode( util_t::str_to_utf8( encoded_url ) );
 
   return encoded_url;
 }
@@ -402,18 +388,19 @@ bool http_t::download( std::string& result,
     return false;
   }
 
+
   char buffer[2048];
-  sprintf( buffer, 
-	   "GET %s HTTP/1.0\r\n"
-	   "User-Agent: Firefox/3.0\r\n"
-	   "Accept: */*\r\n"
-	   "Host: %s\r\n"
-	   "Cookie: loginChecked=1\r\n"
-	   "Cookie: cookieLangId=en_US\r\n"
-	   "Connection: close\r\n"
-	   "\r\n", 
-	   path.c_str(), 
-	   host.c_str() );
+  sprintf( buffer,
+           "GET %s HTTP/1.0\r\n"
+           "User-Agent: Firefox/3.6\r\n"
+           "Accept: */*\r\n"
+           "Host: %s\r\n"
+           "Cookie: loginChecked=1\r\n"
+           "Cookie: cookieLangId=en_US\r\n"
+           "Connection: close\r\n"
+           "\r\n",
+           path.c_str(),
+           host.c_str() );
 
   r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
   if ( r != ( int ) strlen( buffer ) )
@@ -432,6 +419,65 @@ bool http_t::download( std::string& result,
       result += buffer;
     }
     else break;
+  }
+
+  // Moved, redo query
+  while ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
+  {
+    std::string::size_type pos_location = result.find( "Location: " );
+    if ( pos_location == result.npos ) return false;
+    
+    std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
+    std::string new_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
+    
+    if ( ! parse_url( host, path, port, new_url.c_str() ) ) return false;
+
+    h = gethostbyname( host.c_str() );
+    if ( ! h ) return false;
+
+    a.sin_family = AF_INET;
+    a.sin_addr = *( in_addr * )h->h_addr_list[0];
+    a.sin_port = htons( port );
+
+    s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
+    if ( s == 0xffffffffU ) return false;
+  
+    r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
+    if ( r < 0 )
+    {
+      return false;
+    }
+
+    sprintf( buffer,
+             "GET %s HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n"
+             "Host: %s\r\n"
+             "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             "Connection: close\r\n"
+             "\r\n",
+             path.c_str(),
+             host.c_str() );
+
+    r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
+    if ( r != ( int ) strlen( buffer ) )
+    {
+      return false;
+    }
+
+    result = "";
+
+    while ( 1 )
+    {
+      r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
+      if ( r > 0 )
+      {
+        buffer[ r ] = '\0';
+        result += buffer;
+      }
+      else break;
+    }
   }
 
   std::string::size_type pos = result.find( "\r\n\r\n" );
@@ -474,7 +520,7 @@ bool http_t::download( std::string& result,
 
     std::wstring wHeaders = L"";
     wHeaders += L"Cookie: loginChecked=1\r\n";
-	  wHeaders += L"Cookie: cookieLangId=en_US\r\n";
+          wHeaders += L"Cookie: cookieLangId=en_US\r\n";
 
     hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
     if ( hFile )
@@ -516,6 +562,7 @@ bool http_t::download( std::string& result,
   std::string host;
   std::string path;
   short port;
+  int redirect = 0, redirect_max = 5;
 
   if ( ! parse_url( host, path, port, url.c_str() ) ) return false;
 
@@ -539,17 +586,17 @@ bool http_t::download( std::string& result,
   }
 
   char buffer[2048];
-  sprintf( buffer, 
-	   "GET %s HTTP/1.0\r\n"
-	   "User-Agent: Firefox/3.0\r\n"
-	   "Accept: */*\r\n"
-	   "Host: %s\r\n"
-	   "Cookie: loginChecked=1\r\n"
-	   "Cookie: cookieLangId=en_US\r\n"
-	   "Connection: close\r\n"
-	   "\r\n", 
-	   path.c_str(), 
-	   host.c_str() );
+  sprintf( buffer,
+           "GET %s HTTP/1.0\r\n"
+           "User-Agent: Firefox/3.0\r\n"
+           "Accept: */*\r\n"
+           "Host: %s\r\n"
+           "Cookie: loginChecked=1\r\n"
+           "Cookie: cookieLangId=en_US\r\n"
+           "Connection: close\r\n"
+           "\r\n",
+           path.c_str(),
+           host.c_str() );
 
   r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
   if ( r != ( int ) strlen( buffer ) )
@@ -573,6 +620,71 @@ bool http_t::download( std::string& result,
 
   ::close( s );
 
+  // Moved, redo query
+  while ( ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos ) && ( redirect < redirect_max ) )
+  {
+    std::string::size_type pos_location = result.find( "Location: " );
+    if ( pos_location == result.npos ) return false;
+    
+    std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
+    std::string new_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
+    
+    if ( ! parse_url( host, path, port, new_url.c_str() ) ) return false;
+
+    h = gethostbyname( host.c_str() );
+    if ( ! h ) return false;
+
+    a.sin_family = AF_INET;
+    a.sin_addr = *( in_addr * )h->h_addr_list[0];
+    a.sin_port = htons( port );
+
+    s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    if ( s < 0 ) return false;
+
+    r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
+    if ( r < 0 )
+    {
+      close( s );
+      return false;
+    }
+
+    sprintf( buffer,
+             "GET %s HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n"
+             "Host: %s\r\n"
+             "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             "Connection: close\r\n"
+             "\r\n",
+             path.c_str(),
+             host.c_str() );
+
+    r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
+    if ( r != ( int ) strlen( buffer ) )
+    {
+      close( s );
+      return false;
+    }
+
+    result = "";
+
+    while ( 1 )
+    {
+      r = ::recv( s, buffer, sizeof( buffer )-1, MSG_WAITALL );
+      if ( r > 0 )
+      {
+        buffer[ r ] = '\0';
+        result += buffer;
+      }
+      else break;
+    }
+
+    ::close( s );
+    
+    redirect++;
+  }
+  
   std::string::size_type pos = result.find( "\r\n\r\n" );
   if ( pos == result.npos )
   {
@@ -602,6 +714,7 @@ int main( int argc, char** argv )
   }
   else util_t::printf( "Unable to download armory data.\n" );
 
+
   if ( http_t::get( result, "http://www.wowhead.com/?item=40328&xml" ) )
   {
     util_t::printf( "%s\n", result.c_str() );
@@ -612,4 +725,3 @@ int main( int argc, char** argv )
 }
 
 #endif
-

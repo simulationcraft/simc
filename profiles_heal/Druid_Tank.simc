@@ -1,0 +1,59 @@
+#!./simc 
+
+druid=Druid_Tank
+origin="http://eu.battle.net/wow/en/character/proudmoore/astrylian/advanced"
+level=85
+role=tank
+race=night_elf
+use_pre_potion=1
+professions=Alchemy=525/Herbalism=525
+talents=http://www.wowhead.com/talent#druid-000000000000000000002302222310312021220311020301000000000000000
+glyphs=lacerate/rejuvenation/mangle/feral_charge/frenzied_regeneration/maul/unburdened_rebirth/challenging_roar/dash
+actions=flask,type=steelskin
+actions+=/food,type=seafood_magnifique_feast
+actions+=/mark_of_the_wild
+actions+=/bear_form
+actions+=/auto_attack
+actions+=/snapshot_stats
+actions+=/skull_bash_bear
+actions+=/faerie_fire_feral,if=!debuff.faerie_fire.up
+actions+=/enrage,time<=5
+actions+=/maul,if=rage>=75
+actions+=/mangle_bear
+actions+=/lacerate,if=!ticking
+actions+=/thrash
+actions+=/pulverize,if=buff.lacerate.stack=3&buff.pulverize.remains<=2
+actions+=/lacerate,if=buff.lacerate.stack<3
+actions+=/berserk
+actions+=/faerie_fire_feral
+head=mask_of_vines,type=leather,ilevel=346,quality=rare,stats=242agi_1276armor_182crit_162haste_454sta,reforge=haste_dodge,gems=austere_shadowspirit_60sta_30agi,enchant=90sta_35dodge
+neck=pendant_of_the_lightless_grotto,heroic=1,ilevel=346,quality=rare,stats=168agi_112crit_112mastery_252sta,reforge=crit_dodge
+shoulders=embrace_of_the_night,type=leather,ilevel=346,quality=rare,stats=205agi_1178armor_150crit_130hit_337sta,reforge=hit_dodge,gems=60sta_10agi,enchant=20dodge_22sta
+chest=assassins_chestplate,type=leather,ilevel=359,quality=epic,stats=341agi_1669armor_253crit_183hit_512sta,reforge=crit_dodge,enchant=55sta
+waist=belt_of_nefarious_whispers,type=leather,ilevel=359,quality=epic,stats=253agi_939armor_184hit_144mastery_380sta,reforge=hit_dodge,gems=20agi_20dodge
+legs=leggings_of_the_burrowing_mole,type=leather,ilevel=346,quality=rare,stats=262agi_1374armor_162exp_202mastery_454sta,reforge=exp_dodge,gems=20agi_20dodge_20dodge_30sta_20agi,enchant=145sta_55agi
+feet=boots_of_the_predator,heroic=1,type=leather,ilevel=346,quality=rare,stats=205agi_1080armor_150crit_130hit_337sta,reforge=hit_dodge,gems=20agi_20dodge_10crit,enchant=30sta
+wrists=double_dealing_bracers,heroic=1,type=leather,ilevel=346,quality=rare,stats=168agi_687armor_112crit_112mastery_252sta,reforge=crit_dodge,enchant=40sta
+hands=stormbolt_gloves,type=leather,ilevel=359,quality=epic,stats=233agi_1043armor_149crit_169haste_380sta,reforge=haste_dodge,gems=20agi_20dodge_10haste,enchant=50mastery
+finger1=signet_of_the_elder_council,ilevel=359,quality=epic,stats=190agi_286sta_127haste_127mastery,reforge=haste_dodge
+finger2=ring_of_dun_algaz,heroic=1,ilevel=346,quality=rare,stats=168agi_120crit_98hit_252sta,reforge=hit_dodge
+trinket1=lifebound_alchemist_stone,ilevel=359,quality=epic,stats=213mastery_380sta,reforge=mastery_dodge,gems=20agi_20dodge
+trinket2=porcelain_crab,heroic=1,ilevel=346,quality=rare,stats=285dodge,equip=onattackhit_1710mastery_10%_20dur_95cd
+back=cloak_of_thredd,heroic=1,ilevel=346,quality=rare,stats=168agi_580armor_112crit_112mastery_252sta,reforge=crit_dodge,enchant=225barmor
+main_hand=selizas_spear,heroic=1,ilevel=346,quality=rare,stats=302agi_153crit_230mastery_454sta,reforge=crit_dodge,enchant=85ap,weapon=polearm_3.60speed_1590min_2386max
+ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,reforge=haste_dodge,gems=20agi_20dodge
+tabard=darnassus_tabard,ilevel=1
+# Gear Summary
+# gear_agility=3247
+# gear_stamina=5756
+# gear_attack_power=85
+# gear_expertise_rating=98
+# gear_hit_rating=509
+# gear_crit_rating=1281
+# gear_haste_rating=331
+# gear_mastery_rating=1217
+# gear_armor=9826
+# gear_bonus_armor=225
+# gear_dodge_rating=1348
+# meta_gem=austere_shadowspirit
+# main_hand=selizas_spear,heroic=1,weapon=polearm_3.60speed_1590min_2386max

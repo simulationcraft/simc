@@ -7,40 +7,42 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// trigger_judgement_of_wisdom ==============================================
+// dark_intent_callback ==================================================
 
-struct judgement_of_wisdom_callback_t : public action_callback_t
+struct dark_intent_callback_t : public action_callback_t
 {
-  gain_t* gain;
-  proc_t* proc;
-  rng_t*  rng;
+  dark_intent_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  judgement_of_wisdom_callback_t( player_t* p ) : action_callback_t( p -> sim, p )
+  virtual void trigger( action_t* a, void* call_data )
   {
-    gain = p -> get_gain( "judgement_of_wisdom" );
-    proc = p -> get_proc( "judgement_of_wisdom" );
-    rng  = p -> get_rng ( "judgement_of_wisdom" );
+    listener -> buffs.dark_intent_feedback -> trigger();
+  }
+};
+
+struct hymn_of_hope_buff_t : public buff_t
+{
+  double mana_gain;
+  hymn_of_hope_buff_t( player_t* p, const uint32_t id, const std::string& n ) :
+    buff_t ( p, id, n )
+  {
+    mana_gain = 0;
+
+  }
+  virtual void start( int    stacks,
+                          double value )
+  {
+    buff_t::start( stacks, value );
+
+    // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
+    // Extra Mana is set by current max_mana, doesn't change when max_mana changes.
+    mana_gain = player -> resource_max[ RESOURCE_MANA ] * 0.15;
+    player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
   }
 
-  virtual void trigger( action_t* a )
+  virtual void expire()
   {
-    sim_t* sim = a -> sim;
-
-    if ( ! sim -> target -> debuffs.judgement_of_wisdom -> check() )
-      return;
-
-    player_t* p = a -> player;
-
-    double base_mana = p -> resource_base[ RESOURCE_MANA ];
-
-    double PPM = 15.0;
-
-    if ( ! rng -> roll( a -> ppm_proc_chance( PPM ) ) )
-      return;
-
-    proc -> occur();
-
-    p -> resource_gain( RESOURCE_MANA, base_mana * 0.02, gain );
+    buff_t::expire();
+    player -> stat_loss( STAT_MAX_MANA, mana_gain );
   }
 };
 
@@ -152,33 +154,6 @@ static void replenish_raid( player_t* provider )
   }
 }
 
-// trigger_target_swings ====================================================
-
-static void trigger_target_swings( player_t* p )
-{
-  assert( p -> sim -> target -> attack_speed > 0 );
-
-  struct target_swing_event_t : public event_t
-  {
-    target_swing_event_t( sim_t* sim, player_t* player, double interval ) : event_t( sim, player )
-    {
-      name = "Target Swing";
-      sim -> add_event( this, interval );
-    }
-    virtual void execute()
-    {
-      if ( sim -> log )
-        log_t::output( sim, "%s swings at %s", sim -> target -> name(), player -> name() );
-
-      player -> target_swing();
-
-      player -> target_auto_attack = new ( sim ) target_swing_event_t( sim, player, sim -> target -> attack_speed );
-    }
-  };
-
-  p -> target_auto_attack = new ( p -> sim ) target_swing_event_t( p -> sim, p, p -> sim -> target -> attack_speed );
-}
-
 // parse_talent_url =========================================================
 
 static bool parse_talent_url( sim_t* sim,
@@ -207,26 +182,28 @@ static bool parse_talent_url( sim_t* sim,
       return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
     }
   }
-  else if ( url.find( "mmo-champion" ) != url.npos )
-  {
-    std::vector<std::string> parts;
-    int part_count = util_t::string_split( parts, url, "&" );
-    if( part_count <= 0 )
-    {
-      sim -> errorf( "Player %s has malformed talent string: %s\n", p -> name(), url.c_str() );
-      return false;
-    }
-
-    if ( ( cut_pt = parts[ 0 ].find_first_of( "?" ) ) != parts[ 0 ].npos )
-    {
-      return p -> parse_talents_mmo( parts[ 0 ].substr( cut_pt + 1 ) );
-    }
-  }
   else if ( url.find( "wowhead" ) != url.npos )
   {
     if ( ( cut_pt = url.find_first_of( "#=" ) ) != url.npos )
     {
-      return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
+      std::string::size_type cut_pt2 = url.find_first_of( "-", cut_pt + 1 );
+      // Add support for http://www.wowhead.com/talent#priest-033211000000000000000000000000000000000000322032210201222100231
+      if ( cut_pt2 != url.npos )
+        return p -> parse_talents_armory( url.substr( cut_pt2 + 1 ) );
+      else
+        return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
+    }
+  }
+  else
+  {
+    bool all_digits = true;
+    for( int i=url.size()-1; i >= 0 && all_digits; i-- )
+      if( ! isdigit( url[ i ] ) )
+          all_digits = false;
+
+    if( all_digits )
+    {
+      return p -> parse_talents_armory( url );
     }
   }
 
@@ -245,20 +222,25 @@ static bool parse_talent_url( sim_t* sim,
 // player_t::player_t =======================================================
 
 player_t::player_t( sim_t*             s,
-                    int                t,
+                    player_type        t,
                     const std::string& n,
-                    int                r ) :
-    sim( s ), name_str( n ),
-    region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), level( 80 ), use_pre_potion( -1 ), tank( -1 ),
+                    race_type          r ) :
+    sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
+    region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ), role( "unknown" ),
+    next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), race_str( "" ), race( r ),
+    pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
+    vengeance_factor( 0.0 ),
+    player_data( &( s->sim_data ) ),
+    race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
-    spell_haste( 1.0 ),  buffed_spell_haste( 0 ),
-    attack_haste( 1.0 ), buffed_attack_haste( 0 ),
+    spell_haste( 1.0 ),  buffed_spell_haste( 1.0 ),
+    attack_haste( 1.0 ), buffed_attack_haste( 1.0 ),
+    // Mastery
+    mastery( 0 ), buffed_mastery ( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
     // Spell Mechanics
     base_spell_power( 0 ), buffed_spell_power( 0 ),
     base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
@@ -271,14 +253,14 @@ player_t::player_t( sim_t*             s,
     spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
     mp5_per_intellect( 0 ),
     mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
-    energy_regen_per_second( 0 ), focus_regen_per_second( 0 ),
+    base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ),
+    resource_reduction( 0 ), initial_resource_reduction( 0 ),
     last_cast( 0 ),
     // Attack Mechanics
     base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
     base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),         buffed_attack_hit( 0 ),
     base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),   buffed_attack_expertise( 0 ),
     base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),        buffed_attack_crit( 0 ),
-    base_attack_penetration( 0 ), initial_attack_penetration( 0 ),  attack_penetration( 0 ), buffed_attack_penetration( 0 ),
     attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
     attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
     attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
@@ -288,16 +270,15 @@ player_t::player_t( sim_t*             s,
     target_auto_attack( 0 ),
     base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
     base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ),
-    base_block_value( 0 ), initial_block_value( 0 ), block_value( 0 ), buffed_block_value( 0 ),
-    base_defense( 0 ),     initial_defense( 0 ),     defense( 0 ),     buffed_defense( 0 ),
     base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),        buffed_miss( 0 ), buffed_crit( 0 ),
     base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),       buffed_dodge( 0 ),
     base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
     base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
     armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
-    armor_per_agility( 0 ), initial_armor_per_agility( 2.0 ),
     dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
-    diminished_miss_capi( 0 ), diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
+    diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
+    armor_coeff( 0 ),
+    half_resistance_rating( 0 ),
     // Attacks
     main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
     // Resources
@@ -320,18 +301,37 @@ player_t::player_t( sim_t*             s,
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
-    meta_gem( META_GEM_NONE ), scaling_lag( 0 ), rng_list( 0 )
+    // Gear
+    sets( 0 ),
+    meta_gem( META_GEM_NONE ), matching_gear( false ),
+    // Scaling
+    scaling_lag( 0 ),
+    // Movement & Position
+    base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
+
+    rng_list( 0 )
 {
-  if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
-  player_t** last = &( sim -> player_list );
-  while ( *last ) last = &( ( *last ) -> next );
-  *last = this;
-  next = 0;
-  index = ++( sim -> num_players );
+  sim -> actor_list.push_back(this);
+
+  if ( type != ENEMY && type != ENEMY_ADD )
+  {
+    if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
+    player_t** last = &( sim -> player_list );
+    while ( *last ) last = &( ( *last ) -> next );
+    *last = this;
+    next = 0;
+    index = ++( sim -> num_players );
+  }
+  else
+  {
+    index = - ( ++( sim -> num_enemies ) );
+  }
 
   race_str = util_t::race_type_string( race );
 
   if ( is_pet() ) skill = 1.0;
+
+  for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -372,6 +372,14 @@ player_t::player_t( sim_t*             s,
   ranged_weapon.slot = SLOT_RANGED;
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
+
+  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    talent_tab_points[ i ] = 0;
+    tree_type[ i ] = TREE_NONE;
+  }
+  
+  player_data.set_parent( &( sim -> sim_data ) );
 }
 
 // player_t::~player_t =====================================================
@@ -408,8 +416,65 @@ player_t::~player_t()
     rng_list = r -> next;
     delete r;
   }
-  int size = talent_list.size();
-  for( int i=0; i < size; i++ ) delete talent_list[ i ];
+  while ( dot_t* d = dot_list )
+  {   
+    dot_list = d -> next;
+    delete d;
+  }
+  while ( buff_t* d = buff_list )
+  {
+    buff_list = d -> next;
+    delete d;
+  }
+  while ( cooldown_t* d = cooldown_list )
+  {
+    cooldown_list = d -> next;
+    delete d;
+  }
+  for ( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    resource_gain_callbacks[ i ].clear();
+    resource_loss_callbacks[ i ].clear();
+  }
+  for ( int i=0; i < RESULT_MAX; i++ )
+  {
+    attack_result_callbacks[ i ].clear();
+    spell_result_callbacks[ i ].clear();
+    attack_direct_result_callbacks[ i ].clear();
+    spell_direct_result_callbacks[ i ].clear();
+    spell_cast_result_callbacks[ i ].clear();
+    harmful_cast_result_callbacks[ i ].clear();
+  }
+  for ( int i=0; i < SCHOOL_MAX; i++ )
+  {
+    tick_damage_callbacks[ i ].clear();
+    direct_damage_callbacks[ i ].clear();
+  }
+  tick_callbacks.clear();
+
+  for( int i=all_callbacks.size()-1; i >= 0; i-- ) 
+    delete all_callbacks[ i ];
+  all_callbacks.clear();
+
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- ) 
+      delete talent_trees[ i ][ j ];
+    talent_trees[ i ].clear();
+  }
+
+  for( int i=glyphs.size()-1; i >= 0; i-- ) 
+    delete glyphs[ i ];
+  glyphs.clear();
+
+  while ( spell_list.size() )
+  {
+    spell_id_t* s = spell_list.back();
+    spell_list.pop_back();
+    delete s;
+  }
+  if ( sets )
+    delete sets;
 }
 
 // player_t::id ============================================================
@@ -454,11 +519,14 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug ) log_t::output( sim, "Initializing Players." );
 
   bool too_quiet = true;
+  bool zero_dds = true;
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
+    if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
+    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && !p -> is_pet() ) zero_dds = false;
   }
 
   if ( too_quiet && ! sim -> debug )
@@ -466,6 +534,10 @@ bool player_t::init( sim_t* sim )
     sim -> errorf( "No active players in sim!" );
     return false;
   }
+
+  if ( zero_dds && ! sim -> debug )
+    sim -> fixed_time = true;
+
 
   if ( sim -> debug ) log_t::output( sim, "Building Parties." );
 
@@ -532,11 +604,13 @@ void player_t::init()
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
 
   initialized = 1;
-
-  init_rating();
+  init_talents();
+  init_spells();
   init_glyphs();
+  init_rating();
   init_race();
   init_base();
+  init_racials();
   init_items();
   init_core();
   init_spell();
@@ -548,8 +622,8 @@ void player_t::init()
   init_unique_gear();
   init_enchant();
   init_professions();
-  init_scaling();
   init_consumables();
+  init_scaling();
   init_buffs();
   init_actions();
   init_gains();
@@ -557,6 +631,29 @@ void player_t::init()
   init_uptimes();
   init_rng();
   init_stats();
+  init_values();
+}
+
+// player_t::init_base =====================================================
+
+void player_t::init_base()
+{
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  base_mp5                         = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MP5 );
+
+  if ( level <= 80 ) health_per_stamina = 10;
+  else if ( level <= 85 ) health_per_stamina = ( level - 80) / 5 * 4 + 10;
+  else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
 }
 
 // player_t::init_items =====================================================
@@ -578,9 +675,29 @@ void player_t::init_items()
 
   gear_stats_t item_stats;
 
+  bool slots[ SLOT_MAX ];
+  for ( int i = 0; i < SLOT_MAX; i++ )
+  {
+    if ( util_t::armor_type_string( type, i ) )
+    {
+      slots[ i ] = false;
+    }
+    else
+    {
+      slots[ i ] = true;
+    }
+  }
+
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
   {
+    // If the item has been specified in options we want to start from scratch, forgetting about lingering stuff from profile copy
+    if ( items[ i ].options_str != "" )
+    {
+      items[ i ] = item_t(this, items[ i ].options_str);
+      items[ i ].slot = i;
+    }
+
     item_t& item = items[ i ];
 
     if ( ! item.init() )
@@ -589,11 +706,34 @@ void player_t::init_items()
       return;
     }
 
+    slots[ item.slot ] = item.matching_type();
+
     for ( int j=0; j < STAT_MAX; j++ )
     {
       item_stats.add_stat( j, item.stats.get_stat( j ) );
     }
   }
+
+  switch ( type )
+  {
+  case MAGE:
+  case PRIEST:
+  case WARLOCK:
+    matching_gear = true;
+    break;
+  default:
+    matching_gear = true;
+    for ( int i=0; i < SLOT_MAX; i++ )
+    {
+      if ( slots[ i ] == false )
+      {
+        matching_gear = false;
+        break;
+      }
+    }
+    break;
+  }
+
 
   init_meta_gem( item_stats );
 
@@ -620,46 +760,66 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
 
-  if      ( meta_gem == META_AUSTERE_EARTHSIEGE      ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_BRACING_EARTHSIEGE      ) item_stats.spell_power += 25;
-  else if ( meta_gem == META_BRACING_EARTHSTORM      ) item_stats.spell_power += 14;
-  else if ( meta_gem == META_CHAOTIC_SKYFIRE         ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_CHAOTIC_SKYFLARE        ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_EMBER_SKYFLARE          ) item_stats.spell_power += 25;
-  else if ( meta_gem == META_ENIGMATIC_SKYFLARE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_ENIGMATIC_STARFLARE     ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_ENIGMATIC_SKYFIRE       ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_FORLORN_SKYFLARE        ) item_stats.spell_power += 25;
-  else if ( meta_gem == META_FORLORN_STARFLARE       ) item_stats.spell_power += 20;
-  else if ( meta_gem == META_IMPASSIVE_SKYFLARE      ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_IMPASSIVE_STARFLARE     ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE   ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM   ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE ) item_stats.attack_power += 42;
-  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER ) item_stats.attack_power += 34;
-  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE   ) item_stats.attack_power += 42;
-  else if ( meta_gem == META_POWERFUL_EARTHSHATTER   ) item_stats.attribute[ ATTR_STAMINA ] += 26;
-  else if ( meta_gem == META_POWERFUL_EARTHSIEGE     ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_POWERFUL_EARTHSTORM     ) item_stats.attribute[ ATTR_STAMINA ] += 18;
-  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE   ) item_stats.attribute[ ATTR_AGILITY ] += 21;
-  else if ( meta_gem == META_RELENTLESS_EARTHSTORM   ) item_stats.attribute[ ATTR_AGILITY ] += 12;
-  else if ( meta_gem == META_REVITALIZING_SKYFLARE   ) item_stats.mp5 += 8;
-  else if ( meta_gem == META_SWIFT_SKYFIRE           ) item_stats.attack_power += 24;
-  else if ( meta_gem == META_SWIFT_SKYFLARE          ) item_stats.attack_power += 42;
-  else if ( meta_gem == META_SWIFT_STARFIRE          ) item_stats.spell_power  += 12;
-  else if ( meta_gem == META_SWIFT_STARFLARE         ) item_stats.attack_power += 34;
-  else if ( meta_gem == META_TIRELESS_STARFLARE      ) item_stats.spell_power  += 20;
-  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER  ) item_stats.spell_power  += 20;
-  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE    ) item_stats.spell_power  += 25;
+  if      ( meta_gem == META_AGILE_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_AGILITY ] += 54;
+  else if ( meta_gem == META_AUSTERE_EARTHSIEGE         ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if ( meta_gem == META_AUSTERE_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_BEAMING_EARTHSIEGE         ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_BRACING_EARTHSIEGE         ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_BRACING_EARTHSTORM         ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_BRACING_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_BURNING_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_CHAOTIC_SHADOWSPIRIT       ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_CHAOTIC_SKYFIRE            ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_CHAOTIC_SKYFLARE           ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_DESTRUCTIVE_SHADOWSPIRIT   ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_DESTRUCTIVE_SKYFIRE        ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_DESTRUCTIVE_SKYFLARE       ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_EFFULGENT_SHADOWSPIRIT     ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_EMBER_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_EMBER_SKYFIRE              ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_EMBER_SKYFLARE             ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_ENIGMATIC_SHADOWSPIRIT     ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_ENIGMATIC_SKYFLARE         ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_ENIGMATIC_STARFLARE        ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_ENIGMATIC_SKYFIRE          ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_ETERNAL_EARTHSIEGE         ) item_stats.dodge_rating += 21;
+  else if ( meta_gem == META_ETERNAL_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_FLEET_SHADOWSPIRIT         ) item_stats.mastery_rating += 54;
+  else if ( meta_gem == META_FORLORN_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
+  else if ( meta_gem == META_FORLORN_SKYFLARE           ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_FORLORN_STARFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_IMPASSIVE_SHADOWSPIRIT     ) item_stats.crit_rating += 54;
+  else if ( meta_gem == META_IMPASSIVE_SKYFLARE         ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_IMPASSIVE_STARFLARE        ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE      ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM      ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
+  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE    ) item_stats.haste_rating += 21;
+  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER    ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE      ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_POWERFUL_EARTHSHATTER      ) item_stats.attribute[ ATTR_STAMINA ] += 26;
+  else if ( meta_gem == META_POWERFUL_EARTHSIEGE        ) item_stats.attribute[ ATTR_STAMINA ] += 32;
+  else if ( meta_gem == META_POWERFUL_EARTHSTORM        ) item_stats.attribute[ ATTR_STAMINA ] += 18;
+  else if ( meta_gem == META_POWERFUL_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
+  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE      ) item_stats.attribute[ ATTR_AGILITY ] += 21;
+  else if ( meta_gem == META_RELENTLESS_EARTHSTORM      ) item_stats.attribute[ ATTR_AGILITY ] += 12;
+  else if ( meta_gem == META_REVERBERATING_SHADOWSPIRIT ) item_stats.attribute[ ATTR_STRENGTH ] += 54;
+  else if ( meta_gem == META_REVITALIZING_SHADOWSPIRIT  ) item_stats.attribute[ ATTR_SPIRIT ] += 54;
+  else if ( meta_gem == META_REVITALIZING_SKYFLARE      ) item_stats.attribute[ ATTR_SPIRIT ] += 22;
+  else if ( meta_gem == META_SWIFT_SKYFIRE              ) item_stats.crit_rating += 12;
+  else if ( meta_gem == META_SWIFT_SKYFLARE             ) item_stats.crit_rating += 21;
+  else if ( meta_gem == META_SWIFT_STARFLARE            ) item_stats.crit_rating += 17;
+  else if ( meta_gem == META_TIRELESS_STARFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_TIRELESS_SKYFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER     ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
+  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE       ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
 
-  if ( meta_gem == META_AUSTERE_EARTHSIEGE )
+  if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
     initial_armor_multiplier *= 1.02;
   }
-  else if ( meta_gem == META_EMBER_SKYFLARE )
+  else if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
-    attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.02;
+    mana_per_intellect *= 1.02;
   }
   else if ( meta_gem == META_BEAMING_EARTHSIEGE )
   {
@@ -686,12 +846,16 @@ void player_t::init_core()
   initial_stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating + ( is_pet() ? 0 : sim -> enchant.  hit_rating );
   initial_stats. crit_rating = gear. crit_rating + enchant. crit_rating + ( is_pet() ? 0 : sim -> enchant. crit_rating );
   initial_stats.haste_rating = gear.haste_rating + enchant.haste_rating + ( is_pet() ? 0 : sim -> enchant.haste_rating );
+  initial_stats.mastery_rating = gear.mastery_rating + enchant.mastery_rating + ( is_pet() ? 0 : sim -> enchant.mastery_rating );
 
   if ( initial_stats.  hit_rating < 0 ) initial_stats.  hit_rating = 0;
   if ( initial_stats. crit_rating < 0 ) initial_stats. crit_rating = 0;
   if ( initial_stats.haste_rating < 0 ) initial_stats.haste_rating = 0;
+  if ( initial_stats.mastery_rating < 0 ) initial_stats.mastery_rating = 0;
 
-  initial_haste_rating = initial_stats.haste_rating;
+  initial_haste_rating          = initial_stats.haste_rating;
+
+  initial_mastery_rating        = initial_stats.mastery_rating;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -705,7 +869,24 @@ void player_t::init_core()
 
 void player_t::init_race()
 {
-  race = util_t::parse_race_type( race_str );
+  if ( race_str.empty() )
+  {
+    race_str = util_t::race_type_string( race );
+  }
+  else
+  {
+    race = util_t::parse_race_type( race_str );
+  }
+}
+
+// player_t::init_racials ======================================================
+
+void player_t::init_racials()
+{
+  if ( race == RACE_GNOME )
+  {
+    mana_per_intellect *= 1.05;
+  }
 }
 
 // player_t::init_spell =====================================================
@@ -728,13 +909,25 @@ void player_t::init_spell()
 
   initial_spell_penetration = base_spell_penetration + initial_stats.spell_penetration;
 
+
+
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
-  double base_60 = 0.006600;
-  double base_70 = 0.005596;
-  double base_80 = 0.003345;
+  if ( type != ENEMY && type != ENEMY_ADD )
+    mana_regen_base = player_data.spi_regen( type, level );
 
-  mana_regen_base = rating_t::interpolate( level, base_60, base_70, base_80 );
+  if ( level >= 61 )
+  {
+    half_resistance_rating = 150.0 + ( level - 60 ) * ( level - 67.5 );
+  }
+  else if ( level >= 21 )
+  {
+    half_resistance_rating = 50.0 + ( level - 20 ) * 2.5;
+  }
+  else
+  {
+    half_resistance_rating = 50.0;
+  }
 }
 
 // player_t::init_attack ====================================================
@@ -743,11 +936,9 @@ void player_t::init_attack()
 {
   initial_stats.attack_power             = gear.attack_power             + enchant.attack_power             + ( is_pet() ? 0 : sim -> enchant.attack_power );
   initial_stats.expertise_rating         = gear.expertise_rating         + enchant.expertise_rating         + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
-  initial_stats.armor_penetration_rating = gear.armor_penetration_rating + enchant.armor_penetration_rating + ( is_pet() ? 0 : sim -> enchant.armor_penetration_rating );
 
   if ( initial_stats.attack_power             < 0 ) initial_stats.attack_power             = 0;
   if ( initial_stats.expertise_rating         < 0 ) initial_stats.expertise_rating         = 0;
-  if ( initial_stats.armor_penetration_rating < 0 ) initial_stats.armor_penetration_rating = 0;
 
   initial_attack_power = base_attack_power + initial_stats.attack_power;
 
@@ -757,39 +948,55 @@ void player_t::init_attack()
 
   initial_attack_expertise = base_attack_expertise + initial_stats.expertise_rating / rating.expertise;
 
-  initial_attack_penetration = base_attack_penetration + initial_stats.armor_penetration_rating / rating.armor_penetration;
+  double a,b;
+  if ( level > 80 )
+  {
+    a = 2167.5;
+    b = -158167.5;
+  }
+  else if ( level >= 60 )
+  {
+    a = 467.5;
+    b = -22167.5;
+  }
+  else
+  {
+    a = 85.0;
+    b = 400.0;
+  }
+  armor_coeff = a * level + b;
 }
 
 // player_t::init_defense ====================================================
 
 void player_t::init_defense()
 {
+  if ( type != ENEMY && type != ENEMY_ADD )
+    base_dodge = player_data.dodge_base( type );
+
   initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
   initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
-  initial_stats.defense_rating = gear.defense_rating + enchant.defense_rating + ( is_pet() ? 0 : sim -> enchant.defense_rating );
   initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
   initial_stats.parry_rating   = gear.parry_rating   + enchant.parry_rating   + ( is_pet() ? 0 : sim -> enchant.parry_rating );
   initial_stats.block_rating   = gear.block_rating   + enchant.block_rating   + ( is_pet() ? 0 : sim -> enchant.block_rating );
-  initial_stats.block_value    = gear.block_value    + enchant.block_value    + ( is_pet() ? 0 : sim -> enchant.block_value );
 
   if ( initial_stats.armor          < 0 ) initial_stats.armor          = 0;
   if ( initial_stats.bonus_armor    < 0 ) initial_stats.bonus_armor    = 0;
-  if ( initial_stats.defense_rating < 0 ) initial_stats.defense_rating = 0;
   if ( initial_stats.dodge_rating   < 0 ) initial_stats.dodge_rating   = 0;
   if ( initial_stats.parry_rating   < 0 ) initial_stats.parry_rating   = 0;
   if ( initial_stats.block_rating   < 0 ) initial_stats.block_rating   = 0;
-  if ( initial_stats.block_value    < 0 ) initial_stats.block_value    = 0;
 
-  initial_armor       = base_armor       + initial_stats.armor;
-  initial_bonus_armor = base_bonus_armor + initial_stats.bonus_armor;
-  initial_defense     = base_defense     + initial_stats.defense_rating / rating.defense;
-  initial_miss        = base_miss;
-  initial_dodge       = base_dodge       + initial_stats.dodge_rating / rating.dodge;
-  initial_parry       = base_parry       + initial_stats.parry_rating / rating.parry;
-  initial_block       = base_block       + initial_stats.block_rating / rating.block;
-  initial_block_value = base_block_value + initial_stats.block_value;
+  initial_armor             = base_armor       + initial_stats.armor;
+  initial_bonus_armor       = base_bonus_armor + initial_stats.bonus_armor;
+  initial_miss              = base_miss;
+  initial_dodge             = base_dodge       + initial_stats.dodge_rating / rating.dodge;
+  initial_parry             = base_parry       + initial_stats.parry_rating / rating.parry;
+  initial_block             = base_block       + initial_stats.block_rating / rating.block;
 
-  if ( tank > 0 ) position = POSITION_FRONT;
+  if ( type != ENEMY && type != ENEMY_ADD )
+    initial_dodge_per_agility = player_data.dodge_scale( type, level );
+
+  if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
 }
 
 // player_t::init_weapon ===================================================
@@ -823,7 +1030,7 @@ void player_t::init_resources( bool force )
 {
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
   // Code simplified on the assumption that the minimum player level is 60.
-  double adjust = is_pet() ? 0 : 20;
+  double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : 20;
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -831,10 +1038,21 @@ void player_t::init_resources( bool force )
     {
       resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
 
-      if ( i == RESOURCE_MANA   ) resource_initial[ i ] += ( intellect() - adjust ) * mana_per_intellect + adjust;
+      if ( i == RESOURCE_MANA ) 
+      {
+        if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
+        {
+          resource_initial[ i ] *= 1.02;
+        }
+        if ( race == RACE_GNOME )
+        {
+          resource_initial[ i ] *= 1.05;
+        }
+        resource_initial[ i ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
+      }
       if ( i == RESOURCE_HEALTH ) 
       {
-        resource_initial[ i ] += (   stamina() - adjust ) * health_per_stamina + adjust;
+        resource_initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
 
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
         {
@@ -853,6 +1071,13 @@ void player_t::init_resources( bool force )
     size *= 2;
     timeline_resource.insert( timeline_resource.begin(), size, 0 );
   }
+  if ( timeline_health.empty() )
+    {
+      int size = ( int ) sim -> max_time;
+      if ( size == 0 ) size = 600; // Default to 10 minutes
+      size *= 2;
+      timeline_health.insert( timeline_health.begin(), size, 0 );
+    }
 }
 
 // player_t::init_consumables ==============================================
@@ -881,7 +1106,7 @@ void player_t::init_professions()
     if ( 2 != util_t::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
     {
       prof_name  = splits[ i ];
-      prof_value = 450;
+      prof_value = 525;
     }
 
     int prof_type = util_t::parse_profession_type( prof_name );
@@ -895,21 +1120,65 @@ void player_t::init_professions()
   }
 
   // Miners gain additional stamina
-  if      ( profession[ PROF_MINING ] >= 450 ) attribute_initial[ ATTR_STAMINA ] += 50.0;
-  else if ( profession[ PROF_MINING ] >= 375 ) attribute_initial[ ATTR_STAMINA ] += 30.0;
-  else if ( profession[ PROF_MINING ] >= 300 ) attribute_initial[ ATTR_STAMINA ] += 10.0;
-  else if ( profession[ PROF_MINING ] >= 225 ) attribute_initial[ ATTR_STAMINA ] +=  7.0;
-  else if ( profession[ PROF_MINING ] >= 150 ) attribute_initial[ ATTR_STAMINA ] +=  5.0;
-  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=  3.0;
+  if      ( profession[ PROF_MINING ] >= 525 ) attribute_initial[ ATTR_STAMINA ] += 120.0;
+  else if ( profession[ PROF_MINING ] >= 450 ) attribute_initial[ ATTR_STAMINA ] +=  60.0;
+  else if ( profession[ PROF_MINING ] >= 375 ) attribute_initial[ ATTR_STAMINA ] +=  30.0;
+  else if ( profession[ PROF_MINING ] >= 300 ) attribute_initial[ ATTR_STAMINA ] +=  10.0;
+  else if ( profession[ PROF_MINING ] >= 225 ) attribute_initial[ ATTR_STAMINA ] +=   7.0;
+  else if ( profession[ PROF_MINING ] >= 150 ) attribute_initial[ ATTR_STAMINA ] +=   5.0;
+  else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=   3.0;
 
   // Skinners gain additional crit rating
-  if      ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 32.0 / rating.attack_crit;
+  if      ( profession[ PROF_SKINNING ] >= 525 ) initial_attack_crit += 80.0 / rating.attack_crit;
+  else if ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 40.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 375 ) initial_attack_crit += 20.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 300 ) initial_attack_crit += 12.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 225 ) initial_attack_crit +=  9.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >= 150 ) initial_attack_crit +=  6.0 / rating.attack_crit;
   else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;
 }
+
+// Execute Pet Action =========================================================
+
+struct execute_pet_action_t : public action_t
+{
+  action_t* pet_action;
+  pet_t* pet;
+  std::string action_str;
+
+  execute_pet_action_t( player_t* player, pet_t* p, const std::string& as, const std::string& options_str ) :
+      action_t( ACTION_OTHER, "execute_pet_action", player )
+  {
+    parse_options( NULL, options_str );
+    pet = p;
+    action_str = as;
+    trigger_gcd = 0;
+  }
+
+  virtual void reset()
+  {
+    for ( action_t* action = pet -> action_list; action; action = action -> next )
+    {
+      if ( action -> name_str == action_str )
+      {
+        action -> background = true;
+        pet_action = action;
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    pet_action -> execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! action_t::ready() ) return false;
+    if ( pet_action -> player -> sleeping ) return false;
+    return pet_action -> ready();
+  }
+};
 
 // player_t::init_actions ==================================================
 
@@ -929,22 +1198,51 @@ void player_t::init_actions()
       std::string action_name    = splits[ i ];
       std::string action_options = "";
 
-      std::string::size_type cut_pt = action_name.find_first_of( ",:" );
+      std::string::size_type cut_pt = action_name.find( "," );
 
       if ( cut_pt != action_name.npos )
       {
         action_options = action_name.substr( cut_pt + 1 );
         action_name    = action_name.substr( 0, cut_pt );
       }
+      
+      action_t* a=0;
 
-      action_t* a = create_action( action_name, action_options );
-      if ( ! a )
+      cut_pt = action_name.find( ":" );
+      if ( cut_pt != action_name.npos )
       {
-        sim -> errorf( "Player %s has unknown action: %s\n", name(), splits[ i ].c_str() );
-        return;
+        std::string pet_name   = action_name.substr( 0, cut_pt );
+        std::string pet_action = action_name.substr( cut_pt + 1 );
+
+        pet_t* pet = find_pet( pet_name );
+        if ( pet )
+        {
+          a =  new execute_pet_action_t( this, pet, pet_action, action_options );
+        }
+        else
+        {
+          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n", name(), pet_name.c_str(), splits[ i ].c_str() );
+        }
+      }
+      else 
+      {
+        a = create_action( action_name, action_options );
       }
 
-      a -> if_expr = action_expr_t::parse( a, a -> if_expr_str );
+      if ( a )
+      {
+        a -> marker = (char) ( ( i < 10 ) ? ( '0' + i      ) : 
+                               ( i < 36 ) ? ( 'A' + i - 10 ) :
+                               ( i < 58 ) ? ( 'a' + i - 36 ) : '.' );
+
+        a -> signature_str = splits[ i ];
+      }
+      else
+      {
+        sim -> errorf( "Player %s unable to create action: %s\n", name(), splits[ i ].c_str() );
+        sim -> cancel();
+        return;
+      }
     }
   }
 
@@ -959,14 +1257,65 @@ void player_t::init_actions()
       if ( action ) action -> background = true;
     }
   }
+
+  for ( action_t* action = action_list; action; action = action -> next )
+  {
+    action -> if_expr = action_expr_t::parse( action, action -> if_expr_str );
+  }
+
+  int capacity = std::max( 1200, (int) ( sim -> max_time / 2.0 ) );
+  action_sequence.reserve( capacity );
+  action_sequence = "";
 }
 
 // player_t::init_rating ===================================================
 
 void player_t::init_rating()
 {
-  rating.init( sim, level );
+  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%d type=%s", level, util_t::player_type_string( type ) );
+
+  rating.init( sim, player_data, level, type );
 }
+
+// player_t::init_talents =================================================
+
+void player_t::init_talents()
+{
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    talent_tab_points[ i ] = 0;
+
+    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+    {
+      talent_tab_points[ i ] += talent_trees[ i ][ j ] -> rank();
+    }
+  }
+
+  specialization = primary_tab();
+}
+
+// player_t::init_glyphs ==================================================
+
+void player_t::init_glyphs()
+{
+  std::vector<std::string> glyph_names;
+  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+
+  for ( int i=0; i < num_glyphs; i++ )
+  {
+    glyph_t* g = find_glyph( glyph_names[ i ] );
+
+    if( g ) g -> enable();
+  }
+}
+
+// player_t::init_spells =================================================
+
+void player_t::init_spells()
+{
+
+}
+
 
 // player_t::init_buffs ====================================================
 
@@ -974,23 +1323,44 @@ void player_t::init_buffs()
 {
   buffs.berserking           = new buff_t( this, "berserking",          1, 10.0 );
   buffs.heroic_presence      = new buff_t( this, "heroic_presence",     1       );
-  buffs.replenishment        = new buff_t( this, "replenishment",       1, 15.0 );
+  buffs.replenishment        = new buff_t( this, 57669, "replenishment" );
   buffs.stoneform            = new buff_t( this, "stoneform",           1,  8.0 );
   buffs.hellscreams_warsong  = new buff_t( this, "hellscreams_warsong", 1       );
   buffs.strength_of_wrynn    = new buff_t( this, "strength_of_wrynn",   1       );
+  buffs.dark_intent          = new buff_t( this, 85767, "dark_intent" );
+  buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
+  buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
+  buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope" );
+  buffs.body_and_soul        = new buff_t( this, "body_and_soul", 1, 4.0 );
+  buffs.grace                = new buff_t( this, "grace", 3, 15.0 );
+
+
 
   // Infinite-Stacking Buffs
-  buffs.moving  = new buff_t( this, "moving",  -1 );
+  buffs.moving  = new buff_t( this, "moving",  1 );
   buffs.stunned = new buff_t( this, "stunned", -1 );
 
-  // stat_buff_t( sim, player, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, ( level * 4 ) + 2, 1, 15.0 );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  ( level * 2 ) + 3, 1, 15.0 );
+  buffs.self_movement = new buff_t( this, "self_movement", 1 );
+
+  // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )  
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> sim_data.effect_min( 33697, sim -> max_player_level, E_APPLY_AURA, A_MOD_ATTACK_POWER ) ), 1, 15.0 );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> sim_data.effect_min( 33697, sim -> max_player_level, E_APPLY_AURA, A_MOD_DAMAGE_DONE ) ), 1, 15.0 );
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
-  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 120.0, 120.0 );
+  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
   buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
+  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0,            1, 25.0, 60.0 );
+  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0,            1, 25.0, 60.0 );
+  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0,            1, 25.0, 60.0 );
+  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_SPELL_POWER,  1200.0,            1, 25.0, 60.0 );
   buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
+
+
+  // Infinite-Stacking De-Buffs
+  debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
+  debuffs.casting      = new debuff_t( this, "casting",      1 );
+  debuffs.invulnerable = new debuff_t( this, "invulnerable", 1 );
+  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   1 );
 }
 
 // player_t::init_gains ====================================================
@@ -998,15 +1368,13 @@ void player_t::init_buffs()
 void player_t::init_gains()
 {
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
-  gains.blessing_of_wisdom     = get_gain( "blessing_of_wisdom" );
+  gains.blessing_of_might      = get_gain( "blessing_of_might" );
   gains.dark_rune              = get_gain( "dark_rune" );
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.innervate              = get_gain( "innervate" );
-  gains.judgement_of_wisdom    = get_gain( "judgement_of_wisdom" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
-  gains.mana_tide              = get_gain( "mana_tide" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.replenishment          = get_gain( "replenishment" );
   gains.restore_mana           = get_gain( "restore_mana" );
@@ -1015,6 +1383,7 @@ void player_t::init_gains()
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
+  gains.hymn_of_hope           = get_gain( "hymn_of_hope_max_mana" );
 }
 
 // player_t::init_procs ====================================================
@@ -1052,6 +1421,13 @@ void player_t::init_stats()
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
 }
 
+// player_t::init_values ====================================================
+
+void player_t::init_values()
+{
+
+}
+
 // player_t::init_scaling ==================================================
 
 void player_t::init_scaling()
@@ -1061,7 +1437,7 @@ void player_t::init_scaling()
     int role = primary_role();
 
     int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
-    int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
+    int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) || ( role == ROLE_HEAL ) ) ? 1 : 0;
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
@@ -1082,11 +1458,11 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
-    scales_with[ STAT_ARMOR_PENETRATION_RATING ] = attack;
 
-    scales_with[ STAT_HIT_RATING   ] = 1;
-    scales_with[ STAT_CRIT_RATING  ] = 1;
-    scales_with[ STAT_HASTE_RATING ] = 1;
+    scales_with[ STAT_HIT_RATING                ] = 1;
+    scales_with[ STAT_CRIT_RATING               ] = 1;
+    scales_with[ STAT_HASTE_RATING              ] = 1;
+    scales_with[ STAT_MASTERY_RATING            ] = 1;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : 0;
@@ -1096,12 +1472,10 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ARMOR          ] = 0;
     scales_with[ STAT_BONUS_ARMOR    ] = 0;
-    scales_with[ STAT_DEFENSE_RATING ] = 0;
     scales_with[ STAT_DODGE_RATING   ] = 0;
     scales_with[ STAT_PARRY_RATING   ] = 0;
 
     scales_with[ STAT_BLOCK_RATING ] = 0;
-    scales_with[ STAT_BLOCK_VALUE  ] = 0;
 
     if ( sim -> scaling -> scale_stat != STAT_NONE )
     {
@@ -1121,7 +1495,6 @@ void player_t::init_scaling()
 
       case STAT_ATTACK_POWER:             initial_attack_power       += v;                            break;
       case STAT_EXPERTISE_RATING:         initial_attack_expertise   += v / rating.expertise;         break;
-      case STAT_ARMOR_PENETRATION_RATING: initial_attack_penetration += v / rating.armor_penetration; break;
 
       case STAT_HIT_RATING:
         initial_attack_hit += v / rating.attack_hit;
@@ -1134,6 +1507,7 @@ void player_t::init_scaling()
         break;
 
       case STAT_HASTE_RATING: initial_haste_rating += v; break;
+      case STAT_MASTERY_RATING: initial_mastery_rating += v; break;
 
       case STAT_WEAPON_DPS:
         if ( main_hand_weapon.damage > 0 )
@@ -1201,12 +1575,11 @@ void player_t::init_scaling()
 
       case STAT_ARMOR:          initial_armor       += v; break;
       case STAT_BONUS_ARMOR:    initial_bonus_armor += v; break;
-      case STAT_DEFENSE_RATING: initial_defense     += v; break;
       case STAT_DODGE_RATING:   initial_dodge       += v; break;
       case STAT_PARRY_RATING:   initial_parry       += v; break;
 
       case STAT_BLOCK_RATING: initial_block       += v; break;
-      case STAT_BLOCK_VALUE:  initial_block_value += v; break;
+
 
       case STAT_MAX: break;
 
@@ -1228,6 +1601,24 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
+// player_t::energy_regen_per_second ======================================
+
+double player_t::energy_regen_per_second() SC_CONST
+{
+  double r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
+
+  return r;
+}
+
+// player_t::focus_regen_per_second ======================================
+
+double player_t::focus_regen_per_second() SC_CONST
+{
+  double r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
+
+  return r;
+}
+
 // player_t::composite_attack_haste ========================================
 
 double player_t::composite_attack_haste() SC_CONST
@@ -1246,25 +1637,19 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
-    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.03 );
-    }
-
-    if ( position != POSITION_RANGED )
-    {
-      h *= 1.0 / ( 1.0 + std::max( sim -> auras.windfury_totem -> value(), sim -> auras.improved_icy_talons -> value() ) );
-    }
-
-    if ( sim -> auras.celerity -> check() )
+    if ( buffs.unholy_frenzy -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
     if ( type != PLAYER_PET )
     {
-      if ( buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
-      if ( buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 0.02 );
+      if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
+      if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
+    }
+    if ( ( race == RACE_GOBLIN ) )
+    {
+      h *= 1.0 / ( 1.0 + 0.01 );
     }
   }
 
@@ -1277,10 +1662,11 @@ double player_t::composite_attack_power() SC_CONST
 {
   double ap = attack_power;
 
-  ap += floor( attack_power_per_strength * strength() );
-  ap += floor( attack_power_per_agility  * agility() );
+  ap += attack_power_per_strength * ( strength() - 10 );
+  ap += attack_power_per_agility  * ( agility() - 10 );
 
-  ap += std::max( buffs.blessing_of_might -> value(), sim -> auras.battle_shout -> value() );
+  if ( primary_role() == ROLE_TANK && vengeance_factor )
+    ap += (std::min)(1.0, vengeance_factor) * ( stamina() + 0.1 * resource_base[ RESOURCE_HEALTH ]);
 
   return ap;
 }
@@ -1291,14 +1677,21 @@ double player_t::composite_attack_crit() SC_CONST
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    if ( sim -> auras.leader_of_the_pack -> check() || sim -> auras.rampage -> up() )
+    if ( sim -> auras.leader_of_the_pack -> check() 
+      || sim -> auras.honor_among_thieves -> check() 
+      || sim -> auras.elemental_oath -> check()
+      || sim -> auras.rampage -> check()
+      || buffs.furious_howl -> check() )
     {
       ac += 0.05;
     }
   }
-
+  if ( race == RACE_WORGEN )
+  {
+    ac += 0.01;
+  }
   return ac;
 }
 
@@ -1325,9 +1718,7 @@ double player_t::composite_armor() SC_CONST
 
   a += bonus_armor;
 
-  a += floor( armor_per_agility * agility() );
-
-  if ( sim -> auras.devotion_aura -> check() )
+  if ( sim -> auras.devotion_aura -> check() && ! is_enemy() && ! is_add() )
     a += sim -> auras.devotion_aura -> value();
 
   if ( buffs.stoneform -> check() ) a *= 1.10;
@@ -1337,7 +1728,7 @@ double player_t::composite_armor() SC_CONST
 
 // player_t::composite_tank_miss ===========================================
 
-double player_t::composite_tank_miss( int school ) SC_CONST
+double player_t::composite_tank_miss( const school_type school ) SC_CONST
 {
   double m = 0;
 
@@ -1345,7 +1736,7 @@ double player_t::composite_tank_miss( int school ) SC_CONST
   {
     m = 0.05;
 
-    double delta = composite_defense() - sim -> target -> weapon_skill;
+    double delta = 5.0 * ( level - sim -> target -> level );
 
     if( delta > 0 )
     {
@@ -1359,11 +1750,6 @@ double player_t::composite_tank_miss( int school ) SC_CONST
     if ( race == RACE_NIGHT_ELF ) // Quickness
     {
       m += 0.02;
-    }
-
-    if ( sim -> target -> debuffs.insect_swarm || sim -> target -> debuffs.scorpid_sting )
-    {
-      m += 0.03;
     }
   }
   else
@@ -1411,7 +1797,7 @@ double player_t::composite_tank_dodge() SC_CONST
 
   d += agility() * dodge_per_agility;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
+  double delta = 5.0 * ( level - sim -> target -> level );
 
   if( delta > 0 )
   {
@@ -1434,7 +1820,7 @@ double player_t::composite_tank_parry() SC_CONST
 {
   double p = parry;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
+  double delta = 5.0 * ( level - sim -> target -> level );
 
   if( delta > 0 )
   {
@@ -1457,88 +1843,14 @@ double player_t::composite_tank_block() SC_CONST
 {
   double b = block;
 
-  double delta = composite_defense() - sim -> target -> weapon_skill;
-
-  if( delta > 0 )
-  {
-    b += delta * 0.0004;
-  }
-  else
-  {
-    b += delta * 0.0002;
-  }
-
-  if      ( b > 1.0 ) b = 1.0;
-  else if ( b < 0.0 ) b = 0.0;
-
   return b;
-}
-
-// player_t::composite_block_value ===================================
-
-double player_t::composite_block_value() SC_CONST
-{
-  double bv = block_value;
-
-  bv += strength() / 2.0;
-
-  return bv;
 }
 
 // player_t::composite_tank_crit ==========================================
 
-double player_t::composite_tank_crit( int school ) SC_CONST
+double player_t::composite_tank_crit( const school_type school ) SC_CONST
 {
-  double c = 0;
-
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    c = 0.05 + 0.002 * ( sim -> target -> level - level );
-
-    double delta = composite_defense() - sim -> target -> weapon_skill;
-
-    if( delta > 0 )
-    {
-      c -= delta * 0.0004;
-    }
-    else
-    {
-      c -= delta * 0.0002;
-    }
-  }
-  else
-  {
-    c = 0.05;
-  }
-
-  if      ( c > 1.0 ) c = 1.0;
-  else if ( c < 0.0 ) c = 0.0;
-
-  return c;
-}
-
-// player_t::diminished_miss =========================================
-
-double player_t::diminished_miss( int school ) SC_CONST
-{
-  if ( diminished_kfactor == 0 || diminished_miss_capi == 0 ) return 0;
-
-  if ( school != SCHOOL_PHYSICAL )
-    return 0;
-
-  // Only contributions from gear are subject to diminishing returns;
-
-  double m = 0;
-
-  m += 0.0004 * stats.defense_rating / rating.defense;
-
-  if ( m == 0 ) return 0;
-
-  double diminished_m = m / ( m * diminished_miss_capi + diminished_kfactor );
-
-  double loss = m - diminished_m;
-
-  return loss > 0 ? loss : 0;
+  return 0;
 }
 
 // player_t::diminished_dodge ========================================
@@ -1551,13 +1863,11 @@ double player_t::diminished_dodge() SC_CONST
 
   double d = stats.dodge_rating / rating.dodge;
 
-  d += 0.0004 * stats.defense_rating / rating.defense;
-
-  d += dodge_per_agility * stats.attribute[ ATTR_AGILITY ] * attribute_multiplier[ ATTR_AGILITY ];
+  d += dodge_per_agility * stats.attribute[ ATTR_AGILITY ] * composite_attribute_multiplier( ATTR_AGILITY );
 
   if ( d == 0 ) return 0;
 
-  double diminished_d = d / ( d * diminished_dodge_capi + diminished_kfactor );
+  double diminished_d = 0.01 / ( diminished_dodge_capi + diminished_kfactor / d );
 
   double loss = d - diminished_d;
 
@@ -1574,11 +1884,9 @@ double player_t::diminished_parry() SC_CONST
 
   double p = stats.parry_rating / rating.parry;
 
-  p += 0.0004 * stats.defense_rating / rating.defense;
-
   if ( p == 0 ) return 0;
 
-  double diminished_p = p / ( p * diminished_parry_capi + diminished_kfactor );
+  double diminished_p = 0.01 / ( diminished_parry_capi + diminished_kfactor / p );
 
   double loss = p - diminished_p;
 
@@ -1591,35 +1899,32 @@ double player_t::composite_spell_haste() SC_CONST
 {
   double h = spell_haste;
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
+    if ( buffs.dark_intent -> check() ) h *= 1.0 / 1.03;
     if (      buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
     else if ( buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
 
     if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
 
-    if ( sim -> auras.swift_retribution -> check() || sim -> auras.improved_moonkin -> check() )
-    {
-      h *= 1.0 / ( 1.0 + 0.03 );
-    }
-
-    if ( sim -> auras.wrath_of_air -> check() )
+    if ( ! is_pet() && ! is_enemy() && ! is_add() && ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check() ) )
     {
       h *= 1.0 / ( 1.0 + 0.05 );
     }
 
-    if ( sim -> auras.celerity -> check() )
+    if ( race == RACE_GOBLIN )
     {
-      h *= 1.0 / ( 1.0 + 0.20 );
+      h *= 1 / ( 1.0 + 0.01 );
     }
   }
 
   return h;
 }
 
+
 // player_t::composite_spell_power ========================================
 
-double player_t::composite_spell_power( int school ) SC_CONST
+double player_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = spell_power[ school ];
 
@@ -1628,31 +1933,47 @@ double player_t::composite_spell_power( int school ) SC_CONST
     sp = std::max( spell_power[ SCHOOL_FROST ],
                    spell_power[ SCHOOL_FIRE  ] );
   }
-
+  else if ( school == SCHOOL_SPELLSTORM )
+  {
+    sp = std::max( spell_power[ SCHOOL_NATURE ],
+                   spell_power[ SCHOOL_ARCANE ] );
+  }
+  else if ( school == SCHOOL_SHADOWFROST )
+  {
+    sp = std::max( spell_power[ SCHOOL_SHADOW ],
+                   spell_power[ SCHOOL_FROST ] );
+  }
+  else if ( school == SCHOOL_SHADOWFLAME )
+  {
+    sp = std::max( spell_power[ SCHOOL_SHADOW ],
+                   spell_power[ SCHOOL_FIRE ] );
+  }
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
-  sp += spell_power_per_intellect * intellect();
+  sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
   sp += spell_power_per_spirit    * spirit();
 
-  if ( type != PLAYER_GUARDIAN )
-  {
-    double best_buff = 0;
-    if ( sim -> auras.totem_of_wrath -> up() )
-    {
-      if ( best_buff < sim -> auras.totem_of_wrath -> current_value ) best_buff = sim -> auras.totem_of_wrath -> current_value;
-    }
-    if ( sim -> auras.flametongue_totem -> up() )
-    {
-      if ( best_buff < sim -> auras.flametongue_totem -> current_value ) best_buff = sim -> auras.flametongue_totem -> current_value;
-    }
-    if ( buffs.demonic_pact -> up() )
-    {
-      if ( best_buff < buffs.demonic_pact -> current_value ) best_buff = buffs.demonic_pact -> current_value;
-    }
-    sp += best_buff;
-  }
+  return sp;
+}
 
-  return floor( sp );
+// player_t::composite_spell_power_multiplier =============================
+
+double player_t::composite_spell_power_multiplier() SC_CONST
+{
+  double m = spell_power_multiplier;
+  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
+  {
+    if ( sim -> auras.demonic_pact -> check() )
+    {
+      m *= 1.10;
+    }
+    else
+    {
+       m *= 1.0 + std::max( sim -> auras.flametongue_totem -> value(),
+                            buffs.arcane_brilliance -> check() * 0.06 );
+    }
+  }
+  return m;
 }
 
 // player_t::composite_spell_crit ==========================================
@@ -1661,16 +1982,25 @@ double player_t::composite_spell_crit() SC_CONST
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     if ( buffs.focus_magic -> check() ) sc += 0.03;
 
-    if ( sim -> auras.elemental_oath -> up() || sim -> auras.moonkin -> check() )
+    if ( sim -> auras.leader_of_the_pack -> check() 
+      || sim -> auras.honor_among_thieves -> check() 
+      || sim -> auras.elemental_oath -> check()
+      || sim -> auras.rampage -> check()
+      || buffs.furious_howl -> check() )
     {
       sc += 0.05;
     }
 
     if ( buffs.destruction_potion -> check() ) sc += 0.02;
+  }
+
+  if ( ( race == RACE_WORGEN ) )
+  {
+    sc += 0.01;
   }
 
   return sc;
@@ -1693,7 +2023,7 @@ double player_t::composite_spell_hit() SC_CONST
 
 double player_t::composite_mp5() SC_CONST
 {
-  return mp5 + mp5_per_intellect * intellect();
+  return mp5 + mp5_per_intellect * floor( intellect() );
 }
 
 // player_t::composite_attack_power_multiplier =============================
@@ -1702,13 +2032,16 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 {
   double m = attack_power_multiplier;
 
-  if ( sim -> auras.abominations_might -> up() || sim -> auras.trueshot -> up() )
+  if ( ! is_pet() )
   {
-    m *= 1.10;
-  }
-  else
-  {
-    m *= 1.0 + sim -> auras.unleashed_rage -> value() * 0.01;
+    if ( ( sim -> auras.trueshot -> up() && ! is_enemy() && ! is_add() ) || buffs.blessing_of_might -> up() )
+    {
+      m *= 1.10;
+    }
+    else if ( ! is_enemy() && ! is_add() )
+    {
+      m *= 1.0 + std::max( sim -> auras.unleashed_rage -> value(), sim -> auras.abominations_might -> value() );
+    }
   }
 
   return m;
@@ -1719,13 +2052,20 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = attribute_multiplier[ attr ];
-  if ( buffs.blessing_of_kings -> check() ) m *= 1.10;
+
+  // MotW / BoK
+  // ... increasing Strength, Agility, Stamina, and Intellect by 5%
+  if ( attr == ATTR_STRENGTH || attr ==  ATTR_AGILITY || attr ==  ATTR_STAMINA || attr ==  ATTR_INTELLECT )
+    if ( buffs.blessing_of_kings -> check() || buffs.mark_of_the_wild -> check() ) m *= 1.05;
+  if ( attr == ATTR_SPIRIT ) 
+    if ( buffs.mana_tide -> check() ) m *= 1.0 + buffs.mana_tide -> value();
+
   return m;
 }
 
 // player_t::composite_player_multiplier ================================
 
-double player_t::composite_player_multiplier( int school ) SC_CONST
+double player_t::composite_player_multiplier( const school_type school ) SC_CONST
 {
   double m = 1.0;
 
@@ -1737,45 +2077,19 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
       m *= 1.30;
     }
 
-    if ( school == SCHOOL_PHYSICAL )
-    {
-      if ( buffs.hysteria -> up() )
-      {
-        m *= 1.2;
-      }
-    }
     if ( buffs.tricks_of_the_trade -> up() )
     {
-      m *= 1.15;
+      // because of the glyph we now track the damage % increase in the buff value
+      m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    double ferocious_inspiration_value = 0.0;
-    double sanctified_retribution_value = 0.0;
-    double arcane_empowerment_value = 0.0;
-    double max_value = 0.0;
-
-    if ( sim -> auras.ferocious_inspiration -> up() )
+    if ( ! is_pet() && ! is_enemy() && ! is_add() &&
+       ( sim -> auras.ferocious_inspiration -> up()
+      || sim -> auras.communion             -> up()
+      || sim -> auras.arcane_tactics        -> up() ) )
     {
-      ferocious_inspiration_value = sim -> auras.ferocious_inspiration -> value();
+      m *= 1.03;
     }
-
-    if ( sim -> auras.sanctified_retribution -> up() )
-    {
-      sanctified_retribution_value = 3;
-    }
-
-    if ( sim -> auras.arcane_empowerment -> up() )
-    {
-      arcane_empowerment_value = sim -> auras.arcane_empowerment -> value();
-    }
-
-    max_value = sanctified_retribution_value;
-    if ( ferocious_inspiration_value > max_value )
-      max_value = ferocious_inspiration_value;
-    if ( arcane_empowerment_value > max_value )
-      max_value = arcane_empowerment_value;
-
-    m *= 1.00 + 0.01 * max_value;
   }
 
   if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
@@ -1786,15 +2100,72 @@ double player_t::composite_player_multiplier( int school ) SC_CONST
   return m;
 }
 
+// player_t::composite_player_td_multiplier ==============================
+
+double player_t::composite_player_td_multiplier( const school_type school ) SC_CONST
+{
+  double m = 1.0;
+
+  if ( buffs.dark_intent_feedback -> up() )
+  {
+    m *= 1.0 + 0.03 * buffs.dark_intent_feedback -> stack();
+  }
+
+  return m;
+}
+
+// player_t::composite_movement_speed =====================================
+
+double player_t::composite_movement_speed() SC_CONST
+{
+  double speed = base_movement_speed;
+
+  if ( buffs.body_and_soul -> up() )
+    speed *= 1.0 + buffs.body_and_soul -> value();
+
+  // From http://www.wowpedia.org/Movement_speed_effects
+  // Additional items looked up
+
+  // Pursuit of Justice, Quickening: 8%/15%
+
+  // DK: Unholy Presence: 15%
+
+  // Druid: Feral Swiftness: 15%/30%
+
+  // Aspect of  the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
+
+  // Shaman Ghost Wolf: 30%, with Glyph 35%
+
+  // Druid: Travel Form 40%
+
+  // Druid: Dash: 50/60/70
+
+  // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
+  //       Improved Blink: 35%/70% for 3 sec after blink
+  //       Glyph of Invisibility: 40% while invisible
+
+  // Body and Soul: 30%/60%
+
+  // Rogue: Spring 70%
+
+  // Swiftness Potion: 50%
+
+  return speed;
+}
+
 // player_t::strength() ====================================================
 
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
-  a += std::max( sim -> auras.strength_of_earth -> value(),
-                 sim -> auras.horn_of_winter -> value() );
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
+  {
+    a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
+                             sim -> auras.horn_of_winter -> value() ),
+                             sim -> auras.battle_shout -> value() );
+  }
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
-  return floor( a );
+  return a;
 }
 
 // player_t::agility() =====================================================
@@ -1802,10 +2173,14 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
-  a += std::max( sim -> auras.strength_of_earth -> value(),
-                 sim -> auras.horn_of_winter -> value() );
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
+  {
+    a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
+                             sim -> auras.horn_of_winter -> value() ),
+                             sim -> auras.battle_shout -> value() );
+  }
   a *= composite_attribute_multiplier( ATTR_AGILITY );
-  return floor( a );
+  return a;
 }
 
 // player_t::stamina() =====================================================
@@ -1814,7 +2189,7 @@ double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
   a *= composite_attribute_multiplier( ATTR_STAMINA );
-  return floor( a );
+  return a;
 }
 
 // player_t::intellect() ===================================================
@@ -1822,12 +2197,8 @@ double player_t::stamina() SC_CONST
 double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
-  if ( race == RACE_GNOME )
-  {
-    a += floor( ( a - attribute_base[ ATTR_INTELLECT ] ) * 0.05 );
-  }
   a *= composite_attribute_multiplier( ATTR_INTELLECT );
-  return floor( a );
+  return a;
 }
 
 // player_t::spirit() ======================================================
@@ -1837,10 +2208,10 @@ double player_t::spirit() SC_CONST
   double a = attribute[ ATTR_SPIRIT ];
   if ( race == RACE_HUMAN )
   {
-    a += floor( ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03 );
+    a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
   }
   a *= composite_attribute_multiplier( ATTR_SPIRIT );
-  return floor( a );
+  return a;
 }
 
 // player_t::combat_begin ==================================================
@@ -1870,13 +2241,6 @@ void player_t::combat_begin()
     schedule_ready();
   }
 
-  bool is_alliance =
-    (race == RACE_NIGHT_ELF) ||
-    (race == RACE_GNOME)     ||
-    (race == RACE_DWARF)     ||
-    (race == RACE_HUMAN)     ||
-    (race == RACE_DRAENEI);
-
   if ( sim -> overrides.strength_of_wrynn )
   {
     buffs.strength_of_wrynn -> trigger();
@@ -1886,25 +2250,9 @@ void player_t::combat_begin()
     buffs.hellscreams_warsong -> trigger();
   }
 
-  if ( sim -> overrides.heroic_presence && is_alliance )
+  if ( race == RACE_DRAENEI )
   {
     buffs.heroic_presence -> trigger();
-  }
-  else if ( race == RACE_DRAENEI )
-  {
-    buffs.heroic_presence -> trigger();
-
-    if ( party != 0 )
-    {
-      for( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if( p -> party == party &&
-            p -> type != PLAYER_GUARDIAN )
-        {
-          p -> buffs.heroic_presence -> trigger();
-        }
-      }
-    }
   }
 
   if ( sim -> overrides.replenishment ) buffs.replenishment -> override();
@@ -1916,7 +2264,7 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
-  if ( tank > 0 ) trigger_target_swings( this );
+  action_sequence = "";
 }
 
 // player_t::combat_end ====================================================
@@ -1974,12 +2322,17 @@ void player_t::reset()
   stats = initial_stats;
 
   haste_rating = initial_haste_rating;
+  mastery_rating = initial_mastery_rating;
+  mastery = base_mastery + mastery_rating / rating.mastery;
   recalculate_haste();
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
     attribute           [ i ] = attribute_initial           [ i ];
     attribute_multiplier[ i ] = attribute_multiplier_initial[ i ];
+    // Matched gear. i.e. Mysticism etc.
+    if ( ( level >= 50 ) && matching_gear )
+      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( (const attribute_type) i );
   }
 
   for ( int i=0; i <= SCHOOL_MAX; i++ )
@@ -1996,15 +2349,12 @@ void player_t::reset()
   attack_hit         = initial_attack_hit;
   attack_expertise   = initial_attack_expertise;
   attack_crit        = initial_attack_crit;
-  attack_penetration = initial_attack_penetration;
 
   armor              = initial_armor;
   bonus_armor        = initial_bonus_armor;
-  defense            = initial_defense;
   dodge              = initial_dodge;
   parry              = initial_parry;
   block              = initial_block;
-  block_value        = initial_block_value;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
@@ -2017,8 +2367,9 @@ void player_t::reset()
   attack_crit_per_agility   = initial_attack_crit_per_agility;
 
   armor_multiplier  = initial_armor_multiplier;
-  armor_per_agility = initial_armor_per_agility;
   dodge_per_agility = initial_dodge_per_agility;
+
+  resource_reduction = initial_resource_reduction;
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -2036,12 +2387,15 @@ void player_t::reset()
 
   main_hand_weapon.buff_type  = 0;
   main_hand_weapon.buff_value = 0;
+  main_hand_weapon.bonus_dmg  = 0;
 
   off_hand_weapon.buff_type  = 0;
   off_hand_weapon.buff_value = 0;
+  off_hand_weapon.bonus_dmg  = 0;
 
   ranged_weapon.buff_type  = 0;
   ranged_weapon.buff_value = 0;
+  ranged_weapon.bonus_dmg  = 0;
 
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;
@@ -2060,6 +2414,7 @@ void player_t::reset()
     action_callback_t::reset( attack_direct_result_callbacks[ i ] );
     action_callback_t::reset( spell_direct_result_callbacks [ i ] );
     action_callback_t::reset( spell_cast_result_callbacks   [ i ] );
+    action_callback_t::reset( harmful_cast_result_callbacks [ i ] );
   }
   for ( int i=0; i < SCHOOL_MAX; i++ )
   {
@@ -2124,7 +2479,7 @@ void player_t::schedule_ready( double delta_time,
 
         double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
-        if ( diff > 0 && ( last_foreground_action -> time_to_execute == 0 || sim -> strict_gcd_queue ) )
+        if ( diff > 0 && sim -> strict_gcd_queue )
         {
           lag = gcd_lag;
         }
@@ -2182,7 +2537,7 @@ void player_t::clear_debuffs()
 
   for ( action_t* a = action_list; a; a = a -> next )
   {
-    if ( a -> ticking ) a -> cancel();
+    if ( a -> dot -> ticking ) a -> cancel();
   }
 }
 
@@ -2216,6 +2571,7 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     total_foreground_actions++;
+    if ( action -> marker ) action_sequence += action -> marker;
   }
 
   return action;
@@ -2231,26 +2587,26 @@ void player_t::regen( double periodicity )
   {
     if ( resource_type == RESOURCE_ENERGY )
     {
-      double energy_regen = periodicity * energy_regen_per_second;
+      double energy_regen = periodicity * energy_regen_per_second();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
     }
     else if ( resource_type == RESOURCE_FOCUS )
     {
-      double focus_regen = periodicity * focus_regen_per_second;
+      double focus_regen = periodicity * focus_regen_per_second();
 
       resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
     }
     else if ( resource_type == RESOURCE_MANA )
     {
-      if( buffs.innervate -> up() )
+      if( buffs.innervate -> check() )
       {
-        resource_gain( RESOURCE_MANA, buffs.innervate -> current_value * periodicity, gains.innervate );
+        resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
       }
 
-      double spirit_regen = periodicity * sqrt( intellect() ) * spirit() * mana_regen_base;
+      double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
 
-      if ( recent_cast() && mana_regen_while_casting < 1.0 )
+      if ( mana_regen_while_casting < 1.0 )
       {
         spirit_regen *= mana_regen_while_casting;
       }
@@ -2265,17 +2621,17 @@ void player_t::regen( double periodicity )
 
       if ( buffs.replenishment -> up() )
       {
-        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0020 / 1.0;
+        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010 / 1.0;
 
         resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
       }
 
-      double bow = buffs.blessing_of_wisdom -> current_value;
-      double ms  = sim -> auras.mana_spring_totem -> current_value;
+      double bow = buffs.blessing_of_might_regen -> current_value;
+      double ms  = ( ! is_enemy() && ! is_add() ) ? sim -> auras.mana_spring_totem -> current_value : 0;
 
       if ( ms > bow )
       {
-        double mana_spring_regen = periodicity * ms / 2.0;
+        double mana_spring_regen = periodicity * ms / 5.0;
 
         resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
       }
@@ -2283,7 +2639,7 @@ void player_t::regen( double periodicity )
       {
         double wisdom_regen = periodicity * bow / 5.0;
 
-        resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_wisdom );
+        resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
       }
     }
   }
@@ -2295,7 +2651,16 @@ void player_t::regen( double periodicity )
 
     if ( index >= size ) timeline_resource.insert( timeline_resource.begin() + size, size, 0 );
 
-    timeline_resource[ index ] += resource_current[ resource_type ];
+    timeline_resource[ index ] += resource_current[ resource_type ] * periodicity;
+  }
+  if ( resource_type != RESOURCE_HEALTH )
+  {
+    int index = ( int ) sim -> current_time;
+    int size = ( int ) timeline_health.size();
+
+    if ( index >= size ) timeline_health.insert( timeline_health.begin() + size, size, 0 );
+
+    timeline_health[ index ] += resource_current[ RESOURCE_HEALTH ] * periodicity;
   }
 }
 
@@ -2311,24 +2676,24 @@ double player_t::resource_loss( int       resource,
 
   if ( sim -> infinite_resource[ resource ] == 0 )
   {
-    resource_current[ resource ] -= amount;
-    actual_amount = amount;
+    actual_amount = std::min( amount, resource_current[ resource ] );
+    resource_current[ resource ] -= actual_amount;
   }
   else
   {
     actual_amount = 0;
   }
 
-  resource_lost[ resource ] += amount;
+  resource_lost[ resource ] += actual_amount;
 
   if ( resource == RESOURCE_MANA )
   {
     last_cast = sim -> current_time;
   }
 
-  if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action );
+  if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action, (void*) &actual_amount );
 
-  if ( sim -> debug ) log_t::output( sim, "Player %s loses %.0f %s", name(), amount, util_t::resource_type_string( resource ) );
+  if ( sim -> debug ) log_t::output( sim, "Player %s loses %.2f (%.2f) %s", name(), actual_amount, amount, util_t::resource_type_string( resource ) );
 
   return actual_amount;
 }
@@ -2343,6 +2708,7 @@ double player_t::resource_gain( int       resource,
   if ( sleeping ) return 0;
 
   double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
+
   if ( actual_amount > 0 )
   {
     resource_current[ resource ] += actual_amount;
@@ -2352,11 +2718,11 @@ double player_t::resource_gain( int       resource,
 
   if ( source ) source -> add( actual_amount, amount - actual_amount );
 
-  if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action );
+  if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action, (void*) &actual_amount );
 
   if ( sim -> log )
   {
-    log_t::output( sim, "%s gains %.0f (%.0f) %s from %s (%.0f)",
+    log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
                    name(), actual_amount, amount,
                    util_t::resource_type_string( resource ), source ? source -> name() : "unknown",
                    resource_current[ resource ] );
@@ -2383,6 +2749,60 @@ bool player_t::resource_available( int    resource,
   return resource_current[ resource ] >= cost;
 }
 
+// player_t::primary_tab ===================================================
+
+int player_t::primary_tab()
+{
+  specialization = TALENT_TAB_NONE;
+
+  int max_points = 0;
+
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    if ( talent_tab_points[ i ] > 0 )
+    {
+      if( specialization == TALENT_TAB_NONE || ( talent_tab_points[ i ] > max_points ) )
+      {
+        specialization = i;
+        max_points = talent_tab_points[ i ];
+      }
+    }
+  }
+
+  return specialization;
+}
+
+// player_t::primary_role ===================================================
+
+int player_t::primary_role() SC_CONST
+{
+  if ( role == "dmg" || role == "dps" )
+    return ROLE_DMG;
+  if ( role == "heal" || role == "healer" )
+    return ROLE_HEAL;
+  if ( role == "tank" )
+    return ROLE_TANK;
+
+  return ROLE_HYBRID;
+}
+
+// player_t::primary_tree_name ==============================================
+
+const char* player_t::primary_tree_name() SC_CONST
+{
+  return util_t::talent_tree_string( primary_tree() );
+}
+
+// player_t::primary_tree ===================================================
+
+int player_t::primary_tree() SC_CONST
+{
+  if ( specialization == TALENT_TAB_NONE )
+    return TREE_NONE;
+
+  return tree_type[ specialization ];
+}
+
 // player_t::normalize_by ===================================================
 
 int player_t::normalize_by() SC_CONST
@@ -2392,33 +2812,59 @@ int player_t::normalize_by() SC_CONST
     return sim -> normalized_stat; 
   }
 
-  return ( primary_role() == ROLE_SPELL ) ? STAT_SPELL_POWER : STAT_ATTACK_POWER;
+  if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
+    return STAT_INTELLECT;
+  else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE )
+    return STAT_AGILITY;
+  else if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
+    return STAT_STRENGTH;
+
+  return STAT_ATTACK_POWER;
+}
+
+// player_t::health_percentage() ===================================================
+
+double player_t::health_percentage() SC_CONST
+{
+  return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
+
 }
 
 
 // player_t::stat_gain ======================================================
 
-void player_t::stat_gain( int    stat,
-                          double amount )
+void player_t::stat_gain( int       stat,
+                          double    amount,
+                          gain_t*   gain,
+                          action_t* action )
 {
+  if( amount <= 0 ) return;
+  
   if ( sim -> log ) log_t::output( sim, "%s gains %.0f %s", name(), amount, util_t::stat_type_string( stat ) );
 
   switch ( stat )
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; attribute[ ATTR_STRENGTH  ] += amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; attribute[ ATTR_AGILITY   ] += amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; resource_max[ RESOURCE_HEALTH ] += amount * health_per_stamina; break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; resource_max[ RESOURCE_MANA   ] += amount * mana_per_intellect; break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; break;
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] += amount; attribute[ i ] += amount; } break;
 
-  case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount ); break;
-  case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount ); break;
-  case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount ); break;
-  case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount ); break;
-  case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount ); break;
-  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount ); break;
+  case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
+  case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
+  case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
+  case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
+  case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
+  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
+
+  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] += amount; resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
+  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] += amount; resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
+  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] += amount; resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
+  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] += amount; resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
+  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
+  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] += amount; resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:       stats.spell_power       += amount; spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
@@ -2426,7 +2872,6 @@ void player_t::stat_gain( int    stat,
 
   case STAT_ATTACK_POWER:             stats.attack_power             += amount; attack_power       += amount;                            break;
   case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; attack_expertise   += amount / rating.expertise;         break;
-  case STAT_ARMOR_PENETRATION_RATING: stats.armor_penetration_rating += amount; attack_penetration += amount / rating.armor_penetration; break;
 
   case STAT_HIT_RATING:
     stats.hit_rating += amount;
@@ -2448,12 +2893,15 @@ void player_t::stat_gain( int    stat,
 
   case STAT_ARMOR:          stats.armor          += amount; armor       += amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    += amount; bonus_armor += amount;                  break;
-  case STAT_DEFENSE_RATING: stats.defense_rating += amount; defense     += amount / rating.defense; break;
   case STAT_DODGE_RATING:   stats.dodge_rating   += amount; dodge       += amount / rating.dodge;   break;
   case STAT_PARRY_RATING:   stats.parry_rating   += amount; parry       += amount / rating.parry;   break;
 
   case STAT_BLOCK_RATING: stats.block_rating += amount; block       += amount / rating.block; break;
-  case STAT_BLOCK_VALUE:  stats.block_value  += amount; block_value += amount;                break;
+
+  case STAT_MASTERY_RATING:
+    stats.mastery_rating += amount;
+    mastery += amount / rating.mastery;
+    break;
 
   default: assert( 0 );
   }
@@ -2461,27 +2909,48 @@ void player_t::stat_gain( int    stat,
 
 // player_t::stat_loss ======================================================
 
-void player_t::stat_loss( int    stat,
-                          double amount )
+void player_t::stat_loss( int       stat,
+                          double    amount,
+                          action_t* action )
 {
+  if( amount <= 0 ) return;
+  
   if ( sim -> log ) log_t::output( sim, "%s loses %.0f %s", name(), amount, util_t::stat_type_string( stat ) );
 
   switch ( stat )
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; attribute[ ATTR_STAMINA   ] -= amount; break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; attribute[ ATTR_INTELLECT ] -= amount; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, amount * health_per_stamina, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA,   amount * mana_per_intellect, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; attribute[ i ] -= amount; } break;
 
-  case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount ); break;
-  case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount ); break;
-  case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount ); break;
-  case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount ); break;
-  case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount ); break;
-  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount ); break;
+  case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount, action ); break;
+  case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount, action ); break;
+  case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount, action ); break;
+  case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount, action ); break;
+  case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount, action ); break;
+  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC,  amount, action ); break;
+
+  case STAT_MAX_HEALTH:
+  case STAT_MAX_MANA:  
+  case STAT_MAX_RAGE:  
+  case STAT_MAX_ENERGY:
+  case STAT_MAX_FOCUS: 
+  case STAT_MAX_RUNIC: 
+  {
+    int r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
+              ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
+              ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
+              ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
+              ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC );
+    resource_max[ r ] -= amount;
+    double delta = resource_current[ r ] - resource_max[ r ];
+    if( delta > 0 ) resource_loss( r, delta, action );
+  }
+  break;
 
   case STAT_SPELL_POWER:       stats.spell_power       -= amount; spell_power[ SCHOOL_MAX ] -= amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration -= amount; spell_penetration         -= amount; break;
@@ -2489,7 +2958,6 @@ void player_t::stat_loss( int    stat,
 
   case STAT_ATTACK_POWER:             stats.attack_power             -= amount; attack_power       -= amount;                            break;
   case STAT_EXPERTISE_RATING:         stats.expertise_rating         -= amount; attack_expertise   -= amount / rating.expertise;         break;
-  case STAT_ARMOR_PENETRATION_RATING: stats.armor_penetration_rating -= amount; attack_penetration -= amount / rating.armor_penetration; break;
 
   case STAT_HIT_RATING:
     stats.hit_rating -= amount;
@@ -2511,15 +2979,48 @@ void player_t::stat_loss( int    stat,
 
   case STAT_ARMOR:          stats.armor          -= amount; armor       -= amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    -= amount; bonus_armor -= amount;                  break;
-  case STAT_DEFENSE_RATING: stats.defense_rating -= amount; defense     -= amount / rating.defense; break;
   case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; dodge       -= amount / rating.dodge;   break;
   case STAT_PARRY_RATING:   stats.parry_rating   -= amount; parry       -= amount / rating.parry;   break;
 
   case STAT_BLOCK_RATING: stats.block_rating -= amount; block       -= amount / rating.block; break;
-  case STAT_BLOCK_VALUE:  stats.block_value  -= amount; block_value -= amount;                break;
+
+  case STAT_MASTERY_RATING:
+    stats.mastery_rating -= amount;
+    mastery -= amount / rating.mastery;
+    break;
 
   default: assert( 0 );
   }
+}
+
+// player_t::assess_damage ==================================================
+
+double player_t::assess_damage( double amount,
+                              const school_type school,
+                              int    dmg_type,
+                              int result,
+                              action_t* a,
+                              player_t* s )
+{
+  if ( school == SCHOOL_PHYSICAL )
+  {
+    if ( s -> debuffs.demoralizing_roar  -> up() ||
+         s -> debuffs.demoralizing_shout -> up() ||
+         s -> debuffs.scarlet_fever      -> up() ||
+         s -> debuffs.vindication        -> up() )
+    {
+      amount *= 0.90;
+    }
+  }
+
+  double actual_amount = resource_loss( RESOURCE_HEALTH, amount );
+
+  if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
+  {
+    if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
+  }
+
+  return actual_amount;
 }
 
 // player_t::summon_pet =====================================================
@@ -2557,18 +3058,14 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::register_callbacks()
 {
-  if ( primary_resource() == RESOURCE_MANA )
-  {
-    action_callback_t* cb = new judgement_of_wisdom_callback_t( this );
-
-    register_attack_direct_result_callback( RESULT_HIT_MASK, cb );
-    register_spell_direct_result_callback ( RESULT_HIT_MASK, cb );
-  }
+  dark_intent_cb = new dark_intent_callback_t( this );
+  dark_intent_cb -> active = false;
+  register_spell_result_callback ( RESULT_CRIT_MASK, dark_intent_cb );
 }
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( int                resource,
+void player_t::register_resource_gain_callback( int             resource,
                                                 action_callback_t* cb )
 {
   resource_gain_callbacks[ resource ].push_back( cb );
@@ -2576,7 +3073,7 @@ void player_t::register_resource_gain_callback( int                resource,
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( int                resource,
+void player_t::register_resource_loss_callback( int             resource,
                                                 action_callback_t* cb )
 {
   resource_loss_callbacks[ resource ].push_back( cb );
@@ -2584,12 +3081,12 @@ void player_t::register_resource_loss_callback( int                resource,
 
 // player_t::register_attack_result_callback ================================
 
-void player_t::register_attack_result_callback( int                mask,
+void player_t::register_attack_result_callback( int64_t             mask,
                                                 action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       attack_result_callbacks[ i ].push_back( cb );
     }
@@ -2598,12 +3095,12 @@ void player_t::register_attack_result_callback( int                mask,
 
 // player_t::register_spell_result_callback =================================
 
-void player_t::register_spell_result_callback( int                mask,
+void player_t::register_spell_result_callback( int64_t             mask,
                                                action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_result_callbacks[ i ].push_back( cb );
     }
@@ -2612,12 +3109,12 @@ void player_t::register_spell_result_callback( int                mask,
 
 // player_t::register_attack_direct_result_callback ================================
 
-void player_t::register_attack_direct_result_callback( int                mask,
+void player_t::register_attack_direct_result_callback( int64_t             mask,
                                                        action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       attack_direct_result_callbacks[ i ].push_back( cb );
     }
@@ -2626,12 +3123,12 @@ void player_t::register_attack_direct_result_callback( int                mask,
 
 // player_t::register_spell_direct_result_callback =================================
 
-void player_t::register_spell_direct_result_callback( int                mask,
+void player_t::register_spell_direct_result_callback( int64_t             mask,
                                                       action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_direct_result_callbacks[ i ].push_back( cb );
     }
@@ -2647,12 +3144,12 @@ void player_t::register_tick_callback( action_callback_t* cb )
 
 // player_t::register_tick_damage_callback ==================================
 
-void player_t::register_tick_damage_callback( int                mask,
+void player_t::register_tick_damage_callback( int64_t             mask,
                                               action_callback_t* cb )
 {
-  for ( int i=0; i < SCHOOL_MAX; i++ )
+  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       tick_damage_callbacks[ i ].push_back( cb );
     }
@@ -2661,12 +3158,12 @@ void player_t::register_tick_damage_callback( int                mask,
 
 // player_t::register_direct_damage_callback ================================
 
-void player_t::register_direct_damage_callback( int                mask,
+void player_t::register_direct_damage_callback( int64_t             mask,
                                                 action_callback_t* cb )
 {
-  for ( int i=0; i < SCHOOL_MAX; i++ )
+  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       direct_damage_callbacks[ i ].push_back( cb );
     }
@@ -2675,14 +3172,28 @@ void player_t::register_direct_damage_callback( int                mask,
 
 // player_t::register_spell_cast_result_callback =================================
 
-void player_t::register_spell_cast_result_callback( int                mask,
+void player_t::register_spell_cast_result_callback( int64_t             mask,
                                                     action_callback_t* cb )
 {
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( 1 << i ) ) )
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_cast_result_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_harmful_cast_result_callback =================================
+
+void player_t::register_harmful_cast_result_callback( int64_t             mask,
+                                                      action_callback_t* cb )
+{
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      harmful_cast_result_callbacks[ i ].push_back( cb );
     }
   }
 }
@@ -2931,9 +3442,10 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 {
   assert( sim -> rng );
 
-  if ( ! sim -> smooth_rng || type == RNG_GLOBAL ) return sim -> rng;
-
+  if ( type == RNG_GLOBAL ) return sim -> rng;
   if ( type == RNG_DETERMINISTIC ) return sim -> deterministic_rng;
+
+  if ( ! sim -> smooth_rng ) return ( sim -> deterministic_roll ? sim -> deterministic_rng : sim -> rng );
 
   rng_t* rng=0;
 
@@ -2953,30 +3465,89 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   return rng;
 }
 
-// player_t::target_swing ==================================================
+// player_t::get_player_distance ===========================================
 
-int player_t::target_swing()
+double player_t::get_player_distance( player_t* p )
 {
-  double roll = sim -> rng -> real();
-  double chance = 0;
+  // Euclidean Distance
+  double distance = 0;
 
-  chance += ( composite_tank_miss( SCHOOL_PHYSICAL ) - diminished_miss( SCHOOL_PHYSICAL ) );
-  if ( roll <= chance ) return RESULT_MISS;
+  distance = sqrt( ( p -> x_position - this -> x_position ) * ( p -> x_position - this -> x_position ) + ( p -> y_position - this -> y_position ) * ( p -> y_position - this -> y_position ) );
 
-  chance += ( composite_tank_dodge() - diminished_dodge() );
-  if ( roll <= chance ) return RESULT_DODGE;
-
-  chance += ( composite_tank_parry() - diminished_parry() );
-  if ( roll <= chance ) return RESULT_PARRY;
-
-  chance += composite_tank_block();
-  if ( roll <= chance ) return RESULT_BLOCK;
-
-  chance += composite_tank_crit( SCHOOL_PHYSICAL );
-  if ( roll <= chance ) return RESULT_CRIT;
-
-  return RESULT_HIT;
+  return distance;
 }
+
+// player_t::get_position_distance =========================================
+
+double player_t::get_position_distance( double m, double v )
+{
+  // Euclidean Distance
+  double distance = 0;
+
+  distance = sqrt( ( this -> x_position - m ) * ( this -> x_position - m ) + ( this -> y_position - v ) * ( this -> y_position - v ) );
+
+  return distance;
+}
+
+// Chosen Movement Actions
+
+struct start_moving_t : public action_t
+{
+  start_moving_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "start_moving", player )
+  {
+    parse_options( NULL, options_str );
+    trigger_gcd = 0;
+    cooldown -> duration = 0.5;
+    harmful = false;
+  }
+
+  virtual void execute()
+  {   
+    player -> buffs.self_movement -> trigger();
+    player -> buffs.moving -> increment();
+
+    if ( sim -> log ) log_t::output( sim, "%s starts moving.", player -> name() );
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> buffs.self_movement -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+struct stop_moving_t : public action_t
+{
+  stop_moving_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "stop_moving", player )
+  {
+    parse_options( NULL, options_str );
+    trigger_gcd = 0;
+    cooldown -> duration = 0.5; 
+    harmful = false;
+  }
+
+  virtual void execute()
+  {    
+    player -> buffs.self_movement -> expire();
+    player -> buffs.moving -> decrement();
+
+    if ( sim -> log ) log_t::output( sim, "%s stops moving.", player -> name() );
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> buffs.self_movement -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
 
 // ===== Racial Abilities ==================================================
 
@@ -2987,6 +3558,7 @@ struct arcane_torrent_t : public action_t
   arcane_torrent_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "arcane_torrent", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
   }
@@ -3001,6 +3573,8 @@ struct arcane_torrent_t : public action_t
         gain = player -> resource_max [ RESOURCE_MANA ] * 0.06;
         break;
       case RESOURCE_ENERGY:
+      case RESOURCE_FOCUS:
+      case RESOURCE_RAGE:
       case RESOURCE_RUNIC:
         gain = 15;
         break;
@@ -3030,8 +3604,10 @@ struct arcane_torrent_t : public action_t
           return true;
         break;
       case RESOURCE_ENERGY:
+      case RESOURCE_FOCUS:
+      case RESOURCE_RAGE:
       case RESOURCE_RUNIC:
-        if( player -> resource_max [ resource ] - player -> resource_current [ resource ] <= 15 )
+        if( player -> resource_max [ resource ] - player -> resource_current [ resource ] >= 15 )
           return true;
         break;
       default:
@@ -3049,6 +3625,7 @@ struct berserking_t : public action_t
   berserking_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "berserking", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 180;
   }
@@ -3081,6 +3658,7 @@ struct blood_fury_t : public action_t
   blood_fury_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "blood_fury", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
   }
@@ -3097,7 +3675,7 @@ struct blood_fury_t : public action_t
       player -> buffs.blood_fury_ap -> trigger();
     }
 
-    if ( player -> type == SHAMAN  || player -> type == WARLOCK )
+    if ( player -> type == SHAMAN  || player -> type == WARLOCK || player -> type == MAGE )
     {
       player -> buffs.blood_fury_sp -> trigger();
     }
@@ -3122,6 +3700,7 @@ struct stoneform_t : public action_t
   stoneform_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stoneform", player )
   {
+    parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
   }
@@ -3268,6 +3847,7 @@ struct snapshot_stats_t : public action_t
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "snapshot_stats", player ), attack(0), spell(0)
   {
+    parse_options( NULL, options_str );
     base_execute_time = 0.001; // Needs to be non-zero to ensure all the buffs have been setup.
     trigger_gcd = 0;
   }
@@ -3280,16 +3860,17 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed_spell_haste  = p -> composite_spell_haste();
     p -> buffed_attack_haste = p -> composite_attack_haste();
+    p -> buffed_mastery      = p -> composite_mastery();
 
-    p -> attribute_buffed[ ATTR_STRENGTH  ] = p -> strength();
-    p -> attribute_buffed[ ATTR_AGILITY   ] = p -> agility();
-    p -> attribute_buffed[ ATTR_STAMINA   ] = p -> stamina();
-    p -> attribute_buffed[ ATTR_INTELLECT ] = p -> intellect();
-    p -> attribute_buffed[ ATTR_SPIRIT    ] = p -> spirit();
+    p -> attribute_buffed[ ATTR_STRENGTH  ] = floor( p -> strength()  );
+    p -> attribute_buffed[ ATTR_AGILITY   ] = floor( p -> agility()   );
+    p -> attribute_buffed[ ATTR_STAMINA   ] = floor( p -> stamina()   );
+    p -> attribute_buffed[ ATTR_INTELLECT ] = floor( p -> intellect() );
+    p -> attribute_buffed[ ATTR_SPIRIT    ] = floor( p -> spirit()    );
 
     for( int i=0; i < RESOURCE_MAX; i++ ) p -> resource_buffed[ i ] = p -> resource_max[ i ];
 
-    p -> buffed_spell_power       = p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier();
+    p -> buffed_spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed_spell_hit         = p -> composite_spell_hit();
     p -> buffed_spell_crit        = p -> composite_spell_crit();
     p -> buffed_spell_penetration = p -> composite_spell_penetration();
@@ -3299,12 +3880,9 @@ struct snapshot_stats_t : public action_t
     p -> buffed_attack_hit         = p -> composite_attack_hit();
     p -> buffed_attack_expertise   = p -> composite_attack_expertise();
     p -> buffed_attack_crit        = p -> composite_attack_crit();
-    p -> buffed_attack_penetration = p -> composite_attack_penetration();
 
     p -> buffed_armor       = p -> composite_armor();
-    p -> buffed_block_value = p -> composite_block_value();
-    p -> buffed_defense     = p -> composite_defense();
-    p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL ) - p -> diminished_miss( SCHOOL_PHYSICAL );
+    p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
     p -> buffed_dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
     p -> buffed_parry       = p -> composite_tank_parry() - p -> diminished_parry();
     p -> buffed_block       = p -> composite_tank_block();
@@ -3314,26 +3892,26 @@ struct snapshot_stats_t : public action_t
     int delta_level = sim -> target -> level - p -> level;
     double spell_hit_extra=0, attack_hit_extra=0, expertise_extra=0;
 
-    if ( role == ROLE_SPELL || role == ROLE_HYBRID )
+    if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
       if ( ! spell ) spell = new spell_t( "snapshot_spell", p );
       spell -> background = true;
       spell -> player_buff();
-      spell -> target_debuff( DMG_DIRECT );
+      spell -> target_debuff( target, DMG_DIRECT );
       double chance = spell -> miss_chance( delta_level );
       if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.spell_hit;
     }
 
-    if ( role == ROLE_ATTACK || role == ROLE_HYBRID )
+    if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
       if ( ! attack ) attack = new attack_t( "snapshot_attack", p );
       attack -> background = true;
       attack -> player_buff();
-      attack -> target_debuff( DMG_DIRECT );
+      attack -> target_debuff( target, DMG_DIRECT );
       double chance = attack -> miss_chance( delta_level );
       if( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
-      chance = attack -> dodge_chance( delta_level );
+      chance = attack -> dodge_chance(  p -> level, sim -> target -> level );
       if ( chance < 0 ) expertise_extra = -chance * 4 * p -> rating.expertise;
     }
 
@@ -3346,7 +3924,8 @@ struct snapshot_stats_t : public action_t
   virtual bool ready()
   {
     if ( sim -> current_iteration > 0 ) return false;
-    return player -> attribute_buffed[ ATTRIBUTE_NONE ] == 0;
+    if ( player -> attribute_buffed[ ATTRIBUTE_NONE ] != 0 ) return false;
+    return action_t::ready();
   }
 };
 
@@ -3385,7 +3964,7 @@ struct wait_until_ready_t : public action_t
       if ( remains > 0 && remains < wait ) wait = remains;
     }
 
-    return wait;
+    return wait + 0.001;
   }
 
   virtual void execute()
@@ -3479,12 +4058,14 @@ struct use_item_t : public action_t
       if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                     e.stat, e.max_stacks, e.amount, e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
+                                                     e.stat, e.max_stacks, e.stat_amount, 
+                                                     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
       }
       else if ( e.school )
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                          e.max_stacks, e.school, e.amount, e.amount, e.proc_chance, 0.0/*cd*/ );
+                                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling, 
+                                                          e.proc_chance, 0.0/*cd*/ );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -3493,7 +4074,7 @@ struct use_item_t : public action_t
     {
       struct discharge_spell_t : public spell_t
       {
-        discharge_spell_t( const char* n, player_t* p, double a, int s ) :
+        discharge_spell_t( const char* n, player_t* p, double a, const school_type s ) :
             spell_t( n, p, RESOURCE_NONE, s )
         {
           trigger_gcd = 0;
@@ -3506,14 +4087,14 @@ struct use_item_t : public action_t
         }
       };
 
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.amount, e.school );
+      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school );
     }
     else if ( e.stat )
     {
       if( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = new stat_buff_t( player, use_name, e.stat, e.amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
+      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
     }
     else assert( false );
 
@@ -3581,7 +4162,7 @@ struct use_item_t : public action_t
     {
       if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
       buff -> trigger();
-      lockout( buff -> duration );
+      lockout( buff -> buff_duration );
     }
     else assert( false );
 
@@ -3601,6 +4182,53 @@ struct use_item_t : public action_t
   }
 };
 
+// Cancel Buff ================================================================
+
+struct cancel_buff_t : public action_t
+{
+  buff_t* buff;
+
+  cancel_buff_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "cancel_buff", player ), buff(0)
+  {
+    std::string buff_name;
+    option_t options[] =
+    {
+      { "name", OPT_STRING, &buff_name },
+      { NULL,  OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if( buff_name.empty() )
+    {
+      sim -> errorf( "Player %s uses cancel_buff without specifying the name of the buff\n", player -> name() );
+      sim -> cancel();
+    }
+
+    buff = buff_t::find( player, buff_name );
+
+    if( ! buff )
+    {
+      sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
+    }
+    trigger_gcd = 0;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s cancels buff %s", player -> name(), buff -> name() );
+    buff -> expire();
+  }
+
+  virtual bool ready()
+  {
+    if( ! buff || ! buff -> check() )
+      return false;
+    return action_t::ready();
+  }
+};
+
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
@@ -3609,12 +4237,15 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
+  if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
   if ( name == "sequence"         ) return new         sequence_t( this, options_str );
   if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
+  if ( name == "start_moving"     ) return new     start_moving_t( this, options_str );
   if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
+  if ( name == "stop_moving"      ) return new      stop_moving_t( this, options_str );
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );
@@ -3650,24 +4281,20 @@ void player_t::trigger_replenishment()
   }
 }
 
-// player_t::get_talent_list ======================================================
-
-std::vector<talent_translation_t>& player_t::get_talent_list()
-{
-  return talent_translation_list;
-}
-
 // player_t::parse_talent_trees ===================================================
 
-bool player_t::parse_talent_trees( int talents[] )
+bool player_t::parse_talent_trees( int encoding[], const uint32_t size )
 {
-  std::vector<talent_translation_t> translations = this->get_talent_list();
+  int index=0;
 
-  for(unsigned int i = 0; i < translations.size(); i++)
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-          int *address = translations[i].address;
-          if ( ! address ) continue;
-          *address = talents[i];
+    int tree_size = talent_trees[ i ].size();
+
+    for( int j=0; j < tree_size; j++ )
+    {
+      talent_trees[ i ][ j ] -> set_rank( encoding[ index++ ] );
+    }
   }
 
   return true;
@@ -3677,44 +4304,22 @@ bool player_t::parse_talent_trees( int talents[] )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  int talents[MAX_TALENT_SLOTS] = {0};
+  int encoding[MAX_TALENT_SLOTS];
 
-  const char *buffer = talent_string.c_str();
+  for( int i=0; i < MAX_TALENT_SLOTS; i++ ) encoding[ i ] = 0;
 
-  for(unsigned int i = 0; i < talent_string.size(); i++)
+  for( unsigned int i = 0; i < talent_string.size(); i++ )
   {
-    char c = buffer[ i ];
+    char c = talent_string[ i ];
     if ( c < '0' || c > '5' )
     {
       sim -> errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
     }
-    talents[i] = c - '0';
+    encoding[i] = c - '0';
   }
 
-  return parse_talent_trees(talents);
-}
-
-// player_t::parse_talents_mmo ==============================================
-
-bool player_t::parse_talents_mmo( const std::string& talent_string )
-{
-  std::string player_class, talent_string_extract;
-  size_t cut_pos1 = talent_string.find_first_of("#");
-  size_t cut_pos2 = talent_string.find_first_of(",");
-
-  if((cut_pos1 < cut_pos2) && (cut_pos2 < talent_string.npos))
-  {
-        player_class = talent_string.substr(0, cut_pos1);
-        talent_string_extract = talent_string.substr(cut_pos1+1, cut_pos2-cut_pos1);
-        return mmo_champion_t::parse_talents( this, talent_string_extract );
-  }
-  else if((cut_pos1 = talent_string.find_first_of("=")) != talent_string.npos)
-  {
-          return parse_talents_armory( talent_string.substr( cut_pos1 + 1 ) );
-  }
-
-  return false;
+  return parse_talent_trees( encoding, talent_string.size() );
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -3740,37 +4345,33 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     { '\0', '\0', '\0' }
   };
 
-  this->get_talent_list();
-  int talents[ MAX_TALENT_SLOTS ] = {0};
-  unsigned int tree_size[ MAX_TALENT_TREES ] = {0};
-  unsigned int tree_count[ MAX_TALENT_TREES ] = {0};
+  int encoding[ MAX_TALENT_SLOTS ];
+  unsigned tree_count[ MAX_TALENT_TREES ];
 
-  for (unsigned int i=0; i < talent_translation_list.size(); i++ )
-  {
-    tree_size[ talent_translation_list[i].tree ]++;
-  }
+  for( int i=0; i < MAX_TALENT_SLOTS; i++ ) encoding[ i ] = 0;
+  for( int i=0; i < MAX_TALENT_TREES; i++ ) tree_count[ i ] = 0;
 
-  unsigned int tree = 0;
-  unsigned int count = 0;
+  int tree = 0;
+  int count = 0;
 
   for ( unsigned int i=1; i < talent_string.length(); i++ )
   {
-    if ( (tree >= MAX_TALENT_TREES) || (count > talent_translation_list.size()) )
+    if ( tree >= MAX_TALENT_TREES )
     {
-      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talents or trees specified.\n", name() );
+      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talent trees specified.\n", name() );
       return false;
     }
 
     char c = talent_string[ i ];
 
     if ( c == ':' ) break; // glyph encoding follows
-
+ 
     if ( c == 'Z' )
     {
-                count = 0;
-                for(unsigned int j=0; j <= tree; j++)
-                        count += tree_size[j];
-                tree++;
+      count = 0;
+      for( int j=0; j <= tree; j++)
+        count += talent_trees[ j ].size();
+      tree++;
       continue;
     }
 
@@ -3786,16 +4387,16 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
       return false;
     }
 
-    talents[ count++ ] += decode -> first - '0';
+    encoding[ count++ ] += decode -> first - '0';
     tree_count[ tree ] += 1;
 
-    if ( tree_count[ tree ] < tree_size[ tree ] )
+    if ( tree_count[ tree ] < talent_trees[ tree ].size() )
     {
-      talents[ count++ ] += decode -> second - '0';
+      encoding[ count++ ] += decode -> second - '0';
       tree_count[ tree ] += 1;
     }
 
-    if ( tree_count[ tree ] >= tree_size[ tree ] )
+    if ( tree_count[ tree ] >= talent_trees[ tree ].size() )
     {
       tree++;
     }
@@ -3804,15 +4405,131 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   if ( sim -> debug )
   {
     std::string str_out = "";
-    for(unsigned int i=0; i < talent_translation_list.size(); i++)
-      str_out += (char)talents[i];
+    for(  int i=0; i < count; i++ ) str_out += (char)encoding[i];
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
 
-  if ( ! parse_talent_trees( talents ) )
-    return false;
+  return parse_talent_trees( encoding, count );
+}
 
-  return true;
+// player_t::create_talents =================================================
+
+struct compare_talents
+{
+  bool operator()( const talent_t* left, const talent_t* right ) SC_CONST
+  {
+    const talent_data_t* l = left  -> t_data;
+    const talent_data_t* r = right -> t_data;
+
+    if( l -> tab_page == r -> tab_page )
+    {
+      if( l -> row == r -> row )
+      {
+        if( l -> col == r -> col )
+        {
+          return ( l -> id > r -> id ); // not a typo: Dive comes before Dash in pet talent string!
+        }
+        return ( l -> col < r -> col );
+      }
+      return ( l -> row < r -> row );
+    }
+    return ( l -> tab_page < r -> tab_page );
+  }
+};
+
+void player_t::create_talents()
+{
+  int cid_mask = util_t::class_id_mask( type );
+
+  talent_data_t* talent_data = talent_data_t::list();
+
+  for( int i=0; talent_data[ i ].name; i++ )
+  {
+    talent_data_t& td = talent_data[ i ];
+
+    if( cid_mask )
+    {
+      if( cid_mask & td.m_class )
+      {
+        talent_t* t = new talent_t( this, &td );
+        talent_trees[ td.tab_page ].push_back( t );
+        option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
+      }
+    }
+    else if( td.m_pet )
+    {
+      for( int j=0; j < MAX_TALENT_TREES; j++ )
+      {
+        if( td.m_pet & ( 1 << j ) )
+        {
+          talent_t* t = new talent_t( this, &td );
+          talent_trees[ j ].push_back( t );
+          option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
+        }
+      }
+    }
+  }
+
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    std::vector<talent_t*>& tree = talent_trees[ i ];
+    if( ! tree.empty() ) std::sort( tree.begin(), tree.end(), compare_talents() );
+  }
+}
+
+// player_t::find_talent ====================================================
+
+talent_t* player_t::find_talent( const std::string& n,
+                                 int tree )
+{
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
+  {
+    if( tree != TALENT_TAB_NONE && tree != i )
+      continue;
+
+    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+    {
+      talent_t* t = talent_trees[ i ][ j ];
+
+      if( n == t -> td -> name )
+      {
+        return t;
+      }
+    }
+  }
+
+  sim -> errorf( "Player %s unable to find talent %s\n", name(), n.c_str() );
+//sim -> cancel();
+  return 0;
+}
+
+// player_t::create_glyphs ==================================================
+
+void player_t::create_glyphs()
+{
+  std::vector<unsigned> glyph_ids;
+  int num_glyphs = dbc_t::glyphs( glyph_ids, util_t::class_id( type ) );
+
+  for( int i=0; i < num_glyphs; i++ )
+  {
+    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ] ) ) );
+  }
+}
+
+// player_t::find_glyph =====================================================
+
+glyph_t* player_t::find_glyph( const std::string& n )
+{
+  for( int i=glyphs.size()-1; i >= 0; i-- )
+  {
+    glyph_t* g = glyphs[ i ];
+    if( n == g -> sd -> name ) return g;
+    if( n == g -> s_token ) return g; // Armory-ized
+  }
+
+  sim -> errorf( "\nPlayer %s unable to find glyph %s\n", name(), n.c_str() );
+//sim -> cancel();
+  return 0;
 }
 
 // player_t::create_expression ==============================================
@@ -3831,6 +4548,24 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new resource_expr_t( a, name_str, resource_type );
   }
+  if ( name_str == "level" )
+  {
+    struct level_expr_t : public action_expr_t
+    {
+      level_expr_t( action_t* a ) : action_expr_t( a, "level", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = p -> level; return TOK_NUM; }
+    };
+    return new level_expr_t( a );
+  }
+  if ( name_str == "multiplier" )
+  {
+    struct multiplier_expr_t : public action_expr_t
+    {
+      multiplier_expr_t( action_t* a ) : action_expr_t( a, "multiplier", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = p -> composite_player_multiplier( action -> school ); return TOK_NUM; }
+    };
+    return new multiplier_expr_t( a );
+  }
   if ( name_str == "mana_pct" )
   {
     struct mana_pct_expr_t : public action_expr_t
@@ -3839,6 +4574,15 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { player_t* p = action -> player; result_num = 100 * ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ); return TOK_NUM; }
     };
     return new mana_pct_expr_t( a );
+  }
+  if ( name_str == "mana_deficit" )
+  {
+    struct mana_deficit_expr_t : public action_expr_t
+    {
+      mana_deficit_expr_t( action_t* a ) : action_expr_t( a, "mana_deficit", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = ( p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA ] ); return TOK_NUM; }
+    };
+    return new mana_deficit_expr_t( a );
   }
   if ( name_str == "in_combat" )
   {
@@ -3867,10 +4611,136 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new spell_haste_expr_t( a );
   }
+  if ( name_str == "energy_regen" )
+  {
+    struct energy_regen_expr_t : public action_expr_t
+    {
+      energy_regen_expr_t( action_t* a ) : action_expr_t( a, "energy_regen", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> energy_regen_per_second(); return TOK_NUM; }
+    };
+    return new energy_regen_expr_t( a );
+  }
+  if ( name_str == "focus_regen" )
+  {
+    struct focus_regen_expr_t : public action_expr_t
+    {
+      focus_regen_expr_t( action_t* a ) : action_expr_t( a, "focus_regen", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> focus_regen_per_second(); return TOK_NUM; }
+    };
+    return new focus_regen_expr_t( a );
+  }
+  if ( name_str == "time_to_max_energy" )
+  {
+    struct time_to_max_energy_expr_t : public action_expr_t
+    {
+      time_to_max_energy_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_energy", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> player -> resource_max[ RESOURCE_ENERGY ] - 
+                                              action -> player -> resource_current[ RESOURCE_ENERGY ] ) /
+                                            action -> player -> energy_regen_per_second(); return TOK_NUM; }
+    };
+    return new time_to_max_energy_expr_t( a );
+  }
+  if ( name_str == "time_to_max_focus" )
+  {
+    struct time_to_max_focus_expr_t : public action_expr_t
+    {
+      time_to_max_focus_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_focus", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> player -> resource_max[ RESOURCE_FOCUS ] - 
+                                              action -> player -> resource_current[ RESOURCE_FOCUS ] ) / 
+                                            action -> player -> focus_regen_per_second(); return TOK_NUM; }
+    };
+    return new time_to_max_focus_expr_t( a );
+  }
+  if ( name_str == "max_energy" )
+  {
+    struct max_energy_expr_t : public action_expr_t
+    {
+      max_energy_expr_t( action_t* a ) : action_expr_t( a, "max_energy", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_ENERGY ]; return TOK_NUM; }
+    };
+    return new max_energy_expr_t( a );
+  }
+  if ( name_str == "max_focus" )
+  {
+    struct max_focus_expr_t : public action_expr_t
+    {
+      max_focus_expr_t( action_t* a ) : action_expr_t( a, "max_focus", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_FOCUS ]; return TOK_NUM; }
+    };
+    return new max_focus_expr_t( a );
+  }
+  if ( name_str == "max_rage" )
+  {
+    struct max_rage_expr_t : public action_expr_t
+    {
+      max_rage_expr_t( action_t* a ) : action_expr_t( a, "max_rage", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_RAGE ]; return TOK_NUM; }
+    };
+    return new max_rage_expr_t( a );
+  }
+  if ( name_str == "max_runic" )
+  {
+    struct max_runic_expr_t : public action_expr_t
+    {
+      max_runic_expr_t( action_t* a ) : action_expr_t( a, "max_runic", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_RUNIC ]; return TOK_NUM; }
+    };
+    return new max_runic_expr_t( a );
+  }
+  if ( name_str == "max_mana" )
+  {
+    struct max_mana_expr_t : public action_expr_t
+    {
+      max_mana_expr_t( action_t* a ) : action_expr_t( a, "max_mana", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_MANA ]; return TOK_NUM; }
+    };
+    return new max_mana_expr_t( a );
+  }
+  if ( name_str == "ptr" )
+  {
+    struct ptr_expr_t : public action_expr_t
+    {
+      ptr_expr_t( action_t* a ) : action_expr_t( a, "ptr", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> ptr ? 1 : 0; return TOK_NUM; }
+    };
+    return new ptr_expr_t( a );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
-  if ( num_splits == 3 )
+  if ( splits[ 0 ] == "pet" )
+  {
+    pet_t* pet = find_pet( splits[ 1 ] );
+    if ( pet ) {
+      if ( splits[ 2 ] == "active" )
+      {
+        struct pet_active_expr_t : public action_expr_t
+        {
+          pet_t* pet;
+          pet_active_expr_t( action_t* a, pet_t* p ) : action_expr_t( a, "pet_active", TOK_NUM ), pet(p) {}
+          virtual int evaluate() { result_num = ( pet -> sleeping ) ? 0 : 1; return TOK_NUM; }
+        };
+        return new pet_active_expr_t( a, pet );
+      }
+      else
+      {
+        return pet -> create_expression( a, name_str.substr( splits[ 1 ].length() + 5 ) );
+      }
+    }
+  }
+  else if ( splits[ 0 ] == "owner" )
+  {
+    if ( is_pet() )
+    {
+      pet_t* pet = ( pet_t* ) this;
+
+      if ( pet-> owner )
+      {
+        return pet -> owner -> create_expression( a, name_str.substr( 6 ) );
+      }
+    }
+  }
+  else if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "buff" )
     {
@@ -3896,6 +4766,24 @@ action_expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "dot" )
     {
       dot_t* dot = get_dot( splits[ 1 ] );
+      if ( splits[ 2 ] == "duration" )
+      {
+        struct duration_expr_t : public action_expr_t
+        {
+          duration_expr_t( action_t* a ) : action_expr_t( a, "dot_duration", TOK_NUM ) {}
+          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time(); return TOK_NUM; }
+        };
+        return new duration_expr_t( a );
+      }
+      if ( splits[ 2 ] == "multiplier" )
+      {
+        struct multiplier_expr_t : public action_expr_t
+        {
+          multiplier_expr_t( action_t* a ) : action_expr_t( a, "dot_multiplier", TOK_NUM ) {}
+          virtual int evaluate() { result_num = action -> player_multiplier; return TOK_NUM; }
+        };
+        return new multiplier_expr_t( a );
+      }
       if ( splits[ 2 ] == "remains" )
       {
         struct dot_remains_expr_t : public action_expr_t
@@ -3905,6 +4793,16 @@ action_expr_t* player_t::create_expression( action_t* a,
           virtual int evaluate() { result_num = dot -> remains(); return TOK_NUM; }
         };
         return new dot_remains_expr_t( a, dot );
+      }
+      else if ( splits[ 2 ] == "ticking" )
+      {
+        struct dot_ticking_expr_t : public action_expr_t
+        {
+          dot_t* dot;
+          dot_ticking_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_ticking", TOK_NUM ), dot(d) {}
+          virtual int evaluate() { result_num = dot -> ticking; return TOK_NUM; }
+        };
+        return new dot_ticking_expr_t( a, dot );
       }
     }
     else if ( splits[ 0 ] == "swing" )
@@ -3918,50 +4816,104 @@ action_expr_t* player_t::create_expression( action_t* a,
       {
         struct swing_remains_expr_t : public action_expr_t
         {
-	  int slot;
+          int slot;
           swing_remains_expr_t( action_t* a, int s ) : action_expr_t( a, "swing_remains", TOK_NUM ), slot(s) {}
           virtual int evaluate()
-	  {
-	    result_num = 9999;
-	    player_t* p = action -> player;
-	    attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
-	    if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> occurs() - action -> sim -> current_time;
-	    return TOK_NUM;
-	  }
+          {
+            result_num = 9999;
+            player_t* p = action -> player;
+            attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
+            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> remains();
+            return TOK_NUM;
+          }
         };
         return new swing_remains_expr_t( a, hand );
       }
     }
+    else if ( splits[ 0 ] == "action" )
+    {
+      std::vector<action_t*> in_flight_list;
+      for ( action_t* action = action_list; action; action = action -> next )
+      {
+        if ( action -> name_str == splits[ 1 ] )
+        {
+          if ( splits[ 2 ] == "in_flight" ) {
+            in_flight_list.push_back( action );
+          }
+          else
+          {
+            return action -> create_expression( splits[ 2 ] );
+          }
+        }
+      }
+      if ( in_flight_list.size() > 0 )
+      {
+        struct in_flight_multi_expr_t : public action_expr_t
+        {
+          std::vector<action_t*> action_list;
+          in_flight_multi_expr_t( std::vector<action_t*> al ) : action_expr_t( al[ 0 ], "in_flight", TOK_NUM ), action_list(al) {}
+          virtual int evaluate()
+          {
+            result_num = false;
+            for ( int i = 0; i < ( int ) action_list.size(); i++ )
+            {
+              if ( action_list[ i ] -> travel_event != NULL ) result_num = true;
+            }
+            return TOK_NUM;
+          }
+        };
+        return new in_flight_multi_expr_t( in_flight_list );
+      }
+    }
   }
+  else if ( num_splits == 2)
+  {
+    if ( splits[ 0 ] == "set_bonus" )
+    {
+     return a -> player -> set_bonus.create_expression( a, splits[ 1 ] );
+    }
+  }
+
+
 
   return sim -> create_expression( a, name_str );
 }
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, int save_type )
+bool player_t::create_profile( std::string& profile_str, int save_type, bool save_html )
 {
+  std::string term;
+
+  if ( save_html )
+    term = "<br>\n";
+  else
+    term = "\n";
+
   if ( save_type == SAVE_ALL )
   {
-    profile_str += "#!./simc \n\n";
+    profile_str += "#!./simc " + term + term;
   }
 
   if ( ! comment_str.empty() )
   {
-    profile_str += "# " + comment_str + "\n";
+    profile_str += "# " + comment_str + term;
   }
 
   if ( save_type == SAVE_ALL )
   {
-    profile_str += util_t::player_type_string( type ); profile_str += "=" + name_str + "\n";
-    profile_str += "origin=\"" + origin_str + "\"\n";
-    profile_str += "level=" + util_t::to_string( level ) + "\n";
-    profile_str += "race=" + race_str + "\n";
-    profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + "\n";
+    std::string pname = name_str;
+    
+    profile_str += util_t::player_type_string( type ); 
+    profile_str += "=" + util_t::format_text( pname, sim -> input_is_utf8 ) + term;
+    profile_str += "origin=\"" + origin_str + "\"" + term;
+    profile_str += "level=" + util_t::to_string( level ) + term;
+    profile_str += "race=" + race_str + term;
+    profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
     {
-      profile_str += "professions=" + professions_str + "\n";
+      profile_str += "professions=" + professions_str + term;
     };
   }
 
@@ -3969,11 +4921,11 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
   {
     if ( talents_str.size() > 0 )
     {
-      profile_str += "talents=" + talents_str + "\n";
+      profile_str += "talents=" + talents_str + term;
     };
     if ( glyphs_str.size() > 0 )
     {
-      profile_str += "glyphs=" + glyphs_str + "\n";
+      profile_str += "glyphs=" + glyphs_str + term;
     }
   }
 
@@ -3987,7 +4939,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       {
         profile_str += "actions";
         profile_str += i ? "+=/" : "=";
-        profile_str += splits[ i ] + "\n";
+        profile_str += splits[ i ] + term;
       }
     }
   }
@@ -4001,12 +4953,12 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       if ( item.active() )
       {
         profile_str += item.slot_name();
-        profile_str += "=" + item.options_str + "\n";
+        profile_str += "=" + item.options_str + term;
       }
     }
     if ( ! items_str.empty() )
     {
-      profile_str += "items=" + items_str + "\n";
+      profile_str += "items=" + items_str + term;
     }
 
     profile_str += "# Gear Summary\n";
@@ -4017,49 +4969,39 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
       {
         profile_str += "# gear_";
         profile_str += util_t::stat_type_string( i );
-        profile_str += "=" + util_t::to_string( value, 0 ) + "\n";
+        profile_str += "=" + util_t::to_string( value, 0 ) + term;
       }
     }
     if ( meta_gem != META_GEM_NONE )
     {
       profile_str += "# meta_gem=";
       profile_str += util_t::meta_gem_type_string( meta_gem );
-      profile_str += "\n";
+      profile_str += term;
     }
 
-    if ( set_bonus.tier7_2pc_caster() ) profile_str += "# tier7_2pc_caster=1\n";
-    if ( set_bonus.tier7_4pc_caster() ) profile_str += "# tier7_4pc_caster=1\n";
-    if ( set_bonus.tier7_2pc_melee()  ) profile_str += "# tier7_2pc_melee=1\n";
-    if ( set_bonus.tier7_4pc_melee()  ) profile_str += "# tier7_4pc_melee=1\n";
-    if ( set_bonus.tier7_2pc_tank()   ) profile_str += "# tier7_2pc_tank=1\n";
-    if ( set_bonus.tier7_4pc_tank()   ) profile_str += "# tier7_4pc_tank=1\n";
+    if ( set_bonus.tier10_2pc_caster() ) profile_str += "# tier10_2pc_caster=1" + term;
+    if ( set_bonus.tier10_4pc_caster() ) profile_str += "# tier10_4pc_caster=1" + term;
+    if ( set_bonus.tier10_2pc_melee()  ) profile_str += "# tier10_2pc_melee=1" + term;
+    if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1" + term;
+    if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1" + term;
+    if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1" + term;
+    if ( set_bonus.tier10_2pc_heal()   ) profile_str += "# tier10_2pc_heal=1" + term;
+    if ( set_bonus.tier10_4pc_heal()   ) profile_str += "# tier10_4pc_heal=1" + term;
 
-    if ( set_bonus.tier8_2pc_caster() ) profile_str += "# tier8_2pc_caster=1\n";
-    if ( set_bonus.tier8_4pc_caster() ) profile_str += "# tier8_4pc_caster=1\n";
-    if ( set_bonus.tier8_2pc_melee()  ) profile_str += "# tier8_2pc_melee=1\n";
-    if ( set_bonus.tier8_4pc_melee()  ) profile_str += "# tier8_4pc_melee=1\n";
-    if ( set_bonus.tier8_2pc_tank()   ) profile_str += "# tier8_2pc_tank=1\n";
-    if ( set_bonus.tier8_4pc_tank()   ) profile_str += "# tier8_4pc_tank=1\n";
-
-    if ( set_bonus.tier9_2pc_caster() ) profile_str += "# tier9_2pc_caster=1\n";
-    if ( set_bonus.tier9_4pc_caster() ) profile_str += "# tier9_4pc_caster=1\n";
-    if ( set_bonus.tier9_2pc_melee()  ) profile_str += "# tier9_2pc_melee=1\n";
-    if ( set_bonus.tier9_4pc_melee()  ) profile_str += "# tier9_4pc_melee=1\n";
-    if ( set_bonus.tier9_2pc_tank()   ) profile_str += "# tier9_2pc_tank=1\n";
-    if ( set_bonus.tier9_4pc_tank()   ) profile_str += "# tier9_4pc_tank=1\n";
-
-    if ( set_bonus.tier10_2pc_caster() ) profile_str += "# tier10_2pc_caster=1\n";
-    if ( set_bonus.tier10_4pc_caster() ) profile_str += "# tier10_4pc_caster=1\n";
-    if ( set_bonus.tier10_2pc_melee()  ) profile_str += "# tier10_2pc_melee=1\n";
-    if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1\n";
-    if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1\n";
-    if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1\n";
+    if ( set_bonus.tier11_2pc_caster() ) profile_str += "# tier11_2pc_caster=1" + term;
+    if ( set_bonus.tier11_4pc_caster() ) profile_str += "# tier11_4pc_caster=1" + term;
+    if ( set_bonus.tier11_2pc_melee()  ) profile_str += "# tier11_2pc_melee=1" + term;
+    if ( set_bonus.tier11_4pc_melee()  ) profile_str += "# tier11_4pc_melee=1" + term;
+    if ( set_bonus.tier11_2pc_tank()   ) profile_str += "# tier11_2pc_tank=1" + term;
+    if ( set_bonus.tier11_4pc_tank()   ) profile_str += "# tier11_4pc_tank=1" + term;
+    if ( set_bonus.tier11_2pc_heal()   ) profile_str += "# tier11_2pc_heal=1" + term;
+    if ( set_bonus.tier11_4pc_heal()   ) profile_str += "# tier11_4pc_heal=1" + term;
 
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
       if ( ! item.active() ) continue;
-      if ( item.unique || item.unique_enchant || ! item.encoded_weapon_str.empty() )
+      if ( item.unique || item.unique_enchant || item.unique_addon || ! item.encoded_weapon_str.empty() )
       {
         profile_str += "# ";
         profile_str += item.slot_name();
@@ -4068,64 +5010,52 @@ bool player_t::create_profile( std::string& profile_str, int save_type )
         if ( item.heroic() ) profile_str += ",heroic=1";
         if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
         if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
-        profile_str += "\n";
+        if ( item.unique_addon   ) profile_str += ",addon="   + item.encoded_addon_str;
+        profile_str += term;
       }
     }
+
   }
 
   return true;
 }
 
-// player_t::get_talent =====================================================
+// player_t::copy_from =================================================
 
-talent_t* player_t::get_talent( const char* name, int tree, int max_ranks )
+void player_t::copy_from( player_t* source )
 {
-  int size = talent_list.size();
-
-  for( int i=0; i < size; i++ )
+  origin_str = source -> origin_str;
+  level = source -> level;
+  race_str = source -> race_str;
+  role = source -> role;
+  use_pre_potion = source -> use_pre_potion;
+  professions_str = source -> professions_str;
+  talents_str = "http://www.wowhead.com/talent#";
+  talents_str += util_t::player_type_string( type );
+  talents_str += "-";
+  // This is necessary because sometimes the talent trees change shape between live/ptr.
+  for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    talent_t* t = talent_list[ i ];
-    if( t -> _name == name ) return t;
+    for( int j = talent_trees[ i ].size()-1; j >= 0; j-- )
+    {
+      talent_t* t = talent_trees[ i ][ j ];
+      talent_t* source_t = source -> find_talent( t -> td -> name );
+      if( source_t ) t -> set_rank( source_t -> rank() );
+      std::stringstream ss;
+      ss << t -> rank();
+      talents_str += ss.str();
+    }
   }
-
-  talent_t* t = new talent_t( name, tree, max_ranks );
-
-  option_t::add( options, name, OPT_INT, &( t -> _ranks ) );
-
-  return t;
-}
-
-// player_t::get_glyph ======================================================
-
-glyph_t* player_t::get_glyph( const char* name )
-{
-  int size = glyph_list.size();
-
-  for( int i=0; i < size; i++ )
+  glyphs_str = source -> glyphs_str;
+  action_list_str = source -> action_list_str;
+  int num_items = ( int ) items.size();
+  for ( int i=0; i < num_items; i++ )
   {
-    glyph_t* g = glyph_list[ i ];
-    if( g -> _name == name ) return g;
+    items[ i ] = source -> items[ i ];
+    items[ i ].player = this;
   }
-
-  glyph_t* g = new glyph_t( name );
-
-  option_t::add( options, name, OPT_BOOL, &( g -> _active ) );
-
-  return g;
-}
-
-// player_t::create_talents =================================================
-
-void player_t::create_talents()
-{
-  // fill in with DBC stuff here
-}
-
-// player_t::create_glyphs ==================================================
-
-void player_t::create_glyphs()
-{
-  // fill in with DBC stuff here
+  gear = source -> gear;
+  enchant = source -> enchant;
 }
 
 // player_t::create_options =================================================
@@ -4134,132 +5064,126 @@ void player_t::create_options()
 {
   option_t player_options[] =
   {
-    { "name",                                 OPT_STRING,   &( name_str                                     ) },
-    { "origin",                               OPT_STRING,   &( origin_str                                   ) },
-    { "id",                                   OPT_STRING,   &( id_str                                       ) },
-    { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                      },
-    { "glyphs",                               OPT_STRING,   &( glyphs_str                                   ) },
-    { "race",                                 OPT_STRING,   &( race_str                                     ) },
-    { "level",                                OPT_INT,      &( level                                        ) },
-    { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                               ) },
-    { "tank",                                 OPT_INT,      &( tank                                         ) },
-    { "skill",                                OPT_FLT,      &( initial_skill                                ) },
-    { "distance",                             OPT_FLT,      &( distance                                     ) },
-    { "professions",                          OPT_STRING,   &( professions_str                              ) },
-    { "actions",                              OPT_STRING,   &( action_list_str                              ) },
-    { "actions+",                             OPT_APPEND,   &( action_list_str                              ) },
-    { "sleeping",                             OPT_BOOL,     &( sleeping                                     ) },
-    { "quiet",                                OPT_BOOL,     &( quiet                                        ) },
-    { "save",                                 OPT_STRING,   &( save_str                                     ) },
-    { "save_gear",                            OPT_STRING,   &( save_gear_str                                ) },
-    { "save_talents",                         OPT_STRING,   &( save_talents_str                             ) },
-    { "save_actions",                         OPT_STRING,   &( save_actions_str                             ) },
-    { "comment",                              OPT_STRING,   &( comment_str                                  ) },
-    { "meta_gem",                             OPT_STRING,   &( meta_gem_str                                 ) },
-    { "items",                                OPT_STRING,   &( items_str                                    ) },
-    { "items+",                               OPT_APPEND,   &( items_str                                    ) },
-    { "head",                                 OPT_STRING,   &( items[ SLOT_HEAD      ].options_str          ) },
-    { "neck",                                 OPT_STRING,   &( items[ SLOT_NECK      ].options_str          ) },
-    { "shoulders",                            OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
-    { "shirt",                                OPT_STRING,   &( items[ SLOT_SHIRT     ].options_str          ) },
-    { "chest",                                OPT_STRING,   &( items[ SLOT_CHEST     ].options_str          ) },
-    { "waist",                                OPT_STRING,   &( items[ SLOT_WAIST     ].options_str          ) },
-    { "legs",                                 OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
-    { "feet",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
-    { "wrists",                               OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
-    { "hands",                                OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
-    { "finger1",                              OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
-    { "finger2",                              OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
-    { "trinket1",                             OPT_STRING,   &( items[ SLOT_TRINKET_1 ].options_str          ) },
-    { "trinket2",                             OPT_STRING,   &( items[ SLOT_TRINKET_2 ].options_str          ) },
-    { "back",                                 OPT_STRING,   &( items[ SLOT_BACK      ].options_str          ) },
-    { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str          ) },
-    { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str          ) },
-    { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str          ) },
-    { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str          ) },
-    { "tier6_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_CASTER ]         ) },
-    { "tier6_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_CASTER ]         ) },
-    { "tier6_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_MELEE ]          ) },
-    { "tier6_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_MELEE ]          ) },
-    { "tier6_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_2PC_TANK ]           ) },
-    { "tier6_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T6_4PC_TANK ]           ) },
-    { "tier7_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_CASTER ]         ) },
-    { "tier7_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_CASTER ]         ) },
-    { "tier7_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_MELEE ]          ) },
-    { "tier7_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_MELEE ]          ) },
-    { "tier7_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_2PC_TANK ]           ) },
-    { "tier7_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T7_4PC_TANK ]           ) },
-    { "tier8_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_CASTER ]         ) },
-    { "tier8_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_CASTER ]         ) },
-    { "tier8_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_MELEE ]          ) },
-    { "tier8_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_MELEE ]          ) },
-    { "tier8_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_2PC_TANK ]           ) },
-    { "tier8_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T8_4PC_TANK ]           ) },
-    { "tier9_2pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_CASTER ]         ) },
-    { "tier9_4pc_caster",                     OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_CASTER ]         ) },
-    { "tier9_2pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_MELEE ]          ) },
-    { "tier9_4pc_melee",                      OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_MELEE ]          ) },
-    { "tier9_2pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_2PC_TANK ]           ) },
-    { "tier9_4pc_tank",                       OPT_BOOL,     &( set_bonus.count[ SET_T9_4PC_TANK ]           ) },
-    { "tier10_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_CASTER ]        ) },
-    { "tier10_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_CASTER ]        ) },
-    { "tier10_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_MELEE ]         ) },
-    { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]         ) },
-    { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]          ) },
-    { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]          ) },
-    { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str          ) },
-    { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str          ) },
-    { "foot",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str          ) },
-    { "wrist",                                OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str          ) },
-    { "hand",                                 OPT_STRING,   &( items[ SLOT_HANDS     ].options_str          ) },
-    { "ring1",                                OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str          ) },
-    { "ring2",                                OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str          ) },
-    { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]                 ) },
-    { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]                 ) },
-    { "gear_stamina",                         OPT_FLT,  &( gear.attribute[ ATTR_STAMINA   ]                 ) },
-    { "gear_intellect",                       OPT_FLT,  &( gear.attribute[ ATTR_INTELLECT ]                 ) },
-    { "gear_spirit",                          OPT_FLT,  &( gear.attribute[ ATTR_SPIRIT    ]                 ) },
-    { "gear_spell_power",                     OPT_FLT,  &( gear.spell_power                                 ) },
-    { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                         ) },
-    { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                                ) },
-    { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                            ) },
-    { "gear_armor_penetration_rating",        OPT_FLT,  &( gear.armor_penetration_rating                    ) },
-    { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                                ) },
-    { "gear_hit_rating",                      OPT_FLT,  &( gear.hit_rating                                  ) },
-    { "gear_crit_rating",                     OPT_FLT,  &( gear.crit_rating                                 ) },
-    { "gear_health",                          OPT_FLT,  &( gear.resource[ RESOURCE_HEALTH ]                 ) },
-    { "gear_mana",                            OPT_FLT,  &( gear.resource[ RESOURCE_MANA   ]                 ) },
-    { "gear_rage",                            OPT_FLT,  &( gear.resource[ RESOURCE_RAGE   ]                 ) },
-    { "gear_energy",                          OPT_FLT,  &( gear.resource[ RESOURCE_ENERGY ]                 ) },
-    { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]                 ) },
-    { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]                 ) },
-    { "gear_armor",                           OPT_FLT,  &( gear.armor                                       ) },
-    { "gear_block_value",                     OPT_FLT,  &( gear.block_value                                 ) },
-    { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]              ) },
-    { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]              ) },
-    { "enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]              ) },
-    { "enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]              ) },
-    { "enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]              ) },
-    { "enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                              ) },
-    { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                      ) },
-    { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                             ) },
-    { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                         ) },
-    { "enchant_armor_penetration_rating",     OPT_FLT,  &( enchant.armor_penetration_rating                 ) },
-    { "enchant_armor",                        OPT_FLT,  &( enchant.armor                                    ) },
-    { "enchant_block_value",                  OPT_FLT,  &( enchant.block_value                              ) },
-    { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                             ) },
-    { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                               ) },
-    { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                              ) },
-    { "enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]              ) },
-    { "enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]              ) },
-    { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]              ) },
-    { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]              ) },
-    { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]              ) },
-    { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]              ) },
-    { "skip_actions",                         OPT_STRING, &( action_list_skip                               ) },
-    { "elixirs",                              OPT_STRING, &( elixirs_str                                    ) },
-    { "flask",                                OPT_STRING, &( flask_str                                      ) },
-    { "food",                                 OPT_STRING, &( food_str                                       ) },
+    // General
+    { "name",                                 OPT_STRING,   &( name_str                               ) },
+    { "origin",                               OPT_STRING,   &( origin_str                             ) },
+    { "id",                                   OPT_STRING,   &( id_str                                 ) },
+    { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                },
+    { "glyphs",                               OPT_STRING,   &( glyphs_str                             ) },
+    { "race",                                 OPT_STRING,   &( race_str                               ) },
+    { "level",                                OPT_INT,      &( level                                  ) },
+    { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
+    { "role",                                 OPT_STRING,   &( role                                   ) },
+    { "skill",                                OPT_FLT,      &( initial_skill                          ) },
+    { "distance",                             OPT_FLT,      &( distance                               ) },
+    { "professions",                          OPT_STRING,   &( professions_str                        ) },
+    { "actions",                              OPT_STRING,   &( action_list_str                        ) },
+    { "actions+",                             OPT_APPEND,   &( action_list_str                        ) },
+    { "sleeping",                             OPT_BOOL,     &( sleeping                               ) },
+    { "quiet",                                OPT_BOOL,     &( quiet                                  ) },
+    { "save",                                 OPT_STRING,   &( save_str                               ) },
+    { "save_gear",                            OPT_STRING,   &( save_gear_str                          ) },
+    { "save_talents",                         OPT_STRING,   &( save_talents_str                       ) },
+    { "save_actions",                         OPT_STRING,   &( save_actions_str                       ) },
+    { "comment",                              OPT_STRING,   &( comment_str                            ) },
+    { "bugs",                                 OPT_BOOL,     &( bugs                                   ) },
+    // Items
+    { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
+    { "items",                                OPT_STRING,   &( items_str                              ) },
+    { "items+",                               OPT_APPEND,   &( items_str                              ) },
+    { "head",                                 OPT_STRING,   &( items[ SLOT_HEAD      ].options_str    ) },
+    { "neck",                                 OPT_STRING,   &( items[ SLOT_NECK      ].options_str    ) },
+    { "shoulders",                            OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str    ) },
+    { "shoulder",                             OPT_STRING,   &( items[ SLOT_SHOULDERS ].options_str    ) },
+    { "shirt",                                OPT_STRING,   &( items[ SLOT_SHIRT     ].options_str    ) },
+    { "chest",                                OPT_STRING,   &( items[ SLOT_CHEST     ].options_str    ) },
+    { "waist",                                OPT_STRING,   &( items[ SLOT_WAIST     ].options_str    ) },
+    { "legs",                                 OPT_STRING,   &( items[ SLOT_LEGS      ].options_str    ) },
+    { "leg",                                  OPT_STRING,   &( items[ SLOT_LEGS      ].options_str    ) },
+    { "feet",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str    ) },
+    { "foot",                                 OPT_STRING,   &( items[ SLOT_FEET      ].options_str    ) },
+    { "wrists",                               OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str    ) },
+    { "wrist",                                OPT_STRING,   &( items[ SLOT_WRISTS    ].options_str    ) },
+    { "hands",                                OPT_STRING,   &( items[ SLOT_HANDS     ].options_str    ) },
+    { "hand",                                 OPT_STRING,   &( items[ SLOT_HANDS     ].options_str    ) },
+    { "finger1",                              OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str    ) },
+    { "finger2",                              OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str    ) },
+    { "ring1",                                OPT_STRING,   &( items[ SLOT_FINGER_1  ].options_str    ) },
+    { "ring2",                                OPT_STRING,   &( items[ SLOT_FINGER_2  ].options_str    ) },
+    { "trinket1",                             OPT_STRING,   &( items[ SLOT_TRINKET_1 ].options_str    ) },
+    { "trinket2",                             OPT_STRING,   &( items[ SLOT_TRINKET_2 ].options_str    ) },
+    { "back",                                 OPT_STRING,   &( items[ SLOT_BACK      ].options_str    ) },
+    { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str    ) },
+    { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str    ) },
+    { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str    ) },
+    { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str    ) },
+    // Set Bonus
+    { "tier10_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_CASTER ]  ) },
+    { "tier10_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_CASTER ]  ) },
+    { "tier10_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_MELEE ]   ) },
+    { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]   ) },
+    { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]    ) },
+    { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]    ) },
+    { "tier11_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_CASTER ]  ) },
+    { "tier11_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_CASTER ]  ) },
+    { "tier11_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_MELEE ]   ) },
+    { "tier11_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_MELEE ]   ) },
+    { "tier11_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_TANK ]    ) },
+    { "tier11_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_TANK ]    ) },
+    // Gear Stats
+    { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]           ) },
+    { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]           ) },
+    { "gear_stamina",                         OPT_FLT,  &( gear.attribute[ ATTR_STAMINA   ]           ) },
+    { "gear_intellect",                       OPT_FLT,  &( gear.attribute[ ATTR_INTELLECT ]           ) },
+    { "gear_spirit",                          OPT_FLT,  &( gear.attribute[ ATTR_SPIRIT    ]           ) },
+    { "gear_spell_power",                     OPT_FLT,  &( gear.spell_power                           ) },
+    { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                   ) },
+    { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                          ) },
+    { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                      ) },
+    { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                          ) },
+    { "gear_hit_rating",                      OPT_FLT,  &( gear.hit_rating                            ) },
+    { "gear_crit_rating",                     OPT_FLT,  &( gear.crit_rating                           ) },
+    { "gear_health",                          OPT_FLT,  &( gear.resource[ RESOURCE_HEALTH ]           ) },
+    { "gear_mana",                            OPT_FLT,  &( gear.resource[ RESOURCE_MANA   ]           ) },
+    { "gear_rage",                            OPT_FLT,  &( gear.resource[ RESOURCE_RAGE   ]           ) },
+    { "gear_energy",                          OPT_FLT,  &( gear.resource[ RESOURCE_ENERGY ]           ) },
+    { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]           ) },
+    { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]           ) },
+    { "gear_armor",                           OPT_FLT,  &( gear.armor                                 ) },
+    { "gear_mastery_rating",                  OPT_FLT,  &( gear.mastery_rating                        ) },
+    // Stat Enchants
+    { "enchant_strength",                     OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ]        ) },
+    { "enchant_agility",                      OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ]        ) },
+    { "enchant_stamina",                      OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ]        ) },
+    { "enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]        ) },
+    { "enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]        ) },
+    { "enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                        ) },
+    { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                ) },
+    { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                       ) },
+    { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                   ) },
+    { "enchant_armor",                        OPT_FLT,  &( enchant.armor                              ) },
+    { "enchant_haste_rating",                 OPT_FLT,  &( enchant.haste_rating                       ) },
+    { "enchant_hit_rating",                   OPT_FLT,  &( enchant.hit_rating                         ) },
+    { "enchant_crit_rating",                  OPT_FLT,  &( enchant.crit_rating                        ) },
+    { "enchant_mastery_rating",               OPT_FLT,  &( enchant.mastery_rating                     ) },
+    { "enchant_health",                       OPT_FLT,  &( enchant.resource[ RESOURCE_HEALTH ]        ) },
+    { "enchant_mana",                         OPT_FLT,  &( enchant.resource[ RESOURCE_MANA   ]        ) },
+    { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]        ) },
+    { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]        ) },
+    { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]        ) },
+    { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]        ) },
+    // Misc
+    { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
+    { "elixirs",                              OPT_STRING, &( elixirs_str                              ) },
+    { "flask",                                OPT_STRING, &( flask_str                                ) },
+    { "food",                                 OPT_STRING, &( food_str                                 ) },
+    { "vengeance_factor",                     OPT_FLT,    &( vengeance_factor                         ) },
+    { "player_resist_holy",                   OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ]        ) },
+    { "player_resist_shadow",                 OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ]        ) },
+    { "player_resist_arcane",                 OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ]        ) },
+    { "player_resist_frost",                  OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ]        ) },
+    { "player_resist_fire",                   OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ]        ) },
+    { "player_resist_nature",                 OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ]        ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -4271,60 +5195,48 @@ void player_t::create_options()
 player_t* player_t::create( sim_t*             sim,
                             const std::string& type,
                             const std::string& name,
-                            int race_type )
+                            race_type r )
 {
-  player_t *player;
-  if ( type == "death_knight" )
+  if ( type == "death_knight" || type == "deathknight" )
   {
-    player = player_t::create_death_knight( sim, name, race_type );
+    return player_t::create_death_knight( sim, name, r );
   }
   else if ( type == "druid" )
   {
-    player = player_t::create_druid( sim, name, race_type );
+    return player_t::create_druid( sim, name, r );
   }
   else if ( type == "hunter" )
   {
-    player = player_t::create_hunter( sim, name, race_type );
+    return player_t::create_hunter( sim, name, r );
   }
   else if ( type == "mage" )
   {
-    player = player_t::create_mage( sim, name, race_type );
+    return player_t::create_mage( sim, name, r );
   }
   else if ( type == "priest" )
   {
-    player = player_t::create_priest( sim, name, race_type );
+    return player_t::create_priest( sim, name, r );
   }
   else if ( type == "paladin" )
   {
-    player = player_t::create_paladin( sim, name, race_type );
+    return player_t::create_paladin( sim, name, r );
   }
   else if ( type == "rogue" )
   {
-    player = player_t::create_rogue( sim, name, race_type );
+    return player_t::create_rogue( sim, name, r );
   }
   else if ( type == "shaman" )
   {
-    player = player_t::create_shaman( sim, name, race_type );
+    return player_t::create_shaman( sim, name, r );
   }
   else if ( type == "warlock" )
   {
-    player = player_t::create_warlock( sim, name, race_type );
+    return player_t::create_warlock( sim, name, r );
   }
   else if ( type == "warrior" )
   {
-    player = player_t::create_warrior( sim, name, race_type );
+    return player_t::create_warrior( sim, name, r );
   }
-  else if ( type == "pet" )
-  {
-    player = sim -> active_player -> create_pet( name );
-  }
-  else
-  {
-    return 0;
-  }
-  player->create_options();
-  player->create_talents();
-  player->create_glyphs();
-  return player;
+  return 0;
 }
 

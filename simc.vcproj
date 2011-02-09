@@ -46,8 +46,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderThrough="simulationcraft.h"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -63,6 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="wininet.lib"
+				OutputFile="simc.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -123,12 +123,13 @@
 				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;WINDOWS"
 				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
+				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4005"
+				DisableSpecificWarnings="4005;4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -142,6 +143,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="wininet.lib"
+				OutputFile="simc.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -177,6 +179,22 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\engine\utf8\checked.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\utf8\core.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\data_definitions.hh"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\data_enums.hh"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_action.cpp"
 			>
 		</File>
@@ -189,7 +207,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_battle_net.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_buff.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_chardev.cpp"
 			>
 		</File>
 		<File
@@ -197,7 +223,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_const_data.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_consumable.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_data.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_data_access.cpp"
 			>
 		</File>
 		<File
@@ -221,7 +259,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_extra_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_extra_data_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_gear_stats.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_heal.cpp"
 			>
 		</File>
 		<File
@@ -234,6 +284,14 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_item.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_item_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_item_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -305,6 +363,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_scale_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_scale_data_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_scaling.cpp"
 			>
 		</File>
@@ -329,11 +395,43 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_spell_data.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_spell_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_spell_data_ptr.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_spell_info.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_spell_lists.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_spell_lists_ptr.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_stats.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_talents.cpp"
+			RelativePath=".\engine\sc_talent.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_talent_data.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_talent_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -374,6 +472,14 @@
 		</File>
 		<File
 			RelativePath=".\engine\simulationcraft.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\utf8\unchecked.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\utf8.h"
 			>
 		</File>
 	</Files>

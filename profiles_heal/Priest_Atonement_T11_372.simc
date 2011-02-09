@@ -1,0 +1,58 @@
+#!./simc 
+
+# Halfus Wyrmbreaker
+raid_events+=/vulnerable,multiplier=3,duration=598,first=0,cooldown=599
+
+priest=Priest_Heal_Atonement_T11_372
+origin=""
+level=85
+race=night_elf
+use_pre_potion=-1
+professions=Enchanting=525/Jewelcrafting=525
+talents=http://www.wowhead.com/talent#bfGsMRc0cRMo0hZhb0b
+glyphs=smite/divine_accuracy
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/fortitude
+actions+=/inner_fire
+actions+=/snapshot_stats
+actions+=/power_infusion
+actions+=/mana_potion,trigger=40000
+actions+=/shadow_fiend,trigger_pct=20
+actions+=/hymn_of_hope,if=pet.shadow_fiend.active
+actions+=/archangel,if=buff.holy_evangelism.stack>=5
+actions+=/smite
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,gems=ember_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta,reforge=crit_hit
+shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_266int_171spi_429sta,gems=67int_10haste,enchant=50int_25haste
+chest=mercurial_vestment,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,gems=67int_20int_20spi_20int,enchant=20all
+waist=soul_breath_belt_of_the_undertow,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_429sta_266int_180haste_180spi,gems=20haste_20int_67int_10int,suffix=231
+legs=mercurial_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_345int_217spi_578sta,gems=20haste_20int_40int_20int,enchant=95int_55spi
+feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_spi,gems=40int_10haste,enchant=35mastery
+wrists=bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,stats=612armor_209int_153mastery_133spi_344sta,reforge=mastery_hit,gems=20haste_20int_10int,enchant=65haste
+hands=mercurial_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,gems=40int,enchant=65mastery
+finger1=planetary_band_of_the_undertow,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143haste_143spi,suffix=131
+finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
+trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
+main_hand=twilights_hammer,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_165int_2207sp_248sta,enchant=power_torrent,weapon=mace_2.30speed_105min_197max
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=100int
+ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5913
+# gear_intellect=4951
+# gear_spirit=1497
+# gear_spell_power=2207
+# gear_hit_rating=261
+# gear_crit_rating=913
+# gear_haste_rating=2152
+# gear_mastery_rating=938
+# gear_armor=8502
+# meta_gem=ember_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
+# main_hand=twilights_hammer,heroic=1,weapon=mace_2.30speed_105min_197max,enchant=power_torrent

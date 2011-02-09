@@ -78,11 +78,13 @@ static bool parse_normalize_scale_factors( sim_t* sim,
 // scaling_t::scaling_t =====================================================
 
 scaling_t::scaling_t( sim_t* s ) :
-  sim( s ), baseline_sim( 0 ), ref_sim( 0 ), delta_sim( 0 ),
+  sim( s ), baseline_sim( 0 ), ref_sim( 0 ), delta_sim( 0 ), ref_sim2( 0 ), delta_sim2( 0 ),
   scale_stat( STAT_NONE ),
   scale_value( 0 ),
+  scale_delta_multiplier( 1.0 ),
   calculate_scale_factors( 0 ),
   center_scale_delta( 0 ),
+  five_point_stencil( 0 ),
   positive_scale_delta( 0 ),
   scale_lag( 0 ),
   scale_factor_noise( 0.0 ),
@@ -91,8 +93,11 @@ scaling_t::scaling_t( sim_t* s ) :
   debug_scale_factors( 0 ),
   current_scaling_stat( 0 ),
   num_scaling_stats( 0 ),
-  remaining_scaling_stats( 0 )
-{}
+  remaining_scaling_stats( 0 ),
+  scale_haste_iterations( 1.0 )
+{
+  create_options();
+}
 
 // scaling_t::progress ======================================================
 
@@ -112,54 +117,55 @@ double scaling_t::progress( std::string& phase )
   phase  = "Scaling - ";
   phase += util_t::stat_type_abbrev( current_scaling_stat );
 
-  if ( ref_sim && delta_sim )
-  {
-    double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
+  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
 
-    double   ref_progress =   ref_sim -> current_iteration / (double)   ref_sim -> iterations;
-    double delta_progress = delta_sim -> current_iteration / (double) delta_sim -> iterations;
+  double divisor = num_scaling_stats * ( five_point_stencil ? 4.0 : 2.0 );
 
-    stat_progress += ( ref_progress + delta_progress ) / ( 2.0 * num_scaling_stats );
+  if ( ref_sim  ) stat_progress += ref_sim  -> current_iteration / ( ref_sim  -> iterations * divisor );
+  if ( ref_sim2 ) stat_progress += ref_sim2 -> current_iteration / ( ref_sim2 -> iterations * divisor );
 
-    return stat_progress;
-  }
+  if ( delta_sim  ) stat_progress += delta_sim  -> current_iteration / ( delta_sim  -> iterations * divisor );
+  if ( delta_sim2 ) stat_progress += delta_sim2 -> current_iteration / ( delta_sim2 -> iterations * divisor );
 
-  return 1.0;
+  return stat_progress;
 }
 
 // scaling_t::init_deltas ===================================================
 
 void scaling_t::init_deltas()
 {
+  assert ( scale_delta_multiplier != 0 );
+  if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
+
   for ( int i=ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
-    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = smooth_scale_factors ? 75 : 150;
+    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 75 : 150;
+  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 150 : 300;
 
-  if ( stats.attack_power             == 0 ) stats.attack_power             =  smooth_scale_factors ?  75 :  150;
-  if ( stats.armor_penetration_rating == 0 ) stats.armor_penetration_rating =  smooth_scale_factors ?  75 :  150;
+  if ( stats.attack_power == 0 ) stats.attack_power = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
   if ( stats.expertise_rating == 0 ) 
   {
-    stats.expertise_rating =  smooth_scale_factors ? -50 : -100;
+    stats.expertise_rating =  scale_delta_multiplier * ( smooth_scale_factors ? -100 : -200 );
     if ( positive_scale_delta ) stats.expertise_rating *= -1;
   }
 
   if ( stats.hit_rating == 0 ) 
   {
-    stats.hit_rating = smooth_scale_factors ? -50 : -100;
+    stats.hit_rating = scale_delta_multiplier * ( smooth_scale_factors ? -150 : -300 );
     if ( positive_scale_delta ) stats.hit_rating *= -1;
   }
 
-  if ( stats.crit_rating  == 0 ) stats.crit_rating  = smooth_scale_factors ?  75 :  150;
-  if ( stats.haste_rating == 0 ) stats.haste_rating = smooth_scale_factors ?  75 :  150;
+  if ( stats.crit_rating  == 0 ) stats.crit_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.haste_rating == 0 ) stats.haste_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.mastery_rating == 0 ) stats.mastery_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
-  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 3000 : 6000;
+  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 6000 : 12000;
 
-  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = smooth_scale_factors ? 25 : 50;
-  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = smooth_scale_factors ? 25 : 50;
+  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
+  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
 
   if( sim -> weapon_speed_scale_factors )
   {
@@ -221,19 +227,38 @@ void scaling_t::analyze_stats()
       fflush( stdout );
     }
 
-    bool center = center_scale_delta && ! stat_may_cap( i );
+    bool fivepstencil = five_point_stencil && ! stat_may_cap( i );
+
+    bool center = ( five_point_stencil || center_scale_delta ) && ! stat_may_cap( i );
 
     ref_sim = center ? new sim_t( sim ) : baseline_sim;
+
+    if ( fivepstencil )
+    {
+      ref_sim2 = new sim_t( sim );
+      ref_sim2 -> scaling -> scale_stat = i;
+      ref_sim2 -> scaling -> scale_value = -scale_delta;
+      if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) ref_sim2 -> iterations = (int) (ref_sim2 -> iterations * scale_haste_iterations);
+      ref_sim2 -> execute();
+
+      delta_sim2 = new sim_t( sim );
+      delta_sim2 -> scaling -> scale_stat = i;
+      delta_sim2 -> scaling -> scale_value = +scale_delta;
+      if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) delta_sim2 -> iterations = (int) (delta_sim2 -> iterations * scale_haste_iterations);
+      delta_sim2 -> execute();
+    }
 
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = i;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
+    if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) delta_sim -> iterations = (int) (delta_sim -> iterations * scale_haste_iterations);
     delta_sim -> execute();
 
     if ( center )
     {
       ref_sim -> scaling -> scale_stat = i;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
+      if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) ref_sim -> iterations = (int) (ref_sim -> iterations * scale_haste_iterations);
       ref_sim -> execute();
     }
     
@@ -246,11 +271,27 @@ void scaling_t::analyze_stats()
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
 
+      player_t*   ref_p2 = 0;
+      player_t* delta_p2 = 0;
+      if ( fivepstencil )
+      {
+        ref_p2 =   ref_sim2 -> find_player( p -> name() );
+        delta_p2 = delta_sim2 -> find_player( p -> name() );
+      }
       double divisor = scale_delta;
+      if ( fivepstencil)
+        divisor = scale_delta * 6;
+
+      if ( delta_p -> invert_spirit_scaling )
+        divisor = -divisor;
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
 
-      double f = ( delta_p -> dps - ref_p -> dps ) / divisor;
+      double f;
+      if ( fivepstencil )
+        f= ( ref_p2 -> dps + 8 * delta_p -> dps - 8 * ref_p -> dps - delta_p2 -> dps ) / divisor;
+      else
+        f = ( delta_p -> dps - ref_p -> dps ) / divisor;
 
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
         f /= 10.0;
@@ -262,11 +303,18 @@ void scaling_t::analyze_stats()
     {
       report_t::print_text( sim -> output_file,   ref_sim, true );
       report_t::print_text( sim -> output_file, delta_sim, true );
+      if (ref_sim2)   report_t::print_text( sim -> output_file,   ref_sim2, true );
+      if (delta_sim2) report_t::print_text( sim -> output_file, delta_sim2, true );
     }
 
-    if ( ref_sim != baseline_sim && ref_sim != sim ) delete ref_sim;
-    delete delta_sim;
-    delta_sim = ref_sim = 0;
+    if ( ref_sim != baseline_sim && ref_sim != sim ) 
+    {
+      delete ref_sim;
+      ref_sim = 0;
+    }
+    delete delta_sim;  delta_sim  = 0;
+    delete delta_sim2; delta_sim2 = 0;
+    delete ref_sim2;   ref_sim2   = 0;
 
     remaining_scaling_stats--;
   }
@@ -379,9 +427,9 @@ void scaling_t::analyze()
 
 }
 
-// scaling_t::get_options ===================================================
+// scaling_t::create_options ================================================
 
-int scaling_t::get_options( std::vector<option_t>& options )
+void scaling_t::create_options()
 {
   option_t scaling_options[] =
   {
@@ -391,6 +439,8 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "normalize_scale_factors",        OPT_FUNC,   ( void* ) ::parse_normalize_scale_factors },
     { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
     { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
+    { "five_point_stencil",             OPT_BOOL,   &( five_point_stencil                   ) },
+    { "scale_delta_multiplier",         OPT_FLT,    &( scale_delta_multiplier               ) }, // multiplies all default scale deltas
     { "positive_scale_delta",           OPT_BOOL,   &( positive_scale_delta                 ) },
     { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
     { "scale_factor_noise",             OPT_FLT,    &( scale_factor_noise                   ) },
@@ -402,21 +452,20 @@ int scaling_t::get_options( std::vector<option_t>& options )
     { "scale_spell_power",              OPT_FLT,    &( stats.spell_power                    ) },
     { "scale_attack_power",             OPT_FLT,    &( stats.attack_power                   ) },
     { "scale_expertise_rating",         OPT_FLT,    &( stats.expertise_rating               ) },
-    { "scale_armor_penetration_rating", OPT_FLT,    &( stats.armor_penetration_rating       ) },
     { "scale_hit_rating",               OPT_FLT,    &( stats.hit_rating                     ) },
     { "scale_crit_rating",              OPT_FLT,    &( stats.crit_rating                    ) },
     { "scale_haste_rating",             OPT_FLT,    &( stats.haste_rating                   ) },
+    { "scale_mastery_rating",           OPT_FLT,    &( stats.mastery_rating                 ) },
     { "scale_weapon_dps",               OPT_FLT,    &( stats.weapon_dps                     ) },
     { "scale_weapon_speed",             OPT_FLT,    &( stats.weapon_speed                   ) },
     { "scale_offhand_weapon_dps",       OPT_FLT,    &( stats.weapon_offhand_dps             ) },
     { "scale_offhand_weapon_speed",     OPT_FLT,    &( stats.weapon_offhand_speed           ) },
     { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
+    { "scale_haste_iterations",         OPT_FLT,    &( scale_haste_iterations               ) }, // multiplies #iterations for haste scale factor calculation
     { NULL, OPT_UNKNOWN, NULL }
   };
 
-  option_t::copy( options, scaling_options );
-
-  return ( int ) options.size();
+  option_t::copy( sim -> options, scaling_options );
 }
 
 // scaling_t::has_scale_factors =============================================

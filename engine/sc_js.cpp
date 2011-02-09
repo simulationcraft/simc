@@ -15,8 +15,7 @@ struct js_node_t
   const char* name() { return name_str.c_str(); }
 };
 
-namespace   // ANONYMOUS NAMESPACE =========================================
-{
+namespace { // ANONYMOUS NAMESPACE =========================================
 
 // is_white_space ==========================================================
 
@@ -99,9 +98,9 @@ static char parse_token( std::string&            token_str,
 // parse_value =============================================================
 
 static void parse_value( sim_t*                  sim,
-			 js_node_t*              node,
-			 char                    token_type,
-			 std::string&            token_str,
+                         js_node_t*              node,
+                         char                    token_type,
+                         std::string&            token_str,
                          const std::string&      input,
                          std::string::size_type& index )
 {
@@ -115,7 +114,7 @@ static void parse_value( sim_t*                  sim,
       {
         sim -> errorf( "Unexpected token '%c' (%s) at index %d (%s)\n", token_type, token_str.c_str(), ( int ) index, node -> name() );
         sim -> cancel();
-	return;
+        return;
       }
       js_node_t* child = new js_node_t( token_str );
       node -> children.push_back( child );
@@ -125,7 +124,7 @@ static void parse_value( sim_t*                  sim,
       {
         sim -> errorf( "Unexpected token '%c' at index %d (%s)\n", token_type, ( int ) index, node -> name() );
         sim -> cancel();
-	return;
+        return;
       }
 
       token_type = parse_token( token_str, input, index );
@@ -218,34 +217,6 @@ static void parse_value( sim_t*                  sim,
   }
 }
 
-// search_tree =============================================================
-
-static js_node_t* search_tree( js_node_t*         root,
-                               const std::string& name_str,
-			       int                depth )
-{
-  if ( name_str.empty() || name_str.size() == 0 || name_str == root -> name() )
-    return root;
-
-  if ( depth == 0 ) return 0;
-
-  int num_children = ( int ) root -> children.size();
-
-  for ( int i=0; i < num_children; i++ )
-  {
-    js_node_t* node = search_tree( root -> children[ i ], name_str, 0 );
-    if ( node ) return node;
-  }
-
-  for ( int i=0; i < num_children; i++ )
-  {
-    js_node_t* node = search_tree( root -> children[ i ], name_str, depth-1 );
-    if ( node ) return node;
-  }
-
-  return 0;
-}
-
 // split_path ==============================================================
 
 static js_node_t* split_path( js_node_t*         node,
@@ -256,7 +227,7 @@ static js_node_t* split_path( js_node_t*         node,
 
   for ( int i=0; i < num_splits; i++ )
   {
-    node = search_tree( node, splits[ i ], ( i ? +1 : -1 ) );
+    node = js_t::get_child( node, splits[ i ] );
     if ( ! node ) return 0;
   }
 
@@ -319,7 +290,7 @@ int js_t::get_children( std::vector<js_node_t*>& nodes,
   for ( int i=0; i < num_children; i++ )
   {
     js_node_t* node = root -> children[ i ];
-    if ( name_str == node -> name() ) nodes.push_back( node );
+    if ( name_str.empty() || ( name_str == node -> name() ) ) nodes.push_back( node );
   }
 
   return ( int ) nodes.size();
@@ -358,7 +329,7 @@ int js_t::get_nodes( std::vector<js_node_t*>& nodes,
 
       for ( int i=0; i < num_splits-1; i++ )
       {
-        node = search_tree( node, splits[ i ], ( i ? +1 : -1 ) );
+        node = get_child( node, splits[ i ] );
         if ( ! node ) return 0;
       }
       name_str = splits[ num_splits-1 ];

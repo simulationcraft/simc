@@ -3,6 +3,21 @@ Welcome to SimulationCraft!
 
 =============================================================================================
 
+Note: This is a BETA release
+
+Amongst other things there a few stand-out issues:
+
+Beta! Beta! Beta! Beta! Beta! Beta!
+All classes are supported.
+Some class models still need tweaking.
+Some class action lists need tweaking.
+Some class BiS gear setups need tweaking.
+Some unique trinkets not yet implemented.
+Constructive feedback regarding our output will shorten the Beta phase dramatically.
+Beta! Beta! Beta! Beta! Beta! Beta!
+
+=============================================================================================
+
 Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft.
@@ -26,7 +41,7 @@ Windows Platforms:
 (1) simc.exe => Command-line simulation executable
 (2) simcqt.exe => Alpha-level graphic user-interface.  Accepts drag-n-drop of .simc profiles.
 (3) vcredist_x86.exe => Installs C++ runtime libraries (some Windows platforms already have this).
-(4) Win32OpenSSL_Light-0_9_8k.exe => OpenSSL for Qt (some Windows platforms already have this).
+(4) Win32OpenSSL_Light-0_9_8q.exe => OpenSSL for Qt (some Windows platforms already have this).
 (5) Examples.simc => Reference documentation for the many parameters
 (6) Legend.html => Glossary for simulation output
 (7) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run

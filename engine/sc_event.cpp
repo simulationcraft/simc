@@ -27,7 +27,7 @@ void* event_t::operator new( size_t size,
   }
   else
   {
-    new_event = ( event_t* ) malloc( SIZE );
+    new_event = ( event_t* ) ::new char[ SIZE ];
   }
 
   return new_event;
@@ -57,7 +57,8 @@ void event_t::operator delete( void* p )
 
 void event_t::deallocate( event_t* e )
 {
-  free( ( void* ) e );
+  char* e2 = ( char * ) e;
+  ::delete [] e2;
 }
 
 // ==========================================================================
@@ -117,62 +118,65 @@ void action_execute_event_t::execute()
 }
 
 // ==========================================================================
-// Action Tick Event
+// DoT Tick Event
 // ==========================================================================
 
-// action_tick_event_t::action_tick_event_t =================================
+// dot_tick_event_t::dot_tick_event_t =======================================
 
-action_tick_event_t::action_tick_event_t( sim_t*    sim,
-                                          action_t* a,
-                                          double    time_to_tick ) :
-    event_t( sim, a -> player ), action( a )
+dot_tick_event_t::dot_tick_event_t( sim_t* sim,
+                                    dot_t* d,
+                                    double time_to_tick ) :
+  event_t( sim, d -> player ), dot( d )
 {
-  name = "Action Tick";
+  name = "DoT Tick";
 
   if ( sim -> debug )
-    log_t::output( sim, "New Action Tick Event: %s %s %d-of-%d %.2f",
-                   player -> name(), a -> name(), a -> current_tick + 1, a -> num_ticks, time_to_tick );
+    log_t::output( sim, "New DoT Tick Event: %s %s %d-of-%d %.2f",
+                   player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick );
 
   sim -> add_event( this, time_to_tick );
 }
 
-// action_tick_event_t::execute ==============================================
+// dot_tick_event_t::execute =================================================
 
-void action_tick_event_t::execute()
+void dot_tick_event_t::execute()
 {
-  if ( action -> current_tick >= action -> num_ticks )
+  if ( dot -> current_tick >= dot -> num_ticks )
   {
     sim -> errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
-		   player -> name(), action -> current_tick, action -> num_ticks, action -> name() );
+                   player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
     sim -> cancel();
   }
 
-  action -> tick_event = 0;
-  action -> current_tick++;
+  dot -> tick_event = 0;
+  dot -> current_tick++;
 
-  if ( action -> channeled &&
-       action -> current_tick == action -> num_ticks &&
+  if ( dot -> action -> channeled &&
+       dot -> current_tick == dot -> num_ticks &&
        player -> skill < 1.0 )
   {
-    if ( sim -> roll( player -> skill ) ) action -> tick();
-  }
-  else
-  {
-    action -> tick();
-  }
-
-  if ( action -> current_tick == action -> num_ticks )
-  {
-    action -> last_tick();
-    action -> ticking = 0;
-    action -> current_tick = 0;
-
-    if ( action -> channeled )
+    if ( sim -> roll( player -> skill ) ) 
     {
+      dot -> action -> tick();
+    }
+  }
+  else // No skill-check required
+  {
+    dot -> action -> tick();
+  }
+
+  if ( dot -> current_tick == dot -> num_ticks )
+  {
+    dot -> action -> last_tick();
+
+    if ( dot -> action -> channeled )
+    {
+      if( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+
       player -> schedule_ready( 0 );
     }
   }
-  else action -> schedule_tick();
+  else dot -> action -> schedule_tick();
 }
 
 // ==========================================================================
@@ -182,9 +186,10 @@ void action_tick_event_t::execute()
 // action_travel_event_t::action_travel_event_t =============================
 
 action_travel_event_t::action_travel_event_t( sim_t*    sim,
+                                              player_t* t,
                                               action_t* a,
                                               double    time_to_travel ) :
-    event_t( sim, a -> player ), action( a )
+    event_t( sim, a -> player ), action( a ), target( t )
 {
   name   = "Action Travel";
   result = a -> result;
@@ -201,7 +206,9 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
 
 void action_travel_event_t::execute()
 {
-  action -> travel( result, damage );
+  action -> travel( target, result, damage );
+  if ( action -> travel_event == this )
+    action -> travel_event = NULL;
 }
 
 // ===========================================================================
@@ -221,8 +228,9 @@ regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 
 void regen_event_t::execute()
 {
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     if ( p -> sleeping ) continue;
     if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 

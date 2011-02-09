@@ -1,0 +1,58 @@
+#!./simc 
+
+warrior=Warrior_Tank
+origin="http://eu.battle.net/wow/en/character/eredar/cabane/advanced"
+level=85
+race=human
+use_pre_potion=-1
+professions=Blacksmithing=525/Jewelcrafting=515
+talents=http://www.wowhead.com/talent#warrior-2200000000000000000030200000000000000000003233221121210212031
+glyphs=devastate/shield_slam/revenge/victory_rush/shockwave/resonating_power/berserker_rage/demoralizing_shout/command
+actions=flask,type=titanic_strength
+actions+=/food,type=beer_basted_crocolisk
+actions+=/stance,choose=defensive,if=!in_combat
+actions+=/snapshot_stats
+actions+=/auto_attack
+actions+=/heroic_strike,if=rage>=15
+actions+=/revenge
+actions+=/shockwave
+actions+=/shield_block,sync=shield_slam
+actions+=/shield_slam
+actions+=/devastate
+actions+=/battle_shout
+actions+=/berserker_rage
+head=dragon_bone_warhelm,type=plate,ilevel=359,quality=epic,stats=2784armor_113exp_281mastery_512sta_259str,reforge=mastery_dodge,gems=austere_shadowspirit_20exp_20mastery_45sta,enchant=90sta_35dodge
+neck=mountains_mouth,ilevel=333,quality=rare,stats=100mastery_100parry_224sta_149str,reforge=parry_dodge
+shoulders=heaving_plates_of_protection,type=plate,ilevel=359,quality=epic,stats=2570armor_169mastery_129parry_380sta_253str,reforge=parry_dodge,gems=60sta_10mastery,enchant=75sta_25dodge
+shirt=captain_sanders_shirt,ilevel=15
+chest=earthen_chestguard,type=plate,ilevel=359,quality=epic,stats=3426armor_208mastery_168parry_512sta_341str,reforge=parry_dodge,gems=20parry_30sta_101sta_30sta,enchant=55sta
+waist=jumbotron_power_belt,type=plate,ilevel=359,quality=epic,stats=1927armor_139dodge_159mastery_380sta_253str,gems=20mastery_30sta_101sta_15sta
+legs=earthen_legguards,type=plate,ilevel=359,quality=epic,stats=2998armor_188dodge_188parry_512sta_341str,reforge=parry_mastery,gems=20exp_20mastery_101sta_30sta,enchant=85sta_45agi
+feet=gryphon_riders_boots,type=plate,ilevel=359,quality=epic,stats=2355armor_159mastery_139parry_380sta_253str,reforge=parry_dodge,gems=20mastery_30sta_10parry,enchant=30sta
+wrists=sandguard_bracers,type=plate,ilevel=359,quality=epic,stats=1499armor_190dodge_111exp_286sta_136str,gems=60sta,enchant=50dodge
+hands=numbing_handguards,type=plate,ilevel=346,quality=rare,stats=2061armor_130dodge_140mastery_337sta_215str,gems=60sta_60sta_10dodge
+finger1=ring_of_three_lights,heroic=1,ilevel=346,quality=rare,stats=113mastery_113parry_252sta_168str,reforge=parry_dodge
+finger2=permafrost_signet_of_the_rockslab,ilevel=359,quality=epic,stats=285sta_190str_126mastery_126dodge,suffix=-128
+trinket1=leaden_despair,heroic=1,ilevel=346,quality=rare,stats=427sta
+trinket2=figurine__earthen_guardian,ilevel=346,quality=rare,stats=427sta
+back=wrap_of_the_great_turtle,ilevel=359,quality=epic,stats=625armor_127dodge_127mastery_286sta_190str,enchant=250barmor
+main_hand=elementium_fang,heroic=1,ilevel=346,quality=rare,stats=86mastery_86parry_194sta_129str,reforge=parry_hit,weapon=sword_2.60speed_745min_1385max
+off_hand=elementium_earthguard,ilevel=359,quality=epic,stats=11896armor_127hit_127mastery_286sta_190str
+ranged=themios_the_darkbringer,ilevel=359,quality=epic,stats=107agi_72crit_72mastery_161sta,reforge=crit_dodge,weapon=bow_2.90speed_1265min_2350max
+tabard=guild_tabard,ilevel=1
+# Gear Summary
+# gear_strength=3067
+# gear_agility=152
+# gear_stamina=7010
+# gear_expertise_rating=264
+# gear_hit_rating=161
+# gear_crit_rating=44
+# gear_mastery_rating=1920
+# gear_armor=32141
+# gear_bonus_armor=250
+# gear_dodge_rating=1418
+# gear_parry_rating=586
+# meta_gem=austere_shadowspirit
+# tier11_2pc_tank=1
+# main_hand=elementium_fang,heroic=1,weapon=sword_2.60speed_745min_1385max
+# ranged=themios_the_darkbringer,weapon=bow_2.90speed_1265min_2350max

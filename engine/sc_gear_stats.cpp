@@ -31,13 +31,19 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] += value; break;
   case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] += value; break;
 
+  case STAT_MAX_HEALTH: 
+  case STAT_MAX_MANA:   
+  case STAT_MAX_RAGE:   
+  case STAT_MAX_ENERGY: 
+  case STAT_MAX_FOCUS:  
+  case STAT_MAX_RUNIC:  break;
+
   case STAT_SPELL_POWER:       spell_power       += value; break;
   case STAT_SPELL_PENETRATION: spell_penetration += value; break;
   case STAT_MP5:               mp5               += value; break;
 
   case STAT_ATTACK_POWER:             attack_power             += value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         += value; break;
-  case STAT_ARMOR_PENETRATION_RATING: armor_penetration_rating += value; break;
 
   case STAT_HIT_RATING:   hit_rating   += value; break;
   case STAT_CRIT_RATING:  crit_rating  += value; break;
@@ -49,14 +55,15 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_WEAPON_OFFHAND_DPS:    weapon_offhand_dps    += value; break;
   case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
 
-  case STAT_ARMOR:          armor          += value; break;
-  case STAT_BONUS_ARMOR:    bonus_armor    += value; break;
-  case STAT_DEFENSE_RATING: defense_rating += value; break;
-  case STAT_DODGE_RATING:   dodge_rating   += value; break;
-  case STAT_PARRY_RATING:   parry_rating   += value; break;
+  case STAT_ARMOR:             armor          += value; break;
+  case STAT_RESILIENCE_RATING:                          break;
+  case STAT_BONUS_ARMOR:       bonus_armor    += value; break;
+  case STAT_DODGE_RATING:      dodge_rating   += value; break;
+  case STAT_PARRY_RATING:      parry_rating   += value; break;
 
   case STAT_BLOCK_RATING: block_rating += value; break;
-  case STAT_BLOCK_VALUE:  block_value  += value; break;
+
+  case STAT_MASTERY_RATING: mastery_rating += value; break;
 
   case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; }
     break;
@@ -87,13 +94,19 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] = value; break;
   case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] = value; break;
 
+  case STAT_MAX_HEALTH: 
+  case STAT_MAX_MANA:   
+  case STAT_MAX_RAGE:   
+  case STAT_MAX_ENERGY: 
+  case STAT_MAX_FOCUS:  
+  case STAT_MAX_RUNIC:  break;
+
   case STAT_SPELL_POWER:       spell_power       = value; break;
   case STAT_SPELL_PENETRATION: spell_penetration = value; break;
   case STAT_MP5:               mp5               = value; break;
 
   case STAT_ATTACK_POWER:             attack_power             = value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         = value; break;
-  case STAT_ARMOR_PENETRATION_RATING: armor_penetration_rating = value; break;
 
   case STAT_HIT_RATING:   hit_rating   = value; break;
   case STAT_CRIT_RATING:  crit_rating  = value; break;
@@ -105,14 +118,15 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_WEAPON_OFFHAND_DPS:    weapon_offhand_dps    = value; break;
   case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  = value; break;
 
-  case STAT_ARMOR:          armor          = value; break;
-  case STAT_BONUS_ARMOR:    bonus_armor    = value; break;
-  case STAT_DEFENSE_RATING: defense_rating = value; break;
-  case STAT_DODGE_RATING:   dodge_rating   = value; break;
-  case STAT_PARRY_RATING:   parry_rating   = value; break;
+  case STAT_ARMOR:             armor          = value; break;
+  case STAT_RESILIENCE_RATING:                         break;
+  case STAT_BONUS_ARMOR:       bonus_armor    = value; break;
+  case STAT_DODGE_RATING:      dodge_rating   = value; break;
+  case STAT_PARRY_RATING:      parry_rating   = value; break;
 
   case STAT_BLOCK_RATING: block_rating = value; break;
-  case STAT_BLOCK_VALUE:  block_value  = value; break;
+
+  case STAT_MASTERY_RATING: mastery_rating = value; break;
 
   case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; }
     break;
@@ -142,13 +156,19 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
   case STAT_FOCUS:  return resource[ RESOURCE_FOCUS  ];
   case STAT_RUNIC:  return resource[ RESOURCE_RUNIC  ];
 
+  case STAT_MAX_HEALTH: 
+  case STAT_MAX_MANA:   
+  case STAT_MAX_RAGE:   
+  case STAT_MAX_ENERGY: 
+  case STAT_MAX_FOCUS:  
+  case STAT_MAX_RUNIC:  return 0;
+
   case STAT_SPELL_POWER:       return spell_power;
   case STAT_SPELL_PENETRATION: return spell_penetration;
   case STAT_MP5:               return mp5;
 
   case STAT_ATTACK_POWER:             return attack_power;
   case STAT_EXPERTISE_RATING:         return expertise_rating;
-  case STAT_ARMOR_PENETRATION_RATING: return armor_penetration_rating;
 
   case STAT_HIT_RATING:   return hit_rating;
   case STAT_CRIT_RATING:  return crit_rating;
@@ -160,14 +180,15 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
   case STAT_WEAPON_OFFHAND_DPS:    return weapon_offhand_dps;
   case STAT_WEAPON_OFFHAND_SPEED:  return weapon_offhand_speed;
 
-  case STAT_ARMOR:          return armor;
-  case STAT_BONUS_ARMOR:    return bonus_armor;
-  case STAT_DEFENSE_RATING: return defense_rating;
-  case STAT_DODGE_RATING:   return dodge_rating;
-  case STAT_PARRY_RATING:   return parry_rating;
+  case STAT_ARMOR:             return armor;
+  case STAT_BONUS_ARMOR:       return bonus_armor;
+  case STAT_RESILIENCE_RATING: return 0;
+  case STAT_DODGE_RATING:      return dodge_rating;
+  case STAT_PARRY_RATING:      return parry_rating;
 
   case STAT_BLOCK_RATING: return block_rating;
-  case STAT_BLOCK_VALUE:  return block_value;
+
+  case STAT_MASTERY_RATING: return mastery_rating;
 
   default: assert( 0 );
   }

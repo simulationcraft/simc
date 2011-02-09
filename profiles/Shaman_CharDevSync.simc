@@ -1,0 +1,13 @@
+chardev=14385 name=Shaman_Elemental_T11_372 save=Shaman_Elemental_T11_372.simc
+head=headpiece_of_the_raging_elements,id=65256,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit,reforge=mastery_hit
+wrist=chaos_beast_bracers,id=65068,enchant=50int,reforge=mastery_hit
+off_hand=book_of_binding_will,id=65133,enchant=40int
+
+chardev=14201 name=Shaman_Enhancement_T11_372_FTFT save=Shaman_Enhancement_T11_372_FTFT.simc
+head=helmet_of_the_raging_elements,id=65251,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
+wrist=chimaron_armguards,id=65028,enchant=50agi,reforge=crit_mastery
+
+chardev=14192 name=Shaman_Enhancement_T11_372_WFFT save=Shaman_Enhancement_T11_372_WFFT.simc
+head=helmet_of_the_raging_elements,id=65251,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
+wrist=chimaron_armguards,id=65028,enchant=50agi,reforge=crit_exp
+

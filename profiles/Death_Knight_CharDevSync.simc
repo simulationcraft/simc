@@ -1,0 +1,21 @@
+#!simc
+
+chardev=33828 save=Death_Knight_Frost_1h_T11_372.simc name=Death_Knight_Frost_1h_T11_372
+talents=http://ptr.wowhead.com/talent#deathknight-103000000000000000003033001223311201230103300000000000000000
+head=magma_plated_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=haste_crit,gems=reverberating_shadowspirit_20crit_20str_30str,enchant=60str_35mastery
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_hit,gems=40str_67str,enchant=50str
+
+chardev=34593 save=Death_Knight_Frost_2h_T11_372.simc name=Death_Knight_Frost_2h_T11_372
+talents=http://ptr.wowhead.com/talent#deathknight-103000000000000000003033001223311201230103300000000000000000
+head=magma_plated_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_hit,gems=reverberating_shadowspirit_20crit_20str_30str,enchant=60str_35mastery
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_hit,gems=40str_67str,enchant=50str
+
+chardev=34574 save=Death_Knight_Unholy_1h_T11_372.simc name=Death_Knight_Unholy_1h_T11_372
+talents=http://ptr.wowhead.com/talent#deathknight-203200000000000000000030000000000000000003310321230031021231
+head=dragon_bone_warhelm,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_135exp_325mastery_578sta_293str,gems=reverberating_shadowspirit_20mastery_20str_45sta,enchant=60str_35mastery
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_exp,gems=40str_67str,enchant=50str
+
+chardev=34615 save=Death_Knight_Unholy_2h_T11_372.simc name=Death_Knight_Unholy_2h_T11_372
+talents=http://ptr.wowhead.com/talent#deathknight-203200000000000000000000000000000000000003310321230331021231
+head=magma_plated_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_hit,gems=reverberating_shadowspirit_20mastery_20str_30str,enchant=60str_35mastery
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_mastery,gems=40str_67str,enchant=50str

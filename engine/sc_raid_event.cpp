@@ -137,18 +137,22 @@ struct invulnerable_event_t : public raid_event_t
 struct movement_event_t : public raid_event_t
 {
   double move_to;
+  double move_distance;
   int players_only;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "movement" ), move_to( 0 ), players_only( 0 )
+    raid_event_t( s, "movement" ), move_to( 0 ), move_distance( 0 ), players_only( 0 )
   {
     option_t options[] =
     {
       { "to",           OPT_FLT,  &move_to      },
+      { "distance",     OPT_FLT,  &move_distance},
       { "players_only", OPT_BOOL, &players_only },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    if ( move_distance ) name_str = "movement_distance";
+
   }
   virtual void start()
   {
@@ -158,22 +162,20 @@ struct movement_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> is_pet() && players_only ) continue;
-      p -> buffs.moving -> increment();
+      if ( move_distance )
+      {
+        p -> buffs.moving -> buff_duration = move_distance / p -> composite_movement_speed();
+        p -> buffs.moving -> trigger();
+      }
+      else
+      {
+        p -> buffs.moving -> buff_duration = saved_duration;
+        p -> buffs.moving -> trigger();
+      }
+
       if ( p -> sleeping ) continue;
       p -> interrupt();
     }
-  }
-  virtual void finish()
-  {
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
-    {
-      player_t* p = affected_players[ i ];
-      if ( p -> is_pet() && players_only ) continue;
-      p -> buffs.moving -> decrement();
-      if ( p -> sleeping ) continue;
-    }
-    raid_event_t::finish();
   }
 };
 
@@ -244,8 +246,10 @@ struct damage_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
-      if ( sim -> log ) log_t::output( sim, "%s takes raid damage.", p -> name() );
-      p -> resource_loss( RESOURCE_HEALTH, rng -> gauss( amount, amount_stddev ) );
+      double x = 0;
+      x = rng -> gauss( amount, amount_stddev );
+      if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid damage.", p -> name(), x );
+      p -> resource_loss( RESOURCE_HEALTH, x );
     }
   }
 };
@@ -254,16 +258,22 @@ struct damage_event_t : public raid_event_t
 
 struct vulnerable_event_t : public raid_event_t
 {
+  double multiplier;
   vulnerable_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "vulnerable" )
+      raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "multiplier",        OPT_FLT, &multiplier        },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
   }
   virtual void start()
   {
     target_t* t = sim -> target;
     raid_event_t::start();
-    t -> debuffs.vulnerable -> increment();
+    t -> debuffs.vulnerable -> increment( 1, multiplier );
   }
   virtual void finish()
   {
@@ -280,7 +290,7 @@ raid_event_t::raid_event_t( sim_t* s, const char* n ) :
     num_starts( 0 ), first( 0 ), last( 0 ),
     cooldown( 0 ), cooldown_stddev( 0 ), cooldown_min( 0 ), cooldown_max( 0 ),
     duration( 0 ), duration_stddev( 0 ), duration_min( 0 ), duration_max( 0 ),
-    distance_min( 0 ), distance_max( 0 )
+    distance_min( 0 ), distance_max( 0 ), saved_duration( 0 )
 {
   rng = ( sim -> deterministic_roll ) ? sim -> deterministic_rng : sim -> rng;
 }
@@ -386,15 +396,17 @@ void raid_event_t::schedule()
     }
     virtual void execute()
     {
+      raid_event -> saved_duration = raid_event -> duration_time();
+      double ct = raid_event -> cooldown_time();
+
       raid_event -> start();
 
-      double dt = raid_event -> duration_time();
-      double ct = raid_event -> cooldown_time();
-      if ( ct <= dt ) ct = dt + 0.01;
 
-      if ( dt > 0 )
+      if ( ct <= raid_event -> saved_duration ) ct = raid_event -> saved_duration + 0.01;
+
+      if ( raid_event -> saved_duration > 0 )
       {
-        new ( sim ) duration_event_t( sim, raid_event, dt );
+        new ( sim ) duration_event_t( sim, raid_event, raid_event -> saved_duration );
       }
       else raid_event -> finish();
 
@@ -493,8 +505,6 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 
 void raid_event_t::init( sim_t* sim )
 {
-  sim -> auras.celerity = new buff_t( sim, "celerity", 1 );
-
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, sim -> raid_events_str, "/\\" );
 
@@ -545,8 +555,6 @@ void raid_event_t::reset( sim_t* sim )
 
 void raid_event_t::combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.celerity ) sim -> auras.celerity -> override();
-
   int num_events = ( int ) sim -> raid_events.size();
   for ( int i=0; i < num_events; i++ )
   {

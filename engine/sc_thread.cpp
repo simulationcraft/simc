@@ -6,6 +6,8 @@
 #include "simulationcraft.h"
 
 static bool thread_initialized = false;
+static std::vector<void *> cs_list;
+static std::vector<void *> hnd_list;
 
 // Cross-Platform Support for Multi-Threading ===============================
 
@@ -18,6 +20,10 @@ static bool thread_initialized = false;
 // thread_t::init ===========================================================
 
 void thread_t::init() {}
+
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init() {}
 
 // thread_t::launch =========================================================
 
@@ -68,6 +74,23 @@ void thread_t::init()
 {
   InitializeCriticalSection( &global_mutex );
   thread_initialized = true;
+  cs_list.clear();
+}
+
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init()
+{
+  DeleteCriticalSection( &global_mutex );
+  thread_initialized = false;
+  while ( ! cs_list.empty() )
+  {
+    void *& b = cs_list.back();
+    CRITICAL_SECTION* cs = (CRITICAL_SECTION*) b;
+    DeleteCriticalSection( cs );
+    cs_list.pop_back();
+    delete cs;
+  }
 }
 
 // thread_t::launch =========================================================
@@ -102,6 +125,7 @@ void thread_t::mutex_init( void*& mutex )
     CRITICAL_SECTION* cs = new CRITICAL_SECTION();
     InitializeCriticalSection( cs );
     mutex = cs;
+    cs_list.push_back( cs );
   }
 
   LeaveCriticalSection( &global_mutex );
@@ -147,6 +171,23 @@ void thread_t::init()
 {
   InitializeCriticalSection( &global_mutex );
   thread_initialized = true;
+  cs_list.clear();
+}
+
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init()
+{
+  DeleteCriticalSection( &global_mutex );
+  thread_initialized = false;
+  while ( ! cs_list.empty() )
+  {
+    void *& b = cs_list.back();
+    CRITICAL_SECTION* cs = (CRITICAL_SECTION*) b;
+    DeleteCriticalSection( cs );
+    cs_list.pop_back();
+    delete cs;
+  }
 }
 
 // thread_t::launch =========================================================
@@ -165,6 +206,7 @@ void thread_t::wait( sim_t* sim )
 {
   HANDLE* handle = ( HANDLE* ) ( sim -> thread_handle );
   WaitForSingleObject( *handle, INFINITE );
+  CloseHandle( *handle );
   if ( handle ) delete handle;
   sim -> thread_handle = NULL;
 }
@@ -180,6 +222,7 @@ void thread_t::mutex_init( void*& mutex )
     CRITICAL_SECTION* cs = new CRITICAL_SECTION();
     InitializeCriticalSection( cs );
     mutex = cs;
+    cs_list.push_back( cs );
   }
 
   LeaveCriticalSection( &global_mutex );
@@ -225,6 +268,22 @@ void thread_t::init()
 {
   pthread_mutex_init( &global_mutex, NULL );
   thread_initialized = true;
+  cs_list.clear();
+}
+
+// thread_t::de_init ===========================================================
+
+void thread_t::de_init()
+{
+  thread_initialized = false;
+  while ( ! cs_list.empty() )
+  {
+    void *& b = cs_list.back();
+    pthread_mutex_t* cs = (pthread_mutex_t*) b;
+    pthread_mutex_destroy( cs );
+    cs_list.pop_back();
+    delete cs;
+  }
 }
 
 // thread_t::launch =========================================================
@@ -258,6 +317,7 @@ void thread_t::mutex_init( void*& mutex )
     pthread_mutex_t* m = new pthread_mutex_t();
     pthread_mutex_init( m, NULL );
     mutex = m;
+    cs_list.push_back( m );
   }
 
   pthread_mutex_unlock( &global_mutex );

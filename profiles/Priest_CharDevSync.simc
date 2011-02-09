@@ -1,0 +1,10 @@
+chardev=19782 name=Priest_Shadow_T11_359 save=Priest_Shadow_T11_359.simc
+head=mercurial_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_spi,gems=burning_shadowspirit_20int_20spi_30crit,enchant=60int_35crit
+wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547armor_127haste_190int_127mastery_286sta,reforge=mastery_spi,enchant=50int
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
+
+chardev=18129 name=Priest_Shadow_T11_372 save=Priest_Shadow_T11_372.simc
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+wrists=bracers_of_the_dark_mother,type=cloth,ilevel=379,quality=epic,stats=209int_344sta_133spi_153mastery_612armor,gems=20haste_20int_10int,enchant=50int
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143haste_143hit,enchant=40int
+

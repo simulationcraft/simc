@@ -5,8 +5,9 @@
 int main(int argc, char *argv[])
 {
   thread_t::init();
+  dbc_t::init();
+
   QApplication a(argc, argv);
-  SimulationCraftWindow w;
 
   AutoUpdater* updater = 0;
 
@@ -19,12 +20,28 @@ int main(int argc, char *argv[])
 
 #endif
   
-  if(updater)
-  {
-     updater->checkForUpdates();
-  }
+  SimulationCraftWindow w;
   
-  w.showMaximized();
+  if( updater)
+  {
+    updater->checkForUpdates();
+  }
+
+  if( w.historyWidth  != 0 &&
+      w.historyHeight != 0 )
+  {
+    w.resize( w.historyWidth, w.historyHeight );
+  }
+
+  if( w.historyMaximized )
+  {
+    w.showMaximized();
+  }
+  else
+  {
+    w.showNormal();
+  }
+
   w.cmdLine->setFocus();
 
   if( argc > 1 )
@@ -35,8 +52,8 @@ int main(int argc, char *argv[])
 
       if( file.open( QIODevice::ReadOnly ) )
       {
-	w.simulateText->appendPlainText( file.readAll() );
-	file.close();
+        w.simulateText->appendPlainText( file.readAll() );
+        file.close();
       }
     }
     w.mainTab->setCurrentIndex( TAB_SIMULATE );    

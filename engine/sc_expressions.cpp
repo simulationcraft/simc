@@ -5,31 +5,14 @@
 
 #include "simulationcraft.h"
 
-namespace {
-
-struct token_t
-{
-  int type;
-  std::string label;
-};
-
 // Unary Operators ===========================================================
 
-struct unary_minus
-{
-  inline static double evaluate(double input) { return -input; }
-};
-
-struct unary_not
-{
-  inline static double evaluate(double input) { return input ? 0 : 1; }
-};
-
-template <typename Op>
 struct expr_unary_t : public action_expr_t
 {
+  int operation;
   action_expr_t* input;
-  expr_unary_t( action_t* a, const std::string& n, action_expr_t* i ) : action_expr_t(a,n), input(i) {}
+  expr_unary_t( action_t* a, const std::string& n, int o, action_expr_t* i ) : action_expr_t(a,n), operation(o), input(i) {}
+  ~expr_unary_t() { delete input; }
   virtual int evaluate()
   {
     result_type = TOK_UNKNOWN;
@@ -37,7 +20,13 @@ struct expr_unary_t : public action_expr_t
     if ( input_result == TOK_NUM )
     {
       result_type = TOK_NUM;
-      result_num = Op::evaluate(input -> result_num);
+      switch( operation )
+      {
+      case TOK_PLUS:  result_num =   input -> result_num; break;
+      case TOK_MINUS: result_num = - input -> result_num; break;
+      case TOK_NOT:   result_num = ( input -> result_num != 0 ) ? 0 : 1; break;
+      case TOK_ABS:   result_num = fabs( input -> result_num ); break;
+      }
     }
     else
     {
@@ -48,75 +37,15 @@ struct expr_unary_t : public action_expr_t
   }
 };
 
-
 // Binary Operators ==========================================================
 
-struct binary_add
+struct expr_binary_t : public action_expr_t
 {
-  inline static double evaluate(double left, double right) { return left + right; }
-};
-
-struct binary_sub
-{
-  inline static double evaluate(double left, double right) { return left - right; }
-};
-
-struct binary_mult
-{
-  inline static double evaluate(double left, double right) { return left * right; }
-};
-
-struct binary_div
-{
-  inline static double evaluate(double left, double right) { return left / right; }
-};
-
-struct binary_eq
-{
-  inline static double evaluate(double left, double right) { return left == right ? 1 : 0; }
-};
-
-struct binary_noteq
-{
-  inline static double evaluate(double left, double right) { return left != right ? 1 : 0; }
-};
-
-struct binary_lt
-{
-  inline static double evaluate(double left, double right) { return left < right ? 1 : 0; }
-};
-
-struct binary_lteq
-{
-  inline static double evaluate(double left, double right) { return left <= right ? 1 : 0; }
-};
-
-struct binary_gt
-{
-  inline static double evaluate(double left, double right) { return left > right ? 1 : 0; }
-};
-
-struct binary_gteq
-{
-  inline static double evaluate(double left, double right) { return left >= right ? 1 : 0; }
-};
-
-struct binary_and
-{
-  inline static double evaluate(double left, double right) { return (left != 0 && right != 0) ? 1 : 0; }
-};
-
-struct binary_or
-{
-  inline static double evaluate(double left, double right) { return (left != 0 || right != 0 )? 1 : 0; }
-};
-
-template <typename Op>
-struct expr_num_binary_t : public action_expr_t
-{
+  int operation;
   action_expr_t* left;
   action_expr_t* right;
-  expr_num_binary_t( action_t* a, const std::string& n, action_expr_t* l, action_expr_t* r ) : action_expr_t(a,n), left(l), right(r) {}
+  expr_binary_t( action_t* a, const std::string& n, int o, action_expr_t* l, action_expr_t* r ) : action_expr_t(a,n), operation(o), left(l), right(r) {}
+  ~expr_binary_t() { delete left; delete right; }
   virtual int evaluate()
   {
     result_type = TOK_UNKNOWN;
@@ -131,36 +60,25 @@ struct expr_num_binary_t : public action_expr_t
     else if ( left_result == TOK_NUM )
     {
       result_type = TOK_NUM;
-      result_num = Op::evaluate(left -> result_num, right -> result_num);
-    }
-    else if ( left_result == TOK_STR )
-    {
-      abort();
-    }
-    return result_type;
-  }
-};
+      switch( operation )
+      {
+      case TOK_ADD:  result_num = left -> result_num + right -> result_num; break;
+      case TOK_SUB:  result_num = left -> result_num - right -> result_num; break;
+      case TOK_MULT: result_num = left -> result_num * right -> result_num; break;
+      case TOK_DIV:  result_num = left -> result_num / right -> result_num; break;
 
-struct expr_str_binary_t : public action_expr_t
-{
-  int operation;
-  action_expr_t* left;
-  action_expr_t* right;
-  expr_str_binary_t( action_t* a, const std::string& n, int o, action_expr_t* l, action_expr_t* r ) : action_expr_t(a,n), operation(o), left(l), right(r) {}
-  virtual int evaluate()
-  {
-    result_type = TOK_UNKNOWN;
-    int  left_result =  left -> evaluate();
-    int right_result = right -> evaluate();
-    if ( left_result != right_result )
-    {
-      action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n", 
-			       action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
-      action -> sim -> cancel();
-    }
-    else if ( left_result == TOK_NUM )
-    {
-      abort();
+      case TOK_EQ:    result_num = ( left -> result_num == right -> result_num ) ? 1 : 0; break;
+      case TOK_NOTEQ: result_num = ( left -> result_num != right -> result_num ) ? 1 : 0; break;
+      case TOK_LT:    result_num = ( left -> result_num <  right -> result_num ) ? 1 : 0; break;
+      case TOK_LTEQ:  result_num = ( left -> result_num <= right -> result_num ) ? 1 : 0; break;
+      case TOK_GT:    result_num = ( left -> result_num >  right -> result_num ) ? 1 : 0; break;
+      case TOK_GTEQ:  result_num = ( left -> result_num >= right -> result_num ) ? 1 : 0; break;
+
+      case TOK_AND: result_num = ( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) ) ? 1 : 0; break;
+      case TOK_OR:  result_num = ( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) ) ? 1 : 0; break;
+
+      default: assert(0);
+      }
     }
     else if ( left_result == TOK_STR )
     {
@@ -183,13 +101,14 @@ struct expr_str_binary_t : public action_expr_t
 
 // precedence ================================================================
 
-static int precedence( int token_type )
+int expression_t::precedence( int expr_token_type )
 {
-  switch( token_type )
+  switch( expr_token_type )
   {
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
+  case TOK_ABS:
     return 5;
 
   case TOK_MULT:
@@ -206,6 +125,8 @@ static int precedence( int token_type )
   case TOK_LTEQ:
   case TOK_GT:
   case TOK_GTEQ:
+  case TOK_IN:
+  case TOK_NOTIN:
     return 2;
 
   case TOK_AND:
@@ -219,13 +140,14 @@ static int precedence( int token_type )
 
 // is_unary ==================================================================
 
-static int is_unary( int token_type )
+int expression_t::is_unary( int expr_token_type )
 {
-  switch( token_type )
+  switch( expr_token_type )
   {
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
+  case TOK_ABS:
     return true;
   }
   return false;
@@ -233,9 +155,9 @@ static int is_unary( int token_type )
 
 // is_binary =================================================================
 
-static int is_binary( int token_type )
+int expression_t::is_binary( int expr_token_type )
 {
-  switch( token_type )
+  switch( expr_token_type )
   {
   case TOK_MULT:
   case TOK_DIV:
@@ -249,6 +171,8 @@ static int is_binary( int token_type )
   case TOK_GTEQ:
   case TOK_AND:
   case TOK_OR:
+  case TOK_IN:
+  case TOK_NOTIN:
     return true;
   }
   return false;
@@ -256,7 +180,7 @@ static int is_binary( int token_type )
 
 // next_token ================================================================
 
-static int next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str )
+int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token )
 {
   char c = expr_str[ current_index++ ];
 
@@ -264,8 +188,10 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
 
   token_str = c;
 
+  if ( c == '@' ) return TOK_ABS;
   if ( c == '+' ) return TOK_ADD;
-  if ( c == '-' ) return TOK_SUB;
+  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) ) return TOK_SUB;
+  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( expr_str[ current_index ] ) ) return TOK_SUB;
   if ( c == '*' ) return TOK_MULT;
   if ( c == '/' ) return TOK_DIV;
   if ( c == '&' ) 
@@ -278,9 +204,15 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
     if ( expr_str[ current_index ] == '|' ) current_index++;
     return TOK_OR;
   }
+  if ( c == '~' )
+  {
+    if ( expr_str[ current_index ] == '~' ) current_index++;
+    return TOK_IN;
+  }
   if ( c == '!' ) 
   {
     if ( expr_str[ current_index ] == '=' ) { current_index++; token_str += "="; return TOK_NOTEQ; }
+    if ( expr_str[ current_index ] == '~' ) { current_index++; token_str += "~"; return TOK_NOTIN; }
     return TOK_NOT;
   }
   if ( c == '=' ) 
@@ -300,7 +232,7 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
   }
   if ( c == '(' ) return TOK_LPAR;
   if ( c == ')' ) return TOK_RPAR;
-
+  
   if ( isalpha( c ) )
   {
     c = expr_str[ current_index ];
@@ -312,7 +244,7 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
     return TOK_STR;
   }
 
-  if( isdigit( c ) )
+  if( isdigit( c ) || c == '-' )
   {
     c = expr_str[ current_index ];
     while( isdigit( c ) || c == '.' )
@@ -320,6 +252,7 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
       token_str += c;
       c = expr_str[ ++current_index ];
     }
+    
     return TOK_NUM;
   }
 
@@ -337,40 +270,42 @@ static int next_token( action_t* action, const std::string& expr_str, int& curre
 
 // parse_tokens ==============================================================
 
-static void parse_tokens( action_t* action,
-			  std::vector<token_t>& tokens, 
+void expression_t::parse_tokens( action_t* action,
+			  std::vector<expr_token_t>& tokens, 
 			  const std::string& expr_str )
 {
-  token_t token;
+  expr_token_t token;
   int current_index=0;
+  token_type_t t = TOK_UNKNOWN;
   
-  while( ( token.type = next_token( action, expr_str, current_index, token.label ) ) != TOK_UNKNOWN )
+  while( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
   {
+    t = ( token_type_t ) token.type;
     tokens.push_back( token );
   }
 }
 
 // print_tokens ==============================================================
 
-static void print_tokens( std::vector<token_t>& tokens )
+void expression_t::print_tokens( std::vector<expr_token_t>& tokens )
 {
   printf( "tokens:\n" );
   int num_tokens = tokens.size();
   for ( int i=0; i < num_tokens; i++ )
   {
-    token_t& t = tokens[ i ];
+    expr_token_t& t = tokens[ i ];
     printf( "%2d  '%s'\n", t.type, t.label.c_str() );
   }
 }
 
 // convert_to_unary ==========================================================
 
-static void convert_to_unary( action_t* action, std::vector<token_t>& tokens )
+void expression_t::convert_to_unary( action_t* action, std::vector<expr_token_t>& tokens )
 {
   int num_tokens = tokens.size();
   for ( int i=0; i < num_tokens; i++ )
   {
-    token_t& t = tokens[ i ];
+    expr_token_t& t = tokens[ i ];
 
     bool left_side = false;
 
@@ -390,14 +325,14 @@ static void convert_to_unary( action_t* action, std::vector<token_t>& tokens )
 
 // convert_to_rpn ============================================================
 
-static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
+bool expression_t::convert_to_rpn( action_t* action, std::vector<expr_token_t>& tokens )
 {
-  std::vector<token_t> rpn, stack;
+  std::vector<expr_token_t> rpn, stack;
 
   int num_tokens = tokens.size();
   for ( int i=0; i < num_tokens; i++ )
   {
-    token_t& t = tokens[ i ];
+    expr_token_t& t = tokens[ i ];
 
     if ( t.type == TOK_NUM || t.type == TOK_STR )
     {
@@ -412,7 +347,7 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
       while ( true )
       {
 	if ( stack.empty() ) { printf( "rpar stack empty\n" ); return false; }
-	token_t& s = stack.back();
+	expr_token_t& s = stack.back();
 	if ( s.type == TOK_LPAR )
 	{
 	  stack.pop_back();
@@ -430,7 +365,7 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
       while ( true )
       {
 	if ( stack.empty() ) break;
-	token_t& s = stack.back();
+	expr_token_t& s = stack.back();
 	if ( s.type == TOK_LPAR ) break;
 	if ( precedence( t.type ) >= precedence( s.type ) ) break;
 	rpn.push_back( s );
@@ -442,7 +377,7 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
 
   while ( ! stack.empty() )
   {
-    token_t& s = stack.back();
+    expr_token_t& s = stack.back();
     if ( s.type == TOK_LPAR ) { printf( "stack lpar\n" ); return false; }
     rpn.push_back( s );
     stack.pop_back();
@@ -456,14 +391,15 @@ static bool convert_to_rpn( action_t* action, std::vector<token_t>& tokens )
 // build_expression_tree =====================================================
 
 static action_expr_t* build_expression_tree( action_t* action,
-					     std::vector<token_t>& tokens )
+                                             std::vector<expr_token_t>& tokens )
 {
   std::vector<action_expr_t*> stack;
+  action_expr_t* res = 0;
 
   int num_tokens = tokens.size();
   for( int i=0; i < num_tokens; i++ )
   {
-    token_t& t= tokens[ i ];
+    expr_token_t& t= tokens[ i ];
     
     if ( t.type == TOK_NUM ) 
     {
@@ -475,62 +411,47 @@ static action_expr_t* build_expression_tree( action_t* action,
       if ( ! e ) 
       {
         action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n", 
-                                 action -> player -> name(), action -> name(), t.label.c_str() );
-        return 0;
-        e = new action_expr_t( action, t.label, t.label );
+        action -> player -> name(), action -> name(), t.label.c_str() );
+        goto exit_label;
       }
       stack.push_back( e );
     }
-    else if ( is_unary( t.type ) ) 
+    else if ( expression_t::is_unary( t.type ) ) 
     {
-      if ( stack.size() < 1 ) return 0;
+      if ( stack.size() < 1 ) 
+        goto exit_label;
       action_expr_t* input = stack.back(); stack.pop_back();
-      if ( ! input ) return 0;
-      action_expr_t* e = 0;
-      switch (t.type)
-      {
-      case TOK_PLUS:  e = input; break;
-      case TOK_MINUS: e = new expr_unary_t<unary_minus>( action, t.label, input); break;
-      case TOK_NOT:   e = new expr_unary_t<unary_not>  ( action, t.label, input); break;
-      }
-      stack.push_back(e);
+      if ( ! input ) 
+        goto exit_label;
+      stack.push_back( new expr_unary_t( action, t.label, t.type, input ) );
     }
-    else if ( is_binary( t.type ) )
+    else if ( expression_t::is_binary( t.type ) )
     {
-      if ( stack.size() < 2 ) return 0;
+      if ( stack.size() < 2 )
+        goto exit_label;
       action_expr_t* right = stack.back(); stack.pop_back();
       action_expr_t* left  = stack.back(); stack.pop_back();
-      if ( ! left || ! right ) return 0;
-      action_expr_t* e = 0;
-      switch( t.type )
-      {
-      case TOK_ADD:  e = new expr_num_binary_t<binary_add >( action, t.label, left, right ); break;
-      case TOK_SUB:  e = new expr_num_binary_t<binary_sub >( action, t.label, left, right ); break;
-      case TOK_MULT: e = new expr_num_binary_t<binary_mult>( action, t.label, left, right ); break;
-      case TOK_DIV:  e = new expr_num_binary_t<binary_div >( action, t.label, left, right ); break;
-
-      case TOK_EQ:    e = new expr_num_binary_t<binary_eq   >( action, t.label, left, right ); break;
-      case TOK_NOTEQ: e = new expr_num_binary_t<binary_noteq>( action, t.label, left, right ); break;
-      case TOK_LT:    e = new expr_num_binary_t<binary_lt   >( action, t.label, left, right ); break;
-      case TOK_LTEQ:  e = new expr_num_binary_t<binary_lteq >( action, t.label, left, right ); break;
-      case TOK_GT:    e = new expr_num_binary_t<binary_gt   >( action, t.label, left, right ); break;
-      case TOK_GTEQ:  e = new expr_num_binary_t<binary_gteq >( action, t.label, left, right ); break;
-
-      case TOK_AND:   e = new expr_num_binary_t<binary_and>( action, t.label, left, right ); break;
-      case TOK_OR:    e = new expr_num_binary_t<binary_or >( action, t.label, left, right ); break;
-
-      default: e = new expr_str_binary_t( action, t.label, t.type, left, right );
-      }
-
-      stack.push_back(e);
+      if ( ! left || ! right ) 
+        goto exit_label;
+      stack.push_back( new expr_binary_t( action, t.label, t.type, left, right ) );
     }
   }
 
-  if ( stack.size() != 1 ) return 0;
+  if ( stack.size() != 1 ) 
+  {
+    goto exit_label;
+  }
 
-  return stack.back();
-}
-
+  res = stack.back();
+  stack.pop_back();
+exit_label:
+  while ( stack.size() )
+  {
+    action_expr_t* s = stack.back();
+    stack.pop_back();
+    delete s;
+  }
+  return res;
 }
 
 // action_expr_t::parse ======================================================
@@ -540,24 +461,24 @@ action_expr_t* action_expr_t::parse( action_t* action,
 {
   if ( expr_str.empty() ) return 0;
 
-  std::vector<token_t> tokens;
+  std::vector<expr_token_t> tokens;
 
-  parse_tokens( action, tokens, expr_str );
+  expression_t::parse_tokens( action, tokens, expr_str );
 
-  if ( action -> sim -> debug ) print_tokens( tokens );
+  if ( action -> sim -> debug ) expression_t::print_tokens( tokens );
 
-  convert_to_unary( action, tokens );
+  expression_t::convert_to_unary( action, tokens );
 
-  if ( action -> sim -> debug ) print_tokens( tokens );
+  if ( action -> sim -> debug ) expression_t::print_tokens( tokens );
 
-  if( ! convert_to_rpn( action, tokens ) ) 
+  if( ! expression_t::convert_to_rpn( action, tokens ) ) 
   {
     action -> sim -> errorf( "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
     action -> sim -> cancel();
     return 0;
   }
 
-  if ( action -> sim -> debug ) print_tokens( tokens );
+  if ( action -> sim -> debug ) expression_t::print_tokens( tokens );
 
   action_expr_t* e = build_expression_tree( action, tokens );
 
@@ -577,7 +498,7 @@ int main( int argc, char** argv )
 {
   for( int i=1; i < argc; i++ )
   {
-    std::vector<token_t> tokens;
+    std::vector<expr_token_t> tokens;
 
     parse_tokens( NULL, tokens, argv[ i ] );
     convert_to_unary( NULL, tokens );

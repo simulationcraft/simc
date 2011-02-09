@@ -25,6 +25,9 @@ guild=Wicked+Legion,region=us,server=llane,ranks=0/1/3/4/7
 # Downloading guild characters of a certain class
 guild=Wicked+Legion,region=us,server=llane,class=warlock
 
+# Downloading character from CharDev
+chardev=16146
+
 # Downloading character from Wowhead
 wowhead=us,llane,segv
 
@@ -38,6 +41,24 @@ save=segv_mm.simc
 # Saving multiple character profiles (file name is "save_PLAYERNAME.simc")
 guild=Wicked+Legion,region=us,server=llane,max_rank=3
 save_profiles=1
+
+# Load a new item for an existing profile 
+Priest_Shadow_T11_372.simc name=priest_sorrowsong trinket2=sorrowsong,id=56400
+
+# Copy a profile from the specified source profile, or from the currently active profile if no
+# source is specified. The copy becomes the new active profile.
+copy=new_profile_name[,source_profile_name]
+
+# Copy your profile from the armory and test with new trinkets
+armory=us,my+server,myname
+copy=theralions
+trinket1=theralions_mirrior,id=65105
+copy=shard
+trinket1=shard_of_woe,id=60233
+copy=heart
+trinket1=heart_of_ignacious,id=65110
+copy=bell
+trinket1=bell_of_enraging_resonance,id=65053,reforge=crit_haste
 
 # Loading character profiles  (assumed when token does not match parm=value format)
 segv_mm.simc
@@ -65,26 +86,38 @@ iterations=10000
 
 # Setting specific scale deltas for scale factor generation
 # When smooth_scale_factors=1 the default values are cut in half due to improved convergence.
-scale_strength=150
-scale_agility=150
-scale_stamina=150
-scale_intellect=150
-scale_spirit=150
-scale_spell_power=150
-scale_attack_power=150
-scale_expertise_rating=-100
-scale_armor_penetration_rating=150
-scale_hit_rating=-100
-scale_crit_rating=150
-scale_haste_rating=150
-scale_armor=6000
-scale_weapon_dps=50
-scale_weapon_offhand_dps=50
+scale_strength=300
+scale_agility=300
+scale_stamina=300
+scale_intellect=300
+scale_spirit=300
+scale_spell_power=300
+scale_attack_power=300
+scale_expertise_rating=-200
+scale_mastery=300
+scale_hit_rating=-200
+scale_crit_rating=300
+scale_haste_rating=300
+scale_armor=12000
+scale_weapon_dps=100
+scale_weapon_offhand_dps=100
 
 # Normally, scale factors are calculated by examining current vs current+delta
 # An alternative is to compare current-delta/2 vs current+delta/2
 # This is more accurate but the runtime doubles.
 center_scale_delta=1
+
+# Plot scale factors on a chart. Is run seperately from calculate_scale_factors.
+# Default is steps of 20 and 20 points (10 positive and 10 negative).
+dps_plot_step=20
+dps_plot_points=20
+dps_plot_iterations=10000
+
+# To plot haste rating
+dps_plot_stat=haste_rating
+
+# To plot more than one stat
+dps_plot_stat=haste_rating,hit_rating,mastery
 
 # Generate a human-readable combat log (forces iterations=1)
 log=1
@@ -102,62 +135,71 @@ optimal_raid=0
 optimal_raid=0
 override.abominations_might=1
 override.arcane_brilliance=1
-override.arcane_empowerment=1
+override.arcane_tactics=1
 override.battle_shout=1
 override.bleeding=1
 override.blessing_of_kings=1
 override.blessing_of_might=1
-override.blessing_of_wisdom=1
-override.blood_frenzy=1
+override.blood_frenzy_bleed=1
+override.blood_frenzy_physical=1
 override.bloodlust=1
-override.bloodlust_early=1
-override.celerity=1
-override.crypt_fever=1
+override.communion=1
+override.critical_mass=1
 override.curse_of_elements=1
-override.divine_spirit=1
+override.demonic_pact=1
+override.devotion_aura=1
 override.earth_and_moon=1
+override.ebon_plaguebringer=1
 override.elemental_oath=1
 override.expose_armor=1
 override.faerie_fire=1
 override.ferocious_inspiration=1
 override.flametongue_totem=1
-override.focus_magic=1
 override.fortitude=1
-override.heart_of_the_crusader=1
-override.heroic_presence=1
+override.hemorrhage=1
+override.honor_among_thieves=1
+override.horn_of_winter=1
 override.hunters_mark=1
-override.improved_faerie_fire=1
-override.improved_moonkin_aura=1
-override.improved_scorch=1
+override.improved_icy_talons=1
 override.improved_shadow_bolt=1
 override.infected_wounds=1
-override.insect_swarm=1
-override.judgement_of_wisdom=1
 override.judgements_of_the_just=1
 override.leader_of_the_pack=1
 override.mana_spring_totem=1
 override.mangle=1
 override.mark_of_the_wild=1
 override.master_poisoner=1
-override.misery=1
 override.moonkin_aura=1
 override.poisoned=1
 override.rampage=1
 override.replenishment=1
-override.sanctified_retribution=1
 override.savage_combat=1
-override.scorpid_sting=1
 override.strength_of_earth=1
 override.sunder_armor=1
-override.swift_retribution=1
 override.thunder_clap=1
-override.totem_of_wrath=1
-override.trauma=1
 override.trueshot_aura=1
 override.unleashed_rage=1
 override.windfury_totem=1
-override.winters_chill=1
 override.wrath_of_air=1
+
+# Bloodlust/Heroism/Timewarp Early
+override.bloodlust_early=0
+
+# Single Player Buffs
+override.dark_intent=0
+override.focus_magic=0
+
+# Ice Crown Citadel Buffs
+override.hellscreams_warsong=0
+override.strength_of_wrynn=0
+
+# Regen Options
+infinite_energy=1
+infinite_focus=1
+infinite_health=1
+infinite_mana=1
+infinite_rage=1
+infinite_runic=1
 
 # Modeling player error.  Valid values of skill range from zero to one (default) with 1.0 being perfect.
 # A skill of 0.80 means that 20% of the time the player will clip the last tick on DoTs and skip higher
@@ -209,6 +251,7 @@ queue_lag=0.075
 
 # Non-Raid Settings 
 
-# The default level of the target is 83.  Changing it will change the effect of various combat ratings.
-target_level=82
+# The default level of the target is three levels above the highest level character being simulated.
+# Changing it will change the effect of various combat ratings (hit rating, expertise, etc).
+target_level=88
 

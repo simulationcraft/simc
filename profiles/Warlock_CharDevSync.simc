@@ -1,0 +1,58 @@
+
+chardev=36735 name=Warlock_AffDrain_T11_359 save=Warlock_AffDrain_T11_359.simc
+talents=http://ptr.wowhead.com/talent#IrurohsGcdf0bZc
+head=shadowflame_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
+wrists=bracers_of_the_dark_pool,type=cloth,ilevel=359,quality=epic,stats=547armor_127crit_127hit_190int_286sta,reforge=crit_haste,enchant=50int
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
+
+
+chardev=36739 name=Warlock_Affliction_T11_359 save=Warlock_Affliction_T11_359.simc
+talents=http://ptr.wowhead.com/talent#IrurohsGcdsZI
+head=shadowflame_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
+wrists=bracers_of_the_dark_pool,type=cloth,ilevel=359,quality=epic,stats=547armor_127crit_127hit_190int_286sta,reforge=crit_haste,enchant=50int
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
+
+
+chardev=36741 name=Warlock_Demonology_T11_359 save=Warlock_Demonology_T11_359.simc
+talents=http://www.wowhead.com/talent#IZIrbcourRdoIbb
+head=shadowflame_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
+wrists=bracers_of_the_dark_pool,type=cloth,ilevel=359,quality=epic,stats=547armor_127crit_127hit_190int_286sta,reforge=crit_haste,enchant=50int
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
+
+
+chardev=36743 name=Warlock_Destruction_T11_359 save=Warlock_Destruction_T11_359.simc
+talents=http://ptr.wowhead.com/talent#I0hZf0bZIbbfRbsRdo
+head=shadowflame_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
+wrists=bracers_of_the_dark_pool,type=cloth,ilevel=359,quality=epic,stats=547armor_127crit_127hit_190int_286sta,reforge=crit_haste,enchant=50int
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
+
+
+chardev=36745 name=Warlock_AffDrain_T11_372 save=Warlock_AffDrain_T11_372.simc
+talents=http://ptr.wowhead.com/talent#IrurohsGcdf0bZc
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
+
+
+chardev=36750 name=Warlock_Affliction_T11_372 save=Warlock_Affliction_T11_372.simc
+talents=http://ptr.wowhead.com/talent#IrurohsGcdsZI
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
+
+
+chardev=36757 name=Warlock_Demonology_T11_372 save=Warlock_Demonology_T11_372.simc
+talents=http://www.wowhead.com/talent#IZIrbcourRdoIbb
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
+
+
+chardev=36761 name=Warlock_Destruction_T11_372 save=Warlock_Destruction_T11_372.simc
+talents=http://ptr.wowhead.com/talent#I0hZf0bZIbbfRbsRdo
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
+
+
+

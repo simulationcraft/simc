@@ -11,16 +11,15 @@
 
 // pet_t::pet_t =============================================================
 
-pet_t::pet_t( sim_t*             s,
-              player_t*          o,
-              const std::string& n,
-              bool               g ) :
-    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 )
+void pet_t::_init_pet_t()
 {
   level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
-  next_pet = owner -> pet_list;
-  owner -> pet_list = this;
+
+  pet_t** last = &( owner -> pet_list );
+  while ( *last ) last = &( ( *last ) -> next_pet );
+  *last = this;
+  next_pet = 0;
 
   // Pets have inherent 5% critical strike chance if not overridden.
   base_spell_crit  = 0.05;
@@ -33,6 +32,26 @@ pet_t::pet_t( sim_t*             s,
 
   // By default, only report statistics in the context of the owner
   quiet = 1;
+  player_data.set_parent( &( owner -> player_data ) );
+  ptr = owner -> ptr;
+}
+pet_t::pet_t( sim_t*             s,
+              player_t*          o,
+              const std::string& n,
+              bool               g ) :
+    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
+{
+  _init_pet_t();
+}
+
+pet_t::pet_t( sim_t*             s,
+              player_t*          o,
+              const std::string& n,
+              pet_type_t         pt,
+              bool               g ) :
+    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
+{
+  _init_pet_t();
 }
 
 // pet_t::create_action =====================================================
@@ -47,7 +66,7 @@ action_t* pet_t::create_action( const std::string& name,
 
 double pet_t::stamina() SC_CONST
 {
-  double a = floor( composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() ) );
+  double a = composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() );
 
   return player_t::stamina() + a;
 }
@@ -56,7 +75,7 @@ double pet_t::stamina() SC_CONST
 
 double pet_t::intellect() SC_CONST
 {
-  double a = floor( composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() ) );
+  double a = composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() );
 
   return player_t::intellect() + a;
 }
@@ -90,6 +109,10 @@ void pet_t::init_base()
 {
 }
 
+void pet_t::init_talents()
+{
+   specialization = primary_tab();
+}
 // pet_t::reset =============================================================
 
 void pet_t::reset()
@@ -113,6 +136,7 @@ void pet_t::summon( double duration )
   sleeping = 0;
   init_resources( true );
   summon_time = sim -> current_time;
+  summoned=true;
 
   if( duration > 0 )
   {
@@ -120,11 +144,11 @@ void pet_t::summon( double duration )
     {
       expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
       {
-	sim -> add_event( this, duration );
+        sim -> add_event( this, duration );
       }
       virtual void execute()
       {
-	player -> cast_pet() -> dismiss();
+        player -> cast_pet() -> dismiss();
       }
     };
     new ( sim ) expiration_t( sim, this, duration );

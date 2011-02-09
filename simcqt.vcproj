@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -w34100 -w34189 -w34100 -w34189"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;..\Qt\4.6.2\include\QtCore&quot;,&quot;..\Qt\4.6.2\include\QtGui&quot;,&quot;..\Qt\4.6.2\include\QtWebKit&quot;,&quot;..\Qt\4.6.2\include&quot;,&quot;engine&quot;,&quot;..\Qt\4.6.2\include\ActiveQt&quot;,&quot;debug&quot;,..\Qt\4.6.2\mkspecs\default"
+				AdditionalIncludeDirectories="&quot;c:\Qt\4.7.1\include\QtCore&quot;,&quot;c:\Qt\4.7.1\include\QtGui&quot;,&quot;c:\Qt\4.7.1\include\QtWebKit&quot;,&quot;c:\Qt\4.7.1\include&quot;,&quot;engine&quot;,&quot;c:\Qt\4.7.1\include\ActiveQt&quot;,&quot;debug&quot;,c:\Qt\4.7.1\mkspecs\default"
 				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_WEBKIT_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -59,6 +59,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4005;4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -73,11 +74,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
-				AdditionalDependencies="c:\Qt\4.6.2\lib\qtmaind.lib wininet.lib c:\Qt\4.6.2\lib\QtWebKitd4.lib c:\Qt\4.6.2\lib\QtGuid4.lib c:\Qt\4.6.2\lib\QtCored4.lib"
-				OutputFile="debug\simcqt.exe"
+				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;&#x0D;&#x0A;&quot;/MACHINE:i386&quot;"
+				AdditionalDependencies="c:\Qt\4.7.1\lib\qtmaind.lib wininet.lib c:\Qt\4.7.1\lib\QtWebKit4.lib c:\qt\4.7.1\lib\QtNetwork4.lib c:\Qt\4.7.1\lib\QtGui4.lib c:\Qt\4.7.1\lib\QtCore4.lib"
+				OutputFile="SimulationCraft.exe"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\Qt\4.6.2\lib"
+				AdditionalLibraryDirectories="c:\Qt\4.7.1\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -135,20 +136,23 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -w34100 -w34189 -w34100 -w34189"
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;..\Qt\4.6.2\include\QtCore&quot;,&quot;..\Qt\4.6.2\include\QtGui&quot;,&quot;..\Qt\4.6.2\include\QtWebKit&quot;,&quot;..\Qt\4.6.2\include&quot;,&quot;engine&quot;,&quot;..\Qt\4.6.2\include\ActiveQt&quot;,&quot;release&quot;,..\Qt\4.6.2\mkspecs\default"
+				AdditionalIncludeDirectories="&quot;c:\Qt\4.7.1\include\QtCore&quot;,&quot;c:\Qt\4.7.1\include\QtGui&quot;,&quot;c:\Qt\4.7.1\include\QtWebKit&quot;,&quot;c:\Qt\4.7.1\include&quot;,&quot;engine&quot;,&quot;c:\Qt\4.7.1\include\ActiveQt&quot;,&quot;release&quot;,c:\Qt\4.7.1\mkspecs\default"
 				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_WEBKIT_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
+				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
 				AssemblerListingLocation="release\"
 				ObjectFile="release\"
 				ProgramDataBaseFileName=".\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="0"
+				DisableSpecificWarnings="4005;4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -164,11 +168,11 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
-				AdditionalDependencies="c:\Qt\4.6.2\lib\qtmain.lib wininet.lib c:\Qt\4.6.2\lib\QtWebKit4.lib c:\Qt\4.6.2\lib\QtGui4.lib c:\Qt\4.6.2\lib\QtCore4.lib"
-				OutputFile="release\simcqt.exe"
+				AdditionalDependencies="c:\Qt\4.7.1\lib\qtmain.lib wininet.lib c:\Qt\4.7.1\lib\QtWebKit4.lib c:\qt\4.7.1\lib\QtNetwork4.lib c:\Qt\4.7.1\lib\QtGui4.lib c:\Qt\4.7.1\lib\QtCore4.lib"
+				OutputFile="SimulationCraft.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\Qt\4.6.2\lib"
+				AdditionalLibraryDirectories="c:\Qt\4.7.1\lib"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -222,7 +226,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\sc_battle_net.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_buff.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_chardev.cpp"
 				>
 			</File>
 			<File
@@ -230,7 +242,19 @@
 				>
 			</File>
 			<File
+				RelativePath="engine\sc_const_data.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_consumable.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_data.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_data_access.cpp"
 				>
 			</File>
 			<File
@@ -254,7 +278,20 @@
 				>
 			</File>
 			<File
+				RelativePath="engine\sc_extra_data.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_extra_data_ptr.inc"
+				>
+			</File>
+
+			<File
 				RelativePath="engine\sc_gear_stats.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\sc_heal.cpp"
 				>
 			</File>
 			<File
@@ -267,6 +304,14 @@
 			</File>
 			<File
 				RelativePath="engine\sc_item.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_item_data.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_item_data_ptr.inc"
 				>
 			</File>
 			<File
@@ -334,6 +379,14 @@
 				>
 			</File>
 			<File
+				RelativePath="engine\sc_scale_data.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_scale_data_ptr.inc"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_scaling.cpp"
 				>
 			</File>
@@ -358,7 +411,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\sc_spell_data.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_spell_data.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_spell_data_ptr.inc"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\sc_spell_info.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_spell_lists.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_spell_lists_ptr.inc"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_stats.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_talent.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_talent_data.inc"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_talent_data_ptr.inc"
 				>
 			</File>
 			<File
@@ -424,7 +513,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC qt\simulationcraftqt.h"
-						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;C:\Qt\4.6.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;..\Qt\4.6.2\include\QtCore&quot; -I&quot;..\Qt\4.6.2\include\QtGui&quot; -I&quot;..\Qt\4.6.2\include\QtWebKit&quot; -I&quot;..\Qt\4.6.2\include&quot; -I&quot;engine&quot; -I&quot;..\Qt\4.6.2\include\ActiveQt&quot; -I&quot;debug&quot; -I..\Qt\4.6.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
+						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.1\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.1\include\QtCore&quot; -I&quot;c:\Qt\4.7.1\include\QtGui&quot; -I&quot;c:\Qt\4.7.1\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.1\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.1\include\ActiveQt&quot; -I&quot;debug&quot; -Ic:\Qt\4.7.1\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
 						AdditionalDependencies="Rem;qt\simulationcraftqt.h"
 						Outputs="debug\moc_simulationcraftqt.cpp"
 					/>
@@ -435,7 +524,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC qt\simulationcraftqt.h"
-						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp&#x0D;&#x0A;C:\Qt\4.6.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;..\Qt\4.6.2\include\QtCore&quot; -I&quot;..\Qt\4.6.2\include\QtGui&quot; -I&quot;..\Qt\4.6.2\include\QtWebKit&quot; -I&quot;..\Qt\4.6.2\include&quot; -I&quot;engine&quot; -I&quot;..\Qt\4.6.2\include\ActiveQt&quot; -I&quot;release&quot; -I..\Qt\4.6.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o release\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
+						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.1\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.1\include\QtCore&quot; -I&quot;c:\Qt\4.7.1\include\QtGui&quot; -I&quot;c:\Qt\4.7.1\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.1\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.1\include\ActiveQt&quot; -I&quot;release&quot; -Ic:\Qt\4.7.1\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o release\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
 						AdditionalDependencies="Rem;qt\simulationcraftqt.h"
 						Outputs="release\moc_simulationcraftqt.cpp"
 					/>
@@ -447,18 +536,6 @@
 			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			>
-			<File
-				RelativePath="debug\moc_simulationcraftqt.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="release\moc_simulationcraftqt.cpp"
 				>
@@ -472,14 +549,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="debug\simcqt.res"
+				RelativePath="debug\moc_simulationcraftqt.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
-						Name="VCCustomBuildTool"
+						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
 			</File>
@@ -488,6 +565,18 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="debug\simcqt.res"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

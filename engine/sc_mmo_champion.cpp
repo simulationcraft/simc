@@ -9,7 +9,7 @@
 #define RANGE_HIGH_MASK (0x3f<<(RANGE_BITS-6))
 #define RANGE_LOW_MASK ((1<<(RANGE_BITS-6))-1)
 
-static const char* base64 = "f-qR3eOHQ9dSIMwk8pabYt6yrJUFNXLTh4n2KWEoz0uC5j7xmAgDlZiPcs_BGV1v";  // sufficiently randomized 10+26+26+2 = 64
+// static const char* base64 = "f-qR3eOHQ9dSIMwk8pabYt6yrJUFNXLTh4n2KWEoz0uC5j7xmAgDlZiPcs_BGV1v";  // sufficiently randomized 10+26+26+2 = 64
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
@@ -201,7 +201,8 @@ static bool parse_weapon( item_t&     item,
 
   if ( ! get_tti_value( tti_dmg, node, "tti-dmg" ) )
     if ( ! get_tti_value( tti_dmg, node, "tti-damage" ) )
-      return true;
+      if ( ! get_tti_value( tti_dmg, node, "tti-damage_1" ) )
+        return true;
 
   std::string speed_str, dps_str, dmg_min_str, dmg_max_str;
 
@@ -211,7 +212,7 @@ static bool parse_weapon( item_t&     item,
 
   tokens.clear();
   num_tokens = util_t::string_split( tokens, tti_dmg, " " );
-  if ( num_tokens == 4 )
+  if ( ( num_tokens == 4 ) || ( num_tokens == 5 ) )
   {
     dmg_min_str = tokens[ 0 ];
     dmg_max_str = tokens[ 2 ];
@@ -229,7 +230,7 @@ static bool parse_weapon( item_t&     item,
        ! get_tti_value( slot_str,     node, "tti-slot"     ) )
     return false;
 
-  if( slot_str == "Main Hand" ) slot_str = "One-Hand";
+  if( ( slot_str == "Main Hand" ) || ( slot_str == "Off-Hand" ) ) slot_str = "One-Hand";
 
   int weapon_type = WEAPON_NONE;
   if      ( subclass_str == "Axe" && slot_str == "One-Hand"   ) weapon_type = WEAPON_AXE;
@@ -286,7 +287,7 @@ static bool parse_item_stats( item_t&     item,
     }
   }
 
-  std::string armor_str;;
+  std::string armor_str;
   if ( get_tti_value( armor_str, node, "tti-armor" ) )
   {
     std::string::size_type pos = armor_str.find( " " );
@@ -295,7 +296,7 @@ static bool parse_item_stats( item_t&     item,
     item.armory_stats_str += armor_str + "armor";
   }
 
-  std::string block_str;;
+  std::string block_str;
   if ( get_tti_value( armor_str, node, "tti-block" ) )
   {
     std::string::size_type pos = block_str.find( " " );
@@ -305,6 +306,20 @@ static bool parse_item_stats( item_t&     item,
   }
 
   armory_t::format( item.armory_stats_str );
+
+  return true;
+}
+
+// parse_item_stats =========================================================
+
+static bool parse_item_reforge( item_t&     item,
+                              xml_node_t* node )
+{
+  item.armory_reforge_str.clear();
+
+  // TO-DO (if it even makes sense)
+
+  armory_t::format( item.armory_reforge_str );
 
   return true;
 }
@@ -320,11 +335,11 @@ static bool parse_item_name( item_t&            item,
   if ( ! xml_t::get_value( s, node, "title/." ) )
     return false;
 
-  std::string::size_type pos = s.find( " - " );
+  std::string::size_type pos = s.find( " - Items" ); // MMOC appends " - Items - Sigrie" to item names
   if ( pos != std::string::npos ) s.erase( pos );
 
   // The MMO-Champion names often have numbers embedded in the name.....
-  for ( int i=0; i < s.size(); i++ )
+  for ( int i=0; i < (int) s.size(); i++ )
   {
     if ( isdigit( s[ i ] ) )
     {
@@ -345,19 +360,74 @@ static bool parse_item_name( item_t&            item,
 static bool parse_item_heroic( item_t&     item,
                                xml_node_t* node )
 {
-  std::string heroic_str;
   item.armory_heroic_str = "";
 
-  if ( xml_t::get_value( heroic_str, node, "tti-heroic" ) )
+  std::vector<std::string> descriptions;
+  get_tti_value( descriptions, node, "tti-heroic"  );
+
+  if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_heroic_str = "1";
+    armory_t::format( item.armory_heroic_str );
   }
-
-  armory_t::format( item.armory_heroic_str );
 
   return true;
 }
 
+// parse_item_armor_type =========================================================
+
+static bool parse_item_armor_type( item_t&     item,
+                                   xml_node_t* node )
+{
+  item.armory_armor_type_str = "";
+
+  std::vector<std::string> descriptions;
+  get_tti_value( descriptions, node, "tti-subclass"  );
+
+  if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
+  {
+    item.armory_armor_type_str = descriptions[ 0 ];
+    armory_t::format( item.armory_armor_type_str );
+  }
+
+  return true;
+}
+
+// parse_item_level =========================================================
+
+static bool parse_item_level( item_t&     item,
+                              xml_node_t* node )
+{
+  item.armory_ilevel_str.clear();
+  
+  std::string info_str;
+  if ( ! get_tti_value( info_str, node, "tti-level" ) ) return false;
+  
+  size_t p_lvl = info_str.rfind( "Item Level " );
+  
+  if ( p_lvl == info_str.npos ) return false;
+  
+  p_lvl += strlen( "Item Level " );
+  
+  item.armory_ilevel_str = info_str.substr( p_lvl );
+  
+  return true;
+}
+
+// parse_quality ============================================================
+
+static bool parse_quality( item_t&     item,
+                           xml_node_t* node )
+{
+  item.armory_quality_str.clear();
+  
+  std::string info_str;
+  if ( ! get_tti_value( info_str, node, "tti-quality" ) ) return false;
+  
+  item.armory_quality_str = tolower( info_str );
+  
+  return true;
+}
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -376,7 +446,7 @@ int mmo_champion_t::parse_gem( item_t&            item,
   {
     if ( ! cache_only )
       item.sim -> errorf( "Player %s unable to download gem id %s from mmo-champion.\n", 
-			  item.player -> name(), gem_id.c_str() );
+                          item.player -> name(), gem_id.c_str() );
     return GEM_NONE;
   }
 
@@ -473,6 +543,24 @@ bool mmo_champion_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_level( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_quality( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_armor_type( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine armor type for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
@@ -493,6 +581,9 @@ bool mmo_champion_t::download_item( item_t&            item,
 bool mmo_champion_t::download_slot( item_t&            item,
                                     const std::string& item_id,
                                     const std::string& enchant_id,
+                                    const std::string& addon_id,
+                                    const std::string& reforge_id,
+                                    const std::string& rsuffix_id,
                                     const std::string  gem_ids[ 3 ],
                                     int cache_only )
 {
@@ -518,9 +609,33 @@ bool mmo_champion_t::download_slot( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_level( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_quality( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_armor_type( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine armor type for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_stats( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine stats for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_reforge( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine reforge for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -542,107 +657,24 @@ bool mmo_champion_t::download_slot( item_t&            item,
     //return false;
   }
 
+  if ( ! enchant_t::download_addon( item, addon_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
+    //return false;
+  }
+
+  if ( ! enchant_t::download_reforge( item, reforge_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n", p -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
+    //return false;
+  }
+
+  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
+    return false;
+  }
+  
   return true;
 }
 
-bool mmo_champion_t::parse_talents( player_t* player, const std::string& talent_string)
-{
-  unsigned int i;
-  unsigned int visible[MAX_TALENT_SLOTS] = {0};
-  int trees[3] = {0};
-  int numleft = MAX_TALENT_POINTS;
-  int thismax;
-  unsigned int rangelow = 0;
-  unsigned int rangehigh = RANGE_HIGH;
-  unsigned int rangeval = 0;
-  unsigned int div1;
-  int mul1;
-  int mul2;
-  unsigned int len;
-  char c;
-  int newvisible = 1;
-  int talents[MAX_TALENT_SLOTS] = {0};
-
-  std::vector<talent_translation_t> translations = player->get_talent_list();
-
-  // need to have empty talent in the front of vector
-  std::vector<talent_translation_t> talent_translation_list;
-  talent_translation_t empty_talent = {0,0,0,0,0,0,0};
-  talent_translation_list.push_back(empty_talent);
-  for(i=0;i<translations.size();i++)
-	talent_translation_list.push_back(translations[i]);
-
-  char* src = (char*)talent_string.c_str();
-
-  for(i=0;i<RANGE_BITS/6;i++) get_next_range_byte(&rangeval, &src);    // get 24 bits
-
-    // 0 = disabled
-    // 1 = enabled this pass
-    // 2 = already scanned over, not considering again
-
-  visible[0] = 2;
-  while(newvisible) {
-    newvisible = 0;
-
-      // step 1: enable (consider) next row, if requirements met
-
-    for(i=1; i < talent_translation_list.size();i++) {
-      if(visible[i] == 0 && trees[talent_translation_list[i].tree] >= 5*talent_translation_list[i].row && visible[talent_translation_list[i].req] == 2 && talents[talent_translation_list[i].req] == talent_translation_list[talent_translation_list[i].req].max) visible[i] = 1;
-    }
-
-      // step 2: step through each enabled node, convert
-
-	  for(i=1; i < talent_translation_list.size();i++) {
-		  if(!numleft) break;
-
-		  if(visible[i] == 1) 
-		  {
-			newvisible = 1;
-			visible[i] = 2;
-
-		  thismax = numleft;
-		  if(talent_translation_list[i].max < thismax) thismax = talent_translation_list[i].max;
-
-		  div1 = thismax+1;        // # choices
-		  mul2 = 1;                // prob of just this one
-
-			len = rangehigh - rangelow;
-
-			for(mul1=0;mul1<thismax+1;mul1++) {
-			  if(rangeval >= rangelow + len * mul1 / div1 && rangeval < rangelow + len * (mul1 + mul2) / div1) break;
-			}
-
-			talents[i] = mul1;
-			if(talents[i] > talent_translation_list[i].max) {    // probably corrupt string or wrong version, we can't really continue decode
-			  return 1;
-			}
-
-			rangehigh = rangelow + len * (mul1 + mul2) / div1;// - 1;
-			rangelow += len * mul1 / div1;
-
-			while( (rangelow & RANGE_HIGH_MASK) == (rangehigh & RANGE_HIGH_MASK) ) {
-			  c = (rangelow >> (RANGE_BITS-6)) & 0x3f;
-			  len = rangehigh - rangelow;
-			  rangelow = ((rangelow & RANGE_LOW_MASK) << 6);
-			  rangehigh = rangelow + len*0x40 - 1;
-			  get_next_range_byte(&rangeval, &src);    // get 6 bits
-			}
-
-			// update
-			trees[talent_translation_list[i].tree] += talents[i];
-			numleft -= talents[i];
-		  }
-	  }
-  }
-  for(i=0;i<translations.size();i++)
-	  talents[i] = talents[i+1];
-  return  player->parse_talent_trees(talents);
-}
-
-void mmo_champion_t::get_next_range_byte(unsigned int* rangeval, char** src) {
-  *rangeval = ((*rangeval)&(RANGE_HIGH>>6))<<6;
-  if(**src && strchr(base64, **src)) {
-    *rangeval |= (strchr(base64, **src)-base64);
-    *src = (*src) + 1;
-  }
-}

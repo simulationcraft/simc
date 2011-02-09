@@ -1,0 +1,70 @@
+#!./simc 
+
+warlock=Warlock_Destruction_T11_359
+origin="http://chardev.org/?profile=36743"
+level=85
+race=orc
+use_pre_potion=1
+professions=enchanting=525/inscription=525
+talents=http://ptr.wowhead.com/talent#I0hZf0bZIbbfRbsRdo
+glyphs=life_tap/immolate/conflagrate/imp
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/fel_armor
+actions+=/summon_imp
+actions+=/dark_intent
+actions+=/snapshot_stats
+actions+=/blood_fury
+actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
+actions+=/demon_soul
+actions+=/soulburn,if=buff.bloodlust.down
+actions+=/soul_fire,if=buff.soulburn.up
+actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8
+actions+=/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
+actions+=/conflagrate
+actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
+actions+=/shadowflame
+actions+=/soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)
+actions+=/chaos_bolt
+actions+=/summon_infernal
+actions+=/soulburn,if=buff.bloodlust.down
+actions+=/soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight
+actions+=/shadowburn
+actions+=/incinerate
+actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+actions+=/fel_flame,moving=1
+actions+=/life_tap
+head=shadowflame_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
+neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit
+shoulders=shadowflame_mantle,type=cloth,ilevel=359,quality=epic,stats=938armor_169haste_149hit_233int_380sta,gems=40int_10haste,enchant=130int_25haste
+chest=shadowflame_robes,type=cloth,ilevel=359,quality=epic,stats=1251armor_218crit_198haste_301int_512sta,reforge=crit_hit,gems=40int_20hit_20int_20int,enchant=20all
+waist=dreamless_belt,type=cloth,ilevel=359,quality=epic,stats=704armor_149hit_233int_169mastery_380sta,reforge=mastery_haste,gems=40int_40int
+legs=shadowflame_leggings,type=cloth,ilevel=359,quality=epic,stats=1094armor_228haste_188hit_301int_512sta,gems=20haste_20int_40int_20int,enchant=95int_80sta
+feet=desert_walker_sandals,type=cloth,ilevel=359,quality=epic,stats=860armor_149haste_169hit_233int_380sta,gems=20haste_20int_10hit,enchant=35mastery
+wrists=bracers_of_the_dark_pool,type=cloth,ilevel=359,quality=epic,stats=547armor_127crit_127hit_190int_286sta,reforge=crit_haste,enchant=50int
+hands=grips_of_the_failed_immortal,type=cloth,ilevel=359,quality=epic,stats=782armor_169crit_149haste_233int_380sta,reforge=crit_hit,gems=40int_10crit,enchant=50haste
+finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=40int
+finger2=band_of_secret_names,ilevel=359,quality=epic,stats=127crit_127haste_190int_286sta,reforge=crit_hit,enchant=40int
+trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_hit,equip=onharmfulcast_1926sp_30%_20dur_100cd
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=50int
+main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_45min_84max
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
+ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_haste
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=5252
+# gear_intellect=4187
+# gear_spirit=20
+# gear_spell_power=1954
+# gear_hit_rating=1742
+# gear_crit_rating=625
+# gear_haste_rating=2063
+# gear_mastery_rating=789
+# gear_armor=7817
+# meta_gem=burning_shadowspirit
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
+# main_hand=incineratus,weapon=dagger_1.80speed_45min_84max,enchant=power_torrent
