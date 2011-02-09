@@ -2090,6 +2090,7 @@ struct recuperate_t : public rogue_attack_t
     base_tick_time = effect_period( 1 );
     parse_options( options_str );
     dot_behavior = DOT_REFRESH;
+    harmful = false;
   }
 
   virtual void execute()
