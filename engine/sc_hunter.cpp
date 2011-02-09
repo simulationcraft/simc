@@ -538,9 +538,6 @@ struct hunter_pet_t : public pet_t
     double ap = player_t::composite_attack_power();
 
     ap += o -> composite_attack_power() * 0.425;
-    //This is incorrect, pets do scale with AotH AP
-//    if ( o -> buffs_aspect_of_the_hawk -> up() )
-//      ap -= o -> buffs_aspect_of_the_hawk -> value() * 0.425; // Pets do not scale with Aspect of the Hawk AP
 
     return ap;
   }
@@ -1012,7 +1009,7 @@ struct claw_t : public hunter_pet_attack_t
     double c = hunter_pet_attack_t::cost();
     if ( c == 0 ) return 0;
     if ( p -> buffs_owls_focus -> check() ) return 0;
-    if ( p -> buffs_sic_em -> up() )
+    if ( p -> buffs_sic_em -> check() )
       c *= 1.0 + o -> talents.sic_em -> base_value() / 100.0;
     if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
     {
@@ -1399,7 +1396,7 @@ double hunter_attack_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> buffs_beast_within -> up() ) c *= ( 1.0 + p -> buffs_beast_within -> effect_base_value( 1 ) / 100.0 );
+  if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect_base_value( 1 ) / 100.0 );
   return c;
 }
 
@@ -2400,7 +2397,7 @@ struct kill_command_t : public hunter_spell_t
 
     double cost = hunter_spell_t::cost();
 
-    if ( p -> buffs_killing_streak -> up() )
+    if ( p -> buffs_killing_streak -> check() )
       cost -= p -> talents.killing_streak -> effect_base_value( 2 );
     if ( cost < 0.0 ) return 0;
     
