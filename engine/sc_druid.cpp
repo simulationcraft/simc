@@ -2189,7 +2189,7 @@ void druid_spell_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   spell_t::consume_resource();
-  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() )
+  if ( harmful && p -> buffs_omen_of_clarity -> up() && spell_t::execute_time() )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
