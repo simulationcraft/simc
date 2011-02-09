@@ -1082,7 +1082,7 @@ void action_t::tick()
 
   action_callback_t::trigger( player -> tick_callbacks, this );
 
-  stats -> add( actual_tick_dmg, type, result, time_to_tick );
+  stats -> add( actual_tick_dmg, DMG_OVER_TIME, result, time_to_tick );
 }
 // action_t::last_tick =======================================================
 
