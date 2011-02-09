@@ -1110,7 +1110,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
     if ( ! ( num_ticks > 0 && travel_dmg == 0 && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) ) )
       stats -> add_result( actual_direct_dmg, DMG_DIRECT, result );
 
-  if ( num_ticks > 0 )
+  if ( num_ticks > 0 && result_is_hit( travel_result ) )
   {
     if ( dot_behavior != DOT_REFRESH ) cancel();
 
