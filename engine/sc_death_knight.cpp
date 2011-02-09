@@ -4566,7 +4566,7 @@ void death_knight_t::regen( double periodicity )
   player_t::regen( periodicity );
 
   if ( talents.butchery -> rank() )
-    resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect_base_value( 2 ) / 10.0 / 5.0 / periodicity ), gains_butchery );
+    resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect_base_value( 2 ) / 10.0 / 5.0 * periodicity ), gains_butchery );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
