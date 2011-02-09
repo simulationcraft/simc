@@ -1167,7 +1167,7 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
   }
   if ( !sim -> report_targets )
   {
-    util_t::fprintf ( file, " grouped-last" );
+    util_t::fprintf ( file, " final grouped-last" );
   }
   util_t::fprintf ( file, "\">\n" );
   util_t::fprintf ( file,
@@ -1731,29 +1731,17 @@ static void print_html_profile (FILE* file, player_t* a )
 {
   if ( a -> total_seconds > 0 )
   {
-    util_t::fprintf( file,
-      "            <div class=\"player-section profile\">\n"
-      "              <h3 class=\"toggle\">Profile</h3>\n"
-      "              <div class=\"toggle-content\">\n"
-      "                <table class=\"sc\">\n"
-      "                  <tr>\n"
-      "                    <th></th>\n"
-      "                  </tr>\n" );
-
     std::string profile_str;
-
     a -> create_profile( profile_str, SAVE_ALL, true );
 
     util_t::fprintf( file,
-      "                  <tr>\n"
-      "                    <td class=\"left\">%s</th>\n"
-      "                  </tr>\n",
-      profile_str.c_str() );
-
-    util_t::fprintf( file,
-      "                </table>\n"
+      "            <div class=\"player-section profile\">\n"
+      "              <h3 class=\"toggle\">Profile</h3>\n"
+      "              <div class=\"toggle-content no-wrap\">\n"
+      "                <p>%s</p>\n"
       "              </div>\n"
-      "            </div>\n" );
+      "            </div>\n",
+      profile_str.c_str() );
   }
 }
 
@@ -2130,9 +2118,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
     "    <div id=\"%s\" class=\"player section",
     n.c_str() );
-  if ( num_players > 1 && j == 0 && ! sim -> scaling -> has_scale_factors() )
+  if ( num_players > 1 && j == 0 && ! sim -> scaling -> has_scale_factors() && p -> type != ENEMY && p -> type != ENEMY_ADD )
   {
     util_t::fprintf( file, " grouped-first" );
+  }
+  else if (( p -> type == ENEMY || p -> type == ENEMY_ADD ) && j == (int) sim -> targets_by_name.size() - 1 )
+  {
+    util_t::fprintf( file, " final grouped-last" );
   }
   else if ( num_players == 1 )
   {
@@ -3798,6 +3790,7 @@ void report_t::print_html( sim_t* sim )
       "      .clear { clear: both; }\n"
       "      .hide, .charts span { display: none; }\n"
       "      .float { float: left; }\n"
+      "      .no-wrap { max-width: 1200px; outline: 1px solid #ccc; margin: 10px 0 0 16px; padding: 8px; word-wrap: no-wrap; overflow-x: scroll; }\n"
       "      .mt { margin-top: 20px; }\n"
       "      .mb { margin-bottom: 20px; }\n"
       "      .toggle { cursor: pointer; }\n"
@@ -3822,8 +3815,8 @@ void report_t::print_html( sim_t* sim )
       "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: -1px; border: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }\n"
       "      .section-open { margin-top: 25px; margin-bottom: 25px; -moz-border-radius: 10px; -khtml-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }\n"
       "      .grouped-first { -moz-border-radius-topright: 10px; -moz-border-radius-topleft: 10px; -khtml-border-top-right-radius: 10px; -khtml-border-top-left-radius: 10px; -webkit-border-top-right-radius: 10px; -webkit-border-top-left-radius: 10px; border-top-right-radius: 10px; border-top-left-radius: 10px; }\n"
-      "      .grouped-last { -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; -khtml-border-bottom-right-radius: 10px; -khtml-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }\n"
-      "      .section .toggle-content { padding: 0 0 20px 14px; }\n"
+      "      .grouped-last, .final { -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; -khtml-border-bottom-right-radius: 10px; -khtml-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }\n"
+      "      .section .toggle-content { padding: 0 0 20px 16px; }\n"
       "      #raid-summary .toggle-content { padding-bottom: 0px; }\n"
       "      ul.params { padding: 0; }\n"
       "      ul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 12px; }\n"
@@ -4048,7 +4041,7 @@ void report_t::print_html( sim_t* sim )
       "              section.prev().addClass('grouped-last');\n"
       "            }\n"
       "          } else if (section.attr('id') != 'masthead') {\n"
-      "            if (section.attr('id') == 'auras-and-debuffs' || section.next().hasClass('section-open')) {\n"
+      "            if (section.hasClass('final') || section.next().hasClass('section-open')) {\n"
       "              section.addClass('grouped-last');\n"
       "            } else {\n"
       "              section.next().removeClass('grouped-first');\n"
