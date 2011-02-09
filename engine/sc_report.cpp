@@ -1165,7 +1165,11 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
   {
     util_t::fprintf( file, " grouped-first" );
   }
-  util_t::fprintf ( file, " grouped-last\">\n" );
+  if ( !sim -> report_targets )
+  {
+    util_t::fprintf ( file, " grouped-last" );
+  }
+  util_t::fprintf ( file, "\">\n" );
   util_t::fprintf ( file,
     "          <h2 class=\"toggle\">Auras</h2>\n"
     "            <div class=\"toggle-content\">\n" );
