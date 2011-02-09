@@ -1104,12 +1104,18 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
   assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
 
   if ( ! dual )
+  {
     // Check for Dot Application.
     if (  ( num_ticks > 0 && travel_dmg == 0 && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) ) )
+    {
       // Adding all Dot Applications as Hit, because many class modules let everything crit nowadays.
       stats -> add_result( 0, DMG_DIRECT, RESULT_HIT );
+    }
     else
+    {
       stats -> add_result( actual_direct_dmg, DMG_DIRECT, travel_result );
+    }
+  }
 
   if ( num_ticks > 0 && result_is_hit( travel_result ) )
   {
