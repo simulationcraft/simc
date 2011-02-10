@@ -16,6 +16,9 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4258",  "+50 Agility",                                               "50agi"                          },
+  { "4257",  "+50 Intellect",                                             "50int"                          },
+  { "4256",  "+50 Strength",                                              "50str"                          },
   { "4227",  "+130 Agility",                                              "130agi"                         },
   { "4223",  "Greatly increase your run speed for 5 sec.",                ""                               },
   { "4217",  "Pyrium Weapon Chain",                                       ""                               },
