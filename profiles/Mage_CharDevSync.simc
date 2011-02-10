@@ -1,30 +1,13 @@
+#!simc
 
 chardev=34631 save=Mage_Arcane_T11_359.simc name=Mage_Arcane_T11_359
-head=firelords_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
-wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547armor_127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=50int
-off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
 
 chardev=35357 save=Mage_Arcane_T11_372.simc name=Mage_Arcane_T11_372
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
-wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
 
 chardev=35372 save=Mage_Fire_Frostfire_T11_372.simc name=Mage_Fire_Frostfire_T11_372
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
-wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,reforge=haste_crit,enchant=40int
 
 chardev=35380 save=Mage_Fire_T11_372.simc name=Mage_Fire_T11_372
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
-wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,reforge=haste_crit,enchant=40int
 
 chardev=35390 save=Mage_Frost_Frostfire_T11_372.simc name=Mage_Frost_Frostfire_T11_372
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
-wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,reforge=haste_crit,enchant=40int
 
 chardev=35396 save=Mage_Frost_T11_372.simc name=Mage_Frost_T11_372
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
-wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,reforge=haste_crit,enchant=40int
