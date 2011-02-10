@@ -1045,6 +1045,19 @@ debuff_t::debuff_t( player_t*          p,
 {
 }
 
+debuff_t::debuff_t( player_t*          p,
+                    const uint32_t     id,
+                    const std::string& n,
+                    double             chance,
+                    double             cd,
+                    bool               q,
+                    bool               r,
+                    int                rt ) :
+  buff_t( p, id, n, chance, cd, q, r, rt )
+
+{
+}
+
 
 // ==========================================================================
 // Generic Passive Buff system

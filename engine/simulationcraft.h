@@ -2080,9 +2080,16 @@ struct stat_buff_t : public buff_t
 
 struct debuff_t : public buff_t
 {
+  // Player De-Buff
   debuff_t( player_t*, const std::string& name,
             int max_stack=1, double buff_duration=0, double buff_cooldown=0,
             double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+
+  // Player De-Buff as spell_id_t by id
+  debuff_t( player_t*, const uint32_t id, const std::string& name,
+            double chance=-1, double duration=-1.0,
+            bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+
 };
 
 typedef struct buff_t aura_t;

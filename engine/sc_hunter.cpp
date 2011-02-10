@@ -3452,8 +3452,8 @@ void player_t::hunter_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.hunters_mark      = new debuff_t( p, "hunters_mark",  1, 300.0 );
-    p -> debuffs.lightning_breath  = new debuff_t( p, "lightning_breath", 1, 45.0 );
+    p -> debuffs.hunters_mark      = new debuff_t( p, 1130, "hunters_mark" );
+    p -> debuffs.lightning_breath  = new debuff_t( p, 24844, "lightning_breath" );
   }
 }
 
