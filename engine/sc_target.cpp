@@ -275,8 +275,6 @@ void target_t::init_actions()
       break;
     }
   }
-  if ( !tank )
-    action_list_str += "/auto_attack";
 
   player_t::init_actions();
 }
