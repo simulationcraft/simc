@@ -275,6 +275,7 @@ struct mage_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual double    composite_mastery() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -1147,7 +1148,7 @@ void mage_spell_t::player_buff()
   }
   if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
   {
-    player_multiplier *= 1.0 + p -> specializations.frostburn * ( p -> composite_mastery() + p -> specializations.frost2 );
+    player_multiplier *= 1.0 + p -> specializations.frostburn * p -> composite_mastery();
 
     double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
 
@@ -3209,6 +3210,17 @@ double mage_t::composite_spell_power( const school_type school ) SC_CONST
   }
 
   return sp;
+}
+
+// mage_t::composite_mastery ================================================
+
+double mage_t::composite_mastery() SC_CONST
+{
+  double m = player_t::composite_mastery();
+
+  m += specializations.frost2;
+
+  return m;
 }
 
 // mage_t::composite_spell_crit =============================================
