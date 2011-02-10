@@ -2160,7 +2160,7 @@ struct melee_t : public death_knight_attack_t
 
       if ( p -> rng_might_of_the_frozen_wastes -> roll( p -> talents.might_of_the_frozen_wastes -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_RUNIC, sim -> sim_data.effect_base_value( 81331, E_ENERGIZE, A_NONE ), p -> gains_might_of_the_frozen_wastes );
+        p -> resource_gain( RESOURCE_RUNIC, sim -> sim_data.effect_base_value( 81331, E_ENERGIZE, A_NONE ) / 10.0, p -> gains_might_of_the_frozen_wastes );
       }
     }
   }
