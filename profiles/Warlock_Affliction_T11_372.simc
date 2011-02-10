@@ -6,7 +6,7 @@ level=85
 race=orc
 use_pre_potion=1
 professions=enchanting=525/inscription=525
-talents=http://ptr.wowhead.com/talent#IrurohsGcdsZI
+talents=http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
 glyphs=life_tap/shadow_bolt/corruption/imp/haunt
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -36,7 +36,7 @@ head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,sta
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit
 shoulders=shadowflame_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,gems=40int_10haste,enchant=130int_25haste
 chest=shadowflame_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=crit_hit,gems=40int_20hit_20int_20int,enchant=20all
-waist=belt_of_arcane_storms,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_191haste_266int_429sta,reforge=crit_hit,gems=20haste_20int_40int_20haste
+waist=belt_of_arcane_storms,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_191haste_266int_429sta,reforge=crit_hit,gems=20haste_20int_40int_10haste
 legs=shadowflame_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,gems=20haste_20int_40int_20int,enchant=95int_80sta
 feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_hit,gems=40int_10haste,enchant=50hit
 wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
@@ -58,7 +58,7 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # gear_spell_power=2207
 # gear_hit_rating=1730
 # gear_crit_rating=919
-# gear_haste_rating=2438
+# gear_haste_rating=2428
 # gear_mastery_rating=881
 # gear_armor=8479
 # meta_gem=burning_shadowspirit

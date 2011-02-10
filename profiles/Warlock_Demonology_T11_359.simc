@@ -6,7 +6,7 @@ level=85
 race=orc
 use_pre_potion=1
 professions=enchanting=525/inscription=525
-talents=http://www.wowhead.com/talent#IZIrbcourRdoIbb
+talents=http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113320200000000000000
 glyphs=life_tap/shadow_bolt/metamorphosis/imp/immolate
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
