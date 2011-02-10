@@ -7,11 +7,11 @@ race=orc
 use_pre_potion=1
 professions=enchanting=525/inscription=525
 talents=http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
-glyphs=life_tap/shadow_bolt/corruption/imp/haunt
+glyphs=life_tap/shadow_bolt/corruption/lash_of_pain/haunt
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
-actions+=/summon_imp
+actions+=/summon_succubus
 actions+=/dark_intent
 actions+=/snapshot_stats
 actions+=/blood_fury

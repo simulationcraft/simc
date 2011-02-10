@@ -4375,13 +4375,14 @@ void warlock_t::init_actions()
 
     case TREE_DEMONOLOGY:
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
+      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() && ! glyphs.imp -> ok() ) action_list_str += "/demon_soul";
       if ( level >= 60 ) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=20&miss_react";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( level >= 85 && glyphs.imp -> ok() ) action_list_str += "/demon_soul";
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soulburn";
@@ -4397,7 +4398,10 @@ void warlock_t::init_actions()
 
       if ( level >= 50) action_list_str += "/summon_infernal";
       action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
-      if ( ! glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
+      if ( glyphs.imp -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
+      else if ( glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_succubus.down";
+      else action_list_str += "&buff.demon_soul_felguard.down";
+      if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/shadow_bolt";
 
     break;
