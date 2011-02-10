@@ -42,7 +42,7 @@ trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,reforge=haste_mastery,enchant=65crit
 main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,ilevel=372,quality=epic,stats=257crit_257hit_578sta_385str,reforge=hit_mastery,enchant=landslide,weapon=sword2h_3.80speed_2138min_3209max
 off_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,ilevel=372,quality=epic,stats=257crit_257hit_578sta_385str,reforge=hit_mastery,enchant=landslide,weapon=sword2h_3.80speed_2138min_3209max
-ranged=crossfire_carbine,heroic=1,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_107str,reforge=exp_crit,weapon=gun_3.00speed_1309min_2432max
+ranged=crossfire_carbine,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_107str,reforge=exp_crit,weapon=gun_3.00speed_1309min_2432max
 # Gear Summary
 # gear_strength=4782
 # gear_agility=20
@@ -62,4 +62,4 @@ ranged=crossfire_carbine,heroic=1,ilevel=359,quality=epic,stats=72exp_72mastery_
 # trinket1=fury_of_angerforge
 # main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=sword2h_3.80speed_2138min_3209max,enchant=landslide
 # off_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,weapon=sword2h_3.80speed_2138min_3209max,enchant=landslide
-# ranged=crossfire_carbine,heroic=1,weapon=gun_3.00speed_1309min_2432max
+# ranged=crossfire_carbine,weapon=gun_3.00speed_1309min_2432max

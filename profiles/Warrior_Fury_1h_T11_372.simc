@@ -34,7 +34,7 @@ chest=earthen_battleplate,heroic=1,type=plate,ilevel=372,quality=epic,stats=3559
 waist=belt_of_absolute_zero,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_191crit_171hit_429sta_266str,reforge=hit_exp,gems=40str_67str_10hit
 legs=earthen_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_217hit_257mastery_578sta_345str,reforge=mastery_crit,gems=40str_40str,enchant=190ap_55crit
 feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_171exp_191mastery_429sta_266str,reforge=mastery_crit,gems=40str,enchant=50mastery
-wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_exp,gems=20crit_20str_10str,enchant=50str
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_exp,gems=20crit_20str_67str_10str,enchant=50str
 hands=plated_fists_of_provocation,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191crit_171haste_429sta_266str,gems=20crit_20str_67str_10crit,enchant=50str
 finger1=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,gems=20crit_20str_10str
 finger2=cloudburst_ring_of_the_earthshaker,heroic=1,ilevel=372,quality=epic,stats=321sta_214str_143hit_143crit,reforge=hit_exp,suffix=120
@@ -43,9 +43,9 @@ trinket2=fury_of_angerforge,ilevel=359,quality=epic,stats=321crit
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,enchant=65crit
 main_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,enchant=landslide,weapon=sword_2.60speed_949min_1764max
 off_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,enchant=landslide,weapon=sword_2.60speed_949min_1764max
-ranged=crossfire_carbine,heroic=1,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_107str,reforge=exp_crit,weapon=gun_3.00speed_1309min_2432max
+ranged=crossfire_carbine,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_107str,reforge=exp_crit,weapon=gun_3.00speed_1309min_2432max
 # Gear Summary
-# gear_strength=4446
+# gear_strength=4513
 # gear_agility=20
 # gear_stamina=5780
 # gear_intellect=20
@@ -63,4 +63,4 @@ ranged=crossfire_carbine,heroic=1,ilevel=359,quality=epic,stats=72exp_72mastery_
 # trinket2=fury_of_angerforge
 # main_hand=lava_spine,heroic=1,weapon=sword_2.60speed_949min_1764max,enchant=landslide
 # off_hand=lava_spine,heroic=1,weapon=sword_2.60speed_949min_1764max,enchant=landslide
-# ranged=crossfire_carbine,heroic=1,weapon=gun_3.00speed_1309min_2432max
+# ranged=crossfire_carbine,weapon=gun_3.00speed_1309min_2432max
