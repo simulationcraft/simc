@@ -1919,8 +1919,8 @@ struct kick_t : public rogue_attack_t
 
 struct killing_spree_tick_t : public rogue_attack_t
 {
-  killing_spree_tick_t( rogue_t* p ) :
-    rogue_attack_t( "killing_spree", p, true )
+  killing_spree_tick_t( rogue_t* p, const char* name ) :
+    rogue_attack_t( name, p, true )
   {
     dual        = true;
     background  = true;
@@ -1929,51 +1929,46 @@ struct killing_spree_tick_t : public rogue_attack_t
     normalize_weapon_speed = true;
     base_dd_min = base_dd_max = 1;
   }
-
-  virtual void execute()
-  {
-    rogue_attack_t::execute();
-
-    actual_tick_dmg = actual_direct_dmg;
-
-    update_stats( DMG_OVER_TIME );
-  }
 };
 
 struct killing_spree_t : public rogue_attack_t
 {
-  attack_t* killing_spree_tick;
+  attack_t* attack_mh;
+  attack_t* attack_oh;
 
   killing_spree_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "killing_spree", p -> talents.killing_spree -> spell_id(), p )
+    rogue_attack_t( "killing_spree", p -> talents.killing_spree -> spell_id(), p ),
+    attack_mh(0), attack_oh(0)
   {
     add_trigger_buff( p -> buffs_killing_spree );
     
     num_ticks = 5;
     base_tick_time = effect_period( 1 );
 
-    killing_spree_tick = new killing_spree_tick_t( p );
-
     parse_options( options_str );
+
+    attack_mh = new killing_spree_tick_t( p, "killing_spree_mh" );
+    attack_mh -> weapon = &( player -> main_hand_weapon );
+
+    if ( player -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      attack_oh = new killing_spree_tick_t( p, "killing_spree_oh" );
+      attack_oh -> weapon = &( player -> off_hand_weapon );
+    }
   }
 
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
-    killing_spree_tick -> weapon = &( player -> main_hand_weapon );
-    killing_spree_tick -> execute();
+    attack_mh -> execute();
 
-    if ( killing_spree_tick -> result_is_hit() )
+    if ( attack_oh && attack_mh -> result_is_hit() )
     {
-      if ( player -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        killing_spree_tick -> weapon = &( player -> off_hand_weapon );
-        killing_spree_tick -> execute();
-      }
+      attack_oh -> execute();
     }
 
-    update_time( DMG_OVER_TIME );
+    stats -> add_tick( time_to_tick );
   }
 
   // Killing Spree not modified by haste effects
@@ -1984,8 +1979,8 @@ struct killing_spree_t : public rogue_attack_t
 
 struct mutilate_strike_t : public rogue_attack_t
 {
-  mutilate_strike_t( rogue_t* p ) :
-    rogue_attack_t( "mutilate", 5374, p )
+  mutilate_strike_t( rogue_t* p, const char* name ) :
+    rogue_attack_t( name, 5374, p )
   {
     dual        = true;
     background  = true;
@@ -2028,15 +2023,15 @@ struct mutilate_t : public rogue_attack_t
       sim -> cancel();
     }
 
-    mh_strike = new mutilate_strike_t( p );
-    mh_strike -> weapon = &( p -> main_hand_weapon );
-
-    oh_strike = new mutilate_strike_t( p );
-    oh_strike -> weapon = &( p -> off_hand_weapon );
-
     base_cost += p -> glyphs.mutilate -> mod_additive( P_RESOURCE_COST );
 
     parse_options( options_str );
+
+    mh_strike = new mutilate_strike_t( p, "mutilate_mh" );
+    mh_strike -> weapon = &( p -> main_hand_weapon );
+
+    oh_strike = new mutilate_strike_t( p, "mutilate_oh" );
+    oh_strike -> weapon = &( p -> off_hand_weapon );
   }
 
   virtual void execute()
@@ -2045,10 +2040,7 @@ struct mutilate_t : public rogue_attack_t
     if( result_is_hit() )
     {
       mh_strike -> execute();
-      mh_strike -> update_result( DMG_DIRECT );
-
       oh_strike -> execute();
-      oh_strike -> update_result( DMG_DIRECT );
       
       add_combo_points();
 
@@ -3636,7 +3628,7 @@ void rogue_t::register_callbacks()
   {
     action_callback_t* cb = new honor_among_thieves_callback_t( this );
 
-    register_attack_direct_result_callback( RESULT_CRIT_MASK, cb );
+    register_attack_callback( RESULT_CRIT_MASK, cb );
 
     if ( sim -> player_list -> next )
     {
@@ -3647,7 +3639,7 @@ void rogue_t::register_callbacks()
 
         cb = new honor_among_thieves_callback_t( this );
 
-        p -> register_attack_direct_result_callback( RESULT_CRIT_MASK, cb );
+        p -> register_attack_callback( RESULT_CRIT_MASK, cb );
       }
     }
  //   else // Virtual Party

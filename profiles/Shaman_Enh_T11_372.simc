@@ -33,7 +33,7 @@ actions+=/stormstrike
 actions+=/spirit_wolf
 actions+=/fire_nova
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react
-actions+=/lava_burst,if=dot.flame_shock.remains>cast_time+0.2
+actions+=/lava_burst,if=dot.flame_shock.remains>cast_time+0.5
 head=helmet_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257hit_197mastery_578sta,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,ilevel=372,quality=epic,stats=215agi_143haste_143mastery_322sta,reforge=haste_exp
 shoulders=spaulders_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1911armor_171hit_191mastery_429sta,gems=40agi_10mastery,enchant=50agi_25mastery

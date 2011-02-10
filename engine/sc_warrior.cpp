@@ -361,7 +361,7 @@ struct warrior_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
   virtual int       primary_role() SC_CONST;
-  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
+  virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      copy_from( player_t* source );
 };
 
@@ -1147,8 +1147,8 @@ struct auto_attack_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( warrior_t* p ) :
-      warrior_attack_t( "bladestorm_tick", 50622, p, TREE_ARMS, false )
+  bladestorm_tick_t( warrior_t* p, const char* name ) :
+      warrior_attack_t( name, 50622, p, TREE_ARMS, false )
   {
     dual        = true;
     background  = true;
@@ -1157,21 +1157,16 @@ struct bladestorm_tick_t : public warrior_attack_t
     aoe         = 4;
     stats       = p -> get_stats( "bladestorm" );
   }
-
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-    actual_tick_dmg = actual_direct_dmg;
-    update_stats( DMG_OVER_TIME );
-  }
 };
 
 struct bladestorm_t : public warrior_attack_t
 {
-  attack_t* bladestorm_tick;
+  attack_t* bladestorm_mh;
+  attack_t* bladestorm_oh;
 
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "bladestorm", p, SCHOOL_PHYSICAL, TREE_ARMS )
+    warrior_attack_t( "bladestorm", p, SCHOOL_PHYSICAL, TREE_ARMS ),
+    bladestorm_mh(0), bladestorm_oh(0)
   {
     check_talent( p -> talents.bladestorm -> rank() );
 
@@ -1185,17 +1180,21 @@ struct bladestorm_t : public warrior_attack_t
     channeled = true;
     tick_zero = true;
 
+    weapon_multiplier = base_dd_min = base_dd_max = 0;
+    may_miss = may_dodge = may_parry = false;
+
     cooldown -> duration += p -> glyphs.bladestorm -> base_value() / 1000.0;
 
-    bladestorm_tick = new bladestorm_tick_t( p );
+    bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
+    bladestorm_mh -> weapon = &( player -> main_hand_weapon );
+
+    if ( player -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
+      bladestorm_oh -> weapon = &( player -> off_hand_weapon );
+    }
   }
   
-  virtual double calculate_direct_damage()
-  {
-    // Bladestorm activation doesn't hit with the weapon
-    return 0.0;
-  }
-
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -1206,22 +1205,12 @@ struct bladestorm_t : public warrior_attack_t
 
   virtual void tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
-    bladestorm_tick -> weapon = &( player -> main_hand_weapon );
-    bladestorm_tick -> execute();
-
-    // FIXME: why does this require MH to hit?  Not that it's possible anyway.
-    if ( bladestorm_tick -> result_is_hit() )
+    warrior_attack_t::tick();
+    bladestorm_mh -> execute();
+    if ( bladestorm_mh -> result_is_hit() && bladestorm_oh )
     {
-      if ( player -> off_hand_weapon.type != WEAPON_NONE )
-      {
-        bladestorm_tick -> weapon = &( player -> off_hand_weapon );
-        bladestorm_tick -> execute();
-      }
+      bladestorm_oh -> execute();
     }
-
-    update_time( DMG_OVER_TIME );
   }
 
   // Bladestorm not modified by haste effects
@@ -1677,8 +1666,8 @@ struct pummel_t : public warrior_attack_t
 
 struct raging_blow_attack_t : public warrior_attack_t
 {
-  raging_blow_attack_t( warrior_t* p ) :
-      warrior_attack_t( "raging_blow_attack", p, SCHOOL_PHYSICAL, TREE_FURY )
+  raging_blow_attack_t( warrior_t* p, const char* name ) :
+      warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY )
   {
     id = 96103;
     parse_data( p -> player_data );
@@ -1722,12 +1711,12 @@ struct raging_blow_t : public warrior_attack_t
 
     stancemask = STANCE_BERSERKER;
 
-    mh_attack = new raging_blow_attack_t( p );
+    mh_attack = new raging_blow_attack_t( p, "raging_blow_mh" );
     mh_attack -> weapon = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh_attack = new raging_blow_attack_t( p );
+      oh_attack = new raging_blow_attack_t( p, "raging_blow_oh" );
       oh_attack -> weapon = &( p -> off_hand_weapon );
     }
   }
@@ -1739,11 +1728,9 @@ struct raging_blow_t : public warrior_attack_t
     if ( result_is_hit() ) 
     {
       mh_attack -> execute();
-      mh_attack -> update_result( DMG_DIRECT );
       if ( oh_attack ) 
       {
         oh_attack -> execute();
-        oh_attack -> update_result( DMG_DIRECT );
       }
     }
     p -> buffs_tier11_4pc_melee -> trigger();
@@ -2080,11 +2067,9 @@ struct slam_t : public warrior_attack_t
     if ( result_is_hit() ) 
     {
       mh_attack -> execute();
-      mh_attack -> update_result( DMG_DIRECT );
       if ( oh_attack ) 
       {
         oh_attack -> execute();
-        oh_attack -> update_result( DMG_DIRECT );
       }
     }
     p -> buffs_bloodsurge -> decrement();
@@ -3221,12 +3206,11 @@ int warrior_t::primary_role() SC_CONST
 
 // warrior_t::assess_damage ==================================================
 
-double warrior_t::assess_damage( double amount,
-    const school_type school,
-    int    dmg_type,
-    int result,
-    action_t* a,
-    player_t* s )
+double warrior_t::assess_damage( double            amount,
+				 const school_type school,
+				 int               dmg_type,
+				 int               result,
+				 action_t*         action )
 {
   if ( result == RESULT_HIT    ||
        result == RESULT_CRIT   ||
@@ -3265,7 +3249,7 @@ double warrior_t::assess_damage( double amount,
     }
   }
 
-  return player_t::assess_damage( amount, school, dmg_type, result, a, s );
+  return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
 
 // warrior_t::create_options ================================================

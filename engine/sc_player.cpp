@@ -438,22 +438,26 @@ player_t::~player_t()
   }
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    attack_result_callbacks[ i ].clear();
-    spell_result_callbacks[ i ].clear();
-    attack_direct_result_callbacks[ i ].clear();
-    spell_direct_result_callbacks[ i ].clear();
-    spell_cast_result_callbacks[ i ].clear();
-    harmful_cast_result_callbacks[ i ].clear();
+    attack_callbacks[ i ].clear();
+    spell_callbacks[ i ].clear();
+    tick_callbacks[ i ].clear();
   }
   for ( int i=0; i < SCHOOL_MAX; i++ )
   {
     tick_damage_callbacks[ i ].clear();
-    direct_damage_callbacks[ i ].clear();
-  }
-  tick_callbacks.clear();
+    tick_heal_callbacks  [ i ].clear();
 
-  for( int i=all_callbacks.size()-1; i >= 0; i-- ) 
-    delete all_callbacks[ i ];
+    direct_damage_callbacks[ i ].clear();
+    direct_heal_callbacks  [ i ].clear();
+  }
+
+  if ( false )
+  {
+    // FIXME! This cannot be done until we use refcounts.
+    // FIXME! I see the same callback pointer being registered multiple times.
+    for( int i=all_callbacks.size()-1; i >= 0; i-- ) 
+      delete all_callbacks[ i ];
+  }
   all_callbacks.clear();
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
@@ -703,6 +707,7 @@ void player_t::init_items()
     if ( ! item.init() )
     {
       sim -> errorf( "Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
+      sim -> cancel();
       return;
     }
 
@@ -2406,19 +2411,15 @@ void player_t::reset()
   }
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    action_callback_t::reset( attack_result_callbacks       [ i ] );
-    action_callback_t::reset( spell_result_callbacks        [ i ] );
-    action_callback_t::reset( attack_direct_result_callbacks[ i ] );
-    action_callback_t::reset( spell_direct_result_callbacks [ i ] );
-    action_callback_t::reset( spell_cast_result_callbacks   [ i ] );
-    action_callback_t::reset( harmful_cast_result_callbacks [ i ] );
+    action_callback_t::reset( attack_callbacks[ i ] );
+    action_callback_t::reset( spell_callbacks [ i ] );
+    action_callback_t::reset( tick_callbacks  [ i ] );
   }
   for ( int i=0; i < SCHOOL_MAX; i++ )
   {
-    action_callback_t::reset( tick_damage_callbacks         [ i ] );
-    action_callback_t::reset( direct_damage_callbacks       [ i ] );
+    action_callback_t::reset( tick_damage_callbacks  [ i ] );
+    action_callback_t::reset( direct_damage_callbacks[ i ] );
   }
-  action_callback_t::reset( tick_callbacks );
 
   replenishment_targets.clear();
 
@@ -2723,11 +2724,6 @@ double player_t::resource_gain( int       resource,
                    name(), actual_amount, amount,
                    util_t::resource_type_string( resource ), source ? source -> name() : "unknown",
                    resource_current[ resource ] );
-
-    if ( amount && source )
-    {
-      log_t::resource_gain_event( this, resource, amount, actual_amount, source );
-    }
   }
 
   return actual_amount;
@@ -2992,13 +2988,14 @@ void player_t::stat_loss( int       stat,
 
 // player_t::assess_damage ==================================================
 
-double player_t::assess_damage( double amount,
-                              const school_type school,
-                              int    dmg_type,
-                              int result,
-                              action_t* a,
-                              player_t* s )
+double player_t::assess_damage( double            amount,
+				const school_type school,
+				int               dmg_type,
+				int               result,
+				action_t*         action )
 {
+  player_t* s = action -> player;
+
   if ( school == SCHOOL_PHYSICAL )
   {
     if ( s -> debuffs.demoralizing_roar  -> up() ||
@@ -3059,12 +3056,12 @@ void player_t::register_callbacks()
 {
   dark_intent_cb = new dark_intent_callback_t( this );
   dark_intent_cb -> active = false;
-  register_spell_result_callback ( RESULT_CRIT_MASK, dark_intent_cb );
+  register_spell_callback( RESULT_CRIT_MASK, dark_intent_cb );
 }
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( int             resource,
+void player_t::register_resource_gain_callback( int resource,
                                                 action_callback_t* cb )
 {
   resource_gain_callbacks[ resource ].push_back( cb );
@@ -3072,78 +3069,57 @@ void player_t::register_resource_gain_callback( int             resource,
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( int             resource,
+void player_t::register_resource_loss_callback( int resource,
                                                 action_callback_t* cb )
 {
   resource_loss_callbacks[ resource ].push_back( cb );
 }
 
-// player_t::register_attack_result_callback ================================
+// player_t::register_attack_callback =======================================
 
-void player_t::register_attack_result_callback( int64_t             mask,
-                                                action_callback_t* cb )
+void player_t::register_attack_callback( int64_t mask,
+					 action_callback_t* cb )
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      attack_result_callbacks[ i ].push_back( cb );
+      attack_callbacks[ i ].push_back( cb );
     }
   }
 }
 
-// player_t::register_spell_result_callback =================================
+// player_t::register_spell_callback ========================================
 
-void player_t::register_spell_result_callback( int64_t             mask,
-                                               action_callback_t* cb )
+void player_t::register_spell_callback( int64_t mask,
+					action_callback_t* cb )
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      spell_result_callbacks[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_attack_direct_result_callback ================================
-
-void player_t::register_attack_direct_result_callback( int64_t             mask,
-                                                       action_callback_t* cb )
-{
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      attack_direct_result_callbacks[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_spell_direct_result_callback =================================
-
-void player_t::register_spell_direct_result_callback( int64_t             mask,
-                                                      action_callback_t* cb )
-{
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      spell_direct_result_callbacks[ i ].push_back( cb );
+      spell_callbacks[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_tick_callback =========================================
 
-void player_t::register_tick_callback( action_callback_t* cb )
+void player_t::register_tick_callback( int64_t mask,
+				       action_callback_t* cb )
 {
-  tick_callbacks.push_back( cb );
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      tick_callbacks[ i ].push_back( cb );
+    }
+  }
 }
 
 // player_t::register_tick_damage_callback ==================================
 
-void player_t::register_tick_damage_callback( int64_t             mask,
+void player_t::register_tick_damage_callback( int64_t mask,
                                               action_callback_t* cb )
 {
   for ( int64_t i=0; i < SCHOOL_MAX; i++ )
@@ -3157,7 +3133,7 @@ void player_t::register_tick_damage_callback( int64_t             mask,
 
 // player_t::register_direct_damage_callback ================================
 
-void player_t::register_direct_damage_callback( int64_t             mask,
+void player_t::register_direct_damage_callback( int64_t mask,
                                                 action_callback_t* cb )
 {
   for ( int64_t i=0; i < SCHOOL_MAX; i++ )
@@ -3169,30 +3145,30 @@ void player_t::register_direct_damage_callback( int64_t             mask,
   }
 }
 
-// player_t::register_spell_cast_result_callback =================================
+// player_t::register_tick_heal_callback ==================================
 
-void player_t::register_spell_cast_result_callback( int64_t             mask,
-                                                    action_callback_t* cb )
+void player_t::register_tick_heal_callback( int64_t mask,
+                                              action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      spell_cast_result_callbacks[ i ].push_back( cb );
+      tick_heal_callbacks[ i ].push_back( cb );
     }
   }
 }
 
-// player_t::register_harmful_cast_result_callback =================================
+// player_t::register_direct_heal_callback ================================
 
-void player_t::register_harmful_cast_result_callback( int64_t             mask,
-                                                      action_callback_t* cb )
+void player_t::register_direct_heal_callback( int64_t mask,
+                                                action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      harmful_cast_result_callbacks[ i ].push_back( cb );
+      direct_heal_callbacks[ i ].push_back( cb );
     }
   }
 }
@@ -3230,7 +3206,6 @@ void player_t::aura_gain( const char* aura_name , int aura_id )
   if ( sim -> log && ! sleeping )
   {
     log_t::output( sim, "%s gains %s", name(), aura_name );
-    log_t::aura_gain_event( this, aura_name, aura_id );
   }
 
 }
@@ -3242,7 +3217,6 @@ void player_t::aura_loss( const char* aura_name , int aura_id )
   if ( sim -> log && ! sleeping )
   {
     log_t::output( sim, "%s loses %s", name(), aura_name );
-    log_t::aura_loss_event( this, aura_name, aura_id );
   }
 }
 

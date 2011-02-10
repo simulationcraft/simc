@@ -1282,13 +1282,6 @@ struct felguard_pet_t : public warlock_main_pet_t
       direct_tick = true;
       stats       = player -> get_stats( "felstorm" );
     }
-
-    virtual void execute()
-    {
-      warlock_pet_attack_t::execute();
-      actual_tick_dmg = actual_direct_dmg;
-      update_stats( DMG_OVER_TIME );
-    }
   };
 
   struct felstorm_t : public warlock_pet_attack_t
@@ -1304,16 +1297,13 @@ struct felguard_pet_t : public warlock_main_pet_t
       tick_zero = true;
 
       felstorm_tick = new felstorm_tick_t( p );
+      felstorm_tick -> weapon = &( player -> main_hand_weapon );
     }
 
     virtual void tick()
     {
-      if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
-      felstorm_tick -> weapon = &( player -> main_hand_weapon );
+      warlock_pet_attack_t::tick();
       felstorm_tick -> execute();
-
-      update_time( DMG_OVER_TIME );
     }
   };
 
@@ -1568,13 +1558,6 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       stats = player -> get_stats( "infernal_immolation" );
       direct_power_mod  = 0.4;
     }
-
-    virtual void execute()
-    {
-      warlock_pet_spell_t::execute();
-      actual_tick_dmg = actual_direct_dmg;
-      update_stats( DMG_OVER_TIME );
-    }
   };
 
   struct infernal_immolation_t : public warlock_pet_spell_t
@@ -1594,14 +1577,12 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       immolation_damage = new immolation_damage_t( p );
     }
 
-  virtual void tick()
-  {
-    dot -> current_tick = 0; // ticks indefinitely
-    immolation_damage -> execute();
-    update_time( DMG_OVER_TIME );
-  }
-};
-
+    virtual void tick()
+    {
+      dot -> current_tick = 0; // ticks indefinitely
+      immolation_damage -> execute();
+    }
+  };
 
   infernal_pet_t( sim_t* sim, player_t* owner ) :
       warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
@@ -1822,11 +1803,12 @@ struct bane_of_doom_t : public warlock_spell_t
   bane_of_doom_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "bane_of_doom", player, "Bane of Doom" )
   {
+    warlock_t* p = player -> cast_warlock();
+
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
 
-    warlock_t* p = player -> cast_warlock();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
   }
@@ -1874,15 +1856,6 @@ struct bane_of_doom_t : public warlock_spell_t
       p -> dismiss_pet( "ebon_imp" );
       p -> summon_pet( "ebon_imp", 14.99 );
     }
-  }
-
-  virtual void assess_damage( player_t* t,
-                              double amount,
-                              int    dmg_type,
-                              int travel_result )
-  {
-    warlock_spell_t::assess_damage( t, amount, DMG_DIRECT, travel_result );
-    actual_tick_dmg = actual_direct_dmg;
   }
 };
 
@@ -3228,13 +3201,6 @@ struct immolation_damage_t : public warlock_spell_t
 
     stats = player -> get_stats( "immolation_aura" );
   }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-    actual_tick_dmg = actual_direct_dmg;
-    update_stats( DMG_OVER_TIME );
-  }
 };
 
 // Immolation Aura Spell =======================================================
@@ -3258,9 +3224,14 @@ struct immolation_aura_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     if ( p -> buffs_metamorphosis -> check() )
+    {
       immolation_damage -> execute();
+    }
     else
+    {
+      // Cancel the aura
       dot -> current_tick = dot -> num_ticks;
+    }
   }
 
   virtual bool ready()
@@ -3576,13 +3547,6 @@ struct hellfire_tick_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> talent_cremation -> effect_base_value( 1 ) / 100.0;
     stats = player -> get_stats( "hellfire" );
   }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-    actual_tick_dmg = actual_direct_dmg;
-    update_stats( DMG_OVER_TIME );
-  }
 };
 
 // Hellfire Spell ===========================================================
@@ -3610,7 +3574,6 @@ struct hellfire_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = false;
 
-
     hellfire_tick = new hellfire_tick_t( p );
 
     if ( p -> talent_inferno -> rank() )
@@ -3618,7 +3581,6 @@ struct hellfire_t : public warlock_spell_t
       usable_moving   = true;
       range += p -> talent_inferno -> effect_base_value( 1 );
     }
-
   }
 
   virtual void tick()
@@ -3721,23 +3683,16 @@ struct rain_of_fire_tick_t : public warlock_spell_t
 {
   rain_of_fire_tick_t( player_t* player ) :
     warlock_spell_t( "rain_of_fire_tick", player, 42223 )
-
-    {
+  {
     dual        = true;
     background  = true;
     aoe         = -1;
     direct_tick = true;
 
     stats = player -> get_stats( "rain_of_fire" );
-    }
-
-    virtual void execute()
-    {
-      warlock_spell_t::execute();
-      actual_tick_dmg = actual_direct_dmg;
-      update_stats( DMG_OVER_TIME );
-    }
+  }
 };
+
 // Rain of Fire Spell =======================================================
 
 struct rain_of_fire_t : public warlock_spell_t
@@ -3757,11 +3712,9 @@ struct rain_of_fire_t : public warlock_spell_t
   }
 
   virtual void tick()
-   {
-     warlock_spell_t::tick();
-
+  {
+    warlock_spell_t::tick();
     rain_of_fire_tick -> execute();
-
   }
 };
 

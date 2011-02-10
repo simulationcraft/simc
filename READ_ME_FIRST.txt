@@ -3,21 +3,6 @@ Welcome to SimulationCraft!
 
 =============================================================================================
 
-Note: This is a BETA release
-
-Amongst other things there a few stand-out issues:
-
-Beta! Beta! Beta! Beta! Beta! Beta!
-All classes are supported.
-Some class models still need tweaking.
-Some class action lists need tweaking.
-Some class BiS gear setups need tweaking.
-Some unique trinkets not yet implemented.
-Constructive feedback regarding our output will shorten the Beta phase dramatically.
-Beta! Beta! Beta! Beta! Beta! Beta!
-
-=============================================================================================
-
 Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft.

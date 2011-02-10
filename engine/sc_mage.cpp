@@ -837,7 +837,6 @@ static void trigger_ignite( spell_t* s, double dmg )
     int result = s -> result;
     s -> result = RESULT_HIT;
     s -> assess_damage( s -> target, ignite_dmg, DMG_OVER_TIME, s -> result );
-    s -> update_stats( DMG_OVER_TIME );
     s -> result = result;
     return;
   }
@@ -1330,7 +1329,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     dual        = true;
     background  = true;
-    direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     stats = p -> get_stats( "arcane_missiles" );
@@ -1372,7 +1370,7 @@ struct arcane_missiles_t : public mage_spell_t
   virtual void tick()
   {
     tick_spell -> execute();
-    stats -> add( tick_spell -> direct_dmg, DMG_OVER_TIME, tick_spell -> result, time_to_tick );
+    stats -> add_tick( time_to_tick );
   }
 
   virtual bool ready()
@@ -1684,6 +1682,7 @@ struct flame_orb_tick_t : public mage_spell_t
   {
     background = true;
     dual = true;
+    direct_tick = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
     stats = p -> get_stats( "flame_orb" );
   }
@@ -1710,7 +1709,7 @@ struct flame_orb_t : public mage_spell_t
   virtual void tick()
   {
     tick_spell -> execute();
-    stats -> add( tick_spell -> direct_dmg, DMG_OVER_TIME, tick_spell -> result, time_to_tick );
+    stats -> add_tick( time_to_tick );
   }
 
   virtual void last_tick()
@@ -1720,7 +1719,6 @@ struct flame_orb_t : public mage_spell_t
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
       explosion_spell -> execute();
-      stats -> add_result( explosion_spell -> direct_dmg, DMG_DIRECT, explosion_spell -> result );
     }
   }
 };
@@ -1772,7 +1770,7 @@ struct focus_magic_t : public mage_spell_t
 
     focus_magic_cb = new focus_magic_feedback_callback_t( p );
     focus_magic_cb -> active = false;
-    focus_magic_target -> register_spell_result_callback( RESULT_CRIT_MASK, focus_magic_cb );
+    focus_magic_target -> register_spell_callback( RESULT_CRIT_MASK, focus_magic_cb );
   }
 
   virtual void execute()
@@ -1987,6 +1985,7 @@ struct frostfire_orb_tick_t : public mage_spell_t
   {
     background = true;
     dual = true;
+    direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
     stats = p -> get_stats( "frostfire_orb" );
   }
@@ -2014,7 +2013,7 @@ struct frostfire_orb_t : public mage_spell_t
   virtual void tick()
   {
     tick_spell -> execute();
-    stats -> add( tick_spell -> direct_dmg, DMG_OVER_TIME, tick_spell -> result, time_to_tick );
+    stats -> add_tick( time_to_tick );
   }
 
   virtual void last_tick()
@@ -2024,7 +2023,6 @@ struct frostfire_orb_t : public mage_spell_t
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> rank() / 3 ) )
     {
       explosion_spell -> execute();
-      stats -> add_result( explosion_spell -> direct_dmg, DMG_DIRECT, explosion_spell -> result );
     }
   }
 };
@@ -2116,15 +2114,14 @@ struct living_bomb_t : public mage_spell_t
     spell_t::target_debuff( t, dmg_type );
 
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-         p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
-         p -> specializations.flashburn * p -> composite_mastery() );
+				 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
+				 p -> specializations.flashburn * p -> composite_mastery() );
   }
 
   virtual void last_tick()
   {
     mage_spell_t::last_tick();
     explosion_spell -> execute();
-    stats -> add_result( explosion_spell -> direct_dmg, DMG_DIRECT, explosion_spell -> result );
   }
 };
 

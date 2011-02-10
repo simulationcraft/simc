@@ -1484,6 +1484,7 @@ double shaman_spell_t::haste() SC_CONST
 }
 
 // shaman_spell_t::cost_reduction ===========================================
+
 double shaman_spell_t::cost_reduction() SC_CONST
 {
   shaman_t* p = player -> cast_shaman();
@@ -1492,7 +1493,7 @@ double shaman_spell_t::cost_reduction() SC_CONST
   if ( p -> buffs_shamanistic_rage -> up() )
     cr += p -> buffs_shamanistic_rage -> mod_additive( P_RESOURCE_COST );
     
-  if ( harmful && ! pseudo_pet && ! proc && p -> buffs_elemental_focus -> up() )
+  if ( harmful && callbacks && ! proc && p -> buffs_elemental_focus -> up() )
     cr += p -> buffs_elemental_focus -> mod_additive( P_RESOURCE_COST );
 
   if ( base_execute_time == 0 )
@@ -1519,7 +1520,7 @@ void shaman_spell_t::consume_resource()
 {
   spell_t::consume_resource();
   shaman_t* p = player -> cast_shaman();
-  if ( harmful && ! pseudo_pet && ! proc && resource_consumed > 0 && p -> buffs_elemental_focus -> up() )
+  if ( harmful && callbacks && ! proc && resource_consumed > 0 && p -> buffs_elemental_focus -> up() )
     p -> buffs_elemental_focus -> decrement();
 }
 
@@ -1572,8 +1573,8 @@ void shaman_spell_t::execute()
   shaman_t* p = player -> cast_shaman();
   spell_t::execute();
   
-  // Triggers wont happen for procs or "pseudo pets"
-  if ( proc || pseudo_pet )
+  // Triggers wont happen for procs or totems
+  if ( proc || ! callbacks )
     return;
   
   if ( result_is_hit() )
@@ -2548,8 +2549,6 @@ struct shaman_totem_t : public shaman_spell_t
       if ( sim -> log ) 
         log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
     }
-    
-    update_stats( DMG_OVER_TIME );
   }
 
   virtual double gcd() SC_CONST 
@@ -2679,7 +2678,7 @@ struct magma_totem_t : public shaman_totem_t
     harmful           = true;
     may_crit          = true;
     // Magma Totem is not a real DoT, but rather a pet that is spawned.
-    pseudo_pet        = true;
+    callbacks         = false;
     
     // Base multiplier x2 in the effect of call of flame, no real way to discern them except to hardcode it with
     // the effect number
@@ -2719,7 +2718,7 @@ struct magma_totem_t : public shaman_totem_t
     shaman_t* p = player -> cast_shaman();
     
     // Add a direct damage result as the "drop event" of the totem
-    stats -> add_execute( DMG_DIRECT, time_to_execute );
+    stats -> add_execute( time_to_execute );
     
     if ( p -> talent_totemic_wrath -> rank() )
     {
@@ -2827,9 +2826,9 @@ struct searing_totem_t : public shaman_totem_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    harmful              = true;
-    pseudo_pet           = true;
-    may_crit             = true;
+    harmful   = true;
+    callbacks = false;
+    may_crit  = true;
     
     // Base multiplier has to be applied like this, because the talent has two identical effects
     base_multiplier     *= 1.0 + p -> talent_call_of_flame -> effect_base_value( 1 ) / 100.0;
@@ -2881,7 +2880,7 @@ struct searing_totem_t : public shaman_totem_t
     shaman_t* p = player -> cast_shaman();
     
     // Add a direct damage result as the "drop event" of the totem
-    stats -> add_execute( DMG_DIRECT, time_to_execute );
+    stats -> add_execute( time_to_execute );
 
     if ( p -> talent_totemic_wrath -> rank() )
     {

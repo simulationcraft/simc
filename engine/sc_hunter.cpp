@@ -1193,17 +1193,12 @@ struct froststorm_breath_tick_t : public hunter_pet_spell_t
     background  = true;
     direct_tick = true;
   }
-  virtual void execute()
-    {
-      hunter_pet_spell_t::execute();
-      actual_tick_dmg = actual_direct_dmg;
-      update_stats( DMG_OVER_TIME );
-    }
 };
 
 struct froststorm_breath_t : public hunter_pet_spell_t
 {
-  froststorm_breath_tick_t* froststorm_breath_tick;
+  froststorm_breath_tick_t* tick_spell;
+
   froststorm_breath_t( player_t* player, const std::string& options_str ) :
       hunter_pet_spell_t( "froststorm_breath", player, "Froststorm Breath" )
   {
@@ -1215,11 +1210,12 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
 
-    froststorm_breath_tick = new froststorm_breath_tick_t( p );
+    tick_spell = new froststorm_breath_tick_t( p );
   }
   virtual void tick()
   {
-    froststorm_breath_tick -> execute();
+    tick_spell -> execute();
+    stats -> add_tick( time_to_tick );
   }
 };
 
@@ -2860,7 +2856,9 @@ void hunter_t::init_base()
   diminished_parry_capi = 0.006870;
 
   if ( passive_spells.wild_quiver -> ok() )
-    register_attack_result_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
+  {
+    register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
+  }
 }
 
 // hunter_t::init_buffs =======================================================
@@ -2996,7 +2994,7 @@ void hunter_t::init_unique_gear()
       }
     };
 
-    register_attack_result_callback( RESULT_ALL_MASK, new zods_trigger_t( this, new zods_quick_shot_t( this ) ) );
+    register_attack_callback( RESULT_ALL_MASK, new zods_trigger_t( this, new zods_quick_shot_t( this ) ) );
   }
 }
 

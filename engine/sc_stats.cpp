@@ -33,12 +33,12 @@ void stats_t::init()
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    execute_results[ i ].count     = 0;
-    execute_results[ i ].min_dmg   = FLT_MAX;
-    execute_results[ i ].max_dmg   = 0;
-    execute_results[ i ].avg_dmg   = 0;
-    execute_results[ i ].total_dmg = 0;
-    execute_results[ i ].pct       = 0;
+    direct_results[ i ].count     = 0;
+    direct_results[ i ].min_dmg   = FLT_MAX;
+    direct_results[ i ].max_dmg   = 0;
+    direct_results[ i ].avg_dmg   = 0;
+    direct_results[ i ].total_dmg = 0;
+    direct_results[ i ].pct       = 0;
 
     tick_results[ i ].count     = 0;
     tick_results[ i ].min_dmg   = FLT_MAX;
@@ -48,7 +48,7 @@ void stats_t::init()
     tick_results[ i ].pct       = 0;
   }
 
-  num_execute_results = num_tick_results = 0;
+  num_direct_results = num_tick_results = 0;
   num_executes = num_ticks = 0;
   total_execute_time = total_tick_time = 0;
   total_dmg = portion_dmg = 0;
@@ -62,21 +62,6 @@ void stats_t::reset( action_t* a )
 {
   channeled = a -> channeled;
   last_execute = -1;
-}
-
-// stats_t::add_time ========================================================
-
-void stats_t::add_time( double amount,
-			int    dmg_type )
-{
-  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT )
-  {
-    total_execute_time += amount;
-  }
-  else
-  {
-    total_tick_time += amount;
-  }
 }
 
 // stats_t::add_result ======================================================
@@ -93,8 +78,8 @@ void stats_t::add_result( double amount,
 
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) 
   {
-    r = &( execute_results[ result ] );
-    num_execute_results++;
+    r = &( direct_results[ result ] );
+    num_direct_results++;
   }
   else
   {
@@ -120,57 +105,26 @@ void stats_t::add_result( double amount,
 
 // stats_t::add_execute =============================================================
 
-void stats_t::add_execute( int dmg_type,
-                           double time )
+void stats_t::add_execute( double time )
 {
-  if ( dmg_type == DMG_DIRECT )
-    {
-      num_executes++;
-      total_execute_time += time;
+  num_executes++;
+  total_execute_time += time;
 
-      if ( last_execute > 0 &&
-           last_execute != sim -> current_time )
-      {
-        num_intervals++;
-        total_intervals += sim -> current_time - last_execute;
-      }
-      last_execute = sim -> current_time;
-    }
-    else if ( dmg_type == DMG_OVER_TIME )
-    {
-      num_ticks++;
-      total_tick_time += time;
-    }
-    if ( ( dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) )
-    {
-      num_executes++;
-      total_execute_time += time;
-
-      if ( last_execute > 0 &&
-           last_execute != sim -> current_time )
-      {
-        num_intervals++;
-        total_intervals += sim -> current_time - last_execute;
-      }
-      last_execute = sim -> current_time;
-    }
-    else if ( dmg_type == HEAL_OVER_TIME )
-    {
-      num_ticks++;
-      total_tick_time += time;
-    }
+  if ( last_execute > 0 &&
+       last_execute != sim -> current_time )
+  {
+    num_intervals++;
+    total_intervals += sim -> current_time - last_execute;
+  }
+  last_execute = sim -> current_time;
 }
 
-// stats_t::add =============================================================
+// stats_t::add_tick =============================================================
 
-void stats_t::add( double amount,
-                   int    dmg_type,
-                   int    result,
-                   double time )
+void stats_t::add_tick( double time )
 {
-  add_result( amount, dmg_type, result );
-
-  add_execute( dmg_type, time );
+  num_ticks++;
+  total_tick_time += time;
 }
 
 // stats_t::analyze =========================================================
@@ -184,12 +138,12 @@ void stats_t::analyze()
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    if ( execute_results[ i ].count != 0 )
+    if ( direct_results[ i ].count != 0 )
     {
-      stats_results_t& r = execute_results[ i ];
+      stats_results_t& r = direct_results[ i ];
 
       r.avg_dmg = r.total_dmg / r.count;
-      r.pct = 100.0 * r.count / (double) num_execute_results;
+      r.pct = 100.0 * r.count / (double) num_direct_results;
       r.count     /= num_iterations;
       r.total_dmg /= num_iterations;
     }
@@ -215,8 +169,10 @@ void stats_t::analyze()
   resource_consumed /= num_iterations;
 
   num_executes /= num_iterations;
-  num_execute_results /= num_iterations;
   num_ticks    /= num_iterations;
+
+  num_direct_results /= num_iterations;
+  num_tick_results   /= num_iterations;
 
   rpe = resource_consumed / num_executes;
 
@@ -266,7 +222,7 @@ void stats_t::analyze()
 void stats_t::merge( stats_t* other )
 {
   resource_consumed   += other -> resource_consumed;
-  num_execute_results += other -> num_execute_results;
+  num_direct_results  += other -> num_direct_results;
   num_tick_results    += other -> num_tick_results;
   num_executes        += other -> num_executes;
   num_ticks           += other -> num_ticks;
@@ -276,10 +232,10 @@ void stats_t::merge( stats_t* other )
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    if ( other -> execute_results[ i ].count != 0 )
+    if ( other -> direct_results[ i ].count != 0 )
     {
-      stats_results_t& other_r = other -> execute_results[ i ];
-      stats_results_t&       r =          execute_results[ i ];
+      stats_results_t& other_r = other -> direct_results[ i ];
+      stats_results_t&       r =          direct_results[ i ];
 
       r.count     += other_r.count;
       r.total_dmg += other_r.total_dmg;

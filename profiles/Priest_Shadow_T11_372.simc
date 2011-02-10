@@ -44,7 +44,7 @@ wrists=bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,st
 hands=mercurial_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=crit_spi,gems=40int,enchant=65mastery
 finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
 finger2=planetary_band_of_the_undertow,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143haste_143spi,suffix=131
-trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd
+trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,gems=20haste_20int_10int,enchant=lightweave_embroidery
 main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max

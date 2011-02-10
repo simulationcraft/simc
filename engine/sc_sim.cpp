@@ -489,7 +489,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
-    path_str( "." ), output_file( stdout ), log_file( 0 ), csv_file( 0 ),
+    path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
     report_precision( 4 ),report_pets_separately( false ), report_targets( true ),
@@ -1827,7 +1827,6 @@ void sim_t::create_options()
     { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
-    { "csv",                              OPT_STRING, &( csv_file_str                             ) },
     { "output",                           OPT_STRING, &( output_file_str                          ) },
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     { "path",                             OPT_STRING, &( path_str                                 ) },
@@ -2051,23 +2050,6 @@ bool sim_t::parse_options( int    _argc,
     }
     log = 1;
   }
-  if ( ! csv_file_str.empty() )
-  {
-    if ( threads > 1 )
-    {
-      errorf( "Cannot log to CSV file with multiple threads.\n" );
-      cancel();
-      return false;
-    }
-    csv_file = fopen( csv_file_str.c_str(), "w" );
-    if ( ! csv_file )
-    {
-      errorf( "Unable to open CSV log file '%s'\n", csv_file_str.c_str() );
-      cancel();
-      return false;
-    }
-    fprintf( csv_file, "Iteration;Source;Action;Target;Result;School;Value\n" );
-  }
   if ( debug )
   {
     log = 1;
@@ -2204,7 +2186,6 @@ int sim_t::main( int argc, char** argv )
 
   if ( output_file != stdout ) fclose( output_file );
   if ( log_file ) fclose( log_file );
-  if ( csv_file ) fclose( csv_file );
 
   http_t::cache_save();
 

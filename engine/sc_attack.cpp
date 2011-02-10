@@ -472,9 +472,15 @@ void attack_t::execute()
 {
   action_t::execute();
 
-  if ( ! aoe && ! pseudo_pet )
+  if ( harmful && callbacks )
   {
-    action_callback_t::trigger( player -> attack_result_callbacks       [ result ], this );
-    action_callback_t::trigger( player -> attack_direct_result_callbacks[ result ], this );
+    if ( direct_tick )
+    {
+      action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+    }
+    else
+    {
+      action_callback_t::trigger( player -> attack_callbacks[ result ], this );
+    }
   }
 }

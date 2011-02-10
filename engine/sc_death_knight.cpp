@@ -375,7 +375,7 @@ struct death_knight_t : public player_t
   virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual void      reset();
-  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
+  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4200,19 +4200,19 @@ void death_knight_t::init_enchant()
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
-    register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_the_fallen_crusader ) );
+    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_the_fallen_crusader ) );
   }
   else if ( mh_enchant == "rune_of_razorice" )
   {
-    register_attack_result_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_razorice ) );
+    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_razorice ) );
   }
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
-    register_attack_result_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_the_fallen_crusader ) );
+    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_the_fallen_crusader ) );
   }
   else if ( oh_enchant == "rune_of_razorice" )
   {
-    register_attack_result_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_razorice ) );
+    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_razorice ) );
   }
 
 }
@@ -4390,20 +4390,23 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::asses_damage =============================================
 
-double death_knight_t::assess_damage( double amount,
-    const school_type school,
-    int    dmg_type,
-    int result,
-    action_t* a,
-    player_t* s )
+double death_knight_t::assess_damage( double            amount,
+				      const school_type school,
+				      int               dmg_type,
+				      int               result,
+				      action_t*         action )
 {
   if ( buffs_blood_presence -> check() )
-    amount  *= 1.0 - player_data.effect_base_value( player_data.spell_effect_id( 61261, 1 ) ) / 100.0;
+  {
+    amount *= 1.0 - player_data.effect_base_value( player_data.spell_effect_id( 61261, 1 ) ) / 100.0;
+  }
 
-  double actual_amount = player_t::assess_damage( amount, school, dmg_type, result, a, s );
+  double actual_amount = player_t::assess_damage( amount, school, dmg_type, result, action );
 
   if ( result != RESULT_MISS )
+  {
     buffs_scent_of_blood -> trigger();
+  }
 
   return actual_amount;
 }

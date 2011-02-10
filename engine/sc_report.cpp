@@ -142,39 +142,42 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> dpr,
                    s -> portion_dps );
 
-  util_t::fprintf( file, "  Miss=%.2f%%", s -> execute_results[ RESULT_MISS ].pct );
+  util_t::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
 
-  if ( s -> execute_results[ RESULT_HIT ].avg_dmg > 0 )
+  if ( s -> direct_results[ RESULT_HIT ].avg_dmg > 0 )
   {
-    util_t::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f", s -> execute_results[ RESULT_HIT ].avg_dmg, s -> execute_results[ RESULT_HIT ].min_dmg, s -> execute_results[ RESULT_HIT ].max_dmg );
+    util_t::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f", 
+		     s -> direct_results[ RESULT_HIT ].avg_dmg, 
+		     s -> direct_results[ RESULT_HIT ].min_dmg, 
+		     s -> direct_results[ RESULT_HIT ].max_dmg );
   }
-  if ( s -> execute_results[ RESULT_CRIT ].avg_dmg > 0 )
+  if ( s -> direct_results[ RESULT_CRIT ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
                      "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
-                     s -> execute_results[ RESULT_CRIT ].avg_dmg,
-                     s -> execute_results[ RESULT_CRIT ].min_dmg,
-                     s -> execute_results[ RESULT_CRIT ].max_dmg,
-                     s -> execute_results[ RESULT_CRIT ].pct );
+                     s -> direct_results[ RESULT_CRIT ].avg_dmg,
+                     s -> direct_results[ RESULT_CRIT ].min_dmg,
+                     s -> direct_results[ RESULT_CRIT ].max_dmg,
+                     s -> direct_results[ RESULT_CRIT ].pct );
   }
-  if ( s -> execute_results[ RESULT_GLANCE ].avg_dmg > 0 )
+  if ( s -> direct_results[ RESULT_GLANCE ].avg_dmg > 0 )
   {
     util_t::fprintf( file,
                      "  Glance=%4.0f|%.1f%%",
-                     s -> execute_results[ RESULT_GLANCE ].avg_dmg,
-                     s -> execute_results[ RESULT_GLANCE ].pct );
+                     s -> direct_results[ RESULT_GLANCE ].avg_dmg,
+                     s -> direct_results[ RESULT_GLANCE ].pct );
   }
-  if ( s -> execute_results[ RESULT_DODGE ].count > 0 )
+  if ( s -> direct_results[ RESULT_DODGE ].count > 0 )
   {
     util_t::fprintf( file,
                      "  Dodge=%.1f%%",
-                     s -> execute_results[ RESULT_DODGE ].pct );
+                     s -> direct_results[ RESULT_DODGE ].pct );
   }
-  if ( s -> execute_results[ RESULT_PARRY ].count > 0 )
+  if ( s -> direct_results[ RESULT_PARRY ].count > 0 )
   {
     util_t::fprintf( file,
                      "  Parry=%.1f%%",
-                     s -> execute_results[ RESULT_PARRY ].pct );
+                     s -> direct_results[ RESULT_PARRY ].pct );
   }
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
@@ -1552,21 +1555,21 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> portion_dps,
     s -> portion_dmg * 100,
     s -> resource_portion * 100,
-    s -> num_executes, s -> num_execute_results,
+    s -> num_executes, s -> num_direct_results,
     s -> frequency,
     s -> dpe,
     s -> dpet,
     s -> dpr,
     s -> rpe,
-    s -> execute_results[ RESULT_HIT  ].avg_dmg,
-    s -> execute_results[ RESULT_CRIT ].avg_dmg,
-    s -> execute_results[ RESULT_CRIT ].max_dmg ? s -> execute_results[ RESULT_CRIT ].max_dmg : s -> execute_results[ RESULT_HIT ].max_dmg,
-    s -> execute_results[ RESULT_CRIT ].pct,
-    s -> execute_results[ RESULT_MISS ].count / s -> num_executes * 100.0,
-    s -> execute_results[ RESULT_DODGE  ].pct,
-    s -> execute_results[ RESULT_PARRY  ].pct,
-    s -> execute_results[ RESULT_GLANCE ].pct,
-    s -> execute_results[ RESULT_BLOCK  ].pct,
+    s -> direct_results[ RESULT_HIT  ].avg_dmg,
+    s -> direct_results[ RESULT_CRIT ].avg_dmg,
+    s -> direct_results[ RESULT_CRIT ].max_dmg ? s -> direct_results[ RESULT_CRIT ].max_dmg : s -> direct_results[ RESULT_HIT ].max_dmg,
+    s -> direct_results[ RESULT_CRIT ].pct,
+    s -> direct_results[ RESULT_MISS ].pct,
+    s -> direct_results[ RESULT_DODGE  ].pct,
+    s -> direct_results[ RESULT_PARRY  ].pct,
+    s -> direct_results[ RESULT_GLANCE ].pct,
+    s -> direct_results[ RESULT_BLOCK  ].pct,
     s -> num_ticks,
     s -> tick_results[ RESULT_HIT  ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].avg_dmg,
@@ -3211,14 +3214,14 @@ static void print_wiki_action( FILE* file, stats_t* s )
                    s -> name_str.c_str(), s -> portion_dps, s -> portion_dmg * 100,
                    s -> num_executes, s -> frequency,
                    s -> dpe, s -> dpet, s -> dpr,
-                   s -> execute_results[ RESULT_HIT  ].avg_dmg,
-                   s -> execute_results[ RESULT_CRIT ].avg_dmg,
-                   s -> execute_results[ RESULT_CRIT ].max_dmg,
-                   s -> execute_results[ RESULT_CRIT ].pct,
-                   s -> execute_results[ RESULT_MISS ].pct,
-                   s -> execute_results[ RESULT_DODGE  ].pct,
-                   s -> execute_results[ RESULT_PARRY  ].pct,
-                   s -> execute_results[ RESULT_GLANCE ].pct,
+                   s -> direct_results[ RESULT_HIT  ].avg_dmg,
+                   s -> direct_results[ RESULT_CRIT ].avg_dmg,
+                   s -> direct_results[ RESULT_CRIT ].max_dmg,
+                   s -> direct_results[ RESULT_CRIT ].pct,
+                   s -> direct_results[ RESULT_MISS ].pct,
+                   s -> direct_results[ RESULT_DODGE  ].pct,
+                   s -> direct_results[ RESULT_PARRY  ].pct,
+                   s -> direct_results[ RESULT_GLANCE ].pct,
                    s -> num_ticks,
                    s -> tick_results[ RESULT_HIT  ].avg_dmg,
                    s -> tick_results[ RESULT_CRIT ].avg_dmg,

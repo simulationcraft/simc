@@ -43,7 +43,7 @@ wrists=bracers_of_the_dark_pool,type=cloth,ilevel=359,quality=epic,stats=547armo
 hands=grips_of_the_failed_immortal,type=cloth,ilevel=359,quality=epic,stats=782armor_169crit_149haste_233int_380sta,reforge=crit_hit,gems=40int_10crit,enchant=50haste
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=40int
 finger2=band_of_secret_names,ilevel=359,quality=epic,stats=127crit_127haste_190int_286sta,reforge=crit_hit,enchant=40int
-trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_hit,equip=onharmfulcast_1926sp_30%_20dur_100cd
+trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_hit,equip=onspellcast_1926sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=50int
 main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_45min_84max

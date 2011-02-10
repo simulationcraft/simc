@@ -46,7 +46,7 @@ wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547
 hands=firelords_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_149crit_233int_169mastery_380sta,reforge=crit_hit,gems=40int,enchant=65mastery
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=40int
 finger2=planetary_band_of_the_flameblaze,ilevel=359,quality=epic,stats=285sta_190int_126mastery_126hit,reforge=hit_haste,enchant=40int,suffix=114
-trinket1=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onharmfulcast_1926mastery_10%_20dur_100cd
+trinket1=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=lightweave_embroidery
 main_hand=stormwake_the_tempests_reach_of_the_flameblaze,ilevel=359,quality=epic,stats=1954sp_219sta_146int_97mastery_97hit,reforge=mastery_haste,enchant=power_torrent,weapon=sword_1.60speed_40min_75max,suffix=114

@@ -399,8 +399,7 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
-  virtual double      assess_damage( double amount, const school_type school, int dmg_type,
-                                   int travel_result, action_t* a, player_t* s );
+  virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
 
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
@@ -1285,16 +1284,9 @@ struct pounce_bleed_t : public druid_cat_attack_t
   pounce_bleed_t( druid_t* player ) :
     druid_cat_attack_t( "pounce_bleed", 9007, player )
   {
-    dual           = true;
     background     = true;
     stats          = player -> get_stats( "pounce" );
     tick_power_mod = 0; // FIXME: Does pounce scale?
-  }
-
-  virtual void tick()
-  {
-    druid_cat_attack_t::tick();
-    update_stats( DMG_OVER_TIME );
   }
 };
 
@@ -2991,6 +2983,31 @@ struct starfire_t : public druid_spell_t
 
 // Starfall Spell ===========================================================
 
+struct starfall_star_t : public druid_spell_t
+{
+  starfall_star_t( druid_t* player ) :
+    druid_spell_t( "starfall_star", 50288, player )
+  {
+    druid_t* p = player -> cast_druid();
+
+    background  = true;
+    dual        = true;
+    direct_tick = true;
+    stats       = player -> get_stats( "starfall" );
+
+    if ( p -> primary_tree() == TREE_BALANCE )
+      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+  }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+    // Glyph of Focus is Additive with Moonfury
+    additive_multiplier += p -> glyphs.focus -> mod_additive( P_GENERIC );
+    druid_spell_t::player_buff();
+  }
+};
+
 struct starfall_t : public druid_spell_t
 {
   spell_t* starfall_star;
@@ -2998,37 +3015,6 @@ struct starfall_t : public druid_spell_t
   starfall_t( druid_t* player, const std::string& options_str ) :
       druid_spell_t( "starfall", 48505, player )
   {
-    struct starfall_star_t : public druid_spell_t
-    {
-      starfall_star_t( druid_t* player ) :
-          druid_spell_t( "starfall_star", 50288, player )
-      {
-        druid_t* p = player -> cast_druid();
-
-        background = true;
-        dual       = true;
-        stats      = player -> get_stats( "starfall" );
-
-        if ( p -> primary_tree() == TREE_BALANCE )
-          base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
-      }
-
-      virtual void execute()
-      {
-        druid_spell_t::execute();
-        tick_dmg = direct_dmg;
-        stats -> add( direct_dmg, DMG_DIRECT, result, time_to_execute );
-      }
-
-      virtual void player_buff()
-      {
-        druid_t* p = player -> cast_druid();
-        // Glyph of Focus is Additive with Moonfury
-        additive_multiplier += p -> glyphs.focus -> mod_additive( P_GENERIC );
-        druid_spell_t::player_buff();
-      }
-    };
-
     druid_t* p = player -> cast_druid();
     check_talent( p -> talents.starfall -> rank() );
 
@@ -3049,7 +3035,7 @@ struct starfall_t : public druid_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     starfall_star -> execute();
-    update_time( DMG_DIRECT );
+    stats -> add_tick( time_to_tick );
   }
 };
 
@@ -4380,14 +4366,13 @@ int druid_t::primary_resource() SC_CONST
 
 // druid_t::assess_damage ===================================================
 
-double druid_t::assess_damage( double amount,
-                              const school_type school,
-                              int    dmg_type,
-                              int travel_result,
-                              action_t* a,
-                              player_t* s )
+double druid_t::assess_damage( double            amount,
+			       const school_type school,
+			       int               dmg_type,
+			       int               result,
+			       action_t*         action )
 {
-  if ( travel_result == RESULT_DODGE && talents.natural_reaction -> rank() )
+  if ( result == RESULT_DODGE && talents.natural_reaction -> rank() )
   {
     resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
   }
@@ -4418,7 +4403,7 @@ double druid_t::assess_damage( double amount,
   }
 
   // To benefit from -10% physical damage before SD is taken into account, debug=1 will look funny though
-  amount = player_t::assess_damage( amount, school, dmg_type, travel_result, a, s );
+  amount = player_t::assess_damage( amount, school, dmg_type, result, action );
   
   if ( school == SCHOOL_PHYSICAL && buffs_savage_defense -> up() )
   {

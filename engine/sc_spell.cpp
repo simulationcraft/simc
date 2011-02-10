@@ -203,22 +203,15 @@ void spell_t::execute()
 {
   action_t::execute();
 
-  if ( ! aoe && ! pseudo_pet )
+  if ( harmful && callbacks )
   {
-    if ( ! direct_tick )
+    if ( direct_tick )
     {
-      action_callback_t::trigger( player -> spell_cast_result_callbacks[ result ], this );
-      if ( harmful )
-      {
-        action_callback_t::trigger( player -> harmful_cast_result_callbacks[ result ], this );
-      }
+      action_callback_t::trigger( player -> tick_callbacks[ result ], this );
     }
-
-    if ( direct_tick || ( !proc && ( base_dd_max > 0.0 ) ) )
+    else
     {
-      action_callback_t::trigger( player -> spell_direct_result_callbacks[ result ], this );
+      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
     }
-
-    action_callback_t::trigger( player -> spell_result_callbacks       [ result ], this );
   }
 }

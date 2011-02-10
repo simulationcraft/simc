@@ -44,7 +44,7 @@ wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,
 hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=mastery_hit,gems=40int,enchant=50haste
 finger1=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,enchant=40int,suffix=129
 finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
-trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,equip=onharmfulcast_2178sp_30%_20dur_100cd
+trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,equip=onspellcast_2178sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_hit,gems=20crit_20int_10int,enchant=lightweave_embroidery
 main_hand=stormwake_the_tempests_reach_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=2207sp_247sta_165int_110hit_110crit,enchant=power_torrent,weapon=sword_1.60speed_73min_137max,suffix=129

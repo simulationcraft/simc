@@ -1107,10 +1107,8 @@ void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
 
 struct devouring_plague_burst_t : public priest_spell_t
 {
-  double dot_nt;
-
   devouring_plague_burst_t( player_t* player ) :
-      priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW ), dot_nt( 8.0 )
+      priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     dual       = true;
     proc       = true;
@@ -1118,13 +1116,6 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     // This helps log file and decouples the sooth RNG from the ticks.
     name_str = "devouring_plague_burst";
-  }
-
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-
-    stats -> add_result( direct_dmg, DMG_DIRECT, result );
   }
 
   virtual void player_buff()
@@ -1149,10 +1140,10 @@ struct devouring_plague_burst_t : public priest_spell_t
 
 struct devouring_plague_t : public priest_spell_t
 {
-  devouring_plague_burst_t* devouring_plague_burst;
+  devouring_plague_burst_t* burst_spell;
 
   devouring_plague_t( player_t* player, const std::string& options_str ) :
-    priest_spell_t( "devouring_plague", player, "Devouring Plague" ), devouring_plague_burst( 0 )
+    priest_spell_t( "devouring_plague", player, "Devouring Plague" ), burst_spell( 0 )
   {
     priest_t* p = player -> cast_priest();
     parse_options( NULL, options_str );
@@ -1164,7 +1155,7 @@ struct devouring_plague_t : public priest_spell_t
 
     if ( p -> talents.improved_devouring_plague -> rank() )
     {
-      devouring_plague_burst = new devouring_plague_burst_t( p );
+      burst_spell = new devouring_plague_burst_t( p );
     }
   }
 
@@ -1187,11 +1178,13 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::execute();
 
     // Improved Devouring Plague
-    if ( devouring_plague_burst )
+    if ( burst_spell )
     {
-      double t = p -> talents.improved_devouring_plague -> base_value( E_APPLY_AURA, A_DUMMY, P_DAMAGE_TAKEN ) / 100.0 *
-                 ( ceil( base_td ) + total_power() * tick_power_mod );
-      double n;
+      double dmg = ceil( base_td ) + total_power() * tick_power_mod;
+
+      dmg *= p -> talents.improved_devouring_plague -> base_value( E_APPLY_AURA, A_DUMMY, P_DAMAGE_TAKEN ) / 100.0;
+
+      double n = hasted_num_ticks();
 
       if ( p -> bugs )
       {
@@ -1200,16 +1193,11 @@ struct devouring_plague_t : public priest_spell_t
         double t = floor( ( base_tick_time * p -> spell_haste * 1000.0 ) + 0.5 ) / 1000.0;
         n = (int) floor( ( d / t ) + 0.5 );
       }
-      else
-      {
-        n = hasted_num_ticks();
-      }
 
-      devouring_plague_burst -> base_dd_min    = t * n;
-      devouring_plague_burst -> base_dd_max    = t * n;
-      devouring_plague_burst -> dot_nt         = n;
-      devouring_plague_burst -> round_base_dmg = false;
-      devouring_plague_burst -> execute();
+      burst_spell -> base_dd_min    = dmg * n;
+      burst_spell -> base_dd_max    = dmg * n;
+      burst_spell -> round_base_dmg = false;
+      burst_spell -> execute();
     }
   }
 
@@ -1220,13 +1208,6 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     player -> resource_gain( RESOURCE_HEALTH, tick_dmg * p -> constants.devouring_plague_health_mod );
-  }
-
-  virtual void update_stats( int type )
-  {
-    if ( devouring_plague_burst && type == DMG_DIRECT ) return;
-
-    priest_spell_t::update_stats( type );
   }
 };
 
@@ -1741,30 +1722,23 @@ struct penance_tick_t : public priest_spell_t
     direct_power_mod = tick_power_mod; // TO-DO: Check this
   }
 
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-    actual_tick_dmg = actual_direct_dmg;
-    update_stats( DMG_OVER_TIME );
-  }
-
   virtual void player_buff()
   {
-    priest_spell_t::player_buff();
-
     priest_t* p = player -> cast_priest();
-
-    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    priest_spell_t::player_buff();
+    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * 
+				 p -> buffs_holy_evangelism -> stack() * 
+				 p -> constants.holy_evangelism_damage_value );
   }
 };
 
 struct penance_t : public priest_spell_t
 {
-  spell_t* penance_tick;
+  spell_t* tick_spell;
 
   penance_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "penance", player, "Penance" ),
-      penance_tick( 0 )
+      tick_spell( 0 )
   {
     priest_t* p = player -> cast_priest();
 
@@ -1781,27 +1755,23 @@ struct penance_t : public priest_spell_t
 
     cooldown -> duration  -= ( p -> glyphs.penance * 2 );
 
-    penance_tick = new penance_tick_t( p );
+    tick_spell = new penance_tick_t( p );
   }
 
   virtual void tick()
   {
-  if ( sim -> debug )
-    log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
-  penance_tick -> execute();
-
-  update_time( DMG_OVER_TIME );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    tick_spell -> execute();
+    stats -> add_tick( time_to_tick );
   }
 
   virtual double cost() SC_CONST
   {
-    double c = priest_spell_t::cost();
-
     priest_t* p = player -> cast_priest();
-
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
-
+    double c = priest_spell_t::cost();
+    c *= 1.0 - ( p -> talents.evangelism -> rank() * 
+		 p -> buffs_holy_evangelism -> check() * 
+		 p -> constants.holy_evangelism_mana_value );
     return c;
   }
 };
@@ -2284,7 +2254,6 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     may_crit    = true;
     direct_tick = true;
     harmful     = false;
-
     stats = player -> get_stats( "hymn_of_hope" );
   }
 
@@ -2322,10 +2291,8 @@ struct hymn_of_hope_t : public priest_spell_t
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
     hymn_of_hope_tick -> execute();
-
-    update_time( DMG_OVER_TIME );
+    stats -> add_tick( time_to_tick );
   }
 };
 
@@ -3372,7 +3339,6 @@ struct penance_heal_tick_t : public priest_heal_t
     background  = true;
     may_crit    = true;
     direct_tick = true;
-
     stats = player -> get_stats( "penance" );
   }
 
@@ -3435,12 +3401,9 @@ struct penance_heal_t : public priest_heal_t
 
   virtual void tick()
   {
-    if ( sim -> debug )
-      log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     penance_tick -> execute();
-
-    update_time( HEAL_OVER_TIME );
+    stats -> add_tick( time_to_tick );
   }
 
   virtual double cost() SC_CONST
@@ -3466,25 +3429,17 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
     dual        = true;
     background  = true;
     direct_tick = true;
-
     stats = player -> get_stats( "holy_word_sanctuary" );
-  }
-
-  virtual void execute()
-  {
-    priest_heal_t::execute();
-    actual_tick_dmg = actual_direct_dmg;
-    update_stats( HEAL_OVER_TIME );
   }
 };
 
 struct holy_word_sanctuary_t : public priest_heal_t
 {
-  holy_word_sanctuary_tick_t* hw_sanctuary_tick;
+  spell_t* tick_spell;
 
   holy_word_sanctuary_t( player_t* player ) :
     priest_heal_t( "holy_word_sanctuary", player, 88685 ),
-    hw_sanctuary_tick( 0 )
+    tick_spell( 0 )
   {
     background = true;
     hasted_ticks = false;
@@ -3493,7 +3448,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     num_ticks = 9;
 
     priest_t* p = player -> cast_priest();
-    hw_sanctuary_tick = new holy_word_sanctuary_tick_t( p );
+    tick_spell = new holy_word_sanctuary_tick_t( p );
 
     // Fixme: 10x Multiplier for now
     base_multiplier *= 10;
@@ -3503,8 +3458,8 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
   virtual void tick()
   {
-    if ( hw_sanctuary_tick )
-      hw_sanctuary_tick -> execute();
+    tick_spell -> execute();
+    stats -> add_tick( time_to_tick );
   }
 };
 

@@ -21,6 +21,7 @@ void action_t::_init_action_t()
   result                         = RESULT_NONE;
   aoe                            = 0;
   dual                           = false;
+  callbacks                      = true;
   binary                         = false;
   channeled                      = false;
   background                     = false;
@@ -29,7 +30,6 @@ void action_t::_init_action_t()
   repeating                      = false;
   harmful                        = true;
   proc                           = false;
-  pseudo_pet                     = false;
   auto_cast                      = false;
   may_miss                       = false;
   may_resist                     = false;
@@ -98,8 +98,6 @@ void action_t::_init_action_t()
   resource_consumed              = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
-  actual_direct_dmg              = 0.0;
-  actual_tick_dmg                = 0.0;
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
@@ -223,6 +221,7 @@ action_t::~action_t()
 }
 
 // action_t::parse_data ====================================================
+
 void action_t::parse_data( sc_data_access_t& pData )
 {
   if ( pData.spell_exists(id) )
@@ -1012,35 +1011,22 @@ void action_t::execute()
 
   player_buff();
 
-  // Target dependent, may be executed multiple times.
+  target_debuff( target, DMG_DIRECT );
+
+  calculate_result();
+
+  if ( result_is_hit() )
   {
-    target_debuff( target, DMG_DIRECT );
-
-    calculate_result();
-
-    actual_direct_dmg = 0;
-
-    if ( result_is_hit() )
-    {
-      direct_dmg = calculate_direct_damage();
-    }
-    else
-    {
-      if ( sim -> log )
-      {
-        log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
-        log_t::miss_event( this );
-      }
-    }
-
-    schedule_travel( target );
+    direct_dmg = calculate_direct_damage();
   }
+
+  schedule_travel( target );
 
   consume_resource();
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( DMG_DIRECT, time_to_execute );
+  if ( ! dual ) stats -> add_execute( time_to_execute );
 
   if ( repeating && ! proc ) schedule_execute();
 }
@@ -1064,23 +1050,16 @@ void action_t::tick()
     if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
     {
       result = RESULT_CRIT;
-      action_callback_t::trigger( player -> spell_result_callbacks[ RESULT_CRIT ], this );
-      if ( direct_tick )
-      {
-        action_callback_t::trigger( player -> spell_direct_result_callbacks[ RESULT_CRIT ], this );
-      }
     }
   }
-
-  actual_tick_dmg = 0;
 
   tick_dmg = calculate_tick_damage();
 
   assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
 
-  action_callback_t::trigger( player -> tick_callbacks, this );
+  if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add( actual_tick_dmg, DMG_OVER_TIME, result, time_to_tick );
+  stats -> add_tick( time_to_tick );
 }
 // action_t::last_tick =======================================================
 
@@ -1100,118 +1079,107 @@ void action_t::last_tick()
 
 void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
+  assess_damage( t, travel_dmg, ( direct_tick ? DMG_OVER_TIME : DMG_DIRECT ), travel_result );
 
-  assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
-
-  if ( ! dual )
+  if ( result_is_hit( travel_result ) )
   {
-    // Check for Dot Application.
-    if (  ( num_ticks > 0 && travel_dmg == 0 && ( travel_result == RESULT_HIT || travel_result == RESULT_CRIT ) ) )
+    if ( num_ticks > 0 )
     {
-      // Adding all Dot Applications as Hit, because many class modules let everything crit nowadays.
-      stats -> add_result( 0, DMG_DIRECT, RESULT_HIT );
-    }
-    else
-    {
-      stats -> add_result( actual_direct_dmg, DMG_DIRECT, travel_result );
+      if ( dot_behavior != DOT_REFRESH ) cancel();
+      dot -> action = this;
+      dot -> num_ticks = hasted_num_ticks();
+      dot -> current_tick = 0;
+      dot -> added_ticks = 0;
+      dot -> added_seconds = 0;
+      if ( dot -> ticking )
+      {
+	assert( dot -> tick_event );
+	if ( ! channeled )
+        {
+	  // Recasting a dot while it's still ticking gives it an extra tick in total
+	  dot -> num_ticks++;
+	}
+      }
+      else
+      {
+	schedule_tick();
+      }
+      dot -> recalculate_ready();
+
+      if ( sim -> debug )
+	log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
+		       player -> name(), dot -> ready, name(), dot -> name() );
     }
   }
-
-  if ( num_ticks > 0 && result_is_hit( travel_result ) )
+  else
   {
-    if ( dot_behavior != DOT_REFRESH ) cancel();
-
-    dot -> action = this;
-    dot -> num_ticks = hasted_num_ticks();
-    dot -> current_tick = 0;
-    dot -> added_ticks = 0;
-    dot -> added_seconds = 0;
-    if ( dot -> ticking )
+    if ( sim -> log )
     {
-      assert( dot -> tick_event );
-      if ( ! channeled )
-      {
-        // Recasting a dot while it's still ticking gives it an extra tick in total
-        dot -> num_ticks++;
-      }
+      log_t::output( sim, "%s %s %s on %s", player -> name(), util_t::result_type_string( result ), target -> name() );
     }
-    else
-    {
-      schedule_tick();
-    }
-    dot -> recalculate_ready();
-    if ( sim -> debug )
-      log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
-                     player -> name(), dot -> ready, name(), dot -> name() );
   }
 }
 
 // action_t::assess_damage ==================================================
 
 void action_t::assess_damage( player_t* t,
-                              double amount,
-                              int    dmg_type, int travel_result )
+			      double dmg_amount,
+			      int    dmg_type, 
+			      int    dmg_result )
 {
-
-
+  double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
+    
   if ( dmg_type == DMG_DIRECT )
   {
-
-    actual_direct_dmg = t -> assess_damage( amount, school, dmg_type, travel_result, this, player );
-
-    if ( amount > 0)
+    if ( dmg_amount > 0 )
     {
+      direct_dmg = dmg_adjusted;
+
       if ( sim -> log )
       {
         log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
                        player -> name(), name(),
-                       target -> name(), amount,
+                       target -> name(), dmg_adjusted,
                        util_t::school_type_string( school ),
                        util_t::result_type_string( result ) );
-        log_t::damage_event( this, amount, dmg_type );
       }
-      if ( sim -> csv_file )
-      {
-        fprintf( sim -> csv_file, "%d;%s;%s;%s;%s;%s;%.1f\n",
-                 sim->current_iteration, player->name(), name(), t->name(),
-                 util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
-      }
-
-      action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
+      if ( callbacks ) action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
     }
   }
   else // DMG_OVER_TIME
   {
-    actual_tick_dmg = t -> assess_damage( amount, school, dmg_type, travel_result, this, player );
-    if ( sim -> log )
+    if ( dmg_amount > 0 )
     {
-      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                     player -> name(), name(),
-                     dot -> current_tick, dot -> num_ticks,
-                     t -> name(), amount,
-                     util_t::school_type_string( school ),
-                     util_t::result_type_string( result ) );
-      log_t::damage_event( this, amount, dmg_type );
-    }
-    if ( sim -> csv_file )
-    {
-      fprintf( sim -> csv_file, "%d;%s;%s;%s;tick_%s;%s;%.1f\n",
-               sim->current_iteration, player->name(), name(), t->name(),
-               util_t::result_type_string( result ), util_t::school_type_string( school ), amount );
-    }
+      tick_dmg = dmg_adjusted;
 
-    action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
+      if ( sim -> log )
+      {
+	log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+		       player -> name(), name(),
+		       dot -> current_tick, dot -> num_ticks,
+		       t -> name(), dmg_adjusted,
+		       util_t::school_type_string( school ),
+		       util_t::result_type_string( result ) );
+      }
+      if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
+    }
   }
-  if ( t -> is_enemy())
+
+  if ( dmg_amount > 0 || result_is_miss( dmg_result ) )
+  {
+    stats -> add_result( dmg_adjusted, dmg_type, dmg_result );
+  }
+
+  if ( dmg_amount > 0 && t -> is_enemy() )
   {
     target_t* q = t -> cast_target();
 
-    if ( aoe && q -> adds_nearby )
+    if ( dmg_amount > 0 && aoe && q -> adds_nearby )
     {
-      amount *= base_add_multiplier;
+      double dmg_aoe = dmg_amount * base_add_multiplier;
       for ( int i=0; i < q -> adds_nearby && i < ( aoe > 0 ? aoe : 9 ); i++ )
       {
-        additional_damage( q, amount, dmg_type, travel_result );
+        additional_damage( q, dmg_aoe, dmg_type, dmg_result );
       }
     }
   }
@@ -1220,13 +1188,13 @@ void action_t::assess_damage( player_t* t,
 // action_t::additional_damage =============================================
 
 void action_t::additional_damage( player_t* t,
-                                  double amount,
+                                  double dmg_amount,
                                   int    dmg_type,
-                                  int travel_result )
+                                  int    dmg_result )
 {
-  amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  t -> assess_damage( amount, school, dmg_type, travel_result, this, player );
-  stats -> add_result( amount, dmg_type, travel_result );
+  dmg_amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
+  t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
+  stats -> add_result( dmg_amount, dmg_type, dmg_result );
 }
 
 // action_t::schedule_execute ==============================================
@@ -1236,7 +1204,6 @@ void action_t::schedule_execute()
   if ( sim -> log )
   {
     log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
-    log_t::start_event( this );
   }
 
   time_to_execute = execute_time();
@@ -1393,7 +1360,6 @@ void action_t::extend_duration( int extra_ticks )
 
 void action_t::extend_duration_seconds( double extra_seconds )
 {
-
   // Make sure this DoT is still ticking......
   assert( dot -> tick_event );
   
@@ -1402,8 +1368,10 @@ void action_t::extend_duration_seconds( double extra_seconds )
   // First we need the number of ticks remaining after the next one =>
   // ( num_ticks - current_tick ) - 1
   int remaining_ticks = dot -> num_ticks - dot -> current_tick - 1;
+
   // Multiply with tick_time() for the duration left after the next tick
   double duration_left = remaining_ticks * tick_time();
+
   // Add the added seconds
   duration_left += extra_seconds;
   
@@ -1415,6 +1383,7 @@ void action_t::extend_duration_seconds( double extra_seconds )
   dot -> action = this;
   dot -> added_seconds += extra_seconds;
   dot -> num_ticks += ( new_remaining_ticks - remaining_ticks );
+
   if ( sim -> log ) 
     log_t::output( sim, "%s extends duration of %s by %.1f second(s). Now %d ticks total, %d remaining", 
                   player -> name(), name(), extra_seconds, dot -> num_ticks, new_remaining_ticks );
@@ -1444,47 +1413,6 @@ void action_t::update_ready()
       dot -> miss_time = sim -> current_time;
     }
   }
-}
-
-// action_t::update_stats ===================================================
-
-void action_t::update_stats( int type )
-{
-  if ( type == DMG_OVER_TIME )
-  {
-    stats -> add( actual_tick_dmg, type, result, time_to_tick );
-  }
-  else assert( 0 );
-}
-
-// action_t::update_result ==================================================
-
-void action_t::update_result( int type )
-{
-  if ( type == DMG_DIRECT )
-  {
-    stats -> add_result( direct_dmg, type, result );
-  }
-  else if ( type == DMG_OVER_TIME )
-  {
-    stats -> add_result( tick_dmg, type, result );
-  }
-  else assert( 0 );
-}
-
-// action_t::update_time ===================================================
-
-void action_t::update_time( int type )
-{
-  if ( type == DMG_DIRECT || type == HEAL_DIRECT )
-  {
-    stats -> add_time( time_to_execute, type );
-  }
-  else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
-  {
-    stats -> add_time( time_to_tick, type );
-  }
-  else assert( 0 );
 }
 
 // action_t::ready ==========================================================

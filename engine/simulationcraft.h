@@ -284,15 +284,11 @@ enum proc_type
 {
   PROC_NONE=0,
   PROC_DAMAGE,
+  PROC_TICK_DAMAGE,
+  PROC_DIRECT_DAMAGE,
   PROC_ATTACK,
   PROC_SPELL,
   PROC_TICK,
-  PROC_ATTACK_DIRECT,
-  PROC_SPELL_DIRECT,
-  PROC_TICK_DAMAGE,
-  PROC_DIRECT_DAMAGE,
-  PROC_SPELL_CAST,
-  PROC_HARMFUL_CAST,
   PROC_MAX
 };
 
@@ -2417,13 +2413,12 @@ struct sim_t
   std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
-  std::string output_file_str, log_file_str, html_file_str,  wiki_file_str, xml_file_str, csv_file_str;
+  std::string output_file_str, log_file_str, html_file_str,  wiki_file_str, xml_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
   FILE* output_file;
   FILE* log_file;
-  FILE* csv_file;
   int armory_throttle;
   int current_throttle;
   int debug_exp;
@@ -2931,18 +2926,15 @@ struct player_t
 
   // Callbacks
   std::vector<action_callback_t*> all_callbacks;
-
-  std::vector<action_callback_t*> resource_gain_callbacks       [ RESOURCE_MAX ];
-  std::vector<action_callback_t*> resource_loss_callbacks       [ RESOURCE_MAX ];
-  std::vector<action_callback_t*> attack_result_callbacks       [ RESULT_MAX ];
-  std::vector<action_callback_t*> spell_result_callbacks        [ RESULT_MAX ];
-  std::vector<action_callback_t*> attack_direct_result_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*> spell_direct_result_callbacks [ RESULT_MAX ];
-  std::vector<action_callback_t*> tick_callbacks;
-  std::vector<action_callback_t*> tick_damage_callbacks         [ SCHOOL_MAX ];
-  std::vector<action_callback_t*> direct_damage_callbacks       [ SCHOOL_MAX ];
-  std::vector<action_callback_t*> spell_cast_result_callbacks   [ RESULT_MAX ];
-  std::vector<action_callback_t*> harmful_cast_result_callbacks [ RESULT_MAX ];
+  std::vector<action_callback_t*> attack_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*>  spell_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*>   tick_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*> direct_damage_callbacks[ SCHOOL_MAX ];
+  std::vector<action_callback_t*>   tick_damage_callbacks[ SCHOOL_MAX ];
+  std::vector<action_callback_t*>   direct_heal_callbacks[ SCHOOL_MAX ];
+  std::vector<action_callback_t*>     tick_heal_callbacks[ SCHOOL_MAX ];
+  std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
+  std::vector<action_callback_t*> resource_loss_callbacks[ RESOURCE_MAX ];
 
   // Action Priority List
   action_t*   action_list;
@@ -3251,7 +3243,7 @@ struct player_t
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
-  virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a, player_t* s );
+  virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a );
 
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );
@@ -3259,17 +3251,15 @@ struct player_t
   virtual bool ooc_buffs() { return true; }
 
   virtual void register_callbacks();
-  virtual void register_resource_gain_callback       ( int resource, action_callback_t* );
-  virtual void register_resource_loss_callback       ( int resource, action_callback_t* );
-  virtual void register_attack_result_callback       ( int64_t result_mask, action_callback_t* );
-  virtual void register_spell_result_callback        ( int64_t result_mask, action_callback_t* );
-  virtual void register_attack_direct_result_callback( int64_t result_mask, action_callback_t* );
-  virtual void register_spell_direct_result_callback ( int64_t result_mask, action_callback_t* );
-  virtual void register_tick_callback                ( action_callback_t* );
-  virtual void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
-  virtual void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
-  virtual void register_spell_cast_result_callback   ( int64_t result_mask, action_callback_t* );
-  virtual void register_harmful_cast_result_callback ( int64_t result_mask, action_callback_t* );
+  virtual void register_resource_gain_callback( int resource,        action_callback_t* );
+  virtual void register_resource_loss_callback( int resource,        action_callback_t* );
+  virtual void register_attack_callback       ( int64_t result_mask, action_callback_t* );
+  virtual void register_spell_callback        ( int64_t result_mask, action_callback_t* );
+  virtual void register_tick_callback         ( int64_t result_mask, action_callback_t* );
+  virtual void register_tick_damage_callback  ( int64_t result_mask, action_callback_t* );
+  virtual void register_direct_damage_callback( int64_t result_mask, action_callback_t* );
+  virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
+  virtual void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
 
   virtual bool parse_talent_trees( int talents[], const uint32_t size );
   virtual bool parse_talents_armory ( const std::string& talent_string );
@@ -3488,7 +3478,7 @@ struct target_t : public player_t
   virtual double composite_mastery() SC_CONST { return 0.0; }
 
   virtual double assess_damage( double amount, const school_type school,
-                              int type, int travel_result, action_t* a, player_t* s );
+				int type, int travel_result, action_t* a );
   void recalculate_health();
   double time_to_die() SC_CONST;
   virtual double health_percentage() SC_CONST;
@@ -3549,7 +3539,7 @@ struct stats_t
   int resource;
   double resource_consumed, resource_portion;
   double frequency, num_executes, num_ticks;
-  double num_execute_results, num_tick_results;
+  double num_direct_results, num_tick_results;
   double total_execute_time, total_tick_time;
   double total_dmg, portion_dmg;
   double dps, portion_dps, dpe, dpet, dpr, rpe;
@@ -3560,18 +3550,17 @@ struct stats_t
   {
     double count, min_dmg, max_dmg, avg_dmg, total_dmg, pct;
   };
-  stats_results_t execute_results[ RESULT_MAX ];
-  stats_results_t    tick_results[ RESULT_MAX ];
+  stats_results_t direct_results[ RESULT_MAX ];
+  stats_results_t   tick_results[ RESULT_MAX ];
 
   int num_buckets;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
 
   void consume_resource( double r ) { resource_consumed += r; }
-  void add( double amount, int dmg_type, int result, double time );
   void add_result( double amount, int dmg_type, int result );
-  void add_time  ( double amount, int dmg_type );
-  void add_execute( int dmg_type, double time );
+  void add_tick   ( double time );
+  void add_execute( double time );
   void init();
   void reset( action_t* );
   void analyze();
@@ -3597,8 +3586,6 @@ struct base_stats_t
   double spell_crit, melee_crit;
 };
 
-
-
 // Action ====================================================================
 
 struct action_t : public spell_id_t
@@ -3611,7 +3598,7 @@ struct action_t : public spell_id_t
   uint32_t id;
   school_type school;
   int resource, tree, result, aoe;
-  bool dual, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, pseudo_pet, auto_cast;
+  bool dual, callbacks, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, pseudo_pet, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks, usable_moving;
   int dot_behavior;
@@ -3636,7 +3623,7 @@ struct action_t : public spell_id_t
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double player_haste;
   double resource_consumed;
-  double direct_dmg, tick_dmg, actual_direct_dmg, actual_tick_dmg;
+  double direct_dmg, tick_dmg;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
@@ -3717,9 +3704,6 @@ struct action_t : public spell_id_t
   virtual void   extend_duration( int extra_ticks );
   virtual void   extend_duration_seconds( double extra_ticks );
   virtual void   update_ready();
-  virtual void   update_stats( int type );
-  virtual void   update_result( int type );
-  virtual void   update_time( int type );
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
@@ -3815,7 +3799,7 @@ struct heal_t : public spell_t
   std::string target_str;
 
   // Reporting
-  double total_heal, actual_heal, overheal;
+  double total_heal, total_actual;
 
   void _init_heal_t();
   heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
@@ -3831,8 +3815,6 @@ struct heal_t : public spell_t
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
-  virtual void update_stats( int type );
-  virtual void schedule_travel( player_t* );
   virtual void travel( player_t*, int travel_result, double travel_dmg );
   virtual void tick();
   virtual void last_tick();
@@ -3850,7 +3832,7 @@ struct absorb_t : public spell_t
   std::string target_str;
 
   // Reporting
-  double total_heal, actual_heal, overheal;
+  double total_heal, total_actual;
 
   void _init_absorb_t();
   absorb_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
@@ -3865,7 +3847,6 @@ struct absorb_t : public spell_t
   virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
-  virtual void schedule_travel( player_t* );
   virtual void travel( player_t*, int travel_result, double travel_dmg );
 
 };
@@ -4215,14 +4196,8 @@ struct log_t
 {
   // Generic Output
   static void output( sim_t*, const char* format, ... );
-  // Combat Log
-  static void start_event( action_t* );
-  static void damage_event( action_t*, double dmg, int dmg_type );
-  static void miss_event( action_t* );
-  static void resource_gain_event( player_t*, int resource, double amount, double actual_amount, gain_t* source );
-  static void aura_gain_event( player_t*, const char* name, int id );
-  static void aura_loss_event( player_t*, const char* name, int id );
-  static void summon_event( pet_t* );
+
+  // Combat Log (unsupported)
 };
 
 // Pseudo Random Number Generation ===========================================

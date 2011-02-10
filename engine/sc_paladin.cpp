@@ -243,7 +243,7 @@ struct paladin_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST;
   virtual void      regen( double periodicity );
-  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a, player_t* s );
+  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -639,7 +639,7 @@ struct avengers_shield_t : public paladin_attack_t
 
     if ( p -> glyphs.focused_shield -> ok() )
     {
-      aoe             += p -> glyphs.focused_shield -> mod_additive( P_TARGET );
+      aoe             += (int) p -> glyphs.focused_shield -> mod_additive( P_TARGET );
       base_multiplier *= 1.0 + p -> glyphs.focused_shield -> mod_additive( P_GENERIC );
     }
   }
@@ -1131,7 +1131,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
-    aoe              = p -> talents.seals_of_command -> mod_additive( P_TARGET );
+    aoe              = (int) p -> talents.seals_of_command -> mod_additive( P_TARGET );
     base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
     base_multiplier *= 1.0 + ( 0.01 * p -> talents.seals_of_the_pure -> effect_base_value( 1 ) +
                                0.10 * p -> set_bonus.tier10_4pc_melee() );
@@ -1494,11 +1494,12 @@ struct consecration_tick_t : public paladin_spell_t
   consecration_tick_t( paladin_t* p )
     : paladin_spell_t( "consecration", 81297, p )
   {
-    aoe        = -1;
-    dual       = true;
-    background = true;
-    may_crit   = true;
-    may_miss   = true;
+    aoe         = -1;
+    dual        = true;
+    direct_tick = true;
+    background  = true;
+    may_crit    = true;
+    may_miss    = true;
 
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
@@ -1506,21 +1507,11 @@ struct consecration_tick_t : public paladin_spell_t
 
     base_multiplier *= 1.0 + 0.01 * p -> talents.hallowed_ground->effect_base_value( 1 );
   }
-
-  virtual void execute()
-  {
-    paladin_spell_t::execute();
-    if ( result_is_hit() )
-    {
-      actual_tick_dmg = actual_direct_dmg;
-    }
-    update_stats( DMG_OVER_TIME );
-  }
 };
 
 struct consecration_t : public paladin_spell_t
 {
-  action_t* consecration_tick;
+  spell_t* tick_spell;
 
   consecration_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "consecration", "Consecration", p )
@@ -1535,11 +1526,11 @@ struct consecration_t : public paladin_spell_t
 
     if ( p -> glyphs.consecration -> ok() )
     {
-      num_ticks *= 1.0 + p -> glyphs.consecration -> mod_additive( P_DURATION );
+      num_ticks = (int) floor( num_ticks * ( 1.0 + p -> glyphs.consecration -> mod_additive( P_DURATION ) ) );
       cooldown -> duration *= 1.0 + p -> glyphs.consecration -> mod_additive( P_COOLDOWN );
     }
 
-    consecration_tick = new consecration_tick_t( p );
+    tick_spell = new consecration_tick_t( p );
   }
 
   // Consecration ticks are modeled as "direct" damage, requiring a dual-spell setup.
@@ -1547,8 +1538,8 @@ struct consecration_t : public paladin_spell_t
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-    consecration_tick -> execute();
-    update_time( DMG_OVER_TIME );
+    tick_spell -> execute();
+    stats -> add_tick( time_to_tick );
   }
 };
 
@@ -2478,22 +2469,23 @@ void paladin_t::regen( double periodicity )
 
 // paladin_t::assess_damage ==================================================
 
-double paladin_t::assess_damage( double amount,
+double paladin_t::assess_damage( double            amount,
                                  const school_type school,
-                                 int    dmg_type,
-                                 int result,
-                                 action_t* a,
-                                 player_t* s )
+                                 int               dmg_type,
+                                 int               result,
+                                 action_t*         action )
 {
 
   if ( talents.sanctuary -> rank() )
   {
     amount *= 1.0 - talents.sanctuary -> effect_base_value( 1 ) / 100.0;
 
-    if ( result == RESULT_DODGE || result == RESULT_BLOCK )
+    if ( result == RESULT_DODGE || 
+	 result == RESULT_BLOCK )
+    {
       resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, gains_sanctuary );
+    }
   }
-
   if ( result == RESULT_BLOCK )
   {
     buffs_reckoning -> trigger();
@@ -2513,7 +2505,7 @@ double paladin_t::assess_damage( double amount,
     }
   }
 
-  return player_t::assess_damage( amount, school, dmg_type, result, a, s );
+  return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
 
 // paladin_t::get_cooldown ===================================================

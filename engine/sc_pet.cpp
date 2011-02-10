@@ -129,7 +129,6 @@ void pet_t::summon( double duration )
   if ( sim -> log )
   {
     log_t::output( sim, "%s summons %s.", owner -> name(), name() );
-    log_t::summon_event( this );
   }
 
   distance = owner -> distance;
