@@ -30,7 +30,6 @@ struct shaman_t : public player_t
 {
   // Active
   action_t* active_fire_totem;
-  action_t* active_flame_shock;
   action_t* active_lightning_charge;
   action_t* active_searing_flames_dot;
 
@@ -180,7 +179,6 @@ struct shaman_t : public player_t
     tree_type[ SHAMAN_RESTORATION ] = TREE_RESTORATION;
 
     // Active
-    active_flame_shock        = 0;
     active_lightning_charge   = 0;
     active_searing_flames_dot = 0;
 
@@ -817,7 +815,7 @@ struct lava_burst_overload_t : public shaman_spell_t
     
     shaman_t* p = player -> cast_shaman();
     
-    if ( p -> active_flame_shock ) 
+    if ( p -> dot_flame_shock -> ticking ) 
       player_crit += 1.0;
   }
 };
@@ -991,14 +989,12 @@ struct unleash_flame_t : public shaman_spell_t
     if ( p -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     {
       shaman_spell_t::execute();
-      p -> buffs_unleash_flame -> trigger();
     }
     
     if ( p -> off_hand_weapon.type != WEAPON_NONE && 
          p -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     {
       shaman_spell_t::execute();
-      p -> buffs_unleash_flame -> trigger();
     }
   }
 };
@@ -1918,7 +1914,7 @@ struct lava_burst_t : public shaman_spell_t
     
     shaman_t* p = player -> cast_shaman();
     
-    if ( p -> active_flame_shock ) 
+    if ( p -> dot_flame_shock -> ticking ) 
       player_crit += 1.0;
       
     if ( p -> buffs_unleash_flame -> up() )
@@ -1935,11 +1931,11 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( flame_shock )
     {
-      if ( ! p -> active_flame_shock )
+      if ( ! p -> dot_flame_shock -> ticking )
         return false;
 
       double lvb_finish = sim -> current_time + execute_time();
-      double fs_finish  = p -> active_flame_shock -> dot -> ready;
+      double fs_finish  = p -> dot_flame_shock -> ready;
       if ( lvb_finish > fs_finish )
         return false;
     }
@@ -1960,11 +1956,11 @@ struct lava_burst_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
         overload -> execute();
 
-      if ( p -> set_bonus.tier10_4pc_caster() && p -> active_flame_shock )
+      if ( p -> set_bonus.tier10_4pc_caster() && p -> dot_flame_shock -> ticking )
       {
-        double extra_ticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> active_flame_shock -> base_tick_time;
-        extra_ticks *= 1.0 / p -> active_flame_shock -> player_haste;
-        p -> active_flame_shock -> extend_duration( int( floor( extra_ticks + 0.5 ) ) );
+        double extra_ticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> dot_flame_shock -> action -> base_tick_time;
+        extra_ticks *= 1.0 / p -> dot_flame_shock -> action -> player_haste;
+        p -> dot_flame_shock -> action -> extend_duration( int( floor( extra_ticks + 0.5 ) ) );
       }
     }
   }
@@ -2406,8 +2402,6 @@ struct flame_shock_t : public shaman_spell_t
       trigger_gcd         = 1.0;
       min_gcd             = 1.0;
     }
-
-    observer              = &( p -> active_flame_shock );
   }
 
   virtual void player_buff()
@@ -3752,7 +3746,7 @@ void shaman_t::init_actions()
     if ( primary_tree() == TREE_ENHANCEMENT )
     {
       bool caster_mainhand = false;
-      // Caster weapon mainhand check, for double FT
+      // Caster weapon mainhand check, affects priority list very slightly
       for ( unsigned i = 0; i < items.size(); i++ )
       {
         if ( items[ i ].slot == SLOT_MAIN_HAND && items[ i ].stats.spell_power > 0 )
@@ -3764,12 +3758,9 @@ void shaman_t::init_actions()
 
       action_list_str  = "flask,type=winds/food,type=seafood_magnifique_feast";
       
-      if ( ! caster_mainhand )
-        action_list_str +="/windfury_weapon,weapon=main";
-      else
-        action_list_str +="/flametongue_weapon,weapon=main";
-      
-      action_list_str += "/flametongue_weapon,weapon=off";
+      action_list_str +="/windfury_weapon,weapon=main";
+      if ( off_hand_weapon.type != WEAPON_NONE )
+        action_list_str += "/flametongue_weapon,weapon=off";
       action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
       action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react";
       action_list_str += "/snapshot_stats";
@@ -3794,8 +3785,6 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
 
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
-      
       if ( set_bonus.tier10_4pc_melee() )
       {
         action_list_str += "/fire_elemental_totem,if=buff.maelstrom_power.react,time_to_die>=125";
@@ -3806,22 +3795,26 @@ void shaman_t::init_actions()
         
       action_list_str += "/searing_totem";
       action_list_str += "/lava_lash";
-      if ( ! set_bonus.tier10_4pc_melee() )
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react";
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
       if ( level > 80 ) action_list_str += "/unleash_elements";
-      action_list_str += "/flame_shock,if=!ticking";
+      action_list_str += "/flame_shock,if=!ticking|(buff.unleash_flame.up&ticks_remain<=2)";
       action_list_str += "/earth_shock";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/fire_nova";
-      if ( level <= 80 || set_bonus.tier10_2pc_melee() )
+      if ( set_bonus.tier10_2pc_melee() )
       {
         if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
-        if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage";
       }
       if ( ! set_bonus.tier10_4pc_melee() )
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
-      action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.1";
+      {
+        if ( caster_mainhand )
+          action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
+        else
+          action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react";
+      }
+      
+      action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.5";
     }
     else
     {

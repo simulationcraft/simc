@@ -2,7 +2,6 @@
 
 chardev=14385 name=Shaman_Elemental_T11_372 save=Shaman_Elemental_T11_372.simc
 
-chardev=14201 name=Shaman_Enhancement_T11_372_FTFT save=Shaman_Enhancement_T11_372_FTFT.simc
+chardev=39863 name=Shaman_Enh_T11_372 save=Shaman_Enh_T11_372.simc
 
-chardev=14192 name=Shaman_Enhancement_T11_372_WFFT save=Shaman_Enhancement_T11_372_WFFT.simc
-
+chardev=39882 name=Shaman_Enh_T11_372_Caster save=Shaman_Enh_T11_372_Caster.simc
