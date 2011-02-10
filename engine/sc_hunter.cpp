@@ -1223,23 +1223,6 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   }
 };
 
-// Wind Serpent Lightning Breath ================================================
-
-struct lightning_breath_debuff_t : public debuff_t
-{
-  lightning_breath_debuff_t( player_t* t) : debuff_t( t, "lightning_breath", 1, 45.0 )
-  {}
-
-  virtual void expire()
-  { 
-    if( player )
-    {
-      player = 0;
-    }
-    debuff_t::expire();
-  }
-};
-
 struct lightning_breath_t : public hunter_pet_spell_t
 {
   lightning_breath_t( player_t* player, const std::string& options_str ) :
@@ -3469,8 +3452,8 @@ void player_t::hunter_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.hunters_mark  = new debuff_t( p, "hunters_mark",  1, 300.0 );
-    p -> debuffs.lightning_breath  = new lightning_breath_debuff_t( p );
+    p -> debuffs.hunters_mark      = new debuff_t( p, "hunters_mark",  1, 300.0 );
+    p -> debuffs.lightning_breath  = new debuff_t( p, "lightning_breath", 1, 45.0 );
   }
 }
 
