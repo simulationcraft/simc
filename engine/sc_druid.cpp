@@ -3020,8 +3020,8 @@ struct starfall_t : public druid_spell_t
 
     parse_options( NULL, options_str );
 
-    num_ticks      = 20;
-    base_tick_time = 0.5;
+    num_ticks      = 10;
+    base_tick_time = 1.0;
     hasted_ticks   = false;
     cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
 
@@ -3035,6 +3035,12 @@ struct starfall_t : public druid_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     starfall_star -> execute();
+    
+    // If there is at least one additional target around Starfall will
+    // launch 2 Stars per tick, (10*2 = 20 max stars)
+    target_t* t = target -> cast_target(); 
+    if ( t -> adds_nearby > 0 )
+      starfall_star -> execute();
     stats -> add_tick( time_to_tick );
   }
 };
