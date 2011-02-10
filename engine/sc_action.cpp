@@ -323,21 +323,21 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
         num_ticks        = (int) ( pData.spell_duration ( spell_id ) / base_tick_time );
         break;
       case A_ADD_FLAT_MODIFIER:
-        switch (pData.effect_misc_value1(effect))
+        switch ( pData.effect_misc_value1( effect ) )
         {
         case P_CRIT:
-          base_crit += 0.01 * pData.effect_base_value(effect);
+          base_crit += 0.01 * pData.effect_base_value( effect );
           break;
         case P_COOLDOWN:
-          cooldown->duration += 0.001 * pData.effect_base_value(effect);
+          cooldown -> duration += 0.001 * pData.effect_base_value( effect );
           break;
         }
         break;
       case A_ADD_PCT_MODIFIER:
-        switch (pData.effect_misc_value1(effect))
+        switch ( pData.effect_misc_value1( effect ) )
         {
         case P_RESOURCE_COST:
-          base_cost *= 1 + 0.01 * pData.effect_base_value(effect);
+          base_cost *= 1 + 0.01 * pData.effect_base_value( effect );
           break;
         }
         break;

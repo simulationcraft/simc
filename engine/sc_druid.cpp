@@ -1941,7 +1941,7 @@ struct mangle_bear_t : public druid_bear_attack_t
     druid_t* p = player -> cast_druid();
 
     if ( p -> buffs_berserk -> up() )
-      aoe = 3;
+      aoe = 2;
 
     druid_bear_attack_t::execute();
     
