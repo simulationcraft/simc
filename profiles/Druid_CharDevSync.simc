@@ -1,19 +1,10 @@
+#!simc
 
 chardev=34093 save=Druid_Balance_T11_359.simc name=Druid_Balance_T11_359
-head=stormriders_cover,type=leather,ilevel=359,quality=epic,stats=1356armor_228crit_168haste_281int_512sta,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
-wrists=manacles_of_the_sleeping_beast,type=leather,ilevel=359,quality=epic,stats=730armor_190int_127mastery_127spi_286sta,reforge=mastery_haste,enchant=50int
-off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
 
 chardev=34049 save=Druid_Balance_T11_372.simc name=Druid_Balance_T11_372
-head=stormriders_cover,heroic=1,type=leather,ilevel=372,quality=epic,stats=1439armor_257crit_197haste_325int_578sta,reforge=crit_spi,gems=burning_shadowspirit_54int_20int_20spi_30int,enchant=60int_35crit
-wrists=manacles_of_the_sleeping_beast,heroic=1,type=leather,ilevel=372,quality=epic,stats=775armor_215int_143mastery_143spi_322sta,reforge=mastery_haste,enchant=50int
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
 
 chardev=35492 save=Druid_Feral_T11_372.simc name=Druid_Feral_T11_372
-head=stormriders_headpiece,heroic=1,type=leather,ilevel=372,quality=epic,stats=325agi_1439armor_257crit_197hit_578sta,reforge=crit_mastery,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
-wrists=parasitic_bands,heroic=1,type=leather,ilevel=372,quality=epic,stats=215agi_775armor_143crit_143mastery_322sta,reforge=crit_hit,gems=67agi,enchant=50agi
 
 chardev=35430 save=Druid_Feral_T11_372_hitcap.simc name=Druid_Feral_T11_372_hitcap
-head=stormriders_headpiece,heroic=1,type=leather,ilevel=372,quality=epic,stats=325agi_1439armor_257crit_197hit_578sta,reforge=crit_mastery,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
-wrists=parasitic_bands,heroic=1,type=leather,ilevel=372,quality=epic,stats=215agi_775armor_143crit_143mastery_322sta,reforge=crit_hit,gems=67agi,enchant=50agi
 

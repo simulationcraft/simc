@@ -36,7 +36,7 @@ head=stormriders_cover,type=leather,ilevel=359,quality=epic,stats=1356armor_228c
 neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
 shoulders=stormriders_shoulderwraps,type=leather,ilevel=359,quality=epic,stats=1252armor_149haste_233int_169mastery_380sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=50int_25haste
 chest=scorched_wormling_vest,type=leather,ilevel=359,quality=epic,stats=1669armor_301int_228mastery_188spi_512sta,reforge=mastery_haste,gems=67int_67int,enchant=20all
-waist=lightning_lash,type=leather,ilevel=359,quality=epic,stats=939armor_179haste_253int_152spi_380sta,gems=40int
+waist=lightning_lash,type=leather,ilevel=359,quality=epic,stats=939armor_169haste_233int_149spi_380sta,gems=40int_10int
 legs=stormriders_leggings,type=leather,ilevel=359,quality=epic,stats=1460armor_228haste_301int_188spi_512sta,gems=40int_20int_20spi_20int,enchant=95int_55spi
 feet=fading_violet_sandals,type=leather,ilevel=359,quality=epic,stats=1148armor_169haste_233int_149spi_380sta,gems=20haste_20int_10haste,enchant=35mastery
 wrists=manacles_of_the_sleeping_beast,type=leather,ilevel=359,quality=epic,stats=730armor_190int_127mastery_127spi_286sta,reforge=mastery_haste,enchant=50int
@@ -53,12 +53,12 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5208
-# gear_intellect=4083
-# gear_spirit=1581
+# gear_intellect=4073
+# gear_spirit=1578
 # gear_spell_power=1954
 # gear_hit_rating=127
 # gear_crit_rating=607
-# gear_haste_rating=2298
+# gear_haste_rating=2288
 # gear_mastery_rating=757
 # gear_armor=10222
 # meta_gem=burning_shadowspirit
