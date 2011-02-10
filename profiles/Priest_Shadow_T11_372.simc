@@ -40,7 +40,7 @@ chest=mercurial_vestment,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346a
 waist=soul_breath_belt_of_the_undertow,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_429sta_266int_180haste_180spi,gems=20haste_20int_67int_10int,suffix=231
 legs=mercurial_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_345int_217spi_578sta,gems=20haste_20int_40int_20int,enchant=95int_55spi
 feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_spi,gems=40int_10haste,enchant=35mastery
-wrists=bracers_of_the_dark_mother,type=cloth,ilevel=379,quality=epic,stats=209int_344sta_133spi_153mastery_612armor,gems=20haste_20int_10int,enchant=50int
+wrists=bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,stats=612armor_209int_153mastery_133spi_344sta,gems=20haste_20int_10int,enchant=50int
 hands=mercurial_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=crit_spi,gems=40int,enchant=65mastery
 finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
 finger2=planetary_band_of_the_undertow,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143haste_143spi,suffix=131
@@ -48,7 +48,7 @@ trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=o
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,gems=20haste_20int_10int,enchant=lightweave_embroidery
 main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143haste_143hit,enchant=40int
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
 ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta
 # Gear Summary
 # gear_strength=20
