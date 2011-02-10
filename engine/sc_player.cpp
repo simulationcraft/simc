@@ -3008,6 +3008,8 @@ double player_t::assess_damage( double amount,
     {
       amount *= 0.90;
     }
+
+    amount *= 1.0 - buffs.inspiration -> value() / 100.0;
   }
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, amount );

@@ -2709,7 +2709,7 @@ struct flash_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -2824,7 +2824,7 @@ struct binding_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -2904,7 +2904,7 @@ struct greater_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -3041,7 +3041,7 @@ struct prayer_of_healing_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = spell_id_t::cooldown();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
