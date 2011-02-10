@@ -447,7 +447,7 @@ static void print_text_core_stats( FILE* file, player_t* p )
                    p -> attribute_buffed[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
                    p -> attribute_buffed[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
                    p -> attribute_buffed[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
-                   p -> buffed_mastery , p -> mastery, p -> stats.mastery_rating,
+                   p -> buffed_mastery , p -> composite_mastery(), p -> stats.mastery_rating,
                    p -> resource_buffed[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_HEALTH ],
                    p -> resource_buffed[ RESOURCE_MANA   ], p -> resource_max[ RESOURCE_MANA   ] );
 }
@@ -890,7 +890,7 @@ static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
   util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%",
-                   p -> dps, p -> dps_error, p -> dps_error * 100 / p -> dps, ( p -> dps_max - p -> dps_min ) / 2.0 , ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps );
+                   p -> dps, p -> dps_error, p -> dps ? p -> dps_error * 100 / p -> dps : 0, ( p -> dps_max - p -> dps_min ) / 2.0 , p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0);
 
   if ( p -> rps_loss > 0 )
   {
