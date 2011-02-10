@@ -4546,6 +4546,15 @@ void player_t::warlock_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.demonic_pact     ) sim -> auras.demonic_pact     -> override();
   if ( sim -> overrides.fel_intelligence ) sim -> auras.fel_intelligence -> override();
+  
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( sim -> overrides.dark_intent )
+    {
+      p -> buffs.dark_intent          -> override();
+      p -> buffs.dark_intent_feedback -> override( 3 );
+    }
+  }
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {

@@ -25,6 +25,7 @@ static OptionEntry* getBuffOptions()
   static OptionEntry options[] =
     {
       { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
+      { "Dark Intent",           "override.dark_intent",            "Dark Intent"                                                                },
       { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                                                },
       { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
       { "Attack Power (%)",      "override.blessing_of_might",      "Blessing of Might\nAbomination's Might\nTrueshot Aura\nUnleashed Rage"      },
@@ -83,9 +84,9 @@ static OptionEntry* getScalingOptions()
       { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
       { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
       { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-	  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
+      { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
       { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-	  { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
+      { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
       { NULL, NULL, NULL }
     };
   return options;
@@ -116,10 +117,10 @@ static OptionEntry* getPlotOptions()
 static QString defaultSimulateText()
 {
   return QString( "# Profile will be downloaded into here.\n"
-		  "# Use the Back/Forward buttons to cycle through the script history.\n"
-		  "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
-		  "#\n"
-		  "# Clicking Simulate will create a simc_gui.simc profile for review.\n");
+                  "# Use the Back/Forward buttons to cycle through the script history.\n"
+                  "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
+                  "#\n"
+                  "# Clicking Simulate will create a simc_gui.simc profile for review.\n");
 }
 
 static QComboBox* createChoice( int count, ... )
@@ -356,7 +357,7 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   logFileText = QDir::currentPath() + QDir::separator() + "log.txt";
   resultsFileText = QDir::currentPath() + QDir::separator() + "results.html";
 #endif
-	
+
   mainTab = new QTabWidget();
   createWelcomeTab();
   createOptionsTab();
@@ -599,12 +600,12 @@ void SimulationCraftWindow::createRawrTab()
 {
   QVBoxLayout* rawrLayout = new QVBoxLayout();
   QLabel* rawrLabel = new QLabel( " http://rawr.codeplex.com\n\n"
-				  "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
-				  " The key architectural difference between Rawr and SimulationCraft is one of"
-				  " formulation vs simulation.  There are strengths and weaknesses to each"
-				  " approach.  Since they come from different directions, one can be confident"
-				  " in the result when they arrive at the same destination.\n\n"
-				  " To aid comparison, SimulationCraft can import the character xml file written by Rawr." );
+                                  "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
+                                  " The key architectural difference between Rawr and SimulationCraft is one of"
+                                  " formulation vs simulation.  There are strengths and weaknesses to each"
+                                  " approach.  Since they come from different directions, one can be confident"
+                                  " in the result when they arrive at the same destination.\n\n"
+                                  " To aid comparison, SimulationCraft can import the character xml file written by Rawr." );
   rawrLabel->setWordWrap( true );
   rawrLayout->addWidget( rawrLabel );
   rawrLayout->addWidget( rawrButton = new QPushButton( "Change Directory" ) );
@@ -665,12 +666,12 @@ void SimulationCraftWindow::createBestInSlotTab()
     int player = PLAYER_MAX;
     for( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
       if( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
-	player = j;
+        player = j;
 
     int tier = TIER_MAX;
     for( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
       if( profile.contains( tierNames[ j ] ) )
-	tier = j;
+        tier = j;
 
     if( player != PLAYER_MAX && tier != TIER_MAX )
     {
@@ -752,7 +753,7 @@ void SimulationCraftWindow::createExamplesTab()
   {
     CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
     exampleFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
-	
+
     CFRelease( fileRef );
     CFRelease( macPath );
   }
@@ -780,12 +781,12 @@ void SimulationCraftWindow::createResultsTab()
   {
     CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
     legendFile          = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
-	
+
     CFRelease(fileRef);
     CFRelease(macPath);
   }
 #endif
-	
+
   QFile file( legendFile );
   if( file.open( QIODevice::ReadOnly ) )
   {
@@ -808,47 +809,47 @@ void SimulationCraftWindow::createResultsTab()
 void SimulationCraftWindow::createToolTips()
 {
   versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
-			     "PTR:  Use mechanics on PTR server"
-			     "Both: Create Evil Twin with PTR mechanics" );
+                             "PTR:  Use mechanics on PTR server"
+                             "Both: Create Evil Twin with PTR mechanics" );
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
-				"1000:  Sufficient for DPS Analysis\n"
-				"10000: Recommended for Scale Factor Generation" );
+                                "1000:  Sufficient for DPS Analysis\n"
+                                "10000: Recommended for Scale Factor Generation" );
 
   fightLengthChoice->setToolTip( "For custom fight lengths use max_time=seconds." );
 
   fightVarianceChoice->setToolTip( "Varying the fight length over a given spectrum improves\n"
-				   "the analysis of trinkets and abilities with long cooldowns." );
+                                   "the analysis of trinkets and abilities with long cooldowns." );
 
   addsChoice->setToolTip( "Number of additional targets nearby boss for entire fight.\n"
-			  "See Examples tab for how to use raid_events to summon temporary adds.\n"
-			  "Support for multi-DoT has not yet been implemented.\n"
-			  "Many AoE abilities have not yet been implemented." );
+                          "See Examples tab for how to use raid_events to summon temporary adds.\n"
+                          "Support for multi-DoT has not yet been implemented.\n"
+                          "Many AoE abilities have not yet been implemented." );
 
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
-				"Helter Skelter:\n"
-				"    Movement, Stuns, Interrupts,\n"
-				"    Target-Switching (every 2min)\n"
-				"    Distraction (10% -skill every other 45sec" );
+                                "Helter Skelter:\n"
+                                "    Movement, Stuns, Interrupts,\n"
+                                "    Target-Switching (every 2min)\n"
+                                "    Distraction (10% -skill every other 45sec" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
 
   playerSkillChoice->setToolTip( "Elite:       No mistakes.  No cheating either.\n"
-				 "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
+                                 "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
-			     "Most modern desktops have two at least two CPU cores." );
+                             "Most modern desktops have two at least two CPU cores." );
 
   smoothRNGChoice->setToolTip( "Introduce some determinism into the RNG packages, improving convergence by 10x.\n"
-			       "This enables the use of fewer iterations, but the scale factors of non-linear stats may suffer." );
+                               "This enables the use of fewer iterations, but the scale factors of non-linear stats may suffer." );
 
   armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China" );
 
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
-			   "Gory details are very gory.  No documentation will be forthcoming.\n"
-			   "Due to the forced single iteration, no scale factor calculation." );
+                           "Gory details are very gory.  No documentation will be forthcoming.\n"
+                           "Due to the forced single iteration, no scale factor calculation." );
   
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
@@ -1018,7 +1019,7 @@ void SimulationCraftWindow::importFinished()
     bool found = false;
     for( int i=0; i < historyList->count() && ! found; i++ )
       if( historyList->item( i )->text() == label )
-	found = true;
+        found = true;
 
     if( ! found )
     {
@@ -1315,7 +1316,7 @@ void SimulationCraftWindow::cmdLineReturnPressed()
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
     if( cmdLine->text().count( "battle.net" ) || 
-	cmdLine->text().count( "wowarmory.com" ) )
+        cmdLine->text().count( "wowarmory.com" ) )
     {
       battleNetView->setUrl( QUrl( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_BATTLE_NET );

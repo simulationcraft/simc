@@ -1334,8 +1334,6 @@ void player_t::init_buffs()
   buffs.body_and_soul        = new buff_t( this, "body_and_soul", 1, 4.0 );
   buffs.grace                = new buff_t( this, "grace", 3, 15.0 );
 
-
-
   // Infinite-Stacking Buffs
   buffs.moving  = new buff_t( this, "moving",  1 );
   buffs.stunned = new buff_t( this, "stunned", -1 );
@@ -1354,7 +1352,6 @@ void player_t::init_buffs()
   buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_SPELL_POWER,  1200.0,            1, 25.0, 60.0 );
   buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
-
 
   // Infinite-Stacking De-Buffs
   debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
