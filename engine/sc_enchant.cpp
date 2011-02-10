@@ -83,7 +83,7 @@ static enchant_data_t enchant_db[] =
   { "4094",  "+50 Mastery Rating",                                        "50mastery"                      },
   { "4093",  "+50 Spirit",                                                "50spi"                          },
   { "4092",  "+50 Hit Rating",                                            "50hit"                          },
-  { "4091",  "+100 Intellect",                                            "100int"                         },
+  { "4091",  "+40 Intellect",                                             "40int"                          },
   { "4090",  "+250 Armor",                                                "250Barmor"                      },
   { "4089",  "+50 Hit Rating",                                            "50hit"                          },
   { "4088",  "+40 Spirit",                                                "40spi"                          },
