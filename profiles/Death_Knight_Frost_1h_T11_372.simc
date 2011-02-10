@@ -6,7 +6,7 @@ level=85
 race=orc
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
-talents=http://ptr.wowhead.com/talent#deathknight-103000000000000000003033001223311201230103300000000000000000
+talents=http://www.wowhead.com/talent#deathknight-103000000000000000003033001223311201230103300000000000000000
 glyphs=horn_of_winter/frost_strike/howling_blast/obliterate
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
