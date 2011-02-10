@@ -257,27 +257,7 @@ struct paladin_t : public player_t
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// trigger_judgements_of_the_wise ===========================================
-
-static void trigger_judgements_of_the_wise( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-
-  if ( p -> primary_tree() == TREE_PROTECTION )
-  {
-    p -> buffs_judgements_of_the_wise -> trigger();
-  }
-}
-
-static void trigger_judgements_of_the_bold( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-
-  if ( p -> primary_tree() == TREE_RETRIBUTION )
-  {
-    p -> buffs_judgements_of_the_bold -> trigger();
-  }
-}
+// trigger_hand_of_light ====================================================
 
 static void trigger_hand_of_light( action_t* a )
 {
@@ -290,17 +270,8 @@ static void trigger_hand_of_light( action_t* a )
   }
 }
 
-static void trigger_divine_purpose( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
+// Guardian of Ancient Kings Pet ============================================
 
-  if ( p -> talents.divine_purpose->rank() )
-  {
-    p -> buffs_divine_purpose->trigger();
-  }
-}
-
-// Retribution guardian of ancient kings pet
 // TODO: melee attack
 struct guardian_of_ancient_kings_ret_t : public pet_t
 {
@@ -475,7 +446,7 @@ struct paladin_attack_t : public attack_t
         }
       }
       if ( trigger_dp )
-        trigger_divine_purpose( this );
+        p() -> buffs_divine_purpose -> trigger();
     }
   }
 
@@ -485,7 +456,7 @@ struct paladin_attack_t : public attack_t
     attack_t::player_buff();
     if ( p -> buffs_avenging_wrath -> up() )
     {
-      player_multiplier *= 1.0 + 0.01 * p -> player_data.effect_base_value( p -> spells.avenging_wrath->effect_id( 1 ) );
+      player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
     }
     if ( school == SCHOOL_HOLY )
     {
@@ -645,66 +616,6 @@ struct avengers_shield_t : public paladin_attack_t
   }
 };
 
-// Crusader Strike =========================================================
-
-struct crusader_strike_t : public paladin_attack_t
-{
-  double base_cooldown;
-  crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "crusader_strike", "Crusader Strike", p )
-  {
-    parse_options( NULL, options_str );
-
-    trigger_seal = true;
-    spell_haste = true;
-
-    if ( p -> primary_tree() == TREE_PROTECTION )
-    {
-      cooldown->duration += 0.001 * p -> passives.judgements_of_the_wise->effect_base_value( 2 );
-    }
-    base_cooldown = cooldown->duration;
-
-    base_crit       += p -> talents.rule_of_law -> mod_additive( P_CRIT );
-    base_crit       += p -> glyphs.crusader_strike -> mod_additive( P_CRIT );
-    base_multiplier *= 1.0 + p -> talents.crusade -> mod_additive( P_GENERIC )
-                       + 0.01 * p -> talents.wrath_of_the_lightbringer->effect_base_value( 1 ) // TODO how do they stack?
-                       + 0.10 * p -> set_bonus.tier11_2pc_tank()
-                       + 0.05 * p -> ret_pvp_gloves;
-    base_cost       *= 1.0 + p -> glyphs.ascetic_crusader -> mod_additive( P_RESOURCE_COST );
-  }
-
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
-    
-    if ( result_is_hit() )
-    {
-      p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
-      trigger_hand_of_light( this );
-      if ( p -> talents.grand_crusader->rank() )
-      {
-        if ( sim->roll( p -> talents.grand_crusader->proc_chance() ) )
-        {
-          p -> get_cooldown( "avengers_shield" )->reset();
-        }
-      }
-    }
-  }
-
-  virtual void update_ready()
-  {
-    paladin_t* p = player->cast_paladin();
-    if ( p -> talents.sanctity_of_battle->rank() > 0 )
-    {
-      cooldown->duration = base_cooldown * haste();
-      if ( sim -> log ) log_t::output( sim, "%s %s cooldown is %.2f", p -> name(), name(),  cooldown->duration );
-    }
-
-    paladin_attack_t::update_ready();
-  }
-};
-
 // Divine Storm ============================================================
 
 struct divine_storm_t : public paladin_attack_t
@@ -852,7 +763,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( target -> health_percentage() > 20 && ! ( p -> talents.sanctified_wrath -> rank() && p -> buffs_avenging_wrath -> up() ) )
+    if ( target -> health_percentage() > 20 && ! ( p -> talents.sanctified_wrath -> rank() && p -> buffs_avenging_wrath -> check() ) )
       return false;
 
     return paladin_attack_t::ready();
@@ -895,7 +806,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
     player_multiplier *= util_t::talent_rank( p -> holy_power_stacks(), 3, 1.0, 3.0, 6.0 );
-    if ( p -> buffs_sacred_duty->up() )
+    if ( p -> buffs_sacred_duty -> up() )
     {
       player_crit += 1.0;
     }
@@ -1331,25 +1242,22 @@ struct judgement_t : public paladin_attack_t
     if ( seal -> result_is_hit() )
     {
       consume_and_gain_holy_power();
-
-      if ( p -> talents.judgements_of_the_pure -> ok() )
-      {
-        p -> buffs_judgements_of_the_pure -> trigger();
-      }
-      if ( p -> talents.judgements_of_the_just->rank() )
+        
+      if ( p -> talents.judgements_of_the_just -> rank() )
       {
         target -> debuffs.judgements_of_the_just -> trigger();
         target -> debuffs.judgements_of_the_just -> source = p;
       }
-      if ( p -> talents.sacred_duty->rank() )
-      {
-        p -> buffs_sacred_duty->trigger( 1, -1, p -> talents.sacred_duty->proc_chance() );
-      }
-      trigger_divine_purpose( this );
+
+      p -> buffs_divine_purpose -> trigger();
+      p -> buffs_judgements_of_the_pure -> trigger();
+      p -> buffs_sacred_duty-> trigger();      
     }
-    trigger_judgements_of_the_wise( seal );
-    trigger_judgements_of_the_bold( seal );
-    if ( p -> talents.communion->rank() ) p -> trigger_replenishment();
+
+    p -> buffs_judgements_of_the_bold -> trigger();
+    p -> buffs_judgements_of_the_wise -> trigger();
+
+    if ( p -> talents.communion -> rank() ) p -> trigger_replenishment();
 
     update_ready();
 
@@ -1428,7 +1336,7 @@ struct paladin_spell_t : public spell_t
 
     if ( p -> buffs_avenging_wrath -> up() )
     {
-      player_multiplier *= 1.0 + 0.01 * p -> player_data.effect_base_value( p -> spells.avenging_wrath->effect_id( 1 ) );
+      player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
     }
     if ( school == SCHOOL_HOLY )
     {
@@ -1446,7 +1354,10 @@ struct paladin_spell_t : public spell_t
     {
       consume_and_gain_holy_power();
       if ( trigger_dp )
-        trigger_divine_purpose( this );
+      {
+        paladin_t* p = player -> cast_paladin();
+        p -> buffs_divine_purpose -> trigger();
+      }
     }
   }
 
@@ -1483,7 +1394,7 @@ struct avenging_wrath_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    p -> buffs_avenging_wrath -> trigger();
+    p -> buffs_avenging_wrath -> trigger( 1, effect_base_value( 1 ) / 100.0 );
   }
 };
 
@@ -1505,7 +1416,7 @@ struct consecration_tick_t : public paladin_spell_t
     base_attack_power_multiplier = extra_coeff();
     direct_power_mod = 1.0;
 
-    base_multiplier *= 1.0 + 0.01 * p -> talents.hallowed_ground->effect_base_value( 1 );
+    base_multiplier *= 1.0 + 0.01 * p -> talents.hallowed_ground -> effect_base_value( 1 );
   }
 };
 
@@ -1514,15 +1425,14 @@ struct consecration_t : public paladin_spell_t
   spell_t* tick_spell;
 
   consecration_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "consecration", "Consecration", p )
+    : paladin_spell_t( "consecration", "Consecration", p ), tick_spell( 0 )
   {
     parse_options( NULL, options_str );;
 
     may_miss       = false;
     num_ticks      = 10;
     base_tick_time = 1;
-
-    parse_effect_data( p -> player_data, p -> talents.hallowed_ground->spell_id(), 2 );
+    base_cost     *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_RESOURCE_COST );
 
     if ( p -> glyphs.consecration -> ok() )
     {
@@ -1540,6 +1450,64 @@ struct consecration_t : public paladin_spell_t
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     tick_spell -> execute();
     stats -> add_tick( time_to_tick );
+  }
+};
+
+// Crusader Strike =========================================================
+
+struct crusader_strike_t : public paladin_attack_t
+{
+  double base_cooldown;
+  crusader_strike_t( paladin_t* p, const std::string& options_str )
+    : paladin_attack_t( "crusader_strike", "Crusader Strike", p )
+  {
+    parse_options( NULL, options_str );
+
+    spell_haste  = true;
+    trigger_seal = true;    
+
+    // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
+    cooldown -> duration += p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN );
+    base_cooldown         = cooldown -> duration;
+
+    base_crit       += p -> talents.rule_of_law -> mod_additive( P_CRIT );
+    base_crit       += p -> glyphs.crusader_strike -> mod_additive( P_CRIT );
+    base_multiplier *= 1.0 + p -> talents.crusade -> mod_additive( P_GENERIC )
+                       + p -> talents.wrath_of_the_lightbringer-> mod_additive( P_GENERIC ) // TODO how do they stack?
+                       + 0.10 * p -> set_bonus.tier11_2pc_tank()
+                       + 0.05 * p -> ret_pvp_gloves;
+    base_cost       *= 1.0 + p -> glyphs.ascetic_crusader -> mod_additive( P_RESOURCE_COST );
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+    paladin_attack_t::execute();
+    
+    if ( result_is_hit() )
+    {
+      p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
+      trigger_hand_of_light( this );
+      if ( p -> talents.grand_crusader->rank() )
+      {
+        if ( sim->roll( p -> talents.grand_crusader->proc_chance() ) )
+        {
+          p -> get_cooldown( "avengers_shield" )->reset();
+        }
+      }
+    }
+  }
+
+  virtual void update_ready()
+  {
+    paladin_t* p = player->cast_paladin();
+    if ( p -> talents.sanctity_of_battle->rank() > 0 )
+    {
+      cooldown->duration = base_cooldown * haste();
+      if ( sim -> log ) log_t::output( sim, "%s %s cooldown is %.2f", p -> name(), name(),  cooldown->duration );
+    }
+
+    paladin_attack_t::update_ready();
   }
 };
 
@@ -1782,10 +1750,10 @@ struct inquisition_t : public paladin_spell_t
     if ( p -> set_bonus.tier11_4pc_melee() )
       p -> buffs_inquisition -> buff_duration += base_duration;
     p -> buffs_inquisition -> trigger( 1, base_value() );
-    if ( p -> talents.holy_shield->rank() )
+    if ( p -> talents.holy_shield -> rank() )
       p -> buffs_holy_shield -> trigger();
     consume_and_gain_holy_power();
-    trigger_divine_purpose( this );
+    p -> buffs_divine_purpose -> trigger();
   }
 
   virtual bool ready()
@@ -2073,21 +2041,21 @@ void paladin_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
+  // buff_t( player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_ancient_power          = new buff_t( this, "ancient_power", -1 );
-  buffs_avenging_wrath         = new buff_t( this, "avenging_wrath",         1, spells.avenging_wrath->duration() );
+  buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, "censure",                5       );
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
   buffs_divine_plea            = new buff_t( this, "divine_plea",            1, spells.divine_plea->duration() );
-  buffs_divine_purpose         = new buff_t( this, "divine_purpose", 1, 8, 0, 0.01 * talents.divine_purpose->effect_base_value( 1 ) );
+  buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", 0.01 * talents.divine_purpose -> effect_base_value( 1 ) );
   buffs_holy_power             = new buff_t( this, "holy_power", 3 );
   buffs_holy_shield            = new buff_t( this, "holy_shield",            1, 20.0 );
   buffs_inquisition            = new buff_t( this, "inquisition", 1 );
-  buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", 1 );
-  buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", 1 );
-  buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", 1 );
+  buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
+  buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", talents.judgements_of_the_pure -> proc_chance() );
+  buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", ( primary_tree() == TREE_PROTECTION ? 1 : 0 ) );
   buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0, 0, talents.reckoning->rank() * 0.10 );
-  buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty" );
+  buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty", talents.sacred_duty -> proc_chance() );
   buffs_the_art_of_war         = new buff_t( this, talents.the_art_of_war -> effect_trigger_spell( 1 ), "the_art_of_war",  talents.the_art_of_war -> proc_chance() );
   buffs_zealotry               = new buff_t( this, talents.zealotry -> spell_id(), "zealotry", 1 );
 }
