@@ -834,7 +834,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background  = true;
       trigger_gcd = 0;
-      direct_power_mod = 0.3;
+      direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
       base_dd_min      = o -> player_data.effect_min( id, p -> level, E_DUMMY, A_NONE );
       base_dd_max      = o -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
       base_multiplier *= 1 + o -> glyphs.death_coil * 0.15;
@@ -1231,11 +1231,11 @@ struct ghoul_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
       if ( o -> buffs_shadow_infusion -> check() )
       {
-        player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * ( 0.08 );
+        player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * ( 0.06 );
       }
       if ( o -> buffs_dark_transformation -> check() )
       {
-        player_multiplier *= 1.8;
+        player_multiplier *= 1.6;
       }
       if ( o -> buffs_frost_presence -> check() )
       {
@@ -2612,7 +2612,7 @@ struct death_coil_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.3;
+    direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_DUMMY, A_NONE );
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
     base_multiplier *= 1 + p -> talents.morbidity -> effect_base_value( 1 ) / 100.0
