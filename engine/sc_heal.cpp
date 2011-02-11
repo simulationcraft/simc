@@ -154,8 +154,6 @@ void heal_t::execute()
     direct_dmg = calculate_direct_damage();
 
     schedule_travel( heal_target[ i ] );
-
-    if ( ! dual ) stats -> add_result( direct_dmg, HEAL_DIRECT, result );
   }
 
   consume_resource();
@@ -173,10 +171,8 @@ void heal_t::execute()
 
 void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
 {
-  if ( travel_heal > 0 )
-  {
-    assess_damage( t, travel_heal, ( direct_tick ? HEAL_OVER_TIME : HEAL_DIRECT ), travel_result );
-  }
+  assess_damage( t, travel_heal, ( direct_tick ? HEAL_OVER_TIME : HEAL_DIRECT ), travel_result );
+
   if ( num_ticks > 0 )
   {
     if ( dot_behavior != DOT_REFRESH ) cancel();
@@ -337,8 +333,6 @@ void heal_t::assess_damage( player_t* t,
 
   if ( heal_type == HEAL_DIRECT )
   {
-    
-    
     if ( sim -> log )
     {
       log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
@@ -362,10 +356,8 @@ void heal_t::assess_damage( player_t* t,
 
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
-  if ( heal_amount > 0 || result_is_miss( heal_result ) )
-  {
-      stats -> add_result( heal_amount, heal_type, heal_result );
-  }
+  
+  stats -> add_result( heal_amount, heal_type, heal_result );
 }
 
 // heal_t::ready ============================================================
@@ -676,10 +668,8 @@ void absorb_t::assess_damage( player_t* t,
 
     if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
-  if ( heal_amount > 0 || result_is_miss( heal_result ) )
-  {
-      stats -> add_result( heal_amount, heal_type, heal_result );
-  }
+  
+  stats -> add_result( heal_amount, heal_type, heal_result );
 }
 
 // absorb_t::ready ============================================================

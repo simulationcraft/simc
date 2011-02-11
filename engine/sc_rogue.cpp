@@ -1949,11 +1949,13 @@ struct killing_spree_t : public rogue_attack_t
 
     attack_mh = new killing_spree_tick_t( p, "killing_spree_mh" );
     attack_mh -> weapon = &( player -> main_hand_weapon );
+    add_child( attack_mh );
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
       attack_oh = new killing_spree_tick_t( p, "killing_spree_oh" );
       attack_oh -> weapon = &( player -> off_hand_weapon );
+      add_child( attack_oh );
     }
   }
 
@@ -2029,9 +2031,11 @@ struct mutilate_t : public rogue_attack_t
 
     mh_strike = new mutilate_strike_t( p, "mutilate_mh" );
     mh_strike -> weapon = &( p -> main_hand_weapon );
+    add_child( mh_strike );
 
     oh_strike = new mutilate_strike_t( p, "mutilate_oh" );
     oh_strike -> weapon = &( p -> off_hand_weapon );
+    add_child( oh_strike );
   }
 
   virtual void execute()

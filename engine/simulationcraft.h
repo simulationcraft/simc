@@ -3548,6 +3548,9 @@ struct stats_t
   double total_intervals, num_intervals;
   double last_execute;
 
+  std::vector<stats_t*> children;
+  double compound_dmg;
+
   struct stats_results_t
   {
     double count, min_dmg, max_dmg, avg_dmg, total_dmg, pct;
@@ -3738,6 +3741,8 @@ struct action_t : public spell_id_t
   virtual action_expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) SC_CONST;
+
+  virtual void add_child( action_t* child ) { stats -> children.push_back( child -> stats ); }
 };
 
 struct attack_t : public action_t

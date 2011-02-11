@@ -1165,10 +1165,7 @@ void action_t::assess_damage( player_t* t,
     }
   }
 
-  if ( dmg_amount > 0 || result_is_miss( dmg_result ) )
-  {
-    stats -> add_result( dmg_adjusted, dmg_type, dmg_result );
-  }
+  stats -> add_result( dmg_adjusted, dmg_type, dmg_result );
 
   if ( dmg_amount > 0 && t -> is_enemy() )
   {

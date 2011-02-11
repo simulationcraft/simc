@@ -1155,7 +1155,6 @@ struct bladestorm_tick_t : public warrior_attack_t
     aoe         = -1;
     direct_tick = true;
     aoe         = 4;
-    stats       = p -> get_stats( "bladestorm" );
   }
 };
 
@@ -1187,11 +1186,13 @@ struct bladestorm_t : public warrior_attack_t
 
     bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
+    add_child( bladestorm_mh );
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
       bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
       bladestorm_oh -> weapon = &( player -> off_hand_weapon );
+      add_child( bladestorm_oh );
     }
   }
   
@@ -1677,8 +1678,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     dual = true;
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
-
-    stats = p -> get_stats( "raging_blow" );
   }
 
   virtual void player_buff()
@@ -1713,11 +1712,13 @@ struct raging_blow_t : public warrior_attack_t
 
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh" );
     mh_attack -> weapon = &( p -> main_hand_weapon );
+    add_child( mh_attack );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh_attack = new raging_blow_attack_t( p, "raging_blow_oh" );
       oh_attack -> weapon = &( p -> off_hand_weapon );
+      add_child( oh_attack );
     }
   }
 
@@ -1978,8 +1979,8 @@ struct shockwave_t : public warrior_attack_t
 
 struct slam_attack_t : public warrior_attack_t
 {
-  slam_attack_t( warrior_t* p ) :
-    warrior_attack_t( "slam_attack", p, SCHOOL_PHYSICAL, TREE_FURY )
+  slam_attack_t( warrior_t* p, const char* name ) :
+    warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY )
   {
     id = 50783;
     parse_data( p -> player_data );
@@ -1996,8 +1997,6 @@ struct slam_attack_t : public warrior_attack_t
     weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
     base_multiplier *= 1.0 + ( p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
                                p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0 );
-
-    stats = p -> get_stats( "slam" );
   }
 
   virtual void player_buff()
@@ -2032,13 +2031,15 @@ struct slam_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    mh_attack = new slam_attack_t( p );
+    mh_attack = new slam_attack_t( p, "slam_mh" );
     mh_attack -> weapon = &( p -> main_hand_weapon );
+    add_child( mh_attack );
 
     if ( p -> talents.single_minded_fury -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh_attack = new slam_attack_t( p );
+      oh_attack = new slam_attack_t( p, "slam_oh" );
       oh_attack -> weapon = &( p -> off_hand_weapon );
+      add_child( oh_attack );
     }
   }
 

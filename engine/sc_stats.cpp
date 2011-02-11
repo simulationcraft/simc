@@ -158,14 +158,6 @@ void stats_t::analyze()
     }
   }
 
-  if ( total_dmg > 0 )
-  {
-    dps  = total_dmg / ( total_execute_time + total_tick_time );
-    dpe  = total_dmg / num_executes;
-    dpet = total_dmg / ( total_execute_time + ( channeled ? total_tick_time : 0 ) );
-    dpr  = ( resource_consumed > 0.0 ) ? ( total_dmg / resource_consumed ) : 0;
-  }
-
   resource_consumed /= num_iterations;
 
   num_executes /= num_iterations;
@@ -185,6 +177,28 @@ void stats_t::analyze()
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;
   total_dmg          /= num_iterations;
+
+  compound_dmg = total_dmg;
+
+  int num_children = children.size();
+  for( int i=0; i < num_children; i++ )
+  {
+    children[ i ] -> analyze();
+    compound_dmg += children[ i ] -> compound_dmg;
+  }
+
+  if ( compound_dmg > 0 )
+  {
+    dpe  = ( num_executes > 0 ) ? ( compound_dmg / num_executes ) : 0;
+
+    double total_time = total_execute_time + total_tick_time;
+    dps  = ( total_time > 0 ) ? ( compound_dmg / total_time ) : 0;
+
+    total_time = total_execute_time + ( channeled ? total_tick_time : 0 );
+    dpet = ( total_time > 0 ) ? ( compound_dmg / total_time ) : 0;
+
+    dpr  = ( resource_consumed > 0 ) ? ( compound_dmg / resource_consumed ) : 0;
+  }
 
   for ( int i=0; i < num_buckets; i++ )
   {

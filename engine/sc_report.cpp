@@ -142,7 +142,10 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> dpr,
                    s -> portion_dps );
 
-  util_t::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
+  if ( s -> num_direct_results > 0 )
+  {
+    util_t::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
+  }
 
   if ( s -> direct_results[ RESULT_HIT ].avg_dmg > 0 )
   {
@@ -246,7 +249,7 @@ static void print_text_actions( FILE* file, player_t* p )
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> total_dmg > 0 )
+    if ( s -> compound_dmg > 0 )
     {
       print_text_action( file, s, max_length );
     }
@@ -2564,7 +2567,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   i = 0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> num_executes > 0 || s -> total_dmg > 0 )
+    if ( s -> compound_dmg > 0 )
     {
       print_html_action( file, s, p, i );
       i++;
@@ -2578,7 +2581,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     i = 0;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
-      if ( s -> num_executes > 0 )
+      if ( s -> compound_dmg > 0 )
       {
         if ( first )
         {

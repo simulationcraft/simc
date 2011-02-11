@@ -1332,7 +1332,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    stats = p -> get_stats( "arcane_missiles" );
   }
 };
 
@@ -1345,12 +1344,14 @@ struct arcane_missiles_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     channeled = true;
+    may_miss = may_resist = false;
     num_ticks += p -> talents.improved_arcane_missiles -> rank();
     hasted_ticks = false;
 
     base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
 
     tick_spell = new arcane_missiles_tick_t( p );
+    add_child( tick_spell );
   }
 
   virtual void execute()
@@ -1672,7 +1673,6 @@ struct flame_orb_explosion_t : public mage_spell_t
     aoe = -1;
     dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
-    stats = p -> get_stats( "flame_orb" );
   }
 };
 
@@ -1685,7 +1685,6 @@ struct flame_orb_tick_t : public mage_spell_t
     dual = true;
     direct_tick = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
-    stats = p -> get_stats( "flame_orb" );
   }
 };
 
@@ -1704,7 +1703,10 @@ struct flame_orb_t : public mage_spell_t
     hasted_ticks = false;
 
     explosion_spell = new flame_orb_explosion_t( p );
-    tick_spell      = new flame_orb_tick_t( p );
+    add_child( explosion_spell );
+
+    tick_spell = new flame_orb_tick_t( p );
+    add_child( tick_spell );
   }
 
   virtual void tick()
@@ -1975,7 +1977,6 @@ struct frostfire_orb_explosion_t : public mage_spell_t
     dual = true;
     school = SCHOOL_FROSTFIRE; // required since defaults to FIRE
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
-    stats = p -> get_stats( "frostfire_orb" );
   }
 };
 
@@ -1988,7 +1989,6 @@ struct frostfire_orb_tick_t : public mage_spell_t
     dual = true;
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
-    stats = p -> get_stats( "frostfire_orb" );
   }
 };
 
@@ -2008,7 +2008,10 @@ struct frostfire_orb_t : public mage_spell_t
     hasted_ticks = false;
 
     explosion_spell = new frostfire_orb_explosion_t( p );
-    tick_spell      = new frostfire_orb_tick_t( p );
+    add_child( explosion_spell );
+
+    tick_spell = new frostfire_orb_tick_t( p );
+    add_child( tick_spell );
   }
 
   virtual void tick()
@@ -2085,9 +2088,8 @@ struct living_bomb_explosion_t : public mage_spell_t
     aoe = -1;
     dual = true;
     background = true;
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0
-                           + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
-    stats = p -> get_stats( "living_bomb" );
+    base_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
+			       p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
   }
 };
 
@@ -2106,6 +2108,7 @@ struct living_bomb_t : public mage_spell_t
     explosion_spell = new living_bomb_explosion_t( p );
     explosion_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work
     explosion_spell -> base_cost = base_cost;
+    add_child( explosion_spell );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )

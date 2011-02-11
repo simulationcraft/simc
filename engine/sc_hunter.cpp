@@ -1959,9 +1959,6 @@ struct serpent_sting_burst_t : public hunter_attack_t
   {
     proc       = true;
     background = true;
-
-    // This helps log file and decouples the sooth RNG from the ticks.
-    stats = player -> get_stats( "serpent_sting" );
   }
 
 };
@@ -1987,6 +1984,7 @@ struct serpent_sting_t : public hunter_attack_t
     base_crit_bonus_multiplier *= 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
     serpent_sting_burst = new serpent_sting_burst_t( p );
+    add_child( serpent_sting_burst );
   }
 
   virtual void execute()

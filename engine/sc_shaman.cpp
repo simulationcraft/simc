@@ -1444,8 +1444,13 @@ struct stormstrike_t : public shaman_attack_t
 
     // Actual damaging attacks are done by stormstrike_attack_t
     stormstrike_mh = new stormstrike_attack_t( player, "stormstrike_mh", effect_trigger_spell( 2 ), &( p -> main_hand_weapon ) );
+    add_child( stormstrike_mh );
+
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
       stormstrike_oh = new stormstrike_attack_t( player, "stormstrike_oh", effect_trigger_spell( 3 ), &( p -> off_hand_weapon ) );
+      add_child( stormstrike_oh );
+    }
   }
   
   virtual void execute()

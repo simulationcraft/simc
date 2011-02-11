@@ -1069,7 +1069,7 @@ void sim_t::analyze_player( player_t* p )
   {
     stats_t* s = stats_list[ i ];
 
-    s -> portion_dmg = s -> total_dmg / p -> total_dmg;
+    s -> portion_dmg = s -> compound_dmg / p -> total_dmg;
     s -> portion_dps = s -> portion_dmg * p -> dps;
   }
 
