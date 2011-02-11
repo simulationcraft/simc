@@ -2956,12 +2956,12 @@ struct starfire_t : public druid_spell_t
 
       if ( p -> dots_moonfire -> ticking )
       {
-        if ( p -> dots_moonfire -> added_ticks > 5 )
+        if ( p -> dots_moonfire -> added_seconds > 8 )
           return false;
       }
       else if ( p -> dots_sunfire -> ticking )
       {
-        if ( p -> dots_sunfire -> added_ticks > 5 )
+        if ( p -> dots_sunfire -> added_seconds > 8 )
           return false;
       }
       else

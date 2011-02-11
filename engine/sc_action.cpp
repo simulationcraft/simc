@@ -1369,6 +1369,7 @@ void action_t::extend_duration_seconds( double extra_seconds )
   // ( num_ticks - current_tick ) - 1
   int old_num_ticks = dot -> num_ticks;
   int old_remaining_ticks = old_num_ticks - dot -> current_tick - 1;
+  double old_haste_factor = 1.0 / player_haste;
 
   // Multiply with tick_time() for the duration left after the next tick
   double duration_left = old_remaining_ticks * tick_time();
@@ -1386,12 +1387,20 @@ void action_t::extend_duration_seconds( double extra_seconds )
   int new_remaining_ticks = hasted_num_ticks( duration_left );
   dot -> num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
-  if ( sim -> log ) 
-    log_t::output( sim, "%s extends duration of %s by %.1f second(s). Now %d ticks total, %d remaining (OLD: %d total, %d remaining)", 
-                  player -> name(), name(), extra_seconds, dot -> num_ticks, new_remaining_ticks, old_num_ticks, old_remaining_ticks );
-  
-  dot -> recalculate_ready();
+  if ( sim -> debug ) 
+  {
+    log_t::output( sim, "%s extends duration of %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d", 
+                  player -> name(), name(), extra_seconds, 
+                  old_haste_factor, (1.0 / player_haste), 
+                  old_num_ticks, dot -> num_ticks,
+                  old_remaining_ticks, new_remaining_ticks );
+  }
+  else if ( sim -> log ) 
+  {
+    log_t::output( sim, "%s extends duration of %s by %.1f second(s).", player -> name(), name(), extra_seconds );
+  }
 
+  dot -> recalculate_ready();
 }
 
 // action_t::update_ready ====================================================
