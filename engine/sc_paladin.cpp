@@ -282,7 +282,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     paladin_t* owner;
 
     melee_t( player_t *p )
-      : attack_t( "melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL )
+      : attack_t( "melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL ), owner( 0 )
     {
       weapon = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -306,7 +306,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   };
 
   guardian_of_ancient_kings_ret_t( sim_t *sim, paladin_t *p )
-    : pet_t( sim, p, "guardian_of_ancient_kings", true )
+    : pet_t( sim, p, "guardian_of_ancient_kings", true ), melee( 0 )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = 2.0;
@@ -616,48 +616,6 @@ struct avengers_shield_t : public paladin_attack_t
   }
 };
 
-// Divine Storm ============================================================
-
-struct divine_storm_t : public paladin_attack_t
-{
-  double base_cooldown;
-  divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "divine_storm", "Divine Storm", p )
-  {
-    check_talent( p -> talents.divine_storm -> ok() );
-
-    parse_options( NULL, options_str );
-
-    aoe               = -1;
-    spell_haste       = true;
-    trigger_dp        = true;
-    trigger_seal      = false;
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
-
-    base_cooldown = cooldown -> duration;
-  }
-
-  virtual void update_ready()
-  {
-    paladin_t* p = player -> cast_paladin();
-    if ( p -> talents.sanctity_of_battle -> ok() )
-    {
-      cooldown -> duration = base_cooldown * haste();
-    }
-
-    paladin_attack_t::update_ready();
-  }
-
-  virtual void execute()
-  {
-    paladin_attack_t::execute();
-    if ( result_is_hit() )
-    {
-      trigger_hand_of_light( this );
-    }
-  }
-};
-
 // Hammer of Justice =======================================================
 
 struct hammer_of_justice_t : public paladin_attack_t
@@ -667,13 +625,7 @@ struct hammer_of_justice_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    cooldown->duration += 0.001 * p -> talents.improved_hammer_of_justice->effect_base_value( 1 );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() ) return false;
-    return paladin_attack_t::ready();
+    cooldown -> duration += p -> talents.improved_hammer_of_justice -> mod_additive( P_COOLDOWN );
   }
 };
 
@@ -718,13 +670,10 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
-      proc->execute();
-      if ( p() -> talents.grand_crusader->rank() )
+      proc -> execute();
+      if ( sim -> roll( p() -> talents.grand_crusader -> proc_chance() ) )
       {
-        if ( sim->roll( p() -> talents.grand_crusader->proc_chance() ) )
-        {
-          p() -> get_cooldown( "avengers_shield" )->reset();
-        }
+        p() -> get_cooldown( "avengers_shield" ) -> reset();
       }
     }
   }
@@ -734,30 +683,26 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
 struct hammer_of_wrath_t : public paladin_attack_t
 {
-  double base_cooldown;
-
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
     : paladin_attack_t( "hammer_of_wrath", "Hammer of Wrath", p, false )
   {
     parse_options( NULL, options_str );
 
-    may_parry = false;
-    may_dodge = false;
-    may_block = false;
-    trigger_dp = true;
+    may_parry    = false;
+    may_dodge    = false;
+    may_block    = false;
+    trigger_dp   = true;
     trigger_seal = 1; // TODO: only SoT or all seals?
 
-    holy_power_chance = 0.01 * p -> talents.divine_purpose->effect_base_value( 1 );
+    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
 
-    base_cooldown = cooldown->duration;
-
-    parse_effect_data( p -> player_data, p -> talents.wrath_of_the_lightbringer -> spell_id(), 2 );
-    parse_effect_data( p -> player_data, p -> talents.sanctified_wrath -> spell_id(), 2 );
-
+    base_crit += p -> talents.sanctified_wrath -> mod_additive( P_CRIT )
+                 + p -> talents.wrath_of_the_lightbringer -> mod_additive( P_CRIT );
+    base_cost *= p -> glyphs.hammer_of_wrath -> mod_additive( P_RESOURCE_COST );
+    
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
-    direct_power_mod = 1.0;
-    base_cost       *= p -> glyphs.hammer_of_wrath -> mod_additive( P_RESOURCE_COST );
+    direct_power_mod             = 1.0;
   }
 
   virtual bool ready()
@@ -1112,14 +1057,14 @@ struct seal_of_truth_dot_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_attack_t::player_buff();
-    player_multiplier *= p() -> buffs_censure->stack();
+    player_multiplier *= p() -> buffs_censure -> stack();
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg=0 )
   {
     if ( result_is_hit( travel_result ) )
     {
-      p() -> buffs_censure->trigger();
+      p() -> buffs_censure -> trigger();
       player_buff(); // update with new stack of the debuff
     }
     paladin_attack_t::travel( t, travel_result, travel_dmg );
@@ -1459,7 +1404,7 @@ struct crusader_strike_t : public paladin_attack_t
 {
   double base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "crusader_strike", "Crusader Strike", p )
+    : paladin_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -1511,14 +1456,14 @@ struct crusader_strike_t : public paladin_attack_t
   }
 };
 
-// Divine Favor ============================================================
+// Divine Favor =============================================================
 
 struct divine_favor_t : public paladin_spell_t
 {
   divine_favor_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "divine_favor", "Divine Favor", p )
   {
-    check_talent( p -> talents.divine_favor->rank() );
+    check_talent( p -> talents.divine_favor -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -1534,9 +1479,8 @@ struct divine_favor_t : public paladin_spell_t
   }
 };
 
-// Divine Plea =============================================================
+// Divine Plea ==============================================================
 
-// TODO: shield of the templar generating hopow
 struct divine_plea_t : public paladin_spell_t
 {
   divine_plea_t( paladin_t* p, const std::string& options_str )
@@ -1553,13 +1497,52 @@ struct divine_plea_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_divine_plea -> trigger();
+
+    int hopo = ( int ) p -> talents.shield_of_the_templar -> mod_additive( P_EFFECT_3 );
+    if ( hopo )
+      p -> buffs_holy_power -> trigger( hopo );
+  }
+};
+
+// Divine Storm ============================================================
+
+struct divine_storm_t : public paladin_attack_t
+{
+  double base_cooldown;
+  divine_storm_t( paladin_t* p, const std::string& options_str )
+    : paladin_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( 0 )
+  {
+    check_talent( p -> talents.divine_storm -> ok() );
+
+    parse_options( NULL, options_str );
+
+    aoe               = -1;
+    spell_haste       = true;
+    trigger_dp        = true;
+    trigger_seal      = false;
+    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
+
+    base_cooldown = cooldown -> duration;
   }
 
-  virtual bool ready()
+  virtual void update_ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( p -> buffs_divine_plea -> check() ) return false;
-    return paladin_spell_t::ready();
+    if ( p -> talents.sanctity_of_battle -> ok() )
+    {
+      cooldown -> duration = base_cooldown * haste();
+    }
+
+    paladin_attack_t::update_ready();
+  }
+
+  virtual void execute()
+  {
+    paladin_attack_t::execute();
+    if ( result_is_hit() )
+    {
+      trigger_hand_of_light( this );
+    }
   }
 };
 
@@ -1568,7 +1551,6 @@ struct divine_plea_t : public paladin_spell_t
 struct exorcism_t : public paladin_spell_t
 {
   int undead_demon;
-  double blazing_light_multiplier;
 
   exorcism_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "exorcism", "Exorcism", p ), undead_demon( 0 )
@@ -1584,7 +1566,6 @@ struct exorcism_t : public paladin_spell_t
     base_spell_power_multiplier  = 0.344;
     direct_power_mod             = 1.0;
     dot_behavior                 = DOT_REFRESH;
-    blazing_light_multiplier     = 1.0 + p -> talents.blazing_light -> mod_additive( P_GENERIC );
     hasted_ticks                 = false;
     holy_power_chance            = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
     may_crit                     = true;
@@ -1598,8 +1579,8 @@ struct exorcism_t : public paladin_spell_t
 
   virtual double cost() SC_CONST
   {
-    paladin_t* p = player->cast_paladin();
-    if ( p -> buffs_the_art_of_war -> up() ) return 0.0;
+    paladin_t* p = player -> cast_paladin();
+    if ( p -> buffs_the_art_of_war -> check() ) return 0.0;
     return paladin_spell_t::cost();
   }
 
@@ -1615,7 +1596,8 @@ struct exorcism_t : public paladin_spell_t
     paladin_spell_t::player_buff();
     paladin_t* p = player -> cast_paladin();
 
-    player_multiplier *= blazing_light_multiplier + ( p -> buffs_the_art_of_war -> up() ? 1.0 : 0.0 );
+    player_multiplier *= 1.0 + p -> talents.blazing_light -> mod_additive( P_GENERIC )
+                         + ( p -> buffs_the_art_of_war -> up() ? 1.0 : 0.0 );
 
     if ( target -> race == RACE_UNDEAD || target -> race == RACE_DEMON )
     {
@@ -1669,6 +1651,26 @@ struct exorcism_t : public paladin_spell_t
     }
 
     return paladin_spell_t::ready();
+  }
+};
+
+// Guardian of the Ancient Kings ============================================
+
+struct guardian_of_ancient_kings_t : public paladin_spell_t
+{
+  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "guardian_of_ancient_kings", 86150, p )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    if ( p -> primary_tree() == TREE_RETRIBUTION )
+      p -> summon_pet( "guardian_of_ancient_kings", p -> spells.guardian_of_ancient_kings_ret -> duration() );
   }
 };
 
@@ -1794,27 +1796,6 @@ struct zealotry_t : public paladin_spell_t
     if( ! p -> has_holy_power( 3 ) )
       return false;
     return paladin_spell_t::ready();
-  }
-};
-
-// Guardian of the Acient Kings =============================================
-
-struct guardian_of_ancient_kings_t : public paladin_spell_t
-{
-  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "guardian_of_ancient_kings", 86150, p )
-  {
-    assert( p -> primary_tree() == TREE_RETRIBUTION );
-
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
-    p -> summon_pet( "guardian_of_ancient_kings", p -> spells.guardian_of_ancient_kings_ret->duration() );
   }
 };
 
