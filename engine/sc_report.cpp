@@ -926,12 +926,10 @@ static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
 static void print_html_contents( FILE*  file, sim_t* sim )
 {
   util_t::fprintf( file,
-    "      <h2 class=\"toggle\">Table of Contents</h2>\n" );
-  util_t::fprintf( file,
-    "      <div class=\"toggle-content\">\n" );
-  util_t::fprintf( file,
-    "        <ul class=\"toc\">\n" );
-  util_t::fprintf( file,
+    "    <div id=\"table-of-contents\" class=\"section section-open\">\n"
+    "      <h2 class=\"toggle open\">Table of Contents</h2>\n"
+    "      <div class=\"toggle-content\">\n"
+    "        <ul class=\"toc\">\n"
     "          <li><a href=\"#raid-summary\">Raid Summary</a></li>\n" );
   if ( sim -> scaling -> has_scale_factors() )
   {
@@ -969,7 +967,8 @@ static void print_html_contents( FILE*  file, sim_t* sim )
   util_t::fprintf( file,
     "        </ul>\n" );
   util_t::fprintf( file,
-    "      </div>\n\n" );
+    "      </div>\n\n"
+    "    </div>\n\n" );
 }
 
 // print_html_raid_summary ===================================================
@@ -1163,7 +1162,7 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
   }
 
   util_t::fprintf( file,
-    "        <div id=\"auras-and-debuffs\" class=\"section" );
+    "        <div id=\"auras-debuffs\" class=\"section" );
   if ( num_players == 1 )
   {
     util_t::fprintf( file, " grouped-first" );
@@ -3749,34 +3748,44 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 // report_t::print_html ======================================================
 void report_t::print_html( sim_t* sim )
 {
-        int num_players = ( int ) sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
         
-        if ( num_players == 0 ) return;
-        if ( sim -> total_seconds == 0 ) return;
-        if ( sim -> html_file_str.empty() ) return;
-        
-        FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
-        if ( ! file )
-        {
-                sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
-                return;
-        }
-        
-        util_t::fprintf( file,
-          "<!DOCTYPE html>\n\n" );
-        util_t::fprintf( file,
-          "<html>\n\n" );
-        
-        util_t::fprintf( file,
-          "  <head>\n\n" );
-        util_t::fprintf( file,
-          "    <title>Simulationcraft Results</title>\n\n" );
-        util_t::fprintf( file,
-          "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n\n");
+  if ( num_players == 0 ) return;
+  if ( sim -> total_seconds == 0 ) return;
+  if ( sim -> html_file_str.empty() ) return;
+  
+  FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
+  if ( ! file )
+  {
+    sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
+    return;
+  }
+  
+  util_t::fprintf( file,
+    "<!DOCTYPE html>\n\n" );
+  util_t::fprintf( file,
+    "<html>\n\n" );
+  
+  util_t::fprintf( file,
+    "  <head>\n\n" );
+  util_t::fprintf( file,
+    "    <title>Simulationcraft Results</title>\n\n" );
+  util_t::fprintf( file,
+    "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n\n");
 
-        // Styles galore
+  // Styles
+  // If file is being hosted on simulationcraft.org, link to the local
+  // stylesheet; otherwise, embed the styles.
+  util_t::fprintf( file,
+    "    <style type=\"text/css\" media=\"all\">\n" );
+  if ( sim -> hosted_html )
+  {
     util_t::fprintf( file,
-      "    <style type=\"text/css\">\n"
+    "      @import url('http://www.simulationcraft.org/css/styles.css');\n" );
+  }
+  else
+  {
+    util_t::fprintf( file,
       "      * { border: none; margin: 0; padding: 0; }\n"
       "      body { padding: 5px 25px 25px 25px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; text-align: center; }\n"
       "      p { margin-top: 1em; }\n"
@@ -3858,11 +3867,12 @@ void report_t::print_html( sim_t* sim )
       "      table.sc tr.details td div.float ul { margin: 0 0 12px 0; }\n"
       "      table.sc td.filler { background-color: #ccc; }\n"
       "      table.sc .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
-      "      .sample-sequence { width: 500px; word-wrap: break-word; outline: 1px solid #ddd; background: #fcfcfc; padding: 6px; font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n"
-      "    </style>\n\n" );
-        
-        util_t::fprintf( file,
-          "  </head>\n\n" );
+      "      .sample-sequence { width: 500px; word-wrap: break-word; outline: 1px solid #ddd; background: #fcfcfc; padding: 6px; font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n" );
+  }
+
+  util_t::fprintf( file,
+    "    </style>\n\n"
+    "  </head>\n\n" );
           
         util_t::fprintf( file,
           "  <body>\n\n" );
@@ -3894,7 +3904,8 @@ void report_t::print_html( sim_t* sim )
           "    <div id=\"masthead\" class=\"section section-open\">\n\n" );
         
         util_t::fprintf( file,
-          "      <h1>SimulationCraft %s-%s for World of Warcraft %s %s (build level %s)</h1>\n\n",
+          "      <h1>SimulationCraft %s-%s</h1>\n"
+          "      <h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
           SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.6" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
         
         time_t rawtime;
@@ -3923,16 +3934,14 @@ void report_t::print_html( sim_t* sim )
         util_t::fprintf( file,
           "      </ul>\n" );
         util_t::fprintf( file,
-          "      <div class=\"clear\"></div>\n\n" );
+          "      <div class=\"clear\"></div>\n\n"
+          "    </div>\n\n" );
+        // End masthead section
         
         if ( num_players > 1 )
         {
                 print_html_contents( file, sim );
         }
-        
-        // End masthead section
-        util_t::fprintf( file,
-          "    </div>\n\n" );
         
 #if SC_BETA
     util_t::fprintf( file,
@@ -4006,97 +4015,153 @@ void report_t::print_html( sim_t* sim )
         
         // jQuery
         util_t::fprintf ( file,
-          "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n\n" );
+          "    <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n" );
         
-    // Toggles; open external links in new window
+    // Toggles, image load-on-demand, etc. Load from simulationcraft.org if
+    // hosted_html=1, otherwise embed
+    if ( sim -> hosted_html )
+    {
+      util_t::fprintf( file,
+        "    <script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n"
+        "    <script type=\"text/javascript\" src=\"rep.js\"></script>\n" );
+    }
+    else
+    {
+      util_t::fprintf( file,
+        "    <script type=\"text/javascript\">\n"
+        "      jQuery.noConflict();\n"
+        "      jQuery(document).ready(function($) {\n"
+        "        function open_anchor(anchor) {\n"
+        "          var img_id = '';\n"
+        "          var src = '';\n"
+        "          var target = '';\n"
+        "          anchor.addClass('open');\n"
+        "          var section = anchor.parent('.section');\n"
+        "          section.addClass('section-open');\n"
+        "          section.removeClass('grouped-first');\n"
+        "          section.removeClass('grouped-last');\n"
+        "          if (!(section.next().hasClass('section-open'))) {\n"
+        "            section.next().addClass('grouped-first');\n"
+        "          }\n"
+        "          if (!(section.prev().hasClass('section-open'))) {\n"
+        "            section.prev().addClass('grouped-last');\n"
+        "          }\n"
+        "          anchor.next('.toggle-content').show(150);\n"
+        "          anchor.next('.toggle-content').find('.charts').each(function() {\n"
+        "            $(this).children('span').each(function() {\n"
+        "              img_class = $(this).attr('class');\n"
+        "              img_alt = $(this).attr('title');\n"
+        "              img_src = $(this).html().replace(/&amp;/g, \"&\");\n"
+        "              var img = new Image();\n"
+        "              $(img).attr('class', img_class);\n"
+        "              $(img).attr('src', img_src);\n"
+        "              $(img).attr('alt', img_alt);\n"
+        "              $(this).replaceWith(img);\n"
+        "              $(this).load();\n"
+        "            });\n"
+        "          })\n"
+        "          setTimeout('window.scrollTo(0, anchor.position().top', 500);\n"
+        "        }\n"
+        "        var anchor_check = document.location.href.split('#');\n"
+        "        if (anchor_check.length > 1) {\n"
+        "        	var anchor = anchor_check[anchor_check.length - 1];\n"
+        "        }\n"
+        "        var pcol = document.location.protocol;\n"
+        "        if (pcol != 'file:') {\n"
+        "          var whtt = document.createElement(\"script\");\n"
+        "          whtt.src = pcol + \"//static.wowhead.com/widgets/power.js\";\n"
+        "          $('body').append(whtt);\n"
+        "        }\n"
+        "        $('a[ rel=\"_blank\"]').each(function() {\n"
+        "          $(this).attr('target', '_blank');\n"
+        "        });\n"
+        "        $('.toggle-content, .help-box').hide();\n"
+        "        $('.open').next('.toggle-content').show();\n"
+        "        $('.toggle').click(function(e) {\n"
+        "          var img_id = '';\n"
+        "          var src = '';\n"
+        "          var target = '';\n"
+        "          e.preventDefault();\n"
+        "          $(this).toggleClass('open');\n"
+        "          var section = $(this).parent('.section');\n"
+        "          if (section.attr('id') != 'masthead') {\n"
+        "            section.toggleClass('section-open');\n"
+        "          }\n"
+        "          if (section.attr('id') != 'masthead' && section.hasClass('section-open')) {\n"
+        "            section.removeClass('grouped-first');\n"
+        "            section.removeClass('grouped-last');\n"
+        "            if (!(section.next().hasClass('section-open'))) {\n"
+        "              section.next().addClass('grouped-first');\n"
+        "            }\n"
+        "            if (!(section.prev().hasClass('section-open'))) {\n"
+        "              section.prev().addClass('grouped-last');\n"
+        "            }\n"
+        "          } else if (section.attr('id') != 'masthead') {\n"
+        "            if (section.hasClass('final') || section.next().hasClass('section-open')) {\n"
+        "              section.addClass('grouped-last');\n"
+        "            } else {\n"
+        "              section.next().removeClass('grouped-first');\n"
+        "            }\n"
+        "            if (section.prev().hasClass('section-open')) {\n"
+        "              section.addClass('grouped-first');\n"
+        "            } else {\n"
+        "              section.prev().removeClass('grouped-last');\n"
+        "            }\n"
+        "          }\n"
+        "          $(this).next('.toggle-content').toggle(150);\n"
+        "          $(this).next('.toggle-content').find('.charts').each(function() {\n"
+        "            $(this).children('span').each(function() {\n"
+        "              img_class = $(this).attr('class');\n"
+        "              img_alt = $(this).attr('title');\n"
+        "              img_src = $(this).html().replace(/&amp;/g, \"&\");\n"
+        "              var img = new Image();\n"
+        "              $(img).attr('class', img_class);\n"
+        "              $(img).attr('src', img_src);\n"
+        "              $(img).attr('alt', img_alt);\n"
+        "              $(this).replaceWith(img);\n"
+        "              $(this).load();\n"
+        "            });\n"
+        "          });\n"
+        "        });\n"
+        "        $('.toggle-details').click(function(e) {\n"
+        "          e.preventDefault();\n"
+        "          $(this).toggleClass('open');\n"
+        "          $(this).parents().next('.details').toggleClass('hide');\n"
+        "        });\n"
+        "        $('.toggle-db-details').click(function(e) {\n"
+        "          e.preventDefault();\n"
+        "          $(this).toggleClass('open');\n"
+        "          $(this).parent().next('.toggle-content').toggle(150);\n"
+        "        });\n"
+        "        $('.help').click(function(e) {\n"
+        "          e.preventDefault();\n"
+        "          var target = $(this).attr('href') + ' .help-box';\n"
+        "          var content = $(target).html();\n"
+        "          $('#active-help-dynamic .help-box').html(content);\n"
+        "          $('#active-help .help-box').show();\n"
+        "          var t = e.pageY - 20;\n"
+        "          var l = e.pageX - 20;\n"
+        "          $('#active-help').css({top:t,left:l});\n"
+        "          $('#active-help').toggle(250);\n"
+        "        });\n"
+        "        $('#active-help a.close').click(function(e) {\n"
+        "          e.preventDefault();\n"
+        "          $('#active-help').toggle(250);\n"
+        "        });\n"
+        "          if (anchor) {\n"
+        "            anchor = '#' + anchor;\n"
+        "            target = $(anchor).children('h2:first');\n"
+        "            open_anchor(target);\n"
+        "          }\n"
+        "          $('ul.toc li a').click(function(e) {\n"
+        "            anchor = $(this).attr('href');\n"
+        "            target = $(anchor).children('h2:first');\n"
+        "            open_anchor(target);\n"
+        "          });\n"
+        "      });\n"
+        "    </script>\n\n" );
+    }
     util_t::fprintf( file,
-      "    <script type=\"text/javascript\">\n"
-      "      jQuery.noConflict();\n"
-      "      jQuery(document).ready(function($) {\n"
-      "        var pcol = document.location.protocol;\n"
-      "        if (pcol != 'file:') {\n"
-      "          var whtt = document.createElement(\"script\");\n"
-      "          whtt.src = pcol + \"//static.wowhead.com/widgets/power.js\";\n"
-      "          $('body').append(whtt);\n"
-      "        }\n"
-      "        $('a[ rel=\"_blank\"]').each(function() {\n"
-      "          $(this).attr('target', '_blank');\n"
-      "        });\n"
-      "        $('.toggle-content, .help-box').hide();\n"
-      "        $('.open').next('.toggle-content').show();\n"
-      "        $('.toggle').click(function(e) {\n"
-      "          var img_id = '';\n"
-      "          var src = '';\n"
-      "          var target = '';\n"
-      "          e.preventDefault();\n"
-      "          $(this).toggleClass('open');\n"
-      "          var section = $(this).parent('.section');\n"
-      "          if (section.attr('id') != 'masthead') {\n"
-      "            section.toggleClass('section-open');\n"
-      "          }\n"
-      "          if (section.attr('id') != 'masthead' && section.hasClass('section-open')) {\n"
-      "            section.removeClass('grouped-first');\n"
-      "            section.removeClass('grouped-last');\n"
-      "            if (!(section.next().hasClass('section-open'))) {\n"
-      "              section.next().addClass('grouped-first');\n"
-      "            }\n"
-      "            if (!(section.prev().hasClass('section-open'))) {\n"
-      "              section.prev().addClass('grouped-last');\n"
-      "            }\n"
-      "          } else if (section.attr('id') != 'masthead') {\n"
-      "            if (section.hasClass('final') || section.next().hasClass('section-open')) {\n"
-      "              section.addClass('grouped-last');\n"
-      "            } else {\n"
-      "              section.next().removeClass('grouped-first');\n"
-      "            }\n"
-      "            if (section.prev().hasClass('section-open')) {\n"
-      "              section.addClass('grouped-first');\n"
-      "            } else {\n"
-      "              section.prev().removeClass('grouped-last');\n"
-      "            }\n"
-      "          }\n"
-      "          $(this).next('.toggle-content').toggle(150);\n"
-      "          $(this).next('.toggle-content').find('.charts').each(function() {\n"
-      "            $(this).children('span').each(function() {\n"
-      "              img_class = $(this).attr('class');\n"
-      "              img_alt = $(this).attr('title');\n"
-      "              img_src = $(this).html().replace(/&amp;/g, \"&\");\n"
-      "              var img = new Image();\n"
-      "              $(img).attr('class', img_class);\n"
-      "              $(img).attr('src', img_src);\n"
-      "              $(img).attr('alt', img_alt);\n"
-      "              $(this).replaceWith(img);\n"
-      "              $(this).load();\n"
-      "            });\n"
-      "          });\n"
-      "        });\n"
-      "        $('.toggle-details').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $(this).toggleClass('open');\n"
-      "          $(this).parents().next('.details').toggleClass('hide');\n"
-      "        });\n"
-      "        $('.toggle-db-details').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $(this).toggleClass('open');\n"
-      "          $(this).parent().next('.toggle-content').toggle(150);\n"
-      "        });\n"
-      "        $('.help').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          var target = $(this).attr('href') + ' .help-box';\n"
-      "          var content = $(target).html();\n"
-      "          $('#active-help-dynamic .help-box').html(content);\n"
-      "          $('#active-help .help-box').show();\n"
-      "          var t = e.pageY - 20;\n"
-      "          var l = e.pageX - 20;\n"
-      "          $('#active-help').css({top:t,left:l});\n"
-      "          $('#active-help').toggle(250);\n"
-      "        });\n"
-      "        $('#active-help a.close').click(function(e) {\n"
-      "          e.preventDefault();\n"
-      "          $('#active-help').toggle(250);\n"
-      "        });\n"
-      "      });\n"
-      "    </script>\n\n"
       "  </body>\n\n"
       "</html>\n" );
         

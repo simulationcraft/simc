@@ -1825,6 +1825,7 @@ void sim_t::create_options()
     { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
+    { "hosted_html",                      OPT_BOOL,   &( hosted_html                            ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "output",                           OPT_STRING, &( output_file_str                          ) },

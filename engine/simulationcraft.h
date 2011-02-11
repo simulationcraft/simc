@@ -2253,7 +2253,7 @@ struct sim_t
   int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug;
-  int         save_profiles, default_actions;
+  int         save_profiles, default_actions, hosted_html;
   int         normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str;
   bool        input_is_utf8;
