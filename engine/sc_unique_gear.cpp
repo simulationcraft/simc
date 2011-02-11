@@ -117,6 +117,7 @@ struct discharge_proc_callback_t : public action_callback_t
         base_dd_max = amount;
 	direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
+	may_dodge = may_parry = may_glance = false;
         background  = true;
         reset();
       }
@@ -216,6 +217,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         base_dd_max = amount;
 	direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
+	may_dodge = may_parry = may_glance = false;
         background  = true;
         reset();
       }

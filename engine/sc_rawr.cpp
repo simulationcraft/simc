@@ -539,12 +539,13 @@ player_t* rawr_t::load_player( sim_t* sim,
     std::string slot_encoding;
     if ( xml_t::get_value( slot_encoding, root_node, slot_name ) )
     {
-      std::string item_id, gem_ids[ 3 ], enchant_id;
-      std::string reforge_id, rsuffix_id, addon_id;
+      std::string item_id, gem_ids[ 3 ];
+      std::string enchant_id, reforge_id, addon_id;
+      std::string rsuffix_id;
 
       if ( 7 != util_t::string_split( slot_encoding, ".", "S S S S S S S", 
 				      &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), 
-				      &enchant_id, &reforge_id, &rsuffix_id ) )
+				      &enchant_id, &reforge_id, &addon_id ) )
       {
         sim -> errorf( "Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
         return 0;
