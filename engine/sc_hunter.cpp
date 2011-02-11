@@ -19,8 +19,7 @@ struct hunter_t : public player_t
   hunter_pet_t* active_pet;
   int           active_aspect;
   action_t*     active_piercing_shots;
-
-
+  
   // Buffs
   buff_t* buffs_aspect_of_the_hawk;
   buff_t* buffs_beast_within;
