@@ -1367,26 +1367,28 @@ void action_t::extend_duration_seconds( double extra_seconds )
   // Duration left needs to be calculated with old haste for tick_time()
   // First we need the number of ticks remaining after the next one =>
   // ( num_ticks - current_tick ) - 1
-  int remaining_ticks = dot -> num_ticks - dot -> current_tick - 1;
+  int old_num_ticks = dot -> num_ticks;
+  int old_remaining_ticks = old_num_ticks - dot -> current_tick - 1;
 
   // Multiply with tick_time() for the duration left after the next tick
-  double duration_left = remaining_ticks * tick_time();
+  double duration_left = old_remaining_ticks * tick_time();
 
   // Add the added seconds
   duration_left += extra_seconds;
   
   // Switch to new haste values and calculate resulting ticks
-  player_buff();
+  // ONLY updates haste, modifiers/spellpower are left untouched.
+  player_haste = haste();
   target_debuff( target, DMG_OVER_TIME );
-  int new_remaining_ticks = hasted_num_ticks( duration_left );
-  
   dot -> action = this;
   dot -> added_seconds += extra_seconds;
-  dot -> num_ticks += ( new_remaining_ticks - remaining_ticks );
+
+  int new_remaining_ticks = hasted_num_ticks( duration_left );
+  dot -> num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
   if ( sim -> log ) 
-    log_t::output( sim, "%s extends duration of %s by %.1f second(s). Now %d ticks total, %d remaining", 
-                  player -> name(), name(), extra_seconds, dot -> num_ticks, new_remaining_ticks );
+    log_t::output( sim, "%s extends duration of %s by %.1f second(s). Now %d ticks total, %d remaining (OLD: %d total, %d remaining)", 
+                  player -> name(), name(), extra_seconds, dot -> num_ticks, new_remaining_ticks, old_num_ticks, old_remaining_ticks );
   
   dot -> recalculate_ready();
 
