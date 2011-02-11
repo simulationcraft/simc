@@ -88,12 +88,8 @@ struct paladin_t : public player_t
   // Spells
   struct spells_t
   {
-    active_spell_t* avenging_wrath;
     active_spell_t* divine_favor;
-    active_spell_t* divine_plea;
-    active_spell_t* guardian_of_ancient_kings;
     active_spell_t* guardian_of_ancient_kings_ret;
-    active_spell_t* inquisition;
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
 
@@ -151,7 +147,6 @@ struct paladin_t : public player_t
     int improved_judgement;
     int long_arm_of_the_law;
     int pursuit_of_justice;
-    int rebuke;
     int repentance;
     int selfless_healer;
     talent_t* communion;
@@ -1995,17 +1990,17 @@ void paladin_t::init_buffs()
   // buff_t( player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
-  buffs_censure                = new buff_t( this, "censure",                5       );
+  buffs_censure                = new buff_t( this, 31803, "censure" );
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
-  buffs_divine_plea            = new buff_t( this, "divine_plea",            1, spells.divine_plea->duration() );
+  buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", 0.01 * talents.divine_purpose -> effect_base_value( 1 ) );
-  buffs_holy_power             = new buff_t( this, "holy_power", 3 );
-  buffs_holy_shield            = new buff_t( this, "holy_shield",            1, 20.0 );
-  buffs_inquisition            = new buff_t( this, "inquisition", 1 );
+  buffs_holy_power             = new buff_t( this, "holy_power", 3  );
+  buffs_holy_shield            = new buff_t( this, 87342, "holy_shield" );
+  buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
   buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", talents.judgements_of_the_pure -> proc_chance() );
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", ( primary_tree() == TREE_PROTECTION ? 1 : 0 ) );
-  buffs_reckoning              = new buff_t( this, "reckoning",              4,  8.0, 0, talents.reckoning->rank() * 0.10 );
+  buffs_reckoning              = new buff_t( this, talents.reckoning -> effect_trigger_spell( 1 ), "reckoning", talents.reckoning -> proc_chance() );
   buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty", talents.sacred_duty -> proc_chance() );
   buffs_the_art_of_war         = new buff_t( this, talents.the_art_of_war -> effect_trigger_spell( 1 ), "the_art_of_war",  talents.the_art_of_war -> proc_chance() );
   buffs_zealotry               = new buff_t( this, talents.zealotry -> spell_id(), "zealotry", 1 );
@@ -2022,14 +2017,14 @@ void paladin_t::init_actions()
     return;
   }
 
+  active_hand_of_light_proc         = new hand_of_light_proc_t        ( this );
   active_seals_of_command_proc      = new seals_of_command_proc_t     ( this );
   active_seal_of_justice_proc       = new seal_of_justice_proc_t      ( this );
   active_seal_of_insight_proc       = new seal_of_insight_proc_t      ( this );
   active_seal_of_righteousness_proc = new seal_of_righteousness_proc_t( this );
   active_seal_of_truth_proc         = new seal_of_truth_proc_t        ( this );
   active_seal_of_truth_dot          = new seal_of_truth_dot_t         ( this );
-  active_hand_of_light_proc         = new hand_of_light_proc_t        ( this );
-  ancient_fury_explosion            = new ancient_fury_t( this );
+  ancient_fury_explosion            = new ancient_fury_t              ( this );
 
   if ( action_list_str.empty() )
   {
@@ -2071,11 +2066,11 @@ void paladin_t::init_actions()
       }
       std::string hp_proc_str = "divine_purpose";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
-      if ( spells.guardian_of_ancient_kings -> ok() )
+      if ( level >= 85 )
         action_list_str += "/guardian_of_ancient_kings";
       action_list_str += "/avenging_wrath,if=buff.zealotry.down";
       action_list_str += "/zealotry,if=buff.avenging_wrath.down";
-      if ( spells.inquisition -> ok() )
+      if ( level >= 81 )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff."+hp_proc_str+".react)";
       // CS before TV if <3 power, even with HoL/DP up
       action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
@@ -2199,7 +2194,6 @@ void paladin_t::init_talents()
   talents.guarded_by_the_light = 0;
   talents.improved_judgement = 0;
   talents.long_arm_of_the_law = 0;
-  talents.rebuke = 0;
   talents.vindication = 0;
 
   player_t::init_talents();
@@ -2209,24 +2203,20 @@ void paladin_t::init_spells()
 {
   player_t::init_spells();
 
-  // Spells
-  spells.avenging_wrath            = new active_spell_t( this, "avenging_wrath", "Avenging Wrath" );
-  spells.divine_favor              = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
-  spells.divine_plea               = new active_spell_t( this, "divine_plea", "Divine Plea" );
-  spells.guardian_of_ancient_kings = new active_spell_t( this, "guardian_of_ancient_kings", 86150 );
+  // Spells 
+  spells.divine_favor                  = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
   spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
-  spells.inquisition               = new active_spell_t( this, "inquisition", "Inquisition" );
 
   // Passives
-  passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light" );
-  passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance" );
   passives.divine_bulwark         = new mastery_t( this, "divine_bulwark", "Divine Bulwark", TREE_PROTECTION );
-  passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light" );
-  passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization" );
   passives.hand_of_light          = new mastery_t( this, "hand_of_light", "Hand of Light", TREE_RETRIBUTION );
-  passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
   passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold" );
   passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise" );
+  passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
+  passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light" );
+  passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light" );
+  passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization" );
+  passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance" );
 
   // Glyphs
   glyphs.ascetic_crusader         = find_glyph( "Glyph of the Ascetic Crusader" );
@@ -2302,10 +2292,10 @@ double paladin_t::composite_spell_power( const school_type school ) SC_CONST
   switch ( primary_tree() )
   {
   case TREE_PROTECTION:
-    sp += strength() * passives.touched_by_the_light->base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT );
+    sp += strength() * passives.touched_by_the_light -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT );
     break;
   case TREE_RETRIBUTION:
-    sp += composite_attack_power_multiplier() * composite_attack_power() * passives.sheath_of_light->base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
+    sp += composite_attack_power_multiplier() * composite_attack_power() * passives.sheath_of_light -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
     break;
   default:
     break;
@@ -2367,7 +2357,7 @@ void paladin_t::regen( double periodicity )
 
   if ( buffs_divine_plea -> up() )
   {
-    double tick_pct = ( spells.divine_plea -> effect_base_value( 1 ) + glyphs.divine_plea -> mod_additive( P_EFFECT_1 ) ) * 0.01;
+    double tick_pct = ( buffs_divine_plea -> effect_base_value( 1 ) + glyphs.divine_plea -> mod_additive( P_EFFECT_1 ) ) * 0.01;
     double tick_amount = resource_max[ RESOURCE_MANA ] * tick_pct;
     double amount = periodicity * tick_amount / 3;
     resource_gain( RESOURCE_MANA, amount, gains_divine_plea );
