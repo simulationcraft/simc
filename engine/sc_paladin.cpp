@@ -291,7 +291,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       trigger_gcd = 0;
       base_cost   = 0;
 
-      owner = p -> cast_pet()->owner->cast_paladin();
+      owner = p -> cast_pet() -> owner -> cast_paladin();
     }
 
     virtual void execute()
@@ -299,7 +299,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       attack_t::execute();
       if ( result_is_hit() )
       {
-        owner->buffs_ancient_power->trigger();
+        owner -> buffs_ancient_power -> trigger();
       }
     }
   };
@@ -322,7 +322,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   virtual void dismiss()
   {
     pet_t::dismiss();
-    owner->cast_paladin()->ancient_fury_explosion->execute();
+    owner -> cast_paladin() -> ancient_fury_explosion -> execute();
   }
 
   virtual void schedule_ready( double delta_time=0, bool waiting=false )
@@ -379,7 +379,7 @@ struct paladin_attack_t : public attack_t
     if ( p() -> set_bonus.tier10_2pc_melee() )
       base_multiplier *= 1.05;
 
-    if ( p() -> talents.judgements_of_the_pure -> ok() )
+    if ( p() -> talents.judgements_of_the_pure -> rank() )
       jotp_haste = 1.0 / ( 1.0 + p() -> buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
   }
 
@@ -436,12 +436,6 @@ struct paladin_attack_t : public attack_t
         if ( p -> active_seal == SEAL_OF_TRUTH )
         {
           p -> active_seal_of_truth_dot -> execute();
-        }
-
-        // It seems like it's the seal-triggering attacks that stack up ancient power
-        if ( ! p -> guardian_of_ancient_kings -> sleeping )
-        {
-          p -> buffs_ancient_power -> trigger();
         }
       }
       if ( trigger_dp )
@@ -661,7 +655,7 @@ struct divine_storm_t : public paladin_attack_t
   divine_storm_t( paladin_t* p, const std::string& options_str )
     : paladin_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( 0 )
   {
-    check_talent( p -> talents.divine_storm -> ok() );
+    check_talent( p -> talents.divine_storm -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -676,7 +670,7 @@ struct divine_storm_t : public paladin_attack_t
   virtual void update_ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( p -> talents.sanctity_of_battle -> ok() )
+    if ( p -> talents.sanctity_of_battle -> rank() )
     {
       cooldown -> duration = base_cooldown * haste();
     }
@@ -733,7 +727,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
     : paladin_attack_t( "hammer_of_the_righteous", "Hammer of the Righteous", p, false ), proc( 0 )
   {
-    check_talent( p -> talents.hammer_of_the_righteous -> ok() );
+    check_talent( p -> talents.hammer_of_the_righteous -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -1343,7 +1337,7 @@ struct paladin_spell_t : public spell_t
     if ( p() -> set_bonus.tier10_2pc_melee() )
       base_multiplier *= 1.05;
 
-    if ( p() -> talents.judgements_of_the_pure -> ok() )
+    if ( p() -> talents.judgements_of_the_pure -> rank() )
       jotp_haste = 1.0 / ( 1.0 + p() -> buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
   }
 
@@ -1999,7 +1993,7 @@ void paladin_t::init_buffs()
   player_t::init_buffs();
 
   // buff_t( player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_ancient_power          = new buff_t( this, "ancient_power", -1 );
+  buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, "censure",                5       );
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
@@ -2077,11 +2071,11 @@ void paladin_t::init_actions()
       }
       std::string hp_proc_str = "divine_purpose";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
-      if ( spells.guardian_of_ancient_kings->ok() )
+      if ( spells.guardian_of_ancient_kings -> ok() )
         action_list_str += "/guardian_of_ancient_kings";
       action_list_str += "/avenging_wrath,if=buff.zealotry.down";
       action_list_str += "/zealotry,if=buff.avenging_wrath.down";
-      if ( spells.inquisition->ok() )
+      if ( spells.inquisition -> ok() )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff."+hp_proc_str+".react)";
       // CS before TV if <3 power, even with HoL/DP up
       action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
@@ -2293,9 +2287,9 @@ double paladin_t::composite_attack_expertise() SC_CONST
 double paladin_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
   double m = player_t::composite_attribute_multiplier( attr );
-  if ( attr == ATTR_STRENGTH && buffs_ancient_power->check() )
+  if ( attr == ATTR_STRENGTH && buffs_ancient_power -> check() )
   {
-    m *= 1.0 + 0.01 * buffs_ancient_power->stack();
+    m *= 1.0 + 0.01 * buffs_ancient_power -> stack();
   }
   return m;
 }
@@ -2474,7 +2468,7 @@ void paladin_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( talents.communion -> ok() ) sim -> auras.communion -> trigger();
+  if ( talents.communion -> rank() ) sim -> auras.communion -> trigger();
 }
 
 // paladin_t::has_holy_power =================================================

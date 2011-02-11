@@ -3700,24 +3700,23 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   // Report Players
   for ( int i=0; i < num_players; i++ )
   {
-          print_text_player( file, sim, sim -> players_by_name[ i ], i );
+    print_text_player( file, sim, sim -> players_by_name[ i ], i );
 
-          // Pets
-          if ( sim -> report_pets_separately )
-          {
-                  for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
-                  {
-                          if ( pet -> summoned )
-                                  print_text_player( file, sim, pet, 1 );
-                  }
-          }
+    // Pets
+    if ( sim -> report_pets_separately )
+    {
+      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      {
+        if ( pet -> summoned )
+          print_text_player( file, sim, pet, 1 );
+      }
+    }
   }
 
   // Report Targets
   if ( sim -> report_targets )
   {
     util_t::fprintf( file, "\n\n *** Targets *** \n\n" );
-
 
     for ( int i=0; i < (int) sim -> targets_by_name.size(); i++ )
     {
@@ -3978,17 +3977,17 @@ void report_t::print_html( sim_t* sim )
         // Players
         for ( int i=0; i < num_players; i++ )
         {
-                print_html_player( file, sim, sim -> players_by_name[ i ], i );
+          print_html_player( file, sim, sim -> players_by_name[ i ], i );
 
-                // Pets
-                if ( sim -> report_pets_separately )
-                {
-                        for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
-                        {
-                                if ( pet -> summoned )
-                                        print_html_player( file, sim, pet, 1 );
-                        }
-                }
+          // Pets
+          if ( sim -> report_pets_separately )
+          {
+            for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+            {
+              if ( pet -> summoned )
+                print_html_player( file, sim, pet, 1 );
+            }
+          }
         }
 
         // Auras
