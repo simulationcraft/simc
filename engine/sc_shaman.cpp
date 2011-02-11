@@ -1965,6 +1965,48 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
   }
+
+  void schedule_execute()
+  {
+    if ( sim -> log )
+    {
+      log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
+    }
+
+    time_to_execute = execute_time();
+
+    execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+
+    if ( ! background )
+    {
+      player -> executing = this;
+      player -> gcd_ready = sim -> current_time + gcd();
+      if( player -> action_queued )
+      {
+        player -> gcd_ready -= sim -> queue_gcd_reduction;
+      }
+    }
+
+    if ( time_to_execute > 0 )
+    {
+      // While a non-maelstromable spell is casting, main/offhand swing times are _RESET_
+      double time_to_next_hit;
+      // Mainhand
+      if ( player -> main_hand_attack )
+      {
+        time_to_next_hit  = player -> main_hand_attack -> execute_time();
+        time_to_next_hit += time_to_execute;
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+      // Offhand
+      if ( player -> off_hand_attack )
+      {
+        time_to_next_hit  = player -> off_hand_attack -> execute_time();
+        time_to_next_hit += time_to_execute;
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+    }
+  }
 };
 
 // Lightning Bolt Spell =====================================================
@@ -2882,7 +2924,6 @@ struct searing_totem_t : public shaman_totem_t
     shaman_t* p = player -> cast_shaman();
     
     // Add a direct damage result as the "drop event" of the totem
-    stats -> add_execute( time_to_execute );
 
     if ( p -> talent_totemic_wrath -> rank() )
     {
@@ -2916,7 +2957,7 @@ struct searing_totem_t : public shaman_totem_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_totem_t::tick();
-    
+    stats -> add_tick( time_to_tick );
     if ( result_is_hit() && p -> buffs_searing_flames -> trigger() )
     {
       double new_base_td = tick_dmg;
@@ -3810,12 +3851,13 @@ void shaman_t::init_actions()
       if ( ! set_bonus.tier10_4pc_melee() )
       {
         if ( caster_mainhand )
+        {
           action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
+          action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.5";
+        }
         else
           action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react";
       }
-      
-      action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.5";
     }
     else
     {
