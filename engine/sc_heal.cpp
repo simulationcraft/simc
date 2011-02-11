@@ -341,28 +341,31 @@ void heal_t::assess_damage( player_t* t,
     
     if ( sim -> log )
     {
-      log_t::output( sim, "%s %s heals %s for %.0f (%s)",
+      log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
 		     player -> name(), name(),
-		     t -> name(), heal_actual,
+		     t -> name(), heal_actual, heal_amount,
 		     util_t::result_type_string( result ) );
     }
     
     if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
-  else if ( heal_type == HEAL_OVER_TIME ) // DMG_OVER_TIME
+  else
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f heal (%s)",
+      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
 		     player -> name(), name(),
 		     dot -> current_tick, dot -> num_ticks,
-		     heal_target[0] -> name(), heal_actual,
+		     heal_target[0] -> name(), heal_actual, heal_amount,
 		     util_t::result_type_string( result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
-  else assert( 0 );
+  if ( heal_amount > 0 || result_is_miss( heal_result ) )
+  {
+      stats -> add_result( heal_amount, heal_type, heal_result );
+  }
 }
 
 // heal_t::ready ============================================================
@@ -665,15 +668,18 @@ void absorb_t::assess_damage( player_t* t,
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s %s heals %s for %.0f (%s)",
+      log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
 		     player -> name(), name(),
-		     t -> name(), heal_actual,
+		     t -> name(), heal_actual, heal_amount,
 		     util_t::result_type_string( result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
-  else assert( 0 );
+  if ( heal_amount > 0 || result_is_miss( heal_result ) )
+  {
+      stats -> add_result( heal_amount, heal_type, heal_result );
+  }
 }
 
 // absorb_t::ready ============================================================

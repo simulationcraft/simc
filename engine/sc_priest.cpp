@@ -3403,7 +3403,6 @@ struct penance_heal_t : public priest_heal_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     penance_tick -> execute();
-    stats -> add_tick( time_to_tick );
   }
 
   virtual double cost() SC_CONST
