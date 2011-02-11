@@ -866,7 +866,9 @@ sim_t* SimulationCraftWindow::initSim()
     sim = new sim_t();
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
-    sim -> parse_option( "ptr",   ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
+#if SC_USE_PTR
+    sim -> parse_option( "ptr", ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
+#endif
     sim -> parse_option( "debug", ( (   debugChoice->currentIndex() == 2 ) ? "1" : "0" ) );
   }
   return sim;
@@ -1107,7 +1109,9 @@ void SimulationCraftWindow::startSim()
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
+#if SC_USE_PTR
   options += "ptr="; options += ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
+#endif
   options += "iterations=" + iterationsChoice->currentText() + "\n";
   if( iterationsChoice->currentText() == "10000" )
   {
@@ -1193,12 +1197,14 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += cmdLine->text();
   options += "\n";
+#if SC_USE_PTR
   if( versionChoice->currentIndex() == 2 )
   {
     options += "ptr=1\n";
     options += "copy=EvilTwinPTR\n";
     options += "ptr=0\n";
   }
+#endif
   if( debugChoice->currentIndex() != 0 )
   {
     options += "log=1\n";
