@@ -853,14 +853,8 @@ void player_t::init_core()
   initial_stats.haste_rating = gear.haste_rating + enchant.haste_rating + ( is_pet() ? 0 : sim -> enchant.haste_rating );
   initial_stats.mastery_rating = gear.mastery_rating + enchant.mastery_rating + ( is_pet() ? 0 : sim -> enchant.mastery_rating );
 
-  if ( initial_stats.  hit_rating < 0 ) initial_stats.  hit_rating = 0;
-  if ( initial_stats. crit_rating < 0 ) initial_stats. crit_rating = 0;
-  if ( initial_stats.haste_rating < 0 ) initial_stats.haste_rating = 0;
-  if ( initial_stats.mastery_rating < 0 ) initial_stats.mastery_rating = 0;
-
-  initial_haste_rating          = initial_stats.haste_rating;
-
-  initial_mastery_rating        = initial_stats.mastery_rating;
+  initial_haste_rating   = initial_stats.haste_rating;
+  initial_mastery_rating = initial_stats.mastery_rating;
 
   for ( int i=0; i < ATTRIBUTE_MAX; i++ )
   {
@@ -902,10 +896,6 @@ void player_t::init_spell()
   initial_stats.spell_penetration = gear.spell_penetration + enchant.spell_penetration + ( is_pet() ? 0 : sim -> enchant.spell_penetration );
   initial_stats.mp5               = gear.mp5               + enchant.mp5               + ( is_pet() ? 0 : sim -> enchant.mp5 );
 
-  if ( initial_stats.spell_power       < 0 ) initial_stats.spell_power       = 0;
-  if ( initial_stats.spell_penetration < 0 ) initial_stats.spell_penetration = 0;
-  if ( initial_stats.mp5               < 0 ) initial_stats.mp5               = 0;
-
   initial_spell_power[ SCHOOL_MAX ] = base_spell_power + initial_stats.spell_power;
 
   initial_spell_hit = base_spell_hit + initial_stats.hit_rating / rating.spell_hit;
@@ -939,18 +929,12 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
-  initial_stats.attack_power             = gear.attack_power             + enchant.attack_power             + ( is_pet() ? 0 : sim -> enchant.attack_power );
-  initial_stats.expertise_rating         = gear.expertise_rating         + enchant.expertise_rating         + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
+  initial_stats.attack_power     = gear.attack_power     + enchant.attack_power     + ( is_pet() ? 0 : sim -> enchant.attack_power );
+  initial_stats.expertise_rating = gear.expertise_rating + enchant.expertise_rating + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
 
-  if ( initial_stats.attack_power             < 0 ) initial_stats.attack_power             = 0;
-  if ( initial_stats.expertise_rating         < 0 ) initial_stats.expertise_rating         = 0;
-
-  initial_attack_power = base_attack_power + initial_stats.attack_power;
-
-  initial_attack_hit = base_attack_hit + initial_stats.hit_rating / rating.attack_hit;
-
-  initial_attack_crit = base_attack_crit + initial_stats.crit_rating / rating.attack_crit;
-
+  initial_attack_power     = base_attack_power     + initial_stats.attack_power;
+  initial_attack_hit       = base_attack_hit       + initial_stats.hit_rating       / rating.attack_hit;
+  initial_attack_crit      = base_attack_crit      + initial_stats.crit_rating      / rating.attack_crit;
   initial_attack_expertise = base_attack_expertise + initial_stats.expertise_rating / rating.expertise;
 
   double a,b;
@@ -984,12 +968,6 @@ void player_t::init_defense()
   initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
   initial_stats.parry_rating   = gear.parry_rating   + enchant.parry_rating   + ( is_pet() ? 0 : sim -> enchant.parry_rating );
   initial_stats.block_rating   = gear.block_rating   + enchant.block_rating   + ( is_pet() ? 0 : sim -> enchant.block_rating );
-
-  if ( initial_stats.armor          < 0 ) initial_stats.armor          = 0;
-  if ( initial_stats.bonus_armor    < 0 ) initial_stats.bonus_armor    = 0;
-  if ( initial_stats.dodge_rating   < 0 ) initial_stats.dodge_rating   = 0;
-  if ( initial_stats.parry_rating   < 0 ) initial_stats.parry_rating   = 0;
-  if ( initial_stats.block_rating   < 0 ) initial_stats.block_rating   = 0;
 
   initial_armor             = base_armor       + initial_stats.armor;
   initial_bonus_armor       = base_bonus_armor + initial_stats.bonus_armor;
