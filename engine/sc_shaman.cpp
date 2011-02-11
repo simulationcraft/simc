@@ -218,6 +218,7 @@ struct shaman_t : public player_t
   virtual void      clear_debuffs();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
+  virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
@@ -1147,9 +1148,6 @@ void shaman_attack_t::player_buff()
 {
   attack_t::player_buff();
   shaman_t* p = player -> cast_shaman();
-  
-  if ( p -> buffs_elemental_devastation -> up() )
-    player_crit += p -> buffs_elemental_devastation -> base_value();
   
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
@@ -2568,6 +2566,8 @@ struct shaman_totem_t : public shaman_spell_t
     if ( sim -> log ) 
       log_t::output( sim, "%s performs %s", player -> name(), name() );
 
+    result = RESULT_HIT; tick_dmg = 0; direct_dmg = 0;
+
     consume_resource();
     update_ready();
     schedule_travel( target );
@@ -3984,6 +3984,18 @@ double shaman_t::composite_attack_power_multiplier() SC_CONST
     multiplier *= 1.0 + buffs_maelstrom_power -> base_value();
 
   return multiplier;
+}
+
+// shaman_t::composite_attack_crit ==========================================
+
+double shaman_t::composite_attack_crit() SC_CONST
+{
+  double crit = player_t::composite_attack_crit();
+
+  if ( buffs_elemental_devastation -> up() )
+    crit += buffs_elemental_devastation -> base_value();
+
+  return crit;
 }
 
 // shaman_t::composite_spell_power ==========================================
