@@ -31,13 +31,9 @@ struct xml_node_t
   }
 };
 
-struct xml_cache_t
-{
-  std::string url;
-  xml_node_t* node;
-  xml_cache_t() : node( 0 ) {}
-  xml_cache_t( const std::string& u, xml_node_t* n ) : url( u ), node( n ) {}
-};
+typedef std::map<std::string,xml_node_t*> xml_cache_t;
+
+static xml_cache_t xml_cache;
 
 static void* xml_mutex = 0;
 
@@ -360,14 +356,15 @@ xml_node_t* xml_t::download( sim_t*             sim,
 {
   thread_t::mutex_lock( xml_mutex );
 
-  static std::vector<xml_cache_t> xml_cache;
-  int size = ( int ) xml_cache.size();
-
   xml_node_t* node = 0;
 
-  for ( int i=0; i < size && ! node; i++ )
-    if ( xml_cache[ i ].url == url )
-      node = xml_cache[ i ].node;
+  if ( sim -> parent ) // If it is a top-level sim, never use the cache.
+  {
+    if( xml_cache.find( url ) != xml_cache.end() ) 
+    {
+      node = xml_cache[ url ];
+    }
+  }
 
   if ( ! node )
   {
@@ -377,7 +374,10 @@ xml_node_t* xml_t::download( sim_t*             sim,
     {
       node = xml_t::create( sim, result );
 
-      if ( node ) xml_cache.push_back( xml_cache_t( url, node ) );
+      if ( node && ! sim -> parent ) 
+      {
+	xml_cache[ url ] = node;
+      }
     }
   }
 
@@ -394,16 +394,17 @@ xml_node_t* xml_t::download_cache( sim_t*             sim,
 {
   thread_t::mutex_lock( xml_mutex );
 
-  static std::vector<xml_cache_t> xml_cache;
-  int size = ( int ) xml_cache.size();
-
   if ( timestamp < 0 ) timestamp = 0;
 
   xml_node_t* node = 0;
 
-  for ( int i=0; i < size && ! node; i++ )
-    if ( xml_cache[ i ].url == url )
-      node = xml_cache[ i ].node;
+  if ( sim -> parent ) // If it is a top-level sim, never use the cache.
+  {
+    if( xml_cache.find( url ) != xml_cache.end() ) 
+    {
+      node = xml_cache[ url ];
+    }
+  }
 
   if ( ! node )
   {
@@ -413,7 +414,10 @@ xml_node_t* xml_t::download_cache( sim_t*             sim,
     {
       node = xml_t::create( sim, result );
 
-      if ( node ) xml_cache.push_back( xml_cache_t( url, node ) );
+      if ( node && ! sim -> parent ) 
+      {
+	xml_cache[ url ] = node;
+      }
     }
   }
 
