@@ -2524,6 +2524,8 @@ struct shaman_totem_t : public shaman_spell_t
     consume_resource();
     update_ready();
     schedule_travel( target );
+
+    stats -> add_execute( time_to_execute );
   }
   
   virtual void tick()
