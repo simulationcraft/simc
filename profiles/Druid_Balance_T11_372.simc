@@ -19,11 +19,11 @@ actions+=/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|deb
 actions+=/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3
 actions+=/berserking
 actions+=/typhoon,moving=1
-actions+=/starfall
-actions+=/sunfire,if=!ticking&!dot.moonfire.remains>0
-actions+=/moonfire,if=!ticking&!dot.sunfire.remains>0
+actions+=/starfall,if=buff.lunar_eclipse.up&buff.t11_4pc_caster.down
 actions+=/insect_swarm,if=!ticking
-actions+=/starsurge
+actions+=/sunfire,if=!ticking&buff.t11_4pc_caster.down&!dot.moonfire.remains>0
+actions+=/moonfire,if=!ticking&buff.t11_4pc_caster.down&!dot.sunfire.remains>0
+actions+=/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))
 actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
 actions+=/starfire,if=eclipse_dir=1
