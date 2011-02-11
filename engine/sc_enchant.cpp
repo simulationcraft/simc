@@ -22,6 +22,7 @@ static enchant_data_t enchant_db[] =
   { "4227",  "+130 Agility",                                              "130agi"                         },
   { "4223",  "Greatly increase your run speed for 5 sec.",                ""                               },
   { "4217",  "Pyrium Weapon Chain",                                       ""                               },
+  { "4214",  "Summons a Cardboard Assassin to draw the attention of enemies", ""                           },
   { "4209",  "+60 Agility and 35 Haste rating",                           "60agi_35haste"                  },
   { "4208",  "+60 Strength and 35 Mastery rating",                        "60str_35mastery"                },
   { "4207",  "+60 Intellect and 35 Critical Strike rating",               "60int_35crit"                   },
