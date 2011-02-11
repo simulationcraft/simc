@@ -3994,18 +3994,16 @@ void druid_t::init_actions()
         action_list_str += "/berserking";
       if ( talents.typhoon -> rank() ) 
         action_list_str += "/typhoon,moving=1";
-      if ( talents.starfall -> rank() && glyphs.focus -> enabled() ) 
-        action_list_str += "/starfall";
+      if ( talents.starfall -> rank() ) 
+        action_list_str += "/starfall,if=buff.lunar_eclipse.up&buff.t11_4pc_caster.down";
+      action_list_str += "/insect_swarm,if=!ticking";
       if ( talents.sunfire -> rank() )
-        action_list_str += "/sunfire,if=!ticking&!dot.moonfire.remains>0";
-      action_list_str += "/moonfire,if=!ticking";
+        action_list_str += "/sunfire,if=!ticking&buff.t11_4pc_caster.down&!dot.moonfire.remains>0";
+      action_list_str += "/moonfire,if=!ticking&buff.t11_4pc_caster.down";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
-      if ( talents.starfall -> rank() && ! glyphs.focus -> enabled() )
-        action_list_str += "/starfall";
-      action_list_str += "/insect_swarm,if=!ticking";
       if ( primary_tree() == TREE_BALANCE )
-        action_list_str += "/starsurge";
+        action_list_str += "/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))";
       action_list_str += "/innervate,if=mana_pct<50";
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
