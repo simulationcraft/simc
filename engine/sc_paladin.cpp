@@ -963,6 +963,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     paladin_attack_t( "seal_of_righteousness", p, SCHOOL_HOLY )
   {
     background  = true;
+    may_crit    = false;
     proc        = true;
     trigger_gcd = 0;
 
@@ -996,9 +997,10 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
                        + 0.01 * p -> talents.wrath_of_the_lightbringer->effect_base_value( 1 );
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
+    base_dd_min = base_dd_max    = 1.0;
     direct_power_mod             = 1.0;
     base_spell_power_multiplier  = 0.32;
-    base_attack_power_multiplier = base_spell_power_multiplier / 1.57;
+    base_attack_power_multiplier = 0.20;
 
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
@@ -1096,6 +1098,8 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
                        + 0.01 * p -> talents.wrath_of_the_lightbringer->effect_base_value( 1 )
                        + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
+
+    base_dd_min = base_dd_max    = 1.0;
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
     direct_power_mod             = 1.0;
