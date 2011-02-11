@@ -139,8 +139,6 @@ void heal_t::execute()
 		   player -> resource_current[ player -> primary_resource() ] );
   }
 
-  if ( observer ) *observer = 0;
-
   player_buff();
 
   total_heal = 0;
@@ -424,8 +422,6 @@ void heal_t::last_tick()
 
   dot -> ticking = 0;
   time_to_tick = 0;
-
-  if ( observer ) *observer = 0;
 }
 
 // heal_t::find_greatest_difference_player ==================================
@@ -607,8 +603,6 @@ void absorb_t::execute()
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
 		   player -> resource_current[ player -> primary_resource() ] );
   }
-  
-  if ( observer ) *observer = 0;
 
   player_buff();
 

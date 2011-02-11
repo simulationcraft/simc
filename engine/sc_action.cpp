@@ -131,7 +131,6 @@ void action_t::_init_action_t()
   if_expr                        = NULL;
   sync_str                       = "";
   sync_action                    = NULL;
-  observer                       = NULL;
   next                           = NULL;
   marker                         = 0;
   target_str                     = "";
@@ -1007,8 +1006,6 @@ void action_t::execute()
 
   if ( harmful ) player -> in_combat = true;
 
-  if ( observer ) *observer = 0;
-
   player_buff();
 
   target_debuff( target, DMG_DIRECT );
@@ -1071,8 +1068,6 @@ void action_t::last_tick()
   time_to_tick = 0;
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
-
-  if ( observer ) *observer = 0;
 }
 
 // action_t::travel ==========================================================
@@ -1207,8 +1202,6 @@ void action_t::schedule_execute()
 
   execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
 
-  if ( observer ) *observer = this;
-
   if ( ! background )
   {
     player -> executing = this;
@@ -1266,8 +1259,6 @@ void action_t::schedule_tick()
   dot -> ticking = 1;
 
   if ( channeled ) player -> channeling = this;
-
-  if ( observer ) *observer = this;
 }
 
 // action_t::schedule_travel ===============================================
@@ -1549,8 +1540,6 @@ void action_t::reset()
   execute_event = 0;
   travel_event = 0;
 
-  if ( observer ) *observer = 0;
-
   if ( ! dual ) stats -> reset( this );
 }
 
@@ -1567,8 +1556,6 @@ void action_t::cancel()
   event_t::cancel( dot -> tick_event );
 
   dot -> reset();
-
-  if ( observer ) *observer = 0;
 }
 
 // action_t::check_talent ===================================================
