@@ -1,5 +1,40 @@
 jQuery.noConflict();
 jQuery(document).ready(function($) {
+  function open_anchor(anchor) {
+    var img_id = '';
+    var src = '';
+    var target = '';
+    anchor.addClass('open');
+    var section = anchor.parent('.section');
+    section.addClass('section-open');
+    section.removeClass('grouped-first');
+    section.removeClass('grouped-last');
+    if (!(section.next().hasClass('section-open'))) {
+      section.next().addClass('grouped-first');
+    }
+    if (!(section.prev().hasClass('section-open'))) {
+      section.prev().addClass('grouped-last');
+    }
+    anchor.next('.toggle-content').show(150);
+    anchor.next('.toggle-content').find('.charts').each(function() {
+      $(this).children('span').each(function() {
+        img_class = $(this).attr('class');
+        img_alt = $(this).attr('title');
+        img_src = $(this).html().replace(/&amp;/g, "&");
+        var img = new Image();
+        $(img).attr('class', img_class);
+        $(img).attr('src', img_src);
+        $(img).attr('alt', img_alt);
+        $(this).replaceWith(img);
+        $(this).load();
+      });
+    })
+    setTimeout('window.scrollTo(0, anchor.position().top', 500);
+  }
+  var anchor_check = document.location.href.split('#');
+  if (anchor_check.length > 1) {
+  	var anchor = anchor_check[anchor_check.length - 1];
+  }
   var pcol = document.location.protocol;
   if (pcol != 'file:') {
     var whtt = document.createElement("script");
@@ -31,7 +66,7 @@ jQuery(document).ready(function($) {
         section.prev().addClass('grouped-last');
       }
     } else if (section.attr('id') != 'masthead') {
-      if (section.attr('id') == 'auras-and-debuffs' || section.next().hasClass('section-open')) {
+      if (section.hasClass('final') || section.next().hasClass('section-open')) {
         section.addClass('grouped-last');
       } else {
         section.next().removeClass('grouped-first');
@@ -81,5 +116,15 @@ jQuery(document).ready(function($) {
   $('#active-help a.close').click(function(e) {
     e.preventDefault();
     $('#active-help').toggle(250);
+  });
+  if (anchor) {
+    anchor = '#' + anchor;
+    target = $(anchor).children('h2:first');
+    open_anchor(target);
+  }
+  $('ul.toc li a').click(function(e) {
+    anchor = $(this).attr('href');
+    target = $(anchor).children('h2:first');
+    open_anchor(target);
   });
 });
