@@ -1115,7 +1115,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s %s %s on %s", player -> name(), util_t::result_type_string( result ), target -> name() );
+      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util_t::result_type_string( travel_result ) );
     }
   }
 }
