@@ -4023,7 +4023,7 @@ void report_t::print_html( sim_t* sim )
     {
       util_t::fprintf( file,
         "    <script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n"
-        "    <script type=\"text/javascript\" src=\"rep.js\"></script>\n" );
+        "    <script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/rep.js\"></script>\n" );
     }
     else
     {
