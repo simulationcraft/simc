@@ -526,6 +526,30 @@ player_t* rawr_t::load_player( sim_t* sim,
     }
   }
 
+  std::vector<xml_node_t*> glyph_nodes;
+  int num_glyphs = xml_t::get_nodes( glyph_nodes, root_node, "Glyph" );
+  for ( int i=0; i < num_glyphs; i++ )
+  {
+    int spell_id;
+    if ( xml_t::get_value( spell_id, glyph_nodes[ i ], "." ) )
+    {
+      spell_data_t* sd = spell_data_t::find( spell_id );
+      if ( sd )
+      {
+	std::string glyph_name = sd -> name;
+	if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+	else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+	armory_t::format( glyph_name );
+	if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
+	p -> glyphs_str += glyph_name;
+      }
+      else
+      {
+        sim -> errorf( "Player %s unable to decode glyph id '%d'.\n", p -> name(), spell_id );
+      }
+    }
+  }
+
   for ( int i=0; i < SLOT_MAX; i++ )
   {
     sim -> current_slot = i;
