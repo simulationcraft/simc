@@ -1685,6 +1685,8 @@ struct util_t
   static double floor( double X, unsigned int decplaces = 0 );
   static double ceil( double X, unsigned int decplaces = 0 );
   static double round( double X, unsigned int decplaces = 0 );
+
+  static std::string& tolower( std::string& );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form

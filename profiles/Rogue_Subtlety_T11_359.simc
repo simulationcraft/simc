@@ -43,7 +43,7 @@ wrists=parasitic_bands,type=leather,ilevel=359,quality=epic,stats=190agi_730armo
 hands=wind_dancers_gloves,type=leather,ilevel=359,quality=epic,stats=233agi_1043armor_169haste_149hit_380sta,reforge=hit_exp,gems=40agi_67agi_10haste,enchant=50haste
 finger1=gilnean_ring_of_ruination,ilevel=359,quality=epic,stats=190agi_138haste_108hit_286sta,reforge=hit_exp
 finger2=mistral_circle_of_the_windflurry,ilevel=359,quality=epic,stats=285sta_190agi_126crit_126haste,reforge=crit_exp,suffix=135
-trinket1=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_5000nature_1ppm
+trinket1=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_-5000nature_1ppm
 trinket2=fluid_death,ilevel=359,quality=epic,stats=321hit,reforge=hit_haste,equip=onattackhit_38agi_10stack_15dur
 back=viewless_wings,ilevel=359,quality=epic,stats=190agi_625armor_127crit_127hit_286sta,reforge=crit_haste,enchant=22agi
 main_hand=organic_lifeform_inverter,ilevel=359,quality=epic,stats=146agi_97exp_97mastery_219sta,reforge=mastery_haste,enchant=landslide,weapon=dagger_1.80speed_665min_999max

@@ -1863,6 +1863,13 @@ double util_t::round( double X, unsigned int decplaces )
   }
 }
 
+std::string& util_t::tolower( std::string& str )
+{
+  for ( unsigned i=0; i<str.length(); i++ )
+    str[i]=::tolower( str[i] );
+  return str;
+}
+
 //-------------------------------
 // std::STRING   utils
 //-------------------------------

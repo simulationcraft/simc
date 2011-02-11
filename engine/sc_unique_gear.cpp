@@ -80,7 +80,7 @@ struct discharge_proc_callback_t : public action_callback_t
   int stacks, max_stacks;
   double proc_chance;
   cooldown_t* cooldown;
-  spell_t* spell;
+  action_t* discharge_action;
   proc_t* proc;
   rng_t* rng;
 
@@ -107,10 +107,32 @@ struct discharge_proc_callback_t : public action_callback_t
       }
     };
 
+    struct discharge_attack_t : public attack_t
+    {
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
+          attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+      {
+        trigger_gcd = 0;
+        base_dd_min = amount;
+        base_dd_max = amount;
+	direct_power_mod = scaling;
+        may_crit = ( s != SCHOOL_DRAIN );
+        background  = true;
+        reset();
+      }
+    };
+
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;
 
-    spell = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school );
+    if( amount > 0 )
+    {
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school );
+    }
+    else
+    {
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school );
+    }
 
     proc = p -> get_proc( name_str.c_str() );
     rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
@@ -144,7 +166,7 @@ struct discharge_proc_callback_t : public action_callback_t
     else
     {
       stacks = 0;
-      spell -> execute();
+      discharge_action -> execute();
       proc -> occur();
     }
   }
@@ -156,7 +178,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 {
   std::string name_str;
   stat_buff_t* buff;
-  spell_t* spell;
+  action_t* discharge_action;
 
   stat_discharge_proc_callback_t( const std::string& n, player_t* p, 
 				  int stat, int max_stacks, double stat_amount,
@@ -184,7 +206,29 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       }
     };
 
-    spell = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school );
+    struct discharge_attack_t : public attack_t
+    {
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
+          attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+      {
+        trigger_gcd = 0;
+        base_dd_min = amount;
+        base_dd_max = amount;
+	direct_power_mod = scaling;
+        may_crit = ( s != SCHOOL_DRAIN );
+        background  = true;
+        reset();
+      }
+    };
+
+    if ( discharge_amount > 0 )
+    {
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school );
+    }
+    else
+    {
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -discharge_amount, discharge_scaling, school );
+    }
   }
 
   virtual void deactivate()
@@ -197,7 +241,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   {
     if ( buff -> trigger( a ) )
     {
-      spell -> execute();
+      discharge_action -> execute();
     }
   }
 };
@@ -1287,7 +1331,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Discharge Procs
   else if ( name == "bandits_insignia"                    ) e = "OnAttackHit_1880Arcane_15%_45Cd";
-  else if ( name == "darkmoon_card_hurricane"             ) e = "OnAttackHit_5000Nature_1PPM";
+  else if ( name == "darkmoon_card_hurricane"             ) e = "OnAttackHit_-5000Nature_1PPM";
   else if ( name == "darkmoon_card_volcano"               ) e = "OnSpellDamage_1200+10Fire_1600Int_30%_12Dur_45Cd";
   else if ( name == "extract_of_necromantic_power"        ) e = "OnSpellTickDamage_1050Shadow_10%_15Cd";
   else if ( name == "lightning_capacitor"                 ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
@@ -1317,7 +1361,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   if ( e.empty() ) return false;
 
-  armory_t::format( e );
+  util_t::tolower( e );
+  
   encoding = e;
 
   return true;
@@ -1383,9 +1428,9 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 
   if ( e.empty() ) return false;
 
-  armory_t::format( e );
+  util_t::tolower( e );
+
   encoding = e;
 
   return true;
 }
-

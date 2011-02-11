@@ -5,7 +5,7 @@ REM Update the "dir" and "rev" variables appropriately
 set dir=simc-406-1-win32
 set rev=r6937
 
-svn checkout https://simulationcraft.googlecode.com/svn/branches/cataclysm/ %dir% --username natehieter --revision %rev%
+svn checkout https://simulationcraft.googlecode.com/svn/trunk/ %dir% --username natehieter --revision %rev%
 
 mkdir %dir%\imageformats
 

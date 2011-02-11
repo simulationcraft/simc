@@ -212,21 +212,22 @@ bool item_t::parse_options()
 
   option_t::parse( sim, option_name_str.c_str(), options, remainder );
 
-  armory_t::format( option_name_str          );
-  armory_t::format( option_id_str            );
-  armory_t::format( option_stats_str         );
-  armory_t::format( option_gems_str          );
-  armory_t::format( option_enchant_str       );
-  armory_t::format( option_addon_str         );
-  armory_t::format( option_equip_str         );
-  armory_t::format( option_use_str           );
-  armory_t::format( option_weapon_str        );
-  armory_t::format( option_heroic_str        );
-  armory_t::format( option_armor_type_str    );
-  armory_t::format( option_reforge_str       );
-  armory_t::format( option_random_suffix_str );
-  armory_t::format( option_ilevel_str        );
-  armory_t::format( option_quality_str       );
+  armory_t::format( option_name_str );
+
+  util_t::tolower( option_id_str            );
+  util_t::tolower( option_stats_str         );
+  util_t::tolower( option_gems_str          );
+  util_t::tolower( option_enchant_str       );
+  util_t::tolower( option_addon_str         );
+  util_t::tolower( option_equip_str         );
+  util_t::tolower( option_use_str           );
+  util_t::tolower( option_weapon_str        );
+  util_t::tolower( option_heroic_str        );
+  util_t::tolower( option_armor_type_str    );
+  util_t::tolower( option_reforge_str       );
+  util_t::tolower( option_random_suffix_str );
+  util_t::tolower( option_ilevel_str        );
+  util_t::tolower( option_quality_str       );
 
   return true;
 }
@@ -828,8 +829,8 @@ bool item_t::decode_special( special_effect_t& effect,
       std::vector<std::string> splits;
       if( 2 == util_t::string_split( splits, t.value_str, "+" ) )
       {
-              effect.discharge_amount  = atof( splits[ 0 ].c_str() );
-              effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
+	effect.discharge_amount  = atof( splits[ 0 ].c_str() );
+	effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
       }
     }
     else if ( t.name == "stacks" || t.name == "stack" )

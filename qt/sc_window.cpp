@@ -1623,6 +1623,7 @@ void SimulationCraftWindow::armoryRegionChanged( const QString& region )
     importUrl += ".battle.net/wow/en";
   }
 
+  battleNetView->stop();
   battleNetView->setUrl( QUrl( importUrl ) );
 }
 
