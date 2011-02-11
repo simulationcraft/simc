@@ -123,7 +123,7 @@ static const char* translate_glyph_name( player_t* p,
   case MAGE:
     switch ( index )
     {
-    case  0: return "fire_ball";
+    case  0: return "fireball";
     case  1: return "frostfire";
     case  2: return "frost_bolt";
     case  3: return "ice_armor";
@@ -540,14 +540,16 @@ player_t* rawr_t::load_player( sim_t* sim,
     if ( xml_t::get_value( slot_encoding, root_node, slot_name ) )
     {
       std::string item_id, gem_ids[ 3 ], enchant_id;
+      std::string reforge_id, rsuffix_id, addon_id;
 
-      if ( 5 != util_t::string_split( slot_encoding, ".", "S S S S S", &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), &enchant_id ) )
+      if ( 7 != util_t::string_split( slot_encoding, ".", "S S S S S S S", 
+				      &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), 
+				      &enchant_id, &reforge_id, &rsuffix_id ) )
       {
         sim -> errorf( "Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
         return 0;
       }
 
-      std::string addon_id, reforge_id, rsuffix_id;
 
       bool success = item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
 
