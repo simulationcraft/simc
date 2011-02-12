@@ -1531,8 +1531,10 @@ struct heroic_strike_t : public warrior_attack_t
 
 struct mortal_strike_t : public warrior_attack_t
 {
+  double additive_multipliers;
   mortal_strike_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "mortal_strike", p, SCHOOL_PHYSICAL, TREE_ARMS )
+      warrior_attack_t( "mortal_strike", p, SCHOOL_PHYSICAL, TREE_ARMS ),
+      additive_multipliers( 0 )
   {
     check_spec( TREE_ARMS );
 
@@ -1541,7 +1543,7 @@ struct mortal_strike_t : public warrior_attack_t
     id = 12294;
     parse_data( p -> player_data );
    
-    base_multiplier *= 1.0 + p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+    additive_multipliers = p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
                            + p -> set_bonus.tier11_2pc_melee() * 0.05
                            + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
@@ -1568,10 +1570,13 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_lambs_to_the_slaughter -> up() )
+    if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
-      int stack = p -> buffs_lambs_to_the_slaughter -> stack();
-      player_multiplier *= 1.0 + stack * 0.10;
+      player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 ) + additive_multipliers;
+    }
+    else
+    {
+      player_multiplier *= 1.0 + additive_multipliers;
     }
   }
 };
@@ -1983,8 +1988,10 @@ struct shockwave_t : public warrior_attack_t
 
 struct slam_attack_t : public warrior_attack_t
 {
+  double additive_multipliers;
   slam_attack_t( warrior_t* p, const char* name ) :
-    warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY )
+    warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY ),
+    additive_multipliers( 0 )
   {
     id = 50783;
     parse_data( p -> player_data );
@@ -1999,8 +2006,8 @@ struct slam_attack_t : public warrior_attack_t
     base_execute_time          += p -> talents.improved_slam -> effect_base_value( 1 ) / 1000.0;
 
     weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
-    base_multiplier *= 1.0 + ( p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
-                               p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0 );
+    additive_multipliers = p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
+                           p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual void player_buff()
@@ -2011,9 +2018,13 @@ struct slam_attack_t : public warrior_attack_t
     {
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
     }
-    if ( p -> buffs_lambs_to_the_slaughter -> up() )
+    if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
-      player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
+      player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 ) + additive_multipliers;
+    }
+    else
+    {
+      player_multiplier *= 1.0 + additive_multipliers;
     }
   }
 };
