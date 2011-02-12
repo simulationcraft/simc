@@ -588,7 +588,6 @@ void SimulationCraftWindow::createImportTab()
   importTab->addTab( historyList, "History" );
 
   connect( rawrButton,  SIGNAL(clicked(bool)),                       this, SLOT(rawrButtonClicked()) );
-  connect( rawrList,    SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(   rawrDoubleClicked(QListWidgetItem*)) );
   connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
   connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
 
@@ -605,12 +604,12 @@ void SimulationCraftWindow::createRawrTab()
                                   " formulation vs simulation.  There are strengths and weaknesses to each"
                                   " approach.  Since they come from different directions, one can be confident"
                                   " in the result when they arrive at the same destination.\n\n"
-                                  " To aid comparison, SimulationCraft can import the character xml file written by Rawr." );
+                                  " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
+				  " Alternatively, paste xml from the Rawr in-game addon into the space below." );
   rawrLabel->setWordWrap( true );
   rawrLayout->addWidget( rawrLabel );
-  rawrLayout->addWidget( rawrButton = new QPushButton( "Change Directory" ) );
-  rawrLayout->addWidget( rawrDir = new QLabel( "" ) );
-  rawrLayout->addWidget( rawrList = new QListWidget(), 1 );
+  rawrLayout->addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
+  rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
@@ -958,8 +957,8 @@ void ImportThread::importCharDev()
 void ImportThread::importRawr()
 {
   // Win7/x86_64 workaround
-  std::string u = url.toUtf8().constData();
-  player = rawr_t::load_player( sim, u );
+  std::string xml = mainWindow->rawrText->toPlainText().toUtf8().constData();
+  player = rawr_t::load_player( sim, "rawr.xml", xml );
 }
 
 void ImportThread::run()
@@ -974,10 +973,13 @@ void ImportThread::run()
 
   if( player )
   {
-    sim->init();
-    std::string buffer="";
-    player->create_profile( buffer );
-    profile = QString::fromUtf8( buffer.c_str() );
+    if ( sim->init() )
+    {
+      std::string buffer="";
+      player->create_profile( buffer );
+      profile = QString::fromUtf8( buffer.c_str() );
+    }
+    else player = 0;
   }
 }
 
@@ -987,12 +989,6 @@ void SimulationCraftWindow::startImport( int tab, const QString& url )
   {
     sim -> cancel();
     return;
-  }
-  if( tab == TAB_RAWR ) 
-  {
-    rawrCmdLineHistory.add( url );
-    rawrFileText = "";
-    cmdLine->setText( rawrFileText );
   }
   simProgress = 0;
   mainButton->setText( "Cancel!" );
@@ -1031,14 +1027,17 @@ void SimulationCraftWindow::importFinished()
       historyList->addItem( item );
       historyList->sortItems();
     }
+
+    mainButton->setText( "Simulate!" );
+    mainTab->setCurrentIndex( TAB_SIMULATE );
   }
   else
   {
     simulateText->setPlainText( QString( "# Unable to generate profile from: " ) + importThread->url );
+    mainButton->setText( "Save!" );
+    mainTab->setCurrentIndex( TAB_LOG );
   }
   deleteSim();
-  mainButton->setText( "Simulate!" );
-  mainTab->setCurrentIndex( TAB_SIMULATE );
 }
 
 // ==========================================================================
@@ -1313,7 +1312,7 @@ void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
   case TAB_EXAMPLES:  cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
-  case TAB_IMPORT:    if( importTab->currentIndex() == TAB_RAWR ) rawrFileText = s; break;
+  case TAB_IMPORT:    break;
   }
 }
 
@@ -1358,7 +1357,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
-    case TAB_RAWR:       startImport( TAB_RAWR,       cmdLine->text() ); break;
+    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
     }
     break;
   case TAB_LOG: saveLog(); break;
@@ -1430,20 +1429,20 @@ void SimulationCraftWindow::rawrButtonClicked( bool checked )
 {
   checked=true;
   QFileDialog dialog( this );
-  dialog.setFileMode( QFileDialog::Directory );
+  dialog.setFileMode( QFileDialog::ExistingFile );
   dialog.setNameFilter( "Rawr Profiles (*.xml)" );
   dialog.restoreState( rawrDialogState );
   if( dialog.exec() )
   {
     rawrDialogState = dialog.saveState();
-    QDir dir = dialog.directory();
-    dir.setSorting( QDir::Name );
-    dir.setFilter( QDir::Files );
-    dir.setNameFilters( QStringList( "*.xml" ) );
-    QString pathName = dir.absolutePath() + "/";
-    rawrDir->setText( QDir::toNativeSeparators( pathName ) );
-    rawrList->clear();
-    rawrList->addItems( dir.entryList() );
+    QStringList fileList = dialog.selectedFiles();
+    if ( ! fileList.empty() )
+    {
+      QFile rawrFile( fileList.at( 0 ) );
+      rawrFile.open( QIODevice::ReadOnly );
+      rawrText->setPlainText( rawrFile.readAll() );
+      rawrText->moveCursor( QTextCursor::Start );
+    }
   }
 }
 
@@ -1452,12 +1451,12 @@ void SimulationCraftWindow::mainTabChanged( int index )
   visibleWebView = 0;
   switch( index )
   {
-  case TAB_WELCOME:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_OPTIONS:   cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_SIMULATE:  cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_OVERRIDES: cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_EXAMPLES:  cmdLine->setText(     cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_LOG:       cmdLine->setText(     logFileText ); mainButton->setText( "Save!" ); break;
+  case TAB_WELCOME:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_OPTIONS:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_SIMULATE:  cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_OVERRIDES: cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_EXAMPLES:  cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
   case TAB_IMPORT:    
     mainButton->setText( sim ? "Cancel!" : "Import!" ); 
     importTabChanged( importTab->currentIndex() ); 
@@ -1489,14 +1488,7 @@ void SimulationCraftWindow::importTabChanged( int index )
     visibleWebView = 0;
     progressBar->setFormat( simPhase.c_str() );
     progressBar->setValue( simProgress );
-    if( index == TAB_RAWR )
-    {
-      cmdLine->setText( rawrFileText );
-    }
-    else
-    {
-      cmdLine->setText( "" );
-    }
+    cmdLine->setText( "" );
   }
   else
   {
@@ -1534,13 +1526,6 @@ void SimulationCraftWindow::resultsTabCloseRequest( int index )
     resultsTab->removeTab( index );
     resultsHtml.removeAt( index-1 );
   }
-}
-
-void SimulationCraftWindow::rawrDoubleClicked( QListWidgetItem* item )
-{
-  rawrFileText = rawrDir->text();
-  rawrFileText += item->text();
-  cmdLine->setText( rawrFileText );
 }
 
 void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )

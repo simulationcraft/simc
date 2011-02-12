@@ -26,7 +26,7 @@
 #define TAB_HISTORY    4
 #define TAB_CUSTOM     5
 
-#define HISTORY_VERSION "4.9"
+#define HISTORY_VERSION "4.10"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -120,9 +120,8 @@ public:
     SimulationCraftWebView* visibleWebView;
     PersistentCookieJar* charDevCookies;
     QPushButton* rawrButton;
-    QLabel* rawrDir;
     QByteArray rawrDialogState;
-    QListWidget* rawrList;
+    SimulationCraftTextEdit* rawrText;
     QListWidget* historyList;
     QTreeWidget* bisTree;
     QString bisProfilePath;
@@ -148,14 +147,12 @@ public:
     QStringList resultsHtml;
 
     QString cmdLineText;
-    QString rawrFileText;
     QString logFileText;
     QString resultsFileText;
 
     StringHistory simulateCmdLineHistory;
     StringHistory logCmdLineHistory;
     StringHistory resultsCmdLineHistory;
-    StringHistory rawrCmdLineHistory;
     StringHistory optionsHistory;
     StringHistory simulateTextHistory;
     StringHistory overridesTextHistory;
@@ -211,7 +208,6 @@ private slots:
     void resultsTabChanged( int index );
     void resultsTabCloseRequest( int index );
     void rawrButtonClicked( bool checked=false );
-    void rawrDoubleClicked( QListWidgetItem* item );
     void historyDoubleClicked( QListWidgetItem* item );
     void bisDoubleClicked( QTreeWidgetItem* item, int col );
     void allBuffsChanged( bool checked );
@@ -260,11 +256,6 @@ protected:
       setText( mainWindow->cmdLineText ); 
       break;
     case TAB_IMPORT:
-      if( mainWindow->importTab->currentIndex() == TAB_RAWR )
-      {
-        mainWindow->rawrFileText = mainWindow->rawrCmdLineHistory.next( k ); 
-        setText( mainWindow->rawrFileText ); 
-      }
       break;
     case TAB_LOG:
       mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
