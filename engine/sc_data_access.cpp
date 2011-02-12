@@ -1779,6 +1779,123 @@ const random_suffix_data_t* sc_data_access_t::find_random_suffix( unsigned suffi
   return 0;
 }
 
+const item_data_t* sc_data_access_t::find_item( unsigned item_id ) SC_CONST
+{
+  assert( item_id );
+  
+  if ( item_id > m_items_index_size ) return 0;
+
+  return m_items_index[ item_id ];
+}
+
+double sc_data_access_t::weapon_speed( unsigned item_id ) SC_CONST
+{
+  const item_data_t* item = find_item( item_id );
+
+  if ( item ) return item -> delay / 1000.0;
+  return 0.0;
+}
+
+double sc_data_access_t::total_armor( unsigned ilevel, unsigned armor_type ) SC_CONST
+{
+  // TODO: Heirlooms, export ilevel boundaries
+  if ( armor_type > ITEM_SUBCLASS_ARMOR_PLATE || ilevel < 1 || ilevel > 400 ) return 0.0;
+  
+  return m_item_armor_total.ptr( ilevel - 1 ) -> armor_type[ armor_type - 1 ];
+}
+
+double sc_data_access_t::total_armor_shield( unsigned ilevel, unsigned quality ) SC_CONST
+{
+  if ( quality > 5 || ilevel < 1 || ilevel > 400 ) return 0.0;
+  
+  return m_item_armor_shield.ptr( ilevel - 1 ) -> values[ quality ];
+}
+
+double sc_data_access_t::m_armor_quality( unsigned ilevel, unsigned quality ) SC_CONST
+{
+  if ( quality > 5 || ilevel < 1 || ilevel > 400 ) return 0.0;
+  
+  return m_item_armor_quality.ptr( ilevel - 1 ) -> values[ quality ];
+}
+
+double sc_data_access_t::m_armor_invtype( unsigned inv_type, unsigned armor_type ) SC_CONST
+{
+  if ( ! inv_type || inv_type > INVTYPE_HOLDABLE || 
+       ! armor_type || armor_type > ITEM_SUBCLASS_ARMOR_PLATE ) return 0.0;
+  
+  return m_item_armor_invtype.ptr( inv_type - 1 ) -> armor_type[ armor_type - 1 ];
+}
+
+double sc_data_access_t::weapon_dps( unsigned item_id ) SC_CONST
+{
+  const item_data_t* item = m_items_index[ item_id ];
+  const sc_array_t<item_scale_data_t>* p_array = 0;
+  
+  if ( ! item ) return 0.0;
+
+  if ( item -> quality > 5 ) return 0.0;
+
+  switch ( item -> inventory_type )
+  {
+    case INVTYPE_WEAPON:
+    case INVTYPE_WEAPONMAINHAND:
+    case INVTYPE_WEAPONOFFHAND:
+    {
+      if ( item -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
+        p_array = &( m_item_damage_c1h );
+      else
+        p_array = &( m_item_damage_1h );
+      break;
+    }
+    case INVTYPE_2HWEAPON:
+    {
+      if ( item -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
+        p_array = &( m_item_damage_c2h );
+      else
+        p_array = &( m_item_damage_2h );
+      break;
+    }
+    case INVTYPE_RANGED:
+    case INVTYPE_THROWN:
+    case INVTYPE_RANGEDRIGHT:
+    {
+      switch ( item -> item_subclass )
+      {
+        case ITEM_SUBCLASS_WEAPON_BOW:
+        case ITEM_SUBCLASS_WEAPON_GUN:
+        case ITEM_SUBCLASS_WEAPON_CROSSBOW:
+        {
+          p_array = &( m_item_damage_ranged );
+          break;
+        }
+        case ITEM_SUBCLASS_WEAPON_THROWN:
+        {
+          p_array = &( m_item_damage_thrown );
+          break;
+        }
+        case ITEM_SUBCLASS_WEAPON_WAND:
+        {
+          p_array = &( m_item_damage_wand );
+          break;
+        }
+        default: break;
+      }
+      break;
+    }
+    default: break;
+  }
+  
+  if ( ! p_array ) return 0;
+  
+  for ( unsigned i = 0; i < p_array -> size(); i++ )
+  {
+    if ( p_array -> ptr( i ) -> ilevel == ( unsigned ) item -> level )
+      return p_array -> ptr( i ) -> values[ item -> quality ];
+  }
+  
+  return 0;
+}
+
 const item_enchantment_data_t* sc_data_access_t::find_item_enchantment( unsigned enchant_id ) SC_CONST
 {
   const item_enchantment_data_t* p = 0;
@@ -1787,6 +1904,20 @@ const item_enchantment_data_t* sc_data_access_t::find_item_enchantment( unsigned
   {
     p = m_item_enchantments.ptr( i );
     if ( enchant_id == p -> id )
+      return p;
+  }
+  
+  return 0;
+}
+
+const gem_property_data_t* sc_data_access_t::find_gem_property( unsigned gem_id ) SC_CONST
+{
+  const gem_property_data_t* p = 0;
+  
+  for ( unsigned i = 0; i < m_gem_property.size(); i++ )
+  {
+    p = m_gem_property.ptr( i );
+    if ( gem_id == p -> id )
       return p;
   }
   

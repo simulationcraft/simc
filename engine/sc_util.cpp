@@ -1346,6 +1346,31 @@ stat_type util_t::translate_item_mod( int item_mod )
   return STAT_NONE;
 }
 
+weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
+{
+  switch ( id )
+  {
+    case ITEM_SUBCLASS_WEAPON_AXE:          return WEAPON_AXE;
+    case ITEM_SUBCLASS_WEAPON_AXE2:         return WEAPON_AXE_2H;
+    case ITEM_SUBCLASS_WEAPON_BOW:          return WEAPON_BOW;
+    case ITEM_SUBCLASS_WEAPON_GUN:          return WEAPON_GUN;
+    case ITEM_SUBCLASS_WEAPON_MACE:         return WEAPON_MACE;
+    case ITEM_SUBCLASS_WEAPON_MACE2:        return WEAPON_MACE_2H;
+    case ITEM_SUBCLASS_WEAPON_POLEARM:      return WEAPON_POLEARM;
+    case ITEM_SUBCLASS_WEAPON_SWORD:        return WEAPON_SWORD;
+    case ITEM_SUBCLASS_WEAPON_SWORD2:       return WEAPON_SWORD_2H;
+    case ITEM_SUBCLASS_WEAPON_STAFF:        return WEAPON_STAFF;
+    case ITEM_SUBCLASS_WEAPON_FIST:         return WEAPON_FIST;
+    case ITEM_SUBCLASS_WEAPON_DAGGER:       return WEAPON_DAGGER;
+    case ITEM_SUBCLASS_WEAPON_THROWN:       return WEAPON_THROWN;
+    case ITEM_SUBCLASS_WEAPON_CROSSBOW:     return WEAPON_CROSSBOW;
+    case ITEM_SUBCLASS_WEAPON_WAND:         return WEAPON_WAND;
+    default: return WEAPON_NONE;
+  }
+  
+  return WEAPON_NONE;
+}
+
 // util_t::socket_gem_match ================================================
 
 bool util_t::socket_gem_match( int socket,

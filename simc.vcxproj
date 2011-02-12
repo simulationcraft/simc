@@ -121,6 +121,7 @@
     <ClCompile Include="engine\sc_http.cpp" />
     <ClCompile Include="engine\sc_hunter.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />
+    <ClCompile Include="engine\sc_item_data.cpp" />
     <ClCompile Include="engine\sc_js.cpp" />
     <ClCompile Include="engine\sc_log.cpp" />
     <ClCompile Include="engine\sc_mage.cpp" />

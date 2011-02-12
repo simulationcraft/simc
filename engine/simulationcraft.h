@@ -1306,15 +1306,31 @@ public:
   sc_array_t<stat_data_t>         m_class_stats;
   sc_array_t<stat_data_t>         m_race_stats;
   sc_array_t<random_prop_data_t>  m_random_property_data;
-  sc_array_t<random_suffix_data_t> m_random_suffixes;
+  sc_array_t<random_suffix_data_t> m_random_suffixes;  
   sc_array_t<item_enchantment_data_t> m_item_enchantments;
+
+  sc_array_t<item_data_t>         m_items;
+  sc_array_t<item_scale_data_t> m_item_damage_1h;
+  sc_array_t<item_scale_data_t> m_item_damage_c1h;
+  sc_array_t<item_scale_data_t> m_item_damage_2h;
+  sc_array_t<item_scale_data_t> m_item_damage_c2h;
+  sc_array_t<item_scale_data_t> m_item_damage_ranged;
+  sc_array_t<item_scale_data_t> m_item_damage_thrown;
+  sc_array_t<item_scale_data_t> m_item_damage_wand;
+  sc_array_t<item_scale_data_t> m_item_armor_quality;
+  sc_array_t<item_scale_data_t> m_item_armor_shield;
+  sc_array_t<item_armor_type_data_t> m_item_armor_total;
+  sc_array_t<item_armor_type_data_t> m_item_armor_invtype;
+  sc_array_t<gem_property_data_t> m_gem_property;
 
   spell_data_t**                  m_spells_index;
   spelleffect_data_t**            m_effects_index;
   talent_data_t**                 m_talents_index;
+  item_data_t**                   m_items_index;
   uint32_t                        m_spells_index_size;
   uint32_t                        m_effects_index_size;
   uint32_t                        m_talents_index_size;
+  uint32_t                        m_items_index_size;
 
   sc_array_t<uint32_t>            m_talent_trees;
   sc_array_t<uint32_t>            m_pet_talent_trees;
@@ -1327,7 +1343,7 @@ private:
   void                            create_spell_index();
   void                            create_effects_index();
   void                            create_talents_index();
-
+  void                            create_item_index();
   
   void                            sort_talents( uint32_t* p, const uint32_t num );
   int                             talent_compare( const void *vid1, const void *vid2 );
@@ -1504,10 +1520,20 @@ public:
   virtual bool          check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST;
   
   // Item database methods, very initial implementation TODO: Do this better
-  virtual const random_prop_data_t* find_rand_property_data( unsigned ilevel ) SC_CONST;
-  virtual const random_suffix_data_t* find_random_suffix( unsigned suffix_id ) SC_CONST;
+  virtual const item_data_t*             find_item( unsigned item_id ) SC_CONST;
+  virtual const random_prop_data_t*      find_rand_property_data( unsigned ilevel ) SC_CONST;
+  virtual const random_suffix_data_t*    find_random_suffix( unsigned suffix_id ) SC_CONST;
   virtual const item_enchantment_data_t* find_item_enchantment( unsigned enchant_id ) SC_CONST;
+  virtual const gem_property_data_t*     find_gem_property( unsigned gem_id ) SC_CONST;
+  
+  virtual double                         total_armor( unsigned ilevel, unsigned armor_type ) SC_CONST;
+  virtual double                         total_armor_shield( unsigned ilevel, unsigned quality ) SC_CONST;
+  virtual double                         m_armor_quality( unsigned ilevel, unsigned quality ) SC_CONST;
+  virtual double                         m_armor_invtype( unsigned inv_type, unsigned armor_type ) SC_CONST;
 
+  virtual double                         weapon_speed( unsigned item_id ) SC_CONST;
+  virtual double                         weapon_dps( unsigned item_id ) SC_CONST;
+  
   // Static methods
   static double         fmt_value( double, effect_type_t, effect_subtype_t );
   static player_type    get_class_type( const int c );
@@ -1653,6 +1679,7 @@ struct util_t
   static int translate_class_str( std::string& s );
   static race_type translate_race_id( int rid );
   static stat_type translate_item_mod( int stat_mod );
+  static weapon_type translate_weapon_subclass( item_subclass_weapon weapon_subclass );
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
@@ -2269,6 +2296,7 @@ struct sim_t
 
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
+  std::vector<std::string> item_db_sources;
 
   // Random Number Generation
   rng_t* rng;
@@ -2651,6 +2679,7 @@ struct item_t
   std::string option_random_suffix_str;
   std::string option_ilevel_str;
   std::string option_quality_str;
+  std::string option_data_source_str;
   std::string options_str;
 
   // Armory Data
@@ -2715,7 +2744,6 @@ struct item_t
   const char* name() SC_CONST;
   const char* slot_name() SC_CONST;
   const char* armor_type();
-  int random_suffix_type() SC_CONST;
   weapon_t* weapon() SC_CONST;
   bool init();
   bool parse_options();
@@ -2733,7 +2761,7 @@ struct item_t
   bool decode_ilevel();
   bool decode_quality();
 
-  static bool download_slot( item_t&, 
+  static bool download_slot( item_t& item, 
                              const std::string& item_id, 
                              const std::string& enchant_id, 
                              const std::string& addon_id, 
@@ -2741,9 +2769,30 @@ struct item_t
                              const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
-  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id );
+  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
   static int  parse_gem( item_t&            item,
                          const std::string& gem_id );
+};
+
+// Item database =============================================================
+struct item_database_t
+{
+  static bool     download_slot(      item_t& item, 
+                                      const std::string& item_id, 
+                                      const std::string& enchant_id, 
+                                      const std::string& addon_id, 
+                                      const std::string& reforge_id,
+                                      const std::string& rsuffix_id,
+                                      const std::string gem_ids[ 3 ] );
+  static bool     download_item(      item_t& item, const std::string& item_id );
+  static bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
+  static int      parse_gem(          item_t& item, const std::string& gem_id );
+  static bool     initialize_item_sources( const item_t& item, std::vector<std::string>& source_list );
+
+  static int      random_suffix_type( const item_t& item );
+  static uint32_t armor_value(        const item_t& item, unsigned item_id );
+  static uint32_t weapon_dmg_min(     const item_t& item, unsigned item_id );
+  static uint32_t weapon_dmg_max(     const item_t& item, unsigned item_id );
 };
 
 // Set Bonus =================================================================
@@ -4323,10 +4372,11 @@ struct wowhead_t
                              const std::string& reforge_id, 
                              const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ], 
-                             int cache_only=0 );
-  static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
-  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
-  static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
+                             int cache_only=0,
+                             bool ptr=false );
+  static bool download_item( item_t&, const std::string& item_id, int cache_only=0,bool ptr=false );
+  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, int cache_only=0, bool ptr=false );
+  static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0, bool ptr=false );
 };
 
 // CharDev  ==================================================================
@@ -4349,7 +4399,7 @@ struct mmo_champion_t
                              const std::string gem_ids[ 3 ], 
                              int cache_only=0 );
   static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
-  static bool download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
+  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
 };
 

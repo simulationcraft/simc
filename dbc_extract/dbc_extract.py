@@ -11,7 +11,10 @@ parser.add_option("-o", "--out", dest = "output_type",
 parser.add_option("-t", "--type", dest = "type", 
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
-                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix', 'item_ench' ]), 
+                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
+                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
+                              'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix', 
+                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [85]", 
                   default = 85, action = "store", type = "int")
@@ -27,11 +30,20 @@ parser.add_option("--prefix", dest = "prefix",
 parser.add_option("--suffix", dest = "suffix", 
                   help    = "Data structure suffix string", 
                   default = r'', action = "store", type = "string")
+parser.add_option("--min-ilvl", dest = "min_ilevel",
+                  help    = "Minimum inclusive ilevel for item-related extraction",
+                  default = 272, action = "store", type = "int" )
+parser.add_option("--max-ilvl", dest = "max_ilevel",
+                  help    = "Maximum inclusive ilevel for item-related extraction",
+                  default = 400, action = "store", type = "int" )
 
 (options, args) = parser.parse_args()
 
 if options.build == 0 and options.type != 'header' and options.type != 'patch':
     parser.error('-b is a mandatory parameter for extraction type "%s"' % options.type)
+    
+if options.min_ilevel < 0 or options.max_ilevel > 999:
+    parser.error('--min/max-ilevel range is 0..999')
 
 if options.level % 5 != 0 or options.level > 100:
     parser.error('-l must be given as a multiple of 5 and be smaller than 100')
@@ -106,8 +118,43 @@ elif options.type == 'random_suffix':
     ids = g.filter()
     
     print g.generate(ids)
+elif options.type == 'item':
+    g = dbc.generator.ItemDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
 elif options.type == 'item_ench':
     g = dbc.generator.SpellItemEnchantmentGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'weapon_damage':
+    g = dbc.generator.WeaponDamageDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'item_armor':
+    g = dbc.generator.ArmorValueDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+    
+    g = dbc.generator.ArmorSlotDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'gem_properties':
+    g = dbc.generator.GemPropertyDataGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

@@ -1,7 +1,194 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
-// Mangos data types for item modifiers and type
+// Mangos data types for various DBC-related enumerations
+
+enum item_flag
+{
+    ITEM_FLAG_UNK0                            = 0x00000001, // not used
+    ITEM_FLAG_CONJURED                        = 0x00000002,
+    ITEM_FLAG_LOOTABLE                        = 0x00000004, // affect only non container items that can be "open" for loot. It or lockid set enable for client show "Right click to open". See also ITEM_DYNFLAG_UNLOCKED
+    ITEM_FLAG_HEROIC                          = 0x00000008, // heroic item version
+    ITEM_FLAG_UNK4                            = 0x00000010, // can't repeat old note: appears red icon (like when item durability==0)
+    ITEM_FLAG_INDESTRUCTIBLE                  = 0x00000020, // used for totem. Item can not be destroyed, except by using spell (item can be reagent for spell and then allowed)
+    ITEM_FLAG_UNK6                            = 0x00000040, // ? old note: usable
+    ITEM_FLAG_NO_EQUIP_COOLDOWN               = 0x00000080,
+    ITEM_FLAG_UNK8                            = 0x00000100, // saw this on item 47115, 49295...
+    ITEM_FLAG_WRAPPER                         = 0x00000200, // used or not used wrapper
+    ITEM_FLAG_IGNORE_BAG_SPACE                = 0x00000400, // ignore bag space at new item creation?
+    ITEM_FLAG_PARTY_LOOT                      = 0x00000800, // determines if item is party loot or not
+    ITEM_FLAG_REFUNDABLE                      = 0x00001000, // item cost can be refunded within 2 hours after purchase
+    ITEM_FLAG_CHARTER                         = 0x00002000, // arena/guild charter
+    ITEM_FLAG_UNK14                           = 0x00004000,
+    ITEM_FLAG_UNK15                           = 0x00008000, // a lot of items have this
+    ITEM_FLAG_UNK16                           = 0x00010000, // a lot of items have this
+    ITEM_FLAG_UNK17                           = 0x00020000,
+    ITEM_FLAG_PROSPECTABLE                    = 0x00040000, // item can have prospecting loot (in fact some items expected have empty loot)
+    ITEM_FLAG_UNIQUE_EQUIPPED                 = 0x00080000,
+    ITEM_FLAG_UNK20                           = 0x00100000,
+    ITEM_FLAG_USEABLE_IN_ARENA                = 0x00200000,
+    ITEM_FLAG_THROWABLE                       = 0x00400000, // Only items of ITEM_SUBCLASS_WEAPON_THROWN have it but not all, so can't be used as in game check
+    ITEM_FLAG_SPECIALUSE                      = 0x00800000, // last used flag in 2.3.0
+    ITEM_FLAG_UNK24                           = 0x01000000,
+    ITEM_FLAG_UNK25                           = 0x02000000,
+    ITEM_FLAG_UNK26                           = 0x04000000,
+    ITEM_FLAG_BOA                             = 0x08000000, // bind on account (set in template for items that can binded in like way)
+    ITEM_FLAG_ENCHANT_SCROLL                  = 0x10000000, // for enchant scrolls
+    ITEM_FLAG_MILLABLE                        = 0x20000000, // item can have milling loot
+    ITEM_FLAG_UNK30                           = 0x04000000,
+    ITEM_FLAG_BOP_TRADEABLE                   = 0x80000000, // bound item that can be traded
+};
+
+enum item_flag2
+{
+    ITEM_FLAG2_HORDE_ONLY                     = 0x00000001, // drop in loot, sell by vendor and equipping only for horde
+    ITEM_FLAG2_ALLIANCE_ONLY                  = 0x00000002, // drop in loot, sell by vendor and equipping only for alliance
+    ITEM_FLAG2_EXT_COST_REQUIRES_GOLD         = 0x00000004, // item cost include gold part in case extended cost use also
+    ITEM_FLAG2_UNK4                           = 0x00000008,
+    ITEM_FLAG2_UNK5                           = 0x00000010,
+    ITEM_FLAG2_UNK6                           = 0x00000020,
+    ITEM_FLAG2_UNK7                           = 0x00000040,
+    ITEM_FLAG2_UNK8                           = 0x00000080,
+    ITEM_FLAG2_NEED_ROLL_DISABLED             = 0x00000100, // need roll during looting is not allowed for this item
+    ITEM_FLAG2_CASTER_WEAPON                  = 0x00000200, // uses caster specific dbc file for DPS calculations
+};
+
+enum item_class
+{
+    ITEM_CLASS_CONSUMABLE                     = 0,
+    ITEM_CLASS_CONTAINER                      = 1,
+    ITEM_CLASS_WEAPON                         = 2,
+    ITEM_CLASS_GEM                            = 3,
+    ITEM_CLASS_ARMOR                          = 4,
+    ITEM_CLASS_REAGENT                        = 5,
+    ITEM_CLASS_PROJECTILE                     = 6,
+    ITEM_CLASS_TRADE_GOODS                    = 7,
+    ITEM_CLASS_GENERIC                        = 8,
+    ITEM_CLASS_RECIPE                         = 9,
+    ITEM_CLASS_MONEY                          = 10,
+    ITEM_CLASS_QUIVER                         = 11,
+    ITEM_CLASS_QUEST                          = 12,
+    ITEM_CLASS_KEY                            = 13,
+    ITEM_CLASS_PERMANENT                      = 14,
+    ITEM_CLASS_MISC                           = 15,
+    ITEM_CLASS_GLYPH                          = 16
+};
+
+enum item_subclass_weapon
+{
+    ITEM_SUBCLASS_WEAPON_AXE                  = 0,
+    ITEM_SUBCLASS_WEAPON_AXE2                 = 1,
+    ITEM_SUBCLASS_WEAPON_BOW                  = 2,
+    ITEM_SUBCLASS_WEAPON_GUN                  = 3,
+    ITEM_SUBCLASS_WEAPON_MACE                 = 4,
+    ITEM_SUBCLASS_WEAPON_MACE2                = 5,
+    ITEM_SUBCLASS_WEAPON_POLEARM              = 6,
+    ITEM_SUBCLASS_WEAPON_SWORD                = 7,
+    ITEM_SUBCLASS_WEAPON_SWORD2               = 8,
+    ITEM_SUBCLASS_WEAPON_obsolete             = 9,
+    ITEM_SUBCLASS_WEAPON_STAFF                = 10,
+    ITEM_SUBCLASS_WEAPON_EXOTIC               = 11,
+    ITEM_SUBCLASS_WEAPON_EXOTIC2              = 12,
+    ITEM_SUBCLASS_WEAPON_FIST                 = 13,
+    ITEM_SUBCLASS_WEAPON_MISC                 = 14,
+    ITEM_SUBCLASS_WEAPON_DAGGER               = 15,
+    ITEM_SUBCLASS_WEAPON_THROWN               = 16,
+    ITEM_SUBCLASS_WEAPON_SPEAR                = 17,
+    ITEM_SUBCLASS_WEAPON_CROSSBOW             = 18,
+    ITEM_SUBCLASS_WEAPON_WAND                 = 19,
+    ITEM_SUBCLASS_WEAPON_FISHING_POLE         = 20
+};
+
+enum item_subclass_armor
+{
+    ITEM_SUBCLASS_ARMOR_MISC                  = 0,
+    ITEM_SUBCLASS_ARMOR_CLOTH                 = 1,
+    ITEM_SUBCLASS_ARMOR_LEATHER               = 2,
+    ITEM_SUBCLASS_ARMOR_MAIL                  = 3,
+    ITEM_SUBCLASS_ARMOR_PLATE                 = 4,
+    ITEM_SUBCLASS_ARMOR_BUCKLER               = 5,
+    ITEM_SUBCLASS_ARMOR_SHIELD                = 6,
+    ITEM_SUBCLASS_ARMOR_LIBRAM                = 7,
+    ITEM_SUBCLASS_ARMOR_IDOL                  = 8,
+    ITEM_SUBCLASS_ARMOR_TOTEM                 = 9,
+    ITEM_SUBCLASS_ARMOR_SIGIL                 = 10
+};
+
+enum inventory_type
+{
+    INVTYPE_NON_EQUIP                         = 0,
+    INVTYPE_HEAD                              = 1,
+    INVTYPE_NECK                              = 2,
+    INVTYPE_SHOULDERS                         = 3,
+    INVTYPE_BODY                              = 4,
+    INVTYPE_CHEST                             = 5,
+    INVTYPE_WAIST                             = 6,
+    INVTYPE_LEGS                              = 7,
+    INVTYPE_FEET                              = 8,
+    INVTYPE_WRISTS                            = 9,
+    INVTYPE_HANDS                             = 10,
+    INVTYPE_FINGER                            = 11,
+    INVTYPE_TRINKET                           = 12,
+    INVTYPE_WEAPON                            = 13,
+    INVTYPE_SHIELD                            = 14,
+    INVTYPE_RANGED                            = 15,
+    INVTYPE_CLOAK                             = 16,
+    INVTYPE_2HWEAPON                          = 17,
+    INVTYPE_BAG                               = 18,
+    INVTYPE_TABARD                            = 19,
+    INVTYPE_ROBE                              = 20,
+    INVTYPE_WEAPONMAINHAND                    = 21,
+    INVTYPE_WEAPONOFFHAND                     = 22,
+    INVTYPE_HOLDABLE                          = 23,
+    INVTYPE_AMMO                              = 24,
+    INVTYPE_THROWN                            = 25,
+    INVTYPE_RANGEDRIGHT                       = 26,
+    INVTYPE_QUIVER                            = 27,
+    INVTYPE_RELIC                             = 28
+};
+
+enum item_enchantment
+{
+    ITEM_ENCHANTMENT_NONE             = 0,
+    ITEM_ENCHANTMENT_COMBAT_SPELL     = 1,
+    ITEM_ENCHANTMENT_DAMAGE           = 2,
+    ITEM_ENCHANTMENT_EQUIP_SPELL      = 3,
+    ITEM_ENCHANTMENT_RESISTANCE       = 4,
+    ITEM_ENCHANTMENT_STAT             = 5,
+    ITEM_ENCHANTMENT_TOTEM            = 6,
+    ITEM_ENCHANTMENT_USE_SPELL        = 7,
+    ITEM_ENCHANTMENT_PRISMATIC_SOCKET = 8
+};
+
+enum item_spell_trigger_type
+{
+    ITEM_SPELLTRIGGER_ON_USE          = 0, // use after equip cooldown
+    ITEM_SPELLTRIGGER_ON_EQUIP        = 1,
+    ITEM_SPELLTRIGGER_CHANCE_ON_HIT   = 2,
+    ITEM_SPELLTRIGGER_SOULSTONE       = 4,
+    ITEM_SPELLTRIGGER_ON_NO_DELAY_USE = 5, // no equip cooldown
+    ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6
+};
+
+enum item_socket_color
+{
+  SOCKET_COLOR_NONE                 = 0,
+  SOCKET_COLOR_META                 = 1,
+  SOCKET_COLOR_RED                  = 2,
+  SOCKET_COLOR_YELLOW               = 4,
+  SOCKET_COLOR_BLUE                 = 8
+};
+
+enum item_bind_type
+{
+    NO_BIND                           = 0,
+    BIND_WHEN_PICKED_UP               = 1,
+    BIND_WHEN_EQUIPPED                = 2,
+    BIND_WHEN_USE                     = 3,
+    BIND_QUEST_ITEM                   = 4,
+    BIND_QUEST_ITEM1                  = 5         // not used in game
+};
+
 enum item_mod_type {
   ITEM_MOD_MANA                     = 0,
   ITEM_MOD_HEALTH                   = 1,

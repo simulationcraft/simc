@@ -22,8 +22,11 @@ _DIFF_DATA = {
     },
 }
 
-# Base DBC fields, works for 12604, as that's our first DBC data version
+# Base DBC/DB2 fields, works for 12604, as that's our first DBC/DB2 data version
 _DBC_FIELDS = {
+    'ArmorLocation.dbc': [
+        ( 'id', '%3u' ), ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f')
+    ],
     'ChatChannels.dbc' : [
           'id', 'unk_1', 'unk_2', 'unk_3', 'unk_4'
     ],
@@ -33,12 +36,112 @@ _DBC_FIELDS = {
           'id_movie', 'faction',    'ofs_name',   'ofs_f_name', 'ofs_n_name', 'unk_17',
           'unk_19',   'expansion',  'unk_21',     'unk_22',     'unk_23',     'unk_24'
     ],
+    'GemProperties.dbc' : [
+          ( 'id', '%5u' ), ( 'id_enchant', '%5u' ), 'unk_3', 'unk_4', ( 'color', '%3u' ), 'unk_6'
+    ],
     'GlyphProperties.dbc' : [
           'id',      ( 'id_spell', '%5u' ),  'flags',      'unk_3'
     ],
-    'Item.dbc' : [
-          'id',         'class',      'subclass', ( 'unk_3', '%d' ), 'material',
+    'Item.db2' : [
+          'id',      ( 'classs', '%2d' ), ( 'subclass', '%2d' ), ( 'unk_3', '%d' ), 'material',
           'id_display', 'type_inv',   'sheath'
+    ],
+    'ItemArmorQuality.dbc' : [
+        'id',
+      ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+      ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+      ( 'ilevel', '%4u' )
+    ],
+    'ItemArmorShield.dbc' : [
+        'id', ( 'ilevel', '%4u' ),
+      ( 'v_1', '%11.1f' ), ( 'v_2', '%11.1f' ), ( 'v_3', '%11.1f' ), ( 'v_4', '%11.1f' ), ( 'v_5', '%11.1f' ),
+      ( 'v_6', '%11.1f' ), ( 'v_7', '%11.1f' ),
+    ],
+    'ItemArmorTotal.dbc' : [
+        'id', ( 'ilevel', '%4u' ), ( 'v_1', '%12.6f' ), ( 'v_2', '%12.6f' ), ( 'v_3', '%12.6f' ), ( 'v_4', '%12.6f' )
+    ],
+    'ItemClass.dbc' : [
+          ( 'id', '%3d' ), 'unk_1', 'unk_2', 'unk_3', 'ofs_name'
+    ],
+    'ItemDamageOneHand.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDamageOneHandCaster.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDamageRanged.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDamageTwoHand.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDamageTwoHandCaster.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDamageThrown.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDamageWand.dbc' : [
+          'id',
+          ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f' ),
+          ( 'v_6', '%11.6f' ), ( 'v_7', '%11.6f' ),
+          ( 'ilevel', '%4u' )
+    ],
+    'ItemDisplayInfo.dbc' : [
+          'id',
+          'f1', 'f2', 'f3', 'f4', 'ofs_icon', 'f6', 'f7', 'f8', 'f9', 'f10',
+          'f11', 'f12', 'f13', 'f14', 'f15', 'f16', 'f17', 'f18', 'f19', 'f20',
+          'f21', 'f22', 'f23', 'f24'
+    ],
+    'Item-sparse.db2': [
+          ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),         'buy_price',
+            'sell_price',           ( 'inv_type', '%2u' ),    ( 'race_mask', '%#.8x' ), ( 'class_mask', '%#.8x' ),    ( 'ilevel', '%4u' ),
+          ( 'req_level', '%3d' ),     'req_skill',              'req_skill_rank',         'req_spell',                  'req_honor_rank',
+            'req_city_rank',          'req_rep_faction',        'req_rep_rank',           'max_count',                  'stackable',
+            'container_slots', 
+          ( 'stat_type_1', '%3d' ), ( 'stat_type_2', '%3d' ), ( 'stat_type_3', '%3d' ), ( 'stat_type_4', '%3d' ),     ( 'stat_type_5', '%3d' ),
+          ( 'stat_type_6', '%3d' ), ( 'stat_type_7', '%3d' ), ( 'stat_type_8', '%3d' ), ( 'stat_type_9', '%3d' ),     ( 'stat_type_10', '%3d' ),
+          ( 'stat_val_1', '%4d' ),  ( 'stat_val_2', '%4d' ),  ( 'stat_val_3', '%4d' ),  ( 'stat_val_4', '%4d' ),      ( 'stat_val_5', '%4d' ),
+          ( 'stat_val_6', '%4d' ),  ( 'stat_val_7', '%4d' ),  ( 'stat_val_8', '%4d' ),  ( 'stat_val_9', '%4d' ),      ( 'stat_val_10', '%4d' ),
+          ( 'stat_unk1_1', '%2u' ), ( 'stat_unk1_2', '%2u' ), ( 'stat_unk1_3', '%2u' ), ( 'stat_unk1_4', '%2u' ),     ( 'stat_unk1_5', '%2u' ),
+          ( 'stat_unk1_6', '%2u' ), ( 'stat_unk1_7', '%2u' ), ( 'stat_unk1_8', '%2u' ), ( 'stat_unk1_9', '%2u' ),     ( 'stat_unk1_10', '%2u' ),
+          ( 'stat_unk2_1', '%2u' ), ( 'stat_unk2_2', '%2u' ), ( 'stat_unk2_3', '%2u' ), ( 'stat_unk2_4', '%2u' ),     ( 'stat_unk2_5', '%2u' ),
+          ( 'stat_unk2_6', '%2u' ), ( 'stat_unk2_7', '%2u' ), ( 'stat_unk2_8', '%2u' ), ( 'stat_unk2_9', '%2u' ),     ( 'stat_unk2_10', '%2u' ),
+            'scale_stat_dist',        'damage_type',          ( 'delay', '%5d' ),     ( 'ranged_mod_range', '%f' ), 
+          ( 'id_spell_1', '%5d' ),  ( 'id_spell_2', '%5d' ),  ( 'id_spell_3', '%5d' ),  ( 'id_spell_4', '%5d' ),      ( 'id_spell_5', '%5d' ),
+          ( 'trg_spell_1', '%3d' ), ( 'trg_spell_2', '%3d' ), ( 'trg_spell_3', '%3d' ), ( 'trg_spell_4', '%3d' ),     ( 'trg_spell_5', '%3d' ),
+          ( 'chg_spell_1', '%5d' ), ( 'chg_spell_2', '%5d' ), ( 'chg_spell_3', '%5d' ), ( 'chg_spell_4', '%5d' ),     ( 'chg_spell_5', '%5d' ),
+          ( 'cd_spell_1', '%7d' ),  ( 'cd_spell_2', '%7d' ),  ( 'cd_spell_3', '%7d' ),  ( 'cd_spell_4', '%7d' ),      ( 'cd_spell_5', '%7d' ),
+          ( 'cat_spell_1', '%5d' ), ( 'cat_spell_2', '%5d' ), ( 'cat_spell_3', '%5d' ), ( 'cat_spell_4', '%5d' ),     ( 'cat_spell_5', '%5d' ),
+          ( 'cdc_spell_1', '%6d' ), ( 'cdc_spell_2', '%6d' ), ( 'cdc_spell_3', '%6d' ), ( 'cdc_spell_4', '%6d' ),     ( 'cdc_spell_5', '%6d' ),
+          ( 'bonding', '%2d' ),
+            'ofs_name',               'ofs_name_2',             'ofs_name_3',             'ofs_name_4',                 'ofs_desc',
+            'page_text',              'id_lang',                'page_mat',               'start_quest',                'id_lock',
+            'material',               'sheath',                 'rand_prop',              'rand_suffix',              ( 'item_set', '%4u' ),
+            'max_durability',         'area',                   'map',                    'bag_family',                 'totem_category',
+          ( 'socket_color_1', '%3d' ), ( 'socket_color_2', '%3d' ), ( 'socket_color_3', '%3d' ),
+          ( 'socket_cont_1', '%3d' ),  ( 'socket_cont_2', '%3d' ),  ( 'socket_cont_3', '%3d' ),
+          ( 'socket_bonus', '%5d' ),   ( 'gem_props', '%4u' ),
+          ( 'armor_dam_mod', '%f' ),  'duration',               'item_limit_category',    'id_holiday',               ( 'stat_scale_factor', '%f' ),
+            'unk_130',                'unk_131'
     ],
     'ItemSet.dbc' : [
           'id', 'ofs_name', 
@@ -135,9 +238,9 @@ _DBC_FIELDS = {
     'SpellItemEnchantment.dbc' : [
           ( 'id', '%4u' ), 'charges', 
           ( 'type_1', '%3u' ), ( 'type_2', '%3u' ), ( 'type_3', '%3u' ), 
-          'amount_1', 'amount_2', 'amount_3', 'amount_4', 'amount_5', 'amount_6', 
+          ( 'amount_1', '%4d' ), ( 'amount_2', '%4d' ), ( 'amount_3', '%4d' ), 'amount_4', 'amount_5', 'amount_6', 
           ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
-          'ofs_desc', 'id_aura', 'slot', 'id_gem', 'enchantment_condition', 
+          'ofs_desc', 'id_aura', 'slot', ( 'id_gem', '%5u' ), 'enchantment_condition', 
           'req_skill', 'req_skill_value', 'unk_1', 'unk_2'
     ],
     'SpellLevels.dbc' : [
@@ -261,6 +364,80 @@ class DBCRecord(object):
 
         for i in self._fields:
             s += '%s=%s ' % (i, (self._field_fmt[self._fields.index(i)] % getattr(self, i)).strip())
+
+        return s
+
+class Item_sparse(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.name     = ''
+
+    def field(self, *args):
+        f = DBCRecord.field(self, *args)
+
+        if 'name' in args:
+            f[args.index('name')] = '%-55s' % ('"%s"' % self.name.replace('"', '\\"'))
+
+        return f
+
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_name != 0:
+            self.name = self._dbc_parser.get_string_block(self.ofs_name)
+        else:
+            self.name = 0
+
+        if self.ofs_desc != 0:
+            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
+        else:
+            self.desc = 0
+
+        return self
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        s += ' name=\"%s\" ' % self.name
+
+        if self.desc != 0:
+            s += 'desc=\"%s\" ' % self.desc
+
+        return s
+    
+class ItemDisplayInfo(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.icon     = ''
+
+    def field(self, *args):
+        f = DBCRecord.field(self, *args)
+
+        if 'icon' in args:
+            if self.icon != "":
+                f[args.index('icon')] = '%-40s' % ('"%s"' % self.icon.replace('"', '\\"'))
+            else:
+                f[args.index('icon')] = '%-40s' % '0'
+
+        return f
+
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_icon != 0:
+            self.icon = self._dbc_parser.get_string_block(self.ofs_icon)
+        else:
+            self.icon = ""
+
+        return self
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        if self.ofs_icon != 0:
+            s += 'icon=\"%s\" ' % self.icon
 
         return s
 
@@ -525,10 +702,36 @@ class SpellItemEnchantment(DBCRecord):
         else:
             self.desc = ''
     
+    def field(self, *args):
+        f = DBCRecord.field(self, *args)
+
+        if 'desc' in args:
+            f[args.index('desc')] = '%-25s' % ('"%s"' % self.desc)
+
+        return f
+
     def __str__(self):
         s = ''
         if self.desc:
             s += 'desc=\"%s\" ' % self.desc
+
+        s += DBCRecord.__str__(self)
+
+        return s
+
+class ItemClass(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        if self.ofs_name != 0:
+            self.name = self._dbc_parser.get_string_block(self.ofs_name)
+        else:
+            self.name = ''
+
+    def __str__(self):
+        s = ''
+        if self.name:
+            s += 'name=\"%s\" ' % self.name
 
         s += DBCRecord.__str__(self)
 
@@ -656,7 +859,7 @@ class GameTables(DBCRecord):
 def initialize_data_model(build, obj):
     # First, create base classes, based on build id 0
     for dbc_file_name, field_data in _DBC_FIELDS.iteritems():
-        class_name = '%s' % dbc_file_name.split('.')[0]
+        class_name = '%s' % dbc_file_name.split('.')[0].replace('-', '_')
         cls_fields = [ ]
         cls_format = [ ]
         cls_field_fmt = [ ]
@@ -693,7 +896,7 @@ def initialize_data_model(build, obj):
     # Then, derive patch classes from base
     for build_id in sorted(_DIFF_DATA.keys()):
         for dbc_file_name, dbc_fields in _DBC_FIELDS.iteritems():
-            class_base_name = dbc_file_name.split('.')[0]
+            class_base_name = dbc_file_name.split('.')[0].replace('-', '_')
             class_name      = r'%s%d' % ( class_base_name, build )
             dbc_diff_data   = _DIFF_DATA.get(build_id, { }).get(dbc_file_name)
 

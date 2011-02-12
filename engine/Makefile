@@ -82,6 +82,7 @@ SRC =\
 	sc_hunter.cpp		\
 	sc_http.cpp		\
 	sc_item.cpp		\
+	sc_item_data.cpp		\
 	sc_js.cpp		\
 	sc_log.cpp		\
 	sc_mage.cpp		\

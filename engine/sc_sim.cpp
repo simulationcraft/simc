@@ -451,6 +451,40 @@ static bool parse_spell_query( sim_t*             sim,
   return sim -> spell_query > 0;
 }
 
+static bool parse_item_sources( sim_t*             sim,
+                                const std::string& name,
+                                const std::string& value )
+{
+  std::vector<std::string> sources;
+
+  util_t::string_split( sources, value, ":/|,", false );
+  
+  sim -> item_db_sources.clear();
+
+  for ( unsigned i = 0; i < sources.size(); i++ )
+  {
+    if ( ! util_t::str_compare_ci( sources[ i ], "local" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "mmoc" ) && 
+         ! util_t::str_compare_ci( sources[ i ], "wowhead" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "ptrhead" ) && 
+         ! util_t::str_compare_ci( sources[ i ], "armory" ) )
+    {
+      continue;
+    }
+    
+    sim -> item_db_sources.push_back( armory_t::format( sources[ i ] ) );
+  }
+  
+  if ( sim -> item_db_sources.empty() )
+  {
+    sim -> errorf( "Your global data source string \"%s\" contained no valid data sources. Valid identifiers are: local, mmoc, wowhead, ptrhead and armory.\n",
+      value.c_str() );
+    return false;
+  }
+  
+  return true;                                  
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -507,6 +541,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles_heal";
 
+  // Initialize the default item database source order, leave local item db to last for now
+  // until it has proven to be trustworthy
+  const char* dbsources[] = { "wowhead", "mmoc", "armory", "ptrhead", "local" };
+  item_db_sources = std::vector<std::string>( dbsources, dbsources + sizeof( dbsources ) / sizeof( const char* ) );
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -1808,6 +1846,7 @@ void sim_t::create_options()
     { "ptr",                              OPT_FUNC,   ( void* ) ::parse_ptr                         },
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
+    { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
     // @option_doc loc=global/lag title="Lag"
     { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
     { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },

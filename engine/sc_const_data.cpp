@@ -339,6 +339,20 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_random_property_data.create_copy( ( random_prop_data_t * ) __ptr_rand_prop_points_data, sizeof( __ptr_rand_prop_points_data ) / sizeof( random_prop_data_t ) - 1 );
       m_random_suffixes.create_copy( ( random_suffix_data_t * ) __ptr_rand_suffix_data, sizeof( __ptr_rand_suffix_data ) / sizeof( random_suffix_data_t ) - 1 );
       m_item_enchantments.create_copy( ( item_enchantment_data_t * ) __ptr_spell_item_ench_data, sizeof( __ptr_spell_item_ench_data ) / sizeof( item_enchantment_data_t ) - 1 );
+      
+      m_items.create_copy( ( item_data_t * ) __ptr_item_data, sizeof( __ptr_item_data ) / sizeof( item_data_t ) - 1 );
+      m_item_damage_1h.create_copy( ( item_scale_data_t * ) __ptr_itemdamageonehand_data, sizeof( __ptr_itemdamageonehand_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_c1h.create_copy( ( item_scale_data_t * ) __ptr_itemdamageonehandcaster_data, sizeof( __ptr_itemdamageonehandcaster_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_2h.create_copy( ( item_scale_data_t * ) __ptr_itemdamagetwohand_data, sizeof( __ptr_itemdamagetwohand_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_c2h.create_copy( ( item_scale_data_t * ) __ptr_itemdamagetwohandcaster_data, sizeof( __ptr_itemdamagetwohandcaster_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_ranged.create_copy( ( item_scale_data_t * ) __ptr_itemdamageranged_data, sizeof( __ptr_itemdamageranged_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_thrown.create_copy( ( item_scale_data_t * ) __ptr_itemdamagethrown_data, sizeof( __ptr_itemdamagethrown_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_wand.create_copy( ( item_scale_data_t * ) __ptr_itemdamagewand_data, sizeof( __ptr_itemdamagewand_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_armor_quality.create_copy( ( item_scale_data_t * ) __ptr_itemarmorquality_data, sizeof( __ptr_itemarmorquality_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_armor_shield.create_copy( ( item_scale_data_t * ) __ptr_itemarmorshield_data, sizeof( __ptr_itemarmorshield_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_armor_total.create_copy( ( item_armor_type_data_t * ) __ptr_itemarmortotal_data, sizeof( __ptr_itemarmortotal_data ) / sizeof( item_armor_type_data_t ) - 1 );
+      m_item_armor_invtype.create_copy( ( item_armor_type_data_t * ) __ptr_armor_slot_data, sizeof( __ptr_armor_slot_data ) / sizeof( item_armor_type_data_t ) - 1 );
+      m_gem_property.create_copy( ( gem_property_data_t * ) __ptr_gem_property_data, sizeof( __ptr_gem_property_data ) / sizeof( gem_property_data_t ) - 1 );
     }
     else
     {
@@ -370,6 +384,20 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_random_property_data.create_copy( ( random_prop_data_t * ) __rand_prop_points_data, sizeof( __rand_prop_points_data ) / sizeof( random_prop_data_t ) - 1 );
       m_random_suffixes.create_copy( ( random_suffix_data_t * ) __rand_suffix_data, sizeof( __rand_suffix_data ) / sizeof( random_suffix_data_t ) - 1 );
       m_item_enchantments.create_copy( ( item_enchantment_data_t * ) __spell_item_ench_data, sizeof( __spell_item_ench_data ) / sizeof( item_enchantment_data_t ) - 1 );
+
+      m_items.create_copy( ( item_data_t * ) __item_data, sizeof( __item_data ) / sizeof( item_data_t ) - 1 );
+      m_item_damage_1h.create_copy( ( item_scale_data_t * ) __itemdamageonehand_data, sizeof( __itemdamageonehand_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_c1h.create_copy( ( item_scale_data_t * ) __itemdamageonehandcaster_data, sizeof( __itemdamageonehandcaster_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_2h.create_copy( ( item_scale_data_t * ) __itemdamagetwohand_data, sizeof( __itemdamagetwohand_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_c2h.create_copy( ( item_scale_data_t * ) __itemdamagetwohandcaster_data, sizeof( __itemdamagetwohandcaster_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_ranged.create_copy( ( item_scale_data_t * ) __itemdamageranged_data, sizeof( __itemdamageranged_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_thrown.create_copy( ( item_scale_data_t * ) __itemdamagethrown_data, sizeof( __itemdamagethrown_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_damage_wand.create_copy( ( item_scale_data_t * ) __itemdamagewand_data, sizeof( __itemdamagewand_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_armor_quality.create_copy( ( item_scale_data_t * ) __itemarmorquality_data, sizeof( __itemarmorquality_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_armor_shield.create_copy( ( item_scale_data_t * ) __itemarmorshield_data, sizeof( __itemarmorshield_data ) / sizeof( item_scale_data_t ) - 1 );
+      m_item_armor_total.create_copy( ( item_armor_type_data_t * ) __itemarmortotal_data, sizeof( __itemarmortotal_data ) / sizeof( item_armor_type_data_t ) - 1 );
+      m_item_armor_invtype.create_copy( ( item_armor_type_data_t * ) __armor_slot_data, sizeof( __armor_slot_data ) / sizeof( item_armor_type_data_t ) - 1 );
+      m_gem_property.create_copy( ( gem_property_data_t * ) __gem_property_data, sizeof( __gem_property_data ) / sizeof( gem_property_data_t ) - 1 );
 #if SC_USE_PTR
     }
 #endif

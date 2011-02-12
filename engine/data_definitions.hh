@@ -162,9 +162,57 @@ struct random_suffix_data_t {
 };
 
 struct item_enchantment_data_t {
+  unsigned    id;
+  const char* name;
+  unsigned    id_gem;
+  unsigned    ench_type[3];          // item_enchantment
+  unsigned    ench_amount[3];
+  unsigned    ench_prop[3];
+};
+
+struct item_data_t {
   unsigned id;
-  unsigned ench_type[3];
-  unsigned attr_type[3];
+  const char* name;
+  const char* icon;               // Icon filename
+  unsigned flags_1;
+  unsigned flags_2;
+  int      level;                 // Ilevel
+  int      req_level;
+  int      quality;
+  int      inventory_type;
+  int      item_class;
+  int      item_subclass;
+  int      bind_type;
+  double   delay;
+  int      race_mask;
+  int      class_mask;
+  int      stat_type[10];         // item_mod_type
+  int      stat_val[10];
+  int      id_spell[5];
+  int      trigger_spell[5];      // item_spell_trigger_type
+  int      cooldown_spell[5];
+  int      cooldown_category[5];
+  int      socket_color[3];       // item_socket_color
+  int      gem_properties;
+  int      id_socket_bonus;
+};
+
+// float GetMinDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 0.7f + 0.5f); }
+// float GetMaxDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 1.3f + 0.5f); }
+struct item_scale_data_t {
+  unsigned ilevel;
+  double   values[7];             // quality based values for dps
+};
+
+struct item_armor_type_data_t {
+  unsigned ilevel;
+  double   armor_type[4];
+};
+
+struct gem_property_data_t {
+  unsigned id;
+  unsigned enchant_id;
+  unsigned color;
 };
 
 #ifdef __OpenBSD__

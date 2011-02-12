@@ -207,6 +207,7 @@ bool item_t::parse_options()
     { "suffix",  OPT_STRING, &option_random_suffix_str },
     { "ilevel",  OPT_STRING, &option_ilevel_str        },
     { "quality", OPT_STRING, &option_quality_str       },
+    { "source",  OPT_STRING, &option_data_source_str   },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -518,14 +519,14 @@ bool item_t::decode_reforge()
 
 bool item_t::decode_random_suffix()
 {
-  long                               rsid; 
-  const random_suffix_data_t* suffix_data = 0;
-  const random_prop_data_t*   ilevel_data = 0;
+  long                                   rsid; 
+  const random_suffix_data_t*     suffix_data = 0;
+  const random_prop_data_t*       ilevel_data = 0;
   const item_enchantment_data_t* enchant_data = 0;
-  int                                   f = random_suffix_type();
-  unsigned                     enchant_id;
-  double                      stat_amount;
-  std::vector<std::string>      stat_list;
+  int                                       f = item_database_t::random_suffix_type( *this );
+  unsigned                         enchant_id;
+  double                          stat_amount;
+  std::vector<std::string>          stat_list;
 
   if ( encoded_random_suffix_str.empty() || encoded_random_suffix_str == "" || 
        encoded_random_suffix_str == "none"  || encoded_random_suffix_str == "0" )
@@ -577,9 +578,9 @@ bool item_t::decode_random_suffix()
     // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
     for ( int j = 0; j < 3; j++ )
     {
-      if ( enchant_data -> attr_type[ j ] == 0 ) continue;
+      if ( enchant_data -> ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type stat = util_t::translate_item_mod( enchant_data -> attr_type[ j ] );
+      stat_type stat = util_t::translate_item_mod( enchant_data -> ench_prop[ j ] );
 
       if ( stat == STAT_NONE ) continue;
       
@@ -602,8 +603,8 @@ bool item_t::decode_random_suffix()
       {
         if ( sim -> debug )
         {
-          log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d twice, due to random suffix.", 
-            player -> name(), name(), stat );
+          log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d %d (%d) twice, due to random suffix.", 
+            player -> name(), name(), j, stat, enchant_data -> ench_type[ j ] );
         }
       }
     }
@@ -1163,33 +1164,37 @@ bool item_t::download_slot( item_t& item,
                             const std::string& rsuffix_id,
                             const std::string gem_ids[ 3 ] )
 {
-  player_t* p = item.player;
   bool success = false;
 
-  // Check URL caches
-  success =      wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 ) ||
-            mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 ) ||
-                  armory_t::download_slot( item, item_id, 1 );
-
-  if ( success )
-    return true;
-
-  success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
-
-  if ( ! success )
+  for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
-    item.sim -> errorf( "Player %s unable to download slot '%s' info from wowhead.  Trying mmo-champion....\n", 
-                        p -> name(), item.slot_name() );
-
-    success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
+    if ( item.sim -> item_db_sources[ i ] == "local" )
+      success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
+    else if ( item.sim -> item_db_sources[ i ] == "wowhead" )
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 );
+    else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, true );
+    else if ( item.sim -> item_db_sources[ i ] == "mmoc" )
+      success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 );
+    else if ( item.sim -> item_db_sources[ i ] == "armory" )
+      success = armory_t::download_slot( item, item_id, 1 );
+    
+    if ( success ) return true;
   }
-
-  if ( ! success )
+  
+  // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
+  for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
-    item.sim -> errorf( "Player %s unable to download slot '%s' info from mmo-champion.  Trying wowarmory....\n", 
-                        p -> name(), item.slot_name() );
-
-    success = armory_t::download_slot( item, item_id, 0 );
+    if ( item.sim -> item_db_sources[ i ] == "wowhead" )
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
+    else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, true );
+    else if ( item.sim -> item_db_sources[ i ] == "mmoc" )
+      success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
+    else if ( item.sim -> item_db_sources[ i ] == "armory" )
+      success = armory_t::download_slot( item, item_id, 0 );
+    
+    if ( success ) return true;
   }
 
   return success;
@@ -1201,29 +1206,44 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
 {
   player_t* p = item.player;
   bool success = false;
+  std::vector<std::string> source_list;
 
-  // Check URL caches
-  success = ( mmo_champion_t::download_item( item, item_id, 1 ) ||
-              wowhead_t     ::download_item( item, item_id, 1 ) ||
-              armory_t      ::download_item( item, item_id, 1 ) );
-
-  if ( ! success )
+  if ( ! item_database_t::initialize_item_sources( item, source_list ) )
   {
-    success = mmo_champion_t::download_item( item, item_id, 0 );
+    item.sim -> errorf( "Your item-specific data source string \"%s\" contained no valid sources to download item id %s.\n", 
+      item.option_data_source_str.c_str(), item_id.c_str() );
+    return false;
   }
-  if ( ! success )
-  {
-    item.sim -> errorf( "Player %s unable to download item '%s' info from mmo-champion.  Trying wowhead....\n", 
-                        p -> name(), item.name() );
 
-    success = wowhead_t::download_item( item, item_id, 0 );
+  for ( unsigned i = 0; i < source_list.size(); i++ )
+  {
+    if ( source_list[ i ] == "local" )
+      success = item_database_t::download_item( item, item_id );
+    else if ( source_list[ i ] == "wowhead" )
+      success = wowhead_t::download_item( item, item_id, 1 );
+    else if ( source_list[ i ] == "ptrhead" )
+      success = wowhead_t::download_item( item, item_id, 1, true );
+    else if ( source_list[ i ] == "mmoc" )
+      success = mmo_champion_t::download_item( item, item_id, 1 );
+    else if ( source_list[ i ] == "armory" )
+      success = armory_t::download_item( item, item_id, 1 );
+    
+    if ( success ) return true;
   }
-  if ( ! success )
+  
+  // Download in earnest from a data source, local will not be used for this
+  for ( unsigned i = 0; i < source_list.size(); i++ )
   {
-    item.sim -> errorf( "Player %s unable to download item '%s' info from mmo-champion.  Trying wowarmory....\n", 
-                        p -> name(), item.name() );
-
-    success = armory_t::download_item( item, item_id, 0 );
+    if ( source_list[ i ] == "wowhead" )
+      success = wowhead_t::download_item( item, item_id, 0 );
+    else if ( source_list[ i ] == "ptrhead" )
+      success = wowhead_t::download_item( item, item_id, 0, true );
+    else if ( source_list[ i ] == "mmoc" )
+      success = mmo_champion_t::download_item( item, item_id, 0 );
+    else if ( source_list[ i ] == "armory" )
+      success = armory_t::download_item( item, item_id, 0 );
+    
+    if ( success ) return true;
   }
 
   return success;
@@ -1231,23 +1251,35 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
 
 // item_t::download_glyph ================================================================
 
-bool item_t::download_glyph( sim_t* sim, std::string& glyph_name, const std::string& glyph_id )
+bool item_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
 {
   bool success = false;
 
-  success =      wowhead_t::download_glyph( sim, glyph_name, glyph_id, 1 ) ||
-            mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 1 );
-
-  if ( success )
-    return true;
-
-  success = wowhead_t::download_glyph( sim, glyph_name, glyph_id, 0 );
-
-  if ( ! success )
+  for ( unsigned i = 0; i < player -> sim -> item_db_sources.size(); i++ )
   {
-    sim -> errorf( "Unable to download glyph id '%s' info from wowhead.  Trying mmo-champion....\n", glyph_id.c_str() );
-
-    success = mmo_champion_t::download_glyph( sim, glyph_name, glyph_id, 0 );
+    if ( player -> sim -> item_db_sources[ i ] == "local" )
+      success = item_database_t::download_glyph( player, glyph_name, glyph_id );
+    else if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 1 );
+    else if ( player -> sim -> item_db_sources[ i ] == "ptrhead" )
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 1, true );
+    else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
+      success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, 1 );
+    
+    if ( success ) return true;
+  }
+  
+  // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
+  for ( unsigned i = 0; i < player -> sim -> item_db_sources.size(); i++ )
+  {
+    if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 0 );
+    else if ( player -> sim -> item_db_sources[ i ] == "ptrhead" )
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 0, true );
+    else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
+      success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, 0 );
+    
+    if ( success ) return true;
   }
 
   return success;
@@ -1259,112 +1291,44 @@ int item_t::parse_gem( item_t&            item,
                        const std::string& gem_id )
 {
   int gem_type = GEM_NONE;
+  std::vector<std::string> source_list;
 
   if ( gem_id.empty() || gem_id == "" || gem_id == "0" )
     return GEM_NONE;
-
-  // Check URL caches first
-  gem_type = wowhead_t::parse_gem( item, gem_id, 1 );
-  if ( gem_type != GEM_NONE )
-    return gem_type;
-
-  gem_type = mmo_champion_t::parse_gem( item, gem_id, 1 );
-  if ( gem_type != GEM_NONE )
-    return gem_type;
-
-  // Not in cache. Try to download.
-  gem_type = wowhead_t::parse_gem( item, gem_id, 0 );
-  if ( gem_type != GEM_NONE )
-    return gem_type;
-
-  item.sim -> errorf( "Unable to download gem id '%s' info from wowhead.  Trying mmo-champion....\n", gem_id.c_str() );
-
-  gem_type = mmo_champion_t::parse_gem( item, gem_id, 0 );
-
-  return gem_type;
-}
-
-// item_t::random_suffix_type ===========================================
-
-int item_t::random_suffix_type() SC_CONST
-{
-  int f = -1;
-  weapon_t* w;
-
-  if ( ( w = weapon() ) )
+    
+  if ( ! item_database_t::initialize_item_sources( item, source_list ) )
   {
-    switch ( w -> type )
-    {
-      // Two-hand weapons use the first point allocation budget
-      case WEAPON_AXE_2H:
-      case WEAPON_MACE_2H:
-      case WEAPON_POLEARM:
-      case WEAPON_SWORD_2H:
-      case WEAPON_STAFF:
-      {
-        f = 0;
-        break;
-      }
-      // Various ranged types use the fifth point allocation budget
-      case WEAPON_BOW:
-      case WEAPON_CROSSBOW:
-      case WEAPON_GUN:
-      case WEAPON_THROWN:
-      case WEAPON_WAND:
-      {
-        f = 4;
-        break;
-      }
-      // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
-      default:
-      {
-        f = 3;
-        break;
-      }
-    }
+    item.sim -> errorf( "Your item-specific data source string \"%s\" contained no valid sources to download gem id %s.\n", 
+      item.option_data_source_str.c_str(), gem_id.c_str() );
+    return GEM_NONE;
   }
-  // Armor handling goes by slot
-  else
+
+  for ( unsigned i = 0; i < source_list.size(); i++ )
   {
-    switch ( slot )
-    {
-      case SLOT_HEAD:
-      case SLOT_CHEST:
-      case SLOT_LEGS:
-      {
-        f = 0;
-        break;
-      }
-      case SLOT_SHOULDERS:
-      case SLOT_WAIST:
-      case SLOT_FEET:
-      case SLOT_HANDS:
-      case SLOT_TRINKET_1:
-      case SLOT_TRINKET_2:
-      {
-        f = 1;
-        break;
-      }
-      case SLOT_NECK:
-      case SLOT_WRISTS:
-      case SLOT_FINGER_1:
-      case SLOT_FINGER_2:
-      case SLOT_OFF_HAND: // Shields, off hand items
-      case SLOT_BACK:
-      {
-        f = 2;
-        break;
-      }
-      // Ranged non-weapons are relics, which do not have a point allocation
-      case SLOT_RANGED:
-      case SLOT_TABARD:
-      {
-        return f;
-      }
-      default:
-        return f;
-    }
+    if ( source_list[ i ] == "local" )
+      gem_type = item_database_t::parse_gem( item, gem_id );
+    else if ( source_list[ i ] == "wowhead" )
+      gem_type = wowhead_t::parse_gem( item, gem_id, 1 );
+    else if ( source_list[ i ] == "ptrhead" )
+      gem_type = wowhead_t::parse_gem( item, gem_id, 1, true );
+    else if ( source_list[ i ] == "mmoc" )
+      gem_type = mmo_champion_t::parse_gem( item, gem_id, 1 );
+    
+    if ( gem_type != GEM_NONE ) return gem_type;
   }
   
-  return f;
+  // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
+  for ( unsigned i = 0; i < source_list.size(); i++ )
+  {
+    if ( source_list[ i ] == "wowhead" )
+      gem_type = wowhead_t::parse_gem( item, gem_id, 0 );
+    else if ( source_list[ i ] == "ptrhead" )
+      gem_type = wowhead_t::parse_gem( item, gem_id, 0, true );
+    else if ( source_list[ i ] == "mmoc" )
+      gem_type = mmo_champion_t::parse_gem( item, gem_id, 0 );
+    
+    if ( gem_type != GEM_NONE ) return gem_type;
+  }
+
+  return gem_type;
 }

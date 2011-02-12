@@ -33,9 +33,13 @@ python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t mastery_list           >> 
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t racial_list            >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t glyph_list             >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t set_list               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t random_property_points  > %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item                    > %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t random_property_points >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t random_suffix          >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_ench              >> %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_armor             >> %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t weapon_damage          >> %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%.inc
 
 echo Done!
 

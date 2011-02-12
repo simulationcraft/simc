@@ -287,6 +287,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_item_data.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_item_data.inc"
 			>
 		</File>

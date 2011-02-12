@@ -495,16 +495,16 @@ int mmo_champion_t::parse_gem( item_t&            item,
 
 // mmo_champion_t::download_glyph ===========================================
 
-bool mmo_champion_t::download_glyph( sim_t*             sim,
+bool mmo_champion_t::download_glyph( player_t*          player,
                                      std::string&       glyph_name,
                                      const std::string& glyph_id,
                                      int cache_only )
 {
-  xml_node_t* node = download_id( sim, glyph_id, cache_only );
+  xml_node_t* node = download_id( player -> sim, glyph_id, cache_only );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "title/." ) )
   {
     if ( ! cache_only )
-      sim -> errorf( "Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
+      player -> sim -> errorf( "Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
     return false;
   }
 

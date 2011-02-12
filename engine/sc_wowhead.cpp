@@ -72,25 +72,23 @@ static js_node_t* download_profile( sim_t* sim,
 
 static xml_node_t* download_id( sim_t* sim,
                                 const std::string& id_str,
-                                int cache_only=0 )
+                                int cache_only=0,
+                                bool ptr = false )
 {
   if ( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
   std::string url_www = "http://www.wowhead.com/item=" + id_str + "&xml";
-  std::string url_ptr = "http://ptr.wowhead.com/item=" + id_str + "&xml";
+  if ( ptr )
+    url_www = "http://ptr.wowhead.com/item=" + id_str + "&xml";
 
   xml_node_t *node;
 
   if ( cache_only )
   {
     node = xml_t::download_cache( sim, url_www );
-    if ( ! node )
-      node = xml_t::download_cache( sim, url_ptr );
   }
   else
   {
     node = xml_t::download( sim, url_www, "</json>", 0 );
-    if ( ! node )
-      node = xml_t::download( sim, url_ptr, "</json>", 0 );
   }
 
   if ( sim -> debug ) xml_t::print( node );
@@ -517,12 +515,13 @@ static const char* translate_inventory_id( int slot )
 
 int wowhead_t::parse_gem( item_t&            item,
                           const std::string& gem_id,
-                          int cache_only )
+                          int cache_only,
+                          bool ptr )
 {
   if ( gem_id.empty() || gem_id == "" || gem_id == "0" )
     return GEM_NONE;
 
-  xml_node_t* node = download_id( item.sim, gem_id, cache_only );
+  xml_node_t* node = download_id( item.sim, gem_id, cache_only, ptr );
   if ( ! node )
   {
     if ( ! cache_only )
@@ -567,16 +566,17 @@ int wowhead_t::parse_gem( item_t&            item,
 
 // wowhead_t::download_glyph ================================================
 
-bool wowhead_t::download_glyph( sim_t*             sim,
+bool wowhead_t::download_glyph( player_t*          player,
                                 std::string&       glyph_name,
                                 const std::string& glyph_id,
-                                int                cache_only )
+                                int                cache_only,
+                                bool               ptr )
 {
-  xml_node_t* node = download_id( sim, glyph_id, cache_only );
+  xml_node_t* node = download_id( player -> sim, glyph_id, cache_only, ptr );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "name/cdata" ) )
   {
     if ( ! cache_only )
-      sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
+      player -> sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
     return false;
   }
 
@@ -589,11 +589,12 @@ bool wowhead_t::download_glyph( sim_t*             sim,
 
 bool wowhead_t::download_item( item_t&            item,
                                const std::string& item_id,
-                               int cache_only )
+                               int cache_only,
+                               bool ptr )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, cache_only );
+  xml_node_t* node = download_id( item.sim, item_id, cache_only, ptr );
   if ( ! node )
   {
     if ( ! cache_only )
@@ -655,11 +656,12 @@ bool wowhead_t::download_slot( item_t&            item,
                                const std::string& reforge_id,
                                const std::string& rsuffix_id,
                                const std::string  gem_ids[ 3 ],
-                               int cache_only )
+                               int cache_only,
+                               bool ptr )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, cache_only );
+  xml_node_t* node = download_id( item.sim, item_id, cache_only, ptr );
   if ( ! node )
   {
     if ( ! cache_only )
@@ -944,7 +946,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       if ( glyph_id == "0" ) continue;
       std::string glyph_name;
 
-      if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
+      if ( ! item_t::download_glyph( p, glyph_name, glyph_id ) )
       {
         return 0;
       }
@@ -980,7 +982,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
         if ( glyph_id == "0" ) continue;
         std::string glyph_name;
 
-        if ( ! item_t::download_glyph( sim, glyph_name, glyph_id ) )
+        if ( ! item_t::download_glyph( p, glyph_name, glyph_id ) )
         {
           return 0;
         }

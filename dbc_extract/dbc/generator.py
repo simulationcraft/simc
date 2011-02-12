@@ -43,9 +43,10 @@ class DataGenerator(object):
 
     def initialize(self):
         for i in self._dbc:
-            setattr(self, '_%s' % i.lower(), 
-                parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.path, '%s.dbc' % i))))
-            dbc = getattr(self, '_%s' % i.lower())
+            dbcname = i.replace('-', '_').lower()
+            setattr(self, '_%s' % dbcname, 
+                parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.path, i))))
+            dbc = getattr(self, '_%s' % dbcname)
 
             if not dbc.open_dbc():
                 return False
@@ -301,6 +302,74 @@ class TalentDataGenerator(DataGenerator):
 
         return s
 
+class ItemDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo' ]
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        ids = []
+        for item_id, data in self._item_sparse_db.iteritems():
+            classdata = self._item_db[item_id]
+            # Gems, Glyphs, Shirts and Tabards are also included to avoid extra internet fetches
+            if ( classdata.classs != 3 or data.gem_props == 0 ) and \
+               ( classdata.classs != 16 ) and \
+               ( data.inv_type != 19 ) and \
+               ( data.inv_type != 4 ) and \
+               ( data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel or data.inv_type == 0 ):
+                continue
+            
+            ids.append(item_id)
+        
+        return ids
+    
+    def generate(self, ids = None):
+        ids.sort()
+        
+        s = '#include "data_definitions.hh"\n\n'
+        s += '#define %sITEM%s_SIZE (%d)\n\n' % (
+            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
+            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
+            len(ids)
+        )
+        s += '// %d items, ilevel %d-%d, wow build level %d\n' % ( len(ids), 
+            self._options.min_ilevel, self._options.max_ilevel, self._options.build )
+        s += 'static struct item_data_t __%sitem%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or ''
+        )
+
+        for id in ids:
+            item = self._item_sparse_db[id]
+            item2 = self._item_db[id]
+            item_display = self._itemdisplayinfo_db[item2.id_display]
+            
+            if not item.id:
+                sys.stderr.write('Item id %d not found\n') % id
+                continue
+
+            fields = item.field('id', 'name')
+            fields += item_display.field('icon')
+            fields += item.field('flags', 'flags_2', 'ilevel', 'req_level', 'quality', 'inv_type')
+            fields += item2.field('classs', 'subclass')
+            fields += item.field( 'bonding', 'delay', 'race_mask', 'class_mask') 
+            fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4', 'id_spell_5')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('trg_spell_1', 'trg_spell_2', 'trg_spell_3', 'trg_spell_4', 'trg_spell_5')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('cd_spell_1', 'cd_spell_2', 'cd_spell_3', 'cd_spell_4', 'cd_spell_5')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('cdc_spell_1', 'cdc_spell_2', 'cdc_spell_3', 'cdc_spell_4', 'cdc_spell_5')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
+            fields += item.field('gem_props', 'socket_bonus')
+
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '  { %s }\n' % ( ', '.join(([ '0' ] * 15) + [ '{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }' ] * 2 + [ '{ 0, 0, 0, 0, 0 }' ] * 4 + [ '{ 0, 0, 0 }'] + [ '0', '0' ] ) )
+        s += '};\n\n'
+        
+        return s
+
 class SpellDataGenerator(DataGenerator):
     _spell_ref_rx = r'\$(?:\?[A-z])?([0-9]+)(?:\[|[A-z][0-9]?)'
     
@@ -487,7 +556,7 @@ class SpellDataGenerator(DataGenerator):
             'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange', 'SpellClassOptions',
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 'TalentTab',
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
-            'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables' ]
+            'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse' ]
 
         DataGenerator.__init__(self, options)
 
@@ -754,6 +823,44 @@ class SpellDataGenerator(DataGenerator):
                             'effect_list': v['effect_list'] 
                         }
 
+        # Item enchantments that use a spell
+        for eid, data in self._spellitemenchantment_db.iteritems():
+            filter_list = { }
+            for attr_id in xrange(1, 4):
+                attr_type = getattr(data, 'type_%d' % attr_id)
+                if attr_type == 1 or attr_type == 3 or attr_type == 7:
+                    sid = getattr(data, 'id_property_%d' % attr_id)
+                    lst = self.generate_spell_filter_list(sid, 0, 0, 0, filter_list)
+                    if not lst:
+                        continue
+                    
+                    for k, v in lst.iteritems():
+                        ids[k] = { 
+                            'mask_class' : 0,
+                            'mask_race'  : 0,
+                            'effect_list': v['effect_list'] 
+                        }
+        
+        # Items with a spell identifier as "stats"
+        for iid, data in self._item_sparse_db.iteritems():
+            if data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel:
+                continue
+            
+            filter_list = { }
+            for stat_id in xrange(1, 6):
+                sid = getattr(data, 'id_spell_%d' % stat_id)
+                if sid > 0:
+                    lst = self.generate_spell_filter_list(sid, 0, 0, 0, filter_list)
+                    if not lst:
+                        continue
+                    
+                    for k, v in lst.iteritems():
+                        ids[k] = { 
+                            'mask_class' : 0,
+                            'mask_race'  : 0,
+                            'effect_list': v['effect_list']
+                        }
+        
         # Last, get the explicitly defined spells in _spell_id_list on a class basis
         for cls in xrange(0, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
@@ -1903,16 +2010,16 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         RandomSuffixGenerator.__init__(self, options)
 
     def filter(self):
-        sfx_ids = set(RandomSuffixGenerator.filter(self))
-        ids = set()
+        #sfx_ids = set(RandomSuffixGenerator.filter(self))
+        #ids = set()
         
-        for sfx_id in sorted(sfx_ids):
-            data = self._itemrandomsuffix_db[sfx_id]
-            for j in xrange(1, 6):
-                val = getattr(data, 'id_property_%d' % j )
-                if val > 0: ids.add( val )
+        #for sfx_id in sorted(sfx_ids):
+        #    data = self._itemrandomsuffix_db[sfx_id]
+        #    for j in xrange(1, 6):
+        #        val = getattr(data, 'id_property_%d' % j )
+        #        if val > 0: ids.add( val )
 
-        return list(ids)
+        return self._spellitemenchantment_db.keys()
 
     def generate(self, ids = None):
         ids.sort()
@@ -1930,12 +2037,13 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         for i in ids:
             ench_data = self._spellitemenchantment_db[i]
 
-            fields = ench_data.field('id')
+            fields = ench_data.field('id', 'desc', 'id_gem')
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
+            fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
-            s += '  { %s }, // %s\n' % (', '.join(fields), ench_data.desc)
+            s += '  { %s },\n' % (', '.join(fields))
 
-        s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0}' ] * 2) )
+        s += '  { %s }\n' % ( ', '.join([ '0', '0', '0' ] + [ '{ 0, 0, 0 }' ] * 3) )
         s += '};\n'
 
         return s
@@ -1950,7 +2058,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
         ids = [ ]
 
         for ilevel, data in self._randproppoints_db.iteritems():
-            if ilevel >= 277 and ilevel <= 400:
+            if ilevel >= 1 and ilevel <= self._options.max_ilevel:
                 ids.append(ilevel)
 
         return ids
@@ -1958,13 +2066,13 @@ class RandomPropertyPointsGenerator(DataGenerator):
     def generate(self, ids = None):
         # Sort keys
         ids.sort()
-        s = "#include \"data_definitions.hh\"\n\n"
-        s += '#define %sRAND_PROP_POINTS%s_SIZE (%d)\n\n' % (
+        s = '#define %sRAND_PROP_POINTS%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         )
-        s += '// Random property points for item levels 277-400, wow build %d\n' % self._options.build
+        s += '// Random property points for item levels 1-%d, wow build %d\n' % (
+            self._options.max_ilevel, self._options.build )
         s += 'static struct random_prop_data_t __%srand_prop_points%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
@@ -1981,5 +2089,146 @@ class RandomPropertyPointsGenerator(DataGenerator):
 
         s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0 }' ] * 3) )
         s += '};\n'
+
+        return s
+
+class WeaponDamageDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
+                      'ItemDamageRanged',  'ItemDamageThrown',        'ItemDamageWand',
+                      'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+
+        return None
+
+    def generate(self, ids = None):
+        s = ''
+        for dbname in self._dbc:
+            db = getattr(self, '_%s_db' % dbname.lower() )
+            
+            s += '// Item damage data from %s.dbc, ilevels 1-%d, wow build %d\n' % ( 
+                dbname, self._options.max_ilevel, self._options.build )
+            s += 'static struct item_scale_data_t __%s%s%s_data[] = {\n' % (
+                self._options.prefix and ('%s_' % self._options.prefix) or '',
+                dbname.lower(),
+                self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+            for ilevel, data in db.iteritems():
+                if ilevel > self._options.max_ilevel:
+                    continue
+
+                fields = data.field('ilevel')
+                fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+
+                s += '  { %s },\n' % (', '.join(fields))
+
+            s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0, 0, 0 }' ]) )
+            s += '};\n\n'
+
+        return s
+
+class ArmorValueDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal' ]
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+
+        return None
+
+    def generate(self, ids = None):
+        s = ''
+        for dbname in self._dbc:
+            db = getattr(self, '_%s_db' % dbname.lower() )
+
+            s += '// Item armor values data from %s.dbc, ilevels 1-%d, wow build %d\n' % ( 
+                dbname, self._options.max_ilevel, self._options.build )
+            
+            s += 'static struct %s __%s%s%s_data[] = {\n' % (
+                (dbname != 'ItemArmorTotal') and 'item_scale_data_t' or 'item_armor_type_data_t',
+                self._options.prefix and ('%s_' % self._options.prefix) or '',
+                dbname.lower(),
+                self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+            for ilevel, data in db.iteritems():
+                if ilevel > self._options.max_ilevel:
+                    continue
+
+                fields = data.field('ilevel')
+                if dbname != 'ItemArmorTotal':
+                    fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
+                else:
+                    fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
+                s += '  { %s },\n' % (', '.join(fields))
+
+            if dbname != 'ItemArmorTotal':
+                s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0, 0, 0, 0 }' ]) )
+            else:
+                s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0 }' ]) )
+            s += '};\n\n'
+
+        return s
+
+class ArmorSlotDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ArmorLocation' ]
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        return None
+
+    def generate(self, ids = None):
+        s = '// Inventory type based armor multipliers, wow build %d\n' % ( self._options.build )
+        
+        s += 'static struct item_armor_type_data_t __%sarmor_slot%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+        for inv_type in sorted(self._armorlocation_db.keys()):
+            data = self._armorlocation_db[inv_type]
+            fields = data.field('id')
+            fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4')) ]
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '  { %s }\n' % ( ', '.join([ '0' ] + [ '{ 0, 0, 0, 0 }' ]) )
+        s += '};\n\n'
+
+        return s
+
+class GemPropertyDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'GemProperties' ]
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        ids = []
+        for id, data in self._gemproperties_db.iteritems():
+            if not data.color or not data.id_enchant:
+                continue
+                
+            ids.append(id)
+        return ids
+
+    def generate(self, ids = None):
+        ids.sort()
+        s = '// Gem properties, wow build %d\n' % ( self._options.build )
+        
+        s += 'static struct gem_property_data_t __%sgem_property%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+        for id in ids:
+            data = self._gemproperties_db[id]
+            if data.color == 0:
+                continue;
+
+            fields = data.field('id', 'id_enchant', 'color')
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '  { %s }\n' % ( ', '.join([ '0', '0', '0' ]) )
+        s += '};\n\n'
 
         return s

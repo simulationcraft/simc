@@ -5,6 +5,7 @@ sc_data_t::sc_data_t( sc_data_t* p, const bool ptr )
   m_spells_index = NULL;
   m_effects_index = NULL;
   m_talents_index = NULL;
+  m_items_index = 0;
   set_parent( p, ptr );
 }
 
@@ -13,6 +14,7 @@ sc_data_t::sc_data_t( const sc_data_t& copy )
   m_spells_index = NULL;
   m_effects_index = NULL;
   m_talents_index = NULL;
+  m_items_index = 0;
   m_parent = copy.m_parent;
   m_copy( copy );
   create_index();
@@ -26,6 +28,8 @@ sc_data_t::~sc_data_t()
     delete [] m_effects_index;
   if ( m_talents_index )
     delete [] m_talents_index;
+  if ( m_items_index )
+    delete [] m_items_index;
 }
 
 void sc_data_t::reset( )
@@ -63,6 +67,21 @@ void sc_data_t::m_copy( const sc_data_t& copy )
   m_random_property_data.copy_array( copy.m_random_property_data );
   m_random_suffixes.copy_array( copy.m_random_suffixes );
   m_item_enchantments.copy_array( copy.m_item_enchantments );
+  
+  m_items.copy_array( copy.m_items );
+  m_item_damage_1h.copy_array( copy.m_item_damage_1h );
+  m_item_damage_c1h.copy_array( copy.m_item_damage_c1h );
+  m_item_damage_2h.copy_array( copy.m_item_damage_2h );
+  m_item_damage_c2h.copy_array( copy.m_item_damage_c2h );
+  m_item_damage_ranged.copy_array( copy.m_item_damage_ranged );
+  m_item_damage_thrown.copy_array( copy.m_item_damage_thrown );
+  m_item_damage_wand.copy_array( copy.m_item_damage_wand );
+  
+  m_item_armor_quality.copy_array( copy.m_item_armor_quality );
+  m_item_armor_shield.copy_array( copy.m_item_armor_shield );
+  m_item_armor_total.copy_array( copy.m_item_armor_total );
+  m_item_armor_invtype.copy_array( copy.m_item_armor_invtype );
+  m_gem_property.copy_array( copy.m_gem_property );
 }
 
 void sc_data_t::create_spell_index()
@@ -273,11 +292,48 @@ void sc_data_t::create_talents_index()
   delete [] n;
 }
 
+void sc_data_t::create_item_index()
+{
+  uint32_t max_id = 0;
+
+  if ( m_items_index )
+  {
+    delete [] m_items_index;
+    m_items_index = 0;
+  }
+
+  for ( uint32_t i = 0; i < m_items.cols; i++ )
+  {
+    const item_data_t& ref = m_items.ref( i );
+    if ( ref.id > max_id )
+    {
+      max_id = ref.id;
+    }
+  }
+
+  if ( max_id >= 1000000 )
+  {
+    return;
+  }
+
+  m_items_index_size = max_id + 1;
+
+  m_items_index = new item_data_t*[ m_items_index_size ];
+  memset( m_items_index, 0, sizeof( item_data_t* ) * m_items_index_size );
+
+  for ( uint32_t i = 0; i < m_items.cols; i++ )
+  {
+    item_data_t* p = m_items.ptr( i );
+    m_items_index[ p -> id ] = p;
+  }
+}
+
 void sc_data_t::create_index()
 {
   create_spell_index();
   create_effects_index();
   create_talents_index();  
+  create_item_index();
 }
 
 int sc_data_t::talent_compare( const void *vid1, const void *vid2 )

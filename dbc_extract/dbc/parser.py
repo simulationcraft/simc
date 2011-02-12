@@ -2,6 +2,8 @@ import os, io, struct, stat, sys
 import data
 
 DBC_HDR = r'WDBC'
+DB2_HDR = r'WDB2'
+WC2_HDR = r'WCH2'
 
 class DBCParser(object):
     def __init__(self, options, fname):
@@ -14,7 +16,7 @@ class DBCParser(object):
         self._class          = None
         
     def name(self):
-        return os.path.basename(self._fname).split('.')[0].lower()
+        return os.path.basename(self._fname).split('.')[0].replace('-', '_').lower()
 
     def find(self, id):
         original_offset = self._dbc_file.tell()
@@ -29,7 +31,7 @@ class DBCParser(object):
         if begin > end:
             return None
 
-        self._dbc_file.seek(20 + begin * self._record_size + ((end - begin) / 2) * self._record_size)
+        self._dbc_file.seek(self._hdr_size + begin * self._record_size + ((end - begin) / 2) * self._record_size)
         raw_data = self._dbc_file.read(self._record_size)
         record_id = struct.unpack('I', raw_data[:4])[0]
         #print begin, end, begin + (end - begin) / 2, value, record_id, self._dbc_file.tell()
@@ -41,24 +43,48 @@ class DBCParser(object):
             return raw_data
 
     def open_dbc(self):
+        is_db2 = False
+        hdr_size = 20
+        f = None
+
         if self._dbc_file:
             return self
-            
-        if not os.access(os.path.abspath(self._fname), os.R_OK):
+
+        if os.access(os.path.abspath(self._fname), os.R_OK):
+            f = io.open(os.path.abspath(self._fname), mode = 'rb')
+        elif os.access(os.path.abspath(self._fname + '.db2'), os.R_OK):
+            f = io.open(os.path.abspath(self._fname + '.db2'), mode = 'rb')
+        elif os.access(os.path.abspath(self._fname + '.dbc'), os.R_OK):
+            f = io.open(os.path.abspath(self._fname + '.dbc'), mode = 'rb')
+        else:
             sys.stderr.write('%s: Not found\n' % os.path.abspath(self._fname))
             sys.exit(1)
 
-        f = io.open(os.path.abspath(self._fname), mode = 'rb')
+        hdr = f.read(4)
 
-        if f.read(len(DBC_HDR)) != DBC_HDR:
-            sys.stderr.write('%s: Not a World of Warcraft DBC File\n' % os.path.abspath(self._fname))
+        if hdr == DB2_HDR or hdr == WC2_HDR: 
+            is_db2 = True
+            hdr_size = 48
+
+        if hdr != DBC_HDR and hdr != DB2_HDR and hdr != WC2_HDR:
+            sys.stderr.write('%s: Not a World of Warcraft DBC/DB2/WCH2 File\n' % os.path.abspath(self._fname))
             f.close()
             sys.exit(1)
 
         try:
             records, fields, record_size, string_block_size = struct.unpack('IIII', f.read(16))
+            if is_db2:
+                table_hash, build, unk_1 = struct.unpack('III', f.read(12))
+                if build > 12880:
+                    unk_2, unk_3, locale, unk_5 = struct.unpack('IIII', f.read(16))
+            
+                    # Skip index table before real data starts
+                    if unk_3 != 0:
+                        f.read(unk_3 * 4 - hdr_size)
+                        f.read(unk_3 * 2 - hdr_size * 2)
+                        hdr_size += ( unk_3 * 4 - hdr_size ) + ( unk_3 * 2 - hdr_size * 2 )
         except:
-            sys.stderr.write('%s: Invalid DBC header format\n' % os.path.abspath(self._fname))
+            sys.stderr.write('%s: Invalid DBC/DB2/WCH2 header format\n' % os.path.abspath(self._fname))
             f.close()
             sys.exit(1)
 
@@ -66,27 +92,28 @@ class DBCParser(object):
         self._fields            = fields
         self._record_size       = record_size
         self._string_block_size = string_block_size
-        size                    = 20 + records * record_size + string_block_size
+        self._hdr_size          = hdr_size
+        size                    = hdr_size + records * record_size + string_block_size
         statinfo                = os.fstat(f.fileno())
         
         #print records, fields, record_size, string_block_size, self._fname
         # Figure out a valid class for us from data, now that we know the DBC is sane
-        if '%s%d' % ( os.path.basename(self._fname).split('.')[0], self._options.build or data.current_patch_level() ) in dir(data):
+        if '%s%d' % ( os.path.basename(self._fname).split('.')[0].replace('-', '_'), self._options.build ) in dir(data):
             self._class = getattr(data, '%s%d' % ( 
-                os.path.basename(self._fname).split('.')[0], self._options.build or data.current_patch_level() ) )
+                os.path.basename(self._fname.replace('-', '_')).split('.')[0], self._options.build ) )
         #else:
         #    sys.stderr.write('Warning, could not deduce a proper class for dbc file "%s.dbc", wow build %d. You need exact capitalization.\n' % (
         #        os.path.basename(self._fname).split('.')[0], self._options.build or data.current_patch_level() ))
 
         # Sanity check file size
         if statinfo[stat.ST_SIZE] != size:
-            sys.stderr.write('%s: Invalid DBC File size, expected %u, got %u\n' % (os.path.abspath(self._fname), size, statinfo[stat.ST_SIZE]))
+            sys.stderr.write('%s: Invalid DBC/DB2 File size, expected %u, got %u\n' % (os.path.abspath(self._fname), size, statinfo[stat.ST_SIZE]))
             f.close()
             sys.exit(1)
         
         # Make sure our data format is correct size
         if self._class and self._class.data_size() != self._record_size:
-            sys.stderr.write('%s: DBC record size mismatch, expected %u (data type), got %u (dbc file)\n' % (
+            sys.stderr.write('%s: DBC/DB2 record size mismatch, expected %u (dbc file), got %u (dbc data type)\n' % (
                 os.path.abspath(self._fname), self._record_size, self._class.data_size()))
             f.close()
             sys.exit(1)
@@ -97,7 +124,8 @@ class DBCParser(object):
 
         # String block caching to avoid seeking all over the place
         if self._string_block_size > 1:
-            self._dbc_file.seek(20 + self._records * self._record_size)
+            #print hdr_size + self._records * self._record_size
+            self._dbc_file.seek(hdr_size + self._records * self._record_size)
             self._string_block = self._dbc_file.read(self._string_block_size)
             self._dbc_file.seek(old_pos)
         else:
@@ -105,10 +133,11 @@ class DBCParser(object):
 
         # Figure out DBC max identifier, as it's the first uint32 field in every dbc record
         if self._records > 0:
-            self._dbc_file.seek(20 + (self._records - 1) * self._record_size)
+            self._dbc_file.seek(hdr_size + (self._records - 1) * self._record_size)
             self._last_id = struct.unpack('I', self._dbc_file.read(4))[0]
             self._dbc_file.seek(old_pos)
-
+        #print self._last_id
+        
         return self
 
     def get_string_block(self, offset):
