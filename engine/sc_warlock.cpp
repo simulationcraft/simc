@@ -2494,7 +2494,7 @@ struct unstable_affliction_t : public warlock_spell_t
     }
     if ( tick_dmg > 0 )
     {
-      p -> buffs_tier11_4pc_caster -> trigger();
+      p -> buffs_tier11_4pc_caster -> trigger( 2 );
     }
   }
 
@@ -2588,7 +2588,7 @@ struct immolate_t : public warlock_spell_t
     }
     if ( tick_dmg > 0 )
     {
-      p -> buffs_tier11_4pc_caster -> trigger();
+      p -> buffs_tier11_4pc_caster -> trigger( 2 );
     }
   }
 
@@ -3367,7 +3367,7 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( p -> buffs_tier11_4pc_caster -> check() )
     {
-      p -> buffs_tier11_4pc_caster -> expire();
+      p -> buffs_tier11_4pc_caster -> decrement();
     }
   }
 
