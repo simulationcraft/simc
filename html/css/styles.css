@@ -49,33 +49,10 @@
       #masthead h2 { margin: 10px 0 5px 0; }
       #notice { border: 1px solid #ddbbbb; background: #ffdddd; font-size: 12px; }
       #notice h2 { margin-bottom: 10px; }
-.toc {
-	float: left;
-	padding: 0 0 10px 0;
-}
-
-.toc-2 {
-	width: 560px;
-}
-
-.toc-3 {
-	width: 375px;
-}
-
-.toc li {
-	margin-top: 10px;
-	list-style-type: none;
-}
-
-.toc li ul {
-	padding-left: 10px;
-}
-
-.toc li ul li {
-	margin: 0;
-	list-style-type: none;
-	font-size: 13px;
-}
+      #masthead ul.toc { padding: 0; }
+      #masthead ul.toc li { list-style-type: none; }
+      #masthead ul.toc li ul { padding-left: 18px; }
+      #masthead ul.toc li ul li { list-style-type: circle; font-size: 13px; }
       .charts { margin: 10px 60px 0 4px; float: left; width: 550px; text-align: center; }
       .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; border: 1px solid #ccc; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; -moz-box-shadow: inset 1px 1px 4px #ccc; -webkit-box-shadow: inset 1px 1px 4px #ccc; box-shadow: inset 1px 1px 4px #ccc; }
       .talents div.float { width: auto; margin-right: 50px; }

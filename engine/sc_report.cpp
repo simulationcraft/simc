@@ -928,123 +928,48 @@ static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
 
 static void print_html_contents( FILE*  file, sim_t* sim )
 {
-  int i;          // reusable counter
-  int n;          // number of columns
-  int c = 2;      // total number of TOC entries
-  int pi = 0;     // player counter
-  int ci = 0;         // in-column counter
-  int cs = 0;         // column size
-  char buffer[ 1024 ];
-
-  if ( sim -> scaling -> has_scale_factors() )
-  {
-    c++;
-  }
-  int num_players = ( int ) sim -> players_by_name.size();
-  c += num_players;
-  for ( i=0; i < num_players; i++ )
-  {
-    if ( sim -> report_pets_separately )
-    {
-      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
-      {
-        if ( pet -> summoned )
-        {
-          c++;
-        }
-      }
-    }
-  }
-
   util_t::fprintf( file,
     "    <div id=\"table-of-contents\" class=\"section section-open\">\n"
     "      <h2 class=\"toggle open\">Table of Contents</h2>\n"
-    "      <div class=\"toggle-content\">\n" );
-
-  // set number of columns
-  if ( c < 6 )
+    "      <div class=\"toggle-content\">\n"
+    "        <ul class=\"toc\">\n"
+    "          <li><a href=\"#raid-summary\">Raid Summary</a></li>\n" );
+  if ( sim -> scaling -> has_scale_factors() )
   {
-    n = 1;
+    util_t::fprintf( file,
+      "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n" );
   }
-  else if ( c < 9 || sim -> report_pets_separately )
-  {
-    n = 2;
-  }
-  else
-  {
-    n = 3;
-  }
-  std::string cols [n];
-  for ( i=0; i < n; i++ )
-  {
-    if ( i == 0 )
-    {
-      cs = ceil(c / n);
-    }
-    else
-    {
-      if ( ci > cs )
-      {
-        cs = floor(c / n) - (ci - cs);
-      }
-      else
-      {
-        cs = floor(c / n);
-      }
-    }
-    ci = 1;
-    snprintf( buffer, sizeof( buffer ),
-      "        <ul class=\"toc toc-%i\">\n",
-	  n );
-	cols[i] += buffer;
-    if ( i == 0 )
-    {
-      cols[i] += "          <li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
-      ci++;
-      if ( sim -> scaling -> has_scale_factors() )
-      {
-	    cols[i] += "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
-	    ci++;
-      }
-      cols[i] += "          <li><a href=\"#auras-debuffs\">Auras and Debuffs</a></li>\n";
-      ci++;
-    }
-    while ( ci <= cs ) {
-      player_t* p = sim -> players_by_name[ pi ];
-      snprintf( buffer, sizeof( buffer ),
-        "          <li><a href=\"#%s\">%s</a>",
-	    p -> name(),
-	    p -> name() );
-	  cols[i] += buffer;
-	  ci++; 
-      if ( sim -> report_pets_separately )
-      {
-	    cols[i] += "\n            <ul>\n";
-	    for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
-	    {
-		  if ( pet -> summoned )
-		  {
-		    snprintf( buffer, sizeof( buffer ),
-		      "              <li><a href=\"#%s\">%s</a></li>\n",
-		      pet -> name(),
-		      pet -> name() );
-		    cols[i] += buffer;
-		    ci++;
-		  }
-	    }
-	    cols[i] += "            </ul>\n";
-	  }
-	  pi++;
-    }
-    cols[i] += "          </ul>\n";
-  }
-  for ( i=0; i < n; i++ )
-  {
-    util_t::fprintf( file, cols[i].c_str() );
-  }
-
   util_t::fprintf( file,
-    "        <div class=\"clear\"></div>\n"
+    "          <li><a href=\"#auras-debuffs\">Auras and Debuffs</a></li>\n" );
+  int num_players = ( int ) sim -> players_by_name.size();
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+    util_t::fprintf( file,
+      "          <li><a href=\"#%s\">%s</a>",
+      p -> name(),
+      p -> name() );
+    if ( sim -> report_pets_separately )
+    {
+      util_t::fprintf( file,
+        "\n            <ul>\n" );
+      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      {
+        if ( pet -> summoned )
+          util_t::fprintf( file,
+          "              <li><a href=\"#%s\">%s</a></li>\n",
+          pet -> name(),
+          pet -> name() );
+      }
+      util_t::fprintf( file,
+        "            </ul>\n" );
+    }
+    util_t::fprintf( file,
+      "          </li>\n" );
+  }
+  util_t::fprintf( file,
+    "        </ul>\n" );
+  util_t::fprintf( file,
     "      </div>\n\n"
     "    </div>\n\n" );
 }
@@ -3914,12 +3839,10 @@ void report_t::print_html( sim_t* sim )
       "      #masthead h2 { margin: 10px 0 5px 0; }\n"
       "      #notice { border: 1px solid #ddbbbb; background: #ffdddd; font-size: 12px; }\n"
       "      #notice h2 { margin-bottom: 10px; }\n"
-      "      .toc { float: left; padding: 0 0 10px 0; }\n"
-      "      .toc-2 { width: 560px; }\n"
-      "      .toc-3 { width: 375px; }\n"
-      "      .toc li { margin-top: 10px; list-style-type: none; }\n"
-      "      .toc li ul { padding-left: 10px; }\n"
-      "      .toc li ul li { margin: 0; list-style-type: none; font-size: 13px; }\n"
+      "      #masthead ul.toc { padding: 0; }\n"
+      "      #masthead ul.toc li { list-style-type: none; }\n"
+      "      #masthead ul.toc li ul { padding-left: 18px; }\n"
+      "      #masthead ul.toc li ul li { list-style-type: circle; font-size: 13px; }\n"
       "      .charts { margin: 10px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
       "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; border: 1px solid #ccc; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; -moz-box-shadow: inset 1px 1px 4px #ccc; -webkit-box-shadow: inset 1px 1px 4px #ccc; box-shadow: inset 1px 1px 4px #ccc; }\n"
       "      .talents div.float { width: auto; margin-right: 50px; }\n"
