@@ -8,7 +8,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <style type="text/css">
+    <style type="text/css" media="all">
       * { border: none; margin: 0; padding: 0; }
       body { padding: 5px 25px 25px 25px; font-family: "Lucida Grande", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; text-align: center; }
       p { margin-top: 1em; }
@@ -25,6 +25,7 @@
       .clear { clear: both; }
       .hide, .charts span { display: none; }
       .float { float: left; }
+      .no-wrap { max-width: 1200px; outline: 1px solid #ccc; margin: 10px 0 0 16px; padding: 8px; word-wrap: no-wrap; overflow-x: scroll; }
       .mt { margin-top: 20px; }
       .mb { margin-bottom: 20px; }
       .toggle { cursor: pointer; }
@@ -49,8 +50,8 @@
       .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: -1px; border: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }
       .section-open { margin-top: 25px; margin-bottom: 25px; -moz-border-radius: 10px; -khtml-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }
       .grouped-first { -moz-border-radius-topright: 10px; -moz-border-radius-topleft: 10px; -khtml-border-top-right-radius: 10px; -khtml-border-top-left-radius: 10px; -webkit-border-top-right-radius: 10px; -webkit-border-top-left-radius: 10px; border-top-right-radius: 10px; border-top-left-radius: 10px; }
-      .grouped-last { -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; -khtml-border-bottom-right-radius: 10px; -khtml-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }
-      .section .toggle-content { padding: 0 0 20px 14px; }
+      .grouped-last, .final { -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; -khtml-border-bottom-right-radius: 10px; -khtml-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }
+      .section .toggle-content { padding: 0 0 20px 16px; }
       #raid-summary .toggle-content { padding-bottom: 0px; }
       ul.params { padding: 0; }
       ul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: "Lucida Grande", Arial, sans-serif; font-size: 12px; }
@@ -106,12 +107,13 @@
 
     <div id="masthead" class="section section-open">
 
-      <h1>SimulationCraft 406-1 for World of Warcraft 4.0.6 Live (build level 13596)</h1>
+      <h1>SimulationCraft 406-2</h1>
+      <h2>for World of Warcraft 4.0.6 Live (build level 13596)</h2>
 
       <ul class="params">
-        <li><b>Timestamp:</b> Wed Feb 09 11:58:16 2011
+        <li><b>Timestamp:</b> Sat Feb 12 18:29:01 2011
 </li>
-        <li><b>Iterations:</b> 50000</li>
+        <li><b>Iterations:</b> 100000</li>
         <li><b>Fight Length:</b> 450</li>
         <li><b>Vary Combat Length:</b> 0.20</li>
         <li><b>Smooth RNG:</b> false</li>
@@ -121,7 +123,7 @@
     </div>
 
     <div id="Priest_Shadow_T11_372" class="player section section-open">
-      <h2 class="toggle open">Priest_Shadow_T11_372&nbsp;:&nbsp;29795dps</h2>
+      <h2 class="toggle open">Priest_Shadow_T11_372&nbsp;:&nbsp;27617dps</h2>
       <div class="toggle-content">
         <ul class="params">
           <li><b>Race:</b> troll</li>
@@ -147,12 +149,12 @@
                 <th><a href="#help-apm" class="help">APM</a></th>
               </tr>
               <tr>
-                <td>29795.5</td>
-                <td>5.1 / 0.0%</td>
-                <td>2121.4 / 7.1%</td>
-                <td>19.7</td>
-                <td>1515.1</td>
-                <td>1519.7</td>
+                <td>27616.7</td>
+                <td>3.4 / 0.0%</td>
+                <td>2259.5 / 8.2%</td>
+                <td>18.3</td>
+                <td>1508.8</td>
+                <td>1511.6</td>
                 <td>mana</td>
                 <td>0.00%</td>
                 <td>37.1</td>
@@ -184,73 +186,21 @@
                 </td>
               </tr>
             </table>
-            <table class="sc mt">
-              <tr>
-                <th><a href="#help-scale-factors" class="help">?</a></th>
-                <th>Int</th>
-                <th>Spi</th>
-                <th>SP</th>
-                <th>Hit</th>
-                <th>Crit</th>
-                <th>Haste</th>
-                <th>Mastery</th>
-              </tr>
-              <tr>
-                <th class="left">Scale Factors</th>
-                <td>3.6715</td>
-                <td>0.7473</td>
-                <td>2.8344</td>
-                <td>0.7577</td>
-                <td>1.6303</td>
-                <td>2.1161</td>
-                <td>1.5887</td>
-              </tr>
-              <tr>
-                <th class="left">Normalized</th>
-                <td>1.0000</td>
-                <td>0.2036</td>
-                <td>0.7720</td>
-                <td>0.2064</td>
-                <td>0.4441</td>
-                <td>0.5764</td>
-                <td>0.4327</td>
-              </tr>
-              <tr>
-                <th class="left">Scale Deltas</th>
-                <td>300</td>
-                <td>300</td>
-                <td>300</td>
-                <td>-300</td>
-                <td>300</td>
-                <td>300</td>
-                <td>300</td>
-              </tr>
-              <tr class="left">
-                <th>Gear Ranking</th>
-                <td colspan="7" class="filler">
-                  <ul class="float">
-                    <li><a href="http://www.wowhead.com/?items&amp;filter=ub=5;gm=4;gb=1;wt=23:24:123:119:96:103:170;wtv=3.6715:0.7473:2.8344:0.7577:1.6303:2.1161:1.5887;" rel="_blank">wowhead</a></li>
-                    <li><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=16&amp;F=H&amp;Int=3.6715&amp;Spi=0.7473&amp;spd=2.8344&amp;mhit=0.7577&amp;mcr=1.6303&amp;mh=2.1161&amp;Mr=1.5887&amp;Ver=6" rel="_blank">lootrank</a></li>
-                  </ul>
-                </td>
-              </tr>
-            </table>
           </div>
         </div>
         <div class="player-section">
           <h3 class="toggle open">Charts</h3>
           <div class="toggle-content">
             <div class="charts">
-              <img src="http://0.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chd=t:83768|73966|33708|26907|12777|7124&amp;chds=0,167536&amp;chco=9482C9,9482C9,9482C9,9482C9,9482C9,9482C9&amp;chm=t++83768++vampiric_touch,9482C9,0,0,15|t++73966++devouring_plague,9482C9,1,0,15|t++33708++mind_blast,9482C9,2,0,15|t++26907++shadow_word_death,9482C9,3,0,15|t++12777++mind_flay,9482C9,4,0,15|t++7124++melee,9482C9,5,0,15&amp;chtt=Priest_Shadow_T11_372+Damage+Per+Execute+Time&amp;chts=666666,18" alt="Action DPET Chart" />
-              <img src="http://1.chart.apis.google.com/chart?chs=550x290&amp;cht=p&amp;chd=t:30,19,14,12,11,5,4,3,0&amp;chds=0,100&amp;chco=9482C9,9482C9,9482C9,9482C9,9482C9,9482C9,9482C9,9482C9,C41F3B&amp;chl=mind_flay|vampiric_touch|mind_blast|devouring_plague|shadow_word_pain|melee|shadowy_apparition|shadow_word_death|darkmoon_card_volcano&amp;chtt=Priest_Shadow_T11_372+Damage+Sources&amp;chts=666666,18" alt="Action Damage Chart" />
-              <img src="http://2.chart.apis.google.com/chart?chs=550x300&amp;cht=p&amp;chd=t:23,17,17,13,11,9,5,3,0,0&amp;chds=0,100&amp;chco=2459FF&amp;chl=shadow_fiend|vampiric_embrace|archangel|masochism|initial_mana|mp5_regen|replenishment|blessing_of_might|flask|food&amp;chtt=Priest_Shadow_T11_372+Resource+Gains&amp;chts=666666,18" alt="Resource Gains Chart" />
+              <img src="http://9.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chd=t:77072|69625|31010|24746|11752|7131&amp;chds=0,154143&amp;chco=9482C9,9482C9,9482C9,9482C9,9482C9,9482C9&amp;chm=t++77072++vampiric_touch,9482C9,0,0,15|t++69625++devouring_plague,9482C9,1,0,15|t++31010++mind_blast,9482C9,2,0,15|t++24746++shadow_word_death,9482C9,3,0,15|t++11752++mind_flay,9482C9,4,0,15|t++7131++melee,9482C9,5,0,15&amp;chtt=Priest_Shadow_T11_372+Damage+Per+Execute+Time&amp;chts=666666,18" alt="Action DPET Chart" />
+              <img src="http://0.chart.apis.google.com/chart?chs=550x290&amp;cht=p&amp;chd=t:30,19,14,13,11,6,4,3,0&amp;chds=0,100&amp;chco=9482C9,9482C9,9482C9,9482C9,9482C9,9482C9,9482C9,9482C9,C41F3B&amp;chl=mind_flay|vampiric_touch|mind_blast|devouring_plague|shadow_word_pain|melee|shadowy_apparition|shadow_word_death|darkmoon_card_volcano&amp;chtt=Priest_Shadow_T11_372+Damage+Sources&amp;chts=666666,18" alt="Action Damage Chart" />
+              <img src="http://1.chart.apis.google.com/chart?chs=550x300&amp;cht=p&amp;chd=t:24,17,16,12,11,9,6,3,0,0&amp;chds=0,100&amp;chco=2459FF&amp;chl=shadow_fiend|archangel|vampiric_embrace|masochism|initial_mana|mp5_regen|replenishment|blessing_of_might|flask|food&amp;chtt=Priest_Shadow_T11_372+Resource+Gains&amp;chts=666666,18" alt="Resource Gains Chart" />
                           </div>
             <div class="charts">
-              <img src="http://5.chart.apis.google.com/chart?chs=525x240&amp;cht=bhg&amp;chd=t:3.6715|2.8344|2.1161|1.6303|1.5887|0.7577|0.7473&amp;chds=0,7.3429&amp;chco=C0C0C0,C0C0C0,C0C0C0,C0C0C0,C0C0C0,C0C0C0,C0C0C0&amp;chm=t++3.6715++Int,8A8A8A,0,0,15|t++2.8344++SP,8A8A8A,1,0,15|t++2.1161++Haste,8A8A8A,2,0,15|t++1.6303++Crit,8A8A8A,3,0,15|t++1.5887++Mastery,8A8A8A,4,0,15|t++0.7577++Hit,8A8A8A,5,0,15|t++0.7473++Spi,8A8A8A,6,0,15&amp;chtt=Priest_Shadow_T11_372+Scale+Factors&amp;chts=666666,18" alt="Scale Factors Chart" />
-              <img src="http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:gpppqprst078742zxvusrrrqqponnnnnnmmmlkkkkkkjjiiihggggfeeeeedeeeddddeeeedccccddeefeffffggggggfgffeffefhklmoqqqqqpppppoonnmmlllkkkkjjjjjjjjjjjiihhhhhhiiijjjjjjjkkkkkjjjiiiiiiiiihhhhhhggggffeeddddgijlnoopooooooonnnmmllllllllllllllllllllllkkkkkkkkkjjjjjjjjjjiiiihhgggffffffffeeeeeeeeeedddegiklmnopppqqqppppppoooonnnnnnnnnnnnnnnnnnnmmmmllllmmmmmllllllllllkkkkjjjjjjjjjjjjjjjjjkkkkkklmnopqrssssssrrrrrqqqpppppppppppppppppppppqqqqqqqrrrrrrrrrr&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=149921&amp;chtt=Priest_Shadow_T11_372+Mana+Timeline&amp;chts=666666,18&amp;chco=2459FF" alt="Resource Timeline Chart" />
-                            <img src="http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:uv1212432102466843310yzuttqnonnnnmlmkmmklkmkkllmnnoopppqpqppqrrppqpqpppppooonnnnnomnnnonoopooooooppppqqqqqrrrrqqpqppppopppooooonnonnnnoopppqqrrsssssssrrssssrrqrppponnmmnmmmmmmnmnnnoooppqqrsttuuuuuuuuuuutttssrrqqppoonnnnnmmmnnnoopopppqqrrrrssssssssrrrqqqqppooooonnnnnmnmmnnooppqqrrsttuuuvvwwxxxxxxxxwwvvuuttttsssrrrqqqqqrrrrssttuuuuvvvvvvvvvvvvvvvvuuuutttttuuuuvvvwwxxxyyzzz00111122222211110000zzyyyxxwwvvuuuuuuuuvvvwwwxxxxyyyyzzzzzzzzzz&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=29795|max=40253&amp;chxp=1,1,74,100&amp;chtt=Priest_Shadow_T11_372+DPS+Timeline&amp;chts=666666,18" alt="DPS Timeline Chart" />
-              <img src="http://6.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=c,ls,0,EEEEEE,0.125,FFFFFF,0.125&amp;chg=100,100&amp;chd=t:4,2,7,26,25,49,64,158,243,336,466,607,855,1054,1314,1678,1891,2233,2646,2708,2692,3004,3065,2861,2868,2604,2708,2335,1842,1841,1529,1306,1038,828,728,574,401,355,264,231,150,110,92,59,53,42,21,11,11,11&amp;chds=0,3065&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=27862|avg=29795|max=32104&amp;chxp=0,1,46,100&amp;chtt=Priest_Shadow_T11_372+DPS+Distribution&amp;chts=666666,18" alt="DPS Distribution Chart" />
-              <img src="http://3.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chd=t:2,1,0,0,8,99,285,699,957,1360,1420,1247,1196,1172,1373,1409,1387,1353,1347,1370,1290,1278,1159,1316,1537,1534,1369,1317,1281,1347,1301,1227,1322,1299,1274,1294,1114,1015,1032,1230,1227,1305,1061,1023,1121,943,642,330,104,21&amp;chds=0,1537&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=276|avg=450|max=583&amp;chxp=0,1,57,100&amp;chtt=Timeline+Distribution&amp;chts=666666,18" alt="Encounter Timeline Distribution Chart" />
+                            <img src="http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:gpppqprst078742zxvusrrrqqponnnnnnmmmlkkkkkkjjiiihggggfeeeeeeeeeddddeeeedccccddeeffffffggggggggfffffffhklmoqqqqqpppppoonnmmlllkkkkkkjjjjjjjjjiihhhhhiiiijjjjjjjkkkkkjjjiiiiiiiiihhhhhhggggffeeddddgijlnoopooooooonnnmmmlllllllllllllllllllllkkkkkkjjjjjjjjjjjjiiiiihhgggffffffffeeeeeeeeeeeddegiklmnopppqqqppppppoooonnnnnnnnnnnmmmmmmmmmmmllllllllllllllllllllkkkjjjjjjjjjjjjjjjjjjkkkkkkllmopqrssssssrrrrqqqqppppoooopppppppppppppppqqqqqqrrrrrrrrr&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=149732&amp;chtt=Priest_Shadow_T11_372+Mana+Timeline&amp;chts=666666,18&amp;chco=2459FF" alt="Resource Timeline Chart" />
+                            <img src="http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:uv1223432102466843310yzutsqnonnnnmlmjllklkmkklkmnmnopppppppppqrppqpqpppppooonnnnnomnnnonoooooonoopoppqpqqpqqqqqqppooppoopononnnnmnnnnnoopppqqrrssssrsrrrssssrrqrppoonnmmmmmmmmmnmnnnnoooppqrrsttuuuututtttttsssrrqqppoonnnmnmmmmnnoooopppqqrqrrrsssssrrrrrqqpppoooonnnnnnmmmmmmnoopppqqrsstttuuvvwwwwwxxwwwwvvuutttsssrrrrqqqqqqrrrrsstttuuuuvvvvvvvvvvvvvuuutttttttttuuuvvvwwxxxyyzz0001111111111100000zzyyyxxwwvvuuuuutuuuuvvvwwwwxxxyyyyzzzzzzzzz&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=27617|max=37561&amp;chxp=1,1,74,100&amp;chtt=Priest_Shadow_T11_372+DPS+Timeline&amp;chts=666666,18" alt="DPS Timeline Chart" />
+              <img src="http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=c,ls,0,EEEEEE,0.125,FFFFFF,0.125&amp;chg=100,100&amp;chd=t:2,9,8,4,25,51,109,237,304,511,877,1263,1820,2443,3061,3809,4709,5264,5852,6700,6593,6689,6580,6853,6000,5283,4832,4167,3306,2950,2131,1845,1454,1100,907,671,485,376,194,195,113,86,49,43,14,4,10,5,0,7&amp;chds=0,6853&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=25647|avg=27617|max=30166&amp;chxp=0,1,44,100&amp;chtt=Priest_Shadow_T11_372+DPS+Distribution&amp;chts=666666,18" alt="DPS Distribution Chart" />
+              <img src="http://3.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chd=t:3,3,18,139,547,1180,1847,2525,2656,2574,2244,2367,2416,2762,2835,2648,2593,2756,2603,2482,2401,2245,2792,3106,2919,2682,2539,2421,2571,2384,2732,2458,2515,2513,2525,2177,2046,2045,2556,2423,2320,2040,2085,1998,1944,1395,635,273,53,7&amp;chds=0,3106&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=277|avg=450|max=583&amp;chxp=0,1,57,100&amp;chtt=Timeline+Distribution&amp;chts=666666,18" alt="Encounter Timeline Distribution Chart" />
             </div>
             <div class="clear"></div>
           </div>
@@ -288,84 +238,24 @@
               </tr>
               <tr>
                 <th class="left small">Priest_Shadow_T11_372</th>
-                <th class="right small">29795</th>
+                <th class="right small">27617</th>
                 <td colspan="22" class="filler"></td>
               </tr>
               <tr>
-                <td class="left small"><a href="#" class="toggle-details" rel="spell=87151">archangel</a></td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">5.1/5.1</td>
-                <td class="right small">93.25sec</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-              </tr>
-              <tr class="details hide">
-                <td colspan="23" class="filler">
-                  <h4>Database details</h4>
-                  <div class="float">
-                    <h5>Static Values</h5>
-                    <ul>
-                      <li><span class="label">id:</span>87151</li>
-                      <li><span class="label">school:</span>holy</li>
-                      <li><span class="label">resource:</span>mana</li>
-                      <li><span class="label">tree:</span>discipline</li>
-                      <li><span class="label">range:</span>0.0</li>
-                      <li><span class="label">travel_speed:</span>0.0000</li>
-                      <li><span class="label">trigger_gcd:</span>0.0000</li>
-                      <li><span class="label">base_cost:</span>0.0</li>
-                      <li><span class="label">cooldown:</span>90.00</li>
-                      <li><span class="label">base_execute_time:</span>0.00</li>
-                      <li><span class="label">base_crit:</span>0.00</li>
-                      <li><span class="label">target:</span>Fluffy_Pillow</li>
-                      <li><span class="label">tooltip:</span><span class="tooltip">(null)</span></li>
-                      <li><span class="label">description:</span><span class="tooltip">Consumes your Evangelism effects, causing an effect depending what type of Evangelism effect is consumed:
-
-|CFFFFFFFFArchangel (Evangelism)|R
-Instantly restores $87152s1% of your total mana and increases your healing done by $81700s1% for each stack. Lasts for $81700d. $87151s2 sec cooldown.
-
-|CFFFFFFFFDark Archangel (Dark Evangelism)|R
-Instantly restores $87153s3% of your total mana and increases the damage done by your Mind Flay, Mind Spike, Mind Blast and Shadow Word: Death $87153s1% for each stack. Lasts for $87153d. $87151s3 sec cooldown.</span></li>
-                    </ul>
-                  </div>
-                  <div class="float">
-                  </div>
-                  <div class="clear"></div>
-                </td>
-              </tr>
-              <tr class="odd">
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=0">darkmoon_card_volcano</a></td>
-                <td class="right small">86</td>
+                <td class="right small">79</td>
                 <td class="right small">0.3%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">9.9/9.9</td>
-                <td class="right small">46.23sec</td>
-                <td class="right small">3800</td>
-                <td class="right small">1</td>
+                <td class="right small">46.22sec</td>
+                <td class="right small">3497</td>
+                <td class="right small">0</td>
                 <td class="right small">0.0</td>
                 <td class="right small">0</td>
-                <td class="right small">3353</td>
-                <td class="right small">5185</td>
-                <td class="right small">5642</td>
-                <td class="right small">24.4%</td>
+                <td class="right small">3085</td>
+                <td class="right small">4769</td>
+                <td class="right small">5191</td>
+                <td class="right small">24.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
@@ -412,29 +302,29 @@ Instantly restores $87153s3% of your total mana and increases the damage done by
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr>
+              <tr class="odd">
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=2944">devouring_plague</a></td>
-                <td class="right small">3709</td>
-                <td class="right small">12.4%</td>
-                <td class="right small">13.9%</td>
-                <td class="right small">19.2/19.2</td>
-                <td class="right small">23.31sec</td>
-                <td class="right small">84360</td>
-                <td class="right small">73966</td>
-                <td class="right small">17.6</td>
+                <td class="right small">3492</td>
+                <td class="right small">12.6%</td>
+                <td class="right small">14.0%</td>
+                <td class="right small">19.2/38.4</td>
+                <td class="right small">23.30sec</td>
+                <td class="right small">79405</td>
+                <td class="right small">69625</td>
+                <td class="right small">16.6</td>
                 <td class="right small">4786</td>
-                <td class="right small">14054</td>
-                <td class="right small">29594</td>
-                <td class="right small">43481</td>
-                <td class="right small">22.5%</td>
+                <td class="right small">7183</td>
+                <td class="right small">15146</td>
+                <td class="right small">44447</td>
+                <td class="right small">22.4%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">198</td>
-                <td class="right small">5201</td>
-                <td class="right small">10954</td>
+                <td class="right small">4787</td>
+                <td class="right small">10080</td>
                 <td class="right small">22.4%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">98.6%</td>
@@ -500,27 +390,27 @@ Instantly restores $87153s3% of your total mana and increases the damage done by
                     <ul>
                       <li><span class="label">may_crit:</span>true</li>
                       <li><span class="label">direct_power_mod:</span>0.000000</li>
-                      <li><span class="label">base_dd_min:</span>6231.38</li>
-                      <li><span class="label">base_dd_max:</span>6231.38</li>
+                      <li><span class="label">base_dd_min:</span>6923.76</li>
+                      <li><span class="label">base_dd_max:</span>6923.76</li>
                     </ul>
                   </div>
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr class="odd">
+              <tr>
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=8092">mind_blast</a></td>
-                <td class="right small">4251</td>
-                <td class="right small">14.3%</td>
-                <td class="right small">25.1%</td>
+                <td class="right small">3910</td>
+                <td class="right small">14.2%</td>
+                <td class="right small">25.2%</td>
                 <td class="right small">47.5/47.5</td>
                 <td class="right small">9.21sec</td>
-                <td class="right small">39094</td>
-                <td class="right small">33708</td>
-                <td class="right small">11.2</td>
+                <td class="right small">35964</td>
+                <td class="right small">31010</td>
+                <td class="right small">10.3</td>
                 <td class="right small">3500</td>
-                <td class="right small">31315</td>
-                <td class="right small">65940</td>
-                <td class="right small">145622</td>
+                <td class="right small">28815</td>
+                <td class="right small">60643</td>
+                <td class="right small">133972</td>
                 <td class="right small">22.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
@@ -568,30 +458,30 @@ Instantly restores $87153s3% of your total mana and increases the damage done by
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr>
+              <tr class="odd">
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=15407">mind_flay</a></td>
-                <td class="right small">8925</td>
-                <td class="right small">30.0%</td>
-                <td class="right small">30.9%</td>
-                <td class="right small">124.0/0.0</td>
+                <td class="right small">8208</td>
+                <td class="right small">29.7%</td>
+                <td class="right small">31.0%</td>
+                <td class="right small">124.0/124.0</td>
                 <td class="right small">3.49sec</td>
-                <td class="right small">31427</td>
-                <td class="right small">12777</td>
-                <td class="right small">19.1</td>
+                <td class="right small">28905</td>
+                <td class="right small">11752</td>
+                <td class="right small">17.5</td>
                 <td class="right small">1647</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
-                <td class="right small">0.0%</td>
+                <td class="right small">27.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">371</td>
-                <td class="right small">8042</td>
-                <td class="right small">16944</td>
-                <td class="right small">27.6%</td>
+                <td class="right small">7398</td>
+                <td class="right small">15587</td>
+                <td class="right small">27.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">62.8%</td>
               </tr>
@@ -633,20 +523,20 @@ Instantly restores $87153s3% of your total mana and increases the damage done by
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr class="odd">
+              <tr>
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=32379">shadow_word_death</a></td>
-                <td class="right small">1031</td>
-                <td class="right small">3.5%</td>
+                <td class="right small">950</td>
+                <td class="right small">3.4%</td>
                 <td class="right small">5.3%</td>
                 <td class="right small">15.3/15.3</td>
                 <td class="right small">6.01sec</td>
-                <td class="right small">29404</td>
-                <td class="right small">26907</td>
-                <td class="right small">12.8</td>
+                <td class="right small">27044</td>
+                <td class="right small">24746</td>
+                <td class="right small">11.8</td>
                 <td class="right small">2297</td>
-                <td class="right small">23579</td>
-                <td class="right small">49585</td>
-                <td class="right small">73121</td>
+                <td class="right small">21685</td>
+                <td class="right small">45645</td>
+                <td class="right small">67271</td>
                 <td class="right small">22.4%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
@@ -696,29 +586,29 @@ If the target is not killed by Shadow Word: Death, the caster takes damage equal
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr>
+              <tr class="odd">
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=589">shadow_word_pain</a></td>
-                <td class="right small">3418</td>
-                <td class="right small">11.5%</td>
+                <td class="right small">3144</td>
+                <td class="right small">11.4%</td>
                 <td class="right small">0.6%</td>
-                <td class="right small">1.0/0.0</td>
-                <td class="right small">409.31sec</td>
-                <td class="right small">1491309</td>
-                <td class="right small">1437897</td>
-                <td class="right small">354.1</td>
+                <td class="right small">1.0/1.0</td>
+                <td class="right small">386.06sec</td>
+                <td class="right small">1371256</td>
+                <td class="right small">1322225</td>
+                <td class="right small">325.6</td>
                 <td class="right small">4211</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
-                <td class="right small">0.0%</td>
+                <td class="right small">21.3%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">198</td>
-                <td class="right small">6043</td>
-                <td class="right small">12736</td>
+                <td class="right small">5560</td>
+                <td class="right small">11715</td>
                 <td class="right small">22.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">99.8%</td>
@@ -761,20 +651,20 @@ If the target is not killed by Shadow Word: Death, the caster takes damage equal
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr class="odd">
+              <tr>
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=87532">shadowy_apparition</a></td>
-                <td class="right small">1079</td>
+                <td class="right small">993</td>
                 <td class="right small">3.6%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">27.8/26.8</td>
-                <td class="right small">15.31sec</td>
-                <td class="right small">16918</td>
-                <td class="right small">1</td>
+                <td class="right small">15.30sec</td>
+                <td class="right small">15570</td>
+                <td class="right small">0</td>
                 <td class="right small">0.0</td>
                 <td class="right small">0</td>
-                <td class="right small">13358</td>
-                <td class="right small">28120</td>
-                <td class="right small">36202</td>
+                <td class="right small">12289</td>
+                <td class="right small">25870</td>
+                <td class="right small">33306</td>
                 <td class="right small">28.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
@@ -824,29 +714,29 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   <div class="clear"></div>
                 </td>
               </tr>
-              <tr>
+              <tr class="odd">
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=34914">vampiric_touch</a></td>
-                <td class="right small">5734</td>
-                <td class="right small">19.2%</td>
+                <td class="right small">5275</td>
+                <td class="right small">19.1%</td>
                 <td class="right small">12.9%</td>
-                <td class="right small">25.9/0.0</td>
-                <td class="right small">17.10sec</td>
-                <td class="right small">96759</td>
-                <td class="right small">83768</td>
-                <td class="right small">29.4</td>
+                <td class="right small">25.9/25.9</td>
+                <td class="right small">17.09sec</td>
+                <td class="right small">89021</td>
+                <td class="right small">77072</td>
+                <td class="right small">27.0</td>
                 <td class="right small">3294</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
-                <td class="right small">0.0%</td>
+                <td class="right small">22.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">184</td>
-                <td class="right small">10886</td>
-                <td class="right small">22909</td>
+                <td class="right small">10016</td>
+                <td class="right small">21076</td>
                 <td class="right small">22.5%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">92.7%</td>
@@ -891,28 +781,28 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
               </tr>
               <tr>
                 <th class="left small">pet - shadow_fiend</th>
-                <th class="right small">1674</th>
+                <th class="right small">1676</th>
                 <td colspan="21" class="filler"></td>
               </tr>
               <tr>
                 <td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee</a></td>
-                <td class="right small">1674</td>
+                <td class="right small">1676</td>
                 <td class="right small">100.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">70.6/70.6</td>
                 <td class="right small">5.81sec</td>
-                <td class="right small">9669</td>
-                <td class="right small">7124</td>
+                <td class="right small">9678</td>
+                <td class="right small">7131</td>
                 <td class="right small">0.0</td>
                 <td class="right small">0</td>
-                <td class="right small">7381</td>
-                <td class="right small">19922</td>
+                <td class="right small">7378</td>
+                <td class="right small">19937</td>
                 <td class="right small">26511</td>
-                <td class="right small">21.7%</td>
+                <td class="right small">21.8%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0.0%</td>
-                <td class="right small">24.0%</td>
+                <td class="right small">23.9%</td>
                 <td class="right small">0.0%</td>
                 <td class="right small">0</td>
                 <td class="right small">0</td>
@@ -957,60 +847,6 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                       <li><span class="label">weapon_power_mod:</span>0.071429</li>
                       <li><span class="label">weapon_multiplier:</span>0.00</li>
                     </ul>
-                  </div>
-                  <div class="clear"></div>
-                </td>
-              </tr>
-              <tr class="odd">
-                <td class="left small"><a href="#" class="toggle-details" rel="spell=63619">shadowcrawl</a></td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">18.9/18.9</td>
-                <td class="right small">22.42sec</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-              </tr>
-              <tr class="details hide">
-                <td colspan="23" class="filler">
-                  <h4>Database details</h4>
-                  <div class="float">
-                    <h5>Static Values</h5>
-                    <ul>
-                      <li><span class="label">id:</span>63619</li>
-                      <li><span class="label">school:</span>arcane</li>
-                      <li><span class="label">resource:</span>focus</li>
-                      <li><span class="label">tree:</span>Unknown</li>
-                      <li><span class="label">range:</span>30.0</li>
-                      <li><span class="label">travel_speed:</span>0.0000</li>
-                      <li><span class="label">trigger_gcd:</span>1.5000</li>
-                      <li><span class="label">base_cost:</span>0.0</li>
-                      <li><span class="label">cooldown:</span>6.00</li>
-                      <li><span class="label">base_execute_time:</span>0.00</li>
-                      <li><span class="label">base_crit:</span>0.00</li>
-                      <li><span class="label">target:</span>Fluffy_Pillow</li>
-                      <li><span class="label">tooltip:</span><span class="tooltip">Damage increased by $s2%.</span></li>
-                      <li><span class="label">description:</span><span class="tooltip">Crawls through the shadows to the target enemy, and increases damage done by the Shadowfiend by $s2% for $d.</span></li>
-                    </ul>
-                  </div>
-                  <div class="float">
                   </div>
                   <div class="clear"></div>
                 </td>
@@ -1081,9 +917,9 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 <td class="left"><a href="#" class="toggle-details">dark_archangel</a></td>
                 <td class="right">5.1</td>
                 <td class="right">0.0</td>
-                <td class="right">93.2sec</td>
-                <td class="right">93.2sec</td>
-                <td class="right">20%</td>
+                <td class="right">93.3sec</td>
+                <td class="right">93.3sec</td>
+                <td class="right">21%</td>
                 <td class="right">22%</td>
               </tr>
               <tr class="details hide">
@@ -1103,7 +939,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
               <tr class="odd">
                 <td class="left"><a href="#" class="toggle-details">dark_evangelism</a></td>
                 <td class="right">6.1</td>
-                <td class="right">489.3</td>
+                <td class="right">489.1</td>
                 <td class="right">75.7sec</td>
                 <td class="right">0.9sec</td>
                 <td class="right">99%</td>
@@ -1150,7 +986,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 <td class="left"><a href="#" class="toggle-details">empowered_shadow</a></td>
                 <td class="right">1.0</td>
                 <td class="right">46.5</td>
-                <td class="right">376.5sec</td>
+                <td class="right">453.7sec</td>
                 <td class="right">9.2sec</td>
                 <td class="right">99%</td>
                 <td class="right">99%</td>
@@ -1171,7 +1007,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
               </tr>
               <tr>
                 <td class="left"><a href="#" class="toggle-details">glyph_of_shadow_word_death</a></td>
-                <td class="right">7.6</td>
+                <td class="right">7.7</td>
                 <td class="right">0.0</td>
                 <td class="right">12.6sec</td>
                 <td class="right">12.6sec</td>
@@ -1196,8 +1032,8 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 <td class="left"><a href="#" class="toggle-details">lightweave_embroidery</a></td>
                 <td class="right">8.1</td>
                 <td class="right">0.0</td>
-                <td class="right">57.0sec</td>
-                <td class="right">57.0sec</td>
+                <td class="right">57.1sec</td>
+                <td class="right">57.1sec</td>
                 <td class="right">27%</td>
                 <td class="right">27%</td>
               </tr>
@@ -1357,8 +1193,8 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 <td class="left"><a href="#" class="toggle-details">volcanic_potion</a></td>
                 <td class="right">2.0</td>
                 <td class="right">0.0</td>
-                <td class="right">345.5sec</td>
-                <td class="right">345.5sec</td>
+                <td class="right">345.3sec</td>
+                <td class="right">345.3sec</td>
                 <td class="right">10%</td>
                 <td class="right">10%</td>
               </tr>
@@ -1663,11 +1499,11 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 </tr>
                 <tr class="odd">
                   <td class="left">shadow_orb_1</td>
-                  <td class="right">24.9%</td>
+                  <td class="right">24.8%</td>
                 </tr>
                 <tr>
                   <td class="left">shadow_orb_2</td>
-                  <td class="right">28.0%</td>
+                  <td class="right">27.9%</td>
                 </tr>
                 <tr class="odd">
                   <td class="left">shadow_orb_3</td>
@@ -1707,16 +1543,16 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 <tr>
                   <td class="left">archangel</td>
                   <td class="right">5.1</td>
-                  <td class="right">159118.0</td>
-                  <td class="right">31486.5</td>
-                  <td class="right">9.4%</td>
+                  <td class="right">159426.5</td>
+                  <td class="right">31549.6</td>
+                  <td class="right">9.2%</td>
                 </tr>
                 <tr class="odd">
                   <td class="left">blessing_of_might</td>
-                  <td class="right">1746.2</td>
-                  <td class="right">26695.8</td>
-                  <td class="right">15.3</td>
-                  <td class="right">6.2%</td>
+                  <td class="right">1745.7</td>
+                  <td class="right">27137.3</td>
+                  <td class="right">15.5</td>
+                  <td class="right">4.6%</td>
                 </tr>
                 <tr>
                   <td class="left">flask</td>
@@ -1742,37 +1578,37 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                 <tr class="odd">
                   <td class="left">masochism</td>
                   <td class="right">15.3</td>
-                  <td class="right">121357.7</td>
-                  <td class="right">7922.7</td>
-                  <td class="right">18.6%</td>
+                  <td class="right">111703.8</td>
+                  <td class="right">7286.4</td>
+                  <td class="right">25.1%</td>
                 </tr>
                 <tr>
                   <td class="left">mp5_regen</td>
-                  <td class="right">1746.2</td>
-                  <td class="right">84288.8</td>
-                  <td class="right">48.3</td>
-                  <td class="right">6.2%</td>
+                  <td class="right">1745.7</td>
+                  <td class="right">85676.7</td>
+                  <td class="right">49.1</td>
+                  <td class="right">4.6%</td>
                 </tr>
                 <tr class="odd">
                   <td class="left">replenishment</td>
-                  <td class="right">1746.2</td>
-                  <td class="right">49906.3</td>
-                  <td class="right">28.6</td>
-                  <td class="right">6.1%</td>
+                  <td class="right">1745.7</td>
+                  <td class="right">50678.1</td>
+                  <td class="right">29.0</td>
+                  <td class="right">4.6%</td>
                 </tr>
                 <tr>
                   <td class="left">shadow_fiend</td>
                   <td class="right">70.6</td>
-                  <td class="right">216370.5</td>
-                  <td class="right">3063.7</td>
-                  <td class="right">17.6%</td>
+                  <td class="right">219409.3</td>
+                  <td class="right">3109.0</td>
+                  <td class="right">16.4%</td>
                 </tr>
                 <tr class="odd">
                   <td class="left">vampiric_embrace</td>
-                  <td class="right">1234.7</td>
-                  <td class="right">162190.5</td>
-                  <td class="right">131.4</td>
-                  <td class="right">79.2%</td>
+                  <td class="right">1234.5</td>
+                  <td class="right">149418.0</td>
+                  <td class="right">121.0</td>
+                  <td class="right">79.3%</td>
                 </tr>
                 </table>
               </div>
@@ -1887,7 +1723,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   </tr>
                 </table>
                 <h4 class="mt">Sample Sequence</h4>
-                <div class="sample-sequence">013457ABCEIJKKGK9KKEK9KCKK9KEKK9KKCK9EKKKJKKK9CEIKK9KKK9EKCKJKGKK9EKKKCJKKEKJKKK9KCEK9KKK9KEKK9CIKKJEKKAK9KKCK9EGKKK9KKK9ECKK9KKK9EKKC9IKKK9EKKK9KCKE9KKK9KKEC9GKKK9KKEK9KCKK9KEIK9KKK9CEKK9KKK9EKKC9KKAKJEKKK9KCKE9GKKKI9KKECJKKK9KKEK9KCKK9KEKK9KKCK9EKKK9K8FHHDK9CEKIGK9FHHDKKK9EKFHHDK9CKKK9EFHHDKK9KFHHDK9CEKKFHHDJKKK9EFHCAHDK9KKIK9EFHHDKK9CGKFHHDEJKK</div>
+                <div class="sample-sequence">013457ABC9EIKKGK9KKEK9KCKK9KEKK9KKCK9EKKK9KIKE9CKKK9KKEK9KCKK9KEGKK9KKK9CEKKJKKK9EKKC9IKKK9EKKK9CKKE9KKK9AKKK9CEKGK9KKK9EIKK9CKKK9EKKK9KCKE9KKK9KKEK9CKKK9KEKK9KCGKK9EKIK9KKK9CEKK9KKKJEKKC9KKK9EKKK9KCKE9AIKKKJKKEK9CGKKK9KEKK9KCKK9EIKK9KKK89CEFHHDKK9KKFMHHD9EKKK9FMHHDKKJEKKFHHD9KKK9CEFHHDGIK9KKFHHD9EKKC9FHHDKK9EKFHHDK9KCKE9FHHDKKJ</div>
               </div>
             </div>
             <div class="player-section stats">
@@ -1950,9 +1786,9 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   </tr>
                   <tr>
                     <th class="left">Spell Hit</th>
-                    <td class="right">17.00%</td>
-                    <td class="right">17.00%</td>
-                    <td class="right">133</td>
+                    <td class="right">17.10%</td>
+                    <td class="right">17.10%</td>
+                    <td class="right">143</td>
                   </tr>
                   <tr class="odd">
                     <th class="left">Spell Crit</th>
@@ -1986,9 +1822,9 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   </tr>
                   <tr>
                     <th class="left">Melee Hit</th>
-                    <td class="right">1.11%</td>
-                    <td class="right">1.11%</td>
-                    <td class="right">133</td>
+                    <td class="right">1.19%</td>
+                    <td class="right">1.19%</td>
+                    <td class="right">143</td>
                   </tr>
                   <tr class="odd">
                     <th class="left">Melee Crit</th>
@@ -2095,7 +1931,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   </tr>
                   <tr>
                     <th class="left">wrists</th>
-                    <td class="left">bracers_of_the_dark_mother,type=cloth,ilevel=379,quality=epic,stats=209int_344sta_133spi_153mastery_612armor,gems=20haste_20int_10int,enchant=50int</td>
+                    <td class="left">bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,stats=612armor_209int_153mastery_133spi_344sta,gems=20haste_20int_10int,enchant=50int</td>
                   </tr>
                   <tr>
                     <th class="left">hands</th>
@@ -2111,7 +1947,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   </tr>
                   <tr>
                     <th class="left">trinket1</th>
-                    <td class="left">theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd</td>
+                    <td class="left">theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd</td>
                   </tr>
                   <tr>
                     <th class="left">trinket2</th>
@@ -2127,7 +1963,7 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
                   </tr>
                   <tr>
                     <th class="left">off_hand</th>
-                    <td class="left">book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143haste_143hit,enchant=40int</td>
+                    <td class="left">book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int</td>
                   </tr>
                   <tr>
                     <th class="left">ranged</th>
@@ -2424,13 +2260,8 @@ While moving, the chance to summon the shadowy apparation is increased.</span></
             </div>
             <div class="player-section profile">
               <h3 class="toggle">Profile</h3>
-              <div class="toggle-content">
-                <table class="sc">
-                  <tr>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <td class="left">#!./simc <br>
+              <div class="toggle-content no-wrap">
+                <p>#!./simc <br>
 <br>
 priest=Priest_Shadow_T11_372<br>
 origin="http://chardev.org/?profile=18129"<br>
@@ -2472,15 +2303,15 @@ chest=mercurial_vestment,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346a
 waist=soul_breath_belt_of_the_undertow,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_429sta_266int_180haste_180spi,gems=20haste_20int_67int_10int,suffix=231<br>
 legs=mercurial_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_345int_217spi_578sta,gems=20haste_20int_40int_20int,enchant=95int_55spi<br>
 feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=mastery_spi,gems=40int_10haste,enchant=35mastery<br>
-wrists=bracers_of_the_dark_mother,type=cloth,ilevel=379,quality=epic,stats=209int_344sta_133spi_153mastery_612armor,gems=20haste_20int_10int,enchant=50int<br>
+wrists=bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,stats=612armor_209int_153mastery_133spi_344sta,gems=20haste_20int_10int,enchant=50int<br>
 hands=mercurial_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=crit_spi,gems=40int,enchant=65mastery<br>
 finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi<br>
 finger2=planetary_band_of_the_undertow,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143haste_143spi,suffix=131<br>
-trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulcast_2178mastery_10%_20dur_100cd<br>
+trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd<br>
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd<br>
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,gems=20haste_20int_10int,enchant=lightweave_embroidery<br>
 main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max<br>
-off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143haste_143hit,enchant=40int<br>
+off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int<br>
 ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta<br>
 # Gear Summary
 # gear_strength=20<br>
@@ -2489,7 +2320,7 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # gear_intellect=4941<br>
 # gear_spirit=1609<br>
 # gear_spell_power=2207<br>
-# gear_hit_rating=133<br>
+# gear_hit_rating=143<br>
 # gear_crit_rating=446<br>
 # gear_haste_rating=2230<br>
 # gear_mastery_rating=1269<br>
@@ -2499,40 +2330,13 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # tier11_4pc_caster=1<br>
 # back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery<br>
 # main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_82min_154max,enchant=power_torrent<br>
-</th>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div class="player-section gear-weights">
-              <h3 class="toggle">Gear Weights</h3>
-              <div class="toggle-content">
-                <table class="sc mb">
-                  <tr class="left">
-                    <th>Pawn Standard</th>
-                    <td>( Pawn: v1: "Priest_Shadow_T11_372":  Intellect=3.6715, SpellDamage=2.8344, HasteRating=2.1161, CritRating=1.6303, MasteryRating=1.5887, HitRating=0.7577, Spirit=0.7473 )</td>
-                  </tr>
-                  <tr class="left">
-                    <th>Zero Hit/Expertise</th>
-                    <td>( Pawn: v1: "Priest_Shadow_T11_372":  Intellect=3.6715, SpellDamage=2.8344, HasteRating=2.1161, CritRating=1.6303, MasteryRating=1.5887, HitRating=0.0000, Spirit=0.7473 )</td>
-                  </tr>
-                </table>
-                <table class="sc">
-                  <tr class="left">
-                    <th>RhadaTip Standard</th>
-                    <td>( RhadaTip: "Priest_Shadow_T11_372":  Intellect=3.6715, SpellDamage=2.8344, HasteRating=2.1161, CritRating=1.6303, MasteryRating=1.5887, HitRating=0.7577, Spirit=0.7473 )</td>
-                  </tr>
-                  <tr class="left">
-                    <th>Zero Hit/Expertise</th>
-                    <td>( RhadaTip: "Priest_Shadow_T11_372":  Intellect=3.6715, SpellDamage=2.8344, HasteRating=2.1161, CritRating=1.6303, MasteryRating=1.5887, HitRating=0.0000, Spirit=0.7473 )</td>
-                  </tr>
-                </table>
+</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div id="auras-and-debuffs" class="section grouped-first grouped-last">
+        <div id="auras-debuffs" class="section grouped-first">
           <h2 class="toggle">Auras</h2>
             <div class="toggle-content">
               <table class="sc">
@@ -2615,7 +2419,7 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
             </div>
           </div>
 
-    <div id="Fluffy_Pillow" class="player section section-open">
+    <div id="Fluffy_Pillow" class="player section final grouped-last">
       <h2 class="toggle open">Fluffy_Pillow&nbsp;:&nbsp;0dps</h2>
       <div class="toggle-content">
         <ul class="params">
@@ -2642,57 +2446,18 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                 <th><a href="#help-apm" class="help">APM</a></th>
               </tr>
               <tr>
-                <td>0.2</td>
-                <td>0.0 / 0.0%</td>
-                <td>0.0 / 21.5%</td>
                 <td>0.0</td>
-                <td>28244.9</td>
+                <td>0.0 / 0.0%</td>
+                <td>0.0 / 0.0%</td>
+                <td>0.0</td>
+                <td>26179.8</td>
                 <td>0.0</td>
                 <td>health</td>
                 <td>100.02%</td>
-                <td>20.1</td>
+                <td>0.0</td>
               </tr>
             </table>
             <table class="sc mt">
-            </table>
-            <table class="sc mt">
-              <tr>
-                <th><a href="#help-scale-factors" class="help">?</a></th>
-                <th>Hit</th>
-                <th>Crit</th>
-                <th>Haste</th>
-                <th>Mastery</th>
-              </tr>
-              <tr>
-                <th class="left">Scale Factors</th>
-                <td>0.0000</td>
-                <td>0.0000</td>
-                <td>0.0000</td>
-                <td>0.0000</td>
-              </tr>
-              <tr>
-                <th class="left">Normalized</th>
-                <td>0.0000</td>
-                <td>0.0000</td>
-                <td>0.0000</td>
-                <td>0.0000</td>
-              </tr>
-              <tr>
-                <th class="left">Scale Deltas</th>
-                <td>-300</td>
-                <td>300</td>
-                <td>300</td>
-                <td>300</td>
-              </tr>
-              <tr class="left">
-                <th>Gear Ranking</th>
-                <td colspan="4" class="filler">
-                  <ul class="float">
-                    <li><a href="" rel="_blank">wowhead</a></li>
-                    <li><a href="" rel="_blank">lootrank</a></li>
-                  </ul>
-                </td>
-              </tr>
             </table>
           </div>
         </div>
@@ -2700,13 +2465,12 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
           <h3 class="toggle open">Charts</h3>
           <div class="toggle-content">
             <div class="charts">
-                            <img src="http://0.chart.apis.google.com/chart?chs=550x210&amp;cht=p&amp;chd=t:100&amp;chds=0,100&amp;chco=C79C6E&amp;chl=auto_attack_Fluffy_Pillow&amp;chtt=Fluffy_Pillow+Damage+Sources&amp;chts=666666,18" alt="Action Damage Chart" />
-                                        </div>
+                                                                    </div>
             <div class="charts">
-                            <img src="http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:t777777766666555554444444333333332222222221111111100000000zzzzzzzyyyyyyyyxxxxxxxxwwwwwwwwwvvvvvvvuuuuuuuutttttttssssssssrrrrrrrrqqqqqqqqppppppppooooooonnnnnnnmmmmmmmmllllllllkkkkkkkkkjjjjjjjiiiiiiihhhhhhhgggggggffffffffeeeeeeeeedddddddcccccccbbbbbbbbaaaaaaaZZZZZZZZYYYYYYYYYXXXXXXXWWWWWWWVVVVVVUUUUUUUTTTTTTTSSSSSSSSRRRRRRRRQQQQQQQQPPPPPPPPOOOOOOOONNNNNNNNNMMMMMMMMLLLLLLLLKKKKKKKJJJJJJJIIIIIIIHHHHHHHHGGGGGGGGFFFFFFFFEEEEEEEDDDDDDDDCCC&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=12937767&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=666666,18&amp;chco=336600" alt="Resource Timeline Chart" />
-                            <img src="http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:4z83063z52z000000zzzzzzzzzzzzzzz000000000000000000000000000000000000000000000000zzzzzz000000000000000000000000000000000000000000000000000000zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz000000000000000000000zzz000000000000000000000000000000000000000000000000000zzzzzzzzzzzzzzzzzzzzz000000000000000000000000000000000000000000000000000000000000000000000000zzz000zzzzzzzzz000000000000000000000000zzz000000000000000000000000000000000zzzzzzzzzzzzz25z26z3704&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=0|max=0&amp;chxp=1,1,87,100&amp;chtt=Fluffy_Pillow+DPS+Timeline&amp;chts=666666,18" alt="DPS Timeline Chart" />
-              <img src="http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=c,ls,0,EEEEEE,0.125,FFFFFF,0.125&amp;chg=100,100&amp;chd=t:0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,23234,26756,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0&amp;chds=0,26756&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=0|avg=0|max=0&amp;chxp=0,1,51,100&amp;chtt=Fluffy_Pillow+DPS+Distribution&amp;chts=666666,18" alt="DPS Distribution Chart" />
-              <img src="http://3.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chd=t:2,1,0,0,8,99,285,699,957,1360,1420,1247,1196,1172,1373,1409,1387,1353,1347,1370,1290,1278,1159,1316,1537,1534,1369,1317,1281,1347,1301,1227,1322,1299,1274,1294,1114,1015,1032,1230,1227,1305,1061,1023,1121,943,642,330,104,21&amp;chds=0,1537&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=276|avg=450|max=583&amp;chxp=0,1,57,100&amp;chtt=Timeline+Distribution&amp;chts=666666,18" alt="Encounter Timeline Distribution Chart" />
+                            <img src="http://0.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:t877777766666555544444444333333332222222221111111100000000zzzzzzzyyyyyyyyxxxxxxxxwwwwwwwwvvvvvvvvuuuuuuuutttttttssssssssrrrrrrrrqqqqqqqqppppppppooooooonnnnnnnmmmmmmmmllllllllkkkkkkkkkjjjjjjjiiiiiiihhhhhhggggggggffffffffeeeeeeeeddddddddcccccccbbbbbbbaaaaaaaaZZZZZZZZYYYYYYYYXXXXXXXXWWWWWWWVVVVVVUUUUUUUTTTTTTTSSSSSSSRRRRRRRRRQQQQQQQQPPPPPPPPOOOOOOOONNNNNNNNMMMMMMMMMLLLLLLLLKKKKKKKJJJJJJJIIIIIIIHHHHHHHGGGGGGGGGFFFFFFFFEEEEEEEDDDDDDDDCCC&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=11987690&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=666666,18&amp;chco=336600" alt="Resource Timeline Chart" />
+                            <img src="http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2&amp;chg=100,20&amp;chd=s:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=0|max=0&amp;chxp=1,1,nan,100&amp;chtt=Fluffy_Pillow+DPS+Timeline&amp;chts=666666,18" alt="DPS Timeline Chart" />
+              <img src="http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=c,ls,0,EEEEEE,0.125,FFFFFF,0.125&amp;chg=100,100&amp;chd=t:&amp;chds=0,0&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=0|avg=0|max=0&amp;chxp=0,1,nan,100&amp;chtt=Fluffy_Pillow+DPS+Distribution&amp;chts=666666,18" alt="DPS Distribution Chart" />
+              <img src="http://3.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chd=t:3,3,18,139,547,1180,1847,2525,2656,2574,2244,2367,2416,2762,2835,2648,2593,2756,2603,2482,2401,2245,2792,3106,2919,2682,2539,2421,2571,2384,2732,2458,2515,2513,2525,2177,2046,2045,2556,2423,2320,2040,2085,1998,1944,1395,635,273,53,7&amp;chds=0,3106&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=277|avg=450|max=583&amp;chxp=0,1,57,100&amp;chtt=Timeline+Distribution&amp;chts=666666,18" alt="Encounter Timeline Distribution Chart" />
             </div>
             <div class="clear"></div>
           </div>
@@ -2746,67 +2510,6 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                 <th class="left small">Fluffy_Pillow</th>
                 <th class="right small">0</th>
                 <td colspan="22" class="filler"></td>
-              </tr>
-              <tr>
-                <td class="left small"><a href="#" class="toggle-details" rel="spell=0">auto_attack_Fluffy_Pillow</a></td>
-                <td class="right small">0</td>
-                <td class="right small">100.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">146.1/146.1</td>
-                <td class="right small">3.00sec</td>
-                <td class="right small">1</td>
-                <td class="right small">1</td>
-                <td class="right small">0.0</td>
-                <td class="right small">0</td>
-                <td class="right small">1</td>
-                <td class="right small">2</td>
-                <td class="right small">2</td>
-                <td class="right small">5.0%</td>
-                <td class="right small">5.0%</td>
-                <td class="right small">5.0%</td>
-                <td class="right small">14.0%</td>
-                <td class="right small">6.0%</td>
-                <td class="right small">5.0%</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-                <td class="right small">0.0%</td>
-              </tr>
-              <tr class="details hide">
-                <td colspan="23" class="filler">
-                  <h4>Database details</h4>
-                  <div class="float">
-                    <h5>Static Values</h5>
-                    <ul>
-                      <li><span class="label">id:</span>0</li>
-                      <li><span class="label">school:</span>physical</li>
-                      <li><span class="label">resource:</span>mana</li>
-                      <li><span class="label">tree:</span>Unknown</li>
-                      <li><span class="label">range:</span>0.0</li>
-                      <li><span class="label">travel_speed:</span>0.0000</li>
-                      <li><span class="label">trigger_gcd:</span>0.0000</li>
-                      <li><span class="label">base_cost:</span>0.0</li>
-                      <li><span class="label">cooldown:</span>3.00</li>
-                      <li><span class="label">base_execute_time:</span>0.00</li>
-                      <li><span class="label">base_crit:</span>0.00</li>
-                      <li><span class="label">target:</span>Fluffy_Pillow</li>
-                      <li><span class="label">tooltip:</span><span class="tooltip">(null)</span></li>
-                      <li><span class="label">description:</span><span class="tooltip">(null)</span></li>
-                    </ul>
-                  </div>
-                  <div class="float">
-                    <h5>Direct Damage</h5>
-                    <ul>
-                      <li><span class="label">may_crit:</span>true</li>
-                      <li><span class="label">direct_power_mod:</span>0.000000</li>
-                      <li><span class="label">base_dd_min:</span>1.00</li>
-                      <li><span class="label">base_dd_max:</span>1.00</li>
-                    </ul>
-                  </div>
-                  <div class="clear"></div>
-                </td>
               </tr>
             </table>
           </div>
@@ -3057,9 +2760,9 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                   <td>
                     <h4>Database details</h4>
                     <ul>
-                      <li><span class="label">id:</span></li>
+                      <li><span class="label">id:</span>1130</li>
                       <li><span class="label">cooldown name:</span>buff_hunters_mark</li>
-                      <li><span class="label">tooltip:</span><span class="tooltip">(null)</span></li>
+                      <li><span class="label">tooltip:</span><span class="tooltip">All attackers gain $s2 ranged attack power against this target.</span></li>
                       <li><span class="label">max_stacks:</span>1</li>
                       <li><span class="label">duration:</span>0.00</li>
                       <li><span class="label">cooldown:</span>0.00</li>
@@ -3108,12 +2811,12 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                   <td>
                     <h4>Database details</h4>
                     <ul>
-                      <li><span class="label">id:</span></li>
+                      <li><span class="label">id:</span>24844</li>
                       <li><span class="label">cooldown name:</span>buff_lightning_breath</li>
-                      <li><span class="label">tooltip:</span><span class="tooltip">(null)</span></li>
+                      <li><span class="label">tooltip:</span><span class="tooltip">Increases magic damage taken by $s2%.</span></li>
                       <li><span class="label">max_stacks:</span>1</li>
                       <li><span class="label">duration:</span>0.00</li>
-                      <li><span class="label">cooldown:</span>0.00</li>
+                      <li><span class="label">cooldown:</span>30.00</li>
                       <li><span class="label">default_chance:</span>100.00%</li>
                     </ul>
                   </td>
@@ -3323,13 +3026,7 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                     <th class="right">0</th>
                     <td class="left">snapshot_stats</td>
                   </tr>
-                <tr class="odd">
-                    <th class="right">1</th>
-                    <td class="left">auto_attack</td>
-                  </tr>
                 </table>
-                <h4 class="mt">Sample Sequence</h4>
-                <div class="sample-sequence">1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</div>
               </div>
             </div>
             <div class="player-section stats">
@@ -3375,7 +3072,7 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                   <tr class="odd">
                     <th class="left">Health</th>
                     <td class="right">0</td>
-                    <td class="right">13746048</td>
+                    <td class="right">12740975</td>
                     <td class="right">0</td>
                   </tr>
                   <tr>
@@ -3565,7 +3262,7 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
                   </tr>
                   <tr>
                     <th class="left">main_hand</th>
-                    <td class="left">skullcrusher,weapon=axe2h_3.00speed_100000min_120000max</td>
+                    <td class="left">skullcrusher,weapon=axe2h_3.00speed_180000min_240000max</td>
                   </tr>
                   <tr>
                     <th class="left">off_hand</th>
@@ -3590,13 +3287,8 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
             </div>
             <div class="player-section profile">
               <h3 class="toggle">Profile</h3>
-              <div class="toggle-content">
-                <table class="sc">
-                  <tr>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <td class="left">#!./simc <br>
+              <div class="toggle-content no-wrap">
+                <p>#!./simc <br>
 <br>
 enemy=Fluffy_Pillow<br>
 origin="unknown"<br>
@@ -3604,38 +3296,10 @@ level=88<br>
 race=humanoid<br>
 use_pre_potion=1<br>
 actions=snapshot_stats<br>
-actions+=/auto_attack<br>
-main_hand=skullcrusher,weapon=axe2h_3.00speed_100000min_120000max<br>
+main_hand=skullcrusher,weapon=axe2h_3.00speed_180000min_240000max<br>
 # Gear Summary
-# main_hand=skullcrusher,weapon=axe2h_3.00speed_100000min_120000max<br>
-</th>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div class="player-section gear-weights">
-              <h3 class="toggle">Gear Weights</h3>
-              <div class="toggle-content">
-                <table class="sc mb">
-                  <tr class="left">
-                    <th>Pawn Standard</th>
-                    <td></td>
-                  </tr>
-                  <tr class="left">
-                    <th>Zero Hit/Expertise</th>
-                    <td></td>
-                  </tr>
-                </table>
-                <table class="sc">
-                  <tr class="left">
-                    <th>RhadaTip Standard</th>
-                    <td></td>
-                  </tr>
-                  <tr class="left">
-                    <th>Zero Hit/Expertise</th>
-                    <td></td>
-                  </tr>
-                </table>
+# main_hand=skullcrusher,weapon=axe2h_3.00speed_180000min_240000max<br>
+</p>
               </div>
             </div>
           </div>
@@ -3842,10 +3506,44 @@ main_hand=skullcrusher,weapon=axe2h_3.00speed_100000min_120000max<br>
     </div>
     <!-- End Help Boxes -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
-
     <script type="text/javascript">
       jQuery.noConflict();
       jQuery(document).ready(function($) {
+        function open_anchor(anchor) {
+          var img_id = '';
+          var src = '';
+          var target = '';
+          anchor.addClass('open');
+          var section = anchor.parent('.section');
+          section.addClass('section-open');
+          section.removeClass('grouped-first');
+          section.removeClass('grouped-last');
+          if (!(section.next().hasClass('section-open'))) {
+            section.next().addClass('grouped-first');
+          }
+          if (!(section.prev().hasClass('section-open'))) {
+            section.prev().addClass('grouped-last');
+          }
+          anchor.next('.toggle-content').show(150);
+          anchor.next('.toggle-content').find('.charts').each(function() {
+            $(this).children('span').each(function() {
+              img_class = $(this).attr('class');
+              img_alt = $(this).attr('title');
+              img_src = $(this).html().replace(/&amp;/g, "&");
+              var img = new Image();
+              $(img).attr('class', img_class);
+              $(img).attr('src', img_src);
+              $(img).attr('alt', img_alt);
+              $(this).replaceWith(img);
+              $(this).load();
+            });
+          })
+          setTimeout('window.scrollTo(0, anchor.position().top', 500);
+        }
+        var anchor_check = document.location.href.split('#');
+        if (anchor_check.length > 1) {
+        	var anchor = anchor_check[anchor_check.length - 1];
+        }
         var pcol = document.location.protocol;
         if (pcol != 'file:') {
           var whtt = document.createElement("script");
@@ -3877,7 +3575,7 @@ main_hand=skullcrusher,weapon=axe2h_3.00speed_100000min_120000max<br>
               section.prev().addClass('grouped-last');
             }
           } else if (section.attr('id') != 'masthead') {
-            if (section.attr('id') == 'auras-and-debuffs' || section.next().hasClass('section-open')) {
+            if (section.hasClass('final') || section.next().hasClass('section-open')) {
               section.addClass('grouped-last');
             } else {
               section.next().removeClass('grouped-first');
@@ -3928,6 +3626,16 @@ main_hand=skullcrusher,weapon=axe2h_3.00speed_100000min_120000max<br>
           e.preventDefault();
           $('#active-help').toggle(250);
         });
+          if (anchor) {
+            anchor = '#' + anchor;
+            target = $(anchor).children('h2:first');
+            open_anchor(target);
+          }
+          $('ul.toc li a').click(function(e) {
+            anchor = $(this).attr('href');
+            target = $(anchor).children('h2:first');
+            open_anchor(target);
+          });
       });
     </script>
 
