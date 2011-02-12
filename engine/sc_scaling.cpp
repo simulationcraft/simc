@@ -41,6 +41,7 @@ static bool stat_may_cap( int stat )
 {
   if ( stat == STAT_HIT_RATING ) return true;
   if ( stat == STAT_EXPERTISE_RATING ) return true;
+  if ( stat == STAT_SPIRIT ) return true;
   return false;
 }
 
