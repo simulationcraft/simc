@@ -52,6 +52,11 @@ struct casting_event_t : public raid_event_t
     target_t* t = sim -> target;
     raid_event_t::start();
     t -> debuffs.casting -> increment();
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if ( p -> sleeping ) continue;
+      p -> interrupt();
+    }
   }
   virtual void finish()
   {
