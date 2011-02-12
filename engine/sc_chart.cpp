@@ -1366,7 +1366,11 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   }
 
   // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
-  s += "gm=4;gb=1;";
+  s += "gm=3;gb=1;";
+
+  // Automatically reforge items, and min ilvl of 346 (sensible for
+  // current raid tier).
+  s += "rf=1;minle=346;";
 
   std::string    id_string = "";
   std::string value_string = "";
