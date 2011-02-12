@@ -2,7 +2,7 @@
 
 #define RAND_PROP_POINTS_SIZE (124)
 
-// Random property points for item levels 277-400, wow build 13596
+// Random property points for item levels 277-400, wow build 13623
 static struct random_prop_data_t __rand_prop_points_data[] = {
   { 277, {  348,  258,  194,  149,  109 }, {  302,  225,  168,  130,   95 }, {  302,  225,  168,  130,   95 } },
   { 278, {  351,  261,  195,  150,  110 }, {  305,  227,  170,  131,   96 }, {  305,  227,  170,  131,   96 } },
@@ -133,7 +133,7 @@ static struct random_prop_data_t __rand_prop_points_data[] = {
 
 #define RAND_SUFFIX_SIZE (224)
 
-// Random "cataclysm" item suffixes, wow build 13596
+// Random "cataclysm" item suffixes, wow build 13623
 static struct random_suffix_data_t __rand_suffix_data[] = {
   {    5, "of the Monkey"       , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {    6, "of the Eagle"        , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -364,7 +364,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
 
 #define SPELL_ITEM_ENCH_SIZE (18)
 
-// Item enchantment data, wow build 13596
+// Item enchantment data, wow build 13623
 static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 2802, {   5,   0,   0 }, {     3,     0,     0 } }, // +$i Agility
   { 2803, {   5,   0,   0 }, {     7,     0,     0 } }, // +$i Stamina
