@@ -1191,7 +1191,7 @@ struct devouring_plague_t : public priest_spell_t
         // Currently it's rounding up but only using haste rating haste.
         double d = num_ticks * base_tick_time;
         double t = floor( ( base_tick_time * p -> spell_haste * 1000.0 ) + 0.5 ) / 1000.0;
-        n = (int) floor( ( d / t ) + 0.5 );
+        n = (int) ceil( ( d / t ) );
       }
 
       burst_spell -> base_dd_min    = dmg * n;
@@ -4407,6 +4407,10 @@ void priest_t::init_values()
 
   // Shadow Core
   constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
+  // FIX-ME
+  // Hotfix nerf to Shadow Power
+  constants.shadow_power_damage_value       = 0.15;
+
   constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
   constants.shadow_orb_proc_value           = passive_spells.shadow_orb_power   -> proc_chance();
   constants.shadow_orb_mastery_value        = passive_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );

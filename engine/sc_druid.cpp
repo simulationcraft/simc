@@ -2223,7 +2223,13 @@ void druid_spell_t::player_buff()
 
     // Moonfury is actually additive with other player_multipliers, like glyphs, etc.
     if ( p -> spec_moonfury -> ok() )
-      additive_multiplier += p -> spec_moonfury -> mod_additive( P_GENERIC );
+    {
+      double m = p -> spec_moonfury -> mod_additive( P_GENERIC );
+      // FIX-ME: Hotfix nerf to Moonfury. Remove once client is updated
+      m = 0.10;
+
+      additive_multiplier += m;
+    }
 
     if ( p -> buffs_moonkin_form -> check() )
       player_multiplier *= 1.10;

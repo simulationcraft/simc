@@ -1672,6 +1672,10 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     id = 96103;
     parse_data( p -> player_data );
+
+    // FIX-ME: Hotfix nerf. Remove once client updated.
+    weapon_multiplier = 1.0;
+
     base_cost = 0;
     may_miss = may_dodge = may_parry = false;
     background = true;
