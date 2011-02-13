@@ -928,12 +928,13 @@ static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
 
 static void print_html_contents( FILE*  file, sim_t* sim )
 {
-  int i;      // reusable counter
-  int n;      // number of columns
-  int c = 2;  // total number of TOC entries
-  int pi = 0; // player counter
-  int ci = 0; // in-column counter
-  int cs = 0; // column size
+  int i;         // reusable counter
+  double n;      // number of columns
+  double c = 2;  // total number of TOC entries
+  int pi = 0;    // player counter
+  int ci = 0;    // in-column counter
+  int cs = 0;    // column size
+  int ab = 0;    // auras and debuffs link added yet?
   std::string toc_class; // css class
   char buffer[ 1024 ];
 
@@ -988,63 +989,77 @@ static void print_html_contents( FILE*  file, sim_t* sim )
   {
     if ( i == 0 )
     {
-      cs = (int) ceil( 1.0 * c / n);
+      cs = (int) ceil( 1.0 * c / n );
     }
-    else
+    else if ( i == 1 )
     {
-      if ( ci > cs )
+      if ( n == 2 )
       {
-        cs = (int) ( floor( 1.0 * c / n) - (ci - cs) );
+        cs = (int) ( c - ceil( 1.0 * c / n ) );
       }
       else
       {
-        cs = (int) ( floor( 1.0 * c / n) );
+        cs = (int) ceil( 1.0 * c / n );
       }
+    }
+    else
+    {
+      cs = (int) ( c - 2 * ceil( 1.0 * c / n) );
     }
     ci = 1;
     snprintf( buffer, sizeof( buffer ),
       "        <ul class=\"toc %s\">\n",
-      toc_class.c_str() );
-      cols[i] += buffer;
+	  toc_class.c_str() );
+	cols[i] += buffer;
     if ( i == 0 )
     {
       cols[i] += "          <li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
       ci++;
       if ( sim -> scaling -> has_scale_factors() )
       {
-        cols[i] += "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
+	    cols[i] += "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
+	    ci++;
+      }
+    }
+    while ( ci <= cs )
+    {
+      if ( pi < (int) sim -> players_by_name.size() )
+      {
+        player_t* p = sim -> players_by_name[ pi ];
+        snprintf( buffer, sizeof( buffer ),
+          "          <li><a href=\"#%s\">%s</a>",
+	      p -> name(),
+	      p -> name() );
+	    cols[i] += buffer;
+	    ci++; 
+        if ( sim -> report_pets_separately )
+        {
+	      cols[i] += "\n            <ul>\n";
+	      for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
+	      {
+		    if ( pet -> summoned )
+		    {
+		      snprintf( buffer, sizeof( buffer ),
+		        "              <li><a href=\"#%s\">%s</a></li>\n",
+		        pet -> name(),
+		        pet -> name() );
+		      cols[i] += buffer;
+		      ci++;
+		    }
+	      }
+	      cols[i] += "            </ul>\n";
+	    }
+	    pi++;
+	  }
+      if ( pi == (int) sim -> players_by_name.size() )
+      {
+        if ( ab == 0 )
+        {
+          cols[i] += "            <li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
+          ab = 1;
+        }
         ci++;
       }
-      cols[i] += "          <li><a href=\"#auras-debuffs\">Auras and Debuffs</a></li>\n";
-      ci++;
-    }
-    while ( ci <= cs ) 
-    {
-      player_t* p = sim -> players_by_name[ pi ];
-      snprintf( buffer, sizeof( buffer ),
-        "          <li><a href=\"#%s\">%s</a>",
-        p -> name(),
-        p -> name() );
-        cols[i] += buffer;
-        ci++; 
-      if ( sim -> report_pets_separately )
-      {
-        cols[i] += "\n            <ul>\n";
-        for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
-        {
-          if ( pet -> summoned )
-          {
-            snprintf( buffer, sizeof( buffer ),
-              "              <li><a href=\"#%s\">%s</a></li>\n",
-              pet -> name(),
-              pet -> name() );
-            cols[i] += buffer;
-            ci++;
-          }
-        }
-        cols[i] += "            </ul>\n";
-      }
-      pi++;
     }
     cols[i] += "          </ul>\n";
   }
