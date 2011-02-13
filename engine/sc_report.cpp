@@ -1090,9 +1090,12 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
       "          <img src=\"%s\" alt=\"Gear Chart\" />\n",
       sim -> gear_charts[ i ].c_str() );
   }
-  util_t::fprintf( file,
-    "          <a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
-    sim -> timeline_chart.c_str() );
+  if ( sim -> iterations > 1 )
+  {
+    util_t::fprintf( file,
+      "          <a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
+      sim -> timeline_chart.c_str() );
+  }
   if ( ! sim -> raid_events_str.empty() )
   {
     util_t::fprintf( file,
