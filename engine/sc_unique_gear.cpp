@@ -592,7 +592,7 @@ static void register_heart_of_ignacious( item_t* item )
     bool heroic;
 
     heart_of_ignacious_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, 15.0, 0.0 ), heroic( h )
+      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, 15.0, 2.0 ), heroic( h )
     {
       haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, 20.0, 120.0 );
     }
