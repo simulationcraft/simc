@@ -285,7 +285,7 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
   if ( ! item.option_data_source_str.empty() )
   {
     std::vector<std::string> item_sources_split;
-    util_t::string_split( item_sources_split, item.option_data_source_str, ":/|,", false );
+    util_t::string_split( item_sources_split, item.option_data_source_str, ":/|", false );
     
     source_list.clear();
     
