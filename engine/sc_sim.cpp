@@ -457,7 +457,7 @@ static bool parse_item_sources( sim_t*             sim,
 {
   std::vector<std::string> sources;
 
-  util_t::string_split( sources, value, ":/|,", false );
+  util_t::string_split( sources, value, ":/|", false );
   
   sim -> item_db_sources.clear();
 
