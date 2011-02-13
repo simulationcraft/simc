@@ -95,6 +95,8 @@ struct shaman_t : public player_t
   proc_t* procs_wasted_mw;
   proc_t* procs_ft_icd;
   proc_t* procs_windfury;
+  
+  proc_t* procs_fulmination[7];
 
   // Random Number Generators
   rng_t* rng_elemental_overload;
@@ -2403,6 +2405,7 @@ struct earth_shock_t : public shaman_spell_t
       {
         p -> active_lightning_charge -> execute();
         p -> buffs_lightning_shield  -> decrement( consuming_stacks );
+        p -> procs_fulmination[ consuming_stacks ] -> occur();
       }
     }
   }
@@ -3735,6 +3738,11 @@ void shaman_t::init_procs()
   procs_wasted_ls          = get_proc( "wasted_lightning_shield" );
   procs_wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
   procs_windfury           = get_proc( "windfury"                );
+  
+  for ( int i = 0; i < 7; i++ )
+  {
+    procs_fulmination[ i ] = get_proc( "fulmination_" + util_t::to_string( i ) );
+  }
 }
 
 // shaman_t::init_rng ========================================================
@@ -3877,13 +3885,17 @@ void shaman_t::init_actions()
           action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
         }
       }
-      
-      action_list_str += "/flame_shock,if=!ticking";
+      action_list_str += "/unleash_elements,moving=1";
+      action_list_str += "/flame_shock,if=!ticking|ticks_remain<3";
       // Unleash elements for elemental is a downgrade in dps ...
       //if ( level >= 81 )
       //  action_list_str += "/unleash_elements";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05";
-      if ( talent_fulmination -> rank() ) action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9";
+      if ( talent_fulmination -> rank() ) 
+      {
+        action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9";
+        action_list_str += "/earth_shock,if=buff.lightning_shield.stack>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
+      }
       action_list_str += "/fire_elemental_totem";
       action_list_str += "/searing_totem";
       action_list_str += "/chain_lightning,if=target.adds>2";
