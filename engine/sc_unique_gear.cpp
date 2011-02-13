@@ -552,7 +552,7 @@ static void register_fury_of_angerforge( item_t* item )
     fury_of_angerforge_callback_t( player_t* p ) : 
       action_callback_t( p -> sim, p )
     {
-      raw_fury = new buff_t( p, "raw_fury", 5, 0.0, 0.0, 0.5, true );
+      raw_fury = new buff_t( p, "raw_fury", 5, 15.0, 5.0, 0.5, true );
       blackwing_dragonkin = new stat_buff_t( p, "blackwing_dragonkin", STAT_STRENGTH, 1926, 1, 20.0, 120.0 );
     }
 
@@ -561,10 +561,11 @@ static void register_fury_of_angerforge( item_t* item )
       if( ! a -> weapon ) return;
       if( a -> proc ) return;
 
-      if( blackwing_dragonkin -> cooldown -> remains() > 0 ) return;
-
       if( raw_fury -> trigger() )
       {
+        if( blackwing_dragonkin -> cooldown -> remains() > 0 ) return;
+
+        // FIXME: This really should be a /use action
         if( raw_fury -> check() == 5 )
         {
           raw_fury -> expire();
