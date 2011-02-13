@@ -103,19 +103,14 @@ http://www.simulationcraft.org/ShadowPriest_372_Haste_Breakpoints.html
 Each profile is named in the format: p372_<X> where X is the amount of Haste Rating it has.
 Looking at the results you can see that:
 a) A Shadow Word: Pain breakpoint gives no sudden spike of DPS gained. This is of course expected as SW:P is constantly being refreshed anyway.
-b) A Devouring Pain breakpoint might give you an extra 1 or 2 DPS for that extra 1 Haste Rating but that's pretty much expected anyway. i.e. It doesn't add much.
-c) The same is true of Vampiric Touch. You might gain 3 or so DPS for that extra 1 Haste Rating to get you to its breakpoint but it's minor.
-d) Improved Devouring Pain breakpoints on the other hand *are* significant. 
-Going from 2 Haste Rating to 3 Haste Rating you gain 76 DPS.
-Going from 1601 Haste Rating to 1602 Haste Rating you gain 80 DPS.
-Going from 3204 Haste Rating to 3205 Haste Rating you gain 81 DPS.
-
-In general you might gain around 1.5 to 2.0 DPS per point of Haste Rating but at an IDP breakpoint you suddenly gain around 80 DPS.
+b) The DP breakpoint at 1255 haste gives +37DPS. The one at 2737 Haste gives +11 DPS.
+c) The VT breakpoint at 218 haste gives +154DPS. The one at 2589 Haste gives +47 DPS.
+d) The IDP breakpoint at 3 Haste gives +74 DPS. The one at 1602 Haste gives +78 DPS. The one at 3205 Haste gives +77 DPS.
 
 What does all this mean?
 
-First: It means that Haste Scaling Factors need to be calculated carefully if they cross over an IDP breakpoint.
-Second: If you're at a gear level where you've got around 1600 Haste Rating, try to get it to at least 1602. If you're near 3200 try to get it to at least 3205.
+It means that Haste Scaling Factors need to be calculated carefully if they cross over an IDP, VT or DP breakpoint.
+
 
 This doesn't of course mean you should suddenly stop gearing Haste once you reach these breakpoints.
 It still does scale pretty well but it's possible that another stat like Crit *might* overtake it for a while. 
