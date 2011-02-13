@@ -454,7 +454,6 @@ struct priest_spell_t : public spell_t
     weapon_multiplier = 0.0;
   }
 
-  virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
   virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
@@ -650,8 +649,6 @@ struct priest_heal_t : public heal_t
     double h = heal_t::haste();
 
     priest_t* p = player -> cast_priest();
-
-    h *= p -> constants.darkness_value;
 
     if ( p -> buffs_borrowed_time -> up() )
       h *= 1.0 / ( 1.0 + p -> talents.borrowed_time -> effect_base_value( 1 ) / 100.0 );
@@ -933,17 +930,6 @@ struct shadow_fiend_pet_t : public pet_t
 // ==========================================================================
 // Priest Spell
 // ==========================================================================
-
-// priest_spell_t::haste ====================================================
-
-double priest_spell_t::haste() SC_CONST
-{
-  priest_t* p = player -> cast_priest();
-
-  double h = spell_t::haste();
-  h *= p -> constants.darkness_value;
-  return h;
-}
 
 // priest_spell_t::execute ==================================================
 
