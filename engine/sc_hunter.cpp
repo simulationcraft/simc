@@ -3010,7 +3010,7 @@ void hunter_t::init_actions()
   {
     action_list_str = "flask,type=winds";
     action_list_str += "/food,type=seafood_magnifique_feast";
-    action_list_str += "/hunters_mark/summon_pet";
+    action_list_str += "/hunters_mark/summon_pet/aspect_of_the_hawk";
     if ( talents.trueshot_aura -> rank() ) action_list_str += "/trueshot_aura";
     action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     if ( glyphs.aimed_shot -> ok() )
@@ -3028,22 +3028,22 @@ void hunter_t::init_actions()
     }
     switch ( race )
     {
-    case RACE_ORC:       action_list_str += glyphs.aimed_shot -> ok() ? "/blood_fury,if=dot.serpent_sting.ticking" : "/blood_fury,time>=10";     break;
-    case RACE_TROLL:     action_list_str += "/berserking,time>=10";     break;
-    case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
+    case RACE_ORC:       action_list_str += glyphs.aimed_shot -> ok() ? "/blood_fury,if=dot.serpent_sting.ticking" : "/blood_fury";     break;
+    case RACE_TROLL:     action_list_str += "/berserking"; break;
+    case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent"; break;
     default: break;
     }
     switch ( primary_tree() )
     {
     case TREE_BEAST_MASTERY:
-      action_list_str += "/aspect_of_the_hawk";
-      action_list_str += "/serpent_sting,if=!ticking";
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up";
-      action_list_str += "/kill_shot";
       if ( talents.bestial_wrath -> rank() )
       {
-        action_list_str += "/bestial_wrath";
+        action_list_str += "/bestial_wrath,if=focus>60";
       }
+      action_list_str += "/serpent_sting,if=!ticking";
+      action_list_str += "/kill_shot";
+      action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
+      action_list_str += "/kill_command";
 
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=20";
@@ -3053,15 +3053,13 @@ void hunter_t::init_actions()
         if ( talents.the_beast_within -> ok() )
           action_list_str += ",if=!buff.beast_within.up";
       }
-      action_list_str += "/kill_command";
-      action_list_str += "/arcane_shot,if=focus>=57";
+      action_list_str += "/arcane_shot,if=focus>=90|buff.beast_within.up";
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
       else
         action_list_str += "/steady_shot";
       break;
     case TREE_MARKSMANSHIP:
-      action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/serpent_sting,if=!ticking";
       if ( glyphs.arcane_shot -> ok() )
       {
@@ -3097,7 +3095,6 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:
-      action_list_str += "/aspect_of_the_hawk";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
       action_list_str += "/explosive_shot,if=!ticking";
