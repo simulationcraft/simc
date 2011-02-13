@@ -957,6 +957,10 @@ static void print_html_contents( FILE*  file, sim_t* sim )
       }
     }
   }
+  if ( sim -> report_targets )
+  {
+    c += (int) sim -> targets_by_name.size();
+  }
 
   util_t::fprintf( file,
     "    <div id=\"table-of-contents\" class=\"section section-open\">\n"
@@ -989,22 +993,22 @@ static void print_html_contents( FILE*  file, sim_t* sim )
   {
     if ( i == 0 )
     {
-      cs = (int) ceil( 1.0 * c / n );
+      cs = (int) ceil( 1.0 * c / n);
     }
     else if ( i == 1 )
     {
       if ( n == 2 )
       {
-        cs = (int) ( c - ceil( 1.0 * c / n ) );
+        cs = (int) c - ceil( 1.0 * c / n );
       }
       else
       {
-        cs = (int) ceil( 1.0 * c / n );
+        cs = (int) ceil( 1.0 * c / n);
       }
     }
     else
     {
-      cs = (int) ( c - 2 * ceil( 1.0 * c / n) );
+      cs = (int) c - 2 * ceil( 1.0 * c / n);
     }
     ci = 1;
     snprintf( buffer, sizeof( buffer ),
@@ -1060,6 +1064,28 @@ static void print_html_contents( FILE*  file, sim_t* sim )
         }
         ci++;
       }
+      if ( sim -> report_targets && ab > 0 )
+      {
+        if ( ab == 1 )
+        {
+          pi = 0;
+          ab = 2;
+        }
+        while ( ci <= cs )
+        {
+          if ( pi < (int) sim -> targets_by_name.size() )
+          {
+            player_t* p = sim -> targets_by_name[ pi ];
+            snprintf( buffer, sizeof( buffer ),
+              "          <li><a href=\"#%s\">%s</a>",
+	          p -> name(),
+	          p -> name() );
+	        cols[i] += buffer;
+	      }
+          ci++; 
+          pi++;
+	    }
+	  }
     }
     cols[i] += "          </ul>\n";
   }
