@@ -983,67 +983,68 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     n = 3;
     toc_class = "toc-narrow";
   }
-  std::string cols [n];
+  std::string cols [ 3 ];
   for ( i=0; i < n; i++ )
   {
     if ( i == 0 )
     {
-      cs = ceil(c / n);
+      cs = (int) ceil( 1.0 * c / n);
     }
     else
     {
       if ( ci > cs )
       {
-        cs = floor(c / n) - (ci - cs);
+        cs = (int) ( floor( 1.0 * c / n) - (ci - cs) );
       }
       else
       {
-        cs = floor(c / n);
+        cs = (int) ( floor( 1.0 * c / n) );
       }
     }
     ci = 1;
     snprintf( buffer, sizeof( buffer ),
       "        <ul class=\"toc %s\">\n",
-	  toc_class.c_str() );
-	cols[i] += buffer;
+      toc_class.c_str() );
+      cols[i] += buffer;
     if ( i == 0 )
     {
       cols[i] += "          <li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
       ci++;
       if ( sim -> scaling -> has_scale_factors() )
       {
-	    cols[i] += "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
-	    ci++;
+        cols[i] += "          <li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
+        ci++;
       }
       cols[i] += "          <li><a href=\"#auras-debuffs\">Auras and Debuffs</a></li>\n";
       ci++;
     }
-    while ( ci <= cs ) {
+    while ( ci <= cs ) 
+    {
       player_t* p = sim -> players_by_name[ pi ];
       snprintf( buffer, sizeof( buffer ),
         "          <li><a href=\"#%s\">%s</a>",
-	    p -> name(),
-	    p -> name() );
-	  cols[i] += buffer;
-	  ci++; 
+        p -> name(),
+        p -> name() );
+        cols[i] += buffer;
+        ci++; 
       if ( sim -> report_pets_separately )
       {
-	    cols[i] += "\n            <ul>\n";
-	    for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
-	    {
-		  if ( pet -> summoned )
-		  {
-		    snprintf( buffer, sizeof( buffer ),
-		      "              <li><a href=\"#%s\">%s</a></li>\n",
-		      pet -> name(),
-		      pet -> name() );
-		    cols[i] += buffer;
-		    ci++;
-		  }
-	    }
-	    cols[i] += "            </ul>\n";
-	  }
-	  pi++;
+        cols[i] += "\n            <ul>\n";
+        for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
+        {
+          if ( pet -> summoned )
+          {
+            snprintf( buffer, sizeof( buffer ),
+              "              <li><a href=\"#%s\">%s</a></li>\n",
+              pet -> name(),
+              pet -> name() );
+            cols[i] += buffer;
+            ci++;
+          }
+        }
+        cols[i] += "            </ul>\n";
+      }
+      pi++;
     }
     cols[i] += "          </ul>\n";
   }

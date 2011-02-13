@@ -403,10 +403,10 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
 {
   const item_data_t* item = item_struct.player -> player_data.find_item( item_id );
   
-  if ( ! item ) return 0.0;
+  if ( ! item ) return 0;
   
   if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return floor( item_struct.player -> player_data.total_armor_shield( item -> level, item -> quality ) + 0.5 );
+    return (uint32_t) floor( item_struct.player -> player_data.total_armor_shield( item -> level, item -> quality ) + 0.5 );
   
   double m_invtype = 0, m_quality = 0, total_armor = 0;
   
@@ -434,19 +434,19 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
     default: return 0;
   }
 
-  return floor( total_armor * m_quality * m_invtype + 0.5 );
+  return (uint32_t) floor( total_armor * m_quality * m_invtype + 0.5 );
 }
 
 // item_database_t::weapon_dmg_min/max ===========================================
 
 uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
 {
-  return floor( item.player -> player_data.weapon_dps( item_id ) * item.player -> player_data.weapon_speed( item_id ) * 0.8 + 0.5 );
+  return (uint32_t) floor( item.player -> player_data.weapon_dps( item_id ) * item.player -> player_data.weapon_speed( item_id ) * 0.8 + 0.5 );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
 {
-  return floor( item.player -> player_data.weapon_dps( item_id ) * item.player -> player_data.weapon_speed( item_id ) * 1.2 + 0.5 );
+  return (uint32_t) floor( item.player -> player_data.weapon_dps( item_id ) * item.player -> player_data.weapon_speed( item_id ) * 1.2 + 0.5 );
 }
 
 // item_database_t::download_slot ===========================================
