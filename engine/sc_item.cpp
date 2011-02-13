@@ -1204,7 +1204,6 @@ bool item_t::download_slot( item_t& item,
 
 bool item_t::download_item( item_t& item, const std::string& item_id )
 {
-  player_t* p = item.player;
   bool success = false;
   std::vector<std::string> source_list;
 
