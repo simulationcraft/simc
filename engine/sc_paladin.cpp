@@ -442,16 +442,10 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
     attack_t::player_buff();
-    if ( p -> buffs_avenging_wrath -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
-    }
+    player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
     if ( school == SCHOOL_HOLY )
     {
-      if ( p -> buffs_inquisition -> up() )
-      {
-        player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
-      }
+      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
     }
   }
 
@@ -804,10 +798,7 @@ struct hand_of_light_proc_t : public attack_t
     paladin_t* p = player -> cast_paladin();
     // not *= since we don't want to double dip, just calling base to initialize variables
     player_multiplier = p -> get_hand_of_light();
-    if ( p -> buffs_inquisition -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
-    }
+    player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -1362,16 +1353,11 @@ struct paladin_spell_t : public spell_t
 
     spell_t::player_buff();
 
-    if ( p -> buffs_avenging_wrath -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
-    }
+    player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
+
     if ( school == SCHOOL_HOLY )
     {
-      if ( p -> buffs_inquisition -> up() )
-      {
-        player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
-      }
+      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
     }
   }
 

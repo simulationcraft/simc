@@ -1913,7 +1913,8 @@ void death_knight_attack_t::execute()
   {
     p -> buffs_bloodworms -> trigger();
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      p -> buffs_rune_of_cinderglacier -> decrement();
+      if ( ! proc )
+        p -> buffs_rune_of_cinderglacier -> decrement();
   }
 }
 
@@ -1951,7 +1952,8 @@ void death_knight_attack_t::player_buff()
   }
   
   if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
-    player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
+    if ( ! proc )
+      player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
   if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
     player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
