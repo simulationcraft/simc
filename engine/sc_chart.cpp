@@ -1197,6 +1197,9 @@ const char* chart_t::distribution_dps( std::string& s,
 {
   int max_buckets = ( int ) p -> distribution_dps.size();
 
+  if ( ! max_buckets )
+    return 0;
+
   int count_max=0;
   for ( int i=0; i < max_buckets; i++ )
   {
