@@ -1939,6 +1939,9 @@ void death_knight_attack_t::player_buff()
         player_hit += p -> talents.nerves_of_cold_steel -> effect_base_value( 1 ) / 100.0;
     }
   }
+  
+  if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
+    player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
 
   // 3.3 Scourge Strike: Shadow damage is calcuted with some buffs
   // being additive Desolation, Bone Shield, Black Ice, Blood
@@ -2065,7 +2068,9 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> mastery.frozen_heart -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
   }
 
-  player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
+  // FIX ME: Does this affect spells as well?
+  if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
+    player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
 
   if ( sim -> debug )
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
@@ -2143,7 +2148,14 @@ struct melee_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       if ( weapon -> slot == SLOT_MAIN_HAND )
+      {
         p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
+        // KM: 1/2/3 PPM proc, only auto-attacks
+        // TODO: Confirm PPM for ranks 1/2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
+        double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
+        p -> buffs_killing_machine -> trigger( 1, 1.0, chance );
+      }
+
       if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
         p -> buffs_crimson_scourge -> trigger();
       
@@ -2153,10 +2165,6 @@ struct melee_t : public death_knight_attack_t
         p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_scent_of_blood );
         p -> buffs_scent_of_blood -> decrement();
       }
-      // KM: 1/2/3 PPM proc, only auto-attacks
-      // TODO: Confirm PPM
-      double chance = weapon -> proc_chance_on_swing( p -> talents.killing_machine -> rank() );
-      p -> buffs_killing_machine -> trigger( 1, 1.0, chance );
 
       if ( p -> rng_might_of_the_frozen_wastes -> roll( p -> talents.might_of_the_frozen_wastes -> proc_chance() ) )
       {
