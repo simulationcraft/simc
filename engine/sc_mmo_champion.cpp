@@ -172,7 +172,7 @@ static bool parse_gems( item_t&           item,
 
   if ( match )
   {
-    xml_node_t* socket_bonus_node = get_tti_node( node, "tti-socketbonus" );
+    xml_node_t* socket_bonus_node = get_tti_node( node, "tti-socket_bonus" );
     if ( socket_bonus_node )
     {
       std::string socket_bonus_str;
