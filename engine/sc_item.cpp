@@ -1166,11 +1166,10 @@ bool item_t::download_slot( item_t& item,
 {
   bool success = false;
 
+  // Check data source caches, except local
   for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
-    if ( item.sim -> item_db_sources[ i ] == "local" )
-      success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
-    else if ( item.sim -> item_db_sources[ i ] == "wowhead" )
+    if ( item.sim -> item_db_sources[ i ] == "wowhead" )
       success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 );
     else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
       success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, true );
@@ -1182,10 +1181,12 @@ bool item_t::download_slot( item_t& item,
     if ( success ) return true;
   }
   
-  // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
+  // Download in earnest from a data source
   for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
-    if ( item.sim -> item_db_sources[ i ] == "wowhead" )
+    if ( item.sim -> item_db_sources[ i ] == "local" )
+      success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
+    else if ( item.sim -> item_db_sources[ i ] == "wowhead" )
       success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
     else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
       success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, true );
@@ -1214,11 +1215,10 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     return false;
   }
 
+  // Check data source caches, except local
   for ( unsigned i = 0; i < source_list.size(); i++ )
   {
-    if ( source_list[ i ] == "local" )
-      success = item_database_t::download_item( item, item_id );
-    else if ( source_list[ i ] == "wowhead" )
+    if ( source_list[ i ] == "wowhead" )
       success = wowhead_t::download_item( item, item_id, 1 );
     else if ( source_list[ i ] == "ptrhead" )
       success = wowhead_t::download_item( item, item_id, 1, true );
@@ -1230,10 +1230,12 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     if ( success ) return true;
   }
   
-  // Download in earnest from a data source, local will not be used for this
+  // Download in earnest from a data source
   for ( unsigned i = 0; i < source_list.size(); i++ )
   {
-    if ( source_list[ i ] == "wowhead" )
+    if ( source_list[ i ] == "local" )
+      success = item_database_t::download_item( item, item_id );
+    else if ( source_list[ i ] == "wowhead" )
       success = wowhead_t::download_item( item, item_id, 0 );
     else if ( source_list[ i ] == "ptrhead" )
       success = wowhead_t::download_item( item, item_id, 0, true );
@@ -1254,11 +1256,10 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 {
   bool success = false;
 
+  // Check data source caches, except local
   for ( unsigned i = 0; i < player -> sim -> item_db_sources.size(); i++ )
   {
-    if ( player -> sim -> item_db_sources[ i ] == "local" )
-      success = item_database_t::download_glyph( player, glyph_name, glyph_id );
-    else if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
+    if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 1 );
     else if ( player -> sim -> item_db_sources[ i ] == "ptrhead" )
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 1, true );
@@ -1268,10 +1269,12 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     if ( success ) return true;
   }
   
-  // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
+  // Download in earnest from a data source
   for ( unsigned i = 0; i < player -> sim -> item_db_sources.size(); i++ )
   {
-    if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
+    if ( player -> sim -> item_db_sources[ i ] == "local" )
+      success = item_database_t::download_glyph( player, glyph_name, glyph_id );
+    else if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 0 );
     else if ( player -> sim -> item_db_sources[ i ] == "ptrhead" )
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 0, true );
@@ -1302,11 +1305,10 @@ int item_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
+  // Check data source caches, except local
   for ( unsigned i = 0; i < source_list.size(); i++ )
   {
-    if ( source_list[ i ] == "local" )
-      gem_type = item_database_t::parse_gem( item, gem_id );
-    else if ( source_list[ i ] == "wowhead" )
+    if ( source_list[ i ] == "wowhead" )
       gem_type = wowhead_t::parse_gem( item, gem_id, 1 );
     else if ( source_list[ i ] == "ptrhead" )
       gem_type = wowhead_t::parse_gem( item, gem_id, 1, true );
@@ -1319,7 +1321,9 @@ int item_t::parse_gem( item_t&            item,
   // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
   for ( unsigned i = 0; i < source_list.size(); i++ )
   {
-    if ( source_list[ i ] == "wowhead" )
+    if ( source_list[ i ] == "local" )
+      gem_type = item_database_t::parse_gem( item, gem_id );
+    else if ( source_list[ i ] == "wowhead" )
       gem_type = wowhead_t::parse_gem( item, gem_id, 0 );
     else if ( source_list[ i ] == "ptrhead" )
       gem_type = wowhead_t::parse_gem( item, gem_id, 0, true );

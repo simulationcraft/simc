@@ -87,8 +87,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
   int level;
 
   if ( ! xml_t::get_value( name_str, xml_t::get_child( name_node, "a" ), "href" ) ||
-       ! xml_t::get_value( type_str, xml_t::get_node( profile_info, "a", "class", "class" ), "." ) ||
-       ! xml_t::get_value( race_str, xml_t::get_node( profile_info, "a", "class", "race"  ), "." ) ||
+       ! xml_t::get_value( type_str, xml_t::get_node( profile_info, "a", "class", "class" ), "href" ) ||
+       ! xml_t::get_value( race_str, xml_t::get_node( profile_info, "a", "class", "race"  ), "href" ) ||
        ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) )
   {
     sim -> errorf( "Unable to determine name/class/race/level from armory xml for %s|%s|%s.\n",
@@ -110,8 +110,27 @@ player_t* battle_net_t::download_player( sim_t* sim,
     name_str = util_t::format_text( util_t::urldecode( name_str ), sim -> input_is_utf8 );
   }
 
-  armory_t::format( type_str );
-  armory_t::format( race_str );
+  if ( ( pos = type_str.rfind( '/' ) ) == std::string::npos )
+  {
+    sim -> errorf("Could not find '/' in %s, no how to parse the player class.\n", type_str.c_str() );
+    return 0;
+  }
+  else
+  {
+    type_str = type_str.substr( pos + 1 );
+    type_str = util_t::format_text( util_t::urldecode( type_str ), sim -> input_is_utf8 );
+  }
+
+  if ( ( pos = race_str.rfind( '/' ) ) == std::string::npos )
+  {
+    sim -> errorf("Could not find '/' in %s, no how to parse the player race.\n", race_str.c_str() );
+    return 0;
+  }
+  else
+  {
+    race_str = race_str.substr( pos + 1 );
+    race_str = util_t::format_text( util_t::urldecode( race_str ), sim -> input_is_utf8 );
+  }
 
   race_type r = util_t::parse_race_type( race_str );
 
@@ -240,18 +259,31 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   xml_node_t* character_glyphs_node = xml_t::get_node( talents_xml, "div", "class", "character-glyphs" );
   std::vector<xml_node_t*> glyph_nodes;
-  int num_glyphs = xml_t::get_nodes( glyph_nodes, character_glyphs_node, "span", "class", "name" );
+  std::string glyph_id, glyph_name;
+  int num_glyphs = xml_t::get_nodes( glyph_nodes, character_glyphs_node, "a" );
   for( int i=0; i < num_glyphs; i++ )
   {
-    std::string glyph_name;
-    if( xml_t::get_value( glyph_name, glyph_nodes[ i ], "." ) )
+    if ( ! xml_t::get_value( glyph_id, glyph_nodes[ i ], "href" ) )
     {
-      util_t::html_special_char_decode( glyph_name );
-      if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-      else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-      armory_t::format( glyph_name );
+      sim -> errorf( "Could not fetch a valid glyph id string.");
+      continue;
+    }
+    
+    if ( ( pos = glyph_id.rfind( '/' ) ) == std::string::npos )
+    {
+      sim -> errorf("Could not parse glyph_id string \"%s\".\n", glyph_id.c_str() );
+      continue;
+    }
+    else
+    {
+      glyph_id = glyph_id.substr( pos + 1 );
+      glyph_id = util_t::format_text( util_t::urldecode( glyph_id ), sim -> input_is_utf8 );
+    }
+
+    if ( item_t::download_glyph( p, glyph_name, glyph_id ) )
+    {
       if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
-      p -> glyphs_str += glyph_name;      
+      p -> glyphs_str += glyph_name;
     }
   }
   
