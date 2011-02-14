@@ -2282,15 +2282,21 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
     "        <ul class=\"params\">\n"
     "          <li><b>Race:</b> %s</li>\n"
-    "          <li><b>Class:</b> %s</li>\n"
-    "          <li><b>Tree:</b> %s</li>\n"
+    "          <li><b>Class:</b> %s</li>\n",
+    p -> race_str.c_str(),
+    p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type )
+    );
+
+  if ( p -> primary_tree() != TREE_NONE )
+    util_t::fprintf( file,
+    "          <li><b>Tree:</b> %s</li>\n",
+    util_t::talent_tree_string( p -> primary_tree() ) );
+
+  util_t::fprintf( file,
     "          <li><b>Level:</b> %d</li>\n"
     "          <li><b>Role:</b> %s</li>\n"
     "        </ul>\n"
     "        <div class=\"clear\"></div>\n",
-    p -> race_str.c_str(),
-    p -> is_pet() ? util_t::pet_type_string( p -> cast_pet() -> pet_type ) :util_t::player_type_string( p -> type ),
-    util_t::talent_tree_string( p -> primary_tree() ),
     p -> level, util_t::role_type_string( p -> primary_role() ) );
 
   // Main player table
