@@ -1059,7 +1059,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
       {
         if ( ab == 0 )
         {
-          cols[i] += "            <li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
+          cols[i] += "            <li><a href=\"#auras\">Auras</a></li>\n";
           ab = 1;
         }
         ci++;
@@ -1294,7 +1294,7 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
   }
 
   util_t::fprintf( file,
-    "        <div id=\"auras-debuffs\" class=\"section" );
+    "        <div id=\"auras\" class=\"section" );
   if ( num_players == 1 )
   {
     util_t::fprintf( file, " grouped-first" );
