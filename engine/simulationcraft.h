@@ -3501,7 +3501,7 @@ struct target_t : public player_t
   int target_level;
 
   int initial_armor, armor;
-  double attack_speed, attack_damage, weapon_skill;
+  double attack_speed, attack_damage;
   double fixed_health, initial_health, current_health;
   double fixed_health_percentage;
   double total_dmg;
@@ -3860,6 +3860,7 @@ struct heal_t : public spell_t
   heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
+  virtual void parse_options( option_t* options, const std::string& options_str );
   virtual void player_buff();
   virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;
@@ -3893,6 +3894,7 @@ struct absorb_t : public spell_t
   absorb_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   absorb_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
+  virtual void parse_options( option_t* options, const std::string& options_str );
   virtual void player_buff();
   virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() SC_CONST;

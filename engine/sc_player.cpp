@@ -3440,6 +3440,17 @@ double player_t::get_position_distance( double m, double v )
   return distance;
 }
 
+// player_t::debuffs_t::snared ===============================================
+
+bool player_t::debuffs_t::snared()
+{
+  if ( infected_wounds -> check() ) return true;
+  if ( judgements_of_the_just -> check() ) return true;
+  if ( slow -> check() ) return true;
+  if ( thunder_clap -> check() ) return true;
+  return false;
+}
+
 // Chosen Movement Actions
 
 struct start_moving_t : public action_t

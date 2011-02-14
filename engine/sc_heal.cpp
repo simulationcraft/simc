@@ -19,9 +19,7 @@
 
 void heal_t::_init_heal_t()
 {
-  player_t* p = sim -> find_player( "Fluffy_Tank" );
-  if ( p ) heal_target.push_back( p );
-  else heal_target.push_back( player );
+  heal_target.push_back( player );
 
   target=0;
   target_str = "";
@@ -49,6 +47,20 @@ heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
   spell_t( n, id, player, t )
 {
   _init_heal_t();
+}
+
+// heal_t::parse_options ====================================================
+
+void heal_t::parse_options( option_t*          options,
+                              const std::string& options_str )
+{
+  spell_t::parse_options(options, options_str );
+
+  if ( target )
+  {
+    heal_target.clear();
+    heal_target.push_back( target );
+  }
 }
 
 // heal_t::player_buff ======================================================
@@ -525,6 +537,20 @@ absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) 
   spell_t( n, id, player, t )
 {
   _init_absorb_t();
+}
+
+// absorb_t::parse_options ====================================================
+
+void absorb_t::parse_options( option_t*          options,
+                              const std::string& options_str )
+{
+  spell_t::parse_options(options, options_str );
+
+  if ( target )
+  {
+    heal_target.clear();
+    heal_target.push_back( target );
+  }
 }
 
 // absorb_t::player_buff ======================================================

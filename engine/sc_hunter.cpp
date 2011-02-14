@@ -547,8 +547,7 @@ struct hunter_pet_t : public pet_t
 
     double mult = player_t::composite_attack_power_multiplier();
 
-    if ( buffs_rabid -> up() )
-      mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
+    mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
 
     if ( buffs_call_of_the_wild -> up() )
       mult *= 1.0 + buffs_call_of_the_wild -> effect_base_value( 1 ) / 100.0;
@@ -584,8 +583,7 @@ struct hunter_pet_t : public pet_t
     if ( o -> buffs.berserking -> up() )
       h *= 1.20;
 
-    if ( o -> buffs_rapid_fire -> up() )
-      h *= 1.0 + o -> buffs_rapid_fire -> value();
+    h *= 1.0 + o -> buffs_rapid_fire -> value();
 
     return h;
   }
@@ -845,12 +843,13 @@ struct hunter_pet_attack_t : public attack_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t* o = p -> owner -> cast_hunter();
+
     double h = attack_t::swing_haste();
+
     h *= 1.0 / ( 1.0 + p -> talents.serpent_swiftness -> rank() * 0.05 );
-    if ( p -> buffs_frenzy -> up() ) 
-    {
-      h *= 1.0 / ( 1.0 + o -> talents.frenzy -> mod_additive( P_EFFECT_1 ) / 100.0 * p -> buffs_frenzy -> stack() );
-    }
+
+    h *= 1.0 / ( 1.0 + o -> talents.frenzy -> mod_additive( P_EFFECT_1 ) / 100.0 * p -> buffs_frenzy -> stack() );
+
     return h;
   }
 
@@ -862,7 +861,7 @@ struct hunter_pet_attack_t : public attack_t
 
     if ( result_is_hit() )
     {
-      if ( p -> buffs_rabid -> check() )
+      if ( p -> buffs_rabid -> up() )
       {
         p -> buffs_rabid_power_stack -> trigger();
       }
@@ -999,6 +998,10 @@ struct claw_t : public hunter_pet_attack_t
     }
     else
       p -> uptimes_wild_hunt -> update(false);
+
+    // Active Benefit-Calculation.
+    p -> buffs_owls_focus -> up();
+    p -> buffs_sic_em -> up();
   }
 
   virtual double cost() SC_CONST
@@ -1058,6 +1061,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
   virtual void execute()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    p -> buffs_wolverine_bite -> up();
     p -> buffs_wolverine_bite -> expire();
     hunter_pet_attack_t::execute();
   }
@@ -1675,6 +1679,7 @@ struct arcane_shot_t : public hunter_attack_t
         p -> active_pet -> buffs_sic_em -> trigger();
       }
     }
+    p -> buffs_lock_and_load -> up();
     p -> buffs_lock_and_load -> decrement();
   }
 };
@@ -1862,6 +1867,7 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
     hunter_t* p = player -> cast_hunter();
+    p -> buffs_lock_and_load -> up();
     p -> buffs_lock_and_load -> decrement();
     trigger_thrill_of_the_hunt( this );
     if ( result == RESULT_CRIT && p -> active_pet )

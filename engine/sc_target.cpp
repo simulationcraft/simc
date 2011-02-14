@@ -15,7 +15,7 @@ target_t::target_t( sim_t* s, const std::string& n, player_type pt ) :
     player_t( s, pt, n, RACE_HUMANOID ),
     next( 0 ), target_level( -1 ),
     initial_armor( -1 ), armor( 0 ),
-    attack_speed( 3.0 ), attack_damage( 50000 ), weapon_skill( 0 ),
+    attack_speed( 3.0 ), attack_damage( 50000 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
     total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 ),
     add_list( 0 )
@@ -241,8 +241,6 @@ void target_t::init_base()
     // 1414.5 current capped resilience
     resilience = std::min(resilience, 1414.5);
   }
-
-  if ( weapon_skill == 0 ) weapon_skill = 5.0 * level;
 }
 
 // target_t::init_items =====================================================
@@ -331,16 +329,7 @@ double target_t::composite_tank_block() SC_CONST
   return b;
 }
 
-// target_t::debuffs_t::snared ===============================================
 
-bool target_t::debuffs_t::snared()
-{
-  if ( infected_wounds -> check() ) return true;
-  if ( judgements_of_the_just -> check() ) return true;
-  if ( slow -> check() ) return true;
-  if ( thunder_clap -> check() ) return true;
-  return false;
-}
 
 struct auto_attack_t : public attack_t
 {
@@ -444,7 +433,6 @@ void target_t::create_options()
     { "target_armor",                   OPT_INT,    &( initial_armor                     ) },
     { "target_attack_speed",            OPT_FLT,    &( attack_speed                      ) },
     { "target_attack_damage",           OPT_FLT,    &( attack_damage                     ) },
-    { "target_weapon_skill",            OPT_FLT,    &( weapon_skill                      ) },
     { "target_resilience",              OPT_FLT,    &( resilience                        ) },
     { "target_fixed_health_percentage", OPT_FLT,    &( fixed_health_percentage           ) },
     { NULL, OPT_UNKNOWN, NULL }
