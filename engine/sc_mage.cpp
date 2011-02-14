@@ -2441,7 +2441,7 @@ struct scorch_t : public mage_spell_t
     if ( debuff )
     {
 
-      if ( target -> debuffs.improved_shadow_bolt -> check() )
+      if ( target -> debuffs.shadow_and_flame -> check() )
         return false;
 
       if ( target -> debuffs.critical_mass -> remains_gt( 6.0 ) )
@@ -3442,9 +3442,9 @@ void player_t::mage_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> level < MAX_LEVEL ? p -> player_data.effect_min( 79058, p -> level, E_APPLY_AURA, A_MOD_INCREASE_ENERGY ) : 0, !p -> is_pet() );
-    p -> buffs.focus_magic       = new      buff_t( p, "focus_magic", 1 );
-    p -> debuffs.critical_mass   = new debuff_t( p, "critical_mass", 1, 30.0 );
-    p -> debuffs.slow            = new debuff_t( p, "slow",          1, 15.0 );
+    p -> buffs.focus_magic       = new      buff_t( p, 54646, "focus_magic" );
+    p -> debuffs.critical_mass   = new debuff_t( p, 22959, "critical_mass" );
+    p -> debuffs.slow            = new debuff_t( p, 31589, "slow" );
   }
 
 }

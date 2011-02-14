@@ -2354,7 +2354,7 @@ struct sim_t
     int hunters_mark;
     int hunting_party;
     int improved_icy_talons;
-    int improved_shadow_bolt;
+    int shadow_and_flame;
     int infected_wounds;
     int insect_swarm;
     int judgements_of_the_just;
@@ -3116,7 +3116,7 @@ struct player_t
     debuff_t* faerie_fire;
     debuff_t* hemorrhage;
     debuff_t* hunters_mark;
-    debuff_t* improved_shadow_bolt;
+    debuff_t* shadow_and_flame;
     debuff_t* infected_wounds;
     debuff_t* insect_swarm;
     debuff_t* invulnerable;

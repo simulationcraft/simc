@@ -4450,9 +4450,9 @@ void player_t::druid_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     p -> buffs.innervate              = new buff_t( p, "innervate",        1, 10.0 );
     p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
-    p -> debuffs.demoralizing_roar    = new debuff_t( p, "demoralizing_roar",    1,  30.0 );
-    p -> debuffs.earth_and_moon       = new debuff_t( p, "earth_and_moon",       1,  12.0 );
-    p -> debuffs.faerie_fire          = new debuff_t( p, "faerie_fire",          3, 300.0 );
+    p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
+    p -> debuffs.earth_and_moon       = new debuff_t( p, 60433, "earth_and_moon" );
+    p -> debuffs.faerie_fire          = new debuff_t( p, 91565, "faerie_fire" );
     p -> debuffs.infected_wounds      = new debuff_t( p, "infected_wounds",      1,  12.0 );
     p -> debuffs.mangle               = new debuff_t( p, "mangle",               1,  60.0 );
   }

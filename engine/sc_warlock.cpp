@@ -1983,15 +1983,14 @@ struct shadow_bolt_t : public warlock_spell_t
       trigger_decimation( this, travel_result );
       trigger_impending_doom( this );
       p -> buffs_shadow_embrace -> trigger();
-      t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
-      t -> debuffs.curse_of_elements -> source = p;
+      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
     }
   }
 
   virtual bool ready()
   {
     if ( isb )
-      if ( ! sim -> target -> debuffs.improved_shadow_bolt -> check() )
+      if ( ! target -> debuffs.shadow_and_flame -> check() )
         return false;
 
     return warlock_spell_t::ready();
@@ -2734,8 +2733,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
     {
-      t -> debuffs.improved_shadow_bolt -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
-      t -> debuffs.curse_of_elements -> source = p;
+      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
     }
   }
 
@@ -4482,13 +4480,13 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_ty
 
 void player_t::warlock_init( sim_t* sim )
 {
-  sim -> auras.demonic_pact         = new aura_t( sim, "Demonic Pact", 1 );
-  sim -> auras.fel_intelligence     = new aura_t( sim, "Fel Intelligence", 1 );
+  sim -> auras.demonic_pact         = new aura_t( sim, "demonic_Pact", 1 );
+  sim -> auras.fel_intelligence     = new aura_t( sim, "fel_intelligence", 1 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.improved_shadow_bolt = new     debuff_t( p, "Shadow Mastery", 1, 30.0 );
+    p -> debuffs.shadow_and_flame = new     debuff_t( p, 17800, "shadow_and_flame" );
     p -> debuffs.curse_of_elements    = new coe_debuff_t( p );
   }
 }
@@ -4511,8 +4509,8 @@ void player_t::warlock_combat_begin( sim_t* sim )
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    if ( sim -> overrides.curse_of_elements    ) t -> debuffs.curse_of_elements    -> override( 1, 8 );
-    if ( sim -> overrides.improved_shadow_bolt ) t -> debuffs.improved_shadow_bolt -> override();    
+    if ( sim -> overrides.curse_of_elements ) t -> debuffs.curse_of_elements -> override( 1, 8 );
+    if ( sim -> overrides.shadow_and_flame  ) t -> debuffs.shadow_and_flame  -> override();
   }
 }
 
