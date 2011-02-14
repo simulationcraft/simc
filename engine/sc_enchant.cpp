@@ -206,7 +206,7 @@ static enchant_data_t enchant_db[] =
   { "3595",  "Rune of Spellbreaking",                                     ""                               },
   { "3594",  "Rune of Swordbreaking",                                     ""                               },
   { "3370",  "Rune of Razorice",                                          "rune_of_razorice"               },
-  { "3369",  "Rune of Cinderglacier",                                     ""                               },
+  { "3369",  "Rune of Cinderglacier",                                     "rune_of_cinderglacier"          },
   { "3368",  "Rune of the Fallen Crusader",                               "rune_of_the_fallen_crusader"    },
   { "3367",  "Rune of Spellshattering",                                   ""                               },
   { "3366",  "Rune of Lichbane",                                          ""                               },

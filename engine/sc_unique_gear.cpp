@@ -1363,8 +1363,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_1000AP_15%_45Cd";        // TO-DO: Confirm ICD.
 
   // DK Runeforges
-  else if ( name == "rune_of_the_fallen_crusader"         ) e = "custom";
+  else if ( name == "rune_of_cinderglacier"               ) e = "custom";
   else if ( name == "rune_of_razorice"                    ) e = "custom";
+  else if ( name == "rune_of_the_fallen_crusader"         ) e = "custom";
 
   if ( e.empty() ) return false;
 

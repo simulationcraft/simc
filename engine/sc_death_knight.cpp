@@ -104,6 +104,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_killing_machine;
   buff_t* buffs_pillar_of_frost;
   buff_t* buffs_rime;
+  buff_t* buffs_rune_of_cinderglacier;
   buff_t* buffs_rune_of_razorice;
   buff_t* buffs_rune_of_the_fallen_crusader;
   buff_t* buffs_runic_corruption;
@@ -390,7 +391,7 @@ struct death_knight_t : public player_t
   int diseases()
   {
     int disease_count = 0;
-    if ( buffs_ebon_plaguebringer -> up() ) disease_count++;
+    if ( buffs_ebon_plaguebringer -> check() ) disease_count++;
     if ( dots_blood_plague -> ticking ) disease_count++;
     if ( dots_frost_fever  -> ticking ) disease_count++;
     return disease_count;
@@ -1582,6 +1583,7 @@ struct death_knight_spell_t : public spell_t
 
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
+  virtual void   execute();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual bool   ready();
@@ -1910,6 +1912,8 @@ void death_knight_attack_t::execute()
   if ( result_is_hit() )
   {
     p -> buffs_bloodworms -> trigger();
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+      p -> buffs_rune_of_cinderglacier -> decrement();
   }
 }
 
@@ -1946,6 +1950,9 @@ void death_knight_attack_t::player_buff()
     }
   }
   
+  if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
+    player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
+
   if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
     player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
 
@@ -2059,6 +2066,20 @@ void death_knight_spell_t::consume_resource()
     consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
 }
 
+void death_knight_spell_t::execute()
+{
+  spell_t::execute();
+
+  if ( result_is_hit() )
+  {
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    {
+      death_knight_t* p = player -> cast_death_knight();
+      p -> buffs_rune_of_cinderglacier -> decrement();
+    }
+  }
+}
+
 // death_knight_spell_t::player_buff() ======================================
 
 void death_knight_spell_t::player_buff()
@@ -2073,6 +2094,9 @@ void death_knight_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> mastery.frozen_heart -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
   }
+
+  if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
+    player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
   // FIX ME: Does this affect spells as well?
   if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
@@ -4138,7 +4162,27 @@ void death_knight_t::init_enchant()
   std::string& mh_enchant = items[ SLOT_MAIN_HAND ].encoded_enchant_str;
   std::string& oh_enchant = items[ SLOT_OFF_HAND  ].encoded_enchant_str;
 
-  // Rune of the Fallen Crusader =======================================
+  // Rune of Cinderglacier ==================================================
+  struct cinderglacier_callback_t : public action_callback_t
+  {
+    int slot;
+    buff_t* buff;
+
+    cinderglacier_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ) {}
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      weapon_t* w = a -> weapon;
+      if ( ! w || w -> slot != slot ) return;
+      
+      // FIX ME: What is the proc rate? For now assuming the same as FC
+      buff -> trigger( 2, 0.2, w -> proc_chance_on_swing( 2.0 ) );
+
+      // FIX ME: This should roll the benefit when casting DND, it does not
+    }
+  };
+
+  // Rune of the Fallen Crusader ============================================
   struct fallen_crusader_callback_t : public action_callback_t
   {
     int slot;
@@ -4157,7 +4201,7 @@ void death_knight_t::init_enchant()
     }
   };
 
-  // Rune of the Razorice =======================================
+  // Rune of the Razorice ===================================================
 
   // Damage Proc
   struct razorice_spell_t : public death_knight_spell_t
@@ -4203,9 +4247,10 @@ void death_knight_t::init_enchant()
     }
   };
 
-  buffs_rune_of_razorice = new buff_t( this, "rune_of_razorice", 5,  20.0 );
-
+  buffs_rune_of_cinderglacier       = new buff_t( this, "rune_of_cinderglacier",       2, 30.0 );
+  buffs_rune_of_razorice            = new buff_t( this, "rune_of_razorice",            5, 20.0 );
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
+
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
     register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_the_fallen_crusader ) );
@@ -4214,6 +4259,11 @@ void death_knight_t::init_enchant()
   {
     register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_razorice ) );
   }
+  else if ( mh_enchant == "rune_of_cinderglacier" )
+  {
+    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_cinderglacier ) );
+  }
+
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
     register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_the_fallen_crusader ) );
@@ -4221,6 +4271,10 @@ void death_knight_t::init_enchant()
   else if ( oh_enchant == "rune_of_razorice" )
   {
     register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_razorice ) );
+  }
+  else if ( oh_enchant == "rune_of_cinderglacier" )
+  {
+    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_cinderglacier ) );
   }
 }
 
@@ -4301,7 +4355,7 @@ void death_knight_t::init_buffs()
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
-  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer",                                 1,  21.0 + talents.epidemic -> mod_additive( P_DURATION ), 0.0, 1.0, true );
+  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",                           1,  21.0 + talents.epidemic -> mod_additive( P_DURATION ), 0.0, 1.0, true );
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
@@ -4452,14 +4506,8 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( buffs_rune_of_the_fallen_crusader -> up() )
-    {
-      m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
-    }
-    if ( buffs_pillar_of_frost -> up() )
-    {
-      m *= 1.0 + buffs_pillar_of_frost -> value();
-    }
+    m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
+    m *= 1.0 + buffs_pillar_of_frost -> value();
   }
 
   if ( attr == ATTR_STAMINA )
