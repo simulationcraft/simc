@@ -34,6 +34,7 @@ SOURCES += engine/sc_heal.cpp
 SOURCES += engine/sc_http.cpp
 SOURCES += engine/sc_hunter.cpp
 SOURCES += engine/sc_item.cpp
+SOURCES += engine/sc_item_data.cpp
 SOURCES += engine/sc_js.cpp
 SOURCES += engine/sc_log.cpp
 SOURCES += engine/sc_mage.cpp
