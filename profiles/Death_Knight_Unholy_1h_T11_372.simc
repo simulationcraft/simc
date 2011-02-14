@@ -52,7 +52,7 @@ finger2=cloudburst_ring_of_the_faultline,heroic=1,ilevel=372,quality=epic,stats=
 trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_50cd
 trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_mastery,equip=onattackhit_2178str_10%_20dur_100cd
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,reforge=haste_hit,enchant=65crit
-main_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,reforge=haste_exp,enchant=rune_of_razorice,weapon=sword_2.60speed_949min_1764max
+main_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,reforge=haste_exp,enchant=rune_of_the_fallen_crusader,weapon=sword_2.60speed_949min_1764max
 off_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,reforge=haste_exp,enchant=rune_of_the_fallen_crusader,weapon=sword_2.60speed_949min_1764max
 ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107str,reforge=crit_hit,gems=40str
 # Gear Summary

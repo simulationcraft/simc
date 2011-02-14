@@ -2354,7 +2354,6 @@ struct sim_t
     int hunters_mark;
     int hunting_party;
     int improved_icy_talons;
-    int shadow_and_flame;
     int infected_wounds;
     int insect_swarm;
     int judgements_of_the_just;
@@ -2371,6 +2370,7 @@ struct sim_t
     int replenishment;
     int savage_combat;
     int scarlet_fever;
+    int shadow_and_flame;
     int strength_of_earth;
     int strength_of_wrynn;
     int sunder_armor;
@@ -3116,7 +3116,6 @@ struct player_t
     debuff_t* faerie_fire;
     debuff_t* hemorrhage;
     debuff_t* hunters_mark;
-    debuff_t* shadow_and_flame;
     debuff_t* infected_wounds;
     debuff_t* insect_swarm;
     debuff_t* invulnerable;
@@ -3127,6 +3126,7 @@ struct player_t
     debuff_t* poisoned;
     debuff_t* savage_combat;
     debuff_t* scarlet_fever;
+    debuff_t* shadow_and_flame;
     debuff_t* shattering_throw;
     debuff_t* slow;
     debuff_t* sunder_armor;

@@ -830,8 +830,8 @@ bool item_t::decode_special( special_effect_t& effect,
       std::vector<std::string> splits;
       if( 2 == util_t::string_split( splits, t.value_str, "+" ) )
       {
-	effect.discharge_amount  = atof( splits[ 0 ].c_str() );
-	effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
+        effect.discharge_amount  = atof( splits[ 0 ].c_str() );
+        effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
       }
     }
     else if ( t.name == "stacks" || t.name == "stack" )

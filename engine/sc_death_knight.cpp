@@ -170,7 +170,7 @@ struct death_knight_t : public player_t
   // Mastery
   struct dk_mastery_t
   {
-    mastery_t* blightcaller;
+    mastery_t* dreadblade;
     mastery_t* frozen_heart;
 
     dk_mastery_t() { memset( ( void* ) this, 0x0, sizeof( dk_mastery_t ) ); }
@@ -504,7 +504,8 @@ struct army_ghoul_pet_t : public pet_t
   double snapshot_haste, snapshot_hit, snapshot_crit, snapshot_expertise;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "army_of_the_dead_ghoul_8" )
+    pet_t( sim, owner, "army_of_the_dead_ghoul_8" ),
+    snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_crit( 0 ), snapshot_expertise( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
@@ -1070,6 +1071,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "dancing_rune_weapon", true ),
+    dots_drw_blood_plague( 0 ), dots_drw_frost_fever( 0 ),
     snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
     haste_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
     drw_death_coil( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
@@ -1203,7 +1205,8 @@ struct ghoul_pet_t : public pet_t
   double snapshot_crit, snapshot_haste, snapshot_hit, snapshot_strength;
 
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "ghoul" )
+    pet_t( sim, owner, "ghoul" ),
+    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
@@ -1484,7 +1487,10 @@ struct death_knight_attack_t : public attack_t
   bool   additive_factors;
 
   death_knight_attack_t( const char* n, death_knight_t* p, bool special = false ) :
-    attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special )
+    attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special ),
+    requires_weapon( true ),
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
+    additive_factors( false )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
@@ -1524,7 +1530,7 @@ void extract_rune_cost( spell_id_t* spell, int* cost_blood, int* cost_frost, int
   // is whether it costs a frost rune.
   
   uint32_t spell_id = spell -> spell_id();
-  assert( spell_id > 0 );
+  if ( spell_id == 0 ) return;
 
   uint32_t rune_cost = spell -> rune_cost();
   *cost_blood  =        rune_cost & 0x1;
@@ -1735,7 +1741,7 @@ static void trigger_blood_caked_blade( action_t* a )
     };
 
     if ( ! p -> active_blood_caked_blade ) p -> active_blood_caked_blade = new bcb_t( p );
-    p -> active_blood_caked_blade -> weapon =  a -> weapon;
+    p -> active_blood_caked_blade -> weapon = a -> weapon;
     p -> active_blood_caked_blade -> execute();
   }
 }
@@ -1827,7 +1833,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   if ( ! p -> active_unholy_blight )
     p -> active_unholy_blight = new unholy_blight_t( p );
 
-  double unholy_blight_dmg = death_coil_dmg * 0.10;
+  double unholy_blight_dmg = death_coil_dmg * p -> talents.unholy_blight -> effect_base_value( 1 ) / 100.0;
 
   dot_t* dot = p -> active_unholy_blight -> dot;
 
@@ -2118,7 +2124,6 @@ struct melee_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    base_dd_min     = base_dd_max = 1;
     may_glance      = true;
     background      = true;
     repeating       = true;
@@ -2150,7 +2155,6 @@ struct melee_t : public death_knight_attack_t
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
         p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
-        // KM: 1/2/3 PPM proc, only auto-attacks
         // TODO: Confirm PPM for ranks 1/2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
         double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
         p -> buffs_killing_machine -> trigger( 1, 1.0, chance );
@@ -2303,7 +2307,7 @@ struct blood_boil_t : public death_knight_spell_t
     aoe                = -1;
     extract_rune_cost( p -> spells.blood_boil, &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod   = 0.08;
-    player_multiplier *= 1.0 + p -> talents.crimson_scourge -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p -> talents.crimson_scourge -> mod_additive( P_GENERIC );
   }
 
   virtual double cost() SC_CONST
@@ -2339,11 +2343,11 @@ struct blood_plague_t : public death_knight_spell_t
     base_tick_time   = 3.0;
     tick_may_crit    = true;
     background       = true;
-    num_ticks        = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
+    num_ticks        = 7 + p -> talents.epidemic -> mod_additive( P_DURATION ) / 3;
     tick_power_mod   = 0.055 * 1.15;
     dot_behavior     = DOT_REFRESH;
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
-    base_multiplier  *= 1.0 + p -> talents.virulence -> effect_base_value( 1 ) / 100.0;
+    base_multiplier  *= 1.0 + p -> talents.virulence -> mod_additive( P_TICK_DAMAGE );
     may_miss         = false;
     hasted_ticks     = false;
     reset(); // Not a real action
@@ -2408,7 +2412,7 @@ struct blood_tap_t : public death_knight_spell_t
     base_cost = 0.0; // Cost is stored as 6 in the DBC for some odd reason
     harmful   = false;
     if ( p -> talents.improved_blood_tap -> rank() )
-      cooldown -> duration += p -> talents.improved_blood_tap -> effect_base_value( 1 ) / 1000.0;
+      cooldown -> duration += p -> talents.improved_blood_tap -> mod_additive( P_COOLDOWN );
   }
 
   void execute()
@@ -2477,8 +2481,8 @@ struct bone_shield_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    extract_rune_cost( p->talents.bone_shield, &cost_blood, &cost_frost, &cost_unholy );
-    harmful     = false;
+    extract_rune_cost( p -> talents.bone_shield, &cost_blood, &cost_frost, &cost_unholy );
+    harmful = false;
   }
 
   virtual double cost() SC_CONST
@@ -2558,9 +2562,8 @@ struct dark_transformation_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    if ( ! background ) // When we don't take the talent, we have no talent ID, and it asserts
-      extract_rune_cost( p -> talents.dark_transformation, &cost_blood, &cost_frost, &cost_unholy );
-    base_cost = 0;
+    extract_rune_cost( p -> talents.dark_transformation, &cost_blood, &cost_frost, &cost_unholy );
+    base_cost = 0; // DBC has a value of 9 of an unknown resource
   }
 
   virtual void execute()
@@ -2576,7 +2579,7 @@ struct dark_transformation_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_shadow_infusion -> stack() != 5 )
+    if ( p -> buffs_shadow_infusion -> check() != 5 )
       return false;
 
     return death_knight_spell_t::ready();
@@ -2606,7 +2609,7 @@ struct death_and_decay_t : public death_knight_spell_t
     if ( p -> glyphs.death_and_decay )
       num_ticks     += 5;
     if ( p -> talents.morbidity -> rank() )
-      base_multiplier *= 1.0 + p -> talents.morbidity -> rank() / 10.0;
+      base_multiplier *= 1.0 + p -> talents.morbidity -> mod_additive( P_EFFECT_1 );
   }
 };
 
@@ -2624,13 +2627,13 @@ struct death_coil_t : public death_knight_spell_t
     direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_DUMMY, A_NONE );
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
-    base_multiplier *= 1 + p -> talents.morbidity -> effect_base_value( 1 ) / 100.0
+    base_multiplier *= 1 + p -> talents.morbidity -> mod_additive( P_GENERIC )
                        + p -> glyphs.death_coil * 0.15;
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit        += 0.05;
 
     if ( p -> talents.runic_corruption -> rank() )
-      base_cost += p -> talents.runic_corruption -> effect_base_value( 2 );
+      base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST );
   }
 
   virtual double cost() SC_CONST
@@ -2674,8 +2677,8 @@ struct death_strike_t : public death_knight_attack_t
     if ( p -> passives.blood_rites -> ok() )
       convert_runes = 1.0;
 
-    base_crit       +=     p -> talents.improved_death_strike -> effect_base_value( 2 ) / 100.0;
-    base_multiplier *= 1 + p -> talents.improved_death_strike -> effect_base_value( 1 ) / 100.0;
+    base_crit       +=     p -> talents.improved_death_strike -> mod_additive( P_CRIT );
+    base_multiplier *= 1 + p -> talents.improved_death_strike -> mod_additive( P_GENERIC );
   }
 
   virtual void consume_resource() { }
@@ -2751,7 +2754,7 @@ struct festering_strike_t : public death_knight_attack_t
       convert_runes = 1.0;
     }
 
-    base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
   }
 
   virtual void consume_resource() { }
@@ -2789,7 +2792,7 @@ struct frost_fever_t : public death_knight_spell_t
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
     base_crit_bonus_multiplier /= 2.0;  // current bug, FF crits for 150% instead of 200%, which means half the bonus multiplier.
-    num_ticks         = 7 + p -> talents.epidemic -> effect_base_value( 1 ) / 1000 / 3;
+    num_ticks         = 7 + p -> talents.epidemic -> mod_additive( P_DURATION ) / 3;
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
                         + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
@@ -2878,7 +2881,7 @@ struct heart_strike_t : public death_knight_attack_t
     extract_rune_cost( p -> spells.heart_strike, &cost_blood, &cost_frost, &cost_unholy );
 
     base_multiplier *= 1 + p -> set_bonus.tier10_2pc_melee() * 0.07
-                       + p -> glyphs.heart_strike          * 0.30;
+                       + p -> glyphs.heart_strike            * 0.30;
     
     aoe = 2;                   
     base_add_multiplier *= 0.75;
@@ -2958,7 +2961,7 @@ struct howling_blast_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( p->talents.howling_blast, &cost_blood, &cost_frost, &cost_unholy );
-    aoe               = -1;
+    aoe               = 1; // Change to -1 once we support meteor split effect
     direct_power_mod  = 0.4;
   }
 
@@ -3115,7 +3118,7 @@ struct mind_freeze_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> talents.endless_winter -> rank() )
-      base_cost += p -> talents.endless_winter -> effect_base_value( 1 ) / 10.0;
+      base_cost += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST ) / 10.0;
 
     may_miss = may_resist = false;
   }
@@ -3162,7 +3165,7 @@ struct obliterate_t : public death_knight_attack_t
     if ( p -> glyphs.obliterate )
       weapon_multiplier *= 1.2;
 
-    base_multiplier *= 1.0 + p -> talents.annihilation -> effect_base_value( 1 ) / 100.0
+    base_multiplier *= 1.0 + p -> talents.annihilation -> mod_additive( P_GENERIC )
                        + p -> set_bonus.tier10_2pc_melee() * 0.10;
   }
 
@@ -3289,7 +3292,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( p->talents.pillar_of_frost, &cost_blood, &cost_frost, &cost_unholy );
-    harmful    = false;
+    harmful = false;
   }
 
   virtual void execute()
@@ -3418,7 +3421,7 @@ struct presence_t : public death_knight_spell_t
       double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
       if ( p -> talents.improved_frost_presence -> rank() )
         fp_value += p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0 ;
-      p -> buffs_frost_presence  -> trigger( 1, fp_value );
+      p -> buffs_frost_presence -> trigger( 1, fp_value );
     }
     break;
     case PRESENCE_UNHOLY:
@@ -3563,7 +3566,8 @@ struct scourge_strike_t : public death_knight_attack_t
   };
 
   scourge_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "scourge_strike", player -> spells.scourge_strike -> spell_id(), player )
+    death_knight_attack_t( "scourge_strike", player -> spells.scourge_strike -> spell_id(), player ),
+    scourge_strike_shadow( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3573,7 +3577,7 @@ struct scourge_strike_t : public death_knight_attack_t
     extract_rune_cost( p -> spells.scourge_strike, &cost_blood, &cost_frost, &cost_unholy );
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1
-                       + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
+                       + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
   }
 
   void execute()
@@ -3849,9 +3853,11 @@ void death_knight_t::init_base()
   player_t::init_base();
 
   double str_mult = ( talents.abominations_might -> effect_base_value( 2 ) / 100.0 +
-                      talents.endless_winter -> rank() * 0.02 );
+                      talents.brittle_bones -> effect_base_value( 2 ) / 100.0 +
+                      passives.unholy_might -> effect_base_value( 1 ) / 100.0 );
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
+
   if ( passives.veteran_of_the_third_war -> ok() )
   {
     attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + passives.veteran_of_the_third_war -> effect_base_value( 1 ) / 100.0;
@@ -3916,7 +3922,6 @@ void death_knight_t::init_talents()
   talents.runic_power_mastery         = find_talent( "Runic Power Mastery" );
   talents.threat_of_thassarian        = find_talent( "Threat of Thassarian" );
 
-
   // Unholy
   talents.dark_transformation         = find_talent( "Dark Transformation" );
   talents.ebon_plaguebringer          = find_talent( "Ebon Plaguebringer" );
@@ -3945,7 +3950,7 @@ void death_knight_t::init_spells()
   plate_specialization               = new passive_spell_t( this, "plate_specialization", 86524 );
 
   // Mastery
-  mastery.blightcaller               = new mastery_t( this, "blightcaller", 77515, TREE_UNHOLY ); // Renamed to Dreadblade on PTR, same id
+  mastery.dreadblade                 = new mastery_t( this, "dreadblade", 77515, TREE_UNHOLY );
   mastery.frozen_heart               = new mastery_t( this, "frozen_heart", 77514, TREE_FROST );
 
   // Passives
@@ -4148,10 +4153,7 @@ void death_knight_t::init_enchant()
       if ( w -> slot != slot ) return;
 
       // RotFC is 2 PPM.
-      double PPM        = 2.0;
-      double chance     = w -> proc_chance_on_swing( PPM );
-
-      buff -> trigger( 1, 0.15, chance );
+      buff -> trigger( 1, 0.15, w -> proc_chance_on_swing( 2.0 ) );
     }
   };
 
@@ -4160,8 +4162,7 @@ void death_knight_t::init_enchant()
   // Damage Proc
   struct razorice_spell_t : public death_knight_spell_t
   {
-    //razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", 50401, player ) Use this one it's added to the TBC
-    razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+    razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", 50401, player )
     {
       may_miss    = false;
       may_crit    = false;
@@ -4169,8 +4170,6 @@ void death_knight_t::init_enchant()
       background  = true;
       proc        = true;
       trigger_gcd = 0;
-      base_dd_min = base_dd_max = 0.01;
-      base_dd_multiplier *= 0.02;
       reset();
     }
   };
@@ -4223,7 +4222,6 @@ void death_knight_t::init_enchant()
   {
     register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_razorice ) );
   }
-
 }
 
 // death_knight_t::init_glyphs ==============================================
@@ -4299,7 +4297,7 @@ void death_knight_t::init_buffs()
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_blood_presence      = new buff_t( this, 48263, "blood_presence" );
-  buffs_bone_shield         = new buff_t( this, "bone_shield",                                        3, 300.0 );
+  buffs_bone_shield         = new buff_t( this, "bone_shield",                                        4, 300.0 );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
@@ -4400,24 +4398,22 @@ void death_knight_t::combat_begin()
 // death_knight_t::asses_damage =============================================
 
 double death_knight_t::assess_damage( double            amount,
-				      const school_type school,
-				      int               dmg_type,
-				      int               result,
-				      action_t*         action )
+                                      const school_type school,
+                                      int               dmg_type,
+                                      int               result,
+                                      action_t*         action )
 {
   if ( buffs_blood_presence -> check() )
   {
     amount *= 1.0 - player_data.effect_base_value( player_data.spell_effect_id( 61261, 1 ) ) / 100.0;
   }
 
-  double actual_amount = player_t::assess_damage( amount, school, dmg_type, result, action );
-
   if ( result != RESULT_MISS )
   {
     buffs_scent_of_blood -> trigger();
   }
 
-  return actual_amount;
+  return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
 
 
@@ -4456,18 +4452,13 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
-    if ( talents.brittle_bones -> rank() )
+    if ( buffs_rune_of_the_fallen_crusader -> up() )
     {
-      m *= 1.0 + talents.brittle_bones -> effect_base_value( 2 ) / 100.0;
+      m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
     }
-    if ( buffs_pillar_of_frost -> check() )
+    if ( buffs_pillar_of_frost -> up() )
     {
       m *= 1.0 + buffs_pillar_of_frost -> value();
-    }
-    if ( passives.unholy_might -> ok() )
-    {
-      m *= 1.0 + passives.unholy_might -> effect_base_value( 1 ) / 100.0;
     }
   }
 
@@ -4515,7 +4506,7 @@ double death_knight_t::composite_tank_parry() SC_CONST
 {
   double parry = player_t::composite_tank_parry();
 
-  if ( buffs_dancing_rune_weapon -> check() )
+  if ( buffs_dancing_rune_weapon -> up() )
     parry += 0.20;
 
   return parry;
@@ -4531,7 +4522,7 @@ double death_knight_t::composite_player_multiplier( const school_type school ) S
   m *= 1.0 + buffs_bone_shield -> value();
 
   if ( school == SCHOOL_SHADOW )
-    m *= 1.0 + mastery.blightcaller -> base_value( E_APPLY_AURA, A_DUMMY ) * composite_mastery();
+    m *= 1.0 + mastery.dreadblade -> base_value( E_APPLY_AURA, A_DUMMY ) * composite_mastery();
 
   return m;
 }
@@ -4552,11 +4543,8 @@ double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
 
 int death_knight_t::primary_role() SC_CONST
 {
-
-  if ( player_t::primary_role() == ROLE_TANK )
+  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_BLOOD )
     return ROLE_TANK;
-
-  // Implement Automatic Tank detection
 
   return ROLE_ATTACK;
 }
@@ -4658,7 +4646,7 @@ void death_knight_t::trigger_runic_empowerment()
 {
   if ( talents.runic_corruption -> rank() )
   {
-    if ( buffs_runic_corruption -> check() )
+    if ( buffs_runic_corruption -> up() )
       buffs_runic_corruption -> extend_duration( this, 3 );
     else
       buffs_runic_corruption -> trigger();

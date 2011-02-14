@@ -85,8 +85,8 @@ struct discharge_proc_callback_t : public action_callback_t
   rng_t* rng;
 
   discharge_proc_callback_t( const std::string& n, player_t* p, int ms, 
-			     const school_type school, double amount, double scaling, 
-			     double pc, double cd, int rng_type=RNG_DEFAULT ) :
+                             const school_type school, double amount, double scaling, 
+                             double pc, double cd, int rng_type=RNG_DEFAULT ) :
       action_callback_t( p -> sim, p ),
       name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
@@ -100,7 +100,7 @@ struct discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
-	direct_power_mod = scaling;
+        direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
         background  = true;
         reset();
@@ -115,9 +115,9 @@ struct discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
-	direct_power_mod = scaling;
+        direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
-	may_dodge = may_parry = may_glance = false;
+        may_dodge = may_parry = may_glance = false;
         background  = true;
         reset();
       }
@@ -148,13 +148,17 @@ struct discharge_proc_callback_t : public action_callback_t
     if ( cooldown -> remains() > 0 )
         return;
 
-    if ( proc_chance ) {
-      if ( proc_chance < 0 ) {
-	if ( ! rng -> roll( a -> ppm_proc_chance( -proc_chance ) ))
-	  return;
-      } else {
-	if ( ! rng -> roll( proc_chance ) )
-	  return;
+    if ( proc_chance )
+    {
+      if ( proc_chance < 0 )
+      {
+        if ( ! rng -> roll( a -> ppm_proc_chance( -proc_chance ) ) )
+          return;
+      }
+      else
+      {
+        if ( ! rng -> roll( proc_chance ) )
+          return;
       }
     }
 
@@ -182,9 +186,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   action_t* discharge_action;
 
   stat_discharge_proc_callback_t( const std::string& n, player_t* p, 
-				  int stat, int max_stacks, double stat_amount,
-				  const school_type school, double discharge_amount, double discharge_scaling, 
-				  double proc_chance, double duration, double cooldown ) :
+                                  int stat, int max_stacks, double stat_amount,
+                                  const school_type school, double discharge_amount, double discharge_scaling, 
+                                  double proc_chance, double duration, double cooldown ) :
     action_callback_t( p -> sim, p ), name_str( n )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
@@ -200,7 +204,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
-	direct_power_mod = scaling;
+        direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
         background  = true;
         reset();
@@ -215,9 +219,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
-	direct_power_mod = scaling;
+        direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
-	may_dodge = may_parry = may_glance = false;
+        may_dodge = may_parry = may_glance = false;
         background  = true;
         reset();
       }
@@ -919,7 +923,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
         aoe = -1;
         background = true;
         base_spell_power_multiplier = 0;
-	cooldown -> duration = 60.0;
+        cooldown -> duration = 60.0;
         reset();
       }
   };
@@ -949,9 +953,9 @@ static void register_tyrandes_favorite_doll( item_t* item )
       // FIXME! For now trigger as soon as the cooldown is up.
       if( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= 0 ) )
       {
-	discharge_spell -> execute();
-	a -> player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
-	mana_stored = 0;
+        discharge_spell -> execute();
+        a -> player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
+        mana_stored = 0;
       }
     }
   };
@@ -978,8 +982,8 @@ static void register_unheeded_warning( item_t* item )
       bool success = buff_t::trigger( stacks, value, chance );
       if( success )
       {
-	player -> main_hand_weapon.bonus_dmg += bonus_dmg;
-	player ->  off_hand_weapon.bonus_dmg += bonus_dmg;
+        player -> main_hand_weapon.bonus_dmg += bonus_dmg;
+        player ->  off_hand_weapon.bonus_dmg += bonus_dmg;
       }
       return success;
     }
@@ -1002,7 +1006,7 @@ static void register_unheeded_warning( item_t* item )
     {
       if ( a -> weapon && ! a -> proc )
       {
-	buff -> trigger();
+        buff -> trigger();
       }
     }
   };
@@ -1157,18 +1161,18 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_discharge_proc( int                type,
-								int64_t            mask,
-								const std::string& name,
-								player_t*          player,
-								int                max_stacks,
-								int                stat,
-								double             stat_amount,
-								const school_type  school,
-								double             min_dmg,
-								double             max_dmg,
-								double             proc_chance,
-								double             duration,
-								double             cooldown )
+                                                                int64_t            mask,
+                                                                const std::string& name,
+                                                                player_t*          player,
+                                                                int                max_stacks,
+                                                                int                stat,
+                                                                double             stat_amount,
+                                                                const school_type  school,
+                                                                double             min_dmg,
+                                                                double             max_dmg,
+                                                                double             proc_chance,
+                                                                double             duration,
+                                                                double             cooldown )
 {
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance, duration, cooldown );
 
@@ -1211,8 +1215,8 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
   return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, 
-			     e.stat, e.max_stacks, e.stat_amount, 
-			     e.proc_chance, e.duration, e.cooldown, e.tick, e.reverse );
+                             e.stat, e.max_stacks, e.stat_amount, 
+                             e.proc_chance, e.duration, e.cooldown, e.tick, e.reverse );
 }
 
 // ==========================================================================
@@ -1225,8 +1229,8 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player, 
-				  e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling, 
-				  e.proc_chance, e.cooldown );
+                                  e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling, 
+                                  e.proc_chance, e.cooldown );
 }
 
 // ==========================================================================
@@ -1234,14 +1238,14 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
-								item_t::special_effect_t& e )
+                                                                item_t::special_effect_t& e )
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
   return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player, 
-				       e.max_stacks, e.stat, e.stat_amount, 
-				       e.school, e.discharge_amount, e.discharge_scaling, 
-				       e.proc_chance, e.duration, e.cooldown );
+                                       e.max_stacks, e.stat, e.stat_amount, 
+                                       e.school, e.discharge_amount, e.discharge_scaling, 
+                                       e.proc_chance, e.duration, e.cooldown );
 }
 
 // ==========================================================================
