@@ -3369,19 +3369,13 @@ void hunter_t::armory_extensions( const std::string& region,
         return;
       }
 
-      if ( false ) // FIXME! Help me Obi-Reia! You're my only hope!
+      // Pets can have spaces in names, replace with underscore ..
+      for ( unsigned j=0; j < pet_name.length(); j++ )
       {
-	// Pets can have spaces in names!  How do we throw out the bath water and keep the baby!?
+        if ( pet_name[ j ] == ' ' )
+          pet_name[ j ] = '_';
+      }
 
-	for ( unsigned j=0; j < pet_name.length(); j++ )
-	  if ( pet_name[ j ] == ' ' )
-	    pet_name[ j ] = '_';
-      }
-      else
-      {
-	armory_t::format( pet_name );
-      }
-	    
       bool all_zeros = true;
       for( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
         if( pet_talents[ j ] != '0' )
