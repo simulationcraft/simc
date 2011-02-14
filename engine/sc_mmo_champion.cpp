@@ -459,7 +459,7 @@ int mmo_champion_t::parse_gem( item_t&            item,
       int gem_type = util_t::parse_gem_type( color_str );
 
       std::string property_str;
-      xml_node_t* property_node = get_tti_node( node, "tti-gemproperties" );
+      xml_node_t* property_node = get_tti_node( node, "tti-gem_properties" );
       if ( property_node ) xml_t::get_value( property_str, property_node, "a/." );
 
       if ( gem_type == GEM_NONE || property_str.empty() )
