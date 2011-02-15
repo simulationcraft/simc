@@ -22,10 +22,10 @@ actions+=/inner_rage,if=target.health_pct<20
 actions+=/heroic_strike,if=rage>60
 actions+=/execute,if=buff.executioner_talent.remains<1.5|buff.executioner_talent.stack<5
 actions+=/bloodthirst
-actions+=/slam,if=buff.bloodsurge.react
-actions+=/execute,if=rage>=50
 actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
 actions+=/raging_blow
+actions+=/slam,if=buff.bloodsurge.react
+actions+=/execute,if=rage>=50
 actions+=/battle_shout,if=rage<70
 head=earthen_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_crit,gems=reverberating_shadowspirit_20crit_20str_30str,enchant=60str_35mastery
 neck=rage_of_ages,heroic=1,ilevel=372,quality=epic,stats=143hit_143mastery_322sta_215str,reforge=hit_crit

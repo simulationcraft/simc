@@ -3036,9 +3036,14 @@ void warrior_t::init_actions()
       action_list_str += "/heroic_strike,if=rage>60";
       action_list_str += "/execute,if=buff.executioner_talent.remains<1.5|buff.executioner_talent.stack<5";
       action_list_str += "/bloodthirst";
+      if ( talents.raging_blow -> ok() && talents.titans_grip -> ok() )
+      {
+	action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+	action_list_str += "/raging_blow";
+      }
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/execute,if=rage>=50";
-      if ( talents.raging_blow -> ok() )
+      if ( talents.raging_blow -> ok() && ! talents.titans_grip -> ok() )
       {
 	action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
 	action_list_str += "/raging_blow";
