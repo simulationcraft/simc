@@ -3672,11 +3672,14 @@ struct divine_hymn_t : public priest_heal_t
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
 
     if ( divine_hymn_tick -> charges > 0 )
+    {
       divine_hymn_tick -> execute();
+      stats -> add_tick( time_to_tick );
+    }
     else
       cancel();
 
-    stats -> add_tick( time_to_tick );
+
   }
 };
 
