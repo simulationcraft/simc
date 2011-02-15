@@ -192,6 +192,7 @@ struct priest_t : public player_t
 
   // Procs
   proc_t* procs_shadowy_apparation;
+  proc_t* procs_surge_of_light;
 
   // Special
   std::queue<spell_t* > shadowy_apparition_free_list;
@@ -512,6 +513,7 @@ struct priest_heal_t : public heal_t
     {
       proc             = true;
       background       = true;
+      dual             = true;
       direct_power_mod = 0;
     }
   };
@@ -580,6 +582,7 @@ struct priest_heal_t : public heal_t
     if ( p -> talents.divine_aegis -> ok() )
     {
       da = new divine_aegis_t( p );
+      add_child( da );
     }
   }
 
@@ -591,6 +594,7 @@ struct priest_heal_t : public heal_t
     if ( p -> talents.divine_aegis -> ok() )
     {
       da = new divine_aegis_t( p );
+      add_child( da );
     }
   }
 
@@ -605,8 +609,7 @@ struct priest_heal_t : public heal_t
     if ( p -> buffs_serenity -> up() )
       player_crit += 0.10;
 
-    if ( p -> buffs_holy_archangel -> up() )
-      player_multiplier *= 1.0 + p -> buffs_holy_archangel -> stack() * 0.03;
+    player_multiplier *= 1.0 + p -> buffs_holy_archangel -> stack() * 0.03;
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -1519,18 +1522,6 @@ struct mind_flay_t : public priest_spell_t
     base_crit      += p -> sets -> set( SET_T11_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
 
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
-  }
-
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
@@ -1684,12 +1675,12 @@ struct mind_spike_t : public priest_spell_t
 struct penance_tick_t : public priest_spell_t
 {
   penance_tick_t( player_t* player ) :
-    priest_spell_t( "penance", player, "Penance" )
+    priest_spell_t( "penance_tick", player, "Penance" )
   {
-    dual        = true;
     background  = true;
-    direct_tick = true;
+    dual        = true;
     direct_power_mod = tick_power_mod; // TO-DO: Check this
+
   }
 
   virtual void player_buff()
@@ -1728,6 +1719,8 @@ struct penance_t : public priest_spell_t
     cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
 
     tick_spell = new penance_tick_t( p );
+
+    add_child( tick_spell );
   }
 
   virtual void tick()
@@ -2222,7 +2215,6 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     dual        = true;
     background  = true;
     may_crit    = true;
-    direct_tick = true;
     harmful     = false;
     stats = player -> get_stats( "hymn_of_hope" );
   }
@@ -2256,6 +2248,8 @@ struct hymn_of_hope_t : public priest_spell_t
     harmful=false;
 
     hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
+
+    add_child( hymn_of_hope_tick );
   }
 
   virtual void tick()
@@ -2390,7 +2384,8 @@ struct smite_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> buffs_surge_of_light -> trigger();
+    if ( p -> buffs_surge_of_light -> trigger() )
+      p -> procs_surge_of_light -> occur();
 
     p -> buffs_holy_evangelism  -> trigger();
 
@@ -2571,7 +2566,8 @@ struct _heal_t : public priest_heal_t
     priest_heal_t::execute();
     priest_t* p = player -> cast_priest();
 
-    p -> buffs_surge_of_light -> trigger();
+    if ( p -> buffs_surge_of_light -> trigger() )
+      p -> procs_surge_of_light -> occur();
 
     // Trigger Chakra
     if ( p -> buffs_chakra_pre -> up())
@@ -2635,7 +2631,8 @@ struct flash_heal_t : public priest_heal_t
 
     // Assuming a SoL Flash Heal can't proc SoL
     if ( ! p -> buffs_surge_of_light -> up() )
-      p -> buffs_surge_of_light -> trigger();
+      if ( p -> buffs_surge_of_light -> trigger() )
+        p -> procs_surge_of_light -> occur();
 
     p -> buffs_serendipity -> trigger();
 
@@ -2834,7 +2831,8 @@ struct greater_heal_t : public priest_heal_t
 
     p -> buffs_serendipity -> expire();
 
-    p -> buffs_surge_of_light -> trigger();
+    if ( p -> buffs_surge_of_light -> trigger() )
+      p -> procs_surge_of_light -> occur();
 
     // Inner Focus
     if ( p -> buffs_inner_focus -> up() )
@@ -2931,9 +2929,10 @@ struct greater_heal_t : public priest_heal_t
 struct glyph_prayer_of_healing_t : public priest_heal_t
 {
   glyph_prayer_of_healing_t( player_t* player ) :
-      priest_heal_t( "glyph_prayer_of_healing", player, 56161 )
+      priest_heal_t( "prayer_of_healing_glyph", player, 56161 )
   {
     proc       = true;
+    dual       = true;
     background = true;
     may_crit = false;
   }
@@ -2951,6 +2950,8 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     glyph = new glyph_prayer_of_healing_t( p );
+
+    add_child( glyph );
   }
 
   virtual void execute()
@@ -3215,10 +3216,13 @@ struct prayer_of_mending_t : public priest_heal_t
 struct glyph_power_word_shield_t : public priest_heal_t
 {
   glyph_power_word_shield_t( player_t* player ) :
-      priest_heal_t( "glyph_power_word_shield", player, 55672 )
+      priest_heal_t( "power_word_shield_glyph", player, 55672 )
   {
-    proc       = true;
+    dual       = true;
+    school     = SCHOOL_HOLY;
+    stats -> school = school;
     background = true;
+    proc       = true;
   }
 };
 
@@ -3246,6 +3250,7 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p -> glyphs.power_word_shield -> ok() )
     {
       glyph_pws = new glyph_power_word_shield_t( p );
+      add_child( glyph_pws );
     }
   }
 
@@ -3270,13 +3275,7 @@ struct power_word_shield_t : public priest_absorb_t
     p -> buffs_borrowed_time -> trigger();
     p -> buffs_weakened_soul -> trigger();
 
-    // Glyph
-    if ( glyph_pws )
-    {
 
-      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = 0.2 * direct_dmg;
-      glyph_pws -> execute();
-    }
 
     // Rapture
     if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
@@ -3292,6 +3291,14 @@ struct power_word_shield_t : public priest_absorb_t
 
     priest_t* p = player -> cast_priest();
 
+    // Glyph
+    if ( glyph_pws )
+    {
+
+      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = 0.2 * travel_dmg;
+      glyph_pws -> execute();
+    }
+
     // Body and Soul
     if ( p -> talents.body_and_soul -> rank() )
       t -> buffs.body_and_soul -> trigger( 1, p -> talents.body_and_soul -> effect_base_value( 1 ) / 100.0 );
@@ -3305,11 +3312,9 @@ struct penance_heal_tick_t : public priest_heal_t
   penance_heal_tick_t( player_t* player ) :
       priest_heal_t( "penance_tick", player, 47750 )
   {
-    dual        = true;
     background  = true;
     may_crit    = true;
-    direct_tick = true;
-    stats = player -> get_stats( "penance" );
+    dual        = true;
   }
 
   virtual void execute()
@@ -3356,24 +3361,21 @@ struct penance_heal_t : public priest_heal_t
     channeled         = true;
     tick_zero         = true;
 
-    base_execute_time = 0.0;
     num_ticks         = 2;
     base_tick_time    = 1.0;
-
-    // FIXME: hardcoded 4.0.6 changes for now.
-    base_cost *= 1.07;
-    base_cost         = floor( base_cost );
-
 
     cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
 
     penance_tick = new penance_heal_tick_t( p );
+
+    add_child( penance_tick );
   }
 
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     penance_tick -> execute();
+    stats -> add_tick( time_to_tick );
   }
 
   virtual double cost() SC_CONST
@@ -3540,8 +3542,7 @@ struct lightwell_hot_t : public priest_heal_t
     proc = true;
     background = true;
     hasted_ticks = false;
-
-    stats = player -> get_stats( "lightwell" );
+    dual = true;
   }
 
   virtual void execute()
@@ -3578,6 +3579,8 @@ struct lightwell_t : public priest_heal_t
     check_talent( p -> talents.lightwell -> rank() );
 
     lw_hot = new lightwell_hot_t( p );
+
+    add_child( lw_hot );
   }
 
   virtual void execute()
@@ -3591,6 +3594,89 @@ struct lightwell_t : public priest_heal_t
       lw_hot -> charges += 5;
 
     lw_hot -> execute();
+  }
+};
+
+// Divine Hymn Spell ===========================================
+
+struct divine_hymn_tick_t : public priest_heal_t
+{
+  int charges;
+  divine_hymn_tick_t( player_t* player ) :
+      priest_heal_t( "divine_hymn_tick", player, 64844 ),
+      charges( 0 )
+  {
+    background  = true;
+    dual        = true;
+    may_crit    = true;
+  }
+
+  virtual void execute()
+  {
+    // Choose Heal Targets
+    unsigned int h = 0;
+    heal_target.clear();
+    heal_target.push_back( find_lowest_player() ); // Find at least the lowest player
+    for ( player_t* q = sim -> player_list; q; q = q -> next )
+      {
+      if( h > 1 ) continue; // This is actually not correct, but since simc partys aren't automatically limited to 5 people it would screw the results on large simulations.
+      if ( !q -> is_pet() && q != heal_target[0] )
+      {
+        heal_target.push_back(q);
+        h++;
+      }
+
+    }
+
+    priest_heal_t::execute();
+  }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    priest_heal_t::travel( t, travel_result, travel_dmg );
+
+    charges--;
+
+    if ( charges <= 0 )
+      cancel();
+  }
+
+};
+
+struct divine_hymn_t : public priest_heal_t
+{
+  divine_hymn_tick_t* divine_hymn_tick;
+
+  divine_hymn_t( player_t* player, const std::string& options_str ) :
+        priest_heal_t( "divine_hymn", player, "Divine Hymn" ),
+        divine_hymn_tick( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    priest_t* p = player -> cast_priest();
+
+    divine_hymn_tick = new divine_hymn_tick_t( p );
+
+    add_child( divine_hymn_tick );
+  }
+
+  virtual void execute()
+  {
+    divine_hymn_tick -> charges = 12;
+
+    priest_heal_t::execute();
+  }
+
+  virtual void tick()
+  {
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+
+    if ( divine_hymn_tick -> charges > 0 )
+      divine_hymn_tick -> execute();
+    else
+      cancel();
+
+    stats -> add_tick( time_to_tick );
   }
 };
 
@@ -3788,6 +3874,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "penance_heal"           ) return new penance_heal_t          ( this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( this, options_str );
   if ( name == "lightwell"              ) return new lightwell_t             ( this, options_str );
+  if ( name == "divine_hymn"            ) return new divine_hymn_t           ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3851,6 +3938,7 @@ void priest_t::init_procs()
   player_t::init_procs();
 
   procs_shadowy_apparation   = get_proc( "shadowy_apparation_proc" );
+  procs_surge_of_light       = get_proc( "surge_of_light" );
 }
 
 // priest_t::init_scaling ====================================================
@@ -4340,7 +4428,7 @@ void priest_t::init_values()
   constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
   // FIX-ME
   // Hotfix nerf to Shadow Power
-  constants.shadow_power_damage_value       = 0.15;
+  constants.shadow_power_damage_value       = passive_spells.shadow_power -> ok() ? 0.15 : 0;
 
   constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
   constants.shadow_orb_proc_value           = mastery_spells.shadow_orb_power   -> proc_chance();

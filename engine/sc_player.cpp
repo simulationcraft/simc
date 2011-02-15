@@ -2699,7 +2699,7 @@ double player_t::resource_gain( int       resource,
   {
     log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
                    name(), actual_amount, amount,
-                   util_t::resource_type_string( resource ), source ? source -> name() : "unknown",
+                   util_t::resource_type_string( resource ), source ? source -> name() : action ? action -> name() : "unknown",
                    resource_current[ resource ] );
   }
 

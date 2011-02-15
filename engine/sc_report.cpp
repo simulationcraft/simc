@@ -1729,6 +1729,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
       "                  <div class=\"float\">\n"
       "                    <h5>Static Values</h5>\n"
       "                    <ul>\n"
+      "                      <li><span class=\"label\">name:</span>%s</li>\n"
       "                      <li><span class=\"label\">id:</span>%i</li>\n"
       "                      <li><span class=\"label\">school:</span>%s</li>\n"
       "                      <li><span class=\"label\">resource:</span>%s</li>\n"
@@ -1746,6 +1747,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
       "                    </ul>\n"
       "                  </div>\n"
       "                  <div class=\"float\">\n",
+      a -> name(),
       a -> id,
       util_t::school_type_string( a-> school ),
       util_t::resource_type_string( a -> resource ),
