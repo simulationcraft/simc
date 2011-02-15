@@ -999,7 +999,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     {
       if ( n == 2 )
       {
-        cs = (int) c - ceil( 1.0 * c / n );
+        cs = (int) ( c - ceil( 1.0 * c / n ) );
       }
       else
       {
@@ -1008,7 +1008,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     }
     else
     {
-      cs = (int) c - 2 * ceil( 1.0 * c / n);
+      cs = (int) ( c - 2 * ceil( 1.0 * c / n) );
     }
     ci = 1;
     snprintf( buffer, sizeof( buffer ),

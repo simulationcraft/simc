@@ -767,7 +767,11 @@ static void register_shard_of_woe( item_t* item )
 
   item -> unique = true;
 
-  p -> initial_resource_reduction += 405;
+  for ( int i = 0; i <= SCHOOL_MAX; i++ )
+  {
+    p -> initial_resource_reduction[ i ] += 405;
+  }
+  p -> initial_resource_reduction[ SCHOOL_ARCANE ] -= 405 * 0.5; // As per hotfix at http://blue.mmo-champion.com/topic/158233/arcane-hotfixes
 }
 
 // register_sorrowsong =================================================

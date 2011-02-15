@@ -482,7 +482,7 @@ double action_t::cost() SC_CONST
 
   double c = base_cost;
 
-  c -= player -> resource_reduction;
+  c -= player -> resource_reduction[ school ];
   if ( c < 0 ) c = 0;
 
   if ( resource == RESOURCE_MANA )

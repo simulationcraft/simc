@@ -2369,7 +2369,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_tick_time   = 3.0;
     tick_may_crit    = true;
     background       = true;
-    num_ticks        = 7 + p -> talents.epidemic -> mod_additive( P_DURATION ) / 3;
+    num_ticks        = (int ) ( 7 + p -> talents.epidemic -> mod_additive( P_DURATION ) / 3 );
     tick_power_mod   = 0.055 * 1.15;
     dot_behavior     = DOT_REFRESH;
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
@@ -2818,7 +2818,7 @@ struct frost_fever_t : public death_knight_spell_t
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
     base_crit_bonus_multiplier /= 2.0;  // current bug, FF crits for 150% instead of 200%, which means half the bonus multiplier.
-    num_ticks         = 7 + p -> talents.epidemic -> mod_additive( P_DURATION ) / 3;
+    num_ticks         = (int) ( 7 + p -> talents.epidemic -> mod_additive( P_DURATION ) / 3 );
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
                         + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
