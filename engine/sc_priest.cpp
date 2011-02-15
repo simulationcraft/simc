@@ -12,33 +12,42 @@
 struct priest_t : public player_t
 {
   // Buffs
-  buff_t* buffs_empowered_shadow;
-  buff_t* buffs_inner_fire;
-  buff_t* buffs_inner_fire_armor;
-  buff_t* buffs_inner_will;
-  buff_t* buffs_shadow_form;
-  buff_t* buffs_vampiric_embrace;
-  buff_t* buffs_mind_melt;
+
+  // Discipline
+  buff_t* buffs_borrowed_time;
   buff_t* buffs_dark_evangelism;
   buff_t* buffs_holy_evangelism;
-  buff_t* buffs_shadow_orb;
   buff_t* buffs_dark_archangel;
   buff_t* buffs_holy_archangel;
-  buff_t* buffs_chakra_pre;
-  buff_t* buffs_chakra_serenity;
-  buff_t* buffs_chakra_sanctuary;
-  buff_t* buffs_chakra_chastise;
-  buff_t* buffs_mind_spike;
-  buff_t* buffs_shadowfiend;
-  buff_t* buffs_spirit_tap;
-  buff_t* buffs_glyph_of_shadow_word_death;
-  buff_t* buffs_borrowed_time;
-  buff_t* buffs_weakened_soul;
+  buff_t* buffs_inner_fire;
+  buff_t* buffs_inner_fire_armor;
   buff_t* buffs_inner_focus;
+  buff_t* buffs_inner_will;
+  buff_t* buffs_weakened_soul;
+
+  // Holy
+  buff_t* buffs_chakra_pre;
+  buff_t* buffs_chakra_chastise;
+  buff_t* buffs_chakra_sanctuary;
+  buff_t* buffs_chakra_serenity;
+  buff_t* buffs_serendipity;
   buff_t* buffs_serenity;
   buff_t* buffs_surge_of_light;
-  buff_t* buffs_serendipity;
+
+  // Shadow
+  buff_t* buffs_empowered_shadow;
+  buff_t* buffs_glyph_of_shadow_word_death;
+  buff_t* buffs_mind_melt;
+  buff_t* buffs_mind_spike;
+  buff_t* buffs_shadow_form;
+  buff_t* buffs_shadow_orb;
+  buff_t* buffs_shadowfiend;
+  buff_t* buffs_spirit_tap;
+  buff_t* buffs_vampiric_embrace;
+
+  // Set Bonus
   buff_t* buffs_indulgence_of_the_penitent;
+
 
 
   // Talents
@@ -109,26 +118,35 @@ struct priest_t : public player_t
 
   struct passive_spells_t
   {
+    // Discipline
     passive_spell_t* enlightenment;
-    passive_spell_t* spiritual_healing;
-    passive_spell_t* shadow_power;
-    passive_spell_t* meditation_holy;
     passive_spell_t* meditation_disc;
-    passive_spell_t* shield_discipline;
-    mastery_t*       echo_of_light;
-    passive_spell_t* surge_of_light;
-    
-    mastery_t*       shadow_orb_power;
-    passive_spell_t* empowered_shadow;
-    passive_spell_t* shadow_orbs;
     passive_spell_t* dark_evangelism_1;
     passive_spell_t* dark_evangelism_2;
     passive_spell_t* holy_evangelism_1;
     passive_spell_t* holy_evangelism_2;
 
+    // Holy
+    passive_spell_t* spiritual_healing;
+    passive_spell_t* meditation_holy;
+    passive_spell_t* surge_of_light;
+    
+    // Shadow
+    passive_spell_t* shadow_power;
+    passive_spell_t* empowered_shadow;
+    passive_spell_t* shadow_orbs;
     passive_spell_t* shadowy_apparition_num;
   };
   passive_spells_t passive_spells;
+
+
+  struct mastery_spells_t
+  {
+    mastery_t* shield_discipline;
+    mastery_t* echo_of_light;
+    mastery_t* shadow_orb_power;
+  };
+  mastery_spells_t mastery_spells;
 
 
   struct active_spells_t
@@ -457,7 +475,7 @@ struct priest_absorb_t : public absorb_t
 
     priest_t* p = player -> cast_priest();
 
-    player_multiplier *= 1.0 + (  p -> composite_mastery() * p -> passive_spells.shield_discipline -> ok() * 2.5 / 100.0 );
+    player_multiplier *= 1.0 + (  p -> composite_mastery() * p -> mastery_spells.shield_discipline -> ok() * 2.5 / 100.0 );
   }
 
   virtual double haste() SC_CONST
@@ -521,7 +539,7 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = a -> player -> cast_priest();
 
-    if ( p -> passive_spells.echo_of_light -> ok() )
+    if ( p -> mastery_spells.echo_of_light -> ok() )
     {
       if ( ! p -> heals_echo_of_light ) p -> heals_echo_of_light = new echo_of_light_t( p );
 
@@ -532,20 +550,20 @@ struct priest_heal_t : public heal_t
           if ( p -> echo_of_light_merged )
           {
             // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
-            p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td * p -> heals_echo_of_light -> dot -> ticks() + a -> direct_dmg * p -> composite_mastery() * p -> passive_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) / p -> heals_echo_of_light -> num_ticks;
+            p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td * p -> heals_echo_of_light -> dot -> ticks() + a -> direct_dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) / p -> heals_echo_of_light -> num_ticks;
             p -> heals_echo_of_light -> refresh_duration();
           }
           else
           {
             // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
-            p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td * ( p -> heals_echo_of_light -> dot -> ticks() - 1 ) + a -> direct_dmg * p -> composite_mastery() * p -> passive_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) / p -> heals_echo_of_light -> num_ticks;
+            p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td * ( p -> heals_echo_of_light -> dot -> ticks() - 1 ) + a -> direct_dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) / p -> heals_echo_of_light -> num_ticks;
             p -> heals_echo_of_light -> refresh_duration();
             p -> echo_of_light_merged = true;
           }
         }
         else
         {
-          p -> heals_echo_of_light -> base_td = a -> direct_dmg * p -> composite_mastery() * p -> passive_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 / p -> heals_echo_of_light -> num_ticks;
+          p -> heals_echo_of_light -> base_td = a -> direct_dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 / p -> heals_echo_of_light -> num_ticks;
           p -> heals_echo_of_light -> execute();
           p -> echo_of_light_merged = false;
         }
@@ -3976,33 +3994,44 @@ void priest_t::init_spells()
 {
   player_t::init_spells();
 
-  passive_spells.dark_evangelism_1    = new passive_spell_t( this, "dark_evangelism_1", 87117 );
-  passive_spells.dark_evangelism_2    = new passive_spell_t( this, "dark_evangelism_2", 87118 );
-  passive_spells.holy_evangelism_1    = new passive_spell_t( this, "holy_evangelism_1", 81660 );
-  passive_spells.holy_evangelism_2    = new passive_spell_t( this, "holy_evangelism_2", 81661 );
+  // Passive Spells
 
-  passive_spells.enlightenment        = new passive_spell_t( this, "enlightenment", "Enlightenment" );
-  passive_spells.spiritual_healing    = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
-  passive_spells.shadow_power         = new passive_spell_t( this, "shadow_power", "Shadow Power" );
-  passive_spells.meditation_holy      = new passive_spell_t( this, "meditation_holy", 95861 );
-  passive_spells.meditation_disc      = new passive_spell_t( this, "meditation_disc", "Meditation" );
+  // Discipline
+  passive_spells.enlightenment          = new passive_spell_t( this, "enlightenment", "Enlightenment" );
+  passive_spells.meditation_disc        = new passive_spell_t( this, "meditation_disc", "Meditation" );
+  passive_spells.dark_evangelism_1      = new passive_spell_t( this, "dark_evangelism_1", 87117 );
+  passive_spells.dark_evangelism_2      = new passive_spell_t( this, "dark_evangelism_2", 87118 );
+  passive_spells.holy_evangelism_1      = new passive_spell_t( this, "holy_evangelism_1", 81660 );
+  passive_spells.holy_evangelism_2      = new passive_spell_t( this, "holy_evangelism_2", 81661 );
 
-  passive_spells.shield_discipline    = new passive_spell_t( this, "shield_discipline", "Shield Discipline" );
+  // Holy
+  passive_spells.spiritual_healing      = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
+  passive_spells.meditation_holy        = new passive_spell_t( this, "meditation_holy", 95861 );
+  passive_spells.surge_of_light         = new passive_spell_t( this, "surge_of_light", 88687 );
 
+  // Shadow
+  passive_spells.shadow_power           = new passive_spell_t( this, "shadow_power", "Shadow Power" );
+  passive_spells.empowered_shadow       = new passive_spell_t( this, "empowered_shadow", 95799 );
+  passive_spells.shadow_orbs            = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
   passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
-  passive_spells.echo_of_light        = new mastery_t( this, "echo_of_light", "Echo of Light", TREE_HOLY );
-  passive_spells.surge_of_light       = new passive_spell_t( this, "surge_of_light", 88687 );
 
-  // Shadow Mastery
-  passive_spells.shadow_orb_power     = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
-  passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
-  passive_spells.empowered_shadow     = new passive_spell_t( this, "empowered_shadow", 95799 );
 
-  active_spells.mind_spike            = new active_spell_t( this, "mind_spike", "Mind Spike" );
-  active_spells.shadow_fiend          = new active_spell_t( this, "shadow_fiend", "Shadowfiend" );
-  active_spells.holy_archangel        = new active_spell_t( this, "holy_archangel", 87152 );
-  active_spells.holy_archangel2       = new active_spell_t( this, "holy_archangel2", 81700 );
-  active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
+
+  // Mastery Spells
+  mastery_spells.shield_discipline = new mastery_t( this, "shield_discipline", "Shield Discipline", TREE_DISCIPLINE );
+  mastery_spells.echo_of_light     = new mastery_t( this, "echo_of_light", "Echo of Light", TREE_HOLY );
+  mastery_spells.shadow_orb_power  = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
+
+
+
+  // Active Spells
+  active_spells.mind_spike      = new active_spell_t( this, "mind_spike", "Mind Spike" );
+  active_spells.shadow_fiend    = new active_spell_t( this, "shadow_fiend", "Shadowfiend" );
+  active_spells.holy_archangel  = new active_spell_t( this, "holy_archangel", 87152 );
+  active_spells.holy_archangel2 = new active_spell_t( this, "holy_archangel2", 81700 );
+  active_spells.dark_archangel  = new active_spell_t( this, "dark_archangel", 87153 );
+
+
 
   // Glyphs
   glyphs.dispersion         = find_glyph( "Glyph of Dispersion" );
@@ -4022,6 +4051,8 @@ void priest_t::init_spells()
   glyphs.circle_of_healing  = find_glyph( "Glyph of Circle of Healing" );
   glyphs.prayer_of_mending  = find_glyph( "Glyph of Prayer of Mending" );
 
+
+  // Set Bonuses
   // T11: H2P = 89910, H4P = 89911
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
@@ -4040,35 +4071,44 @@ void priest_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_empowered_shadow           = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
-  buffs_inner_fire                 = new buff_t( this, 588, "inner_fire"                                              );
-  buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
-  buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
-  buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
-  buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
+
+  // Discipline
+  buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
   buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 20.0, 0, 1.0             );
   buffs_holy_evangelism            = new buff_t( this, "holy_evangelism",            5, 20.0, 0, 1.0             );
   buffs_dark_archangel             = new buff_t( this, "dark_archangel",             5, 18.0                     );
   buffs_holy_archangel             = new buff_t( this, "holy_archangel",             5, 18.0                     );
-  buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
-  buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
-  buffs_chakra_sanctuary           = new buff_t( this, 81206, "chakra_sanctuary" );
-  buffs_chakra_chastise            = new buff_t( this, 81209, "chakra_chastise" );
-  buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );
-  buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
-  buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
-  buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
-  buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
-  buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
-  buffs_weakened_soul              = new buff_t( this, 6788, "weakened_soul" );
+  buffs_inner_fire                 = new buff_t( this, 588, "inner_fire"                                              );
+  buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
-  buffs_shadow_orb                 = new buff_t( this, "shadow_orb",      3, 60.0                                );
+  buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
+  buffs_weakened_soul              = new buff_t( this, 6788, "weakened_soul" );
+
+  // Holy
+  buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
+  buffs_chakra_chastise            = new buff_t( this, 81209, "chakra_chastise" );
+  buffs_chakra_sanctuary           = new buff_t( this, 81206, "chakra_sanctuary" );
+  buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
+  buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
   buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
   buffs_surge_of_light             = new buff_t( this, 88688, "surge_of_light", passive_spells.surge_of_light -> proc_chance() );
-  buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
+
+
+  // Shadow
+  buffs_empowered_shadow           = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
+  buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
+  buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
+  buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
+  buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
+  buffs_shadow_orb                 = new buff_t( this, "shadow_orb",      3, 60.0                                );
+  buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
+  buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
+  buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );
+
+  // Set Bonus
   buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
+
 }
 
 // priest_t::init_actions =====================================================
@@ -4303,8 +4343,8 @@ void priest_t::init_values()
   constants.shadow_power_damage_value       = 0.15;
 
   constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
-  constants.shadow_orb_proc_value           = passive_spells.shadow_orb_power   -> proc_chance();
-  constants.shadow_orb_mastery_value        = passive_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
+  constants.shadow_orb_proc_value           = mastery_spells.shadow_orb_power   -> proc_chance();
+  constants.shadow_orb_mastery_value        = mastery_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
 
   // Shadow
   constants.darkness_value                  = 1.0 / ( 1.0 + talents.darkness    -> effect_base_value( 1 ) / 100.0 );
