@@ -11,7 +11,7 @@ glyphs=dragons_breath/evocation/blink/slow_fall/conjuring/arcane_brilliance/fire
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/arcane_brilliance
-actions+=/molten_armor
+actions+=/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/counterspell
@@ -24,11 +24,8 @@ actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/living_bomb,if=!ticking
 actions+=/pyroblast_hs,if=buff.hot_streak.react
 actions+=/flame_orb,if=target.time_to_die>=12
-actions+=/scorch,if=mana_pct<5
-actions+=/fireball,if=target.time_to_die<60
-actions+=/fireball,if=mana_pct>39
-actions+=/scorch,if=mana_pct<95&cooldown.evocation.remains>60
-actions+=/evocation
+actions+=/mage_armor,if=mana_pct<5
+actions+=/fireball
 actions+=/scorch
 head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit

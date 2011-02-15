@@ -3026,48 +3026,29 @@ void warrior_t::init_actions()
     }
     else if ( primary_tree() == TREE_FURY )
     {
-      action_list_str += "/stance,choose=berserker,if=!in_combat";
+      action_list_str += "/stance,choose=berserker";
       action_list_str += "/recklessness";
       if ( talents.death_wish -> ok() ) action_list_str += "/death_wish";
       action_list_str += "/cleave,if=target.adds>0";
       action_list_str += "/whirlwind,if=target.adds>0";      
-      if ( talents.titans_grip -> ok() )
+      if ( level >= 81 ) action_list_str += "/colossus_smash";
+      if ( level >= 83 ) action_list_str += "/inner_rage,if=target.health_pct<20";
+      action_list_str += "/heroic_strike,if=rage>60";
+      action_list_str += "/execute,if=buff.executioner_talent.remains<1.5|buff.executioner_talent.stack<5";
+      action_list_str += "/bloodthirst";
+      action_list_str += "/slam,if=buff.bloodsurge.react";
+      action_list_str += "/execute,if=rage>=50";
+      if ( talents.raging_blow -> ok() )
       {
-	action_list_str += "/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20";
-	if ( level >= 81 ) action_list_str += "/colossus_smash";
-	if ( level >= 83 ) action_list_str += "/inner_rage,if=target.health_pct<20";
-	action_list_str += "/execute,if=buff.colossus_smash.up|buff.inner_rage.up";
-	if ( talents.raging_blow -> ok() )
-        {
-	  action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-	  action_list_str += "/raging_blow,if=target.health_pct>=20";
-	}
-	action_list_str += "/bloodthirst";
-	action_list_str += "/slam,if=buff.bloodsurge.react";
-      }
-      else
-      {
-	action_list_str += "/heroic_strike,if=target.adds=0&rage>85&target.health_pct>=20";
-	action_list_str += "/heroic_strike,if=target.adds=0&buff.battle_trance.up|buff.incite.up";
-	if ( level >= 81 ) action_list_str += "/heroic_strike,if=buff.colossus_smash.up&((rage>=55&target.health_pct>=20)|(rage>=75&target.health_pct<20))";
-	action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
-	if ( level >= 81 ) action_list_str += "/colossus_smash";
-	action_list_str += "/execute,if=buff.executioner_talent.stack<5";
-	action_list_str += "/bloodthirst";
-	action_list_str += "/slam,if=buff.bloodsurge.react";
-	if ( talents.raging_blow -> ok() )
-        {
-	  action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-	  action_list_str += "/raging_blow";
-	}
-	action_list_str += "/execute,if=rage<=20|rage>=50";
+	action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+	action_list_str += "/raging_blow";
       }
       action_list_str += "/battle_shout,if=rage<70";
       if ( ! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
-      action_list_str += "/stance,choose=defensive,if=!in_combat";
+      action_list_str += "/stance,choose=defensive";
       action_list_str += "/heroic_strike,if=rage>=15";
       action_list_str += "/revenge";
       if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
