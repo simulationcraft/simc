@@ -2922,6 +2922,8 @@ struct horn_of_winter_t : public death_knight_spell_t
     if ( sim -> log )
       log_t::output( sim, "%s performs %s", player -> name(), name() );
 
+    update_ready();
+
     death_knight_t* p = player -> cast_death_knight();
     if ( ! sim -> overrides.horn_of_winter )
     {
