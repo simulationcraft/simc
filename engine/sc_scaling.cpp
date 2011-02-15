@@ -88,7 +88,7 @@ scaling_t::scaling_t( sim_t* s ) :
   five_point_stencil( 0 ),
   positive_scale_delta( 0 ),
   scale_lag( 0 ),
-  scale_factor_noise( 0.0 ),
+  scale_factor_noise( -1.0 ),
   normalize_scale_factors( 0 ),
   smooth_scale_factors( 0 ),
   debug_scale_factors( 0 ),
@@ -297,6 +297,11 @@ void scaling_t::analyze_stats()
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
         f /= 10.0;
 
+      if ( scale_factor_noise < 0.0 )
+      {
+        scale_factor_noise = ( delta_p -> dps_error + ref_p -> dps_error ) / divisor;
+      }
+
       if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
     }
 
@@ -357,7 +362,14 @@ void scaling_t::analyze_lag()
     player_t* delta_p = delta_sim -> find_player( p -> name() );
 
     // Calculate DPS difference per millisecond of lag
-    double f = ( ref_p -> dps - delta_p -> dps ) / ( ( delta_sim -> queue_lag - sim -> queue_lag ) * 1000 );
+    double divisor = ( ( delta_sim -> queue_lag - sim -> queue_lag ) * 1000 );
+
+    double f = ( ref_p -> dps - delta_p -> dps ) / divisor;
+
+    if ( scale_factor_noise < 0.0 )
+    {
+      scale_factor_noise = ( delta_p -> dps_error + ref_p -> dps_error ) / divisor;
+    }
 
     if ( f >= scale_factor_noise ) p -> scaling_lag = f;
   }
