@@ -3221,7 +3221,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> glyphs.prayer_of_mending && t == heal_target[1] )
+    if ( p -> glyphs.prayer_of_mending && t == heal_target[0] )
       target_multiplier *= 1.60;
   }
 };
