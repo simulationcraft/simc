@@ -40,6 +40,7 @@ struct priest_t : public player_t
   buff_t* buffs_serendipity;
   buff_t* buffs_indulgence_of_the_penitent;
 
+
   // Talents
 
   struct talents_list_t 
@@ -64,7 +65,6 @@ struct priest_t : public player_t
     talent_t* grace;
     talent_t* power_word_barrier;
 
-
     // Holy
     talent_t* improved_renew;
     talent_t* empowered_healing;
@@ -83,7 +83,6 @@ struct priest_t : public player_t
     talent_t* test_of_faith;
     talent_t* state_of_mind;
     talent_t* circle_of_healing;
-
 
     // Shadow
     talent_t* darkness;
@@ -105,8 +104,8 @@ struct priest_t : public player_t
     talent_t* phantasm;
     talent_t* paralysis;
   };
-
   talents_list_t talents;
+
 
   struct passive_spells_t
   {
@@ -129,48 +128,23 @@ struct priest_t : public player_t
 
     passive_spell_t* shadowy_apparition_num;
   };
-
   passive_spells_t passive_spells;
+
 
   struct active_spells_t
   {
     active_spell_t* mind_spike;
     active_spell_t* shadow_fiend;
-    active_spell_t* inner_will;
-    active_spell_t* shadow_word_pain;
-    active_spell_t* mind_blast;
-    active_spell_t* devouring_plague;
-    active_spell_t* shadow_word_death;
-    active_spell_t* inner_fire;
-    active_spell_t* smite;
-    active_spell_t* holy_fire;
-    active_spell_t* power_word_fortitude;
-    active_spell_t* shadow_protection;
-
-    active_spell_t* shadow_form;
-    active_spell_t* vampiric_embrace;
-    active_spell_t* vampiric_touch;
-    active_spell_t* dispersion;
-    active_spell_t* power_infusion;
-    active_spell_t* inner_focus;
-    active_spell_t* chakra;
-    active_spell_t* archangel;
     active_spell_t* holy_archangel;
     active_spell_t* holy_archangel2;
     active_spell_t* dark_archangel;
- 
-    active_spell_t* penance;
-    active_spell_t* chastise;
-    active_spell_t* mind_flay;
   };
-
   active_spells_t   active_spells;
+
 
   // Cooldowns
   cooldown_t*       cooldowns_mind_blast;
   cooldown_t*       cooldowns_shadow_fiend;
-  cooldown_t*       cooldowns_archangel;
-  cooldown_t*       cooldowns_dark_archangel;
   cooldown_t*       cooldowns_chakra;
   cooldown_t*       cooldowns_rapture;
   cooldown_t*       cooldowns_inner_focus;
@@ -264,8 +238,6 @@ struct priest_t : public player_t
     double holy_archangel_value;
     double archangel_mana_value;
     double inner_will_value;
-    double inner_fire_spellpower_value;
-    double inner_fire_armor_mult;
 
     // Holy
     double holy_concentration_value;
@@ -285,7 +257,6 @@ struct priest_t : public player_t
     double harnessed_shadows_value;
     double pain_and_suffering_value;
 
-    double mind_spike_crit_value;
     double devouring_plague_health_mod;
 
     uint32_t max_shadowy_apparitions;
@@ -344,8 +315,6 @@ struct priest_t : public player_t
 
     cooldowns_mind_blast                 = get_cooldown( "mind_blast" );
     cooldowns_shadow_fiend               = get_cooldown( "shadow_fiend" );
-    cooldowns_archangel                  = get_cooldown( "archangel"   );
-    cooldowns_dark_archangel             = get_cooldown( "dark_archangel" );
     cooldowns_chakra                     = get_cooldown( "chakra"   );
     cooldowns_rapture                    = get_cooldown( "rapture" );
     cooldowns_rapture -> duration = 12.0;
@@ -1489,7 +1458,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    target_crit       += p -> constants.mind_spike_crit_value * p -> buffs_mind_spike -> stack();
+    target_crit       += p -> buffs_mind_spike -> value() * p -> buffs_mind_spike -> check();
   }
 
   virtual double execute_time() SC_CONST
@@ -1514,7 +1483,7 @@ struct mind_flay_t : public priest_spell_t
       priest_spell_t( "mind_flay", player, "Mind Flay" ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> active_spells.mind_flay -> ok() );
+    check_spec( TREE_SHADOW );
 
     option_t options[] =
     {
@@ -1676,7 +1645,7 @@ struct mind_spike_t : public priest_spell_t
       p -> buffs_mind_melt  -> trigger( 1, 1.0 );
       p -> buffs_shadow_orb -> expire();
       p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
-      p -> buffs_mind_spike -> trigger();
+      p -> buffs_mind_spike -> trigger(1, effect_base_value( 2 ) / 100.0 );
     }
   }
 
@@ -1724,6 +1693,8 @@ struct penance_t : public priest_spell_t
       tick_spell( 0 )
   {
     priest_t* p = player -> cast_priest();
+
+    check_spec( TREE_DISCIPLINE );
 
     parse_options( NULL, options_str );
 
@@ -2181,7 +2152,7 @@ struct archangel_t : public priest_spell_t
       p -> buffs_dark_evangelism -> expire();
     }
 
-    spell_t::execute();
+    priest_spell_t::execute();
   }
 
   virtual bool ready()
@@ -3359,7 +3330,8 @@ struct penance_heal_t : public priest_heal_t
       priest_heal_t( "penance", player, 47540 ), penance_tick( 0 )
   {
     priest_t* p = player -> cast_priest();
-    check_talent( p -> active_spells.penance -> ok() );
+
+    check_spec( TREE_DISCIPLINE );
 
     parse_options( NULL, options_str );
 
@@ -4026,29 +3998,8 @@ void priest_t::init_spells()
   passive_spells.shadow_orbs          = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
   passive_spells.empowered_shadow     = new passive_spell_t( this, "empowered_shadow", 95799 );
 
-  active_spells.penance               = new active_spell_t( this, "penance", "Penance" );
-  active_spells.chastise              = new active_spell_t( this, "holy_word_chastise", "Holy Word: Chastise" );     // incomplete
-  active_spells.mind_flay             = new active_spell_t( this, "mind_flay", "Mind Flay" );
   active_spells.mind_spike            = new active_spell_t( this, "mind_spike", "Mind Spike" );
   active_spells.shadow_fiend          = new active_spell_t( this, "shadow_fiend", "Shadowfiend" );
-  active_spells.inner_will            = new active_spell_t( this, "inner_will", "Inner Will" );
-  active_spells.shadow_word_pain      = new active_spell_t( this, "shadow_word_pain", "Shadow Word: Pain" );
-  active_spells.mind_blast            = new active_spell_t( this, "mind_blast", "Mind Blast" );
-  active_spells.devouring_plague      = new active_spell_t( this, "devouring_plague", "Devouring Plague" );
-  active_spells.shadow_word_death     = new active_spell_t( this, "shadow_word_death", "Shadow Word: Death" );
-  active_spells.inner_fire            = new active_spell_t( this, "inner_fire", "Inner Fire" );
-  active_spells.smite                 = new active_spell_t( this, "smite", "Smite" );
-  active_spells.holy_fire             = new active_spell_t( this, "holy_fire", "Holy Fire" );
-  active_spells.power_word_fortitude  = new active_spell_t( this, "fortitude", "Power Word: Fortitude" );
-  active_spells.shadow_protection     = new active_spell_t( this, "shadow_protection", "Shadow Protection" );
-  active_spells.shadow_form           = new active_spell_t( this, "shadow_form", "Shadowform", talents.shadow_form );
-  active_spells.vampiric_embrace      = new active_spell_t( this, "vampiric_embrace", "Vampiric Embrace", talents.vampiric_embrace );
-  active_spells.vampiric_touch        = new active_spell_t( this, "vampiric_touch", "Vampiric Touch", talents.vampiric_touch );
-  active_spells.dispersion            = new active_spell_t( this, "dispersion", "Dispersion", talents.dispersion );
-  active_spells.power_infusion        = new active_spell_t( this, "power_infusion", "Power Infusion", talents.power_infusion );
-  active_spells.inner_focus           = new active_spell_t( this, "inner_focus", "Inner Focus", talents.inner_focus );
-  active_spells.chakra                = new active_spell_t( this, "chakra", "Chakra", talents.chakra );
-  active_spells.archangel             = new active_spell_t( this, "archangel", "Archangel", talents.archangel );
   active_spells.holy_archangel        = new active_spell_t( this, "holy_archangel", 87152 );
   active_spells.holy_archangel2       = new active_spell_t( this, "holy_archangel2", 81700 );
   active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
@@ -4091,7 +4042,7 @@ void priest_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   buffs_empowered_shadow           = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
-  buffs_inner_fire                 = new buff_t( this, "inner_fire"                                              );
+  buffs_inner_fire                 = new buff_t( this, 588, "inner_fire"                                              );
   buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
   buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
@@ -4342,10 +4293,6 @@ void priest_t::init_values()
   constants.holy_archangel_value          = active_spells.holy_archangel2  -> base_value( E_APPLY_AURA, A_MOD_HEALING_DONE_PERCENT ) / 100.0;
   constants.archangel_mana_value          = active_spells.holy_archangel   -> base_value( E_ENERGIZE_PCT );
 
-  
-  constants.inner_fire_spellpower_value     = util_t::ability_rank( level, 425,85,  360,83,  324,82,  120,80, 0,0 );
-  constants.inner_fire_armor_mult           = active_spells.inner_fire          -> effect_base_value( 1 ) / 100.0;
-
   // Holy
   constants.holy_concentration_value        = talents.holy_concentration        -> effect_base_value( 1 ) / 100.0;
 
@@ -4367,15 +4314,10 @@ void priest_t::init_values()
   constants.shadow_form_value               = talents.shadow_form               -> effect_base_value( 2 ) / 100.0;
   constants.harnessed_shadows_value         = talents.harnessed_shadows         -> effect_base_value( 1 ) / 100.0;
   constants.pain_and_suffering_value        = talents.pain_and_suffering        -> proc_chance();
-  constants.mind_spike_crit_value           = active_spells.mind_spike          -> effect_base_value( 2 ) / 100.0;
   constants.devouring_plague_health_mod     = 0.15;
 
   cooldowns_shadow_fiend -> duration        = active_spells.shadow_fiend        -> cooldown() + 
                                               talents.veiled_shadows            -> effect_base_value( 2 ) / 1000.0;
-
-  cooldowns_archangel -> duration           = talents.archangel                 -> effect_base_value( 2 );
-  cooldowns_chakra -> duration              = talents.chakra                    -> cooldown();
-  cooldowns_dark_archangel -> duration      = active_spells.dark_archangel      -> cooldown();
 
   constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
 }
