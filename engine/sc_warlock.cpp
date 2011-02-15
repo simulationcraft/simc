@@ -3357,15 +3357,22 @@ struct fel_flame_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
-    if ( result_is_hit() )
-    {
-      if ( p -> dots_immolate -> ticking            ) p -> dots_immolate            -> action -> extend_duration( 2 );
-      if ( p -> dots_unstable_affliction -> ticking ) p -> dots_unstable_affliction -> action -> extend_duration( 2 );
-    }
 
     if ( p -> buffs_tier11_4pc_caster -> check() )
     {
       p -> buffs_tier11_4pc_caster -> decrement();
+    }
+  }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    warlock_spell_t::travel( t, travel_result, travel_dmg );
+
+    warlock_t* p = player -> cast_warlock();
+    if ( result_is_hit( travel_result ) )
+    {
+      if ( p -> dots_immolate -> ticking            ) p -> dots_immolate            -> action -> extend_duration( 2 );
+      if ( p -> dots_unstable_affliction -> ticking ) p -> dots_unstable_affliction -> action -> extend_duration( 2 );
     }
   }
 
