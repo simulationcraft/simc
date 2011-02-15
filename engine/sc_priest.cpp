@@ -2105,8 +2105,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
       priest_spell_t( "shadow_fiend", player, "Shadowfiend" ), trigger( 0 ),
       trigger_pct( 0 )
   {
-    check_min_level( 66 );
-
     option_t options[] =
     {
       { "trigger",     OPT_INT, &trigger     },

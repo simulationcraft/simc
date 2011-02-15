@@ -164,7 +164,9 @@ void action_t::_init_action_t()
 
   if ( id && player -> player_data.spell_exists(id) && ! player -> player_data.spell_is_level( id, player -> level ) && player -> player_data.spell_level(id) <= MAX_LEVEL)
   {
-    sim -> errorf( "Player %s attempting to execute action %s without the required level.\n", player -> name(), name() );
+    sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
+                   player -> name(), name(), player -> level, player -> player_data.spell_level(id) );
+
     background = true; // prevent action from being executed
   }
 
