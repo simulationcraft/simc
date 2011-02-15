@@ -2961,18 +2961,11 @@ void warrior_t::init_actions()
     else
       action_list_str += "/food,type=dragonfin_filet";
 
-    // Stance
-    if ( primary_tree() == TREE_ARMS )
-      action_list_str += "/stance,choose=battle,if=!in_combat";
-    else if ( primary_tree() == TREE_FURY )
-      action_list_str += "/stance,choose=berserker,if=!in_combat";
-    else if ( primary_tree() == TREE_PROTECTION )
-      action_list_str += "/stance,choose=defensive,if=!in_combat";
-
     action_list_str += "/snapshot_stats";
 
     // Potion
-    if ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY )
+    if ( primary_tree() == TREE_ARMS || 
+	 primary_tree() == TREE_FURY )
     {
       // TO-DO: Revert to >= 80 when Cata is out
       if (level > 80 )
@@ -3008,50 +3001,73 @@ void warrior_t::init_actions()
 
     if ( primary_tree() == TREE_ARMS )
     {
-      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<20";
+      action_list_str += "/stance,choose=berserker,if=cooldown.recklessness.remains=0&rage<=50&((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
+      action_list_str += "/stance,choose=battle,if=(cooldown.recklessness.remains>0&rage<=50)";
+      action_list_str += "/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
+      if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage,if=!buff.deadly_calm.up&rage<70";
+      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30&((target.health_pct>20&target.time_to_die>130)|(target.health_pct<=20&buff.recklessness.up))";
       if ( talents.sweeping_strikes -> ok() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
-      if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
       action_list_str += "/cleave,if=target.adds>0";
-      action_list_str += "/heroic_strike,if=target.adds=0&(rage>65|buff.deadly_calm.up|buff.incite.up|buff.battle_trance.up)";
-      action_list_str += "/overpower,if=buff.taste_for_blood.remains<1.5";
+      action_list_str += "/inner_rage,if=!buff.deadly_calm.up&rage>80&cooldown.deadly_calm.remains>15";
+      action_list_str += "/heroic_strike,if=(rage>70|buff.deadly_calm.up|buff.incite.up|buff.battle_trance.up)";
+      action_list_str += "/overpower,if=buff.taste_for_blood.remains<=1.5";
+      action_list_str += "/mortal_strike,if=target.health_pct>20|rage>=30";
+      action_list_str += "/execute,if=buff.battle_trance.up";
       action_list_str += "/rend,if=!ticking";
-      if ( level >= 81 ) action_list_str += "/colossus_smash,if=!buff.colossus_smash.up";
+      if ( level >= 81 ) action_list_str += "/colossus_smash,if=buff.colossus_smash.remains<0.5";
+      action_list_str += "/execute,if=(buff.deadly_calm.up|buff.recklessness.up)";
       action_list_str += "/mortal_strike";
       action_list_str += "/overpower";
       action_list_str += "/execute";
-      if ( glyphs.slam -> ok() ) action_list_str += "/slam,if=cooldown.mortal_strike.remains>=1.5";
-      action_list_str += "/battle_shout,if=rage<25";
+      action_list_str += "/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|swing.mh.remains<1.1|buff.deadly_calm.up|buff.colossus_smash.up))|(cooldown.mortal_strike.remains>=1.2&buff.colossus_smash.remains>0.5&rage>=35)";
+      action_list_str += "/battle_shout,if=rage<20";
     }
     else if ( primary_tree() == TREE_FURY )
     {
+      action_list_str += "/stance,choose=berserker,if=!in_combat";
       action_list_str += "/recklessness";
       if ( talents.death_wish -> ok() ) action_list_str += "/death_wish";
-      action_list_str += "/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20";
       action_list_str += "/cleave,if=target.adds>0";
       action_list_str += "/whirlwind,if=target.adds>0";      
-      if ( level >= 81 ) action_list_str += "/colossus_smash";
-      if ( level >= 83 ) action_list_str += "/inner_rage,if=target.health_pct<20";
-      action_list_str += "/execute,if=buff.colossus_smash.up|buff.inner_rage.up";
-      if ( talents.titans_grip -> ok() && talents.raging_blow -> ok() )
+      if ( talents.titans_grip -> ok() )
       {
-        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-        action_list_str += "/raging_blow,if=target.health_pct>=20";
+	action_list_str += "/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20";
+	if ( level >= 81 ) action_list_str += "/colossus_smash";
+	if ( level >= 83 ) action_list_str += "/inner_rage,if=target.health_pct<20";
+	action_list_str += "/execute,if=buff.colossus_smash.up|buff.inner_rage.up";
+	if ( talents.raging_blow -> ok() )
+        {
+	  action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+	  action_list_str += "/raging_blow,if=target.health_pct>=20";
+	}
+	action_list_str += "/bloodthirst";
+	action_list_str += "/slam,if=buff.bloodsurge.react";
       }
-      action_list_str += "/bloodthirst";
-      action_list_str += "/slam,if=buff.bloodsurge.react";
-      if ( ! talents.titans_grip -> ok() && talents.raging_blow -> ok() )
+      else
       {
-        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-        action_list_str += "/raging_blow";
+	action_list_str += "/heroic_strike,if=target.adds=0&rage>85&target.health_pct>=20";
+	action_list_str += "/heroic_strike,if=target.adds=0&buff.battle_trance.up|buff.incite.up";
+	if ( level >= 81 ) action_list_str += "/heroic_strike,if=buff.colossus_smash.up&((rage>=55&target.health_pct>=20)|(rage>=75&target.health_pct<20))";
+	action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
+	if ( level >= 81 ) action_list_str += "/colossus_smash";
+	action_list_str += "/execute,if=buff.executioner_talent.stack<5";
+	action_list_str += "/bloodthirst";
+	action_list_str += "/slam,if=buff.bloodsurge.react";
+	if ( talents.raging_blow -> ok() )
+        {
+	  action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+	  action_list_str += "/raging_blow";
+	}
+	action_list_str += "/execute,if=rage<=20|rage>=50";
       }
       action_list_str += "/battle_shout,if=rage<70";
-      if (! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) 
-        action_list_str += "/berserker_rage";
+      if ( ! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
     }
     else if ( primary_tree() == TREE_PROTECTION )
     {
+      action_list_str += "/stance,choose=defensive,if=!in_combat";
       action_list_str += "/heroic_strike,if=rage>=15";
       action_list_str += "/revenge";
       if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
@@ -3194,16 +3210,10 @@ double warrior_t::resource_loss( int       resource,
 
   if ( resource == RESOURCE_HEALTH )
   {
-    // FIXME!!! Only works for level 80 currently!
-    double coeff_60 = 453.3;
-    double coeff_70 = 453.3;
-    double coeff_80 = 453.3;
-    double coeff_85 = 453.3; // FIXME
+    // FIXME!!  This needs to use unmitigated damage.
 
-    double coeff = rating_t::interpolate( level, coeff_60, coeff_70, coeff_80, coeff_85 );
-
-    double rage_gain = 5 * amount / ( 2 * coeff );
-
+    double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
+    
     resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
   }
 
@@ -3233,7 +3243,7 @@ double warrior_t::assess_damage( double            amount,
        result == RESULT_GLANCE ||
        result == RESULT_BLOCK  )
   {
-    resource_gain( RESOURCE_RAGE, 100.0, gains_incoming_damage );  // FIXME! Assume it caps rage every time.
+    // Rage gain modeled in resource_loss for now.
   }
   if ( result == RESULT_BLOCK )
   {

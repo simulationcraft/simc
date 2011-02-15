@@ -9,15 +9,15 @@ talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111
 glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
-actions+=/stance,choose=berserker,if=!in_combat
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
+actions+=/stance,choose=berserker,if=!in_combat
 actions+=/recklessness
 actions+=/death_wish
-actions+=/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20
 actions+=/cleave,if=target.adds>0
 actions+=/whirlwind,if=target.adds>0
+actions+=/heroic_strike,if=target.adds=0&(rage>60|buff.battle_trance.up|buff.incite.up)&target.health_pct>=20
 actions+=/colossus_smash
 actions+=/inner_rage,if=target.health_pct<20
 actions+=/execute,if=buff.colossus_smash.up|buff.inner_rage.up

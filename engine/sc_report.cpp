@@ -1659,7 +1659,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
-    "                <td class=\"right small\">%.1f/%.1f</td>\n"
+    "                <td class=\"right small\">%.1f</td>\n"
     "                <td class=\"right small\">%.2fsec</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
@@ -1686,7 +1686,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> portion_dps,
     s -> portion_dmg * 100,
     s -> resource_portion * 100,
-    s -> num_executes, s -> num_direct_results,
+    s -> num_executes,
     s -> frequency,
     s -> dpe,
     s -> dpet,
@@ -2696,7 +2696,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "              <tr>\n"
     "                <th class=\"left small\">%s</th>\n"
     "                <th class=\"right small\">%.0f</th>\n"
-    "                <td colspan=\"22\" class=\"filler\"></td>\n"
+    "                <td colspan=\"23\" class=\"filler\"></td>\n"
     "              </tr>\n",
     n.c_str(),
     p -> dps );
@@ -2727,7 +2727,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       "              <tr>\n"
       "                <th class=\"left small\">pet - %s</th>\n"
       "                <th class=\"right small\">%.0f</th>\n"
-      "                <td colspan=\"21\" class=\"filler\"></td>\n"
+      "                <td colspan=\"23\" class=\"filler\"></td>\n"
       "              </tr>\n",
       pet -> name_str.c_str(),
       pet -> dps );
