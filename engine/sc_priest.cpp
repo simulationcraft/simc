@@ -230,24 +230,22 @@ struct priest_t : public player_t
   // Glyphs
   struct glyphs_t
   {
-    int dispersion;
-    int divine_accuracy;
-    int holy_nova;
-    int inner_fire;
-    int mind_flay;
-    int penance;
-    int spirit_tap;
-    int shadow_word_death;
-    int shadow_word_pain;
-    int smite;
-    int renew;
-    int power_word_shield;
-    int prayer_of_healing;
-    int lightwell;
-    int circle_of_healing;
-    int prayer_of_mending;
-
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+    glyph_t* dispersion;
+    glyph_t* divine_accuracy;
+    glyph_t* holy_nova;
+    glyph_t* inner_fire;
+    glyph_t* mind_flay;
+    glyph_t* penance;
+    glyph_t* spirit_tap;
+    glyph_t* shadow_word_death;
+    glyph_t* shadow_word_pain;
+    glyph_t* smite;
+    glyph_t* renew;
+    glyph_t* power_word_shield;
+    glyph_t* prayer_of_healing;
+    glyph_t* lightwell;
+    glyph_t* circle_of_healing;
+    glyph_t* prayer_of_mending;
   };
   glyphs_t glyphs;
 
@@ -360,7 +358,6 @@ struct priest_t : public player_t
   }
 
   // Character Definition
-  virtual void      init_glyphs();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_uptimes();
@@ -1219,7 +1216,7 @@ struct dispersion_t : public priest_spell_t
     channeled         = true;
     harmful           = false;
 
-    if ( p -> glyphs.dispersion ) cooldown -> duration -= 45;
+    if ( p -> glyphs.dispersion -> ok() ) cooldown -> duration -= 45;
 
     shadow_fiend = p -> find_pet( "shadow_fiend" );
   }
@@ -1370,7 +1367,7 @@ struct inner_fire_t : public priest_spell_t
     sp_value    = effect_min( E_APPLY_AURA, A_MOD_DAMAGE_DONE );
     armor_value = base_value( E_APPLY_AURA, A_MOD_RESISTANCE_PCT ) / 100.0;
 
-    armor_value *= ( 1.0 + p -> glyphs.inner_fire * 0.5 );
+    armor_value *= ( 1.0 + p -> glyphs.inner_fire -> ok() * 0.5 );
   }
 
   virtual void execute()
@@ -1572,7 +1569,7 @@ struct mind_flay_t : public priest_spell_t
 
     player_td_multiplier += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
 
-    if ( p -> glyphs.mind_flay )
+    if ( p -> glyphs.mind_flay -> ok() )
     {
       player_td_multiplier += 0.10;
     }
@@ -1739,7 +1736,7 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    cooldown -> duration  -= ( p -> glyphs.penance * 2 );
+    cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
 
     tick_spell = new penance_tick_t( p );
   }
@@ -1906,7 +1903,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> was_sub_25 = p -> glyphs.shadow_word_death && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) &&
+    p -> was_sub_25 = p -> glyphs.shadow_word_death -> ok() && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) &&
                      ( target -> health_percentage() <= 25 );
 
     priest_spell_t::execute();
@@ -1943,7 +1940,7 @@ struct shadow_word_death_t : public priest_spell_t
     if ( p -> talents.mind_melt -> rank() && ( target -> health_percentage() <= 25 ) )
       player_multiplier *= 1.0 + p -> talents.mind_melt -> rank() * 0.15;
 
-    if ( p -> glyphs.shadow_word_death && ( target -> health_percentage() <= 25 ) )
+    if ( p -> glyphs.shadow_word_death -> ok() && ( target -> health_percentage() <= 25 ) )
       player_multiplier *= 3.0;
 
     player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
@@ -2002,7 +1999,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     player_td_multiplier += p -> constants.improved_shadow_word_pain_value;
 
-    player_td_multiplier += p -> glyphs.shadow_word_pain ? 0.1 : 0.0;
+    player_td_multiplier += p -> glyphs.shadow_word_pain -> ok() ? 0.1 : 0.0;
   }
 
   virtual void tick()
@@ -2389,7 +2386,7 @@ struct smite_t : public priest_spell_t
 
     base_execute_time += p -> talents.divine_fury -> effect_base_value( 1 ) / 1000.0;
 
-    base_hit       += p -> glyphs.divine_accuracy ? 0.18 : 0.0;
+    base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
 
     if ( p -> talents.atonement -> rank() )
     {
@@ -2468,7 +2465,7 @@ struct smite_t : public priest_spell_t
 
     player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
 
-    if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite )
+    if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite -> ok() )
       player_multiplier *= 1.20;
   }
 
@@ -2513,7 +2510,7 @@ struct renew_t : public priest_heal_t
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
-    base_multiplier *= 1.0 + p -> glyphs.renew * 0.10;
+    base_multiplier *= 1.0 + p -> glyphs.renew -> ok() * 0.10;
     base_multiplier *= 1.0 + p -> talents.improved_renew -> effect_base_value( 1 ) / 100.0;
 
     // Implement Divine Touch
@@ -3121,7 +3118,7 @@ struct circle_of_healing_t : public priest_heal_t
     heal_target.push_back(find_lowest_player());
     for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-      if( h > ( p -> glyphs.circle_of_healing ? 4 : 3 ) ) continue;
+      if( h > ( p -> glyphs.circle_of_healing -> ok() ? 4 : 3 ) ) continue;
       if ( !q -> is_pet() && q != player && q -> get_player_distance(heal_target[0]) < range )
       {
         heal_target.push_back(q);
@@ -3219,7 +3216,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> glyphs.prayer_of_mending && t == heal_target[0] )
+    if ( p -> glyphs.prayer_of_mending -> ok() && t == heal_target[0] )
       target_multiplier *= 1.60;
   }
 };
@@ -3257,7 +3254,7 @@ struct power_word_shield_t : public priest_absorb_t
 
     direct_power_mod = 0.87; // hardcoded into tooltip
 
-    if ( p -> glyphs.power_word_shield )
+    if ( p -> glyphs.power_word_shield -> ok() )
     {
       glyph_pws = new glyph_power_word_shield_t( p );
     }
@@ -3378,7 +3375,7 @@ struct penance_heal_t : public priest_heal_t
     base_cost         = floor( base_cost );
 
 
-    cooldown -> duration  -= ( p -> glyphs.penance * 2 );
+    cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
 
     penance_tick = new penance_heal_tick_t( p );
   }
@@ -3600,7 +3597,7 @@ struct lightwell_t : public priest_heal_t
 
     lw_hot -> charges = 10;
     lw_hot -> consume_interval = consume_interval;
-    if ( p -> glyphs.lightwell )
+    if ( p -> glyphs.lightwell -> ok() )
       lw_hot -> charges += 5;
 
     lw_hot -> execute();
@@ -3824,61 +3821,6 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 void priest_t::create_pets()
 {
   create_pet( "shadow_fiend" );
-}
-
-// priest_t::init_glyphs =====================================================
-
-void priest_t::init_glyphs()
-{
-  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
-
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "dispersion"        ) glyphs.dispersion = 1;
-    else if ( n == "divine_accuracy"   ) glyphs.divine_accuracy = 1;
-    else if ( n == "holy_nova"         ) glyphs.holy_nova = 1;
-    else if ( n == "inner_fire"        ) glyphs.inner_fire = 1;
-    else if ( n == "mind_flay"         ) glyphs.mind_flay = 1;
-    else if ( n == "penance"           ) glyphs.penance = 1;
-    else if ( n == "shadow_word_death" ) glyphs.shadow_word_death = 1;
-    else if ( n == "shadow_word_pain"  ) glyphs.shadow_word_pain = 1;
-    else if ( n == "spirit_tap"        ) glyphs.spirit_tap = 1;
-    else if ( n == "smite"             ) glyphs.smite = 1;
-    else if ( n == "renew"             ) glyphs.renew = 1;
-    else if ( n == "power_word_shield" ) glyphs.power_word_shield = 1;
-    else if ( n == "prayer_of_healing" ) glyphs.prayer_of_healing = 1;
-    else if ( n == "lightwell"         ) glyphs.lightwell = 1;
-    else if ( n == "circle_of_healing" ) glyphs.circle_of_healing = 1;
-    else if ( n == "prayer_of_mending" ) glyphs.prayer_of_mending = 1;
-    // Just to prevent warnings....
-    else if ( n == "dispel_magic"         ) ;
-    else if ( n == "fade"                 ) ;
-    else if ( n == "fading"               ) ;
-    else if ( n == "fear_ward"            ) ;
-    else if ( n == "flash_heal"           ) ;
-    else if ( n == "fortitude"            ) ;
-    else if ( n == "guardian_spirit"      ) ;
-    else if ( n == "levitate"             ) ;
-    else if ( n == "mass_dispel"          ) ;
-    else if ( n == "pain_suppression"     ) ;
-    else if ( n == "power_word_barrier"   ) ;
-    else if ( n == "psychic_horror"       ) ;
-    else if ( n == "psychic_scream"       ) ;
-    else if ( n == "scourge_imprisonment" ) ;
-    else if ( n == "shackle_undead"       ) ;
-    else if ( n == "shadow_protection"    ) ;
-    else if ( n == "shadowfiend"          ) ;
-    else if ( n == "spirit_of_redemption" );
-    else if ( ! sim -> parent ) 
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
-  }
 }
 
 // priest_t::init_base =======================================================
@@ -4110,6 +4052,24 @@ void priest_t::init_spells()
   active_spells.holy_archangel        = new active_spell_t( this, "holy_archangel", 87152 );
   active_spells.holy_archangel2       = new active_spell_t( this, "holy_archangel2", 81700 );
   active_spells.dark_archangel        = new active_spell_t( this, "dark_archangel", 87153 );
+
+  // Glyphs
+  glyphs.dispersion         = find_glyph( "Glyph of Dispersion" );
+  glyphs.divine_accuracy    = find_glyph( "Glyph of Divine Accuracy" );
+  glyphs.holy_nova          = find_glyph( "Glyph of Holy Nova" );
+  glyphs.inner_fire         = find_glyph( "Glyph of Inner Fire" );
+  glyphs.mind_flay          = find_glyph( "Glyph of Mind Flay" );
+  glyphs.penance            = find_glyph( "Glyph of Penance" );
+  glyphs.spirit_tap         = find_glyph( "Glyph of Spirit Tap" );
+  glyphs.shadow_word_death  = find_glyph( "Glyph of Shadow Word: Death" );
+  glyphs.shadow_word_pain   = find_glyph( "Glyph of Shadow Word: Pain" );
+  glyphs.smite              = find_glyph( "Glyph of Smite" );
+  glyphs.renew              = find_glyph( "Glyph of Renew" );
+  glyphs.power_word_shield  = find_glyph( "Glyph of Power Word: Shield" );
+  glyphs.prayer_of_healing  = find_glyph( "Glyph of Prayer of Healing" );
+  glyphs.lightwell          = find_glyph( "Glyph of Lightwell" );
+  glyphs.circle_of_healing  = find_glyph( "Glyph of Circle of Healing" );
+  glyphs.prayer_of_mending  = find_glyph( "Glyph of Prayer of Mending" );
 
   // T11: H2P = 89910, H4P = 89911
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
