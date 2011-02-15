@@ -582,7 +582,6 @@ struct priest_heal_t : public heal_t
     if ( p -> talents.divine_aegis -> ok() )
     {
       da = new divine_aegis_t( p );
-      add_child( da );
     }
   }
 
@@ -594,7 +593,6 @@ struct priest_heal_t : public heal_t
     if ( p -> talents.divine_aegis -> ok() )
     {
       da = new divine_aegis_t( p );
-      add_child( da );
     }
   }
 
