@@ -1362,12 +1362,12 @@ struct inner_fire_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    priest_spell_t::execute();
 
     p -> buffs_inner_will       -> expire ();
 
-    p -> buffs_inner_fire       -> start( 1, sp_value );
-    p -> buffs_inner_fire_armor -> start( 1, armor_value );
+    p -> buffs_inner_fire       -> trigger( 1, sp_value );
+    p -> buffs_inner_fire_armor -> trigger( 1, armor_value );
   }
 
   virtual bool ready()
@@ -1399,8 +1399,7 @@ struct inner_will_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+    priest_spell_t::execute();
 
     p -> buffs_inner_fire -> expire();
     p -> buffs_inner_fire_armor -> expire();

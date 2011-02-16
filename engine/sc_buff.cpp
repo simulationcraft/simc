@@ -584,7 +584,11 @@ void buff_t::start( int    stacks,
 {
   if ( max_stack == 0 ) return;
 
-  assert( current_stack == 0 );
+  if ( current_stack != 0 )
+  {
+    sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name(), player -> name() );
+    assert( 0 );
+  }
 
   if ( sim -> current_time <= 0.01 ) constant = true;
 
