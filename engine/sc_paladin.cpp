@@ -432,6 +432,12 @@ struct paladin_attack_t : public attack_t
         {
           p -> active_seal_of_truth_dot -> execute();
         }
+
+        // It seems like it's the seal-triggering attacks that stack up ancient power		
+        if ( ! p -> guardian_of_ancient_kings -> sleeping )		
+        {		
+          p -> buffs_ancient_power -> trigger();		
+        }
       }
       if ( trigger_dp )
         p() -> buffs_divine_purpose -> trigger();
