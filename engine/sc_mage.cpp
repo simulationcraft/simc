@@ -3026,8 +3026,7 @@ void mage_t::init_actions()
       }
       if ( ! strcmp( items[ i ].name(), "shard_of_woe" ) )
       {
-        action_list_str += ",if=cooldown.evocation.remains<26";
-        action_list_str += "/use_item,name=shard_of_woe,if=cooldown.evocation.remains>86";
+        action_list_str += ",if=cooldown.evocation.remains>26";
       }
     }
     //Potions
