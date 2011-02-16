@@ -240,6 +240,8 @@ struct druid_t : public player_t
   proc_t* procs_fury_swipes;
   proc_t* procs_parry_haste;
   proc_t* procs_primal_fury;
+  proc_t* procs_wrong_eclipse_wrath;
+  proc_t* procs_wrong_eclipse_starfire;
 
   // Random Number Generation
   rng_t* rng_berserk;
@@ -660,10 +662,11 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   else
   {
     // If the gain isn't not alligned with the direction of the bar it won't happen
-    // +*+ == -*- => >0 => fine
-    // -*+ == +*- => <0 => Not alligned, no gain
-    if ( p -> eclipse_bar_direction * gain < 0 )
+    if ( p -> eclipse_bar_direction == -1 && gain > 0 )
       return;
+    if ( p -> eclipse_bar_direction ==  1 && gain < 0 )
+      return;
+    
   }
 
   int old_eclipse_bar_value = p -> eclipse_bar_value;
@@ -2948,6 +2951,11 @@ struct starfire_t : public druid_spell_t
         //trigger_eclipse_energy_gain( this, gain );
         trigger_eclipse_gain_delay( this, gain );
       }
+      else
+      {
+        // Cast starfire, but solar eclipse was up?
+        p -> procs_wrong_eclipse_starfire -> occur();
+      }
     }
   }
 
@@ -3433,7 +3441,7 @@ struct wrath_t : public druid_spell_t
       }
       trigger_earth_and_moon( this );
 
-      if ( ! p -> buffs_eclipse_lunar -> check() )
+      if ( p -> eclipse_bar_direction <= 0 )
       {
         // Wrath's Eclipse gain is a bit tricky, as it is NOT just 40/3 or 
         // rather 40/3*2 in case of Euphoria procs. This is how it behaves:
@@ -3468,6 +3476,15 @@ struct wrath_t : public druid_spell_t
         trigger_eclipse_gain_delay( this, gain );
       }
     }
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    druid_t* p = player -> cast_druid();
+    // Cast wrath, but lunar eclipse was up?
+    if ( p -> buffs_eclipse_lunar -> check() )
+      p -> procs_wrong_eclipse_wrath -> occur();
   }
 
   virtual bool ready()
@@ -3825,10 +3842,12 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points_wasted = get_proc( "combo_points_wasted" );
-  procs_fury_swipes         = get_proc( "fury_swipes"         );
-  procs_parry_haste         = get_proc( "parry_haste"         );
-  procs_primal_fury         = get_proc( "primal_fury"         );
+  procs_combo_points_wasted    = get_proc( "combo_points_wasted"    );
+  procs_fury_swipes            = get_proc( "fury_swipes"            );
+  procs_parry_haste            = get_proc( "parry_haste"            );
+  procs_primal_fury            = get_proc( "primal_fury"            );
+  procs_wrong_eclipse_wrath    = get_proc( "wrong_eclipse_wrath"    );
+  procs_wrong_eclipse_starfire = get_proc( "wrong_eclipse_starfire" );
 }
 
 // druid_t::init_uptimes ====================================================
