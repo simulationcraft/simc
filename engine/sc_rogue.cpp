@@ -3199,19 +3199,20 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
-      // XXX TODO
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down&time<4";
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2&combo_points>=3";
+      // TODO: Add Blade Flurry
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
       if ( talents.killing_spree -> rank() )
-        action_list_str += "/killing_spree,if=energy<20&buff.slice_and_dice.remains>5";
-      action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
-      action_list_str += "/eviscerate,if=combo_points=5&buff.slice_and_dice.remains>7&dot.rupture.remains>0";
-      action_list_str += "/eviscerate,if=combo_points>=4&buff.slice_and_dice.remains>4&energy>40&dot.rupture.remains>0";
-      action_list_str += "/eviscerate,if=combo_points=5&target.time_to_die<10";
-      action_list_str += "/revealing_strike,if=combo_points=4&buff.slice_and_dice.remains>8";
-      action_list_str += "/sinister_strike,if=combo_points<5";
+        action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
       if ( talents.adrenaline_rush -> rank() ) 
-        action_list_str += "/adrenaline_rush,if=energy<20";
+        action_list_str += "/adrenaline_rush,if=energy<35";
+      if ( talents.bandits_guile -> rank() )
+        action_list_str += "/eviscerate,if=combo_points=5&buff.bandits_guile.stack>=3";
+      action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
+      action_list_str += "/eviscerate,if=combo_points=5";
+      if ( talents.revealing_strike -> rank() )
+        action_list_str += "/revealing_strike,if=combo_points=4&buff.revealing_strike.down";
+      action_list_str += "/sinister_strike,if=combo_points<5";
     }
     else if ( primary_tree() == TREE_SUBTLETY )
     {
