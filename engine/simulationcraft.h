@@ -2056,7 +2056,6 @@ struct buff_t : public spell_id_t
   bool   remains_lt( double time );
   bool   trigger  ( action_t*, int stacks=1, double value=-1.0 );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
-  virtual bool   trigger  ( player_t* s, int stacks=1, double value=-1.0, double chance=-1.0 );
   virtual void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
   void   extend_duration( player_t* p, double seconds );
@@ -2156,12 +2155,9 @@ struct new_buff_t : public buff_t
   const spelleffect_data_t* e_data[MAX_EFFECTS];
   const spelleffect_data_t* single;
 
-  new_buff_t( player_t*, const std::string&, uint32_t, 
-    double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
+  new_buff_t( player_t*, const std::string&, uint32_t, double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
 
-  virtual bool   trigger( int stacks = -1, double value = -1.0, double chance = -1.0 );
-  virtual bool   trigger  ( player_t* s, int stacks= -1, double value= -1.0, double chance= -1.0 )
-  { return buff_t::trigger( s, stacks, value, chance ); };
+  virtual bool trigger( int stacks = -1, double value = -1.0, double chance = -1.0 );
   virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
 };
 
@@ -3655,7 +3651,7 @@ struct action_t : public spell_id_t
   uint32_t id;
   school_type school;
   int resource, tree, result, aoe;
-  bool dual, callbacks, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, pseudo_pet, auto_cast;
+  bool dual, callbacks, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks, usable_moving;
   int dot_behavior;

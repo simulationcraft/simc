@@ -353,6 +353,7 @@ void buff_t::_init_buff_t()
   avg_start = 0;
   avg_refresh = 0;
   constant = false;
+  overridden = false;
   expiration = 0;
 
   if( max_stack >= 0 )
@@ -499,19 +500,6 @@ bool buff_t::trigger( int    stacks,
   trigger_successes++;
 
   return true;
-}
-
-// buff_t::trigger ==========================================================
-
-bool buff_t::trigger( player_t* s,
-                      int    stacks,
-                      double value,
-                      double chance )
-{
-  if ( buff_t::trigger( stacks, value, chance ) )
-    { source = s; return true; }
-
-  return false;
 }
 
 // buff_t::increment ========================================================

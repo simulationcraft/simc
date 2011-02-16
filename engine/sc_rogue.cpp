@@ -3603,7 +3603,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
         return;
 
       // doesn't proc from pets (only tested for hunter pets though)
-      if (a -> player -> is_pet() || a -> pseudo_pet )
+      if (a -> player -> is_pet() )
         return;
 
       a -> player -> procs.hat_donor -> occur();

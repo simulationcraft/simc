@@ -683,8 +683,7 @@ static void register_nibelung( item_t* item )
       if (   a -> aoe      ||
              a -> proc     ||
              a -> dual     ||
-           ! a -> harmful  ||
-             a -> pseudo_pet )
+           ! a -> harmful   )
         return;
 
       if ( rng -> roll( 0.02 ) )
