@@ -491,7 +491,7 @@ bool buff_t::trigger( int    stacks,
   // new buff cooldown impl
   if ( cooldown -> duration > 0 )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
+    if ( sim -> debug ) log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f", player -> name(), name(), cooldown -> name(), cooldown -> duration );
 
     cooldown -> start();
   }
@@ -499,6 +499,19 @@ bool buff_t::trigger( int    stacks,
   trigger_successes++;
 
   return true;
+}
+
+// buff_t::trigger ==========================================================
+
+bool buff_t::trigger( player_t* s,
+                      int    stacks,
+                      double value,
+                      double chance )
+{
+  if ( buff_t::trigger( stacks, value, chance ) )
+    { source = s; return true; }
+
+  return false;
 }
 
 // buff_t::increment ========================================================
@@ -534,8 +547,8 @@ void buff_t::decrement( int    stacks,
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
     if ( sim -> debug )
-      log_t::output( sim, "%s decrements buff %s by %d to %d stacks", 
-		     player -> name(), name(), stacks, current_stack );
+      log_t::output( sim, "buff %s decremented by %d to %d stacks",
+		     name(), stacks, current_stack );
   }
 }
 
