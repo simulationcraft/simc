@@ -763,15 +763,21 @@ static void register_shadowmourne( item_t* item )
 
 static void register_shard_of_woe( item_t* item )
 {
+  // February 15 - Hotfix
+  // Shard of Woe (Heroic trinket) now reduces the base mana cost of 
+  // spells by 205, with the exception of Holy and Nature spells -- 
+  // the base mana cost of Holy and Nature spells remains reduced 
+  // by 405 with this trinket.
   player_t* p = item -> player;
 
   item -> unique = true;
 
   for ( int i = 0; i <= SCHOOL_MAX; i++ )
   {
-    p -> initial_resource_reduction[ i ] += 405;
+    p -> initial_resource_reduction[ i ] += 205;
   }
-  p -> initial_resource_reduction[ SCHOOL_ARCANE ] -= 405 * 0.5; // As per hotfix at http://blue.mmo-champion.com/topic/158233/arcane-hotfixes
+  p -> initial_resource_reduction[ SCHOOL_HOLY   ] -= 200;
+  p -> initial_resource_reduction[ SCHOOL_NATURE ] -= 200;
 }
 
 // register_sorrowsong =================================================
