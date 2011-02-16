@@ -132,6 +132,9 @@ player_t* battle_net_t::download_player( sim_t* sim,
     race_str = util_t::format_text( util_t::urldecode( race_str ), sim -> input_is_utf8 );
   }
 
+  armory_t::format( type_str );
+  armory_t::format( race_str );
+
   race_type r = util_t::parse_race_type( race_str );
 
   if( ! talents_description.empty() && ( talents_description != "active" ) )
