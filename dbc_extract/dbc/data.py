@@ -140,7 +140,7 @@ _DBC_FIELDS = {
           ( 'socket_color_1', '%3d' ), ( 'socket_color_2', '%3d' ), ( 'socket_color_3', '%3d' ),
           ( 'socket_cont_1', '%3d' ),  ( 'socket_cont_2', '%3d' ),  ( 'socket_cont_3', '%3d' ),
           ( 'socket_bonus', '%5d' ),   ( 'gem_props', '%4u' ),
-          ( 'armor_dam_mod', '%f' ),  'duration',               'item_limit_category',    'id_holiday',               ( 'stat_scale_factor', '%f' ),
+          ( 'item_damage_modifier', '%8.3f' ),  'duration',               'item_limit_category',    'id_holiday',               ( 'weapon_damage_range', '%7.6f' ),
             'unk_130',                'unk_131'
     ],
     'ItemSet.dbc' : [
@@ -167,6 +167,9 @@ _DBC_FIELDS = {
           ( 'id','%4u' ),   'ofs_name_sfx',   'ofs_name_int',
           ( 'id_property_1', '%5u' ),  ( 'id_property_2',  '%5u' ), ( 'id_property_3', '%5u' ),  ( 'id_property_4', '%5u' ),  ( 'id_property_5', '%5u' ),
           ( 'property_pct_1', '%5u' ), ( 'property_pct_2', '%5u' ), ( 'property_pct_3', '%5u' ), ( 'property_pct_4', '%5u' ), ( 'property_pct_5', '%5u' )
+    ],
+    'OverrideSpellData.dbc' : [
+        'id', 'f1', 'f2', 'f3', 'f4', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12', 'f13'
     ],
     'RandPropPoints.dbc' : [
           ( 'id', '%3u' ),

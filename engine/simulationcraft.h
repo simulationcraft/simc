@@ -1309,7 +1309,6 @@ public:
   sc_array_t<random_suffix_data_t> m_random_suffixes;  
   sc_array_t<item_enchantment_data_t> m_item_enchantments;
 
-  sc_array_t<item_data_t>         m_items;
   sc_array_t<item_scale_data_t> m_item_damage_1h;
   sc_array_t<item_scale_data_t> m_item_damage_c1h;
   sc_array_t<item_scale_data_t> m_item_damage_2h;
@@ -1326,11 +1325,9 @@ public:
   spell_data_t**                  m_spells_index;
   spelleffect_data_t**            m_effects_index;
   talent_data_t**                 m_talents_index;
-  item_data_t**                   m_items_index;
   uint32_t                        m_spells_index_size;
   uint32_t                        m_effects_index_size;
   uint32_t                        m_talents_index_size;
-  uint32_t                        m_items_index_size;
 
   sc_array_t<uint32_t>            m_talent_trees;
   sc_array_t<uint32_t>            m_pet_talent_trees;
@@ -1343,7 +1340,6 @@ private:
   void                            create_spell_index();
   void                            create_effects_index();
   void                            create_talents_index();
-  void                            create_item_index();
   
   void                            sort_talents( uint32_t* p, const uint32_t num );
   int                             talent_compare( const void *vid1, const void *vid2 );
@@ -1520,7 +1516,6 @@ public:
   virtual bool          check_talent_name( const uint32_t talent_id, const char* name ) SC_CONST;
   
   // Item database methods, very initial implementation TODO: Do this better
-  virtual const item_data_t*             find_item( unsigned item_id ) SC_CONST;
   virtual const random_prop_data_t*      find_rand_property_data( unsigned ilevel ) SC_CONST;
   virtual const random_suffix_data_t*    find_random_suffix( unsigned suffix_id ) SC_CONST;
   virtual const item_enchantment_data_t* find_item_enchantment( unsigned enchant_id ) SC_CONST;
@@ -1533,7 +1528,8 @@ public:
 
   virtual double                         weapon_speed( unsigned item_id ) SC_CONST;
   virtual double                         weapon_dps( unsigned item_id ) SC_CONST;
-  
+  virtual double                         weapon_damage_multiplier( unsigned item_id ) SC_CONST;
+
   // Static methods
   static double         fmt_value( double, effect_type_t, effect_subtype_t );
   static player_type    get_class_type( const int c );

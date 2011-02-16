@@ -184,6 +184,8 @@ struct item_data_t {
   int      item_subclass;
   int      bind_type;
   double   delay;
+  double   dmg_range;
+  double   item_modifier;
   int      race_mask;
   int      class_mask;
   int      stat_type[10];         // item_mod_type
@@ -195,10 +197,11 @@ struct item_data_t {
   int      socket_color[3];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;
+
+  static item_data_t* list();
+  static item_data_t* find( unsigned item_id );
 };
 
-// float GetMinDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 0.7f + 0.5f); }
-// float GetMaxDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 1.3f + 0.5f); }
 struct item_scale_data_t {
   unsigned ilevel;
   double   values[7];             // quality based values for dps

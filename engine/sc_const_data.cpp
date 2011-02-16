@@ -116,6 +116,15 @@ talent_data_t* talent_data_t::list()
 #endif
 }
 
+item_data_t* item_data_t::list()
+{
+#if SC_USE_PTR
+  return use_ptr ? __ptr_item_data : __item_data; 
+#else
+  return __item_data; 
+#endif
+}
+
 spell_data_t* spell_data_t::nil() 
 { 
   return &nil_sd;
@@ -181,6 +190,19 @@ spell_data_t* spell_data_t::find( const std::string& name )
   for( int i=0; spell_data[ i ].name; i++ )
     if( name == spell_data[ i ].name )
       return spell_data + i;
+
+  return 0;
+}
+
+item_data_t* item_data_t::find( unsigned item_id ) 
+{ 
+  item_data_t* item_data = item_data_t::list();
+
+  for ( int i = 0; item_data[ i ].id; i++ )
+  {
+    if ( item_id == item_data[ i ].id )
+      return item_data + i;
+  }
 
   return 0;
 }
@@ -340,7 +362,6 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_random_suffixes.create_copy( ( random_suffix_data_t * ) __ptr_rand_suffix_data, sizeof( __ptr_rand_suffix_data ) / sizeof( random_suffix_data_t ) - 1 );
       m_item_enchantments.create_copy( ( item_enchantment_data_t * ) __ptr_spell_item_ench_data, sizeof( __ptr_spell_item_ench_data ) / sizeof( item_enchantment_data_t ) - 1 );
       
-      m_items.create_copy( ( item_data_t * ) __ptr_item_data, sizeof( __ptr_item_data ) / sizeof( item_data_t ) - 1 );
       m_item_damage_1h.create_copy( ( item_scale_data_t * ) __ptr_itemdamageonehand_data, sizeof( __ptr_itemdamageonehand_data ) / sizeof( item_scale_data_t ) - 1 );
       m_item_damage_c1h.create_copy( ( item_scale_data_t * ) __ptr_itemdamageonehandcaster_data, sizeof( __ptr_itemdamageonehandcaster_data ) / sizeof( item_scale_data_t ) - 1 );
       m_item_damage_2h.create_copy( ( item_scale_data_t * ) __ptr_itemdamagetwohand_data, sizeof( __ptr_itemdamagetwohand_data ) / sizeof( item_scale_data_t ) - 1 );
@@ -385,7 +406,6 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
       m_random_suffixes.create_copy( ( random_suffix_data_t * ) __rand_suffix_data, sizeof( __rand_suffix_data ) / sizeof( random_suffix_data_t ) - 1 );
       m_item_enchantments.create_copy( ( item_enchantment_data_t * ) __spell_item_ench_data, sizeof( __spell_item_ench_data ) / sizeof( item_enchantment_data_t ) - 1 );
 
-      m_items.create_copy( ( item_data_t * ) __item_data, sizeof( __item_data ) / sizeof( item_data_t ) - 1 );
       m_item_damage_1h.create_copy( ( item_scale_data_t * ) __itemdamageonehand_data, sizeof( __itemdamageonehand_data ) / sizeof( item_scale_data_t ) - 1 );
       m_item_damage_c1h.create_copy( ( item_scale_data_t * ) __itemdamageonehandcaster_data, sizeof( __itemdamageonehandcaster_data ) / sizeof( item_scale_data_t ) - 1 );
       m_item_damage_2h.create_copy( ( item_scale_data_t * ) __itemdamagetwohand_data, sizeof( __itemdamagetwohand_data ) / sizeof( item_scale_data_t ) - 1 );

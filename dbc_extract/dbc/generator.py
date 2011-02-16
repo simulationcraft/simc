@@ -353,7 +353,7 @@ class ItemDataGenerator(DataGenerator):
             fields += item_display.field('icon')
             fields += item.field('flags', 'flags_2', 'ilevel', 'req_level', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
-            fields += item.field( 'bonding', 'delay', 'race_mask', 'class_mask') 
+            fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 
             fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4', 'id_spell_5')) ]
@@ -365,7 +365,7 @@ class ItemDataGenerator(DataGenerator):
 
             s += '  { %s },\n' % (', '.join(fields))
 
-        s += '  { %s }\n' % ( ', '.join(([ '0' ] * 15) + [ '{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }' ] * 2 + [ '{ 0, 0, 0, 0, 0 }' ] * 4 + [ '{ 0, 0, 0 }'] + [ '0', '0' ] ) )
+        s += '  { %s }\n' % ( ', '.join(([ '0' ] * 17) + [ '{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }' ] * 2 + [ '{ 0, 0, 0, 0, 0 }' ] * 4 + [ '{ 0, 0, 0 }'] + [ '0', '0' ] ) )
         s += '};\n\n'
         
         return s

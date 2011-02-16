@@ -1779,20 +1779,19 @@ const random_suffix_data_t* sc_data_access_t::find_random_suffix( unsigned suffi
   return 0;
 }
 
-const item_data_t* sc_data_access_t::find_item( unsigned item_id ) SC_CONST
-{
-  assert( item_id );
-  
-  if ( item_id > m_items_index_size ) return 0;
-
-  return m_items_index[ item_id ];
-}
-
 double sc_data_access_t::weapon_speed( unsigned item_id ) SC_CONST
 {
-  const item_data_t* item = find_item( item_id );
+  const item_data_t* item = item_data_t::find( item_id );
 
   if ( item ) return item -> delay / 1000.0;
+  return 0.0;
+}
+
+double sc_data_access_t::weapon_damage_multiplier( unsigned item_id ) SC_CONST
+{
+  const item_data_t* item = item_data_t::find( item_id );
+
+  if ( item ) return item -> dmg_range;
   return 0.0;
 }
 
@@ -1828,7 +1827,7 @@ double sc_data_access_t::m_armor_invtype( unsigned inv_type, unsigned armor_type
 
 double sc_data_access_t::weapon_dps( unsigned item_id ) SC_CONST
 {
-  const item_data_t* item = m_items_index[ item_id ];
+  const item_data_t* item = item_data_t::find( item_id );
   const sc_array_t<item_scale_data_t>* p_array = 0;
   
   if ( ! item ) return 0.0;
@@ -1890,7 +1889,9 @@ double sc_data_access_t::weapon_dps( unsigned item_id ) SC_CONST
   for ( unsigned i = 0; i < p_array -> size(); i++ )
   {
     if ( p_array -> ptr( i ) -> ilevel == ( unsigned ) item -> level )
+    {
       return p_array -> ptr( i ) -> values[ item -> quality ];
+    }
   }
   
   return 0;

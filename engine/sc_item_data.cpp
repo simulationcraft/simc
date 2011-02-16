@@ -210,16 +210,30 @@ static bool parse_gems( item_t&            item,
   {
     if ( gem_ids[ i ].empty() || gem_ids[ i ] == "" )
     {
-      // Check if there's a gem slot, if so, this is ungemmed item.
+      /// Check if there's a gem slot, if so, this is ungemmed item.
       if ( item_data -> socket_color[ i ] )
         match = false;
       continue;
     }
-
-    if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data -> socket_color[ i ] ) )
-      match = false;
+    
+    if ( item_data -> socket_color[ i ] )
+    {
+      if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data -> socket_color[ i ] ) )
+        match = false;
+    }
+    else 
+    {
+      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a 
+      // single extra one. Wrist/hands should be checked against player professions at 
+      // least ..
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST )
+      {
+        item_t::parse_gem( item, gem_ids[ i ] );
+        break;
+      }
+    }
   }
-
+  
   // Socket bonus
   if ( match && ( socket_bonus = item.player -> player_data.find_item_enchantment( item_data -> id_socket_bonus ) ) )
   {
@@ -401,7 +415,7 @@ int item_database_t::random_suffix_type( const item_t& item )
 
 uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
 {
-  const item_data_t* item = item_struct.player -> player_data.find_item( item_id );
+  const item_data_t* item = item_data_t::find( item_id );
   
   if ( ! item ) return 0;
   
@@ -441,12 +455,16 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
 
 uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
 {
-  return (uint32_t) floor( item.player -> player_data.weapon_dps( item_id ) * item.player -> player_data.weapon_speed( item_id ) * 0.8 + 0.5 );
+  return (uint32_t) floor( item.player -> player_data.weapon_dps( item_id ) * 
+    item.player -> player_data.weapon_speed( item_id ) * 
+    ( 1 - item.player -> player_data.weapon_damage_multiplier( item_id ) / 2 ) );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
 {
-  return (uint32_t) floor( item.player -> player_data.weapon_dps( item_id ) * item.player -> player_data.weapon_speed( item_id ) * 1.2 + 0.5 );
+  return  (uint32_t) ceil( item.player -> player_data.weapon_dps( item_id ) * 
+    item.player -> player_data.weapon_speed( item_id ) * 
+    ( 1 + item.player -> player_data.weapon_damage_multiplier( item_id ) / 2 ) );
 }
 
 // item_database_t::download_slot ===========================================
@@ -461,9 +479,13 @@ bool item_database_t::download_slot( item_t&            item,
 {
   player_t* p                  = item.player;
   long iid                     = strtol( item_id.c_str(), 0, 10 );
-  const item_data_t* item_data = p -> player_data.m_items_index[ iid ];
+  const item_data_t* item_data = item_data_t::find( iid );
 
-  if ( ! item_data || ! iid ) return false;
+  if ( ! item_data || ! iid )
+  {
+    item.sim -> errorf( "Player %s unable to find item id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
 
   parse_item_name( item, item_data );
   parse_item_quality( item, item_data );
@@ -518,7 +540,7 @@ bool item_database_t::download_item( item_t& item, const std::string& item_id )
 {
   player_t* p                  = item.player;
   long iid                     = strtol( item_id.c_str(), 0, 10 );
-  const item_data_t* item_data = p -> player_data.m_items_index[ iid ];
+  const item_data_t* item_data = item_data_t::find( iid );
 
   if ( ! item_data || ! iid ) return false;
 
@@ -553,7 +575,7 @@ bool item_database_t::download_item( item_t& item, const std::string& item_id )
 bool item_database_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
 {
   long gid                 = strtol( glyph_id.c_str(), 0, 10 );
-  const item_data_t* glyph = player -> player_data.find_item( gid );
+  const item_data_t* glyph = item_data_t::find( gid );
 
   if ( ! gid || ! glyph ) return false;
   
@@ -576,7 +598,7 @@ int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
   int gc                                   = SOCKET_COLOR_NONE;
   std::vector<std::string> stats;
   
-  if ( ( gem = item.player -> player_data.m_items_index[ gid ] ) && 
+  if ( ( gem = item_data_t::find( gid ) ) && 
        ( gem_prop = item.player -> player_data.find_gem_property( gem -> gem_properties ) ) )
   {
     // For now, make meta gems simply parse the name out
