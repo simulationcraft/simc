@@ -7,3 +7,9 @@ chardev=34115 name=Hunter_MM_T11_372_Arcane save=Hunter_MM_T11_372_Arcane.simc
 chardev=34116 name=Hunter_SV_T11_372 save=Hunter_SV_T11_372.simc
 
 chardev=34117 name=Hunter_MM_T11_372 save=Hunter_MM_T11_372.simc
+
+chardev=36175 name=Hunter_BM_T11_359 save=Hunter_BM_T11_359.simc
+
+chardev=36177 name=Hunter_SV_T11_359 save=Hunter_SV_T11_359.simc
+
+chardev=36158 name=Hunter_MM_T11_359 save=Hunter_MM_T11_359.simc
