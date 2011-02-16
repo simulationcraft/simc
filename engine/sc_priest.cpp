@@ -20,7 +20,6 @@ struct priest_t : public player_t
   buff_t* buffs_dark_archangel;
   buff_t* buffs_holy_archangel;
   buff_t* buffs_inner_fire;
-  buff_t* buffs_inner_fire_armor;
   buff_t* buffs_inner_focus;
   buff_t* buffs_inner_will;
   buff_t* buffs_weakened_soul;
@@ -1341,21 +1340,12 @@ struct holy_fire_t : public priest_spell_t
 
 struct inner_fire_t : public priest_spell_t
 {
-  double sp_value, armor_value;
-
   inner_fire_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "inner_fire", player, "Inner Fire" ), sp_value( 0.0 ), armor_value( 0.0 )
+      priest_spell_t( "inner_fire", player, "Inner Fire" )
   {
     parse_options( NULL, options_str );
 
     trigger_gcd = 0;
-
-    priest_t* p = player -> cast_priest();
-
-    sp_value    = effect_min( E_APPLY_AURA, A_MOD_DAMAGE_DONE );
-    armor_value = base_value( E_APPLY_AURA, A_MOD_RESISTANCE_PCT ) / 100.0;
-
-    armor_value *= ( 1.0 + p -> glyphs.inner_fire -> ok() * 0.5 );
   }
 
   virtual void execute()
@@ -1366,15 +1356,14 @@ struct inner_fire_t : public priest_spell_t
 
     p -> buffs_inner_will       -> expire ();
 
-    p -> buffs_inner_fire       -> trigger( 1, sp_value );
-    p -> buffs_inner_fire_armor -> trigger( 1, armor_value );
+    p -> buffs_inner_fire       -> trigger();
   }
 
   virtual bool ready()
   {
     priest_t* p = player -> cast_priest();
 
-    return ! p -> buffs_inner_fire -> check() || ! p -> buffs_inner_fire_armor -> check();
+    return ! p -> buffs_inner_fire -> check();
   }
 };
 
@@ -1402,7 +1391,6 @@ struct inner_will_t : public priest_spell_t
     priest_spell_t::execute();
 
     p -> buffs_inner_fire -> expire();
-    p -> buffs_inner_fire_armor -> expire();
 
     p -> buffs_inner_will -> trigger( 1, -value );
   }
@@ -3728,7 +3716,8 @@ double priest_t::composite_armor() SC_CONST
 {
   double a = player_t::composite_armor();
 
-  a *= 1.0 + buffs_inner_fire_armor -> value();
+  if ( buffs_inner_fire -> up() )
+    a *= 1.0 + buffs_inner_fire -> base_value( E_APPLY_AURA, A_MOD_RESISTANCE_PCT ) / 100.0 * ( 1.0 + glyphs.inner_fire -> ok() * 0.5 );
 
   return floor( a );
 }
@@ -3739,7 +3728,9 @@ double priest_t::composite_spell_power( const school_type school ) SC_CONST
 {
   double sp = player_t::composite_spell_power( school );
 
-  sp += buffs_inner_fire -> value();
+
+  if ( buffs_inner_fire -> up() )
+    sp += buffs_inner_fire -> effect_min( E_APPLY_AURA, A_MOD_DAMAGE_DONE );
 
   return sp;
 }
@@ -4167,7 +4158,6 @@ void priest_t::init_buffs()
   buffs_dark_archangel             = new buff_t( this, "dark_archangel",             5, 18.0                     );
   buffs_holy_archangel             = new buff_t( this, "holy_archangel",             5, 18.0                     );
   buffs_inner_fire                 = new buff_t( this, 588, "inner_fire"                                              );
-  buffs_inner_fire_armor           = new buff_t( this, "inner_fire_armor"                                        );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
