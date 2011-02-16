@@ -134,6 +134,9 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   armory_t::format( type_str );
   armory_t::format( race_str );
+  
+  if ( race_str == "forsaken" )
+    race_str = "undead";
 
   race_type r = util_t::parse_race_type( race_str );
 
