@@ -1282,9 +1282,6 @@ public:
   void set_parent( sc_data_t* p, const bool ptr = false );
   void reset( );
 
-  sc_array_t<spell_data_t>        m_spells;
-  sc_array_t<spelleffect_data_t>  m_effects;
-  sc_array_t<talent_data_t>       m_talents;
   sc_array_t<double>              m_melee_crit_base;
   sc_array_t<double>              m_spell_crit_base;
   sc_array_t<double>              m_spell_scaling;

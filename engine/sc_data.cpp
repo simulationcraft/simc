@@ -35,9 +35,6 @@ void sc_data_t::reset( )
 
 void sc_data_t::m_copy( const sc_data_t& copy )
 {
-  m_spells.copy_array( copy.m_spells );
-  m_effects.copy_array( copy.m_effects );
-  m_talents.copy_array( copy.m_talents );
   m_melee_crit_base.copy_array( copy.m_melee_crit_base );
   m_spell_crit_base.copy_array( copy.m_spell_crit_base );
   m_spell_scaling.copy_array( copy.m_spell_scaling );
@@ -88,13 +85,12 @@ void sc_data_t::create_spell_index()
     delete [] m_spells_index;
     m_spells_index = NULL;
   }
-
-  for ( uint32_t i = 0; i < m_spells.cols; i++ )
+  
+  for ( spell_data_t* s = spell_data_t::list(); s -> id; s++ )
   {
-    spell_data_t& ref = m_spells.ref( i );
-    if ( ref.id > max_id )
+    if ( s -> id > max_id )
     {
-      max_id = ref.id;
+      max_id = s -> id;
     }
   }
 
@@ -108,13 +104,10 @@ void sc_data_t::create_spell_index()
   m_spells_index = new spell_data_t*[ m_spells_index_size ];
   memset( m_spells_index, 0, sizeof( spell_data_t* ) * m_spells_index_size );
 
-  for ( uint32_t i = 0; i < m_spells.cols; i++ )
+  for ( spell_data_t* s = spell_data_t::list(); s -> id; s++ )
   {
-    spell_data_t* p = m_spells.ptr( i );
-    m_spells_index[ p->id ] = p;
+    m_spells_index[ s -> id ] = s;
   }
-
-  m_spells_index_size = max_id + 1;
 }
 
 void sc_data_t::create_effects_index()
@@ -127,12 +120,11 @@ void sc_data_t::create_effects_index()
     m_effects_index = NULL;
   }
 
-  for ( uint32_t i = 0; i < m_effects.cols; i++ )
+  for ( const spelleffect_data_t* e = spelleffect_data_t::list(); e -> id; e++ )
   {
-    spelleffect_data_t& ref = m_effects.ref( i );
-    if ( ref.id > max_id )
+    if ( e -> id > max_id )
     {
-      max_id = ref.id;
+      max_id = e -> id;
     }
   }
 
@@ -146,10 +138,9 @@ void sc_data_t::create_effects_index()
   m_effects_index = new spelleffect_data_t*[ m_effects_index_size ];
   memset( m_effects_index, 0, sizeof( spelleffect_data_t* ) * m_effects_index_size );
 
-  for ( uint32_t i = 0; i < m_effects.cols; i++ )
+  for ( spelleffect_data_t* e = spelleffect_data_t::list(); e -> id; e++ )
   {
-    spelleffect_data_t* p = m_effects.ptr( i );
-    m_effects_index[ p->id ] = p;
+    m_effects_index[ e -> id ] = e;
   }
 }
 
@@ -163,12 +154,11 @@ void sc_data_t::create_talents_index()
     m_talents_index = NULL;
   }
 
-  for ( uint32_t i = 0; i < m_talents.cols; i++ )
+  for ( const talent_data_t* t = talent_data_t::list(); t -> id; t++ )
   {
-    talent_data_t& ref = m_talents.ref( i );
-    if ( ref.id > max_id )
+    if ( t -> id > max_id )
     {
-      max_id = ref.id;
+      max_id = t -> id;
     }
   }
 
@@ -182,10 +172,9 @@ void sc_data_t::create_talents_index()
   m_talents_index = new talent_data_t*[ m_talents_index_size ];
   memset( m_talents_index, 0, sizeof( talent_data_t* ) * m_talents_index_size );
 
-  for ( uint32_t i = 0; i < m_talents.cols; i++ )
+  for ( talent_data_t* t = talent_data_t::list(); t -> id; t++ )
   {
-    talent_data_t* p = m_talents.ptr( i );
-    m_talents_index[ p->id ] = p;
+    m_talents_index[ t -> id ] = t;
   }
 
   // Now create the talent trees
@@ -220,34 +209,30 @@ void sc_data_t::create_talents_index()
   for ( j = 0; j < max_classes + 3; j++ )
     n[ j ] = 0;
 
-  for ( j = 0; j < m_talents.cols; j++ )
+  for ( const talent_data_t* t = talent_data_t::list(); t -> id; t++ )
   {
-    talent_data_t* p = m_talents.ptr( j );
-    if ( !p )
-      continue;
-
-    if ( p->m_class != 0 )
+    if ( t -> m_class != 0 )
     {
       for ( c = 1; c < max_classes; c++ )
       {
-        if ( ( p->m_class & ( 1 << ( c - 1 ) ) ) == ( uint32_t ) ( 1 << ( c - 1 ) ) )
+        if ( ( t -> m_class & ( 1 << ( c - 1 ) ) ) == ( uint32_t ) ( 1 << ( c - 1 ) ) )
         {
-          if ( p->tab_page < MAX_TALENT_TABS )
+          if ( t -> tab_page < MAX_TALENT_TABS )
           {
-            v1[ c * MAX_TALENT_TABS + p->tab_page ][ n[ c * MAX_TALENT_TABS + p->tab_page ] ] = p->id;
-            n[ c * MAX_TALENT_TABS + p->tab_page ]++;
+            v1[ c * MAX_TALENT_TABS + t -> tab_page ][ n[ c * MAX_TALENT_TABS + t -> tab_page ] ] = t -> id;
+            n[ c * MAX_TALENT_TABS + t -> tab_page ]++;
           }
         }
       }
     }
 
-    if ( p->m_pet != 0 )
+    if ( t -> m_pet != 0 )
     {
       for ( c = 0; c < 3; c++ )
       {
-        if ( ( p->m_pet & ( 1 << ( c - 1 ) ) ) == ( uint32_t ) ( 1 << ( c - 1 ) ) )
+        if ( ( t -> m_pet & ( 1 << ( c - 1 ) ) ) == ( uint32_t ) ( 1 << ( c - 1 ) ) )
         {
-          v1[ ( c + max_classes ) * MAX_TALENT_TABS + 0 ][ n[ ( c + max_classes ) * MAX_TALENT_TABS + 0 ] ] = p->id;
+          v1[ ( c + max_classes ) * MAX_TALENT_TABS + 0 ][ n[ ( c + max_classes ) * MAX_TALENT_TABS + 0 ] ] = t -> id;
           n[ ( c + max_classes ) * MAX_TALENT_TABS + 0 ]++;
         }
       }      
