@@ -712,13 +712,19 @@ struct hunter_spell_t : public spell_t
 {
   hunter_spell_t( const char* n, player_t* p, const school_type s, int t=TREE_NONE ) :
       spell_t( n, p, RESOURCE_FOCUS, s, t )
-  {}
+  {
+    range=-1;
+  }
   hunter_spell_t( const char* n, player_t* p, const char* sname ) :
       spell_t( n, sname, p )
-  {}
+  {
+    range=-1;
+  }
   hunter_spell_t( const char* n, player_t* p, const uint32_t id ) :
       spell_t( n, id, p )
-  {}
+  {
+    range=-1;
+  }
 
   virtual double gcd() SC_CONST;
 };
@@ -2203,8 +2209,6 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     harmful = false;
   }
 
-  virtual bool usable_moving() { return true; }
-
   virtual void execute()
   {
     hunter_spell_t::execute();
@@ -2245,8 +2249,6 @@ struct aspect_of_the_fox_t : public hunter_spell_t
     parse_options( NULL, options_str );
     harmful = false;
   }
-
-  virtual bool usable_moving() { return true; }
 
   virtual void execute()
   {
