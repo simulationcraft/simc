@@ -20,7 +20,7 @@ actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down
 actions+=/adrenaline_rush,if=energy<35
-actions+=/eviscerate,if=combo_points=5&buff.bandits_guile.stack>=3
+actions+=/eviscerate,if=combo_points=5&buff.bandits_guile.stack>=12
 actions+=/rupture,if=!ticking&combo_points=5&target.time_to_die>10
 actions+=/eviscerate,if=combo_points=5
 actions+=/revealing_strike,if=combo_points=4&buff.revealing_strike.down

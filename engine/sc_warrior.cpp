@@ -1320,9 +1320,6 @@ struct colossus_smash_t : public warrior_attack_t
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
   }
 
-  // Does CS benefit from its own effect?
-  // virtual double armor() SC_CONST { return 0.0; }
-
   virtual void execute()
   {
     warrior_attack_t::execute();

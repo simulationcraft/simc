@@ -3207,7 +3207,7 @@ void rogue_t::init_actions()
       if ( talents.adrenaline_rush -> rank() ) 
         action_list_str += "/adrenaline_rush,if=energy<35";
       if ( talents.bandits_guile -> rank() )
-        action_list_str += "/eviscerate,if=combo_points=5&buff.bandits_guile.stack>=3";
+        action_list_str += "/eviscerate,if=combo_points=5&buff.bandits_guile.stack>=12";
       action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
       action_list_str += "/eviscerate,if=combo_points=5";
       if ( talents.revealing_strike -> rank() )
