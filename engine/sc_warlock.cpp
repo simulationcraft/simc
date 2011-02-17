@@ -4236,7 +4236,7 @@ void warlock_t::init_actions()
 
     // Choose Potion
     if ( level >= 80 )
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20";
     else if ( level >= 70 )
     {
       if ( primary_tree() == TREE_AFFLICTION )
@@ -4251,7 +4251,7 @@ void warlock_t::init_actions()
     case TREE_AFFLICTION:
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
-      if ( level >= 12 ) action_list_str += "/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react";
+      if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
       if ( level >= 75) action_list_str += "/shadowflame";
@@ -4309,10 +4309,10 @@ void warlock_t::init_actions()
       {
         action_list_str += "/soul_fire,if=buff.soulburn.up";
       }
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
       action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
@@ -4335,7 +4335,7 @@ void warlock_t::init_actions()
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() && ! glyphs.imp -> ok() ) action_list_str += "/demon_soul";
       if ( level >= 60 ) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=20&miss_react";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";

@@ -15,10 +15,10 @@ actions+=/summon_succubus
 actions+=/dark_intent
 actions+=/snapshot_stats
 actions+=/blood_fury
-actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat
+actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
 actions+=/corruption,if=(!ticking|remains<tick_time)&miss_react
 actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
-actions+=/bane_of_agony,if=target.time_to_die>=20&!ticking&miss_react
+actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
 actions+=/shadowflame
