@@ -249,7 +249,7 @@ static void print_text_actions( FILE* file, player_t* p )
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> compound_dmg > 0 )
+    if ( s -> num_executes > 1 || s -> compound_dmg > 0 )
     {
       print_text_action( file, s, max_length );
     }
@@ -260,7 +260,7 @@ static void print_text_actions( FILE* file, player_t* p )
     bool first=true;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
-      if ( s -> total_dmg > 0 )
+      if ( s -> num_executes || s -> compound_dmg > 0 )
       {
         if ( first )
         {
@@ -2704,7 +2704,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   i = 0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> compound_dmg > 0 )
+    if ( s -> num_executes > 1 || s -> compound_dmg > 0 )
     {
       print_html_action( file, s, p, i );
       i++;
@@ -2718,7 +2718,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     i = 0;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
-      if ( s -> compound_dmg > 0 )
+      if ( s -> num_executes || s -> compound_dmg > 0 )
       {
         if ( first )
         {
