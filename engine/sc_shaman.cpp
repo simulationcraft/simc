@@ -319,6 +319,11 @@ struct shaman_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual double haste() SC_CONST;
+  virtual bool   usable_moving()
+  {
+    // Return true when Spiritwalker's Grace is up
+    return false;
+  }
 };
 
 // ==========================================================================

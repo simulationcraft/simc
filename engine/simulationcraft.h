@@ -3640,7 +3640,7 @@ struct action_t : public spell_id_t
   int resource, tree, result, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, auto_cast;
   bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
-  bool tick_may_crit, tick_zero, hasted_ticks, usable_moving;
+  bool tick_may_crit, tick_zero, hasted_ticks;
   int dot_behavior;
   double rp_gain;
   double min_gcd, trigger_gcd, range;
@@ -3743,6 +3743,7 @@ struct action_t : public spell_id_t
   virtual void   extend_duration( int extra_ticks );
   virtual void   extend_duration_seconds( double extra_ticks );
   virtual void   update_ready();
+  virtual bool   usable_moving() { return false; }
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
@@ -3887,7 +3888,6 @@ struct absorb_t : public spell_t
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                                     int    dmg_type, int travel_result );
-  virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual void travel( player_t*, int travel_result, double travel_dmg );

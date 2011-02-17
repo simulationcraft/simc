@@ -42,7 +42,6 @@ void action_t::_init_action_t()
   tick_may_crit                  = false;
   tick_zero                      = false;
   hasted_ticks                   = false;
-  usable_moving                  = false;
   dot_behavior                   = DOT_CLIP;
   rp_gain                        = 0.0;
   min_gcd                        = 0.0;
@@ -1460,7 +1459,7 @@ bool action_t::ready()
       return false;
 
   if ( player -> buffs.moving -> check() )
-    if ( ! usable_moving && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
+    if ( ! usable_moving() && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
       return false;
 
   if ( moving != -1 )

@@ -2420,8 +2420,12 @@ struct scorch_t : public mage_spell_t
     if ( debuff )
       check_talent( p -> talents.critical_mass -> rank() );
 
-    if ( p -> talents.firestarter -> rank() )
-      usable_moving = true;
+  }
+
+  virtual bool usable_moving()
+  {
+    mage_t* p = player -> cast_mage();
+    return p -> talents.firestarter -> rank() != 0;
   }
 
   virtual void execute()
