@@ -1795,6 +1795,12 @@ struct cobra_shot_t : public hunter_attack_t
       base_execute_time -= 0.2;
   }
   
+  virtual bool usable_moving()
+  {
+    hunter_t* p = player -> cast_hunter();
+    return p -> active_aspect == ASPECT_FOX;
+  }
+
   void execute()
   {
     hunter_attack_t::execute();
@@ -2094,6 +2100,12 @@ struct steady_shot_t : public hunter_attack_t
     }
   }
 
+  virtual bool usable_moving()
+  {
+    hunter_t* p = player -> cast_hunter();
+    return p -> active_aspect == ASPECT_FOX;
+  }
+
   void execute()
   {
     hunter_attack_t::execute();
@@ -2216,6 +2228,44 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
   }
 };
 
+// Aspect of the Fox
+
+struct aspect_of_the_fox_t : public hunter_spell_t
+{
+  aspect_of_the_fox_t( player_t* player, const std::string& options_str ) :
+    hunter_spell_t( "aspect_of_the_fox", player, "Aspect of the Fox" )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    hunter_spell_t::execute();
+    hunter_t* p = player -> cast_hunter();
+
+    if ( !p -> active_aspect )
+    {
+      p -> active_aspect = ASPECT_FOX;
+    }
+    else if ( p -> active_aspect == ASPECT_FOX )
+    {
+      p -> active_aspect = ASPECT_NONE;
+    }
+    else if ( p -> active_aspect == ASPECT_HAWK )
+    {
+      p -> buffs_aspect_of_the_hawk -> expire();
+      p -> active_aspect = ASPECT_FOX;
+    }
+
+  }
+  virtual bool ready()
+  {
+    hunter_t* p = player -> cast_hunter();
+    if ( p -> active_aspect == ASPECT_FOX) return false;
+    return hunter_spell_t::ready();
+  }
+};
 
 // Bestial Wrath =========================================================
 
@@ -2621,6 +2671,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "aimed_shot_mm"         ) return new          aimed_shot_mm_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_hawk"    ) return new     aspect_of_the_hawk_t( this, options_str );
+  if ( name == "aspect_of_the_fox"     ) return new     aspect_of_the_fox_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
