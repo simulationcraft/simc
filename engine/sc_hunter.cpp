@@ -2203,6 +2203,8 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     harmful = false;
   }
 
+  virtual bool usable_moving() { return true; }
+
   virtual void execute()
   {
     hunter_spell_t::execute();
@@ -2217,6 +2219,11 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     {
       p -> active_aspect = ASPECT_NONE;
       p -> buffs_aspect_of_the_hawk -> expire();
+    }
+    else if ( p -> active_aspect == ASPECT_FOX )
+    {
+      p -> active_aspect = ASPECT_HAWK;
+      p -> buffs_aspect_of_the_hawk -> trigger( 1, effect_average( 1 ) * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
     }
 
   }
@@ -2238,6 +2245,8 @@ struct aspect_of_the_fox_t : public hunter_spell_t
     parse_options( NULL, options_str );
     harmful = false;
   }
+
+  virtual bool usable_moving() { return true; }
 
   virtual void execute()
   {
@@ -3067,13 +3076,15 @@ void hunter_t::init_actions()
   {
     action_list_str = "flask,type=winds";
     action_list_str += "/food,type=seafood_magnifique_feast";
-    action_list_str += "/hunters_mark/summon_pet/aspect_of_the_hawk";
+    action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura -> rank() ) action_list_str += "/trueshot_aura";
     action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     if ( glyphs.aimed_shot -> ok() )
       action_list_str += "|buff.rapid_fire.react";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
+    action_list_str += "/aspect_of_the_hawk,moving=0";
+    action_list_str += "/aspect_of_the_fox,moving=1";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
