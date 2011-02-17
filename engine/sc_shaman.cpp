@@ -2607,6 +2607,8 @@ struct shaman_totem_t : public shaman_spell_t
     shaman_spell_t::last_tick();
     
     shaman_t* p = player -> cast_shaman();
+    if ( sim -> log )
+      log_t::output( sim, "%s destroys %s", player -> name(), p -> totems[ totem ] -> name() );
     p -> totems[ totem ] = 0;
   }
 
@@ -2697,8 +2699,6 @@ struct fire_elemental_totem_t : public shaman_totem_t
     p -> summon_pet( "fire_elemental" );
   }
   
-  virtual void tick() { }
-
   virtual void last_tick()
   {
     shaman_totem_t::last_tick();
