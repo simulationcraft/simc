@@ -3098,8 +3098,8 @@ void hunter_t::init_actions()
     }
     switch ( race )
     {
-    case RACE_ORC:       action_list_str += glyphs.aimed_shot -> ok() ? "/blood_fury,if=dot.serpent_sting.ticking" : "/blood_fury";     break;
-    case RACE_TROLL:     action_list_str += "/berserking"; break;
+    case RACE_ORC:       action_list_str += "/blood_fury";     break;
+    case RACE_TROLL:     action_list_str += "/berserking";     break;
     case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent"; break;
     default: break;
     }
@@ -3130,9 +3130,9 @@ void hunter_t::init_actions()
         action_list_str += "/steady_shot";
       break;
     case TREE_MARKSMANSHIP:
-      action_list_str += "/serpent_sting,if=!ticking";
       if ( glyphs.arcane_shot -> ok() )
       {
+        action_list_str += "/serpent_sting,if=!ticking";
         action_list_str += "/rapid_fire";
         if ( talents.chimera_shot -> rank() )
           action_list_str += "/chimera_shot";
@@ -3142,9 +3142,10 @@ void hunter_t::init_actions()
       }
       else
       {
+        action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=80";
         if ( talents.chimera_shot -> rank() )
         {
-          action_list_str += "/chimera_shot,if=target.health_pct<=80|dot.serpent_sting.remains<3|time<5";
+          action_list_str += "/chimera_shot,if=target.health_pct<=80";
         }
         action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
         action_list_str += "/readiness,wait_for_rapid_fire=1";
@@ -3155,7 +3156,7 @@ void hunter_t::init_actions()
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
       if ( ! glyphs.arcane_shot -> ok() )
       {
-        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|(target.health_pct>80&(dot.serpent_sting.remains>=5|focus>=65))";
+        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|target.health_pct>80";
       }
       else
       {
