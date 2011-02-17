@@ -538,7 +538,6 @@ bool item_database_t::download_slot( item_t&            item,
 
 bool item_database_t::download_item( item_t& item, const std::string& item_id )
 {
-  player_t* p                  = item.player;
   long iid                     = strtol( item_id.c_str(), 0, 10 );
   const item_data_t* item_data = item_data_t::find( iid );
 
