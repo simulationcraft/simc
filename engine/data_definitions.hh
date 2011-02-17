@@ -21,7 +21,20 @@ struct dbc_t
   static bool get_ptr();
   static const char* build_level();
   static void init();
+  static void de_init();
   static int glyphs( std::vector<unsigned>& glyph_ids, int cid );
+  
+  static void create_spell_data_index();
+  static spell_data_t** get_spell_data_index();
+  static unsigned get_spell_data_index_size();
+
+  static void create_spelleffect_data_index();
+  static spelleffect_data_t** get_spelleffect_data_index();
+  static unsigned get_spelleffect_data_index_size();
+
+  static void create_talent_data_index();
+  static talent_data_t** get_talent_data_index();
+  static unsigned get_talent_data_index_size();
 };
 
 struct spell_data_t {

@@ -17,9 +17,18 @@
 #endif
 
 static bool use_ptr = false;
-static spell_data_t       nil_sd;
-static spelleffect_data_t nil_sed;
-static talent_data_t      nil_td;
+static spell_data_t         nil_sd;
+static spelleffect_data_t   nil_sed;
+static talent_data_t        nil_td;
+
+static spell_data_t**       idx_sd[2]       = { 0, 0 };
+static unsigned             idx_sd_size[2]  = { 0, 0 };
+
+static spelleffect_data_t** idx_sed[2]      = { 0, 0 };
+static unsigned             idx_sed_size[2] = { 0, 0 };
+
+static talent_data_t**      idx_td[2]       = { 0, 0 };
+static unsigned             idx_td_size[2]  = { 0, 0 };
 
 bool dbc_t::get_ptr()
 {
@@ -75,6 +84,16 @@ void dbc_t::init()
 #endif
 }
 
+void dbc_t::de_init()
+{
+  if ( idx_sd[ 0 ]  ) delete [] idx_sd[ 0 ];
+  if ( idx_sd[ 1 ]  ) delete [] idx_sd[ 1 ];
+  if ( idx_td[ 0 ]  ) delete [] idx_td[ 0 ];
+  if ( idx_td[ 1 ]  ) delete [] idx_td[ 1 ];
+  if ( idx_sed[ 0 ] ) delete [] idx_sed[ 0 ];
+  if ( idx_sed[ 1 ] ) delete [] idx_sed[ 1 ];
+}
+
 int dbc_t::glyphs( std::vector<unsigned>& glyph_ids, int cid )
 {
   for( int i=0; i < GLYPH_MAX; i++ )
@@ -87,6 +106,126 @@ int dbc_t::glyphs( std::vector<unsigned>& glyph_ids, int cid )
     }
   }
   return glyph_ids.size();
+}
+
+spell_data_t** dbc_t::get_spell_data_index()
+{
+  return idx_sd[ use_ptr ];
+}
+
+unsigned dbc_t::get_spell_data_index_size()
+{
+  return idx_sd_size[ use_ptr ];
+}
+
+void dbc_t::create_spell_data_index()
+{
+  unsigned max_id = 0;
+  
+  if ( idx_sd[ use_ptr ] ) return;
+
+  for ( spell_data_t* s = spell_data_t::list(); s -> id; s++ )
+  {
+    if ( s -> id > max_id )
+    {
+      max_id = s -> id;
+    }
+  }
+
+  if ( max_id >= 1000000 )
+  {
+    return;
+  }
+
+  idx_sd_size[ use_ptr ] = max_id + 1;
+  idx_sd[ use_ptr ]      = new spell_data_t*[ max_id + 1 ];
+
+  memset( idx_sd[ use_ptr ], 0, sizeof( spell_data_t* ) * max_id + 1 );
+
+  for ( spell_data_t* s = spell_data_t::list(); s -> id; s++ )
+  {
+    idx_sd[ use_ptr ][ s -> id ] = s;
+  }
+}
+
+void dbc_t::create_spelleffect_data_index()
+{
+  unsigned max_id = 0;
+  
+  if ( idx_sed[ use_ptr ] ) return;
+
+  for ( const spelleffect_data_t* e = spelleffect_data_t::list(); e -> id; e++ )
+  {
+    if ( e -> id > max_id )
+    {
+      max_id = e -> id;
+    }
+  }
+
+  if ( max_id >= 1000000 )
+  {
+    return;
+  }
+
+  idx_sed_size[ use_ptr ] = max_id + 1;
+  idx_sed[ use_ptr ]      = new spelleffect_data_t*[ max_id + 1 ];
+
+  memset( idx_sed[ use_ptr ], 0, sizeof( spelleffect_data_t* ) * max_id + 1 );
+
+  for ( spelleffect_data_t* e = spelleffect_data_t::list(); e -> id; e++ )
+  {
+    idx_sed[ use_ptr ][ e -> id ] = e;
+  }
+}
+
+spelleffect_data_t** dbc_t::get_spelleffect_data_index()
+{
+  return idx_sed[ use_ptr ];
+}
+
+unsigned dbc_t::get_spelleffect_data_index_size()
+{
+  return idx_sed_size[ use_ptr ];
+}
+
+void dbc_t::create_talent_data_index()
+{
+  unsigned max_id = 0;
+  
+  if ( idx_td[ use_ptr ] ) return;
+
+  for ( const talent_data_t* t = talent_data_t::list(); t -> id; t++ )
+  {
+    if ( t -> id > max_id )
+    {
+      max_id = t -> id;
+    }
+  }
+
+  if ( max_id >= 1000000 )
+  {
+    return;
+  }
+
+  idx_td_size[ use_ptr ] = max_id + 1;
+  idx_td[ use_ptr ]      = new talent_data_t*[ max_id + 1 ];
+
+  memset( idx_td[ use_ptr ], 0, sizeof( talent_data_t* ) * max_id + 1 );
+
+  for ( talent_data_t* t = talent_data_t::list(); t -> id; t++ )
+  {
+    idx_td[ use_ptr ][ t -> id ] = t;
+  }
+}
+
+talent_data_t** dbc_t::get_talent_data_index()
+{
+  return idx_td[ use_ptr ];
+}
+
+unsigned dbc_t::get_talent_data_index_size()
+{
+  return idx_td_size[ use_ptr ];
 }
 
 spell_data_t* spell_data_t::list() 
@@ -421,5 +560,17 @@ void sc_data_t::set_parent( sc_data_t* p, const bool ptr )
     m_copy( *p );
   }
 
-  create_index();
+#if SC_USE_PTR
+  dbc_t::set_ptr( ptr );
+#endif
+  dbc_t::create_spell_data_index();
+  m_spells_index      = dbc_t::get_spell_data_index();
+  m_spells_index_size = dbc_t::get_spell_data_index_size();
+  dbc_t::create_spelleffect_data_index();
+  m_effects_index      = dbc_t::get_spelleffect_data_index();
+  m_effects_index_size = dbc_t::get_spelleffect_data_index_size();
+  dbc_t::create_talent_data_index();
+  m_talents_index      = dbc_t::get_talent_data_index();
+  m_talents_index_size = dbc_t::get_talent_data_index_size();
+  create_talent_trees();
 }

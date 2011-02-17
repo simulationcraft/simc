@@ -2233,6 +2233,7 @@ int sim_t::main( int argc, char** argv )
   sim_signal_handler_t::init( 0 );
 
   thread_t::de_init();
+  dbc_t::de_init();
 
   return 0;
 }

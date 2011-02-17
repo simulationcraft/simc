@@ -1277,8 +1277,6 @@ public:
   sc_data_t( sc_data_t* p, const bool ptr = false );
   sc_data_t( const sc_data_t& copy );
 
-  virtual ~sc_data_t();
-
   void set_parent( sc_data_t* p, const bool ptr = false );
   void reset( );
 
@@ -1328,15 +1326,11 @@ public:
 
   sc_array_t<uint32_t>            m_talent_trees;
   sc_array_t<uint32_t>            m_pet_talent_trees;
-
-  void                            create_index();
 private:
   void                            m_copy( const sc_data_t& copy );
   const sc_data_t*                m_parent;
 
-  void                            create_spell_index();
-  void                            create_effects_index();
-  void                            create_talents_index();
+  void                            create_talent_trees();
   
   void                            sort_talents( uint32_t* p, const uint32_t num );
   int                             talent_compare( const void *vid1, const void *vid2 );

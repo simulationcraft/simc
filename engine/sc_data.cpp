@@ -2,30 +2,20 @@
 
 sc_data_t::sc_data_t( sc_data_t* p, const bool ptr )
 {
-  m_spells_index = NULL;
-  m_effects_index = NULL;
-  m_talents_index = NULL;
   set_parent( p, ptr );
 }
 
 sc_data_t::sc_data_t( const sc_data_t& copy )
 {
-  m_spells_index = NULL;
-  m_effects_index = NULL;
-  m_talents_index = NULL;
+  m_spells_index       = copy.m_spells_index;
+  m_spells_index_size  = copy.m_spells_index_size;
+  m_effects_index      = copy.m_effects_index;
+  m_effects_index_size = copy.m_effects_index_size;
+  m_talents_index      = copy.m_talents_index;
+  m_talents_index_size = copy.m_talents_index_size;
   m_parent = copy.m_parent;
   m_copy( copy );
-  create_index();
-}
-
-sc_data_t::~sc_data_t()
-{
-  if ( m_spells_index )
-    delete [] m_spells_index;
-  if ( m_effects_index )
-    delete [] m_effects_index;
-  if ( m_talents_index )
-    delete [] m_talents_index;
+  create_talent_trees();
 }
 
 void sc_data_t::reset( )
@@ -76,107 +66,8 @@ void sc_data_t::m_copy( const sc_data_t& copy )
   m_gem_property.copy_array( copy.m_gem_property );
 }
 
-void sc_data_t::create_spell_index()
+void sc_data_t::create_talent_trees()
 {
-  uint32_t max_id = 0;
-
-  if ( m_spells_index )
-  {
-    delete [] m_spells_index;
-    m_spells_index = NULL;
-  }
-  
-  for ( spell_data_t* s = spell_data_t::list(); s -> id; s++ )
-  {
-    if ( s -> id > max_id )
-    {
-      max_id = s -> id;
-    }
-  }
-
-  if ( max_id >= 1000000 )
-  {
-    return;
-  }
-
-  m_spells_index_size = max_id + 1;
-
-  m_spells_index = new spell_data_t*[ m_spells_index_size ];
-  memset( m_spells_index, 0, sizeof( spell_data_t* ) * m_spells_index_size );
-
-  for ( spell_data_t* s = spell_data_t::list(); s -> id; s++ )
-  {
-    m_spells_index[ s -> id ] = s;
-  }
-}
-
-void sc_data_t::create_effects_index()
-{
-  uint32_t max_id = 0;
-
-  if ( m_effects_index )
-  {
-    delete [] m_effects_index;
-    m_effects_index = NULL;
-  }
-
-  for ( const spelleffect_data_t* e = spelleffect_data_t::list(); e -> id; e++ )
-  {
-    if ( e -> id > max_id )
-    {
-      max_id = e -> id;
-    }
-  }
-
-  if ( max_id >= 1000000 )
-  {
-    return;
-  }
-
-  m_effects_index_size = max_id + 1;
-
-  m_effects_index = new spelleffect_data_t*[ m_effects_index_size ];
-  memset( m_effects_index, 0, sizeof( spelleffect_data_t* ) * m_effects_index_size );
-
-  for ( spelleffect_data_t* e = spelleffect_data_t::list(); e -> id; e++ )
-  {
-    m_effects_index[ e -> id ] = e;
-  }
-}
-
-void sc_data_t::create_talents_index()
-{
-  uint32_t max_id = 0;
-
-  if ( m_talents_index )
-  {
-    delete [] m_talents_index;
-    m_talents_index = NULL;
-  }
-
-  for ( const talent_data_t* t = talent_data_t::list(); t -> id; t++ )
-  {
-    if ( t -> id > max_id )
-    {
-      max_id = t -> id;
-    }
-  }
-
-  if ( max_id >= 1000000 )
-  {
-    return;
-  }
-
-  m_talents_index_size = max_id + 1;
-
-  m_talents_index = new talent_data_t*[ m_talents_index_size ];
-  memset( m_talents_index, 0, sizeof( talent_data_t* ) * m_talents_index_size );
-
-  for ( talent_data_t* t = talent_data_t::list(); t -> id; t++ )
-  {
-    m_talents_index[ t -> id ] = t;
-  }
-
   // Now create the talent trees
 
   uint32_t max_classes = m_class_stats.rows;
@@ -270,13 +161,6 @@ void sc_data_t::create_talents_index()
   }
   delete [] v1;
   delete [] n;
-}
-
-void sc_data_t::create_index()
-{
-  create_spell_index();
-  create_effects_index();
-  create_talents_index();  
 }
 
 int sc_data_t::talent_compare( const void *vid1, const void *vid2 )
