@@ -2912,7 +2912,7 @@ struct searing_totem_t : public shaman_totem_t
     // except it's in-game cast time is ~1.6sec
     // base_tick_time       = p -> player_data.spell_cast_time( 3606, p -> level );
     base_tick_time       = 1.6;
-    travel_speed         = p -> player_data.spell_missile_speed( 3606 );
+    travel_speed         = 0;
     range                = p -> player_data.spell_max_range( 3606 );
     num_ticks            = (int) ( totem_duration / base_tick_time );
     // Also kludge totem school to fire
