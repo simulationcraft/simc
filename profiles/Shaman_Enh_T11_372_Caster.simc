@@ -32,6 +32,7 @@ actions+=/earth_shock
 actions+=/stormstrike
 actions+=/spirit_wolf
 actions+=/fire_nova
+actions+=/spiritwalkers_grace,moving=1
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time+0.5
 head=helmet_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257hit_197mastery_578sta,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste

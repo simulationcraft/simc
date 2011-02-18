@@ -49,6 +49,7 @@ struct shaman_t : public player_t
   buff_t* buffs_maelstrom_power;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_searing_flames;
+  buff_t* buffs_spiritwalkers_grace;
   buff_t* buffs_unleash_flame;
   buff_t* buffs_unleash_wind;
   buff_t* buffs_water_shield;
@@ -2912,7 +2913,7 @@ struct searing_totem_t : public shaman_totem_t
     // except it's in-game cast time is ~1.6sec
     // base_tick_time       = p -> player_data.spell_cast_time( 3606, p -> level );
     base_tick_time       = 1.6;
-    travel_speed         = 0;
+    travel_speed         = 0; // TODO: Searing bolt has a real travel time, however modeling it is another issue entirely
     range                = p -> player_data.spell_max_range( 3606 );
     num_ticks            = (int) ( totem_duration / base_tick_time );
     // Also kludge totem school to fire
@@ -3336,6 +3337,30 @@ struct water_shield_t : public shaman_spell_t
   }
 };
 
+struct spiritwalkers_grace_t : public shaman_spell_t
+{
+  spiritwalkers_grace_t( player_t* player, const std::string& options_str ) :
+    shaman_spell_t( "spiritwalkers_grace", "Spiritwalker's Grace", player )
+  {
+    may_miss  = may_crit = harmful = callbacks = false;
+
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+  }
+  
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    shaman_spell_t::execute();
+    
+    p -> buffs_spiritwalkers_grace -> trigger();
+  }
+};
+
 // ==========================================================================
 // Shaman Passive Buffs
 // ==========================================================================
@@ -3497,6 +3522,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
+  if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
@@ -3709,6 +3735,7 @@ void shaman_t::init_buffs()
   buffs_natures_swiftness       = new buff_t                 ( this, talent_natures_swiftness -> spell_id(),                   "natures_swiftness"     );
   buffs_searing_flames          = new searing_flames_buff_t  ( this, talent_searing_flames -> spell_id(),                      "searing_flames"        );
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );
+  buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace", 1.0, 0 );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
   buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame"         );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
@@ -3840,6 +3867,7 @@ void shaman_t::init_actions()
       {
         if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
       }
+      action_list_str += "/spiritwalkers_grace,moving=1";
       if ( ! set_bonus.tier10_4pc_melee() )
       {
         if ( caster_mainhand )
@@ -3903,6 +3931,7 @@ void shaman_t::init_actions()
       }
       action_list_str += "/fire_elemental_totem";
       action_list_str += "/searing_totem";
+      action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier10_2pc_caster() || set_bonus.tier11_4pc_caster() || level > 80 ) )
         action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
@@ -3920,7 +3949,31 @@ void shaman_t::init_actions()
 
 void shaman_t::interrupt()
 {
-  player_t::interrupt();
+  // Spiritwalker's Grace complicates things, as you can cast it while casting
+  // anything. So, to model that, if a raid move event comes, we need to check 
+  // if we can trigger Spiritwalker's Grace. If so, execute it, to allow the 
+  // currently executing cast to finish.
+  if ( level == 85 && buffs.moving -> check() )
+  {
+    action_t* swg = find_action( "spiritwalkers_grace" );
+
+    if ( swg -> ready() && executing )
+    {
+      if ( sim -> log ) log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish", 
+        executing -> name_str.c_str() );
+      swg -> execute();
+    }
+    else
+    {
+      if ( sim -> log ) log_t::output( sim, "%s is interrupted, executing %s", name(), executing ? executing -> name_str.c_str() : "nothing" );
+      if ( executing ) executing  -> cancel();
+      if ( channeling ) channeling -> cancel();
+      
+      if ( ! readying && ! sleeping ) schedule_ready();
+    }
+  }
+  else
+    player_t::interrupt();
 
   if ( main_hand_attack ) main_hand_attack -> cancel();
   if (  off_hand_attack )  off_hand_attack -> cancel();

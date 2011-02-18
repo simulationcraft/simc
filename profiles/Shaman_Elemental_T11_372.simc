@@ -28,6 +28,7 @@ actions+=/earth_shock,if=buff.lightning_shield.stack=9
 actions+=/earth_shock,if=buff.lightning_shield.stack>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
 actions+=/fire_elemental_totem
 actions+=/searing_totem
+actions+=/spiritwalkers_grace,moving=1
 actions+=/chain_lightning,if=target.adds>2
 actions+=/lightning_bolt
 actions+=/thunderstorm
