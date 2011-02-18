@@ -3408,6 +3408,8 @@ struct holy_word_sanctuary_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
     tick_spell = new holy_word_sanctuary_tick_t( p );
 
+    add_child( tick_spell );
+
     // Fixme: 10x Multiplier for now
     base_multiplier *= 10;
 
@@ -3512,11 +3514,9 @@ struct holy_word_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    dual = true;
-
     hw_sanctuary = new holy_word_sanctuary_t( p );
-    hw_chastise  = new holy_word_chastise_t( p );
-    hw_serenity  = new holy_word_serenity_t( p );
+    hw_chastise  = new holy_word_chastise_t ( p );
+    hw_serenity  = new holy_word_serenity_t ( p );
 
   }
 
@@ -3525,13 +3525,27 @@ struct holy_word_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> up() )
+    {
+      player -> last_foreground_action = hw_serenity;
       hw_serenity -> schedule_execute();
+    }
 
     else if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> up() )
+    {
+      player -> last_foreground_action = hw_sanctuary;
       hw_sanctuary -> schedule_execute();
+    }
 
     else
+    {
+      player -> last_foreground_action = hw_chastise;
       hw_chastise -> schedule_execute();
+    }
+  }
+
+  virtual void execute()
+  {
+    assert( 0 );
   }
 
   virtual bool ready()
