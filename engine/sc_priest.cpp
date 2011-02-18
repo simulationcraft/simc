@@ -4242,13 +4242,13 @@ void priest_t::init_actions()
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
                                                          action_list_str += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
-                                                         action_list_str += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+0.5)&miss_react";
+                                                         action_list_str += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react";
 
                                                          action_list_str += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
       if ( talents.vampiric_touch -> rank() )            action_list_str += "|dot.vampiric_touch.remains<cast_time+0.5";
                                                        
 
-      if ( talents.vampiric_touch -> rank() )            action_list_str += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+0.5)&miss_react";
+      if ( talents.vampiric_touch -> rank() )            action_list_str += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
 
                                                          action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
 
