@@ -238,6 +238,7 @@ struct hunter_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c );
+  virtual void      moving();
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -3480,6 +3481,16 @@ int hunter_t::decode_set( item_t& item )
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
 
   return SET_NONE;
+}
+
+// hunter_t::moving() =======================================================
+
+void hunter_t::moving()
+{
+  player_t::interrupt();
+  
+  if ( main_hand_attack ) main_hand_attack -> cancel();
+  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // ==========================================================================
