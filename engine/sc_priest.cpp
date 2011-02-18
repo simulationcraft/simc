@@ -3387,9 +3387,22 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
   {
     dual        = true;
     background  = true;
-    direct_tick = true;
-    stats = player -> get_stats( "holy_word_sanctuary" );
+
   }
+  virtual void execute()
+   {
+     // Choose Heal Targets
+     heal_target.clear();
+     for ( player_t* q = sim -> player_list; q; q = q -> next )
+       {
+       if ( !q -> is_pet() && q -> get_player_distance(player) < range )
+       {
+         heal_target.push_back(q);
+       }
+     }
+
+     priest_heal_t::execute();
+   }
 };
 
 struct holy_word_sanctuary_t : public priest_heal_t
@@ -3410,8 +3423,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
     add_child( tick_spell );
 
-    // Fixme: 10x Multiplier for now
-    base_multiplier *= 10;
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect_base_value( 1 ) / 100.0;
   }
