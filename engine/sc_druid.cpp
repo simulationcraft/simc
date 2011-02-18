@@ -242,6 +242,7 @@ struct druid_t : public player_t
   proc_t* procs_primal_fury;
   proc_t* procs_wrong_eclipse_wrath;
   proc_t* procs_wrong_eclipse_starfire;
+  proc_t* procs_unaligned_eclipse_gain;
 
   // Random Number Generation
   rng_t* rng_berserk;
@@ -657,10 +658,15 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   {
     // If the gain isn't not alligned with the direction of the bar it won't happen
     if ( p -> eclipse_bar_direction == -1 && gain > 0 )
+    {
+      p -> procs_unaligned_eclipse_gain -> occur();
       return;
-    if ( p -> eclipse_bar_direction ==  1 && gain < 0 )
+    }
+    else if ( p -> eclipse_bar_direction ==  1 && gain < 0 )
+    {
+      p -> procs_unaligned_eclipse_gain -> occur();
       return;
-    
+    }
   }
 
   int old_eclipse_bar_value = p -> eclipse_bar_value;
@@ -3846,8 +3852,10 @@ void druid_t::init_procs()
   procs_fury_swipes            = get_proc( "fury_swipes"            );
   procs_parry_haste            = get_proc( "parry_haste"            );
   procs_primal_fury            = get_proc( "primal_fury"            );
+  procs_unaligned_eclipse_gain = get_proc( "unaligned_eclipse_gain" );
   procs_wrong_eclipse_wrath    = get_proc( "wrong_eclipse_wrath"    );
   procs_wrong_eclipse_starfire = get_proc( "wrong_eclipse_starfire" );
+  
 }
 
 // druid_t::init_uptimes ====================================================
@@ -4055,7 +4063,9 @@ void druid_t::reset()
 {
   player_t::reset();
 
-  eclipse_bar_value = 0;
+  eclipse_bar_value     = 0;
+  eclipse_wrath_count   = 0;
+  eclipse_bar_direction = 0;
   base_gcd = 1.5;
 }
 
