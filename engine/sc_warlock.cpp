@@ -3421,10 +3421,14 @@ struct dark_intent_t : public warlock_spell_t
     else
     {
       dark_intent_target = sim -> find_player( target_str );
-
-      assert ( dark_intent_target != 0 );
-      assert ( dark_intent_target != p );
+      if ( ! dark_intent_target )
+      {
+        sim -> errorf( "%s Dark Intent Target: Can't find player %s, setting Dark Intent Target to %s.\n", player -> name(), target_str.c_str(), player -> name() );
+        dark_intent_target = p;
+      }
     }
+
+    assert ( dark_intent_target != 0 );
   }
 
   virtual void execute()
