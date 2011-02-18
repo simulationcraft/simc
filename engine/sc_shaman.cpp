@@ -224,9 +224,9 @@ struct shaman_t : public player_t
   virtual void      init_actions();
   virtual void      interrupt();
   virtual void      clear_debuffs();
-  virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
+  virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
@@ -254,18 +254,12 @@ struct shaman_attack_t : public attack_t
 {
   /* Old style construction, spell data will not be accessed */
   shaman_attack_t( const char* n, player_t* player, school_type s, int t, bool special ) :
-    attack_t( n, player, RESOURCE_MANA, s, t, special )
-  {
-    shaman_t* p = player -> cast_shaman();
-    base_hit   += p -> spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
-  }
+    attack_t( n, player, RESOURCE_MANA, s, t, special ) { }
   
   /* Class spell data based construction, spell name in s_name */
   shaman_attack_t( const char* n, const char* s_name, player_t* player ) :
     attack_t( n, s_name, player, TREE_NONE, true ) 
   { 
-    shaman_t* p = player -> cast_shaman();
-    base_hit   += p -> spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
     may_crit    = true;
   }
   
@@ -273,8 +267,6 @@ struct shaman_attack_t : public attack_t
   shaman_attack_t( const char* n, uint32_t spell_id, player_t* player ) :
     attack_t( n, spell_id, player, TREE_NONE, true )
   { 
-    shaman_t* p = player -> cast_shaman();
-    base_hit   += p -> spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
     may_crit    = true;
   }
 
@@ -4007,13 +3999,14 @@ double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   return 0.0;
 }
 
-// shaman_t::composite_attack_power ==========================================
-
-double shaman_t::composite_attack_power() SC_CONST
+// shaman_t::composite_spell_hit ==========================================
+double shaman_t::composite_attack_hit() SC_CONST
 {
-  double ap = player_t::composite_attack_power();
-
-  return ap;
+  double hit = player_t::composite_attack_hit();
+  
+  hit += spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
+  
+  return hit;
 }
 
 // shaman_t::composite_spell_hit ==========================================
