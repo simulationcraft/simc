@@ -3033,16 +3033,28 @@ struct summon_main_pet_t : public summon_pet_t
   std::string pet_name;
 
   summon_main_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
-    summon_pet_t( n, player, sname, options_str )
+    summon_pet_t( n, player, sname, options_str ), pet_name( n )
   {
     usable_pre_combat = true;
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if ( p -> active_pet )
+      p -> active_pet -> dismiss();
+
+    summon_pet_t::execute();
   }
 
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
+
     if ( p -> active_pet )
-      return false;
+      if ( p -> active_pet -> name_str == pet_name )
+        return false;
 
     return summon_pet_t::ready();
   }
