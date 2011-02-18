@@ -1709,16 +1709,14 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     100 * s -> total_tick_time / s -> player -> total_seconds );
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
-    "                <td colspan=\"23\" class=\"filler\">\n" );
+    "                <td colspan=\"25\" class=\"filler\">\n" );
 
   // Stat Details
   util_t::fprintf (file,
     "                  <h4>Stat details: %s </h4>\n", s -> name_str.c_str() );
 
-  // Averages
   util_t::fprintf (file,
     "                  <div class=\"float\">\n"
-    "                    <h5>Count</h5>\n"
     "                    <ul>\n" );
   util_t::fprintf (file,
       "                      <li><span class=\"label\">executes:</span>%.2f</li>\n"
@@ -1728,67 +1726,52 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
       s -> num_direct_results,
       s -> num_tick_results );
   util_t::fprintf (file,
-    "                    </ul>\n"
-    "                  </div>\n" );
+    "                    </ul></div>\n" );
 
+  util_t::fprintf (file,
+    "                  <div class=\"clear\"></div>\n" );
+
+  util_t::fprintf (file,
+    "                  <table class=\"sc\">\n");
   if ( s -> num_direct_results > 0 )
   {
   // Direct Damage
   util_t::fprintf (file,
-    "                  <div class=\"float\" width=\"100\">\n"
-    "                    <h5>DD: Count / Average / Max</h5>\n"
-    "                    <ul>\n" );
-  if ( s -> direct_results[ RESULT_HIT  ].count)
+    "                    <tr>\n"
+    "                      <th class=\"small\">Direct Damage</th>\n"
+    "                      <th class=\"small\">Count</th>\n"
+    "                      <th class=\"small\">Pct</th>\n"
+    "                      <th class=\"small\">Average</th>\n"
+    "                      <th class=\"small\">Max</th>\n"
+    "                      <th class=\"small\">Total Damage</th>\n"
+    "                    </tr>\n" );
+  for ( int i=RESULT_MAX; i >= 0; i-- )
+  {
+  if ( s -> direct_results[ i  ].count)
+  {
+    util_t::fprintf( file,
+    "                    <tr" );
+    if ( i & 1 )
+    {
+      util_t::fprintf( file, " class=\"odd\"" );
+    }
+    util_t::fprintf( file, ">\n" );
     util_t::fprintf (file,
-    "                      <li><span class=\"label\">hit:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_HIT  ].count,
-    s -> direct_results[ RESULT_HIT  ].avg_dmg,
-    s -> direct_results[ RESULT_HIT  ].max_dmg);
-  if ( s -> direct_results[ RESULT_CRIT  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">crit:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_CRIT  ].count,
-    s -> direct_results[ RESULT_CRIT  ].avg_dmg,
-    s -> direct_results[ RESULT_CRIT  ].max_dmg);
-  if ( s -> direct_results[ RESULT_GLANCE  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">glance:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_GLANCE  ].count,
-    s -> direct_results[ RESULT_GLANCE  ].avg_dmg,
-    s -> direct_results[ RESULT_GLANCE  ].max_dmg);
-  if ( s -> direct_results[ RESULT_BLOCK  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">block:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_BLOCK  ].count,
-    s -> direct_results[ RESULT_BLOCK  ].avg_dmg,
-    s -> direct_results[ RESULT_BLOCK  ].max_dmg);
-  if ( s -> direct_results[ RESULT_CRIT_BLOCK  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">crit-block:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_CRIT_BLOCK  ].count,
-    s -> direct_results[ RESULT_CRIT_BLOCK  ].avg_dmg,
-    s -> direct_results[ RESULT_CRIT_BLOCK  ].max_dmg);
-  if ( s -> direct_results[ RESULT_RESIST  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">resist:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_RESIST  ].count,
-    s -> direct_results[ RESULT_RESIST  ].avg_dmg,
-    s -> direct_results[ RESULT_RESIST  ].max_dmg);
-  if ( s -> direct_results[ RESULT_DODGE  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">dodge:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_DODGE  ].count,
-    s -> direct_results[ RESULT_DODGE  ].avg_dmg,
-    s -> direct_results[ RESULT_DODGE  ].max_dmg);
-  if ( s -> direct_results[ RESULT_PARRY  ].count )
-    util_t::fprintf (file,
-    "                      <li><span class=\"label\">parry:</span>%.2f / %.2f / %.0f</li>\n",
-    s -> direct_results[ RESULT_PARRY  ].count,
-    s -> direct_results[ RESULT_PARRY  ].avg_dmg,
-    s -> direct_results[ RESULT_PARRY  ].max_dmg);
-  util_t::fprintf (file,
-    "                    </ul>\n"
-    "                  </div>\n" );
+    "                      <td class=\"right small\">%s:</td>\n"
+    "                      <td class=\"right small\">%.1f</td>\n"
+    "                      <td class=\"right small\">%.2f%%</td>\n"
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.0f</td>\n"
+    "                      <td class=\"right small\">%.0f</td>\n"
+    "                    </tr>\n",
+    util_t::result_type_string( i ),
+    s -> direct_results[ i  ].count,
+    s -> direct_results[ i  ].pct,
+    s -> direct_results[ i  ].avg_dmg,
+    s -> direct_results[ i  ].max_dmg,
+    s -> direct_results[ i  ].total_dmg);
+  }
+  }
 
   }
 
@@ -1796,61 +1779,46 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   {
     // Tick Damage
     util_t::fprintf (file,
-      "                  <div class=\"float\" width=\"100\">\n"
-      "                    <h5>Ticks: Count / Average / Max</h5>\n"
-      "                    <ul>\n" );
-    if ( s -> tick_results[ RESULT_HIT  ].count)
+      "                    <tr>\n"
+      "                      <th class=\"small\">Tick Damage</th>\n"
+      "                      <th class=\"small\">Count</th>\n"
+      "                      <th class=\"small\">Pct</th>\n"
+      "                      <th class=\"small\">Average</th>\n"
+      "                      <th class=\"small\">Max</th>\n"
+      "                      <th class=\"small\">Total Damage</th>\n"
+      "                    </tr>\n" );
+    for ( int i=RESULT_MAX; i >= 0; i-- )
+    {
+    if ( s -> tick_results[ i  ].count)
+    {
+      util_t::fprintf( file,
+      "                    <tr" );
+      if ( i & 1 )
+      {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">\n" );
       util_t::fprintf (file,
-      "                      <li><span class=\"label\">hit:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_HIT  ].count,
-      s -> tick_results[ RESULT_HIT  ].avg_dmg,
-      s -> tick_results[ RESULT_HIT  ].max_dmg);
-    if ( s -> tick_results[ RESULT_CRIT  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">crit:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_CRIT  ].count,
-      s -> tick_results[ RESULT_CRIT  ].avg_dmg,
-      s -> tick_results[ RESULT_CRIT  ].max_dmg);
-    if ( s -> tick_results[ RESULT_GLANCE  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">glance:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_GLANCE  ].count,
-      s -> tick_results[ RESULT_GLANCE  ].avg_dmg,
-      s -> tick_results[ RESULT_GLANCE  ].max_dmg);
-    if ( s -> tick_results[ RESULT_BLOCK  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">block:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_BLOCK  ].count,
-      s -> tick_results[ RESULT_BLOCK  ].avg_dmg,
-      s -> tick_results[ RESULT_BLOCK  ].max_dmg);
-    if ( s -> tick_results[ RESULT_CRIT_BLOCK  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">crit-block:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_CRIT_BLOCK  ].count,
-      s -> tick_results[ RESULT_CRIT_BLOCK  ].avg_dmg,
-      s -> tick_results[ RESULT_CRIT_BLOCK  ].max_dmg);
-    if ( s -> tick_results[ RESULT_RESIST  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">resist:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_RESIST  ].count,
-      s -> tick_results[ RESULT_RESIST  ].avg_dmg,
-      s -> tick_results[ RESULT_RESIST  ].max_dmg);
-    if ( s -> tick_results[ RESULT_DODGE  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">dodge:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_DODGE  ].count,
-      s -> tick_results[ RESULT_DODGE  ].avg_dmg,
-      s -> tick_results[ RESULT_DODGE  ].max_dmg);
-    if ( s -> tick_results[ RESULT_PARRY  ].count )
-      util_t::fprintf (file,
-      "                      <li><span class=\"label\">parry:</span>%.2f / %.2f / %.0f</li>\n",
-      s -> tick_results[ RESULT_PARRY  ].count,
-      s -> tick_results[ RESULT_PARRY  ].avg_dmg,
-      s -> tick_results[ RESULT_PARRY  ].max_dmg);
-    util_t::fprintf (file,
-      "                    </ul>\n"
-      "                  </div>\n" );
+      "                      <td class=\"right small\">%s:</td>\n"
+      "                      <td class=\"right small\">%.1f</td>\n"
+      "                      <td class=\"right small\">%.2f%%</td>\n"
+      "                      <td class=\"right small\">%.2f</td>\n"
+      "                      <td class=\"right small\">%.0f</td>\n"
+      "                      <td class=\"right small\">%.0f</td>\n"
+      "                    </tr>\n",
+      util_t::result_type_string( i ),
+      s -> tick_results[ i  ].count,
+      s -> tick_results[ i  ].pct,
+      s -> tick_results[ i  ].avg_dmg,
+      s -> tick_results[ i  ].max_dmg,
+      s -> tick_results[ i  ].total_dmg);
+    }
+    }
+
+
   }
+  util_t::fprintf (file,
+    "                  </table>\n" );
 
   util_t::fprintf (file,
     "                  <div class=\"clear\"></div>\n" );
