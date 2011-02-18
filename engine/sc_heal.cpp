@@ -509,9 +509,7 @@ void heal_t::refresh_duration()
 
 void absorb_t::_init_absorb_t()
 {
-  player_t* p = sim -> find_player( "Fluffy_Tank" );
-  if ( p ) heal_target.push_back( p );
-  else heal_target.push_back( player );
+  heal_target.push_back( player );
 
   target=0;
   target_str = "";
@@ -736,3 +734,58 @@ double absorb_t::calculate_direct_damage()
   return dmg;
 }
 
+// absorb_t::ready ============================================================
+
+bool absorb_t::ready()
+{
+  if ( player -> skill < 1.0 )
+    if ( ! sim -> roll( player -> skill ) )
+      return false;
+
+  if ( cooldown -> remains() > 0 )
+    return false;
+
+  if ( ! player -> resource_available( resource, cost() ) )
+    return false;
+
+  if ( min_current_time > 0 )
+    if ( sim -> current_time < min_current_time )
+      return false;
+
+  if ( max_current_time > 0 )
+    if ( sim -> current_time > max_current_time )
+      return false;
+
+  if ( max_haste > 0 )
+    if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )
+      return false;
+
+  if ( bloodlust_active > 0 )
+    if ( ! player -> buffs.bloodlust -> check() )
+      return false;
+
+  if ( bloodlust_active < 0 )
+    if ( player -> buffs.bloodlust -> check() )
+      return false;
+
+  if ( sync_action && ! sync_action -> ready() )
+    return false;
+
+  if ( player -> buffs.moving -> check() )
+    if ( usable_moving() && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
+      return false;
+
+  if ( moving != -1 )
+    if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
+      return false;
+
+  if ( if_expr )
+  {
+    int result_type = if_expr -> evaluate();
+    if ( result_type == TOK_NUM     ) return if_expr -> result_num != 0;
+    if ( result_type == TOK_STR     ) return true;
+    if ( result_type == TOK_UNKNOWN ) return false;
+  }
+
+  return true;
+}

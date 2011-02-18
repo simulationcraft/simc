@@ -3891,6 +3891,7 @@ struct absorb_t : public spell_t
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual void travel( player_t*, int travel_result, double travel_dmg );
+  virtual bool ready();
 
 };
 

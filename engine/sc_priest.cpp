@@ -3281,6 +3281,8 @@ struct power_word_shield_t : public priest_absorb_t
     {
 
       glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = 0.2 * travel_dmg;
+      glyph_pws -> heal_target.clear();
+      glyph_pws -> heal_target.push_back( t );
       glyph_pws -> execute();
     }
 
