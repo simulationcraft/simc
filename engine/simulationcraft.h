@@ -3259,6 +3259,8 @@ struct player_t
   virtual double spirit() SC_CONST;
 
   virtual void      interrupt();
+  virtual void      halt();
+  virtual void      moving();
   virtual void      clear_debuffs();
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual double    available() SC_CONST { return 0.1; }

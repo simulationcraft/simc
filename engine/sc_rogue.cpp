@@ -374,7 +374,6 @@ struct rogue_t : public player_t
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual void      interrupt();
   virtual void      clear_debuffs();
   virtual double    energy_regen_per_second() SC_CONST;
   virtual void      regen( double periodicity );
@@ -3722,16 +3721,6 @@ void rogue_t::reset()
   }
 
   tricks_of_the_trade_target = 0;
-}
-
-// rogue_t::interrupt ======================================================
-
-void rogue_t::interrupt()
-{
-  player_t::interrupt();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
-  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // rogue_t::clear_debuffs ==================================================

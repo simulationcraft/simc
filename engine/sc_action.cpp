@@ -1427,7 +1427,7 @@ bool action_t::usable_moving()
   if ( channeled )
     return false;
 
-  if ( range == 0 )
+  if ( range > 0 && range <= 5 )
     return false;
 
   return usable;

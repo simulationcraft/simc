@@ -353,7 +353,6 @@ struct warrior_t : public player_t
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      reset();
-  virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual double    resource_loss( int resurce, double amount, action_t* );
   virtual void      create_options();
@@ -3096,18 +3095,6 @@ void warrior_t::reset()
 {
   player_t::reset();
   active_stance = STANCE_BATTLE;
-}
-
-// warrior_t::interrupt =====================================================
-
-void warrior_t::interrupt()
-{
-  player_t::interrupt();
-
-  buffs_rude_interruption -> trigger();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
-  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // warrior_t::composite_attack_power_multiplier =============================

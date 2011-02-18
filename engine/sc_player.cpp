@@ -2502,6 +2502,28 @@ void player_t::interrupt()
   }
 }
 
+// player_t::halt ===========================================================
+
+void player_t::halt()
+{
+  if ( sim -> log ) log_t::output( sim, "%s is halted", name() );
+
+  interrupt();
+
+  if ( main_hand_attack ) main_hand_attack -> cancel();
+  if (  off_hand_attack )  off_hand_attack -> cancel();
+  if (    ranged_attack )    ranged_attack -> cancel();
+}
+
+// player_t::moving =========================================================
+
+void player_t::moving()
+{
+  // FIXME! In the future, some movement events may not cause auto-attack to stop.
+
+  halt();
+}
+
 // player_t::clear_debuffs===================================================
 
 void player_t::clear_debuffs()

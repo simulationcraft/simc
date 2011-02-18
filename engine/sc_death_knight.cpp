@@ -340,7 +340,6 @@ struct death_knight_t : public player_t
   virtual double    composite_tank_parry() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
-  virtual void      interrupt();
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
@@ -4544,16 +4543,6 @@ int death_knight_t::primary_role() SC_CONST
     return ROLE_TANK;
 
   return ROLE_ATTACK;
-}
-
-// death_knight_t::interrupt ================================================
-
-void death_knight_t::interrupt()
-{
-  player_t::interrupt();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
-  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // death_knight_t::regen ====================================================

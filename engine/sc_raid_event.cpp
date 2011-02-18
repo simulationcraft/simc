@@ -117,13 +117,13 @@ struct invulnerable_event_t : public raid_event_t
   {
     target_t* t = sim -> target;
     raid_event_t::start();
+    t -> debuffs.invulnerable -> increment();
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> sleeping ) continue;
-      p -> interrupt();
+      p -> halt();
       p -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
     }
-    t -> debuffs.invulnerable -> increment();
   }
   virtual void finish()
   {
@@ -179,7 +179,8 @@ struct movement_event_t : public raid_event_t
       }
 
       if ( p -> sleeping ) continue;
-      p -> interrupt();
+      if ( p -> buffs.stunned -> check() ) continue;
+      p -> moving();
     }
   }
 };
@@ -202,7 +203,7 @@ struct stun_event_t : public raid_event_t
       player_t* p = affected_players[ i ];
       p -> buffs.stunned -> increment();
       if ( p -> sleeping ) continue;
-      p -> interrupt();
+      p -> halt();
     }
   }
   virtual void finish()
@@ -220,6 +221,28 @@ struct stun_event_t : public raid_event_t
     }
 
     raid_event_t::finish();
+  }
+};
+
+// Interrupt =================================================================
+
+struct interrupt_event_t : public raid_event_t
+{
+  interrupt_event_t( sim_t* s, const std::string& options_str ) :
+      raid_event_t( s, "interrupt" )
+  {
+    parse_options( NULL, options_str );
+  }
+  virtual void start()
+  {
+    raid_event_t::start();
+    int num_affected = ( int ) affected_players.size();
+    for ( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
+      if ( p -> sleeping ) continue;
+      p -> interrupt();
+    }
   }
 };
 
@@ -497,6 +520,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
   if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
   if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
   if ( name == "invulnerable" ) return new invulnerable_event_t( sim, options_str );
+  if ( name == "interrupt"    ) return new    interrupt_event_t( sim, options_str );
   if ( name == "movement"     ) return new     movement_event_t( sim, options_str );
   if ( name == "moving"       ) return new     movement_event_t( sim, options_str );
   if ( name == "damage"       ) return new       damage_event_t( sim, options_str );

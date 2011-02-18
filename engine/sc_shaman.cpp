@@ -222,7 +222,7 @@ struct shaman_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual void      interrupt();
+  virtual void      moving();
   virtual void      clear_debuffs();
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
@@ -3947,38 +3947,37 @@ void shaman_t::init_actions()
   player_t::init_actions();
 }
 
-// shaman_t::interrupt =======================================================
+// shaman_t::moving ==========================================================
 
-void shaman_t::interrupt()
+void shaman_t::moving()
 {
   // Spiritwalker's Grace complicates things, as you can cast it while casting
   // anything. So, to model that, if a raid move event comes, we need to check 
   // if we can trigger Spiritwalker's Grace. If so, execute it, to allow the 
   // currently executing cast to finish.
-  if ( level == 85 && buffs.moving -> check() )
+  if ( level == 85 )
   {
     action_t* swg = find_action( "spiritwalkers_grace" );
 
     if ( swg && swg -> ready() && executing )
     {
-      if ( sim -> log ) log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish", 
-        executing -> name_str.c_str() );
+      if ( sim -> log ) 
+	log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish", 
+		       executing -> name_str.c_str() );
       swg -> execute();
     }
     else
     {
-      if ( sim -> log ) log_t::output( sim, "%s is interrupted, executing %s", name(), executing ? executing -> name_str.c_str() : "nothing" );
-      if ( executing ) executing  -> cancel();
-      if ( channeling ) channeling -> cancel();
-      
-      if ( ! readying && ! sleeping ) schedule_ready();
+      interrupt();
     }
+
+    if ( main_hand_attack ) main_hand_attack -> cancel();
+    if (  off_hand_attack )  off_hand_attack -> cancel();
   }
   else
-    player_t::interrupt();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
-  if (  off_hand_attack )  off_hand_attack -> cancel();
+  {
+    halt();
+  }
 }
 
 // shaman_t::matching_gear_multiplier =============================================

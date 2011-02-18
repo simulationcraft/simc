@@ -378,7 +378,6 @@ struct druid_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual void      interrupt();
   virtual void      clear_debuffs();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
@@ -551,10 +550,8 @@ struct treants_pet_t : public pet_t
     }
   };
 
-  melee_t* melee;
-
   treants_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
-      pet_t( sim, owner, pet_name ), melee( 0 )
+      pet_t( sim, owner, pet_name )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 580;
@@ -577,7 +574,7 @@ struct treants_pet_t : public pet_t
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
 
-    melee = new melee_t( this );
+    main_hand_attack = new melee_t( this );
   }
   virtual double composite_attack_power() SC_CONST
   {
@@ -598,12 +595,7 @@ struct treants_pet_t : public pet_t
                                bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
-    if ( ! melee -> execute_event ) melee -> execute();
-  }
-  virtual void interrupt()
-  {
-    pet_t::interrupt();
-    melee -> cancel();
+    if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
   }
 };
 
@@ -4055,15 +4047,6 @@ void druid_t::reset()
 
   eclipse_bar_value = 0;
   base_gcd = 1.5;
-}
-
-// druid_t::interrupt =======================================================
-
-void druid_t::interrupt()
-{
-  player_t::interrupt();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
 }
 
 // druid_t::clear_debuffs ===================================================

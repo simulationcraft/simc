@@ -223,7 +223,6 @@ struct hunter_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual void      interrupt();
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
@@ -610,12 +609,6 @@ struct hunter_pet_t : public pet_t
     hunter_t* o = owner -> cast_hunter();
     pet_t::summon( duration );
     o -> active_pet = this;
-  }
-
-  virtual void interrupt()
-  {
-    pet_t::interrupt();
-    if ( main_hand_attack ) main_hand_attack -> cancel();
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
@@ -3218,15 +3211,6 @@ void hunter_t::reset()
   active_pet            = 0;
   active_aspect         = ASPECT_NONE;
 
-}
-
-// hunter_t::interrupt =======================================================
-
-void hunter_t::interrupt()
-{
-  player_t::interrupt();
-
-  if ( ranged_attack ) ranged_attack -> cancel();
 }
 
 // hunter_t::composite_attack_power ==========================================

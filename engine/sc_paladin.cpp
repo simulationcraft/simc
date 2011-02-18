@@ -225,7 +225,6 @@ struct paladin_t : public player_t
   virtual void      init_spells();
   virtual void      init_actions();
   virtual void      reset();
-  virtual void      interrupt();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_attack_expertise() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
@@ -1869,15 +1868,6 @@ void paladin_t::reset()
   player_t::reset();
 
   active_seal = SEAL_NONE;
-}
-
-// paladin_t::interrupt =====================================================
-
-void paladin_t::interrupt()
-{
-  player_t::interrupt();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
 }
 
 // paladin_t::init_gains ====================================================

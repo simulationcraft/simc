@@ -703,10 +703,9 @@ struct mirror_image_pet_t : public pet_t
     }
   }
 
-  virtual void interrupt()
+  virtual void halt()
   {
-    pet_t::interrupt();
-
+    pet_t::halt();
     dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };

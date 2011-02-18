@@ -777,11 +777,9 @@ struct shadow_fiend_pet_t : public pet_t
     }
   };
 
-  melee_t* melee;
-
   shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ),
-      bad_swing( false ), bad_spell_power( 0.0 ), extra_tick( false ), melee( 0 )
+      bad_swing( false ), bad_spell_power( 0.0 ), extra_tick( false )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.5;
@@ -825,7 +823,7 @@ struct shadow_fiend_pet_t : public pet_t
     base_attack_crit                  = 0.07; // Needs more testing
     initial_attack_power_per_strength = 0; // Unknown
 
-    melee = new melee_t( this );
+    main_hand_attack = new melee_t( this );
   }
 
   virtual void init_buffs()
@@ -901,12 +899,7 @@ struct shadow_fiend_pet_t : public pet_t
                                bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
-    if ( ! melee -> execute_event ) melee -> execute();
-  }
-  virtual void interrupt()
-  {
-    pet_t::interrupt();
-    melee -> cancel();
+    if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
   }
 };
 

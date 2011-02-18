@@ -43,7 +43,8 @@ void attack_t::_init_attack_t()
   min_gcd = 1.0;
   hasted_ticks = false;
 
-  range = 0; // Prevent action from being scheduled when player_t::moving!=0  
+  // Prevent melee from being scheduled when player is moving
+  if ( range < 0 ) range = 5; 
 }
 
 attack_t::attack_t( const active_spell_t& s, int t, bool special ) :
