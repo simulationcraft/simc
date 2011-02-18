@@ -256,6 +256,7 @@ struct druid_t : public player_t
   passive_spell_t* spec_moonfury;
   mastery_t* mastery_total_eclipse; // Mastery
   int eclipse_bar_value; // Tracking the current value of the eclipse bar
+  int eclipse_wrath_count; // Wrath gains eclipse in 13, 13, 14, 13, 13, 14, 13, 13
   int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
   
   // Feral
@@ -341,6 +342,7 @@ struct druid_t : public player_t
     active_t10_4pc_caster_dot = 0;
     
     eclipse_bar_value     = 0;
+    eclipse_wrath_count   = 0;
     eclipse_bar_direction = 0;
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
@@ -3437,16 +3439,21 @@ struct wrath_t : public druid_spell_t
       {
         // Wrath's Eclipse gain is a bit tricky, as it is NOT just 40/3 or 
         // rather 40/3*2 in case of Euphoria procs. This is how it behaves:
-        // 66.6% for -13 Eclipse / -27 if Euphoria proc
-        // 33.3% for -14 Eclipse / -26 if Euphoria proc
-        // This gives averages of -13.33 and -26.66, but as Power's are tracked
-        // as an integer internally, you can't recieve fractions. To get from
-        // Solar into Lunar you need to get -200 energy, this means 15 Wrath
-        // on average, but because the gains are not fractions you have a not
-        // negliable chance to need 15 Wrath!
+        // There is an internal counter, a normal wrath increases it by 1,
+        // Euphoria wrath by 2. If the counter reaches >=3 your wrath will give 
+        // you 1 additional eclipse energy and counter will be lowered. This 
+        // leads to predictable patterns where Ephoria is the only random thing
+        // Example, ignoring eclipse procs / elipse bar value:
+        // ++:      +1  +1  +1  +1  +1  +1  +2  +2  +2
+        // Count: 0  1   2   3   1   2   3   2   1   0
+        // Mod 3: 0  1   2   0   1   2   0   2   1   0
+        // Gain:   -13 -13 -14 -13 -13 -14 -26 -27 -27
         
         // Wrath's second effect base value is positive in the DBC files
-        int gain = - effect_base_value( 2 );
+        int gain = effect_base_value( 2 );
+        
+        // Every wrath increases the counter by 1
+        p -> eclipse_wrath_count++;
         
         // BUG (FEATURE?) ON LIVE 
         // #1 Euphoria does not proc, if you are more than 35 into the side the
@@ -3456,16 +3463,17 @@ struct wrath_t : public druid_spell_t
           && !( p -> bugs && p -> eclipse_bar_value < -35 ) )
         {
           gain *= 2;
-          if ( p -> rng_wrath_eclipsegain -> roll( 2.0/3.0 ) )
-            gain -= 1;
+          // Euphoria procs also add 1 to the counter
+          p -> eclipse_wrath_count++;
         }
-        else 
+
+        if ( p -> eclipse_wrath_count > 2 )
         {
-          if ( p -> rng_wrath_eclipsegain -> roll( 1.0/3.0 ) )
-            gain -= 1;
+          gain++;
+          p -> eclipse_wrath_count -= 3;
         }
-        //trigger_eclipse_energy_gain( this, gain );
-        trigger_eclipse_gain_delay( this, gain );
+        // Wrath gain is negative!
+        trigger_eclipse_gain_delay( this, -gain );
       }
     }
   }
@@ -4025,8 +4033,10 @@ void druid_t::init_actions()
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
       action_list_str += use_str;
-      action_list_str += "/starfire,if=eclipse_dir=1";
-      action_list_str += "/wrath,if=eclipse_dir=-1";
+      action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
+      action_list_str += "/starfire,if=eclipse_dir=-1&eclipse<-87";
+      action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
+      action_list_str += "/wrath,if=eclipse_dir=1&eclipse>=80";
       action_list_str += "/starfire";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
       action_list_str += "/moonfire,moving=1";
