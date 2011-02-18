@@ -3743,7 +3743,7 @@ struct action_t : public spell_id_t
   virtual void   extend_duration( int extra_ticks );
   virtual void   extend_duration_seconds( double extra_ticks );
   virtual void   update_ready();
-  virtual bool   usable_moving() { return false; }
+  virtual bool   usable_moving();
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();

@@ -3400,7 +3400,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
     priest_heal_t( "holy_word_sanctuary", player, 88685 ),
     tick_spell( 0 )
   {
-    background = true;
     hasted_ticks = false;
 
     base_tick_time = 2.0;
@@ -3427,7 +3426,6 @@ struct holy_word_chastise_t : public priest_spell_t
   holy_word_chastise_t( player_t* player ) :
     priest_spell_t( "holy_word_chastise", player, 88625 )
   {
-    background = true;
     priest_t* p = player -> cast_priest();
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
@@ -3444,7 +3442,6 @@ struct holy_word_serenity_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    background = true;
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
@@ -3479,20 +3476,21 @@ struct holy_word_t : public priest_spell_t
     hw_sanctuary = new holy_word_sanctuary_t( p );
     hw_chastise  = new holy_word_chastise_t( p );
     hw_serenity  = new holy_word_serenity_t( p );
+
   }
 
-  virtual void execute()
+  virtual void schedule_execute()
   {
     priest_t* p = player -> cast_priest();
 
     if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> up() )
-      hw_serenity -> execute();
+      hw_serenity -> schedule_execute();
 
     else if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> up() )
-      hw_sanctuary -> execute();
+      hw_sanctuary -> schedule_execute();
 
     else
-      hw_chastise -> execute();
+      hw_chastise -> schedule_execute();
   }
 
   virtual bool ready()
@@ -3503,10 +3501,12 @@ struct holy_word_t : public priest_spell_t
       return false;
 
     if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> check() )
-      return hw_serenity -> ready();
+      if ( ! hw_serenity -> ready() )
+        return false;
 
     if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> check() )
-      return hw_sanctuary -> ready();
+      if ( ! hw_sanctuary -> ready() )
+        return false;
 
     return hw_chastise -> ready();
   }

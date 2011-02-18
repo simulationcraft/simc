@@ -407,7 +407,7 @@ bool heal_t::ready()
     return false;
 
   if ( player -> buffs.moving -> check() )
-    if ( usable_moving() && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
+    if ( ! usable_moving() )
       return false;
 
   if ( moving != -1 )
@@ -683,7 +683,6 @@ void absorb_t::assess_damage( player_t* t,
 		     util_t::result_type_string( result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
   
   stats -> add_result( heal_amount, heal_type, heal_result );
@@ -772,7 +771,7 @@ bool absorb_t::ready()
     return false;
 
   if ( player -> buffs.moving -> check() )
-    if ( usable_moving() && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
+    if ( ! usable_moving() )
       return false;
 
   if ( moving != -1 )

@@ -1415,6 +1415,24 @@ void action_t::update_ready()
   }
 }
 
+// action_t::usable_moving ====================================================
+
+bool action_t::usable_moving()
+{
+  bool usable = true;
+
+  if ( execute_time() > 0 )
+    return false;
+
+  if ( channeled )
+    return false;
+
+  if ( range == 0 )
+    return false;
+
+  return usable;
+}
+
 // action_t::ready ==========================================================
 
 bool action_t::ready()
@@ -1459,7 +1477,7 @@ bool action_t::ready()
       return false;
 
   if ( player -> buffs.moving -> check() )
-    if ( ! usable_moving() && ( channeled || ( range == 0 ) || ( execute_time() > 0 ) ) )
+    if ( ! usable_moving() )
       return false;
 
   if ( moving != -1 )
@@ -1779,3 +1797,4 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
 
   return (int) floor( ( d / t ) + 0.5 );
 }
+

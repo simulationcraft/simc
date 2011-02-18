@@ -322,7 +322,7 @@ struct shaman_spell_t : public spell_t
   virtual bool   usable_moving()
   {
     // Return true when Spiritwalker's Grace is up
-    return false;
+    return spell_t::usable_moving();
   }
 };
 

@@ -2900,11 +2900,6 @@ struct life_tap_t : public warlock_spell_t
       trigger_gcd += p -> glyphs.life_tap -> effect_base_value( 1 ) / 1000.0;
   }
 
-  virtual bool usable_moving()
-  {
-    return true;
-  }
-
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
