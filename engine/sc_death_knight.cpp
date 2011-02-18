@@ -332,6 +332,7 @@ struct death_knight_t : public player_t
   virtual void      init_values();
   double composite_pet_attack_crit();
   virtual double    composite_attack_haste() SC_CONST;
+  virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -1907,15 +1908,6 @@ void death_knight_attack_t::player_buff()
   death_knight_t* p = player -> cast_death_knight();
 
   attack_t::player_buff();
-
-  if ( weapon )
-  {
-    if ( p -> talents.nerves_of_cold_steel -> rank() )
-    {
-      if ( weapon -> group() == WEAPON_1H )
-        player_hit += p -> talents.nerves_of_cold_steel -> effect_base_value( 1 ) / 100.0;
-    }
-  }
   
   if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
     if ( ! proc )
@@ -3810,6 +3802,23 @@ double death_knight_t::composite_attack_haste() SC_CONST
   return haste;
 }
 
+// death_knight_t::composite_attack_hit() ===================================
+
+double death_knight_t::composite_attack_hit() SC_CONST
+{
+  double hit = player_t::composite_attack_hit();
+
+  // Factor in the hit from NoCS here so it shows up in the report, to match the character sheet
+  if ( main_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( talents.nerves_of_cold_steel -> rank() )
+    {
+      hit += talents.nerves_of_cold_steel -> effect_base_value( 1 ) / 100.0;
+    }
+  }
+
+  return hit;
+}
 // death_knight_t::init =====================================================
 
 void death_knight_t::init()
