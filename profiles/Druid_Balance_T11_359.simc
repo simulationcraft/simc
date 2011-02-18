@@ -26,8 +26,10 @@ actions+=/moonfire,if=!ticking&buff.t11_4pc_caster.down&!dot.sunfire.remains>0
 actions+=/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))
 actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
-actions+=/starfire,if=eclipse_dir=1
-actions+=/wrath,if=eclipse_dir=-1
+actions+=/starfire,if=eclipse_dir=1&eclipse<80
+actions+=/starfire,if=eclipse_dir=-1&eclipse<-87
+actions+=/wrath,if=eclipse_dir=-1&eclipse>=-87
+actions+=/wrath,if=eclipse_dir=1&eclipse>=80
 actions+=/starfire
 actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
 actions+=/moonfire,moving=1
