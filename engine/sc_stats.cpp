@@ -70,7 +70,6 @@ void stats_t::add_result( double amount,
 			  int    dmg_type,
 			  int    result )
 {
-
   player -> iteration_dmg += amount;
   total_dmg += amount;
 

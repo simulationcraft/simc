@@ -1759,7 +1759,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     "                      <th class=\"small\">Max</th>\n"
     "                      <th class=\"small\">Total Damage</th>\n"
     "                    </tr>\n" );
-  for ( int i=RESULT_MAX; i >= 0; i-- )
+  for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
   {
   if ( s -> direct_results[ i  ].count)
   {
@@ -1804,7 +1804,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
       "                      <th class=\"small\">Max</th>\n"
       "                      <th class=\"small\">Total Damage</th>\n"
       "                    </tr>\n" );
-    for ( int i=RESULT_MAX; i >= 0; i-- )
+    for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
     {
     if ( s -> tick_results[ i  ].count)
     {
