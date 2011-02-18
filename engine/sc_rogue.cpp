@@ -853,8 +853,9 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
       {
         venomous_wound_t( rogue_t* p ) : rogue_poison_t( "venomous_wound", 79136, p )
         {
-          proc = true;
-          direct_power_mod = .1125; // XXX: it has extra_coeff() but do no match
+          background       = true;
+          proc             = true;
+          direct_power_mod = extra_coeff();
           reset();
         }
       };
