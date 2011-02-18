@@ -1655,7 +1655,17 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   }
 
   util_t::fprintf( file,
-    "                <td class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"spell=%i\">%s</a></td>\n"
+    "                <td class=\"left small\">" );
+  if ( p -> sim -> report_details )
+  util_t::fprintf( file,
+    "<a href=\"#\" class=\"toggle-details\" rel=\"spell=%i\">%s</a></td>\n",
+    id,
+    s -> name_str.c_str() );
+  else
+  util_t::fprintf( file,
+    "%s</td>\n",
+    s -> name_str.c_str());
+  util_t::fprintf( file,
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
@@ -1681,8 +1691,6 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
     "              </tr>\n",
-    id,
-    s -> name_str.c_str(),
     s -> portion_dps,
     s -> portion_dmg * 100,
     s -> resource_portion * 100,
@@ -1707,6 +1715,9 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> tick_results[ RESULT_CRIT ].pct,
     s -> tick_results[ RESULT_MISS ].pct,
     100 * s -> total_tick_time / s -> player -> total_seconds );
+
+  if ( p -> sim -> report_details )
+  {
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
     "                <td colspan=\"25\" class=\"filler\">\n" );
@@ -1932,7 +1943,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   util_t::fprintf( file,
     "                </td>\n"
     "              </tr>\n" );
-
+  }
 }
 
 // print_html_gear ============================================================
@@ -2900,8 +2911,15 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file, " class=\"odd\"" );
     }
     util_t::fprintf( file, ">\n" );
+    if ( p -> sim -> report_details )
     util_t::fprintf( file,
-      "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
+      "                <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n",
+      buff_name.c_str() );
+    else
+    util_t::fprintf( file,
+      "                <td class=\"left\">%s</td>\n",
+      buff_name.c_str() );
+    util_t::fprintf( file,
       "                <td class=\"right\">%.1f</td>\n"
       "                <td class=\"right\">%.1f</td>\n"
       "                <td class=\"right\">%.1fsec</td>\n"
@@ -2909,7 +2927,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       "                <td class=\"right\">%.0f%%</td>\n"
       "                <td class=\"right\">%.0f%%</td>\n"
       "              </tr>\n",
-      buff_name.c_str(),
       b -> avg_start,
       b -> avg_refresh,
       b -> avg_start_interval,
@@ -2917,6 +2934,8 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       b -> uptime_pct,
      ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct ) );
 
+    if ( p -> sim -> report_details )
+    {
     util_t::fprintf( file,
       "              <tr class=\"details hide\">\n"
       "                <td colspan=\"7\" class=\"filler\">\n"
@@ -2939,6 +2958,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       b -> buff_duration,
       b -> cooldown -> duration,
       b -> default_chance * 100 );
+    }
   }
   util_t::fprintf( file,
     "            </table>\n" );
@@ -2964,10 +2984,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         util_t::fprintf( file, " class=\"odd\"" );
       }
       util_t::fprintf( file, ">\n" );
+      if ( p -> sim -> report_details )
+      {
       util_t::fprintf( file,
         "                  <td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
         "                </tr>\n",
         b -> name() );
+
 
       util_t::fprintf( file,
         "                <tr class=\"details hide\">\n"
@@ -2991,6 +3014,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         b -> buff_duration,
         b -> cooldown -> duration,
         b -> default_chance * 100 );
+      }
+      else
+      util_t::fprintf( file,
+        "                  <td class=\"left\">%s</td>\n"
+        "                </tr>\n",
+        b -> name() );
+
       i++;
     }
     util_t::fprintf( file,
@@ -4672,7 +4702,7 @@ void report_t::print_spell_query( sim_t* sim )
 
 void report_t::print_suite( sim_t* sim )
 {
-  report_t::print_text( sim -> output_file, sim );
+  report_t::print_text( sim -> output_file, sim, sim -> report_details );
   report_t::print_html( sim );
   report_t::print_wiki( sim );
   report_t::print_xml( sim );

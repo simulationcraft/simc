@@ -2441,6 +2441,7 @@ struct sim_t
   int report_precision;
   bool report_pets_separately;
   bool report_targets;
+  bool report_details;
 
   // Multi-Threading
   int threads;
