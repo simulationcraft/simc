@@ -4041,10 +4041,15 @@ void druid_t::init_actions()
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
       action_list_str += use_str;
-      action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
-      action_list_str += "/starfire,if=eclipse_dir=-1&eclipse<-87";
-      action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
-      action_list_str += "/wrath,if=eclipse_dir=1&eclipse>=80";
+      // Those smarter actions should yield better dps
+      // action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
+      // action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-87";
+      // action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
+      // action_list_str += "/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=80";
+      // action_list_str += "/starfire";
+      // but somehow they don't, so go with very dumb actions
+      action_list_str += "/starfire,if=eclipse_dir=1";
+      action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
       action_list_str += "/moonfire,moving=1";
