@@ -3119,10 +3119,16 @@ struct circle_of_healing_t : public priest_heal_t
 
 struct prayer_of_mending_t : public priest_heal_t
 {
+  bool single;
   prayer_of_mending_t( player_t* player, const std::string& options_str ) :
-      priest_heal_t( "prayer_of_mending", player, "Prayer of Mending" )
+      priest_heal_t( "prayer_of_mending", player, "Prayer of Mending" ), single( false )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "single", OPT_BOOL,       &single },
+      { NULL,     OPT_UNKNOWN, NULL       }
+    };
+    parse_options( options, options_str );
 
     priest_t* p = player -> cast_priest();
 
@@ -3148,16 +3154,19 @@ struct prayer_of_mending_t : public priest_heal_t
   virtual void execute()
   {
     // Set Heal Targets
-    unsigned int h = 0;
     heal_target.resize(1); // Only leave the first target, reset the others.
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    if ( ! single )
+    {
+      unsigned int h = 0;
+      for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-      if( h > 3 ) continue;
-      if ( !p -> is_pet() && p != player )
-      {
-        heal_target.push_back(p);
+        if( h > 3 ) continue;
+        if ( !p -> is_pet() && p != player )
+        {
+          heal_target.push_back(p);
+        }
+        h++;
       }
-      h++;
     }
 
     priest_heal_t::execute();
@@ -3295,6 +3304,8 @@ struct penance_heal_tick_t : public priest_heal_t
     background  = true;
     may_crit    = true;
     dual        = true;
+    direct_tick = true;
+    stats = player -> get_stats( "penance" );
   }
 
   virtual void execute()
@@ -3338,6 +3349,8 @@ struct penance_heal_t : public priest_heal_t
 
     parse_options( NULL, options_str );
 
+    may_crit = false;
+
     channeled         = true;
     tick_zero         = true;
 
@@ -3347,8 +3360,6 @@ struct penance_heal_t : public priest_heal_t
     cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
 
     penance_tick = new penance_heal_tick_t( p );
-
-    add_child( penance_tick );
   }
 
   virtual void tick()

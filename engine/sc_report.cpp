@@ -1724,7 +1724,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
 
   // Stat Details
   util_t::fprintf (file,
-    "                  <h4>Stat details: %s </h4>\n", s -> name_str.c_str() );
+    "                  <h4>Stats details: %s </h4>\n", s -> name_str.c_str() );
 
   util_t::fprintf (file,
     "                  <div class=\"float\">\n"
@@ -1732,9 +1732,11 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   util_t::fprintf (file,
       "                      <li><span class=\"label\">executes:</span>%.2f</li>\n"
       "                      <li><span class=\"label\">direct results:</span>%.2f</li>\n"
+      "                      <li><span class=\"label\">ticks:</span>%.2f</li>\n"
       "                      <li><span class=\"label\">tick results:</span>%.2f</li>\n",
       s -> num_executes,
       s -> num_direct_results,
+      s -> num_ticks,
       s -> num_tick_results );
   util_t::fprintf (file,
     "                    </ul></div>\n" );
@@ -1749,10 +1751,11 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   // Direct Damage
   util_t::fprintf (file,
     "                    <tr>\n"
-    "                      <th class=\"small\">Direct Damage</th>\n"
+    "                      <th class=\"small\">Direct Results</th>\n"
     "                      <th class=\"small\">Count</th>\n"
     "                      <th class=\"small\">Pct</th>\n"
     "                      <th class=\"small\">Average</th>\n"
+    "                      <th class=\"small\">Min</th>\n"
     "                      <th class=\"small\">Max</th>\n"
     "                      <th class=\"small\">Total Damage</th>\n"
     "                    </tr>\n" );
@@ -1768,10 +1771,11 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     }
     util_t::fprintf( file, ">\n" );
     util_t::fprintf (file,
-    "                      <td class=\"right small\">%s:</td>\n"
+    "                      <td class=\"left small\">%s</td>\n"
     "                      <td class=\"right small\">%.1f</td>\n"
     "                      <td class=\"right small\">%.2f%%</td>\n"
     "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.0f</td>\n"
     "                      <td class=\"right small\">%.0f</td>\n"
     "                      <td class=\"right small\">%.0f</td>\n"
     "                    </tr>\n",
@@ -1779,6 +1783,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     s -> direct_results[ i  ].count,
     s -> direct_results[ i  ].pct,
     s -> direct_results[ i  ].avg_dmg,
+    s -> direct_results[ i  ].min_dmg,
     s -> direct_results[ i  ].max_dmg,
     s -> direct_results[ i  ].total_dmg);
   }
@@ -1791,10 +1796,11 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     // Tick Damage
     util_t::fprintf (file,
       "                    <tr>\n"
-      "                      <th class=\"small\">Tick Damage</th>\n"
+      "                      <th class=\"small\">Tick Results</th>\n"
       "                      <th class=\"small\">Count</th>\n"
       "                      <th class=\"small\">Pct</th>\n"
       "                      <th class=\"small\">Average</th>\n"
+      "                      <th class=\"small\">Min</th>\n"
       "                      <th class=\"small\">Max</th>\n"
       "                      <th class=\"small\">Total Damage</th>\n"
       "                    </tr>\n" );
@@ -1810,10 +1816,11 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
       }
       util_t::fprintf( file, ">\n" );
       util_t::fprintf (file,
-      "                      <td class=\"right small\">%s:</td>\n"
+      "                      <td class=\"left small\">%s</td>\n"
       "                      <td class=\"right small\">%.1f</td>\n"
       "                      <td class=\"right small\">%.2f%%</td>\n"
       "                      <td class=\"right small\">%.2f</td>\n"
+      "                      <td class=\"right small\">%.0f</td>\n"
       "                      <td class=\"right small\">%.0f</td>\n"
       "                      <td class=\"right small\">%.0f</td>\n"
       "                    </tr>\n",
@@ -1821,6 +1828,7 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
       s -> tick_results[ i  ].count,
       s -> tick_results[ i  ].pct,
       s -> tick_results[ i  ].avg_dmg,
+      s -> tick_results[ i  ].min_dmg,
       s -> tick_results[ i  ].max_dmg,
       s -> tick_results[ i  ].total_dmg);
     }
