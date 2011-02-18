@@ -462,6 +462,7 @@ struct fire_elemental_pet_t : public pet_t
     virtual void execute() { player -> distance = 1; }
     virtual double execute_time() SC_CONST { return ( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
+    virtual bool usable_moving() { return true; }
   };
 
   struct fire_elemental_spell_t : public spell_t
@@ -551,6 +552,11 @@ struct fire_elemental_pet_t : public pet_t
       base_dd_min        = 276;
       base_dd_max        = 321;
     };
+    
+    virtual bool usable_moving()
+    {
+      return true;
+    }
   };
 
   struct fire_melee_t : public attack_t

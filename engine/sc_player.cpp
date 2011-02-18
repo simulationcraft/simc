@@ -4997,7 +4997,7 @@ void player_t::copy_from( player_t* source )
   // This is necessary because sometimes the talent trees change shape between live/ptr.
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    for( int j = talent_trees[ i ].size()-1; j >= 0; j-- )
+    for( unsigned j = 0; j < talent_trees[ i ].size(); j++ )
     {
       talent_t* t = talent_trees[ i ][ j ];
       talent_t* source_t = source -> find_talent( t -> td -> name );
