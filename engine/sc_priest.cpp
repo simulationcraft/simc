@@ -3419,6 +3419,19 @@ struct holy_word_sanctuary_t : public priest_heal_t
     tick_spell -> execute();
     stats -> add_tick( time_to_tick );
   }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( ! p -> talents.revelations -> rank() )
+      return false;
+
+    if ( ! p -> buffs_chakra_sanctuary -> check() )
+      return false;
+
+    return priest_heal_t::ready();
+  }
 };
 
 struct holy_word_chastise_t : public priest_spell_t
@@ -3432,6 +3445,19 @@ struct holy_word_chastise_t : public priest_spell_t
     base_cost  = floor( base_cost );
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect_base_value( 1 ) / 100.0;
+  }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> buffs_chakra_sanctuary -> check() )
+      return false;
+
+    if (  p -> buffs_chakra_serenity -> check() )
+      return false;
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -3457,6 +3483,19 @@ struct holy_word_serenity_t : public priest_heal_t
 
     p -> buffs_serenity -> trigger();
   }
+
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( ! p -> talents.revelations -> rank() )
+      return false;
+
+    if ( ! p -> buffs_chakra_serenity -> check() )
+      return false;
+
+    return priest_heal_t::ready();
+  }
 };
 
 struct holy_word_t : public priest_spell_t
@@ -3472,6 +3511,8 @@ struct holy_word_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     priest_t* p = player -> cast_priest();
+
+    dual = true;
 
     hw_sanctuary = new holy_word_sanctuary_t( p );
     hw_chastise  = new holy_word_chastise_t( p );
@@ -3497,18 +3538,14 @@ struct holy_word_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( ! priest_spell_t::ready() )
-      return false;
-
     if ( p -> talents.revelations -> rank() && p -> buffs_chakra_serenity -> check() )
-      if ( ! hw_serenity -> ready() )
-        return false;
+      return hw_serenity -> ready();
 
-    if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> check() )
-      if ( ! hw_sanctuary -> ready() )
-        return false;
+    else if ( p -> talents.revelations -> rank() && p -> buffs_chakra_sanctuary -> check() )
+      return hw_sanctuary -> ready();
 
-    return hw_chastise -> ready();
+    else
+      return hw_chastise -> ready();
   }
 };
 
