@@ -546,13 +546,14 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   weapon_t* weapon;
   buff_t* buff;
   double PPM;
+  bool all_damage;
 
-  weapon_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, double ppm=0.0 ) :
-    action_callback_t( p -> sim, p ), weapon(w), buff(b), PPM(ppm) {}
+  weapon_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, double ppm=0.0, bool all=false ) :
+    action_callback_t( p -> sim, p ), weapon(w), buff(b), PPM(ppm), all_damage(all) {}
 
   virtual void trigger( action_t* a, void* call_data )
   {
-    if( a -> proc ) return;
+    if( ! all_damage && a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
 
     if( PPM > 0 )
@@ -749,12 +750,14 @@ void enchant_t::init( player_t* p )
     if ( mh_enchant == "hurricane" )
     {
       mh_buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
-      p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/ ) );
+      p -> register_direct_damage_callback( SCHOOL_ALL_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
+      p -> register_tick_damage_callback  ( SCHOOL_ALL_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
     }
     if ( oh_enchant == "hurricane" )
     {
       oh_buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
-      p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/ ) );
+      p -> register_direct_damage_callback( SCHOOL_ALL_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
+      p -> register_tick_damage_callback  ( SCHOOL_ALL_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
     }
     // Custom proc is required for spell damage procs.
     // If MH buff is up, then refresh it, else
@@ -764,14 +767,12 @@ void enchant_t::init( player_t* p )
     struct hurricane_spell_proc_callback_t : public action_callback_t
     {
       buff_t *mh_buff, *oh_buff, *s_buff;
-      hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb ) :
-        action_callback_t( p -> sim, p ), mh_buff(mhb), oh_buff(ohb)
+      hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
+        action_callback_t( p -> sim, p ), mh_buff(mhb), oh_buff(ohb), s_buff(sb)
       {
-        s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, 12, 45.0 );
       }
       virtual void trigger( action_t* a, void* call_data )
       {
-        if( a -> proc ) return;
         if( s_buff -> cooldown -> remains() > 0 ) return;
         if( ! s_buff -> rng -> roll( 0.15 ) ) return;
         if( mh_buff && mh_buff -> check() )
@@ -787,7 +788,9 @@ void enchant_t::init( player_t* p )
         else s_buff -> trigger();
       }
     };
-    p -> register_spell_callback( RESULT_HIT_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff ) );
+    buff_t* s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, 12, 45.0 );
+    p -> register_direct_damage_callback( SCHOOL_ALL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> register_tick_damage_callback  ( SCHOOL_ALL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
   }
   if ( mh_enchant == "landslide" )
   {
