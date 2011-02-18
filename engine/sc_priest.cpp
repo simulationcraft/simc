@@ -533,6 +533,7 @@ struct priest_heal_t : public heal_t
         background     = true;
         tick_may_crit  = false;
         hasted_ticks   = false;
+        may_crit       = false;
 
         reset();
       }
@@ -984,6 +985,7 @@ struct shadowy_apparition_t : public priest_spell_t
   {
     background        = true;
     proc              = true;
+    dual              = true;
 
     trigger_gcd       = 0;
     travel_speed      = 3.5;
@@ -1071,14 +1073,11 @@ void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
 struct devouring_plague_burst_t : public priest_spell_t
 {
   devouring_plague_burst_t( player_t* player ) :
-      priest_spell_t( "devouring_plague", player, SCHOOL_SHADOW, TREE_SHADOW )
+      priest_spell_t( "devouring_plague_burst", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     dual       = true;
     proc       = true;
     background = true;
-
-    // This helps log file and decouples the sooth RNG from the ticks.
-    name_str = "devouring_plague_burst";
   }
 
   virtual void player_buff()
@@ -1111,6 +1110,8 @@ struct devouring_plague_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     parse_options( NULL, options_str );
 
+    may_crit   = false;
+
     base_cost        *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
 
@@ -1119,6 +1120,8 @@ struct devouring_plague_t : public priest_spell_t
     if ( p -> talents.improved_devouring_plague -> rank() )
     {
       burst_spell = new devouring_plague_burst_t( p );
+
+      add_child( burst_spell );
     }
   }
 
@@ -1482,6 +1485,7 @@ struct mind_flay_t : public priest_spell_t
       priest_spell_t( "mind_flay", player, "Mind Flay" ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     priest_t* p = player -> cast_priest();
+
     check_spec( TREE_SHADOW );
 
     option_t options[] =
@@ -1493,7 +1497,8 @@ struct mind_flay_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    channeled = true;
+    may_crit     = false;
+    channeled    = true;
     hasted_ticks = false;
 
     base_tick_time += p -> sets -> set( SET_T10_4PC_CASTER ) -> mod_additive( P_TICK_TIME );
@@ -1933,10 +1938,14 @@ struct shadow_word_pain_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
+    may_crit   = false;
+
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
     base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
+
+    stats -> children.push_back( player -> get_stats( "shadowy_apparition") );
   }
 
   virtual double cost() SC_CONST
@@ -2036,6 +2045,8 @@ struct vampiric_touch_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     priest_t* p = player -> cast_priest();
+
+    may_crit   = false;
 
     base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
@@ -2912,7 +2923,9 @@ struct glyph_prayer_of_healing_t : public priest_heal_t
     proc       = true;
     dual       = true;
     background = true;
-    may_crit = false;
+    may_crit   = false;
+    num_ticks=0; // coded as DD for now.
+
   }
 };
 
@@ -3391,6 +3404,9 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
   {
     dual        = true;
     background  = true;
+    direct_tick = true;
+
+    stats = player -> get_stats( "holy_word_sanctuary" );
 
   }
   virtual void execute()
@@ -3418,14 +3434,13 @@ struct holy_word_sanctuary_t : public priest_heal_t
     tick_spell( 0 )
   {
     hasted_ticks = false;
+    may_crit     = false;
 
     base_tick_time = 2.0;
     num_ticks = 9;
 
     priest_t* p = player -> cast_priest();
     tick_spell = new holy_word_sanctuary_tick_t( p );
-
-    add_child( tick_spell );
 
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect_base_value( 1 ) / 100.0;
@@ -3592,10 +3607,11 @@ struct lightwell_hot_t : public priest_heal_t
     tick_power_mod = 0.308;
     base_multiplier *= 3 * 1.25;
 
-    proc = true;
-    background = true;
-    hasted_ticks = false;
-    dual = true;
+    proc          = true;
+    background    = true;
+    hasted_ticks  = false;
+    dual          = true;
+    may_crit      = false;
   }
 
   virtual void execute()
