@@ -1705,6 +1705,8 @@ int sim_t::roll( double chance )
 double sim_t::range( double min,
                      double max )
 {
+  if ( average_range ) return ( min + max ) / 2.0;
+
   rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
   
   return r -> range( min, max );

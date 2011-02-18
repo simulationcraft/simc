@@ -846,6 +846,12 @@ double action_t::calculate_weapon_damage()
   if ( weapon -> slot == SLOT_OFF_HAND )
     total_dmg *= 0.5;
 
+  if ( sim -> debug )
+  {
+    log_t::output( sim, "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
+		   player -> name(), name(), total_dmg, weapon_damage, weapon -> bonus_dmg, weapon_speed, power_damage, total_attack_power() );
+  }
+
   return total_dmg;
 }
 

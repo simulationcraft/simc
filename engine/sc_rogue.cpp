@@ -195,7 +195,6 @@ struct rogue_t : public player_t
   rng_t* rng_anesthetic_poison;
   rng_t* rng_bandits_guile;
   rng_t* rng_combat_potency;
-  rng_t* rng_critical_strike_interval;
   rng_t* rng_cut_to_the_chase;
   rng_t* rng_deadly_poison;
   rng_t* rng_honor_among_thieves;
@@ -211,6 +210,7 @@ struct rogue_t : public player_t
   rng_t* rng_venomous_wounds;
   rng_t* rng_wound_poison;
   rng_t* rng_tier10_4pc;
+  rng_t* rng_hat_interval;
 
   // Spec passives
   passive_spell_t* spec_improved_poisons;   // done
@@ -309,11 +309,10 @@ struct rogue_t : public player_t
   glyphs_t glyphs;
 
   combo_points_t* combo_points;
+  action_callback_t* virtual_hat_callback;
 
   // Options
-  std::vector<action_callback_t*> critical_strike_callbacks;
-  std::vector<double> critical_strike_intervals;
-  std::string critical_strike_intervals_str;
+  double      virtual_hat_interval;
   std::string tricks_of_the_trade_target_str;
   player_t*   tricks_of_the_trade_target;
 
@@ -332,10 +331,11 @@ struct rogue_t : public player_t
     active_venomous_wound = 0;
     active_main_gauche    = 0;
 
-    combo_points          = new combo_points_t( this );
+    combo_points = new combo_points_t( this );
+    virtual_hat_callback = 0;
 
     // Dots
-    dots_rupture          = get_dot( "rupture" );
+    dots_rupture = get_dot( "rupture" );
 
     // Cooldowns
     cooldowns_honor_among_thieves = get_cooldown( "honor_among_thieves" );
@@ -344,7 +344,7 @@ struct rogue_t : public player_t
     cooldowns_killing_spree       = get_cooldown( "killing_spree"       );
 
     // Options
-    critical_strike_intervals_str = "1.50/1.75/2.0/2.25";
+    virtual_hat_interval = -1;
     tricks_of_the_trade_target_str = "other";
     tricks_of_the_trade_target = 0;
 
@@ -939,7 +939,9 @@ void rogue_attack_t::_init_rogue_attack_t()
     
   rogue_t* p = player -> cast_rogue();
 
-  base_hit  += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
+  base_hit += p -> talents.precision -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
+
+  base_dd_multiplier *= 1.0 + p -> spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 }
 
 // rogue_attack_t::parse_options ===========================================
@@ -1078,9 +1080,6 @@ void rogue_attack_t::player_buff()
   attack_t::player_buff();
   
   rogue_t* p = player -> cast_rogue();
-
-  if ( school == SCHOOL_PHYSICAL )
-    player_multiplier *= 1.0 + p -> spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 
   if ( p -> buffs_cold_blood -> check() )
     player_crit += p -> buffs_cold_blood -> base_value() / 100.0;
@@ -3533,8 +3532,8 @@ void rogue_t::init_rng()
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
   // also useful for frequent checks with low probability of proc and timed effect
 
-  rng_critical_strike_interval = get_rng( "critical_strike_interval", RNG_DISTRIBUTED );
-  rng_critical_strike_interval -> average_range = false;
+  rng_hat_interval = get_rng( "hat_interval", RNG_DISTRIBUTED );
+  rng_hat_interval -> average_range = false;
 }
 
 // rogue_t::init_scaling ====================================================
@@ -3633,34 +3632,22 @@ void rogue_t::register_callbacks()
   {
     action_callback_t* cb = new honor_among_thieves_callback_t( this );
 
-    register_attack_callback( RESULT_CRIT_MASK, cb );
-
-    if ( sim -> player_list -> next )
+    if ( virtual_hat_interval < 0 )
+    {
+      virtual_hat_interval = 5.20 - talents.honor_among_thieves -> rank();
+    }
+    if ( virtual_hat_interval > 0 )
+    {
+      virtual_hat_callback = cb;
+    }
+    else
     {
       for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if ( p == this     ) continue;
         if ( p -> is_pet() ) continue;
 
-        cb = new honor_among_thieves_callback_t( this );
-
         p -> register_attack_callback( RESULT_CRIT_MASK, cb );
-      }
-    }
- //   else // Virtual Party
-    if ( critical_strike_intervals.size() == 0 )
-    {
-      std::vector<std::string> intervals;
-      int num_intervals = util_t::string_split( intervals, critical_strike_intervals_str, ",;|/" );
-
-      for ( int i=0; i < num_intervals; i++ )
-      {
-        double interval = atof( intervals[ i ].c_str() );
-        if (interval > 0.0)
-        {
-          critical_strike_intervals.push_back( interval );
-          critical_strike_callbacks.push_back( new honor_among_thieves_callback_t( this ) );
-        }
+        p -> register_spell_callback ( RESULT_CRIT_MASK, cb );
       }
     }
   }
@@ -3674,33 +3661,31 @@ void rogue_t::combat_begin()
 
   if ( talents.honor_among_thieves -> rank() )
   {
-    //if ( ! sim -> player_list -> next ) // Virtual Party
+    if ( virtual_hat_interval > 0 )
     {
-      int num_intervals = ( int ) critical_strike_intervals.size();
-      for ( int i=0; i < num_intervals; i++ )
+      struct virtual_hat_event_t : public event_t
       {
-        struct critical_strike_t : public event_t
-        {
-          action_callback_t* callback;
-          double interval;
+	action_callback_t* callback;
+	double interval;
 
-          critical_strike_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) :
-            event_t( sim, p ), callback(cb), interval(i)
-          {
-            name = "Critical Strike";
-            double time = p -> rng_critical_strike_interval -> range( interval*0.5, interval*1.5 );
-            sim -> add_event( this, time );
-          }
-          virtual void execute()
-          {
-            rogue_t* p = player -> cast_rogue();
-            callback -> trigger( NULL );
-            new ( sim ) critical_strike_t( sim, p, callback, interval );
-          }
-        };
-        if ( critical_strike_intervals[ i ] > 0.0 )
-          new ( sim ) critical_strike_t( sim, this, critical_strike_callbacks[ i ], critical_strike_intervals[ i ] );
-      }
+	virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) :
+	  event_t( sim, p ), callback(cb), interval(i)
+	{
+	  name = "Virtual HAT Event";
+	  double cooldown = 5.0 - p -> talents.honor_among_thieves -> rank();
+	  double remainder = interval - cooldown;
+	  if ( remainder < 0 ) remainder = 0;
+	  double time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + 0.01;
+	  sim -> add_event( this, time );
+	}
+	virtual void execute()
+	{
+	  rogue_t* p = player -> cast_rogue();
+	  callback -> trigger( NULL );
+	  new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
+	}
+      };
+      new ( sim ) virtual_hat_event_t( sim, this, virtual_hat_callback, virtual_hat_interval );
     }
   }
 }
@@ -3710,16 +3695,7 @@ void rogue_t::combat_begin()
 void rogue_t::reset()
 {
   player_t::reset();
-
   _expirations.reset();
-
-  // Reset the callbacks for the Virtual Party
-  int num_intervals = ( int ) critical_strike_callbacks.size();
-  for ( int i=0; i < num_intervals; i++ )
-  {
-    critical_strike_callbacks[ i ] -> reset();
-  }
-
   tricks_of_the_trade_target = 0;
 }
 
@@ -3818,7 +3794,7 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "critical_strike_intervals",  OPT_STRING, &( critical_strike_intervals_str  ) },
+    { "virtual_hat_interval",       OPT_FLT,    &( virtual_hat_interval           ) },
     { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { "initial_combo_points",       OPT_FUNC,   ( void * ) ::parse_combo_points     },
     { NULL, OPT_UNKNOWN, NULL }
@@ -3837,11 +3813,15 @@ bool rogue_t::create_profile( std::string& profile_str, int save_type, bool save
   {
     if ( talents.honor_among_thieves -> rank() )
     {
-      profile_str += "# These values represent the avg donor intervals (unlimited by cooldown) of the Rogues's party members.\n";
-      profile_str += "# This does not affect HAT procs generated by the Rogue himself.\n";
-      profile_str += "# When using this profile with real raid setup, this should be set to 0.\n";
-      profile_str += "critical_strike_intervals=" + critical_strike_intervals_str + "\n";
+      profile_str += "# These values represent the avg HAT donor interval of the raid.\n";
+      profile_str += "# A negative value will make the Rogue use a programmed default interval.\n";
+      profile_str += "# A zero value will disable virtual HAT procs and assume a real raid is being simulated.\n";
+      profile_str += "virtual_hat_interval=-1\n";  // Force it to generate profiles using programmed default.
     }
+
+    profile_str += "# A value of 'other' implies some unspecified target.\n";
+    profile_str += "# A value of 'self' implies swapping with another Rogue.\n";
+    profile_str += "tricks_of_the_trade_target=other\n";
   }
 
   return true;
@@ -3853,8 +3833,8 @@ void rogue_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   rogue_t* p = source -> cast_rogue();
-  critical_strike_intervals_str = p -> critical_strike_intervals_str;
-  tricks_of_the_trade_target    = p -> tricks_of_the_trade_target;
+  virtual_hat_interval = p -> virtual_hat_interval;
+  tricks_of_the_trade_target = p -> tricks_of_the_trade_target;
 }
 
 // rogue_t::decode_set =====================================================

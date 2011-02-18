@@ -536,9 +536,8 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     for ( stats_t* st = p -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> total_dmg <= 0 ) continue;
-      if ( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
-      if ( st -> num_executes < 5 ) continue;
+      if ( st -> dpet <= 0 ) continue;
+      if ( st -> dpet > ( 5 * p -> dps ) ) continue;
 
       stats_list.push_back( st );
     }
@@ -622,8 +621,7 @@ const char* chart_t::action_dpet( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_dmg <= 0 ) continue;
-    if ( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
+    if ( st -> dpet <= 0 ) continue;
     if ( st -> dpet > ( 5 * p -> dps ) ) continue;
 
     stats_list.push_back( st );
@@ -634,9 +632,8 @@ const char* chart_t::action_dpet( std::string& s,
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> total_dmg <= 0 ) continue;
-      if ( ! st -> channeled && st -> total_execute_time <= 0 ) continue;
-      if ( st -> dpet > ( 10 * p -> dps ) ) continue;
+      if ( st -> dpet <= 0 ) continue;
+      if ( st -> dpet > ( 5 * p -> dps ) ) continue;
 
       stats_list.push_back( st );
     }

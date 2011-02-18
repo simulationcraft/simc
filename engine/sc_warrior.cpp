@@ -1151,9 +1151,8 @@ struct bladestorm_tick_t : public warrior_attack_t
   {
     dual        = true;
     background  = true;
-    aoe         = -1;
     direct_tick = true;
-    aoe         = 4;
+    aoe         = -1;
   }
 };
 
