@@ -322,7 +322,11 @@ struct shaman_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual bool   usable_moving()
   {
-    // Return true when Spiritwalker's Grace is up
+    shaman_t* p = player -> cast_shaman();
+    
+    if ( p -> buffs_spiritwalkers_grace -> up() || execute_time() == 0 )
+      return true;
+
     return spell_t::usable_moving();
   }
 };
@@ -3957,7 +3961,7 @@ void shaman_t::interrupt()
   {
     action_t* swg = find_action( "spiritwalkers_grace" );
 
-    if ( swg -> ready() && executing )
+    if ( swg && swg -> ready() && executing )
     {
       if ( sim -> log ) log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish", 
         executing -> name_str.c_str() );
