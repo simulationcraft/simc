@@ -3033,7 +3033,7 @@ void player_t::register_callbacks()
 {
   dark_intent_cb = new dark_intent_callback_t( this );
   dark_intent_cb -> active = false;
-  register_spell_callback( RESULT_CRIT_MASK, dark_intent_cb );
+  register_tick_callback( RESULT_CRIT_MASK, dark_intent_cb );
 }
 
 // player_t::register_resource_gain_callback ================================
