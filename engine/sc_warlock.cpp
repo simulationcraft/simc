@@ -1754,6 +1754,8 @@ struct bane_of_agony_t : public warlock_spell_t
 
     parse_options( NULL, options_str );
 
+    may_crit   = false;
+
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
@@ -1801,6 +1803,7 @@ struct bane_of_doom_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
+    may_crit     = false;
 
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
     base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
@@ -2208,6 +2211,9 @@ struct corruption_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     warlock_t* p = player -> cast_warlock();
+
+    may_crit   = false;
+
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
   }
@@ -2254,6 +2260,7 @@ struct drain_life_t : public warlock_spell_t
     channeled    = true;
     binary       = true;
     hasted_ticks = false;
+    may_crit     = false;
   }
 
   virtual void execute()
@@ -2362,6 +2369,7 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     binary       = true;
     hasted_ticks = true; // informative
+    may_crit     = false;
   }
 
   virtual void tick()
@@ -2459,6 +2467,9 @@ struct unstable_affliction_t : public warlock_spell_t
     check_talent( ok() );
 
     warlock_t* p = player -> cast_warlock();
+
+    may_crit   = false;
+
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
     base_execute_time += p -> glyphs.unstable_affliction -> base_value() / 1000.0;
   }
@@ -2606,7 +2617,7 @@ struct shadowflame_dot_t : public warlock_spell_t
     dual       = true;
     proc       = true;
     background = true;
-    stats = player -> get_stats( "shadowflame" );
+    direct_tick= true;
   }
 };
 // Shadowflame Spell =============================================================
@@ -2622,6 +2633,8 @@ struct shadowflame_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     sf_dot = new shadowflame_dot_t( p );
+
+    add_child( sf_dot );
   }
 
   virtual void execute()
