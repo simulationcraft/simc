@@ -1154,7 +1154,6 @@ struct bladestorm_tick_t : public warrior_attack_t
   bladestorm_tick_t( warrior_t* p, const char* name ) :
       warrior_attack_t( name, 50622, p, TREE_ARMS, false )
   {
-    dual        = true;
     background  = true;
     direct_tick = true;
     aoe         = -1;
