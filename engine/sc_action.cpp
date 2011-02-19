@@ -1011,7 +1011,13 @@ void action_t::execute()
                    player -> resource_current[ player -> primary_resource() ] );
   }
 
-  if ( harmful ) player -> in_combat = true;
+  if ( harmful )
+  {
+    if ( player -> in_combat == false && sim -> debug )
+      log_t::output( sim, "%s enters combat.", player -> name() );
+
+    player -> in_combat = true;
+  }
 
   player_buff();
 

@@ -1332,6 +1332,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     dual        = true;
     background  = true;
+    direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     stats = player -> get_stats( "arcane_missiles" );
