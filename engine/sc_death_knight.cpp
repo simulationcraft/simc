@@ -2331,6 +2331,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect_base_value( 1 ) / 100.0;
     base_multiplier  *= 1.0 + p -> talents.virulence -> mod_additive( P_TICK_DAMAGE );
     may_miss         = false;
+    may_crit         = false;
     hasted_ticks     = false;
     reset(); // Not a real action
   }
@@ -2544,6 +2545,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
+    harmful = false;
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     base_cost = 0; // DBC has a value of 9 of an unknown resource
   }
@@ -2704,6 +2706,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t( "empower_rune_weapon", 47568, player )
   {
     parse_options( NULL, options_str );
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -2770,6 +2774,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_tick_time    = 3.0;
     hasted_ticks      = false;
     may_miss          = false;
+    may_crit          = false;
     background        = true;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
@@ -2947,6 +2952,9 @@ struct howling_blast_t : public death_knight_spell_t
     extract_rune_cost( this , &cost_blood, &cost_frost, &cost_unholy );
     aoe               = 1; // Change to -1 once we support meteor split effect
     direct_power_mod  = 0.4;
+
+    if ( ! p -> frost_fever )
+      p -> frost_fever = new frost_fever_t( p );
   }
 
   virtual double cost() SC_CONST
@@ -2972,10 +2980,8 @@ struct howling_blast_t : public death_knight_spell_t
     {
       if ( p -> glyphs.howling_blast )
       {
-        if ( ! p -> frost_fever )
-          p -> frost_fever = new frost_fever_t( p );
-
-        p -> frost_fever -> execute();
+        if ( p -> frost_fever )
+          p -> frost_fever -> execute();
       }
       if ( p -> talents.chill_of_the_grave -> rank() )
       {
@@ -3021,6 +3027,11 @@ struct icy_touch_t : public death_knight_spell_t
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod = 0.2;
+
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( ! p -> frost_fever )
+      p -> frost_fever = new frost_fever_t( p );
   }
 
   virtual double cost() SC_CONST
@@ -3052,9 +3063,8 @@ struct icy_touch_t : public death_knight_spell_t
       {
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect_base_value( 1 ) / 10.0, p -> gains_chill_of_the_grave );
       }
-      if ( ! p -> frost_fever )
-        p -> frost_fever = new frost_fever_t( p );
-      p -> frost_fever -> execute();
+      if ( p -> frost_fever )
+        p -> frost_fever -> execute();
       trigger_ebon_plaguebringer( this );
     }
     p -> buffs_killing_machine -> expire();
@@ -3216,6 +3226,16 @@ struct outbreak_t : public death_knight_spell_t
     death_knight_spell_t( "outbreak", 77575, player )
   {
     parse_options( NULL, options_str );
+
+    may_crit   = false;
+
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( ! p -> blood_plague )
+      p -> blood_plague = new blood_plague_t( p );
+
+    if ( ! p -> frost_fever )
+      p -> frost_fever = new frost_fever_t( p );
   }
 
   virtual void execute()
@@ -3223,13 +3243,14 @@ struct outbreak_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( ! p -> blood_plague )
-      p -> blood_plague = new blood_plague_t( p );
-    p -> blood_plague -> execute();
+    if ( result_is_hit() )
+    {
+      if ( p -> blood_plague )
+        p -> blood_plague -> execute();
 
-    if ( ! p -> frost_fever )
-      p -> frost_fever = new frost_fever_t( p );
-    p -> frost_fever -> execute();
+      if ( p -> frost_fever )
+        p -> frost_fever -> execute();
+    }
   }
 };
 
