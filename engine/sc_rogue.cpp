@@ -3609,6 +3609,9 @@ struct honor_among_thieves_callback_t : public action_callback_t
       a -> player -> procs.hat_donor -> occur();
     }
 
+//    if ( sim -> debug )
+//      log_t::output( sim, "Eligible For Honor Among Thieves" );
+
     if ( rogue -> cooldowns_honor_among_thieves -> remains() > 0 )
       return;
 
@@ -3633,6 +3636,10 @@ void rogue_t::register_callbacks()
   {
     action_callback_t* cb = new honor_among_thieves_callback_t( this );
 
+    register_attack_callback( RESULT_CRIT_MASK, cb );
+    register_spell_callback ( RESULT_CRIT_MASK, cb );
+    register_tick_callback( RESULT_CRIT_MASK, cb );
+
     if ( virtual_hat_interval < 0 )
     {
       virtual_hat_interval = 5.20 - talents.honor_among_thieves -> rank();
@@ -3645,10 +3652,12 @@ void rogue_t::register_callbacks()
     {
       for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
+        if ( p == this     ) continue;
         if ( p -> is_pet() ) continue;
 
         p -> register_attack_callback( RESULT_CRIT_MASK, cb );
         p -> register_spell_callback ( RESULT_CRIT_MASK, cb );
+        p -> register_tick_callback( RESULT_CRIT_MASK, cb );
       }
     }
   }
