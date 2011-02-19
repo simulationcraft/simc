@@ -1512,9 +1512,9 @@ struct aimed_shot_mm_t : public hunter_attack_t
     // Don't know why these values aren't 0 in the database.
     base_cost = 0;
     base_execute_time = 0;
-    direct_power_mod =  1.44;
 
     // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    direct_power_mod =  1.6*0.724;
     weapon_multiplier = 1.625;
 
     weapon = &( p -> ranged_weapon );
@@ -1569,7 +1569,6 @@ struct aimed_shot_t : public hunter_attack_t
     check_spec ( TREE_MARKSMANSHIP );
     parse_options( NULL, options_str );
 
-    direct_power_mod = 1.44;
     base_execute_time = 2.90;
 
     weapon = &( p -> ranged_weapon );
@@ -1579,6 +1578,7 @@ struct aimed_shot_t : public hunter_attack_t
     casted = 0;
 
     // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    direct_power_mod =  1.6*0.724;
     weapon_multiplier = 1.60;
 
     as_mm = new aimed_shot_mm_t( p );
