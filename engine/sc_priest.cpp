@@ -3280,7 +3280,9 @@ struct power_word_shield_t : public priest_absorb_t
     // Rapture
     if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.02 * p -> talents.rapture -> rank(), p -> gains_rapture );
+      // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+      double amount = util_t::talent_rank( p -> talents.rapture -> rank(), 3, 0.02, 0.05, 0.07 );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * amount, p -> gains_rapture );
       p -> cooldowns_rapture -> start();
     }
   }

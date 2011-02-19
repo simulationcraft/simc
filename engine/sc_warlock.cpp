@@ -1902,11 +1902,11 @@ struct bane_of_havoc_t : public warlock_spell_t
 
 struct shadow_bolt_t : public warlock_spell_t
 {
-  bool isb;
+  bool isb, used_shadow_trance;
 
   shadow_bolt_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "shadow_bolt", player, "Shadow Bolt" ),
-      isb( 0 )
+      isb( 0 ), used_shadow_trance( 0 )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -1940,7 +1940,15 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::schedule_execute();
-    p -> buffs_shadow_trance -> expire();
+    if ( p -> buffs_shadow_trance -> check() )
+    {
+      p -> buffs_shadow_trance -> expire();
+      used_shadow_trance = true;
+    }
+    else
+    {
+      used_shadow_trance = false;
+    }
   }
 
   virtual void execute()
@@ -1953,7 +1961,7 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> uptimes_backdraft[ i ] -> update( i == p -> buffs_backdraft -> stack() );
     }
 
-    if ( p -> buffs_backdraft -> up() )
+    if ( !used_shadow_trance && p -> buffs_backdraft -> up() )
     {
       p -> buffs_backdraft -> decrement();
     }

@@ -942,7 +942,12 @@ void warrior_attack_t::player_buff()
   // --- Specializations --
 
   if ( weapon && weapon -> group() == WEAPON_2H )
-    player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
+  {
+    double bonus = p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
+    // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    bonus = 0.20;
+    player_multiplier *= 1.0 + bonus;
+  }
 
   if ( p -> dual_wield() && school == SCHOOL_PHYSICAL )
     player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
