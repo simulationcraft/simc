@@ -1116,7 +1116,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
 
   // Left side charts: dps, gear, timeline, raid events
   util_t::fprintf( file,
-    "        <div class=\"charts\">\n" );
+    "        <div class=\"charts charts-left\">\n" );
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
@@ -1221,19 +1221,19 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 
       util_t::fprintf( file,
         "          <tr>\n"
-        "            <th class=\"left\">Profile</th>\n" );
+        "            <th class=\"left small\">Profile</th>\n" );
       for ( int i=0; i < STAT_MAX; i++ )
       {
   if ( sim -> scaling -> stats.get_stat( i ) != 0 )
         {
     util_t::fprintf( file,
-      "            <th>%s</th>\n",
+      "            <th class=\"small\">%s</th>\n",
       util_t::stat_type_abbrev( i ) );
   }
       }
       util_t::fprintf( file,
-        "            <th>wowhead</th>\n"
-        "            <th>lootrank</th>\n"
+        "            <th class=\"small\">wowhead</th>\n"
+        "            <th class=\"small\">lootrank</th>\n"
         "          </tr>\n" );
     }
 
@@ -1245,21 +1245,21 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
     }
     util_t::fprintf( file, ">\n" );
     util_t::fprintf( file,
-      "            <td class=\"left\">%s</td>\n",
+      "            <td class=\"left small\">%s</td>\n",
       p -> name() );
     for ( int j=0; j < STAT_MAX; j++ )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
         util_t::fprintf( file,
-          "            <td>%.*f</td>\n",
+          "            <td class=\"small\">%.*f</td>\n",
           sim -> report_precision,
           p -> scaling.get_stat( j ) );
       }
     }
     util_t::fprintf( file,
-      "            <td><a href=\"%s\"> wowhead </a></td>\n"
-      "            <td><a href=\"%s\"> lootrank</a></td>\n"
+      "            <td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
+      "            <td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
       "          </tr>\n",
       p -> gear_weights_wowhead_link.c_str(),
       p -> gear_weights_lootrank_link.c_str() );
@@ -1267,15 +1267,19 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   util_t::fprintf( file,
     "        </table>\n" );
   if ( sim -> iterations < 10000 )
-    util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations will vary from run to run.</h3>");
+    util_t::fprintf( file,
+      "        <div class=\"alert\">\n"
+      "          <h3>Warning</h3>\n"
+      "          <p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
+      "        </div>\n" );
   util_t::fprintf( file,
     "      </div>\n"
     "    </div>\n\n" );
 }
 
-// print_html_auras_debuffs ==================================================
+// print_html_auras_buffs ==================================================
 
-static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
+static void print_html_auras_buffs( FILE*  file, sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
   int show_dyn = 0;
@@ -1294,7 +1298,7 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
   }
 
   util_t::fprintf( file,
-    "        <div id=\"auras\" class=\"section" );
+    "        <div id=\"auras-buffs\" class=\"section" );
   if ( num_players == 1 )
   {
     util_t::fprintf( file, " grouped-first" );
@@ -1305,7 +1309,7 @@ static void print_html_auras_debuffs( FILE*  file, sim_t* sim )
   }
   util_t::fprintf ( file, "\">\n" );
   util_t::fprintf ( file,
-    "          <h2 class=\"toggle\">Auras</h2>\n"
+    "          <h2 class=\"toggle\">Auras/Buffs</h2>\n"
     "            <div class=\"toggle-content\">\n" );
 
   if ( show_dyn > 0 )
@@ -1633,9 +1637,9 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
     "    <!-- End Help Boxes -->\n" );
 }
 
-// print_html_action =========================================================
+// print_html_action_damage ===================================================
 
-static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
+static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 {
   int id = 0;
 
@@ -1668,12 +1672,9 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   util_t::fprintf( file,
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.1f%%</td>\n"
-    "                <td class=\"right small\">%.1f%%</td>\n"
     "                <td class=\"right small\">%.1f</td>\n"
     "                <td class=\"right small\">%.2fsec</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
-    "                <td class=\"right small\">%.0f</td>\n"
-    "                <td class=\"right small\">%.1f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
     "                <td class=\"right small\">%.0f</td>\n"
@@ -1693,13 +1694,10 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
     "              </tr>\n",
     s -> portion_dps,
     s -> portion_dmg * 100,
-    s -> resource_portion * 100,
     s -> num_executes,
     s -> frequency,
     s -> dpe,
     s -> dpet,
-    s -> dpr,
-    s -> rpe,
     s -> direct_results[ RESULT_HIT  ].avg_dmg,
     s -> direct_results[ RESULT_CRIT ].avg_dmg,
     s -> direct_results[ RESULT_CRIT ].max_dmg ? s -> direct_results[ RESULT_CRIT ].max_dmg : s -> direct_results[ RESULT_HIT ].max_dmg,
@@ -1954,6 +1952,39 @@ static void print_html_action( FILE* file, stats_t* s, player_t* p, int j )
   }
 }
 
+// print_html_action_resource ==================================================
+
+static void print_html_action_resource( FILE* file, stats_t* s, player_t* p, int j )
+{
+  int id = 0;
+
+  util_t::fprintf( file,
+    "              <tr" );
+  if ( j & 1 )
+  {
+    util_t::fprintf( file, " class=\"odd\"" );
+  }
+  util_t::fprintf( file, ">\n" );
+
+  for ( action_t* a = s -> player -> action_list; a; a = a -> next )
+  {
+    if ( a -> stats != s ) continue;
+    id = a -> id;
+    if ( ! a -> background ) break;
+  }
+
+  util_t::fprintf( file,
+    "                <td class=\"left small\">%s</td>\n"
+    "                <td class=\"right small\">%.1f%%</td>\n"
+    "                <td class=\"right small\">%.1f</td>\n"
+    "                <td class=\"right small\">%.0f</td>\n"
+    "              </tr>\n",
+    s -> name_str.c_str(),
+    s -> resource_portion * 100,
+    s -> dpr,
+    s -> rpe );
+}
+
 // print_html_gear ============================================================
 
 static void print_html_gear (FILE* file, player_t* a )
@@ -2002,8 +2033,10 @@ static void print_html_profile (FILE* file, player_t* a )
     util_t::fprintf( file,
       "            <div class=\"player-section profile\">\n"
       "              <h3 class=\"toggle\">Profile</h3>\n"
-      "              <div class=\"toggle-content no-wrap\">\n"
-      "                <p>%s</p>\n"
+      "              <div class=\"toggle-content\">\n"
+      "                <div class=\"subsection force-wrap\">\n"
+      "                  <p>%s</p>\n"
+      "                </div>\n"
       "              </div>\n"
       "            </div>\n",
       profile_str.c_str() );
@@ -2613,7 +2646,11 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file,
       "            </table>\n" );
       if ( sim -> iterations < 10000 )
-        util_t::fprintf( file, "<br/><h3>Warning: Scale Factors generated using less than 10,000 iterations will vary from run to run.</h3>");
+        util_t::fprintf( file,
+          "        <div class=\"alert\">\n"
+          "          <h3>Warning</h3>\n"
+          "          <p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
+          "        </div>\n" );
     }
   }
   util_t::fprintf( file,
@@ -2760,7 +2797,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "        <div class=\"player-section\">\n"
     "          <h3 class=\"toggle open\">Charts</h3>\n"
     "          <div class=\"toggle-content\">\n"
-    "            <div class=\"charts\">\n"
+    "            <div class=\"charts charts-left\">\n"
     "              %s"
     "              %s"
     "              %s"
@@ -2794,16 +2831,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "          <div class=\"toggle-content\">\n"
     "            <table class=\"sc\">\n"
     "              <tr>\n"
-    "                <th class=\"small\"></th>\n"
+    "                <th class=\"left small\">Damage Stats</th>\n"
     "                <th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%%</a></th>\n"
-    "                <th class=\"small\">Res%%</th>\n"
     "                <th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-dpet\" class=\"help\">DPET</a></th>\n"
-    "                <th class=\"small\"><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
-    "                <th class=\"small\">RPE</th>\n"
     "                <th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
     "                <th class=\"small\"><a href=\"#help-max\" class=\"help\">Max</a></th>\n"
@@ -2825,7 +2859,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "              <tr>\n"
     "                <th class=\"left small\">%s</th>\n"
     "                <th class=\"right small\">%.0f</th>\n"
-    "                <td colspan=\"23\" class=\"filler\"></td>\n"
+    "                <td colspan=\"20\" class=\"filler\"></td>\n"
     "              </tr>\n",
     n.c_str(),
     p -> dps );
@@ -2835,7 +2869,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   {
     if ( s -> num_executes > 1 || s -> compound_dmg > 0 )
     {
-      print_html_action( file, s, p, i );
+      print_html_action_damage( file, s, p, i );
       i++;
     }
   }
@@ -2856,12 +2890,67 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       "              <tr>\n"
       "                <th class=\"left small\">pet - %s</th>\n"
       "                <th class=\"right small\">%.0f</th>\n"
-      "                <td colspan=\"23\" class=\"filler\"></td>\n"
+      "                <td colspan=\"20\" class=\"filler\"></td>\n"
       "              </tr>\n",
       pet -> name_str.c_str(),
       pet -> dps );
         }
-        print_html_action( file, s, p, i );
+        print_html_action_damage( file, s, p, i );
+        i++;
+      }
+    }
+  }
+
+  util_t::fprintf( file,
+    "            </table>\n" );
+
+  util_t::fprintf( file,
+    "            <table class=\"sc mt\">\n"
+    "              <tr>\n"
+    "                <th class=\"left small\">Resource Usage</th>\n"
+    "                <th class=\"small\">Res%%</th>\n"
+    "                <th class=\"small\"><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
+    "                <th class=\"small\">RPE</th>\n"
+    "              </tr>\n" );
+
+  util_t::fprintf( file,
+    "              <tr>\n"
+    "                <th class=\"left small\">%s</th>\n"
+    "                <td colspan=\"3\" class=\"filler\"></td>\n"
+    "              </tr>\n",
+    n.c_str() );
+
+  i = 0;
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  {
+    if ( s -> rpe > 0 )
+    {
+      print_html_action_resource( file, s, p, i );
+      i++;
+    }
+  }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    bool first=true;
+
+    i = 0;
+    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    {
+      if ( s -> rpe > 0 )
+      {
+        if ( first )
+        {
+          first = false;
+    util_t::fprintf( file,
+      "              <tr>\n"
+      "                <th class=\"left small\">pet - %s</th>\n"
+      "                <td colspan=\"3\" class=\"filler\"></td>\n"
+      "              </tr>\n",
+      pet -> name_str.c_str(),
+      pet -> dps );
+        }
+        print_html_action_resource( file, s, p, i );
         i++;
       }
     }
@@ -3227,8 +3316,12 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     if ( seq.size() > 0 )
     {
       util_t::fprintf( file,
-        "                <h4 class=\"mt\">Sample Sequence</h4>\n"
-        "                <div class=\"sample-sequence\">%s</div>\n",
+        "                <div class=\"subsection subsection-small\">\n"
+        "                  <h4>Sample Sequence</h4>\n"
+        "                  <div class=\"force-wrap mono\">\n"
+        "                    %s\n"
+        "                  </div>\n"
+        "                </div>\n",
         seq.c_str() );
     }
   }
@@ -4068,95 +4161,110 @@ void report_t::print_html( sim_t* sim )
   if ( sim -> hosted_html )
   {
     util_t::fprintf( file,
-    "      @import url('http://www.simulationcraft.org/css/styles.css');\n" );
+      "      @import url('http://www.simulationcraft.org/css/styles-new.css');\n" );
   }
   else
   {
     util_t::fprintf( file,
-      "      * { border: none; margin: 0; padding: 0; }\n"
-      "      body { padding: 5px 25px 25px 25px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; text-align: center; }\n"
-      "      p { margin-top: 1em; }\n"
-      "      h1, h2, h3, h4, h5, h6 { color: #777; margin-top: 1em; margin-bottom: 0.5em; }\n"
-      "      h1, h2 { margin: 0; padding: 2px 2px 0 2px; }\n"
-      "      h1 { font-size: 24px; }\n"
-      "      h2 { font-size: 18px; }\n"
-      "      h3 { margin: 0 0 4px 0; font-size: 16px; }\n"
-      "      a { color: #666688; text-decoration: none; }\n"
-      "      a:hover, a:active { color: #333; }\n"
-      "      ul, ol { padding-left: 20px; }\n"
-      "      ul.float, ol.float { padding: 0; }\n"
-      "      ul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 2px solid #eee; }\n"
-      "      .clear { clear: both; }\n"
-      "      .hide, .charts span { display: none; }\n"
-      "      .float { float: left; }\n"
-      "      .no-wrap { max-width: 1200px; outline: 1px solid #ccc; margin: 10px 0 0 16px; padding: 8px; word-wrap: no-wrap; overflow-x: scroll; }\n"
-      "      .mt { margin-top: 20px; }\n"
-      "      .mb { margin-bottom: 20px; }\n"
-      "      .toggle { cursor: pointer; }\n"
-      "      h2.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD1SURBVHja7JQ9CoQwFIT9LURQG3vBwyh4XsUjWFtb2IqNCmIhkp1dd9dsfIkeYKdKHl+G5CUTvaqqrutM09Tk2rYtiiIrjuOmaeZ5VqBBEADVGWPTNJVlOQwDyYVhmKap4zgGJp7nJUmCpQoOY2Mv+b6PkkDz3IGevQUOeu6VdxrHsSgK27azLOM5AoVwPqCu6wp1ApXJ0G7rjx5oXdd4YrfQtm3xFJdluUYRBFypghb32ve9jCaOJaPpDpC0tFmg8zzn46nq6/rSd2opAo38IHMXrmeOdgWHACKVFx3Y/c7cjys+JkSP9HuLfYR/Dg1icj0EGACcXZ/44V8+SgAAAABJRU5ErkJggg==) 0 -10px no-repeat; }\n"
-      "      h2.open { margin-bottom: 10px; background-position: 0 9px; }\n"
-      "      h3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAIAAAAMmCo2AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEfSURBVHjazJPLjkRAGIXbdSM8ACISvWeDNRYeGuteuL2EdMSGWLrOmdExaCO9nLOq+vPV+S9VRTwej6IoGIYhCOK21zzPfd/f73da07TiRxRFbTkQ4zjKsqyqKoFN27ZhGD6fT5ZlV2IYBkVRXNflOI5ESBAEz/NEUYT5lnAcBwQi307L6aZpoiiqqgprSZJwbCF2EFTXdRAENE37vr8SR2jhAPE8vw0eoVORtw/0j6Fpmi7afEFlWeZ5jhu9grqui+M4SZIrCO8Eg86y7JT7LXx5TODSNL3qDhw6eOeOIyBJEuUj6ZY7mRNmAUvQa4Q+EEiHJizLMgzj3AkeMLBte0vsoCULPHRd//NaUK9pmu/EywDCv0M7+CTzmb4EGADS4Lwj+N6gZgAAAABJRU5ErkJggg==) 0 -11px no-repeat; }\n"
-      "      h3.open { background-position: 0 7px; }\n"
-      "      h4.toggle { margin: 0 0 8px 0; padding-left: 12px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
-      "      h4.open { background-position: 0 6px; }\n"
-      "      a.toggle-details { margin: 0 0 8px 0; padding-left: 12px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAXCAYAAADZTWX7AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADiSURBVHjaYvz//z/DrFmzGBkYGLqBeG5aWtp1BjTACFIEAkCFZ4AUNxC7ARU+RlbEhMT+BMQaQLwOqEESlyIYMIEqlMenCAQsgLiakKILQNwF47AgSfyH0leA2B/o+EfYTOID4gdA7IusAK4IGk7ngNgPqOABut3I1uUDFfzA5kB4YOIDTAxEgOGtiAUY2vlA2hCIf2KRZwXie6AQPwzEFUAsgUURSGMQEzAqQHFmB8R30BS8BWJXoPw2sJuAjNug2Afi+1AFH4A4DCh+GMXhQIEboHQExKeAOAbI3weTAwgwAIZTQ9CyDvuYAAAAAElFTkSuQmCC) 0 4px no-repeat; }\n"
-      "      a.open { background-position: 0 -11px; }\n"
-      "      td.small a.toggle-details { background-position: 0 2px; }\n"
-      "      td.small a.open { background-position: 0 -13px; }\n"
-      "      .toggle-content { display: none; }\n"
-      "      #active-help, .help-box { display: none; }\n"
-      "      #active-help { position: absolute; width: 350px; padding: 3px; background: #fff; z-index: 10; }\n"
-      "      #active-help-dynamic { padding: 6px 6px 18px 6px; background: #eeeef5; outline: 1px solid #ddd; font-size: 13px; }\n"
-      "      #active-help .close { position: absolute; right: 10px; bottom: 4px; }\n"
-      "      .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
-      "      .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
-      "      a.help { cursor: help; }\n"
-      "      .section { position: relative; max-width: 1260px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: -1px; border: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }\n"
-      "      .section-open { margin-top: 25px; margin-bottom: 25px; -moz-border-radius: 10px; -khtml-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; }\n"
-      "      .grouped-first { -moz-border-radius-topright: 10px; -moz-border-radius-topleft: 10px; -khtml-border-top-right-radius: 10px; -khtml-border-top-left-radius: 10px; -webkit-border-top-right-radius: 10px; -webkit-border-top-left-radius: 10px; border-top-right-radius: 10px; border-top-left-radius: 10px; }\n"
-      "      .grouped-last, .final { -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; -khtml-border-bottom-right-radius: 10px; -khtml-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -webkit-border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }\n"
-      "      .section .toggle-content { padding: 0 0 20px 16px; }\n"
-      "      #raid-summary .toggle-content { padding-bottom: 0px; }\n"
-      "      ul.params { padding: 0; }\n"
-      "      ul.params li { float: left; padding: 2px 10px 2px 10px; margin-right: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 12px; }\n"
-      "      .player h2 { margin: 0; }\n"
-      "      .player ul.params { position: relative; top: 2px; }\n"
-      "      #masthead h2 { margin: 10px 0 5px 0; }\n"
-      "      #notice { border: 1px solid #ddbbbb; background: #ffdddd; font-size: 12px; }\n"
-      "      #notice h2 { margin-bottom: 10px; }\n"
-      "      .toc { float: left; padding: 0; }\n"
-      "      .toc-wide { width: 560px; }\n"
-      "      .toc-narrow { width: 375px; }\n"
-      "      .toc li { margin-bottom: 10px; list-style-type: none; }\n"
-      "      .toc li ul { padding-left: 10px; }\n"
-      "      .toc li ul li { margin: 0; list-style-type: none; font-size: 13px; }\n"
-      "      .charts { margin: 10px 60px 0 4px; float: left; width: 550px; text-align: center; }\n"
-      "      .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; border: 1px solid #ccc; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; -moz-box-shadow: inset 1px 1px 4px #ccc; -webkit-box-shadow: inset 1px 1px 4px #ccc; box-shadow: inset 1px 1px 4px #ccc; }\n"
-      "      .talents div.float { width: auto; margin-right: 50px; }\n"
-      "      table.sc { border: 0; background-color: #eee; }\n"
-      "      table.sc tr { background-color: #fff; }\n"
-      "      table.sc tr.head { background-color: #aaa; color: #fff; }\n"
-      "      table.sc tr.odd { background-color: #f3f3f3; }\n"
-      "      table.sc th { padding: 2px 4px; text-align: center; background-color: #aaa; color: #fcfcfc; }\n"
-      "      table.sc th.small { padding: 2px 2px; font-size: 12px; }\n"
-      "      table.sc th a { color: #fff; text-decoration: underline; }\n"
-      "      table.sc th a:hover, table.sc th a:active { color: #f1f1ff; }\n"
-      "      table.sc td { padding: 2px 4px; text-align: center; font-size: 13px; }\n"
-      "      table.sc td.small { padding: 2px 2px; font-size: 11px; }\n"
-      "      table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td { text-align: left; padding-right: 6px; }\n"
-      "      table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td { text-align: right; padding-right: 6px; }\n"
-      "      table.sc tr.details td { padding: 0 0 15px 15px; text-align: left; background-color: #fff; }\n"
-      "      table.sc tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
-      "      table.sc tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
-      "      table.sc tr.details td ul li span.label { display: block; float: left; width: 150px; margin-right: 4px; background: #f3f3f3; }\n"
-      "      table.sc tr.details td ul li span.tooltip { display: block; float: left; width: 190px; }\n"
-      "      table.sc tr.details td ul li span.tooltip-wider { display: block; float: left; width: 350px; }\n"
-      "      table.sc tr.details td div.float { width: 350px; }\n"
-      "      table.sc tr.details td div.float h5 { margin-top: 4px; }\n"
-      "      table.sc tr.details td div.float ul { margin: 0 0 12px 0; }\n"
-      "      table.sc td.filler { background-color: #ccc; }\n"
-      "      table.sc .dynamic-buffs tr.details td ul li span.label { width: 80px; }\n"
-      "      .sample-sequence { width: 500px; word-wrap: break-word; outline: 1px solid #ddd; background: #fcfcfc; padding: 6px; font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n" );
+      "       /* * Standard elements */ * { border: none; margin: 0; padding: 0; }\n"
+      "       body { padding: 5px 25px 25px 25px; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 14px; background-color: #f9f9f9; color: #333; text-align: center; }\n"
+      "       h1, h2, h3, h4, h5, h6 { width: auto; color: #777; margin-top: 1em; margin-bottom: 0.5em; }\n"
+      "       h1, h2 { margin: 0; padding: 2px 2px 0 2px; }\n"
+      "       h1 { font-size: 24px; }\n"
+      "       h2 { font-size: 18px; }\n"
+      "       h3 { margin: 0 0 4px 0; font-size: 16px; }\n"
+      "       h4 { font-size: 12px; }\n"
+      "       h5 { font-size: 10px; }\n"
+      "       a { color: #666688; text-decoration: none; }\n"
+      "       a:hover, a:active { color: #333; }\n"
+      "       ul, ol { padding-left: 20px; }\n"
+      "       ul.float, ol.float { padding: 0; margin: 0; }\n"
+      "       ul.float li, ol.float li { display: inline; float: left; padding-right: 6px; margin-right: 6px; list-style-type: none; border-right: 2px solid #eee; }\n"
+      "       /* * Global classes */ .clear { clear: both; }\n"
+      "       .hide, .charts span { display: none; }\n"
+      "       .center { text-align: center; }\n"
+      "       .float { float: left; }\n"
+      "       .mt { margin-top: 20px; }\n"
+      "       .mb { margin-bottom: 20px; }\n"
+      "       .force-wrap { word-wrap: break-word; }\n"
+      "       .mono { font-family: \"Lucida Console\", Monaco, monospace; font-size: 12px; }\n"
+      "       /* * Styles for jQuery toggles */ .toggle { cursor: pointer; }\n"
+      "       .toggle-content { display: none; }\n"
+      "       h2.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD1SURBVHja7JQ9CoQwFIT9LURQG3vBwyh4XsUjWFtb2IqNCmIhkp1dd9dsfIkeYKdKHl+G5CUTvaqqrutM09Tk2rYtiiIrjuOmaeZ5VqBBEADVGWPTNJVlOQwDyYVhmKap4zgGJp7nJUmCpQoOY2Mv+b6PkkDz3IGevQUOeu6VdxrHsSgK27azLOM5AoVwPqCu6wp1ApXJ0G7rjx5oXdd4YrfQtm3xFJdluUYRBFypghb32ve9jCaOJaPpDpC0tFmg8zzn46nq6/rSd2opAo38IHMXrmeOdgWHACKVFx3Y/c7cjys+JkSP9HuLfYR/Dg1icj0EGACcXZ/44V8+SgAAAABJRU5ErkJggg==) 0 -10px no-repeat; }\n"
+      "       h2.open { margin-bottom: 10px; background-position: 0 9px; }\n"
+      "       h3.toggle { padding-left: 16px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAIAAAAMmCo2AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEfSURBVHjazJPLjkRAGIXbdSM8ACISvWeDNRYeGuteuL2EdMSGWLrOmdExaCO9nLOq+vPV+S9VRTwej6IoGIYhCOK21zzPfd/f73da07TiRxRFbTkQ4zjKsqyqKoFN27ZhGD6fT5ZlV2IYBkVRXNflOI5ESBAEz/NEUYT5lnAcBwQi307L6aZpoiiqqgprSZJwbCF2EFTXdRAENE37vr8SR2jhAPE8vw0eoVORtw/0j6Fpmi7afEFlWeZ5jhu9grqui+M4SZIrCO8Eg86y7JT7LXx5TODSNL3qDhw6eOeOIyBJEuUj6ZY7mRNmAUvQa4Q+EEiHJizLMgzj3AkeMLBte0vsoCULPHRd//NaUK9pmu/EywDCv0M7+CTzmb4EGADS4Lwj+N6gZgAAAABJRU5ErkJggg==) 0 -11px no-repeat; }\n"
+      "       h3.open { background-position: 0 7px; }\n"
+      "       h4.toggle { margin: 0 0 8px 0; padding-left: 12px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
+      "       h4.open { background-position: 0 6px; }\n"
+      "       a.toggle-details { margin: 0 0 8px 0; padding-left: 12px; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAXCAYAAADZTWX7AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADiSURBVHjaYvz//z/DrFmzGBkYGLqBeG5aWtp1BjTACFIEAkCFZ4AUNxC7ARU+RlbEhMT+BMQaQLwOqEESlyIYMIEqlMenCAQsgLiakKILQNwF47AgSfyH0leA2B/o+EfYTOID4gdA7IusAK4IGk7ngNgPqOABut3I1uUDFfzA5kB4YOIDTAxEgOGtiAUY2vlA2hCIf2KRZwXie6AQPwzEFUAsgUURSGMQEzAqQHFmB8R30BS8BWJXoPw2sJuAjNug2Afi+1AFH4A4DCh+GMXhQIEboHQExKeAOAbI3weTAwgwAIZTQ9CyDvuYAAAAAElFTkSuQmCC) 0 4px no-repeat; }\n"
+      "       a.open { background-position: 0 -11px; }\n"
+      "       td.small a.toggle-details { background-position: 0 2px; }\n"
+      "       td.small a.open { background-position: 0 -13px; }\n"
+      "       /* * Help boxes */ #active-help, .help-box { display: none; }\n"
+      "       #active-help { position: absolute; width: 350px; padding: 3px; background: #fff; z-index: 10; }\n"
+      "       #active-help-dynamic { padding: 6px 6px 18px 6px; background: #eeeef5; outline: 1px solid #ddd; font-size: 13px; }\n"
+      "       #active-help .close { position: absolute; right: 10px; bottom: 4px; }\n"
+      "       .help-box h3 { margin: 0 0 5px 0; font-size: 16px; }\n"
+      "       .help-box { border: 1px solid #ccc; background-color: #fff; padding: 10px; }\n"
+      "       a.help { cursor: help; }\n"
+      "       /* * Content sections */ .section { position: relative; width: 1150px; padding: 8px; margin-left: auto; margin-right: auto; margin-bottom: -1px; border: 1px solid #ccc; background-color: #fff; -moz-box-shadow: 4px 4px 4px #bbb; -webkit-box-shadow: 4px 4px 4px #bbb; box-shadow: 4px 4px 4px #bbb; text-align: left; }\n"
+      "       .section-open { margin-top: 25px; margin-bottom: 35px; -moz-border-radius: 15px; -khtml-border-radius: 15px; -webkit-border-radius: 15px; border-radius: 15px; }\n"
+      "       .grouped-first { -moz-border-radius-topright: 15px; -moz-border-radius-topleft: 15px; -khtml-border-top-right-radius: 15px; -khtml-border-top-left-radius: 15px; -webkit-border-top-right-radius: 15px; -webkit-border-top-left-radius: 15px; border-top-right-radius: 15px; border-top-left-radius: 15px; }\n"
+      "       .grouped-last { -moz-border-radius-bottomright: 15px; -moz-border-radius-bottomleft: 15px; -khtml-border-bottom-right-radius: 15px; -khtml-border-bottom-left-radius: 15px; -webkit-border-bottom-right-radius: 15px; -webkit-border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; }\n"
+      "       .section .toggle-content { padding: 0; }\n"
+      "       .player-section .toggle-content { padding-left: 16px; margin-bottom: 20px; }\n"
+      "       .subsection { background-color: #ccc; width: 1000px; padding: 8px; margin-bottom: 20px; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; font-size: 12px; }\n"
+      "       .subsection-small { width: 500px; }\n"
+      "       .subsection h4 { margin: 0 0 10px 0; }\n"
+      "       .profile .subsection p { margin: 0; }\n"
+      "       #raid-summary .toggle-content { padding-bottom: 0px; }\n"
+      "       ul.params { padding: 0; margin: 4px 0 0 6px; }\n"
+      "       ul.params li { float: left; padding: 2px 10px 2px 10px; margin-left: 10px; list-style-type: none; background: #eeeef5; font-family: \"Lucida Grande\", Arial, sans-serif; font-size: 11px; }\n"
+      "       #masthead ul.params { margin-left: 4px; }\n"
+      "       #masthead ul.params li { margin-left: 0px; margin-right: 10px; }\n"
+      "       .player h2 { margin: 0; }\n"
+      "       .player ul.params { position: relative; top: 2px; }\n"
+      "       #masthead h2 { margin: 10px 0 5px 0; }\n"
+      "       #notice { border: 1px solid #ddbbbb; background: #ffdddd; font-size: 12px; }\n"
+      "       #notice h2 { margin-bottom: 10px; }\n"
+      "       .alert { width: 800px; padding: 10px; margin: 10px 0 10px 0; background-color: #ddd; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }\n"
+      "       .alert p { margin-bottom: 0px; }\n"
+      "       .section .toggle-content { padding-left: 18px; }\n"
+      "       .player > .toggle-content { padding-left: 0; }\n"
+      "       .toc { float: left; padding: 0; }\n"
+      "       .toc-wide { width: 560px; }\n"
+      "       .toc-narrow { width: 375px; }\n"
+      "       .toc li { margin-bottom: 10px; list-style-type: none; }\n"
+      "       .toc li ul { padding-left: 10px; }\n"
+      "       .toc li ul li { margin: 0; list-style-type: none; font-size: 13px; }\n"
+      "       /* * Charts */ .charts { float: left; width: 541px; margin-top: 10px; }\n"
+      "       .charts-left { margin-right: 40px; }\n"
+      "       .charts img { padding: 8px; margin: 0 auto; margin-bottom: 20px; border: 1px solid #ccc; -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; -moz-box-shadow: inset 1px 1px 4px #ccc; -webkit-box-shadow: inset 1px 1px 4px #ccc; box-shadow: inset 1px 1px 4px #ccc; }\n"
+      "       /* * Tables */ .talents div.float { width: auto; margin-right: 50px; }\n"
+      "       table.sc { border: 0; background-color: #eee; }\n"
+      "       table.sc tr { background-color: #fff; }\n"
+      "       table.sc tr.head { background-color: #aaa; color: #fff; }\n"
+      "       table.sc tr.odd { background-color: #f3f3f3; }\n"
+      "       table.sc th { padding: 2px 4px 4px 4px; text-align: center; background-color: #aaa; color: #fcfcfc; }\n"
+      "       table.sc th.small { padding: 2px 2px; font-size: 12px; }\n"
+      "       table.sc th a { color: #fff; text-decoration: underline; }\n"
+      "       table.sc th a:hover, table.sc th a:active { color: #f1f1ff; }\n"
+      "       table.sc td { padding: 2px; text-align: center; font-size: 13px; }\n"
+      "       table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td { text-align: left; }\n"
+      "       table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td { text-align: right; padding-right: 4px; }\n"
+      "       table.sc th.small { padding: 2px 2px 3px 2px; font-size: 11px; }\n"
+      "       table.sc td.small { padding: 2px 2px 3px 2px; font-size: 11px; }\n"
+      "       table.sc tr.details td { padding: 0 0 15px 15px; text-align: left; background-color: #fff; font-size: 11px; }\n"
+      "       table.sc tr.details td ul { padding: 0; margin: 4px 0 8px 0; }\n"
+      "       table.sc tr.details td ul li { clear: both; padding: 2px; list-style-type: none; }\n"
+      "       table.sc tr.details td ul li span.label { display: block; padding: 2px; float: left; width: 145px; margin-right: 4px; background: #f3f3f3; }\n"
+      "       table.sc tr.details td ul li span.tooltip { display: block; float: left; width: 190px; }\n"
+      "       table.sc tr.details td ul li span.tooltip-wider { display: block; float: left; width: 350px; }\n"
+      "       table.sc tr.details td div.float { width: 350px; }\n"
+      "       table.sc tr.details td div.float h5 { margin-top: 4px; }\n"
+      "       table.sc tr.details td div.float ul { margin: 0 0 12px 0; }\n"
+      "       table.sc td.filler { background-color: #ccc; }\n"
+      "       table.sc .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n" );
   }
 
   util_t::fprintf( file,
@@ -4184,7 +4292,7 @@ void report_t::print_html( sim_t* sim )
           "      <div id=\"active-help-dynamic\">\n"
           "        <div class=\"help-box\">\n"
           "        </div>\n"
-          "        <a href=\"#\" class=\"close\">close</a>\n"
+          "        <a href=\"#\" class=\"close\"><span class=\"hide\">close</span></a>\n"
           "      </div>\n"
           "    </div>\n\n" );
         
@@ -4227,11 +4335,6 @@ void report_t::print_html( sim_t* sim )
           "    </div>\n\n" );
         // End masthead section
         
-        if ( num_players > 1 )
-        {
-                print_html_contents( file, sim );
-        }
-        
 #if SC_BETA
     util_t::fprintf( file,
       "    <div id=\"notice\" class=\"section section-open\">\n" );
@@ -4257,6 +4360,11 @@ void report_t::print_html( sim_t* sim )
         
         if ( num_players > 1 )
         {
+                print_html_contents( file, sim );
+        }
+        
+        if ( num_players > 1 )
+        {
                 print_html_raid_summary( file, sim );
                 print_html_scale_factors( file, sim );
         }
@@ -4278,7 +4386,7 @@ void report_t::print_html( sim_t* sim )
         }
 
         // Auras
-        print_html_auras_debuffs( file, sim );
+        print_html_auras_buffs( file, sim );
 
         // Report Targets
         if ( sim -> report_targets )
