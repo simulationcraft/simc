@@ -1019,14 +1019,14 @@ void action_t::execute()
 
   calculate_result();
 
+  consume_resource();
+
   if ( result_is_hit() )
   {
     direct_dmg = calculate_direct_damage();
   }
 
   schedule_travel( target );
-
-  consume_resource();
 
   update_ready();
 
