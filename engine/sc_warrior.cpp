@@ -585,6 +585,7 @@ static void trigger_deep_wounds( action_t* a )
   }
   
   p -> active_deep_wounds -> direct_dmg = deep_wounds_dmg;
+  p -> active_deep_wounds -> result = RESULT_HIT;
   p -> active_deep_wounds -> schedule_travel( a -> target );
 
   if ( p -> active_deep_wounds -> travel_event && dot -> ticking ) 

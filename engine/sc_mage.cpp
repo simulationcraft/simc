@@ -868,6 +868,7 @@ static void trigger_ignite( spell_t* s, double dmg )
   }
 
   p -> active_ignite -> direct_dmg = ignite_dmg;
+  p -> active_ignite -> result = RESULT_HIT;
   p -> active_ignite -> schedule_travel( s -> target );
 
   if ( p -> active_ignite -> travel_event && dot -> ticking )
