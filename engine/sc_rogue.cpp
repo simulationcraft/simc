@@ -1921,7 +1921,6 @@ struct killing_spree_tick_t : public rogue_attack_t
   killing_spree_tick_t( rogue_t* p, const char* name ) :
     rogue_attack_t( name, p, true )
   {
-    dual        = true;
     background  = true;
     may_crit    = true;
     direct_tick = true;
@@ -1943,6 +1942,8 @@ struct killing_spree_t : public rogue_attack_t
     
     num_ticks = 5;
     base_tick_time = effect_period( 1 );
+
+    may_crit   = false;
 
     parse_options( options_str );
 
@@ -1983,7 +1984,6 @@ struct mutilate_strike_t : public rogue_attack_t
   mutilate_strike_t( rogue_t* p, const char* name ) :
     rogue_attack_t( name, 5374, p )
   {
-    dual        = true;
     background  = true;
     may_miss = may_dodge = may_parry = false;
 
@@ -2594,6 +2594,7 @@ struct deadly_poison_t : public rogue_poison_t
   deadly_poison_t( rogue_t* player ) :  rogue_poison_t( "deadly_poison", 2818, player )
   {
     tick_power_mod = extra_coeff();
+    may_crit   = false;
   }
 
   virtual void execute()

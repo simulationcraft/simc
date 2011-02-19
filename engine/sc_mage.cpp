@@ -1333,6 +1333,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
+    stats = player -> get_stats( "arcane_missiles" );
   }
 };
 
@@ -1352,7 +1353,6 @@ struct arcane_missiles_t : public mage_spell_t
     base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
 
     tick_spell = new arcane_missiles_tick_t( p );
-    add_child( tick_spell );
   }
 
   virtual void execute()
@@ -1394,6 +1394,7 @@ struct arcane_power_t : public mage_spell_t
   {
     check_talent( p -> talents.arcane_power -> rank() );
     parse_options( NULL, options_str );
+    harmful = false;
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect_base_value( 1 ) / 100.0;
   }
 
@@ -1428,6 +1429,8 @@ struct cold_snap_t : public mage_spell_t
   {
     check_talent( p -> talents.cold_snap -> rank() );
     parse_options( NULL, options_str );
+
+    harmful = false;
 
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
 
@@ -1672,7 +1675,6 @@ struct flame_orb_explosion_t : public mage_spell_t
   {
     background = true;
     aoe = -1;
-    dual = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
 };
@@ -1683,7 +1685,6 @@ struct flame_orb_tick_t : public mage_spell_t
     mage_spell_t( "flame_orb_tick", 82739, p )
   {
     background = true;
-    dual = true;
     direct_tick = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
   }
@@ -1975,7 +1976,6 @@ struct frostfire_orb_explosion_t : public mage_spell_t
   {
     background = true;
     aoe = -1;
-    dual = true;
     school = SCHOOL_FROSTFIRE; // required since defaults to FIRE
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
@@ -1987,7 +1987,6 @@ struct frostfire_orb_tick_t : public mage_spell_t
     mage_spell_t( "frostfire_orb_tick", 84721, p )
   {
     background = true;
-    dual = true;
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
@@ -2087,7 +2086,6 @@ struct living_bomb_explosion_t : public mage_spell_t
     mage_spell_t( "living_bomb_explosion", 44461, p )
   {
     aoe = -1;
-    dual = true;
     background = true;
     base_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
 			       p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
@@ -2279,6 +2277,8 @@ struct presence_of_mind_t : public mage_spell_t
       mage_spell_t( "presence_of_mind", 12043, p )
   {
     check_talent( p -> talents.presence_of_mind -> rank() );
+
+    harmful = false;
 
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect_base_value( 1 ) / 100.0;
 

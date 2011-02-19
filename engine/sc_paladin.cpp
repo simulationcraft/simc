@@ -1017,6 +1017,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     hasted_ticks     = true;
     spell_haste      = true;
     tick_may_crit    = true;
+    may_crit         = false;
     dot_behavior     = DOT_REFRESH;
 
     base_spell_power_multiplier  = tick_power_mod;

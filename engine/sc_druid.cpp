@@ -1430,6 +1430,7 @@ struct rip_t : public druid_cat_attack_t
     base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
     ap_per_point          = 0.0207;
     requires_combo_points = true;
+    may_crit   = false;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
 
     if ( p -> set_bonus.tier10_2pc_melee() )
@@ -3039,8 +3040,7 @@ struct starfall_t : public druid_spell_t
     hasted_ticks   = false;
     cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
 
-    may_crit = false;
-    may_miss = false; // This spell only triggers the buff
+    harmful = false;
 
     starfall_star = new starfall_star_t( p );
   }
