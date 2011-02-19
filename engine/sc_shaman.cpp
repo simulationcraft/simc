@@ -919,7 +919,6 @@ struct searing_flames_t : public shaman_spell_t
     proc             = true;      
     dot_behavior     = DOT_REFRESH;
     hasted_ticks     = false;
-    may_crit         = false;
     
     // Override spell data values, as they seem wrong, instead
     // make searing totem calculate the damage portion of the
