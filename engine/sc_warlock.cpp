@@ -2622,7 +2622,6 @@ struct shadowflame_dot_t : public warlock_spell_t
   shadowflame_dot_t( player_t* player ) :
     warlock_spell_t( "shadowflame_dot", player, 47960 )
   {
-    dual       = true;
     proc       = true;
     background = true;
     direct_tick= true;
@@ -3648,14 +3647,12 @@ struct hellfire_t : public warlock_spell_t
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
   seed_of_corruption_aoe_t( player_t* player ) :
-    warlock_spell_t( "seed_of_corruption", player, 27285 )
+    warlock_spell_t( "seed_of_corruption_aoe", player, 27285 )
 
     {
       proc       = true;
       background = true;
       aoe        = -1;
-
-      name_str = "seed_of_corruption_aoe";
     }
 
     virtual void execute()
@@ -3684,6 +3681,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+    add_child( seed_of_corruption_aoe );
 
     base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
   }
@@ -3723,7 +3721,6 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   rain_of_fire_tick_t( player_t* player ) :
     warlock_spell_t( "rain_of_fire_tick", player, 42223 )
   {
-    dual        = true;
     background  = true;
     aoe         = -1;
     direct_tick = true;
@@ -3748,6 +3745,8 @@ struct rain_of_fire_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     rain_of_fire_tick = new rain_of_fire_tick_t( p );
+
+    add_child( rain_of_fire_tick );
   }
 
   virtual void tick()

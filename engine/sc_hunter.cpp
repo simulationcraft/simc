@@ -1192,7 +1192,6 @@ struct froststorm_breath_tick_t : public hunter_pet_spell_t
   {
     base_dd_min = base_dd_max = 150;
     direct_power_mod = 1.5 / 3.5;
-    dual        = true;
     background  = true;
     direct_tick = true;
   }
@@ -1214,6 +1213,8 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     auto_cast = true;
 
     tick_spell = new froststorm_breath_tick_t( p );
+
+    add_child( tick_spell );
   }
   virtual void tick()
   {
@@ -1979,7 +1980,6 @@ struct serpent_sting_burst_t : public hunter_attack_t
   {
     proc       = true;
     background = true;
-    dual       = true;
   }
 
 };

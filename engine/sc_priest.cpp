@@ -566,7 +566,6 @@ struct priest_heal_t : public heal_t
     {
       proc             = true;
       background       = true;
-      dual             = true;
       direct_power_mod = 0;
     }
   };
@@ -974,7 +973,6 @@ struct shadowy_apparition_t : public priest_spell_t
   {
     background        = true;
     proc              = true;
-    dual              = true;
 
     trigger_gcd       = 0;
     travel_speed      = 3.5;
@@ -1069,7 +1067,6 @@ struct devouring_plague_burst_t : public priest_spell_t
   devouring_plague_burst_t( player_t* player ) :
       priest_spell_t( "devouring_plague_burst", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
-    dual       = true;
     proc       = true;
     background = true;
   }
@@ -1659,7 +1656,7 @@ struct penance_tick_t : public priest_spell_t
     background  = true;
     dual        = true;
     direct_power_mod = tick_power_mod; // TO-DO: Check this
-
+    stats = player -> get_stats( "penance" );
   }
 
   virtual void player_buff()
@@ -1699,7 +1696,6 @@ struct penance_t : public priest_spell_t
 
     tick_spell = new penance_tick_t( p );
 
-    add_child( tick_spell );
   }
 
   virtual void tick()
@@ -2456,13 +2452,12 @@ struct smite_t : public priest_spell_t
 struct divine_touch_t : public priest_heal_t
 {
   divine_touch_t( player_t* player ) :
-    priest_heal_t( "divine_touch", player, SCHOOL_HOLY, TREE_HOLY )
+    priest_heal_t( "divine_touch", player, 63544 )
   {
+    school = SCHOOL_HOLY;
+    stats -> school = school;
     background = true;
-    dual       = true;
     proc       = true;
-
-    stats = player -> get_stats( "renew" );
   }
 };
 
@@ -2484,7 +2479,11 @@ struct renew_t : public priest_heal_t
 
     // Implement Divine Touch
     if ( p -> talents.divine_touch -> rank() )
+    {
       dt = new divine_touch_t( p );
+
+      add_child( dt );
+    }
 
     if ( p -> talents.rapid_renewal -> rank() )
       trigger_gcd -= 1.0;
@@ -2917,7 +2916,6 @@ struct glyph_prayer_of_healing_t : public priest_heal_t
       priest_heal_t( "prayer_of_healing_glyph", player, 56161 )
   {
     proc       = true;
-    dual       = true;
     background = true;
     may_crit   = false;
     num_ticks=0; // coded as DD for now.
@@ -3214,7 +3212,6 @@ struct glyph_power_word_shield_t : public priest_heal_t
   glyph_power_word_shield_t( player_t* player ) :
       priest_heal_t( "power_word_shield_glyph", player, 55672 )
   {
-    dual       = true;
     school     = SCHOOL_HOLY;
     stats -> school = school;
     background = true;
@@ -3310,13 +3307,13 @@ struct power_word_shield_t : public priest_absorb_t
 struct penance_heal_tick_t : public priest_heal_t
 {
   penance_heal_tick_t( player_t* player ) :
-      priest_heal_t( "penance_tick", player, 47750 )
+      priest_heal_t( "penance_heal_tick", player, 47750 )
   {
     background  = true;
     may_crit    = true;
     dual        = true;
     direct_tick = true;
-    stats = player -> get_stats( "penance" );
+    stats = player -> get_stats( "penance_heal" );
   }
 
   virtual void execute()
@@ -3352,7 +3349,7 @@ struct penance_heal_t : public priest_heal_t
   penance_heal_tick_t* penance_tick;
 
   penance_heal_t( player_t* player, const std::string& options_str ) :
-      priest_heal_t( "penance", player, 47540 ), penance_tick( 0 )
+      priest_heal_t( "penance_heal", player, 47540 ), penance_tick( 0 )
   {
     priest_t* p = player -> cast_priest();
 
@@ -3608,7 +3605,6 @@ struct lightwell_hot_t : public priest_heal_t
     proc          = true;
     background    = true;
     hasted_ticks  = false;
-    dual          = true;
     may_crit      = false;
   }
 
@@ -3674,7 +3670,6 @@ struct divine_hymn_tick_t : public priest_heal_t
       charges( 0 )
   {
     background  = true;
-    dual        = true;
     may_crit    = true;
   }
 

@@ -63,7 +63,7 @@ static const char* school_color( int type )
   case SCHOOL_SHADOWFROST: 	return "000066"; // Shadowfrost???
   case SCHOOL_SHADOWFLAME:	return "435133";
   case SCHOOL_SHADOWSTRIKE: return "0099CC";
-  default: assert( 0 );
+  default: return "";
   }
   return 0;
 }
@@ -666,7 +666,15 @@ const char* chart_t::action_dpet( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
-    s += school_color( stats_list[ i ] -> school );
+
+
+    std::string school = school_color( stats_list[ i ] -> school );
+    if ( school.empty() )
+    {
+      p -> sim -> errorf( "chart_t::action_dpet assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
+      assert( 0 );
+    }
+    s += school;
   }
   s += "&amp;";
   s += "chm=";
@@ -742,7 +750,14 @@ const char* chart_t::action_dmg( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
-    s += school_color( stats_list[ i ] -> school );
+
+    std::string school = school_color( stats_list[ i ] -> school );
+    if ( school.empty() )
+    {
+      p -> sim -> errorf( "chart_t::action_dmg assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
+      assert( 0 );
+    }
+    s += school;
   }
   s += "&amp;";
   s += "chl=";
