@@ -945,7 +945,8 @@ void warrior_attack_t::player_buff()
   {
     double bonus = p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
     // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-    bonus = 0.20;
+    if ( bonus > 0.0 )
+      bonus = 0.20;
     player_multiplier *= 1.0 + bonus;
   }
 
