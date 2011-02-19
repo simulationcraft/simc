@@ -1234,6 +1234,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
+    harmful   = false;
   }
 
   virtual void execute()
@@ -1347,8 +1348,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     base_tick_time = 3;
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
     auto_cast = true;
-
-    id = 53517;
+    harmful   = false;
   }
 
   virtual void tick()
@@ -1703,7 +1703,8 @@ struct black_arrow_t : public hunter_attack_t
 
     parse_options( NULL, options_str );
 
-    may_block = false;
+    may_block  = false;
+    may_crit   = false;
 
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
@@ -1853,6 +1854,7 @@ struct explosive_shot_t : public hunter_attack_t
     parse_options( NULL, options_str );
 
     may_block = false;
+    may_crit  = false;
 
     base_cost += p -> talents.efficiency -> effect_base_value( 1 );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
@@ -1977,6 +1979,7 @@ struct serpent_sting_burst_t : public hunter_attack_t
   {
     proc       = true;
     background = true;
+    dual       = true;
   }
 
 };
@@ -1993,6 +1996,7 @@ struct serpent_sting_t : public hunter_attack_t
     parse_options( NULL, options_str );
 
     may_block = false;
+    may_crit  = false;
 
     tick_power_mod = 0.4 / num_ticks;
 
@@ -2434,7 +2438,12 @@ struct kill_command_t : public hunter_spell_t
     base_attack_power_multiplier   = 1.0;
     base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
 
-    may_miss = false;
+    harmful = false;
+
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      stats -> children.push_back( pet -> get_stats( "kill_command") );
+    }
   }
 
   virtual double cost() SC_CONST

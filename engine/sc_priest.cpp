@@ -398,52 +398,102 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 struct priest_spell_t : public spell_t
 {
-  priest_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t )
+  void _init_priest_spell_t()
   {
     may_crit          = true;
     tick_may_crit     = true;
 
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
+  }
+
+  priest_spell_t( const char* n, player_t* player, const school_type s, int t ) :
+      spell_t( n, player, RESOURCE_MANA, s, t )
+  {
+    _init_priest_spell_t();
   }
 
   priest_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
       spell_t( s )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
-
-    dot_behavior      = DOT_REFRESH;
-    weapon_multiplier = 0.0;
+    _init_priest_spell_t();
   }
 
   priest_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
       spell_t( n, sname, player, t )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
-
-    dot_behavior      = DOT_REFRESH;
-    weapon_multiplier = 0.0;
+    _init_priest_spell_t();
   }
 
   priest_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
       spell_t( n, id, player, t )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
-
-    dot_behavior      = DOT_REFRESH;
-    weapon_multiplier = 0.0;
+    _init_priest_spell_t();
   }
 
-  virtual void   execute();
-  virtual void   player_buff();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
+  virtual void player_buff()
+  {
+    spell_t::player_buff();
+
+    priest_t* p = player -> cast_priest();
+
+    player_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
+
+    for ( int i=0; i < 6; i++ )
+    {
+      p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
+      p -> uptimes_holy_evangelism[ i ] -> update( i == p -> buffs_holy_evangelism -> stack() );
+    }
+  }
+
+  virtual void assess_damage( player_t* t,
+                                      double amount,
+                                      int    dmg_type,
+                                      int travel_result )
+  {
+    priest_t* p = player -> cast_priest();
+
+    spell_t::assess_damage( t, amount, dmg_type, travel_result );
+
+    if ( p -> buffs_vampiric_embrace -> up() && result_is_hit( travel_result ) )
+    {
+      double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
+      p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
+
+      pet_t* r = p -> pet_list;
+
+      while ( r )
+      {
+        r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
+        r = r -> next_pet;
+      }
+
+      int num_players = ( int ) p -> party_list.size();
+
+      for ( int i=0; i < num_players; i++ )
+      {
+        player_t* q = p -> party_list[ i ];
+
+        q -> resource_gain( RESOURCE_HEALTH, a * 0.03, q -> gains.vampiric_embrace );
+
+        r = q -> pet_list;
+
+        while ( r )
+        {
+          r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
+          r = r -> next_pet;
+        }
+      }
+    }
+  }
+
   static void    trigger_shadowy_apparition( player_t* player );
   static void    add_more_shadowy_apparitions( player_t* player );
 };
+
+// ==========================================================================
+// Priest Absorb
+// ==========================================================================
 
 struct priest_absorb_t : public absorb_t
 {
@@ -502,6 +552,10 @@ struct priest_absorb_t : public absorb_t
       p -> buffs_borrowed_time -> expire();
   }
 };
+
+// ==========================================================================
+// Priest Heal
+// ==========================================================================
 
 struct priest_heal_t : public heal_t
 {
@@ -906,75 +960,10 @@ struct shadow_fiend_pet_t : public pet_t
 
 
 // ==========================================================================
-// Priest Spell
+// Priest Spell Increments
 // ==========================================================================
 
-// priest_spell_t::execute ==================================================
 
-void priest_spell_t::execute()
-{
-  spell_t::execute();
-}
-
-// priest_spell_t::player_buff ==============================================
-
-void priest_spell_t::player_buff()
-{
-  spell_t::player_buff();
-
-  priest_t* p = player -> cast_priest();
-
-  player_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
-
-  for ( int i=0; i < 6; i++ )
-  {
-    p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
-    p -> uptimes_holy_evangelism[ i ] -> update( i == p -> buffs_holy_evangelism -> stack() );
-  }
-}
-
-// priest_spell_t::assess_damage =============================================
-
-void priest_spell_t::assess_damage( player_t* t,
-                                    double amount,
-                                    int    dmg_type,
-                                    int travel_result )
-{
-  priest_t* p = player -> cast_priest();
-
-  spell_t::assess_damage( t, amount, dmg_type, travel_result );
-
-  if ( p -> buffs_vampiric_embrace -> up() && result_is_hit( travel_result ) )
-  {
-    double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
-    p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
-
-    pet_t* r = p -> pet_list;
-
-    while ( r )
-    {
-      r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
-      r = r -> next_pet;
-    }
-
-    int num_players = ( int ) p -> party_list.size();
-
-    for ( int i=0; i < num_players; i++ )
-    {
-      player_t* q = p -> party_list[ i ];
-
-      q -> resource_gain( RESOURCE_HEALTH, a * 0.03, q -> gains.vampiric_embrace );
-
-      r = q -> pet_list;
-
-      while ( r )
-      {
-        r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
-        r = r -> next_pet;
-      }
-    }
-  }
-}
 
 // Shadowy Apparation Spell ============================================================
 
@@ -1068,7 +1057,12 @@ void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
 }
 
 
-// Devouring Plague Spell ======================================================
+// ==========================================================================
+// Priest Actions
+// ==========================================================================
+
+
+// Devouring Plague Spell ===================================================
 
 struct devouring_plague_burst_t : public priest_spell_t
 {
@@ -1177,7 +1171,7 @@ struct devouring_plague_t : public priest_spell_t
   }
 };
 
-// Dispersion Spell ============================================================
+// Dispersion Spell =========================================================
 
 struct dispersion_t : public priest_spell_t
 {
@@ -1257,7 +1251,7 @@ struct dispersion_t : public priest_spell_t
   }
 };
 
-// Fortitude Spell ========================================================
+// Fortitude Spell ==========================================================
 
 struct fortitude_t : public priest_spell_t
 {
@@ -1295,7 +1289,7 @@ struct fortitude_t : public priest_spell_t
   }
 };
 
-// Holy Fire Spell ===========================================================
+// Holy Fire Spell ==========================================================
 
 struct holy_fire_t : public priest_spell_t
 {
@@ -1332,7 +1326,7 @@ struct holy_fire_t : public priest_spell_t
   }
 };
 
-// Inner Fire Spell ======================================================
+// Inner Fire Spell =========================================================
 
 struct inner_fire_t : public priest_spell_t
 {
@@ -1364,7 +1358,7 @@ struct inner_fire_t : public priest_spell_t
 };
 
 
-// Inner Will Spell ======================================================
+// Inner Will Spell =========================================================
 
 struct inner_will_t : public priest_spell_t
 {
@@ -1399,7 +1393,7 @@ struct inner_will_t : public priest_spell_t
   }
 };
 
-// Mind Blast Spell ============================================================
+// Mind Blast Spell =========================================================
 
 struct mind_blast_t : public priest_spell_t
 {
@@ -1474,6 +1468,8 @@ struct mind_blast_t : public priest_spell_t
     return a;
   }
 };
+
+// Mind Flay Spell ==========================================================
 
 struct mind_flay_t : public priest_spell_t
 {
@@ -1591,7 +1587,7 @@ struct mind_flay_t : public priest_spell_t
   }
 };
 
-// Mind Spike Spell ============================================================
+// Mind Spike Spell =========================================================
 
 struct mind_spike_t : public priest_spell_t
 {
@@ -1653,7 +1649,7 @@ struct mind_spike_t : public priest_spell_t
   }
 };
 
-// Penance Spell ===============================================================
+// Penance Spell ============================================================
 
 struct penance_tick_t : public priest_spell_t
 {
@@ -1781,7 +1777,7 @@ struct power_infusion_t : public priest_spell_t
   }
 };
 
-// Shadow Form Spell =======================================================
+// Shadow Form Spell ========================================================
 
 struct shadow_form_t : public priest_spell_t
 {
@@ -1828,7 +1824,7 @@ struct shadow_form_t : public priest_spell_t
   }
 };
 
-// Shadow Word Death Spell ======================================================
+// Shadow Word Death Spell ==================================================
 
 struct shadow_word_death_t : public priest_spell_t
 {
@@ -1927,7 +1923,7 @@ struct shadow_word_death_t : public priest_spell_t
   }
 };
 
-// Shadow Word Pain Spell ======================================================
+// Shadow Word Pain Spell ===================================================
 
 struct shadow_word_pain_t : public priest_spell_t
 {
@@ -1995,8 +1991,7 @@ struct shadow_word_pain_t : public priest_spell_t
   }
 };
 
-
-// Vampiric Embrace Spell ======================================================
+// Vampiric Embrace Spell ===================================================
 
 struct vampiric_embrace_t : public priest_spell_t
 {
@@ -2035,7 +2030,7 @@ struct vampiric_embrace_t : public priest_spell_t
 
 };
 
-// Vampiric Touch Spell ======================================================
+// Vampiric Touch Spell =====================================================
 
 struct vampiric_touch_t : public priest_spell_t
 {
@@ -2062,7 +2057,7 @@ struct vampiric_touch_t : public priest_spell_t
   }
 };
 
-// Shadow Fiend Spell ========================================================
+// Shadow Fiend Spell =======================================================
 
 struct shadow_fiend_spell_t : public priest_spell_t
 {
@@ -2114,7 +2109,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   }
 };
 
-// Archangel Spell ======================================================
+// Archangel Spell ==========================================================
 
 struct archangel_t : public priest_spell_t
 {
@@ -2166,7 +2161,7 @@ struct archangel_t : public priest_spell_t
    }
 };
 
-// Inner Focus Spell ===============================================
+// Inner Focus Spell ========================================================
 
 struct inner_focus_t : public priest_spell_t
 {
@@ -2194,7 +2189,7 @@ struct inner_focus_t : public priest_spell_t
   }
 };
 
-// Hymn of Hope Spell ===========================================
+// Hymn of Hope Spell =======================================================
 
 struct hymn_of_hope_tick_t : public priest_spell_t
 {
@@ -2249,7 +2244,7 @@ struct hymn_of_hope_t : public priest_spell_t
   }
 };
 
-// Chakra_Pre Spell ======================================================
+// Chakra_Pre Spell =========================================================
 
 struct chakra_t : public priest_spell_t
 {
@@ -2286,7 +2281,8 @@ struct chakra_t : public priest_spell_t
     return priest_spell_t::ready();
   }
 };
-// Smite non-crit Atonement Heal ========================================================
+
+// Smite non-crit Atonement Heal ============================================
 
 struct atonement_nc_t : public priest_heal_t
 {
@@ -2308,7 +2304,7 @@ struct atonement_nc_t : public priest_heal_t
   }
 };
 
-// Smite non-crit Atonement Heal ========================================================
+// Smite non-crit Atonement Heal ============================================
 
 struct atonement_c_t : public priest_heal_t
 {
@@ -2341,7 +2337,7 @@ struct atonement_c_t : public priest_heal_t
   }
 };
 
-// Smite Spell ================================================================
+// Smite Spell ==============================================================
 
 struct smite_t : public priest_spell_t
 {
@@ -2455,7 +2451,7 @@ struct smite_t : public priest_spell_t
 };
 
 
-// Renew Spell ===================================================
+// Renew Spell ==============================================================
 
 struct divine_touch_t : public priest_heal_t
 {
@@ -2532,7 +2528,7 @@ struct renew_t : public priest_heal_t
   }
 };
 
-// Heal Spell =================================================
+// Heal Spell ===============================================================
 
 struct _heal_t : public priest_heal_t
 {
@@ -2598,7 +2594,7 @@ struct _heal_t : public priest_heal_t
   }
 };
 
-// Flash Heal Spell ====================================================
+// Flash Heal Spell =========================================================
 
 struct flash_heal_t : public priest_heal_t
 {
@@ -2706,7 +2702,7 @@ struct flash_heal_t : public priest_heal_t
    }
 };
 
-// Binding Heal Spell ===================================================
+// Binding Heal Spell =======================================================
 
 struct binding_heal_t : public priest_heal_t
 {
@@ -2796,7 +2792,7 @@ struct binding_heal_t : public priest_heal_t
   }
 };
 
-// Greater Heal Spell =============================================
+// Greater Heal Spell =======================================================
 
 struct greater_heal_t : public priest_heal_t
 {
@@ -2913,7 +2909,7 @@ struct greater_heal_t : public priest_heal_t
   }
 };
 
-// Prayer of Healing Spell ========================================
+// Prayer of Healing Spell ==================================================
 
 struct glyph_prayer_of_healing_t : public priest_heal_t
 {
@@ -3057,7 +3053,7 @@ struct prayer_of_healing_t : public priest_heal_t
   }
 };
 
-// Circle of Healing =======================================================
+// Circle of Healing ========================================================
 
 struct circle_of_healing_t : public priest_heal_t
 {
@@ -3128,7 +3124,7 @@ struct circle_of_healing_t : public priest_heal_t
   }
 };
 
-// Prayer of Mending Spell ================================================
+// Prayer of Mending Spell ==================================================
 
 struct prayer_of_mending_t : public priest_heal_t
 {
@@ -3211,7 +3207,7 @@ struct prayer_of_mending_t : public priest_heal_t
   }
 };
 
-// Power Word: Shield Spell ==============================================
+// Power Word: Shield Spell =================================================
 
 struct glyph_power_word_shield_t : public priest_heal_t
 {
@@ -3309,7 +3305,7 @@ struct power_word_shield_t : public priest_absorb_t
   }
 };
 
-// Penance Heal Spell ===============================================================
+// Penance Heal Spell =======================================================
 
 struct penance_heal_tick_t : public priest_heal_t
 {
@@ -3397,7 +3393,7 @@ struct penance_heal_t : public priest_heal_t
   }
 };
 
-// Holy Word Spell =========================================================
+// Holy Word Spell ==========================================================
 
 struct holy_word_sanctuary_tick_t : public priest_heal_t
 {
@@ -3595,7 +3591,7 @@ struct holy_word_t : public priest_spell_t
   }
 };
 
-// Lightwell Spell ===================================================
+// Lightwell Spell ==========================================================
 
 struct lightwell_hot_t : public priest_heal_t
 {
@@ -3668,7 +3664,7 @@ struct lightwell_t : public priest_heal_t
   }
 };
 
-// Divine Hymn Spell ===========================================
+// Divine Hymn Spell ========================================================
 
 struct divine_hymn_tick_t : public priest_heal_t
 {
