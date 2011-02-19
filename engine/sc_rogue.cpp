@@ -2308,19 +2308,19 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     requires_combo_points = true;
 
+    harmful = false;
+
     parse_options( options_str );
   }
 
   virtual void execute()
   {
-    rogue_t* p = player -> cast_rogue();
+    rogue_attack_t::execute();
 
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+    rogue_t* p = player -> cast_rogue();
 
     p -> buffs_slice_and_dice -> trigger ( p -> combo_points -> count );
 
-    consume_resource();
   }
 };
 
