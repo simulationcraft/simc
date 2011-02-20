@@ -31,73 +31,73 @@ struct _stat_list_t {
   static const _stat_list_t pet_base_stats[]=
   {
           // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t imp_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,  5026, 17628,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,  5026, 31607,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  5026, 17628,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t felguard_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t felhunter_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t succubus_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t infernal_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t doomguard_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t ebon_imp_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
   static const _stat_list_t voidwalker_base_stats[]=
   {
           // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+    { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,         0,     0,     0,     0,   0,       0 } },
     { 0, { 0 } }
   };
 
@@ -115,30 +115,29 @@ struct _stat_list_t {
   };
   static const _weapon_list_t felguard_weapon[]=
   {
-    { 80, 824.6, 824.6, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t felhunter_weapon[]=
   {
-    { 80, 824.6, 824.6, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
     { 81, 678.4, 1010.4, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t succubus_weapon[]=
   {
-          { 80, 824.6, 824.6, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t infernal_weapon[]=
   { 
-    { 80, 924.0, 924.0, 2.0 }, //Rough numbers
     { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
+    { 80, 924.0, 924.0, 2.0 }, //Rough numbers
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t doomguard_weapon[]=
@@ -147,15 +146,15 @@ struct _stat_list_t {
   };
   static const _weapon_list_t ebon_imp_weapon[]=
   {
-    { 80, 956.0, 956.0, 2.0 }, //Rough numbers
     { 85, 1110.0, 1110.0, 2.0 }, //Rough numbers
+    { 80, 956.0, 956.0, 2.0 }, //Rough numbers
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t voidwalker_weapon[]=
   {
-    { 80, 824.6, 824.6, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
     { 85, 926.3, 926.3, 2.0 },
+    { 81, 848.7, 848.7, 2.0 },
+    { 80, 824.6, 824.6, 2.0 },
     { 0, 0, 0, 0 }
   };
 }
@@ -485,15 +484,19 @@ struct warlock_pet_t : public pet_t
         return 0.0;
       }
 
-      int i;
       if ( base_list )
       {
-       for ( i = 0; base_list[ i ].id != 0; i++ )
+       for ( int i = 0; base_list[ i ].id != 0 ; i++ )
         {
           if ( level == base_list[ i ].id )
           {
             r += base_list[ i ].stats[ stat_type ];
             stats_avaiable++;
+            break;
+          }
+          if ( level > base_list[ i ].id )
+          {
+            r += base_list[ i ].stats[ stat_type ];
             break;
           }
         }
@@ -502,12 +505,17 @@ struct warlock_pet_t : public pet_t
 
       if ( pet_list )
       {
-        for ( i = 0; pet_list[ i ].id != 0; i++ )
-        {
+        for ( int i = 0; pet_list[ i ].id != 0 ; i++ )
+         {
           if ( level == pet_list[ i ].id )
           {
             r += pet_list[ i ].stats[ stat_type ];
             stats2_avaiable++;
+            break;
+          }
+          if ( level > pet_list[ i ].id )
+          {
+            r += pet_list[ i ].stats[ stat_type ];
             break;
           }
         }
@@ -534,9 +542,14 @@ struct warlock_pet_t : public pet_t
          {
            if ( n == 3 )
            {
-             for ( int i = 0; weapon_list[ i ].id != 0; i++ )
-             {
+             for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+              {
                if ( level == weapon_list[ i ].id )
+               {
+                 r += weapon_list[ i ].swing_time;
+                 break;
+               }
+               if ( level > weapon_list[ i ].id )
                {
                  r += weapon_list[ i ].swing_time;
                  break;
@@ -546,9 +559,14 @@ struct warlock_pet_t : public pet_t
 
            else if ( n == 1 )
            {
-             for ( int i = 0; weapon_list[ i ].id != 0; i++ )
-             {
+             for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+              {
                if ( level == weapon_list[ i ].id )
+               {
+                 r += weapon_list[ i ].min_dmg;
+                 break;
+               }
+               if ( level > weapon_list[ i ].id )
                {
                  r += weapon_list[ i ].min_dmg;
                  break;
@@ -558,9 +576,14 @@ struct warlock_pet_t : public pet_t
 
            else if ( n == 2 )
            {
-             for ( int i = 0; weapon_list[ i ].id != 0; i++ )
-             {
+             for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+              {
                if ( level == weapon_list[ i ].id )
+               {
+                 r += weapon_list[ i ].max_dmg;
+                 break;
+               }
+               if ( level > weapon_list[ i ].id )
                {
                  r += weapon_list[ i ].max_dmg;
                  break;
@@ -2236,7 +2259,8 @@ struct drain_life_t : public warlock_spell_t
 {
   int interrupt;
   drain_life_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "drain_life", player, "Drain Life" )
+    warlock_spell_t( "drain_life", player, "Drain Life" ),
+    interrupt( false )
   {
     option_t options[] =
     {
@@ -2345,7 +2369,8 @@ struct drain_soul_t : public warlock_spell_t
   int interrupt;
 
   drain_soul_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "drain_soul", player, "Drain Soul" )
+    warlock_spell_t( "drain_soul", player, "Drain Soul" ),
+    interrupt( 0 )
   {
     option_t options[] =
     {
@@ -2355,7 +2380,6 @@ struct drain_soul_t : public warlock_spell_t
     parse_options( options, options_str );
 
     channeled    = true;
-    binary       = true;
     hasted_ticks = true; // informative
     may_crit     = false;
   }
