@@ -868,7 +868,6 @@ static void trigger_ignite( spell_t* s, double dmg )
   }
 
   p -> active_ignite -> direct_dmg = ignite_dmg;
-  p -> active_ignite -> result = RESULT_HIT;
   p -> active_ignite -> schedule_travel( s -> target );
 
   if ( p -> active_ignite -> travel_event && dot -> ticking )
@@ -1332,7 +1331,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     dual        = true;
     background  = true;
-    direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     stats = player -> get_stats( "arcane_missiles" );
@@ -2090,7 +2088,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     aoe = -1;
     background = true;
     base_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-			       p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
+             p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
   }
 };
 
@@ -2119,8 +2117,8 @@ struct living_bomb_t : public mage_spell_t
     spell_t::target_debuff( t, dmg_type );
 
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-				 p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
-				 p -> specializations.flashburn * p -> composite_mastery() );
+         p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
+         p -> specializations.flashburn * p -> composite_mastery() );
   }
 
   virtual void last_tick()
@@ -3043,7 +3041,7 @@ void mage_t::init_actions()
       }
       else if ( primary_tree() == TREE_ARCANE )
       {
-        action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
+        action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<35&buff.arcane_blast.stack=4";
       }
       else
       {
@@ -3080,27 +3078,28 @@ void mage_t::init_actions()
       }
       else if ( race == RACE_ORC )
       {
-        action_list_str += "/blood_fury,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
+        action_list_str += "/blood_fury,if=cooldown.evocation.remains<35&buff.arcane_blast.stack=4";
       }
       else if ( race == RACE_TROLL )
       {
         action_list_str += "/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
       }
       if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=target.time_to_die<40";
-      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
+      if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=cooldown.evocation.remains<35&buff.arcane_blast.stack=4";
       action_list_str += "/mana_gem,if=target.time_to_die<40";
-      action_list_str += "/mana_gem,if=cooldown.evocation.remains<26&buff.arcane_blast.stack=4";
-      action_list_str += "/mirror_image,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
-      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=15";
+      action_list_str += "/mana_gem,if=cooldown.evocation.remains<35&buff.arcane_blast.stack=4";
+      action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
+      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=10";
       if ( talents.presence_of_mind -> rank() )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
       action_list_str += "/arcane_blast,if=target.time_to_die<40&mana_pct>5";
       action_list_str += "/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2";
-      action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)";
+      action_list_str += "/arcane_blast,if=(cooldown.evocation.remains<35&mana_pct>26)";
       action_list_str += "/arcane_blast,if=mana_pct>94";
-      //Switch conserve rotation to AB4 in case of Shard of Woe
+      action_list_str += "/evocation,if=target.time_to_die>=31";
+      // Switch conserve action list based on Shard of Woe presence
       bool has_shard = false;
       for ( int i=0; i < SLOT_MAX; i++ )
       {
@@ -3111,20 +3110,21 @@ void mage_t::init_actions()
           break;
         }
       }
-      if ( has_shard == true )
+      if ( has_shard == true ) // AB5 conserve with the Shard
+      {
+        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast";
+        action_list_str += "/arcane_missiles";
+        action_list_str += "/arcane_barrage,if=buff.arcane_blast.stack>0";
+        action_list_str += "/restart_sequence,name=conserve";
+        action_list_str += "/arcane_barrage,moving=1";
+      }
+      else // AB4 conserve without Shard (AB3 during Bloodlust)
       {
         action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react";
         action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&buff.bloodlust.react";
+        action_list_str += "/arcane_missiles";
+        action_list_str += "/arcane_barrage";
       }
-      else
-      {
-        action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<3&!buff.bloodlust.react";
-        action_list_str += "/arcane_blast,if=buff.arcane_blast.stack<2&buff.bloodlust.react";
-      }
-
-      action_list_str += "/evocation,if=target.time_to_die>=31";
-      action_list_str += "/arcane_missiles";
-      action_list_str += "/arcane_barrage";
       action_list_str += "/fire_blast,moving=1"; // when moving
       action_list_str += "/ice_lance,moving=1"; // when moving
     }
