@@ -1725,22 +1725,41 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     "                  <h4>Stats details: %s </h4>\n", s -> name_str.c_str() );
 
   util_t::fprintf (file,
-    "                  <div class=\"float\">\n"
-    "                    <ul>\n" );
+    "                  <table class=\"sc\">\n"
+    "                    <tr>\n");
   util_t::fprintf (file,
-      "                      <li><span class=\"label\">executes:</span>%.2f</li>\n"
-      "                      <li><span class=\"label\">direct results:</span>%.2f</li>\n"
-      "                      <li><span class=\"label\">ticks:</span>%.2f</li>\n"
-      "                      <li><span class=\"label\">tick results:</span>%.2f</li>\n",
+      "                      <th class=\"small\">executes</th>\n"
+      "                      <th class=\"small\">direct results</th>\n"
+      "                      <th class=\"small\">ticks</th>\n"
+      "                      <th class=\"small\">tick results</th>\n"
+      "                      <th class=\"small\">Execute Time per Execution</th>\n"
+      "                      <th class=\"small\">Tick Time per  Tick</th>\n"
+      "                      <th class=\"small\">total dmg</th>\n");
+  util_t::fprintf (file,
+    "                    </tr>\n"
+    "                    <tr>\n");
+  util_t::fprintf (file,
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.0f</td>\n",
       s -> num_executes,
       s -> num_direct_results,
       s -> num_ticks,
-      s -> num_tick_results );
+      s -> num_tick_results,
+      s -> num_executes ? s -> total_execute_time / s -> num_executes : -1,
+      s -> num_ticks ? s -> total_tick_time / s -> num_ticks : -1,
+      s -> total_dmg );
   util_t::fprintf (file,
-    "                    </ul></div>\n" );
+    "                    </tr>\n"
+    "                  </table>\n");
+
 
   util_t::fprintf (file,
-    "                  <div class=\"clear\"></div>\n" );
+    "                  <div class=\"clear\"> <br> </div>\n" );
 
   util_t::fprintf (file,
     "                  <table class=\"sc\">\n");
