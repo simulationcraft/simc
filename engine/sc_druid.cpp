@@ -4394,7 +4394,7 @@ int druid_t::primary_role() SC_CONST
 
   else if ( primary_tree() == TREE_RESTORATION )
   {
-    if ( player_t::primary_role() == ROLE_SPELL )
+    if ( player_t::primary_role() == ROLE_DMG )
       return ROLE_SPELL;
 
     return ROLE_HEAL;
