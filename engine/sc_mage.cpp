@@ -868,6 +868,7 @@ static void trigger_ignite( spell_t* s, double dmg )
   }
 
   p -> active_ignite -> direct_dmg = ignite_dmg;
+  p -> active_ignite -> result = RESULT_HIT;
   p -> active_ignite -> schedule_travel( s -> target );
 
   if ( p -> active_ignite -> travel_event && dot -> ticking )
@@ -1331,6 +1332,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     dual        = true;
     background  = true;
+    direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     stats = player -> get_stats( "arcane_missiles" );
