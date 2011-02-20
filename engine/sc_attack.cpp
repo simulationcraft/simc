@@ -97,6 +97,10 @@ double attack_t::haste() SC_CONST
 double attack_t::execute_time() SC_CONST
 {
   if ( base_execute_time == 0 ) return 0;
+
+  if ( ! harmful && ! player -> in_combat )
+    return 0;
+
   return base_execute_time * swing_haste();
 }
 

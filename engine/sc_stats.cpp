@@ -165,7 +165,7 @@ void stats_t::analyze()
   num_direct_results /= num_iterations;
   num_tick_results   /= num_iterations;
 
-  rpe = resource_consumed / num_executes;
+  rpe = num_executes ? resource_consumed / num_executes : -1;
 
   double resource_total = player -> resource_lost [ resource ] / num_iterations;
 

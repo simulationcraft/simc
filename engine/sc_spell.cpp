@@ -69,8 +69,13 @@ double spell_t::gcd() SC_CONST
 double spell_t::execute_time() SC_CONST
 {
   double t = base_execute_time;
+
+  if ( ! harmful && ! player -> in_combat )
+    return 0;
+
   if ( t <= 0 ) return 0;
-  t *= haste();
+    t *= haste();
+
   return t;
 }
 

@@ -799,8 +799,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct warlock_spell_t : public spell_t
 {
-  bool usable_pre_combat;
-
   void _init_warlock_spell_t()
   {
     may_crit      = true;
@@ -811,25 +809,25 @@ struct warlock_spell_t : public spell_t
   }
 
   warlock_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t ), usable_pre_combat( false)
+      spell_t( n, player, RESOURCE_MANA, s, t )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
-      spell_t( s, t ), usable_pre_combat( false)
+      spell_t( s, t )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-      spell_t( n, sname, player, t ), usable_pre_combat( false)
+      spell_t( n, sname, player, t )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-      spell_t( n, id, player, t ), usable_pre_combat( false)
+      spell_t( n, id, player, t )
   {
     _init_warlock_spell_t();
   }
@@ -904,24 +902,6 @@ struct warlock_spell_t : public spell_t
     }
 
     return spell_t::total_td_multiplier() * shadow_td_multiplier;
-  }
-
-  virtual double cost() SC_CONST
-  {
-    if ( usable_pre_combat && ! player -> in_combat ) return 0;
-    return spell_t::cost();
-  }
-
-  virtual double gcd() SC_CONST
-  {
-    if ( usable_pre_combat && ! player -> in_combat ) return 0;
-    return spell_t::gcd();
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    if ( usable_pre_combat && ! player -> in_combat ) return 0;
-    return spell_t::execute_time();
   }
 
   // trigger_impending_doom ===================================================
@@ -2970,7 +2950,6 @@ struct fel_armor_t : public warlock_spell_t
     }
 #endif
 
-    usable_pre_combat = true;
   }
 
   virtual void execute()
@@ -3055,7 +3034,7 @@ struct summon_main_pet_t : public summon_pet_t
   summon_main_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
     summon_pet_t( n, player, sname, options_str ), pet_name( n )
   {
-    usable_pre_combat = true;
+
   }
 
   virtual void execute()
@@ -3431,8 +3410,6 @@ struct dark_intent_t : public warlock_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    usable_pre_combat = true;
 
     if ( target_str.empty() )
     {

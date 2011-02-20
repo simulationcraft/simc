@@ -1189,6 +1189,7 @@ struct dispersion_t : public priest_spell_t
 
     channeled         = true;
     harmful           = false;
+    tick_may_crit     = false;
 
     if ( p -> glyphs.dispersion -> ok() ) cooldown -> duration -= 45;
 
@@ -1259,14 +1260,14 @@ struct fortitude_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    harmful = false;
 
     bonus = floor( sim -> sim_data.effect_min( 79104, player -> level, E_APPLY_AURA, A_MOD_STAT ) );
   }
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    priest_spell_t::execute();
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
@@ -1282,7 +1283,10 @@ struct fortitude_t : public priest_spell_t
 
   virtual bool ready()
   {
-    return player -> buffs.fortitude -> current_value < bonus;
+    if ( player -> buffs.fortitude -> current_value >= bonus )
+      return false;
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -1332,7 +1336,7 @@ struct inner_fire_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    harmful = false;
   }
 
   virtual void execute()
@@ -1350,7 +1354,10 @@ struct inner_fire_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    return ! p -> buffs_inner_fire -> check();
+    if ( p -> buffs_inner_fire -> check() )
+      return false;
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -1366,7 +1373,7 @@ struct inner_will_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    harmful = false;
 
     value = mod_additive( P_RESOURCE_COST );
   }
@@ -1386,7 +1393,10 @@ struct inner_will_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    return ! p -> buffs_inner_will -> check();
+    if ( p -> buffs_inner_will -> check() )
+      return false;
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -1783,7 +1793,7 @@ struct shadow_form_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    harmful = false;
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
@@ -1805,7 +1815,7 @@ struct shadow_form_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    priest_spell_t::execute();
 
     p -> buffs_shadow_form -> trigger();
 
@@ -1999,16 +2009,14 @@ struct vampiric_embrace_t : public priest_spell_t
 
     check_talent( p -> talents.vampiric_embrace -> rank() );
 
-    trigger_gcd = 0;
-    base_cost   = 0.0;
+    harmful = false;
   }
 
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
 
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+    priest_spell_t::execute();
 
     if ( p -> talents.vampiric_embrace -> rank() )
       p -> buffs_vampiric_embrace -> trigger();
