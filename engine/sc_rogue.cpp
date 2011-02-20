@@ -3707,6 +3707,7 @@ void rogue_t::reset()
   player_t::reset();
   _expirations.reset();
   tricks_of_the_trade_target = 0;
+  combo_points -> clear();
 }
 
 // rogue_t::clear_debuffs ==================================================
