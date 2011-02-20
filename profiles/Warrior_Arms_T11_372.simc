@@ -31,6 +31,7 @@ actions+=/colossus_smash,if=buff.colossus_smash.remains<0.5
 actions+=/execute,if=(buff.deadly_calm.up|buff.recklessness.up)
 actions+=/mortal_strike
 actions+=/overpower
+actions+=/bladestorm
 actions+=/execute
 actions+=/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|swing.mh.remains<1.1|buff.deadly_calm.up|buff.colossus_smash.up))|(cooldown.mortal_strike.remains>=1.2&buff.colossus_smash.remains>0.5&rage>=35)
 actions+=/battle_shout,if=rage<20
@@ -57,7 +58,7 @@ ranged=crossfire_carbine,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_10
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=381
+gear_expertise_rating=0
 # gear_hit_rating=982
 # gear_crit_rating=2575
 # gear_haste_rating=760

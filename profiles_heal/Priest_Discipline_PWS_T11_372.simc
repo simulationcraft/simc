@@ -11,13 +11,13 @@ glyphs=inner_fire/mass_dispel/levitate/power_word_shield/prayer_of_healing/penan
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
-actions+=/inner_fire
+actions+=/inner_will
 actions+=/snapshot_stats
 actions+=/use_item,name=core_of_ripeness
 actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger_pct=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
-actions+=/power_infusion
+#actions+=/power_infusion
 actions+=/prayer_of_mending
 actions+=/power_word_shield
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
@@ -32,7 +32,7 @@ hands=brackish_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor
 finger1=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta,enchant=40int
 finger2=planetary_band_of_the_fireflash,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143crit_143haste,enchant=40int,suffix=130
 trinket1=core_of_ripeness,ilevel=359,quality=epic,stats=321int,use=1926spi_20dur_120cd
-trinket2=fall_of_mortality,heroic=1,ilevel=372,quality=epic,stats=363int
+trinket2=shard_of_woe
 back=drape_of_the_twins,heroic=1,ilevel=372,quality=epic,stats=673armor_143haste_215int_143spi_322sta,enchant=lightweave_embroidery
 main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max
 off_hand=scepter_of_ice,heroic=1,ilevel=372,quality=epic,stats=215int_143mastery_143spi_322sta,enchant=100int

@@ -2174,7 +2174,7 @@ struct expression_t
   static int is_binary( int token_type );
   static int next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token );
   static void parse_tokens( action_t* action, std::vector<expr_token_t>& tokens, const std::string& expr_str );
-  static void print_tokens( std::vector<expr_token_t>& tokens );
+  static void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
   static void convert_to_unary( action_t* action, std::vector<expr_token_t>& tokens );
   static bool convert_to_rpn( action_t* action, std::vector<expr_token_t>& tokens );
 };

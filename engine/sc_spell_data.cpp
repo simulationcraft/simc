@@ -1276,11 +1276,11 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   expression_t::parse_tokens( 0, tokens, expr_str );
 
-  if ( sim -> debug ) expression_t::print_tokens( tokens );
+  if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
   expression_t::convert_to_unary( 0, tokens );
 
-  if ( sim -> debug ) expression_t::print_tokens( tokens );
+  if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
   if( ! expression_t::convert_to_rpn( 0, tokens ) ) 
   {
@@ -1289,7 +1289,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
     return 0;
   }
 
-  if ( sim -> debug ) expression_t::print_tokens( tokens );
+  if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
   spell_data_expr_t* e = build_expression_tree( sim, tokens );
 

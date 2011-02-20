@@ -1743,8 +1743,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     "                      <td class=\"right small\">%.2f</td>\n"
     "                      <td class=\"right small\">%.2f</td>\n"
     "                      <td class=\"right small\">%.2f</td>\n"
-    "                      <td class=\"right small\">%.2f</td>\n"
-    "                      <td class=\"right small\">%.2f</td>\n"
+    "                      <td class=\"right small\">%.4f</td>\n"
+    "                      <td class=\"right small\">%.4f</td>\n"
     "                      <td class=\"right small\">%.0f</td>\n",
       s -> num_executes,
       s -> num_direct_results,

@@ -18,7 +18,7 @@ actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger_pct=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/lightwell
-actions+=/chakra,if=buff.chakra_sanctuary.down
+actions+=/chakra
 actions+=/prayer_of_healing,if=buff.chakra_pre.up
 actions+=/prayer_of_mending
 actions+=/holy_word

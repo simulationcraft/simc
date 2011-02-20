@@ -3,7 +3,7 @@
 optimal_raid=1
 
 # Healers aren't Damage Dealers, they tend to pause between heals
-queue_lag=0.3
+queue_lag=0.5
 
 # Do some Damage!
 raid_events+=/damage,cooldown=500,amount=400000,first=5
@@ -15,4 +15,6 @@ Priest_Holy_Single_T11_372.simc
 Priest_Holy_AE_T11_372.simc
 Priest_Holy_Mixed_T11_372.simc
 
-Fluffy_Tank.simc
+Warlock_Destruction_T11_372.simc dark_intent_target=Priest_Heal_Holy_Single_T11_372
+
+Warrior_Tank.simc

@@ -17,7 +17,7 @@ actions+=/use_item,name=core_of_ripeness
 actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger_pct=40&(time<100|time>=200)
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
-actions+=/chakra,if=buff.chakra_serenity.down&(time<100|time>=200)|buff.chakra_sanctuary.down&time>=100&time<200
+actions+=/chakra
 actions+=/heal,if=buff.chakra_pre.up&(time<100|time>=200)
 actions+=/prayer_of_healing,if=buff.chakra_pre.up&time>=100&time<200
 actions+=/renew,if=!ticking&(time<100|time>=200)

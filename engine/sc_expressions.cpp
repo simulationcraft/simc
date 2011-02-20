@@ -262,6 +262,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
   }
   else
   {
+
     printf( "Unexpected token (%c) in %s\n", c, expr_str.c_str() );
   }
 
@@ -287,14 +288,14 @@ void expression_t::parse_tokens( action_t* action,
 
 // print_tokens ==============================================================
 
-void expression_t::print_tokens( std::vector<expr_token_t>& tokens )
+void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
-  printf( "tokens:\n" );
+  log_t::output( sim, "tokens:\n" );
   int num_tokens = tokens.size();
   for ( int i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
-    printf( "%2d  '%s'\n", t.type, t.label.c_str() );
+    log_t::output( sim,  "%2d  '%s'\n", t.type, t.label.c_str() );
   }
 }
 
@@ -465,11 +466,11 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   expression_t::parse_tokens( action, tokens, expr_str );
 
-  if ( action -> sim -> debug ) expression_t::print_tokens( tokens );
+  if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
   expression_t::convert_to_unary( action, tokens );
 
-  if ( action -> sim -> debug ) expression_t::print_tokens( tokens );
+  if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
   if( ! expression_t::convert_to_rpn( action, tokens ) ) 
   {
@@ -478,7 +479,7 @@ action_expr_t* action_expr_t::parse( action_t* action,
     return 0;
   }
 
-  if ( action -> sim -> debug ) expression_t::print_tokens( tokens );
+  if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
   action_expr_t* e = build_expression_tree( action, tokens );
 

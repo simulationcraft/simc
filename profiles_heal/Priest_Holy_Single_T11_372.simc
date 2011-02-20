@@ -17,13 +17,11 @@ actions+=/use_item,name=core_of_ripeness
 actions+=/mana_potion,trigger=30000
 actions+=/shadow_fiend,trigger_pct=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
-actions+=/chakra,if=buff.chakra_serenity.down
+actions+=/chakra
 actions+=/heal,if=buff.chakra_pre.up|buff.chakra_serenity.remains<10&cooldown.chakra.remains>2|dot.renew.remains<4
 actions+=/renew,if=!ticking
 actions+=/holy_word
-actions+=/flash_heal,if=buff.surge_of_light.react
-actions+=/flash_heal,if=buff.serendipity.stack<2&mana_pct>=20
-actions+=/greater_heal,if=buff.serendipity.stack=2
+actions+=/greater_heal,if=buff.chakra_serenity_crit.up||mana>10000
 actions+=/heal
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
