@@ -3031,7 +3031,7 @@ void mage_t::init_actions()
       }
       if ( ! strcmp( items[ i ].name(), "shard_of_woe" ) )
       {
-        action_list_str += ",if=cooldown.evocation.remains>26";
+        action_list_str += ",if=(cooldown.evocation.remains<35&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
       }
     }
     //Potions
