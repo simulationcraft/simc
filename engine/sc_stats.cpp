@@ -52,7 +52,7 @@ void stats_t::init()
   num_executes = num_ticks = 0;
   total_execute_time = total_tick_time = 0;
   total_dmg = portion_dmg = 0;
-  dps = dpe = dpet = dpr = 0;
+  dps = dpe = dpet = dpr = etpe = ttpt = 0;
   total_intervals = num_intervals = 0;
 }
 
@@ -198,6 +198,9 @@ void stats_t::analyze()
 
     dpr  = ( resource_consumed > 0 ) ? ( compound_dmg / resource_consumed ) : 0;
   }
+
+  ttpt = num_ticks ? total_tick_time / num_ticks : 0;
+  etpe = num_executes? ( total_execute_time + ( channeled ? total_tick_time : 0 ) ) / num_executes : 0;
 
   for ( int i=0; i < num_buckets; i++ )
   {

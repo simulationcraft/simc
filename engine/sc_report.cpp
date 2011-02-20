@@ -1750,8 +1750,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
       s -> num_direct_results,
       s -> num_ticks,
       s -> num_tick_results,
-      s -> num_executes ? s -> total_execute_time / s -> num_executes : -1,
-      s -> num_ticks ? s -> total_tick_time / s -> num_ticks : -1,
+      s -> etpe,
+      s -> ttpt,
       s -> total_dmg );
   util_t::fprintf (file,
     "                    </tr>\n"

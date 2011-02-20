@@ -627,6 +627,14 @@ void absorb_t::execute()
 		   player -> resource_current[ player -> primary_resource() ] );
   }
 
+  if ( harmful )
+  {
+    if ( player -> in_combat == false && sim -> debug )
+      log_t::output( sim, "%s enters combat.", player -> name() );
+
+    player -> in_combat = true;
+  }
+
   player_buff();
 
   for ( unsigned int i = 0; i < heal_target.size(); i++ )
@@ -645,8 +653,6 @@ void absorb_t::execute()
   update_ready();
 
   if ( ! dual ) stats -> add_execute( time_to_execute );
-
-  if ( harmful ) player -> in_combat = true;
 
   if ( repeating && ! proc ) schedule_execute();
 }

@@ -15,7 +15,7 @@ actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/use_item,name=core_of_ripeness
 actions+=/mana_potion,trigger=30000
-actions+=/shadow_fiend,trigger_pct=20
+actions+=/shadow_fiend,if=mana_pct<=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/power_infusion
 actions+=/prayer_of_mending

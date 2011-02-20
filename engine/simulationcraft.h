@@ -3582,7 +3582,7 @@ struct stats_t
   double num_direct_results, num_tick_results;
   double total_execute_time, total_tick_time;
   double total_dmg, portion_dmg;
-  double dps, portion_dps, dpe, dpet, dpr, rpe;
+  double dps, portion_dps, dpe, dpet, dpr, rpe, etpe, ttpt;
   double total_intervals, num_intervals;
   double last_execute;
 

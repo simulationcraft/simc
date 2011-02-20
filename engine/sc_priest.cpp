@@ -2065,20 +2065,10 @@ struct vampiric_touch_t : public priest_spell_t
 
 struct shadow_fiend_spell_t : public priest_spell_t
 {
-  int trigger;
-  int trigger_pct;
-
   shadow_fiend_spell_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "shadow_fiend", player, "Shadowfiend" ), trigger( 0 ),
-      trigger_pct( 0 )
+      priest_spell_t( "shadow_fiend", player, "Shadowfiend" )
   {
-    option_t options[] =
-    {
-      { "trigger",     OPT_INT, &trigger     },
-      { "trigger_pct", OPT_INT, &trigger_pct },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     harmful = false;
   }
@@ -2090,26 +2080,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
     p -> summon_pet( "shadow_fiend", duration() );
 
     update_ready();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! priest_spell_t::ready() )
-      return false;
-
-    priest_t* p = player -> cast_priest();
-
-    if ( sim -> infinite_resource[ RESOURCE_MANA ] )
-      return true;
-
-    double     max_mana = p -> resource_max    [ RESOURCE_MANA ];
-    double current_mana = p -> resource_current[ RESOURCE_MANA ];
-
-    if ( trigger > 0 ) return ( max_mana - current_mana ) >= trigger;
-
-    if ( trigger_pct > 0 ) return ( current_mana / max_mana * 100 ) <= trigger_pct;
-
-    return true;
   }
 };
 
@@ -2204,6 +2174,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     background  = true;
     may_crit    = true;
     harmful     = false;
+    direct_tick = true;
     stats = player -> get_stats( "hymn_of_hope" );
   }
 
@@ -2235,14 +2206,13 @@ struct hymn_of_hope_t : public priest_spell_t
 
     harmful=false;
 
-    hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
+    channeled = true;
 
-    add_child( hymn_of_hope_tick );
+    hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
   }
 
   virtual void tick()
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
     hymn_of_hope_tick -> execute();
     stats -> add_tick( time_to_tick );
   }
@@ -3725,6 +3695,10 @@ struct divine_hymn_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
+    harmful = false;
+
+    channeled = true;
+
     divine_hymn_tick = new divine_hymn_tick_t( p );
 
     add_child( divine_hymn_tick );
@@ -4361,7 +4335,7 @@ void priest_t::init_actions()
       if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion";
-                                                         action_list_str += "/shadow_fiend,trigger_pct=20";
+                                                         action_list_str += "/shadow_fiend,if=mana_pct<=20";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
                                                          action_list_str += "/shadow_word_pain,if=!ticking";
         if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
@@ -4375,7 +4349,7 @@ void priest_t::init_actions()
       else
       {
                                                          action_list_str += "/mana_potion,trigger=30000";
-                                                         action_list_str += "/shadow_fiend,trigger_pct=20";
+                                                         action_list_str += "/shadow_fiend,if=mana_pct<=20";
                                                          action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
@@ -4390,7 +4364,7 @@ void priest_t::init_actions()
       if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion";
-                                                         action_list_str += "/shadow_fiend,trigger_pct=20";
+                                                         action_list_str += "/shadow_fiend,if=mana_pct<=20";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
                                                          action_list_str += "/shadow_word_pain,if=!ticking";
                                                          action_list_str += "/devouring_plague,if=!ticking";
@@ -4403,7 +4377,7 @@ void priest_t::init_actions()
       else
       {
                                                          action_list_str += "/mana_potion,trigger=30000";
-                                                         action_list_str += "/shadow_fiend,trigger_pct=20";
+                                                         action_list_str += "/shadow_fiend,if=mana_pct<=20";
                                                          action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
