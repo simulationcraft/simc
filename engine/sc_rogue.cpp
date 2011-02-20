@@ -2315,11 +2315,12 @@ struct slice_and_dice_t : public rogue_attack_t
 
   virtual void execute()
   {
+    rogue_t* p = player -> cast_rogue();
+    int action_cp = p -> combo_points -> count;
+
     rogue_attack_t::execute();
 
-    rogue_t* p = player -> cast_rogue();
-
-    p -> buffs_slice_and_dice -> trigger ( p -> combo_points -> count );
+    p -> buffs_slice_and_dice -> trigger ( action_cp );
 
   }
 };
