@@ -3118,6 +3118,16 @@ struct starsurge_t : public druid_spell_t
 
     return druid_spell_t::execute_time();
   }  
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+    // Druids can only have 1 Starsurge in the air at a time
+    if ( travel_event != NULL )
+      return false;
+    else
+      return druid_spell_t::ready();
+  }
 };
 
 // Stealth ==================================================================
