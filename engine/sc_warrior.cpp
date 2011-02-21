@@ -1010,17 +1010,16 @@ struct melee_t : public warrior_attack_t
 
   virtual double swing_haste() SC_CONST
   {
-    warrior_t* p = player -> cast_warrior();
     double h = warrior_attack_t::swing_haste();
 
+    warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_flurry -> up() )
-    {
       h *= 1.0 / ( 1.0 + p -> buffs_flurry -> base_value() / 100.0 );
-    }
+
     if ( p -> buffs_executioner_talent -> up() )
-    {
-      h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() * p -> buffs_executioner_talent -> effect_base_value( 1 ) / 100.0 );
-    }
+      h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() *
+                   p -> buffs_executioner_talent -> effect_base_value( 1 ) / 100.0 );
 
     // FIXME: does unholy_frenzy benefit from mastery.unshackled_fury?
 
@@ -1103,17 +1102,20 @@ struct auto_attack_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
+
     p -> main_hand_attack -> schedule_execute();
+
     if ( p -> off_hand_attack )
-    {
       p -> off_hand_attack -> schedule_execute();
-    }
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs.moving -> check() ) return false;
+
+    if ( p -> buffs.moving -> check() )
+      return false;
+
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
@@ -1172,15 +1174,22 @@ struct bladestorm_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
-    if ( p ->  off_hand_attack ) p -> off_hand_attack -> cancel();
+
+    if ( p -> main_hand_attack )
+      p -> main_hand_attack -> cancel();
+
+    if ( p ->  off_hand_attack )
+      p -> off_hand_attack -> cancel();
   }
 
   virtual void tick()
   {
     warrior_attack_t::tick();
+
     bladestorm_mh -> execute();
+
     if ( bladestorm_mh -> result_is_hit() && bladestorm_oh )
     {
       bladestorm_oh -> execute();
@@ -1217,6 +1226,7 @@ struct bloodthirst_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     if ( result_is_hit() )
     {
       warrior_t* p = player -> cast_warrior();
@@ -1226,7 +1236,7 @@ struct bloodthirst_t : public warrior_attack_t
   }
 };
 
-// Charge =========================================================== added by hellord
+// Charge ===========================================================
 
 struct charge_t : public warrior_attack_t
 {
@@ -1304,7 +1314,9 @@ struct cleave_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();  
+
     if ( result_is_hit() ) 
       p -> buffs_meat_cleaver -> trigger();
   }
@@ -1312,17 +1324,18 @@ struct cleave_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
+
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_meat_cleaver -> up() )
-    {
-      player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
-    }
+
+    player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
   }
 
   virtual void update_ready()
   {
     warrior_t* p = player -> cast_warrior();
+
     cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+
     warrior_attack_t::update_ready();
   }
 };
@@ -1349,7 +1362,9 @@ struct colossus_smash_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() )
       p -> buffs_colossus_smash -> trigger( 1, 1.0 );
   }
@@ -1396,9 +1411,11 @@ struct devastate_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
 
-    if ( result_is_hit() ) trigger_sword_and_board( this );
+    if ( result_is_hit() )
+      trigger_sword_and_board( this );
 
     if ( target -> health_percentage() <= 20 )
     {
@@ -1461,11 +1478,11 @@ struct execute_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
-    {
       p -> buffs_executioner_talent -> trigger();
-    }
   }
 
   virtual void player_buff()
@@ -1484,20 +1501,17 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
-      int stack = p -> buffs_lambs_to_the_slaughter -> stack();
+      int stack = p -> buffs_lambs_to_the_slaughter -> check();
       player_multiplier *= 1.0 + stack * 0.10;
     }
   }
 
   virtual bool ready()
   {
-    if ( ! warrior_attack_t::ready() )
-      return false;
-
     if ( target -> health_percentage() > 20 )
       return false;
 
-    return true;
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1512,6 +1526,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     id = 78;
     parse_data( p -> player_data );
+
     // Include the weapon so we benefit from racials
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1524,11 +1539,13 @@ struct heroic_strike_t : public warrior_attack_t
 
   virtual void execute()
   {
+    warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    warrior_attack_t::execute();    
 
     if ( p -> buffs_incite -> check() )
       p -> buffs_incite -> expire();
+
     else if ( result == RESULT_CRIT )
       p -> buffs_incite -> trigger();
 
@@ -1537,7 +1554,9 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_incite -> up() )
       player_crit += 1.0;
   }
@@ -1545,7 +1564,9 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void update_ready()
   {
     warrior_t* p = player -> cast_warrior();
+
     cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+
     warrior_attack_t::update_ready();
   }
 };
@@ -1555,6 +1576,7 @@ struct heroic_strike_t : public warrior_attack_t
 struct mortal_strike_t : public warrior_attack_t
 {
   double additive_multipliers;
+
   mortal_strike_t( warrior_t* p, const std::string& options_str ) :
       warrior_attack_t( "mortal_strike", p, SCHOOL_PHYSICAL, TREE_ARMS ),
       additive_multipliers( 0 )
@@ -1576,12 +1598,15 @@ struct mortal_strike_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() )
     {
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
       p -> buffs_juggernaut -> expire();
+
       if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
       {
         double value = p -> talents.wrecking_crew -> rank() * 0.05;
@@ -1720,9 +1745,12 @@ struct raging_blow_attack_t : public warrior_attack_t
 
   virtual void player_buff()
   {
-    warrior_t* p = player -> cast_warrior();
     warrior_attack_t::player_buff();
-    player_multiplier *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+
+    warrior_t* p = player -> cast_warrior();
+
+    player_multiplier *= 1.0 + p -> composite_mastery() *
+                               p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
   }
 };
 
@@ -1762,8 +1790,10 @@ struct raging_blow_t : public warrior_attack_t
 
   virtual void execute()
   {
-    warrior_t* p = player -> cast_warrior();
     attack_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() ) 
     {
       mh_attack -> execute();
@@ -1778,11 +1808,13 @@ struct raging_blow_t : public warrior_attack_t
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( ! ( p -> buffs_berserker_rage -> check() || 
              p -> buffs_death_wish     -> check() || 
              p -> buffs_enrage         -> check() ||
              p -> buffs.unholy_frenzy  -> check() ) )
       return false;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1821,7 +1853,9 @@ struct rend_t : public warrior_attack_t
   virtual void execute()
   {
     base_td = base_td_init + calculate_weapon_damage() * 0.25;
+
     warrior_attack_t::execute();
+
     if ( result_is_hit() )
       trigger_blood_frenzy( this );
   }
@@ -1829,7 +1863,9 @@ struct rend_t : public warrior_attack_t
   virtual void tick()
   {
     warrior_attack_t::tick();
+
     warrior_t* p = player -> cast_warrior();
+
     p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
   }
@@ -1861,16 +1897,23 @@ struct revenge_t : public warrior_attack_t
 
   virtual void execute()
   {
-    warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+
     p -> buffs_revenge -> expire();
-    if ( result_is_hit() ) trigger_sword_and_board( this );
+
+    if ( result_is_hit() )
+      trigger_sword_and_board( this );
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( ! p -> buffs_revenge -> check() ) return false;
+
+    if ( ! p -> buffs_revenge -> check() )
+      return false;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1894,13 +1937,16 @@ struct shattering_throw_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     if ( result_is_hit() )
       target -> debuffs.shattering_throw -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( target -> debuffs.shattering_throw -> check() ) return false;
+    if ( target -> debuffs.shattering_throw -> check() )
+      return false;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1924,7 +1970,9 @@ struct shield_bash_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1953,17 +2001,19 @@ struct shield_slam_t : public warrior_attack_t
     warrior_attack_t::player_buff();
 
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_shield_block -> up() )
-    {
       player_multiplier *= 1.0 + p -> talents.heavy_repercussions -> effect_base_value( 1 ) / 100.0;
-    }
   }
 
   virtual void execute()
   {
-    warrior_t* p = player -> cast_warrior();
     warrior_attack_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+
     p -> buffs_sword_and_board -> expire();
+
     if ( result_is_hit() )
       p -> buffs_battle_trance -> trigger();
   }
@@ -1971,9 +2021,11 @@ struct shield_slam_t : public warrior_attack_t
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_sword_and_board -> up() ) return 0;
-    double c = warrior_attack_t::cost();
-    return c;
+
+    if ( p -> buffs_sword_and_board -> up() )
+      return 0;
+
+    return warrior_attack_t::cost();
   }
 };
 
@@ -2001,15 +2053,20 @@ struct shockwave_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     p -> buffs_thunderstruck -> expire();
   }
 
   virtual void player_buff()
   {
+    warrior_attack_t::player_buff();
+
     warrior_t* p = player -> cast_warrior();
-    warrior_attack_t::player_buff();    
-    player_multiplier *= 1.0 + p -> buffs_thunderstruck -> stack() * p -> talents.thunderstruck -> effect_base_value( 2 ) / 100.0;
+
+    player_multiplier *= 1.0 + p -> buffs_thunderstruck -> stack() *
+                               p -> talents.thunderstruck -> effect_base_value( 2 ) / 100.0;
   }
 };
 
@@ -2018,6 +2075,7 @@ struct shockwave_t : public warrior_attack_t
 struct slam_attack_t : public warrior_attack_t
 {
   double additive_multipliers;
+
   slam_attack_t( warrior_t* p, const char* name ) :
     warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY ),
     additive_multipliers( 0 )
@@ -2049,17 +2107,10 @@ struct slam_attack_t : public warrior_attack_t
       player_crit += p -> buffs_juggernaut -> effect_base_value( 1 ) / 100.0;
 
     if ( p -> buffs_bloodsurge -> up() )
-    {
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
-    }
-    if ( p -> buffs_lambs_to_the_slaughter -> check() )
-    {
-      player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 ) + additive_multipliers;
-    }
-    else
-    {
-      player_multiplier *= 1.0 + additive_multipliers;
-    }
+
+    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
+                             + additive_multipliers;
   }
 };
 
@@ -2069,7 +2120,8 @@ struct slam_t : public warrior_attack_t
   attack_t* oh_attack;
 
   slam_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY ), mh_attack(0), oh_attack(0)
+    warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY ),
+    mh_attack(0), oh_attack(0)
   {
     id = 1464;
     parse_data( p -> player_data );
@@ -2097,34 +2149,44 @@ struct slam_t : public warrior_attack_t
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_bloodsurge -> check() )
       return 0;
+
     return warrior_attack_t::cost();
   }
 
   virtual double execute_time() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_bloodsurge -> check() )
       return 0.0;
+
     return warrior_attack_t::execute_time();
   }
 
   virtual void execute()
   {
-    warrior_t* p = player -> cast_warrior();
     attack_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() ) 
     {
       mh_attack -> execute();
+
       p -> buffs_juggernaut -> expire();
+
       if ( oh_attack ) 
       {
         oh_attack -> execute();
+
         if ( p -> bugs ) // http://elitistjerks.com/f81/t106912-fury_dps_4_0_cataclysm/p19/#post1875264
           p -> buffs_battle_trance -> expire();
       }
     }
+
     p -> buffs_bloodsurge -> decrement();
   }
 };
@@ -2154,7 +2216,9 @@ struct thunder_clap_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     p -> buffs_thunderstruck -> trigger();
   }
 };
@@ -2202,7 +2266,9 @@ struct whirlwind_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_meat_cleaver -> up() )
     {
       // Caution: additive
@@ -2229,6 +2295,7 @@ struct victory_rush_t : public warrior_attack_t
   virtual bool ready()
   {
      warrior_t* p = player -> cast_warrior();
+
     if ( ! p -> buffs_victory_rush -> check() )
       return false;
 
@@ -2287,16 +2354,13 @@ double warrior_spell_t::gcd() SC_CONST
 
 bool warrior_spell_t::ready()
 {
-  if ( ! spell_t::ready() )
-    return false;
-
   warrior_t* p = player -> cast_warrior();
 
   // Attack vailable in current stance?
   if ( ( stancemask & p -> active_stance ) == 0 )
     return false;
 
-  return true;
+  return spell_t::ready();
 }
 
 // warrior_spell_t::parse_options() =========================================
@@ -2333,11 +2397,14 @@ struct battle_shout_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
     
     if ( ! sim -> overrides.battle_shout )
+    {
       sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect_base_value( 1 ) / 1000.0;
-    sim -> auras.battle_shout -> trigger( 1, sim -> sim_data.effect_min( 6673, p -> level, E_APPLY_AURA, A_MOD_STAT ) );
+      sim -> auras.battle_shout -> trigger( 1, sim -> sim_data.effect_min( 6673, p -> level, E_APPLY_AURA, A_MOD_STAT ) );
+    }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
   }
@@ -2363,13 +2430,15 @@ struct berserker_rage_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );  
+
     if ( p -> glyphs.berserker_rage -> ok() ) {
       double ragegain = 5.0;
       ragegain *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
       p -> resource_gain( RESOURCE_RAGE, ragegain, p -> gains_berserker_rage );
     }
+
     p -> buffs_berserker_rage -> trigger();
   }
 };
@@ -2394,17 +2463,19 @@ struct deadly_calm_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );    
+
     p -> buffs_deadly_calm -> trigger();  
-    update_ready();
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_inner_rage -> check() )
       return false;
+
     return warrior_spell_t::ready();
   }
 };
@@ -2416,7 +2487,8 @@ struct death_wish_t : public warrior_spell_t
   double enrage_bonus;
 
   death_wish_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "death_wish", p )
+      warrior_spell_t( "death_wish", p ),
+      enrage_bonus( 0 )
   {
     check_talent( p -> talents.death_wish -> rank() );
 
@@ -2426,6 +2498,7 @@ struct death_wish_t : public warrior_spell_t
     parse_data( p -> player_data );
 
     harmful = false;
+
     if ( p -> talents.intensify_rage -> ok() )
       cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0 );
   }
@@ -2433,6 +2506,7 @@ struct death_wish_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
 
     enrage_bonus = p -> talents.death_wish -> effect_base_value( 1 ) / 100.0;
@@ -2464,16 +2538,21 @@ struct inner_rage_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );    
+
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+
     p -> buffs_inner_rage -> trigger();  
+
     update_ready();
   }
 
   virtual bool ready()
   {
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> resource_current[ RESOURCE_RAGE ] < 75.0 )
       return false;
+
     return warrior_spell_t::ready();
   }
 };
@@ -2500,7 +2579,9 @@ struct recklessness_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     p -> buffs_recklessness -> trigger( 3 );
   }
 };
@@ -2525,7 +2606,9 @@ struct shield_block_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     p -> buffs_shield_block -> trigger();
   }
 };
@@ -2535,8 +2618,10 @@ struct shield_block_t : public warrior_spell_t
 struct stance_t : public warrior_spell_t
 {
   int switch_to_stance;
+
   stance_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "stance", p ), switch_to_stance( 0 )
+      warrior_spell_t( "stance", p ),
+      switch_to_stance( 0 )
   {
     std::string stance_str;
     option_t options[] =
@@ -2605,10 +2690,10 @@ struct stance_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    if ( ! warrior_spell_t::ready() )
+    if ( p -> active_stance == switch_to_stance )
       return false;
 
-    return p -> active_stance != switch_to_stance;
+    return warrior_spell_t::ready();
   }
 };
 
@@ -2634,10 +2719,10 @@ struct sweeping_strikes_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     warrior_t* p = player -> cast_warrior();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );    
+
     p -> buffs_sweeping_strikes -> trigger();  
-    update_ready();
   }
 };
 
@@ -2902,7 +2987,7 @@ void warrior_t::init_gains()
   gains_berserker_rage         = get_gain( "berserker_rage"        );
   gains_blood_frenzy           = get_gain( "blood_frenzy"          );
   gains_incoming_damage        = get_gain( "incoming_damage"       );
-  gains_charge                 = get_gain( "charge"            );
+  gains_charge                 = get_gain( "charge"                );
   gains_melee_main_hand        = get_gain( "melee_main_hand"       );
   gains_melee_off_hand         = get_gain( "melee_off_hand"        );
   gains_shield_specialization  = get_gain( "shield_specialization" );
@@ -3117,10 +3202,8 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 {
   double mult = player_t::composite_attack_power_multiplier();
 
-  if ( buffs_tier11_4pc_melee -> up() )
-  {
-    mult *= 1.0 + 0.01 * buffs_tier11_4pc_melee -> stack();
-  }
+  mult *= 1.0 + 0.01 * buffs_tier11_4pc_melee -> stack();
+
   return mult;
 }
 
@@ -3129,7 +3212,9 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 double warrior_t::composite_attack_hit() SC_CONST
 {
   double ah = player_t::composite_attack_hit();
+
   ah += spec.precision -> effect_base_value( 1 ) / 100.0;
+
   return ah;
 }
 
@@ -3139,6 +3224,7 @@ double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   if ( ( attr == ATTR_STRENGTH ) && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
     return 0.05;
+
   if ( ( attr == ATTR_STAMINA ) && ( primary_tree() == TREE_PROTECTION ) )
     return 0.05;
 
@@ -3150,10 +3236,12 @@ double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 double warrior_t::composite_tank_block() SC_CONST
 {
   double b = player_t::composite_tank_block();
+
   b += composite_mastery() * mastery.critical_block -> effect_base_value( 3 ) / 10000.0;
 
   if ( buffs_shield_block -> up() )
     b = 1.0;
+
   return b;
 }
 
