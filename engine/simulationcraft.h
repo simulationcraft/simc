@@ -2442,10 +2442,10 @@ struct sim_t
   int current_throttle;
   int debug_exp;
   int report_precision;
-  bool report_pets_separately;
-  bool report_targets;
-  bool report_details;
-  bool hosted_html;
+  int report_pets_separately;
+  int report_targets;
+  int report_details;
+  int hosted_html;
   int print_styles;
 
   // Multi-Threading

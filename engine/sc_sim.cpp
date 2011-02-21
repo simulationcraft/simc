@@ -526,7 +526,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
-    report_precision( 4 ),report_pets_separately( false ), report_targets( true ), report_details( true ), hosted_html( false ), print_styles( false ),
+    report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), hosted_html( 0 ), print_styles( false ),
     // Multi-Threading
     threads( 0 ), thread_handle( 0 ), thread_index( index ),
     spell_query( 0 )
