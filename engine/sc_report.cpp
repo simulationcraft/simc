@@ -1718,14 +1718,14 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
   {
   util_t::fprintf( file,
     "              <tr class=\"details hide\">\n"
-    "                <td colspan=\"25\" class=\"filler\">\n" );
+    "                <td colspan=\"22\" class=\"filler\">\n" );
 
   // Stat Details
   util_t::fprintf (file,
     "                  <h4>Stats details: %s </h4>\n", s -> name_str.c_str() );
 
   util_t::fprintf (file,
-    "                  <table class=\"sc\">\n"
+    "                  <table class=\"details\">\n"
     "                    <tr>\n");
   util_t::fprintf (file,
       "                      <th class=\"small\">executes</th>\n"
@@ -1759,10 +1759,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
 
 
   util_t::fprintf (file,
-    "                  <div class=\"clear\"> <br> </div>\n" );
-
-  util_t::fprintf (file,
-    "                  <table class=\"sc\">\n");
+    "                  <table  class=\"details\">\n");
   if ( s -> num_direct_results > 0 )
   {
   // Direct Damage
@@ -4402,6 +4399,12 @@ void report_t::print_html( sim_t* sim )
       "      table.sc tr.details td div.float ul { margin: 0 0 12px 0; }\n"
       "      table.sc td.filler { background-color: #333; }\n"
       "      table.sc .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
+      "      tr.details td table.details { padding: 0px; margin: 5px 0 10px 0; }\n"
+      "      tr.details td table.details tr th { background-color: #222; }\n"
+      "      tr.details td table.details tr td { background-color: #2d2d2d; }\n"
+      "      tr.details td table.details tr.odd td { background-color: #292929; }\n"
+      "      tr.details td table.details tr td { padding: 1px 3px 1px 3px; }\n"
+      "      tr.details td table.details tr td.right { text-align: right; }\n"
       "    </style>\n" );
   }
 

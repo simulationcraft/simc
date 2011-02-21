@@ -639,3 +639,28 @@ table.sc .dynamic-buffs tr.details td ul li span.label {
 	width: 120px;
 }
 
+tr.details td table.details {
+	padding: 0px;
+	margin: 5px 0 10px 0;
+}
+
+tr.details td table.details tr th {
+	background-color: #222;
+}
+
+tr.details td table.details tr td {
+	background-color: #2d2d2d;
+}
+
+tr.details td table.details tr.odd td {
+	background-color: #292929;
+}
+
+tr.details td table.details tr td {
+	padding: 1px 3px 1px 3px;
+}
+
+tr.details td table.details tr td.right {
+	text-align: right;
+}
+

@@ -5,7 +5,7 @@
   {
     util_t::fprintf( file,
       "    <style type=\"text/css\" media=\"screen\">\n"
-      "      @import url('http://www.simulationcraft.org/css/styles-new.css');\n"
+      "      @import url('http://www.simulationcraft.org/css/styles.css');\n"
       "    </style>\n"
       "    <style type=\"text/css\" media=\"print\">\n"
       "      @import url('http://www.simulationcraft.org/css/styles-print.css');\n"
@@ -228,5 +228,11 @@
       "      table.sc tr.details td div.float ul { margin: 0 0 12px 0; }\n"
       "      table.sc td.filler { background-color: #333; }\n"
       "      table.sc .dynamic-buffs tr.details td ul li span.label { width: 120px; }\n"
+      "      tr.details td table.details { padding: 0px; margin: 5px 0 10px 0; }\n"
+      "      tr.details td table.details tr th { background-color: #222; }\n"
+      "      tr.details td table.details tr td { background-color: #2d2d2d; }\n"
+      "      tr.details td table.details tr.odd td { background-color: #292929; }\n"
+      "      tr.details td table.details tr td { padding: 1px 3px 1px 3px; }\n"
+      "      tr.details td table.details tr td.right { text-align: right; }\n"
       "    </style>\n" );
   }
