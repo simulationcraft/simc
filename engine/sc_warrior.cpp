@@ -1139,15 +1139,14 @@ struct bladestorm_t : public warrior_attack_t
   attack_t* bladestorm_oh;
 
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "bladestorm", p, SCHOOL_PHYSICAL, TREE_ARMS ),
+    warrior_attack_t( "bladestorm", "Bladestorm", p ),
     bladestorm_mh(0), bladestorm_oh(0)
   {
     check_talent( p -> talents.bladestorm -> rank() );
 
     parse_options( NULL, options_str );
 
-    id = 46924;
-    parse_data( p -> player_data );
+    //id = 46924;
 
     aoe       = -1;
     harmful   = false;
@@ -1294,12 +1293,11 @@ struct charge_t : public warrior_attack_t
 struct cleave_t : public warrior_attack_t
 {
   cleave_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "cleave", p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "cleave", "Cleave", p )
   {
     parse_options( NULL, options_str );
 
-    id = 845;
-    parse_data( p -> player_data );
+    //id = 845;
 
     direct_power_mod = 0.4496;
     base_dd_min      = 6;
@@ -1345,14 +1343,11 @@ struct cleave_t : public warrior_attack_t
 struct colossus_smash_t : public warrior_attack_t
 {
   colossus_smash_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "colossus_smash",  p, SCHOOL_PHYSICAL, TREE_ARMS )
+      warrior_attack_t( "colossus_smash",  "Colossus Smash", p )
   {
     check_min_level( 81 );
 
     parse_options( NULL, options_str );
-
-    id = 86346;
-    parse_data( p -> player_data );
 
     base_dd_min = base_dd_max = p -> player_data.effect_base_value( 87876 );
 
@@ -1375,14 +1370,13 @@ struct colossus_smash_t : public warrior_attack_t
 struct concussion_blow_t : public warrior_attack_t
 {
   concussion_blow_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "concussion_blow", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "concussion_blow", "Concussion Blow", p )
   {
     check_talent( p -> talents.concussion_blow -> rank() );
 
     parse_options( NULL, options_str );
 
-    id = 12809;
-    parse_data( p -> player_data );
+    //id = 12809;
 
     direct_power_mod  = effect_base_value( 3 ) / 100.0;
   }
@@ -1393,14 +1387,13 @@ struct concussion_blow_t : public warrior_attack_t
 struct devastate_t : public warrior_attack_t
 {
   devastate_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "devastate", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "devastate", "Devastate", p )
   {
     check_talent( p -> talents.devastate -> rank() );
 
     parse_options( NULL, options_str );
 
-    id = 20243;
-    parse_data( p -> player_data );
+    //id = 20243;
 
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
 
@@ -1430,12 +1423,9 @@ struct devastate_t : public warrior_attack_t
 struct execute_t : public warrior_attack_t
 {
   execute_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "execute", p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "execute", "Execute", p )
   {
     parse_options( NULL, options_str );
-
-    id = 5308;
-    parse_data( p -> player_data );
 
     // Include the weapon so we benefit from racials
     weapon             = &( player -> main_hand_weapon );
@@ -1520,12 +1510,9 @@ struct execute_t : public warrior_attack_t
 struct heroic_strike_t : public warrior_attack_t
 {
   heroic_strike_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "heroic_strike", p, SCHOOL_PHYSICAL, TREE_ARMS )
+      warrior_attack_t( "heroic_strike", "Heroic Strike", p )
   {
     parse_options( NULL, options_str );
-
-    id = 78;
-    parse_data( p -> player_data );
 
     // Include the weapon so we benefit from racials
     weapon = &( player -> main_hand_weapon );
@@ -1578,15 +1565,14 @@ struct mortal_strike_t : public warrior_attack_t
   double additive_multipliers;
 
   mortal_strike_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "mortal_strike", p, SCHOOL_PHYSICAL, TREE_ARMS ),
+      warrior_attack_t( "mortal_strike", "Mortal Strike", p ),
       additive_multipliers( 0 )
   {
     check_spec( TREE_ARMS );
 
     parse_options( NULL, options_str );
 
-    id = 12294;
-    parse_data( p -> player_data );
+    //id = 12294;
    
     additive_multipliers = p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
                            + p -> set_bonus.tier11_2pc_melee() * 0.05
@@ -1640,12 +1626,9 @@ struct mortal_strike_t : public warrior_attack_t
 struct overpower_t : public warrior_attack_t
 {
   overpower_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "overpower", p, SCHOOL_PHYSICAL, TREE_ARMS )
+      warrior_attack_t( "overpower", "Overpower", p )
   {
     parse_options( NULL, options_str );
-
-    id = 7384;
-    parse_data( p -> player_data );
 
     may_dodge  = false;
     may_parry  = false;
@@ -1703,12 +1686,11 @@ struct overpower_t : public warrior_attack_t
 struct pummel_t : public warrior_attack_t
 {
   pummel_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "pummel", p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "pummel", "Pummel", p )
   {
     parse_options( NULL, options_str );
 
-    id = 6552;
-    parse_data( p -> player_data );
+    //id = 6552;
 
     base_cost *= 1.0 + p -> talents.drums_of_war -> effect_base_value( 1 ) / 100.0;
 
@@ -1727,11 +1709,8 @@ struct pummel_t : public warrior_attack_t
 struct raging_blow_attack_t : public warrior_attack_t
 {
   raging_blow_attack_t( warrior_t* p, const char* name ) :
-      warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( name, 96103, p )
   {
-    id = 96103;
-    parse_data( p -> player_data );
-
     // FIX-ME: Hotfix nerf. Remove once client updated.
     weapon_multiplier = 1.0;
 
@@ -1760,12 +1739,10 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* oh_attack;
 
   raging_blow_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "raging_blow", p, SCHOOL_PHYSICAL, TREE_FURY ), mh_attack(0), oh_attack(0)
+    warrior_attack_t( "raging_blow", "Raging Blow", p ),
+    mh_attack(0), oh_attack(0)
   {
     check_talent( p -> talents.raging_blow -> rank() );
-
-    id = 85288;
-    parse_data( p -> player_data );
 
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
@@ -1824,12 +1801,9 @@ struct raging_blow_t : public warrior_attack_t
 struct rend_t : public warrior_attack_t
 {
   rend_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "rend", p, SCHOOL_BLEED, TREE_ARMS )
+      warrior_attack_t( "rend", "Rend", p )
   {
     parse_options( NULL, options_str );
-
-    id = 772;
-    parse_data( p -> player_data );
 
     weapon                 = &( p -> main_hand_weapon );
     may_crit               = false;
@@ -1876,12 +1850,11 @@ struct rend_t : public warrior_attack_t
 struct revenge_t : public warrior_attack_t
 {
   revenge_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "revenge", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "revenge", "Revenge", p )
   {
     parse_options( NULL, options_str );
 
-    id = 6572;
-    parse_data( p -> player_data );
+    //id = 6572;
 
     direct_power_mod  = 0.31; // Assumption from 3.3.5
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
@@ -1924,12 +1897,11 @@ struct revenge_t : public warrior_attack_t
 struct shattering_throw_t : public warrior_attack_t
 {
   shattering_throw_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "shattering_throw", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+    warrior_attack_t( "shattering_throw", "Shattering Throw", p )
   {
     parse_options( NULL, options_str );
 
-    id = 64382;
-    parse_data( p -> player_data );
+    //id = 64382;
 
     stancemask = STANCE_BATTLE;
   }
@@ -1956,12 +1928,11 @@ struct shattering_throw_t : public warrior_attack_t
 struct shield_bash_t : public warrior_attack_t
 {
   shield_bash_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "shield_bash", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+    warrior_attack_t( "shield_bash", "Shield Bash", p )
   {
     parse_options( NULL, options_str );
 
-    id = 72;
-    parse_data( p -> player_data );
+    //id = 72;
 
     base_cost *= 1.0 + p -> talents.drums_of_war -> effect_base_value( 1 ) / 100.0;
 
@@ -1982,14 +1953,13 @@ struct shield_bash_t : public warrior_attack_t
 struct shield_slam_t : public warrior_attack_t
 {
   shield_slam_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "shield_slam", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "shield_slam", "Shield Slam", p )
   {
     check_spec( TREE_PROTECTION );
 
     parse_options( NULL, options_str );
 
-    id = 23922;
-    parse_data( p -> player_data );
+    //id = 23922;
 
     direct_power_mod  = 0; // FIXME: What is this?
     base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
@@ -2034,14 +2004,13 @@ struct shield_slam_t : public warrior_attack_t
 struct shockwave_t : public warrior_attack_t
 {
   shockwave_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "shockwave", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "shockwave", "Shockwave", p )
   {
     check_talent( p -> talents.shockwave -> rank() );
 
     parse_options( NULL, options_str );
 
-    id = 46968;
-    parse_data( p -> player_data );
+    //id = 46968;
 
     direct_power_mod  = 0.75;
     may_dodge         = false;
@@ -2077,11 +2046,9 @@ struct slam_attack_t : public warrior_attack_t
   double additive_multipliers;
 
   slam_attack_t( warrior_t* p, const char* name ) :
-    warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_FURY ),
+    warrior_attack_t( name, 50783, p ),
     additive_multipliers( 0 )
   {
-    id = 50783;
-    parse_data( p -> player_data );
 
     base_cost = 0;
     may_miss = may_dodge = may_parry = false;
@@ -2120,12 +2087,11 @@ struct slam_t : public warrior_attack_t
   attack_t* oh_attack;
 
   slam_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "slam", p, SCHOOL_PHYSICAL, TREE_FURY ),
+    warrior_attack_t( "slam", "Slam", p ),
     mh_attack(0), oh_attack(0)
   {
-    id = 1464;
-    parse_data( p -> player_data );
     parse_options( NULL, options_str );
+
     may_crit = false;
 
     // Ensure we include racial expertise
@@ -2196,12 +2162,11 @@ struct slam_t : public warrior_attack_t
 struct thunder_clap_t : public warrior_attack_t
 {
   thunder_clap_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "thunder_clap", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+      warrior_attack_t( "thunder_clap", "Thunder Clap", p )
   {
     parse_options( NULL, options_str );
 
-    id = 6343;
-    parse_data( p -> player_data );
+    //id = 6343;
 
     aoe               = -1;
     may_dodge         = false;
@@ -2228,12 +2193,11 @@ struct thunder_clap_t : public warrior_attack_t
 struct whirlwind_t : public warrior_attack_t
 {
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "whirlwind", p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "whirlwind", "Whirlwind", p )
   {
     parse_options( NULL, options_str );
 
-    id = 1680;
-    parse_data( p -> player_data );
+    //id = 1680;
 
     aoe               = -1;
     stancemask        = STANCE_BERSERKER;
@@ -2282,12 +2246,11 @@ struct whirlwind_t : public warrior_attack_t
 struct victory_rush_t : public warrior_attack_t
 {
   victory_rush_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "victory_rush", p, SCHOOL_PHYSICAL, TREE_FURY )
+      warrior_attack_t( "victory_rush", "Victory Rush", p )
   {
     parse_options( NULL, options_str );
 
-    id = 34428;
-    parse_data( p -> player_data );
+    //id = 34428;
 
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
   }
@@ -2319,6 +2282,13 @@ struct warrior_spell_t : public spell_t
 
   warrior_spell_t( const char* n, uint32_t id, warrior_t* p, int t=TREE_NONE ) :
       spell_t( n, id, p, t ),
+      stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+  {
+    _init_warrior_spell_t();
+  }
+
+  warrior_spell_t( const char* n, const char* s_name, warrior_t* p, int t=TREE_NONE ) :
+      spell_t( n, s_name, p, t ),
       stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
     _init_warrior_spell_t();
@@ -2382,12 +2352,11 @@ struct battle_shout_t : public warrior_spell_t
   double rage_gain;
 
   battle_shout_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "battle_shout", p )
+      warrior_spell_t( "battle_shout", "Battle Shout", p )
   {
     parse_options( NULL, options_str );
 
-    id = 6673;
-    parse_data( p -> player_data );
+    //id = 6673;
 
     harmful   = false;
     rage_gain = 20 + p -> talents.booming_voice -> effect_base_value( 2 ) / 10.0;
@@ -2415,12 +2384,9 @@ struct battle_shout_t : public warrior_spell_t
 struct berserker_rage_t : public warrior_spell_t
 {
   berserker_rage_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "berserker_rage", p )
+      warrior_spell_t( "berserker_rage", "Berserker Rage", p )
   {
     parse_options( NULL, options_str );
-
-    id = 18499;
-    parse_data( p -> player_data );
 
     harmful = false;
     if ( p -> talents.intensify_rage -> ok() )
@@ -2448,14 +2414,11 @@ struct berserker_rage_t : public warrior_spell_t
 struct deadly_calm_t : public warrior_spell_t
 {
   deadly_calm_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "deadly_calm", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+    warrior_spell_t( "deadly_calm", 85730, p )
   {
     check_talent( p -> talents.deadly_calm -> rank() );
 
     parse_options( NULL, options_str );
-
-    id = 85730;
-    parse_data( p -> player_data );
 
     harmful = false;
   }
@@ -2487,15 +2450,12 @@ struct death_wish_t : public warrior_spell_t
   double enrage_bonus;
 
   death_wish_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "death_wish", p ),
+      warrior_spell_t( "death_wish", "Death Wish", p ),
       enrage_bonus( 0 )
   {
     check_talent( p -> talents.death_wish -> rank() );
 
     parse_options( NULL, options_str );
-
-    id = 12292;
-    parse_data( p -> player_data );
 
     harmful = false;
 
@@ -2522,14 +2482,13 @@ struct death_wish_t : public warrior_spell_t
 struct inner_rage_t : public warrior_spell_t
 {
   inner_rage_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "inner_rage", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+    warrior_spell_t( "inner_rage", "Inner Rage", p )
   {
     check_min_level( 83 );
 
     parse_options( NULL, options_str );
 
-    id = 1134;
-    parse_data( p -> player_data );
+    //id = 1134;
 
     harmful = false;
     cooldown -> duration = 1.5;
@@ -2562,12 +2521,9 @@ struct inner_rage_t : public warrior_spell_t
 struct recklessness_t : public warrior_spell_t
 {
   recklessness_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "recklessness", p )
+      warrior_spell_t( "recklessness", "Recklessness", p )
   {
     parse_options( NULL, options_str );
-
-    id = 1719;
-    parse_data( p -> player_data );
 
     harmful = false;
 
@@ -2591,12 +2547,11 @@ struct recklessness_t : public warrior_spell_t
 struct shield_block_t : public warrior_spell_t
 {
   shield_block_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "shield_block", p )
+      warrior_spell_t( "shield_block", "Shield Block", p )
   {
     parse_options( NULL, options_str );
 
-    id = 2565;
-    parse_data( p -> player_data );
+    //id = 2565;
 
     harmful = false;
     if ( p -> talents.shield_mastery -> ok() )
