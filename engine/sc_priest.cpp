@@ -1661,21 +1661,24 @@ struct mind_spike_t : public priest_spell_t
 struct penance_tick_t : public priest_spell_t
 {
   penance_tick_t( player_t* player ) :
-    priest_spell_t( "penance_tick", player, "Penance" )
+    priest_spell_t( "penance_tick", player, 47666 )
   {
     background  = true;
     dual        = true;
-    direct_power_mod = tick_power_mod; // TO-DO: Check this
+    direct_tick = true;
+
     stats = player -> get_stats( "penance" );
   }
 
   virtual void player_buff()
   {
-    priest_t* p = player -> cast_priest();
     priest_spell_t::player_buff();
+
+    priest_t* p = player -> cast_priest();
+
     player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * 
-				 p -> buffs_holy_evangelism -> stack() * 
-				 p -> constants.holy_evangelism_damage_value );
+                                 p -> buffs_holy_evangelism -> stack() *
+                                 p -> constants.holy_evangelism_damage_value );
   }
 };
 
@@ -1693,12 +1696,10 @@ struct penance_t : public priest_spell_t
 
     parse_options( NULL, options_str );
 
-    may_miss = may_resist = false;
+    harmful = false;
     channeled         = true;
     tick_zero         = true;
 
-    base_cost         = 0.16 * p -> resource_base[ RESOURCE_MANA ];
-    base_execute_time = 0.0;
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
@@ -1717,11 +1718,14 @@ struct penance_t : public priest_spell_t
 
   virtual double cost() SC_CONST
   {
-    priest_t* p = player -> cast_priest();
     double c = priest_spell_t::cost();
+
+    priest_t* p = player -> cast_priest();
+
     c *= 1.0 - ( p -> talents.evangelism -> rank() * 
-		 p -> buffs_holy_evangelism -> check() * 
-		 p -> constants.holy_evangelism_mana_value );
+                 p -> buffs_holy_evangelism -> check() *
+                 p -> constants.holy_evangelism_mana_value );
+
     return c;
   }
 };
@@ -4334,26 +4338,29 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-                                                         action_list_str += "/mana_potion";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
                                                          action_list_str += "/shadow_fiend,if=mana_pct<=20";
+                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-                                                         action_list_str += "/shadow_word_pain,if=!ticking";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
+        if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          action_list_str += "/holy_fire";
+                                                         action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          action_list_str += "/penance";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
-                                                         action_list_str += "/shadow_word_death,moving=1"; // when moving
       }
       // HEALER
       else
       {
-                                                         action_list_str += "/mana_potion,trigger=30000";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
                                                          action_list_str += "/shadow_fiend,if=mana_pct<=20";
                                                          action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
+        if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
-                                                         action_list_str += "\n# Insert Healing Spell Rotation here";
       }
       break;
 
@@ -4363,39 +4370,41 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-                                                         action_list_str += "/mana_potion";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
                                                          action_list_str += "/shadow_fiend,if=mana_pct<=20";
+                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-                                                         action_list_str += "/shadow_word_pain,if=!ticking";
-                                                         action_list_str += "/devouring_plague,if=!ticking";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
+        if ( talents.chakra -> ok() )                    action_list_str += "/chakra";
+        if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          action_list_str += "/holy_fire";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
-                                                         action_list_str += "/shadow_word_death,moving=1"; // when moving
       }
       // HEALER
       else
       {
-                                                         action_list_str += "/mana_potion,trigger=30000";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
                                                          action_list_str += "/shadow_fiend,if=mana_pct<=20";
                                                          action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
-                                                         action_list_str += "\n# Insert Healing Spell Rotation here";
       }
       break;
     default:
-                                                         action_list_str += "/mana_potion";
-                                                         action_list_str += "/shadow_fiend,trigger_pct=20";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+                                                         action_list_str += "/shadow_fiend,if=mana_pct<=20";
                                                          action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
-      if ( race == RACE_TROLL     )                      action_list_str += "/berserking";
-                                                         action_list_str += "/shadow_word_pain,if=!ticking";
-                                                         action_list_str += "/devouring_plague,if=!ticking";
+        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
+        if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          action_list_str += "/holy_fire";
-      
-      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+                                                         action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
-                                                         action_list_str += "/shadow_word_death,moving=1"; // when moving
       break;
     }
 
