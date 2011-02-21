@@ -88,42 +88,6 @@ struct warrior_t : public player_t
   action_t* active_opportunity_strike;
   int       active_stance;
 
-  // Active Spells
-  struct active_spells_t
-  {
-    active_spell_t* battle_shout;
-    active_spell_t* berserker_rage;
-    active_spell_t* bladestorm;
-    active_spell_t* bloodthirst;
-    active_spell_t* cleave;
-    active_spell_t* colossus_smash;
-    active_spell_t* concussion_blow;
-    active_spell_t* deadly_calm;
-    active_spell_t* death_wish;
-    active_spell_t* devastate;
-    active_spell_t* execute;
-    active_spell_t* heroic_strike;
-    active_spell_t* inner_rage;
-    active_spell_t* mortal_strike;
-    active_spell_t* overpower;
-    active_spell_t* pummel;
-    active_spell_t* raging_blow;
-    active_spell_t* recklessness;
-    active_spell_t* rend;
-    active_spell_t* revenge;
-    active_spell_t* shattering_throw;
-    active_spell_t* shield_bash;
-    active_spell_t* shield_block;
-    active_spell_t* shield_slam;
-    active_spell_t* shockwave;
-    active_spell_t* slam;
-    active_spell_t* sweeping_strikes;
-    active_spell_t* thunder_clap;
-    active_spell_t* victory_rush;
-    active_spell_t* whirlwind;
-  };
-  active_spells_t   active_spells;
-
   // Buffs
   buff_t* buffs_bastion_of_defense;
   buff_t* buffs_battle_stance;
@@ -2721,7 +2685,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "thunder_clap"     ) return new thunder_clap_t    ( this, options_str );
   if ( name == "victory_rush"     ) return new victory_rush_t    ( this, options_str );
   if ( name == "whirlwind"        ) return new whirlwind_t       ( this, options_str );
-  if ( name == "charge"        ) return new charge_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2792,38 +2755,6 @@ void warrior_t::init_talents()
 void warrior_t::init_spells()
 {
   player_t::init_spells();
-
-  // Active Spells
-  active_spells.battle_shout      = new active_spell_t( this, "battle_shout", "Battle Shout" );
-  active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage" );
-  active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm" );
-  active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst" );
-  active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave" );
-  active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash" );
-  active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow" );
-  active_spells.deadly_calm       = new active_spell_t( this, "deadly_calm", "Deadly Calm" );
-  active_spells.death_wish        = new active_spell_t( this, "death_wish", "Death Wish" );
-  active_spells.devastate         = new active_spell_t( this, "devastate", "Devastate" );
-  active_spells.execute           = new active_spell_t( this, "execute", "Execute" );
-  active_spells.heroic_strike     = new active_spell_t( this, "heroic_strike", "Heroic Strike" );
-  active_spells.inner_rage        = new active_spell_t( this, "inner_rage", "Inner Rage" );
-  active_spells.mortal_strike     = new active_spell_t( this, "mortal_strike", "Mortal Strike" );
-  active_spells.overpower         = new active_spell_t( this, "overpower", "Overpower" );
-  active_spells.pummel            = new active_spell_t( this, "pummel", "Pummel" );
-  active_spells.raging_blow       = new active_spell_t( this, "raging_blow", "Raging Blow" );
-  active_spells.recklessness      = new active_spell_t( this, "recklessness", "Recklessness" );
-  active_spells.rend              = new active_spell_t( this, "rend", "Rend" );
-  active_spells.revenge           = new active_spell_t( this, "revenge", "Revenge" );
-  active_spells.shattering_throw  = new active_spell_t( this, "shattering_throw", "Shattering Throw" );
-  active_spells.shield_bash       = new active_spell_t( this, "shield_bash", "Shield Bash" );
-  active_spells.shield_block      = new active_spell_t( this, "shield_block", "Shield Block" );
-  active_spells.shield_slam       = new active_spell_t( this, "shield_slam", "Shield Slam" );
-  active_spells.shockwave         = new active_spell_t( this, "shockwave", "Shockwave" );
-  active_spells.slam              = new active_spell_t( this, "slam", "Slam" );
-  active_spells.sweeping_strikes  = new active_spell_t( this, "sweeping_strikes", "Sweeping Strikes" );
-  active_spells.thunder_clap      = new active_spell_t( this, "thunder_clap", "Thunder Clap" );
-  active_spells.victory_rush      = new active_spell_t( this, "victory_rush", "Victory Rush" );
-  active_spells.whirlwind         = new active_spell_t( this, "whirlwind", "Whirlwind" );
 
   // Mastery
   mastery.critical_block         = new mastery_t( this, "critical_block",         76857, TREE_PROTECTION );
