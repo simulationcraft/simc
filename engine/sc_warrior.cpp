@@ -650,13 +650,16 @@ static void trigger_sudden_death( action_t* a )
 
 // trigger_sword_and_board ==================================================
 
-static void trigger_sword_and_board( attack_t* a )
+static void trigger_sword_and_board( attack_t* a, int result )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( p -> buffs_sword_and_board -> trigger() )
+  if ( a -> result_is_hit( result ) )
   {
-    p -> cooldowns_shield_slam -> reset();
+    if ( p -> buffs_sword_and_board -> trigger() )
+    {
+      p -> cooldowns_shield_slam -> reset();
+    }
   }
 }
 
@@ -1002,8 +1005,8 @@ struct melee_t : public warrior_attack_t
     may_glance      = true;
     background      = true;
     repeating       = true;
+
     trigger_gcd     = 0;
-    base_cost       = 0;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
@@ -1345,11 +1348,7 @@ struct colossus_smash_t : public warrior_attack_t
   colossus_smash_t( warrior_t* p, const std::string& options_str ) :
       warrior_attack_t( "colossus_smash",  "Colossus Smash", p )
   {
-    check_min_level( 81 );
-
     parse_options( NULL, options_str );
-
-    base_dd_min = base_dd_max = p -> player_data.effect_base_value( 87876 );
 
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
   }
@@ -1407,8 +1406,7 @@ struct devastate_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( result_is_hit() )
-      trigger_sword_and_board( this );
+    trigger_sword_and_board( this, result );
 
     if ( target -> health_percentage() <= 20 )
     {
@@ -1519,8 +1517,7 @@ struct heroic_strike_t : public warrior_attack_t
     weapon_multiplier = 0;
 
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-    base_dd_min       = 8;
-    base_dd_max       = 8;
+    base_dd_min       = base_dd_max = 8;
     direct_power_mod  = 0.6;
   }
 
@@ -1610,14 +1607,9 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p -> buffs_juggernaut -> up() )
       player_crit += p -> buffs_juggernaut -> effect_base_value( 1 ) / 100.0;
 
-    if ( p -> buffs_lambs_to_the_slaughter -> check() )
-    {
-      player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 ) + additive_multipliers;
-    }
-    else
-    {
-      player_multiplier *= 1.0 + additive_multipliers;
-    }
+
+    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
+                             + additive_multipliers;
   }
 };
 
@@ -1659,7 +1651,9 @@ struct overpower_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( p -> buffs_lambs_to_the_slaughter -> up() )
     {
       int stack = p -> buffs_lambs_to_the_slaughter -> stack();
@@ -1669,15 +1663,12 @@ struct overpower_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( ! warrior_attack_t::ready() )
-      return false;
-
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> buffs_overpower -> check() || p -> buffs_taste_for_blood -> check() )
-      return true;
+    if ( ! ( p -> buffs_overpower -> check() || p -> buffs_taste_for_blood -> check() ) )
+      return false;
 
-    return false;
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1699,7 +1690,9 @@ struct pummel_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1714,10 +1707,8 @@ struct raging_blow_attack_t : public warrior_attack_t
     // FIX-ME: Hotfix nerf. Remove once client updated.
     weapon_multiplier = 1.0;
 
-    base_cost = 0;
     may_miss = may_dodge = may_parry = false;
     background = true;
-    dual = true;
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
     base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
   }
@@ -1798,24 +1789,24 @@ struct raging_blow_t : public warrior_attack_t
 
 // Rend =====================================================================
 
-struct rend_t : public warrior_attack_t
+struct rend_dot_t : public warrior_attack_t
 {
-  rend_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "rend", "Rend", p )
+  rend_dot_t(warrior_t* p ) :
+      warrior_attack_t( "rend_dot", 94009, p )
   {
-    parse_options( NULL, options_str );
+    background = true;
+    tick_may_crit          = true;
+    may_crit               = false;
+    tick_zero              = true;
+
+    dot = p ->  get_dot( "rend" );
 
     weapon                 = &( p -> main_hand_weapon );
-    may_crit               = false;
-    base_td_init           = p -> player_data.effect_min( 98699, p -> type, p -> level );
-    base_tick_time         = p -> player_data.effect_period ( 98699 );
-    num_ticks              = (int) ( p -> player_data.spell_duration ( 94009 ) / base_tick_time );
-    tick_may_crit          = true;
-    tick_zero              = true;
     normalize_weapon_speed = false;
+    base_td_init = base_td;
+
     base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-    stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
-    school                 = stats -> school = SCHOOL_BLEED;
+
   }
 
   virtual double calculate_direct_damage()
@@ -1842,6 +1833,33 @@ struct rend_t : public warrior_attack_t
 
     p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
+  }
+};
+
+struct rend_t : public warrior_attack_t
+{
+  rend_dot_t* rend_dot;
+
+  rend_t( warrior_t* p, const std::string& options_str ) :
+      warrior_attack_t( "rend", "Rend", p ),
+      rend_dot( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+
+    stancemask             = STANCE_BATTLE | STANCE_DEFENSE;
+
+    rend_dot = new rend_dot_t( p );
+    add_child( rend_dot );
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    if ( rend_dot )
+      rend_dot -> execute();
   }
 };
 
@@ -1876,8 +1894,7 @@ struct revenge_t : public warrior_attack_t
 
     p -> buffs_revenge -> expire();
 
-    if ( result_is_hit() )
-      trigger_sword_and_board( this );
+    trigger_sword_and_board( this, result );
   }
 
   virtual bool ready()
