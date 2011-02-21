@@ -1703,7 +1703,7 @@ struct penance_t : public priest_spell_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
+    cooldown -> duration  += p -> glyphs.penance -> effect_base_value( 1 ) / 1000.0;
 
     tick_spell = new penance_tick_t( p );
 
@@ -1830,7 +1830,10 @@ struct shadow_form_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    return( ! p -> buffs_shadow_form -> check() );
+    if (  p -> buffs_shadow_form -> check() )
+      return false;
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -2009,6 +2012,7 @@ struct vampiric_embrace_t : public priest_spell_t
       priest_spell_t( "vampiric_embrace", player, "Vampiric Embrace" )
   {
     priest_t* p = player -> cast_priest();
+
     parse_options( NULL, options_str );
 
     check_talent( p -> talents.vampiric_embrace -> rank() );
@@ -2030,10 +2034,10 @@ struct vampiric_embrace_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( ! priest_spell_t::ready() )
+    if ( p -> buffs_vampiric_embrace -> check() )
       return false;
 
-    return p -> talents.vampiric_embrace -> rank() && ! p -> buffs_vampiric_embrace -> check();
+    return priest_spell_t::ready();
   }
 
 };
@@ -2081,9 +2085,10 @@ struct shadow_fiend_spell_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
+    priest_spell_t::execute();
+
     p -> summon_pet( "shadow_fiend", duration() );
 
-    update_ready();
   }
 };
 
@@ -2177,8 +2182,10 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     dual        = true;
     background  = true;
     may_crit    = true;
-    harmful     = false;
     direct_tick = true;
+
+    harmful     = false;
+
     stats = player -> get_stats( "hymn_of_hope" );
   }
 
@@ -2208,7 +2215,7 @@ struct hymn_of_hope_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    harmful=false;
+    harmful = false;
 
     channeled = true;
 
@@ -2218,6 +2225,7 @@ struct hymn_of_hope_t : public priest_spell_t
   virtual void tick()
   {
     hymn_of_hope_tick -> execute();
+
     stats -> add_tick( time_to_tick );
   }
 };
@@ -2368,27 +2376,25 @@ struct smite_t : public priest_spell_t
     // Atonement
     if ( atonement_nc && atonement_c)
     {
+      double atonement_dmg = direct_dmg * p -> talents.atonement -> effect_base_value( 1 ) / 100.0;
       if ( result == RESULT_CRIT )
       {
         // Assuming there is no cap for crits, since it's not clear how much it would be.
-        atonement_c -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
-        atonement_c -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+        atonement_c -> base_dd_min = atonement_dmg;
+        atonement_c -> base_dd_max = atonement_dmg;
         atonement_c -> round_base_dmg = false;
         atonement_c -> execute();
       }
       else
       {
-      // Hotfix Cap from 5. Jan.
-        if ( direct_dmg * p -> talents.atonement -> rank() * 0.5 < p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
+        // Hotfix Cap from 05.01.2011
+        if ( atonement_dmg > p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
         {
-          atonement_nc -> base_dd_min = direct_dmg * p -> talents.atonement -> rank() * 0.5;
-          atonement_nc -> base_dd_max = direct_dmg * p -> talents.atonement -> rank() * 0.5;
+          atonement_dmg = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
         }
-        else
-        {
-          atonement_nc -> base_dd_min = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
-          atonement_nc -> base_dd_max = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
-        }
+
+        atonement_nc -> base_dd_min = atonement_dmg;
+        atonement_nc -> base_dd_max = atonement_dmg;
         atonement_nc -> round_base_dmg = false;
         atonement_nc -> execute();
       }
@@ -2413,7 +2419,7 @@ struct smite_t : public priest_spell_t
     player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
 
     if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite -> ok() )
-      player_multiplier *= 1.20;
+      player_multiplier *= 1.0 + p -> glyphs.smite -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double cost() SC_CONST
@@ -2422,7 +2428,9 @@ struct smite_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
+    c *= 1.0 - ( p -> talents.evangelism -> rank() *
+                 p -> buffs_holy_evangelism -> check() *
+                 p -> constants.holy_evangelism_mana_value );
 
     return c;
   }
@@ -2436,8 +2444,9 @@ struct divine_touch_t : public priest_heal_t
   divine_touch_t( player_t* player ) :
     priest_heal_t( "divine_touch", player, 63544 )
   {
-    school = SCHOOL_HOLY;
+    school          = SCHOOL_HOLY;
     stats -> school = school;
+
     background = true;
     proc       = true;
   }
@@ -2456,7 +2465,8 @@ struct renew_t : public priest_heal_t
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
-    base_multiplier *= 1.0 + p -> glyphs.renew -> ok() * 0.10;
+
+    base_multiplier *= 1.0 + p -> glyphs.renew -> effect_base_value( 1 ) / 100.0;
     base_multiplier *= 1.0 + p -> talents.improved_renew -> effect_base_value( 1 ) / 100.0;
 
     // Implement Divine Touch
@@ -2468,7 +2478,7 @@ struct renew_t : public priest_heal_t
     }
 
     if ( p -> talents.rapid_renewal -> rank() )
-      trigger_gcd -= 1.0;
+      trigger_gcd += p -> talents.rapid_renewal -> effect_base_value( 1 ) / 1000.0;
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -2505,7 +2515,7 @@ struct renew_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> buffs_chakra_sanctuary -> up() )
-      player_multiplier *= 1.15;
+      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -2900,8 +2910,8 @@ struct glyph_prayer_of_healing_t : public priest_heal_t
     proc       = true;
     background = true;
     may_crit   = false;
-    num_ticks=0; // coded as DD for now.
 
+    num_ticks=0; // coded as DD for now.
   }
 };
 
@@ -2916,9 +2926,11 @@ struct prayer_of_healing_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    glyph = new glyph_prayer_of_healing_t( p );
-
-    add_child( glyph );
+    if ( p -> glyphs.prayer_of_healing -> ok() )
+    {
+      glyph = new glyph_prayer_of_healing_t( p );
+      add_child( glyph );
+    }
   }
 
   virtual void execute()
@@ -3002,7 +3014,7 @@ struct prayer_of_healing_t : public priest_heal_t
           player_crit += p -> buffs_inner_focus -> effect_base_value( 2 ) / 100.0;
 
     if ( p -> buffs_chakra_sanctuary -> up() )
-      player_multiplier *= 1.15;
+      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double execute_time() SC_CONST
@@ -3067,7 +3079,9 @@ struct circle_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     cooldown -> duration = spell_id_t::cooldown();
-    cooldown -> duration -= ( p -> buffs_chakra_sanctuary -> up() ) ? 2.0 : 0.0;
+
+    if ( p -> buffs_chakra_sanctuary -> up() )
+      cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect_base_value( 2 ) / 1000.0;
 
     // Choose Heal Target
     int h = 0;
@@ -3100,7 +3114,7 @@ struct circle_of_healing_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> buffs_chakra_sanctuary -> up() )
-      player_multiplier *= 1.15;
+      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -3126,6 +3140,16 @@ struct prayer_of_mending_t : public priest_heal_t
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
+  }
+
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> buffs_chakra_sanctuary -> up() )
+      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double cost() SC_CONST
@@ -3183,7 +3207,7 @@ struct prayer_of_mending_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> glyphs.prayer_of_mending -> ok() && t == heal_target[0] )
-      target_multiplier *= 1.60;
+      target_multiplier *= 1.0 + p -> glyphs.prayer_of_mending -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -3194,8 +3218,9 @@ struct glyph_power_word_shield_t : public priest_heal_t
   glyph_power_word_shield_t( player_t* player ) :
       priest_heal_t( "power_word_shield_glyph", player, 55672 )
   {
-    school     = SCHOOL_HOLY;
+    school          = SCHOOL_HOLY;
     stats -> school = school;
+
     background = true;
     proc       = true;
   }
@@ -3295,6 +3320,7 @@ struct penance_heal_tick_t : public priest_heal_t
     may_crit    = true;
     dual        = true;
     direct_tick = true;
+
     stats = player -> get_stats( "penance_heal" );
   }
 
@@ -3347,7 +3373,8 @@ struct penance_heal_t : public priest_heal_t
     num_ticks         = 2;
     base_tick_time    = 1.0;
 
-    cooldown -> duration  -= ( p -> glyphs.penance -> ok() * 2 );
+    cooldown = player -> get_cooldown( "penance" );
+    cooldown -> duration  += p -> glyphs.penance -> effect_base_value( 1 ) / 1000.0;
 
     penance_tick = new penance_heal_tick_t( p );
   }
@@ -3365,8 +3392,9 @@ struct penance_heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
-
+    c *= 1.0 - ( p -> talents.evangelism -> rank() *
+                 p -> buffs_holy_evangelism -> check() *
+                 p -> constants.holy_evangelism_mana_value );
 
     return c;
   }
@@ -3400,6 +3428,16 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
 
      priest_heal_t::execute();
    }
+
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> buffs_chakra_sanctuary -> up() )
+      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect_base_value( 1 ) / 100.0;
+  }
 };
 
 struct holy_word_sanctuary_t : public priest_heal_t
@@ -3477,7 +3515,6 @@ struct holy_word_serenity_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
@@ -3510,8 +3547,8 @@ struct holy_word_serenity_t : public priest_heal_t
 struct holy_word_t : public priest_spell_t
 {
   holy_word_sanctuary_t* hw_sanctuary;
-  holy_word_chastise_t* hw_chastise;
-  holy_word_serenity_t* hw_serenity;
+  holy_word_chastise_t*  hw_chastise;
+  holy_word_serenity_t*  hw_serenity;
 
   holy_word_t( player_t* player, const std::string& options_str ) :
     priest_spell_t( "holy_word", player, SCHOOL_HOLY, TREE_HOLY ),
@@ -3524,7 +3561,6 @@ struct holy_word_t : public priest_spell_t
     hw_sanctuary = new holy_word_sanctuary_t( p );
     hw_chastise  = new holy_word_chastise_t ( p );
     hw_serenity  = new holy_word_serenity_t ( p );
-
   }
 
   virtual void schedule_execute()
@@ -3635,8 +3671,8 @@ struct lightwell_t : public priest_heal_t
 
     lw_hot -> charges = 10;
     lw_hot -> consume_interval = consume_interval;
-    if ( p -> glyphs.lightwell -> ok() )
-      lw_hot -> charges += 5;
+
+    lw_hot -> charges += p -> glyphs.lightwell -> effect_base_value( 1 );
 
     lw_hot -> execute();
   }
@@ -3647,6 +3683,7 @@ struct lightwell_t : public priest_heal_t
 struct divine_hymn_tick_t : public priest_heal_t
 {
   int charges;
+
   divine_hymn_tick_t( player_t* player ) :
       priest_heal_t( "divine_hymn_tick", player, 64844 ),
       charges( 0 )
@@ -3669,7 +3706,6 @@ struct divine_hymn_tick_t : public priest_heal_t
         heal_target.push_back(q);
         h++;
       }
-
     }
 
     priest_heal_t::execute();
@@ -3685,6 +3721,15 @@ struct divine_hymn_tick_t : public priest_heal_t
       cancel();
   }
 
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> buffs_chakra_sanctuary -> up() )
+      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect_base_value( 1 ) / 100.0;
+  }
 };
 
 struct divine_hymn_t : public priest_heal_t
@@ -3726,8 +3771,6 @@ struct divine_hymn_t : public priest_heal_t
     }
     else
       cancel();
-
-
   }
 };
 
