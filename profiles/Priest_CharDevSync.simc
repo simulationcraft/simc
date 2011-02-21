@@ -4,3 +4,26 @@ chardev=19782 name=Priest_Shadow_T11_359 save=Priest_Shadow_T11_359.simc
 
 chardev=18129 name=Priest_Shadow_T11_372 save=Priest_Shadow_T11_372.simc
 
+# Holy Smite Archangel
+chardev=18129
+talents=http://www.wowhead.com/talent#bcGoZfuRrRkbkMdo0o
+role=dps
+glyphs=penance/smite/shadow_word_pain/divine_accuracy
+name=Priest_Holy_Smite_AA_T11_372
+save=Priest_Holy_Smite_AA_T11_372.simc
+
+# Holy Smite Twisted Faith
+chardev=18129
+talents=http://www.wowhead.com/talent#bcZfuRrRkbkMdoRb0b
+role=dps
+glyphs=penance/smite/shadow_word_pain/divine_accuracy
+name=Priest_Holy_Smite_TF_T11_372
+save=Priest_Holy_Smite_TF_T11_372.simc
+
+# Discipline Smite
+chardev=18129
+talents=http://www.wowhead.com/talent#bcGszRsbcRMo0hZhb0b
+role=dps
+glyphs=penance/smite/shadow_word_pain/divine_accuracy
+name=Priest_Disc_Smite_T11_372
+save=Priest_Disc_Smite_T11_372.simc

@@ -4892,6 +4892,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     profile_str += "origin=\"" + origin_str + "\"" + term;
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
+    if ( ! role.empty() ) profile_str += "role=" + role + term;
     profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
