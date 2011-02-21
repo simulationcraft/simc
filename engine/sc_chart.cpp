@@ -221,6 +221,11 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
+    if ( ! sim -> print_styles )
+    {
+      s += "chf=bg,s,333333";
+      s += "&amp;";
+    }
     s += "chbh=15";
     s += "&amp;";
     s += "chd=t:";
@@ -254,7 +259,14 @@ int chart_t::raid_dps( std::vector<std::string>& images,
       s += "chtt=DPS+Ranking";
       s += "&amp;";
     }
-    s += "chts=666666,18";
+    if ( sim -> print_styles )
+    {
+      s += "chts=666666,18";
+    }
+    else
+    {
+      s += "chts=dddddd,18";
+    }
 
     images.push_back( s );
 
@@ -322,6 +334,11 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "cht=bhs";
     s += "&amp;";
+    if ( ! sim -> print_styles )
+    {
+      s += "chf=bg,s,333333";
+      s += "&amp;";
+    }
     s += "chbh=15";
     s += "&amp;";
     s += "chd=t:";
@@ -361,7 +378,14 @@ int chart_t::raid_gear( std::vector<std::string>& images,
       s += formatted_name.c_str();
     }
     s += "&amp;";
-    s += "chxs=0,000000,15";
+    if ( sim -> print_styles )
+    {
+      s += "chxs=0,000000,14";
+    }
+    else
+    {
+      s += "chxs=0,dddddd,14";
+    }
     s += "&amp;";
     s += "chdl=";
     first = true;
@@ -377,9 +401,21 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     {
       s += "chdlp=t&amp;";
     }
+    if ( ! sim -> print_styles )
+    {
+      s += "chdls=dddddd,12";
+      s += "&amp;";
+    }
     s += "chtt=Gear+Overview";
     s += "&amp;";
-    s += "chts=666666,18";
+    if ( sim -> print_styles )
+    {
+      s += "chts=666666,18";
+    }
+    else
+    {
+      s += "chts=dddddd,18";
+    }
 
     images.push_back( s );
 
@@ -426,6 +462,11 @@ const char* chart_t::raid_downtime( std::string& s,
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
+  if ( ! sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   double max_waiting=0;
   for ( int i=0; i < num_waiting; i++ )
@@ -456,7 +497,14 @@ const char* chart_t::raid_downtime( std::string& s,
   s += "&amp;";
   s += "chtt=Raid+Down-Time";
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -488,6 +536,11 @@ const char* chart_t::raid_timeline( std::string& s,
   s += "&amp;";
   s += "cht=bvs";
   s += "&amp;";
+  if ( ! sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   for ( int i=0; i < max_buckets; i++ )
   {
@@ -506,7 +559,14 @@ const char* chart_t::raid_timeline( std::string& s,
   s += "&amp;";
   s += "chtt=Timeline+Distribution";
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -565,6 +625,11 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     s += "&amp;";
     s += "cht=bhg";
     s += "&amp;";
+    if ( ! sim -> print_styles )
+    {
+      s += "chf=bg,s,333333";
+      s += "&amp;";
+    }
     s += "chbh=10";
     s += "&amp;";
     s += "chd=t:";
@@ -599,7 +664,14 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     	s += "chtt=Raid+Damage+Per+Execute+Time";
     	s += "&amp;";
     }
-    s += "chts=666666,18";
+    if ( sim -> print_styles )
+    {
+      s += "chts=666666,18";
+    }
+    else
+    {
+      s += "chts=dddddd,18";
+    }
 
     images.push_back( s );
 
@@ -651,6 +723,11 @@ const char* chart_t::action_dpet( std::string& s,
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   double max_dpet=0;
   for ( int i=0; i < num_stats; i++ )
@@ -688,7 +765,14 @@ const char* chart_t::action_dpet( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -737,6 +821,11 @@ const char* chart_t::action_dmg( std::string& s,
   s += "&amp;";
   s += "cht=p";
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   for ( int i=0; i < num_stats; i++ )
   {
@@ -771,7 +860,14 @@ const char* chart_t::action_dmg( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Sources", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -811,6 +907,11 @@ const char* chart_t::gains( std::string& s,
   s += "&amp;";
   s += "cht=p";
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   for ( int i=0; i < num_gains; i++ )
   {
@@ -834,7 +935,14 @@ const char* chart_t::gains( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Resource+Gains", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -881,6 +989,11 @@ const char* chart_t::scale_factors( std::string& s,
   s += "&amp;";
   s += "cht=bhg";
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   for ( int i=0; i < num_scaling_stats; i++ )
   {
@@ -910,7 +1023,14 @@ const char* chart_t::scale_factors( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale+Factors", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -945,6 +1065,11 @@ const char* chart_t::scaling_dps( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
   s += "chd=t:";
   bool first=true;
   for ( int i=0; i < STAT_MAX; i++ )
@@ -981,6 +1106,11 @@ const char* chart_t::scaling_dps( std::string& s,
     first = false;
   }
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chdls=dddddd,12";
+    s += "&amp;";
+  }
   s += "chco=";
   first = true;
   for ( int i=0; i < STAT_MAX; i++ )
@@ -999,7 +1129,14 @@ const char* chart_t::scaling_dps( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Scaling", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -1040,7 +1177,14 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
-  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
   s += "&amp;";
   s += "chg=100,20";
   s += "&amp;";
@@ -1050,6 +1194,11 @@ const char* chart_t::timeline_dps( std::string& s,
     s += simple_encoding( ( int ) ( p -> timeline_dps[ i ] * dps_adjust ) );
   }
   s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chco=FDD017";
+    s += "&amp;";
+  }
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", dps_range ); s += buffer;
   s += "&amp;";
   s += "chxt=x,y";
@@ -1062,7 +1211,14 @@ const char* chart_t::timeline_dps( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Timeline", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }
@@ -1109,7 +1265,14 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
-  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
   s += "&amp;";
   s += "chg=100,20";
   s += "&amp;";
@@ -1129,7 +1292,14 @@ const char* chart_t::timeline_resource( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), chart_resource_type_string( p -> primary_resource() ) ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( p -> primary_resource() ) ); s += buffer;
 
@@ -1175,7 +1345,14 @@ const char* chart_t::timeline_health( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
-  s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
   s += "&amp;";
   s += "chg=100,20";
   s += "&amp;";
@@ -1195,7 +1372,14 @@ const char* chart_t::timeline_health( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Timeline", formatted_name.c_str(), chart_resource_type_string( resource ) ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chco=%s", resource_color( resource ) ); s += buffer;
 
@@ -1228,7 +1412,14 @@ const char* chart_t::distribution_dps( std::string& s,
   s += "&amp;";
   s += "cht=bvs";
   s += "&amp;";
-  s += "chf=c,ls,0,EEEEEE,0.125,FFFFFF,0.125";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
   s += "&amp;";
   s += "chg=100,100";
   s += "&amp;";
@@ -1252,7 +1443,14 @@ const char* chart_t::distribution_dps( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Distribution", formatted_name.c_str() ); s += buffer;
   s += "&amp;";
-  s += "chts=666666,18";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
 
   return s.c_str();
 }

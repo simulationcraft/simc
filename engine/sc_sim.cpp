@@ -511,7 +511,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
     armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
     optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ), default_actions( 0 ),
-    hosted_html( 0 ),
     normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
     save_prefix_str( "save_" ),
@@ -527,7 +526,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
-    report_precision( 4 ),report_pets_separately( false ), report_targets( true ), report_details( true ),
+    report_precision( 4 ),report_pets_separately( false ), report_targets( true ), report_details( true ), hosted_html( false ), print_styles( false ),
     // Multi-Threading
     threads( 0 ), thread_handle( 0 ), thread_index( index ),
     spell_query( 0 )
@@ -1868,6 +1867,7 @@ void sim_t::create_options()
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "hosted_html",                      OPT_BOOL,   &( hosted_html                            ) },
+    { "print_styles",                     OPT_BOOL,   &( print_styles                            ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "output",                           OPT_STRING, &( output_file_str                          ) },

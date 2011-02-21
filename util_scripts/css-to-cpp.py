@@ -66,7 +66,7 @@ OUTFILE.write('  {\n')
 OUTFILE.write('    util_t::fprintf( file,\n')
 OUTFILE.write('      "    <style type=\\"text/css\\" media=\\"all\\">\\n"\n')
 
-INFILE = open('../html/css/styles-new.css', 'r')
+INFILE = open('../html/css/styles.css', 'r')
 lines = []
 comment = False
 for line in INFILE.readlines():
