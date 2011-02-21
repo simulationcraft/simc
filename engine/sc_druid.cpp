@@ -2601,10 +2601,10 @@ struct innervate_t : public druid_spell_t
       return false;
 
     if ( trigger < 0 )
-      return ( player -> resource_current[ RESOURCE_MANA ] + trigger ) < 0;
+      return ( innervate_target -> resource_current[ RESOURCE_MANA ] + trigger ) < 0;
 
-    return ( player -> resource_max    [ RESOURCE_MANA ] -
-             player -> resource_current[ RESOURCE_MANA ] ) > trigger;
+    return ( innervate_target -> resource_max    [ RESOURCE_MANA ] -
+             innervate_target -> resource_current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 
