@@ -169,6 +169,7 @@ enum pet_type_t
   PET_CAT,
   PET_CORE_HOUND,
   PET_DEVILSAUR,
+  PET_DOG,
   PET_FOX,
   PET_HYENA,
   PET_MOTH,
@@ -182,6 +183,7 @@ enum pet_type_t
 
   // Tenacity
   PET_BEAR,
+  PET_BEETLE,
   PET_BOAR,
   PET_CRAB,
   PET_CROCOLISK,
@@ -200,6 +202,7 @@ enum pet_type_t
   PET_BIRD_OF_PREY,
   PET_CHIMERA,
   PET_DRAGONHAWK,
+  PET_MONKEY,
   PET_NETHER_RAY,
   PET_RAVAGER,
   PET_SERPENT,

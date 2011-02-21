@@ -3373,6 +3373,21 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = source -> cast_hunter();
   summon_pet_str = p -> summon_pet_str;
   hunter_position = p -> hunter_position;
+  
+  for ( pet_t* pet = source -> pet_list; pet; pet = pet -> next_pet )
+  {
+    hunter_pet_t* hp = new hunter_pet_t( sim, this, pet -> name_str, pet -> pet_type );
+
+    hp -> parse_talents_armory( pet -> talents_str );
+    
+    for( int i = 0; i < MAX_TALENT_TREES; i++ )
+    {
+      for( int j = 0; j < (int) hp -> talent_trees[ i ].size(); j++ )
+      {
+        hp -> talents_str += (char) ( hp -> talent_trees[ i ][ j ] -> rank() + (int) '0' );
+      }
+    }
+  }
 }
 
 // hunter_t::armory_extensions ==============================================
@@ -3393,7 +3408,7 @@ void hunter_t::armory_extensions( const std::string& region,
       /*35*/ PET_SERPENT,      PET_NONE,         PET_MOTH,         PET_CHIMERA,  PET_DEVILSAUR,
       /*40*/ PET_NONE,         PET_SILITHID,     PET_WORM,         PET_RHINO,    PET_WASP,
       /*45*/ PET_CORE_HOUND,   PET_SPIRIT_BEAST, PET_NONE,         PET_NONE,     PET_NONE,
-      /*50*/ PET_FOX,          PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
+      /*50*/ PET_FOX,          PET_MONKEY,       PET_DOG,          PET_BEETLE,   PET_NONE,
       /*55*/ PET_SHALE_SPIDER, PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE
     };
   int num_families = sizeof( pet_types ) / sizeof( pet_type_t );
