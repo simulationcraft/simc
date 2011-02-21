@@ -1732,7 +1732,7 @@ std::string& util_t::urlencode( std::string& str )
 
 std::string& util_t::urldecode( std::string& str )
 {
-  std::string temp;
+  std::string temp, sub;
   int l = str.length();
 
   if ( ! l ) return str;
@@ -1744,7 +1744,8 @@ std::string& util_t::urldecode( std::string& str )
     if ( c == '%' && i + 2 < l )
     {
       long c = 0;
-      c = strtol( str.c_str() + i + 1, 0, 16 );
+      sub = str.substr( i + 1, 2 );
+      c = strtol( sub.c_str(), 0, 16 );
       if ( c ) temp += (unsigned char) c;
       i += 2;
     }
