@@ -4179,7 +4179,7 @@ void report_t::print_html( sim_t* sim )
   {
     util_t::fprintf( file,
       "    <style type=\"text/css\" media=\"screen\">\n"
-      "      @import url('http://www.simulationcraft.org/css/styles-new.css');\n"
+      "      @import url('http://www.simulationcraft.org/css/styles.css');\n"
       "    </style>\n"
       "    <style type=\"text/css\" media=\"print\">\n"
       "      @import url('http://www.simulationcraft.org/css/styles-print.css');\n"
