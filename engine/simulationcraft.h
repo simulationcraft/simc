@@ -2841,7 +2841,8 @@ struct player_t
   int         bugs;
   int         specialization;
   int         invert_spirit_scaling;
-  double      vengeance_factor; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
+  bool        vengeance_enabled;
+  double      vengeance_damage, vengeance_value, vengeance_max; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
 
 
   // Data access

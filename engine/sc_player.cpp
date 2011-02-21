@@ -46,6 +46,49 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
+// Event Vengeance
+
+struct vengeance_t : public event_t
+{
+  vengeance_t ( player_t* player ) :
+    event_t( player -> sim, player )
+  {
+    name = "Vengeance_Check";
+    sim -> add_event( this, 2.0 );
+  }
+
+  virtual void execute()
+  {
+    if ( player -> vengeance_damage > 1 )
+    {
+      player -> vengeance_value *= 0.95;
+      player -> vengeance_value += 0.05 * player -> vengeance_damage;
+    }
+    else
+    {
+      player -> vengeance_value -= 0.1 * player -> vengeance_max;
+    }
+
+    if ( player -> vengeance_value > ( player -> stamina() + 0.1 * player -> resource_base[ RESOURCE_HEALTH ]) )
+      player -> vengeance_value = ( player -> stamina() + 0.1 * player -> resource_base[ RESOURCE_HEALTH ]);
+
+    if ( player -> vengeance_value > player -> vengeance_max )
+      player -> vengeance_max = player -> vengeance_value;
+
+
+    if ( sim -> debug )
+      {
+        log_t::output( sim, "%s updated vengeance. New vengeance_value=%.2f and vengeance_max=%.2f. vengeance_damage=%.2f.\n",
+                       player -> name(), player -> vengeance_value,
+                       player -> vengeance_max, player -> vengeance_damage );
+      }
+
+    player -> vengeance_damage = 0;
+
+    new (sim) vengeance_t( player );
+  }
+};
+
 // has_foreground_actions ================================================
 
 static bool has_foreground_actions( player_t* p )
@@ -232,7 +275,7 @@ player_t::player_t( sim_t*             s,
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
-    vengeance_factor( 0.0 ),
+    vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
     player_data( &( s->sim_data ) ),
     race_str( "" ), race( r ),
     // Haste
@@ -1645,8 +1688,8 @@ double player_t::composite_attack_power() SC_CONST
   ap += attack_power_per_strength * ( strength() - 10 );
   ap += attack_power_per_agility  * ( agility() - 10 );
 
-  if ( primary_role() == ROLE_TANK && vengeance_factor )
-    ap += (std::min)(1.0, vengeance_factor) * ( stamina() + 0.1 * resource_base[ RESOURCE_HEALTH ]);
+  if ( vengeance_enabled )
+    ap += vengeance_value;
 
   return ap;
 }
@@ -2244,6 +2287,9 @@ void player_t::combat_begin()
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
   }
 
+  if ( primary_role() == ROLE_TANK && !is_enemy() && !is_add() )
+    new (sim) vengeance_t( this );
+
   action_sequence = "";
 }
 
@@ -2300,6 +2346,8 @@ void player_t::reset()
   gcd_ready = 0;
 
   stats = initial_stats;
+
+  vengeance_damage = vengeance_value = vengeance_max = 0.0;
 
   haste_rating = initial_haste_rating;
   mastery_rating = initial_mastery_rating;
@@ -3014,6 +3062,9 @@ double player_t::assess_damage( double            amount,
   {
     if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
   }
+
+  if ( vengeance_enabled && school == SCHOOL_PHYSICAL )
+    vengeance_damage += actual_amount;
 
   return actual_amount;
 }
@@ -5161,7 +5212,6 @@ void player_t::create_options()
     { "elixirs",                              OPT_STRING, &( elixirs_str                              ) },
     { "flask",                                OPT_STRING, &( flask_str                                ) },
     { "food",                                 OPT_STRING, &( food_str                                 ) },
-    { "vengeance_factor",                     OPT_FLT,    &( vengeance_factor                         ) },
     { "player_resist_holy",                   OPT_INT,    &( spell_resistance[ SCHOOL_HOLY   ]        ) },
     { "player_resist_shadow",                 OPT_INT,    &( spell_resistance[ SCHOOL_SHADOW ]        ) },
     { "player_resist_arcane",                 OPT_INT,    &( spell_resistance[ SCHOOL_ARCANE ]        ) },

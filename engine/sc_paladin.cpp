@@ -2204,6 +2204,8 @@ void paladin_t::init_spells()
   passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light" );
   passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization" );
   passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance" );
+  if ( passives.vengeance -> ok() )
+    vengeance_enabled = true;
 
   // Glyphs
   glyphs.ascetic_crusader         = find_glyph( "Glyph of the Ascetic Crusader" );

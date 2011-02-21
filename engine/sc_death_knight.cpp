@@ -3895,6 +3895,9 @@ void death_knight_t::init_base()
 
   initial_attack_power_per_strength = 2.0;
 
+  if ( primary_tree() == TREE_BLOOD )
+    vengeance_enabled = true;
+
   resource_base[ RESOURCE_RUNIC ] = 100;
   if ( talents.runic_power_mastery -> rank() )
     resource_base[ RESOURCE_RUNIC ] += talents.runic_power_mastery -> effect_base_value( 1 ) / 10.0;
