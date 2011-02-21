@@ -358,12 +358,9 @@ xml_node_t* xml_t::download( sim_t*             sim,
 
   xml_node_t* node = 0;
 
-  if ( sim -> parent ) // If it is a top-level sim, never use the cache.
+  if( xml_cache.find( url ) != xml_cache.end() ) 
   {
-    if( xml_cache.find( url ) != xml_cache.end() ) 
-    {
-      node = xml_cache[ url ];
-    }
+    node = xml_cache[ url ];
   }
 
   if ( ! node )
@@ -374,7 +371,7 @@ xml_node_t* xml_t::download( sim_t*             sim,
     {
       node = xml_t::create( sim, result );
 
-      if ( node && ! sim -> parent ) 
+      if ( node ) 
       {
 	xml_cache[ url ] = node;
       }
@@ -398,12 +395,9 @@ xml_node_t* xml_t::download_cache( sim_t*             sim,
 
   xml_node_t* node = 0;
 
-  if ( sim -> parent ) // If it is a top-level sim, never use the cache.
+  if( xml_cache.find( url ) != xml_cache.end() ) 
   {
-    if( xml_cache.find( url ) != xml_cache.end() ) 
-    {
-      node = xml_cache[ url ];
-    }
+    node = xml_cache[ url ];
   }
 
   if ( ! node )
@@ -414,7 +408,7 @@ xml_node_t* xml_t::download_cache( sim_t*             sim,
     {
       node = xml_t::create( sim, result );
 
-      if ( node && ! sim -> parent ) 
+      if ( node ) 
       {
 	xml_cache[ url ] = node;
       }
