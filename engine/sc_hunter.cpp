@@ -2229,7 +2229,7 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
       p -> active_aspect = ASPECT_HAWK;
       double value = effect_average( 1 );
       // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-      value += 2000.0;
+      value = 2000.0;
       p -> buffs_aspect_of_the_hawk -> trigger( 1, value * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
     }
     else if ( p -> active_aspect == ASPECT_HAWK )

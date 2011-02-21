@@ -863,7 +863,7 @@ void warrior_attack_t::execute()
   warrior_t* p = player -> cast_warrior();
 
   // Battle Trance only is effective+consumed if action cost was >5
-  if ( attack_t::cost() > 50 && p -> buffs_battle_trance -> up() )
+  if ( resource_consumed > 5 && p -> buffs_battle_trance -> up() )
     p -> buffs_battle_trance -> expire();
 
   if ( proc ) return;
@@ -2157,6 +2157,8 @@ struct slam_t : public warrior_attack_t
       if ( oh_attack ) 
       {
         oh_attack -> execute();
+        if ( p -> bugs ) // http://elitistjerks.com/f81/t106912-fury_dps_4_0_cataclysm/p19/#post1875264
+          p -> buffs_battle_trance -> expire();
       }
     }
     p -> buffs_bloodsurge -> decrement();
