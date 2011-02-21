@@ -1392,7 +1392,7 @@ struct devastate_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    //id = 20243;
+    base_dd_min = base_dd_max = 0;
 
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
 
@@ -1413,6 +1413,20 @@ struct devastate_t : public warrior_attack_t
       if ( p -> rng_impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
         p -> buffs_victory_rush -> trigger();
     }      
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    warrior_attack_t::target_debuff( t, dmg_type );
+
+    target_dd_adder = t -> debuffs.sunder_armor -> stack() * effect_average( 2 );
+  }
+
+  virtual void travel( player_t* t, int travel_result, double dmg )
+  {
+    warrior_attack_t::travel( t, travel_result, dmg );
+
+    t -> debuffs.sunder_armor -> trigger();
   }
 };
 
@@ -1976,9 +1990,6 @@ struct shield_slam_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    //id = 23922;
-
-    direct_power_mod  = 0; // FIXME: What is this?
     base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
     base_multiplier  *= 1.0  + p -> glyphs.shield_slam -> effect_base_value( 1 ) / 100.0;
   }
@@ -2027,9 +2038,7 @@ struct shockwave_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    //id = 46968;
-
-    direct_power_mod  = 0.75;
+    direct_power_mod  = effect_base_value( 3 ) / 100.0;
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -3301,6 +3310,7 @@ double warrior_t::assess_damage( double            amount,
        result == RESULT_PARRY )
   {
        buffs_bastion_of_defense -> trigger();
+       buffs_revenge -> trigger();
   }
   if ( result == RESULT_PARRY )
   {
@@ -3428,7 +3438,7 @@ void player_t::warrior_init( sim_t* sim )
     p -> debuffs.blood_frenzy_physical = new debuff_t( p, "blood_frenzy_physical", 1, 60.0 );
     p -> debuffs.demoralizing_shout    = new debuff_t( p, "demoralizing_shout",    1, 30.0 );
     p -> debuffs.shattering_throw      = new debuff_t( p, "shattering_throw",      1 );
-    p -> debuffs.sunder_armor          = new debuff_t( p, "sunder_armor",          1, 30.0 );
+    p -> debuffs.sunder_armor          = new debuff_t( p, 58567, "sunder_armor" );
     p -> debuffs.thunder_clap          = new debuff_t( p, "thunder_clap",          1, 30.0 );
   }
 }
