@@ -95,6 +95,7 @@ struct warrior_t : public player_t
     active_spell_t* berserker_rage;
     active_spell_t* bladestorm;
     active_spell_t* bloodthirst;
+    active_spell_t* charge;
     active_spell_t* cleave;
     active_spell_t* colossus_smash;
     active_spell_t* concussion_blow;
@@ -251,6 +252,7 @@ struct warrior_t : public player_t
   {
     // Arms
     talent_t* bladestorm;
+    talent_t* blitz;
     talent_t* blood_frenzy;
     talent_t* deadly_calm;
     talent_t* deep_wounds;
@@ -1282,12 +1284,8 @@ struct charge_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( result_is_hit() )
-    {
-       p -> buffs_juggernaut -> trigger();
-
-       p -> resource_gain( RESOURCE_RAGE, effect_base_value( 2 ) / 10.0 /* + talent "blitz" */, p -> gains_charge );
-    }
+    p -> buffs_juggernaut -> trigger();
+    p -> resource_gain( RESOURCE_RAGE, effect_base_value( 2 ) / 10.0 + p -> talents.blitz -> effect_base_value( 2 ) / 10.0 , p -> gains_charge );
   }
 };
 
@@ -1593,6 +1591,7 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
+      p -> buffs_juggernaut -> expire();
       if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
       {
         double value = p -> talents.wrecking_crew -> rank() * 0.05;
@@ -1605,6 +1604,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
+    if ( p -> buffs_juggernaut -> up() ) player_crit += 0.25;
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
       player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 ) + additive_multipliers;
@@ -2049,6 +2049,7 @@ struct slam_attack_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
     warrior_attack_t::player_buff();
+    if ( p -> buffs_juggernaut -> up() ) player_crit += 0.25;
     if ( p -> buffs_bloodsurge -> up() )
     {
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
@@ -2118,6 +2119,7 @@ struct slam_t : public warrior_attack_t
     if ( result_is_hit() ) 
     {
       mh_attack -> execute();
+      p -> buffs_juggernaut -> expire();
       if ( oh_attack ) 
       {
         oh_attack -> execute();
@@ -2655,6 +2657,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "berserker_rage"   ) return new berserker_rage_t  ( this, options_str );
   if ( name == "bladestorm"       ) return new bladestorm_t      ( this, options_str );
   if ( name == "bloodthirst"      ) return new bloodthirst_t     ( this, options_str );
+  if ( name == "charge"           ) return new charge_t          ( this, options_str );
   if ( name == "cleave"           ) return new cleave_t          ( this, options_str );
   if ( name == "colossus_smash"   ) return new colossus_smash_t  ( this, options_str );
   if ( name == "concussion_blow"  ) return new concussion_blow_t ( this, options_str );
@@ -2694,6 +2697,7 @@ void warrior_t::init_talents()
 
   // Arms
   talents.bladestorm              = find_talent( "Bladestorm" );
+  talents.blitz                   = find_talent( "Blitz" );
   talents.blood_frenzy            = find_talent( "Blood Frenzy" );
   talents.deadly_calm             = find_talent( "Deadly Calm" );
   talents.deep_wounds             = find_talent( "Deep Wounds" );
@@ -2757,6 +2761,7 @@ void warrior_t::init_spells()
   active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage" );
   active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm" );
   active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst" );
+  active_spells.charge            = new active_spell_t( this, "charge", "Charge" );
   active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave" );
   active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash" );
   active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow" );
