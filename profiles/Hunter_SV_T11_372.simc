@@ -48,7 +48,7 @@ ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-gear_hit_rating=0
+# gear_hit_rating=966
 # gear_crit_rating=2164
 # gear_haste_rating=1425
 # gear_mastery_rating=596

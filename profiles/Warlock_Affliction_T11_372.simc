@@ -11,10 +11,7 @@ glyphs=life_tap/shadow_bolt/corruption/lash_of_pain/haunt
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
-actions+=/summon_succubus,if=time<100
-actions+=/summon_felhunter,if=time>100&&time<200
-actions+=/summon_imp,if=time>200&&time<300
-actions+=/summon_voidwalker,if=time>300
+actions+=/summon_succubus
 actions+=/dark_intent
 actions+=/snapshot_stats
 actions+=/blood_fury
@@ -59,7 +56,7 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # gear_intellect=4659
 # gear_spirit=20
 # gear_spell_power=2207
-gear_hit_rating=0
+# gear_hit_rating=1730
 # gear_crit_rating=919
 # gear_haste_rating=2428
 # gear_mastery_rating=881
