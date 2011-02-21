@@ -1513,9 +1513,12 @@ struct aimed_shot_mm_t : public hunter_attack_t
     base_cost = 0;
     base_execute_time = 0;
 
+    base_dd_max = base_dd_min;
+
     // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-    direct_power_mod =  1.6*0.724;
-    weapon_multiplier = 1.625;
+    weapon_multiplier = 1.625; // Remove once DBCs updated
+    direct_power_mod  = 0.724;
+    direct_power_mod *= weapon_multiplier;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1571,6 +1574,8 @@ struct aimed_shot_t : public hunter_attack_t
 
     base_execute_time = 2.90;
 
+    base_dd_max = base_dd_min;
+
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     normalize_weapon_speed = true;
@@ -1578,8 +1583,9 @@ struct aimed_shot_t : public hunter_attack_t
     casted = 0;
 
     // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-    direct_power_mod =  1.6*0.724;
-    weapon_multiplier = 1.60;
+    weapon_multiplier = 1.60; // Remove once DBCs updated
+    direct_power_mod  = 0.724;
+    direct_power_mod *= weapon_multiplier;
 
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
