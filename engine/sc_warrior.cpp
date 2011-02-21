@@ -757,10 +757,7 @@ double warrior_attack_t::armor() SC_CONST
 
   double a = attack_t::armor();
 
-  if ( p -> buffs_colossus_smash -> up() )
-  {
-    a *= 1.0 - p -> buffs_colossus_smash -> value();
-  }
+  a *= 1.0 - p -> buffs_colossus_smash -> value();
 
   return a;
 }
@@ -1242,15 +1239,15 @@ struct bloodthirst_t : public warrior_attack_t
 
 struct charge_t : public warrior_attack_t
 {
-  bool usable_in_combat;
+  int use_in_combat;
 
   charge_t( warrior_t* p, const std::string& options_str ) :
       warrior_attack_t( "charge",  "Charge", p ),
-      usable_in_combat( false ) // For now it's not usable in combat by default because we can't modell the distance/movement.
+      use_in_combat( 0 ) // For now it's not usable in combat by default because we can't modell the distance/movement.
   {
     option_t options[] =
     {
-      { "usable_in_combat", OPT_BOOL, &usable_in_combat },
+      { "use_in_combat", OPT_BOOL, &use_in_combat },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -1283,7 +1280,7 @@ struct charge_t : public warrior_attack_t
       if ( ! p -> talents.juggernaut -> rank() )
         return false;
 
-      else if ( ! usable_in_combat )
+      else if ( ! use_in_combat )
         return false;
     }
 
@@ -1305,7 +1302,6 @@ struct cleave_t : public warrior_attack_t
     direct_power_mod = 0.4496;
     base_dd_min      = 6;
     base_dd_max      = 6;
-    aoe              = -1;
 
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
 
@@ -1360,7 +1356,7 @@ struct colossus_smash_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
-      p -> buffs_colossus_smash -> trigger( 1, 1.0 );
+      p -> buffs_colossus_smash -> trigger();
   }
 };
 
@@ -1583,8 +1579,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    //id = 12294;
-   
     additive_multipliers = p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
                            + p -> set_bonus.tier11_2pc_melee() * 0.05
                            + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
@@ -1650,6 +1644,7 @@ struct overpower_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_t* p = player -> cast_warrior();
+
     // Track some information on what got us the overpower
     // Talents or lack of expertise
     p -> buffs_overpower -> up();
@@ -1668,11 +1663,7 @@ struct overpower_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> buffs_lambs_to_the_slaughter -> up() )
-    {
-      int stack = p -> buffs_lambs_to_the_slaughter -> stack();
-      player_multiplier *= 1.0 + stack * 0.10;
-    }
+    player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
   }
 
   virtual bool ready()
@@ -2075,11 +2066,9 @@ struct slam_attack_t : public warrior_attack_t
     warrior_attack_t( name, 50783, p ),
     additive_multipliers( 0 )
   {
-
     base_cost = 0;
     may_miss = may_dodge = may_parry = false;
     background = true;
-    dual = true;
 
     base_crit                  += p -> glyphs.slam -> effect_base_value( 1 ) / 100.0;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;

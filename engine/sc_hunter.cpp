@@ -2353,7 +2353,7 @@ struct fervor_t : public hunter_spell_t
 
 struct focus_fire_t : public hunter_spell_t
 {
-  bool five_stacks;
+  int five_stacks;
   focus_fire_t( player_t* player, const std::string& options_str ) :
       hunter_spell_t( "focus_fire", player, 82692 )
   {

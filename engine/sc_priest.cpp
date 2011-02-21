@@ -3122,7 +3122,7 @@ struct circle_of_healing_t : public priest_heal_t
 
 struct prayer_of_mending_t : public priest_heal_t
 {
-  bool single;
+  int single;
   prayer_of_mending_t( player_t* player, const std::string& options_str ) :
       priest_heal_t( "prayer_of_mending", player, "Prayer of Mending" ), single( false )
   {
@@ -4690,19 +4690,6 @@ void priest_t::create_options()
 
   option_t priest_options[] =
   {
-    { "glyph_dispersion",        OPT_BOOL,   &( glyphs.dispersion         ) },
-    { "glyph_divine_accuracy",   OPT_BOOL,   &( glyphs.divine_accuracy    ) },
-    { "glyph_holy_nova",         OPT_BOOL,   &( glyphs.holy_nova          ) },
-    { "glyph_inner_fire",        OPT_BOOL,   &( glyphs.inner_fire         ) },
-    { "glyph_mind_flay",         OPT_BOOL,   &( glyphs.mind_flay          ) },
-    { "glyph_penance",           OPT_BOOL,   &( glyphs.penance            ) },
-    { "glyph_shadow_word_death", OPT_BOOL,   &( glyphs.shadow_word_death  ) },
-    { "glyph_shadow_word_pain",  OPT_BOOL,   &( glyphs.shadow_word_pain   ) },
-    { "glyph_spirit_tap",        OPT_BOOL,   &( glyphs.spirit_tap         ) },
-    { "glyph_smite",             OPT_BOOL,   &( glyphs.smite              ) },
-    { "glyph_renew",             OPT_BOOL,   &( glyphs.renew              ) },
-    { "glyph_power_word_shield", OPT_BOOL,   &( glyphs.power_word_shield  ) },
-
     { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
     { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
     { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },

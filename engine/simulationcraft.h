@@ -2445,7 +2445,8 @@ struct sim_t
   bool report_pets_separately;
   bool report_targets;
   bool report_details;
-  int hosted_html, print_styles;
+  bool hosted_html;
+  int print_styles;
 
   // Multi-Threading
   int threads;

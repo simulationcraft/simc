@@ -1905,7 +1905,9 @@ struct bane_of_havoc_t : public warlock_spell_t
 
 struct shadow_bolt_t : public warlock_spell_t
 {
-  bool isb, used_shadow_trance;
+  int isb;
+  bool used_shadow_trance;
+
 
   shadow_bolt_t( player_t* player, const std::string& options_str ) :
     warlock_spell_t( "shadow_bolt", player, "Shadow Bolt" ),
