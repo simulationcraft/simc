@@ -266,12 +266,28 @@ player_t* battle_net_t::download_player( sim_t* sim,
   xml_node_t* character_glyphs_node = xml_t::get_node( talents_xml, "div", "class", "character-glyphs" );
   std::vector<xml_node_t*> glyph_nodes;
   std::string glyph_id, glyph_name;
-  int num_glyphs = xml_t::get_nodes( glyph_nodes, character_glyphs_node, "a" );
+  // Hack to get a non-item id based glyph identification working, at least for the english
+  // speaking locale. Not much we can do about koKR for example.
+  int num_glyphs = xml_t::get_nodes( glyph_nodes, character_glyphs_node, "li", "class", "filled" );
   for( int i=0; i < num_glyphs; i++ )
   {
-    if ( ! xml_t::get_value( glyph_id, glyph_nodes[ i ], "href" ) )
+    if ( ! xml_t::get_value( glyph_id, xml_t::get_node( glyph_nodes[ i ], "a" ), "href" ) )
     {
-      sim -> errorf( "Could not fetch a valid glyph id string.");
+      // Revert to name based lookup
+      if ( ! xml_t::get_value( glyph_name, xml_t::get_node( glyph_nodes[ i ], "span", "class", "name" ), "." ) )
+      {
+        sim -> errorf( "Could not fetch a valid glyph id or name string.");
+      }
+      else
+      {
+        if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+        else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+        armory_t::format( glyph_name );
+        
+        if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
+        p -> glyphs_str += glyph_name;
+      }
+      
       continue;
     }
     
