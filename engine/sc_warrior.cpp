@@ -95,7 +95,6 @@ struct warrior_t : public player_t
     active_spell_t* berserker_rage;
     active_spell_t* bladestorm;
     active_spell_t* bloodthirst;
-    active_spell_t* charge;
     active_spell_t* cleave;
     active_spell_t* colossus_smash;
     active_spell_t* concussion_blow;
@@ -1267,10 +1266,18 @@ struct bloodthirst_t : public warrior_attack_t
 
 struct charge_t : public warrior_attack_t
 {
+  bool usable_in_combat;
+
   charge_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "charge",  "Charge", p )
+      warrior_attack_t( "charge",  "Charge", p ),
+      usable_in_combat( false ) // For now it's not usable in combat by default because we can't modell the distance/movement.
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "usable_in_combat", OPT_BOOL, &usable_in_combat },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
 
     stancemask  = STANCE_BATTLE;
 
@@ -1285,7 +1292,26 @@ struct charge_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_juggernaut -> trigger();
-    p -> resource_gain( RESOURCE_RAGE, effect_base_value( 2 ) / 10.0 + p -> talents.blitz -> effect_base_value( 2 ) / 10.0 , p -> gains_charge );
+
+    p -> resource_gain( RESOURCE_RAGE,
+                        effect_base_value( 2 ) / 10.0 + p -> talents.blitz -> effect_base_value( 2 ) / 10.0,
+                        p -> gains_charge );
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    if ( p -> in_combat )
+    {
+      if ( ! p -> talents.juggernaut -> rank() )
+        return false;
+
+      else if ( ! usable_in_combat )
+        return false;
+    }
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1603,8 +1629,12 @@ struct mortal_strike_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
+
     warrior_t* p = player -> cast_warrior();
-    if ( p -> buffs_juggernaut -> up() ) player_crit += 0.25;
+
+    if ( p -> buffs_juggernaut -> up() )
+      player_crit += p -> buffs_juggernaut -> effect_base_value( 1 ) / 100.0;
+
     if ( p -> buffs_lambs_to_the_slaughter -> check() )
     {
       player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 ) + additive_multipliers;
@@ -2047,9 +2077,13 @@ struct slam_attack_t : public warrior_attack_t
 
   virtual void player_buff()
   {
-    warrior_t* p = player -> cast_warrior();
     warrior_attack_t::player_buff();
-    if ( p -> buffs_juggernaut -> up() ) player_crit += 0.25;
+
+    warrior_t* p = player -> cast_warrior();
+
+    if ( p -> buffs_juggernaut -> up() )
+      player_crit += p -> buffs_juggernaut -> effect_base_value( 1 ) / 100.0;
+
     if ( p -> buffs_bloodsurge -> up() )
     {
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
@@ -2685,6 +2719,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "thunder_clap"     ) return new thunder_clap_t    ( this, options_str );
   if ( name == "victory_rush"     ) return new victory_rush_t    ( this, options_str );
   if ( name == "whirlwind"        ) return new whirlwind_t       ( this, options_str );
+  if ( name == "charge"        ) return new charge_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2761,7 +2796,6 @@ void warrior_t::init_spells()
   active_spells.berserker_rage    = new active_spell_t( this, "berserker_rage", "Berserker Rage" );
   active_spells.bladestorm        = new active_spell_t( this, "bladestorm", "Bladestorm" );
   active_spells.bloodthirst       = new active_spell_t( this, "bloodthirst", "Bloodthirst" );
-  active_spells.charge            = new active_spell_t( this, "charge", "Charge" );
   active_spells.cleave            = new active_spell_t( this, "cleave", "Cleave" );
   active_spells.colossus_smash    = new active_spell_t( this, "colossus_smash", "Colossus Smash" );
   active_spells.concussion_blow   = new active_spell_t( this, "concussion_blow", "Concussion Blow" );
