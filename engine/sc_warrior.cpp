@@ -96,7 +96,6 @@ struct warrior_t : public player_t
     active_spell_t* bladestorm;
     active_spell_t* bloodthirst;
     active_spell_t* cleave;
-    active_spell_t* charge; // added by hellord
     active_spell_t* colossus_smash;
     active_spell_t* concussion_blow;
     active_spell_t* deadly_calm;
@@ -175,7 +174,7 @@ struct warrior_t : public player_t
   gain_t* gains_berserker_rage;
   gain_t* gains_blood_frenzy;
   gain_t* gains_incoming_damage;
-  gain_t* gains_juggernaut; //added by hellord
+  gain_t* gains_charge;
   gain_t* gains_melee_main_hand;
   gain_t* gains_melee_off_hand;
   gain_t* gains_shield_specialization;
@@ -258,7 +257,7 @@ struct warrior_t : public player_t
     talent_t* drums_of_war;
     talent_t* impale;
     talent_t* improved_slam;
-    talent_t* juggernaut;//added by hellord
+    talent_t* juggernaut;
     talent_t* lambs_to_the_slaughter;
     talent_t* sudden_death;
     talent_t* sweeping_strikes;
@@ -1267,23 +1266,28 @@ struct bloodthirst_t : public warrior_attack_t
 struct charge_t : public warrior_attack_t
 {
   charge_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "charge",  p, SCHOOL_PHYSICAL, TREE_ARMS )
+      warrior_attack_t( "charge",  "Charge", p )
   {
-    check_min_level( 20 );
-
     parse_options( NULL, options_str );
 
-    id = 100;
-    parse_data( p -> player_data );
-    stancemask  = STANCE_BERSERKER | STANCE_BATTLE | STANCE_DEFENSE;
+    stancemask  = STANCE_BATTLE;
+
+    if ( p -> talents.juggernaut -> rank() )
+      stancemask  = STANCE_BERSERKER | STANCE_BATTLE | STANCE_DEFENSE;
   }
 
   virtual void execute()
   {
     warrior_attack_t::execute();
+
     warrior_t* p = player -> cast_warrior();
+
     if ( result_is_hit() )
+    {
        p -> buffs_juggernaut -> trigger();
+
+       p -> resource_gain( RESOURCE_RAGE, effect_base_value( 2 ) / 10.0 /* + talent "blitz" */, p -> gains_charge );
+    }
   }
 };
 
@@ -2696,6 +2700,7 @@ void warrior_t::init_talents()
   talents.drums_of_war            = find_talent( "Drums of War" );
   talents.impale                  = find_talent( "Impale" );
   talents.improved_slam           = find_talent( "Improved Slam" );
+  talents.juggernaut              = find_talent( "Juggernaut" );
   talents.lambs_to_the_slaughter  = find_talent( "Lambs to the Slaughter" );
   talents.sudden_death            = find_talent( "Sudden Death" );
   talents.sweeping_strikes        = find_talent( "Sweeping Strikes" );
@@ -2895,7 +2900,7 @@ void warrior_t::init_buffs()
   buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 0.0, talents.incite -> proc_chance() );
   buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
-  buffs_juggernaut                = new buff_t( this, "juggernaut",                1,   10, 0,  talents.juggernaut -> proc_chance() ); //added by hellord
+  buffs_juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    3, 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
@@ -2925,7 +2930,7 @@ void warrior_t::init_gains()
   gains_berserker_rage         = get_gain( "berserker_rage"        );
   gains_blood_frenzy           = get_gain( "blood_frenzy"          );
   gains_incoming_damage        = get_gain( "incoming_damage"       );
-  gains_juggernaut             = get_gain( "juggernaut"            ); //added by hellord
+  gains_charge                 = get_gain( "charge"            );
   gains_melee_main_hand        = get_gain( "melee_main_hand"       );
   gains_melee_off_hand         = get_gain( "melee_off_hand"        );
   gains_shield_specialization  = get_gain( "shield_specialization" );
