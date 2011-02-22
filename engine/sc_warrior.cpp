@@ -81,7 +81,6 @@ struct warrior_t : public player_t
 {
   int instant_flurry_haste;
   int initial_rage;
-  double max_deep_wounds_refresh;
 
   // Active
   action_t* active_deep_wounds;
@@ -304,7 +303,6 @@ struct warrior_t : public player_t
 
     instant_flurry_haste = 1;
     initial_rage = 0;
-    max_deep_wounds_refresh = 6.0;
 
     create_talents();
     create_glyphs();
@@ -484,14 +482,11 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
   }
 
-  if ( p -> max_deep_wounds_refresh > 0 )
+  if( ( 6.0 + sim -> aura_delay ) < dot -> remains() )
   {
-    if( ( p -> max_deep_wounds_refresh + sim -> aura_delay ) < dot -> remains() )
-    {
-      if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
-      p -> procs_munched_deep_wounds -> occur();
-      return;
-    }
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
+    p -> procs_munched_deep_wounds -> occur();
+    return;
   }
 
   if ( p -> active_deep_wounds -> travel_event ) 
@@ -3412,7 +3407,6 @@ void warrior_t::create_options()
   {
     { "initial_rage",            OPT_INT,  &initial_rage            },
     { "instant_flurry_haste",    OPT_BOOL, &instant_flurry_haste    },
-    { "max_deep_wounds_refresh", OPT_FLT,  &max_deep_wounds_refresh },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3427,7 +3421,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = source -> cast_warrior();
   initial_rage            = p -> initial_rage;
   instant_flurry_haste    = p -> instant_flurry_haste;
-  max_deep_wounds_refresh = p -> max_deep_wounds_refresh;
 }
 
 // warrior_t::decode_set ====================================================

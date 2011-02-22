@@ -554,7 +554,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ),cooldown_list( 0 ), replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
-    merge_ignite( 0 ), report_progress( 1 ),
+    report_progress( 1 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
@@ -1988,7 +1988,6 @@ void sim_t::create_options()
     { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
     { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
     { "aura_delay",                       OPT_FLT,    &( aura_delay                               ) },
-    { "merge_ignite",                     OPT_BOOL,   &( merge_ignite                             ) },
     { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
     { "seed",                             OPT_INT,    &( seed                                     ) },
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },

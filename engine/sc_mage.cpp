@@ -86,7 +86,7 @@ struct mage_t : public player_t
 
   // Options
   std::string focus_magic_target_str;
-  double max_ignite_refresh;
+  double merge_ignite;
 
   // Spell Data
   struct spells_t
@@ -245,7 +245,7 @@ struct mage_t : public player_t
 
     distance = 40;
     mana_gem_charges =  3;
-    max_ignite_refresh = 4.0;
+    merge_ignite = 0;
 
     create_talents();
     create_glyphs();
@@ -833,11 +833,11 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_dmg *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
   }
 
-  if ( sim -> merge_ignite ) // Does not report Ignite seperately.
+  if ( p -> merge_ignite > 0 ) // Does not report Ignite seperately.
   {
     int result = s -> result;
     s -> result = RESULT_HIT;
-    s -> assess_damage( s -> target, ignite_dmg, DMG_OVER_TIME, s -> result );
+    s -> assess_damage( s -> target, ignite_dmg * p -> merge_ignite, DMG_OVER_TIME, s -> result );
     s -> result = result;
     return;
   }
@@ -851,14 +851,11 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
   }
 
-  if ( p -> max_ignite_refresh > 0 )
+  if( ( 4.0 + sim -> aura_delay ) < dot -> remains() )
   {
-    if( (  p -> max_ignite_refresh + sim -> aura_delay ) < dot -> remains() )
-    {
-      if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
-      p -> procs_munched_ignite -> occur();
-      return;
-    }
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
+    p -> procs_munched_ignite -> occur();
+    return;
   }
 
   if ( p -> active_ignite -> travel_event )
@@ -3385,7 +3382,7 @@ void mage_t::create_options()
   option_t mage_options[] =
   {
     { "focus_magic_target",  OPT_STRING, &( focus_magic_target_str ) },
-    { "max_ignite_refresh",  OPT_FLT,    &( max_ignite_refresh     ) },
+    { "merge_ignite",        OPT_FLT,    &( merge_ignite           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3412,7 +3409,7 @@ void mage_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   focus_magic_target_str = source -> cast_mage() -> focus_magic_target_str;
-  max_ignite_refresh     = source -> cast_mage() -> max_ignite_refresh;
+  merge_ignite           = source -> cast_mage() -> merge_ignite;
 }
 
 // mage_t::decode_set =======================================================

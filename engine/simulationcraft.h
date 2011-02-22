@@ -2421,7 +2421,6 @@ struct sim_t
   scaling_t* scaling;
   plot_t*    plot;
   double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds;
-  int        merge_ignite;
   int        report_progress;
   std::string reference_player_str;
   std::vector<player_t*> players_by_rank;
