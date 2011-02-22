@@ -3597,6 +3597,7 @@ struct stats_t
 
   std::vector<stats_t*> children;
   double compound_dmg;
+  double opportunity_cost;
 
   struct stats_results_t
   {

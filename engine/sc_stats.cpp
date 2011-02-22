@@ -51,7 +51,7 @@ void stats_t::init()
   num_direct_results = num_tick_results = 0;
   num_executes = num_ticks = 0;
   total_execute_time = total_tick_time = 0;
-  total_dmg = portion_dmg = 0;
+  total_dmg = portion_dmg = compound_dmg = opportunity_cost = 0;
   dps = dpe = dpet = dpr = etpe = ttpt = 0;
   total_intervals = num_intervals = 0;
 }
@@ -176,8 +176,9 @@ void stats_t::analyze()
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;
   total_dmg          /= num_iterations;
+  opportunity_cost   /= num_iterations;
 
-  compound_dmg = total_dmg;
+  compound_dmg = total_dmg - opportunity_cost;
 
   int num_children = children.size();
   for( int i=0; i < num_children; i++ )
@@ -245,6 +246,7 @@ void stats_t::merge( stats_t* other )
   total_execute_time  += other -> total_execute_time;
   total_tick_time     += other -> total_tick_time;
   total_dmg           += other -> total_dmg;
+  opportunity_cost    += other -> opportunity_cost;
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {

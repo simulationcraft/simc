@@ -1565,7 +1565,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     {
       parse_options( NULL, options_str );
 
-      harmful      = false;
+      callbacks    = false;
       num_ticks    = 1;
       hasted_ticks = false;
 
