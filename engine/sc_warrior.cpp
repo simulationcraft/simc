@@ -2824,6 +2824,7 @@ void warrior_t::init_talents()
   talents.war_academy             = find_talent( "War Academy" );
   talents.wrecking_crew           = find_talent( "Wrecking Crew" );
 
+
   // Fury
   talents.battle_trance           = find_talent( "Battle Trance" );
   talents.bloodsurge              = find_talent( "Bloodsurge" );
@@ -2863,8 +2864,6 @@ void warrior_t::init_talents()
   talents.safeguard               = find_talent( "Safeguard" );
   talents.sword_and_board         = find_talent( "Sword and Board" );
   talents.shockwave               = find_talent( "Shockwave" );
-
-
 
 
   player_t::init_talents();

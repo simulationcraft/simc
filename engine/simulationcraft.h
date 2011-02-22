@@ -3292,7 +3292,7 @@ struct player_t
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
 
-  virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a );
+  virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
 
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );

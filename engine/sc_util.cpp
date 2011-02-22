@@ -190,7 +190,7 @@ role_type util_t::parse_role_type( const std::string& name )
     if ( util_t::str_compare_ci( name, util_t::role_type_string( i ) ) )
       return (role_type) i;
 
-  return ROLE_NONE;
+  return ROLE_HYBRID;
 }
 
 // util_t::race_type_string ================================================

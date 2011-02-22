@@ -283,7 +283,7 @@ player_t::player_t( sim_t*             s,
                     race_type          r ) :
     sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), role( ROLE_NONE ), level( 85 ), use_pre_potion( 1 ),
+    next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), level( 85 ), use_pre_potion( 1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
@@ -3046,18 +3046,8 @@ double player_t::assess_damage( double            amount,
 				int               result,
 				action_t*         action )
 {
-  player_t* s = action -> player;
-
   if ( school == SCHOOL_PHYSICAL )
   {
-    if ( s -> debuffs.demoralizing_roar  -> up() ||
-         s -> debuffs.demoralizing_shout -> up() ||
-         s -> debuffs.scarlet_fever      -> up() ||
-         s -> debuffs.vindication        -> up() )
-    {
-      amount *= 0.90;
-    }
-
     amount *= 1.0 - buffs.inspiration -> value() / 100.0;
   }
 

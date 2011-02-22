@@ -556,6 +556,18 @@ void action_t::player_buff()
   {
     // Not applicable
   }
+
+  if ( school == SCHOOL_PHYSICAL )
+  {
+    if ( p -> debuffs.demoralizing_roar  -> up() ||
+         p -> debuffs.demoralizing_shout -> up() ||
+         p -> debuffs.scarlet_fever      -> up() ||
+         p -> debuffs.vindication        -> up() )
+    {
+      player_multiplier *= 0.90;
+    }
+  }
+
   else if ( school != SCHOOL_PHYSICAL )
   {
     player_penetration = p -> composite_spell_penetration();
