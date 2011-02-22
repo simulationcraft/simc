@@ -4099,6 +4099,7 @@ void death_knight_t::init_actions()
       {
         action_list_str += "/summon_gargoyle,time<=60";
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
+        action_list_str += "/summon_gargoyle,if=buff.unholy_frenzy.react";
       }
       action_list_str += "/death_and_decay,if=death=4";
       action_list_str += "/death_and_decay,if=unholy=2";
