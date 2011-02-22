@@ -4326,7 +4326,7 @@ void death_knight_t::init_buffs()
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
-  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer",								  1,  21.0 + talents.epidemic -> mod_additive( P_DURATION ), 0.0, 1.0, true );
+  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",							  1,  21.0 + talents.epidemic -> mod_additive( P_DURATION ), 0.0, 1.0, true );
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
@@ -4708,7 +4708,7 @@ void player_t::death_knight_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     p -> buffs.unholy_frenzy        = new   buff_t( p, "unholy_frenzy",      1, 30.0 );
     p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1, 15.0 );
-    p -> debuffs.ebon_plaguebringer = new debuff_t( p, "ebon_plaguebringer", 1, 15.0 );
+    p -> debuffs.ebon_plaguebringer = new debuff_t( p, "ebon_plague",		 1, 15.0 );
     p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, 21.0 );
   }
 }
