@@ -105,8 +105,9 @@ struct warrior_t : public player_t
   buff_t* buffs_hold_the_line;
   buff_t* buffs_incite;
   buff_t* buffs_inner_rage;
-  buff_t* buffs_juggernaut; //added by hellord
+  buff_t* buffs_juggernaut;
   buff_t* buffs_lambs_to_the_slaughter;
+  buff_t* buffs_last_stand;
   buff_t* buffs_meat_cleaver;
   buff_t* buffs_overpower;
   buff_t* buffs_recklessness;
@@ -250,20 +251,26 @@ struct warrior_t : public player_t
     talent_t* titans_grip;
 
     // Prot
-    talent_t* bastion_of_defense;
-    talent_t* concussion_blow;
-    talent_t* devastate;
-    talent_t* heavy_repercussions;
-    talent_t* hold_the_line;
-    talent_t* impending_victory;
-    talent_t* improved_revenge;
     talent_t* incite;
-    talent_t* shockwave;
-    talent_t* shield_mastery;
-    talent_t* shield_specialization;
-    talent_t* sword_and_board;
     talent_t* toughness;
+    talent_t* blood_and_thunder;
+    talent_t* shield_specialization;
+    talent_t* shield_mastery;
+    talent_t* hold_the_line;
+    talent_t* last_stand;
+    talent_t* concussion_blow;
+    talent_t* bastion_of_defense;
+    talent_t* warbringer;
+    talent_t* improved_revenge;
+    talent_t* devastate;
+    talent_t* impending_victory;
     talent_t* thunderstruck;
+    talent_t* vigilance;
+    talent_t* heavy_repercussions;
+    talent_t* safeguard;
+    talent_t* sword_and_board;
+    talent_t* shockwave;
+
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
@@ -497,6 +504,7 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> direct_dmg = deep_wounds_dmg;
   p -> active_deep_wounds -> result = RESULT_HIT;
   p -> active_deep_wounds -> schedule_travel( a -> target );
+  p -> active_deep_wounds -> stats -> add_execute( 0 );
 
   if ( p -> active_deep_wounds -> travel_event && dot -> ticking ) 
   {
@@ -1262,7 +1270,7 @@ struct charge_t : public warrior_attack_t
 
     stancemask  = STANCE_BATTLE;
 
-    if ( p -> talents.juggernaut -> rank() )
+    if ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() )
       stancemask  = STANCE_BERSERKER | STANCE_BATTLE | STANCE_DEFENSE;
   }
 
@@ -1285,7 +1293,7 @@ struct charge_t : public warrior_attack_t
 
     if ( p -> in_combat )
     {
-      if ( ! p -> talents.juggernaut -> rank() )
+      if ( ! ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() ) )
         return false;
 
       else if ( ! use_in_combat )
@@ -1378,8 +1386,6 @@ struct concussion_blow_t : public warrior_attack_t
     check_talent( p -> talents.concussion_blow -> rank() );
 
     parse_options( NULL, options_str );
-
-    //id = 12809;
 
     direct_power_mod  = effect_base_value( 3 ) / 100.0;
   }
@@ -1885,9 +1891,6 @@ struct revenge_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    //id = 6572;
-
-    direct_power_mod  = 0.31; // Assumption from 3.3.5
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
                             + p -> glyphs.revenge -> effect_base_value( 1 ) / 100.0;
     stancemask = STANCE_DEFENSE;
@@ -2704,6 +2707,55 @@ struct sweeping_strikes_t : public warrior_spell_t
   }
 };
 
+// Last Stand ===============================================================
+
+struct last_stand_t : public warrior_spell_t
+{
+  last_stand_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "last_stand", 12975, p )
+  {
+    check_talent( p -> talents.last_stand -> rank() );
+
+    harmful = false;
+
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+
+    p -> buffs_last_stand -> trigger();
+  }
+};
+
+struct buff_last_stand_t : public buff_t
+{
+  int health_gain;
+  buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& n ) :
+    buff_t( p, id, n ),
+    health_gain( 0 )
+  {
+
+  }
+
+  virtual bool trigger( int stacks, double value, double chance )
+  {
+    health_gain = (int) floor( player -> resource_max[ RESOURCE_HEALTH ] * 0.3 );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+
+    return buff_t::trigger( stacks, value, chance );
+  }
+
+  virtual void expire()
+  {
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+    buff_t::expire();
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -2730,6 +2782,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "execute"          ) return new execute_t         ( this, options_str );
   if ( name == "heroic_strike"    ) return new heroic_strike_t   ( this, options_str );
   if ( name == "inner_rage"       ) return new inner_rage_t      ( this, options_str );
+  if ( name == "last_stand"       ) return new last_stand_t      ( this, options_str );
   if ( name == "mortal_strike"    ) return new mortal_strike_t   ( this, options_str );
   if ( name == "overpower"        ) return new overpower_t       ( this, options_str );
   if ( name == "pummel"           ) return new pummel_t          ( this, options_str );
@@ -2794,21 +2847,30 @@ void warrior_t::init_talents()
   talents.single_minded_fury      = find_talent( "Single-Minded Fury" );
   talents.titans_grip             = find_talent( "Titan's Grip" );
 
+
   // Prot
-  talents.bastion_of_defense      = find_talent( "Bastion of Defense" );
-  talents.concussion_blow         = find_talent( "Concussion Blow" );
-  talents.devastate               = find_talent( "Devastate" );
-  talents.heavy_repercussions     = find_talent( "Heavy Repercussions" );
-  talents.hold_the_line           = find_talent( "Hold the Line" );
-  talents.impending_victory       = find_talent( "Impending Victory" );
-  talents.improved_revenge        = find_talent( "Improved Revenge" );
   talents.incite                  = find_talent( "Incite" );
-  talents.shockwave               = find_talent( "Shockwave" );
-  talents.shield_mastery          = find_talent( "Shield Mastery" );
-  talents.shield_specialization   = find_talent( "Shield Specialization" );
-  talents.sword_and_board         = find_talent( "Sword and Board" );
   talents.toughness               = find_talent( "Toughness" );
+  talents.blood_and_thunder       = find_talent( "Blood and Thunder" );
+  talents.shield_specialization   = find_talent( "Shield Specialization" );
+  talents.shield_mastery          = find_talent( "Shield Mastery" );
+  talents.hold_the_line           = find_talent( "Hold the Line" );
+  talents.last_stand              = find_talent( "Last Stand" );
+  talents.concussion_blow         = find_talent( "Concussion Blow" );
+  talents.bastion_of_defense      = find_talent( "Bastion of Defense" );
+  talents.warbringer              = find_talent( "Warbringer" );
+  talents.improved_revenge        = find_talent( "Improved Revenge" );
+  talents.devastate               = find_talent( "Devastate" );
+  talents.impending_victory       = find_talent( "Impending Victory" );
   talents.thunderstruck           = find_talent( "Thunderstruck" );
+  talents.vigilance               = find_talent( "Vigilance" );
+  talents.heavy_repercussions     = find_talent( "Heavy Repercussions" );
+  talents.safeguard               = find_talent( "Safeguard" );
+  talents.sword_and_board         = find_talent( "Sword and Board" );
+  talents.shockwave               = find_talent( "Shockwave" );
+
+
+
 
   player_t::init_talents();
 }
@@ -2940,6 +3002,7 @@ void warrior_t::init_buffs()
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.0 );
   buffs_juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    3, 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
+  buffs_last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
   buffs_revenge                   = new buff_t( this, "revenge",                   1,  5.0 );
@@ -3130,6 +3193,7 @@ void warrior_t::init_actions()
     else if ( primary_tree() == TREE_PROTECTION )
     {
       action_list_str += "/stance,choose=defensive";
+      if ( talents.last_stand -> ok() ) action_list_str += "/last_stand,if=health<30000";
       action_list_str += "/heroic_strike,if=rage>=15";
       action_list_str += "/revenge";
       if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
