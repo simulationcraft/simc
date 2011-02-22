@@ -1944,7 +1944,6 @@ double player_t::composite_spell_haste() SC_CONST
   return h;
 }
 
-
 // player_t::composite_spell_power ========================================
 
 double player_t::composite_spell_power( const school_type school ) SC_CONST

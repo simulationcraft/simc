@@ -276,6 +276,7 @@ struct mage_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_mastery() SC_CONST;
+  virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -977,10 +978,6 @@ double mage_spell_t::haste() SC_CONST
   if ( p -> buffs_icy_veins -> up() )
   {
     h *= 1.0 / ( 1.0 + p -> buffs_icy_veins -> effect_base_value( 1 ) / 100.0 );
-  }
-  if ( p -> talents.netherwind_presence -> rank() )
-  {
-    h *= 1.0 / ( 1.0 + p -> talents.netherwind_presence -> effect_base_value( 1 ) / 100.0 );
   }
   if ( p -> buffs_tier10_2pc -> up() )
   {
@@ -3203,6 +3200,20 @@ void mage_t::init_actions()
   }
 
   player_t::init_actions();
+}
+
+// mage_t::composite_spell_haste ============================================
+
+double mage_t::composite_spell_haste() SC_CONST
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( talents.netherwind_presence -> rank() )
+  {
+    h *= 1.0 / ( 1.0 + talents.netherwind_presence -> effect_base_value( 1 ) / 100.0 );
+  }
+
+  return h;
 }
 
 // mage_t::composite_spell_power ============================================
