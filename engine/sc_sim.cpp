@@ -1819,7 +1819,10 @@ action_expr_t* sim_t::create_expression( action_t* a,
   {
     if ( splits[ 0 ] == "target" )
     {
-      return target -> create_expression( a, splits[ 1 ] );
+      if ( a -> target )
+        return a -> target -> create_expression( a, splits[ 1 ] );
+      else
+        return target -> create_expression( a, splits[ 1 ] );
     }
   }
   else if ( num_splits == 3 )
