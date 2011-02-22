@@ -537,7 +537,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
     travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
     current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
-    fixed_time( false ),
+    fixed_time( 0 ),
     events_remaining( 0 ), max_events_remaining( 0 ),
     events_processed( 0 ), total_events_processed( 0 ),
     seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),

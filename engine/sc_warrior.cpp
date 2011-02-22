@@ -79,7 +79,7 @@ enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
 struct warrior_t : public player_t
 {
-  bool instant_flurry_haste;
+  int instant_flurry_haste;
   int initial_rage;
   double max_deep_wounds_refresh;
 
@@ -295,7 +295,7 @@ struct warrior_t : public player_t
     dots_deep_wounds = get_dot( "deep_wounds" );
     dots_rend        = get_dot( "rend"        );
 
-    instant_flurry_haste = true;
+    instant_flurry_haste = 1;
     initial_rage = 0;
     max_deep_wounds_refresh = 6.0;
 

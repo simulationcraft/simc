@@ -2263,7 +2263,7 @@ struct sim_t
   int         strict_gcd_queue;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time, expected_time, vary_combat_length;
-  bool        fixed_time;
+  int         fixed_time;
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, current_slot;
