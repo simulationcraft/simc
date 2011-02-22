@@ -255,6 +255,19 @@ static bool parse_talent_url( sim_t* sim,
   return false;
 }
 
+// parse_role_string ========================================================
+
+static bool parse_role_string( sim_t* sim,
+			       const std::string& name,
+			       const std::string& value )
+{
+  assert( name == "role" );
+
+  sim -> active_player -> role = util_t::parse_role_type( value );
+
+  return true;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 
@@ -269,8 +282,8 @@ player_t::player_t( sim_t*             s,
                     const std::string& n,
                     race_type          r ) :
     sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
-    region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ), role( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), level( 85 ), use_pre_potion( 1 ),
+    region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
+    next( 0 ), index( -1 ), type( t ), role( ROLE_NONE ), level( 85 ), use_pre_potion( 1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
@@ -2815,14 +2828,7 @@ int player_t::primary_tab()
 
 int player_t::primary_role() SC_CONST
 {
-  if ( role == "dmg" || role == "dps" )
-    return ROLE_DMG;
-  if ( role == "heal" || role == "healer" )
-    return ROLE_HEAL;
-  if ( role == "tank" )
-    return ROLE_TANK;
-
-  return ROLE_HYBRID;
+  return role;
 }
 
 // player_t::primary_tree_name ==============================================
@@ -4942,7 +4948,8 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     profile_str += "origin=\"" + origin_str + "\"" + term;
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
-    if ( ! role.empty() ) profile_str += "role=" + role + term;
+    profile_str += "role=";
+    profile_str += util_t::role_type_string( primary_role() ) + term;
     profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
@@ -5107,7 +5114,7 @@ void player_t::create_options()
     { "race",                                 OPT_STRING,   &( race_str                               ) },
     { "level",                                OPT_INT,      &( level                                  ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
-    { "role",                                 OPT_STRING,   &( role                                   ) },
+    { "role",                                 OPT_FUNC,     ( void* ) ::parse_role_string               },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },

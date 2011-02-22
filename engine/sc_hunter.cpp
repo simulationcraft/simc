@@ -3186,7 +3186,7 @@ void hunter_t::init_actions()
     case TREE_SURVIVAL:
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
-      action_list_str += "/explosive_shot,if=!ticking";
+      action_list_str += "/explosive_shot,if=!ticking&!in_flight";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
       action_list_str += "/kill_shot";
       action_list_str += "/arcane_shot,if=focus>=70&buff.lock_and_load.down";

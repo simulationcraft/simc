@@ -4,6 +4,7 @@ hunter=Hunter_MM_T11_359
 origin="http://chardev.org/?profile=36158"
 level=85
 race=orc
+role=attack
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#hunter-0230020000000000000230232003212023122103000000000000000000

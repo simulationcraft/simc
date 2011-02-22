@@ -3808,7 +3808,7 @@ int priest_t::primary_role() SC_CONST
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
-  if ( player_t::primary_role() == ROLE_DMG )
+  if ( player_t::primary_role() == ROLE_DPS )
     return ROLE_SPELL;
 
   if ( primary_tree() == TREE_DISCIPLINE || primary_tree() == TREE_HOLY )

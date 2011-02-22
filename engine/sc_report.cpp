@@ -4441,7 +4441,7 @@ void report_t::print_html( sim_t* sim )
           "    <div id=\"masthead\" class=\"section section-open\">\n\n" );
         
         util_t::fprintf( file,
-          "      <h1>SimulationCraft %s-%s</h1>\n"
+          "      <h1><a href=\"http://code.google.com/p/simulationcraft/\">SimulationCraft %s-%s</a></h1>\n"
           "      <h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
           SC_MAJOR_VERSION, SC_MINOR_VERSION, ( dbc_t::get_ptr() ? "4.0.6" : "4.0.6" ), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
         

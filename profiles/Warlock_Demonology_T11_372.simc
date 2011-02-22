@@ -4,6 +4,7 @@ warlock=Warlock_Demonology_T11_372
 origin="http://chardev.org/?profile=36757"
 level=85
 race=orc
+role=spell
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113320200000000000000

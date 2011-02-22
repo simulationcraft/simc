@@ -4,6 +4,7 @@ mage=Mage_Fire_T11_372
 origin="http://chardev.org/?profile=35380"
 level=85
 race=troll
+role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525
 talents=http://www.wowhead.com/talent#mage-3030001000000000000002313302201201210130310300000000000000000

@@ -1,11 +1,12 @@
-#!./simc
+#!./simc 
 
 mage=Mage_Arcane_T11_359
 origin="http://chardev.org/?profile=34631"
 level=85
 race=gnome
+role=spell
 use_pre_potion=1
-professions=tailoring=525/enchanting=525
+professions=enchanting=525/tailoring=525
 talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000
 glyphs=evocation/arcane_power/slow/mirror_image/arcane_brilliance/conjuring/arcane_blast/arcane_missiles/mage_armor
 actions=flask,type=draconic_mind
@@ -26,7 +27,7 @@ actions+=/flame_orb,if=target.time_to_die>=10
 actions+=/presence_of_mind,arcane_blast
 actions+=/arcane_blast,if=target.time_to_die<40&mana_pct>5
 actions+=/arcane_blast,if=buff.clearcasting.react&buff.arcane_blast.stack>=2
-actions+=/arcane_blast,if=(cooldown.evocation.remains<26&mana_pct>26)
+actions+=/arcane_blast,if=(cooldown.evocation.remains<35&mana_pct>26)
 actions+=/arcane_blast,if=mana_pct>94
 actions+=/evocation,if=target.time_to_die>=31
 actions+=/arcane_blast,if=buff.arcane_blast.stack<4&!buff.bloodlust.react

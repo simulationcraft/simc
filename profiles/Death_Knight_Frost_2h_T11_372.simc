@@ -4,7 +4,7 @@ deathknight=Death_Knight_Frost_2h_T11_372
 origin="http://chardev.org/?profile=34593"
 level=85
 race=orc
-role=unknown
+role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#deathknight-103000000000000000003203101223311201203103300000000000000000

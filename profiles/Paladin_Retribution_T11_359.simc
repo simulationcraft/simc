@@ -4,6 +4,7 @@ paladin=Paladin_Retribution_T11_359
 origin="http://chardev.org/?profile=35780"
 level=85
 race=human
+role=hybrid
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301

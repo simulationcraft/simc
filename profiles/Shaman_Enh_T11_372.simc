@@ -4,6 +4,7 @@ shaman=Shaman_Enh_T11_372
 origin="http://chardev.org/?profile=39863"
 level=85
 race=orc
+role=hybrid
 use_pre_potion=1
 professions=alchemy=525/enchanting=525
 talents=http://www.wowhead.com/talent#shaman-302200300000000000023033200130230123210000000000000000000

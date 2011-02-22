@@ -4,6 +4,7 @@ priest=Priest_Shadow_T11_359
 origin="http://chardev.org/?profile=19782"
 level=85
 race=troll
+role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231

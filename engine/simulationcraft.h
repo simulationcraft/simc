@@ -634,7 +634,7 @@ enum profession_type
   PROFESSION_MAX
 };
 
-enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_HYBRID, ROLE_DMG, ROLE_TANK, ROLE_HEAL, ROLE_MAX };
+enum role_type { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_HYBRID, ROLE_DPS, ROLE_TANK, ROLE_HEAL, ROLE_MAX };
 
 enum rng_type
 {
@@ -1652,6 +1652,7 @@ struct util_t
   static player_type parse_player_type         ( const std::string& name );
   static int parse_profession_type             ( const std::string& name );
   static race_type parse_race_type             ( const std::string& name );
+  static role_type parse_role_type             ( const std::string& name );
   static int parse_resource_type               ( const std::string& name );
   static int parse_result_type                 ( const std::string& name );
   static school_type parse_school_type         ( const std::string& name );
@@ -2831,10 +2832,11 @@ struct player_t
   sim_t*      sim;
   bool        ptr;
   std::string name_str, talents_str, glyphs_str, id_str;
-  std::string region_str, server_str, origin_str, role;
+  std::string region_str, server_str, origin_str;
   player_t*   next;
   int         index;
   player_type type;
+  role_type   role;
   int         level, use_pre_potion, party, member;
   double      skill, initial_skill, distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;

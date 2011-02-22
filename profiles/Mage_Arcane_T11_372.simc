@@ -1,9 +1,10 @@
-#!./simc
+#!./simc 
 
 mage=Mage_Arcane_T11_372
 origin="http://chardev.org/?profile=35357"
 level=85
 race=gnome
+role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525
 talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000

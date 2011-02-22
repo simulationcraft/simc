@@ -166,6 +166,33 @@ char* util_t::dup( const char *value )
   return strcpy( ( char* ) malloc( strlen( value ) + 1 ), value );
 }
 
+// util_t::role_type_string ================================================
+
+const char* util_t::role_type_string( int role )
+{
+  switch ( role )
+  {
+  case ROLE_ATTACK:    return "attack";
+  case ROLE_SPELL:     return "spell";
+  case ROLE_HYBRID:    return "hybrid";
+  case ROLE_DPS:       return "dps";
+  case ROLE_TANK:      return "tank";
+  case ROLE_HEAL:      return "heal";
+  }
+  return "unknown";
+}
+
+// util_t::parse_role_type =================================================
+
+role_type util_t::parse_role_type( const std::string& name )
+{
+  for ( int i=(int) ROLE_NONE; i < (int)ROLE_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::role_type_string( i ) ) )
+      return (role_type) i;
+
+  return ROLE_NONE;
+}
+
 // util_t::race_type_string ================================================
 
 const char* util_t::race_type_string( int type )
@@ -187,23 +214,8 @@ const char* util_t::race_type_string( int type )
   case RACE_TAUREN:    return "tauren";
   case RACE_TROLL:     return "troll";
   case RACE_UNDEAD:    return "undead";
-  case RACE_GOBLIN:        return "goblin";
-  case RACE_WORGEN:        return "worgen";
-  }
-  return "unknown";
-}
-
-// util_t::role_type_string ================================================
-
-const char* util_t::role_type_string( int role )
-{
-  switch ( role )
-  {
-  case ROLE_SPELL:     return "Spell";
-  case ROLE_HYBRID:    return "Hybrid";
-  case ROLE_ATTACK:    return "Attack";
-  case ROLE_TANK:      return "Tank";
-  case ROLE_HEAL:      return "Heal";
+  case RACE_GOBLIN:    return "goblin";
+  case RACE_WORGEN:    return "worgen";
   }
   return "unknown";
 }

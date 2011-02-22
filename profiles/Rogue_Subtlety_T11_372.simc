@@ -4,7 +4,7 @@ rogue=Rogue_Subtlety_T11_372
 origin="http://chardev.org/?profile=36352"
 level=85
 race=troll
-role=unknown
+role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000331032321310012321

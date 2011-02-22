@@ -4,6 +4,7 @@ hunter=Hunter_SV_T11_359
 origin="http://chardev.org/?profile=36177"
 level=85
 race=orc
+role=attack
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#hunter-0010000000000000000230202000000000000003223003023022121311
@@ -20,7 +21,7 @@ actions+=/aspect_of_the_fox,moving=1
 actions+=/blood_fury
 actions+=/serpent_sting,if=!ticking
 actions+=/rapid_fire
-actions+=/explosive_shot,if=!ticking
+actions+=/explosive_shot,if=!ticking&!in_flight
 actions+=/black_arrow,if=!ticking
 actions+=/kill_shot
 actions+=/arcane_shot,if=focus>=70&buff.lock_and_load.down

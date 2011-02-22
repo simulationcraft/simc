@@ -4,6 +4,7 @@ warrior=Warrior_Arms_T11_372
 origin="http://chardev.org/?profile=36399"
 level=85
 race=worgen
+role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3200032312021231221103220000000000000000010200000000000000000
@@ -57,7 +58,7 @@ ranged=crossfire_carbine,ilevel=359,quality=epic,stats=72exp_72mastery_161sta_10
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=0
+# gear_expertise_rating=381
 # gear_hit_rating=982
 # gear_crit_rating=2575
 # gear_haste_rating=760

@@ -4,6 +4,7 @@ warrior=Warrior_Fury_1h_T11_372
 origin="http://chardev.org/?profile=36557"
 level=85
 race=worgen
+role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022320120000000000000000000
