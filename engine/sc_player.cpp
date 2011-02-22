@@ -3137,7 +3137,7 @@ void player_t::register_attack_callback( int64_t mask,
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       attack_callbacks[ i ].push_back( cb );
     }
@@ -3151,7 +3151,7 @@ void player_t::register_spell_callback( int64_t mask,
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_callbacks[ i ].push_back( cb );
     }
@@ -3165,7 +3165,7 @@ void player_t::register_tick_callback( int64_t mask,
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       tick_callbacks[ i ].push_back( cb );
     }

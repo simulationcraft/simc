@@ -1004,7 +1004,7 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.trigger_str = t.full;
       effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_ALL_MASK;
+      effect.trigger_mask = RESULT_NONE_MASK;
     }
     else if ( t.full == "onspellhit" )
     {

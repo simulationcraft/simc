@@ -168,7 +168,7 @@ void spell_t::calculate_result()
   direct_dmg = 0;
   result = RESULT_NONE;
 
-  if ( ! harmful ) return;
+  if ( ! harmful || ! may_hit ) return;
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {
@@ -210,13 +210,20 @@ void spell_t::execute()
 
   if ( harmful && callbacks )
   {
-    if ( direct_tick )
+    if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+      if ( direct_tick )
+      {
+	action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+      }
+      else
+      {
+	action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+      }
     }
-    else
+    if ( ! background ) // OnSpellCast
     {
-      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+      action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
     }
   }
 }

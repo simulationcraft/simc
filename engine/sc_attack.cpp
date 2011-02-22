@@ -405,7 +405,7 @@ void attack_t::calculate_result()
 
   result = RESULT_NONE;
 
-  if ( ! harmful ) return;
+  if ( ! harmful || ! may_hit ) return;
 
   int num_results = build_table( chances, results );
 
@@ -479,13 +479,16 @@ void attack_t::execute()
 
   if ( harmful && callbacks )
   {
-    if ( direct_tick )
+    if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> tick_callbacks[ result ], this );
-    }
-    else
-    {
-      action_callback_t::trigger( player -> attack_callbacks[ result ], this );
+      if ( direct_tick )
+      {
+	action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+      }
+      else
+      {
+	action_callback_t::trigger( player -> attack_callbacks[ result ], this );
+      }
     }
   }
 }

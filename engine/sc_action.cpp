@@ -31,6 +31,7 @@ void action_t::_init_action_t()
   harmful                        = true;
   proc                           = false;
   auto_cast                      = false;
+  may_hit                        = true;
   may_miss                       = false;
   may_resist                     = false;
   may_dodge                      = false;
@@ -676,8 +677,7 @@ bool action_t::result_is_hit( int r ) SC_CONST
   return( r == RESULT_HIT    ||
           r == RESULT_CRIT   ||
           r == RESULT_GLANCE ||
-          r == RESULT_BLOCK  ||
-          r == RESULT_NONE   );
+          r == RESULT_BLOCK  );
 }
 
 // action_t::result_is_miss =================================================
@@ -688,6 +688,7 @@ bool action_t::result_is_miss( int r ) SC_CONST
 
   return( r == RESULT_MISS   ||
           r == RESULT_DODGE  ||
+          r == RESULT_PARRY  ||
           r == RESULT_RESIST );
 }
 

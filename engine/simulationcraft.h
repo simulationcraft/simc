@@ -281,6 +281,7 @@ enum result_type
 #define RESULT_HIT_MASK  ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
 #define RESULT_CRIT_MASK ( (1<<RESULT_CRIT) )
 #define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
+#define RESULT_NONE_MASK ( (1<<RESULT_NONE) )
 #define RESULT_ALL_MASK  -1
 
 enum proc_type
@@ -3650,7 +3651,7 @@ struct action_t : public spell_id_t
   school_type school;
   int resource, tree, result, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, auto_cast;
-  bool may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
+  bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   int dot_behavior;
   double rp_gain;
