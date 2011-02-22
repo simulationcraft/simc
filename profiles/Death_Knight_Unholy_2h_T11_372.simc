@@ -25,6 +25,7 @@ actions+=/plague_strike,if=dot.blood_plague.remains<3
 actions+=/dark_transformation
 actions+=/summon_gargoyle,time<=60
 actions+=/summon_gargoyle,if=buff.bloodlust.react
+actions+=/summon_gargoyle,if=buff.unholy_frenzy.react
 actions+=/death_and_decay,if=death=4
 actions+=/death_and_decay,if=unholy=2
 actions+=/scourge_strike,if=death=4
