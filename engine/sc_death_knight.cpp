@@ -610,7 +610,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_hit() SC_CONST
   {
-    return floor( snapshot_hit * 100.0 ) / 100.0; // Hit is rounded down, 7.99% hit is 7%
+    return snapshot_hit;
   }
 
   virtual double composite_attack_crit() SC_CONST
@@ -1406,11 +1406,11 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> passives.master_of_ghouls -> ok() )
     {
-      return floor( o -> composite_attack_hit() * 100.0 ) / 100.0;
+      return o -> composite_attack_hit();
     }
     else
     {
-      return floor( snapshot_hit * 100.0 ) / 100.0;
+      return snapshot_hit;
     }
   }
 
@@ -3607,14 +3607,13 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.summon_gargoyle -> rank() );
-
+    rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
     parse_options( NULL, options_str );
   }
 
   virtual void execute()
   {
-    consume_resource();
-    update_ready();
+    death_knight_spell_t::execute();
     // Examining logs show gargoyls take 4.5-5.5 seconds before they
     // can begin casting, so rather than the tooltip's 30s duration,
     // let's use 25s.  This still probably overestimates and assumes
