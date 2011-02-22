@@ -677,7 +677,8 @@ bool action_t::result_is_hit( int r ) SC_CONST
   return( r == RESULT_HIT    ||
           r == RESULT_CRIT   ||
           r == RESULT_GLANCE ||
-          r == RESULT_BLOCK  );
+          r == RESULT_BLOCK  ||
+          r == RESULT_NONE   );
 }
 
 // action_t::result_is_miss =================================================
