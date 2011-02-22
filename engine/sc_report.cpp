@@ -3453,7 +3453,7 @@ static void print_wiki_preamble( FILE* file, sim_t* sim )
   {
     util_t::fprintf( file, " * Vary Combat Length: %.2f\n", sim -> vary_combat_length );
   }
-  util_t::fprintf( file, " * Smooth RNG: %s\n", ( sim -> smooth_rng ? "true" : "false" ) );
+  util_t::fprintf( file, " * Fight Style: %s\n", sim -> fight_style.c_str() );
 
   util_t::fprintf( file, "\n----\n\n<br>\n\n" );
   print_wiki_beta_message( file );
@@ -4466,8 +4466,8 @@ void report_t::print_html( sim_t* sim )
             sim -> vary_combat_length );
         }
         util_t::fprintf( file,
-          "        <li><b>Smooth RNG:</b> %s</li>\n",
-          ( sim -> smooth_rng ? "true" : "false" ) );
+          "        <li><b>Fight Style:</b> %s</li>\n",
+	  sim -> fight_style.c_str() );
         util_t::fprintf( file,
           "      </ul>\n" );
         util_t::fprintf( file,

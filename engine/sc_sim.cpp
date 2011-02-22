@@ -443,6 +443,38 @@ static bool parse_rawr( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
+// parse_fight_style ========================================================
+
+static bool parse_fight_style( sim_t*             sim,
+			       const std::string& name,
+			       const std::string& value )
+{
+  if ( name != "fight_style" ) return false;
+
+  if ( util_t::str_compare_ci( value, "Patchwerk" ) )
+  {
+    sim -> fight_style = "Patchwerk";
+    sim -> raid_events_str.clear();
+  }
+  else if ( util_t::str_compare_ci( value, "HelterSkelter" ) )
+  {
+    sim -> fight_style = "HelterSkelter";
+    sim -> raid_events_str = "casting,cooldown=30,duration=3,first=15";
+    sim -> raid_events_str += "/movement,cooldown=30,duration=5";
+    sim -> raid_events_str += "/stun,cooldown=60,duration=2";
+    sim -> raid_events_str += "/invulnerable,cooldown=120,duration=3";
+  }
+  else
+  {
+    log_t::output( sim, "Custom fight style specified: %s", value.c_str() );
+    sim -> fight_style = value;
+  }
+
+  return true;
+}
+
+// parse_spell_query ========================================================
+
 static bool parse_spell_query( sim_t*             sim,
                                const std::string& name,
                                const std::string& value)
@@ -519,7 +551,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-    buff_list( 0 ), aura_delay( 0.15 ),cooldown_list( 0 ), replenishment_targets( 0 ),
+    fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ),cooldown_list( 0 ), replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     merge_ignite( 0 ), report_progress( 1 ),
@@ -1962,6 +1994,7 @@ void sim_t::create_options()
     { "reference_player",                 OPT_STRING, &( reference_player_str                     ) },
     { "raid_events",                      OPT_STRING, &( raid_events_str                          ) },
     { "raid_events+",                     OPT_APPEND, &( raid_events_str                          ) },
+    { "fight_style",                      OPT_FUNC,   ( void* ) ::parse_fight_style                 },
     { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
     // @option_doc loc=skip

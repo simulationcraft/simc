@@ -2301,6 +2301,7 @@ struct sim_t
   // Raid Events
   std::vector<raid_event_t*> raid_events;
   std::string raid_events_str;
+  std::string fight_style;
 
   // Buffs and Debuffs Overrides
   struct overrides_t

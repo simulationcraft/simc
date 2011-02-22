@@ -151,9 +151,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
       targetRaceChoice->setCurrentIndex( tokens[  6 ].toInt() );
      playerSkillChoice->setCurrentIndex( tokens[  7 ].toInt() );
          threadsChoice->setCurrentIndex( tokens[  8 ].toInt() );
-       smoothRNGChoice->setCurrentIndex( tokens[  9 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[ 10 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 11 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[  9 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[ 10 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -194,7 +193,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
@@ -204,7 +203,6 @@ QString SimulationCraftWindow::encodeOptions()
     .arg(    targetRaceChoice->currentIndex() )
     .arg(   playerSkillChoice->currentIndex() )
     .arg(       threadsChoice->currentIndex() )
-    .arg(     smoothRNGChoice->currentIndex() )
     .arg(  armoryRegionChoice->currentIndex() )
     .arg(    armorySpecChoice->currentIndex() )
     ;
@@ -465,11 +463,10 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(           "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
-  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "Helter Skelter" ) );
+  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "HelterSkelter" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow(     "Smooth RNG",     smoothRNGChoice = createChoice( 2, "No", "Yes" ) );
   globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
@@ -826,10 +823,9 @@ void SimulationCraftWindow::createToolTips()
                           "Many AoE abilities have not yet been implemented." );
 
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
-                                "Helter Skelter:\n"
+                                "HelterSkelter:\n"
                                 "    Movement, Stuns, Interrupts,\n"
-                                "    Target-Switching (every 2min)\n"
-                                "    Distraction (10% -skill every other 45sec" );
+                                "    Target-Switching (every 2min)\n" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
 
@@ -838,9 +834,6 @@ void SimulationCraftWindow::createToolTips()
 
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
                              "Most modern desktops have two at least two CPU cores." );
-
-  smoothRNGChoice->setToolTip( "Introduce some determinism into the RNG packages, improving convergence by 10x.\n"
-                               "This enables the use of fewer iterations, but the scale factors of non-linear stats may suffer." );
 
   armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China" );
 
@@ -1121,22 +1114,14 @@ QString SimulationCraftWindow::mergeOptions()
   const char *variance[] = { "0.0", "0.1", "0.2" };
   options += variance[ fightVarianceChoice->currentIndex() ];
   options += "\n";
+  options += "fight_style=" + fightStyleChoice->currentText() + "\n";
   options += "target_adds=" + addsChoice->currentText() + "\n";
-  if( fightStyleChoice->currentText() == "Helter Skelter" )
-  {
-    options += "raid_events=casting,cooldown=30,duration=3,first=15\n";
-    options += "raid_events+=/movement,cooldown=30,duration=5\n";
-    options += "raid_events+=/stun,cooldown=60,duration=2\n";
-    options += "raid_events+=/invulnerable,cooldown=120,duration=3\n";
-    options += "raid_events+=/distraction,skill=0.2,cooldown=90,duration=45\n";
-  }
   options += "target_race=" + targetRaceChoice->currentText() + "\n";
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ playerSkillChoice->currentIndex() ];
   options += "\n";
   options += "threads=" + threadsChoice->currentText() + "\n";
-  options += smoothRNGChoice->currentIndex() ? "smooth_rng=1\n" : "smooth_rng=0\n";
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
