@@ -4089,6 +4089,8 @@ void death_knight_t::init_actions()
       action_list_str += "/auto_attack";
       if ( talents.unholy_frenzy -> rank() )
         action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
+      if ( level > 81 )
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
       if ( talents.dark_transformation -> rank() )
@@ -4106,8 +4108,6 @@ void death_knight_t::init_actions()
       action_list_str += "/death_coil,if=runic_power>90";
       if ( talents.sudden_doom -> rank() )
         action_list_str += "/death_coil,if=buff.sudden_doom.react";
-      if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/death_and_decay";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";

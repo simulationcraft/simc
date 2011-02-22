@@ -4,6 +4,7 @@ deathknight=Death_Knight_Unholy_2h_T11_372
 origin="http://chardev.org/?profile=34615"
 level=85
 race=orc
+role=unknown
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#deathknight-203200000000000000000000000000000000000003310321230331021231
@@ -18,6 +19,7 @@ actions+=/raise_dead
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45
+actions+=/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2
 actions+=/icy_touch,if=dot.frost_fever.remains<3
 actions+=/plague_strike,if=dot.blood_plague.remains<3
 actions+=/dark_transformation
@@ -30,7 +32,6 @@ actions+=/scourge_strike,if=unholy=2
 actions+=/festering_strike,if=blood=2&frost=2
 actions+=/death_coil,if=runic_power>90
 actions+=/death_coil,if=buff.sudden_doom.react
-actions+=/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2
 actions+=/death_and_decay
 actions+=/scourge_strike
 actions+=/festering_strike
