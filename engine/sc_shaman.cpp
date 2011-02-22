@@ -4180,10 +4180,10 @@ int shaman_t::primary_role() SC_CONST
 {
   if ( primary_tree() == TREE_RESTORATION )
   {
-    if ( player_t::primary_role() == ROLE_DMG )
-        return ROLE_SPELL;
+    if ( player_t::primary_role() == ROLE_HEAL )
+        return ROLE_HEAL;
 
-    return ROLE_HEAL;
+    return ROLE_SPELL;
   }
   else if ( primary_tree() == TREE_ENHANCEMENT )
     return ROLE_HYBRID;

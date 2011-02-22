@@ -2243,7 +2243,7 @@ int paladin_t::primary_role() SC_CONST
     return ROLE_HYBRID;
   if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION )
     return ROLE_TANK;
-  if ( player_t::primary_role() == ROLE_HEAL || primary_tree() == TREE_HOLY )
+  if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
   return ROLE_HYBRID;
