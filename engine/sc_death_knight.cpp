@@ -2845,9 +2845,16 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
 
     player_crit += p -> buffs_killing_machine -> value();
+  }
 
-    if ( target -> health_percentage() < 35 )
-      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    death_knight_attack_t::target_debuff( t, dmg_type);
+
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( t -> health_percentage() < 35 )
+     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 };
 
@@ -2889,6 +2896,7 @@ struct heart_strike_t : public death_knight_attack_t
   void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
+
     death_knight_attack_t::target_debuff( t, dmg_type );
 
     target_multiplier *= 1 + p -> diseases() * effect_base_value( 3 ) / 100.0;
@@ -2989,13 +2997,14 @@ struct howling_blast_t : public death_knight_spell_t
     p -> buffs_rime -> expire();
   }
 
-  virtual void player_buff()
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_spell_t::player_buff();
+    death_knight_spell_t::target_debuff( t, dmg_type);
+
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( target -> health_percentage() < 35 )
-      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
+    if ( t -> health_percentage() < 35 )
+     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual bool ready()
@@ -3075,9 +3084,16 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     player_crit += p -> buffs_killing_machine -> value();
+  }
 
-    if ( target -> health_percentage() < 35 )
-      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    death_knight_spell_t::target_debuff( t, dmg_type );
+
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( t -> health_percentage() < 35 )
+     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual bool ready()
@@ -3203,8 +3219,7 @@ struct obliterate_t : public death_knight_attack_t
 
     player_crit += p -> buffs_killing_machine -> value();
 
-    if ( target -> health_percentage() < 35 )
-      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
+
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -3213,6 +3228,9 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_attack_t::target_debuff( t, dmg_type );
 
     target_multiplier *= 1 + p -> diseases() * 0.125;
+
+    if ( t -> health_percentage() < 35 )
+      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
   }
 };
 
