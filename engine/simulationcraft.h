@@ -2318,7 +2318,9 @@ struct sim_t
     int blood_frenzy_bleed;
     int blood_frenzy_physical;
     int bloodlust;
-    int bloodlust_early;
+    int bloodlust_percent;
+    int bloodlust_time;
+    int bloodlust_time_before_death;
     int brittle_bones;
     int communion;
     int critical_mass;
