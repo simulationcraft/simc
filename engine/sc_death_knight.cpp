@@ -1716,19 +1716,12 @@ static void trigger_blood_caked_blade( action_t* a )
 
 // Trigger Brittle Bones ====================================================
 
-static void trigger_brittle_bones( spell_t* s )
+static void trigger_brittle_bones( spell_t* s, player_t* t )
 {
   death_knight_t* p = s -> player -> cast_death_knight();
   if ( ! p -> talents.brittle_bones -> rank() )
     return;
 
-  player_t* t = s -> target;
-
-  // Don't set duration if it's set to 0
-  if ( t -> debuffs.brittle_bones -> buff_duration > 0 )
-  {
-    t -> debuffs.brittle_bones -> buff_duration = s -> num_ticks * s -> base_tick_time;
-  }
   double bb_value = p -> talents.brittle_bones -> effect_base_value( 2 ) / 100.0;
 
   if ( bb_value >= t -> debuffs.brittle_bones -> current_value )
@@ -2788,18 +2781,22 @@ struct frost_fever_t : public death_knight_spell_t
     reset(); // Not a real action
   }
 
-  virtual void execute()
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
-    death_knight_spell_t::execute();
+    death_knight_spell_t::travel( t, travel_result, travel_dmg );
 
-    trigger_brittle_bones( this );
+    if ( result_is_hit( travel_result ) )
+      trigger_brittle_bones( this, t );
   }
 
-  virtual void extend_duration( int extra_ticks )
+  virtual void last_tick()
   {
-    death_knight_spell_t::extend_duration( extra_ticks );
+    death_knight_spell_t::last_tick();
 
-    trigger_brittle_bones( this );
+    if ( target -> debuffs.brittle_bones -> check()
+         && target -> debuffs.brittle_bones -> source
+         && target -> debuffs.brittle_bones -> source == player )
+      target -> debuffs.brittle_bones -> expire();
   }
 };
 
@@ -4709,7 +4706,7 @@ void player_t::death_knight_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.unholy_frenzy        = new   buff_t( p, "unholy_frenzy",      1, 30.0 );
-    p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1, 15.0 );
+    p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1 );
     p -> debuffs.ebon_plaguebringer = new debuff_t( p, "ebon_plague",		 1, 15.0 );
     p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, 21.0 );
   }
