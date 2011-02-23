@@ -564,18 +564,37 @@ player_t* rawr_t::load_player( sim_t* sim,
       std::string enchant_id, reforge_id, addon_id;
       std::string rsuffix_id;
 
-      if ( 7 != util_t::string_split( slot_encoding, ".", "S S S S S S S", 
-				      &item_id, &( gem_ids[ 0 ] ), &( gem_ids[ 1 ] ), &( gem_ids[ 2 ] ), 
-				      &enchant_id, &reforge_id, &addon_id ) )
+      std::vector<std::string> splits;
+      int num_splits = util_t::string_split( splits, slot_encoding, "." );
+
+      if ( num_splits == 7 )
+      {
+	item_id      = splits[ 0 ];
+	gem_ids[ 0 ] = splits[ 1 ];
+	gem_ids[ 1 ] = splits[ 2 ];
+	gem_ids[ 2 ] = splits[ 3 ];
+	enchant_id   = splits[ 4 ];
+	reforge_id   = splits[ 5 ];
+	addon_id     = splits[ 6 ];
+      }
+      else if ( num_splits == 8 )
+      {
+	item_id      = splits[ 0 ];
+	rsuffix_id   = splits[ 1 ];
+	gem_ids[ 0 ] = splits[ 2 ];
+	gem_ids[ 1 ] = splits[ 3 ];
+	gem_ids[ 2 ] = splits[ 4 ];
+	enchant_id   = splits[ 5 ];
+	reforge_id   = splits[ 6 ];
+	addon_id     = splits[ 7 ];
+      }
+      else
       {
         sim -> errorf( "Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
         return 0;
       }
 
-
-      bool success = item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
-
-      if ( ! success )
+      if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {
         return 0;
       }
