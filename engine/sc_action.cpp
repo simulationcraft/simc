@@ -686,12 +686,12 @@ bool action_t::result_is_hit( int r ) SC_CONST
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
-  return( r == RESULT_HIT    ||
-          r == RESULT_CRIT   ||
-          r == RESULT_GLANCE ||
-          r == RESULT_BLOCK  ||
+  return( r == RESULT_HIT        ||
+          r == RESULT_CRIT       ||
+          r == RESULT_GLANCE     ||
+          r == RESULT_BLOCK      ||
           r == RESULT_CRIT_BLOCK ||
-          r == RESULT_NONE   );
+          r == RESULT_NONE       );
 }
 
 // action_t::result_is_miss =================================================

@@ -329,7 +329,6 @@ struct warrior_t : public player_t
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      reset();
   virtual void      regen( double periodicity );
-  virtual double    resource_loss( int resurce, double amount, action_t* );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
@@ -809,7 +808,8 @@ double warrior_attack_t::calculate_weapon_damage()
   double dmg = attack_t::calculate_weapon_damage();
 
   // Catch the case where weapon == 0 so we don't crash/retest below.
-  if ( dmg == 0 ) return 0;
+  if ( dmg == 0 )
+    return 0;
 
   warrior_t* p = player -> cast_warrior();
 
@@ -842,10 +842,6 @@ void warrior_attack_t::player_buff()
   else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
   {
     player_multiplier *= ( 1.0 + p -> buffs_berserker_stance -> effect_base_value( 1 ) / 100.0 );
-  }
-  else if ( p -> active_stance == STANCE_DEFENSE && p -> buffs_defensive_stance -> up() )
-  {
-    // No penalty for defensive stance at the moment.
   }
   
   // --- Specializations --
@@ -1051,7 +1047,6 @@ struct melee_t : public warrior_attack_t
     // delayed by half its swing time.
 
     return 0.02 + t / 2;
-
   }
 
   virtual void execute()
@@ -1334,7 +1329,7 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
+    player_multiplier *= 1.0 + p -> talents.meat_cleaver -> effect_base_value( 1 ) / 100.0 * p -> buffs_meat_cleaver -> stack();
   }
 
   virtual void update_ready()
@@ -2379,6 +2374,7 @@ struct battle_shout_t : public warrior_spell_t
     //id = 6673;
 
     harmful   = false;
+
     rage_gain = 20 + p -> talents.booming_voice -> effect_base_value( 2 ) / 10.0;
     cooldown -> duration += p -> talents.booming_voice -> effect_base_value( 1 ) / 1000.0;
   }
@@ -2409,6 +2405,7 @@ struct berserker_rage_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+
     if ( p -> talents.intensify_rage -> ok() )
       cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0 );
   }
@@ -2511,6 +2508,7 @@ struct inner_rage_t : public warrior_spell_t
     //id = 1134;
 
     harmful = false;
+
     cooldown -> duration = 1.5;
   }
 
@@ -2574,6 +2572,7 @@ struct shield_block_t : public warrior_spell_t
     //id = 2565;
 
     harmful = false;
+
     if ( p -> talents.shield_mastery -> ok() )
       cooldown -> duration += p -> talents.shield_mastery -> effect_base_value( 1 ) / 1000.0;
   }
@@ -2593,12 +2592,12 @@ struct shield_block_t : public warrior_spell_t
 struct stance_t : public warrior_spell_t
 {
   int switch_to_stance;
+  std::string stance_str;
 
   stance_t( warrior_t* p, const std::string& options_str ) :
       warrior_spell_t( "stance", p ),
-      switch_to_stance( 0 )
+      switch_to_stance( 0 ), stance_str( "" )
   {
-    std::string stance_str;
     option_t options[] =
     {
       { "choose",  OPT_STRING, &stance_str     },
@@ -2645,6 +2644,7 @@ struct stance_t : public warrior_spell_t
       case STANCE_BERSERKER:  p -> buffs_berserker_stance -> trigger(); break;
       case STANCE_DEFENSE:    p -> buffs_defensive_stance -> trigger(); break;
     }
+
     consume_resource();
 
     update_ready();
@@ -2653,11 +2653,16 @@ struct stance_t : public warrior_spell_t
   virtual double cost() SC_CONST
   {
     warrior_t* p = player -> cast_warrior();
+
     double c = p -> resource_current [ RESOURCE_RAGE ];
+
     c -= 25.0; // Stance Mastery
+
     if ( p -> talents.tactical_mastery -> ok() )
       c -= p -> talents.tactical_mastery -> effect_base_value( 1 );
+
     if ( c < 0 ) c = 0;
+
     return c;
   }
 
@@ -2732,9 +2737,7 @@ struct buff_last_stand_t : public buff_t
   buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& n ) :
     buff_t( p, id, n ),
     health_gain( 0 )
-  {
-
-  }
+  {}
 
   virtual bool trigger( int stacks, double value, double chance )
   {
@@ -2747,6 +2750,7 @@ struct buff_last_stand_t : public buff_t
   virtual void expire()
   {
     player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+
     buff_t::expire();
   }
 };
@@ -2864,7 +2868,6 @@ void warrior_t::init_talents()
   talents.safeguard               = find_talent( "Safeguard" );
   talents.sword_and_board         = find_talent( "Sword and Board" );
   talents.shockwave               = find_talent( "Shockwave" );
-
 
   player_t::init_talents();
 }
@@ -3331,6 +3334,9 @@ double warrior_t::composite_tank_crit_block() SC_CONST
 
   b += composite_mastery() * mastery.critical_block -> effect_coeff( 1 ) / 100.0;
 
+  if ( buffs_hold_the_line -> up() )
+      b += 0.10;
+
   return b;
 }
 
@@ -3361,26 +3367,6 @@ void warrior_t::regen( double periodicity )
                               resource_max    [ RESOURCE_RAGE] );
 }
 
-// warrior_t::resource_loss =================================================
-
-double warrior_t::resource_loss( int       resource,
-                                 double    amount,
-                                 action_t* action )
-{
-  double actual_amount = player_t::resource_loss( resource, amount, action );
-
-  if ( resource == RESOURCE_HEALTH )
-  {
-    // FIXME!!  This needs to use unmitigated damage.
-
-    double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
-    
-    resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
-  }
-
-  return actual_amount;
-}
-
 // warrior_t::primary_role() ================================================
 
 int warrior_t::primary_role() SC_CONST
@@ -3404,7 +3390,8 @@ double warrior_t::assess_damage( double            amount,
        result == RESULT_GLANCE ||
        result == RESULT_BLOCK  )
   {
-    // Rage gain modeled in resource_loss for now.
+    double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
+    resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
   }
   if ( result == RESULT_BLOCK )
   {
@@ -3436,6 +3423,10 @@ double warrior_t::assess_damage( double            amount,
       }
     }
   }
+
+  // Defensive Stance
+  if ( active_stance == STANCE_DEFENSE && buffs_defensive_stance -> up() )
+    amount *= 0.90;
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
