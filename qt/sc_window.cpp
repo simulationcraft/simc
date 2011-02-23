@@ -467,7 +467,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 4, "us", "eu", "tw", "cn" ) );
+  globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   iterationsChoice->setCurrentIndex( 1 );
@@ -835,7 +835,7 @@ void SimulationCraftWindow::createToolTips()
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
                              "Most modern desktops have two at least two CPU cores." );
 
-  armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China" );
+  armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China, Korea" );
 
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
