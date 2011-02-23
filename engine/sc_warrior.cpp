@@ -1164,9 +1164,6 @@ struct bladestorm_t : public warrior_attack_t
     channeled = true;
     tick_zero = true;
 
-    weapon_multiplier = base_dd_min = base_dd_max = 0;
-    may_miss = may_dodge = may_parry = false;
-
     cooldown -> duration += p -> glyphs.bladestorm -> base_value() / 1000.0;
 
     bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
@@ -1240,7 +1237,9 @@ struct bloodthirst_t : public warrior_attack_t
     if ( result_is_hit() )
     {
       warrior_t* p = player -> cast_warrior();
+
       p -> buffs_battle_trance -> trigger();
+
       trigger_bloodsurge( this );
     }
   }
@@ -2017,7 +2016,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> buffs_sword_and_board -> up() )
+    if ( p -> buffs_sword_and_board -> check() )
       return 0;
 
     return warrior_attack_t::cost();
@@ -2109,7 +2108,7 @@ struct slam_t : public warrior_attack_t
 
   slam_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "slam", "Slam", p ),
-    mh_attack(0), oh_attack(0)
+    mh_attack( 0 ), oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2678,14 +2677,13 @@ struct stance_t : public warrior_spell_t
 struct sweeping_strikes_t : public warrior_spell_t
 {
   sweeping_strikes_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "sweeping_strikes", p, SCHOOL_PHYSICAL, TREE_PROTECTION )
+    warrior_spell_t( "sweeping_strikes", 12328, p )
   {
     check_talent( p -> talents.sweeping_strikes -> rank() );
 
     parse_options( NULL, options_str );
 
-    id = 12328;
-    parse_data( p -> player_data );
+    //id = 12328;
 
     base_cost *= 1.0 + p -> glyphs.sweeping_strikes -> effect_base_value( 1 ) / 100.0;
 
@@ -3081,34 +3079,60 @@ void warrior_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    // Flask
-    // TO-DO: Revert to >= 80 when Cata is out
-    if ( level > 80 )
-      action_list_str += "/flask,type=titanic_strength";
-    else
-      action_list_str += "/flask,type=endless_rage";
     
-    // Food
-    if ( level >= 85 )
-      action_list_str += "/food,type=beer_basted_crocolisk";
-    else
-      action_list_str += "/food,type=dragonfin_filet";
+    switch ( primary_tree() )
+    {
+
+    case TREE_FURY:
+    case TREE_ARMS:
+      // Flask
+      if ( level >= 80 )
+        action_list_str += "/flask,type=titanic_strength";
+      else if ( level >= 75 )
+        action_list_str += "/flask,type=endless_rage";
+
+      // Food
+      if ( level >= 80 )
+        action_list_str += "/food,type=beer_basted_crocolisk";
+      else if ( level >= 70 )
+        action_list_str += "/food,type=dragonfin_filet";
+
+    break;
+
+    case TREE_PROTECTION:
+      // Flask
+      if ( level >= 80 )
+        action_list_str += "/flask,type=steelskin";
+      else if ( level >= 75 )
+        action_list_str += "/flask,type=stoneblood";
+
+      // Food
+      if ( level >= 80 )
+        action_list_str += "/food,type=beer_basted_crocolisk";
+      else if ( level >= 70 )
+        action_list_str += "/food,type=dragonfin_filet";
+
+    break; default: break;
+    }
+
 
     action_list_str += "/snapshot_stats";
 
     // Potion
-    if ( primary_tree() == TREE_ARMS || 
-	 primary_tree() == TREE_FURY )
+    if ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY )
     {
       // TO-DO: Revert to >= 80 when Cata is out
-      if (level > 80 )
+      if ( level >= 80 )
         action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react";
-      else
+      else if ( level >= 70 )
         action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
     }
     else
     {
-      // FIXME: earthen potion, but when to use?
+      if ( level >= 80 )
+        action_list_str += "/earthen_potion,if=!in_combat|health_pct<35&buff.earthen_potion.down";
+      else if ( level >= 70 )
+        action_list_str += "/indestructible_potion,if=!in_combat|health_pct<35&buff.indestructible_potion.down";
     }
 
     action_list_str += "/auto_attack";
@@ -3132,6 +3156,7 @@ void warrior_t::init_actions()
     else if ( race == RACE_BLOOD_ELF )
       action_list_str += "/arcane_torrent";
 
+    // Arms
     if ( primary_tree() == TREE_ARMS )
     {
       action_list_str += "/stance,choose=berserker,if=cooldown.recklessness.remains=0&rage<=50&((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
@@ -3157,6 +3182,8 @@ void warrior_t::init_actions()
       action_list_str += "/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|swing.mh.remains<1.1|buff.deadly_calm.up|buff.colossus_smash.up))|(cooldown.mortal_strike.remains>=1.2&buff.colossus_smash.remains>0.5&rage>=35)";
       action_list_str += "/battle_shout,if=rage<20";
     }
+
+    // Fury
     else if ( primary_tree() == TREE_FURY )
     {
       action_list_str += "/stance,choose=berserker";
@@ -3171,24 +3198,26 @@ void warrior_t::init_actions()
       action_list_str += "/bloodthirst";
       if ( talents.raging_blow -> ok() && talents.titans_grip -> ok() )
       {
-	action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-	action_list_str += "/raging_blow";
+        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+        action_list_str += "/raging_blow";
       }
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/execute,if=rage>=50";
       if ( talents.raging_blow -> ok() && ! talents.titans_grip -> ok() )
       {
-	action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
-	action_list_str += "/raging_blow";
+        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+        action_list_str += "/raging_blow";
       }
       action_list_str += "/battle_shout,if=rage<70";
       if ( ! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
     }
+
+    // Protection
     else if ( primary_tree() == TREE_PROTECTION )
     {
       action_list_str += "/stance,choose=defensive";
       if ( talents.last_stand -> ok() ) action_list_str += "/last_stand,if=health<30000";
-      action_list_str += "/heroic_strike,if=rage>=15";
+      action_list_str += "/heroic_strike,if=rage>=35";
       action_list_str += "/revenge";
       if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
       action_list_str += "/shield_block,sync=shield_slam";
@@ -3197,6 +3226,8 @@ void warrior_t::init_actions()
       action_list_str += "/battle_shout";
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
     }
+
+    // Default
     else
     {
       action_list_str += "/stance,choose=berserker/auto_attack";
