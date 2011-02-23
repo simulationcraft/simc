@@ -1885,6 +1885,13 @@ double player_t::composite_tank_block() SC_CONST
   return b;
 }
 
+// player_t::composite_tank_crit_block ===================================
+
+double player_t::composite_tank_crit_block() SC_CONST
+{
+  return 0;
+}
+
 // player_t::composite_tank_crit ==========================================
 
 double player_t::composite_tank_crit( const school_type school ) SC_CONST

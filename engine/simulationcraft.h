@@ -3247,6 +3247,7 @@ struct player_t
   virtual double composite_tank_dodge()            SC_CONST;
   virtual double composite_tank_parry()            SC_CONST;
   virtual double composite_tank_block()            SC_CONST;
+  virtual double composite_tank_crit_block()            SC_CONST;
   virtual double composite_tank_crit( const school_type school ) SC_CONST;
 
   virtual double diminished_dodge()             SC_CONST;
@@ -3822,6 +3823,7 @@ struct attack_t : public action_t
   virtual double  parry_chance( int source_level, int target_level ) SC_CONST;
   virtual double glance_chance( int delta_level ) SC_CONST;
   virtual double  block_chance( int delta_level ) SC_CONST;
+  virtual double  crit_block_chance( int delta_level ) SC_CONST;
   virtual double   crit_chance( int delta_level ) SC_CONST;
 };
 

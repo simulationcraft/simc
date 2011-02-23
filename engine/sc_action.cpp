@@ -690,6 +690,7 @@ bool action_t::result_is_hit( int r ) SC_CONST
           r == RESULT_CRIT   ||
           r == RESULT_GLANCE ||
           r == RESULT_BLOCK  ||
+          r == RESULT_CRIT_BLOCK ||
           r == RESULT_NONE   );
 }
 

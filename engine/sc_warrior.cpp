@@ -325,6 +325,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
+  virtual double    composite_tank_crit_block() SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      reset();
   virtual void      regen( double periodicity );
@@ -3318,6 +3319,17 @@ double warrior_t::composite_tank_block() SC_CONST
 
   if ( buffs_shield_block -> up() )
     b = 1.0;
+
+  return b;
+}
+
+// warrior_t::composite_tank_crit_block ==========================================
+
+double warrior_t::composite_tank_crit_block() SC_CONST
+{
+  double b = player_t::composite_tank_crit_block();
+
+  b += composite_mastery() * mastery.critical_block -> effect_coeff( 1 ) / 100.0;
 
   return b;
 }
