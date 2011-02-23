@@ -328,7 +328,7 @@ struct hunter_pet_t : public pet_t
     case PET_CARRION_BIRD: return NULL;
     case PET_CAT:          return NULL;
     case PET_CORE_HOUND:   return NULL;
-    case PET_DEVILSAUR:    return "furious_howl,monstrous_bite";
+    case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
     case PET_HYENA:        return NULL;
     case PET_MOTH:         return NULL;
     case PET_RAPTOR:       return NULL;
@@ -506,14 +506,8 @@ struct hunter_pet_t : public pet_t
       const char* special = unique_special();
       if ( special )
       {
-        std::vector<std::string> splits;
-        int num_splits = util_t::string_split( splits, special, "," );
-
-        for ( int i = 0; i< num_splits; i++ )
-        {
-          action_list_str += "/";
-          action_list_str += splits[i];
-        }
+	action_list_str += "/";
+	action_list_str += special;
       }
       if ( talents.wolverine_bite -> rank() )
       {
