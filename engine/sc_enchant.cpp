@@ -653,8 +653,6 @@ static void register_synapse_springs( item_t* item )
 {
   player_t* p = item -> player;
 
-  item -> unique_addon = true;
-
   int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTRIBUTE_NONE };
   int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_NONE };
 
@@ -872,9 +870,15 @@ void enchant_t::init( player_t* p )
     {
       unique_gear_t::register_discharge_proc( item, item.enchant );
     }
+    else if ( item.encoded_enchant_str == "synapse_springs" )
+    {
+      register_synapse_springs( &item );
+      item.unique_enchant = true;
+    }
     else if ( item.encoded_addon_str == "synapse_springs" )
     {
       register_synapse_springs( &item );
+      item.unique_addon = true;
     }
   }
 }
