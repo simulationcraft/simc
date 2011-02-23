@@ -69,6 +69,9 @@ struct vengeance_t : public event_t
       player -> vengeance_value -= 0.1 * player -> vengeance_max;
     }
 
+    if ( player -> vengeance_value < 0 )
+      player -> vengeance_value = 0;
+
     if ( player -> vengeance_value > ( player -> stamina() + 0.1 * player -> resource_base[ RESOURCE_HEALTH ]) )
       player -> vengeance_value = ( player -> stamina() + 0.1 * player -> resource_base[ RESOURCE_HEALTH ]);
 
@@ -4603,6 +4606,15 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { player_t* p = action -> player; result_num = 100 * ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ); return TOK_NUM; }
     };
     return new mana_pct_expr_t( a );
+  }
+  if ( name_str == "health_pct" )
+  {
+    struct health_pct_expr_t : public action_expr_t
+    {
+      health_pct_expr_t( action_t* a ) : action_expr_t( a, "health_pct", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = 100 * ( p -> resource_current[ RESOURCE_HEALTH ] / p -> resource_max[ RESOURCE_HEALTH ] ); return TOK_NUM; }
+    };
+    return new health_pct_expr_t( a );
   }
   if ( name_str == "mana_deficit" )
   {

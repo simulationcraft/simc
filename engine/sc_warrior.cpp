@@ -499,7 +499,6 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> direct_dmg = deep_wounds_dmg;
   p -> active_deep_wounds -> result = RESULT_HIT;
   p -> active_deep_wounds -> schedule_travel( a -> target );
-  p -> active_deep_wounds -> stats -> add_execute( 0 );
 
   if ( p -> active_deep_wounds -> travel_event && dot -> ticking ) 
   {
@@ -2684,6 +2683,8 @@ struct sweeping_strikes_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     //id = 12328;
+
+    harmful = false;
 
     base_cost *= 1.0 + p -> glyphs.sweeping_strikes -> effect_base_value( 1 ) / 100.0;
 
