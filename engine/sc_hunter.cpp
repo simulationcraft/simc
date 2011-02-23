@@ -1513,12 +1513,14 @@ struct aimed_shot_mm_t : public hunter_attack_t
     base_cost = 0;
     base_execute_time = 0;
 
-    base_dd_max = base_dd_min;
-
-    // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    // Testing confirms that the weapon multiplier also affects the RAP coeff
+    // and the base damage of the shot. Probably a bug on Blizzard's end.
     weapon_multiplier = 1.625; // Remove once DBCs updated
     direct_power_mod  = 0.724;
     direct_power_mod *= weapon_multiplier;
+    base_dd_max *= weapon_multiplier;
+    base_dd_min *= weapon_multiplier;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1574,18 +1576,21 @@ struct aimed_shot_t : public hunter_attack_t
 
     base_execute_time = 2.90;
 
-    base_dd_max = base_dd_min;
-
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     normalize_weapon_speed = true;
     
     casted = 0;
 
-    // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+    // Testing confirms that the weapon multiplier also affects the RAP coeff
+    // and the base damage of the shot. Probably a bug on Blizzard's end.
     weapon_multiplier = 1.60; // Remove once DBCs updated
     direct_power_mod  = 0.724;
     direct_power_mod *= weapon_multiplier;
+    base_dd_max *= weapon_multiplier;
+    base_dd_min *= weapon_multiplier;
+
 
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
@@ -2240,7 +2245,10 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     else if ( p -> active_aspect == ASPECT_FOX )
     {
       p -> active_aspect = ASPECT_HAWK;
-      p -> buffs_aspect_of_the_hawk -> trigger( 1, effect_average( 1 ) * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
+      double value = effect_average( 1 );
+      // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+      value = 2000.0;
+      p -> buffs_aspect_of_the_hawk -> trigger( 1, value * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
     }
 
   }
