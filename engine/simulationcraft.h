@@ -2318,9 +2318,6 @@ struct sim_t
     int blood_frenzy_bleed;
     int blood_frenzy_physical;
     int bloodlust;
-    int bloodlust_percent;
-    int bloodlust_time;
-    int bloodlust_time_before_death;
     int brittle_bones;
     int communion;
     int critical_mass;
@@ -2425,6 +2422,7 @@ struct sim_t
   plot_t*    plot;
   double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds;
   int        report_progress;
+  int        bloodlust_percent, bloodlust_time, bloodlust_time_before_death;
   std::string reference_player_str;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;
