@@ -1591,6 +1591,8 @@ struct skull_bash_cat_t : public druid_cat_attack_t
 
     parse_options( NULL, options_str );
 
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+
     cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 3 ) / 1000.0;
   }
 
@@ -2041,6 +2043,8 @@ struct skull_bash_bear_t : public druid_bear_attack_t
     druid_t* p = player -> cast_druid();
 
     parse_options( NULL, options_str );
+
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 2 ) / 1000.0;
   }

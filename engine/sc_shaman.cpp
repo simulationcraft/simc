@@ -2541,6 +2541,8 @@ struct wind_shear_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     
+    may_miss = may_resist = may_crit = false;
+
     cooldown -> duration += p -> talent_reverberation -> mod_additive( P_COOLDOWN );
   }
 

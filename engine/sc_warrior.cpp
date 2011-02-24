@@ -1704,7 +1704,7 @@ struct pummel_t : public warrior_attack_t
 
     base_cost *= 1.0 + p -> talents.drums_of_war -> effect_base_value( 1 ) / 100.0;
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual bool ready()
@@ -1968,6 +1968,8 @@ struct shield_bash_t : public warrior_attack_t
     //id = 72;
 
     base_cost *= 1.0 + p -> talents.drums_of_war -> effect_base_value( 1 ) / 100.0;
+
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }

@@ -2082,6 +2082,8 @@ struct silencing_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = 0.0;
 
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+
     normalize_weapon_speed = true;
   }
 };

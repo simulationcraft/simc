@@ -1505,7 +1505,7 @@ struct counterspell_t : public mage_spell_t
     mage_spell_t( "counterspell", 2139, p )
   {
     parse_options( NULL, options_str );
-    may_miss = may_resist = false;
+    may_miss = may_resist = may_crit = false;
   }
 
   virtual void execute()

@@ -1898,6 +1898,8 @@ struct kick_t : public rogue_attack_t
 
     parse_options( options_str );
 
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+
     if ( p -> glyphs.kick -> ok() )
     {
       // All kicks are assumed to interrupt a cast

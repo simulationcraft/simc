@@ -3108,7 +3108,7 @@ struct mind_freeze_t : public death_knight_spell_t
     if ( p -> talents.endless_winter -> rank() )
       base_cost += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST ) / 10.0;
 
-    may_miss = may_resist = false;
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual bool ready()
