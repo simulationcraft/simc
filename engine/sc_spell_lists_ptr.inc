@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13596
+// Class based active abilities, wow build 13682
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -19,7 +19,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warrior
   {
-    // Arms tree, 16 abilities
+    // Arms tree, 17 abilities
     {
        2457, // Battle Stance
       46924, // Bladestorm
@@ -30,6 +30,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       57755, // Heroic Throw
       12294, // Mortal Strike
        7384, // Overpower (Battle Stance)
+      97462, // Rallying Cry
         772, // Rend (Battle, Defensive Stance)
       20230, // Retaliation (Battle Stance)
       64382, // Shattering Throw (Battle Stance)
@@ -848,7 +849,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13596
+// Talent tree specialization abilities, wow build 13682
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -958,17 +959,17 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
   {
     // Specialization abilities for Discipline tree
     {
+      33167, // Absolution
       84732, // Enlightenment
       95860, // Meditation
       47540, // Penance
-          0,
     },
     // Specialization abilities for Holy tree
     {
+      33167, // Absolution
       88625, // Holy Word: Chastise
       95861, // Meditation
       87336, // Spiritual Healing
-          0,
     },
     // Specialization abilities for Shadow tree
     {
@@ -1106,7 +1107,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13596
+// Class mastery abilities, wow build 13682
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1191,7 +1192,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13596
+// Racial abilities, wow build 13682
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1834,7 +1835,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13596
+// Glyph spells for classes, wow build 13682
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2349,7 +2350,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13596
+// Tier item set bonuses for class, wow build 13682
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3091,7 +3092,7 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
     },
     // Tier 1 bonuses (3 spells)
     {
-      23556, // Cenarion Raiment - 8 Piece Bonus (Decreased Tranquility and Hurricane Cooldown)
+      23556, // Cenarion Raiment - 8 Piece Bonus (Increased Tranquility and Hurricane Effect)
       23557, // Cenarion Raiment - 3 Piece Bonus (Improved Thorns Damage)
       39507, // Cenarion Raiment - 5 Piece Bonus (Increased Critical Spell)
           0,

@@ -4954,7 +4954,7 @@ void report_t::print_spell_query( sim_t* sim )
 
 void report_t::print_suite( sim_t* sim )
 {
-  report_t::print_text( sim -> output_file, sim, sim -> report_details );
+  report_t::print_text( sim -> output_file, sim, sim -> report_details != 0 );
   report_t::print_html( sim );
   report_t::print_wiki( sim );
   report_t::print_xml( sim );

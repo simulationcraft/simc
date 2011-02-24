@@ -292,7 +292,7 @@ player_t::player_t( sim_t*             s,
     potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
     vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-    player_data( &( s->sim_data ) ),
+    player_data( &( s->sim_data ), ptr ),
     race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
@@ -438,7 +438,7 @@ player_t::player_t( sim_t*             s,
     tree_type[ i ] = TREE_NONE;
   }
   
-  player_data.set_parent( &( sim -> sim_data ) );
+  player_data.set_parent( &( sim -> sim_data ), ptr );
 }
 
 // player_t::~player_t =====================================================

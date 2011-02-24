@@ -80,7 +80,7 @@ static bool parse_ptr( sim_t*             sim,
 
 #if SC_USE_PTR
   dbc_t::set_ptr( atoi( value.c_str() ) != 0 );
-  sim -> sim_data.set_parent( dbc_t::get_ptr() ? &sim_t::ptr_data : &sim_t::base_data );
+  sim -> sim_data.set_parent( dbc_t::get_ptr() ? &sim_t::ptr_data : &sim_t::base_data, dbc_t::get_ptr() );
 #else
   sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 #endif

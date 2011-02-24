@@ -32,7 +32,7 @@ void pet_t::_init_pet_t()
 
   // By default, only report statistics in the context of the owner
   quiet = 1;
-  player_data.set_parent( &( owner -> player_data ) );
+  player_data.set_parent( &( owner -> player_data ), ptr );
   ptr = owner -> ptr;
 }
 pet_t::pet_t( sim_t*             s,

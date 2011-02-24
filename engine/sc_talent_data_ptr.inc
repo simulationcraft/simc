@@ -1,6 +1,6 @@
-#define PTR_TALENT_SIZE (660)
+#define PTR_TALENT_SIZE (659)
 
-// 660 talents, wow build 13596
+// 659 talents, wow build 13682
 static struct talent_data_t __ptr_talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 }, 0, 0, 0 },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 }, 0, 0, 0 },
@@ -636,7 +636,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Rolling Thunder"                   , 11767, 0x00,  0, 0x040, 0x0,     0,  0,  0,  2, { 88756, 88764,     0 }, 0, 0, 0 },
   { "Earth's Grasp"                     , 11768, 0x00,  0, 0x040, 0x0,     0,  0,  2,  4, { 51483, 51485,     0 }, 0, 0, 0 },
   { "Fulmination"                       , 11769, 0x00,  0, 0x040, 0x0, 11767,  1,  0,  4, { 88766,     0,     0 }, 0, 0, 0 },
-  { "Improved Fire Nova"                , 11770, 0x00,  1, 0x040, 0x0,     0,  0,  1,  3, { 16086, 16544,     0 }, 0, 0, 0 },
+  { "Seasoned Winds"                    , 11770, 0x00,  1, 0x040, 0x0,     0,  0,  1,  3, { 16086, 16544,     0 }, 0, 0, 0 },
   { "Daybreak"                          , 11771, 0x00,  0, 0x002, 0x0,     0,  0,  3,  2, { 88820, 88821,     0 }, 0, 0, 0 },
   { "Masochism"                         , 11778, 0x00,  2, 0x010, 0x0,     0,  0,  2,  3, { 88994, 88995,     0 }, 0, 0, 0 },
   { "Conviction"                        , 11779, 0x00,  0, 0x002, 0x0,     0,  0,  0,  4, { 20049, 20056, 20057 }, 0, 0, 0 },
