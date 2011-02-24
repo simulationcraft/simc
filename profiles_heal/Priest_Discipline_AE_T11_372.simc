@@ -36,7 +36,7 @@ finger2=planetary_band_of_the_fireflash,heroic=1,ilevel=372,quality=epic,stats=3
 trinket1=core_of_ripeness,ilevel=359,quality=epic,stats=321int,use=1926spi_20dur_120cd
 trinket2=fall_of_mortality,heroic=1,ilevel=372,quality=epic,stats=363int
 back=drape_of_the_twins,heroic=1,ilevel=372,quality=epic,stats=673armor_143haste_215int_143spi_322sta,enchant=lightweave_embroidery
-main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max
+main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max,enchant=power_torrent
 off_hand=scepter_of_ice,heroic=1,ilevel=372,quality=epic,stats=215int_143mastery_143spi_322sta,enchant=100int
 ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta
 # Gear Summary

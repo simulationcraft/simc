@@ -6,7 +6,7 @@ optimal_raid=1
 queue_lag=0.5
 
 # Do some Damage!
-raid_events+=/damage,cooldown=500,amount=400000,first=5
+raid_events+=/damage,cooldown=10,amount=40000,first=5
 
 Priest_Discipline_Single_T11_372.simc
 Priest_Discipline_AE_T11_372.simc
@@ -16,5 +16,3 @@ Priest_Holy_AE_T11_372.simc
 Priest_Holy_Mixed_T11_372.simc
 
 Warlock_Destruction_T11_372.simc dark_intent_target=Priest_Heal_Holy_Single_T11_372
-
-Warrior_Tank.simc

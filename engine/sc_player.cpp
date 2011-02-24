@@ -2589,6 +2589,11 @@ void player_t::demise()
   }
 
   sim -> cancel_events( this );
+
+  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  {
+    pet -> demise();
+  }
 }
 
 // player_t::interrupt ======================================================

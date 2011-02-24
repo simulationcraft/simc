@@ -414,6 +414,9 @@ bool heal_t::ready()
     if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
       return false;
   
+  if ( target -> sleeping )
+    return false;
+
   if ( if_expr )
   {
     int result_type = if_expr -> evaluate();
@@ -768,6 +771,9 @@ bool absorb_t::ready()
   if ( bloodlust_active > 0 )
     if ( ! player -> buffs.bloodlust -> check() )
       return false;
+
+  if ( target -> sleeping )
+    return false;
 
   if ( bloodlust_active < 0 )
     if ( player -> buffs.bloodlust -> check() )
