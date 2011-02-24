@@ -252,6 +252,60 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   }
 };
 
+// register_apparatus_of_khazgoroth ====================================
+
+static void register_apparatus_of_khazgoroth( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+  bool heroic = item -> heroic();
+
+  struct apparatus_of_khazgoroth_callback_t : public action_callback_t
+  {
+    bool heroic;
+    buff_t* apparatus_of_khazgoroth;
+    stat_buff_t* blessing_of_khazgoroth;
+
+    apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) : 
+      action_callback_t( p -> sim, p ), heroic( h )
+    {
+      apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 60.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
+      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, ( heroic ? 1725 : 1530 ), 1, 20.0, 120.0 );
+    }
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      if( ! a -> weapon ) return;
+      if( a -> proc ) return;
+
+      if( apparatus_of_khazgoroth -> trigger() )
+      {
+        if( blessing_of_khazgoroth -> cooldown -> remains() > 0 ) return;
+
+        // FIXME: This really should be a /use action
+        if( apparatus_of_khazgoroth -> check() == 5 )
+        { 
+          // Highest of Crits/Master/haste is chosen
+          blessing_of_khazgoroth -> stat = STAT_CRIT_RATING;
+          if ( a -> player -> stats.haste_rating   > a -> player -> stats.crit_rating ||
+               a -> player -> stats.mastery_rating > a -> player -> stats.crit_rating )
+          {
+            if ( a -> player -> stats.mastery_rating > a -> player -> stats.haste_rating )
+              blessing_of_khazgoroth -> stat = STAT_MASTERY_RATING;
+            else
+              blessing_of_khazgoroth -> stat = STAT_HASTE_RATING;
+          }
+          apparatus_of_khazgoroth -> expire();
+          blessing_of_khazgoroth -> trigger();
+        }
+      }
+    }
+  };
+
+  p -> register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, heroic ) );
+}
+
 // register_black_bruise ====================================================
 
 static void register_black_bruise( item_t* item )
@@ -1050,6 +1104,7 @@ void unique_gear_t::init( player_t* p )
       register_discharge_proc( item, item.equip );
     }
 
+    if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"   ) ) register_apparatus_of_khazgoroth( &item );
     if ( ! strcmp( item.name(), "black_bruise"              ) ) register_black_bruise           ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness"   ) ) register_darkmoon_card_greatness( &item );
     if ( ! strcmp( item.name(), "deathbringers_will"        ) ) register_deathbringers_will     ( &item );
@@ -1315,6 +1370,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "mithril_pocketwatch"                 ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "mjolnir_runestone"                   ) e = "OnAttackHit_665Haste_15%_10Dur_45Cd";
   else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
+  else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_48Mastery_10Stack_10Dur" : "OnSpellTickDamage_42Mastery_10Stack_10Dur" ); 
   else if ( name == "needleencrusted_scorpion"            ) e = "OnAttackCrit_678crit_10%_10Dur_50Cd";
   else if ( name == "pandoras_plea"                       ) e = "OnSpellCast_751SP_10%_10Dur_45Cd";
   else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_95Cd" : "OnAttackHit_918Mastery_10%_20Dur_95Cd" ); // TO-DO: Confirm ICD.
