@@ -1064,7 +1064,9 @@ void mage_spell_t::tick()
 {
   spell_t::tick();
 
-  if ( result == RESULT_CRIT )
+  mage_t* p = player -> cast_mage();
+
+  if ( result == RESULT_CRIT && ! p -> ptr )
   {
     trigger_ignite( this, tick_dmg );
   }
@@ -1199,7 +1201,8 @@ struct arcane_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
 
-    base_cost *= 0.05 / 0.07; // FIXME: Hotfixed value from: http://blue.mmo-champion.com/topic/158233/arcane-hotfixes
+    if ( ! p -> ptr )
+      base_cost *= 0.05 / 0.07; // FIXME: Hotfixed value from: http://blue.mmo-champion.com/topic/158233/arcane-hotfixes
   }
 
   virtual double cost() SC_CONST

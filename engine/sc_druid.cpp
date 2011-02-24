@@ -1966,7 +1966,9 @@ struct maul_t : public druid_bear_attack_t
     
     aoe = 1;
     base_add_multiplier = p -> glyphs.maul -> effect_base_value( 3 ) / 100.0;
-    // FIX ME: DBC data points to base scaling, tooltip states AP scaling like Heroic Strike
+    // DBC data points to base scaling, tooltip states AP scaling which is correct
+    base_dd_min = base_dd_max = 8;
+    direct_power_mod = ( p -> ptr ) ? 0.264 : 0.24;
   }
 
   virtual void execute()
@@ -2078,9 +2080,11 @@ struct thrash_t : public druid_bear_attack_t
     parse_options( NULL, options_str );
     check_min_level( 81 );
 
+    druid_t* p = player -> cast_druid();
+
     aoe               = -1;
-    direct_power_mod  = 0.154;
-    tick_power_mod    = 0.026;
+    direct_power_mod  = ( p -> ptr ) ? 0.128 : 0.154;
+    tick_power_mod    = ( p -> ptr ) ? 0.0217 : 0.026;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
