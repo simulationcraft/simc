@@ -466,7 +466,7 @@ bool buff_t::trigger( int    stacks,
   if ( cooldown -> remains() > 0 )
     return false;
 
-  if ( player -> sleeping )
+  if ( player && player -> sleeping )
     return false;
 
   trigger_attempts++;
