@@ -21,7 +21,7 @@ void heal_t::_init_heal_t()
 {
   heal_target.push_back( player );
 
-  target=0;
+  target= player;
   target_str = "";
   total_heal = total_actual = 0;
 
@@ -369,65 +369,6 @@ void heal_t::assess_damage( player_t* t,
   stats -> add_result( heal_amount, heal_type, heal_result );
 }
 
-// heal_t::ready ============================================================
-
-bool heal_t::ready()
-{
-  if ( player -> skill < 1.0 )
-    if ( ! sim -> roll( player -> skill ) )
-      return false;
-
-  if ( cooldown -> remains() > 0 )
-    return false;
-
-  if ( ! player -> resource_available( resource, cost() ) )
-    return false;
-
-  if ( min_current_time > 0 )
-    if ( sim -> current_time < min_current_time )
-      return false;
-
-  if ( max_current_time > 0 )
-    if ( sim -> current_time > max_current_time )
-      return false;
-  
-  if ( max_haste > 0 )
-    if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )
-      return false;
-
-  if ( bloodlust_active > 0 )
-    if ( ! player -> buffs.bloodlust -> check() )
-      return false;
-  
-  if ( bloodlust_active < 0 )
-    if ( player -> buffs.bloodlust -> check() )
-      return false;
-
-  if ( sync_action && ! sync_action -> ready() )
-    return false;
-
-  if ( player -> buffs.moving -> check() )
-    if ( ! usable_moving() )
-      return false;
-
-  if ( moving != -1 )
-    if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
-      return false;
-  
-  if ( target -> sleeping )
-    return false;
-
-  if ( if_expr )
-  {
-    int result_type = if_expr -> evaluate();
-    if ( result_type == TOK_NUM     ) return if_expr -> result_num != 0;
-    if ( result_type == TOK_STR     ) return true;
-    if ( result_type == TOK_UNKNOWN ) return false;
-  }
-
-  return true;
-}
-
 // heal_t::last_tick =======================================================
 
 void heal_t::last_tick()
@@ -514,7 +455,7 @@ void absorb_t::_init_absorb_t()
 {
   heal_target.push_back( player );
 
-  target=0;
+  target = player;
   target_str = "";
   total_heal = total_actual = 0;
   
@@ -740,63 +681,4 @@ double absorb_t::calculate_direct_damage()
   }
 
   return dmg;
-}
-
-// absorb_t::ready ============================================================
-
-bool absorb_t::ready()
-{
-  if ( player -> skill < 1.0 )
-    if ( ! sim -> roll( player -> skill ) )
-      return false;
-
-  if ( cooldown -> remains() > 0 )
-    return false;
-
-  if ( ! player -> resource_available( resource, cost() ) )
-    return false;
-
-  if ( min_current_time > 0 )
-    if ( sim -> current_time < min_current_time )
-      return false;
-
-  if ( max_current_time > 0 )
-    if ( sim -> current_time > max_current_time )
-      return false;
-
-  if ( max_haste > 0 )
-    if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )
-      return false;
-
-  if ( bloodlust_active > 0 )
-    if ( ! player -> buffs.bloodlust -> check() )
-      return false;
-
-  if ( target -> sleeping )
-    return false;
-
-  if ( bloodlust_active < 0 )
-    if ( player -> buffs.bloodlust -> check() )
-      return false;
-
-  if ( sync_action && ! sync_action -> ready() )
-    return false;
-
-  if ( player -> buffs.moving -> check() )
-    if ( ! usable_moving() )
-      return false;
-
-  if ( moving != -1 )
-    if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
-      return false;
-
-  if ( if_expr )
-  {
-    int result_type = if_expr -> evaluate();
-    if ( result_type == TOK_NUM     ) return if_expr -> result_num != 0;
-    if ( result_type == TOK_STR     ) return true;
-    if ( result_type == TOK_UNKNOWN ) return false;
-  }
-
-  return true;
 }

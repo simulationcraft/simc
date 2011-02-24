@@ -3873,7 +3873,6 @@ struct heal_t : public spell_t
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                                   int    dmg_type, int travel_result );
-  virtual bool ready();
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
@@ -3910,7 +3909,6 @@ struct absorb_t : public spell_t
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual void travel( player_t*, int travel_result, double travel_dmg );
-  virtual bool ready();
 
 };
 
