@@ -2066,7 +2066,7 @@ static void print_html_profile (FILE* file, player_t* a )
 static void print_html_stats (FILE* file, player_t* a )
 {
   std::string n = a -> name();
-  util_t::format_text( n, a -> sim -> input_is_utf8 );
+  util_t::format_text( n, true );
 
   if ( a -> total_seconds > 0 )
   {
@@ -2370,7 +2370,7 @@ static void print_html_stats (FILE* file, player_t* a )
 static void print_html_talents( FILE* file, player_t* p )
 {
   std::string n = p -> name();
-  util_t::format_text( n, p -> sim -> input_is_utf8 );
+  util_t::format_text( n, true );
 
   if ( p -> total_seconds > 0 )
   {
@@ -2426,7 +2426,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 {
   char buffer[ 4096 ];
   std::string n = p -> name();
-  util_t::format_text( n, sim -> input_is_utf8 );
+  util_t::format_text( n, true );
   int num_players = ( int ) sim -> players_by_name.size();
   int i;
   
