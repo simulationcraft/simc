@@ -674,10 +674,14 @@ struct divine_storm_t : public paladin_attack_t
 
   virtual void execute()
   {
+    paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
+      if ( p -> ptr )
+	if ( target -> cast_target() -> adds_nearby >= 4 )
+	  p -> buffs_holy_power -> trigger( 1 );
     }
   }
 };
