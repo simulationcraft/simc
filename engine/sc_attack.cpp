@@ -79,9 +79,11 @@ attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, boo
 double attack_t::swing_haste() SC_CONST
 {
   double h = 1.0;
-  h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
-                     std::max( sim -> auras.windfury_totem      -> value(),
-                               sim -> auras.improved_icy_talons -> value() ) ) );
+
+  if ( ! player -> is_enemy() && ! player -> is_add() )
+    h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
+                       std::max( sim -> auras.windfury_totem      -> value(),
+                                 sim -> auras.improved_icy_talons -> value() ) ) );
   return h * haste();
 }
 

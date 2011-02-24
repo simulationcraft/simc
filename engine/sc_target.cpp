@@ -15,7 +15,7 @@ target_t::target_t( sim_t* s, const std::string& n, player_type pt ) :
     player_t( s, pt, n, RACE_HUMANOID ),
     next( 0 ), target_level( -1 ),
     initial_armor( -1 ), armor( 0 ),
-    attack_speed( 3.0 ), attack_damage( 50000 ),
+    attack_speed( 2.0 ), attack_damage( 120000 ),
     fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
     total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 ),
     add_list( 0 )
@@ -247,8 +247,6 @@ void target_t::init_base()
 
 void target_t::init_items()
 {
-  items[ SLOT_MAIN_HAND ].options_str = "Skullcrusher,weapon=axe2h_3.00speed_120000min_140000max";
-
   player_t::init_items();
 }
 
@@ -333,7 +331,7 @@ double target_t::composite_tank_block() SC_CONST
 
 struct auto_attack_t : public attack_t
 {
-  auto_attack_t( player_t* p, const std::string& options_str ) :
+  auto_attack_t( target_t* p, const std::string& options_str ) :
       attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
     parse_options( NULL, options_str );
@@ -341,22 +339,15 @@ struct auto_attack_t : public attack_t
     stats = player -> get_stats( name_str + "_" + target -> name() );
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
-    base_execute_time = 2.0;
+    base_execute_time = p -> attack_speed;
+    base_dd_min = base_dd_max = p -> attack_damage;
     may_crit = true;
-
-    base_dd_min = base_dd_max = 1;
 
     if ( player -> is_enemy() && target != player)
     {
       weapon = &( player -> main_hand_weapon );
     }
   }
-/*
-  virtual double execute_time() SC_CONST
-  {
-    return 0;
-  }*/
-
 };
 
 struct summon_add_t : public spell_t
