@@ -1346,12 +1346,16 @@ struct cleave_t : public warrior_attack_t
 
 struct colossus_smash_t : public warrior_attack_t
 {
+  double armor_pen_value;
+
   colossus_smash_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "colossus_smash",  "Colossus Smash", p )
+      warrior_attack_t( "colossus_smash",  "Colossus Smash", p ), armor_pen_value( 0.0 )
   {
     parse_options( NULL, options_str );
 
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
+
+    armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
   }
 
   virtual void execute()
@@ -1361,7 +1365,7 @@ struct colossus_smash_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
-      p -> buffs_colossus_smash -> trigger();
+      p -> buffs_colossus_smash -> trigger( 1, armor_pen_value );
   }
 };
 
