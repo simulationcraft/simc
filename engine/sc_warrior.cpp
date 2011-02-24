@@ -1259,6 +1259,11 @@ struct charge_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
+    if ( p -> ptr )
+    {
+      cooldown -> duration += p -> talents.juggernaut -> effect_base_value( 3 ) / 1000.0;
+    }
+
     stancemask  = STANCE_BATTLE;
 
     if ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() )
