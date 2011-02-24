@@ -4686,29 +4686,18 @@ void death_knight_t::trigger_runic_empowerment()
     return;
   }
 
-  bool fully_depleted_runes[RUNE_SLOT_MAX];
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    fully_depleted_runes[i] = false;
-    if ( !_runes.slot[i].is_depleted() )
-      fully_depleted_runes[i] = true;
-  }
+  int depleted_runes[RUNE_SLOT_MAX];
+  int num_depleted=0;
 
-  // Use a fair algorithm to pick whichever rune to regen.
-  int rune_to_regen = -1;
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    if ( sim -> roll( 1.0 / static_cast<double>( i + 1 ) ) )
-    {
-      rune_to_regen = i;
-    }
-  }
+    if ( _runes.slot[i].is_depleted() )
+      depleted_runes[ num_depleted++ ] = i;
 
-  if ( rune_to_regen >= 0 )
+  if ( num_depleted > 0 )
   {
+    int rune_to_regen = depleted_runes[ (int) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
     _runes.slot[rune_to_regen].fill_rune();
-    if ( sim -> log )
-      log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
+    if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();
   }
 }
