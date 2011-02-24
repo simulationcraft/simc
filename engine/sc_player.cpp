@@ -2281,7 +2281,7 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
-  if ( ! is_pet() )
+  if ( ! is_pet() && !is_add() )
   {
     arise();
   }

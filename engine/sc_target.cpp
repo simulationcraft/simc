@@ -626,8 +626,7 @@ void add_t::summon( double duration, double health)
 
 
   distance = owner -> distance;
-  sleeping = 0;
-  init_resources( true );
+
   summon_time = sim -> current_time;
   summoned=true;
   stat_gain( STAT_MAX_HEALTH, health );
@@ -648,7 +647,7 @@ void add_t::summon( double duration, double health)
     new ( sim ) expiration_t( sim, this, duration );
   }
 
-  schedule_ready();
+  arise();
 }
 
 // add_t::dismiss ===========================================================
@@ -657,20 +656,7 @@ void add_t::dismiss()
 {
   if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
 
-  readying = 0;
-  sleeping = 1;
-
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    a -> cancel();
-  }
-
-  for( buff_t* b = buff_list; b; b = b -> next )
-  {
-    b -> expire();
-  }
-
-  sim -> cancel_events( this );
+  demise();
 }
 
 // add_t::resource_loss =================================================
