@@ -1522,8 +1522,6 @@ struct aimed_shot_mm_t : public hunter_attack_t
     weapon_multiplier = 1.625; // Remove once DBCs updated
     direct_power_mod  = 0.724;
     direct_power_mod *= weapon_multiplier;
-    base_dd_max *= weapon_multiplier;
-    base_dd_min *= weapon_multiplier;
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -1591,9 +1589,6 @@ struct aimed_shot_t : public hunter_attack_t
     weapon_multiplier = 1.60; // Remove once DBCs updated
     direct_power_mod  = 0.724;
     direct_power_mod *= weapon_multiplier;
-    base_dd_max *= weapon_multiplier;
-    base_dd_min *= weapon_multiplier;
-
 
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
