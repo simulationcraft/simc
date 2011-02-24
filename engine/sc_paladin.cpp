@@ -2239,12 +2239,17 @@ void paladin_t::init_spells()
 
 int paladin_t::primary_role() SC_CONST
 {
-  if ( player_t::primary_role() == ROLE_DPS )
+  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;
-  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION )
+
+  if ( player_t::primary_role() == ROLE_TANK  )
     return ROLE_TANK;
+
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
+
+  if ( primary_tree() == TREE_PROTECTION )
+    return ROLE_TANK;
 
   return ROLE_HYBRID;
 }

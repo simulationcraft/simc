@@ -1116,16 +1116,16 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
       dot -> added_seconds = 0;
       if ( dot -> ticking )
       {
-	assert( dot -> tick_event );
-	if ( ! channeled )
+        assert( dot -> tick_event );
+        if ( ! channeled )
         {
-	  // Recasting a dot while it's still ticking gives it an extra tick in total
-	  dot -> num_ticks++;
-	}
+          // Recasting a dot while it's still ticking gives it an extra tick in total
+          dot -> num_ticks++;
+        }
       }
       else
       {
-	schedule_tick();
+        schedule_tick();
       }
       dot -> recalculate_ready();
 

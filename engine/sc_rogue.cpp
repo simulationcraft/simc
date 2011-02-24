@@ -2649,6 +2649,9 @@ struct deadly_poison_t : public rogue_poison_t
           apply_poison_debuff( p );
         }
       }
+
+      update_ready();
+      stats -> add_execute( time_to_execute );
     }
   }
 

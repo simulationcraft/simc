@@ -4579,7 +4579,13 @@ double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
 
 int death_knight_t::primary_role() SC_CONST
 {
-  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_BLOOD )
+  if ( player_t::primary_role() == ROLE_TANK )
+    return ROLE_TANK;
+
+  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
+    return ROLE_ATTACK;
+
+  if ( primary_tree() == TREE_BLOOD )
     return ROLE_TANK;
 
   return ROLE_ATTACK;

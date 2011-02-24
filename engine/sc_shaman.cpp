@@ -4178,15 +4178,20 @@ int shaman_t::decode_set( item_t& item )
 
 int shaman_t::primary_role() SC_CONST
 {
+  if ( player_t::primary_role() == ROLE_HEAL )
+      return ROLE_HEAL;
+
   if ( primary_tree() == TREE_RESTORATION )
   {
-    if ( player_t::primary_role() == ROLE_HEAL )
-        return ROLE_HEAL;
+    if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
+      return ROLE_SPELL;
 
     return ROLE_SPELL;
   }
+
   else if ( primary_tree() == TREE_ENHANCEMENT )
     return ROLE_HYBRID;
+
   else if ( primary_tree() == TREE_ELEMENTAL )
     return ROLE_SPELL;
 

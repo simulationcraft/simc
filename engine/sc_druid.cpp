@@ -4382,6 +4382,9 @@ int druid_t::primary_role() SC_CONST
 
   if ( primary_tree() == TREE_BALANCE )
   {
+    if ( player_t::primary_role() == ROLE_HEAL )
+      return ROLE_HEAL;
+
     return ROLE_SPELL;
   }
 
@@ -4399,6 +4402,9 @@ int druid_t::primary_role() SC_CONST
   {
     if ( player_t::primary_role() == ROLE_HEAL )
       return ROLE_HEAL;
+
+    if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
+      return ROLE_SPELL;
 
     return ROLE_SPELL;
   }

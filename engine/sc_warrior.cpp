@@ -3371,7 +3371,13 @@ void warrior_t::regen( double periodicity )
 
 int warrior_t::primary_role() SC_CONST
 {
-  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION )
+  if ( player_t::primary_role() == ROLE_TANK )
+    return ROLE_TANK;
+
+  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
+    return ROLE_ATTACK;
+
+  if ( primary_tree() == TREE_PROTECTION )
     return ROLE_TANK;
 
   return ROLE_ATTACK;
