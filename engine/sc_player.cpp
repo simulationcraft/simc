@@ -2559,7 +2559,12 @@ void player_t::schedule_ready( double delta_time,
 
 void player_t::arise()
 {
+  if ( sim -> log )
+    log_t::output( sim, "%s arises.", name() );
+
   sleeping = 0;
+
+  init_resources( true );
 
   schedule_ready();
 }
@@ -2568,6 +2573,9 @@ void player_t::arise()
 
 void player_t::demise()
 {
+  if ( sim -> log )
+    log_t::output( sim, "%s demises.", name() );
+
   sleeping = 1;
   readying = 0;
 
@@ -2579,6 +2587,7 @@ void player_t::demise()
   {
     a -> cancel();
   }
+
   sim -> cancel_events( this );
 }
 

@@ -132,7 +132,7 @@ void pet_t::summon( double duration )
 
   distance = owner -> distance;
 
-  init_resources( true );
+
   summon_time = sim -> current_time;
   summoned=true;
 
@@ -161,13 +161,22 @@ void pet_t::dismiss()
 {
   if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
 
-
-
-
   demise();
+}
 
+// pet_t::assess_damage ==================================================
 
+double pet_t::assess_damage( double            amount,
+        const school_type school,
+        int               dmg_type,
+        int               result,
+        action_t*         action )
+{
+  if ( ! action )
+    amount *= 0.10;
 
+  else if ( action -> aoe )
+    amount *= 0.10;
 
-
+  return player_t::assess_damage( amount, school, dmg_type, result, action );
 }

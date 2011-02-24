@@ -612,6 +612,20 @@ struct hunter_pet_t : public pet_t
     o -> active_pet = this;
   }
 
+  virtual void dismiss()
+  {
+    hunter_t* o = owner -> cast_hunter();
+    pet_t::dismiss();
+    o -> active_pet = 0;
+  }
+
+  virtual void demise()
+  {
+    hunter_t* o = owner -> cast_hunter();
+    pet_t::demise();
+    o -> active_pet = 0;
+  }
+
   virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );

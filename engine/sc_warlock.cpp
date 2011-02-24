@@ -759,6 +759,13 @@ struct warlock_main_pet_t : public warlock_pet_t
     o -> active_pet = 0;
   }
 
+  virtual void demise()
+  {
+    warlock_t* o = owner -> cast_warlock();
+    warlock_pet_t::demise();
+    o -> active_pet = 0;
+  }
+
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> spell_hit * 26.0 / 17.0;
