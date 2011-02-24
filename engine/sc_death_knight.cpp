@@ -203,6 +203,9 @@ struct death_knight_t : public player_t
   dancing_rune_weapon_pet_t* active_dancing_rune_weapon;
   ghoul_pet_t*               active_ghoul;
 
+  // Procs
+  proc_t* proc_runic_empowerment;
+
   // RNGs
   rng_t* rng_blood_caked_blade;
   rng_t* rng_might_of_the_frozen_wastes;
@@ -327,6 +330,7 @@ struct death_knight_t : public player_t
   virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
+  virtual void      init_procs();
   virtual void      init_glyphs();
   virtual void      init_resources( bool force );
   virtual void      init_values();
@@ -4372,6 +4376,15 @@ void death_knight_t::init_gains()
   gains_scent_of_blood             = get_gain( "scent_of_blood"             );
 }
 
+// death_knight_t::init_procs ===============================================
+
+void death_knight_t::init_procs()
+{
+  player_t::init_procs();
+
+  proc_runic_empowerment = get_proc( "runic_empowerment" );
+}
+
 // death_knight_t::init_resources ===========================================
 
 void death_knight_t::init_resources( bool force )
@@ -4656,14 +4669,20 @@ int death_knight_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// death_knight_t::trigger_runic_empowerment ================================
+
 void death_knight_t::trigger_runic_empowerment()
 {
   if ( talents.runic_corruption -> rank() )
   {
     if ( buffs_runic_corruption -> up() )
+    {
       buffs_runic_corruption -> extend_duration( this, 3 );
+    }
     else
+    {
       buffs_runic_corruption -> trigger();
+    }
     return;
   }
 
@@ -4690,6 +4709,7 @@ void death_knight_t::trigger_runic_empowerment()
     _runes.slot[rune_to_regen].fill_rune();
     if ( sim -> log )
       log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
+    proc_runic_empowerment -> occur();
   }
 }
 
