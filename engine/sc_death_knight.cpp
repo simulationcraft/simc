@@ -4071,16 +4071,29 @@ void death_knight_t::init_actions()
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
         action_list_str += "/pillar_of_frost";
-      if ( talents.howling_blast -> rank() && talents.rime -> rank() )
-        action_list_str += "/howling_blast,if=buff.rime.react";
       action_list_str += "/raise_dead,time>=5";
+      // Priority Taken from Frost DK OP
+      // Diseases
       if ( level > 81 )
         action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/howling_blast,if=dot.frost_fever.remains<=2";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
+      //  Ob if both Frost/Unholy pairs and/or both Death runes are up, or if KM is procced
+      action_list_str += "/obliterate,if=frost=2&unholy=2";
+      action_list_str += "/obliterate,if=death=2";
+      action_list_str += "/obliterate,if=buff.killing_machine.react"; // All 3 are seperated for Sample Sequence
+      // BS if both blood are up
+      action_list_str += "/blood_strike,if=blood=2";
+      // FS if capped; using 30 less than cap was a DPS gain in all cases
+      action_list_str +="/frost_strike,if=runic_power>=90";
+      // Rime
+      if ( talents.howling_blast -> rank() && talents.rime -> rank() )
+        action_list_str += "/howling_blast,if=buff.rime.react"; 
+      // OB -> BS -> FS
       action_list_str += "/obliterate";
-      action_list_str += "/frost_strike";
       action_list_str += "/blood_strike";
+      action_list_str += "/frost_strike";
+      // Other
       action_list_str += "/blood_tap";
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
