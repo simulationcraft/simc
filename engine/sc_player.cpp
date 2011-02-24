@@ -289,7 +289,7 @@ player_t::player_t( sim_t*             s,
     next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), level( 85 ), use_pre_potion( 1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
-    potion_used( 0 ), sleeping( 0 ), initialized( 0 ),
+    potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
     vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
     player_data( &( s->sim_data ) ),
@@ -2281,9 +2281,9 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
-  if ( ! is_pet() && ! sleeping )
+  if ( ! is_pet() )
   {
-    schedule_ready();
+    arise();
   }
 
   if ( sim -> overrides.strength_of_wrynn )
@@ -2337,10 +2337,14 @@ void player_t::combat_end()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s", name() );
 
-  for( buff_t* b = buff_list; b; b = b -> next )
+  if ( ! is_pet() )
   {
-    b -> expire();
+    demise();
   }
+  else if ( is_pet() )
+    cast_pet() -> dismiss();
+
+
 
   double iteration_seconds = current_time;
 
@@ -2366,6 +2370,8 @@ void player_t::reset()
 
   last_cast = 0;
   gcd_ready = 0;
+
+  sleeping = 1;
 
   stats = initial_stats;
 
@@ -2479,8 +2485,6 @@ void player_t::reset()
   for ( dot_t* d = dot_list; d; d = d -> next ) d -> reset();
 
   potion_used = 0;
-
-  if ( sleeping ) quiet = 1;
 }
 
 // player_t::schedule_ready =================================================
@@ -2549,6 +2553,33 @@ void player_t::schedule_ready( double delta_time,
   if ( delta_time == 0 ) delta_time = 0.000001;
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
+}
+
+// player_t::arise
+
+void player_t::arise()
+{
+  sleeping = 0;
+
+  schedule_ready();
+}
+
+// player_t::demise
+
+void player_t::demise()
+{
+  sleeping = 1;
+  readying = 0;
+
+  for( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> expire();
+  }
+  for ( action_t* a = action_list; a; a = a -> next )
+  {
+    a -> cancel();
+  }
+  sim -> cancel_events( this );
 }
 
 // player_t::interrupt ======================================================
@@ -2737,7 +2768,11 @@ double player_t::resource_loss( int       resource,
                                 double    amount,
                                 action_t* action )
 {
-  if ( amount == 0 ) return 0;
+  if ( amount == 0 )
+    return 0;
+
+  if ( sleeping )
+    return 0;
 
   double actual_amount;
 
@@ -2772,7 +2807,8 @@ double player_t::resource_gain( int       resource,
                                 gain_t*   source,
                                 action_t* action )
 {
-  if ( sleeping ) return 0;
+  if ( sleeping )
+    return 0;
 
   double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
 
@@ -3066,6 +3102,7 @@ double player_t::assess_damage( double            amount,
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
   {
     if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
+    demise();
   }
 
   if ( vengeance_enabled && school == SCHOOL_PHYSICAL )

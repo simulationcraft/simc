@@ -3274,6 +3274,8 @@ struct player_t
   virtual void      moving();
   virtual void      clear_debuffs();
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
+  virtual void      arise();
+  virtual void      demise();
   virtual double    available() SC_CONST { return 0.1; }
   virtual action_t* execute_action();
 

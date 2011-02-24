@@ -466,6 +466,9 @@ bool buff_t::trigger( int    stacks,
   if ( cooldown -> remains() > 0 )
     return false;
 
+  if ( player -> sleeping )
+    return false;
+
   trigger_attempts++;
 
   if ( chance < 0 ) chance = default_chance;
@@ -641,6 +644,7 @@ void buff_t::refresh( int    stacks,
 void buff_t::bump( int    stacks,
                    double value )
 {
+
   if ( max_stack == 0 ) return;
 
   if ( max_stack < 0 )

@@ -201,7 +201,9 @@ int chart_t::raid_dps( std::vector<std::string>& images,
                        sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_rank.size();
-  assert( num_players != 0 );
+
+  if ( num_players == 0 )
+    return 0;
 
   double max_dps = sim -> players_by_rank[ 0 ] -> dps;
 
@@ -285,7 +287,9 @@ int chart_t::raid_gear( std::vector<std::string>& images,
                         sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_rank.size();
-  assert( num_players != 0 );
+
+  if ( num_players == 0 )
+    return 0;
 
   std::vector<double> data_points[ STAT_MAX ];
 
@@ -439,7 +443,9 @@ const char* chart_t::raid_downtime( std::string& s,
                                     sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
-  assert( num_players != 0 );
+
+  if ( num_players == 0 )
+    return 0;
 
   std::vector<player_t*> waiting_list;
 
@@ -585,7 +591,9 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
                         sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_rank.size();
-  assert( num_players != 0 );
+
+  if ( num_players == 0 )
+    return 0;
 
   std::vector<stats_t*> stats_list;
 

@@ -118,7 +118,6 @@ void pet_t::init_talents()
 void pet_t::reset()
 {
   player_t::reset();
-  sleeping = 1;
   summon_time = 0;
 }
 
@@ -132,7 +131,7 @@ void pet_t::summon( double duration )
   }
 
   distance = owner -> distance;
-  sleeping = 0;
+
   init_resources( true );
   summon_time = sim -> current_time;
   summoned=true;
@@ -153,7 +152,7 @@ void pet_t::summon( double duration )
     new ( sim ) expiration_t( sim, this, duration );
   }
 
-  schedule_ready();
+  arise();
 }
 
 // pet_t::dismiss ===========================================================
@@ -162,18 +161,13 @@ void pet_t::dismiss()
 {
   if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
 
-  readying = 0;
-  sleeping = 1;
 
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    a -> cancel();
-  }
 
-  for( buff_t* b = buff_list; b; b = b -> next )
-  {
-    b -> expire();
-  }
 
-  sim -> cancel_events( this );
+  demise();
+
+
+
+
+
 }

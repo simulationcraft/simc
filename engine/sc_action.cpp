@@ -1499,6 +1499,9 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
+  if ( t -> sleeping )
+    return false;
+
   if ( target -> debuffs.invulnerable -> check() )
     if ( harmful )
       return false;
