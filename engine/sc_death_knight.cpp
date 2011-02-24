@@ -2592,7 +2592,7 @@ struct death_coil_t : public death_knight_spell_t
       base_crit        += 0.05;
 
     if ( p -> talents.runic_corruption -> rank() )
-      base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST );
+      base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST ) / 10.0;
   }
 
   virtual double cost() SC_CONST
@@ -2794,7 +2794,7 @@ struct frost_strike_t : public death_knight_attack_t
 
     parse_options( NULL, options_str );
 
-    base_cost   -= p -> glyphs.frost_strike * 80;
+    base_cost   -= p -> glyphs.frost_strike * 8;
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += 0.05;
   }
@@ -3106,7 +3106,7 @@ struct mind_freeze_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> talents.endless_winter -> rank() )
-      base_cost += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST );
+      base_cost += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST ) / 10.0;
 
     may_miss = may_resist = false;
   }

@@ -2196,7 +2196,7 @@ struct thunder_clap_t : public warrior_attack_t
     direct_power_mod  = 0.12; // FIXME: Is this correct?
     base_multiplier  *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
     base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-    base_cost        += p -> glyphs.resonating_power -> effect_base_value( 1 );
+    base_cost        += p -> glyphs.resonating_power -> effect_base_value( 1 ) / 10.0;
   }
 
   virtual void execute()
