@@ -178,6 +178,7 @@ const char* util_t::role_type_string( int role )
   case ROLE_DPS:       return "dps";
   case ROLE_TANK:      return "tank";
   case ROLE_HEAL:      return "heal";
+  case ROLE_NONE:      return "auto";
   }
   return "unknown";
 }

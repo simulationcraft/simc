@@ -2251,8 +2251,8 @@ int sim_t::main( int argc, char** argv )
     }
 
     util_t::fprintf( output_file,
-                     "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, smooth_rng=%d )\n",
-                     iterations, max_time, vary_combat_length, optimal_raid, smooth_rng );
+                     "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
+                     iterations, max_time, vary_combat_length, optimal_raid, fight_style.c_str() );
     fflush( output_file );
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

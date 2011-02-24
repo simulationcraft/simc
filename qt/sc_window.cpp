@@ -153,6 +153,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
          threadsChoice->setCurrentIndex( tokens[  8 ].toInt() );
     armoryRegionChoice->setCurrentIndex( tokens[  9 ].toInt() );
       armorySpecChoice->setCurrentIndex( tokens[ 10 ].toInt() );
+     defaultRoleChoice->setCurrentIndex( tokens[ 11 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -193,7 +194,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
@@ -205,6 +206,7 @@ QString SimulationCraftWindow::encodeOptions()
     .arg(       threadsChoice->currentIndex() )
     .arg(  armoryRegionChoice->currentIndex() )
     .arg(    armorySpecChoice->currentIndex() )
+    .arg(   defaultRoleChoice->currentIndex() )
     ;
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
@@ -469,6 +471,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout->addRow(   "Default Role",   defaultRoleChoice = createChoice( 2, "auto", "dps", "tank", "heal" ) );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
@@ -839,6 +842,8 @@ void SimulationCraftWindow::createToolTips()
 
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
+  defaultRoleChoice->setToolTip( "Specify the character role during import to ensure correct action priority list." );
+
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
                            "Due to the forced single iteration, no scale factor calculation." );
@@ -920,7 +925,7 @@ void ImportThread::importBattleNet()
   {
     // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so 
     // do it in a silly way as a workaround for now.
-    std::string talents = mainWindow->armorySpecChoice  ->currentText().toUtf8().constData(),
+    std::string talents = mainWindow->armorySpecChoice->currentText().toUtf8().constData(),
                 cpp_s   = server.toUtf8().constData(),
                 cpp_c   = character.toUtf8().constData(),
                 cpp_r   = region.toUtf8().constData();
@@ -967,6 +972,8 @@ void ImportThread::run()
 
   if( player )
   {
+    player -> role = util_t::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
+
     if ( sim->init() )
     {
       std::string buffer="";

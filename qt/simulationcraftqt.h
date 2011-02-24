@@ -26,7 +26,7 @@
 #define TAB_HISTORY    4
 #define TAB_CUSTOM     5
 
-#define HISTORY_VERSION "4.11"
+#define HISTORY_VERSION "4.12"
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -107,9 +107,9 @@ public:
     QComboBox* targetRaceChoice;
     QComboBox* playerSkillChoice;
     QComboBox* threadsChoice;
-    QComboBox* smoothRNGChoice;
     QComboBox* armoryRegionChoice;
     QComboBox* armorySpecChoice;
+    QComboBox* defaultRoleChoice;
     QComboBox* debugChoice;
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;

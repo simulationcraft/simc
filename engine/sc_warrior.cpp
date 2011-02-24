@@ -724,7 +724,7 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
 double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
-  double c = attack_t::cost() / 10; // Rage Costs are stored as * 10
+  double c = attack_t::cost();
   if ( p -> buffs_deadly_calm -> up()                 ) c  = 0;
   if ( p -> buffs_battle_trance -> check() && c > 5   ) c  = 0;
   return c;
@@ -765,8 +765,10 @@ void warrior_attack_t::execute()
   warrior_t* p = player -> cast_warrior();
 
   // Battle Trance only is effective+consumed if action cost was >5
-  if ( resource_consumed > 5 && p -> buffs_battle_trance -> up() )
+  if ( base_cost > 5 && p -> buffs_battle_trance -> up() )
+  {
     p -> buffs_battle_trance -> expire();
+  }
 
   if ( proc ) return;
 
@@ -2317,19 +2319,10 @@ struct warrior_spell_t : public spell_t
   {
   }
    
-  virtual double cost() SC_CONST;
   virtual double gcd() SC_CONST;
   virtual bool   ready();
   virtual void   parse_options( option_t* options, const std::string& options_str );
 };
-
-// warrior_spell_t::cost ====================================================
-
-double warrior_spell_t::cost() SC_CONST
-{
-  double c = spell_t::cost() / 10; // Rage Costs are stored as * 10;
-  return c;
-}
 
 // warrior_spell_t::gcd =====================================================
 

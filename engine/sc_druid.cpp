@@ -1673,7 +1673,7 @@ void druid_bear_attack_t::parse_options( option_t*          options,
 double druid_bear_attack_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  double c = attack_t::cost() / 10; // Rage Costs are stored as * 10;
+  double c = attack_t::cost();
   if ( harmful && p -> buffs_omen_of_clarity -> check() ) return 0;
   return c;
 }

@@ -254,13 +254,16 @@ double sc_data_access_t::spell_cost( const uint32_t spell_id ) SC_CONST
 
   assert( spell_exists( spell_id ) );
 
-  if ( m_spells_index[ spell_id ]->power_type == POWER_MANA )
-  {
-    // Return as a fraction of base mana.
-    return m_spells_index[ spell_id ]->cost / 100.0;
+  double divisor = 1.0;
+
+  switch ( m_spells_index[ spell_id ]->power_type )
+  { 
+  case POWER_MANA:        divisor = 100.0; break;
+  case POWER_RAGE:        divisor =  10.0; break;
+  case POWER_RUNIC_POWER: divisor =  10.0; break;
   }
 
-  return ( double ) m_spells_index[ spell_id ]->cost;
+  return ( double ) m_spells_index[ spell_id ]->cost / divisor;
 }
 
 uint32_t sc_data_access_t::spell_rune_cost( const uint32_t spell_id ) SC_CONST

@@ -1478,7 +1478,6 @@ struct death_knight_attack_t : public attack_t
   virtual void   reset();
 
   virtual void   consume_resource();
-  virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
   virtual double calculate_weapon_damage();
@@ -1548,7 +1547,6 @@ struct death_knight_spell_t : public spell_t
   virtual void   reset();
 
   virtual void   consume_resource();
-  virtual double cost() SC_CONST;
   virtual void   execute();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
@@ -1852,14 +1850,6 @@ void death_knight_attack_t::consume_resource()
     refund_power( this );
 }
 
-// death_knight_attack_t::cost ==============================================
-
-double death_knight_attack_t::cost() SC_CONST
-{
-  double c = attack_t::cost() / 10.0; // Runic Power Costs are stored as * 10
-  return c;
-}
-
 // death_knight_attack_t::execute() =========================================
 
 void death_knight_attack_t::execute()
@@ -1978,14 +1968,6 @@ void death_knight_spell_t::reset()
 {
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
   action_t::reset();
-}
-
-// death_knight_spell_t::cost ===============================================
-
-double death_knight_spell_t::cost() SC_CONST
-{
-  double c = spell_t::cost() / 10.0; // Runic Power Costs are stored as * 10
-  return c;
 }
 
 // death_knight_spell_t::consume_resource() =================================
