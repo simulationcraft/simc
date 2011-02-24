@@ -262,7 +262,7 @@ class TalentDataGenerator(DataGenerator):
                 continue
 
             # Make sure the "base spell" exists
-            if not self._spell_db.get(talent.id_rank_1):
+            if not self._spell_db.get(talent_data.id_rank_1):
                 continue
 
             ids.append(talent_id)
