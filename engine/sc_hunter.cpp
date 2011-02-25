@@ -325,13 +325,13 @@ struct hunter_pet_t : public pet_t
   {
     switch ( pet_type )
     {
-    case PET_CARRION_BIRD: return NULL;
+    case PET_CARRION_BIRD: return "demoralizing_screech";
     case PET_CAT:          return NULL;
     case PET_CORE_HOUND:   return NULL;
     case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
-    case PET_HYENA:        return NULL;
+    case PET_HYENA:        return "tendon_rip";
     case PET_MOTH:         return NULL;
-    case PET_RAPTOR:       return NULL;
+    case PET_RAPTOR:       return "tear_armor";
     case PET_SPIRIT_BEAST: return NULL;
     case PET_TALLSTRIDER:  return NULL;
     case PET_WASP:         return NULL;
@@ -352,12 +352,13 @@ struct hunter_pet_t : public pet_t
     case PET_CHIMERA:      return "froststorm_breath";
     case PET_DRAGONHAWK:   return "lightning_breath";
     case PET_NETHER_RAY:   return NULL;
-    case PET_RAVAGER:      return NULL;
-    case PET_SERPENT:      return NULL;
+    case PET_RAVAGER:      return "ravage";
+    case PET_SERPENT:      return "corrosive_spit";
     case PET_SILITHID:     return NULL;
     case PET_SPIDER:       return NULL;
     case PET_SPOREBAT:     return NULL;
     case PET_WIND_SERPENT: return "lightning_breath";
+    case PET_FOX:          return "tailspin";
     default: break;
     }
     return NULL;
@@ -780,7 +781,7 @@ static void trigger_piercing_shots( action_t* a )
     void player_buff() {}
     void target_debuff( player_t* t, int dmg_type )
     {
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
+      if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
       {
         target_multiplier = 1.30;
       }
@@ -1197,75 +1198,6 @@ struct hunter_pet_spell_t : public spell_t
   }
 };
 
-// Chimera Froststorm Breath ================================================
-
-struct froststorm_breath_tick_t : public hunter_pet_spell_t
-{
-  froststorm_breath_tick_t( player_t* player ) :
-      hunter_pet_spell_t( "froststorm_breath_tick", player, 95725 )
-  {
-    base_dd_min = base_dd_max = 150;
-    direct_power_mod = 1.5 / 3.5;
-    background  = true;
-    direct_tick = true;
-  }
-};
-
-struct froststorm_breath_t : public hunter_pet_spell_t
-{
-  froststorm_breath_tick_t* tick_spell;
-
-  froststorm_breath_t( player_t* player, const std::string& options_str ) :
-      hunter_pet_spell_t( "froststorm_breath", player, "Froststorm Breath" )
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    parse_options( NULL, options_str );
-
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
-    auto_cast = true;
-
-    tick_spell = new froststorm_breath_tick_t( p );
-
-    add_child( tick_spell );
-  }
-  virtual void tick()
-  {
-    tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
-  }
-};
-
-struct lightning_breath_t : public hunter_pet_spell_t
-{
-  lightning_breath_t( player_t* player, const std::string& options_str ) :
-      hunter_pet_spell_t( "lightning_breath", player, "Lightning Breath" )
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    parse_options( 0, options_str );
-
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
-    auto_cast = true;
-    harmful   = false;
-  }
-
-  virtual void execute()
-  {
-    hunter_pet_spell_t::execute();
-    if ( result_is_hit() )
-    {
-      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
-      target -> debuffs.lightning_breath -> expire();
-      target -> debuffs.lightning_breath -> trigger( 1, effect_base_value( 1 ) );
-      target -> debuffs.lightning_breath -> source = p;
-    }
-  }
-
-};
-
 // Call of the Wild ===========================================================
 
 struct call_of_the_wild_t : public hunter_pet_spell_t
@@ -1289,36 +1221,6 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
     hunter_t*     o = p -> owner -> cast_hunter();
     o -> buffs_call_of_the_wild -> trigger();
     p -> buffs_call_of_the_wild -> trigger();
-    hunter_pet_spell_t::execute();
-  }
-};
-
-// Furious Howl ===============================================================
-
-struct furious_howl_t : public hunter_pet_spell_t
-{
-  furious_howl_t( player_t* player, const std::string& options_str ) :
-      hunter_pet_spell_t( "furious_howl", player, "Furious Howl" )
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    parse_options( NULL, options_str );
-
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    for ( player_t* pl = sim -> player_list; pl; pl = pl -> next )
-    {
-      if ( pl -> is_pet() )
-        continue;
-
-      pl -> buffs.furious_howl -> trigger();
-    }
     hunter_pet_spell_t::execute();
   }
 };
@@ -1381,6 +1283,279 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     if ( o -> resource_current[ RESOURCE_FOCUS ] > 50 )
       return false;
     return hunter_pet_spell_t::ready();
+  }
+};
+
+// ============================================================================
+// Unique Pet Specials=========================================================
+// ============================================================================
+
+// Wolf/Devilsaur Furious Howl ================================================
+
+struct furious_howl_t : public hunter_pet_spell_t
+{
+  furious_howl_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "furious_howl", player, "Furious Howl" )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( NULL, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    for ( player_t* pl = sim -> player_list; pl; pl = pl -> next )
+    {
+      if ( pl -> is_pet() )
+        continue;
+
+      pl -> buffs.furious_howl -> trigger();
+    }
+    hunter_pet_spell_t::execute();
+  }
+};
+
+// Wind Serpent Lightning Breath ==============================================
+
+struct lightning_breath_t : public hunter_pet_spell_t
+{
+  lightning_breath_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "lightning_breath", player, "Lightning Breath" )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      target -> debuffs.lightning_breath -> expire();
+      target -> debuffs.lightning_breath -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.lightning_breath -> source = p;
+    }
+  }
+};
+
+// Serpent Corrosive Spit  ===================================================
+
+struct corrosive_spit_t : public hunter_pet_spell_t
+{
+  corrosive_spit_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "corrosive_spit", player, 95466 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      target -> debuffs.corrosive_spit -> trigger(1, -1*effect_base_value( 1 ) );
+    }
+  }
+};
+
+// Demoralizing Screech  ===================================================
+
+struct demoralizing_screech_t : public hunter_pet_spell_t
+{
+  demoralizing_screech_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "demoralizing_screech", player, 24423 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    //TODO: Is actually an aoe ability
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      target -> debuffs.demoralizing_screech -> expire();
+      target -> debuffs.demoralizing_screech -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.demoralizing_screech -> source = p;
+    }
+  }
+};
+
+// Ravager Ravage ===========================================================
+
+struct ravage_t : public hunter_pet_spell_t
+{
+  ravage_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "ravage", player, 50518 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      target -> debuffs.ravage -> expire();
+      target -> debuffs.ravage -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.ravage -> source = p;
+    }
+  }
+};
+
+// Fox Tailspin  ===================================================
+
+struct tailspin_t : public hunter_pet_spell_t
+{
+  tailspin_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "tailspin", player, 90315 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    //TODO: Is actually an aoe ability
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      target -> debuffs.tailspin -> expire();
+      target -> debuffs.tailspin -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.tailspin -> source = p;
+    }
+  }
+};
+
+// Raptor Tear Armor  ===================================================
+
+struct tear_armor_t : public hunter_pet_spell_t
+{
+  tear_armor_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "tear_armor", player, 95467 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      target -> debuffs.tear_armor -> trigger( 1, -1*effect_base_value( 1 ) );
+    }
+  }
+};
+
+// Hyena Tendon Rip ===========================================================
+
+struct tendon_rip_t : public hunter_pet_spell_t
+{
+  tendon_rip_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "tendon_rip", player, 50271 )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( 0, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( result_is_hit() )
+    {
+      hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+      target -> debuffs.tendon_rip -> expire();
+      target -> debuffs.tendon_rip -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.tendon_rip -> source = p;
+    }
+  }
+};
+
+// Chimera Froststorm Breath ================================================
+
+struct froststorm_breath_tick_t : public hunter_pet_spell_t
+{
+  froststorm_breath_tick_t( player_t* player ) :
+      hunter_pet_spell_t( "froststorm_breath_tick", player, 95725 )
+  {
+    base_dd_min = base_dd_max = 150;
+    direct_power_mod = 1.5 / 3.5;
+    background  = true;
+    direct_tick = true;
+  }
+};
+
+struct froststorm_breath_t : public hunter_pet_spell_t
+{
+  froststorm_breath_tick_t* tick_spell;
+
+  froststorm_breath_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "froststorm_breath", player, "Froststorm Breath" )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( NULL, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    auto_cast = true;
+
+    tick_spell = new froststorm_breath_tick_t( p );
+
+    add_child( tick_spell );
+  }
+  virtual void tick()
+  {
+    tick_spell -> execute();
+    stats -> add_tick( time_to_tick );
   }
 };
 
@@ -2698,16 +2873,23 @@ struct snipertraining_hunter_t : public event_t
 action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
 {
-  if ( name == "auto_attack"       ) return new   pet_auto_attack_t( this, options_str );
-  if ( name == "call_of_the_wild"  ) return new  call_of_the_wild_t( this, options_str );
-  if ( name == "claw"              ) return new              claw_t( this, options_str );
-  if ( name == "froststorm_breath" ) return new froststorm_breath_t( this, options_str );
-  if ( name == "furious_howl"      ) return new      furious_howl_t( this, options_str );
-  if ( name == "lightning_breath"  ) return new  lightning_breath_t( this, options_str );
-  if ( name == "monstrous_bite"    ) return new    monstrous_bite_t( this, options_str );
-  if ( name == "rabid"             ) return new             rabid_t( this, options_str );
-  if ( name == "roar_of_recovery"  ) return new  roar_of_recovery_t( this, options_str );
-  if ( name == "wolverine_bite"    ) return new    wolverine_bite_t( this, options_str );
+  if ( name == "auto_attack"           ) return new      pet_auto_attack_t( this, options_str );
+  if ( name == "call_of_the_wild"      ) return new     call_of_the_wild_t( this, options_str );
+  if ( name == "claw"                  ) return new                 claw_t( this, options_str );
+  if ( name == "froststorm_breath"     ) return new    froststorm_breath_t( this, options_str );
+  if ( name == "furious_howl"          ) return new         furious_howl_t( this, options_str );
+  if ( name == "lightning_breath"      ) return new     lightning_breath_t( this, options_str );
+  if ( name == "monstrous_bite"        ) return new       monstrous_bite_t( this, options_str );
+  if ( name == "rabid"                 ) return new                rabid_t( this, options_str );
+  if ( name == "roar_of_recovery"      ) return new     roar_of_recovery_t( this, options_str );
+  if ( name == "wolverine_bite"        ) return new       wolverine_bite_t( this, options_str );
+  if ( name == "corrosive_spit"        ) return new       corrosive_spit_t( this, options_str );
+  if ( name == "demoralizing_screech"  ) return new demoralizing_screech_t( this, options_str );
+  if ( name == "ravage"                ) return new               ravage_t( this, options_str );
+  if ( name == "tailspin"              ) return new             tailspin_t( this, options_str );
+  if ( name == "tear_armor"            ) return new           tear_armor_t( this, options_str );
+  if ( name == "tendon_rip"            ) return new           tendon_rip_t( this, options_str );
+  if ( name == "corrosive_spit"        ) return new       corrosive_spit_t( this, options_str );
 
   return pet_t::create_action( name, options_str );
 }
@@ -3576,8 +3758,14 @@ void player_t::hunter_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.hunters_mark      = new debuff_t( p, 1130, "hunters_mark" );
-    p -> debuffs.lightning_breath  = new debuff_t( p, 24844, "lightning_breath" );
+    p -> debuffs.hunters_mark         = new debuff_t( p, 1130,  "hunters_mark" );
+    p -> debuffs.corrosive_spit       = new debuff_t( p, 95466, "corrosive_spit" );
+    p -> debuffs.demoralizing_screech = new debuff_t( p, 24423, "demoralizing_screech" );
+    p -> debuffs.lightning_breath     = new debuff_t( p, 24844, "lightning_breath" );
+    p -> debuffs.ravage               = new debuff_t( p, 50518, "ravage" );
+    p -> debuffs.tailspin             = new debuff_t( p, 90315, "tailspin" );
+    p -> debuffs.tear_armor           = new debuff_t( p, 95467, "tear_armor" );
+    p -> debuffs.tendon_rip           = new debuff_t( p, 50271, "tendon_rip" );
   }
 }
 
@@ -3592,7 +3780,13 @@ void player_t::hunter_combat_begin( sim_t* sim )
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
     double v = sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS );
-    if ( sim -> overrides.hunters_mark ) t -> debuffs.hunters_mark -> override( 1, v );
-    if ( sim -> overrides.lightning_breath ) t -> debuffs.lightning_breath -> override( 1, 8 );
+    if ( sim -> overrides.hunters_mark           ) t -> debuffs.hunters_mark -> override( 1, v );
+    if ( sim -> overrides.lightning_breath       ) t -> debuffs.lightning_breath -> override( 1, 8 );
+    if ( sim -> overrides.corrosive_spit         ) t -> debuffs.corrosive_spit -> override( 1, 12 );
+    if ( sim -> overrides.demoralizing_screech   ) t -> debuffs.demoralizing_screech -> override( 1, 10 );
+    if ( sim -> overrides.ravage                 ) t -> debuffs.ravage -> override( 1, 4 );
+    if ( sim -> overrides.tailspin               ) t -> debuffs.tailspin -> override( 1, 20 );
+    if ( sim -> overrides.tear_armor             ) t -> debuffs.tear_armor -> override( 1, 12 );
+    if ( sim -> overrides.tendon_rip             ) t -> debuffs.tendon_rip -> override( 1, 30 );
   }
 }

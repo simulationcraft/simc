@@ -1654,10 +1654,12 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blood_frenzy_physical  = optimal_raid;
   overrides.bloodlust              = optimal_raid;
   overrides.communion              = optimal_raid;
+  overrides.corrosive_spit         = optimal_raid;
   overrides.critical_mass          = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.demonic_pact           = optimal_raid;
   overrides.demoralizing_roar      = optimal_raid;
+  overrides.demoralizing_screech   = optimal_raid;
   overrides.demoralizing_shout     = optimal_raid;
   overrides.devotion_aura          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
@@ -1687,11 +1689,15 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.moonkin_aura           = optimal_raid;
   overrides.poisoned               = optimal_raid;
   overrides.rampage                = optimal_raid;
+  overrides.ravage                 = optimal_raid;
   overrides.replenishment          = optimal_raid;
   overrides.savage_combat          = optimal_raid;
   overrides.scarlet_fever          = optimal_raid;
   overrides.strength_of_earth      = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
+  overrides.tailspin               = optimal_raid;
+  overrides.tear_armor             = optimal_raid;
+  overrides.tendon_rip             = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
   overrides.unleashed_rage         = optimal_raid;
@@ -1924,11 +1930,13 @@ void sim_t::create_options()
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
     { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
+    { "override.corrosive_spit",          OPT_BOOL,   &( overrides.corrosive_spit                 ) },
     { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
     { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
     { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
     { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
     { "override.demoralizing_roar",       OPT_BOOL,   &( overrides.demoralizing_roar              ) },
+    { "override.demoralizing_screech",    OPT_BOOL,   &( overrides.demoralizing_screech           ) },
     { "override.demoralizing_shout",      OPT_BOOL,   &( overrides.demoralizing_shout             ) },
     { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
     { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
@@ -1959,12 +1967,16 @@ void sim_t::create_options()
     { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
     { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
     { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
+    { "override.ravage",                  OPT_BOOL,   &( overrides.ravage                         ) },
     { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
     { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
     { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
     { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
     { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
     { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
+    { "override.tailspin",                OPT_BOOL,   &( overrides.tailspin                       ) },
+    { "override.tear_armor",              OPT_BOOL,   &( overrides.tear_armor                     ) },
+    { "override.tendon_rip",              OPT_BOOL,   &( overrides.tendon_rip                     ) },
     { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
     { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
     { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },

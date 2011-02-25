@@ -559,10 +559,11 @@ void action_t::player_buff()
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    if ( p -> debuffs.demoralizing_roar  -> up() ||
-         p -> debuffs.demoralizing_shout -> up() ||
-         p -> debuffs.scarlet_fever      -> up() ||
-         p -> debuffs.vindication        -> up() )
+    if ( p -> debuffs.demoralizing_roar    -> up() ||
+         p -> debuffs.demoralizing_shout   -> up() ||
+         p -> debuffs.demoralizing_screech -> up() ||
+         p -> debuffs.scarlet_fever        -> up() ||
+         p -> debuffs.vindication          -> up() )
     {
       player_multiplier *= 0.90;
     }
@@ -618,10 +619,13 @@ void action_t::target_debuff( player_t* t, int dmg_type )
     {
       target_multiplier *= 1.04;
     }
-    else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() )
+    else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() || t -> debuffs.ravage -> value() )
     {
-      target_multiplier *= 1.0 + std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
-                                           t -> debuffs.brittle_bones         -> value() );
+      target_multiplier *= 1.0 + std::max( 
+          std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
+                    t -> debuffs.brittle_bones         -> value() ),
+                    t -> debuffs.ravage                -> value() * 0.01);
+                                                
     }
   }
   else
@@ -636,7 +640,7 @@ void action_t::target_debuff( player_t* t, int dmg_type )
 
   if ( school == SCHOOL_BLEED )
   {
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.hemorrhage -> up() )
+    if ( t -> debuffs.mangle -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
     {
       target_multiplier *= 1.30;
     }
@@ -718,8 +722,9 @@ double action_t::armor() SC_CONST
 
   double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
                            std::max( t -> debuffs.faerie_fire  -> stack() * t -> debuffs.faerie_fire -> value(),
-                                     t -> debuffs.expose_armor -> value() ) );
-  // TO-DO: Also need to add the Hunter Pets Raptor and Serpent
+                           std::max( t -> debuffs.expose_armor -> value(),
+                           std::max( t -> debuffs.corrosive_spit -> stack() * t -> debuffs.corrosive_spit -> value() * 0.01,
+                                     t -> debuffs.tear_armor -> stack() * t -> debuffs.tear_armor -> value() * 0.01) ) ) );
 
   armor_reduction += t -> debuffs.shattering_throw -> stack() * 0.20;
 
