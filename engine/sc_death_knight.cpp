@@ -205,6 +205,7 @@ struct death_knight_t : public player_t
 
   // Procs
   proc_t* proc_runic_empowerment;
+  proc_t* proc_runic_empowerment_wasted;
 
   // RNGs
   rng_t* rng_blood_caked_blade;
@@ -2616,10 +2617,11 @@ struct death_coil_t : public death_knight_spell_t
       p -> active_dancing_rune_weapon -> drw_death_coil -> execute();
 
     if ( result_is_hit() )
+    {
       trigger_unholy_blight( this, direct_dmg );
+      p -> trigger_runic_empowerment(); // FIX ME: Confirm this needs to hit to trigger
+    }
 
-    if ( p -> sim -> roll( p -> constants.runic_empowerment_proc_chance ) )
-      p -> trigger_runic_empowerment();
     if ( ! p -> buffs_dark_transformation -> check() )
       p -> buffs_shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
   }
@@ -2811,6 +2813,9 @@ struct frost_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
+   
+    if( result_is_hit() )
+      p -> trigger_runic_empowerment(); // FIX ME: Does DW get 2 chances to proc this?
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -2821,8 +2826,6 @@ struct frost_strike_t : public death_knight_attack_t
       }
     }
     p -> buffs_killing_machine -> expire();
-    if ( p -> sim -> roll( p -> constants.runic_empowerment_proc_chance ) )
-      p -> trigger_runic_empowerment();
   }
 
   virtual void player_buff()
@@ -3508,6 +3511,11 @@ struct rune_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
+    
+    if ( result_is_hit() )
+    {
+      p -> trigger_runic_empowerment();  // FIX ME: Does DW get 2 chances to proc this?
+    }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -4396,7 +4404,8 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  proc_runic_empowerment = get_proc( "runic_empowerment" );
+  proc_runic_empowerment        = get_proc( "runic_empowerment"        );
+  proc_runic_empowerment_wasted = get_proc( "runic_empowerment_wasted" );
 }
 
 // death_knight_t::init_resources ===========================================
@@ -4687,6 +4696,9 @@ int death_knight_t::decode_set( item_t& item )
 
 void death_knight_t::trigger_runic_empowerment()
 {
+  if ( ! sim -> roll( constants.runic_empowerment_proc_chance ) )
+    return;
+
   if ( talents.runic_corruption -> rank() )
   {
     if ( buffs_runic_corruption -> up() )
@@ -4713,6 +4725,11 @@ void death_knight_t::trigger_runic_empowerment()
     _runes.slot[rune_to_regen].fill_rune();
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();
+  }
+  else
+  {
+    // If there were no available runes to refresh
+    proc_runic_empowerment_wasted -> occur();
   }
 }
 
