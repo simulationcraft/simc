@@ -2285,6 +2285,7 @@ struct sim_t
   // Default stat enchants
   gear_stats_t enchant;
 
+  std::map<std::string,std::string> var_map;
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
   std::vector<std::string> item_db_sources;

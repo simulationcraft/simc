@@ -360,6 +360,32 @@ bool option_t::parse_token( sim_t*       sim,
   name  = token.substr( 0, cut_pt );
   value = token.substr( cut_pt + 1 );
 
+  std::string::size_type start=0;
+
+  while ( ( start = value.find( "$(", start ) ) != std::string::npos )
+  {
+    std::string::size_type end = value.find( ")", start );
+    if ( end == std::string::npos )
+    {
+      sim -> errorf( "Variable syntax error: %s\n", token.c_str() );
+      return false;
+    }
+
+    std::string var_name = value.substr( start+2, ( end - start ) - 2 );
+
+    printf( "var_name = %s\n", var_name.c_str() );
+    
+    value.replace( start, ( end - start ) + 1, sim -> var_map[ var_name ] );
+  }
+
+  if ( name[ 0 ] == '$' )
+  {
+    std::string var_name = name.substr( 1 );
+    sim -> var_map[ var_name ] = value;
+    if ( sim -> debug ) log_t::output( sim, "%s = %s", var_name.c_str(), value.c_str() );
+    return true;
+  }
+
   if ( name == "input" )
   {
     FILE* file = open_file( sim, value );
