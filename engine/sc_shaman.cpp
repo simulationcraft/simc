@@ -1910,7 +1910,7 @@ struct fire_nova_t : public shaman_spell_t
 
     if ( ! p -> ptr )
     {
-      if ( ! p -> totems[ TOTEM_FIRE ] -> ticking )
+      if ( ! p -> totems[ TOTEM_FIRE ] -> dot -> ticking )
         return false;
 
 
