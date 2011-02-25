@@ -2423,7 +2423,7 @@ struct sim_t
   plot_t*    plot;
   double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds;
   int        report_progress;
-  int        bloodlust_percent, bloodlust_time, bloodlust_time_before_death;
+  int        bloodlust_percent, bloodlust_time;
   std::string reference_player_str;
   std::vector<player_t*> players_by_rank;
   std::vector<player_t*> players_by_name;

@@ -555,7 +555,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     report_progress( 1 ),
-    bloodlust_percent( 25 ), bloodlust_time( 0 ), bloodlust_time_before_death( 60 ),
+    bloodlust_percent( 25 ), bloodlust_time( -60 ),
     path_str( "." ), output_file( stdout ), log_file( 0 ),
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
@@ -940,9 +940,9 @@ void sim_t::combat_begin()
       virtual void execute()
       {
         target_t* t = sim -> target;
-        if ( ( sim -> bloodlust_percent           > 0 && t -> health_percentage() < sim -> bloodlust_percent ) ||
-             ( sim -> bloodlust_time_before_death > 0 && t -> time_to_die()       < sim -> bloodlust_time_before_death ) ||
-             ( sim -> bloodlust_time              > 0 && t -> current_time        > sim -> bloodlust_time ) )
+        if ( ( sim -> bloodlust_percent  > 0 && t -> health_percentage() <  sim -> bloodlust_percent ) ||
+             ( sim -> bloodlust_time     < 0 && t -> time_to_die()       < -sim -> bloodlust_time ) ||
+             ( sim -> bloodlust_time     > 0 && t -> current_time        >  sim -> bloodlust_time ) )
         {
           for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
@@ -1923,7 +1923,6 @@ void sim_t::create_options()
     { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
-    { "bloodlust_time_before_death",      OPT_INT,    &( bloodlust_time_before_death              ) },
     { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
     { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
     { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
