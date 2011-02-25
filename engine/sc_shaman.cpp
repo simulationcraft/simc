@@ -92,6 +92,8 @@ struct shaman_t : public player_t
   proc_t* procs_maelstrom_weapon;
   proc_t* procs_rolling_thunder;
   proc_t* procs_static_shock;
+  proc_t* procs_swings_clipped_mh;
+  proc_t* procs_swings_clipped_oh;
   proc_t* procs_wasted_ls;
   proc_t* procs_wasted_mw;
   proc_t* procs_ft_icd;
@@ -283,22 +285,23 @@ struct shaman_attack_t : public attack_t
 
 struct shaman_spell_t : public spell_t
 {
-  double                    base_cost_reduction;
-
+  double base_cost_reduction;
+  bool   maelstrom;
+  
   /* Old style construction, spell data will not be accessed */
   shaman_spell_t( const char* n, player_t* p, const school_type s, int t ) :
-    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 ) { }
+    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 ), maelstrom( false ) { }
   
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p ) :
-    spell_t( n, s_name, p ), base_cost_reduction( 0.0 )
+    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false )
   {
     may_crit = true;
   }
 
   /* Spell data based construction, spell id in spell_id */
   shaman_spell_t( const char* n, uint32_t spell_id, player_t* p ) :
-    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 )
+    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false )
   {
     may_crit = true;
   }
@@ -312,6 +315,7 @@ struct shaman_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual double haste() SC_CONST;
+  virtual void   schedule_execute();
   virtual bool   usable_moving()
   {
     shaman_t* p = player -> cast_shaman();
@@ -1615,6 +1619,78 @@ void shaman_spell_t::execute()
   }
 }
 
+// shaman_spell_t::execute =================================================
+
+void shaman_spell_t::schedule_execute()
+{
+  if ( sim -> log )
+  {
+    log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
+  }
+
+  time_to_execute = execute_time();
+
+  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+
+  if ( ! background )
+  {
+    player -> executing = this;
+    player -> gcd_ready = sim -> current_time + gcd();
+    if( player -> action_queued )
+    {
+      player -> gcd_ready -= sim -> queue_gcd_reduction;
+    }
+  }
+
+  if ( special && time_to_execute > 0 && ! proc )
+  {
+    double time_to_next_hit = 0;
+    shaman_t* p = player -> cast_shaman();
+
+    // If a maelstromable ability is cast, and we have maelstrom weapon up
+    // we clip swings instead of outright reset the swing timer(s)
+    if ( maelstrom && p -> buffs_maelstrom_weapon -> check() )
+    {
+      if ( player -> main_hand_attack && 
+           sim -> current_time + time_to_execute > player -> main_hand_attack -> execute_event -> occurs() )
+      {
+        p -> procs_swings_clipped_mh -> occur();
+        time_to_next_hit = player -> main_hand_attack -> execute_event -> remains() + 
+                           player -> main_hand_attack -> execute_time();
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+      
+      if ( player -> off_hand_attack &&
+           sim -> current_time + time_to_execute > player -> off_hand_attack -> execute_event -> occurs() )
+      {
+        p -> procs_swings_clipped_oh -> occur();
+        time_to_next_hit = player -> off_hand_attack -> execute_event -> remains() + 
+                           player -> off_hand_attack -> execute_time();
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+    }
+    else
+    {
+      // While a non-maelstromable spell is casting, main/offhand swing times are _RESET_
+      // Mainhand
+      if ( player -> main_hand_attack )
+      {
+        time_to_next_hit  = player -> main_hand_attack -> execute_time();
+        time_to_next_hit += time_to_execute;
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+      // Offhand
+      if ( player -> off_hand_attack )
+      {
+        time_to_next_hit  = player -> off_hand_attack -> execute_time();
+        time_to_next_hit += time_to_execute;
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+    }
+  }
+}
+
+
 // =========================================================================
 // Shaman Spells
 // =========================================================================
@@ -1664,30 +1740,22 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chain_lightning_t : public shaman_spell_t
 {
-  int      clearcasting,
-           conserve,
-           maelstrom,
-           glyph_targets;
-  double   max_lvb_cd;
+  int      glyph_targets;
   chain_lightning_overload_t* overload;
   
   chain_lightning_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "chain_lightning", "Chain Lightning", player ),
-    clearcasting( 0 ), conserve( 0 ), maelstrom( 0 ), glyph_targets( 0 ), 
-    max_lvb_cd( 0 )
+    glyph_targets( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "clearcasting", OPT_INT,     &clearcasting },
-      { "conserve",     OPT_INT,     &conserve     },
-      { "lvb_cd<",      OPT_FLT,     &max_lvb_cd   },
-      { "maelstrom",    OPT_INT,     &maelstrom    },
       { NULL,           OPT_UNKNOWN, NULL          }
     };
     parse_options( options, options_str );
 
+    maelstrom          = true;
     direct_power_mod  += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
@@ -1740,31 +1808,6 @@ struct chain_lightning_t : public shaman_spell_t
     t *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_CAST_TIME );
     
     return t;
-  }
-
-  virtual bool ready()
-  {
-    shaman_t* p = player -> cast_shaman();
-
-    if ( clearcasting > 0 && ! p -> buffs_elemental_focus -> check() )
-      return false;
-
-    if ( conserve > 0 )
-    {
-      double mana_pct = 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max [ RESOURCE_MANA ];
-      if ( ( mana_pct - 5.0 ) < target -> health_percentage() )
-        return false;
-    }
-
-    if ( maelstrom > 0 )
-      if ( maelstrom > p -> buffs_maelstrom_weapon -> check() )
-      return false;
-
-    if ( max_lvb_cd > 0  )
-      if ( p -> cooldowns_lava_burst -> remains() > ( max_lvb_cd * haste() ) )
-            return false;
-
-    return shaman_spell_t::ready();
   }
 
   double cost_reduction() SC_CONST
@@ -1862,12 +1905,18 @@ struct fire_nova_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( ! p -> totems[ TOTEM_FIRE ] )
+    if ( p -> ptr && ! p -> dot_flame_shock -> ticking )
       return false;
-      
-    // Searing totem cannot proc fire nova
-    if ( p -> totems[ TOTEM_FIRE ] -> spell_id() == 3599 )
-      return false;
+
+    if ( ! p -> ptr )
+    {
+      if ( ! p -> totems[ TOTEM_FIRE ] -> ticking )
+        return false;
+
+
+      if ( p -> totems[ TOTEM_FIRE ] -> id == 3599 )
+        return false;
+    }
 
     return shaman_spell_t::ready();
   }
@@ -1878,18 +1927,16 @@ struct fire_nova_t : public shaman_spell_t
 struct lava_burst_t : public shaman_spell_t
 {
   lava_burst_overload_t* overload;
-  int                   flame_shock;
   double                m_additive;
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
       shaman_spell_t( "lava_burst", "Lava Burst", player ),
-      flame_shock( 0 ),  m_additive( 0 )
+      m_additive( 0 )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "flame_shock", OPT_BOOL,    &flame_shock },
       { NULL,          OPT_UNKNOWN, NULL         }
     };
     parse_options( options, options_str );
@@ -1943,26 +1990,6 @@ struct lava_burst_t : public shaman_spell_t
       base_multiplier = 1.0 + m_additive;
   }
 
-  virtual bool ready()
-  {
-    if ( ! shaman_spell_t::ready() )
-      return false;
-    shaman_t* p = player -> cast_shaman();
-
-    if ( flame_shock )
-    {
-      if ( ! p -> dot_flame_shock -> ticking )
-        return false;
-
-      double lvb_finish = sim -> current_time + execute_time();
-      double fs_finish  = p -> dot_flame_shock -> ready;
-      if ( lvb_finish > fs_finish )
-        return false;
-    }
-
-    return true;
-  }
-  
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
@@ -1984,70 +2011,26 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
   }
-
-  void schedule_execute()
-  {
-    if ( sim -> log )
-    {
-      log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
-    }
-
-    time_to_execute = execute_time();
-
-    execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
-
-    if ( ! background )
-    {
-      player -> executing = this;
-      player -> gcd_ready = sim -> current_time + gcd();
-      if( player -> action_queued )
-      {
-        player -> gcd_ready -= sim -> queue_gcd_reduction;
-      }
-    }
-
-    if ( time_to_execute > 0 )
-    {
-      // While a non-maelstromable spell is casting, main/offhand swing times are _RESET_
-      double time_to_next_hit;
-      // Mainhand
-      if ( player -> main_hand_attack )
-      {
-        time_to_next_hit  = player -> main_hand_attack -> execute_time();
-        time_to_next_hit += time_to_execute;
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-      // Offhand
-      if ( player -> off_hand_attack )
-      {
-        time_to_next_hit  = player -> off_hand_attack -> execute_time();
-        time_to_next_hit += time_to_execute;
-        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-    }
-  }
 };
 
 // Lightning Bolt Spell =====================================================
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  int      maelstrom;
   lightning_bolt_overload_t* overload;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lightning_bolt", "Lightning Bolt", player ),
-    maelstrom( 0 )
+    shaman_spell_t( "lightning_bolt", "Lightning Bolt", player )
   {
     shaman_t* p = player -> cast_shaman();
 
     option_t options[] =
     {
-      { "maelstrom", OPT_INT,  &maelstrom  },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
+    maelstrom          = true;
     // Shamanism
     direct_power_mod  += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
@@ -2092,20 +2075,6 @@ struct lightning_bolt_t : public shaman_spell_t
     
     t *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_CAST_TIME );
     return t;
-  }
-  
-  virtual bool ready()
-  {
-    shaman_t* p = player -> cast_shaman();
-
-    if ( ! shaman_spell_t::ready() )
-      return false;
-
-    if ( maelstrom > 0 )
-      if( maelstrom > p -> buffs_maelstrom_weapon -> current_stack )
-        return false;
-
-    return true;
   }
   
   virtual double cost_reduction() SC_CONST
@@ -3771,6 +3740,8 @@ void shaman_t::init_procs()
   procs_lava_surge         = get_proc( "lava_surge"              );
   procs_maelstrom_weapon   = get_proc( "maelstrom_weapon"        );
   procs_static_shock       = get_proc( "static_shock"            );
+  procs_swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
+  procs_swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
   procs_rolling_thunder    = get_proc( "rolling_thunder"         );
   procs_wasted_ls          = get_proc( "wasted_lightning_shield" );
   procs_wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
