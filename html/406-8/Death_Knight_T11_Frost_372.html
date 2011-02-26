@@ -8,119 +8,11 @@
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<style type="text/css" media="all">
-			* {border: none;margin: 0;padding: 0; }
-			body {padding: 5px 25px 25px 25px;font-family: "Lucida Grande", Arial, sans-serif;font-size: 14px;background: #333;color: #FFF;text-align: center; }
-			p {margin: 1em 0 1em 0; }
-			h1, h2, h3, h4, h5, h6 {width: auto;color: #FDD017;margin-top: 1em;margin-bottom: 0.5em; }
-			h1, h2 {margin: 0;padding: 2px 2px 0 2px; }
-			h1 {font-size: 28px;text-shadow: 0 0 3px #FDD017; }
-			h2 {font-size: 18px; }
-			h3 {margin: 0 0 4px 0;font-size: 16px; }
-			h4 {font-size: 12px; }
-			h5 {font-size: 10px; }
-			a {color: #FDD017;text-decoration: none; }
-			a:hover, a:active {text-shadow: 0 0 1px #FDD017; }
-			ul, ol {padding-left: 20px; }
-			ul.float, ol.float {padding: 0;margin: 0; }
-			ul.float li, ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #333; }
-			.clear {clear: both; }
-			.hide, .charts span {display: none; }
-			.center {text-align: center; }
-			.float {float: left; }
-			.mt {margin-top: 20px; }
-			.mb {margin-bottom: 20px; }
-			.force-wrap {word-wrap: break-word; }
-			.mono {font-family: "Lucida Console", Monaco, monospace;font-size: 12px; }
-			.toggle {cursor: pointer; }
-			h2.toggle {padding-left: 18px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFaSURBVHjaYoz24a9N51aVZ2PADT5//VPS+5WRk51RVZ55STu/tjILVnV//jLEVn1cv/cHMzsb45OX/+48/muizSoiyISm7vvP/yn1n1bs+AE0kYGbkxEiaqDOcn+HyN8L4nD09aRYhCcHRBakDK4UCKwNWM+sEIao+34aoQ6LUiCwMWR9sEMETR12pUBgqs0a5MKOJohdKVYAVMbEQDQYVUq6UhlxZmACIBwNQNJCj/XVQVFjLVbCsfXrN4MwP9O6fn4jTVai3Ap0xtp+fhMcZqN7S06CeU0fPzBxERUCshLM6ycKmOmwEhVYkiJMa/oE0HyJM1zffvj38u0/wkq3H/kZU/nxycu/yIJY8v65678LOj8DszsBt+4+/iuo8COmOnSlh87+Ku///PjFXwIRe2qZkKggE56IZebnZfn56x8nO9P5m/+u3vkNLHBYWdARExMjNxczQIABACK8cxwggQ+oAAAAAElFTkSuQmCC) 0 -10px no-repeat; }
-			h2.toggle:hover {text-shadow: 0 0 2px #FDD017; }
-			h2.open {margin-bottom: 10px;background-position: 0 9px; }
-			#home-toc h2.open {margin-top: 20px; }
-			h3.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAYAAACD+r1hAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD/SURBVHjaYvx7QdyTgYGhE4iVgfg3A3bACsRvgDic8f///wz/Lkq4ADkrgVgIh4bvIMVM+i82M4F4QMYeIBUAxE+wKP4IxCEgxWC1MFGgwGEglQnEj5EUfwbiaKDcNpgA2EnIAOg8VyC1Cog5gDgMZjJODVBNID9xABVvQZdjweHJO9CQwQBYbcAHmBhIBMNBAwta+MtgSx7A+MBpgw6pTloKxBGkaOAB4vlAHEyshu/QRLcQlyZ0DYxQmhuIFwNxICnBygnEy4DYg5R4AOW2D8RqACXxMCA+QYyG20CcAcSHCGUgTmhxEgPEp4gJpetQZ5wiNh7KgXg/vlAACDAAkUxCv8kbXs4AAAAASUVORK5CYII=) 0 -11px no-repeat; }
-			h3.toggle:hover {text-shadow: 0 0 2px #CDB007; }
-			h3.open {background-position: 0 7px; }
-			h4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }
-			h4.open {background-position: 0 6px; }
-			a.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAWCAYAAAD5Jg1dAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVHjaYvx7QdyLgYGhH4ilgfgPAypgAuIvQBzD+P//f4Z/FyXCgJzZQMyHpvAvEMcx6b9YBlYIAkDFAUBqKRBzQRX9AuJEkCIwD6QQhoHOCADiX0D8F4hjkeXgJsIA0OQYIMUGNGkesjgLAyY4AsTM6IIYJuICTAxEggFUyIIULIpA6jkQ/0AxSf8FhoneQKxJjNVxQLwFiGUJKfwOxFJAvBmakgh6Rh+INwCxBDG+NoEq1iEmeK4A8Rt8iQIEpgJxPjThYpjIhKSoFFkRukJQQK8D4gpoCDDgSo+Tgfg0NDNhAIAAAwD5YVPrQE/ZlwAAAABJRU5ErkJggg==) 0 -9px no-repeat; }
-			a.open {background-position: 0 6px; }
-			td.small a.toggle-details {background-position: 0 -10px; }
-			td.small a.open {background-position: 0 5px; }
-			#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }
-			#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }
-			#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }
-			#active-help .close {display: block;height: 14px;width: 14px;position: absolute;right: 12px;bottom: 7px;background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE8SURBVHjafNI/KEVhGMfxc4/j33BZjK4MbkmxnEFiQFcZlMEgZTAZDbIYLEaRUMpCuaU7yCCrJINsJFkUNolSBnKJ71O/V69zb576LOe8v/M+73ueVBzH38HfesQ5bhGiFR2o9xdFidAm1nCFop7VoAvTGHILQy9kCw+0W9F7/o4jHPs7uOAyZrCL0aC05rCgd/uu1Rus4g6VKKAa2wrNKziCPTyhx4InClkt4RNbardFoWG3E3WKCwteJ9pawSt28IEcDr33b7gPy9ysVRZf2rWpzPso0j/yax2T6EazzlynTgL9z2ykBe24xAYm0I8zqdJF2cUtog9tFsxgFs8YR68uwFVeLec1DDYEaXe+MZ1pIBFyZe3WarJKRq5CV59Wiy9IoQGDmPpvVq3/Tg34gz5mR2nUUPzWjwADAFypQitBus+8AAAAAElFTkSuQmCC) no-repeat; }
-			#active-help .close:hover {background-color: #1d1d1d; }
-			.help-box h3 {margin: 0 0 12px 0;font-size: 14px;color: #C68E17; }
-			.help-box p {margin: 0 0 10px 0; }
-			.help-box {background-color: #000;padding: 10px; }
-			a.help {color: #C68E17;cursor: help; }
-			a.help:hover {text-shadow: 0 0 1px #C68E17; }
-			.section {position: relative;width: 1150px;padding: 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;border: 0;-moz-box-shadow: 0px 0px 8px #FDD017;-webkit-box-shadow: 0px 0px 8px #FDD017;box-shadow: 0px 0px 8px #FDD017;color: #fff;background-color: #000;text-align: left; }
-			.section-open {margin-top: 25px;margin-bottom: 35px;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px; }
-			.grouped-first {-moz-border-radius-topright: 15px;-moz-border-radius-topleft: 15px;-khtml-border-top-right-radius: 15px;-khtml-border-top-left-radius: 15px;-webkit-border-top-right-radius: 15px;-webkit-border-top-left-radius: 15px;border-top-right-radius: 15px;border-top-left-radius: 15px; }
-			.grouped-last {-moz-border-radius-bottomright: 15px;-moz-border-radius-bottomleft: 15px;-khtml-border-bottom-right-radius: 15px;-khtml-border-bottom-left-radius: 15px;-webkit-border-bottom-right-radius: 15px;-webkit-border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px; }
-			.section .toggle-content {padding: 0; }
-			.player-section .toggle-content {padding-left: 16px; }
-			#home-toc .toggle-content {margin-bottom: 20px; }
-			.subsection {background-color: #333;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }
-			.subsection-small {width: 500px; }
-			.subsection h4 {margin: 0 0 10px 0;color: #fff; }
-			.profile .subsection p {margin: 0; }
-			#raid-summary .toggle-content {padding-bottom: 0px; }
-			ul.params {padding: 0;margin: 4px 0 0 6px; }
-			ul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #2f2f2f;color: #ddd;font-family: "Lucida Grande", Arial, sans-serif;font-size: 11px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-bottom-radius: 8px; }
-			.player h2 {margin: 0; }
-			.player ul.params {position: relative;top: 2px; }
-			#masthead {height: auto;padding-bottom: 15px;border: 0;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px;-moz-box-shadow: 0px 0px 8px #FDD017;-webkit-box-shadow: 0px 0px 8px #FDD017;box-shadow: 0px 0px 8px #FDD017;text-align: left;color: #FDD017;background: #000 url(data:image/jpeg;base64,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) 7px 13px no-repeat; }
-			#masthead h1 {margin: 57px 0 0 355px; }
-			#home #masthead h1 {margin-top: 98px; }
-			#masthead h2 {margin-left: 355px; }
-			#masthead ul.params {margin: 20px 0 0 345px; }
-			#masthead p {color: #fff;margin: 20px 20px 0 20px; }
-			#notice {font-size: 12px;-moz-box-shadow: 0px 0px 8px #E41B17;-webkit-box-shadow: 0px 0px 8px #E41B17;box-shadow: 0px 0px 8px #E41B17; }
-			#notice h2 {margin-bottom: 10px; }
-			.alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #333;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 0px 0px 6px #C11B17;-webkit-box-shadow: inset 0px 0px 6px #C11B17;box-shadow: inset 0px 0px 6px #C11B17; }
-			.alert p {margin-bottom: 0px; }
-			.section .toggle-content {padding-left: 18px; }
-			.player > .toggle-content {padding-left: 0; }
-			.toc {float: left;padding: 0; }
-			.toc-wide {width: 560px; }
-			.toc-narrow {width: 375px; }
-			.toc li {margin-bottom: 10px;list-style-type: none; }
-			.toc li ul {padding-left: 10px; }
-			.toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }
-			.charts {float: left;width: 541px;margin-top: 10px; }
-			.charts-left {margin-right: 40px; }
-			.charts img {background-color: #333;padding: 5px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }
-			.talents div.float {width: auto;margin-right: 50px; }
-			table.sc {background-color: #333;padding: 4px 2px 2px 2px;margin: 10px 0 20px 0;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }
-			table.sc tr {color: #fff;background-color: #1a1a1a; }
-			table.sc tr.head {background-color: #aaa;color: #fff; }
-			table.sc tr.odd {background-color: #222; }
-			table.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #333;color: #fff; }
-			table.sc td {padding: 2px;text-align: center;font-size: 13px; }
-			table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; }
-			table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; }
-			table.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }
-			table.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }
-			table.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #333;font-size: 11px; }
-			table.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }
-			table.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }
-			table.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #222; }
-			table.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }
-			table.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }
-			table.sc tr.details td div.float {width: 350px; }
-			table.sc tr.details td div.float h5 {margin-top: 4px; }
-			table.sc tr.details td div.float ul {margin: 0 0 12px 0; }
-			table.sc td.filler {background-color: #333; }
-			table.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }
-			tr.details td table.details {padding: 0px;margin: 5px 0 10px 0; }
-			tr.details td table.details tr th {background-color: #222; }
-			tr.details td table.details tr td {background-color: #2d2d2d; }
-			tr.details td table.details tr.odd td {background-color: #292929; }
-			tr.details td table.details tr td {padding: 1px 3px 1px 3px; }
-			tr.details td table.details tr td.right {text-align: right; }
+		<style type="text/css" media="screen">
+			@import url('http://www.simulationcraft.org/css/styles.css');
+		</style>
+		<style type="text/css" media="print">
+			@import url('http://www.simulationcraft.org/css/styles-print.css');
 		</style>
 	</head>
 
@@ -139,7 +31,7 @@
 			<h2>for World of Warcraft 4.0.6 Live (build level 13623)</h2>
 
 			<ul class="params">
-				<li><b>Timestamp:</b> Fri Feb 25 19:41:14 2011
+				<li><b>Timestamp:</b> Fri Feb 25 20:42:03 2011
 </li>
 				<li><b>Iterations:</b> 20000</li>
 				<li><b>Fight Length:</b> 450</li>
@@ -173,12 +65,12 @@
 			<h2 class="toggle open">Raid Summary</h2>
 			<div class="toggle-content">
 				<div class="charts charts-left">
-					<a href="#help-dps" class="help"><img src="http://0.chart.apis.google.com/chart?chs=525x60&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:25831|24847&amp;chds=0,64576&amp;chco=C41F3B,C41F3B&amp;chm=t++25831++Death_Knight_Frost_2h_T11_372,C41F3B,0,0,15|t++24847++Death_Knight_Frost_1h_T11_372,C41F3B,1,0,15&amp;chtt=DPS+Ranking&amp;chts=dddddd,18" alt="DPS Chart" /></a>
+					<a href="#help-dps" class="help"><img src="http://0.chart.apis.google.com/chart?chs=525x60&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:25408|24849&amp;chds=0,63519&amp;chco=C41F3B,C41F3B&amp;chm=t++25408++Death_Knight_Frost_2h_T11_372,C41F3B,0,0,15|t++24849++Death_Knight_Frost_1h_T11_372,C41F3B,1,0,15&amp;chtt=DPS+Ranking&amp;chts=dddddd,18" alt="DPS Chart" /></a>
 					<img src="http://2.chart.apis.google.com/chart?chs=525x140&amp;cht=bhs&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:5011,4957|20,20|20,20|20,20|0,0|0,0|0,0|95,95|536,780|970,614|2169,1927|760,764|1079,1355&amp;chds=0,10680&amp;chco=C79C6E,336600,69CCF0,C0C0C0,9482C9,8A8A8A,59ADCC,FFF569,C55D54,C41F3B,F58CBA,2459FF,C0B84F&amp;chxt=y&amp;chxl=0:|Death_Knight_Frost_1h_T11_372|Death_Knight_Frost_2h_T11_372&amp;chxs=0,dddddd,14&amp;chdl=Str|Agi|Int|Spi|SP|SPen|MP5|AP|Exp|Hit|Crit|Haste|Mastery&amp;chdlp=t&amp;chdls=dddddd,12&amp;chtt=Gear+Overview&amp;chts=dddddd,18" alt="Gear Chart" />
-					<a href="#help-timeline-distribution" class="help"><img src="http://4.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chf=bg,s,333333&amp;chd=t:1,2,3,12,82,221,412,431,509,497,504,536,471,472,572,576,580,531,446,526,486,612,580,602,572,616,594,529,478,393,366,395,407,453,458,430,458,480,481,432,449,432,461,443,410,280,193,91,31,2&amp;chds=0,616&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=277|avg=450|max=587&amp;chxp=0,1,56,100&amp;chtt=Timeline+Distribution&amp;chts=dddddd,18" alt="Timeline Distribution Chart" /></a>
+					<a href="#help-timeline-distribution" class="help"><img src="http://4.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chf=bg,s,333333&amp;chd=t:1,0,0,2,6,35,159,339,443,501,527,481,562,503,452,588,581,570,569,501,507,524,598,614,552,600,615,643,536,481,399,375,404,455,428,447,462,516,472,455,434,456,466,449,457,394,231,144,50,14&amp;chds=0,643&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=272|avg=450|max=584&amp;chxp=0,1,57,100&amp;chtt=Timeline+Distribution&amp;chts=dddddd,18" alt="Timeline Distribution Chart" /></a>
 				</div>
 				<div class="charts">
-					<img src="http://1.chart.apis.google.com/chart?chs=500x215&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=10&amp;chd=t:35361|28772|20697|20348|16189|15426|8104|7662|5894|5234|3744|2628|1639&amp;chds=0,88401&amp;chco=C79C6E,C79C6E,2459FF,2459FF,2459FF,2459FF,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++35361++obliterate+(Death_Knight_Frost_2h_T11_372),C41F3B,0,0,10|t++28772++obliterate+(Death_Knight_Frost_1h_T11_372),C41F3B,1,0,10|t++20697++howling_blast+(Death_Knight_Frost_2h_T11_372),C41F3B,2,0,10|t++20348++frost_strike+(Death_Knight_Frost_2h_T11_372),C41F3B,3,0,10|t++16189++howling_blast+(Death_Knight_Frost_1h_T11_372),C41F3B,4,0,10|t++15426++frost_strike+(Death_Knight_Frost_1h_T11_372),C41F3B,5,0,10|t++8104++blood_strike+(Death_Knight_Frost_2h_T11_372),C41F3B,6,0,10|t++7662++plague_strike+(Death_Knight_Frost_2h_T11_372),C41F3B,7,0,10|t++5894++plague_strike+(Death_Knight_Frost_1h_T11_372),C41F3B,8,0,10|t++5234++blood_strike+(Death_Knight_Frost_1h_T11_372),C41F3B,9,0,10|t++3744++melee_main_hand+(Death_Knight_Frost_2h_T11_372),C41F3B,10,0,10|t++2628++melee_main_hand+(Death_Knight_Frost_1h_T11_372),C41F3B,11,0,10|t++1639++melee_off_hand+(Death_Knight_Frost_1h_T11_372),C41F3B,12,0,10&amp;chtt=Raid+Damage+Per+Execute+Time&amp;chts=dddddd,18" alt="DPET Chart" />
+					<img src="http://1.chart.apis.google.com/chart?chs=500x215&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=10&amp;chd=t:35342|28774|20350|18496|16204|15425|8106|7673|5903|5232|3745|2629|1639&amp;chds=0,88354&amp;chco=C79C6E,C79C6E,2459FF,2459FF,2459FF,2459FF,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++35342++obliterate+(Death_Knight_Frost_2h_T11_372),C41F3B,0,0,10|t++28774++obliterate+(Death_Knight_Frost_1h_T11_372),C41F3B,1,0,10|t++20350++frost_strike+(Death_Knight_Frost_2h_T11_372),C41F3B,2,0,10|t++18496++howling_blast+(Death_Knight_Frost_2h_T11_372),C41F3B,3,0,10|t++16204++howling_blast+(Death_Knight_Frost_1h_T11_372),C41F3B,4,0,10|t++15425++frost_strike+(Death_Knight_Frost_1h_T11_372),C41F3B,5,0,10|t++8106++blood_strike+(Death_Knight_Frost_2h_T11_372),C41F3B,6,0,10|t++7673++plague_strike+(Death_Knight_Frost_2h_T11_372),C41F3B,7,0,10|t++5903++plague_strike+(Death_Knight_Frost_1h_T11_372),C41F3B,8,0,10|t++5232++blood_strike+(Death_Knight_Frost_1h_T11_372),C41F3B,9,0,10|t++3745++melee_main_hand+(Death_Knight_Frost_2h_T11_372),C41F3B,10,0,10|t++2629++melee_main_hand+(Death_Knight_Frost_1h_T11_372),C41F3B,11,0,10|t++1639++melee_off_hand+(Death_Knight_Frost_1h_T11_372),C41F3B,12,0,10&amp;chtt=Raid+Damage+Per+Execute+Time&amp;chts=dddddd,18" alt="DPET Chart" />
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -211,50 +103,50 @@
 					</tr>
 					<tr>
 						<td class="left small">Death_Knight_Frost_1h_T11_372</td>
-						<td class="small">2.5535</td>
-						<td class="small">0.6382</td>
+						<td class="small">2.5742</td>
+						<td class="small">0.6257</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
-						<td class="small">0.8974</td>
-						<td class="small">1.6754</td>
-						<td class="small">2.0425</td>
-						<td class="small">1.0579</td>
-						<td class="small">1.0517</td>
-						<td class="small">0.8693</td>
-						<td class="small">5.4559</td>
-						<td class="small">3.7073</td>
+						<td class="small">0.8864</td>
+						<td class="small">1.6874</td>
+						<td class="small">2.0813</td>
+						<td class="small">0.9767</td>
+						<td class="small">1.0038</td>
+						<td class="small">0.8656</td>
+						<td class="small">5.4508</td>
+						<td class="small">3.5551</td>
 						<td class="small">0.0000</td>
-						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.5535:0.6382:0.8974:1.6754:2.0425:1.0579:1.0517:0.8693:5.4559;"> wowhead </a></td>
-						<td class="small"><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.5535&amp;Agi=0.6382&amp;map=0.8974&amp;Exp=1.6754&amp;mhit=2.0425&amp;mcr=1.0579&amp;mh=1.0517&amp;Mr=0.8693&amp;dps=5.4559&amp;odps=3.7073&amp;Ver=6"> lootrank</a></td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.5742:0.6257:0.8864:1.6874:2.0813:0.9767:1.0038:0.8656:5.4508;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.5742&amp;Agi=0.6257&amp;map=0.8864&amp;Exp=1.6874&amp;mhit=2.0813&amp;mcr=0.9767&amp;mh=1.0038&amp;Mr=0.8656&amp;dps=5.4508&amp;odps=3.5551&amp;Ver=6"> lootrank</a></td>
 					</tr>
 					<tr class="odd">
 						<td class="left small">Death_Knight_Frost_2h_T11_372</td>
-						<td class="small">2.5009</td>
-						<td class="small">0.5895</td>
+						<td class="small">2.4365</td>
+						<td class="small">0.5702</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
-						<td class="small">0.8400</td>
-						<td class="small">1.1955</td>
-						<td class="small">1.5943</td>
-						<td class="small">0.8522</td>
-						<td class="small">1.5970</td>
-						<td class="small">0.8582</td>
-						<td class="small">9.0191</td>
+						<td class="small">0.7925</td>
+						<td class="small">1.1937</td>
+						<td class="small">1.5486</td>
+						<td class="small">0.9302</td>
+						<td class="small">1.4490</td>
+						<td class="small">0.9150</td>
+						<td class="small">8.8716</td>
 						<td class="small">0.0000</td>
 						<td class="small">0.0000</td>
-						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.5009:0.5895:0.8400:1.1955:1.5943:0.8522:1.5970:0.8582:9.0191;"> wowhead </a></td>
-						<td class="small"><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.5009&amp;Agi=0.5895&amp;map=0.8400&amp;Exp=1.1955&amp;mhit=1.5943&amp;mcr=0.8522&amp;mh=1.5970&amp;Mr=0.8582&amp;dps=9.0191&amp;Ver=6"> lootrank</a></td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.4365:0.5702:0.7925:1.1937:1.5486:0.9302:1.4490:0.9150:8.8716;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.4365&amp;Agi=0.5702&amp;map=0.7925&amp;Exp=1.1937&amp;mhit=1.5486&amp;mcr=0.9302&amp;mh=1.4490&amp;Mr=0.9150&amp;dps=8.8716&amp;Ver=6"> lootrank</a></td>
 					</tr>
 				</table>
 			</div>
 		</div>
 
 		<div id="Death_Knight_Frost_1h_T11_372" class="player section">
-			<h2 class="toggle">Death_Knight_Frost_1h_T11_372&nbsp;:&nbsp;24847dps</h2>
+			<h2 class="toggle">Death_Knight_Frost_1h_T11_372&nbsp;:&nbsp;24849dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> orc</li>
@@ -280,10 +172,10 @@
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>24847.4</td>
+								<td>24849.1</td>
 								<td>8.4 / 0.0%</td>
-								<td>2628.1 / 10.6%</td>
-								<td>2757.3</td>
+								<td>2368.6 / 9.5%</td>
+								<td>2757.9</td>
 								<td>9.0</td>
 								<td>9.2</td>
 								<td>runic_power</td>
@@ -329,30 +221,30 @@
 							</tr>
 							<tr>
 								<th class="left">Scale Factors</th>
-								<td>2.5535</td>
-								<td>0.6382</td>
-								<td>0.8974</td>
-								<td>1.6754</td>
-								<td>2.0425</td>
-								<td>1.0579</td>
-								<td>1.0517</td>
-								<td>0.8693</td>
-								<td>5.4559</td>
-								<td>3.7073</td>
+								<td>2.5742</td>
+								<td>0.6257</td>
+								<td>0.8864</td>
+								<td>1.6874</td>
+								<td>2.0813</td>
+								<td>0.9767</td>
+								<td>1.0038</td>
+								<td>0.8656</td>
+								<td>5.4508</td>
+								<td>3.5551</td>
 								<td>0.0000</td>
 							</tr>
 							<tr>
 								<th class="left">Normalized</th>
 								<td>1.0000</td>
-								<td>0.2499</td>
-								<td>0.3514</td>
-								<td>0.6561</td>
-								<td>0.7999</td>
-								<td>0.4143</td>
-								<td>0.4119</td>
-								<td>0.3404</td>
-								<td>2.1366</td>
-								<td>1.4518</td>
+								<td>0.2431</td>
+								<td>0.3443</td>
+								<td>0.6555</td>
+								<td>0.8085</td>
+								<td>0.3794</td>
+								<td>0.3899</td>
+								<td>0.3363</td>
+								<td>2.1175</td>
+								<td>1.3811</td>
 								<td>0.0000</td>
 							</tr>
 							<tr>
@@ -373,8 +265,8 @@
 								<th>Gear Ranking</th>
 								<td colspan="11" class="filler">
 									<ul class="float">
-										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.5535:0.6382:0.8974:1.6754:2.0425:1.0579:1.0517:0.8693:5.4559;" rel="_blank">wowhead</a></li>
-										<li><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.5535&amp;Agi=0.6382&amp;map=0.8974&amp;Exp=1.6754&amp;mhit=2.0425&amp;mcr=1.0579&amp;mh=1.0517&amp;Mr=0.8693&amp;dps=5.4559&amp;odps=3.7073&amp;Ver=6" rel="_blank">lootrank</a></li>
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.5742:0.6257:0.8864:1.6874:2.0813:0.9767:1.0038:0.8656:5.4508;" rel="_blank">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.5742&amp;Agi=0.6257&amp;map=0.8864&amp;Exp=1.6874&amp;mhit=2.0813&amp;mcr=0.9767&amp;mh=1.0038&amp;Mr=0.8656&amp;dps=5.4508&amp;odps=3.5551&amp;Ver=6" rel="_blank">lootrank</a></li>
 									</ul>
 								</td>
 							</tr>
@@ -385,15 +277,15 @@
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://7.chart.apis.google.com/chart?chs=550x300&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:28772|16189|15426|5894|5234|2628|1639|1487|313&amp;chds=0,57543&amp;chco=C79C6E,2459FF,2459FF,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++28772++obliterate,C79C6E,0,0,15|t++16189++howling_blast,2459FF,1,0,15|t++15426++frost_strike,2459FF,2,0,15|t++5894++plague_strike,C79C6E,3,0,15|t++5234++blood_strike,C79C6E,4,0,15|t++2628++melee_main_hand,C79C6E,5,0,15|t++1639++melee_off_hand,C79C6E,6,0,15|t++1487++melee,C79C6E,7,0,15|t++313++melee,C79C6E,8,0,15&amp;chtt=Death_Knight_Frost_1h_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
-              <span class="chart-action-dmg" title="Action Damage Chart">http://8.chart.apis.google.com/chart?chs=550x340&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:31,26,11,9,7,5,4,3,2,2,1,1,0,0&amp;chds=0,100&amp;chco=C79C6E,2459FF,C79C6E,2459FF,C79C6E,2459FF,9482C9,C79C6E,C79C6E,C79C6E,2459FF,C79C6E,C79C6E,C79C6E&amp;chl=obliterate|frost_strike|melee_main_hand|howling_blast|melee_off_hand|frost_fever|blood_plague|blood_strike|claw|melee|razorice|plague_strike|melee|claw&amp;chtt=Death_Knight_Frost_1h_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://7.chart.apis.google.com/chart?chs=550x300&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:28774|16204|15425|5903|5232|2629|1639|1488|313&amp;chds=0,57548&amp;chco=C79C6E,2459FF,2459FF,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++28774++obliterate,C79C6E,0,0,15|t++16204++howling_blast,2459FF,1,0,15|t++15425++frost_strike,2459FF,2,0,15|t++5903++plague_strike,C79C6E,3,0,15|t++5232++blood_strike,C79C6E,4,0,15|t++2629++melee_main_hand,C79C6E,5,0,15|t++1639++melee_off_hand,C79C6E,6,0,15|t++1488++melee,C79C6E,7,0,15|t++313++melee,C79C6E,8,0,15&amp;chtt=Death_Knight_Frost_1h_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dmg" title="Action Damage Chart">http://8.chart.apis.google.com/chart?chs=550x340&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:31,26,11,9,7,4,4,3,2,2,1,1,0,0&amp;chds=0,100&amp;chco=C79C6E,2459FF,C79C6E,2459FF,C79C6E,2459FF,9482C9,C79C6E,C79C6E,C79C6E,2459FF,C79C6E,C79C6E,C79C6E&amp;chl=obliterate|frost_strike|melee_main_hand|howling_blast|melee_off_hand|frost_fever|blood_plague|blood_strike|claw|melee|razorice|plague_strike|melee|claw&amp;chtt=Death_Knight_Frost_1h_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://9.chart.apis.google.com/chart?chs=550x250&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:68,29,2,0,0&amp;chds=0,100&amp;chco=C41F3B&amp;chl=rune_abilities|chill_of_the_grave|butchery|horn_of_winter|power_refund&amp;chtt=Death_Knight_Frost_1h_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-              <span class="chart-scale-factors" title="Scale Factors Chart">http://7.chart.apis.google.com/chart?chs=525x330&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:5.4559|3.7073|2.5535|2.0425|1.6754|1.0579|1.0517|0.8974|0.8693|0.6382&amp;chds=0,10.9118&amp;chco=C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B&amp;chm=t++5.4559++Wdps,C41F3B,0,0,15|t++3.7073++WOHdps,C41F3B,1,0,15|t++2.5535++Str,C41F3B,2,0,15|t++2.0425++Hit,C41F3B,3,0,15|t++1.6754++Exp,C41F3B,4,0,15|t++1.0579++Crit,C41F3B,5,0,15|t++1.0517++Haste,C41F3B,6,0,15|t++0.8974++AP,C41F3B,7,0,15|t++0.8693++Mastery,C41F3B,8,0,15|t++0.6382++Agi,C41F3B,9,0,15&amp;chtt=Death_Knight_Frost_1h_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
-              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://0.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:Rfov177xy2ruz70wqosy002yvtrruwwwxvsonoopqpppommppqrqqqpnpqqrrpnllmopqqqqpqqrrrrrqqqqrrrrrqqqqqrrrqrqppoooooooooppqqqppqqqponnmmmmnnopppqqqrrrqqqqqqqqqqqppppqqqqppppqqppooooooopppppppponnnnoooooopppopqqqrrrrqqqqqqqqqqqqqqqqqqqqqqqqrrqqppppppppoonnmmlllllllmmmmnmmnnooppppqqqqqqqqqqrrrrrrrrrrrrrrrrssrrqqqppoonnmmmmmmmmmmnnnnooooooppqqrrrrrsssssssssssssssssssssssssssrrrssrqpppoppppppqqqqqqrrrrrrrssstttttuuuttttttttttttttttttssssrrrqqqpp&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=114&amp;chtt=Death_Knight_Frost_1h_T11_372+Runic Power+Timeline&amp;chts=dddddd,18&amp;chco=C41F3B</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wxzz021244475576787554210yxxvttrqrppqpppoopppqqqqqqqqqqrqpqpppppqqpppooooooonnnnnnmmmlllkkkjjjijjjjjjkkkklllmnnoppqqqrsrrrrrrqqrrqrqqqqpppoonnnnnnnmmmlllkkkjjjjjjjjjjjjjjjjjjjjjjkklllmmnnnnnnnoooopqqqqqqqqqqrrrsssttttuuuuuutttttttsssrrrrqqpppppppqqpqqqpppppooooooooonnnnnmmnnnnnnnnnnoonnnnnnmmmmmmmmmmmnnnnoppqrrsttuuvvvvvvvvvvvuuuutttsssrrsrrrrrrrrrqqqqpponnnooooppqqrrsstuuvwxyzzzzzzyyyxxxwwwvvvuuuuuuuuuuvvvvwwwxxxxxxxxxxxxxxxxxxxxww&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=24847|max=34790&amp;chxp=1,1,71,100&amp;chtt=Death_Knight_Frost_1h_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,0,0,0,0,1,3,2,4,7,24,32,33,80,102,149,209,317,433,575,731,855,1061,1235,1297,1351,1385,1390,1422,1266,1235,1020,817,721,604,463,348,268,181,137,75,62,43,24,17,7,4,6,3&amp;chds=0,1422&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=21926|avg=24847|max=27182&amp;chxp=0,1,56,100&amp;chtt=Death_Knight_Frost_1h_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://6.chart.apis.google.com/chart?chs=525x330&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:5.4508|3.5551|2.5742|2.0813|1.6874|1.0038|0.9767|0.8864|0.8656|0.6257&amp;chds=0,10.9016&amp;chco=C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B&amp;chm=t++5.4508++Wdps,C41F3B,0,0,15|t++3.5551++WOHdps,C41F3B,1,0,15|t++2.5742++Str,C41F3B,2,0,15|t++2.0813++Hit,C41F3B,3,0,15|t++1.6874++Exp,C41F3B,4,0,15|t++1.0038++Haste,C41F3B,5,0,15|t++0.9767++Crit,C41F3B,6,0,15|t++0.8864++AP,C41F3B,7,0,15|t++0.8656++Mastery,C41F3B,8,0,15|t++0.6257++Agi,C41F3B,9,0,15&amp;chtt=Death_Knight_Frost_1h_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://0.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:Rfov187xx2ruz60wqosy002yvtrruwwwxvsonoopqppponmppqrqqqpopqrrrpnllmopqqqqpqqrrrrrqqqqrrrrrqqqqqqqqqqqpooooooooooppppppppqqponnmmmmnnopppqqqrrrqqqqqqqqqqqqpppqqqqqpppqqppooonooopppppppponnnoooooooppoopqqqqrrqqqqqqqqqqqqqqqqqqqqqqqqqrrqqppppppppoonnmmmllllllmmmmmmmnnooppqqqqqqqqqqqqqrrrrrrrrrrrrrrrssrrrqqppoonnmmmmmmmmmmnnnnnoooooppqqrrrrrrssssssssssssssssssssssssssrqrssrqppppoooppppqqqqqqrrrrrrrssttttttttttttttttttttttttttssssrrrqqqpp&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=114&amp;chtt=Death_Knight_Frost_1h_T11_372+Runic Power+Timeline&amp;chts=dddddd,18&amp;chco=C41F3B</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wxzz021244475576777554210yxxvttrqrppqpppoopppqqqqqqqqqqrqqqpppppqqpppooooooonnnnnnmmmlllkkkjjjijjjjjjkkkklllmnnoppqqqrrrrrrrrqqrrqrqqqqpppoonnnnnnnmmmlllkkkjjjjjjjjjjjjjjjjjjjjjjkklllmmnnnnnnnoooopqqqqqqqqqqrrsssttttuuuuuuutttttttsssrrrrqqpppppppqqqqqqpppppooooooooonnnnnnmnnnnnnnnnnoonnnnnnmmmmmmmmmmmnnnooppqrrsttuuvvvvvvvvvvvvuuutttsssrssrrrrrrrrrqqqqpponnnooooppqqrrsstuuvwxyzzzzzzyyyxxxwwvvvvuuuuuuuuuuvvvvwwwxxxxxxxxxxxxxxxxxxxxww&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=24849|max=34779&amp;chxp=1,1,71,100&amp;chtt=Death_Knight_Frost_1h_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,2,1,4,1,5,12,9,41,47,84,119,161,204,300,407,499,627,794,892,1014,1117,1221,1300,1298,1222,1202,1112,1071,946,875,788,604,476,406,313,247,151,121,93,75,55,31,16,10,10,9,3,3,1&amp;chds=0,1300&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=22513|avg=24849|max=27250&amp;chxp=0,1,49,100&amp;chtt=Death_Knight_Frost_1h_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -428,7 +320,7 @@
 							</tr>
 							<tr>
 								<th class="left small">Death_Knight_Frost_1h_T11_372</th>
-								<th class="right small">24847</th>
+								<th class="right small">24849</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
@@ -436,8 +328,8 @@
 								<td class="right small">912</td>
 								<td class="right small">3.7%</td>
 								<td class="right small">13.6</td>
-								<td class="right small">33.25sec</td>
-								<td class="right small">29206</td>
+								<td class="right small">33.24sec</td>
+								<td class="right small">29204</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -450,8 +342,8 @@
 								<td class="right small">0.0%</td>
 								<td class="right small">144</td>
 								<td class="right small">2297</td>
-								<td class="right small">4801</td>
-								<td class="right small">18.9%</td>
+								<td class="right small">4802</td>
+								<td class="right small">19.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">98.7%</td>
 							</tr>
@@ -471,11 +363,11 @@
 										<tr>
 											<td class="right small">13.64</td>
 											<td class="right small">13.64</td>
-											<td class="right small">143.77</td>
-											<td class="right small">143.77</td>
+											<td class="right small">143.75</td>
+											<td class="right small">143.75</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">398492</td>
+											<td class="right small">398404</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -509,20 +401,20 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">116.5</td>
-											<td class="right small">81.06%</td>
-											<td class="right small">2297.34</td>
+											<td class="right small">81.05%</td>
+											<td class="right small">2296.74</td>
 											<td class="right small">1760</td>
 											<td class="right small">3859</td>
-											<td class="right small">267730</td>
+											<td class="right small">267595</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">27.2</td>
-											<td class="right small">18.94%</td>
-											<td class="right small">4801.27</td>
+											<td class="right small">18.95%</td>
+											<td class="right small">4801.59</td>
 											<td class="right small">3679</td>
 											<td class="right small">8065</td>
-											<td class="right small">130761</td>
+											<td class="right small">130809</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -566,13 +458,13 @@
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=45902">blood_strike</a></td>
 								<td class="right small">626</td>
 								<td class="right small">2.5%</td>
-								<td class="right small">69.3</td>
-								<td class="right small">12.63sec</td>
-								<td class="right small">3944</td>
-								<td class="right small">5234</td>
-								<td class="right small">3436</td>
-								<td class="right small">7078</td>
-								<td class="right small">10795</td>
+								<td class="right small">69.4</td>
+								<td class="right small">12.61sec</td>
+								<td class="right small">3942</td>
+								<td class="right small">5232</td>
+								<td class="right small">3437</td>
+								<td class="right small">7080</td>
+								<td class="right small">9763</td>
 								<td class="right small">13.9%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -600,13 +492,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">69.34</td>
-											<td class="right small">69.34</td>
+											<td class="right small">69.36</td>
+											<td class="right small">69.36</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.7535</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">273452</td>
+											<td class="right small">273451</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -622,20 +514,20 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">59.7</td>
-											<td class="right small">86.06%</td>
-											<td class="right small">3436.47</td>
-											<td class="right small">2694</td>
+											<td class="right small">86.11%</td>
+											<td class="right small">3436.64</td>
+											<td class="right small">2665</td>
 											<td class="right small">5240</td>
-											<td class="right small">205050</td>
+											<td class="right small">205259</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">9.7</td>
-											<td class="right small">13.94%</td>
-											<td class="right small">7077.87</td>
+											<td class="right small">9.6</td>
+											<td class="right small">13.89%</td>
+											<td class="right small">7080.24</td>
 											<td class="right small">5550</td>
-											<td class="right small">10795</td>
-											<td class="right small">68402</td>
+											<td class="right small">9763</td>
+											<td class="right small">68192</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -691,7 +583,7 @@
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">2.1</td>
-								<td class="right small">128.96sec</td>
+								<td class="right small">129.85sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -724,8 +616,8 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">2.08</td>
-											<td class="right small">2.08</td>
+											<td class="right small">2.07</td>
+											<td class="right small">2.07</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
@@ -783,9 +675,9 @@
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=59921">frost_fever</a></td>
 								<td class="right small">1118</td>
 								<td class="right small">4.5%</td>
-								<td class="right small">52.7</td>
-								<td class="right small">8.35sec</td>
-								<td class="right small">9263</td>
+								<td class="right small">52.8</td>
+								<td class="right small">8.34sec</td>
+								<td class="right small">9256</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -798,8 +690,8 @@
 								<td class="right small">0.0%</td>
 								<td class="right small">145</td>
 								<td class="right small">3050</td>
-								<td class="right small">4712</td>
-								<td class="right small">19.0%</td>
+								<td class="right small">4713</td>
+								<td class="right small">18.9%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">99.7%</td>
 							</tr>
@@ -817,13 +709,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">52.74</td>
-											<td class="right small">52.74</td>
-											<td class="right small">145.18</td>
-											<td class="right small">145.18</td>
+											<td class="right small">52.77</td>
+											<td class="right small">52.77</td>
+											<td class="right small">145.16</td>
+											<td class="right small">145.16</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">488556</td>
+											<td class="right small">488456</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -838,7 +730,7 @@
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">52.7</td>
+											<td class="right small">52.8</td>
 											<td class="right small">100.00%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
@@ -856,21 +748,21 @@
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">117.6</td>
-											<td class="right small">81.03%</td>
-											<td class="right small">3049.94</td>
+											<td class="right small">117.7</td>
+											<td class="right small">81.08%</td>
+											<td class="right small">3050.30</td>
 											<td class="right small">2308</td>
 											<td class="right small">5059</td>
-											<td class="right small">358813</td>
+											<td class="right small">359028</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">27.5</td>
-											<td class="right small">18.97%</td>
-											<td class="right small">4711.58</td>
+											<td class="right small">18.92%</td>
+											<td class="right small">4713.49</td>
 											<td class="right small">3566</td>
 											<td class="right small">7817</td>
-											<td class="right small">129743</td>
+											<td class="right small">129428</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -912,14 +804,14 @@
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=49143">frost_strike</a></td>
-								<td class="right small">6544</td>
+								<td class="right small">6543</td>
 								<td class="right small">26.3%</td>
-								<td class="right small">246.1</td>
+								<td class="right small">246.0</td>
 								<td class="right small">3.51sec</td>
-								<td class="right small">11619</td>
-								<td class="right small">15426</td>
-								<td class="right small">8550</td>
-								<td class="right small">17625</td>
+								<td class="right small">11618</td>
+								<td class="right small">15425</td>
+								<td class="right small">8553</td>
+								<td class="right small">17618</td>
 								<td class="right small">33717</td>
 								<td class="right small">33.8%</td>
 								<td class="right small">0.0%</td>
@@ -948,13 +840,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">246.06</td>
-											<td class="right small">246.06</td>
+											<td class="right small">245.99</td>
+											<td class="right small">245.99</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.7532</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2859001</td>
+											<td class="right small">2857946</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -970,20 +862,20 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">162.8</td>
-											<td class="right small">66.17%</td>
-											<td class="right small">8550.19</td>
+											<td class="right small">66.18%</td>
+											<td class="right small">8553.33</td>
 											<td class="right small">5382</td>
 											<td class="right small">16368</td>
-											<td class="right small">1392077</td>
+											<td class="right small">1392386</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">83.2</td>
-											<td class="right small">33.83%</td>
-											<td class="right small">17624.63</td>
+											<td class="right small">33.82%</td>
+											<td class="right small">17618.01</td>
 											<td class="right small">11087</td>
 											<td class="right small">33717</td>
-											<td class="right small">1466924</td>
+											<td class="right small">1465561</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -1036,17 +928,17 @@
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=49184">howling_blast</a></td>
-								<td class="right small">2215</td>
+								<td class="right small">2218</td>
 								<td class="right small">8.9%</td>
 								<td class="right small">46.8</td>
 								<td class="right small">9.27sec</td>
-								<td class="right small">20692</td>
-								<td class="right small">16189</td>
+								<td class="right small">20711</td>
+								<td class="right small">16204</td>
 								<td class="right small">17519</td>
-								<td class="right small">36588</td>
+								<td class="right small">36614</td>
 								<td class="right small">62308</td>
-								<td class="right small">18.5%</td>
-								<td class="right small">2.1%</td>
+								<td class="right small">18.6%</td>
+								<td class="right small">2.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -1072,13 +964,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">46.77</td>
-											<td class="right small">46.77</td>
+											<td class="right small">46.78</td>
+											<td class="right small">46.78</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.2781</td>
+											<td class="right small">1.2782</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">967673</td>
+											<td class="right small">968916</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1094,25 +986,25 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">37.1</td>
-											<td class="right small">79.42%</td>
-											<td class="right small">17518.55</td>
+											<td class="right small">79.38%</td>
+											<td class="right small">17519.01</td>
 											<td class="right small">13232</td>
 											<td class="right small">29813</td>
-											<td class="right small">650693</td>
+											<td class="right small">650596</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">8.7</td>
-											<td class="right small">18.53%</td>
-											<td class="right small">36587.92</td>
+											<td class="right small">18.58%</td>
+											<td class="right small">36613.51</td>
 											<td class="right small">27656</td>
 											<td class="right small">62308</td>
-											<td class="right small">316979</td>
+											<td class="right small">318320</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">1.0</td>
-											<td class="right small">2.05%</td>
+											<td class="right small">2.03%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1154,14 +1046,14 @@
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_main_hand</a></td>
-								<td class="right small">2624</td>
+								<td class="right small">2625</td>
 								<td class="right small">10.6%</td>
-								<td class="right small">265.4</td>
+								<td class="right small">265.3</td>
 								<td class="right small">1.65sec</td>
-								<td class="right small">4320</td>
-								<td class="right small">2628</td>
+								<td class="right small">4322</td>
+								<td class="right small">2629</td>
 								<td class="right small">4811</td>
-								<td class="right small">9909</td>
+								<td class="right small">9911</td>
 								<td class="right small">14757</td>
 								<td class="right small">13.9%</td>
 								<td class="right small">18.9%</td>
@@ -1190,13 +1082,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">265.37</td>
-											<td class="right small">265.37</td>
+											<td class="right small">265.33</td>
+											<td class="right small">265.33</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.6439</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1146543</td>
+											<td class="right small">1146778</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1211,30 +1103,30 @@
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">114.7</td>
-											<td class="right small">43.23%</td>
-											<td class="right small">4810.61</td>
+											<td class="right small">114.6</td>
+											<td class="right small">43.20%</td>
+											<td class="right small">4810.70</td>
 											<td class="right small">3913</td>
 											<td class="right small">7164</td>
-											<td class="right small">551818</td>
+											<td class="right small">551439</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">36.8</td>
-											<td class="right small">13.88%</td>
-											<td class="right small">9908.61</td>
+											<td class="right small">36.9</td>
+											<td class="right small">13.91%</td>
+											<td class="right small">9910.71</td>
 											<td class="right small">8062</td>
 											<td class="right small">14757</td>
-											<td class="right small">364932</td>
+											<td class="right small">365784</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">63.7</td>
-											<td class="right small">24.00%</td>
-											<td class="right small">3607.79</td>
+											<td class="right small">63.6</td>
+											<td class="right small">23.98%</td>
+											<td class="right small">3608.26</td>
 											<td class="right small">2935</td>
 											<td class="right small">5373</td>
-											<td class="right small">229793</td>
+											<td class="right small">229555</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -1247,8 +1139,8 @@
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
-											<td class="right small">50.1</td>
-											<td class="right small">18.89%</td>
+											<td class="right small">50.2</td>
+											<td class="right small">18.90%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1293,10 +1185,10 @@
 								<td class="right small">6.6%</td>
 								<td class="right small">264.8</td>
 								<td class="right small">1.65sec</td>
-								<td class="right small">2699</td>
+								<td class="right small">2700</td>
 								<td class="right small">1639</td>
-								<td class="right small">3005</td>
-								<td class="right small">6189</td>
+								<td class="right small">3004</td>
+								<td class="right small">6188</td>
 								<td class="right small">9223</td>
 								<td class="right small">13.9%</td>
 								<td class="right small">18.9%</td>
@@ -1325,13 +1217,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">264.84</td>
-											<td class="right small">264.84</td>
+											<td class="right small">264.80</td>
+											<td class="right small">264.80</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.6471</td>
+											<td class="right small">1.6472</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">714798</td>
+											<td class="right small">714826</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1347,29 +1239,29 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">114.4</td>
-											<td class="right small">43.20%</td>
-											<td class="right small">3004.71</td>
+											<td class="right small">43.19%</td>
+											<td class="right small">3004.16</td>
 											<td class="right small">2446</td>
 											<td class="right small">4477</td>
-											<td class="right small">343793</td>
+											<td class="right small">343602</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">36.8</td>
-											<td class="right small">13.90%</td>
-											<td class="right small">6188.54</td>
+											<td class="right small">13.91%</td>
+											<td class="right small">6187.82</td>
 											<td class="right small">5038</td>
 											<td class="right small">9223</td>
-											<td class="right small">227835</td>
+											<td class="right small">227972</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">63.6</td>
 											<td class="right small">24.00%</td>
-											<td class="right small">2252.83</td>
+											<td class="right small">2253.89</td>
 											<td class="right small">1834</td>
 											<td class="right small">3358</td>
-											<td class="right small">143169</td>
+											<td class="right small">143252</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -1383,7 +1275,7 @@
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">50.0</td>
-											<td class="right small">18.89%</td>
+											<td class="right small">18.88%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1424,14 +1316,14 @@
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=49020">obliterate</a></td>
-								<td class="right small">7623</td>
+								<td class="right small">7622</td>
 								<td class="right small">30.7%</td>
 								<td class="right small">153.6</td>
 								<td class="right small">5.71sec</td>
-								<td class="right small">21679</td>
-								<td class="right small">28772</td>
+								<td class="right small">21680</td>
+								<td class="right small">28774</td>
 								<td class="right small">15362</td>
-								<td class="right small">31875</td>
+								<td class="right small">31877</td>
 								<td class="right small">58406</td>
 								<td class="right small">38.3%</td>
 								<td class="right small">0.0%</td>
@@ -1460,13 +1352,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">153.62</td>
-											<td class="right small">153.62</td>
+											<td class="right small">153.57</td>
+											<td class="right small">153.57</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.7535</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">3330181</td>
+											<td class="right small">3329540</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1483,19 +1375,19 @@
 											<td class="left small">hit</td>
 											<td class="right small">94.8</td>
 											<td class="right small">61.73%</td>
-											<td class="right small">15361.56</td>
+											<td class="right small">15361.73</td>
 											<td class="right small">10040</td>
 											<td class="right small">28353</td>
-											<td class="right small">1456812</td>
+											<td class="right small">1456311</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">58.8</td>
 											<td class="right small">38.26%</td>
-											<td class="right small">31874.51</td>
+											<td class="right small">31877.33</td>
 											<td class="right small">20683</td>
 											<td class="right small">58406</td>
-											<td class="right small">1873369</td>
+											<td class="right small">1873228</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -1588,7 +1480,7 @@
 											<td class="right small">7.08</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.2860</td>
+											<td class="right small">1.2862</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0</td>
 										</tr>
@@ -1606,7 +1498,7 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">6.9</td>
-											<td class="right small">97.98%</td>
+											<td class="right small">98.01%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1615,7 +1507,7 @@
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.1</td>
-											<td class="right small">2.02%</td>
+											<td class="right small">1.99%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1747,13 +1639,13 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">136</td>
 								<td class="right small">0.5%</td>
 								<td class="right small">13.4</td>
-								<td class="right small">64.95sec</td>
-								<td class="right small">4440</td>
-								<td class="right small">5894</td>
-								<td class="right small">3873</td>
-								<td class="right small">7974</td>
+								<td class="right small">65.00sec</td>
+								<td class="right small">4447</td>
+								<td class="right small">5903</td>
+								<td class="right small">3870</td>
+								<td class="right small">7981</td>
 								<td class="right small">14161</td>
-								<td class="right small">13.8%</td>
+								<td class="right small">14.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -1780,13 +1672,13 @@ Immune to movement from external sources.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">13.41</td>
-											<td class="right small">13.41</td>
+											<td class="right small">13.40</td>
+											<td class="right small">13.40</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.7534</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">59554</td>
+											<td class="right small">59610</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1801,26 +1693,26 @@ Immune to movement from external sources.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">11.6</td>
-											<td class="right small">86.16%</td>
-											<td class="right small">3873.02</td>
+											<td class="right small">11.5</td>
+											<td class="right small">85.95%</td>
+											<td class="right small">3870.08</td>
 											<td class="right small">2684</td>
 											<td class="right small">6874</td>
-											<td class="right small">44756</td>
+											<td class="right small">44589</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">1.9</td>
-											<td class="right small">13.84%</td>
-											<td class="right small">7973.81</td>
+											<td class="right small">14.04%</td>
+											<td class="right small">7981.08</td>
 											<td class="right small">5530</td>
 											<td class="right small">14161</td>
-											<td class="right small">14797</td>
+											<td class="right small">15020</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.0</td>
-											<td class="right small">0.00%</td>
+											<td class="right small">0.01%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1870,7 +1762,7 @@ Immune to movement from external sources.</span></li>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=50401">razorice</a></td>
 								<td class="right small">221</td>
 								<td class="right small">0.9%</td>
-								<td class="right small">421.8</td>
+								<td class="right small">421.6</td>
 								<td class="right small">1.04sec</td>
 								<td class="right small">229</td>
 								<td class="right small">0</td>
@@ -1904,13 +1796,13 @@ Immune to movement from external sources.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">421.76</td>
-											<td class="right small">421.76</td>
+											<td class="right small">421.63</td>
+											<td class="right small">421.63</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">96718</td>
+											<td class="right small">96693</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1925,12 +1817,12 @@ Immune to movement from external sources.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">421.8</td>
+											<td class="right small">421.6</td>
 											<td class="right small">100.00%</td>
-											<td class="right small">229.32</td>
+											<td class="right small">229.33</td>
 											<td class="right small">195</td>
 											<td class="right small">319</td>
-											<td class="right small">96718</td>
+											<td class="right small">96693</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -1974,7 +1866,7 @@ Immune to movement from external sources.</span></li>
 							</tr>
 							<tr>
 								<th class="left small">pet - army_of_the_dead_ghoul_8</th>
-								<th class="right small">517</th>
+								<th class="right small">516</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
@@ -1983,7 +1875,7 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">40.6%</td>
 								<td class="right small">11.0</td>
 								<td class="right small">3.23sec</td>
-								<td class="right small">668</td>
+								<td class="right small">667</td>
 								<td class="right small">0</td>
 								<td class="right small">647</td>
 								<td class="right small">1293</td>
@@ -1992,7 +1884,7 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">23.8%</td>
+								<td class="right small">24.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -2021,7 +1913,7 @@ Immune to movement from external sources.</span></li>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">7343</td>
+											<td class="right small">7340</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -2036,17 +1928,17 @@ Immune to movement from external sources.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">7.4</td>
-											<td class="right small">66.97%</td>
+											<td class="right small">7.3</td>
+											<td class="right small">66.81%</td>
 											<td class="right small">646.68</td>
 											<td class="right small">647</td>
 											<td class="right small">647</td>
-											<td class="right small">4764</td>
+											<td class="right small">4753</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">1.0</td>
-											<td class="right small">9.18%</td>
+											<td class="right small">9.19%</td>
 											<td class="right small">1293.37</td>
 											<td class="right small">1293</td>
 											<td class="right small">1293</td>
@@ -2055,11 +1947,11 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">2.6</td>
-											<td class="right small">23.85%</td>
+											<td class="right small">24.00%</td>
 											<td class="right small">485.01</td>
 											<td class="right small">485</td>
 											<td class="right small">485</td>
-											<td class="right small">1272</td>
+											<td class="right small">1280</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -2109,7 +2001,7 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">23.9%</td>
+								<td class="right small">24.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -2138,7 +2030,7 @@ Immune to movement from external sources.</span></li>
 											<td class="right small">0.00</td>
 											<td class="right small">1.7158</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">10747</td>
+											<td class="right small">10736</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -2154,29 +2046,29 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">13.4</td>
-											<td class="right small">66.89%</td>
+											<td class="right small">66.78%</td>
 											<td class="right small">520.31</td>
 											<td class="right small">520</td>
 											<td class="right small">520</td>
-											<td class="right small">6961</td>
+											<td class="right small">6949</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">1.8</td>
-											<td class="right small">9.24%</td>
+											<td class="right small">9.18%</td>
 											<td class="right small">1040.62</td>
 											<td class="right small">1041</td>
 											<td class="right small">1041</td>
-											<td class="right small">1924</td>
+											<td class="right small">1910</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">4.8</td>
-											<td class="right small">23.87%</td>
+											<td class="right small">24.04%</td>
 											<td class="right small">390.23</td>
 											<td class="right small">390</td>
 											<td class="right small">390</td>
-											<td class="right small">1863</td>
+											<td class="right small">1877</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -2225,14 +2117,14 @@ Immune to movement from external sources.</span></li>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=91776">claw</a></td>
-								<td class="right small">687</td>
+								<td class="right small">686</td>
 								<td class="right small">53.5%</td>
 								<td class="right small">91.9</td>
 								<td class="right small">4.23sec</td>
-								<td class="right small">2923</td>
+								<td class="right small">2922</td>
 								<td class="right small">0</td>
-								<td class="right small">2959</td>
-								<td class="right small">5921</td>
+								<td class="right small">2960</td>
+								<td class="right small">5917</td>
 								<td class="right small">8244</td>
 								<td class="right small">9.2%</td>
 								<td class="right small">0.0%</td>
@@ -2261,13 +2153,13 @@ Immune to movement from external sources.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">91.86</td>
-											<td class="right small">91.86</td>
+											<td class="right small">91.85</td>
+											<td class="right small">91.85</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">268493</td>
+											<td class="right small">268360</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -2282,35 +2174,35 @@ Immune to movement from external sources.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">57.2</td>
-											<td class="right small">62.25%</td>
-											<td class="right small">2959.05</td>
+											<td class="right small">57.3</td>
+											<td class="right small">62.33%</td>
+											<td class="right small">2959.97</td>
 											<td class="right small">2078</td>
 											<td class="right small">4122</td>
-											<td class="right small">169211</td>
+											<td class="right small">169467</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">8.5</td>
-											<td class="right small">9.24%</td>
-											<td class="right small">5921.40</td>
+											<td class="right small">8.4</td>
+											<td class="right small">9.19%</td>
+											<td class="right small">5917.46</td>
 											<td class="right small">4156</td>
 											<td class="right small">8244</td>
-											<td class="right small">50271</td>
+											<td class="right small">49962</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">22.1</td>
-											<td class="right small">24.03%</td>
-											<td class="right small">2220.56</td>
+											<td class="right small">22.0</td>
+											<td class="right small">23.99%</td>
+											<td class="right small">2220.80</td>
 											<td class="right small">1559</td>
 											<td class="right small">3091</td>
-											<td class="right small">49011</td>
+											<td class="right small">48931</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">4.1</td>
-											<td class="right small">4.48%</td>
+											<td class="right small">4.49%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -2356,9 +2248,9 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">99.6</td>
 								<td class="right small">3.86sec</td>
 								<td class="right small">2346</td>
-								<td class="right small">1487</td>
-								<td class="right small">2377</td>
-								<td class="right small">4755</td>
+								<td class="right small">1488</td>
+								<td class="right small">2378</td>
+								<td class="right small">4750</td>
 								<td class="right small">6597</td>
 								<td class="right small">9.2%</td>
 								<td class="right small">0.0%</td>
@@ -2387,13 +2279,13 @@ Immune to movement from external sources.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">99.59</td>
-											<td class="right small">99.59</td>
+											<td class="right small">99.61</td>
+											<td class="right small">99.61</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.5773</td>
+											<td class="right small">1.5767</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">233654</td>
+											<td class="right small">233706</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -2409,34 +2301,34 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">62.1</td>
-											<td class="right small">62.34%</td>
-											<td class="right small">2376.96</td>
+											<td class="right small">62.37%</td>
+											<td class="right small">2377.54</td>
 											<td class="right small">1663</td>
 											<td class="right small">3298</td>
-											<td class="right small">147564</td>
+											<td class="right small">147706</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">9.1</td>
-											<td class="right small">9.18%</td>
-											<td class="right small">4755.08</td>
+											<td class="right small">9.17%</td>
+											<td class="right small">4749.80</td>
 											<td class="right small">3327</td>
 											<td class="right small">6597</td>
-											<td class="right small">43496</td>
+											<td class="right small">43386</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">23.9</td>
 											<td class="right small">23.99%</td>
-											<td class="right small">1782.54</td>
+											<td class="right small">1783.24</td>
 											<td class="right small">1248</td>
 											<td class="right small">2474</td>
-											<td class="right small">42594</td>
+											<td class="right small">42614</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">4.5</td>
-											<td class="right small">4.49%</td>
+											<td class="right small">4.47%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -2497,7 +2389,7 @@ Immune to movement from external sources.</span></li>
 							<tr>
 								<td class="left small">frost_strike</td>
 								<td class="right small">100.0%</td>
-								<td class="right small">726.2</td>
+								<td class="right small">726.1</td>
 								<td class="right small">16</td>
 							</tr>
 							<tr>
@@ -2517,7 +2409,7 @@ Immune to movement from external sources.</span></li>
 							<tr>
 								<td class="left small">claw</td>
 								<td class="right small">100.0%</td>
-								<td class="right small">73.1</td>
+								<td class="right small">73.0</td>
 								<td class="right small">40</td>
 							</tr>
 						</table>
@@ -2609,8 +2501,8 @@ Immune to movement from external sources.</span></li>
 								<td class="left"><a href="#" class="toggle-details">golemblood_potion</a></td>
 								<td class="right">2.0</td>
 								<td class="right">0.0</td>
-								<td class="right">340.2sec</td>
-								<td class="right">340.2sec</td>
+								<td class="right">340.1sec</td>
+								<td class="right">340.1sec</td>
 								<td class="right">10%</td>
 								<td class="right">10%</td>
 							</tr>
@@ -2653,7 +2545,7 @@ Immune to movement from external sources.</span></li>
 							</tr>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">killing_machine</a></td>
-								<td class="right">44.4</td>
+								<td class="right">44.5</td>
 								<td class="right">2.1</td>
 								<td class="right">9.7sec</td>
 								<td class="right">9.2sec</td>
@@ -2700,7 +2592,7 @@ Immune to movement from external sources.</span></li>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">rime</a></td>
 								<td class="right">47.1</td>
-								<td class="right">22.0</td>
+								<td class="right">22.1</td>
 								<td class="right">9.3sec</td>
 								<td class="right">6.3sec</td>
 								<td class="right">40%</td>
@@ -2723,7 +2615,7 @@ Immune to movement from external sources.</span></li>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">rune_of_razorice</a></td>
 								<td class="right">1.0</td>
-								<td class="right">420.8</td>
+								<td class="right">420.6</td>
 								<td class="right">0.0sec</td>
 								<td class="right">1.0sec</td>
 								<td class="right">100%</td>
@@ -2770,7 +2662,7 @@ Immune to movement from external sources.</span></li>
 								<td class="left"><a href="#" class="toggle-details">tier11_4pc_melee</a></td>
 								<td class="right">2.5</td>
 								<td class="right">23.5</td>
-								<td class="right">137.1sec</td>
+								<td class="right">138.2sec</td>
 								<td class="right">16.6sec</td>
 								<td class="right">95%</td>
 								<td class="right">100%</td>
@@ -2984,7 +2876,7 @@ Immune to movement from external sources.</span></li>
 								<tr class="odd">
 									<td class="left">runic_empowerment_wasted</td>
 									<td class="right">4.9</td>
-									<td class="right">69.1sec</td>
+									<td class="right">69.5sec</td>
 								</tr>
 							</table>
 						</div>
@@ -3002,22 +2894,22 @@ Immune to movement from external sources.</span></li>
 								</tr>
 								<tr>
 									<td class="left">butchery</td>
-									<td class="right">1747.7</td>
+									<td class="right">1747.5</td>
 									<td class="right">84.8</td>
 									<td class="right">0.0</td>
-									<td class="right">2.9%</td>
+									<td class="right">3.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">chill_of_the_grave</td>
 									<td class="right">122.6</td>
-									<td class="right">1177.8</td>
+									<td class="right">1177.6</td>
 									<td class="right">9.6</td>
-									<td class="right">3.9%</td>
+									<td class="right">4.0%</td>
 								</tr>
 								<tr>
 									<td class="left">horn_of_winter</td>
 									<td class="right">0.8</td>
-									<td class="right">8.1</td>
+									<td class="right">8.0</td>
 									<td class="right">10.0</td>
 									<td class="right">0.0%</td>
 								</tr>
@@ -3031,7 +2923,7 @@ Immune to movement from external sources.</span></li>
 								<tr>
 									<td class="left">rune_abilities</td>
 									<td class="right">173.5</td>
-									<td class="right">2746.9</td>
+									<td class="right">2746.5</td>
 									<td class="right">15.8</td>
 									<td class="right">1.5%</td>
 								</tr>
@@ -3050,7 +2942,7 @@ Immune to movement from external sources.</span></li>
 								</tr>
 								<tr>
 									<td>energy_regen</td>
-									<td>3455.6</td>
+									<td>3455.5</td>
 									<td>0.0%</td>
 								</tr>
 								</table>
@@ -3168,7 +3060,7 @@ Immune to movement from external sources.</span></li>
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    0123678ADGI9HJH5GFHHKJHIHJHIJHCHIJHIHKLLJGIJHKHJH8LLJAIJHFHKFHIHJHFGHIHJHIEHCHIHJGHKLJKHKLL8JLMJIFHIA5HGCHJHIKHJHFHIGFHHIJHIHJCHIGHHJHJ8HIHJ9HGIHJHJHAGFHIHJHGJHIHJHFHIHFHKKLCJHI8HFFHHIJH5IHKFHKHLLDAJIKHLJIHKLLJFIHLMKFIHKL8LCJILLGJIJHIHFHKLJHIJHAIHKFHIHJHGIHJHJEHHIL8LK9CLJ5ILJIHKLJIHKJHLJKHLAJIFHIHLJKLJLLKLJL8MKNDEEHHILCJ6HIKHJHIHJHFHIFHGHIFHAGHIFHFHIHJH8GHIJH5IHEEHHCJHIGHJHIHJEHHIJHGHIJHIAEHFHHI8H9GFHIHFHEHIHDHCI
+                    0123678ADFG9HIH5JGHHIJFHEHHIJHKHKLCLMJIKHLJIKHLJIJ8HHIJHIHAKJHIHJHIFHGHFHIJHEEHHCIHGJHIHJGHIH8JHIFHFH5HIFAGHHIJFHHIJHIHGFHIHJEHCHFHGIHJHIH8G9HJFHHGFHIHAJHIJHIHGJFHHIKHJHILGJCHKHJHJHIKH8J5HJHIHEHJHILAJIHFHGKFHHLKLJILJIJHHCKLKLJILL8MKLJILJKLJIHKLLAJKLJILLKNDEEHHIKFHHIKH9CFH5I8HLLGJIKHJHIJHIHGJHAFHKHJHFHIKHLFLJIHKLJIHC8KHJ6HJHIJEHHIJHKHJHIKHAJHEHIHJHGIHJHJEHHI5LJGH8CIHKJHKHLLJEIHKLLJGKLMJAIJHKHLJIKH9LJKLLOJIL8KLLCFJLLKFI
 									</div>
 								</div>
 							</div>
@@ -3778,21 +3670,21 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<table class="sc mb">
 									<tr class="left">
 										<th>Pawn Standard</th>
-										<td>( Pawn: v1: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4559, Strength=2.5535, HitRating=2.0425, ExpertiseRating=1.6754, CritRating=1.0579, HasteRating=1.0517, Ap=0.8974, MasteryRating=0.8693, Agility=0.6382 )</td>
+										<td>( Pawn: v1: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4508, Strength=2.5742, HitRating=2.0813, ExpertiseRating=1.6874, HasteRating=1.0038, CritRating=0.9767, Ap=0.8864, MasteryRating=0.8656, Agility=0.6257 )</td>
 									</tr>
 									<tr class="left">
 										<th>Zero Hit/Expertise</th>
-										<td>( Pawn: v1: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4559, Strength=2.5535, HitRating=0.0000, ExpertiseRating=0.0000, CritRating=1.0579, HasteRating=1.0517, Ap=0.8974, MasteryRating=0.8693, Agility=0.6382 )</td>
+										<td>( Pawn: v1: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4508, Strength=2.5742, HitRating=0.0000, ExpertiseRating=0.0000, HasteRating=1.0038, CritRating=0.9767, Ap=0.8864, MasteryRating=0.8656, Agility=0.6257 )</td>
 									</tr>
 								</table>
 								<table class="sc">
 									<tr class="left">
 										<th>RhadaTip Standard</th>
-										<td>( RhadaTip: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4559, Strength=2.5535, HitRating=2.0425, ExpertiseRating=1.6754, CritRating=1.0579, HasteRating=1.0517, Ap=0.8974, MasteryRating=0.8693, Agility=0.6382 )</td>
+										<td>( RhadaTip: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4508, Strength=2.5742, HitRating=2.0813, ExpertiseRating=1.6874, HasteRating=1.0038, CritRating=0.9767, Ap=0.8864, MasteryRating=0.8656, Agility=0.6257 )</td>
 									</tr>
 									<tr class="left">
 										<th>Zero Hit/Expertise</th>
-										<td>( RhadaTip: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4559, Strength=2.5535, HitRating=0.0000, ExpertiseRating=0.0000, CritRating=1.0579, HasteRating=1.0517, Ap=0.8974, MasteryRating=0.8693, Agility=0.6382 )</td>
+										<td>( RhadaTip: "Death_Knight_Frost_1h_T11_372":  MeleeDps=5.4508, Strength=2.5742, HitRating=0.0000, ExpertiseRating=0.0000, HasteRating=1.0038, CritRating=0.9767, Ap=0.8864, MasteryRating=0.8656, Agility=0.6257 )</td>
 									</tr>
 								</table>
 							</div>
@@ -3801,7 +3693,7 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 				</div>
 
 		<div id="Death_Knight_Frost_2h_T11_372" class="player section">
-			<h2 class="toggle">Death_Knight_Frost_2h_T11_372&nbsp;:&nbsp;25831dps</h2>
+			<h2 class="toggle">Death_Knight_Frost_2h_T11_372&nbsp;:&nbsp;25408dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> orc</li>
@@ -3827,14 +3719,14 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>25830.5</td>
-								<td>12.2 / 0.0%</td>
-								<td>3392.3 / 13.1%</td>
-								<td>2020.3</td>
+								<td>25407.6</td>
+								<td>12.0 / 0.0%</td>
+								<td>3372.6 / 13.3%</td>
+								<td>1987.1</td>
 								<td>12.8</td>
 								<td>12.9</td>
 								<td>runic_power</td>
-								<td>9.76%</td>
+								<td>9.75%</td>
 								<td>57.5</td>
 							</tr>
 						</table>
@@ -3875,28 +3767,28 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr>
 								<th class="left">Scale Factors</th>
-								<td>2.5009</td>
-								<td>0.5895</td>
-								<td>0.8400</td>
-								<td>1.1955</td>
-								<td>1.5943</td>
-								<td>0.8522</td>
-								<td>1.5970</td>
-								<td>0.8582</td>
-								<td>9.0191</td>
+								<td>2.4365</td>
+								<td>0.5702</td>
+								<td>0.7925</td>
+								<td>1.1937</td>
+								<td>1.5486</td>
+								<td>0.9302</td>
+								<td>1.4490</td>
+								<td>0.9150</td>
+								<td>8.8716</td>
 								<td>0.0000</td>
 							</tr>
 							<tr>
 								<th class="left">Normalized</th>
 								<td>1.0000</td>
-								<td>0.2357</td>
-								<td>0.3359</td>
-								<td>0.4780</td>
-								<td>0.6375</td>
-								<td>0.3408</td>
-								<td>0.6385</td>
-								<td>0.3432</td>
-								<td>3.6063</td>
+								<td>0.2340</td>
+								<td>0.3253</td>
+								<td>0.4899</td>
+								<td>0.6356</td>
+								<td>0.3818</td>
+								<td>0.5947</td>
+								<td>0.3756</td>
+								<td>3.6411</td>
 								<td>0.0000</td>
 							</tr>
 							<tr>
@@ -3916,8 +3808,8 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<th>Gear Ranking</th>
 								<td colspan="10" class="filler">
 									<ul class="float">
-										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.5009:0.5895:0.8400:1.1955:1.5943:0.8522:1.5970:0.8582:9.0191;" rel="_blank">wowhead</a></li>
-										<li><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.5009&amp;Agi=0.5895&amp;map=0.8400&amp;Exp=1.1955&amp;mhit=1.5943&amp;mcr=0.8522&amp;mh=1.5970&amp;Mr=0.8582&amp;dps=9.0191&amp;Ver=6" rel="_blank">lootrank</a></li>
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=6;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.4365:0.5702:0.7925:1.1937:1.5486:0.9302:1.4490:0.9150:8.8716;" rel="_blank">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?usr=&amp;ser=&amp;grp=www&amp;Cla=2048&amp;F=H&amp;Str=2.4365&amp;Agi=0.5702&amp;map=0.7925&amp;Exp=1.1937&amp;mhit=1.5486&amp;mcr=0.9302&amp;mh=1.4490&amp;Mr=0.9150&amp;dps=8.8716&amp;Ver=6" rel="_blank">lootrank</a></li>
 									</ul>
 								</td>
 							</tr>
@@ -3928,15 +3820,15 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://6.chart.apis.google.com/chart?chs=550x270&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:35361|20697|20348|8104|7662|3744|1407|344&amp;chds=0,70721&amp;chco=C79C6E,2459FF,2459FF,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++35361++obliterate,C79C6E,0,0,15|t++20697++howling_blast,2459FF,1,0,15|t++20348++frost_strike,2459FF,2,0,15|t++8104++blood_strike,C79C6E,3,0,15|t++7662++plague_strike,C79C6E,4,0,15|t++3744++melee_main_hand,C79C6E,5,0,15|t++1407++melee,C79C6E,6,0,15|t++344++melee,C79C6E,7,0,15&amp;chtt=Death_Knight_Frost_2h_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
-              <span class="chart-action-dmg" title="Action Damage Chart">http://7.chart.apis.google.com/chart?chs=550x320&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:32,30,14,8,4,4,4,2,2,0,0,0&amp;chds=0,100&amp;chco=2459FF,C79C6E,C79C6E,2459FF,2459FF,C79C6E,9482C9,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chl=frost_strike|obliterate|melee_main_hand|howling_blast|frost_fever|blood_strike|blood_plague|claw|melee|plague_strike|melee|claw&amp;chtt=Death_Knight_Frost_2h_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://6.chart.apis.google.com/chart?chs=550x270&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:35342|20350|18496|8106|7673|3745|1408|344&amp;chds=0,70683&amp;chco=C79C6E,2459FF,2459FF,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++35342++obliterate,C79C6E,0,0,15|t++20350++frost_strike,2459FF,1,0,15|t++18496++howling_blast,2459FF,2,0,15|t++8106++blood_strike,C79C6E,3,0,15|t++7673++plague_strike,C79C6E,4,0,15|t++3745++melee_main_hand,C79C6E,5,0,15|t++1408++melee,C79C6E,6,0,15|t++344++melee,C79C6E,7,0,15&amp;chtt=Death_Knight_Frost_2h_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dmg" title="Action Damage Chart">http://7.chart.apis.google.com/chart?chs=550x320&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:32,30,15,7,4,4,3,2,2,0,0,0&amp;chds=0,100&amp;chco=2459FF,C79C6E,C79C6E,2459FF,C79C6E,2459FF,9482C9,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chl=frost_strike|obliterate|melee_main_hand|howling_blast|blood_strike|frost_fever|blood_plague|claw|melee|plague_strike|melee|claw&amp;chtt=Death_Knight_Frost_2h_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://8.chart.apis.google.com/chart?chs=550x260&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:55,23,16,2,2,1&amp;chds=0,100&amp;chco=C41F3B&amp;chl=rune_abilities|chill_of_the_grave|might_of_the_frozen_wastes|horn_of_winter|butchery|power_refund&amp;chtt=Death_Knight_Frost_2h_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-              <span class="chart-scale-factors" title="Scale Factors Chart">http://8.chart.apis.google.com/chart?chs=525x300&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:9.0191|2.5009|1.5970|1.5943|1.1955|0.8582|0.8522|0.8400|0.5895&amp;chds=0,18.0382&amp;chco=C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B&amp;chm=t++9.0191++Wdps,C41F3B,0,0,15|t++2.5009++Str,C41F3B,1,0,15|t++1.5970++Haste,C41F3B,2,0,15|t++1.5943++Hit,C41F3B,3,0,15|t++1.1955++Exp,C41F3B,4,0,15|t++0.8582++Mastery,C41F3B,5,0,15|t++0.8522++Crit,C41F3B,6,0,15|t++0.8400++AP,C41F3B,7,0,15|t++0.5895++Agi,C41F3B,8,0,15&amp;chtt=Death_Knight_Frost_2h_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
-              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://9.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:Ws466732vx6670zutv130vromswyvtqpnosuusqooosttroomnoqqomkkkmnnifccfhklkjihijllkihghikkjhgffgiiigeeddcddcbabbdefedcbcdfffddbZZZaZZZZacghhgfeefgggfeedefgffedddeefedcccccbbaaabcdeedcdcdddcaabccccddcccdehihhgffggggfeeeefffeeddeefeedddddccbbabbcdddcbaaZaZZZYZZabccccccdeghghgggghggfgfggggggggghhhhggghhhgffefefffeedcccccddddeefffgghijjkmnnopppppppqqqqqqqqqrrrrrqqqrrrrqpooqrrpponnnmmmmmmmnnnnnmmmnnnnnnopppqppppoooooonnonnnnnnnnnnnmlllkjihhgg&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=93&amp;chtt=Death_Knight_Frost_2h_T11_372+Runic Power+Timeline&amp;chts=dddddd,18&amp;chco=C41F3B</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wxzz012244455666766543210zyxwutttssrrqqqqqqqqqppppppponnnnnnmmmmmmmmmllllllmmlllklkkkjjiihhhhgggggggggggghhhiiiijjkjkkkkjkkllmmmmmnnnnnnnnnnmnmmllllkkkjjiihhhgggggggggggfgfgfgfggghhiiiijijjkkklllmnnnnnnmnnnnnonnnnnnnnnnononnnnnnonononnnmnmmmmmmmmmmmlmllllllllmmmmmmlllllllllllllklklklkkkkkkkjkjjkjjjjjkjkkkklllmmnnnoopoppppqqqrrrrrrrrrrrsrsssssssssssssrrrqpppqqqqqrrrsssttuuvvwxxxxxxxwwwvvvuuuuttttsssssssttttttttttttttsssssrrrrrrrrqqqq&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=25831|max=38498&amp;chxp=1,1,67,100&amp;chtt=Death_Knight_Frost_2h_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,1,3,8,12,14,35,50,89,126,224,245,352,426,557,700,816,913,1003,1141,1176,1232,1220,1249,1254,1104,993,946,853,675,548,452,388,287,236,207,151,102,75,39,31,26,12,13,5,2,2,3,1,2&amp;chds=0,1254&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=22786|avg=25831|max=29571&amp;chxp=0,1,45,100&amp;chtt=Death_Knight_Frost_2h_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://7.chart.apis.google.com/chart?chs=525x300&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:8.8716|2.4365|1.5486|1.4490|1.1937|0.9302|0.9150|0.7925|0.5702&amp;chds=0,17.7432&amp;chco=C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B,C41F3B&amp;chm=t++8.8716++Wdps,C41F3B,0,0,15|t++2.4365++Str,C41F3B,1,0,15|t++1.5486++Hit,C41F3B,2,0,15|t++1.4490++Haste,C41F3B,3,0,15|t++1.1937++Exp,C41F3B,4,0,15|t++0.9302++Crit,C41F3B,5,0,15|t++0.9150++Mastery,C41F3B,6,0,15|t++0.7925++AP,C41F3B,7,0,15|t++0.5702++Agi,C41F3B,8,0,15&amp;chtt=Death_Knight_Frost_2h_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://9.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:Ws466732vy6670zutv130vromswyvtqpnosuurqooosttroomnoqqomkkkmnnifccfillkihhhjlljigggikkjhgefgiiigeeddcddcbabbdefedcbcdfffddbaZZaZZZZacghhgfeffgggfeedefgffedddeffedccdccbbaaabcdeedcdcdddcaabcccccccccdehhhhfffgggffeeeefffedddddeeeddcddccbbabbcdddccaaZaZZZZZZabccccccdeghhhgggghggggfggghgggggghhhhgghghgffffffffeedcccccddddeefffgghiijkmnnopppppppqqrrrqqqqrrrrrrrrrrrrqpooprqponnnnmmmmmmmmnnnnmmmmnnnnnopppppppooooonnnnnnnnnnnmmmmmmlllkjihhgg&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=93&amp;chtt=Death_Knight_Frost_2h_T11_372+Runic Power+Timeline&amp;chts=dddddd,18&amp;chco=C41F3B</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wxzz012234455666866543210zyxwutttssrrqqqqqqrqqppppppponnnnnnmmmmmmmmmllllllmllkkkkkkjjjiihhhhgggggggggggghhhhiiijjjjkkkkjkkllmllmmmmnnnnnmmmmnmmlllkkjjjjiihhhgggggggggggfgfgfgfggghhiiiijijjkkklllmnnnnnnmnnnnnnnnnnnnnnnnnnnnnnnnnnnonnnnnmmmmmmmmmmmmmmmllllllllmlmmmmllllllkllllklklklkkkkkkkkkjkjjkjjjjjjjkkkklllmmnnnoopoppppqqqrrrrrrrrrrrsrsssssssssssssrrrqppqqqqqqrrrsssttuuvwwxxxxxxxwwwvvvuuuuttttsssssssstttttttttttttssssrrrrrrrrrqqqq&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=25408|max=37926&amp;chxp=1,1,67,100&amp;chtt=Death_Knight_Frost_2h_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:2,2,2,5,10,11,32,32,63,98,157,244,313,391,479,594,766,843,978,1107,1214,1220,1261,1244,1262,1158,1063,1002,883,748,593,535,410,310,260,215,161,103,78,54,37,18,19,10,3,3,1,5,0,1&amp;chds=0,1262&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=22320|avg=25408|max=29065&amp;chxp=0,1,46,100&amp;chtt=Death_Knight_Frost_2h_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -3971,16 +3863,16 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr>
 								<th class="left small">Death_Knight_Frost_2h_T11_372</th>
-								<th class="right small">25831</th>
+								<th class="right small">25408</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=59879">blood_plague</a></td>
-								<td class="right small">933</td>
-								<td class="right small">3.6%</td>
+								<td class="right small">834</td>
+								<td class="right small">3.3%</td>
 								<td class="right small">13.7</td>
 								<td class="right small">33.06sec</td>
-								<td class="right small">29734</td>
+								<td class="right small">26556</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -3992,8 +3884,8 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">144</td>
-								<td class="right small">2315</td>
-								<td class="right small">4837</td>
+								<td class="right small">2067</td>
+								<td class="right small">4321</td>
 								<td class="right small">20.3%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">99.1%</td>
@@ -4014,11 +3906,11 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr>
 											<td class="right small">13.71</td>
 											<td class="right small">13.71</td>
-											<td class="right small">144.28</td>
-											<td class="right small">144.28</td>
+											<td class="right small">144.26</td>
+											<td class="right small">144.26</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">407774</td>
+											<td class="right small">364136</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4052,20 +3944,20 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">115.0</td>
-											<td class="right small">79.73%</td>
-											<td class="right small">2315.11</td>
-											<td class="right small">1728</td>
-											<td class="right small">3778</td>
-											<td class="right small">266331</td>
+											<td class="right small">79.71%</td>
+											<td class="right small">2066.71</td>
+											<td class="right small">1543</td>
+											<td class="right small">3373</td>
+											<td class="right small">237638</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">29.2</td>
-											<td class="right small">20.27%</td>
-											<td class="right small">4837.37</td>
-											<td class="right small">3612</td>
-											<td class="right small">7896</td>
-											<td class="right small">141443</td>
+											<td class="right small">29.3</td>
+											<td class="right small">20.29%</td>
+											<td class="right small">4320.76</td>
+											<td class="right small">3225</td>
+											<td class="right small">7050</td>
+											<td class="right small">126497</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4107,16 +3999,16 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=45902">blood_strike</a></td>
-								<td class="right small">1007</td>
-								<td class="right small">3.9%</td>
+								<td class="right small">1008</td>
+								<td class="right small">4.0%</td>
 								<td class="right small">53.8</td>
 								<td class="right small">8.14sec</td>
-								<td class="right small">8184</td>
-								<td class="right small">8104</td>
-								<td class="right small">7138</td>
-								<td class="right small">14709</td>
+								<td class="right small">8186</td>
+								<td class="right small">8106</td>
+								<td class="right small">7139</td>
+								<td class="right small">14706</td>
 								<td class="right small">20398</td>
-								<td class="right small">15.0%</td>
+								<td class="right small">15.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">1.3%</td>
 								<td class="right small">0.0%</td>
@@ -4147,9 +4039,9 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<td class="right small">53.77</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0098</td>
+											<td class="right small">1.0099</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">440026</td>
+											<td class="right small">440187</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4165,20 +4057,20 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">45.0</td>
-											<td class="right small">83.69%</td>
-											<td class="right small">7138.14</td>
+											<td class="right small">83.67%</td>
+											<td class="right small">7138.52</td>
 											<td class="right small">5109</td>
 											<td class="right small">9902</td>
-											<td class="right small">321181</td>
+											<td class="right small">321153</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">8.1</td>
-											<td class="right small">15.03%</td>
-											<td class="right small">14708.91</td>
-											<td class="right small">11393</td>
+											<td class="right small">15.05%</td>
+											<td class="right small">14706.07</td>
+											<td class="right small">11320</td>
 											<td class="right small">20398</td>
-											<td class="right small">118844</td>
+											<td class="right small">119035</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -4234,7 +4126,7 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">6.2</td>
-								<td class="right small">70.52sec</td>
+								<td class="right small">70.62sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -4327,7 +4219,7 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">1.8</td>
-								<td class="right small">315.16sec</td>
+								<td class="right small">315.47sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -4417,11 +4309,11 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=59921">frost_fever</a></td>
-								<td class="right small">1094</td>
-								<td class="right small">4.2%</td>
+								<td class="right small">976</td>
+								<td class="right small">3.8%</td>
 								<td class="right small">48.0</td>
-								<td class="right small">9.16sec</td>
-								<td class="right small">9945</td>
+								<td class="right small">9.13sec</td>
+								<td class="right small">8877</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -4433,8 +4325,8 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">145</td>
-								<td class="right small">2965</td>
-								<td class="right small">4581</td>
+								<td class="right small">2647</td>
+								<td class="right small">4091</td>
 								<td class="right small">20.3%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">99.6%</td>
@@ -4455,11 +4347,11 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr>
 											<td class="right small">48.05</td>
 											<td class="right small">48.05</td>
-											<td class="right small">145.08</td>
-											<td class="right small">145.08</td>
+											<td class="right small">145.06</td>
+											<td class="right small">145.06</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">477802</td>
+											<td class="right small">426500</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4494,19 +4386,19 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<td class="left small">hit</td>
 											<td class="right small">115.6</td>
 											<td class="right small">79.69%</td>
-											<td class="right small">2965.35</td>
-											<td class="right small">2213</td>
-											<td class="right small">4837</td>
-											<td class="right small">342853</td>
+											<td class="right small">2646.97</td>
+											<td class="right small">1976</td>
+											<td class="right small">4319</td>
+											<td class="right small">305979</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">29.5</td>
 											<td class="right small">20.31%</td>
-											<td class="right small">4580.98</td>
-											<td class="right small">3419</td>
-											<td class="right small">7473</td>
-											<td class="right small">134948</td>
+											<td class="right small">4090.50</td>
+											<td class="right small">3052</td>
+											<td class="right small">6673</td>
+											<td class="right small">120521</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4548,14 +4440,14 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=49143">frost_strike</a></td>
-								<td class="right small">8184</td>
-								<td class="right small">31.7%</td>
-								<td class="right small">174.6</td>
+								<td class="right small">8185</td>
+								<td class="right small">32.2%</td>
+								<td class="right small">174.5</td>
 								<td class="right small">2.49sec</td>
-								<td class="right small">20484</td>
-								<td class="right small">20348</td>
+								<td class="right small">20486</td>
+								<td class="right small">20350</td>
 								<td class="right small">14845</td>
-								<td class="right small">30587</td>
+								<td class="right small">30593</td>
 								<td class="right small">46558</td>
 								<td class="right small">37.0%</td>
 								<td class="right small">0.0%</td>
@@ -4584,13 +4476,13 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">174.56</td>
-											<td class="right small">174.56</td>
+											<td class="right small">174.54</td>
+											<td class="right small">174.54</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0067</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">3575714</td>
+											<td class="right small">3575722</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4606,25 +4498,25 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">107.7</td>
-											<td class="right small">61.68%</td>
-											<td class="right small">14844.81</td>
+											<td class="right small">61.71%</td>
+											<td class="right small">14844.61</td>
 											<td class="right small">11903</td>
 											<td class="right small">22601</td>
-											<td class="right small">1598470</td>
+											<td class="right small">1598806</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">64.6</td>
-											<td class="right small">37.03%</td>
-											<td class="right small">30587.30</td>
+											<td class="right small">37.02%</td>
+											<td class="right small">30593.42</td>
 											<td class="right small">24521</td>
 											<td class="right small">46558</td>
-											<td class="right small">1977244</td>
+											<td class="right small">1976916</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">2.2</td>
-											<td class="right small">1.28%</td>
+											<td class="right small">1.27%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4672,16 +4564,16 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=49184">howling_blast</a></td>
-								<td class="right small">1950</td>
-								<td class="right small">7.5%</td>
+								<td class="right small">1743</td>
+								<td class="right small">6.9%</td>
 								<td class="right small">40.9</td>
-								<td class="right small">10.56sec</td>
-								<td class="right small">20814</td>
-								<td class="right small">20697</td>
-								<td class="right small">17037</td>
-								<td class="right small">35600</td>
-								<td class="right small">59547</td>
-								<td class="right small">20.3%</td>
+								<td class="right small">10.53sec</td>
+								<td class="right small">18600</td>
+								<td class="right small">18496</td>
+								<td class="right small">15209</td>
+								<td class="right small">31797</td>
+								<td class="right small">53167</td>
+								<td class="right small">20.4%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -4708,13 +4600,13 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">40.92</td>
-											<td class="right small">40.92</td>
+											<td class="right small">40.93</td>
+											<td class="right small">40.93</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0056</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">851800</td>
+											<td class="right small">761230</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4730,20 +4622,20 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">32.6</td>
-											<td class="right small">79.66%</td>
-											<td class="right small">17037.22</td>
-											<td class="right small">12671</td>
-											<td class="right small">28492</td>
-											<td class="right small">555392</td>
+											<td class="right small">79.56%</td>
+											<td class="right small">15209.13</td>
+											<td class="right small">11314</td>
+											<td class="right small">25439</td>
+											<td class="right small">495235</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">8.3</td>
-											<td class="right small">20.34%</td>
-											<td class="right small">35600.07</td>
-											<td class="right small">26483</td>
-											<td class="right small">59547</td>
-											<td class="right small">296408</td>
+											<td class="right small">8.4</td>
+											<td class="right small">20.44%</td>
+											<td class="right small">31797.06</td>
+											<td class="right small">23645</td>
+											<td class="right small">53167</td>
+											<td class="right small">265995</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4781,14 +4673,14 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_main_hand</a></td>
-								<td class="right small">3737</td>
-								<td class="right small">14.5%</td>
+								<td class="right small">3738</td>
+								<td class="right small">14.7%</td>
 								<td class="right small">210.1</td>
-								<td class="right small">2.09sec</td>
-								<td class="right small">7770</td>
-								<td class="right small">3744</td>
+								<td class="right small">2.08sec</td>
+								<td class="right small">7771</td>
+								<td class="right small">3745</td>
 								<td class="right small">7136</td>
-								<td class="right small">14701</td>
+								<td class="right small">14703</td>
 								<td class="right small">21140</td>
 								<td class="right small">15.3%</td>
 								<td class="right small">0.0%</td>
@@ -4817,13 +4709,13 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">210.15</td>
-											<td class="right small">210.15</td>
+											<td class="right small">210.12</td>
+											<td class="right small">210.12</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">2.0751</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1632827</td>
+											<td class="right small">1632877</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4838,35 +4730,35 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">125.0</td>
-											<td class="right small">59.47%</td>
-											<td class="right small">7135.81</td>
+											<td class="right small">124.9</td>
+											<td class="right small">59.43%</td>
+											<td class="right small">7135.78</td>
 											<td class="right small">5866</td>
 											<td class="right small">10262</td>
-											<td class="right small">891718</td>
+											<td class="right small">891031</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">32.1</td>
-											<td class="right small">15.26%</td>
-											<td class="right small">14700.79</td>
+											<td class="right small">15.28%</td>
+											<td class="right small">14703.01</td>
 											<td class="right small">12085</td>
 											<td class="right small">21140</td>
-											<td class="right small">471301</td>
+											<td class="right small">471953</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">50.4</td>
 											<td class="right small">24.00%</td>
-											<td class="right small">5350.07</td>
+											<td class="right small">5351.41</td>
 											<td class="right small">4400</td>
 											<td class="right small">7697</td>
-											<td class="right small">269809</td>
+											<td class="right small">269893</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">2.7</td>
-											<td class="right small">1.28%</td>
+											<td class="right small">1.29%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4907,14 +4799,14 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=49020">obliterate</a></td>
-								<td class="right small">7696</td>
-								<td class="right small">29.8%</td>
+								<td class="right small">7694</td>
+								<td class="right small">30.3%</td>
 								<td class="right small">94.0</td>
 								<td class="right small">4.66sec</td>
-								<td class="right small">35781</td>
-								<td class="right small">35361</td>
+								<td class="right small">35763</td>
+								<td class="right small">35342</td>
 								<td class="right small">26376</td>
-								<td class="right small">54580</td>
+								<td class="right small">54577</td>
 								<td class="right small">81436</td>
 								<td class="right small">34.5%</td>
 								<td class="right small">0.0%</td>
@@ -4943,13 +4835,13 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">93.97</td>
-											<td class="right small">93.97</td>
+											<td class="right small">93.98</td>
+											<td class="right small">93.98</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0119</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">3362356</td>
+											<td class="right small">3360919</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4965,25 +4857,25 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">60.3</td>
-											<td class="right small">64.18%</td>
-											<td class="right small">26375.94</td>
+											<td class="right small">64.20%</td>
+											<td class="right small">26375.99</td>
 											<td class="right small">21274</td>
 											<td class="right small">39532</td>
-											<td class="right small">1590628</td>
+											<td class="right small">1591496</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">32.5</td>
-											<td class="right small">34.54%</td>
-											<td class="right small">54580.44</td>
+											<td class="right small">32.4</td>
+											<td class="right small">34.50%</td>
+											<td class="right small">54577.46</td>
 											<td class="right small">43825</td>
 											<td class="right small">81436</td>
-											<td class="right small">1771727</td>
+											<td class="right small">1769423</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">1.2</td>
-											<td class="right small">1.28%</td>
+											<td class="right small">1.30%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -5071,7 +4963,7 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 											<td class="right small">7.12</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0164</td>
+											<td class="right small">1.0165</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0</td>
 										</tr>
@@ -5127,7 +5019,7 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">7.6</td>
-								<td class="right small">61.70sec</td>
+								<td class="right small">61.69sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -5221,15 +5113,15 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">119</td>
 								<td class="right small">0.5%</td>
 								<td class="right small">6.7</td>
-								<td class="right small">65.26sec</td>
-								<td class="right small">7759</td>
-								<td class="right small">7662</td>
+								<td class="right small">65.30sec</td>
+								<td class="right small">7769</td>
+								<td class="right small">7673</td>
 								<td class="right small">6766</td>
-								<td class="right small">13940</td>
+								<td class="right small">13945</td>
 								<td class="right small">19941</td>
-								<td class="right small">15.1%</td>
+								<td class="right small">15.2%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">1.4%</td>
+								<td class="right small">1.3%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -5260,7 +5152,7 @@ Immune to movement from external sources.</span></li>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0126</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">51861</td>
+											<td class="right small">51899</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -5276,25 +5168,25 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">5.6</td>
-											<td class="right small">83.53%</td>
-											<td class="right small">6765.69</td>
+											<td class="right small">83.46%</td>
+											<td class="right small">6765.92</td>
 											<td class="right small">5918</td>
 											<td class="right small">9947</td>
-											<td class="right small">37774</td>
+											<td class="right small">37722</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">1.0</td>
-											<td class="right small">15.12%</td>
-											<td class="right small">13940.43</td>
+											<td class="right small">15.22%</td>
+											<td class="right small">13944.94</td>
 											<td class="right small">12190</td>
 											<td class="right small">19941</td>
-											<td class="right small">14088</td>
+											<td class="right small">14176</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.1</td>
-											<td class="right small">1.35%</td>
+											<td class="right small">1.32%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -5351,7 +5243,7 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">40.4%</td>
 								<td class="right small">12.0</td>
 								<td class="right small">2.98sec</td>
-								<td class="right small">668</td>
+								<td class="right small">667</td>
 								<td class="right small">0</td>
 								<td class="right small">647</td>
 								<td class="right small">1293</td>
@@ -5389,7 +5281,7 @@ Immune to movement from external sources.</span></li>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">8010</td>
+											<td class="right small">8007</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -5405,29 +5297,29 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">8.0</td>
-											<td class="right small">66.75%</td>
+											<td class="right small">66.82%</td>
 											<td class="right small">646.68</td>
 											<td class="right small">647</td>
 											<td class="right small">647</td>
-											<td class="right small">5180</td>
+											<td class="right small">5186</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">1.1</td>
-											<td class="right small">9.23%</td>
+											<td class="right small">9.18%</td>
 											<td class="right small">1293.37</td>
 											<td class="right small">1293</td>
 											<td class="right small">1293</td>
-											<td class="right small">1432</td>
+											<td class="right small">1425</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">2.9</td>
-											<td class="right small">24.02%</td>
+											<td class="right small">24.00%</td>
 											<td class="right small">485.01</td>
 											<td class="right small">485</td>
 											<td class="right small">485</td>
-											<td class="right small">1398</td>
+											<td class="right small">1397</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -5473,11 +5365,11 @@ Immune to movement from external sources.</span></li>
 								<td class="right small">520</td>
 								<td class="right small">1041</td>
 								<td class="right small">1041</td>
-								<td class="right small">9.2%</td>
+								<td class="right small">9.3%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">23.9%</td>
+								<td class="right small">24.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -5506,7 +5398,7 @@ Immune to movement from external sources.</span></li>
 											<td class="right small">0.00</td>
 											<td class="right small">1.5603</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">11814</td>
+											<td class="right small">11819</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -5522,29 +5414,29 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">14.7</td>
-											<td class="right small">66.86%</td>
+											<td class="right small">66.68%</td>
 											<td class="right small">520.31</td>
 											<td class="right small">520</td>
 											<td class="right small">520</td>
-											<td class="right small">7653</td>
+											<td class="right small">7633</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">2.0</td>
-											<td class="right small">9.19%</td>
+											<td class="right small">9.27%</td>
 											<td class="right small">1040.62</td>
 											<td class="right small">1041</td>
 											<td class="right small">1041</td>
-											<td class="right small">2104</td>
+											<td class="right small">2121</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">5.3</td>
-											<td class="right small">23.95%</td>
+											<td class="right small">24.05%</td>
 											<td class="right small">390.23</td>
 											<td class="right small">390</td>
 											<td class="right small">390</td>
-											<td class="right small">2056</td>
+											<td class="right small">2065</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -5588,18 +5480,18 @@ Immune to movement from external sources.</span></li>
 							</tr>
 							<tr>
 								<th class="left small">pet - ghoul</th>
-								<th class="right small">1189</th>
+								<th class="right small">1191</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=91776">claw</a></td>
-								<td class="right small">618</td>
+								<td class="right small">619</td>
 								<td class="right small">52.0%</td>
 								<td class="right small">96.1</td>
 								<td class="right small">4.05sec</td>
-								<td class="right small">2516</td>
+								<td class="right small">2518</td>
 								<td class="right small">0</td>
-								<td class="right small">2550</td>
+								<td class="right small">2551</td>
 								<td class="right small">5101</td>
 								<td class="right small">7206</td>
 								<td class="right small">9.2%</td>
@@ -5629,13 +5521,13 @@ Immune to movement from external sources.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">96.12</td>
-											<td class="right small">96.12</td>
+											<td class="right small">96.14</td>
+											<td class="right small">96.14</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">241793</td>
+											<td class="right small">242112</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -5651,34 +5543,34 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">59.9</td>
-											<td class="right small">62.31%</td>
-											<td class="right small">2549.89</td>
+											<td class="right small">62.30%</td>
+											<td class="right small">2551.33</td>
 											<td class="right small">1821</td>
 											<td class="right small">3603</td>
-											<td class="right small">152718</td>
+											<td class="right small">152815</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">8.8</td>
-											<td class="right small">9.16%</td>
-											<td class="right small">5100.91</td>
+											<td class="right small">8.9</td>
+											<td class="right small">9.22%</td>
+											<td class="right small">5100.69</td>
 											<td class="right small">3642</td>
 											<td class="right small">7206</td>
-											<td class="right small">44894</td>
+											<td class="right small">45203</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">23.1</td>
-											<td class="right small">24.04%</td>
-											<td class="right small">1911.77</td>
+											<td class="right small">23.0</td>
+											<td class="right small">23.97%</td>
+											<td class="right small">1913.02</td>
 											<td class="right small">1366</td>
 											<td class="right small">2702</td>
-											<td class="right small">44180</td>
+											<td class="right small">44095</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">4.3</td>
-											<td class="right small">4.49%</td>
+											<td class="right small">4.51%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -5719,14 +5611,14 @@ Immune to movement from external sources.</span></li>
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee</a></td>
-								<td class="right small">571</td>
+								<td class="right small">572</td>
 								<td class="right small">48.0%</td>
-								<td class="right small">110.8</td>
+								<td class="right small">110.9</td>
 								<td class="right small">3.49sec</td>
-								<td class="right small">2016</td>
-								<td class="right small">1407</td>
-								<td class="right small">2043</td>
-								<td class="right small">4082</td>
+								<td class="right small">2017</td>
+								<td class="right small">1408</td>
+								<td class="right small">2044</td>
+								<td class="right small">4085</td>
 								<td class="right small">5767</td>
 								<td class="right small">9.2%</td>
 								<td class="right small">0.0%</td>
@@ -5755,13 +5647,13 @@ Immune to movement from external sources.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">110.79</td>
-											<td class="right small">110.79</td>
+											<td class="right small">110.86</td>
+											<td class="right small">110.86</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.4333</td>
+											<td class="right small">1.4322</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">223400</td>
+											<td class="right small">223596</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -5777,34 +5669,34 @@ Immune to movement from external sources.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">69.0</td>
-											<td class="right small">62.32%</td>
-											<td class="right small">2042.86</td>
+											<td class="right small">62.28%</td>
+											<td class="right small">2043.69</td>
 											<td class="right small">1457</td>
 											<td class="right small">2883</td>
-											<td class="right small">141053</td>
+											<td class="right small">141106</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">10.2</td>
 											<td class="right small">9.20%</td>
-											<td class="right small">4081.97</td>
+											<td class="right small">4085.08</td>
 											<td class="right small">2915</td>
 											<td class="right small">5767</td>
-											<td class="right small">41608</td>
+											<td class="right small">41648</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">26.6</td>
-											<td class="right small">24.01%</td>
-											<td class="right small">1531.77</td>
+											<td class="right small">24.03%</td>
+											<td class="right small">1533.07</td>
 											<td class="right small">1093</td>
 											<td class="right small">2162</td>
-											<td class="right small">40738</td>
+											<td class="right small">40842</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">5.0</td>
-											<td class="right small">4.47%</td>
+											<td class="right small">4.49%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -5865,7 +5757,7 @@ Immune to movement from external sources.</span></li>
 							<tr>
 								<td class="left small">frost_strike</td>
 								<td class="right small">100.0%</td>
-								<td class="right small">640.1</td>
+								<td class="right small">640.2</td>
 								<td class="right small">32</td>
 							</tr>
 							<tr>
@@ -5885,7 +5777,7 @@ Immune to movement from external sources.</span></li>
 							<tr>
 								<td class="left small">claw</td>
 								<td class="right small">100.0%</td>
-								<td class="right small">62.9</td>
+								<td class="right small">63.0</td>
 								<td class="right small">40</td>
 							</tr>
 						</table>
@@ -5977,8 +5869,8 @@ Immune to movement from external sources.</span></li>
 								<td class="left"><a href="#" class="toggle-details">golemblood_potion</a></td>
 								<td class="right">2.0</td>
 								<td class="right">0.0</td>
-								<td class="right">340.0sec</td>
-								<td class="right">340.0sec</td>
+								<td class="right">339.9sec</td>
+								<td class="right">339.9sec</td>
 								<td class="right">10%</td>
 								<td class="right">10%</td>
 							</tr>
@@ -6022,7 +5914,7 @@ Immune to movement from external sources.</span></li>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">killing_machine</a></td>
 								<td class="right">59.7</td>
-								<td class="right">2.6</td>
+								<td class="right">2.5</td>
 								<td class="right">7.3sec</td>
 								<td class="right">7.0sec</td>
 								<td class="right">14%</td>
@@ -6091,8 +5983,8 @@ Immune to movement from external sources.</span></li>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">rune_of_the_fallen_crusader</a></td>
 								<td class="right">7.5</td>
-								<td class="right">56.4</td>
-								<td class="right">58.3sec</td>
+								<td class="right">56.3</td>
+								<td class="right">58.4sec</td>
 								<td class="right">6.8sec</td>
 								<td class="right">89%</td>
 								<td class="right">88%</td>
@@ -6115,7 +6007,7 @@ Immune to movement from external sources.</span></li>
 								<td class="left"><a href="#" class="toggle-details">tier11_4pc_melee</a></td>
 								<td class="right">2.5</td>
 								<td class="right">29.3</td>
-								<td class="right">141.8sec</td>
+								<td class="right">142.1sec</td>
 								<td class="right">13.5sec</td>
 								<td class="right">95%</td>
 								<td class="right">100%</td>
@@ -6323,13 +6215,13 @@ Immune to movement from external sources.</span></li>
 								</tr>
 								<tr>
 									<td class="left">runic_empowerment</td>
-									<td class="right">75.7</td>
+									<td class="right">75.8</td>
 									<td class="right">5.7sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">runic_empowerment_wasted</td>
 									<td class="right">1.8</td>
-									<td class="right">116.4sec</td>
+									<td class="right">117.1sec</td>
 								</tr>
 							</table>
 						</div>
@@ -6347,7 +6239,7 @@ Immune to movement from external sources.</span></li>
 								</tr>
 								<tr>
 									<td class="left">butchery</td>
-									<td class="right">1747.7</td>
+									<td class="right">1747.5</td>
 									<td class="right">86.9</td>
 									<td class="right">0.0</td>
 									<td class="right">0.6%</td>
@@ -6355,35 +6247,35 @@ Immune to movement from external sources.</span></li>
 								<tr class="odd">
 									<td class="left">chill_of_the_grave</td>
 									<td class="right">133.7</td>
-									<td class="right">1321.2</td>
+									<td class="right">1321.4</td>
 									<td class="right">9.9</td>
 									<td class="right">1.2%</td>
 								</tr>
 								<tr>
 									<td class="left">horn_of_winter</td>
 									<td class="right">11.8</td>
-									<td class="right">117.7</td>
+									<td class="right">117.8</td>
 									<td class="right">10.0</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">might_of_the_frozen_wastes</td>
-									<td class="right">93.5</td>
-									<td class="right">927.5</td>
+									<td class="right">93.4</td>
+									<td class="right">926.6</td>
 									<td class="right">9.9</td>
 									<td class="right">0.7%</td>
 								</tr>
 								<tr>
 									<td class="left">power_refund</td>
 									<td class="right">2.2</td>
-									<td class="right">64.6</td>
+									<td class="right">64.0</td>
 									<td class="right">28.8</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">rune_abilities</td>
 									<td class="right">203.8</td>
-									<td class="right">3122.4</td>
+									<td class="right">3122.5</td>
 									<td class="right">15.3</td>
 									<td class="right">0.4%</td>
 								</tr>
@@ -6402,7 +6294,7 @@ Immune to movement from external sources.</span></li>
 								</tr>
 								<tr>
 									<td>energy_regen</td>
-									<td>3652.3</td>
+									<td>3653.2</td>
 									<td>0.0%</td>
 								</tr>
 								</table>
@@ -6520,7 +6412,7 @@ Immune to movement from external sources.</span></li>
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    0123678ADGFH9HIHJ5GHKHLJIFHHJHLLMJFIHKLLCNDGHJHJHLLJJLKLOFKLJJLLKBJLL8ALOJIFHLLKFLLKLJKLMKOLJJLLLCBFIHKLLOJLJKLLKLLJIJHILLL8JILL5AFLOJKLLLKJILJLLLJIJIHJHIHJHIHJHIHGCHKLLJILJKHLLMJILLJ9ILL8GKLJIHLJKALLOFIKLLLJIKLJLLOJLFICHLJIHKLKLJIHLLJIKL5LM8OFJLLKJLALJLOLJILKLFLLKFILJHKLLCCFKLLKOLJKLLM8JLKLJILLLJLKJLLOAJLGJILLNDGJHIHJHKHEEHHLLJIJHIHKLJCC9HJHK5FHH8HLKLMJIJHFHIHJHIHGHJHKLJALKLLOLJLJLJLKLFLKOLFILCLL8LMJKL6JILLOKJIHLJHKJHIHLJJHKAHKHJHKKHJHIHFHJHIHGHJHJHLLJ5KLJL8LOLMCFLLKJLKLOBLJILJLJHLKLAKFLOFLKJHIHL9KLJIHLLFL8LJLMKOLCFILL
+                    0123678ADGFH9HKLJ5JHKHLFLFKLLMJLNDGHJHIKLLCEKLLLOJIKLLJIJHIHLLFLKLOA8KLJLFIKLKLLMKOFILLJIJHKHLCLJLOLKJLKLKLJKLLJJILLL8OF5AIJHIHKHKJHHILLMJKLJILLJILGKFHIHLJLCJHKLLOKLJKLKLJIL9L8JILLLOJAJLLKLJILMKLFLOKLJLFILKCLJLLKLOJLLK8L5JLJILLGGKAJHILLJILJHIKHKLJHJHLLMKOLJILKLCJLLKKLJLO8LJLFILJHKLKKLAJIHKKHKJHIHLJHIJHHKLEIHJHFHIHKHLCLJL9KKLJ5IL8LMKKLNDEEHHIJHJHKHLLJLOAJKLLKLJLKLJLKOLKLJKLLJBCLKLO8LKMJIL6LJKLLJLJLGKLOJIKHLJAIHJHJHHIGHJHJHKHJHJHIGHKHJHJHI5KHC8HLJLKLMJLOJLLKLJLKLJILLOAJKLJIHLLGJJLKLLJLJ9ILLJKLJLLOKC8KLMKLJILFKLLO
 									</div>
 								</div>
 							</div>
@@ -7129,21 +7021,21 @@ tabard=tabard_of_ramkahen,ilevel=85<br>
 								<table class="sc mb">
 									<tr class="left">
 										<th>Pawn Standard</th>
-										<td>( Pawn: v1: "Death_Knight_Frost_2h_T11_372":  MeleeDps=9.0191, Strength=2.5009, HasteRating=1.5970, HitRating=1.5943, ExpertiseRating=1.1955, MasteryRating=0.8582, CritRating=0.8522, Ap=0.8400, Agility=0.5895 )</td>
+										<td>( Pawn: v1: "Death_Knight_Frost_2h_T11_372":  MeleeDps=8.8716, Strength=2.4365, HitRating=1.5486, HasteRating=1.4490, ExpertiseRating=1.1937, CritRating=0.9302, MasteryRating=0.9150, Ap=0.7925, Agility=0.5702 )</td>
 									</tr>
 									<tr class="left">
 										<th>Zero Hit/Expertise</th>
-										<td>( Pawn: v1: "Death_Knight_Frost_2h_T11_372":  MeleeDps=9.0191, Strength=2.5009, HasteRating=1.5970, HitRating=0.0000, ExpertiseRating=0.0000, MasteryRating=0.8582, CritRating=0.8522, Ap=0.8400, Agility=0.5895 )</td>
+										<td>( Pawn: v1: "Death_Knight_Frost_2h_T11_372":  MeleeDps=8.8716, Strength=2.4365, HitRating=0.0000, HasteRating=1.4490, ExpertiseRating=0.0000, CritRating=0.9302, MasteryRating=0.9150, Ap=0.7925, Agility=0.5702 )</td>
 									</tr>
 								</table>
 								<table class="sc">
 									<tr class="left">
 										<th>RhadaTip Standard</th>
-										<td>( RhadaTip: "Death_Knight_Frost_2h_T11_372":  MeleeDps=9.0191, Strength=2.5009, HasteRating=1.5970, HitRating=1.5943, ExpertiseRating=1.1955, MasteryRating=0.8582, CritRating=0.8522, Ap=0.8400, Agility=0.5895 )</td>
+										<td>( RhadaTip: "Death_Knight_Frost_2h_T11_372":  MeleeDps=8.8716, Strength=2.4365, HitRating=1.5486, HasteRating=1.4490, ExpertiseRating=1.1937, CritRating=0.9302, MasteryRating=0.9150, Ap=0.7925, Agility=0.5702 )</td>
 									</tr>
 									<tr class="left">
 										<th>Zero Hit/Expertise</th>
-										<td>( RhadaTip: "Death_Knight_Frost_2h_T11_372":  MeleeDps=9.0191, Strength=2.5009, HasteRating=1.5970, HitRating=0.0000, ExpertiseRating=0.0000, MasteryRating=0.8582, CritRating=0.8522, Ap=0.8400, Agility=0.5895 )</td>
+										<td>( RhadaTip: "Death_Knight_Frost_2h_T11_372":  MeleeDps=8.8716, Strength=2.4365, HitRating=0.0000, HasteRating=1.4490, ExpertiseRating=0.0000, CritRating=0.9302, MasteryRating=0.9150, Ap=0.7925, Agility=0.5702 )</td>
 									</tr>
 								</table>
 							</div>
@@ -7272,7 +7164,7 @@ tabard=tabard_of_ramkahen,ilevel=85<br>
 								<td>0.0 / 0.0%</td>
 								<td>0.0 / 0.0%</td>
 								<td>0.0</td>
-								<td>48025.2</td>
+								<td>47625.9</td>
 								<td>0.0</td>
 								<td>health</td>
 								<td>100.02%</td>
@@ -7328,8 +7220,8 @@ tabard=tabard_of_ramkahen,ilevel=85<br>
 						<div class="charts charts-left">
                                                         						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:t8777777666665555544443333332222222211111110000000zzzzzzzyyyyyyyxxxxxxxxwwwwwwwwvvvvvvvvuuuuuuuuttttttttttssssssssrrrrrrrqqqqqqqqpppppppooooooonnnnnnnnmmmmmmmmmlllllllllkkkkkkkkkjjjjjjjjjiiiiiiihhhhhhhggggggggfffffffeeeeeeedddddddcccccccbbbbbbbaaaaaaaaZZZZZZZZYYYYYYYXXXXXXXXWWWWWWWWVVVVVVVVUUUUUUUUTTTTTTTTSSSSSSSSRRRRRRRQQQQQQQPPPPPPPPOOOOOOOONNNNNNNNNMMMMMMMMLLLLLLLLLKKKKKKKJJJJJJJIIIIIIIHHHHHHHHGGGGGGGGFFFFFFFEEEEEEEEDDDDDDDDCCCCCC&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=437|1:|0|max=21969798&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=dddddd,18&amp;chco=336600</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=437|1:|0|avg=0|max=0&amp;chxp=1,1,nan,100&amp;chtt=Fluffy_Pillow+DPS+Timeline&amp;chts=dddddd,18</span>
+                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:t8777777666665555544443333332222222211111110000000zzzzzzzyyyyyyyxxxxxxxxwwwwwwwwvvvvvvvvuuuuuuuuttttttttttssssssssrrrrrrrqqqqqqqqpppppppooooooonnnnnnnnmmmmmmmmmlllllllllkkkkkkkkkjjjjjjjjjiiiiiiihhhhhhhggggggggfffffffeeeeeeedddddddcccccccbbbbbbbaaaaaaaaZZZZZZZYYYYYYYYXXXXXXXXWWWWWWWWVVVVVVVVUUUUUUUUTTTTTTTTSSSSSSSSRRRRRRRQQQQQQQPPPPPPPPOOOOOOOONNNNNNNNMMMMMMMMMLLLLLLLLLKKKKKKKJJJJJJJIIIIIIIHHHHHHHHGGGGGGGGFFFFFFFEEEEEEEEDDDDDDDCCCCCC&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|max=21784096&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=dddddd,18&amp;chco=336600</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=436|1:|0|avg=0|max=0&amp;chxp=1,1,nan,100&amp;chtt=Fluffy_Pillow+DPS+Timeline&amp;chts=dddddd,18</span>
                             						</div>
 						<div class="clear"></div>
 					</div>
@@ -8060,7 +7952,7 @@ Cannot stealth or turn invisible.</span></li>
 									<tr class="odd">
 										<th class="left">Health</th>
 										<td class="right">0</td>
-										<td class="right">23376544</td>
+										<td class="right">23186667</td>
 										<td class="right">0</td>
 									</tr>
 									<tr>
@@ -8520,131 +8412,9 @@ actions=snapshot_stats<br>
 		</div>
 		<!-- End Help Boxes -->
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
-		<script type="text/javascript">
-			jQuery.noConflict();
-			function open_anchor(anchor) {
-				var img_id = '';
-				var src = '';
-				var target = '';
-				anchor.addClass('open');
-				var section = anchor.parent('.section');
-				section.addClass('section-open');
-				section.removeClass('grouped-first');
-				section.removeClass('grouped-last');
-				if (!(section.next().hasClass('section-open'))) {
-					section.next().addClass('grouped-first');
-				}
-				if (!(section.prev().hasClass('section-open'))) {
-					section.prev().addClass('grouped-last');
-				}
-				anchor.next('.toggle-content').show(150);
-				anchor.next('.toggle-content').find('.charts').each(function() {
-					$(this).children('span').each(function() {
-						img_class = $(this).attr('class');
-						img_alt = $(this).attr('title');
-						img_src = $(this).html().replace(/&amp;/g, '&');
-						var img = new Image();
-						$(img).attr('class', img_class);
-						$(img).attr('src', img_src);
-						$(img).attr('alt', img_alt);
-						$(this).replaceWith(img);
-						$(this).load();
-					});
-				})
-				setTimeout('window.scrollTo(0, anchor.position().top', 500);
-			}
-			jQuery(document).ready(function($) {
-				var anchor_check = document.location.href.split('#');
-				if (anchor_check.length > 1) {
-					var anchor = anchor_check[anchor_check.length - 1];
-				}
-				$('a[ rel="_blank"]').each(function() {
-					$(this).attr('target', '_blank');
-				});
-				$('.toggle').click(function(e) {
-					var img_id = '';
-					var src = '';
-					var target = '';
-					e.preventDefault();
-					$(this).toggleClass('open');
-					var section = $(this).parent('.section');
-					if (section.attr('id') != 'masthead') {
-						section.toggleClass('section-open');
-					}
-					if (section.attr('id') != 'masthead' && section.hasClass('section-open')) {
-						section.removeClass('grouped-first');
-						section.removeClass('grouped-last');
-						if (!(section.next().hasClass('section-open'))) {
-							section.next().addClass('grouped-first');
-						}
-						if (!(section.prev().hasClass('section-open'))) {
-							section.prev().addClass('grouped-last');
-						}
-					} else if (section.attr('id') != 'masthead') {
-						if (section.hasClass('final') || section.next().hasClass('section-open')) {
-							section.addClass('grouped-last');
-						} else {
-							section.next().removeClass('grouped-first');
-						}
-						if (section.prev().hasClass('section-open')) {
-							section.addClass('grouped-first');
-						} else {
-							section.prev().removeClass('grouped-last');
-						}
-					}
-					$(this).next('.toggle-content').toggle(150);
-					$(this).next('.toggle-content').find('.charts').each(function() {
-						$(this).children('span').each(function() {
-							img_class = $(this).attr('class');
-							img_alt = $(this).attr('title');
-							img_src = $(this).html().replace(/&amp;/g, '&');
-							var img = new Image();
-							$(img).attr('class', img_class);
-							$(img).attr('src', img_src);
-							$(img).attr('alt', img_alt);
-							$(this).replaceWith(img);
-							$(this).load();
-						});
-					});
-				});
-				$('.toggle-details').click(function(e) {
-					e.preventDefault();
-					$(this).toggleClass('open');
-					$(this).parents().next('.details').toggleClass('hide');
-				});
-				$('.toggle-db-details').click(function(e) {
-					e.preventDefault();
-					$(this).toggleClass('open');
-					$(this).parent().next('.toggle-content').toggle(150);
-				});
-				$('.help').click(function(e) {
-					e.preventDefault();
-					var target = $(this).attr('href') + ' .help-box';
-					var content = $(target).html();
-					$('#active-help-dynamic .help-box').html(content);
-					$('#active-help .help-box').show();
-					var t = e.pageY - 20;
-					var l = e.pageX - 20;
-					$('#active-help').css({top:t,left:l});
-					$('#active-help').toggle(250);
-				});
-				$('#active-help a.close').click(function(e) {
-					e.preventDefault();
-					$('#active-help').toggle(250);
-				});
-				if (anchor) {
-					anchor = '#' + anchor;
-					target = $(anchor).children('h2:first');
-					open_anchor(target);
-				}
-				$('ul.toc li a').click(function(e) {
-					anchor = $(this).attr('href');
-					target = $(anchor).children('h2:first');
-					open_anchor(target);
-				});
-			});
-		</script>
-
+		<script type="text/javascript" src="http://www.simulationcraft.org/js/ga.js"></script>
+		<script type="text/javascript" src="http://www.simulationcraft.org/js/rep.js"></script>
+		<script type="text/javascript" src="http://static.wowhead.com/widgets/power.js"></script>
 	</body>
 
 </html>
