@@ -2054,10 +2054,6 @@ void death_knight_spell_t::player_buff()
   if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
     player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
-  // FIX ME: Does this affect spells as well?
-  if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
-    player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect_base_value( 3 ) / 100.0;
-
   if ( sim -> debug )
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
                    name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
