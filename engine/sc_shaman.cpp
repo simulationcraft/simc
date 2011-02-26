@@ -1877,10 +1877,17 @@ struct fire_nova_t : public shaman_spell_t
 
     aoe                   = -1;
 
-    m_additive            =  
-      p -> talent_improved_fire_nova -> mod_additive( P_GENERIC ) +
-      p -> talent_call_of_flame      -> effect_base_value( 1 ) / 100.0;
-    cooldown -> duration += p -> talent_improved_fire_nova -> mod_additive( P_COOLDOWN );
+    if ( p -> ptr )
+    {
+      m_additive =  p -> talent_call_of_flame -> effect_base_value( 1 ) / 100.0;
+    }
+    else
+    {
+      m_additive            =  
+	p -> talent_improved_fire_nova -> mod_additive( P_GENERIC ) +
+	p -> talent_call_of_flame      -> effect_base_value( 1 ) / 100.0;
+      cooldown -> duration += p -> talent_improved_fire_nova -> mod_additive( P_COOLDOWN );
+    }
 
     base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
     
@@ -3572,7 +3579,7 @@ void shaman_t::init_talents()
   talent_elemental_precision      = find_talent( "Elemental Precision" );
   talent_feedback                 = find_talent( "Feedback" );
   talent_fulmination              = find_talent( "Fulmination" );
-  talent_improved_fire_nova       = find_talent( "Improved Fire Nova" );
+  talent_improved_fire_nova       = ptr ? 0 : find_talent( "Improved Fire Nova" );
   talent_lava_flows               = find_talent( "Lava Flows" );
   talent_lava_surge               = find_talent( "Lava Surge" );
   talent_reverberation            = find_talent( "Reverberation" );
