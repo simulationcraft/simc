@@ -25,13 +25,13 @@ actions+=/plague_strike,if=dot.blood_plague.remains<=2
 actions+=/obliterate,if=frost=2&unholy=2
 actions+=/obliterate,if=death=2
 actions+=/obliterate,if=buff.killing_machine.react
+actions+=/blood_tap
 actions+=/blood_strike,if=blood=2
 actions+=/frost_strike,if=runic_power>=90
 actions+=/howling_blast,if=buff.rime.react
 actions+=/obliterate
 actions+=/blood_strike
 actions+=/frost_strike
-actions+=/blood_tap
 actions+=/empower_rune_weapon
 actions+=/horn_of_winter
 head=magma_plated_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=haste_crit,gems=reverberating_shadowspirit_20crit_20str_30str,enchant=60str_35mastery
