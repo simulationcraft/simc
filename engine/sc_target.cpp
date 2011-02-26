@@ -16,7 +16,8 @@ target_t::target_t( sim_t* s, const std::string& n, player_type pt ) :
     next( 0 ), target_level( -1 ),
     initial_armor( -1 ), armor( 0 ),
     attack_speed( 2.0 ), attack_damage( 120000 ),
-    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), fixed_health_percentage( 0 ),
+    fixed_health( 0 ), initial_health( 0 ), current_health( 0 ), max_health( 0 ),
+    initial_health_percentage( 100.0 ), fixed_health_percentage( 0 ),
     total_dmg( 0 ), adds_nearby( 0 ), initial_adds_nearby( 0 ), resilience( 0 ),
     add_list( 0 )
 {
@@ -77,11 +78,20 @@ void target_t::recalculate_health()
 {
   if ( sim -> expected_time == 0 ) return;
 
-  if ( fixed_health == 0 )
+  if ( ( initial_health_percentage < 0.001 ) || ( initial_health_percentage > 100.0 ) )
+    initial_health_percentage = 100.0;
+
+  if ( fixed_health != 0.0 ) 
+  {
+    initial_health = fixed_health;
+    max_health = initial_health / ( initial_health_percentage / 100.0 );
+    return;
+  }
+
+  if ( initial_health == 0 )
   {
     current_health = total_dmg;
     initial_health = current_health * ( sim -> expected_time / sim -> current_time );
-    fixed_health = initial_health;
   }
   else
   {
@@ -89,7 +99,7 @@ void target_t::recalculate_health()
     delta_time /= sim -> current_iteration + 1; // dampening factor
     double time_factor = ( delta_time / sim -> expected_time );
 
-    double delta_dmg = fixed_health - total_dmg * ( sim -> expected_time / sim -> current_time );
+    double delta_dmg = initial_health - total_dmg * ( sim -> expected_time / sim -> current_time );
     delta_dmg /= sim -> current_iteration + 1; // dampening factor
     double dmg_factor = ( delta_dmg / ( total_dmg * ( sim -> expected_time / sim -> current_time ) )  );
 
@@ -102,10 +112,12 @@ void target_t::recalculate_health()
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 
-    fixed_health *= factor;
+    initial_health *= factor;
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Target %s fixed health calculated to be %.0f. Total Damage was %.0f", name(), fixed_health, total_dmg );
+  max_health = initial_health / ( initial_health_percentage / 100.0 );
+
+  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Total Damage was %.0f", name(), initial_health, total_dmg );
 }
 
 // target_t::time_to_die =====================================================
@@ -132,11 +144,11 @@ double target_t::health_percentage() SC_CONST
   }
   else if ( initial_health > 0 ) 
   {
-    return 100.0 * current_health / initial_health;
+    return 100.0 * current_health / max_health;
   }
   else
   {
-    return 100.0 * ( sim -> expected_time - sim -> current_time ) / sim -> expected_time;
+    return initial_health_percentage * ( sim -> expected_time - sim -> current_time ) / sim -> expected_time;
   }
 }
 
@@ -282,15 +294,25 @@ void target_t::reset()
   total_dmg = 0;
   armor = initial_armor;
   player_t::base_armor = initial_armor;
-  current_health = initial_health = fixed_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
+  if ( fixed_health > 0 )
+  {
+    initial_health = fixed_health;
+  }
+  else
+  {
+    current_health = initial_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
+  }
+
+  if ( ( initial_health_percentage < 0.001 ) || ( initial_health_percentage > 100.0 ) )
+    initial_health_percentage = 100.0;
+
+  max_health = initial_health / ( initial_health_percentage / 100.0 );
 
   adds_nearby = initial_adds_nearby;
 
-  resource_base[ RESOURCE_HEALTH ] = fixed_health;
+  resource_base[ RESOURCE_HEALTH ] = initial_health;
 
   player_t::reset();
-
-
 }
 
 // target_t::combat_begin ====================================================
@@ -415,17 +437,18 @@ void target_t::create_options()
 {
   option_t target_options[] =
   {
-    { "target_name",                    OPT_STRING, &( name_str                          ) },
-    { "target_race",                    OPT_STRING, &( race_str                          ) },
-    { "target_level",                   OPT_INT,    &( target_level                      ) },
-    { "target_health",                  OPT_FLT,    &( fixed_health                      ) },
-    { "target_id",                      OPT_STRING, &( id_str                            ) },
-    { "target_adds",                    OPT_INT,    &( initial_adds_nearby               ) },
-    { "target_armor",                   OPT_INT,    &( initial_armor                     ) },
-    { "target_attack_speed",            OPT_FLT,    &( attack_speed                      ) },
-    { "target_attack_damage",           OPT_FLT,    &( attack_damage                     ) },
-    { "target_resilience",              OPT_FLT,    &( resilience                        ) },
-    { "target_fixed_health_percentage", OPT_FLT,    &( fixed_health_percentage           ) },
+    { "target_name",                      OPT_STRING, &( name_str                          ) },
+    { "target_race",                      OPT_STRING, &( race_str                          ) },
+    { "target_level",                     OPT_INT,    &( target_level                      ) },
+    { "target_health",                    OPT_FLT,    &( fixed_health                      ) },
+    { "target_initial_health_percentage", OPT_FLT,    &( initial_health_percentage         ) },
+    { "target_id",                        OPT_STRING, &( id_str                            ) },
+    { "target_adds",                      OPT_INT,    &( initial_adds_nearby               ) },
+    { "target_armor",                     OPT_INT,    &( initial_armor                     ) },
+    { "target_attack_speed",              OPT_FLT,    &( attack_speed                      ) },
+    { "target_attack_damage",             OPT_FLT,    &( attack_damage                     ) },
+    { "target_resilience",                OPT_FLT,    &( resilience                        ) },
+    { "target_fixed_health_percentage",   OPT_FLT,    &( fixed_health_percentage           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

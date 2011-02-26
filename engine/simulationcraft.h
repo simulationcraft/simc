@@ -3522,7 +3522,8 @@ struct target_t : public player_t
 
   int initial_armor, armor;
   double attack_speed, attack_damage;
-  double fixed_health, initial_health, current_health;
+  double fixed_health, initial_health, current_health, max_health;
+  double initial_health_percentage;
   double fixed_health_percentage;
   double total_dmg;
   int adds_nearby, initial_adds_nearby;
