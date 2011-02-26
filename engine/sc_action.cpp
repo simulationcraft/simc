@@ -287,6 +287,7 @@ void action_t::parse_effect_data( sc_data_access_t& pData, int spell_id, int eff
       break;
 
       // Dot
+    case E_PERSISTENT_AREA_AURA:
     case E_APPLY_AURA:
       switch ( pData.effect_subtype ( effect) )
       {

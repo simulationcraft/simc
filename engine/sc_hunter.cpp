@@ -2000,6 +2000,61 @@ struct black_arrow_t : public hunter_attack_t
   }
 };
 
+// Explosive Trap ============================================================
+
+struct explosive_trap_effect_t : public hunter_attack_t
+{
+  explosive_trap_effect_t( hunter_t* player )
+    : hunter_attack_t( "explosive_trap", player, 13812 )
+  {
+    hunter_t* p = player -> cast_hunter();
+    aoe = -1;
+    dual = true;
+    background = true;
+    tick_power_mod = extra_coeff();
+
+    base_multiplier *= 1.0 + p -> talents.trap_mastery -> rank() * 0.10;
+    //TODO: Test whether explosive trap is on spell or melee hit table and what
+    //its crit bonus is.
+  }
+
+  virtual void tick()
+  {
+    hunter_attack_t::tick();
+    hunter_t* p = player -> cast_hunter();
+    if ( p -> buffs_lock_and_load -> trigger( 2 ) )
+      p -> procs_lock_and_load -> occur();
+  }
+};
+
+struct explosive_trap_t : public hunter_attack_t
+{
+  attack_t* trap_effect;
+
+  explosive_trap_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "explosive_trap", player, 13813 ), trap_effect( 0 )
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    parse_options( NULL, options_str );
+
+    //TODO: Split traps cooldown into fire/frost/snakes
+    cooldown = p -> get_cooldown( "traps" );
+    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration -= p -> talents.resourcefulness -> rank() * 2;
+    //TODO: Add option for using trap launcher and consuming the correct amount
+    //of focus
+
+    trap_effect = new explosive_trap_effect_t( p );
+  }
+
+  virtual void execute()
+  {
+    hunter_attack_t::execute();
+    trap_effect -> execute();
+  }
+};
+
 // Chimera Shot ================================================================
 
 struct chimera_shot_t : public hunter_attack_t
@@ -2978,6 +3033,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
+  if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "fervor"                ) return new                 fervor_t( this, options_str );
   if ( name == "focus_fire"            ) return new             focus_fire_t( this, options_str );
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
