@@ -2346,35 +2346,58 @@ struct blood_plague_t : public death_knight_spell_t
 
 // Blood Strike =============================================================
 
+struct blood_strike_offhand_t : public death_knight_attack_t
+{
+  blood_strike_offhand_t( death_knight_t* player ) :
+    death_knight_attack_t( "blood_strike_offhand", 45902, player )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    
+    background = true;
+    weapon     = &( p -> off_hand_weapon );
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    death_knight_attack_t::target_debuff( t, dmg_type );
+
+    target_multiplier *= 1 + p -> diseases() * effect_base_value( 3 ) / 100.0;
+  }
+};
+
 struct blood_strike_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   blood_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "blood_strike", 45902, player )
+    death_knight_attack_t( "blood_strike", 45902, player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
+    weapon = &( p -> main_hand_weapon );
+
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> passives.blood_of_the_north -> ok() || p -> passives.reaping -> ok() )
       convert_runes = 1.0;
-  }
 
-  virtual void consume_resource() { }
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      oh_attack = new blood_strike_offhand_t( p );
+  }
 
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( oh_attack )
     {
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect_base_value( 1 ) / 100.0 ) )
       {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
+        oh_attack -> execute();
       }
     }
   }
@@ -2816,40 +2839,83 @@ struct frost_fever_t : public death_knight_spell_t
 };
 
 // Frost Strike =============================================================
+struct frost_strike_offhand_t : public death_knight_attack_t
+{
+  frost_strike_offhand_t( death_knight_t* player ) :
+    death_knight_attack_t( "frost_strike_offhand", 66196, player )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    background = true;
+    weapon     = &( p -> off_hand_weapon );
+    // FIXME: Base Value is halfed in the DBC, should it be?
+
+    if ( p -> set_bonus.tier11_2pc_melee() )
+      base_crit += 0.05;
+  }
+
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    death_knight_attack_t::execute();
+   
+    if( result_is_hit() )
+      p -> trigger_runic_empowerment(); // FIX ME: Does DW get 2 chances to proc this?
+  }
+
+  virtual void player_buff()
+  {
+    death_knight_attack_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+
+    player_crit += p -> buffs_killing_machine -> value();
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    death_knight_attack_t::target_debuff( t, dmg_type);
+
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( t -> health_percentage() < 35 )
+     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
+  }
+};
 
 struct frost_strike_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   frost_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "frost_strike", 49143, player )
+    death_knight_attack_t( "frost_strike", 49143, player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_spec( TREE_FROST );
 
     parse_options( NULL, options_str );
 
-    base_cost   -= p -> glyphs.frost_strike * 8;
+    weapon     = &( p -> main_hand_weapon );
+    base_cost -= p -> glyphs.frost_strike * 8;
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += 0.05;
-  }
 
-  virtual void consume_resource() { }
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      oh_attack = new frost_strike_offhand_t( p );
+  }
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
+    death_knight_t* p = player -> cast_death_knight();    
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
    
     if( result_is_hit() )
       p -> trigger_runic_empowerment(); // FIX ME: Does DW get 2 chances to proc this?
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( oh_attack )
     {
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect_base_value( 1 ) / 100.0 ) )
       {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
+        oh_attack -> execute();
       }
     }
     p -> buffs_killing_machine -> expire();
@@ -3169,14 +3235,71 @@ struct necrotic_strike_t : public death_knight_attack_t
 
 // Obliterate ===============================================================
 
+struct obliterate_offhand_t : public death_knight_attack_t
+{
+  obliterate_offhand_t( death_knight_t* player ) :
+    death_knight_attack_t( "obliterate_offhand", 66198, player )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    background = true;
+    weapon     = &( p -> off_hand_weapon );
+    // FIXME: Base Value is halfed in the DBC, should it be?
+
+    if ( p -> glyphs.obliterate )
+      weapon_multiplier *= 1.2;
+
+    base_multiplier *= 1.0 + p -> talents.annihilation -> mod_additive( P_GENERIC )
+                       + p -> set_bonus.tier10_2pc_melee() * 0.10;
+  }
+
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    death_knight_attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      if ( p -> buffs_rime -> trigger() )
+      {
+        p -> cooldowns_howling_blast -> reset();
+        update_ready();
+      }
+    }
+  }
+
+  virtual void player_buff()
+  {
+    death_knight_attack_t::player_buff();
+    death_knight_t* p = player -> cast_death_knight();
+
+    player_crit += p -> buffs_killing_machine -> value();
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    death_knight_attack_t::target_debuff( t, dmg_type );
+
+    target_multiplier *= 1 + p -> diseases() * 0.125;
+
+    if ( t -> health_percentage() < 35 )
+      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect_base_value( 1 ) / 100.0;
+  }
+};
+
 struct obliterate_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   obliterate_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "obliterate", 49020, player )
+    death_knight_attack_t( "obliterate", 49020, player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
+
+    weapon = &( p -> main_hand_weapon );
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> passives.blood_rites -> ok() )
@@ -3187,16 +3310,14 @@ struct obliterate_t : public death_knight_attack_t
 
     base_multiplier *= 1.0 + p -> talents.annihilation -> mod_additive( P_GENERIC )
                        + p -> set_bonus.tier10_2pc_melee() * 0.10;
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      oh_attack = new obliterate_offhand_t( p );
   }
-
-  virtual void consume_resource() { }
 
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -3211,17 +3332,11 @@ struct obliterate_t : public death_knight_attack_t
       }
     }
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( oh_attack )
     {
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect_base_value( 1 ) / 100.0 ) )
       {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
-        if ( result_is_hit() && p -> buffs_rime -> trigger() )
-        {
-          p -> cooldowns_howling_blast -> reset();
-          update_ready();
-        }
+        oh_attack -> execute();
       }
     }
 
@@ -3234,8 +3349,6 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
 
     player_crit += p -> buffs_killing_machine -> value();
-
-
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -3338,27 +3451,56 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
 // Plague Strike ============================================================
 
+struct plague_strike_offhand_t : public death_knight_attack_t
+{
+  plague_strike_offhand_t( death_knight_t* player ) :
+    death_knight_attack_t( "plague_strike_offhand", 66216, player )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    
+    background = true;
+    weapon     = &( p -> off_hand_weapon );
+    // FIXME: Base Value is halfed in the DBC, should it be?
+
+    base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
+  }
+
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();    
+    death_knight_attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      if ( ! p -> blood_plague ) p -> blood_plague = new blood_plague_t( p );
+
+      p -> blood_plague -> execute();
+    }
+  }
+};
+
 struct plague_strike_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   plague_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "plague_strike", 45462, player )
+    death_knight_attack_t( "plague_strike", 45462, player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     
     parse_options( NULL, options_str );
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
+    weapon = &( p -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect_base_value( 1 ) / 100.0;
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      oh_attack = new plague_strike_offhand_t( p );
   }
-
-  virtual void consume_resource() { }
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
+    death_knight_t* p = player -> cast_death_knight();    
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
     {
@@ -3372,12 +3514,11 @@ struct plague_strike_t : public death_knight_attack_t
       trigger_ebon_plaguebringer( this );
     }
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( oh_attack )
     {
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect_base_value( 1 ) / 100.0 ) )
       {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
+        oh_attack -> execute();
       }
     }
   }
