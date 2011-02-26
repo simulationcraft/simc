@@ -1651,6 +1651,7 @@ struct util_t
   static int parse_gem_type                    ( const std::string& name );
   static int parse_meta_gem_type               ( const std::string& name );
   static player_type parse_player_type         ( const std::string& name );
+  static int parse_pet_type                    ( const std::string& name );
   static int parse_profession_type             ( const std::string& name );
   static race_type parse_race_type             ( const std::string& name );
   static role_type parse_role_type             ( const std::string& name );

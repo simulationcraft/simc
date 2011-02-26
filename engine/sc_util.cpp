@@ -307,6 +307,17 @@ int util_t::translate_class_str( std::string& s )
   return PLAYER_NONE;
 }
 
+// util_t::parse_player_type ===============================================
+
+player_type util_t::parse_player_type( const std::string& name )
+{
+  for ( int i=(int) PLAYER_NONE; i < (int) PLAYER_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
+      return (player_type) i;
+
+  return PLAYER_NONE;
+}
+
 // util_t::pet_type_string =================================================
 
 const char* util_t::pet_type_string( int type )
@@ -372,15 +383,15 @@ const char* util_t::pet_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_player_type ===============================================
+// util_t::parse_pet_type ==================================================
 
-player_type util_t::parse_player_type( const std::string& name )
+int util_t::parse_pet_type( const std::string& name )
 {
-  for ( int i=(int) PLAYER_NONE; i < (int) PLAYER_MAX; i++ )
-    if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
-      return (player_type) i;
+  for ( int i=PET_NONE; i < PET_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::pet_type_string( i ) ) )
+      return i;
 
-  return PLAYER_NONE;
+  return PET_NONE;
 }
 
 // util_t::attribute_type_string ===========================================
