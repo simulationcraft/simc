@@ -1488,6 +1488,7 @@ struct death_knight_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual bool   ready();
+  virtual double    swing_haste() SC_CONST;
 };
 
 // ==========================================================================
@@ -3823,12 +3824,21 @@ double death_knight_t::composite_attack_haste() SC_CONST
   double haste = player_t::composite_attack_haste();
   haste *= 1.0 / ( 1.0 + buffs_unholy_presence -> value() );
 
-  if ( passives.icy_talons -> ok() )
-    haste *= 1.0 / ( 1.0 + passives.icy_talons -> effect_base_value( 1 ) / 100.0 );
-  if ( talents.improved_icy_talons -> rank() )
-    haste *= 1.0 / ( 1.0 + talents.improved_icy_talons -> effect_base_value( 3 ) / 100.0 );
-
   return haste;
+}
+
+double death_knight_attack_t::swing_haste() SC_CONST
+{
+    double haste = attack_t::swing_haste();
+    death_knight_t* p = player -> cast_death_knight();
+
+  if ( p -> passives.icy_talons -> ok() )
+    haste *= 1.0 / ( 1.0 + p -> passives.icy_talons -> effect_base_value( 1 ) / 100.0 );
+
+  if ( p -> talents.improved_icy_talons -> rank() )
+    haste *= 1.0 / ( 1.0 + p -> talents.improved_icy_talons -> effect_base_value( 3 ) / 100.0 );
+
+    return haste;
 }
 
 // death_knight_t::composite_attack_hit() ===================================
