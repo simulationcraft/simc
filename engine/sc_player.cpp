@@ -2207,7 +2207,8 @@ double player_t::strength() SC_CONST
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter -> value() ),
-                             sim -> auras.battle_shout -> value() );
+                   std::max( sim -> auras.battle_shout -> value(),
+                             sim -> auras.roar_of_courage -> value() ) );
   }
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
   return a;
@@ -2222,7 +2223,8 @@ double player_t::agility() SC_CONST
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter -> value() ),
-                             sim -> auras.battle_shout -> value() );
+                   std::max( sim -> auras.battle_shout -> value(),
+                             sim -> auras.roar_of_courage -> value() ) );
   }
   a *= composite_attribute_multiplier( ATTR_AGILITY );
   return a;
@@ -2233,6 +2235,10 @@ double player_t::agility() SC_CONST
 double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
+  if ( ! is_pet() && ! is_enemy() && ! is_add() )
+  {
+    a += sim -> auras.qiraji_fortitude -> value();
+  }
   a *= composite_attribute_multiplier( ATTR_STAMINA );
   return a;
 }

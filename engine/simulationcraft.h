@@ -2363,6 +2363,7 @@ struct sim_t
     int rampage;
     int ravage;
     int replenishment;
+    int roar_of_courage;
     int savage_combat;
     int scarlet_fever;
     int shadow_and_flame;
@@ -2374,6 +2375,7 @@ struct sim_t
     int tendon_rip;
     int thunder_clap;
     int trueshot_aura;
+    int qiraji_fortitude;
     int unleashed_rage;
     int vindication;
     int windfury_totem;
@@ -2403,7 +2405,9 @@ struct sim_t
     aura_t* mana_spring_totem;
     aura_t* moonkin;
     aura_t* mind_quickening;
+    aura_t* qiraji_fortitude;
     aura_t* rampage;
+    aura_t* roar_of_courage;
     aura_t* strength_of_earth;
     aura_t* trueshot;
     aura_t* unleashed_rage;

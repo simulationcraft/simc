@@ -1677,6 +1677,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.hunters_mark           = optimal_raid;
   overrides.improved_icy_talons    = optimal_raid;
   overrides.hunting_party          = optimal_raid;
+  overrides.roar_of_courage        = optimal_raid;
   overrides.shadow_and_flame       = optimal_raid;
   overrides.infected_wounds        = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
@@ -1688,6 +1689,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.master_poisoner        = optimal_raid;
   overrides.moonkin_aura           = optimal_raid;
   overrides.poisoned               = optimal_raid;
+  overrides.qiraji_fortitude       = optimal_raid;
   overrides.rampage                = optimal_raid;
   overrides.ravage                 = optimal_raid;
   overrides.replenishment          = optimal_raid;
@@ -1966,9 +1968,11 @@ void sim_t::create_options()
     { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
     { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
     { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
+    { "override.qiraji_fortitude",        OPT_BOOL,   &( overrides.qiraji_fortitude               ) },
     { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
     { "override.ravage",                  OPT_BOOL,   &( overrides.ravage                         ) },
     { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
+    { "override.roar_of_courage",         OPT_BOOL,   &( overrides.roar_of_courage                ) },
     { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
     { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
     { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },

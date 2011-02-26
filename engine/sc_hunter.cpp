@@ -326,13 +326,13 @@ struct hunter_pet_t : public pet_t
     switch ( pet_type )
     {
     case PET_CARRION_BIRD: return "demoralizing_screech";
-    case PET_CAT:          return NULL;
+    case PET_CAT:          return "roar_of_courage";
     case PET_CORE_HOUND:   return NULL;
     case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
     case PET_HYENA:        return "tendon_rip";
     case PET_MOTH:         return NULL;
     case PET_RAPTOR:       return "tear_armor";
-    case PET_SPIRIT_BEAST: return NULL;
+    case PET_SPIRIT_BEAST: return "roar_of_courage";
     case PET_TALLSTRIDER:  return NULL;
     case PET_WASP:         return NULL;
     case PET_WOLF:         return "furious_howl";
@@ -354,7 +354,7 @@ struct hunter_pet_t : public pet_t
     case PET_NETHER_RAY:   return NULL;
     case PET_RAVAGER:      return "ravage";
     case PET_SERPENT:      return "corrosive_spit";
-    case PET_SILITHID:     return NULL;
+    case PET_SILITHID:     return "qiraji_fortitude";
     case PET_SPIDER:       return NULL;
     case PET_SPOREBAT:     return NULL;
     case PET_WIND_SERPENT: return "lightning_breath";
@@ -1309,6 +1309,7 @@ struct furious_howl_t : public hunter_pet_spell_t
 
   virtual void execute()
   {
+    hunter_pet_spell_t::execute();
     for ( player_t* pl = sim -> player_list; pl; pl = pl -> next )
     {
       if ( pl -> is_pet() )
@@ -1316,8 +1317,74 @@ struct furious_howl_t : public hunter_pet_spell_t
 
       pl -> buffs.furious_howl -> trigger();
     }
-    hunter_pet_spell_t::execute();
   }
+};
+
+// Cat/Spirit Beast Roar of Courage ==========================================
+
+struct roar_of_courage_t : public hunter_pet_spell_t
+{
+  double bonus;
+  roar_of_courage_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "roar_of_courage", player, "Roar of Courage" )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( NULL, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+
+    harmful = false;
+    bonus = p -> player_data.effect_min( id, p -> level, E_APPLY_AURA, A_MOD_STAT );
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
+    if ( ! sim -> overrides.roar_of_courage )
+    {
+      sim -> auras.roar_of_courage -> buff_duration = p -> player_data.spell_duration( id );
+      sim -> auras.roar_of_courage -> trigger( 1, bonus );
+    }
+  }
+};
+
+// Silithid Qiraji Fortitude  ===============================================
+
+struct qiraji_fortitude_t : public hunter_pet_spell_t
+{
+  double bonus;
+  qiraji_fortitude_t( player_t* player, const std::string& options_str ) :
+      hunter_pet_spell_t( "qiraji_fortitude", player, "Qiraji Fortitude" )
+  {
+    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_t*     o = p -> owner -> cast_hunter();
+
+    parse_options( NULL, options_str );
+
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+
+    harmful = false;
+    bonus = p -> player_data.effect_min( id, p -> level, E_APPLY_AREA_AURA_RAID, A_MOD_STAT );
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_spell_t::execute();
+    if ( ! sim -> overrides.qiraji_fortitude ) {
+      sim -> auras.qiraji_fortitude -> trigger( 1, bonus );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( sim -> auras.qiraji_fortitude -> check() )
+      return false;
+    return hunter_pet_spell_t::ready();
+  }
+
 };
 
 // Wind Serpent Lightning Breath ==============================================
@@ -2878,6 +2945,8 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if ( name == "claw"                  ) return new                 claw_t( this, options_str );
   if ( name == "froststorm_breath"     ) return new    froststorm_breath_t( this, options_str );
   if ( name == "furious_howl"          ) return new         furious_howl_t( this, options_str );
+  if ( name == "roar_of_courage"       ) return new      roar_of_courage_t( this, options_str );
+  if ( name == "qiraji_fortitude"      ) return new     qiraji_fortitude_t( this, options_str );
   if ( name == "lightning_breath"      ) return new     lightning_breath_t( this, options_str );
   if ( name == "monstrous_bite"        ) return new       monstrous_bite_t( this, options_str );
   if ( name == "rabid"                 ) return new                rabid_t( this, options_str );
@@ -3754,6 +3823,8 @@ void player_t::hunter_init( sim_t* sim )
   sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
   sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
   sim -> auras.hunting_party         = new aura_t( sim, "hunting_party" );
+  sim -> auras.roar_of_courage       = new aura_t( sim, "roar_of_courage" );
+  sim -> auras.qiraji_fortitude      = new aura_t( sim, "qiraji_fortitude" );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -3776,6 +3847,8 @@ void player_t::hunter_combat_begin( sim_t* sim )
   if ( sim -> overrides.trueshot_aura         ) sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
   if ( sim -> overrides.hunting_party         ) sim -> auras.hunting_party -> override( 1, 0.10);
+  if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> sim_data.effect_min( 93435, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT) );
+  if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> sim_data.effect_min( 90364, sim -> max_player_level,E_APPLY_AREA_AURA_RAID, A_MOD_STAT) );
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {

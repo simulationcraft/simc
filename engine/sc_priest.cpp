@@ -1283,7 +1283,8 @@ struct fortitude_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if ( player -> buffs.fortitude -> current_value >= bonus )
+    if ( player -> buffs.fortitude -> current_value >= bonus ||
+         sim -> auras.qiraji_fortitude -> check() )
       return false;
 
     return priest_spell_t::ready();
