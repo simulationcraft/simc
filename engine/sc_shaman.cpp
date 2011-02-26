@@ -6,8 +6,9 @@
 // ==========================================================================
 // TODO
 // ==========================================================================
-// Spirit Walker's Grace Ability
 // Does flametongue's AP coefficient scale with level? Our values are at 85.
+// Fire Nova for 4.1.0 works wrong, for now; flares only on single target,
+// fix this later.
 // ==========================================================================
 // BUGS
 // ==========================================================================
@@ -1919,6 +1920,27 @@ struct fire_nova_t : public shaman_spell_t
     }
 
     return shaman_spell_t::ready();
+  }
+
+  virtual void assess_damage( player_t* target, double dmg_amount, int dmg_type, int dmg_result )
+  {
+    if ( player -> ptr )
+    {
+      if ( result_is_hit( dmg_result ) )
+      {
+        target_t* t = target -> cast_target();
+
+        if ( t -> adds_nearby > 0 )
+        {
+          for ( int i = 0; i < t -> adds_nearby; i++ )
+          {
+            additional_damage( t, dmg_amount, dmg_type, dmg_result );
+          }
+        }
+      }
+    }
+    else
+      shaman_spell_t::assess_damage( target, dmg_amount, dmg_type, dmg_result );
   }
 };
 
@@ -3839,6 +3861,8 @@ void shaman_t::init_actions()
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/fire_nova";
+      if ( ptr )
+        action_list_str +=  ",if=target.adds>1";
       if ( set_bonus.tier10_2pc_melee() )
       {
         if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
