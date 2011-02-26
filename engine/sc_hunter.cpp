@@ -3068,6 +3068,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( pet_type == "cat"          ) return new hunter_pet_t( sim, this, pet_name, PET_CAT          );
   if ( pet_type == "core_hound"   ) return new hunter_pet_t( sim, this, pet_name, PET_CORE_HOUND   );
   if ( pet_type == "devilsaur"    ) return new hunter_pet_t( sim, this, pet_name, PET_DEVILSAUR    );
+  if ( pet_type == "dog"          ) return new hunter_pet_t( sim, this, pet_name, PET_DOG          );
   if ( pet_type == "fox"          ) return new hunter_pet_t( sim, this, pet_name, PET_FOX          );
   if ( pet_type == "hyena"        ) return new hunter_pet_t( sim, this, pet_name, PET_HYENA        );
   if ( pet_type == "moth"         ) return new hunter_pet_t( sim, this, pet_name, PET_MOTH         );
@@ -3079,6 +3080,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
   // Tenacity
   if ( pet_type == "bear"         ) return new hunter_pet_t( sim, this, pet_name, PET_BEAR         );
+  if ( pet_type == "beetle"       ) return new hunter_pet_t( sim, this, pet_name, PET_BEETLE       );
   if ( pet_type == "boar"         ) return new hunter_pet_t( sim, this, pet_name, PET_BOAR         );
   if ( pet_type == "crab"         ) return new hunter_pet_t( sim, this, pet_name, PET_CRAB         );
   if ( pet_type == "crocolisk"    ) return new hunter_pet_t( sim, this, pet_name, PET_CROCOLISK    );
@@ -3095,6 +3097,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( pet_type == "bird_of_prey" ) return new hunter_pet_t( sim, this, pet_name, PET_BIRD_OF_PREY );
   if ( pet_type == "chimera"      ) return new hunter_pet_t( sim, this, pet_name, PET_CHIMERA      );
   if ( pet_type == "dragonhawk"   ) return new hunter_pet_t( sim, this, pet_name, PET_DRAGONHAWK   );
+  if ( pet_type == "monkey"       ) return new hunter_pet_t( sim, this, pet_name, PET_MONKEY       );
   if ( pet_type == "nether_ray"   ) return new hunter_pet_t( sim, this, pet_name, PET_NETHER_RAY   );
   if ( pet_type == "ravager"      ) return new hunter_pet_t( sim, this, pet_name, PET_RAVAGER      );
   if ( pet_type == "serpent"      ) return new hunter_pet_t( sim, this, pet_name, PET_SERPENT      );

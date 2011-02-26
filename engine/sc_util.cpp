@@ -321,6 +321,9 @@ const char* util_t::pet_type_string( int type )
   case PET_FOX:                 return "fox";
   case PET_HYENA:               return "hyena";
   case PET_MOTH:                return "moth";
+  case PET_MONKEY:              return "monkey";
+  case PET_DOG:                 return "dog";
+  case PET_BEETLE:              return "beetle";
   case PET_RAPTOR:              return "raptor";
   case PET_SPIRIT_BEAST:        return "spirit_beast";
   case PET_TALLSTRIDER:         return "tallstrider";
