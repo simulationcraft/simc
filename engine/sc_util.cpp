@@ -385,11 +385,11 @@ const char* util_t::pet_type_string( int type )
 
 // util_t::parse_pet_type ==================================================
 
-int util_t::parse_pet_type( const std::string& name )
+pet_type_t util_t::parse_pet_type( const std::string& name )
 {
-  for ( int i=PET_NONE; i < PET_MAX; i++ )
+  for ( int i=(int)PET_NONE; i < (int)PET_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::pet_type_string( i ) ) )
-      return i;
+      return (pet_type_t)i;
 
   return PET_NONE;
 }

@@ -1471,7 +1471,7 @@ void player_t::init_values()
 
 void player_t::init_scaling()
 {
-  if ( ! is_pet() )
+  if ( ! is_pet() && ! is_enemy() )
   {
     int role = primary_role();
 

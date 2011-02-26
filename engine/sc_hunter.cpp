@@ -3063,7 +3063,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   pet_t* p = find_pet( pet_name );
   if ( p ) return p;
 
-  int type = util_t::parse_pet_type( pet_type );
+  pet_type_t type = util_t::parse_pet_type( pet_type );
 
   if ( type > PET_NONE && type < PET_HUNTER )
   {
