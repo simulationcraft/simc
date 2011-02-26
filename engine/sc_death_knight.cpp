@@ -42,9 +42,10 @@ struct dk_rune_t
   rune_state state;
   double     value;   // 0.0 to 1.0, with 1.0 being full
   int        slot_number;
+  bool       permanent_death_rune;
   dk_rune_t* paired_rune;
 
-  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), paired_rune( NULL ) {}
+  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ) {}
 
   bool is_death() SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0; }
   bool is_ready() SC_CONST { return state == STATE_FULL; }
@@ -54,10 +55,23 @@ struct dk_rune_t
 
   void regen_rune( player_t* p, double periodicity );
 
+  void make_permanent_death_rune()
+  {
+    permanent_death_rune = true;
+    type |= RUNE_TYPE_DEATH;
+  }
+
   void consume( bool convert )
   {
     assert ( value >= 1.0 );
-    type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 );
+    if ( permanent_death_rune )
+    {
+      type |= RUNE_TYPE_DEATH;
+    }
+    else
+    {
+      type = ( type & RUNE_TYPE_MASK ) | ( ( type << 1 ) & RUNE_TYPE_WASDEATH ) | ( convert ? RUNE_TYPE_DEATH : 0 );
+    }
     value = 0.0;
     state = STATE_DEPLETED;
   }
@@ -73,6 +87,10 @@ struct dk_rune_t
     value = 1.0;
     state = STATE_FULL;
     type = type & RUNE_TYPE_MASK;
+    if ( permanent_death_rune )
+    {
+      type |= RUNE_TYPE_DEATH;
+    }
   }
 };
 
@@ -3867,6 +3885,17 @@ void death_knight_t::init()
     else
     {
       ghoul -> type = PLAYER_GUARDIAN;
+    }
+  }
+
+  if ( ptr && passives.blood_of_the_north -> ok() )
+  {
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    {
+      if ( _runes.slot[i].type == RUNE_TYPE_BLOOD )
+      {
+	_runes.slot[i].make_permanent_death_rune();
+      }
     }
   }
 }
