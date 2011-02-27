@@ -2638,7 +2638,7 @@ struct death_coil_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
+    direct_power_mod = 0.23; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
     base_dd_min      = p -> player_data.effect_min( id, p -> level, E_DUMMY, A_NONE );
     base_dd_max      = p -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
     base_multiplier *= 1 + p -> talents.morbidity -> mod_additive( P_GENERIC )
@@ -4062,11 +4062,7 @@ void death_knight_t::init_base()
   if ( talents.toughness -> rank() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect_base_value( 1 ) / 100.0;
 
-  // For some reason, my buffless, naked Death Knight Human with
-  // 180str (3% bonus) has 583 AP.  No talent or buff can explain this
-  // discrepency, but it is also present on other Death Knights I have
-  // checked.  TODO: investigate this further.
-  base_attack_power = 220;
+  base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   initial_attack_power_per_strength = 2.0;
 
