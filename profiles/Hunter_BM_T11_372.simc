@@ -35,7 +35,7 @@ chest=voltage_source_chestguard,heroic=1,type=mail,ilevel=372,quality=epic,stats
 waist=coil_of_tenthousand_screams,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1433armor_171crit_191haste_429sta,gems=67agi_40agi_10haste
 legs=lightningcharged_legguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=345agi_2230armor_257crit_217haste_578sta,gems=40agi_40agi,enchant=190ap_55crit
 feet=boots_of_vertigo,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1752armor_191haste_171hit_429sta,reforge=haste_crit,gems=20agi_20hit_10agi,enchant=25agi
-wrists=chimaeron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
+wrists=chimaron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
 hands=lightningcharged_gloves,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1593armor_191crit_171haste_429sta,gems=20agi_20hit_10agi,enchant=20agi
 finger1=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_143crit_143hit_322sta,enchant=40agi
 finger2=mistral_circle_of_the_stormblast,heroic=1,ilevel=372,quality=epic,stats=321sta_214agi_143hit_143crit,enchant=40agi,suffix=133
