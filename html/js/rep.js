@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
 		var t = e.pageY - 20;
 		var l = e.pageX - 20;
 		$('#active-help').css({top:t,left:l});
-		$('#active-help').toggle(250);
+		$('#active-help').show(250);
 	});
 	$('#active-help a.close').click(function(e) {
 		e.preventDefault();

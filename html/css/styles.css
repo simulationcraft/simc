@@ -219,7 +219,7 @@ td.small a.open {
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 	-moz-box-shadow: 4px 4px 10px #000;
-	-webkit-box-shadow: 4px 4px 10px #000;
+	-webkit-box-shadow: 4px 4px 10px #111;
 	box-shadow: 4px 4px 10px #000;
 }
 
@@ -372,6 +372,18 @@ ul.params li {
 	-khtml-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-bottom-radius: 8px;
+}
+
+ul.params li.linked:hover {
+	background: #393939;
+}
+
+ul.params li a {
+	color: #ddd;
+}
+
+ul.params li a:hover {
+	text-shadow: none;
 }
 
 .player h2 {
