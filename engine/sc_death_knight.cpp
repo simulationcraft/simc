@@ -2839,6 +2839,7 @@ struct frost_fever_t : public death_knight_spell_t
 };
 
 // Frost Strike =============================================================
+
 struct frost_strike_offhand_t : public death_knight_attack_t
 {
   frost_strike_offhand_t( death_knight_t* player ) :

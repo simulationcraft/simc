@@ -81,6 +81,7 @@ struct mage_t : public player_t
 
     // Minor
     glyph_t* arcane_brilliance;
+    glyph_t* conjuring;
   };
   glyphs_t glyphs;
 
@@ -244,7 +245,7 @@ struct mage_t : public player_t
     cooldowns_early_frost = get_cooldown( "early_frost" );
 
     distance = 40;
-    mana_gem_charges =  10; // HACK Set this back to 3 once Conjure Mana Gem is implemented
+    mana_gem_charges = 3;
     merge_ignite = 0;
 
     create_talents();
@@ -922,8 +923,8 @@ void mage_spell_t::parse_options( option_t*          options,
 {
   option_t base_options[] =
   {
-    { "dps",          OPT_BOOL, &dps_rotation },
-    { "dpm",          OPT_BOOL, &dpm_rotation },
+    { "dps", OPT_BOOL, &dps_rotation },
+    { "dpm", OPT_BOOL, &dpm_rotation },
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
@@ -1494,6 +1495,35 @@ struct cone_of_cold_t : public mage_spell_t
 
     may_brain_freeze = true;
     may_chill = true;
+  }
+};
+
+// Conjure Mana Gem Spell ===================================================
+
+struct conjure_mana_gem_t : public mage_spell_t
+{
+  conjure_mana_gem_t( mage_t* p, const std::string& options_str ) : 
+    mage_spell_t( "conjure_mana_gem", 759, p )
+  {
+    parse_options( NULL, options_str );
+
+    base_cost += p -> glyphs.conjuring -> mod_additive( P_RESOURCE_COST );
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    mage_t* p = player -> cast_mage();
+    p -> mana_gem_charges = 3;
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> mana_gem_charges == 3 )
+      return false;
+
+    return mage_spell_t::ready();
   }
 };
 
@@ -2674,8 +2704,9 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
-  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
+  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
+  if ( name == "conjure_mana_gem"  ) return new        conjure_mana_gem_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
   if ( name == "deep_freeze"       ) return new             deep_freeze_t( this, options_str );
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
@@ -2835,6 +2866,7 @@ void mage_t::init_spells()
   glyphs.arcane_brilliance    = find_glyph( "Glyph of Arcane Brilliance" );
   glyphs.arcane_missiles      = find_glyph( "Glyph of Arcane Missiles" );
   glyphs.cone_of_cold         = find_glyph( "Glyph of Cone of Cold" );
+  glyphs.conjuring            = find_glyph( "Glyph of Conjuring" );
   glyphs.deep_freeze          = find_glyph( "Glyph of Deep Freeze" );
   glyphs.dragons_breath       = find_glyph( "Glyph of Dragon's Breath" );
   glyphs.fireball             = find_glyph( "Glyph of Fireball" );
@@ -3314,7 +3346,7 @@ void mage_t::reset()
   player_t::reset();
   active_water_elemental = 0;
   rotation.reset();
-  mana_gem_charges = 10; // HACK Set this back to 3 once Conjure Mana Gem is implemented
+  mana_gem_charges = 3;
 }
 
 // mage_t::regen  ===========================================================
@@ -3402,6 +3434,16 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
       virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPM ) ? 1.0 : 0.0; return TOK_NUM; }
     };
     return new dpm_rotation_expr_t( a );
+  }
+
+  if ( name_str == "mana_gem_charges" )
+  {
+    struct mana_gem_charges_expr_t : public action_expr_t
+    {
+      mana_gem_charges_expr_t( action_t* a ) : action_expr_t( a, "mana_gem_charges", TOK_NUM ){}
+      virtual int evaluate() { result_num = action -> player -> cast_mage() -> mana_gem_charges; return TOK_NUM; }
+    };
+    return new mana_gem_charges_expr_t( a );
   }
 
   return player_t::create_expression( a, name_str );
