@@ -2855,15 +2855,6 @@ struct frost_strike_offhand_t : public death_knight_attack_t
       base_crit += 0.05;
   }
 
-  virtual void execute()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::execute();
-   
-    if( result_is_hit() )
-      p -> trigger_runic_empowerment(); // FIX ME: Does DW get 2 chances to proc this?
-  }
-
   virtual void player_buff()
   {
     death_knight_attack_t::player_buff();
@@ -2910,7 +2901,7 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
    
     if( result_is_hit() )
-      p -> trigger_runic_empowerment(); // FIX ME: Does DW get 2 chances to proc this?
+      p -> trigger_runic_empowerment();
 
     if ( oh_attack )
     {
