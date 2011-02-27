@@ -920,7 +920,7 @@ bool warrior_attack_t::ready()
 
   warrior_t* p = player -> cast_warrior();
 
-  // Attack vailable in current stance?
+  // Attack available in current stance?
   if ( ( stancemask & p -> active_stance ) == 0 )
     return false;
 
