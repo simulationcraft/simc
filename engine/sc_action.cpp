@@ -1795,7 +1795,7 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
 {
   if ( weapon )
   {
-    return weapon -> proc_chance_on_swing( PPM, time_to_execute );
+    return weapon -> proc_chance_on_swing( PPM );
   }
   else
   {
