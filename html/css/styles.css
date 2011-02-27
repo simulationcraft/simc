@@ -219,7 +219,7 @@ td.small a.open {
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 	-moz-box-shadow: 4px 4px 10px #000;
-	-webkit-box-shadow: 4px 4px 10px #111;
+	-webkit-box-shadow: 4px 4px 10px #000;
 	box-shadow: 4px 4px 10px #000;
 }
 

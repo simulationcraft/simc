@@ -1,41 +1,46 @@
 jQuery.noConflict();
-function open_anchor(anchor) {
-	var img_id = '';
-	var src = '';
-	var target = '';
-	anchor.addClass('open');
-	var section = anchor.parent('.section');
-	section.addClass('section-open');
-	section.removeClass('grouped-first');
-	section.removeClass('grouped-last');
-	if (!(section.next().hasClass('section-open'))) {
-		section.next().addClass('grouped-first');
-	}
-	if (!(section.prev().hasClass('section-open'))) {
-		section.prev().addClass('grouped-last');
-	}
-	anchor.next('.toggle-content').show(150);
-	anchor.next('.toggle-content').find('.charts').each(function() {
-		$(this).children('span').each(function() {
-			img_class = $(this).attr('class');
-			img_alt = $(this).attr('title');
-			img_src = $(this).html().replace(/&amp;/g, '&');
-			var img = new Image();
-			$(img).attr('class', img_class);
-			$(img).attr('src', img_src);
-			$(img).attr('alt', img_alt);
-			$(this).replaceWith(img);
-			$(this).load();
-		});
-	})
-	setTimeout('window.scrollTo(0, anchor.position().top', 500);
-}
 jQuery(document).ready(function($) {
+	function load_images(containers) {
+		containers.each(function() {
+			$(this).children('span').each(function() {
+				img_class = $(this).attr('class');
+				img_alt = $(this).attr('title');
+				img_src = $(this).html().replace(/&amp;/g, '&');
+				var img = new Image();
+				$(img).attr('class', img_class);
+				$(img).attr('src', img_src);
+				$(img).attr('alt', img_alt);
+				$(this).replaceWith(img);
+				$(this).load();
+			});
+		});
+	}
+	function open_anchor(anchor) {
+		var img_id = '';
+		var src = '';
+		var target = '';
+		anchor.addClass('open');
+		var section = anchor.parent('.section');
+		section.addClass('section-open');
+		section.removeClass('grouped-first');
+		section.removeClass('grouped-last');
+		if (!(section.next().hasClass('section-open'))) {
+			section.next().addClass('grouped-first');
+		}
+		if (!(section.prev().hasClass('section-open'))) {
+			section.prev().addClass('grouped-last');
+		}
+		anchor.next('.toggle-content').show(150);
+		chart_containers = anchor.next('.toggle-content').find('.charts');
+		load_images(chart_containers);
+		setTimeout('window.scrollTo(0, anchor.position().top', 500);
+	}
+	var chart_containers = false;
 	var anchor_check = document.location.href.split('#');
 	if (anchor_check.length > 1) {
 		var anchor = anchor_check[anchor_check.length - 1];
 	}
-	$('a[ rel="_blank"]').each(function() {
+	$('a.ext').mouseover(function() {
 		$(this).attr('target', '_blank');
 	});
 	$('.toggle').click(function(e) {
@@ -70,19 +75,8 @@ jQuery(document).ready(function($) {
 			}
 		}
 		$(this).next('.toggle-content').toggle(150);
-		$(this).next('.toggle-content').find('.charts').each(function() {
-			$(this).children('span').each(function() {
-				img_class = $(this).attr('class');
-				img_alt = $(this).attr('title');
-				img_src = $(this).html().replace(/&amp;/g, '&');
-				var img = new Image();
-				$(img).attr('class', img_class);
-				$(img).attr('src', img_src);
-				$(img).attr('alt', img_alt);
-				$(this).replaceWith(img);
-				$(this).load();
-			});
-		});
+		chart_containers = $(this).next('.toggle-content').find('.charts');
+		load_images(chart_containers);
 	});
 	$('.toggle-details').click(function(e) {
 		e.preventDefault();
