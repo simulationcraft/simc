@@ -2269,25 +2269,6 @@ struct kill_shot_t : public hunter_attack_t
   }
 };
 
-// Multi Shot Attack =========================================================
-
-struct multi_shot_t : public hunter_attack_t
-{
-  multi_shot_t( player_t* player, const std::string& options_str ) :
-      hunter_attack_t( "multi_shot", player, "Multi-Shot" )
-  {
-    hunter_t* p = player -> cast_hunter();
-    assert( p -> ranged_weapon.type != WEAPON_NONE );
-    parse_options( NULL, options_str );
-
-    weapon = &( p -> ranged_weapon );
-    assert( weapon -> group() == WEAPON_RANGED );
-    aoe = -1;
-
-    normalize_weapon_speed = true;
-  }
-};
-
 // Scatter Shot Attack =========================================================
 
 struct scatter_shot_t : public hunter_attack_t
@@ -2376,6 +2357,71 @@ struct serpent_sting_t : public hunter_attack_t
     if ( tick_dmg > 0 )
     {
       p -> buffs_tier10_4pc-> trigger();
+    }
+  }
+};
+
+struct serpent_sting_spread_t : public serpent_sting_t
+{
+  serpent_sting_spread_t( player_t* player, const std::string& options_str ) :
+    serpent_sting_t( player, options_str )
+  {
+    hunter_t* p = player -> cast_hunter();
+    num_ticks = 1 + p-> talents.serpent_spread -> rank();
+    base_cost = 0.0;
+    travel_speed = 0.0;
+    background = true;
+    aoe = -1;
+    serpent_sting_burst -> aoe = -1;
+  }
+
+  virtual void execute()
+  {
+    hunter_attack_t::execute();
+    if ( result_is_hit() ) target -> debuffs.poisoned -> increment();
+    hunter_t* p = player -> cast_hunter();
+    if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> ok() )
+    {
+      double t = ( p -> talents.improved_serpent_sting -> effect_base_value( 1 ) / 100.0 ) *
+        ( ceil( base_td ) * 5 + total_power() * 0.4 );
+
+      serpent_sting_burst -> base_dd_min = t;
+      serpent_sting_burst -> base_dd_max = t;
+      serpent_sting_burst -> execute();
+    }
+  }
+};
+
+// Multi Shot Attack =========================================================
+
+struct multi_shot_t : public hunter_attack_t
+{
+  serpent_sting_spread_t* spread_sting;
+
+  multi_shot_t( player_t* player, const std::string& options_str ) :
+      hunter_attack_t( "multi_shot", player, "Multi-Shot" ), spread_sting( 0 )
+  {
+    hunter_t* p = player -> cast_hunter();
+    assert( p -> ranged_weapon.type != WEAPON_NONE );
+    parse_options( NULL, options_str );
+
+    weapon = &( p -> ranged_weapon );
+    assert( weapon -> group() == WEAPON_RANGED );
+    aoe = -1;
+
+    normalize_weapon_speed = true;
+    if( p -> talents.serpent_spread -> rank() )
+      spread_sting = new serpent_sting_spread_t( player, options_str );
+  }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    hunter_attack_t::travel( t, travel_result, travel_dmg);
+
+    if( result_is_hit( travel_result ) )
+    {
+      if( spread_sting )
+        spread_sting -> execute();
     }
   }
 };
