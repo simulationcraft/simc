@@ -17,6 +17,7 @@ actions+=/mage_armor
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/conjure_mana_gem,if=cooldown.evocation.remains<44&target.time_to_die<44&mana_gem_charges=0
+actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=cooldown.evocation.remains<30&buff.arcane_blast.stack=4
 actions+=/arcane_power,if=(cooldown.evocation.remains<30&buff.arcane_blast.stack=4)|target.time_to_die<40
