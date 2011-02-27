@@ -23,6 +23,7 @@ struct hunter_t : public player_t
   // Buffs
   buff_t* buffs_aspect_of_the_hawk;
   buff_t* buffs_beast_within;
+  buff_t* buffs_bombardment;
   buff_t* buffs_call_of_the_wild;
   buff_t* buffs_cobra_strikes;
   buff_t* buffs_culling_the_herd;
@@ -2414,15 +2415,50 @@ struct multi_shot_t : public hunter_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
+  virtual void execute()
+  {
+    hunter_attack_t::execute();
+    hunter_t* p = player -> cast_hunter();
+
+    if( p -> buffs_bombardment -> up() )
+      p -> buffs_bombardment -> expire();
+  }
+  
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
+    hunter_t* p = player -> cast_hunter();
+    target_t* q = t -> cast_target();
+
     hunter_attack_t::travel( t, travel_result, travel_dmg);
+    int crit_occurred = 0;
 
     if( result_is_hit( travel_result ) )
     {
       if( spread_sting )
         spread_sting -> execute();
+      if( travel_result == RESULT_CRIT )
+        crit_occurred++;
+      for( int i=0; i < q -> adds_nearby; i++ ) {
+        // Calculate a result for each nearby add to determine whether to proc
+        // bombardment
+        int delta_level = q -> level - p -> level;
+        if( sim -> real() <= crit_chance( delta_level ) )
+          crit_occurred++;
+      }
     }
+
+    if( crit_occurred )
+      p -> buffs_bombardment -> trigger();
+  }
+
+  virtual double cost() SC_CONST
+  {
+    hunter_t* p = player -> cast_hunter();
+    if( p -> buffs_bombardment -> check() )
+    {
+      return base_cost * ( 1 + p -> buffs_bombardment -> effect_base_value( 1 ) / 100.0 );
+    }
+    return hunter_attack_t::cost();
   }
 };
 
@@ -3315,6 +3351,7 @@ void hunter_t::init_buffs()
 
   buffs_aspect_of_the_hawk          = new buff_t( this, 13165, "aspect_of_the_hawk" );
   buffs_beast_within                = new buff_t( this, 34471, "beast_within", talents.the_beast_within -> rank() );
+  buffs_bombardment                 = new buff_t( this, talents.bombardment -> rank() == 2 ? 35110 : talents.bombardment -> rank() == 1 ? 35104 : 0, "bombardment" );
   buffs_call_of_the_wild            = new buff_t( this, 53434, "call_of_the_wild" );
   buffs_cobra_strikes               = new buff_t( this, 53257, "cobra_strikes", talents.cobra_strikes -> proc_chance() );
   buffs_culling_the_herd            = new buff_t( this, 70893, "culling_the_herd" );
@@ -3484,6 +3521,7 @@ void hunter_t::init_actions()
     case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent"; break;
     default: break;
     }
+    action_list_str += "/explosive_trap,if=target.adds>0";
     switch ( primary_tree() )
     {
     case TREE_BEAST_MASTERY:
@@ -3491,6 +3529,8 @@ void hunter_t::init_actions()
       {
         action_list_str += "/bestial_wrath,if=focus>60";
       }
+      action_list_str += "/multi_shot,if=target.adds>5";
+      action_list_str += "/cobra_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/kill_shot";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
@@ -3511,6 +3551,8 @@ void hunter_t::init_actions()
         action_list_str += "/steady_shot";
       break;
     case TREE_MARKSMANSHIP:
+      action_list_str += "/multi_shot,if=target.adds>5";
+      action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=80";
       if ( talents.chimera_shot -> rank() )
       {
@@ -3533,6 +3575,8 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot";
       break;
     case TREE_SURVIVAL:
+      action_list_str += "/multi_shot,if=target.adds>2";
+      action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
       action_list_str += "/explosive_shot,if=!ticking&!in_flight";

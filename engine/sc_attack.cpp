@@ -420,7 +420,7 @@ int attack_t::build_table( double* chances,
   return num_results;
 }
 
-// attack_t::caclulate_result ===============================================
+// attack_t::calculate_result ===============================================
 
 void attack_t::calculate_result()
 {
