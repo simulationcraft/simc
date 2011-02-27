@@ -556,7 +556,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
     report_progress( 1 ),
     bloodlust_percent( 25 ), bloodlust_time( -60 ),
-    path_str( "." ), output_file( stdout ), log_file( 0 ),
+    path_str( "." ), output_file( stdout ), 
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
     report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), hosted_html( 0 ), print_styles( false ),
@@ -1907,7 +1907,6 @@ void sim_t::create_options()
     // @option_doc loc=skip
     { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
     { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
-    { "combat_log",                       OPT_STRING, &( log_file_str                             ) },
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "hosted_html",                      OPT_BOOL,   &( hosted_html                            ) },
@@ -2136,17 +2135,6 @@ bool sim_t::parse_options( int    _argc,
       return false;
     }
   }
-  if ( ! log_file_str.empty() )
-  {
-    log_file = fopen( log_file_str.c_str(), "w" );
-    if ( ! log_file )
-    {
-      errorf( "Unable to open combat log file '%s'\n", log_file_str.c_str() );
-      cancel();
-      return false;
-    }
-    log = 1;
-  }
   if ( debug )
   {
     log = 1;
@@ -2282,7 +2270,6 @@ int sim_t::main( int argc, char** argv )
   }
 
   if ( output_file != stdout ) fclose( output_file );
-  if ( log_file ) fclose( log_file );
 
   http_t::cache_save();
 

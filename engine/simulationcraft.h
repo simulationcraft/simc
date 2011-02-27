@@ -2446,12 +2446,11 @@ struct sim_t
   std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
-  std::string output_file_str, log_file_str, html_file_str,  wiki_file_str, xml_file_str;
+  std::string output_file_str, html_file_str,  wiki_file_str, xml_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
   FILE* output_file;
-  FILE* log_file;
   int armory_throttle;
   int current_throttle;
   int debug_exp;
