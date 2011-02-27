@@ -3400,7 +3400,7 @@ void hunter_t::init_actions()
     action_list_str += "/hunters_mark/summon_pet";
     if ( talents.trueshot_aura -> rank() ) action_list_str += "/trueshot_aura";
     action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-    if ( glyphs.aimed_shot -> ok() )
+    if ( glyphs.rapid_fire -> ok() )
       action_list_str += "|buff.rapid_fire.react";
     action_list_str += "/auto_shot";
     action_list_str += "/snapshot_stats";
@@ -3449,29 +3449,15 @@ void hunter_t::init_actions()
         action_list_str += "/steady_shot";
       break;
     case TREE_MARKSMANSHIP:
-      if ( glyphs.arcane_shot -> ok() )
+      action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=80";
+      if ( talents.chimera_shot -> rank() )
       {
-        action_list_str += "/serpent_sting,if=!ticking";
-        action_list_str += "/rapid_fire";
-        if ( talents.chimera_shot -> rank() )
-          action_list_str += "/chimera_shot";
-        action_list_str += "/steady_shot,if=buff.improved_steady_shot.remains<5";
-        action_list_str += "/kill_shot";
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
+        action_list_str += "/chimera_shot,if=target.health_pct<=80";
       }
-      else
-      {
-        action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=80";
-        if ( talents.chimera_shot -> rank() )
-        {
-          action_list_str += "/chimera_shot,if=target.health_pct<=80";
-        }
-        action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
-        action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
-        action_list_str += "/kill_shot";
-      }
-
+      action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
+      action_list_str += "/readiness,wait_for_rapid_fire=1";
+      action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
+      action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
       if ( ! glyphs.arcane_shot -> ok() )
       {
@@ -3479,8 +3465,8 @@ void hunter_t::init_actions()
       }
       else
       {
-        action_list_str += "/arcane_shot,if=focus>=66&cooldown.chimera_shot.remains>0";
-        action_list_str += "/arcane_shot,if=cooldown.chimera_shot.remains>=5";
+        action_list_str += "/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.up";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up)";
       }
       action_list_str += "/steady_shot";
       break;
