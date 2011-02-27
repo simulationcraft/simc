@@ -160,7 +160,8 @@ struct hunter_t : public player_t
     glyph_t* steady_shot;
 
     // Major
-    glyph_t*  bestial_wrath;
+    glyph_t* bestial_wrath;
+    glyph_t* trap_launcher;
   };
   glyphs_t glyphs;
 
@@ -2030,28 +2031,43 @@ struct explosive_trap_effect_t : public hunter_attack_t
 struct explosive_trap_t : public hunter_attack_t
 {
   attack_t* trap_effect;
+  int trap_launcher;
 
   explosive_trap_t( player_t* player, const std::string& options_str ) :
-      hunter_attack_t( "explosive_trap", player, 13813 ), trap_effect( 0 )
+      hunter_attack_t( "explosive_trap", player, 13813 ), trap_effect( 0 ),
+        trap_launcher( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      // Launched traps have a focus cost
+      { "trap_launcher", OPT_BOOL, &trap_launcher },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
 
     //TODO: Split traps cooldown into fire/frost/snakes
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
     cooldown -> duration -= p -> talents.resourcefulness -> rank() * 2;
-    //TODO: Add option for using trap launcher and consuming the correct amount
-    //of focus
 
     trap_effect = new explosive_trap_effect_t( p );
+    add_child( trap_effect );
   }
 
   virtual void execute()
   {
     hunter_attack_t::execute();
     trap_effect -> execute();
+  }
+
+  virtual double cost() SC_CONST
+  {
+    hunter_t* p = player -> cast_hunter();
+    if( trap_launcher )
+      return 20.0 + p -> glyphs.trap_launcher -> base_value();
+    return hunter_attack_t::cost();
   }
 };
 
@@ -3039,7 +3055,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
-//if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
 //if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
@@ -3187,6 +3202,7 @@ void hunter_t::init_spells()
   glyphs.rapid_fire     = find_glyph( "Glyph of Rapid Fire"     );
   glyphs.serpent_sting  = find_glyph( "Glyph of Serpent Sting"  );
   glyphs.steady_shot    = find_glyph( "Glyph of Steady Shot"    );
+  glyphs.trap_launcher  = find_glyph( "Glyph of Trap Launcher"  );
   glyphs.kill_command   = find_glyph( "Glyph of Kill Command"   );
 
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
