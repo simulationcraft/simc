@@ -1502,7 +1502,7 @@ struct cone_of_cold_t : public mage_spell_t
 
 struct conjure_mana_gem_t : public mage_spell_t
 {
-  conjure_mana_gem_t( mage_t* p, const std::string& options_str ) : 
+  conjure_mana_gem_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "conjure_mana_gem", 759, p )
   {
     parse_options( NULL, options_str );
@@ -3055,8 +3055,9 @@ void mage_t::init_actions()
     action_list_str += "/snapshot_stats";
     // Counterspell
     action_list_str += "/counterspell";
-    // Usable Items
 
+    if ( primary_tree() == TREE_ARCANE ) action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<44&target.time_to_die<44&mana_gem_charges=0";
+    // Usable Items
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
     {
