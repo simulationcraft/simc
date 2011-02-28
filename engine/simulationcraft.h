@@ -4493,5 +4493,103 @@ struct js_t
   static void print( js_node_t* root, FILE* f=0, int spacing=0 );
 };
 
+#ifdef WHAT_IF
+
+struct sim_t
+{
+...
+int get_slot( const std::string& n, actor_t* );
+...
+};
+
+struct actor_t
+{
+  items, stats, action list, resource management...
+  actor_t( const std::string& n, int type ) {}
+  virtual actor_t*  choose_target();
+  virtual void      execute_action() { choose_target(); execute_first_ready_action(); }
+  virtual debuff_t* get_debuff( int slot );
+  virtual dot_t*    get_dot   ( int slot );
+};
+
+struct player_t : public actor_t
+{
+  scaling, current_target (actor), pet_list ...
+  player_t( const std::string& n, int type ) : actor_t( n, type ) {}
+};
+
+struct pet_t : public actor_t
+{
+  owner, summon, dismiss...
+  player_t( const std::string& n, int type ) : actor_t( n, type ) {}
+};
+
+struct enemy_t : public actor_t
+{
+  health recalculation, ...
+  enemy_t( const std::string& n ) : actor_t( n, ACTOR_ENEMY ) {}
+};
+
+struct action_t
+{
+  actor_t, ...
+  action_t( const std::string& n );
+  virtual int execute();
+  virtual void schedule_execute();
+  virtual double execute_time();
+  virtual double haste();
+  virtual double gcd();
+  virtual bool ready();
+  virtual void cancel();
+  virtual void reset();
+};
+
+struct result_t
+{
+  int type;
+  bool hit;  // convenience
+  bool crit; // convenience, two-roll (blocked crits, etc)
+  double direct_amount;
+  double pool_amount; 
+  // Perhaps this should be just "amount" and generate two travel events when there is direct damage and "aura applied"?
+};
+
+struct ability_t : public action_t
+{
+  spell_data, resource, weapon, two_roll, base_xyz (no player_xyz or target_xyz),
+  harmful, healing, callbacks, ...
+  ability_t( spell_data_t* s ) : action_t( s -> name() ) {}
+  virtual void     execute();
+  virtual void     travel();
+  virtual void     tick();
+  virtual void     last_tick();
+  virtual double   cost();
+  virtual double   haste();
+  virtual bool     ready();
+  virtual void     cancel();
+  virtual void     reset();
+  virtual void     consume_resource();
+  virtual result_t calculate_result( actor_t* target );
+  virtual double   calculate_weapon_amount( actor_t* target );
+  virtual double   calculate_direct_amount( actor_t* target );
+  virtual double   calculate_pool_amount  ( actor_t* target );
+  virtual double   calculate_miss_chance  ( actor_t* target );
+  virtual double   calculate_dodge_chance ( actor_t* target );
+  virtual double   calculate_parry_chance ( actor_t* target );
+  virtual double   calculate_glance_chance( actor_t* target );
+  virtual double   calculate_block_chance ( actor_t* target );
+  virtual double   calculate_crit_chance  ( actor_t* target );
+  virtual double   calculate_multiplier       ();
+  virtual double   calculate_direct_multiplier();
+  virtual double   calculate_pool_multiplier  ();
+  virtual double   calculate_target_multiplier( actor_t* target ); // includes mitigation
+  virtual int      area_of_effect( actor_t* targets[] ) { targets[ 0 ] = actor -> current_target; return 1; }
+  virtual void     schedule_travel();
+  virtual double   travel_time();
+  virtual void     travel( result_t result );
+};
+
+#endif
+
 #endif // __SIMULATIONCRAFT_H
 
