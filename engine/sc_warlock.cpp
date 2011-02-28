@@ -4451,6 +4451,15 @@ void warlock_t::reset()
 
 action_expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
 {
+  if ( name_str == "shards" )
+  {
+    struct shards_expr_t : public action_expr_t
+    {
+      shards_expr_t( action_t* a) : action_expr_t( a, "shards", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> cast_warlock() -> resource_current[ RESOURCE_SOUL_SHARDS ]; return TOK_NUM; }
+    };
+    return new shards_expr_t( a );
+  }
   return player_t::create_expression( a, name_str );
 }
 
