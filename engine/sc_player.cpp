@@ -2801,13 +2801,12 @@ double player_t::resource_loss( int       resource,
   {
     actual_amount = std::min( amount, resource_current[ resource ] );
     resource_current[ resource ] -= actual_amount;
+    resource_lost[ resource ] += actual_amount;
   }
   else
   {
-    actual_amount = 0;
+    actual_amount = amount;
   }
-
-  resource_lost[ resource ] += actual_amount;
 
   if ( resource == RESOURCE_MANA )
   {
