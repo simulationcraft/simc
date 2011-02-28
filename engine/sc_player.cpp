@@ -3129,7 +3129,7 @@ double player_t::assess_damage( double            amount,
     demise();
   }
 
-  if ( vengeance_enabled && school == SCHOOL_PHYSICAL )
+  if ( vengeance_enabled )
     vengeance_damage += actual_amount;
 
   return actual_amount;
