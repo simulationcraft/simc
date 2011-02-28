@@ -1387,6 +1387,7 @@ void player_t::init_buffs()
   buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> sim_data.effect_min( 33697, sim -> max_player_level, E_APPLY_AURA, A_MOD_DAMAGE_DONE ) ), 1, 15.0 );
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
+  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING, 480,               1, 20.0 );
   buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
   buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0,            1, 25.0, 60.0 );
   buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0,            1, 25.0, 60.0 );
@@ -3864,6 +3865,42 @@ struct cycle_t : public action_t
   }
 };
 
+// Lifeblood ===============================================================
+
+struct lifeblood_t : public action_t
+{
+  lifeblood_t( player_t* player, const std::string& options_str ) :
+      action_t( ACTION_OTHER, "lifeblood", player )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+    trigger_gcd = 0;
+    cooldown -> duration = 120;
+    
+    // TODO: This spell shares a cooldown for the duration of the buff with
+    // at least engi gloves-trinker and the use-effect of Heart of Ignacious
+    // are mutual exclusive buffs (they trigger a cd with the duration of the
+    // buffs on each other
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    update_ready();
+
+    player -> buffs.lifeblood -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> profession[ PROF_HERBALISM ] < 525 )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 // Restart Sequence Action =================================================
 
 struct restart_sequence_t : public action_t
@@ -4335,6 +4372,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
   if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
   if ( name == "cycle"            ) return new            cycle_t( this, options_str );
+  if ( name == "lifeblood"        ) return new        lifeblood_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
   if ( name == "sequence"         ) return new         sequence_t( this, options_str );
