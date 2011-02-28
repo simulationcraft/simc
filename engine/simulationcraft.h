@@ -4498,7 +4498,7 @@ struct js_t
 struct sim_t
 {
 ...
-int get_slot( const std::string& n, actor_t* );
+int get_slot( const std::string& n, actor_t* source );
 ...
 };
 
@@ -4546,6 +4546,7 @@ struct action_t
 
 struct result_t
 {
+  actor_t* target;
   int type;
   bool hit;  // convenience
   bool crit; // convenience, two-roll (blocked crits, etc)
@@ -4582,11 +4583,13 @@ struct ability_t : public action_t
   virtual double   calculate_multiplier       ();
   virtual double   calculate_direct_multiplier();
   virtual double   calculate_pool_multiplier  ();
-  virtual double   calculate_target_multiplier( actor_t* target ); // includes mitigation
+  virtual double   calculate_target_multiplier( actor_t* target ); // includes mitigation, not called during pool calculation
   virtual int      area_of_effect( actor_t* targets[] ) { targets[ 0 ] = actor -> current_target; return 1; }
-  virtual void     schedule_travel();
   virtual double   travel_time();
-  virtual void     travel( result_t result );
+  virtual void     schedule_travel( result_t& result );
+  virtual void     travel         ( result_t& result );
+  virtual void     assess_damage  ( result_t& result );
+  virtual void     assess_healing ( result_t& result );
 };
 
 #endif
