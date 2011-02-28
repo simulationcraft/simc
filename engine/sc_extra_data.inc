@@ -499,7 +499,7 @@ static double __gt_base_mp5[][85] = {
        0.0,    0.0,    0.0,    0.0,  931.0,
   }
 };
-
+//      Str   Agi Sta Int Spi Health Mana
 static stat_data_t __gt_class_stats_by_level[][85] = {
 	// No Class
 	{
