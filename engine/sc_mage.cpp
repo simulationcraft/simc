@@ -3039,13 +3039,10 @@ void mage_t::init_actions()
     {
       action_list_str += "/mage_armor";
     }
-    else if ( primary_tree() == TREE_FIRE )
-    {
-      action_list_str += "/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down";
-    }
     else
     {
       action_list_str += "/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down";
+      action_list_str += "/molten_armor,if=mana_pct>60&buff.mage_armor.up";
     }
 
     // Water Elemental
@@ -3206,7 +3203,7 @@ void mage_t::init_actions()
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
       if ( talents.hot_streak -> rank()  ) action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=12";
-      action_list_str += "/mage_armor,if=mana_pct<5";
+      action_list_str += "/evocation,if=buff.mage_armor.up"; // evocate with high priority to ensure we can get back to molten soon
       if ( glyphs.frostfire -> ok() )
       {
         action_list_str += "/frostfire_bolt";
@@ -3215,6 +3212,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/fireball";
       }
+      action_list_str += "/mage_armor,if=mana_pct<5&buff.mage_armor.down";
       action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
@@ -3248,6 +3246,7 @@ void mage_t::init_actions()
         if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*15)<target.time_to_die";
       }
       action_list_str += "/evocation,if=mana_pct<5&target.time_to_die>60";
+      action_list_str += "/evocation,if=buff.mage_armor.up";
       if ( glyphs.frostbolt -> ok() )
       {
         action_list_str += "/frostbolt";
