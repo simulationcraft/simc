@@ -2975,6 +2975,12 @@ void warrior_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
   }
+
+  if ( primary_role() == ROLE_TANK )
+  {
+    scales_with[ STAT_PARRY_RATING ] = 1;
+    scales_with[ STAT_BLOCK_RATING ] = 1;
+  }
 }
 
 // warrior_t::init_buffs ====================================================

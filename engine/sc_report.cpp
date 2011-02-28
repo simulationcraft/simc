@@ -2694,6 +2694,9 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
           util_t::fprintf( file,
             "\t\t\t\t\t\t\t\t<td>%.0f</td>\n",
             p -> sim -> scaling -> stats.get_stat( i ) );
+      if ( p -> sim -> scaling -> scale_lag )
+             util_t::fprintf( file,
+               "\t\t\t\t\t\t\t\t<td>100</td>\n" );
       util_t::fprintf( file,
         "\t\t\t\t\t\t\t</tr>\n" );
       util_t::fprintf( file,

@@ -1907,10 +1907,15 @@ void paladin_t::init_scaling()
   int tree = primary_tree();
 
   // Technically prot and ret scale with int and sp too, but it's so minor it's not worth the sim time.
-  scales_with[ STAT_STAMINA     ] = tree == TREE_PROTECTION;
   scales_with[ STAT_INTELLECT   ] = tree == TREE_HOLY;
   scales_with[ STAT_SPIRIT      ] = tree == TREE_HOLY;
   scales_with[ STAT_SPELL_POWER ] = tree == TREE_HOLY;
+
+  if ( primary_role() == ROLE_TANK )
+  {
+    scales_with[ STAT_PARRY_RATING ] = 1;
+    scales_with[ STAT_BLOCK_RATING ] = 1;
+  }
 }
 
 // paladin_t::decode_set ====================================================

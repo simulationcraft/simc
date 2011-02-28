@@ -2530,7 +2530,6 @@ struct scaling_t
   double scale_delta_multiplier;
   int    calculate_scale_factors;
   int    center_scale_delta;
-  int    five_point_stencil;
   int    positive_scale_delta;
   int    scale_lag;
   double scale_factor_noise;
@@ -2540,6 +2539,7 @@ struct scaling_t
   std::string scale_only_str;
   int    current_scaling_stat, num_scaling_stats, remaining_scaling_stats;
   double    scale_haste_iterations;
+  std::string scale_over;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
@@ -2556,6 +2556,8 @@ struct scaling_t
   double progress( std::string& phase );
   void create_options();
   bool has_scale_factors();
+  double scale_over_function( sim_t* s, player_t* p );
+  double scale_over_function_error( sim_t* s, player_t* p );
 };
 
 // Plot ======================================================================
@@ -3012,6 +3014,7 @@ struct player_t
   double    resource_gained[ RESOURCE_MAX ];
   double    dps, dps_min, dps_max, dps_std_dev, dps_error;
   double    dpr, rps_gain, rps_loss;
+  int       death_count;
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;

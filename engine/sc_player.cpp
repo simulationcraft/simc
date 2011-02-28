@@ -356,6 +356,7 @@ player_t::player_t( sim_t*             s,
     total_waiting( 0 ), total_foreground_actions( 0 ),
     iteration_dmg( 0 ), total_dmg( 0 ),
     dps( 0 ), dps_min( 0 ), dps_max( 0 ), dps_std_dev( 0 ), dps_error( 0 ), dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
+    death_count( 0 ),
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
@@ -1478,10 +1479,11 @@ void player_t::init_scaling()
 
     int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
     int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) || ( role == ROLE_HEAL ) ) ? 1 : 0;
+    int tank   = role == ROLE_TANK ? 1 : 0;
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
-    scales_with[ STAT_STAMINA   ] = 0;
+    scales_with[ STAT_STAMINA   ] = tank;
     scales_with[ STAT_INTELLECT ] = spell;
     scales_with[ STAT_SPIRIT    ] = spell;
 
@@ -1510,9 +1512,9 @@ void player_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = 0;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = 0;
 
-    scales_with[ STAT_ARMOR          ] = 0;
+    scales_with[ STAT_ARMOR          ] = tank;
     scales_with[ STAT_BONUS_ARMOR    ] = 0;
-    scales_with[ STAT_DODGE_RATING   ] = 0;
+    scales_with[ STAT_DODGE_RATING   ] = tank;
     scales_with[ STAT_PARRY_RATING   ] = 0;
 
     scales_with[ STAT_BLOCK_RATING ] = 0;
@@ -3121,6 +3123,8 @@ double player_t::assess_damage( double            amount,
 
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
   {
+    if ( !sleeping )
+      death_count++;
     if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
     demise();
   }

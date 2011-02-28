@@ -85,7 +85,6 @@ scaling_t::scaling_t( sim_t* s ) :
   scale_delta_multiplier( 1.0 ),
   calculate_scale_factors( 0 ),
   center_scale_delta( 0 ),
-  five_point_stencil( 0 ),
   positive_scale_delta( 0 ),
   scale_lag( 0 ),
   scale_factor_noise( -1.0 ),
@@ -95,7 +94,8 @@ scaling_t::scaling_t( sim_t* s ) :
   current_scaling_stat( 0 ),
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
-  scale_haste_iterations( 1.0 )
+  scale_haste_iterations( 1.0 ),
+  scale_over( "" )
 {
   create_options();
 }
@@ -120,7 +120,7 @@ double scaling_t::progress( std::string& phase )
 
   double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
 
-  double divisor = num_scaling_stats * ( five_point_stencil ? 4.0 : 2.0 );
+  double divisor = num_scaling_stats * 2.0;
 
   if ( ref_sim  ) stat_progress += ref_sim  -> current_iteration / ( ref_sim  -> iterations * divisor );
   if ( ref_sim2 ) stat_progress += ref_sim2 -> current_iteration / ( ref_sim2 -> iterations * divisor );
@@ -143,7 +143,7 @@ void scaling_t::init_deltas()
     if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = smooth_scale_factors ? 150 : 300;
+  if ( stats.spell_power == 0 ) stats.spell_power = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
 
   if ( stats.attack_power == 0 ) stats.attack_power = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
@@ -163,7 +163,12 @@ void scaling_t::init_deltas()
   if ( stats.haste_rating == 0 ) stats.haste_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
   if ( stats.mastery_rating == 0 ) stats.mastery_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
+  // Defensive
   if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 6000 : 12000;
+  if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.parry_rating  == 0 ) stats.parry_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.block_rating  == 0 ) stats.block_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+
 
   if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
   if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
@@ -228,26 +233,11 @@ void scaling_t::analyze_stats()
       fflush( stdout );
     }
 
-    bool fivepstencil = five_point_stencil && ! stat_may_cap( i );
-
-    bool center = ( five_point_stencil || center_scale_delta ) && ! stat_may_cap( i );
+    bool center = center_scale_delta && ! stat_may_cap( i );
 
     ref_sim = center ? new sim_t( sim ) : baseline_sim;
 
-    if ( fivepstencil )
-    {
-      ref_sim2 = new sim_t( sim );
-      ref_sim2 -> scaling -> scale_stat = i;
-      ref_sim2 -> scaling -> scale_value = -scale_delta;
-      if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) ref_sim2 -> iterations = (int) (ref_sim2 -> iterations * scale_haste_iterations);
-      ref_sim2 -> execute();
 
-      delta_sim2 = new sim_t( sim );
-      delta_sim2 -> scaling -> scale_stat = i;
-      delta_sim2 -> scaling -> scale_value = +scale_delta;
-      if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) delta_sim2 -> iterations = (int) (delta_sim2 -> iterations * scale_haste_iterations);
-      delta_sim2 -> execute();
-    }
 
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = i;
@@ -272,16 +262,7 @@ void scaling_t::analyze_stats()
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-      player_t*   ref_p2 = 0;
-      player_t* delta_p2 = 0;
-      if ( fivepstencil )
-      {
-        ref_p2 =   ref_sim2 -> find_player( p -> name() );
-        delta_p2 = delta_sim2 -> find_player( p -> name() );
-      }
       double divisor = scale_delta;
-      if ( fivepstencil)
-        divisor = scale_delta * 6;
 
       if ( delta_p -> invert_spirit_scaling )
         divisor = -divisor;
@@ -289,20 +270,17 @@ void scaling_t::analyze_stats()
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
 
       double f;
-      if ( fivepstencil )
-        f= ( ref_p2 -> dps + 8 * delta_p -> dps - 8 * ref_p -> dps - delta_p2 -> dps ) / divisor;
-      else
-        f = ( delta_p -> dps - ref_p -> dps ) / divisor;
+        f = ( scale_over_function( delta_sim, delta_p ) - scale_over_function( ref_sim, ref_p ) ) / divisor;
 
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
         f /= 10.0;
 
       if ( scale_factor_noise < 0.0 )
       {
-        scale_factor_noise = ( delta_p -> dps_error + ref_p -> dps_error ) / divisor;
+        scale_factor_noise = ( scale_over_function_error( delta_sim, delta_p ) + scale_over_function_error( ref_sim, ref_p ) ) / divisor;
       }
 
-      if ( f >= scale_factor_noise ) p -> scaling.set_stat( i, f );
+      if ( fabs( f ) >= scale_factor_noise ) p -> scaling.set_stat( i, f );
     }
 
     if ( debug_scale_factors )
@@ -319,8 +297,6 @@ void scaling_t::analyze_stats()
       ref_sim = 0;
     }
     delete delta_sim;  delta_sim  = 0;
-    delete delta_sim2; delta_sim2 = 0;
-    delete ref_sim2;   ref_sim2   = 0;
 
     remaining_scaling_stats--;
   }
@@ -344,9 +320,17 @@ void scaling_t::analyze_lag()
     fflush( stdout );
   }
 
-  ref_sim = new sim_t( sim );
-  ref_sim -> scaling -> scale_stat = STAT_MAX;
-  ref_sim -> execute();
+  if ( center_scale_delta )
+  {
+    ref_sim = new sim_t( sim );
+    ref_sim -> scaling -> scale_stat = STAT_MAX;
+    ref_sim -> execute();
+  }
+  else
+  {
+    ref_sim = sim;
+    ref_sim -> scaling -> scale_stat = STAT_MAX;
+  }
 
   delta_sim = new sim_t( sim );
   delta_sim ->   queue_lag += 0.100;
@@ -362,16 +346,16 @@ void scaling_t::analyze_lag()
     player_t* delta_p = delta_sim -> find_player( p -> name() );
 
     // Calculate DPS difference per millisecond of lag
-    double divisor = ( ( delta_sim -> queue_lag - sim -> queue_lag ) * 1000 );
+    double divisor = ( ( delta_sim -> queue_lag - ref_sim -> queue_lag ) * 1000 );
 
-    double f = ( ref_p -> dps - delta_p -> dps ) / divisor;
+    double f = ( scale_over_function( delta_sim, delta_p ) - scale_over_function( ref_sim, ref_p ) ) / divisor;
 
     if ( scale_factor_noise < 0.0 )
     {
-      scale_factor_noise = ( delta_p -> dps_error + ref_p -> dps_error ) / divisor;
+      scale_factor_noise = ( scale_over_function_error( delta_sim, delta_p ) + scale_over_function_error( ref_sim, ref_p ) ) / divisor;
     }
 
-    if ( f >= scale_factor_noise ) p -> scaling_lag = f;
+    if ( fabs( f ) >= scale_factor_noise ) p -> scaling_lag = f;
   }
 
   if ( ref_sim != sim ) delete ref_sim;
@@ -452,7 +436,6 @@ void scaling_t::create_options()
     { "normalize_scale_factors",        OPT_FUNC,   ( void* ) ::parse_normalize_scale_factors },
     { "debug_scale_factors",            OPT_BOOL,   &( debug_scale_factors                  ) },
     { "center_scale_delta",             OPT_BOOL,   &( center_scale_delta                   ) },
-    { "five_point_stencil",             OPT_BOOL,   &( five_point_stencil                   ) },
     { "scale_delta_multiplier",         OPT_FLT,    &( scale_delta_multiplier               ) }, // multiplies all default scale deltas
     { "positive_scale_delta",           OPT_BOOL,   &( positive_scale_delta                 ) },
     { "scale_lag",                      OPT_BOOL,   &( scale_lag                            ) },
@@ -475,6 +458,7 @@ void scaling_t::create_options()
     { "scale_offhand_weapon_speed",     OPT_FLT,    &( stats.weapon_offhand_speed           ) },
     { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
     { "scale_haste_iterations",         OPT_FLT,    &( scale_haste_iterations               ) }, // multiplies #iterations for haste scale factor calculation
+    { "scale_over",                     OPT_STRING, &( scale_over                           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -497,3 +481,29 @@ bool scaling_t::has_scale_factors()
 
   return false;
 }
+
+
+
+// scaling_t::scale_over_function ==================================================
+
+double scaling_t::scale_over_function( sim_t* s, player_t* p )
+{
+  if ( scale_over == "raid_dps" )
+    return s -> raid_dps;
+  else if ( scale_over == "deaths" )
+    return p -> death_count;
+
+  return p -> dps;
+}
+
+
+// scaling_t::scale_over_function_error ==================================================
+
+double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
+{
+  if ( scale_over == "raid_dps" || "deaths" )
+    return 0;
+
+  return p -> dps_error;
+}
+
