@@ -3883,6 +3883,22 @@ struct lifeblood_t : public action_t
     // buffs on each other
   }
 
+  void lockout( double duration )
+  {
+    if( duration <= 0 ) return;
+    double ready = sim -> current_time + duration;
+    for( action_t* a = player -> action_list; a; a = a -> next )
+    {
+      if( a -> name_str == "use_item" || a -> name_str == "lifeblood" )
+      {
+        if( ready > a -> cooldown -> ready )
+        {
+          a -> cooldown -> ready = ready;
+        }
+      }
+    }
+  }
+
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
@@ -3890,6 +3906,7 @@ struct lifeblood_t : public action_t
     update_ready();
 
     player -> buffs.lifeblood -> trigger();
+    lockout( player -> buffs.lifeblood -> remains() );
   }
 
   virtual bool ready()
@@ -4246,7 +4263,7 @@ struct use_item_t : public action_t
     double ready = sim -> current_time + duration;
     for( action_t* a = player -> action_list; a; a = a -> next )
     {
-      if( a -> name_str == "use_item" )
+      if( a -> name_str == "use_item" || a -> name_str == "lifeblood" )
       {
         if( ready > a -> cooldown -> ready )
         {
