@@ -19,7 +19,10 @@ actions+=/snapshot_stats
 actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
 actions+=/blood_fury
+actions+=/explosive_trap,if=target.adds>0
 actions+=/bestial_wrath,if=focus>60
+actions+=/multi_shot,if=target.adds>5
+actions+=/cobra_shot,if=target.adds>5
 actions+=/serpent_sting,if=!ticking
 actions+=/kill_shot
 actions+=/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up

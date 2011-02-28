@@ -19,6 +19,9 @@ actions+=/snapshot_stats
 actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
 actions+=/blood_fury
+actions+=/explosive_trap,if=target.adds>0
+actions+=/multi_shot,if=target.adds>2
+actions+=/cobra_shot,if=target.adds>2
 actions+=/serpent_sting,if=!ticking
 actions+=/rapid_fire
 actions+=/explosive_shot,if=!ticking&!in_flight
