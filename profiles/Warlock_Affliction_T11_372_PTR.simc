@@ -8,7 +8,7 @@ role=spell
 use_pre_potion=1
 professions=enchanting=525/inscription=525
 talents=http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
-glyphs=life_tap/shadow_bolt/corruption/bane_of_agony/haunt
+glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
@@ -24,7 +24,7 @@ actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
 actions+=/shadowflame
-actions+=/summon_infernal
+actions+=/summon_doomguard
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/life_tap,mana_percentage<=35
 actions+=/soulburn

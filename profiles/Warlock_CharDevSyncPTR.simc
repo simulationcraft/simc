@@ -1,16 +1,18 @@
 #!simc
 
-chardev=36735 name=Warlock_AffDrain_T11_359_PTR glyphs=life_tap/shadow_bolt/corruption/bane_of_agony/haunt save=Warlock_AffDrain_T11_359_PTR.simc
+ptr=1
 
-chardev=36739 name=Warlock_Affliction_T11_359_PTR glyphs=life_tap/shadow_bolt/corruption/bane_of_agony/haunt save=Warlock_Affliction_T11_359_PTR.simc
+chardev=36735 name=Warlock_AffDrain_T11_359_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_AffDrain_T11_359_PTR.simc
+
+chardev=36739 name=Warlock_Affliction_T11_359_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_Affliction_T11_359_PTR.simc
 
 chardev=36741 name=Warlock_Demonology_T11_359_PTR save=Warlock_Demonology_T11_359_PTR.simc
 
 chardev=36743 name=Warlock_Destruction_T11_359_PTR save=Warlock_Destruction_T11_359_PTR.simc
 
-chardev=36745 name=Warlock_AffDrain_T11_372_PTR glyphs=life_tap/shadow_bolt/corruption/bane_of_agony/haunt save=Warlock_AffDrain_T11_372_PTR.simc
+chardev=36745 name=Warlock_AffDrain_T11_372_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_AffDrain_T11_372_PTR.simc
 
-chardev=36750 name=Warlock_Affliction_T11_372_PTR glyphs=life_tap/shadow_bolt/corruption/bane_of_agony/haunt save=Warlock_Affliction_T11_372_PTR.simc
+chardev=36750 name=Warlock_Affliction_T11_372_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_Affliction_T11_372_PTR.simc
 
 chardev=36757 name=Warlock_Demonology_T11_372_PTR save=Warlock_Demonology_T11_372_PTR.simc
 
