@@ -1366,6 +1366,13 @@ struct felhunter_pet_t : public warlock_main_pet_t
       direct_power_mod = 0.614; // tested in-game as of 2010/12/20
       base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
       base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
+      if ( player -> ptr )
+      {
+        // FIXME - Naive assumption, needs testing on the 4.1 PTR!
+        base_dd_min *= 2;
+        base_dd_max *= 2;
+        direct_power_mod *= 2;
+      }
     }
 
     virtual void player_buff()
@@ -1373,7 +1380,11 @@ struct felhunter_pet_t : public warlock_main_pet_t
       warlock_pet_spell_t::player_buff();
 
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      player_multiplier *= 1.0 + o -> active_dots() * effect_base_value( 3 ) / 100.0;
+      // FIXME - Temporary override awaiting updated DBC data.
+      if ( player -> ptr )
+        player_multiplier *= 1.0 + o -> active_dots() * 0.3;
+      else
+        player_multiplier *= 1.0 + o -> active_dots() * effect_base_value( 3 ) / 100.0;
     }
 
     virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -1630,7 +1641,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       direct_power_mod = 0.95; // Based on testing 2010/11/20
       if ( player -> ptr )
       {
-        // Naive assumption, needs testing on the 4.1 PTR!
+        // FIXME - Naive assumption, needs testing on the 4.1 PTR!
         base_dd_min *= 1.5;
         base_dd_max *= 1.5;
         direct_power_mod *= 1.5;
@@ -2558,7 +2569,9 @@ struct haunt_t : public warlock_spell_t
     check_talent( p -> talent_haunt -> rank() );
 
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
-    direct_power_mod = 2 / 3.5;
+    direct_power_mod = 0.429;
+    // FIXME - Needs exact testing on the 4.1 PTR once the change is in
+    if ( p -> ptr ) direct_power_mod *= 1.3;
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -3850,7 +3863,12 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
   // Shadow
   shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 );
-  shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
+
+  // FIXME - Temporary override until we have new DBC data.
+  if ( ptr )
+    shadow_multiplier *= 1.30;
+  else
+    shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
 
 
   if ( buffs_improved_soul_fire -> up() )
@@ -4303,6 +4321,7 @@ void warlock_t::init_actions()
     {
 
     case TREE_AFFLICTION:
+      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
@@ -4330,7 +4349,7 @@ void warlock_t::init_actions()
         {
           action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
-        if ( level >= 85 ) action_list_str += "/demon_soul";
+        if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
         action_list_str += "/shadow_bolt";
       } 
       else
