@@ -4496,6 +4496,8 @@ struct js_t
 
 #ifdef WHAT_IF
 
+#define AOE_CAP 10
+
 struct sim_t
 {
 ...
@@ -4527,7 +4529,7 @@ struct pet_t : public actor_t
 
 struct enemy_t : public actor_t
 {
-  health recalculation, ...
+  health_by_time, health_per_player, arrise_at_time, arise_at_percent, ...
   enemy_t( const std::string& n ) : actor_t( n, ACTOR_ENEMY ) {}
 };
 
@@ -4552,45 +4554,49 @@ struct result_t
   bool hit;  // convenience
   bool crit; // convenience, two-roll (blocked crits, etc)
   double direct_amount;
-  double pool_amount; 
+  double tick_amount; 
   // Perhaps this should be just "amount" and generate two travel events when there is direct damage and "aura applied"?
 };
 
 struct ability_t : public action_t
 {
-  spell_data, resource, weapon, two_roll, base_xyz (no player_xyz or target_xyz),
-  harmful, healing, callbacks, ...
+  spell_data, resource, weapon, two_roll, self_cast, aoe, base_xyz (no player_xyz or target_xyz),
+  direct_sp_coeff, direct_ap_coeff, tick_sp_coeff, tick_ap_coeff,
+  harmful, healing, callbacks, std::vector<result_t> results,
+  NO binary, NO repeating, NO direct_dmg, NO tick_dmg
   ability_t( spell_data_t* s ) : action_t( s -> name() ) {}
-  virtual void     execute();
-  virtual void     travel();
-  virtual void     tick();
-  virtual void     last_tick();
-  virtual double   cost();
-  virtual double   haste();
-  virtual bool     ready();
-  virtual void     cancel();
-  virtual void     reset();
-  virtual void     consume_resource();
-  virtual result_t calculate_result( actor_t* target );
-  virtual double   calculate_weapon_amount( actor_t* target );
-  virtual double   calculate_direct_amount( actor_t* target );
-  virtual double   calculate_pool_amount  ( actor_t* target );
-  virtual double   calculate_miss_chance  ( actor_t* target );
-  virtual double   calculate_dodge_chance ( actor_t* target );
-  virtual double   calculate_parry_chance ( actor_t* target );
-  virtual double   calculate_glance_chance( actor_t* target );
-  virtual double   calculate_block_chance ( actor_t* target );
-  virtual double   calculate_crit_chance  ( actor_t* target );
-  virtual double   calculate_multiplier       ();
-  virtual double   calculate_direct_multiplier();
-  virtual double   calculate_pool_multiplier  ();
-  virtual double   calculate_target_multiplier( actor_t* target ); // includes mitigation, not called during pool calculation
-  virtual int      area_of_effect( actor_t* targets[] ) { targets[ 0 ] = actor -> current_target; return 1; }
-  virtual double   travel_time();
-  virtual void     schedule_travel( result_t& result );
-  virtual void     travel         ( result_t& result );
-  virtual void     assess_damage  ( result_t& result );
-  virtual void     assess_healing ( result_t& result );
+  virtual void      execute();
+  virtual void      travel();
+  virtual void      tick();
+  virtual void      last_tick();
+  virtual double    cost();
+  virtual double    haste();
+  virtual bool      ready();
+  virtual void      cancel();
+  virtual void      reset();
+  virtual void      consume_resource();
+  virtual result_t  calculate_result( actor_t* target );
+  virtual double    calculate_weapon_amount( actor_t* target );
+  virtual double    calculate_direct_amount( actor_t* target );
+  virtual double    calculate_tick_amount  ( actor_t* target );
+  virtual double    calculate_miss_chance  ( actor_t* target );
+  virtual double    calculate_dodge_chance ( actor_t* target );
+  virtual double    calculate_parry_chance ( actor_t* target );
+  virtual double    calculate_glance_chance( actor_t* target );
+  virtual double    calculate_block_chance ( actor_t* target );
+  virtual double    calculate_crit_chance  ( actor_t* target );
+  virtual double    calculate_multiplier       ();
+  virtual double    calculate_direct_multiplier();
+  virtual double    calculate_tick_multiplier  ();
+  virtual double    calculate_target_multiplier( actor_t* target ); // includes mitigation, not called during tick calculation
+  virtual int       area_of_effect( actor_t* targets[] ) { targets[ 0 ] = self_cast ? actor : actor -> current_target; return 1; }
+  virtual result_t& result(); // returns 0th "result", asserts if aoe
+  virtual double    travel_time( actor_t* target );
+  virtual void      schedule_travel( result_t& result );
+  virtual void      travel         ( result_t& result );
+  virtual void      assess_damage  ( result_t& result );
+  virtual void      assess_healing ( result_t& result );
+  virtual int       calculate_num_ticks();
 };
 
 #endif
