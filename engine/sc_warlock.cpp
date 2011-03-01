@@ -3866,7 +3866,10 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
   // FIXME - Temporary override until we have new DBC data.
   if ( ptr )
-    if ( passive_spells.shadow_mastery -> effect_base_value( 1 ) == 25 ) shadow_multiplier *= 1.30;
+  {
+    if ( passive_spells.shadow_mastery -> effect_base_value( 1 ) == 25 ) 
+      shadow_multiplier *= 1.30;
+  }
   else
     shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
 
