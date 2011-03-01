@@ -1763,6 +1763,13 @@ double player_t::composite_armor() SC_CONST
   if ( sim -> auras.devotion_aura -> check() && ! is_enemy() && ! is_add() )
     a += sim -> auras.devotion_aura -> value();
 
+  a *= 1.0 - std::max( debuffs.sunder_armor -> stack() * 0.04,
+             std::max( debuffs.faerie_fire  -> check() * debuffs.faerie_fire -> value(),
+             std::max( debuffs.expose_armor -> value(),
+             std::max( debuffs.corrosive_spit -> check() * debuffs.corrosive_spit -> value() * 0.01,
+                       debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01) ) ) )
+           - debuffs.shattering_throw -> stack() * 0.20;
+
   if ( buffs.stoneform -> check() ) a *= 1.10;
 
   return a;
@@ -3114,12 +3121,9 @@ double player_t::assess_damage( double            amount,
 				int               result,
 				action_t*         action )
 {
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    amount *= 1.0 - buffs.inspiration -> value() / 100.0;
-  }
+  double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 
-  double actual_amount = resource_loss( RESOURCE_HEALTH, amount );
+  double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount );
 
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
   {
@@ -3133,6 +3137,36 @@ double player_t::assess_damage( double            amount,
     vengeance_damage += actual_amount;
 
   return actual_amount;
+}
+
+// player_t::target_mitigation ==============================================
+
+double player_t::target_mitigation( double            amount,
+                                    const school_type school,
+                                    int               dmg_type,
+                                    int               result,
+                                    action_t*         action )
+{
+  double mitigated_amount = amount;
+  if ( school == SCHOOL_PHYSICAL )
+  {
+    // Inspiration
+    mitigated_amount *= 1.0 - buffs.inspiration -> value() / 100.0;
+
+    // Armor
+    if ( action )
+    {
+      double resist = action -> armor() / ( action -> armor() + action -> player -> armor_coeff );
+
+      if ( resist < 0.0 )
+        resist = 0.0;
+      else if ( resist > 0.75 )
+        resist = 0.75;
+      mitigated_amount *= 1.0 - resist;
+    }
+  }
+
+  return mitigated_amount;
 }
 
 // player_t::summon_pet =====================================================

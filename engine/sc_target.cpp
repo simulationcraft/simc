@@ -54,9 +54,11 @@ double target_t::assess_damage( double            amount,
 				int               result,
 				action_t*         action )
 {
-  total_dmg += amount;
+  double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 
-  resource_loss( RESOURCE_HEALTH, amount );
+  total_dmg += mitigated_amount;
+
+  resource_loss( RESOURCE_HEALTH, mitigated_amount );
 
   if ( current_health > 0 )
   {
@@ -69,7 +71,7 @@ double target_t::assess_damage( double            amount,
     else if ( sim -> debug ) log_t::output( sim, "Target %s has %.0f remaining health", name(), current_health );
   }
 
-  return amount;
+  return mitigated_amount;
 }
 
 // target_t::recalculate_health ==============================================

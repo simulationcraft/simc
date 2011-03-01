@@ -385,6 +385,8 @@ struct priest_t : public player_t
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 
+  virtual double    target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
+
   virtual double    empowered_shadows_amount() SC_CONST;
   virtual double    shadow_orb_amount() SC_CONST;
 };
@@ -4660,17 +4662,6 @@ double priest_t::resource_loss( int       resource,
                                 double    amount,
                                 action_t* action )
 {
-  if ( resource == RESOURCE_HEALTH )
-  {
-    if ( buffs_shadow_form -> check() )
-    {
-      amount *= 0.85;
-    }
-    if ( talents.inner_sanctum -> rank() )
-    {
-      amount *= 1.0 - talents.inner_sanctum -> rank() * 0.02;
-    }
-  }
 
   double actual_amount = player_t::resource_loss( resource, amount, action );
 
@@ -4681,6 +4672,28 @@ double priest_t::resource_loss( int       resource,
   }
 
   return actual_amount;
+}
+
+// priest_t::target_mitigation =============================================
+
+double priest_t::target_mitigation( double            amount,
+                                    const school_type school,
+                                    int               dmg_type,
+                                    int               result,
+                                    action_t*         action )
+{
+  amount = player_t::target_mitigation( amount, school, dmg_type, result, action );
+
+  if ( buffs_shadow_form -> check() )
+  {
+    amount *= 0.85;
+  }
+  if ( talents.inner_sanctum -> rank() )
+  {
+    amount *= 1.0 - talents.inner_sanctum -> rank() * 0.02;
+  }
+
+  return amount;
 }
 
 // priest_t::create_options ================================================

@@ -715,23 +715,7 @@ bool action_t::result_is_miss( int r ) SC_CONST
 
 double action_t::armor() SC_CONST
 {
-  player_t* t = target;
-
-  double adjusted_armor;
-
-  adjusted_armor = target -> composite_armor();
-
-  double armor_reduction = std::max( t -> debuffs.sunder_armor -> stack() * 0.04,
-                           std::max( t -> debuffs.faerie_fire  -> stack() * t -> debuffs.faerie_fire -> value(),
-                           std::max( t -> debuffs.expose_armor -> value(),
-                           std::max( t -> debuffs.corrosive_spit -> stack() * t -> debuffs.corrosive_spit -> value() * 0.01,
-                                     t -> debuffs.tear_armor -> stack() * t -> debuffs.tear_armor -> value() * 0.01) ) ) );
-
-  armor_reduction += t -> debuffs.shattering_throw -> stack() * 0.20;
-
-  adjusted_armor *= 1.0 - armor_reduction;
-
-  return adjusted_armor;
+  return target -> composite_armor();
 }
 
 // action_t::resistance =====================================================
@@ -748,16 +732,6 @@ double action_t::resistance() SC_CONST
   if ( school == SCHOOL_BLEED )
   {
     // Bleeds cannot be resisted
-  }
-  else if ( school == SCHOOL_PHYSICAL )
-  {
-    double temp_armor = armor();
-    resist = temp_armor / ( temp_armor + player -> armor_coeff );
-
-    if ( resist < 0.0 )
-      resist = 0.0;
-    else if ( resist > 0.75 )
-      resist = 0.75;
   }
   else
   {
