@@ -79,6 +79,8 @@ for line in INFILE.readlines():
     elif line[0:2] == '*/':
         comment = False
         continue
+    elif re.search('images\/hosted_html\/bg\.jpg', line):
+        line = re.sub(' url\(\.\.\/images\/hosted_html\/bg\.jpg\) \-100px 5px', '', line)
     if comment:
         continue
     line = re.sub('"', '\\"', line)
