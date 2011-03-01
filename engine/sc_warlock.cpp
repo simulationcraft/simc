@@ -1105,7 +1105,10 @@ static void trigger_mana_feed( action_t* s, double travel_result )
   {
     if ( travel_result == RESULT_CRIT )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] / 100.0 * p -> talent_mana_feed -> effect_base_value( 3 ), p -> gains_mana_feed );
+      double mana = p -> resource_max[ RESOURCE_MANA ] / 100.0 * p -> talent_mana_feed -> effect_base_value( 3 );
+      if ( p -> ptr )
+        if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
+      p -> resource_gain( RESOURCE_MANA, mana, p -> gains_mana_feed );
       a -> procs_mana_feed -> occur();
     }
   }
@@ -1625,6 +1628,13 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       base_dd_min *= 1.333; // Based on testing 2010/11/20
       base_dd_max *= 1.333; // Based on testing 2010/11/20
       direct_power_mod = 0.95; // Based on testing 2010/11/20
+      if ( player -> ptr )
+      {
+        // Naive assumption, needs testing on the 4.1 PTR!
+        base_dd_min *= 1.5;
+        base_dd_max *= 1.5;
+        direct_power_mod *= 1.5;
+      }
       base_execute_time = 2.5;
     }
   };
