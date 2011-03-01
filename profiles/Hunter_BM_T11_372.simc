@@ -38,7 +38,7 @@ chest=voltage_source_chestguard,heroic=1,type=mail,ilevel=372,quality=epic,stats
 waist=coil_of_tenthousand_screams,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1433armor_171crit_191haste_429sta,gems=67agi_40agi_10haste
 legs=lightningcharged_legguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=345agi_2230armor_257crit_217haste_578sta,gems=40agi_40agi,enchant=190ap_55crit
 feet=boots_of_vertigo,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1752armor_191haste_171hit_429sta,reforge=haste_crit,gems=20agi_20hit_10agi,enchant=25agi
-wrists=chimaron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
+wrists=chimaeron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
 hands=lightningcharged_gloves,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1593armor_191crit_171haste_429sta,gems=20agi_20hit_10agi,enchant=20agi
 finger1=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_143crit_143hit_322sta,enchant=40agi
 finger2=mistral_circle_of_the_stormblast,heroic=1,ilevel=372,quality=epic,stats=321sta_214agi_143hit_143crit,enchant=40agi,suffix=133
@@ -46,7 +46,7 @@ trinket1=essence_of_the_cyclone,heroic=1,ilevel=372,quality=epic,stats=363agi,eq
 trinket2=prestors_talisman_of_machination,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178haste_10%_15dur_75cd
 back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=215agi_673armor_143crit_143mastery_322sta,reforge=mastery_haste,enchant=65crit
 main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_257crit_257mastery_578sta,reforge=mastery_haste,enchant=130agi,weapon=staff_2.40speed_1350min_2027max
-ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_81haste_181sta,enchant=gnomish_xray,weapon=crossbow_3.00speed_1688min_2533max
+ranged=themios_the_darkbringer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_81mastery_181sta,reforge=mastery_haste,enchant=gnomish_xray,weapon=bow_2.90speed_1428min_2653max
 # Gear Summary
 # gear_strength=20
 # gear_agility=5345
@@ -56,14 +56,14 @@ ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_
 # gear_attack_power=190
 # gear_hit_rating=966
 # gear_crit_rating=2305
-# gear_haste_rating=1349
-# gear_mastery_rating=596
+# gear_haste_rating=1300
+# gear_mastery_rating=645
 # gear_armor=15326
 # meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # main_hand=malevolence,heroic=1,weapon=staff_2.40speed_1350min_2027max
-# ranged=dragonheart_piercer,heroic=1,weapon=crossbow_3.00speed_1688min_2533max,enchant=gnomish_xray
+# ranged=themios_the_darkbringer,heroic=1,weapon=bow_2.90speed_1428min_2653max,enchant=gnomish_xray
 pet=cat,cat
 talents=200000030300003010122000000000000000000000000000000000000000000
 active=owner
