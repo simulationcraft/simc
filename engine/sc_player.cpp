@@ -3879,11 +3879,6 @@ struct lifeblood_t : public action_t
     harmful = false;
     trigger_gcd = 0;
     cooldown -> duration = 120;
-    
-    // TODO: This spell shares a cooldown for the duration of the buff with
-    // at least engi gloves-trinker and the use-effect of Heart of Ignacious
-    // are mutual exclusive buffs (they trigger a cd with the duration of the
-    // buffs on each other
   }
 
   void lockout( double duration )
