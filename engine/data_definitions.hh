@@ -20,6 +20,7 @@ struct dbc_t
   static void set_ptr( bool );
   static bool get_ptr();
   static const char* build_level();
+  static const char* wow_version();
   static void init();
   static void de_init();
   static int glyphs( std::vector<unsigned>& glyph_ids, int cid );

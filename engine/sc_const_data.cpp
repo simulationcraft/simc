@@ -53,6 +53,15 @@ const char* dbc_t::build_level()
 #endif
 }
 
+const char* dbc_t::wow_version()
+{
+#if SC_USE_PTR
+  return use_ptr ? "4.1.0" : "4.0.6";
+#else
+  return "4.0.6";
+#endif
+}
+
 void dbc_t::init()
 {
   memset( &nil_sd,  0x00, sizeof( spell_data_t )       );
