@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13682
+// Class based active abilities, wow build 13698
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -19,7 +19,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warrior
   {
-    // Arms tree, 17 abilities
+    // Arms tree, 16 abilities
     {
        2457, // Battle Stance
       46924, // Bladestorm
@@ -30,7 +30,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       57755, // Heroic Throw
       12294, // Mortal Strike
        7384, // Overpower (Battle Stance)
-      97462, // Rallying Cry
         772, // Rend (Battle, Defensive Stance)
       20230, // Retaliation (Battle Stance)
       64382, // Shattering Throw (Battle Stance)
@@ -40,7 +39,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        6343, // Thunder Clap (Battle, Defensive Stance)
           0,
     },
-    // Fury tree, 23 abilities
+    // Fury tree, 24 abilities
     {
        6673, // Battle Shout
       18499, // Berserker Rage
@@ -59,15 +58,16 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       20252, // Intercept (Berserker Stance)
        5246, // Intimidating Shout
       12323, // Piercing Howl
-       6552, // Pummel (Battle, Berserker Stance)
+       6552, // Pummel
       85288, // Raging Blow (Berserker Stance)
+      97462, // Rallying Cry
        1719, // Recklessness (Berserker Stance)
        1464, // Slam
       34428, // Victory Rush
        1680, // Whirlwind (Berserker Stance)
           0,
     },
-    // Protection tree, 16 abilities
+    // Protection tree, 15 abilities
     {
       12809, // Concussion Blow
          71, // Defensive Stance
@@ -76,7 +76,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        3411, // Intervene (Defensive Stance)
       12975, // Last Stand
        6572, // Revenge (Defensive Stance)
-         72, // Shield Bash (Battle, Defensive Stance)
        2565, // Shield Block (Defensive Stance)
       23922, // Shield Slam
         871, // Shield Wall (Defensive Stance)
@@ -849,7 +848,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13682
+// Talent tree specialization abilities, wow build 13698
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1107,7 +1106,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13682
+// Class mastery abilities, wow build 13698
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1192,7 +1191,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13682
+// Racial abilities, wow build 13698
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1835,7 +1834,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13682
+// Glyph spells for classes, wow build 13698
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2111,10 +2110,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     // Minor Glyphs (6 spells)
     {
       58640, // Glyph of Blood Tap
+      60200, // Glyph of Death Gate
       58677, // Glyph of Death's Embrace
       58680, // Glyph of Horn of Winter
       59307, // Glyph of Path of Frost
-      60200, // Glyph of Raise Ally
       59309, // Glyph of Resilient Grip
           0,
     },
@@ -2350,7 +2349,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13682
+// Tier item set bonuses for class, wow build 13698
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
