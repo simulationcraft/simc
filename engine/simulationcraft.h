@@ -3555,7 +3555,7 @@ struct target_t : public player_t
   virtual double composite_mastery() SC_CONST { return 0.0; }
 
   virtual double assess_damage( double amount, const school_type school,
-				int type, int travel_result, action_t* a );
+                                int type, int travel_result, action_t* a );
   void recalculate_health();
   double time_to_die() SC_CONST;
   virtual double health_percentage() SC_CONST;
@@ -4498,10 +4498,16 @@ struct js_t
 
 #define AOE_CAP 10
 
+struct ticker_t; // replacement for dot_t, handles any ticking buff/debuff
+
 struct sim_t
 {
 ...
-int get_slot( const std::string& n, actor_t* source );
+actor_t* actor_list;
+std::vector<player_t*> player_list;
+std::vector<mob_t*> mob_list;
+...
+int get_aura_slot( const std::string& n, actor_t* source );
 ...
 };
 
@@ -4511,26 +4517,27 @@ struct actor_t
   actor_t( const std::string& n, int type ) {}
   virtual actor_t*  choose_target();
   virtual void      execute_action() { choose_target(); execute_first_ready_action(); }
-  virtual debuff_t* get_debuff( int slot );
-  virtual dot_t*    get_dot   ( int slot );
+  virtual debuff_t* get_debuff( int aura_slot );
+  virtual ticker_t* get_ticker( int aura_slot );
+  virtual bool      is_ally( actor_t* other );
 };
 
 struct player_t : public actor_t
 {
   scaling, current_target (actor), pet_list ...
-  player_t( const std::string& n, int type ) : actor_t( n, type ) {}
+  player_t( const std::string& n, int type ) : actor_t( n, type ) { sim.player_list.push_back(this); }
 };
 
 struct pet_t : public actor_t
 {
   owner, summon, dismiss...
-  player_t( const std::string& n, int type ) : actor_t( n, type ) {}
+  pet_t( const std::string& n, int type ) : actor_t( n, type ) {}
 };
 
-struct enemy_t : public actor_t
+struct mob_t : public actor_t
 {
   health_by_time, health_per_player, arrise_at_time, arise_at_percent, ...
-  enemy_t( const std::string& n ) : actor_t( n, ACTOR_ENEMY ) {}
+  mob_t( const std::string& n ) : actor_t( n, ACTOR_MOB ) { sim.mob_list.push_back(this); }
 };
 
 struct action_t
@@ -4565,10 +4572,45 @@ struct ability_t : public action_t
   harmful, healing, callbacks, std::vector<result_t> results,
   NO binary, NO repeating, NO direct_dmg, NO tick_dmg
   ability_t( spell_data_t* s ) : action_t( s -> name() ) {}
-  virtual void      execute();
-  virtual void      travel();
-  virtual void      tick();
-  virtual void      last_tick();
+  virtual void  execute()
+  {
+    actor_t* targets[ AOE_CAP ];
+    int num_targets = area_of_effect( targets );
+    results.resize( num_targets );
+    for( int i=0; i < num_targets; i++ )
+    {
+      schedule_travel( results[ i ] = calculate_result( targets[ i ] ) );
+      // "result" callbacks
+    }
+    consume_resource();
+    update_ready();
+    // "cast" callbacks
+  }
+  virtual void travel( result_t& result )
+  {
+    if ( harmful )
+    {
+      assess_damage( result );
+    }
+    else if( healing )
+    {
+      assess_healing( result );
+    }
+    if( result.hit )
+    {
+      if ( num_ticks > 0 )
+      {
+        ticker_t* ticker = get_ticker( result.target );  // caches aura_slot
+        ticker -> trigger( this, result );
+	// ticker_t::trigger() handles dot work in existing action_t::travel(), plus:
+	// ticker -> pool = ticker -> num_ticks * result.tick_amount;
+      }
+    }
+    else // miss msg
+  }
+  virtual void      tick         ( ticker_t* );
+  virtual void      last_tick    ( ticker_t* );
+  virtual void      schedule_tick( ticker_t* );
   virtual double    cost();
   virtual double    haste();
   virtual bool      ready();
@@ -4593,7 +4635,6 @@ struct ability_t : public action_t
   virtual result_t& result(); // returns 0th "result", asserts if aoe
   virtual double    travel_time( actor_t* target );
   virtual void      schedule_travel( result_t& result );
-  virtual void      travel         ( result_t& result );
   virtual void      assess_damage  ( result_t& result );
   virtual void      assess_healing ( result_t& result );
   virtual int       calculate_num_ticks();
