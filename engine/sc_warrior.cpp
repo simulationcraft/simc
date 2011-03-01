@@ -652,6 +652,8 @@ static void trigger_flurry( attack_t* a, int stacks )
 
   // Default mult is the up -> down case
   double mult = 1 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
+  if ( p -> ptr )
+    mult = 1 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.16, 0.32, 0.50 );
 
   // down -> up case
   if ( ! up_before && up_after )
@@ -1617,6 +1619,9 @@ struct mortal_strike_t : public warrior_attack_t
         double value = p -> talents.wrecking_crew -> rank() * 0.05;
         p -> buffs_wrecking_crew -> trigger( 1, value );
       }
+
+      if ( p -> ptr && p -> talents.lambs_to_the_slaughter -> rank() && p -> dots_rend -> ticking )
+        p -> dots_rend -> action -> refresh_duration();
     }
   }
 
