@@ -663,7 +663,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if ( p -> rng_relentless_strikes -> roll( chance * p -> combo_points -> count ) )
   {
     // actual energy gain is in Relentless Strike Effect (14181)
-    double gain = p -> player_data.effect_base_value( 14181, E_ENERGIZE );
+    double gain = p -> dbc.spell( 14181 ) -> effect1 -> base_value();
     p -> resource_gain( RESOURCE_ENERGY, gain, p -> gains_relentless_strikes );
   }
 }
@@ -816,11 +816,11 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
   if ( t )
   {
-    double duration = p -> player_data.spell_duration( 57933 );
+    double duration = p -> dbc.spell( 57933 ) -> duration();
 
     if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
     {
-      double value = p -> player_data.effect_base_value( 57933, E_APPLY_AURA );
+      double value = p -> dbc.spell( 57933 ) -> effect1 -> base_value();
       value += p -> glyphs.tricks_of_the_trade -> mod_additive( P_EFFECT_1 );
       
       t -> buffs.tricks_of_the_trade -> buff_duration = duration;
@@ -932,8 +932,13 @@ void rogue_attack_t::_init_rogue_attack_t()
   requires_position     = POSITION_NONE;
   requires_stealth      = false;
   requires_combo_points = false;
-
-  adds_combo_points     = (int) player -> player_data.effect_base_value( id, E_ADD_COMBO_POINTS );
+  
+  if ( player -> dbc.spell( id ) -> effect1 -> type() == E_ADD_COMBO_POINTS )
+    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect1 -> base_value();
+  else if ( player -> dbc.spell( id ) -> effect2 -> type() == E_ADD_COMBO_POINTS )
+    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect2 -> base_value();
+  else if ( player -> dbc.spell( id ) -> effect3 -> type() == E_ADD_COMBO_POINTS )
+    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect3 -> base_value();
 
   combo_points_spent    = 0;
     
@@ -2941,11 +2946,11 @@ struct find_weakness_buff_t : public new_buff_t
   find_weakness_buff_t( rogue_t* p, uint32_t id ) :
     new_buff_t( p, "find_weakness", id )
   {
-    if ( ! p -> player_data.spell_exists( id ) )
+    if ( ! p -> dbc.spell( id ) )
       return;
 
     // Duration is specified in the actual debuff (or is it a buff?) placed on the target
-    buff_duration = p -> player_data.spell_duration( 91021 );
+    buff_duration = p -> dbc.spell( 91021 ) -> duration();
 
     _init_buff_t();
   }
@@ -3029,7 +3034,7 @@ struct slice_and_dice_buff_t : public new_buff_t
   {
     rogue_t* p = player -> cast_rogue();
     
-    double new_duration = p -> player_data.spell_duration( id );
+    double new_duration = p -> dbc.spell( id ) -> duration();
     new_duration += 3.0 * cp;
     new_duration += p -> glyphs.slice_and_dice -> mod_additive( P_DURATION );
     new_duration *= 1.0 + p -> talents.improved_slice_and_dice -> mod_additive( P_DURATION );

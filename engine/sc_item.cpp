@@ -520,9 +520,6 @@ bool item_t::decode_reforge()
 bool item_t::decode_random_suffix()
 {
   long                                   rsid; 
-  const random_suffix_data_t*     suffix_data = 0;
-  const random_prop_data_t*       ilevel_data = 0;
-  const item_enchantment_data_t* enchant_data = 0;
   int                                       f = item_database_t::random_suffix_type( *this );
   unsigned                         enchant_id;
   double                          stat_amount;
@@ -541,15 +538,16 @@ bool item_t::decode_random_suffix()
   }
 
   rsid = abs( strtol( encoded_random_suffix_str.c_str(), 0, 10 ) );
-  ilevel_data = sim -> sim_data.find_rand_property_data( ilevel );
-  suffix_data = sim -> sim_data.find_random_suffix( rsid );
+  const random_prop_data_t& ilevel_data   = player -> dbc.random_property( ilevel );
+  const random_suffix_data_t& suffix_data = player -> dbc.random_suffix( rsid );
   
-  if ( ! ilevel_data || ! suffix_data )
+  if ( ! suffix_data.id )
   {
-    sim -> errorf( "Player %s unable to decode random suffix at slot %s due to missing DBC data.\n", player -> name(), slot_name() );
+    sim -> errorf( "Warning: Unknown random suffix identifier %d at slot %s for item %s.\n",
+      rsid, slot_name(), name() );
     return true;
   }
-
+  
   if ( sim -> debug )
   {
     log_t::output( sim, "random_suffix: item=%s suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
@@ -558,19 +556,21 @@ bool item_t::decode_random_suffix()
   
   for ( int i = 0; i < 5; i++ )
   {
-    if ( ! ( enchant_id = suffix_data -> enchant_id[ i ] ) )
+    if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
       continue;
+
+    const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( enchant_id );
     
-    if ( ! ( enchant_data = sim -> sim_data.find_item_enchantment( enchant_id ) ) )
+    if ( ! enchant_data.id )
       continue;
 
     // Calculate amount of points
     if ( quality == 4 ) // Epic
-      stat_amount = ilevel_data -> p_epic[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+      stat_amount = ilevel_data.p_epic[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
     else if ( quality == 3 ) // Rare
-      stat_amount = ilevel_data -> p_rare[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+      stat_amount = ilevel_data.p_rare[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
     else if ( quality == 2 ) // Uncommon
-      stat_amount = ilevel_data -> p_uncommon[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+      stat_amount = ilevel_data.p_uncommon[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
     else // Impossible choices, so bogus data, skip
       continue;
 
@@ -578,9 +578,9 @@ bool item_t::decode_random_suffix()
     // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
     for ( int j = 0; j < 3; j++ )
     {
-      if ( enchant_data -> ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
+      if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type stat = util_t::translate_item_mod( enchant_data -> ench_prop[ j ] );
+      stat_type stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
 
       if ( stat == STAT_NONE ) continue;
       
@@ -604,7 +604,7 @@ bool item_t::decode_random_suffix()
         if ( sim -> debug )
         {
           log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d %d (%d) twice, due to random suffix.", 
-            player -> name(), name(), j, stat, enchant_data -> ench_type[ j ] );
+            player -> name(), name(), j, stat, enchant_data.ench_type[ j ] );
         }
       }
     }
@@ -613,7 +613,7 @@ bool item_t::decode_random_suffix()
   // Append random suffix to name only if it's not "hardcoded"
   if ( option_name_str.empty() )
   {
-    std::string name_str = suffix_data -> suffix;
+    std::string name_str = suffix_data.suffix;
     encoded_name_str += "_" + armory_t::format( name_str );
   }
   

@@ -601,7 +601,7 @@ void add_t::_init_add_t()
 
   // By default, only report statistics in the context of the owner
   quiet = 1;
-  player_data.set_parent( &( owner -> player_data ), dbc_t::get_ptr() );
+  ptr = owner -> ptr;
 }
 
 add_t::add_t( sim_t*             s,

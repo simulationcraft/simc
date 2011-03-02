@@ -250,7 +250,7 @@ const spell_id_t* set_bonus_array_t::set( set_type s ) SC_CONST
 // Override this one to create custom spell_id_t returns
 const spell_id_t* set_bonus_array_t::create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST
 {
-  if ( ! p -> player_data.spell_exists( spell_id ) )
+  if ( ! p -> dbc.spell( spell_id ) )
   {
     if ( spell_id > 0 )
     {

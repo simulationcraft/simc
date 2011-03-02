@@ -9,7 +9,6 @@
     <ClCompile Include="engine\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
     <ClCompile Include="engine\sc_data.cpp" />
-    <ClCompile Include="engine\sc_data_access.cpp" />
     <ClCompile Include="engine\sc_death_knight.cpp" />
     <ClCompile Include="engine\sc_druid.cpp" />
     <ClCompile Include="engine\sc_enchant.cpp" />

@@ -1663,7 +1663,7 @@ struct holy_shock_t : public paladin_spell_t
 
     // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
     // to do damage is 25912
-    parse_effect_data( p -> player_data, 25912, 1 );
+    parse_effect_data( 25912, 1 );
 
     base_multiplier *= 1.0 + p -> talents.blazing_light -> mod_additive( P_GENERIC )
                        + p -> talents.crusade -> mod_additive( P_GENERIC ); // TODO how do they stack?
@@ -2536,8 +2536,8 @@ void player_t::paladin_init( sim_t* sim )
 
 void player_t::paladin_combat_begin( sim_t* sim )
 {
-  double devo = sim -> sim_data.effect_min( 465,   sim -> max_player_level, E_APPLY_AREA_AURA_RAID, A_MOD_RESISTANCE  );
-  double bow  = sim -> sim_data.effect_min( 79101, sim -> max_player_level, E_APPLY_AURA,           A_MOD_POWER_REGEN );
+  double devo = sim -> dbc.effect_average( sim -> dbc.spell( 465 ) -> effect1 -> id(), sim -> max_player_level );
+  double bow  = sim -> dbc.effect_average( sim -> dbc.spell( 79101 ) -> effect3 -> id(), sim -> max_player_level );
 
   if( sim -> overrides.communion     ) sim -> auras.communion     -> override();
   if( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );

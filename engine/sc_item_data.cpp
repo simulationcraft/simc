@@ -37,16 +37,16 @@ static std::string encode_stats( const std::vector<std::string>& stats )
   return s.str();
 }
 
-static size_t encode_item_enchant_stats( const item_enchantment_data_t* enchantment, std::vector<std::string>& stats )
+static size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<std::string>& stats )
 {
-  assert( enchantment );
+  assert( enchantment.id );
   
   for ( int i = 0; i < 3; i++ )
   {
-    if ( enchantment -> ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
+    if ( enchantment.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
       continue;
 
-    std::string stat_str = stat_to_str( enchantment -> ench_prop[ i ], enchantment -> ench_amount[ i ] );
+    std::string stat_str = stat_to_str( enchantment.ench_prop[ i ], enchantment.ench_amount[ i ] );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
   
@@ -178,7 +178,7 @@ static bool parse_weapon_type( item_t&            item,
   if ( item_data -> item_class != ITEM_CLASS_WEAPON )
     return true;
 
-  speed   = item.player -> player_data.weapon_speed( item_data -> id );
+  speed   = item_data -> delay / 1000.0;
   min_dam = item_database_t::weapon_dmg_min( item, item_data -> id );
   max_dam = item_database_t::weapon_dmg_max( item, item_data -> id );
 
@@ -201,7 +201,6 @@ static bool parse_gems( item_t&            item,
                         const std::string  gem_ids[ 3 ] )
 {
   bool match = true;
-  const item_enchantment_data_t* socket_bonus = 0;
   std::vector<std::string> stats;
 
   item.armory_gems_str.clear();
@@ -235,7 +234,8 @@ static bool parse_gems( item_t&            item,
   }
   
   // Socket bonus
-  if ( match && ( socket_bonus = item.player -> player_data.find_item_enchantment( item_data -> id_socket_bonus ) ) )
+  const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item_data -> id_socket_bonus );
+  if ( match && socket_bonus.id )
   {
     if ( encode_item_enchant_stats( socket_bonus, stats ) > 0 && ! item.armory_gems_str.empty() )
       item.armory_gems_str += "_";
@@ -252,12 +252,12 @@ static bool parse_enchant( item_t&            item,
 {
   if ( enchant_id.empty() || enchant_id == "none" ) return true;
   
-  const item_enchantment_data_t* item_enchant;
   long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
   bool                              has_spell = true;
   std::vector<std::string> stats;
   
-  if ( !( item_enchant = item.player -> player_data.find_item_enchantment( eid ) ) )
+  const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
+  if ( ! item_enchant.id )
   {
     item.player -> sim -> errorf("Unable to find enchant id %u from item enchantment database", eid );
     return true;
@@ -267,7 +267,7 @@ static bool parse_enchant( item_t&            item,
   
   for ( unsigned i = 0; i < 3; i++ )
   {
-    if ( item_enchant -> ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
+    if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
     {
       has_spell = true;
       break;
@@ -415,15 +415,21 @@ int item_database_t::random_suffix_type( const item_t& item )
 
 uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
 {
-  const item_data_t* item = item_data_t::find( item_id );
+  const item_data_t* item = item_struct.player -> dbc.item( item_id );
   
-  if ( ! item ) return 0;
+  if ( ! item || item -> quality > 5 ) 
+    return 0;
   
+  // Shield have separate armor table, bypass normal calculation
   if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return (uint32_t) floor( item_struct.player -> player_data.total_armor_shield( item -> level, item -> quality ) + 0.5 );
+    return ( uint32_t ) floor( item_struct.player -> dbc.item_armor_shield( item -> level ).values[ item -> quality ] + 0.5 );
+  
+  // Only Cloth, Leather, Mail and Plate armor has innate armor values
+  if ( item -> item_subclass != ITEM_SUBCLASS_ARMOR_MISC && item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
+    return 0;
   
   double m_invtype = 0, m_quality = 0, total_armor = 0;
-  
+
   switch ( item -> inventory_type )
   {
     case INVTYPE_HEAD:
@@ -437,34 +443,34 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
     case INVTYPE_CLOAK:
     case INVTYPE_ROBE:
     {
-      total_armor = item_struct.player -> player_data.total_armor( item -> level, item -> item_subclass );
-      m_quality   = item_struct.player -> player_data.m_armor_quality( item -> level, item -> quality );
+      total_armor = item_struct.player -> dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
+      m_quality   = item_struct.player -> dbc.item_armor_quality( item -> level ).values[ item -> quality ];
       if ( item -> inventory_type == INVTYPE_ROBE )
-        m_invtype = item_struct.player -> player_data.m_armor_invtype( INVTYPE_CHEST, item -> item_subclass );
+        m_invtype = item_struct.player -> dbc.item_armor_inv_type( INVTYPE_CHEST ).armor_type[ item -> item_subclass - 1 ];
       else
-        m_invtype = item_struct.player -> player_data.m_armor_invtype( item -> inventory_type, item -> item_subclass );
+        m_invtype = item_struct.player -> dbc.item_armor_inv_type( item -> inventory_type ).armor_type[ item -> item_subclass - 1 ];
       break;
     }
     default: return 0;
   }
 
-  return (uint32_t) floor( total_armor * m_quality * m_invtype + 0.5 );
+  return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
 }
 
 // item_database_t::weapon_dmg_min/max ===========================================
 
 uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
 {
-  return (uint32_t) floor( item.player -> player_data.weapon_dps( item_id ) * 
-    item.player -> player_data.weapon_speed( item_id ) * 
-    ( 1 - item.player -> player_data.weapon_damage_multiplier( item_id ) / 2 ) );
+  return (uint32_t) floor( item.player -> dbc.weapon_dps( item_id ) * 
+    item.player -> dbc.item( item_id ) -> delay / 1000.0 * 
+    ( 1 - item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
 {
-  return  (uint32_t) ceil( item.player -> player_data.weapon_dps( item_id ) * 
-    item.player -> player_data.weapon_speed( item_id ) * 
-    ( 1 + item.player -> player_data.weapon_damage_multiplier( item_id ) / 2 ) );
+  return (uint32_t) floor( item.player -> dbc.weapon_dps( item_id ) * 
+    item.player -> dbc.item( item_id ) -> delay / 1000.0 * 
+    ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
 }
 
 // item_database_t::download_slot ===========================================
@@ -479,7 +485,7 @@ bool item_database_t::download_slot( item_t&            item,
 {
   player_t* p                  = item.player;
   long iid                     = strtol( item_id.c_str(), 0, 10 );
-  const item_data_t* item_data = item_data_t::find( iid );
+  const item_data_t* item_data = p -> dbc.item( iid );
 
   if ( ! item_data || ! iid )
   {
@@ -539,7 +545,7 @@ bool item_database_t::download_slot( item_t&            item,
 bool item_database_t::download_item( item_t& item, const std::string& item_id )
 {
   long iid                     = strtol( item_id.c_str(), 0, 10 );
-  const item_data_t* item_data = item_data_t::find( iid );
+  const item_data_t* item_data = item.player -> dbc.item( iid );
 
   if ( ! item_data || ! iid ) return false;
 
@@ -574,7 +580,7 @@ bool item_database_t::download_item( item_t& item, const std::string& item_id )
 bool item_database_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
 {
   long gid                 = strtol( glyph_id.c_str(), 0, 10 );
-  const item_data_t* glyph = item_data_t::find( gid );
+  const item_data_t* glyph = player -> dbc.item( gid );
 
   if ( ! gid || ! glyph ) return false;
   
@@ -591,35 +597,39 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
 int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
 {
   long gid                                 = strtol( gem_id.c_str(), 0, 10 );
-  const gem_property_data_t* gem_prop      = 0;
-  const item_enchantment_data_t* item_ench = 0;
   const item_data_t* gem                   = 0;
   int gc                                   = SOCKET_COLOR_NONE;
   std::vector<std::string> stats;
   
-  if ( ( gem = item_data_t::find( gid ) ) && 
-       ( gem_prop = item.player -> player_data.find_gem_property( gem -> gem_properties ) ) )
+  if ( ! ( gem = item.player -> dbc.item( gid ) ) )
+    return gc;
+
+  const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
+  
+  if ( ! gem_prop.id )
+    return gc;
+
+  // For now, make meta gems simply parse the name out
+  if ( gem_prop.color == 1 )
   {
-    // For now, make meta gems simply parse the name out
-    if ( gem_prop -> color == 1 )
+    std::string gem_name = gem -> name;
+    size_t cut_pt = gem_name.rfind( " Diamond");
+    if ( cut_pt != gem_name.npos )
     {
-      std::string gem_name = gem -> name;
-      size_t cut_pt = gem_name.rfind( " Diamond");
-      if ( cut_pt != gem_name.npos )
-      {
-        gem_name = gem_name.substr( 0, cut_pt );
-        armory_t::format( gem_name );
-        item.armory_gems_str += gem_name;
-      }
+      gem_name = gem_name.substr( 0, cut_pt );
+      armory_t::format( gem_name );
+      item.armory_gems_str += gem_name;
     }
-    // Fetch gem stats
-    else if ( ( item_ench = item.player -> player_data.find_item_enchantment( gem_prop -> enchant_id ) ) )
-    {
-      encode_item_enchant_stats( item_ench, stats );
-    }
-    
-    gc = gem_prop -> color;
   }
+  // Fetch gem stats
+  else
+  {
+    const item_enchantment_data_t& item_ench = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
+    if ( item_ench.id )
+      encode_item_enchant_stats( item_ench, stats );
+  }
+
+  gc = gem_prop.color;
 
   if ( stats.size() > 0 && ! item.armory_gems_str.empty() )
     item.armory_gems_str += "_";

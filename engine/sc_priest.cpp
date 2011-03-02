@@ -742,7 +742,7 @@ struct priest_heal_t : public heal_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> talents.grace -> rank() )
-      t -> buffs.grace -> trigger( 1, p -> player_data.effect_base_value( p -> player_data.spell_effect_id( p -> talents.grace -> effect_trigger_spell( 1 ), 1 ) ) / 100.0 );
+      t -> buffs.grace -> trigger( 1, p -> dbc.effect( p -> dbc.spell( p -> talents.grace -> effect_trigger_spell( 1 ) ) -> effect1 -> id() ) -> base_value() / 100.0 );
   }
 };
 
@@ -1264,7 +1264,7 @@ struct fortitude_t : public priest_spell_t
 
     harmful = false;
 
-    bonus = floor( sim -> sim_data.effect_min( 79104, player -> level, E_APPLY_AURA, A_MOD_STAT ) );
+    bonus = floor( player -> dbc.effect_average( player -> dbc.spell( 79104 ) -> effect1 -> id() , player -> level ) );
   }
 
   virtual void execute()
@@ -2119,7 +2119,7 @@ struct archangel_t : public priest_spell_t
 
     if ( p -> buffs_holy_evangelism -> up() && delta > 0)
     {
-      cooldown -> duration = p -> player_data.effect_base_value( p -> player_data.spell_effect_id( 87151, 2 ) );
+      cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect2 -> id() ) -> base_value();
       p -> buffs_holy_archangel -> trigger( p -> buffs_holy_evangelism -> stack() , 1.0, 1.0 );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
@@ -2127,7 +2127,7 @@ struct archangel_t : public priest_spell_t
 
     else if ( p -> buffs_dark_evangelism -> up() && delta < 0 )
     {
-      cooldown -> duration = p -> player_data.effect_base_value( p -> player_data.spell_effect_id( 87151, 3 ) );
+      cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect3 -> id() ) -> base_value();
       p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_dark_evangelism -> expire();
@@ -3840,7 +3840,7 @@ double priest_t::composite_spell_power( const school_type school ) SC_CONST
 
 
   if ( buffs_inner_fire -> up() )
-    sp += buffs_inner_fire -> effect_min( E_APPLY_AURA, A_MOD_DAMAGE_DONE );
+    sp += buffs_inner_fire -> effect_min( 2 );
 
   return sp;
 }
@@ -4821,7 +4821,7 @@ void player_t::priest_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, floor( sim -> sim_data.effect_min( 79104, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) ), !p -> is_pet() );
+    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1 -> id(), sim -> max_player_level ) ), !p -> is_pet() );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
     p -> buffs.inspiration    = new      buff_t( p, "inspiration", 1, 15.0, 0 );
   }
@@ -4838,7 +4838,7 @@ void player_t::priest_combat_begin( sim_t* sim )
   {
     if ( p -> ooc_buffs() )
     {
-      if ( sim -> overrides.fortitude     ) p -> buffs.fortitude     -> override( 1, floor( sim -> sim_data.effect_min( 79104, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) ) );
+      if ( sim -> overrides.fortitude     ) p -> buffs.fortitude     -> override( 1, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1 -> id(), sim -> max_player_level ) ) );
     }
   }
 }

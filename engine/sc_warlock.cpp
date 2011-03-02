@@ -377,7 +377,7 @@ struct warlock_t : public player_t
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_glyph_of_shadowburn             = get_cooldown ( "glyph_of_shadowburn" );
-    cooldowns_glyph_of_shadowburn -> duration = player_data.spell_duration(91001);
+    cooldowns_glyph_of_shadowburn -> duration = dbc.spell( 91001 ) -> duration();
 
     use_pre_soulburn = 0;
 
@@ -4171,7 +4171,7 @@ void warlock_t::init_buffs()
   
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
-  buffs_improved_soul_fire -> cooldown -> duration  = player_data.effect_base_value( player_data.spell_effect_id( 85113, 3 ) );
+  buffs_improved_soul_fire -> cooldown -> duration  = dbc.effect( dbc.spell( 85113 ) -> effect3 -> id() ) -> base_value();
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );
   buffs_demon_soul_felguard   = new buff_t( this, 79462, "demon_soul_felguard" );

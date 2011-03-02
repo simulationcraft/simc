@@ -71,7 +71,6 @@ SRC =\
 	sc_const_data.cpp	\
 	sc_consumable.cpp	\
 	sc_data.cpp		\
-	sc_data_access.cpp	\
 	sc_death_knight.cpp	\
 	sc_druid.cpp		\
 	sc_enchant.cpp		\

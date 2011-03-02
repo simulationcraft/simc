@@ -79,8 +79,7 @@ static bool parse_ptr( sim_t*             sim,
   if ( name != "ptr" ) return false;
 
 #if SC_USE_PTR
-  dbc_t::set_ptr( atoi( value.c_str() ) != 0 );
-  sim -> sim_data.set_parent( dbc_t::get_ptr() ? &sim_t::ptr_data : &sim_t::base_data, dbc_t::get_ptr() );
+  sim -> dbc.ptr = atoi( value.c_str() ) != 0;
 #else
   sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 #endif
@@ -523,9 +522,6 @@ static bool parse_item_sources( sim_t*             sim,
 // Simulator
 // ==========================================================================
 
-sc_data_access_t sim_t::base_data = sc_data_access_t( NULL );
-sc_data_access_t sim_t::ptr_data  = sc_data_access_t( NULL, true );
-
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
@@ -547,7 +543,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     default_region_str( "us" ),
     save_prefix_str( "save_" ),
     input_is_utf8( false ),
-    sim_data( &sim_t::base_data ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale(2),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -2286,7 +2281,7 @@ int sim_t::main( int argc, char** argv )
   current_throttle = armory_throttle;
 
   util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version(), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version(), ( dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( dbc.ptr ) );
   fflush( output_file );
 
   if ( spell_query )

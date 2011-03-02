@@ -242,92 +242,145 @@ struct spell_list_expr_t : public spell_data_expr_t
   
   virtual int evaluate()
   {
-    const sc_array_t<uint32_t>* cref = 0;
+    unsigned spell_id;
+    
     // Based on the data type, see what list of spell ids we should handle, and populate the 
     // result_spell_list accordingly
     switch ( data_type )
     {
       case DATA_SPELL:
       {
-        for ( unsigned int i = 0; i < sim -> sim_data.m_spells_index_size; i++ )
-        {
-          if ( ! sim -> sim_data.m_spells_index[ i ] )
-            continue;
-      
-          result_spell_list.push_back( sim -> sim_data.m_spells_index[ i ] -> id );
-        }
+        for ( const spell_data_t* spell = spell_data_t::list( sim -> dbc.ptr ); spell -> id(); spell++ )
+          result_spell_list.push_back( spell -> id() );
         break;
       }
       case DATA_TALENT:
       {
-        for ( unsigned int i = 0; i < sim -> sim_data.m_talents_index_size; i++ )
-        {
-          if ( ! sim -> sim_data.m_talents_index[ i ] )
-            continue;
-      
-          result_spell_list.push_back( sim -> sim_data.m_talents_index[ i ] -> id );
-        }
+        for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
+          result_spell_list.push_back( talent -> id() );
         break;
       }
       case DATA_EFFECT:
       {
-        for ( unsigned int i = 0; i < sim -> sim_data.m_effects_index_size; i++ )
-        {
-          if ( ! sim -> sim_data.m_effects_index[ i ] )
-            continue;
-      
-          result_spell_list.push_back( sim -> sim_data.m_effects_index[ i ] -> id );
-        }
+        for ( const spelleffect_data_t* effect = spelleffect_data_t::list( sim -> dbc.ptr ); effect -> id(); effect++ )
+          result_spell_list.push_back( effect -> id() );
         break;
       }
       case DATA_TALENT_SPELL:
       {
-        for ( unsigned int i = 0; i < sim -> sim_data.m_talents_index_size; i++ )
+        for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
         {
-          if ( ! sim -> sim_data.m_talents_index[ i ] )
-            continue;
-          
           for ( int j = 0; j < 3; j++ )
           {
-            if ( ! sim -> sim_data.m_talents_index[ i ] -> rank_id[ j ] )
+            if ( ! talent -> _rank_id[ j ] )
               continue;
               
-            result_spell_list.push_back( sim -> sim_data.m_talents_index[ i ] -> rank_id[ j ] );
+            result_spell_list.push_back( talent -> _rank_id[ j ] );
           }
         }
         break;
       }
       case DATA_CLASS_SPELL:
-        cref = &( sim -> sim_data.m_class_spells );
+      {
+        for ( unsigned cls = 0; cls < 12; cls++ )
+        {
+          for ( unsigned tree = 0; tree < sim -> dbc.class_ability_tree_size(); tree++ )
+          {
+            for ( unsigned n = 0; n < sim -> dbc.class_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.class_ability( cls, tree, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
         break;
+      }
       case DATA_RACIAL_SPELL:
-        cref = &( sim -> sim_data.m_racial_spells );
+      {
+        for ( unsigned race = 0; race < 24; race++ )
+        {
+          for ( unsigned cls = 0; cls < 12; cls++ )
+          {
+            for ( unsigned n = 0; n < sim -> dbc.race_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.race_ability( race, cls, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
         break;
+      }
       case DATA_MASTERY_SPELL:
-        cref = &( sim -> sim_data.m_mastery_spells );
+      {
+        for ( unsigned cls = 0; cls < 12; cls++ )
+        {
+          for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
+          {
+            if ( ! ( spell_id = sim -> dbc.mastery_ability( cls, n ) ) )
+              continue;
+
+            result_spell_list.push_back( spell_id );
+          }
+        }
         break;
+      }
       case DATA_SPECIALIZATION_SPELL:
-        cref = &( sim -> sim_data.m_talent_spec_spells );
+      {
+        for ( unsigned cls = 0; cls < 12; cls++ )
+        {
+          for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
+          {
+            for ( unsigned n = 0; n < sim -> dbc.specialization_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.specialization_ability( cls, tree, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
         break;
+      }
       case DATA_GLYPH_SPELL:
-        cref = &( sim -> sim_data.m_glyph_spells );
+      {
+        for ( unsigned cls = 0; cls < 12; cls++ )
+        {
+          for ( unsigned type = 0; type < GLYPH_MAX; type++ )
+          {
+            for ( unsigned n = 0; n < sim -> dbc.glyph_spell_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.glyph_spell( cls, type, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
         break;
+      }
       case DATA_SET_BONUS_SPELL:
-        cref = &( sim -> sim_data.m_set_bonus_spells );
+      {
+        for ( unsigned cls = 0; cls < 12; cls++ )
+        {
+          for ( unsigned tier = 0; tier < 12; tier++ )
+          {
+            for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.set_bonus_spell( cls, tier, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
         break;
+      }
       default:
         return TOK_UNKNOWN;
-    }
-    
-    if ( cref )
-    {
-      for ( unsigned int i = 0; i < cref -> size(); i++ )
-      {
-        if ( cref -> raw_ref( i ) == 0 )
-          continue;
-
-        result_spell_list.push_back( cref -> raw_ref( i ) );
-      }
     }
     
     std::sort( result_spell_list.begin(), result_spell_list.end() );
@@ -613,9 +666,10 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         for ( int j = 0; j < MAX_EFFECTS; j++ )
         {
-          if ( sim -> sim_data.m_spells_index[ *i ] && sim -> sim_data.m_spells_index[ *i ] -> effect[ j ] &&
-               sim -> sim_data.m_effects_index[ sim -> sim_data.m_spells_index[ *i ] -> effect[ j ] ] )
-            p_data = reinterpret_cast< char* > ( sim -> sim_data.m_effects_index[ sim -> sim_data.m_spells_index[ *i ] -> effect[ j ] ] );
+          const spell_data_t* spell = sim -> dbc.spell( *i );
+          if ( spell && spell -> _effect[ j ] &&
+               sim -> dbc.effect( spell -> _effect[ j ] ) )
+            p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( sim -> dbc.effect( spell -> _effect[ j ] ) ) );
           else
             p_data = 0;
           
@@ -626,11 +680,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       else 
       {
         if ( data_type == DATA_TALENT )
-          p_data = reinterpret_cast< char* > ( sim -> sim_data.m_talents_index[ *i ] );
+          p_data = reinterpret_cast< char* > ( const_cast< talent_data_t* >( sim -> dbc.talent( *i ) ) );
         else if ( data_type == DATA_EFFECT )
-          p_data = reinterpret_cast< char* > ( sim -> sim_data.m_effects_index[ *i ] );
+          p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( sim -> dbc.effect( *i ) ) );
         else
-          p_data = reinterpret_cast< char* > ( sim -> sim_data.m_spells_index[ *i ] );
+          p_data = reinterpret_cast< char* > ( const_cast< spell_data_t* >( sim -> dbc.spell( *i ) ) );
 
         if ( p_data && std::find( res.begin(), res.end(), *i ) == res.end() && compare( p_data, other, t ) )
           res.push_back( *i );
@@ -822,10 +876,11 @@ struct spell_rune_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_spells_index[ *i ] || sim -> sim_data.m_spells_index[ *i ] -> power_type != 5 )
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+      if ( ! spell || spell -> power_type() != 5 )
         continue;
         
-      if ( ( sim -> sim_data.m_spells_index[ *i ] -> rune_cost & r ) == r )
+      if ( ( spell -> rune_cost() & r ) == r )
         res.push_back( *i );
     }
 
@@ -839,10 +894,11 @@ struct spell_rune_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_spells_index[ *i ] || sim -> sim_data.m_spells_index[ *i ] -> power_type != 5 )
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+      if ( ! spell || spell -> power_type() != 5 )
         continue;
         
-      if ( ( sim -> sim_data.m_spells_index[ *i ] -> rune_cost & r ) != r )
+      if ( ( spell -> rune_cost() & r ) != r )
         res.push_back( *i );
     }
 
@@ -869,18 +925,20 @@ struct spell_class_expr_t : public spell_list_expr_t
     {
       if ( data_type == DATA_TALENT )
       {
-        if ( ! sim -> sim_data.m_talents_index[ *i ] )
+        if ( ! sim -> dbc.talent( *i ) )
           continue;
 
-        if ( sim -> sim_data.m_talents_index[ *i ] -> m_class & class_mask )
+        if ( sim -> dbc.talent( *i ) -> mask_class() & class_mask )
           res.push_back( *i );
       }
       else
       {
-        if ( ! sim -> sim_data.m_spells_index[ *i ] )
+        const spell_data_t* spell = sim -> dbc.spell( *i );
+
+        if ( ! spell )
           continue;
 
-        if ( sim -> sim_data.m_spells_index[ *i ] -> class_mask & class_mask )
+        if ( spell -> class_mask() & class_mask )
           res.push_back( *i );
       }
     }
@@ -903,18 +961,19 @@ struct spell_class_expr_t : public spell_list_expr_t
     {
       if ( data_type == DATA_TALENT )
       {
-        if ( ! sim -> sim_data.m_talents_index[ *i ] )
+        if ( ! sim -> dbc.talent( *i ) )
           continue;
         
-        if ( ( sim -> sim_data.m_talents_index[ *i ] -> m_class & class_mask ) == 0 )
+        if ( ( sim -> dbc.talent( *i ) -> mask_class() & class_mask ) == 0 )
           res.push_back( *i );
       }
       else
       {
-        if ( ! sim -> sim_data.m_spells_index[ *i ] )
+        const spell_data_t* spell = sim -> dbc.spell( *i );
+        if ( ! spell )
           continue;
         
-        if ( ( sim -> sim_data.m_spells_index[ *i ] -> class_mask & class_mask ) == 0 )
+        if ( ( spell -> class_mask() & class_mask ) == 0 )
           res.push_back( *i );
       }
     }
@@ -944,10 +1003,10 @@ struct spell_pet_class_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-        if ( ! sim -> sim_data.m_talents_index[ *i ] )
+        if ( ! sim -> dbc.talent( *i ) )
           continue;
 
-        if ( sim -> sim_data.m_talents_index[ *i ] -> m_pet & class_mask )
+        if ( sim -> dbc.talent( *i ) -> mask_pet() & class_mask )
           res.push_back( *i );
     }
 
@@ -967,10 +1026,10 @@ struct spell_pet_class_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_talents_index[ *i ] )
+      if ( ! sim -> dbc.talent( *i ) )
         continue;
 
-      if ( ( sim -> sim_data.m_talents_index[ *i ] -> m_pet & class_mask ) == 0 )
+      if ( ( sim -> dbc.talent( *i ) -> mask_pet() & class_mask ) == 0 )
         res.push_back( *i );
     }
 
@@ -999,10 +1058,12 @@ struct spell_race_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_spells_index[ *i ] )
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+
+      if ( ! spell )
         continue;
         
-      if ( sim -> sim_data.m_spells_index[ *i ] -> race_mask & race_mask )
+      if ( spell -> race_mask() & race_mask )
         res.push_back( *i );
     }
 
@@ -1026,10 +1087,11 @@ struct spell_race_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_spells_index[ *i ] )
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+      if ( ! spell )
         continue;
         
-      if ( ( sim -> sim_data.m_spells_index[ *i ] -> class_mask & class_mask ) == 0 )
+      if ( ( spell -> class_mask() & class_mask ) == 0 )
         res.push_back( *i );
     }
 
@@ -1054,10 +1116,12 @@ struct spell_school_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_spells_index[ *i ] )
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+
+      if ( ! spell )
         continue;
 
-      if ( ( sim -> sim_data.m_spells_index[ *i ] -> school & school_mask ) == school_mask )
+      if ( ( spell -> school_mask() & school_mask ) == school_mask )
         res.push_back( *i );
     }
 
@@ -1077,10 +1141,12 @@ struct spell_school_expr_t : public spell_list_expr_t
     
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
-      if ( ! sim -> sim_data.m_spells_index[ *i ] )
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+
+      if ( ! spell )
         continue;
         
-      if ( ( sim -> sim_data.m_spells_index[ *i ] -> school & school_mask ) == 0 )
+      if ( ( spell -> school_mask() & school_mask ) == 0 )
         res.push_back( *i );
     }
 

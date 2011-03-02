@@ -2477,7 +2477,7 @@ static void print_html_talents( FILE* file, player_t* p )
         talent_t* t = p -> talent_trees[ i ][ j ];
 
         util_t::fprintf( file, "\t\t\t\t\t\t\t\t\t\t<tr%s>\n", ( (j&1) ? " class=\"odd\"" : "" ) );
-        util_t::fprintf( file, "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n", t -> t_data -> name );
+        util_t::fprintf( file, "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n", t -> t_data -> name_cstr() );
         util_t::fprintf( file, "\t\t\t\t\t\t\t\t\t\t\t<td>%d</td>\n", t -> rank() );
         util_t::fprintf( file, "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
       }
@@ -3576,7 +3576,7 @@ static void print_wiki_raid_events( FILE * file, sim_t* sim )
 static void print_wiki_preamble( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file, "= !SimulationCraft %s-%s for World of Warcraft %s %s (build level %s) =\n", 
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version(), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
+                   SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
 
   time_t rawtime;
   time ( &rawtime );
@@ -4578,7 +4578,7 @@ void report_t::print_html( sim_t* sim )
         util_t::fprintf( file,
           "\t\t\t<h1><a href=\"http://code.google.com/p/simulationcraft/\">SimulationCraft %s-%s</a></h1>\n"
           "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
-          SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version(), ( dbc_t::get_ptr() ? "PTR" : "Live" ), dbc_t::build_level() );
+          SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
         
         time_t rawtime;
         time ( &rawtime );
@@ -5062,23 +5062,25 @@ void report_t::print_spell_query( sim_t* sim )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
-      util_t::fprintf( sim -> output_file, "%s", spell_info_t::talent_to_str( sim, sim -> sim_data.m_talents_index[ *i ] ).c_str() );
+      util_t::fprintf( sim -> output_file, "%s", spell_info_t::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
       std::ostringstream sqs;
-      if ( sim -> sim_data.m_spells_index[ sim -> sim_data.m_effects_index[ *i ] -> spell_id ] )
+      const spell_data_t* spell = sim -> dbc.spell( sim -> dbc.effect( *i ) -> spell_id() );
+      if ( spell )
       {
         spell_info_t::effect_to_str( sim, 
-                                     sim -> sim_data.m_spells_index[ sim -> sim_data.m_effects_index[ *i ] -> spell_id ], 
-                                     sim -> sim_data.m_effects_index[ *i ],
+                                     spell, 
+                                     sim -> dbc.effect( *i ),
                                      sqs );
       }
       util_t::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
     }
     else
     {
-      util_t::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, sim -> sim_data.m_spells_index[ *i ] ).c_str() );
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+      util_t::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, spell ).c_str() );
     }
   }
 }

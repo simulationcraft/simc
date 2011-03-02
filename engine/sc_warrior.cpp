@@ -2398,7 +2398,7 @@ struct battle_shout_t : public warrior_spell_t
     if ( ! sim -> overrides.battle_shout )
     {
       sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect_base_value( 1 ) / 1000.0;
-      sim -> auras.battle_shout -> trigger( 1, sim -> sim_data.effect_min( 6673, p -> level, E_APPLY_AURA, A_MOD_STAT ) );
+      sim -> auras.battle_shout -> trigger( 1, p -> dbc.effect_average( p -> dbc.spell( 6673 ) -> effect1 -> id(), p -> level ) );
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
@@ -3579,7 +3579,7 @@ void player_t::warrior_init( sim_t* sim )
 void player_t::warrior_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.battle_shout ) 
-    sim -> auras.battle_shout -> override( 1, sim -> sim_data.effect_min( 6673, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) );
+    sim -> auras.battle_shout -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 6673 ) -> effect1 -> id(), sim -> max_player_level ) );
 
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 

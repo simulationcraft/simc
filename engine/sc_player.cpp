@@ -284,7 +284,7 @@ player_t::player_t( sim_t*             s,
                     player_type        t,
                     const std::string& n,
                     race_type          r ) :
-    sim( s ), ptr( dbc_t::get_ptr() ), name_str( n ),
+    sim( s ), ptr( s -> dbc.ptr ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
     next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), level( 85 ), use_pre_potion( 1 ),
     party( 0 ), member( 0 ),
@@ -292,7 +292,7 @@ player_t::player_t( sim_t*             s,
     potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
     vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-    player_data( &( s->sim_data ), ptr ),
+    dbc( s -> dbc ),
     race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
@@ -440,8 +440,6 @@ player_t::player_t( sim_t*             s,
     talent_tab_points[ i ] = 0;
     tree_type[ i ] = TREE_NONE;
   }
-  
-  player_data.set_parent( &( sim -> sim_data ), ptr );
 }
 
 // player_t::~player_t =====================================================
@@ -704,18 +702,18 @@ void player_t::init()
 
 void player_t::init_base()
 {
-  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_STRENGTH );
-  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_AGILITY );
-  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_STAMINA );
-  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_INTELLECT );
-  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_HEALTH );
-  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MANA );
-  base_spell_crit                  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT );
-  base_attack_crit                 = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT );
-  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
-  base_mp5                         = rating_t::get_attribute_base( sim, player_data, level, type, race, BASE_STAT_MP5 );
+  attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STRENGTH );
+  attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_AGILITY );
+  attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STAMINA );
+  attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_INTELLECT );
+  attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPIRIT );
+  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_HEALTH );
+  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MANA );
+  base_spell_crit                  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT );
+  base_attack_crit                 = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT );
+  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  base_mp5                         = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 );
 
   if ( level <= 80 ) health_per_stamina = 10;
   else if ( level <= 85 ) health_per_stamina = ( level - 80) / 5 * 4 + 10;
@@ -971,7 +969,7 @@ void player_t::init_spell()
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
   if ( type != ENEMY && type != ENEMY_ADD )
-    mana_regen_base = player_data.spi_regen( type, level );
+    mana_regen_base = dbc.regen_spirit( type, level );
 
   if ( level >= 61 )
   {
@@ -1023,7 +1021,7 @@ void player_t::init_attack()
 void player_t::init_defense()
 {
   if ( type != ENEMY && type != ENEMY_ADD )
-    base_dodge = player_data.dodge_base( type );
+    base_dodge = dbc.dodge_base( type );
 
   initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
   initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
@@ -1039,7 +1037,7 @@ void player_t::init_defense()
   initial_block             = base_block       + initial_stats.block_rating / rating.block;
 
   if ( type != ENEMY && type != ENEMY_ADD )
-    initial_dodge_per_agility = player_data.dodge_scale( type, level );
+    initial_dodge_per_agility = dbc.dodge_scaling( type, level );
 
   if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
 }
@@ -1319,7 +1317,7 @@ void player_t::init_rating()
 {
   if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%d type=%s", level, util_t::player_type_string( type ) );
 
-  rating.init( sim, player_data, level, type );
+  rating.init( sim, dbc, level, type );
 }
 
 // player_t::init_talents =================================================
@@ -1386,8 +1384,8 @@ void player_t::init_buffs()
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )  
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> sim_data.effect_min( 33697, sim -> max_player_level, E_APPLY_AURA, A_MOD_ATTACK_POWER ) ), 1, 15.0 );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> sim_data.effect_min( 33697, sim -> max_player_level, E_APPLY_AURA, A_MOD_DAMAGE_DONE ) ), 1, 15.0 );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1 -> id(), sim -> max_player_level ) ), 1, 15.0 );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2 -> id(), sim -> max_player_level ) ), 1, 15.0 );
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
   buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING, 480,               1, 20.0 );
@@ -4611,46 +4609,45 @@ struct compare_talents
     const talent_data_t* l = left  -> t_data;
     const talent_data_t* r = right -> t_data;
 
-    if( l -> tab_page == r -> tab_page )
+    if( l -> tab_page() == r -> tab_page() )
     {
-      if( l -> row == r -> row )
+      if( l -> row() == r -> row() )
       {
-        if( l -> col == r -> col )
+        if( l -> col() == r -> col() )
         {
-          return ( l -> id > r -> id ); // not a typo: Dive comes before Dash in pet talent string!
+          return ( l -> id() > r -> id() ); // not a typo: Dive comes before Dash in pet talent string!
         }
-        return ( l -> col < r -> col );
+        return ( l -> col() < r -> col() );
       }
-      return ( l -> row < r -> row );
+      return ( l -> row() < r -> row() );
     }
-    return ( l -> tab_page < r -> tab_page );
+    return ( l -> tab_page() < r -> tab_page() );
   }
 };
 
 void player_t::create_talents()
 {
   int cid_mask = util_t::class_id_mask( type );
+  talent_data_t* talent_data = talent_data_t::list( ptr );
 
-  talent_data_t* talent_data = talent_data_t::list();
-
-  for( int i=0; talent_data[ i ].name; i++ )
+  for( int i=0; talent_data[ i ].name_cstr(); i++ )
   {
     talent_data_t& td = talent_data[ i ];
 
     if( cid_mask )
     {
-      if( cid_mask & td.m_class )
+      if( cid_mask & td.mask_class() )
       {
         talent_t* t = new talent_t( this, &td );
-        talent_trees[ td.tab_page ].push_back( t );
+        talent_trees[ td.tab_page() ].push_back( t );
         option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, (void*) t );
       }
     }
-    else if( td.m_pet )
+    else if( td.mask_pet() )
     {
       for( int j=0; j < MAX_TALENT_TREES; j++ )
       {
-        if( td.m_pet & ( 1 << j ) )
+        if( td.mask_pet() & ( 1 << j ) )
         {
           talent_t* t = new talent_t( this, &td );
           talent_trees[ j ].push_back( t );
@@ -4681,7 +4678,7 @@ talent_t* player_t::find_talent( const std::string& n,
     {
       talent_t* t = talent_trees[ i ][ j ];
 
-      if( n == t -> td -> name )
+      if( n == t -> td -> name_cstr() )
       {
         return t;
       }
@@ -4698,11 +4695,11 @@ talent_t* player_t::find_talent( const std::string& n,
 void player_t::create_glyphs()
 {
   std::vector<unsigned> glyph_ids;
-  int num_glyphs = dbc_t::glyphs( glyph_ids, util_t::class_id( type ) );
+  int num_glyphs = dbc_t::glyphs( glyph_ids, util_t::class_id( type ), ptr );
 
   for( int i=0; i < num_glyphs; i++ )
   {
-    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ] ) ) );
+    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], "", ptr ) ) );
   }
 }
 
@@ -4713,7 +4710,7 @@ glyph_t* player_t::find_glyph( const std::string& n )
   for( int i=glyphs.size()-1; i >= 0; i-- )
   {
     glyph_t* g = glyphs[ i ];
-    if( n == g -> sd -> name ) return g;
+    if( n == g -> sd -> name_cstr() ) return g;
     if( n == g -> s_token ) return g; // Armory-ized
   }
 
@@ -4901,7 +4898,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct ptr_expr_t : public action_expr_t
     {
       ptr_expr_t( action_t* a ) : action_expr_t( a, "ptr", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> ptr ? 1 : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> dbc.ptr ? 1 : 0; return TOK_NUM; }
     };
     return new ptr_expr_t( a );
   }
@@ -5241,7 +5238,7 @@ void player_t::copy_from( player_t* source )
     for( unsigned j = 0; j < talent_trees[ i ].size(); j++ )
     {
       talent_t* t = talent_trees[ i ][ j ];
-      talent_t* source_t = source -> find_talent( t -> td -> name );
+      talent_t* source_t = source -> find_talent( t -> td -> name_cstr() );
       if( source_t ) t -> set_rank( source_t -> rank() );
       std::stringstream ss;
       ss << t -> rank();

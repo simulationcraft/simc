@@ -904,6 +904,9 @@ def initialize_data_model(build, obj):
     # Then, derive patch classes from base
     for build_id in sorted(_DIFF_DATA.keys()):
         for dbc_file_name, dbc_fields in _DBC_FIELDS.iteritems():
+            if build_id > build:
+                break
+            
             class_base_name = dbc_file_name.split('.')[0].replace('-', '_')
             class_name      = r'%s%d' % ( class_base_name, build )
             dbc_diff_data   = _DIFF_DATA.get(build_id, { }).get(dbc_file_name)
@@ -957,7 +960,4 @@ def initialize_data_model(build, obj):
                     del cls._fields[idx_field]
                     del cls._field_fmt[idx_field]
                     delattr(cls, diff_data[0])
-
-        if build_id >= build:
-            break
 

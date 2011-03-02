@@ -72,22 +72,22 @@ buff_t::buff_t( player_t*          p,
 
 buff_t::buff_t( player_t* p,
                 talent_t* talent, ... ) :
-  spell_id_t( p, talent -> trigger ? talent -> trigger -> name : talent -> td -> name ),
+  spell_id_t( p, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
   sim( p -> sim ), player( p ), source( p ), name_str( s_token ), 
   max_stack( 0 ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
   if( talent -> rank() )
   {
-    default_chance = talent -> sd -> proc_chance / 100.0;
+    default_chance = talent -> sd -> proc_chance();
     if( default_chance <= 0 ) default_chance = 1.0;
 
     spell_data_t* spell = talent -> trigger ? talent -> trigger : talent -> sd;
 
-    max_stack = std::max( (int) spell -> max_stack, 1 );
-    buff_duration = spell -> duration / 1000.0;
-    buff_cooldown = spell -> cooldown / 1000.0;
-    aura_id = spell -> id;
+    max_stack = std::max( (int) spell -> max_stacks(), 1 );
+    buff_duration = spell -> duration();
+    buff_cooldown = spell -> cooldown();
+    aura_id = spell -> id();
   }
 
   va_list vap;
@@ -101,16 +101,16 @@ buff_t::buff_t( player_t* p,
 
 buff_t::buff_t( player_t*     p,
                 spell_data_t* spell, ... ) :
-  spell_id_t( p, spell -> name, spell -> id ),
+  spell_id_t( p, spell -> name_cstr(), spell -> id() ),
   sim( p -> sim ), player( p ), source( p ), name_str( s_token ), 
   max_stack( 0 ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
-  max_stack = std::max( (int) spell -> max_stack, 1 );
-  default_chance = spell -> proc_chance ? ( spell -> proc_chance / 100.0 ) : 1.0;
-  buff_duration = spell -> duration / 1000.0;
-  buff_cooldown = spell -> cooldown / 1000.0;
-  aura_id = spell -> id;
+  max_stack = std::max( (int) spell -> max_stacks(), 1 );
+  default_chance = spell -> proc_chance() ? spell -> proc_chance() : 1.0;
+  buff_duration = spell -> duration();
+  buff_cooldown = spell -> cooldown();
+  aura_id = spell -> id();
 
   va_list vap;
   va_start( vap, spell );
@@ -253,7 +253,7 @@ buff_t::buff_t( player_t*          p,
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
   {
-    cooldown -> duration = player -> player_data.spell_cooldown( spell_id() );
+    cooldown -> duration = p -> dbc.spell( spell_id() ) -> cooldown();
   }
   else
   {
@@ -299,7 +299,7 @@ buff_t::buff_t( player_t*          p,
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
   {
-    cooldown -> duration = player -> player_data.spell_cooldown( spell_id() );
+    cooldown -> duration = p -> dbc.spell( spell_id() ) -> cooldown();
   }
   else
   {
@@ -1090,37 +1090,38 @@ new_buff_t::new_buff_t( player_t*          p,
   int        effects = 0;
   
   memset(e_data, 0, sizeof(e_data));
-  
+  const spell_data_t* spell = p -> dbc.spell( id );
+
   // Find some stuff for the buff, generically
-  if ( id > 0 && player -> player_data.spell_exists( id ) )
+  if ( id > 0 && spell )
   {
-    max_stack            = player -> player_data.spell_max_stacks( id );
+    max_stack              = spell -> max_stacks();
 
-    buff_duration             = player -> player_data.spell_duration( id );
+    buff_duration          = spell -> duration();
     if ( buff_duration > ( player -> sim -> wheel_seconds - 2.0 ) )
-      buff_duration = player -> sim -> wheel_seconds - 2.0;
+      buff_duration        = player -> sim -> wheel_seconds - 2.0;
 
-    cooldown -> duration     = player -> player_data.spell_cooldown( id );
+    cooldown -> duration   = spell -> cooldown();
     if ( cooldown -> duration > ( player -> sim -> wheel_seconds - 2.0 ) )
       cooldown -> duration = player -> sim -> wheel_seconds - 2.0;
 
-    default_stack_charge = player -> player_data.spell_initial_stacks( id );
+    default_stack_charge   = spell -> initial_stacks();
 
     if ( override_chance == 0 )
     {
-      default_chance     = player -> player_data.spell_proc_chance( id );
+      default_chance       = spell -> proc_chance();
       
       if ( default_chance == 0.0 )
-        default_chance   = 1.0;
+        default_chance     = 1.0;
     }
 
     // If there's no max stack, set max stack to proc charges
     if ( max_stack == 0 )
-      max_stack          = player -> player_data.spell_initial_stacks( id );
+      max_stack            = spell -> initial_stacks();
 
     // A duration of < 0 in blizzard speak is infinite -> change to 0
     if ( buff_duration < 0 )
-      buff_duration           = 0.0;
+      buff_duration        = 0.0;
 
     // Some spells seem to have a max_stack but no initial stacks, so set 
     // initial stacks to 1 if it is 0 in spell data
@@ -1136,13 +1137,18 @@ new_buff_t::new_buff_t( player_t*          p,
     // Map effect data for this buff
     for ( int i = 1; i <= MAX_EFFECTS; i++ ) 
     {
-      if ( ! ( effect_id = player -> player_data.spell_effect_id( id, i ) ) )
+      if ( ! ( effect_id = spell -> effect_id( i ) ) )
         continue;
       
-      e_data[ i - 1 ] = player -> player_data.m_effects_index[ effect_id ];
+      if ( i == 1 )
+        e_data[ i - 1 ] = spell -> effect1;
+      else if ( i == 2 )
+        e_data[ i - 1 ] = spell -> effect2;
+      else if ( i == 3 )
+        e_data[ i - 1 ] = spell -> effect3;
 
       // Trigger spells will not be used in anything for now
-      if ( e_data[ i - 1 ] -> trigger_spell_id > 0 )
+      if ( e_data[ i - 1 ] -> trigger_spell_id() > 0 )
         continue;
 
       effects++;
@@ -1153,7 +1159,7 @@ new_buff_t::new_buff_t( player_t*          p,
     {
       for ( int i = 0; i < MAX_EFFECTS; i++ ) 
       {
-        if ( ! e_data[ i ] || e_data[ i ] -> trigger_spell_id > 0 )
+        if ( ! e_data[ i ] || e_data[ i ] -> trigger_spell_id() > 0 )
           continue;
         
         single = e_data[ i ];
@@ -1181,18 +1187,18 @@ bool new_buff_t::trigger( int stacks, double value, double chance)
 double new_buff_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
 {
   if ( single )
-    return sc_data_access_t::fmt_value( single -> base_value, (effect_type_t) single -> type, (effect_subtype_t) single -> subtype );
+    return dbc_t::fmt_value( single -> base_value(), single -> type(), single -> subtype() );
 
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
     if ( ! e_data[ i ] )
       continue;
 
-    if ( ( type == E_MAX || e_data[ i ] -> type == type ) && 
-         ( sub_type == A_MAX || e_data[ i ] -> subtype == sub_type ) && 
-         ( misc_value == DEFAULT_MISC_VALUE || e_data[ i ] -> misc_value == misc_value ) &&
-         ( misc_value2 == DEFAULT_MISC_VALUE || e_data[ i ] -> misc_value_2 == misc_value2 ) )
-      return sc_data_access_t::fmt_value( e_data[ i ] -> base_value, type, sub_type );
+    if ( ( type == E_MAX || e_data[ i ] -> type() == type ) && 
+         ( sub_type == A_MAX || e_data[ i ] -> subtype() == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || e_data[ i ] -> misc_value1() == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || e_data[ i ] -> misc_value2() == misc_value2 ) )
+      return dbc_t::fmt_value( e_data[ i ] -> base_value(), type, sub_type );
   }
   
   return 0.0;

@@ -533,7 +533,7 @@ player_t* rawr_t::load_player( sim_t* sim,
       spell_data_t* sd = spell_data_t::find( spell_id );
       if ( sd )
       {
-	std::string glyph_name = sd -> name;
+	std::string glyph_name = sd -> name_cstr();
 	if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
 	else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
 	armory_t::format( glyph_name );

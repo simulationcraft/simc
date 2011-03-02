@@ -1,4 +1,4 @@
-#define TALENT_SIZE (660)
+#define TALENT_SIZE (659)
 
 // 660 talents, wow build 13623
 static struct talent_data_t __talent_data[] = {

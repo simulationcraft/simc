@@ -12,7 +12,7 @@
 // talent_t::talent_t =======================================================
 
 talent_t::talent_t( player_t* player, talent_data_t* _td ) : 
-  spell_id_t( player, _td->name ), t_data( 0 ), t_rank( 0 ), t_overridden( false ),
+  spell_id_t( player, _td->name_cstr() ), t_data( 0 ), t_rank( 0 ), t_overridden( false ),
   // Future trimmed down access
   td( _td ), sd( spell_data_t::nil() ), trigger( 0 )
 {
@@ -21,9 +21,9 @@ talent_t::talent_t( player_t* player, talent_data_t* _td ) :
   for ( int i = 0; i < MAX_RANK; i++ )
     t_rank_spells[ i ] = t_default_rank;
   
-  t_data = s_player->player_data.m_talents_index[ td->id ];
-  t_enabled = s_player -> player_data.talent_is_enabled( td->id );
-  s_player -> player_data.talent_set_used( td->id, true );
+  t_data = player -> dbc.talent( td -> id() );
+  t_enabled = t_data -> is_enabled();
+  const_cast< talent_data_t* >( t_data ) -> set_used( true );
 }
 
 talent_t::~talent_t()
@@ -67,7 +67,7 @@ uint32_t talent_t::spell_id( ) SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.talent_rank_spell_id( t_data -> id, t_rank );
+  return t_data -> rank_spell_id( t_rank );
 }
 
 bool talent_t::set_rank( uint32_t r, bool overridden )
@@ -77,9 +77,9 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
 	 ( r == 2 ) ? td -> spell2 :
 	 ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
   trigger = 0;
-  if ( ! trigger && sd -> effect1 -> trigger_spell_id ) trigger = sd -> effect1 -> trigger_spell;
-  if ( ! trigger && sd -> effect2 -> trigger_spell_id ) trigger = sd -> effect2 -> trigger_spell;
-  if ( ! trigger && sd -> effect3 -> trigger_spell_id ) trigger = sd -> effect3 -> trigger_spell;
+  if ( ! trigger && sd -> effect1 -> trigger_spell_id() ) trigger = sd -> effect1 -> trigger_spell;
+  if ( ! trigger && sd -> effect2 -> trigger_spell_id() ) trigger = sd -> effect2 -> trigger_spell;
+  if ( ! trigger && sd -> effect3 -> trigger_spell_id() ) trigger = sd -> effect3 -> trigger_spell;
   // rank = r;
 
   if ( ! t_data || ! t_enabled )
@@ -89,7 +89,7 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
     return false;
   }
 
-  if ( r > s_player -> player_data.talent_max_rank( t_data -> id ) )
+  if ( r > t_data -> max_rank() )
   {
     if ( s_player -> sim -> debug ) 
       log_t::output( s_player -> sim, "Talent status: %s", to_str().c_str() );
@@ -122,11 +122,11 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
     {
       if ( t_rank == (unsigned) i + 1 )
         t_rank_spells[ i ] = this;
-      else if ( t_data -> rank_id[ i ] && s_player -> player_data.spell_exists( t_data -> rank_id[ i ] ) )
+      else if ( t_data -> _rank_id[ i ] && s_player -> dbc.spell( t_data -> _rank_id[ i ] ) )
       {
         char rankbuf[128];
         snprintf( rankbuf, sizeof( rankbuf ), "%s_rank_%d", s_token.c_str(), i + 1 );
-        spell_id_t* talent_rank_spell = new spell_id_t( s_player, rankbuf, t_data -> rank_id[ i ] );
+        spell_id_t* talent_rank_spell = new spell_id_t( s_player, rankbuf, t_data -> _rank_id[ i ] );
         talent_rank_spell -> s_enabled = s_enabled;
         t_rank_spells[ i ] = talent_rank_spell;
         if ( s_player -> sim -> debug ) log_t::output( s_player -> sim, "Talent Base status: %s", t_rank_spells[ i ] -> to_str().c_str() );
@@ -138,18 +138,18 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
 
 uint32_t talent_t::max_rank() SC_CONST
 {
-  if ( ! s_player || ! t_data || ! t_data->id )
+  if ( ! s_player || ! t_data || ! t_data->id() )
     return 0;
 
-  return s_player -> player_data.talent_max_rank( t_data -> id );
+  return t_data -> max_rank();
 }
 
 uint32_t talent_t::rank_spell_id( const uint32_t r ) SC_CONST
 {
-  if ( ! s_player || ! t_data || ! t_data->id )
+  if ( ! s_player || ! t_data || ! t_data->id() )
     return 0;
 
-  return s_player -> player_data.talent_rank_spell_id( t_data -> id, r );
+  return t_data -> rank_spell_id( r );
 }
 
 const spell_id_t* talent_t::rank_spell( uint32_t r ) SC_CONST
@@ -250,66 +250,67 @@ bool spell_id_t::initialize( const char* s_name )
     if ( ! s_name || ! *s_name )
       return false;
 
-    if ( ( s_id = s_player -> player_data.find_mastery_spell( player_class, s_name ) ) )
+    if ( ( s_id = s_player -> dbc.mastery_ability_id( player_class, s_name ) ) )
       s_type      = T_MASTERY;
-    else if ( ! s_id && ( s_id = s_player -> player_data.find_talent_spec_spell( player_class, s_name ) ) )
+    else if ( ! s_id && ( s_id = s_player -> dbc.specialization_ability_id( player_class, s_name ) ) )
       s_type      = T_SPEC;
-    else if ( ! s_id && ( s_id = s_player -> player_data.find_class_spell( player_class, s_name ) ) )
+    else if ( ! s_id && ( s_id = s_player -> dbc.class_ability_id( player_class, s_name ) ) )
       s_type      = T_CLASS;
-    else if ( ! s_id && ( s_id = s_player -> player_data.find_racial_spell( player_class, s_player -> race, s_name ) ) )
+    else if ( ! s_id && ( s_id = s_player -> dbc.race_ability_id( player_class, s_player -> race, s_name ) ) )
       s_type      = T_RACE;
-    else if ( ! s_id && ( s_id = s_player -> player_data.find_glyph_spell( player_class, s_name ) ) )
+    else if ( ! s_id && ( s_id = s_player -> dbc.glyph_spell_id( player_class, s_name ) ) )
       s_type      = T_GLYPH;
-    else if ( ! s_id && ( s_id = s_player -> player_data.find_set_bonus_spell( player_class, s_name ) ) )
+    else if ( ! s_id && ( s_id = s_player -> dbc.set_bonus_spell_id( player_class, s_name ) ) )
       s_type      = T_ITEM;
   }
   // Search using spell id to find the spell type
   else
   {
-    if ( s_player -> player_data.is_mastery_spell( s_id ) )
+    if ( s_player -> dbc.is_mastery_ability( s_id ) )
       s_type      = T_MASTERY;
-    else if ( s_player -> player_data.is_talent_spec_spell( s_id ) )
+    else if ( s_player -> dbc.is_specialization_ability( s_id ) )
       s_type      = T_SPEC;
-    else if ( s_player -> player_data.is_class_spell( s_id ) )
+    else if ( s_player -> dbc.is_class_ability( s_id ) )
       s_type      = T_CLASS;
-    else if ( s_player -> player_data.is_racial_spell( s_id ) )
+    else if ( s_player -> dbc.is_race_ability( s_id ) )
       s_type      = T_RACE;
-    else if ( s_player -> player_data.is_glyph_spell( s_id ) )
+    else if ( s_player -> dbc.is_glyph_spell( s_id ) )
       s_type      = T_GLYPH;
-    else if ( s_player -> player_data.is_set_bonus_spell( s_id ) )
+    else if ( s_player -> dbc.is_set_bonus_spell( s_id ) )
       s_type      = T_ITEM;
   }
   
   // At this point, our spell must exist or we are in trouble
-  if ( ! s_id || ! s_player -> player_data.spell_exists( s_id ) )
+  if ( ! s_id || ! s_player -> dbc.spell( s_id ) )
+  {
     return false;
+  }
   
   // Do second phase of spell initialization
-  s_data = s_player -> player_data.m_spells_index[ s_id ];
+  s_data = s_player -> dbc.spell( s_id );
 
-  s_player -> player_data.spell_set_used( s_id, true );
+  const_cast<spell_data_t*>( s_data ) -> set_used( true );
 
   // Some spells, namely specialization and class spells
   // can specify a tree for the spell
   switch ( s_type )
   {
     case T_SPEC:
-      s_tree = s_player -> player_data.find_talent_spec_spell_tree( player_class, s_id );
+      s_tree = s_player -> dbc.specialization_ability_tree( player_class, s_id );
       break;
     case T_CLASS:
-      s_tree = s_player -> player_data.find_class_spell_tree( player_class, s_id );
+      s_tree = s_player -> dbc.class_ability_tree( player_class, s_id );
       break;
     default:
       s_tree = -1;
       break;
   }
 
-  s_enabled = s_player -> player_data.spell_is_enabled( s_id ) & 
-              s_player -> player_data.spell_is_level( s_id, s_player -> level );
+  s_enabled = s_data -> is_enabled() & s_data -> is_level( s_player -> level );
    
   // Warn if the player is enabling a spell that the player has no level for
   /*
-  if ( ! s_player -> player_data.spell_is_level( s_id, s_player -> level ) )
+  if ( ! s_player -> dbc.spell_is_level( s_id, s_player -> level ) )
   {
     s_player -> sim -> errorf( "Warning: Player %s level (%d) too low for spell %s, requires level %d",
       s_player -> name_str.c_str(),
@@ -327,13 +328,13 @@ bool spell_id_t::initialize( const char* s_name )
   // Map s_effects, figure out if this is a s_single-effect spell
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
-    if ( ! s_data -> effect[ i ] )
+    if ( ! s_data -> _effect[ i ] )
       continue;
       
-    if ( ! s_player -> player_data.m_effects_index[ s_data -> effect[ i ] ] )
+    if ( ! s_player -> dbc.effect( s_data -> _effect[ i ] ) )
       continue;
     
-    s_effects[ i ] = s_player -> player_data.m_effects_index[ s_data -> effect[ i ] ];
+    s_effects[ i ] = s_player -> dbc.effect( s_data -> _effect[ i ] );
     n_effects++;
   }
   
@@ -405,7 +406,7 @@ const char* spell_id_t::real_name() SC_CONST
   if ( ! s_player || ! s_data || ! s_id )
     return 0;
 
-  return s_player -> player_data.spell_name_str( s_id );
+  return s_data -> name_cstr();
 }
 
 const std::string spell_id_t::token() SC_CONST
@@ -421,7 +422,7 @@ double spell_id_t::missile_speed() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_missile_speed( s_id );
+  return s_data -> missile_speed();
 }
 
 uint32_t spell_id_t::school_mask() SC_CONST
@@ -429,7 +430,7 @@ uint32_t spell_id_t::school_mask() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_school_mask( s_id );
+  return s_data -> school_mask();
 }
 
 uint32_t spell_id_t::get_school_mask( const school_type s )
@@ -533,7 +534,7 @@ resource_type spell_id_t::power_type() SC_CONST
   if ( ! ok() )
     return RESOURCE_NONE;
 
-  return s_player -> player_data.spell_power_type( s_id );
+  return s_data -> power_type();
 }
 
 double spell_id_t::min_range() SC_CONST
@@ -541,7 +542,7 @@ double spell_id_t::min_range() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_min_range( s_id );
+  return s_data -> min_range();
 }
 
 double spell_id_t::max_range() SC_CONST
@@ -549,7 +550,7 @@ double spell_id_t::max_range() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_max_range( s_id );
+  return s_data -> max_range();
 }
 
 double spell_id_t::extra_coeff() SC_CONST
@@ -557,7 +558,7 @@ double spell_id_t::extra_coeff() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_extra_coeff( s_id );
+  return s_data -> extra_coeff();
 }
 
 bool spell_id_t::in_range() SC_CONST
@@ -565,7 +566,7 @@ bool spell_id_t::in_range() SC_CONST
   if ( ! ok() )
     return false;
 
-  return s_player -> player_data.spell_in_range( s_id, s_player -> distance );
+  return s_data -> in_range( s_player -> distance );
 }
 
 double spell_id_t::cooldown() SC_CONST
@@ -573,7 +574,7 @@ double spell_id_t::cooldown() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  double d = s_player -> player_data.spell_cooldown( s_id );
+  double d = s_data -> cooldown();
 
   if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
     d = s_player -> sim -> wheel_seconds - 2.0;
@@ -586,7 +587,7 @@ double spell_id_t::gcd() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_gcd( s_id );
+  return s_data -> gcd();
 }
 
 uint32_t spell_id_t::category() SC_CONST
@@ -594,7 +595,7 @@ uint32_t spell_id_t::category() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_category( s_id );
+  return s_data -> category();
 }
 
 double spell_id_t::duration() SC_CONST
@@ -602,7 +603,7 @@ double spell_id_t::duration() SC_CONST
   if ( ! ok() )
     return 0.0;
   
-  double d = s_player -> player_data.spell_duration( s_id );
+  double d = s_data -> duration();
 
   if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
     d = s_player -> sim -> wheel_seconds - 2.0;
@@ -615,7 +616,7 @@ double spell_id_t::cost() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_cost( s_id );
+  return s_data -> cost();
 }
 
 uint32_t spell_id_t::rune_cost() SC_CONST
@@ -623,7 +624,7 @@ uint32_t spell_id_t::rune_cost() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_rune_cost( s_id );
+  return s_data -> rune_cost();
 }
 
 double spell_id_t::runic_power_gain() SC_CONST
@@ -631,7 +632,7 @@ double spell_id_t::runic_power_gain() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_runic_power_gain( s_id );
+  return s_data -> runic_power_gain();
 }
 
 uint32_t spell_id_t::max_stacks() SC_CONST
@@ -639,7 +640,7 @@ uint32_t spell_id_t::max_stacks() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_max_stacks( s_id );
+  return s_data -> max_stacks();
 }
 
 uint32_t spell_id_t::initial_stacks() SC_CONST
@@ -647,7 +648,7 @@ uint32_t spell_id_t::initial_stacks() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_initial_stacks( s_id );
+  return s_data -> initial_stacks();
 }
 
 double spell_id_t::proc_chance() SC_CONST
@@ -655,7 +656,7 @@ double spell_id_t::proc_chance() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_proc_chance( s_id );
+  return s_data -> proc_chance();
 }
 
 double spell_id_t::cast_time() SC_CONST
@@ -663,23 +664,23 @@ double spell_id_t::cast_time() SC_CONST
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.spell_cast_time( s_id, s_player -> level );
+  return s_data -> cast_time( s_player -> level );
 }
 
-uint32_t spell_id_t::effect_id( const uint32_t effect_num ) SC_CONST
+uint32_t spell_id_t::effect_id( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_effect_id( s_id, effect_num );
+  return s_data -> effect_id( effect_num );
 }
 
-bool spell_id_t::flags( const spell_attribute_t f ) SC_CONST
+bool spell_id_t::flags( spell_attribute_t f ) SC_CONST
 {
   if ( ! ok() )
     return false;
 
-  return s_player -> player_data.spell_flags( s_id, f );
+  return s_data -> flags( f );
 }
 
 const char* spell_id_t::desc() SC_CONST
@@ -687,7 +688,7 @@ const char* spell_id_t::desc() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_desc( s_id );
+  return s_data -> desc();
 }
 
 const char* spell_id_t::tooltip() SC_CONST
@@ -695,67 +696,67 @@ const char* spell_id_t::tooltip() SC_CONST
   if ( ! ok() )
     return 0;
 
-  return s_player -> player_data.spell_tooltip( s_id );
+  return s_data -> tooltip();
 }
 
-int32_t spell_id_t::effect_type( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_type( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_type( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> type();
 }
 
-int32_t spell_id_t::effect_subtype( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_subtype( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_subtype( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> subtype();
 }
 
-int32_t spell_id_t::effect_base_value( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_base_value( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_base_value( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> base_value();
 }
 
-int32_t spell_id_t::effect_misc_value1( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_misc_value1( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_misc_value1( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> misc_value1();
 }
 
-int32_t spell_id_t::effect_misc_value2( const uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_misc_value2( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_misc_value2( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> misc_value2();
 }
 
-uint32_t spell_id_t::effect_trigger_spell( const uint32_t effect_num ) SC_CONST
+uint32_t spell_id_t::effect_trigger_spell( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_trigger_spell_id( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> trigger_spell_id();
 }
 
 double spell_id_t::effect_chain_multiplier( uint32_t effect_num ) SC_CONST
@@ -763,150 +764,129 @@ double spell_id_t::effect_chain_multiplier( uint32_t effect_num ) SC_CONST
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_chain_multiplier( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> chain_multiplier();
 }
 
-double spell_id_t::effect_average( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_average( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_average( effect_id, 
-    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
+  return s_player -> dbc.effect_average( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_delta( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_delta( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_delta( effect_id, 
-    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
+  return s_player -> dbc.effect_delta( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_bonus( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_bonus( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_bonus( effect_id, 
-    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
+  return s_player -> dbc.effect_bonus( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_min( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_min( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_min( effect_id, 
-    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
+  return s_player -> dbc.effect_min( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_max( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_max( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_max( effect_id, 
-    s_player -> player_data.spell_scaling_class( s_id ), s_player -> level );
+  return s_player -> dbc.effect_max( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_min( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+double spell_id_t::effect_coeff( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.effect_min( s_id, s_player -> level, type, sub_type, misc_value );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
+
+  return s_player -> dbc.effect( effect_id ) -> coeff();
 }
 
-double spell_id_t::effect_max( effect_type_t type, effect_subtype_t sub_type, int misc_value ) SC_CONST
+double spell_id_t::effect_period( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  return s_player -> player_data.effect_max( s_id, s_player -> level, type, sub_type, misc_value );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
+
+  return s_player -> dbc.effect( effect_id ) -> period();
 }
 
-double spell_id_t::effect_coeff( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_radius( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_coeff( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> radius();
 }
 
-double spell_id_t::effect_period( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_radius_max( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_period( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> radius_max();
 }
 
-double spell_id_t::effect_radius( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_pp_combo_points( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_radius( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> pp_combo_points();
 }
 
-double spell_id_t::effect_radius_max( const uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_real_ppl( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0.0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_radius_max( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> real_ppl();
 }
 
-double spell_id_t::effect_pp_combo_points( const uint32_t effect_num ) SC_CONST
-{
-  if ( ! ok() )
-    return 0.0;
-
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
-
-  return s_player -> player_data.effect_pp_combo_points( effect_id );
-}
-
-double spell_id_t::effect_real_ppl( const uint32_t effect_num ) SC_CONST
-{
-  if ( ! ok() )
-    return 0.0;
-
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
-
-  return s_player -> player_data.effect_real_ppl( effect_id );
-}
-
-int spell_id_t::effect_die_sides( const uint32_t effect_num ) SC_CONST
+int spell_id_t::effect_die_sides( uint32_t effect_num ) SC_CONST
 {
   if ( ! ok() )
     return 0;
 
-  uint32_t effect_id = s_player -> player_data.spell_effect_id( s_id, effect_num );
+  uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> player_data.effect_die_sides( effect_id );
+  return s_player -> dbc.effect( effect_id ) -> die_sides();
 }
 
 double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
@@ -915,16 +895,16 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
     return 0.0;
 
   if ( s_single && 
-       ( type == E_MAX || s_single -> type == type ) && 
-       ( sub_type == A_MAX || s_single -> subtype == sub_type ) && 
-       ( misc_value == DEFAULT_MISC_VALUE || s_single -> misc_value == misc_value ) &&
-       ( misc_value2 == DEFAULT_MISC_VALUE || s_single -> misc_value_2 == misc_value2 ) )
+       ( type == E_MAX || s_single -> type() == type ) && 
+       ( sub_type == A_MAX || s_single -> subtype() == sub_type ) && 
+       ( misc_value == DEFAULT_MISC_VALUE || s_single -> misc_value1() == misc_value ) &&
+       ( misc_value2 == DEFAULT_MISC_VALUE || s_single -> misc_value2() == misc_value2 ) )
   {
-    if ( ( type == E_MAX || s_single -> type == type ) && 
-         ( sub_type == A_MAX || s_single -> subtype == sub_type ) && 
-         ( misc_value == DEFAULT_MISC_VALUE || s_single -> misc_value == misc_value ) &&
-         ( misc_value2 == DEFAULT_MISC_VALUE || s_single -> misc_value_2 == misc_value2 ) )
-      return sc_data_access_t::fmt_value( s_single -> base_value, s_single -> type, s_single -> subtype );
+    if ( ( type == E_MAX || s_single -> type() == type ) && 
+         ( sub_type == A_MAX || s_single -> subtype() == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || s_single -> misc_value1() == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || s_single -> misc_value2() == misc_value2 ) )
+      return dbc_t::fmt_value( s_single -> base_value(), s_single -> type(), s_single -> subtype() );
     else
       return 0.0;
   }
@@ -934,11 +914,11 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
     if ( ! s_effects[ i ] )
       continue;
 
-    if ( ( type == E_MAX || s_effects[ i ] -> type == type ) && 
-         ( sub_type == A_MAX || s_effects[ i ] -> subtype == sub_type ) && 
-         ( misc_value == DEFAULT_MISC_VALUE || s_effects[ i ] -> misc_value == misc_value ) &&
-         ( misc_value2 == DEFAULT_MISC_VALUE || s_effects[ i ] -> misc_value_2 == misc_value2 ) )
-      return sc_data_access_t::fmt_value( s_effects[ i ] -> base_value, type, sub_type );
+    if ( ( type == E_MAX || s_effects[ i ] -> type() == type ) && 
+         ( sub_type == A_MAX || s_effects[ i ] -> subtype() == sub_type ) && 
+         ( misc_value == DEFAULT_MISC_VALUE || s_effects[ i ] -> misc_value1() == misc_value ) &&
+         ( misc_value2 == DEFAULT_MISC_VALUE || s_effects[ i ] -> misc_value2() == misc_value2 ) )
+      return dbc_t::fmt_value( s_effects[ i ] -> base_value(), type, sub_type );
   }
   
   return 0.0;
@@ -984,13 +964,13 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
 
   if ( s_single )
   {
-    if ( ( p_type == P_MAX ) || ( s_single -> subtype == A_ADD_FLAT_MODIFIER ) || ( s_single -> subtype == A_ADD_PCT_MODIFIER ) )
+    if ( ( p_type == P_MAX ) || ( s_single -> subtype() == A_ADD_FLAT_MODIFIER ) || ( s_single -> subtype() == A_ADD_PCT_MODIFIER ) )
     {
-      if ( s_single -> subtype == (int) A_ADD_PCT_MODIFIER )
-        return s_single -> base_value / 100.0;
+      if ( s_single -> subtype() == (int) A_ADD_PCT_MODIFIER )
+        return s_single -> base_value() / 100.0;
       // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
       else
-        return s_single -> base_value / property_flat_divisor[ s_single -> misc_value ];
+        return s_single -> base_value() / property_flat_divisor[ s_single -> misc_value1() ];
     }
     else
       return 0.0;
@@ -1001,17 +981,17 @@ double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
     if ( ! s_effects[ i ] )
       continue;
 
-    if ( s_effects[ i ] -> subtype != A_ADD_FLAT_MODIFIER && s_effects[ i ] -> subtype != A_ADD_PCT_MODIFIER )
+    if ( s_effects[ i ] -> subtype() != A_ADD_FLAT_MODIFIER && s_effects[ i ] -> subtype() != A_ADD_PCT_MODIFIER )
       continue;
 
-    if ( p_type == P_MAX || s_effects[ i ] -> misc_value == p_type )
+    if ( p_type == P_MAX || s_effects[ i ] -> misc_value1() == p_type )
     {
       // Divide by 100 for every A_ADD_PCT_MODIFIER
-      if ( s_effects[ i ] -> subtype == (int) A_ADD_PCT_MODIFIER )
-        return s_effects[ i ] -> base_value / 100.0;
+      if ( s_effects[ i ] -> subtype() == (int) A_ADD_PCT_MODIFIER )
+        return s_effects[ i ] -> base_value() / 100.0;
       // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
       else
-        return s_effects[ i ] -> base_value / property_flat_divisor[ s_effects[ i ] -> misc_value ];
+        return s_effects[ i ] -> base_value() / property_flat_divisor[ s_effects[ i ] -> misc_value1() ];
     }
   }
   
@@ -1066,11 +1046,11 @@ passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const ch
 // Glyph basic object
 
 glyph_t::glyph_t( player_t* player, spell_data_t* _sd ) :
-  spell_id_t( player, _sd->name ),
+  spell_id_t( player, _sd->name_cstr() ),
   // Future trimmed down access
   sd( _sd ), sd_enabled( spell_data_t::nil() )
 {
-  initialize( sd->name );
+  initialize( sd->name_cstr() );
   if( s_token.substr( 0, 9 ) == "glyph_of_" ) s_token.erase( 0, 9 );
   if( s_token.substr( 0, 7 ) == "glyph__"   ) s_token.erase( 0, 7 );
   s_enabled = false;

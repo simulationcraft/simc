@@ -1276,6 +1276,96 @@ int util_t::class_id( int type )
   case MAGE:         return  8;
   case WARLOCK:      return  9;
   case DRUID:        return 11;
+  case PLAYER_SPECIAL_SCALE: return 12;
+  }
+
+  return 0;
+}
+
+// util_t::race_id ========================================================
+
+unsigned util_t::race_id( int r )
+{
+  switch ( r )
+  {
+  case RACE_NIGHT_ELF: return 4;
+  case RACE_HUMAN: return 1;
+  case RACE_GNOME: return 7;
+  case RACE_DWARF: return 3;
+  case RACE_DRAENEI: return 11;
+  case RACE_WORGEN: return 22;
+  case RACE_ORC: return 2;
+  case RACE_TROLL: return 8;
+  case RACE_UNDEAD: return 5;
+  case RACE_BLOOD_ELF: return 10;
+  case RACE_TAUREN: return 6;
+  case RACE_GOBLIN: return 9;
+  default: break;
+  }
+  return 0;
+}
+
+// util_t::race_mask ========================================================
+
+unsigned util_t::race_mask( int r )
+{
+  uint32_t id = race_id( r );
+
+  if ( id > 0 )
+    return ( 1 << ( id - 1 ) );
+
+  return 0x00;
+}
+
+// util_t::pet_class_type ========================================================
+
+player_type util_t::pet_class_type( int c )
+{
+  player_type p = WARRIOR;
+
+  if ( c <= PET_HUNTER )
+  {
+    p = WARRIOR;
+  }
+  else if ( c == PET_GHOUL )
+  {
+    p = ROGUE;
+  }
+  else if ( c == PET_FELGUARD )
+  {
+    p = WARRIOR;
+  }
+  else if ( c <= PET_WARLOCK )
+  {
+    p = WARLOCK;
+  }
+
+  return p;
+}
+
+// util_t::pet_mask ========================================================
+
+unsigned util_t::pet_mask( int p )
+{
+  if ( p <= PET_FEROCITY )
+    return 0x1;
+  if ( p <= PET_TENACITY )
+    return 0x2;
+  if ( p <= PET_CUNNING )
+    return 0x4;
+
+  return 0x0;
+}
+
+unsigned util_t::pet_id( int p )
+{
+  uint32_t mask = pet_mask( p );
+
+  switch ( mask )
+  {
+  case 0x1: return 1;
+  case 0x2: return 2;
+  case 0x4: return 3;
   }
 
   return 0;

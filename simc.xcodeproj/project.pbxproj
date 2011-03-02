@@ -78,7 +78,6 @@
 		6E4AFD6412D923CF00621EA4 /* sc_chardev.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E4AFD6312D923AC00621EA4 /* sc_chardev.cpp */; };
 		6E84EB761292F73F00976A2C /* sc_battle_net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB5E1292F40B00976A2C /* sc_battle_net.cpp */; };
 		6E84EB771292F73F00976A2C /* sc_const_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB5F1292F40B00976A2C /* sc_const_data.cpp */; };
-		6E84EB781292F73F00976A2C /* sc_data_access.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB601292F40B00976A2C /* sc_data_access.cpp */; };
 		6E84EB791292F73F00976A2C /* sc_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB611292F40B00976A2C /* sc_data.cpp */; };
 		6E84EB7A1292F73F00976A2C /* sc_spell_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB621292F40B00976A2C /* sc_spell_data.cpp */; };
 		6E84EB7B1292F73F00976A2C /* sc_spell_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E84EB631292F40B00976A2C /* sc_spell_info.cpp */; };
@@ -216,7 +215,6 @@
 		6E84EB5D1292F40B00976A2C /* data_enums.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = data_enums.hh; sourceTree = "<group>"; };
 		6E84EB5E1292F40B00976A2C /* sc_battle_net.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_battle_net.cpp; sourceTree = "<group>"; };
 		6E84EB5F1292F40B00976A2C /* sc_const_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_const_data.cpp; sourceTree = "<group>"; };
-		6E84EB601292F40B00976A2C /* sc_data_access.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_data_access.cpp; sourceTree = "<group>"; };
 		6E84EB611292F40B00976A2C /* sc_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_data.cpp; sourceTree = "<group>"; };
 		6E84EB621292F40B00976A2C /* sc_spell_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_spell_data.cpp; sourceTree = "<group>"; };
 		6E84EB631292F40B00976A2C /* sc_spell_info.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_spell_info.cpp; sourceTree = "<group>"; };
@@ -281,7 +279,6 @@
 				6E84EB5F1292F40B00976A2C /* sc_const_data.cpp */,
 				44E3D1BE10545A7500677DEB /* sc_consumable.cpp */,
 				6E84EB611292F40B00976A2C /* sc_data.cpp */,
-				6E84EB601292F40B00976A2C /* sc_data_access.cpp */,
 				44E3D1BF10545A7500677DEB /* sc_death_knight.cpp */,
 				44E3D1C010545A7500677DEB /* sc_druid.cpp */,
 				44E3D1C110545A7500677DEB /* sc_enchant.cpp */,
@@ -530,7 +527,6 @@
 				6E84EB761292F73F00976A2C /* sc_battle_net.cpp in Sources */,
 				6E4AFD6412D923CF00621EA4 /* sc_chardev.cpp in Sources */,
 				6E84EB771292F73F00976A2C /* sc_const_data.cpp in Sources */,
-				6E84EB781292F73F00976A2C /* sc_data_access.cpp in Sources */,
 				6E84EB791292F73F00976A2C /* sc_data.cpp in Sources */,
 				6E84EB7A1292F73F00976A2C /* sc_spell_data.cpp in Sources */,
 				6E84EB7B1292F73F00976A2C /* sc_spell_info.cpp in Sources */,

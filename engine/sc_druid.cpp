@@ -1146,7 +1146,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     parse_options( NULL, options_str );
 
-    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
+    base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.feral_aggression -> mod_additive( P_GENERIC );
     requires_combo_points = true;
   }
@@ -1233,11 +1233,9 @@ struct maim_t : public druid_cat_attack_t
   maim_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "maim", 22570, player )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
     
-    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
+    base_dmg_per_point    = player -> dbc.effect_bonus( effect_id( 1 ), player -> level );
     requires_combo_points = true;
   }
 
@@ -1427,7 +1425,7 @@ struct rip_t : public druid_cat_attack_t
 
     parse_options( NULL, options_str );
 
-    base_dmg_per_point    = p -> player_data.effect_bonus( p -> player_data.spell_effect_id( id, 1 ), p -> type, p -> level);
+    base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
     ap_per_point          = 0.0207;
     requires_combo_points = true;
     may_crit   = false;
@@ -2507,15 +2505,13 @@ struct faerie_fire_feral_t : public druid_spell_t
   faerie_fire_feral_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "faerie_fire_feral", 60089, player )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );    
     
     base_attack_power_multiplier = extra_coeff();
     base_spell_power_multiplier  = 0;
     direct_power_mod             = 1.0;
-    cooldown -> duration         = p -> player_data.spell_cooldown( 16857 ); // Cooldown is stored in another version of FF
-    trigger_gcd                  = p -> player_data.spell_gcd( 16857 );
+    cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown(); // Cooldown is stored in another version of FF
+    trigger_gcd                  = player -> dbc.spell( 16857 ) -> gcd();
   }
 
   virtual void execute()
@@ -3337,10 +3333,10 @@ struct typhoon_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     aoe                   = -1;
-    base_dd_min           = p -> player_data.effect_min( effect_id( 2 ), p -> type, p -> level );
-    base_dd_max           = p -> player_data.effect_max( effect_id( 2 ), p -> type, p -> level );
+    base_dd_min           = p -> dbc.effect_min( effect_id( 2 ), p -> level );
+    base_dd_max           = p -> dbc.effect_max( effect_id( 2 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
-    direct_power_mod      = p -> player_data.effect_coeff( effect_id( 2 ) );
+    direct_power_mod      = p -> dbc.effect( effect_id( 2 ) ) -> coeff();
     cooldown -> duration += p -> glyphs.monsoon -> mod_additive( P_COOLDOWN );
     base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
@@ -3374,16 +3370,14 @@ struct wild_mushroom_detonate_t : public druid_spell_t
   wild_mushroom_detonate_t( druid_t* player, const std::string& options_str ) :
       druid_spell_t( "wild_mushroom_detonate", 88751, player )
     {
-      druid_t* p = player -> cast_druid();
-
       parse_options( NULL, options_str );
 
       // Actual ability is 88751, all damage is in spell 78777
-      uint32_t damage_id = 78777;
-      direct_power_mod   = p -> player_data.effect_coeff( damage_id, E_SCHOOL_DAMAGE );
-      base_dd_min        = p -> player_data.effect_min( damage_id, p -> level, E_SCHOOL_DAMAGE );
-      base_dd_max        = p -> player_data.effect_max( damage_id, p -> level, E_SCHOOL_DAMAGE );
-      school             = spell_id_t::get_school_type( p -> player_data.spell_school_mask( damage_id ) );
+      const spell_data_t* damage_spell = player -> dbc.spell( 78777 );
+      direct_power_mod   = damage_spell -> effect1 -> coeff();
+      base_dd_min        = player -> dbc.effect_min( damage_spell -> effect1 -> id(), player -> level );
+      base_dd_max        = player -> dbc.effect_max( damage_spell -> effect1 -> id(), player -> level );
+      school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
       stats -> school    = school;
       aoe                = -1;
     }
@@ -3792,8 +3786,8 @@ void druid_t::init_buffs()
   buffs_barkskin           = new buff_t( this, 22812, "barkskin" );
   buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
   buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
-  buffs_enrage             = new buff_t( this, player_data.find_class_spell( type, "Enrage" ), "enrage" );
-  buffs_lacerate           = new buff_t( this, player_data.find_class_spell( type, "Lacerate" ), "lacerate" );
+  buffs_enrage             = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
+  buffs_lacerate           = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
   buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );
   buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600

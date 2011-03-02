@@ -182,10 +182,10 @@ static std::string spell_flags( sim_t* sim, const spell_data_t* spell )
   
   s << "[";
   
-  if ( spell -> scaling_type != 0 )
+  if ( spell -> scaling_class() != 0 )
     s << "Scaling Spell, ";
   
-  if ( spell -> gcd == 0 && spell -> cast_min == 0 && spell -> cast_max == 0 )
+  if ( spell -> _gcd == 0 && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
     s << "Off GCD, ";
   
   if ( s.tellp() > 1 )
@@ -207,24 +207,24 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   char tmp_buffer[512],
        tmp_buffer2[64];
   
-  snprintf( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id );
-  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index + 1, 10, tmp_buffer2 );
+  snprintf( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
+  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index() + 1, 10, tmp_buffer2 );
   s << tmp_buffer;
   
-  if ( e -> type < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) && 
-    _effect_type_strings[ e -> type ] != 0 )
+  if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) && 
+    _effect_type_strings[ e -> type() ] != 0 )
   {
-    s << _effect_type_strings[ e -> type ];
+    s << _effect_type_strings[ e -> type() ];
     // Put some nice handling on some effect types
-    switch ( e -> type )
+    switch ( e -> type() )
     {
       case E_SCHOOL_DAMAGE:
-        s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school ) );
+        s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
         break;
       case E_TRIGGER_SPELL:
       case E_TRIGGER_SPELL_WITH_VALUE:
-        if ( e -> trigger_spell_id && sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] )
-          s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] -> name;
+        if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
+          s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
         break;
       default:
         break;
@@ -232,38 +232,38 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   }
   else
     s << "Unknown effect type";
-  s << " (" << e -> type << ")";
+  s << " (" << e -> type() << ")";
 
-  if ( e -> subtype > 0 )
+  if ( e -> subtype() > 0 )
   {
-   if (  e -> subtype < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) && 
-     _effect_subtype_strings[ e -> subtype ] != 0 )
+   if (  e -> subtype() < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) && 
+     _effect_subtype_strings[ e -> subtype() ] != 0 )
    {
-     s << " | " << _effect_subtype_strings[ e -> subtype ];
-     switch ( e -> subtype )
+     s << " | " << _effect_subtype_strings[ e -> subtype() ];
+     switch ( e -> subtype() )
      {
        case A_PERIODIC_DAMAGE:
-         s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school ) );
-         if ( e -> amplitude )
-           s << " every " << e -> amplitude / 1000.0 << " seconds";
+         s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
+         if ( e -> period() )
+           s << " every " << e -> period() << " seconds";
          break;
        case A_PROC_TRIGGER_SPELL:
-         if ( e -> trigger_spell_id && sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] )
-           s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] -> name;
+         if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
+           s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
          break;
        case A_PERIODIC_TRIGGER_SPELL:
-         if ( e -> trigger_spell_id && sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] )
+         if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
          {
-           s << ": " << sim -> sim_data.m_spells_index[ e -> trigger_spell_id ] -> name;
-           if ( e -> amplitude )
-             s << " every " << e -> amplitude / 1000.0 << " seconds";
+           s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+           if ( e -> period() )
+             s << " every " << e -> period() << " seconds";
          }
          break;
        case A_ADD_FLAT_MODIFIER:
        case A_ADD_PCT_MODIFIER:
-         if ( e -> misc_value < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) && 
-           _property_type_strings[ e -> misc_value ] != 0 )
-           s << ": " << _property_type_strings[ e -> misc_value ];
+         if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) && 
+           _property_type_strings[ e -> misc_value1() ] != 0 )
+           s << ": " << _property_type_strings[ e -> misc_value1() ];
          break;
        default:
          break;
@@ -272,7 +272,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     else
       s << " | Unknown effect sub type";
       
-    s << " (" << e -> subtype << ")";
+    s << " (" << e -> subtype() << ")";
   }
   
   s << std::endl;
@@ -280,71 +280,62 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   s << "               Base Value: ";
   double v_min = 0, v_max = 0;
 
-  v_min = sim -> sim_data.effect_min( e -> id, 
-    sim -> sim_data.spell_scaling_class( spell -> id ),
-    85 );
-
-  v_max = sim -> sim_data.effect_max( e -> id, 
-    sim -> sim_data.spell_scaling_class( spell -> id ),
-    85 );
+  v_min = sim -> dbc.effect_min( e -> id(), 85 );
+  v_max = sim -> dbc.effect_max( e -> id(), 85 );
 
   s << v_min;
   if ( v_min != v_max )
     s << " - " << v_max;
 
-  if ( v_min != e -> base_value && v_max != e -> base_value )
-    s << " (" << e -> base_value << ")";
+  if ( v_min != e -> base_value() && v_max != e -> base_value() )
+    s << " (" << e -> base_value() << ")";
   
-  if ( e -> m_unk )
-  {
-    s << " | Bonus Value: " << sim -> sim_data.effect_bonus( e -> id,
-      sim -> sim_data.spell_scaling_class( spell -> id ),
-      85 );
-  }
+  if ( e -> m_unk() )
+    s << " | Bonus Value: " << sim -> dbc.effect_bonus( e -> id(), 85 );
   
-  if ( e -> real_ppl != 0 )
+  if ( e -> real_ppl() != 0 )
   {
-    snprintf( tmp_buffer, sizeof(tmp_buffer), "%f", e -> real_ppl );
-    s << " | Points Per Level: " << e -> real_ppl;
+    snprintf( tmp_buffer, sizeof(tmp_buffer), "%f", e -> real_ppl() );
+    s << " | Points Per Level: " << e -> real_ppl();
   }
 
-  if ( e -> die_sides != 0 )
+  if ( e -> die_sides() != 0 )
   {
-    s << " | Value Range: " << e -> die_sides;
+    s << " | Value Range: " << e -> die_sides();
   }
   
-  if ( e -> coeff != 0 )
+  if ( e -> coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof(tmp_buffer), "%.3f", e -> coeff );
+    snprintf( tmp_buffer, sizeof(tmp_buffer), "%.3f", e -> coeff() );
     s << " | Coefficient: " << tmp_buffer;
   }
   
-  if ( e -> m_chain != 0 && e -> m_chain != 1.0 )
-    s << " | Chain Multiplier: " << e -> m_chain;
+  if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
+    s << " | Chain Multiplier: " << e -> chain_multiplier();
   
-  if ( e -> misc_value != 0 )
+  if ( e -> misc_value1() != 0 )
   {
-    if ( e -> subtype == A_MOD_DAMAGE_DONE || 
-         e -> subtype == A_MOD_DAMAGE_TAKEN || 
-         e -> subtype == A_MOD_DAMAGE_PERCENT_DONE || 
-         e -> subtype == A_MOD_DAMAGE_PERCENT_TAKEN )
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value );
+    if ( e -> subtype() == A_MOD_DAMAGE_DONE || 
+         e -> subtype() == A_MOD_DAMAGE_TAKEN || 
+         e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE || 
+         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value );
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
     s << " | Misc Value: " << tmp_buffer;
   }
   
-  if ( e -> misc_value_2 != 0 )
+  if ( e -> misc_value2() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value_2 );
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value2() );
     s << " | Misc Value 2: " << tmp_buffer;
   }
 
-  if ( e -> pp_combo_points != 0 )
-    s << " | Points Per Combo Point: " << e -> pp_combo_points;
+  if ( e -> pp_combo_points() != 0 )
+    s << " | Points Per Combo Point: " << e -> pp_combo_points();
 
-  if ( e -> trigger_spell_id != 0 )
-    s << " | Trigger Spell: " << e -> trigger_spell_id;
+  if ( e -> trigger_spell_id() != 0 )
+    s << " | Trigger Spell: " << e -> trigger_spell_id();
 
   s << std::endl;
   return s;
@@ -355,18 +346,18 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   std::ostringstream s;
   player_type pt = PLAYER_NONE;
   
-  s <<   "Name         : " << spell -> name << " (id=" << spell -> id << ") " << spell_flags( sim, spell ) << std::endl;
+  s <<   "Name         : " << spell -> name_cstr() << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
   
-  if ( spell -> class_mask )
+  if ( spell -> class_mask() )
   {
     s << "Class        : ";
     for ( unsigned int i = 0; i < 12; i++ )
     {
-      if ( spell -> class_mask & ( 1 << ( i - 1 ) ) )
+      if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
       {
         s << _class_strings[ i ] << ", ";
         if ( ! pt )
-          pt = sc_data_access_t::get_class_type( i );
+          pt = (player_type) ( i - 1 );
       }
     }
     
@@ -374,12 +365,12 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << std::endl;
   }
   
-  if ( spell -> race_mask )
+  if ( spell -> race_mask() )
   {
     s << "Race         : ";
     for ( unsigned int i = 0; i < 24; i++ )
     {
-      if ( spell -> race_mask & ( 1 << ( i - 1 ) ) )
+      if ( spell -> race_mask() & ( 1 << ( i - 1 ) ) )
         s << _race_strings[ i ] << ", ";
     }
     
@@ -387,32 +378,32 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << std::endl;
   }
   
-  if ( ( spell -> power_type + 2 ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) && 
-    ( spell -> cost > 0 || ( spell -> power_type == 5 && spell -> rune_cost > 0 ) ) )
+  if ( ( spell -> _power_type + 2 ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) && 
+    ( spell -> cost() > 0 || ( spell -> _power_type == 5 && spell -> rune_cost() > 0 ) ) )
   {
     s << "Resource     : ";
-    if ( spell -> power_type != 5 && spell -> power_type != 6 && spell -> power_type != 1 )
+    if ( spell -> _power_type != 5 && spell -> _power_type != 6 && spell -> _power_type != 1 )
     {
       double base_mana = rating_t::get_attribute_base( sim, 
-        sim -> sim_data, 
+        sim -> dbc, 
         85, 
         pt, 
         RACE_NONE, 
         BASE_STAT_MANA );
       
-      s << spell -> cost << ( spell -> power_type == 0 ? "% " : " " ) << _resource_strings[ spell -> power_type + 2 ];
-      if ( spell -> power_type == 0 ) 
-        s << " (" << floor( spell -> cost * base_mana / 100.0 ) << " mana @" << 85 << ")";
+      s << spell -> _cost << ( spell -> _power_type == 0 ? "% " : " " ) << _resource_strings[ spell -> _power_type + 2 ];
+      if ( spell -> _power_type == 0 ) 
+        s << " (" << floor( spell -> cost() * base_mana ) << " mana @" << 85 << ")";
         
       s << std::endl;
     }
-    else if ( spell -> power_type == 6 || spell -> power_type == 1 )
-      s << spell -> cost / 10.0 << " " << _resource_strings[ spell -> power_type + 2 ] << std::endl; 
-    else if ( spell -> rune_cost > 0 )
+    else if ( spell -> _power_type == 6 || spell -> _power_type == 1 )
+      s << spell -> cost() / 10.0 << " " << _resource_strings[ spell -> _power_type + 2 ] << std::endl; 
+    else if ( spell -> rune_cost() > 0 )
     {
-      int b = spell -> rune_cost & 0x3;
-      int u = ( spell -> rune_cost & 0xC ) >> 2;
-      int f = ( spell -> rune_cost & 0x30 ) >> 4;
+      int b = spell -> rune_cost() & 0x3;
+      int u = ( spell -> rune_cost() & 0xC ) >> 2;
+      int f = ( spell -> rune_cost() & 0x30 ) >> 4;
       if ( b > 0 ) s << ( b & 0x1 ? "1" : "2" ) << " Blood, ";
       if ( u > 0 ) s << ( u & 0x1 ? "1" : "2" ) << " Unholy, ";
       if ( f > 0 ) s << ( f & 0x1 ? "1" : "2" ) << " Frost, ";
@@ -423,84 +414,84 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     }
   }
   
-  if ( spell -> spell_level > 0 )
+  if ( spell -> level() > 0 )
   {
-    s << "Spell Level  : " << ( int ) spell -> spell_level;
-    if ( spell -> max_level > 0 )
-      s << " (max " << ( int ) spell -> max_level << ")";
+    s << "Spell Level  : " << ( int ) spell -> level();
+    if ( spell -> max_level() > 0 )
+      s << " (max " << ( int ) spell -> max_level() << ")";
       
     s << std::endl;
   }
   
-  if ( spell -> min_range || spell -> max_range )
+  if ( spell -> min_range() || spell -> max_range() )
   {
     s << "Range        : ";
-    if ( spell -> min_range )
-      s << ( int ) spell -> min_range << " - ";
+    if ( spell -> min_range() )
+      s << ( int ) spell -> min_range() << " - ";
     
-    s << ( int ) spell -> max_range << " yards" << std::endl;
+    s << ( int ) spell -> max_range() << " yards" << std::endl;
   }
   
-  if ( spell -> cast_min > 0 || spell -> cast_max > 0 )
+  if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
   {
     s << "Cast Time    : ";
     
-    if ( spell -> cast_div )
-      s << sim -> sim_data.spell_cast_time( spell -> id, 85 );
-    else if ( spell -> cast_min != spell -> cast_max )
-      s << spell -> cast_min / 1000.0 << " - " << spell -> cast_max / 1000.0;
+    if ( spell -> _cast_div )
+      s << spell -> cast_time( 85 );
+    else if ( spell -> _cast_min != spell -> _cast_max )
+      s << spell -> _cast_min / 1000.0 << " - " << spell -> _cast_max / 1000.0;
     else
-      s << spell -> cast_max / 1000.0;
+      s << spell -> _cast_max / 1000.0;
       
     s << " seconds" << std::endl;
   }
-  else if ( spell -> cast_min < 0 || spell -> cast_max < 0 )
+  else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
     s << "Cast Time    : Ranged Shot" << std::endl;
   
-  if ( spell -> gcd )
-    s << "GCD          : " << spell -> gcd / 1000.0 << " seconds" << std::endl;
+  if ( spell -> gcd() )
+    s << "GCD          : " << spell -> gcd() << " seconds" << std::endl;
   
-  if ( spell -> prj_speed )
-    s << "Velocity     : " << spell -> prj_speed << " yards/sec"  << std::endl;
+  if ( spell -> missile_speed() )
+    s << "Velocity     : " << spell -> missile_speed() << " yards/sec"  << std::endl;
   
-  if ( spell -> runic_power_gain > 0 )
-    s << "Power Gain   : " << spell -> runic_power_gain / 10.0 << " Runic Power" << std::endl;
+  if ( spell -> runic_power_gain() > 0 )
+    s << "Power Gain   : " << spell -> runic_power_gain() << " Runic Power" << std::endl;
   
-  if ( spell -> duration != 0 )
+  if ( spell -> duration() != 0 )
   {
     s << "Duration     : ";
-    if ( spell -> duration < 0 )
+    if ( spell -> duration() < 0 )
       s << "Aura (infinite)";
     else
-      s << spell -> duration / 1000.0 << " seconds";
+      s << spell -> duration() << " seconds";
       
     s << std::endl;
   }
   
-  if ( spell -> cooldown > 0 )
-    s << "Cooldown     : " << spell -> cooldown / 1000.0 << " seconds" << std::endl;
+  if ( spell -> cooldown() > 0 )
+    s << "Cooldown     : " << spell -> cooldown() << " seconds" << std::endl;
     
-  if ( spell -> proc_charges > 0 || spell -> max_stack )
+  if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
   {
     s << "Stacks       : ";
-    if ( spell -> proc_charges )
-      s << spell -> proc_charges << " initial, ";
+    if ( spell -> initial_stacks() )
+      s << spell -> initial_stacks() << " initial, ";
     
-    if ( spell -> max_stack )
-      s << spell -> max_stack << " maximum, ";
-    else if ( spell -> proc_charges && ! spell -> max_stack )
-      s << spell -> proc_charges << " maximum, ";
+    if ( spell -> max_stacks() )
+      s << spell -> max_stacks() << " maximum, ";
+    else if ( spell -> initial_stacks() && ! spell -> max_stacks() )
+      s << spell -> initial_stacks() << " maximum, ";
       
     s.seekp( -2, std::ios_base::cur );
     
     s << std::endl;
   }
   
-  if ( spell -> proc_chance > 0 )
-    s << "Proc Chance  : " << spell -> proc_chance << "%" << std::endl;
+  if ( spell -> proc_chance() > 0 )
+    s << "Proc Chance  : " << spell -> proc_chance() * 100 << "%" << std::endl;
     
-  if ( spell -> extra_coeff > 0 )
-    s << "Coefficient  : " << spell -> extra_coeff << std::endl;
+  if ( spell -> extra_coeff() > 0 )
+    s << "Coefficient  : " << spell -> extra_coeff() << std::endl;
   
   s << "Effects      :" << std::endl;
   
@@ -508,22 +499,22 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   const spelleffect_data_t* e;
   for ( int i = 0; i < 3; i++ )
   {
-    if ( ! ( effect_id = spell -> effect[ i ] ) )
+    if ( ! ( effect_id = spell -> _effect[ i ] ) )
       continue;
     else
-      e = sim -> sim_data.m_effects_index[ effect_id ];
+      e = sim -> dbc.effect( effect_id );
       
     spell_info_t::effect_to_str( sim, spell, e, s );
   }
     
-  if ( spell -> desc )
-    s << "Description  : " << spell -> desc << std::endl;
+  if ( spell -> desc() )
+    s << "Description  : " << spell -> desc() << std::endl;
   
-  if ( spell -> tooltip )
-    s << "Tooltip      : " << spell -> tooltip << std::endl;
+  if ( spell -> tooltip() )
+    s << "Tooltip      : " << spell -> tooltip() << std::endl;
     
-  if ( spell -> desc_vars )
-    s << "Variables    : " << spell -> desc_vars << std::endl;
+  if ( spell -> _desc_vars )
+    s << "Variables    : " << spell -> _desc_vars << std::endl;
   
   s << std::endl;
   
@@ -534,14 +525,14 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
 {
   std::ostringstream s;
   
-  s <<   "Name         : " << talent -> name << " (id=" << talent -> id << ") " << std::endl;
+  s <<   "Name         : " << talent -> name_cstr() << " (id=" << talent -> id() << ") " << std::endl;
   
-  if ( talent -> m_class )
+  if ( talent -> mask_class() )
   {
     s << "Class        : ";
     for ( unsigned int i = 0; i < 12; i++ )
     {
-      if ( talent -> m_class & ( 1 << ( i - 1 ) ) )
+      if ( talent -> mask_class() & ( 1 << ( i - 1 ) ) )
         s << _class_strings[ i ] << ", ";
     }
     
@@ -549,22 +540,22 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
     s << std::endl;
   }
   
-  s << "Talent Tab   : " << talent -> tab_page + 1 << std::endl;
-  if ( talent -> dependance )
+  s << "Talent Tab   : " << talent -> tab_page() + 1 << std::endl;
+  if ( talent -> depends_id() )
   {
-    s << "Depends on   : " << sim -> sim_data.m_talents_index[ talent -> dependance ] -> name;
-    if ( talent -> depend_rank > 0 )
-      s << " (Rank " << talent -> depend_rank + 1 << ")";
+    s << "Depends on   : " << sim -> dbc.talent( talent -> depends_id() ) -> name_cstr();
+    if ( talent -> depends_rank() > 0 )
+      s << " (Rank " << talent -> depends_rank() + 1 << ")";
     
     s << std::endl;
   }
   
-  s << "Column       : " << talent -> col + 1 << std::endl;
-  s << "Row          : " << talent -> row + 1 << std::endl;
+  s << "Column       : " << talent -> col() + 1 << std::endl;
+  s << "Row          : " << talent -> row() + 1 << std::endl;
   for ( int i = 0; i < 3; i++ )
   {
-    if ( talent -> rank_id[ i ] )
-      s << "Rank " << i + 1 << " Spell : " << talent -> rank_id[ i ] << std::endl;
+    if ( talent -> _rank_id[ i ] )
+      s << "Rank " << i + 1 << " Spell : " << talent -> _rank_id[ i ] << std::endl;
   }
   
   s << std::endl;

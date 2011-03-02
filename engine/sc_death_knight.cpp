@@ -461,7 +461,9 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   }
 
   if ( p -> sim -> debug )
+  {
     log_t::output( p -> sim, "rune %d regen rate %.3f with haste %.2f percent", slot_number, runes_per_second, 100.0 / p -> composite_attack_haste() );
+  }
 
   if ( state == STATE_FULL )
   {
@@ -557,11 +559,8 @@ struct army_ghoul_pet_t : public pet_t
     army_ghoul_pet_claw_t( player_t* player ) :
       army_ghoul_pet_attack_t( "claw", player )
     {
-      army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
       id = 91776;
-      parse_data( o -> player_data );
+      parse_data();
     }
   };
 
@@ -752,7 +751,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 48721;
-      parse_data( o -> player_data );
+      parse_data();
 
       background       = true;
       trigger_gcd      = 0;
@@ -787,7 +786,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 59879;
-      parse_data( o -> player_data );
+      parse_data();
 
       background         = true;
       base_tick_time     = 3.0;
@@ -818,13 +817,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 47541;
-      parse_data( o -> player_data );
+      parse_data();
 
       background  = true;
       trigger_gcd = 0;
       direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
-      base_dd_min      = o -> player_data.effect_min( id, p -> level, E_DUMMY, A_NONE );
-      base_dd_max      = o -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
+      base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level );
+      base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
       base_multiplier *= 1 + o -> glyphs.death_coil * 0.15;
       base_multiplier *= 0.50; // DRW Penalty
       if ( o -> set_bonus.tier11_2pc_melee() )
@@ -847,7 +846,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 49998;
-      parse_data( o -> player_data );
+      parse_data();
 
       background  = true;
       trigger_gcd = 0;
@@ -873,7 +872,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 59921;
-      parse_data( o -> player_data );
+      parse_data();
 
       background        = true;
       trigger_gcd       = 0;
@@ -903,7 +902,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 55050;
-      parse_data( p -> player_data );
+      parse_data();
 
       background          = true;
       aoe                 = 2;
@@ -941,7 +940,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 45477;
-      parse_data( p -> player_data );
+      parse_data();
 
       background       = true;
       trigger_gcd      = 0;
@@ -991,7 +990,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       id = 45462;
-      parse_data( o -> player_data );
+      parse_data();
 
       background       = true;
       trigger_gcd      = 0;
@@ -1276,11 +1275,8 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_claw_t( player_t* player ) :
       ghoul_pet_attack_t( "claw", player )
     {
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
       id = 91776;
-      parse_data( o -> player_data );
+      parse_data();
     }
 
   };
@@ -1290,12 +1286,9 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_sweeping_claws_t( player_t* player ) :
       ghoul_pet_attack_t( "sweeping_claws", player )
     {
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
       id = 91778;
       aoe = 2;
-      parse_data( o -> player_data );
+      parse_data();
     }
 
     virtual bool ready()
@@ -1851,7 +1844,7 @@ void death_knight_attack_t::consume_resource()
       double real_rp_gain = rp_gain;
       if ( p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_329 ) / 100.0;
+        real_rp_gain *= 1.0 + player -> dbc.spell( 48266 ) -> effect2 -> base_value() / 100.0;
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
@@ -2019,7 +2012,7 @@ void death_knight_spell_t::consume_resource()
       double real_rp_gain = rp_gain;
       if ( p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_329 ) / 100.0;
+        real_rp_gain *= 1.0 + p -> dbc.spell( 48266 ) -> effect2 -> base_value() / 100.0;
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
@@ -2163,7 +2156,7 @@ struct melee_t : public death_knight_attack_t
 
       if ( p -> rng_might_of_the_frozen_wastes -> roll( p -> talents.might_of_the_frozen_wastes -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_RUNIC, sim -> sim_data.effect_base_value( 81331, E_ENERGIZE, A_NONE ) / 10.0, p -> gains_might_of_the_frozen_wastes );
+        p -> resource_gain( RESOURCE_RUNIC, p -> dbc.spell( 81331 ) -> effect1 -> base_value() / 10.0, p -> gains_might_of_the_frozen_wastes );
       }
     }
   }
@@ -2561,7 +2554,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
     p -> buffs_dancing_rune_weapon -> trigger();
-    p -> summon_pet( "dancing_rune_weapon", p -> player_data.spell_duration( id ) );
+    p -> summon_pet( "dancing_rune_weapon", p -> dbc.spell( id ) -> duration() );
   }
 };
 
@@ -2617,8 +2610,8 @@ struct death_and_decay_t : public death_knight_spell_t
     aoe              = -1;
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
-    base_dd_min      = p -> player_data.effect_min( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
-    base_dd_max      = p -> player_data.effect_max( id, p -> level, E_PERSISTENT_AREA_AURA, A_PERIODIC_DUMMY );
+    base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
+    base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
     base_tick_time   = 1.0;
     num_ticks        = 11;
     tick_zero        = true;
@@ -2642,8 +2635,8 @@ struct death_coil_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     direct_power_mod = 0.23; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
-    base_dd_min      = p -> player_data.effect_min( id, p -> level, E_DUMMY, A_NONE );
-    base_dd_max      = p -> player_data.effect_max( id, p -> level, E_DUMMY, A_NONE );
+    base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
+    base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
     base_multiplier *= 1 + p -> talents.morbidity -> mod_additive( P_GENERIC )
                        + p -> glyphs.death_coil * 0.15;
     if ( p -> set_bonus.tier11_2pc_melee() )
@@ -2993,12 +2986,10 @@ struct horn_of_winter_t : public death_knight_spell_t
   horn_of_winter_t( death_knight_t* player, const std::string& options_str ) :
     death_knight_spell_t( "horn_of_winter", 57330, player ), bonus( 0 )
   {
-    death_knight_t* p = player -> cast_death_knight();
-
     parse_options( NULL, options_str );
 
     harmful = false;
-    bonus   = p -> player_data.effect_min( id, p -> level, E_APPLY_AURA, A_MOD_STAT );
+    bonus   = player -> dbc.effect_average( effect_id( 1 ), player -> level );
   }
 
   virtual void execute()
@@ -3599,7 +3590,7 @@ struct presence_t : public death_knight_spell_t
     break;
     case PRESENCE_FROST:
     {
-      double fp_value = sim -> sim_data.effect_base_value( 48266, E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
+      double fp_value = p -> dbc.spell( 48266 ) -> effect1 -> base_value() / 100.0;
       if ( p -> talents.improved_frost_presence -> rank() )
         fp_value += p -> talents.improved_frost_presence -> effect_base_value( 2 ) / 100.0 ;
       p -> buffs_frost_presence -> trigger( 1, fp_value );
@@ -4653,7 +4644,7 @@ double death_knight_t::assess_damage( double            amount,
 {
   if ( buffs_blood_presence -> check() )
   {
-    amount *= 1.0 - player_data.effect_base_value( player_data.spell_effect_id( 61261, 1 ) ) / 100.0;
+    amount *= 1.0 - dbc.spell( 61261 ) -> effect1 -> base_value() / 100.0;
   }
 
   if ( result != RESULT_MISS )
@@ -4933,7 +4924,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 void player_t::death_knight_init( sim_t* sim )
 {
   sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1,   0.0 );
-  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0 );
+  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0, sim -> dbc.effect_average( sim -> dbc.spell( 57330 ) -> effect1 -> id(), sim -> max_player_level ) );
   sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,   0.0 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
@@ -4952,7 +4943,7 @@ void player_t::death_knight_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.abominations_might  ) sim -> auras.abominations_might  -> override( 1, 0.10 );
   if ( sim -> overrides.horn_of_winter      )
-    sim -> auras.horn_of_winter      -> override( 1, sim -> sim_data.effect_min( 57330, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT ) );
+    sim -> auras.horn_of_winter      -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 57330 ) -> effect1 -> id(), sim -> max_player_level ) );
 
   if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.10 );
 

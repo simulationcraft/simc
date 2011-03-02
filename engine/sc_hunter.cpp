@@ -1338,16 +1338,15 @@ struct roar_of_courage_t : public hunter_pet_spell_t
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
 
     harmful = false;
-    bonus = p -> player_data.effect_min( id, p -> level, E_APPLY_AURA, A_MOD_STAT );
+    bonus = p -> dbc.effect_min( p -> dbc.spell( id ) -> effect1 -> id(), p -> level );
   }
 
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-    hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
     if ( ! sim -> overrides.roar_of_courage )
     {
-      sim -> auras.roar_of_courage -> buff_duration = p -> player_data.spell_duration( id );
+      sim -> auras.roar_of_courage -> buff_duration = duration();
       sim -> auras.roar_of_courage -> trigger( 1, bonus );
     }
   }
@@ -1369,7 +1368,7 @@ struct qiraji_fortitude_t : public hunter_pet_spell_t
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
 
     harmful = false;
-    bonus = p -> player_data.effect_min( id, p -> level, E_APPLY_AREA_AURA_RAID, A_MOD_STAT );
+    bonus = p -> dbc.effect_min( p -> dbc.spell( id ) -> effect1 -> id(), p -> level );
   }
 
   virtual void execute()
@@ -3967,12 +3966,12 @@ void player_t::hunter_combat_begin( sim_t* sim )
   if ( sim -> overrides.trueshot_aura         ) sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
   if ( sim -> overrides.hunting_party         ) sim -> auras.hunting_party -> override( 1, 0.10);
-  if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> sim_data.effect_min( 93435, sim -> max_player_level, E_APPLY_AURA, A_MOD_STAT) );
-  if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> sim_data.effect_min( 90364, sim -> max_player_level,E_APPLY_AREA_AURA_RAID, A_MOD_STAT) );
+  if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 93435 ) -> effect1 -> id(), sim -> max_player_level ) );
+  if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 90364 ) -> effect1 -> id(), sim -> max_player_level ) );
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    double v = sim -> sim_data.effect_min( 1130, sim -> max_player_level, E_APPLY_AURA,A_RANGED_ATTACK_POWER_ATTACKER_BONUS );
+    double v = sim -> dbc.effect_average( sim -> dbc.spell( 1130 ) -> effect2 -> id(), sim -> max_player_level );
     if ( sim -> overrides.hunters_mark           ) t -> debuffs.hunters_mark -> override( 1, v );
     if ( sim -> overrides.lightning_breath       ) t -> debuffs.lightning_breath -> override( 1, 8 );
     if ( sim -> overrides.corrosive_spit         ) t -> debuffs.corrosive_spit -> override( 1, 12 );

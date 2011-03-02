@@ -235,10 +235,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_data_access.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_death_knight.cpp"
 			>
 		</File>
