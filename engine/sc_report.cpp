@@ -669,13 +669,15 @@ static void print_text_scale_factors( FILE* file, sim_t* sim )
 
     util_t::fprintf( file, "  %-*s", max_length, p -> name() );
 
-    gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
+    gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
     for ( int j=0; j < STAT_MAX; j++ )
     {
       if ( p -> scales_with[ j ] != 0 )
       {
-        util_t::fprintf( file, "  %s=%.*f", util_t::stat_type_abbrev( j ), sim -> report_precision, sf.get_stat( j ) );
+        util_t::fprintf( file, "  %s=%.*f(%.*f)", util_t::stat_type_abbrev( j ), 
+			 sim -> report_precision, sf.get_stat( j ),
+			 sim -> report_precision, p -> scaling_error.get_stat( j ) );
       }
     }
 
@@ -701,14 +703,16 @@ static void print_text_scale_factors( FILE* file, player_t* p )
 
   util_t::fprintf( file, "  Scale Factors:\n" );
 
-  gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> normalized_scaling : p -> scaling;
+  gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
   util_t::fprintf( file, "    Weights :" );
   for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( p -> scales_with[ i ] != 0 )
     {
-      util_t::fprintf( file, "  %s=%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, sf.get_stat( i ) );
+      util_t::fprintf( file, "  %s=%.*f(%.*f)", util_t::stat_type_abbrev( i ), 
+		       p -> sim -> report_precision, sf.get_stat( i ),
+		       p -> sim -> report_precision, p -> scaling_error.get_stat( i ) );;
     }
   }
   if ( p -> sim -> scaling -> normalize_scale_factors )
@@ -895,8 +899,11 @@ static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
                    util_t::player_type_string( p -> type ),
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
-  util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%",
-                   p -> dps, p -> dps_error, p -> dps ? p -> dps_error * 100 / p -> dps : 0, ( p -> dps_max - p -> dps_min ) / 2.0 , p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0);
+  util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%  Convergence=%.1f%%",
+                   p -> dps, 
+		   p -> dps_error, p -> dps ? p -> dps_error * 100 / p -> dps : 0,
+		   ( p -> dps_max - p -> dps_min ) / 2.0 , p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0,
+		   p -> dps_convergence * 100 );
 
   if ( p -> rps_loss > 0 )
   {
@@ -1503,6 +1510,14 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
     "\t\t\t<div class=\"help-box\">\n"
     "\t\t\t\t<h3>Error</h3>\n"
     "\t\t\t\t<p>( 2 * dps_stddev / sqrt( iterations ) ) / dps_avg</p>\n"
+    "\t\t\t</div>\n"
+    "\t\t</div>\n" );
+
+  util_t::fprintf( file,
+    "\t\t<div id=\"help-convergence\">\n"
+    "\t\t\t<div class=\"help-box\">\n"
+    "\t\t\t\t<h3>Convergence</h3>\n"
+    "\t\t\t\t<p>Rate at which increasing iterations reduces error</p>\n"
     "\t\t\t</div>\n"
     "\t\t</div>\n" );
 
@@ -2548,6 +2563,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">Error</a></th>\n"
+    "\t\t\t\t\t\t\t\t<th><a href=\"#help-convergence\" class=\"help\">Convergence</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">Range</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
@@ -2560,6 +2576,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n"
+    "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2573,6 +2590,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     p -> dps ? p -> dps_error * 100 / p -> dps : 0,
     ( ( p -> dps_max - p -> dps_min ) / 2 ),
     p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0,
+    p -> dps_convergence * 100,
     p -> dpr,
     p -> rps_loss,
     p -> rps_gain,
@@ -2683,7 +2701,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
           util_t::fprintf( file,
             "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
             p -> sim -> report_precision,
-            p -> normalized_scaling.get_stat( i ) );
+            p -> scaling_normalized.get_stat( i ) );
       util_t::fprintf( file,
         "\t\t\t\t\t\t\t</tr>\n" );
       util_t::fprintf( file,
@@ -3734,7 +3752,7 @@ static void print_wiki_player( FILE* file, player_t* p )
     util_t::fprintf( file, "|| *Normalized* ||" );
     for ( int i=0; i < STAT_MAX; i++ )
       if ( p -> scales_with[ i ] )
-        util_t::fprintf( file, " %.*f ||", p -> sim -> report_precision, p -> normalized_scaling.get_stat( i ) );
+        util_t::fprintf( file, " %.*f ||", p -> sim -> report_precision, p -> scaling_normalized.get_stat( i ) );
     util_t::fprintf( file, "\n" );
 
     util_t::fprintf( file, "_DPS gain per unit stat increase except for *Hit/Expertise* which represent *DPS loss* per unit stat *decrease*_<p>\n" );

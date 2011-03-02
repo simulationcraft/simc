@@ -2296,6 +2296,7 @@ struct sim_t
   rng_t* deterministic_rng;
   rng_t* rng_list;
   int smooth_rng, deterministic_roll, average_range, average_gauss;
+  int convergence_scale;
 
   // Timing Wheel Event Management
   event_t** timing_wheel;
@@ -2858,7 +2859,7 @@ struct player_t
   int64_t     last_modified;
   int         bugs;
   int         specialization;
-  int         invert_spirit_scaling;
+  int         invert_scaling;
   bool        vengeance_enabled;
   double      vengeance_damage, vengeance_value, vengeance_max; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
 
@@ -3012,7 +3013,7 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dps_min, dps_max, dps_std_dev, dps_error;
+  double    dps, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
   double    dpr, rps_gain, rps_loss;
   int       death_count;
   buff_t*   buff_list;
@@ -3050,7 +3051,8 @@ struct player_t
 
   // Scale Factors
   gear_stats_t scaling;
-  gear_stats_t normalized_scaling;
+  gear_stats_t scaling_normalized;
+  gear_stats_t scaling_error;
   double       scaling_lag;
   int          scales_with[ STAT_MAX ];
   double       over_cap[ STAT_MAX ];

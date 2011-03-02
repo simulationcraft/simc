@@ -549,7 +549,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     input_is_utf8( false ),
     sim_data( &sim_t::base_data ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
-    smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
+    smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale(2),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
     fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ),cooldown_list( 0 ), replenishment_targets( 0 ),
     raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
@@ -1250,7 +1250,7 @@ void sim_t::analyze_player( player_t* p )
 
   assert( p -> iteration_dps.size() >= ( size_t ) iterations );
 
-  p -> dps_min = 1.0E+50;
+  p -> dps_min = +1.0E+50;
   p -> dps_max = -1.0E+50;
   p -> dps_std_dev = 0.0;
 
@@ -1263,12 +1263,52 @@ void sim_t::analyze_player( player_t* p )
     p -> dps_std_dev += delta * delta;
   }
 
+  int    convergence_iterations = 0;
+  double convergence_dps = 0;
+  double convergence_min = +1.0E+50;
+  double convergence_max = -1.0E+50;
+  double convergence_std_dev = 0;
+
+  if ( iterations > 1 && convergence_scale > 1 )
+  {
+    for ( int i=0; i < iterations; i++ )
+    {
+      if ( ( i % convergence_scale ) == 0 )
+      {
+	convergence_dps += p -> iteration_dps[ i ];
+	convergence_iterations++;
+      }
+    }
+    convergence_dps /= convergence_iterations;
+
+    for ( int i=0; i < iterations; i++ )
+    {
+      if ( ( i % convergence_scale ) == 0 )
+      {
+	double i_dps = p -> iteration_dps[ i ];
+	if ( convergence_min > i_dps ) convergence_min = i_dps;
+	if ( convergence_max < i_dps ) convergence_max = i_dps;
+	double delta = i_dps - convergence_dps;
+	convergence_std_dev += delta * delta;
+      }
+    }
+  }
+
   if ( p -> dps_min >= 1.0E+50 ) p -> dps_min = 0.0;
   if ( p -> dps_max < 0.0      ) p -> dps_max = 0.0;
 
   p -> dps_std_dev /= iterations;
   p -> dps_std_dev = sqrt( p -> dps_std_dev );
   p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
+
+  convergence_std_dev /= convergence_iterations;
+  convergence_std_dev = sqrt( convergence_std_dev );
+  double convergence_error = 2.0 * convergence_std_dev / sqrt( ( float ) convergence_iterations );
+
+  if ( convergence_error > 0 ) 
+  {
+    p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
+  }
 
   if ( ( p -> dps_max - p -> dps_min ) > 0 )
   {
@@ -1757,6 +1797,8 @@ double sim_t::range( double min,
 double sim_t::gauss( double mean,
                      double stddev )
 {
+  if ( average_gauss ) return mean;
+
   rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
   
   return r -> gauss( mean, stddev );
@@ -1882,7 +1924,7 @@ void sim_t::create_options()
 {
   option_t global_options[] =
   {
-    // @option_doc loc=global/general title="General"
+    // General
     { "iterations",                       OPT_INT,    &( iterations                               ) },
     { "max_time",                         OPT_FLT,    &( max_time                                 ) },
     { "fixed_time",                       OPT_BOOL,   &( fixed_time                               ) },
@@ -1892,7 +1934,7 @@ void sim_t::create_options()
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
-    // @option_doc loc=global/lag title="Lag"
+    // Lag
     { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
     { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
     { "gcd_lag",                          OPT_FLT,    &( gcd_lag                                  ) },
@@ -1904,7 +1946,7 @@ void sim_t::create_options()
     { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
     { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
     { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
-    // @option_doc loc=skip
+    // Output
     { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
     { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
@@ -1917,7 +1959,7 @@ void sim_t::create_options()
     { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     { "path",                             OPT_STRING, &( path_str                                 ) },
     { "path+",                            OPT_APPEND, &( path_str                                 ) },
-    // @option_doc loc=global/overrides title="Buff/Debuff Overrides"
+    // Overrides"
     { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
     { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },
     { "override.arcane_tactics",          OPT_BOOL,   &( overrides.arcane_tactics                 ) },
@@ -1986,7 +2028,7 @@ void sim_t::create_options()
     { "override.vindication",             OPT_BOOL,   &( overrides.vindication                    ) },
     { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
     { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
-    // @option_doc loc=global/regen title="Regen"
+    // Regen
     { "infinite_energy",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
     { "infinite_focus",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
     { "infinite_health",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
@@ -1994,14 +2036,14 @@ void sim_t::create_options()
     { "infinite_rage",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
     { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
     { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
-    // @option_doc loc=global/rng title="Smooth RNG"
+    // RNG
     { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
     { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
     { "average_range",                    OPT_BOOL,   &( average_range                            ) },
     { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
-    // @option_doc loc=global/party title="Party Composition"
+    { "convergence_scale",                OPT_INT,    &( convergence_scale                        ) },
+    // Misc
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
-    // @option_doc loc=skip
     { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
     { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
     { "aura_delay",                       OPT_FLT,    &( aura_delay                               ) },
@@ -2016,7 +2058,7 @@ void sim_t::create_options()
     { "fight_style",                      OPT_FUNC,   ( void* ) ::parse_fight_style                 },
     { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
-    // @option_doc loc=skip
+    // Character Creation
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
     { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },
     { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
@@ -2040,7 +2082,7 @@ void sim_t::create_options()
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
     { "default_server",                   OPT_STRING, &( default_server_str                       ) },
     { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
-    // @option_doc loc=player/all/enchant/stats title="Stat Enchants"
+    // Stat Enchants
     { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
     { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },
     { "default_enchant_stamina",                  OPT_FLT,  &( enchant.attribute[ ATTR_STAMINA   ] ) },
@@ -2064,7 +2106,6 @@ void sim_t::create_options()
     { "default_enchant_energy",                   OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ] ) },
     { "default_enchant_focus",                    OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ] ) },
     { "default_enchant_runic",                    OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ] ) },
-
     // Report
     { "report_precision",                 OPT_INT,    &( report_precision                         ) },
     { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },

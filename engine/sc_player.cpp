@@ -290,7 +290,7 @@ player_t::player_t( sim_t*             s,
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
-    pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_spirit_scaling( 0 ),
+    pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
     vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
     player_data( &( s->sim_data ), ptr ),
     race_str( "" ), race( r ),
@@ -355,7 +355,9 @@ player_t::player_t( sim_t*             s,
     current_time( 0 ), total_seconds( 0 ),
     total_waiting( 0 ), total_foreground_actions( 0 ),
     iteration_dmg( 0 ), total_dmg( 0 ),
-    dps( 0 ), dps_min( 0 ), dps_max( 0 ), dps_std_dev( 0 ), dps_error( 0 ), dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
+    dps( 0 ), dps_min( 0 ), dps_max( 0 ), 
+    dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ), 
+    dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
     death_count( 0 ),
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
@@ -1475,6 +1477,8 @@ void player_t::init_scaling()
 {
   if ( ! is_pet() && ! is_enemy() )
   {
+    invert_scaling = 0;
+
     int role = primary_role();
 
     int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;

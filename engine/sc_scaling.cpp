@@ -87,7 +87,7 @@ scaling_t::scaling_t( sim_t* s ) :
   center_scale_delta( 0 ),
   positive_scale_delta( 0 ),
   scale_lag( 0 ),
-  scale_factor_noise( -1.0 ),
+  scale_factor_noise( 0.10 ),
   normalize_scale_factors( 0 ),
   smooth_scale_factors( 0 ),
   debug_scale_factors( 0 ),
@@ -237,8 +237,6 @@ void scaling_t::analyze_stats()
 
     ref_sim = center ? new sim_t( sim ) : baseline_sim;
 
-
-
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = i;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
@@ -264,23 +262,37 @@ void scaling_t::analyze_stats()
 
       double divisor = scale_delta;
 
-      if ( delta_p -> invert_spirit_scaling )
+      if ( delta_p -> invert_scaling )
         divisor = -divisor;
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
 
-      double f;
-        f = ( scale_over_function( delta_sim, delta_p ) - scale_over_function( ref_sim, ref_p ) ) / divisor;
+      double delta_score = scale_over_function( delta_sim, delta_p );
+      double   ref_score = scale_over_function(   ref_sim,   ref_p );
+
+      double delta_error = scale_over_function_error( delta_sim, delta_p );
+      double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
+
+      double score = ( delta_score - ref_score ) / divisor;
+      double error = fabs( ref_error / divisor );
 
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
-        f /= 10.0;
-
-      if ( scale_factor_noise < 0.0 )
       {
-        scale_factor_noise = ( scale_over_function_error( delta_sim, delta_p ) + scale_over_function_error( ref_sim, ref_p ) ) / divisor;
+        score /= 10.0;
+	error /= 10.0;
       }
 
-      if ( fabs( f ) >= scale_factor_noise ) p -> scaling.set_stat( i, f );
+      if ( scale_factor_noise <= 0 ||
+	   scale_factor_noise > ref_error / fabs( delta_score - ref_score ) )
+      {
+	p -> scaling.set_stat( i, score );
+	p -> scaling_error.set_stat( i, error );
+      }
+      else
+      {
+	sim -> errorf( "Player %s given insufficient iterations (%d) to calculate scale factor for %s\n",
+		       p -> name(), sim -> iterations, util_t::stat_type_string( i ) );
+      }
     }
 
     if ( debug_scale_factors )
@@ -348,14 +360,24 @@ void scaling_t::analyze_lag()
     // Calculate DPS difference per millisecond of lag
     double divisor = ( ( delta_sim -> queue_lag - ref_sim -> queue_lag ) * 1000 );
 
-    double f = ( scale_over_function( delta_sim, delta_p ) - scale_over_function( ref_sim, ref_p ) ) / divisor;
+    double delta_score = scale_over_function( delta_sim, delta_p );
+    double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-    if ( scale_factor_noise < 0.0 )
+    double delta_error = scale_over_function_error( delta_sim, delta_p );
+    double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
+
+    double score = ( delta_score - ref_score ) / divisor;
+
+    if ( scale_factor_noise <= 0 || 
+	 scale_factor_noise > ref_error / fabs( delta_score - ref_score ) )
     {
-      scale_factor_noise = ( scale_over_function_error( delta_sim, delta_p ) + scale_over_function_error( ref_sim, ref_p ) ) / divisor;
+      p -> scaling_lag = score;
     }
-
-    if ( fabs( f ) >= scale_factor_noise ) p -> scaling_lag = f;
+    else
+    {
+      sim -> errorf( "Player %s given insufficient iterations (%d) to calculate scale factor for lag\n",
+		     p -> name(), sim -> iterations );
+    }
   }
 
   if ( ref_sim != sim ) delete ref_sim;
@@ -398,9 +420,13 @@ void scaling_t::normalize()
     {
       if ( p -> scales_with[ i ] == 0 ) continue;
 
-      p -> normalized_scaling.set_stat( i, p -> scaling.get_stat( i ) / divisor );
-    }
+      p -> scaling_normalized.set_stat( i, p -> scaling.get_stat( i ) / divisor );
 
+      if ( normalize_scale_factors ) // For report purposes.
+      {
+	p -> scaling_error.set_stat( i, p -> scaling_error.get_stat( i ) / divisor );
+      }
+    }
   }
 }
 
@@ -488,11 +514,8 @@ bool scaling_t::has_scale_factors()
 
 double scaling_t::scale_over_function( sim_t* s, player_t* p )
 {
-  if ( scale_over == "raid_dps" )
-    return s -> raid_dps;
-  else if ( scale_over == "deaths" )
-    return p -> death_count;
-
+  if ( scale_over == "raid_dps" ) return s -> raid_dps;
+  if ( scale_over == "deaths"   ) return p -> death_count;
   return p -> dps;
 }
 
@@ -501,9 +524,8 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
 
 double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
 {
-  if ( scale_over == "raid_dps" || "deaths" )
-    return 0;
-
+  if ( scale_over == "raid_dps" ) return 0;
+  if ( scale_over == "deaths"   ) return 0;
   return p -> dps_error;
 }
 

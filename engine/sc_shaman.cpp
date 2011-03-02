@@ -3707,11 +3707,9 @@ void shaman_t::init_scaling()
     double v = sim -> scaling -> scale_value;
     if ( ! sim -> scaling -> positive_scale_delta )
     {
-      invert_spirit_scaling = 1;
+      invert_scaling = 1;
       attribute_initial[ ATTR_SPIRIT ] -= v * 2;
     }
-    else
-      attribute_initial[ ATTR_SPIRIT ] += v * 2;
   }
 
 }
