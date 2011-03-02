@@ -44,7 +44,6 @@ struct paladin_t : public player_t
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
   buff_t* buffs_divine_purpose;
-  buff_t* buffs_holy_power;
   buff_t* buffs_holy_shield;
   buff_t* buffs_inquisition;
   buff_t* buffs_judgements_of_the_bold;
@@ -62,6 +61,17 @@ struct paladin_t : public player_t
   gain_t* gains_sanctuary;
   gain_t* gains_seal_of_command_glyph;
   gain_t* gains_seal_of_insight;
+
+  // Holy Power
+  gain_t* gains_hp_crusader_strike;
+  gain_t* gains_hp_holy_shock;
+  gain_t* gains_hp_blessed_life;
+  gain_t* gains_hp_tower_of_radiance;
+  gain_t* gains_hp_hammer_of_the_righteous;
+  gain_t* gains_hp_divine_plea;
+  gain_t* gains_hp_pursuit_of_justice;
+  gain_t* gains_hp_zealotry;
+  gain_t* gains_hp_divine_storm;
 
   // Passives
   struct passives_t
@@ -242,7 +252,6 @@ struct paladin_t : public player_t
   virtual void      create_pets   ();
   virtual void      combat_begin();
 
-  bool              has_holy_power( int power_needed=1 ) SC_CONST;
   int               holy_power_stacks() SC_CONST;
   double            get_divine_bulwark() SC_CONST;
   double            get_hand_of_light() SC_CONST;
@@ -333,29 +342,27 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 struct paladin_attack_t : public attack_t
 {
   bool trigger_seal;
-  bool uses_holy_power;
   bool spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
-  double holy_power_chance;
   double jotp_haste;
   bool trigger_dp;
 
   paladin_attack_t( const char* n, paladin_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true, bool use2hspec=true )
     : attack_t( n, p, RESOURCE_MANA, s, t, special ),
-      trigger_seal( false ), uses_holy_power( false ), spell_haste( false ), holy_power_chance( 0.0 ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), spell_haste( false ),  jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, id, p, TREE_NONE, special ),
-      trigger_seal( false ), uses_holy_power( false ), spell_haste( false ), holy_power_chance( 0.0 ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, sname, p, TREE_NONE, special ),
-      trigger_seal( false ), uses_holy_power( false ), spell_haste( false ), holy_power_chance( 0.0 ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
@@ -398,7 +405,6 @@ struct paladin_attack_t : public attack_t
     attack_t::execute();
     if ( result_is_hit() )
     {
-      consume_and_gain_holy_power();
 
       if ( trigger_seal )
       {
@@ -454,16 +460,29 @@ struct paladin_attack_t : public attack_t
     }
   }
 
-  virtual void consume_and_gain_holy_power()
+
+  virtual double cost() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
-    if ( uses_holy_power )
+
+    if ( resource == RESOURCE_HOLY_POWER )
     {
-      if ( p -> buffs_divine_purpose -> up() )
-        p -> buffs_divine_purpose -> expire();
-      else
-        p -> buffs_holy_power -> expire();
+      if ( p -> buffs_divine_purpose -> check() )
+        return 0;
+
+      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
     }
+
+    return attack_t::cost();
+   }
+
+  virtual void consume_resource()
+  {
+    attack_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    p -> buffs_divine_purpose -> expire();
   }
 };
 
@@ -619,7 +638,9 @@ struct crusader_strike_t : public paladin_attack_t
     
     if ( result_is_hit() )
     {
-      p -> buffs_holy_power -> trigger( p -> buffs_zealotry -> up() ? 3 : 1 );
+      p -> resource_gain( RESOURCE_HOLY_POWER, p -> buffs_zealotry -> up() ? 3 : 1,
+                                p -> gains_hp_crusader_strike );
+
       trigger_hand_of_light( this );
       if ( sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
       {
@@ -657,7 +678,6 @@ struct divine_storm_t : public paladin_attack_t
     spell_haste       = true;
     trigger_dp        = true;
     trigger_seal      = false;
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
     base_cooldown     = cooldown -> duration;
   }
 
@@ -680,8 +700,11 @@ struct divine_storm_t : public paladin_attack_t
     {
       trigger_hand_of_light( this );
       if ( p -> ptr )
-	if ( target -> cast_target() -> adds_nearby >= 4 )
-	  p -> buffs_holy_power -> trigger( 1 );
+        if ( target -> cast_target() -> adds_nearby >= 4 )
+          {
+            p -> resource_gain( RESOURCE_HOLY_POWER, 1,
+                                      p -> gains_hp_divine_storm );
+          }
     }
   }
 };
@@ -763,8 +786,6 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_block    = false;
     trigger_dp   = true;
     trigger_seal = 1; // TODO: only SoT or all seals?
-
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
 
     base_crit += p -> talents.sanctified_wrath -> mod_additive( P_CRIT )
                  + p -> talents.wrath_of_the_lightbringer -> mod_additive( P_CRIT );
@@ -1142,8 +1163,7 @@ struct judgement_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
-
+    trigger_dp = true;
     seal_of_justice       = new seal_of_justice_judgement_t      ( p );
     seal_of_insight       = new seal_of_insight_judgement_t      ( p );
     seal_of_righteousness = new seal_of_righteousness_judgement_t( p );
@@ -1180,8 +1200,7 @@ struct judgement_t : public paladin_attack_t
 
     if ( seal -> result_is_hit() )
     {
-      consume_and_gain_holy_power();
-        
+
       if ( p -> talents.judgements_of_the_just -> rank() )
       {
         target -> debuffs.judgements_of_the_just -> trigger();
@@ -1226,8 +1245,6 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     may_dodge = false;
     may_block = false;
 
-    uses_holy_power = true;
-
     direct_power_mod = extra_coeff();
     base_multiplier *= 1.0 + p -> glyphs.shield_of_the_righteous -> mod_additive( P_GENERIC );
   }
@@ -1246,7 +1263,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= util_t::talent_rank( p -> holy_power_stacks(), 3, 1.0, 3.0, 6.0 );
+    player_multiplier *= ( p -> resource_current[ RESOURCE_HOLY_POWER ] - 1 ) * 3.0;
     if ( p -> buffs_sacred_duty -> up() )
     {
       player_crit += 1.0;
@@ -1256,8 +1273,10 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   virtual bool ready()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( p -> main_hand_weapon.group() == WEAPON_2H ) return false;
-    if ( ! p -> has_holy_power() ) return false;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+      return false;
+
     return paladin_attack_t::ready();
   }
 };
@@ -1272,9 +1291,7 @@ struct templars_verdict_t : public paladin_attack_t
     parse_options( NULL, options_str );
 
     trigger_seal      = true;
-    uses_holy_power   = true;
     trigger_dp        = true;
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1 + p -> talents.crusade -> mod_additive( P_GENERIC )
@@ -1292,13 +1309,6 @@ struct templars_verdict_t : public paladin_attack_t
       trigger_hand_of_light( this );
     }
   }
-
-  virtual bool ready()
-  {
-    paladin_t* p = player -> cast_paladin();
-    if ( ! p -> has_holy_power() ) return false;
-    return paladin_attack_t::ready();
-  }
 };
 
 // ==========================================================================
@@ -1307,25 +1317,23 @@ struct templars_verdict_t : public paladin_attack_t
 
 struct paladin_spell_t : public spell_t
 {
-  bool uses_holy_power;
-  double holy_power_chance;
   double jotp_haste;
   bool trigger_dp;
 
   paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE )
-    : spell_t( n, p, RESOURCE_MANA, s, t ), uses_holy_power( false ), holy_power_chance( 0.0 ), jotp_haste( 1.0 ), trigger_dp( false )
+    : spell_t( n, p, RESOURCE_MANA, s, t ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_();
   }
 
   paladin_spell_t( const char* n, uint32_t id, paladin_t* p )
-    : spell_t( n, id, p ), uses_holy_power( false ), holy_power_chance( 0.0 ), jotp_haste( 1.0 ), trigger_dp( false )
+    : spell_t( n, id, p ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_();
   }
 
   paladin_spell_t( const char *n, const char *sname, paladin_t* p )
-    : spell_t( n, sname, p ), uses_holy_power( false ), holy_power_chance( 0.0 ), jotp_haste( 1.0 ), trigger_dp( false )
+    : spell_t( n, sname, p ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_();
   }
@@ -1376,7 +1384,6 @@ struct paladin_spell_t : public spell_t
     spell_t::execute();
     if ( result_is_hit() )
     {
-      consume_and_gain_holy_power();
       if ( trigger_dp )
       {
         paladin_t* p = player -> cast_paladin();
@@ -1385,17 +1392,28 @@ struct paladin_spell_t : public spell_t
     }
   }
 
-  virtual void consume_and_gain_holy_power()
+  virtual double cost() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
-    if ( uses_holy_power )
+
+    if ( resource == RESOURCE_HOLY_POWER )
     {
-      if ( p -> buffs_divine_purpose -> up() )
-        p -> buffs_divine_purpose -> expire();
-      else
-        p -> buffs_holy_power -> expire();
+      if ( p -> buffs_divine_purpose -> check() )
+        return 0;
+
+      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
     }
-    p -> buffs_holy_power -> trigger( 1, -1, holy_power_chance );
+
+    return spell_t::cost();
+   }
+
+  virtual void consume_resource()
+  {
+    spell_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    p -> buffs_divine_purpose -> expire();
   }
 };
 
@@ -1513,13 +1531,16 @@ struct divine_plea_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    paladin_spell_t::execute();
     update_ready();
     p -> buffs_divine_plea -> trigger();
 
     int hopo = ( int ) p -> talents.shield_of_the_templar -> mod_additive( P_EFFECT_3 );
     if ( hopo )
-      p -> buffs_holy_power -> trigger( hopo );
+    {
+      p -> resource_gain( RESOURCE_HOLY_POWER, hopo,
+                                p -> gains_hp_divine_plea );
+    }
   }
 };
 
@@ -1544,7 +1565,6 @@ struct exorcism_t : public paladin_spell_t
     direct_power_mod             = 1.0;
     dot_behavior                 = DOT_REFRESH;
     hasted_ticks                 = false;
-    holy_power_chance            = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
     may_crit                     = true;
     tick_may_crit                = true;
     trigger_dp                   = true;
@@ -1676,7 +1696,8 @@ struct holy_shock_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( result_is_hit() )
     {
-      p -> buffs_holy_power -> trigger();
+      p -> resource_gain( RESOURCE_HOLY_POWER, 1,
+                                p -> gains_hp_holy_shock );
     }
   }
 };
@@ -1696,8 +1717,6 @@ struct holy_wrath_t : public paladin_spell_t
 
     direct_power_mod = 0.61;
 
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
-
     base_crit += p -> talents.wrath_of_the_lightbringer -> mod_additive( P_CRIT );
   }
 };
@@ -1714,9 +1733,7 @@ struct inquisition_t : public paladin_spell_t
 
     parse_options( NULL, options_str );
 
-    uses_holy_power = true;
     harmful = false;
-    holy_power_chance = 0.01 * p -> talents.divine_purpose -> effect_base_value( 1 );
     base_duration = duration() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
   }
 
@@ -1731,16 +1748,7 @@ struct inquisition_t : public paladin_spell_t
     p -> buffs_inquisition -> trigger( 1, base_value() );
     if ( p -> talents.holy_shield -> rank() )
       p -> buffs_holy_shield -> trigger();
-    consume_and_gain_holy_power();
     p -> buffs_divine_purpose -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    paladin_t* p = player -> cast_paladin();
-    if( ! p -> has_holy_power() )
-      return false;
-    return paladin_spell_t::ready();
   }
 };
 
@@ -1766,12 +1774,102 @@ struct zealotry_t : public paladin_spell_t
     p -> buffs_zealotry -> trigger();
   }
 
-  virtual bool ready()
+  virtual void consume_resource()
+  {
+  }
+};
+
+
+// =========================================================================
+// Paladin Heals
+// =========================================================================
+
+struct paladin_heal_t : public heal_t
+{
+  void _init_paladin_heal_t()
+  {
+    may_crit          = true;
+    tick_may_crit     = true;
+
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
+  }
+  paladin_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+      heal_t( n, player, sname, t )
+  {
+    _init_paladin_heal_t();
+  }
+
+  paladin_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+      heal_t( n, player, id, t )
+  {
+    _init_paladin_heal_t();
+  }
+
+  virtual void player_buff()
+  {
+    heal_t::player_buff();
+  }
+
+  virtual double cost() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
-    if( ! p -> has_holy_power( 3 ) )
-      return false;
-    return paladin_spell_t::ready();
+
+    if ( resource == RESOURCE_HOLY_POWER )
+    {
+      if ( p -> buffs_divine_purpose -> check() )
+        return 0;
+
+      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+    }
+
+    return heal_t::cost();
+   }
+
+  virtual void consume_resource()
+  {
+    heal_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    p -> buffs_divine_purpose -> expire();
+  }
+};
+
+
+// Holy Light Spell
+
+struct holy_light_t : public paladin_heal_t
+{
+  holy_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "holy_light", p, "Holy Light" )
+  {
+    parse_options( NULL, options_str );
+  }
+};
+
+// Word of Glory Spell
+
+struct word_of_glory_t : public paladin_heal_t
+{
+  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "word_of_glory", p, "Word of Glory" )
+  {
+    parse_options( NULL, options_str );
+
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier  = 0.0;
+
+    // !Glyph deactivates the hot.
+  }
+
+  virtual void player_buff()
+  {
+    paladin_heal_t::player_buff();
+
+    paladin_t* p = player -> cast_paladin();
+
+    player_multiplier *= p -> holy_power_stacks();
   }
 };
 
@@ -1817,6 +1915,9 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   //if ( name == "devotion_aura"           ) return new devotion_aura_t          ( this, options_str );
   //if ( name == "retribution_aura"        ) return new retribution_aura_t       ( this, options_str );
 
+  if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
+  if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
+
   return player_t::create_action( name, options_str );
 }
 
@@ -1831,6 +1932,8 @@ void paladin_t::init_base()
 
   base_spell_power  = 0;
   base_attack_power = ( level * 3 ) - 20;
+
+  resource_base[ RESOURCE_HOLY_POWER ] = 3;
 
   // FIXME! Level-specific!
   base_miss    = 0.05;
@@ -1887,6 +1990,17 @@ void paladin_t::init_gains()
   gains_sanctuary              = get_gain( "sanctuary"              );
   gains_seal_of_command_glyph  = get_gain( "seal_of_command_glyph"  );
   gains_seal_of_insight        = get_gain( "seal_of_insight"        );
+
+  // Holy Power
+  gains_hp_crusader_strike          = get_gain( "holy_power_crusader_strike" );
+  gains_hp_holy_shock               = get_gain( "holy_power_holy_shock" );
+  gains_hp_blessed_life             = get_gain( "holy_power_blessed_life" );
+  gains_hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
+  gains_hp_hammer_of_the_righteous  = get_gain( "holy_power_hammer_of_the_righteous" );
+  gains_hp_divine_plea              = get_gain( "holy_power_divine_plea" );
+  gains_hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
+  gains_hp_zealotry                 = get_gain( "holy_power_zealotry" );
+  gains_hp_divine_storm             = get_gain( "holy_power_divine_storm" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -1990,7 +2104,6 @@ void paladin_t::init_buffs()
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", 0.01 * talents.divine_purpose -> effect_base_value( 1 ) );
-  buffs_holy_power             = new buff_t( this, "holy_power", 3  );
   buffs_holy_shield            = new buff_t( this, 87342, "holy_shield" );
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
@@ -2067,10 +2180,10 @@ void paladin_t::init_actions()
       action_list_str += "/avenging_wrath,if=buff.zealotry.down";
       action_list_str += "/zealotry,if=buff.avenging_wrath.down";
       if ( level >= 81 )
-        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(buff.holy_power.react==3|buff."+hp_proc_str+".react)";
+        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff."+hp_proc_str+".react)";
       // CS before TV if <3 power, even with HoL/DP up
-      action_list_str += "/templars_verdict,if=buff.holy_power.react==3";
-      action_list_str += "/crusader_strike,if=buff."+hp_proc_str+".react&(buff."+hp_proc_str+".remains>2)&(buff.holy_power.react<3)";
+      action_list_str += "/templars_verdict,if=holy_power=3";
+      action_list_str += "/crusader_strike,if=buff."+hp_proc_str+".react&(buff."+hp_proc_str+".remains>2)&holy_power<3";
       action_list_str += "/templars_verdict,if=buff."+hp_proc_str+".react";
       action_list_str += "/crusader_strike";
       action_list_str += "/hammer_of_wrath";
@@ -2101,7 +2214,7 @@ void paladin_t::init_actions()
       action_list_str += "/auto_attack";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/avenging_wrath";
-      action_list_str += "/shield_of_the_righteous,if=buff.holy_power.react==3";
+      action_list_str += "/shield_of_the_righteous,if=holy_power=3";
       action_list_str += "/crusader_strike";
       action_list_str += "/judgement";
       action_list_str += "/avengers_shield";
@@ -2464,25 +2577,14 @@ void paladin_t::combat_begin()
   if ( talents.communion -> rank() ) sim -> auras.communion -> trigger();
 }
 
-// paladin_t::has_holy_power =================================================
-
-bool paladin_t::has_holy_power( int power_needed ) SC_CONST
-{
-  if ( buffs_divine_purpose -> check() )
-    return true;
-  return buffs_holy_power -> check() >= power_needed;
-}
-
 // paladin_t::holy_power_stacks ==============================================
 
 int paladin_t::holy_power_stacks() SC_CONST
 {
-  if ( buffs_divine_purpose -> check() )
-    return 3;
-  else if ( buffs_holy_power -> check() )
-    return buffs_holy_power -> check();
-  else
-    return 0;
+  if ( buffs_divine_purpose -> up() )
+    return (int) resource_max[ RESOURCE_HOLY_POWER ];
+
+   return (int) resource_current[ RESOURCE_HOLY_POWER ];
 }
 
 // paladin_t::get_divine_bulwark =============================================

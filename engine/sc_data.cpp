@@ -51,6 +51,7 @@ resource_type spell_data_t::power_type() SC_CONST
   case POWER_RUNIC_POWER: return RESOURCE_RUNIC;
   case POWER_SOUL_SHARDS: return RESOURCE_SOUL_SHARDS;
   case POWER_ECLIPSE:     return RESOURCE_ECLIPSE;
+  case POWER_HOLY_POWER:  return RESOURCE_HOLY_POWER;
   case POWER_HEALTH:      return RESOURCE_HEALTH;
   }
   return RESOURCE_NONE;

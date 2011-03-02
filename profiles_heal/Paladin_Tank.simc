@@ -16,13 +16,15 @@ actions+=/seal_of_truth
 actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/avenging_wrath
-actions+=/shield_of_the_righteous,if=buff.holy_power.react==3
 actions+=/crusader_strike
 actions+=/judgement
+actions+=/divine_plea,if=holy_power=0
+actions+=/word_of_glory,if=health_pct<=40
 actions+=/avengers_shield
+actions+=/shield_of_the_righteous,if=holy_power>=3
 actions+=/holy_wrath
 actions+=/consecration
-actions+=/divine_plea
+
 head=dragon_bone_warhelm,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_135exp_325mastery_578sta_293str,reforge=exp_dodge,gems=eternal_shadowspirit_20mastery_20parry_45sta,enchant=90sta_35dodge
 neck=rage_of_ages,ilevel=359,quality=epic,stats=127hit_127mastery_286sta_190str,reforge=hit_dodge
 shoulders=reinforced_sapphirium_shoulderguards,type=plate,ilevel=359,quality=epic,stats=2570armor_213dodge_128hit_380sta_193str,gems=20parry_30sta_15sta,enchant=75sta_25dodge
