@@ -4769,10 +4769,11 @@ action_expr_t* player_t::create_expression( action_t* a,
   {
     struct health_pct_expr_t : public action_expr_t
     {
-      health_pct_expr_t( action_t* a ) : action_expr_t( a, "health_pct", TOK_NUM ) {}
-      virtual int evaluate() { player_t* p = action -> player; result_num = 100 * ( p -> resource_current[ RESOURCE_HEALTH ] / p -> resource_max[ RESOURCE_HEALTH ] ); return TOK_NUM; }
+      player_t* player;
+      health_pct_expr_t( action_t* a, player_t* p ) : action_expr_t( a, "health_pct", TOK_NUM ), player( p ) {}
+      virtual int evaluate() { result_num = 100 * ( player -> resource_current[ RESOURCE_HEALTH ] / player -> resource_max[ RESOURCE_HEALTH ] ); return TOK_NUM; }
     };
-    return new health_pct_expr_t( a );
+    return new health_pct_expr_t( a, this );
   }
   if ( name_str == "mana_deficit" )
   {
