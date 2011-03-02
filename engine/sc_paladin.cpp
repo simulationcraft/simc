@@ -1742,7 +1742,7 @@ struct inquisition_t : public paladin_spell_t
   {
     paladin_t* p = player -> cast_paladin();
 
-    paladin_spell_t::execute();
+
 
     p -> buffs_inquisition -> buff_duration = base_duration * p -> holy_power_stacks();
     if ( p -> set_bonus.tier11_4pc_melee() )
@@ -1751,6 +1751,8 @@ struct inquisition_t : public paladin_spell_t
     if ( p -> talents.holy_shield -> rank() )
       p -> buffs_holy_shield -> trigger();
     p -> buffs_divine_purpose -> trigger();
+
+    paladin_spell_t::execute();
   }
 };
 
