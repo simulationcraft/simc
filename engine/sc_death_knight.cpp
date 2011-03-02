@@ -157,7 +157,9 @@ struct death_knight_t : public player_t
   // Gains
   gain_t* gains_butchery;
   gain_t* gains_chill_of_the_grave;
+  gain_t* gains_frost_presence;
   gain_t* gains_horn_of_winter;
+  gain_t* gains_improved_frost_presence;
   gain_t* gains_might_of_the_frozen_wastes;
   gain_t* gains_power_refund;
   gain_t* gains_rune_abilities;
@@ -1841,16 +1843,19 @@ void death_knight_attack_t::consume_resource()
   {
     if ( result_is_hit() )
     {
-      double real_rp_gain = rp_gain;
       if ( p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + player -> dbc.spell( 48266 ) -> effect2 -> base_value() / 100.0;
+        p -> resource_gain( RESOURCE_RUNIC,
+                            rp_gain * player -> dbc.spell( 48266 ) -> effect2 -> base_value() / 100.0,
+                            p -> gains_frost_presence );
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0;
+        p -> resource_gain( RESOURCE_RUNIC,
+                            rp_gain * p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0,
+                            p -> gains_improved_frost_presence );
       }
-      p -> resource_gain( RESOURCE_RUNIC, real_rp_gain, p -> gains_rune_abilities );
+      p -> resource_gain( RESOURCE_RUNIC, rp_gain, p -> gains_rune_abilities );
     }
   }
   else
@@ -2009,16 +2014,19 @@ void death_knight_spell_t::consume_resource()
   {
     if ( result_is_hit() )
     {
-      double real_rp_gain = rp_gain;
       if ( p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + p -> dbc.spell( 48266 ) -> effect2 -> base_value() / 100.0;
+        p -> resource_gain( RESOURCE_RUNIC,
+                            rp_gain * player -> dbc.spell( 48266 ) -> effect2 -> base_value() / 100.0,
+                            p -> gains_frost_presence );
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
-        real_rp_gain *= 1.0 + p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0;
+        p -> resource_gain( RESOURCE_RUNIC,
+                            rp_gain * p -> talents.improved_frost_presence -> effect_base_value( 1 ) / 100.0,
+                            p -> gains_improved_frost_presence );
       }
-      p -> resource_gain( RESOURCE_RUNIC, real_rp_gain, p -> gains_rune_abilities );
+      p -> resource_gain( RESOURCE_RUNIC, rp_gain, p -> gains_rune_abilities );
     }
   }
   else
@@ -4570,7 +4578,9 @@ void death_knight_t::init_gains()
 
   gains_butchery                   = get_gain( "butchery"                   );
   gains_chill_of_the_grave         = get_gain( "chill_of_the_grave"         );
+  gains_frost_presence             = get_gain( "frost_presence"             );
   gains_horn_of_winter             = get_gain( "horn_of_winter"             );
+  gains_improved_frost_presence    = get_gain( "improved_frost_presence"    );
   gains_might_of_the_frozen_wastes = get_gain( "might_of_the_frozen_wastes" );
   gains_power_refund               = get_gain( "power_refund"               );
   gains_rune_abilities             = get_gain( "rune_abilities"             );
