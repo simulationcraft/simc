@@ -1263,7 +1263,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= ( p -> resource_current[ RESOURCE_HOLY_POWER ] - 1 ) * 3.0;
+    player_multiplier *= util_t::talent_rank( p -> holy_power_stacks(), 3, 1.0, 3.0, 6.0 );
     if ( p -> buffs_sacred_duty -> up() )
     {
       player_crit += 1.0;
@@ -1531,8 +1531,9 @@ struct divine_plea_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
+
     paladin_spell_t::execute();
-    update_ready();
+
     p -> buffs_divine_plea -> trigger();
 
     int hopo = ( int ) p -> talents.shield_of_the_templar -> mod_additive( P_EFFECT_3 );
