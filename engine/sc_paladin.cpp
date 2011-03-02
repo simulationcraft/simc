@@ -1741,8 +1741,9 @@ struct inquisition_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
+
+    paladin_spell_t::execute();
+
     p -> buffs_inquisition -> buff_duration = base_duration * p -> holy_power_stacks();
     if ( p -> set_bonus.tier11_4pc_melee() )
       p -> buffs_inquisition -> buff_duration += base_duration;
