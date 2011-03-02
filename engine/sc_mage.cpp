@@ -2032,6 +2032,7 @@ struct frostfire_orb_t : public mage_spell_t
     check_min_level( 81 );
     parse_options( NULL, options_str );
 
+    school = SCHOOL_FROSTFIRE; // set as Fire in DBC, coloring the report chart wrong
     num_ticks = 15;
     base_tick_time = 1.0;
     hasted_ticks = false;

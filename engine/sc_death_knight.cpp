@@ -1864,7 +1864,7 @@ void death_knight_attack_t::consume_resource()
   }
 
   if ( result_is_hit() )
-    consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
+    consume_runes( player, use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
   else
     refund_power( this );
 }
@@ -2035,8 +2035,10 @@ void death_knight_spell_t::consume_resource()
   }
 
   if ( result_is_hit() )
-    consume_runes( player, use, convert_runes == 0 ? false : sim->roll( convert_runes ) == 1 );
+    consume_runes( player, use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
 }
+
+// death_knight_spell_t::execute() ==========================================
 
 void death_knight_spell_t::execute()
 {
