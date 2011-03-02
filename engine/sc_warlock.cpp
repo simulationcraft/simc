@@ -1636,16 +1636,10 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
     doom_bolt_t( player_t* player ) :
       warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
     {
+      //FIXME: This needs re-testing on the 4.1 PTR
       base_dd_min *= 1.333; // Based on testing 2010/11/20
       base_dd_max *= 1.333; // Based on testing 2010/11/20
       direct_power_mod = 0.95; // Based on testing 2010/11/20
-      if ( player -> ptr )
-      {
-        // FIXME - Naive assumption, needs testing on the 4.1 PTR!
-        base_dd_min *= 1.5;
-        base_dd_max *= 1.5;
-        direct_power_mod *= 1.5;
-      }
       base_execute_time = 2.5;
     }
   };
