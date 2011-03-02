@@ -3016,6 +3016,8 @@ struct player_t
   double    dps, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
   double    dpr, rps_gain, rps_loss;
   int       death_count;
+  std::vector<double> death_time;
+  double avg_death_time, death_count_pct, min_death_time;
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;

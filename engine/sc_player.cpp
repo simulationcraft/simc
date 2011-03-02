@@ -358,7 +358,7 @@ player_t::player_t( sim_t*             s,
     dps( 0 ), dps_min( 0 ), dps_max( 0 ), 
     dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ), 
     dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
-    death_count( 0 ),
+    death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( FLT_MAX ),
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
@@ -3132,7 +3132,10 @@ double player_t::assess_damage( double            amount,
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
   {
     if ( !sleeping )
+    {
       death_count++;
+      death_time.push_back( current_time );
+    }
     if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
     demise();
   }

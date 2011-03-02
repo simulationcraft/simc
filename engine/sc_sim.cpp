@@ -1326,6 +1326,20 @@ void sim_t::analyze_player( player_t* p )
       p -> distribution_dps[ index ]++;
     }
   }
+
+  // Death analysis
+  double count_death_time = p -> death_time.size();
+  assert ( count_death_time == p -> death_count);
+  for ( int i = 0; i < count_death_time; i++ )
+  {
+    if ( p -> death_time[ i ] < p -> min_death_time )
+      p -> min_death_time = p -> death_time[ i ];
+    p -> avg_death_time += p -> death_time[ i ];
+  }
+  p -> avg_death_time /= count_death_time;
+  p -> death_count_pct = p -> death_count;
+  p -> death_count_pct /= iterations;
+  p -> death_count_pct *= 100.0;
 }
 
 void sim_t::analyze()

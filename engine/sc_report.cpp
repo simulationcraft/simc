@@ -3366,6 +3366,54 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t</div>\n"
     "\t\t\t\t\t\t</div>\n" );
 
+
+  // Death Analysis
+
+  if ( p -> death_count > 0 )
+  {
+  util_t::fprintf( file,
+    "\t\t\t\t\t<div class=\"player-section gains\">\n"
+    "\t\t\t\t\t\t<h3 class=\"toggle\">Deaths</h3>\n"
+    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+    "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+    "\t\t\t\t\t\t\t\t<tr>\n"
+    "\t\t\t\t\t\t\t\t\t<th></th>\n"
+    "\t\t\t\t\t\t\t\t\t<th></th>\n"
+    "\t\t\t\t\t\t\t\t</tr>\n" );
+
+    util_t::fprintf( file,
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        p -> death_count );
+
+    util_t::fprintf( file,
+        "\t\t\t\t\t\t\t\t<tr>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count pct</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+            "\t\t\t\t\t\t\t\t</tr>\n",
+            p -> death_count_pct );
+    util_t::fprintf( file,
+        "\t\t\t\t\t\t\t\t<tr>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"left\">avg death time</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t</tr>\n",
+            p -> avg_death_time );
+    util_t::fprintf( file,
+        "\t\t\t\t\t\t\t\t<tr>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"left\">min death time</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t</tr>\n",
+            p -> min_death_time );
+
+  util_t::fprintf( file,
+    "\t\t\t\t\t\t\t\t</table>\n"
+    "\t\t\t\t\t\t\t</div>\n"
+    "\t\t\t\t\t\t</div>\n" );
+  }
+
+
   util_t::fprintf( file,
     "\t\t\t\t\t\t<div class=\"player-section action-priority-list\">\n"
     "\t\t\t\t\t\t\t<h3 class=\"toggle\">Action Priority List</h3>\n"
