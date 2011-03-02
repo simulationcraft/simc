@@ -482,7 +482,8 @@ struct paladin_attack_t : public attack_t
 
     paladin_t* p = player -> cast_paladin();
 
-    p -> buffs_divine_purpose -> expire();
+    if ( resource == RESOURCE_HOLY_POWER )
+      p -> buffs_divine_purpose -> expire();
   }
 };
 
@@ -1413,7 +1414,8 @@ struct paladin_spell_t : public spell_t
 
     paladin_t* p = player -> cast_paladin();
 
-    p -> buffs_divine_purpose -> expire();
+    if ( resource == RESOURCE_HOLY_POWER )
+      p -> buffs_divine_purpose -> expire();
   }
 };
 
@@ -1735,6 +1737,7 @@ struct inquisition_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    trigger_dp = true;
     base_duration = duration() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
   }
 
