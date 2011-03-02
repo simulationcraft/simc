@@ -107,26 +107,27 @@ struct paladin_t : public player_t
   struct talents_t
   {
     // holy
-    int aura_mastery;
-    int beacon_of_light;
-    int blessed_life;
-    int clarity_of_purpose;
-    int conviction;
-    int daybreak;
-    int denounce;
-    int enlightened_judgements;
-    int infusion_of_light;
-    int last_word;
-    int light_of_dawn;
-    int paragon_of_virtue;
-    int protector_of_the_innocent;
-    int sacred_cleansing;
-    int speed_of_light;
-    int tower_of_radiance;
     talent_t* arbiter_of_the_light;
-    talent_t* blazing_light;
-    talent_t* divine_favor;
+    talent_t* protector_of_the_innocent;
     talent_t* judgements_of_the_pure;
+    talent_t* clarity_of_purpose;
+    talent_t* last_word;
+    talent_t* blazing_light;
+    talent_t* denounce;
+    talent_t* divine_favor;
+    talent_t* infusion_of_light;
+    talent_t* daybreak;
+    talent_t* enlightened_judgements;
+    talent_t* beacon_of_light;
+    talent_t* speed_of_light;
+    talent_t* sacred_cleansing;
+    talent_t* conviction;
+    talent_t* aura_mastery;
+    talent_t* paragon_of_virtue;
+    talent_t* tower_of_radiance;
+    talent_t* blessed_life;
+    talent_t* light_of_dawn;
+
 
     // prot
     int ardent_defender;
@@ -1844,17 +1845,6 @@ struct paladin_heal_t : public heal_t
 };
 
 
-// Holy Light Spell
-
-struct holy_light_t : public paladin_heal_t
-{
-  holy_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_light", p, "Holy Light" )
-  {
-    parse_options( NULL, options_str );
-  }
-};
-
 // Word of Glory Spell
 
 struct word_of_glory_t : public paladin_heal_t
@@ -1877,6 +1867,64 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
 
     player_multiplier *= p -> holy_power_stacks();
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    paladin_heal_t::target_debuff( t, dmg_type );
+
+    paladin_t* p = player -> cast_paladin();
+
+    if ( t -> health_percentage() <= 35 )
+      player_crit += p -> talents.last_word -> effect_base_value( 1 ) / 100.0;
+  }
+};
+
+// Holy Light Spell
+
+struct holy_light_t : public paladin_heal_t
+{
+  holy_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "holy_light", p, "Holy Light" )
+  {
+    parse_options( NULL, options_str );
+
+    base_execute_time += p -> talents.clarity_of_purpose -> effect_base_value( 1 ) / 1000.0;
+  }
+};
+
+// Flash of Light Spell
+
+struct flash_of_light_t : public paladin_heal_t
+{
+  flash_of_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "flash_of_light", p, "Flash of Light" )
+  {
+    parse_options( NULL, options_str );
+  }
+};
+
+// Divine Light Spell
+
+struct divine_light_t : public paladin_heal_t
+{
+  divine_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "divine_light", p, "Divine Light" )
+  {
+    parse_options( NULL, options_str );
+
+    base_execute_time += p -> talents.clarity_of_purpose -> effect_base_value( 1 ) / 1000.0;
+  }
+};
+
+// Lay on Hands Spell
+
+struct lay_on_hands_t : public paladin_heal_t
+{
+  lay_on_hands_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "lay_on_hands", p, "Lay on Hands" )
+  {
+    parse_options( NULL, options_str );
   }
 };
 
@@ -1922,8 +1970,11 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   //if ( name == "devotion_aura"           ) return new devotion_aura_t          ( this, options_str );
   //if ( name == "retribution_aura"        ) return new retribution_aura_t       ( this, options_str );
 
-  if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
+  if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
+  if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
+  if ( name == "divine_light"              ) return new divine_light_t             ( this, options_str );
+  if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2221,6 +2272,7 @@ void paladin_t::init_actions()
       action_list_str += "/auto_attack";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/avenging_wrath";
+      action_list_str += "/word_of_glory,if=health_pct<=50";
       action_list_str += "/shield_of_the_righteous,if=holy_power=3";
       action_list_str += "/crusader_strike";
       action_list_str += "/judgement";
@@ -2267,10 +2319,28 @@ void paladin_t::init_actions()
 void paladin_t::init_talents()
 {
   // Holy
-  talents.arbiter_of_the_light   = find_talent( "Arbiter of the Light" );
-  talents.judgements_of_the_pure = find_talent( "Judgements of the Pure" );
-  talents.blazing_light          = find_talent( "Blazing Light" );
-  talents.divine_favor           = find_talent( "Divine Favor" );
+  talents.arbiter_of_the_light      = find_talent( "Arbiter of the Light" );
+  talents.protector_of_the_innocent = find_talent( "Protector of the Innocent" );
+  talents.judgements_of_the_pure    = find_talent( "Judgements of the Pure" );
+  talents.clarity_of_purpose        = find_talent( "Clarity of Purpose" );
+  talents.last_word                 = find_talent( "Last Word" );
+  talents.blazing_light             = find_talent( "Blazing Light" );
+  talents.denounce                  = find_talent( "Denounce" );
+  talents.divine_favor              = find_talent( "Divine Favor" );
+  talents.infusion_of_light         = find_talent( "Infusion of Light" );
+  talents.daybreak                  = find_talent( "Daybreak" );
+  talents.enlightened_judgements    = find_talent( "Enlightened Judgements" );
+  talents.beacon_of_light           = find_talent( "Beacon of Light" );
+  talents.speed_of_light            = find_talent( "Speed of Light" );
+  talents.sacred_cleansing          = find_talent( "Sacred Cleansing" );
+  talents.conviction                = find_talent( "Conviction" );
+  talents.aura_mastery              = find_talent( "Aura Mastery" );
+  talents.paragon_of_virtue         = find_talent( "Paragon of Virtue" );
+  talents.tower_of_radiance         = find_talent( "Tower of Radiance" );
+  talents.blessed_life              = find_talent( "Blessed Life" );
+  talents.light_of_dawn             = find_talent( "Light of Dawn" );
+
+
   // Prot
   talents.seals_of_the_pure         = find_talent( "Seals of the Pure" );
   talents.judgements_of_the_just    = find_talent( "Judgements of the Just" );

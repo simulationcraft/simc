@@ -4090,6 +4090,7 @@ struct gain_t
 {
   std::string name_str;
   double actual, overflow, count;
+  resource_type type;
   int id;
   gain_t* next;
   gain_t( const std::string& n, int _id=0 ) :

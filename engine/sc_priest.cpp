@@ -2667,7 +2667,7 @@ struct flash_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
-         player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talents.renewed_hope -> effect_base_value( 1 ) / 100.0;
   }
 
   virtual double cost() SC_CONST
@@ -2990,9 +2990,11 @@ struct prayer_of_healing_t : public priest_heal_t
     // Glyph
     if ( glyph )
     {
+      priest_t* p = player -> cast_priest();
+
       // FIXME: Modelled as a Direct Heal instead of a dot
       glyph -> heal_target.clear(); glyph -> heal_target.push_back( t );
-      glyph -> base_dd_min = glyph -> base_dd_max = travel_dmg * 0.2;
+      glyph -> base_dd_min = glyph -> base_dd_max = travel_dmg * p -> glyphs.prayer_of_healing -> effect_base_value( 1 ) / 100.0;
       glyph -> execute();
     }
 
@@ -3300,7 +3302,7 @@ struct power_word_shield_t : public priest_absorb_t
     if ( glyph_pws )
     {
 
-      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = 0.2 * travel_dmg;
+      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p -> glyphs.power_word_shield -> effect_base_value( 1 ) / 100.0 * travel_dmg;
       glyph_pws -> heal_target.clear();
       glyph_pws -> heal_target.push_back( t );
       glyph_pws -> execute();
@@ -3621,6 +3623,7 @@ struct lightwell_hot_t : public priest_heal_t
     priest_heal_t( "lightwell_hot", player, 7001 ),
     charges( 0 ), consume_interval( 0.0 )
   {
+    // Hardcoded in the tooltip
     tick_power_mod = 0.308;
     base_multiplier *= 3 * 1.25;
 
@@ -3941,28 +3944,34 @@ double priest_t::spirit() SC_CONST
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
+  // Misc
   if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
   if ( name == "fortitude"              ) return new fortitude_t             ( this, options_str );
-  if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
   if ( name == "inner_fire"             ) return new inner_fire_t            ( this, options_str );
-  if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
-  if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
-  if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
-  if ( name == "penance"                ) return new penance_t               ( this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( this, options_str );
-  if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
-  if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
   if ( name == "shadow_form"            ) return new shadow_form_t           ( this, options_str );
-  if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
-  if ( name == "shadow_fiend"           ) return new shadow_fiend_spell_t    ( this, options_str );
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
-  if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
   if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
   if ( name == "inner_focus"            ) return new inner_focus_t           ( this, options_str );
   if ( name == "hymn_of_hope"           ) return new hymn_of_hope_t          ( this, options_str );
+
+  // Damage
+  if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
+  if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
+  if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
+  if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
+  if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
+  if ( name == "penance"                ) return new penance_t               ( this, options_str );
+  if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
+  if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
+  if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
+  if ( name == "shadow_fiend"           ) return new shadow_fiend_spell_t    ( this, options_str );
+  if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
+
+
+  // Heals
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
   if ( name == "heal"                   ) return new _heal_t                 ( this, options_str );
   if ( name == "flash_heal"             ) return new flash_heal_t            ( this, options_str );
@@ -4033,6 +4042,8 @@ void priest_t::init_gains()
   gains_rapture                   = get_gain( "rapture" );
   gains_hymn_of_hope              = get_gain( "hymn_of_hope" );
 }
+
+// priest_t::init_procs ======================================================
 
 void priest_t::init_procs()
 {
@@ -4350,7 +4361,7 @@ void priest_t::init_actions()
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
                                                          action_list_str += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
-                                                         action_list_str += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react";
+      if ( level >= 28 )                                 action_list_str += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react";
 
                                                          action_list_str += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
       if ( talents.vampiric_touch -> rank() )            action_list_str += "|dot.vampiric_touch.remains<cast_time+2.5";
@@ -4368,7 +4379,7 @@ void priest_t::init_actions()
       }
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
-                                                         action_list_str += "/shadow_fiend";
+      if ( level >= 66 )                                 action_list_str += "/shadow_fiend";
                                                          action_list_str += "/mind_blast";
                                                          action_list_str += "/mind_flay";
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion,moving=1";
@@ -4384,15 +4395,16 @@ void priest_t::init_actions()
       if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion,if=mana_pct<=75";
-                                                         action_list_str += "/shadow_fiend,if=mana_pct<=50";
-                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active&time>200";
+        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=50";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active&time>200";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
         if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
         if ( talents.rapture -> ok() )                   action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
                                                          action_list_str += "/holy_fire";
-                                                         action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+        if ( level >= 28 )                               action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          action_list_str += "/penance";
         if ( ! talents.archangel -> ok() )               action_list_str += "/mind_blast";
@@ -4404,8 +4416,9 @@ void priest_t::init_actions()
       {
                                                          action_list_str += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
-                                                         action_list_str += "/shadow_fiend,if=mana_pct<=50";
-                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active&time>200";
+        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=20";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active";
         if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
       }
@@ -4418,14 +4431,15 @@ void priest_t::init_actions()
       if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion,if=mana_pct<=75";
-                                                         action_list_str += "/shadow_fiend,if=mana_pct<=50";
-                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active&time>200";
+        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=50";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active&time>200";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( talents.chakra -> ok() )                    action_list_str += "/chakra";
         if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          action_list_str += "/holy_fire";
-                                                         action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+        if ( level >= 28 )                               action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
         if ( ! talents.archangel -> ok() )               action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
@@ -4436,20 +4450,22 @@ void priest_t::init_actions()
       {
                                                          action_list_str += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
-                                                         action_list_str += "/shadow_fiend,if=mana_pct<=20";
-                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active";
+        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=20";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
       }
       break;
     default:
                                                          action_list_str += "/mana_potion,if=mana_pct<=75";
-                                                         action_list_str += "/shadow_fiend,if=mana_pct<=50";
-                                                         action_list_str += "/hymn_of_hope,if=pet.shadow_fiend.active&time>200";
+        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=50";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active&time>200";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          action_list_str += "/holy_fire";
-                                                         action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+        if ( level >= 28 )                               action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
@@ -4660,7 +4676,6 @@ double priest_t::resource_loss( int       resource,
                                 double    amount,
                                 action_t* action )
 {
-
   double actual_amount = player_t::resource_loss( resource, amount, action );
 
 
