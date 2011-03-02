@@ -270,7 +270,7 @@ void scaling_t::analyze_stats()
       double delta_score = scale_over_function( delta_sim, delta_p );
       double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-      double delta_error = scale_over_function_error( delta_sim, delta_p );
+    //double delta_error = scale_over_function_error( delta_sim, delta_p );
       double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
 
       double score = ( delta_score - ref_score ) / divisor;
@@ -363,7 +363,7 @@ void scaling_t::analyze_lag()
     double delta_score = scale_over_function( delta_sim, delta_p );
     double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-    double delta_error = scale_over_function_error( delta_sim, delta_p );
+  //double delta_error = scale_over_function_error( delta_sim, delta_p );
     double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
 
     double score = ( delta_score - ref_score ) / divisor;
