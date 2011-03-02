@@ -323,6 +323,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
+  virtual double    composite_mastery() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit_block() SC_CONST;
@@ -3312,6 +3313,18 @@ double warrior_t::composite_attack_hit() SC_CONST
   ah += spec.precision -> effect_base_value( 1 ) / 100.0;
 
   return ah;
+}
+
+// warrior_t::composite_mastery =============================================
+
+double warrior_t::composite_mastery() SC_CONST
+{
+  double m = player_t::composite_mastery();
+
+  if ( ptr )
+    m += spec.precision -> effect_base_value( 2 ) / 100.0;
+
+  return m;
 }
 
 // warrior_t::matching_gear_multiplier ======================================
