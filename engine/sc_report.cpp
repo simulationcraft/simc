@@ -2003,6 +2003,22 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
         a -> hasted_ticks?"true":"false",
         a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
     }
+    // Extra Reporting for DKs
+    if ( a -> player -> type == DEATH_KNIGHT )
+    {
+      util_t::fprintf (file,
+        "\t\t\t\t\t\t\t\t\t\t<h5>Rune Information</h5>\n"
+        "\t\t\t\t\t\t\t\t\t\t<ul>\n"
+        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Blood Cost:</span>%d</li>\n"
+        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Frost Cost:</span>%d</li>\n"
+        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Unholy Cost:</span>%d</li>\n"
+        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Runic Power Gain:</span>%.2f</li>\n"
+        "\t\t\t\t\t\t\t\t\t\t</ul>\n",
+        a -> rune_cost() & 0x1,
+        ( a -> rune_cost() >> 4 ) & 0x1,
+        ( a -> rune_cost() >> 2 ) & 0x1,
+        a -> rp_gain );
+    }
     if( a -> weapon )
     {
       util_t::fprintf (file,
