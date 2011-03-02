@@ -34,7 +34,7 @@ struct item_enchantment_data_t {
   const char* name;
   unsigned    id_gem;
   unsigned    ench_type[3];          // item_enchantment
-  unsigned    ench_amount[3];
+  int         ench_amount[3];
   unsigned    ench_prop[3];
 };
 
