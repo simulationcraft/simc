@@ -2449,7 +2449,7 @@ struct multi_shot_t : public hunter_attack_t
       }
     }
 
-    if( crit_occurred )
+    if( p -> talents.bombardment -> rank() && crit_occurred )
       p -> buffs_bombardment -> trigger();
   }
 
