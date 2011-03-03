@@ -2014,7 +2014,10 @@ struct explosive_trap_effect_t : public hunter_attack_t
     tick_power_mod = extra_coeff();
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> rank() * 0.10;
-    may_miss=false;
+    may_miss = false;
+    may_crit = false;
+    tick_may_crit = true;
+    base_crit_bonus = 0.5;
   }
 
   virtual void tick()
