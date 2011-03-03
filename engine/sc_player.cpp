@@ -541,33 +541,20 @@ player_t::~player_t()
     delete sets;
 }
 
-// player_t::id ============================================================
-
-const char* player_t::id()
-{
-  if ( id_str.empty() )
-  {
-    // create artifical unit ID, format type+subtype+id= TTTSSSSSSSIIIIII
-    char buffer[ 1024 ];
-    sprintf( buffer, "0x0100000002%06X,\"%s\",0x511", index, name_str.c_str() );
-    id_str = buffer;
-  }
-
-  return id_str.c_str();
-}
-
 // player_t::init ==========================================================
 
 bool player_t::init( sim_t* sim )
 {
-  if ( sim -> debug ) log_t::output( sim, "Creating Pets." );
+  if ( sim -> debug )
+    log_t::output( sim, "Creating Pets." );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     p -> create_pets();
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
+  if ( sim -> debug )
+    log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
 
   player_t::death_knight_init( sim );
   player_t::druid_init       ( sim );
@@ -580,10 +567,12 @@ bool player_t::init( sim_t* sim )
   player_t::warlock_init     ( sim );
   player_t::warrior_init     ( sim );
 
-  if ( sim -> debug ) log_t::output( sim, "Initializing Players." );
+  if ( sim -> debug )
+    log_t::output( sim, "Initializing Players." );
 
-  bool too_quiet = true;
-  bool zero_dds = true;
+
+  bool too_quiet = true; // Check for at least 1 active player
+  bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -599,11 +588,14 @@ bool player_t::init( sim_t* sim )
     return false;
   }
 
+  // Set Fixed_Time when there are no DD's present
   if ( zero_dds && ! sim -> debug )
     sim -> fixed_time = true;
 
 
-  if ( sim -> debug ) log_t::output( sim, "Building Parties." );
+  // Parties
+  if ( sim -> debug )
+    log_t::output( sim, "Building Parties." );
 
   int party_index=0;
   for ( unsigned i=0; i < sim -> party_encoding.size(); i++ )
@@ -651,7 +643,9 @@ bool player_t::init( sim_t* sim )
     }
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Registering Callbacks." );
+  // Callbacks
+  if ( sim -> debug )
+    log_t::output( sim, "Registering Callbacks." );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
@@ -1264,7 +1258,8 @@ void player_t::init_actions()
         }
         else
         {
-          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n", name(), pet_name.c_str(), splits[ i ].c_str() );
+          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n",
+                         name(), pet_name.c_str(), splits[ i ].c_str() );
         }
       }
       else 
@@ -1291,7 +1286,9 @@ void player_t::init_actions()
 
   if ( ! action_list_skip.empty() )
   {
-    if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+    if ( sim -> debug )
+      log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, action_list_skip, "/" );
     for ( int i=0; i < num_splits; i++ )
@@ -1315,7 +1312,9 @@ void player_t::init_actions()
 
 void player_t::init_rating()
 {
-  if ( sim -> debug ) log_t::output( sim, "player_t::init_rating(): level=%d type=%s", level, util_t::player_type_string( type ) );
+  if ( sim -> debug )
+    log_t::output( sim, "player_t::init_rating(): level=%d type=%s",
+                   level, util_t::player_type_string( type ) );
 
   rating.init( sim, dbc, level, type );
 }
@@ -1364,18 +1363,18 @@ void player_t::init_spells()
 
 void player_t::init_buffs()
 {
-  buffs.berserking           = new buff_t( this, "berserking",          1, 10.0 );
-  buffs.heroic_presence      = new buff_t( this, "heroic_presence",     1       );
-  buffs.replenishment        = new buff_t( this, 57669, "replenishment" );
-  buffs.stoneform            = new buff_t( this, "stoneform",           1,  8.0 );
-  buffs.hellscreams_warsong  = new buff_t( this, "hellscreams_warsong", 1       );
-  buffs.strength_of_wrynn    = new buff_t( this, "strength_of_wrynn",   1       );
-  buffs.dark_intent          = new buff_t( this, 85767, "dark_intent" );
-  buffs.dark_intent_feedback = new buff_t( this, "dark_intent_feedback",3, 7.0  );
-  buffs.furious_howl         = new buff_t( this, 24604, "furious_howl" );
-  buffs.hymn_of_hope         = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope" );
-  buffs.body_and_soul        = new buff_t( this, "body_and_soul", 1, 4.0 );
-  buffs.grace                = new buff_t( this, "grace", 3, 15.0 );
+  buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
+  buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
+  buffs.replenishment             = new buff_t( this, 57669, "replenishment"                );
+  buffs.stoneform                 = new buff_t( this, 65116, "stoneform"                    );
+  buffs.hellscreams_warsong       = new buff_t( this,        "hellscreams_warsong", 1       );
+  buffs.strength_of_wrynn         = new buff_t( this,        "strength_of_wrynn",   1       );
+  buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
+  buffs.dark_intent_feedback      = new buff_t( this, 85759, "dark_intent_feedback"         );
+  buffs.furious_howl              = new buff_t( this, 24604, "furious_howl"                 );
+  buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
+  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1,  4.0 );
+  buffs.grace                     = new buff_t( this,        "grace",               3, 15.0 );
 
   // Infinite-Stacking Buffs
   buffs.moving  = new buff_t( this, "moving",  1 );
@@ -1386,16 +1385,16 @@ void player_t::init_buffs()
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )  
   buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1 -> id(), sim -> max_player_level ) ), 1, 15.0 );
   buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2 -> id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,  120.0,             1, 15.0, 60.0 );
+  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0,            1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
-  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING, 480,               1, 20.0 );
-  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING, 500.0,             1, 15.0, 60.0 );
+  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0,            1, 20.0       );
+  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0,            1, 15.0, 60.0 );
   buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0,            1, 25.0, 60.0 );
   buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0,            1, 25.0, 60.0 );
   buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0,            1, 25.0, 60.0 );
   buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_SPELL_POWER,  1200.0,            1, 25.0, 60.0 );
-  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,  200.0,             1, 15.0, 60.0 );
-  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,  200.0,             1, 15.0, 60.0 );
+  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0,            1, 15.0, 60.0 );
+  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0,            1, 15.0, 60.0 );
 
   // Infinite-Stacking De-Buffs
   debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
@@ -1638,6 +1637,7 @@ void player_t::init_scaling()
 item_t* player_t::find_item( const std::string& str )
 {
   int num_items = ( int ) items.size();
+
   for ( int i=0; i < num_items; i++ )
     if ( str == items[ i ].name() )
       return &( items[ i ] );
@@ -1723,19 +1723,21 @@ double player_t::composite_attack_crit() SC_CONST
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    if ( sim -> auras.leader_of_the_pack -> check() 
-      || sim -> auras.honor_among_thieves -> check() 
-      || sim -> auras.elemental_oath -> check()
-      || sim -> auras.rampage -> check()
-      || buffs.furious_howl -> check() )
+    if ( sim -> auras.leader_of_the_pack -> up()  ||
+         sim -> auras.honor_among_thieves -> up() ||
+         sim -> auras.elemental_oath -> up()      ||
+         sim -> auras.rampage -> up()             ||
+         buffs.furious_howl -> up() )
     {
       ac += 0.05;
     }
   }
+
   if ( race == RACE_WORGEN )
   {
     ac += 0.01;
   }
+
   return ac;
 }
 
@@ -1747,7 +1749,7 @@ double player_t::composite_attack_hit() SC_CONST
 
   // Changes here may need to be reflected in the corresponding pet_t
   // function in simulationcraft.h
-  if ( buffs.heroic_presence -> check() ) ah += 0.01;
+  if ( buffs.heroic_presence -> up() ) ah += 0.01;
 
   return ah;
 }
@@ -1766,13 +1768,14 @@ double player_t::composite_armor() SC_CONST
     a += sim -> auras.devotion_aura -> value();
 
   a *= 1.0 - std::max( debuffs.sunder_armor -> stack() * 0.04,
-             std::max( debuffs.faerie_fire  -> check() * debuffs.faerie_fire -> value(),
-             std::max( debuffs.expose_armor -> value(),
-             std::max( debuffs.corrosive_spit -> check() * debuffs.corrosive_spit -> value() * 0.01,
-                       debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01) ) ) )
+               std::max( debuffs.faerie_fire  -> check() * debuffs.faerie_fire -> value(),
+                 std::max( debuffs.expose_armor -> value(),
+                   std::max( debuffs.corrosive_spit -> check() * debuffs.corrosive_spit -> value() * 0.01,
+                     debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01) ) ) )
            - debuffs.shattering_throw -> stack() * 0.20;
 
-  if ( buffs.stoneform -> check() ) a *= 1.10;
+  if ( buffs.stoneform -> up() )
+    a *= 1.10;
 
   return a;
 }
@@ -1785,50 +1788,7 @@ double player_t::composite_tank_miss( const school_type school ) SC_CONST
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    m = 0.05;
-
-    double delta = 5.0 * ( level - sim -> target -> level );
-
-    if( delta > 0 )
-    {
-      m += delta * 0.0004;
-    }
-    else
-    {
-      m += delta * 0.0002;
-    }
-
     if ( race == RACE_NIGHT_ELF ) // Quickness
-    {
-      m += 0.02;
-    }
-  }
-  else
-  {
-    m = 0.04;
-
-    int delta = level - sim -> target -> level;
-
-    if( delta > 0 )
-    {
-      m += delta * 0.01;
-    }
-    else if ( delta > -2 )
-    {
-      m += delta * 0.01;
-    }
-    else
-    {
-      m += 0.02 - ( 2 + delta ) * 0.07;
-    }
-
-    if ( ( race == RACE_NIGHT_ELF && school == SCHOOL_NATURE ) ||
-         ( race == RACE_DWARF     && school == SCHOOL_FROST  ) ||
-         ( race == RACE_GNOME     && school == SCHOOL_ARCANE ) ||
-         ( race == RACE_DRAENEI   && school == SCHOOL_SHADOW ) ||
-         ( race == RACE_TAUREN    && school == SCHOOL_NATURE ) ||
-         ( race == RACE_UNDEAD    && school == SCHOOL_SHADOW ) ||
-         ( race == RACE_BLOOD_ELF ) )
     {
       m += 0.02;
     }
@@ -1837,6 +1797,7 @@ double player_t::composite_tank_miss( const school_type school ) SC_CONST
   if      ( m > 1.0 ) m = 1.0;
   else if ( m < 0.0 ) m = 0.0;
 
+  return m;
   return m;
 }
 
@@ -1848,20 +1809,6 @@ double player_t::composite_tank_dodge() SC_CONST
 
   d += agility() * dodge_per_agility;
 
-  double delta = 5.0 * ( level - sim -> target -> level );
-
-  if( delta > 0 )
-  {
-    d += delta * 0.0004;
-  }
-  else
-  {
-    d += delta * 0.0002;
-  }
-
-  if      ( d > 1.0 ) d = 1.0;
-  else if ( d < 0.0 ) d = 0.0;
-
   return d;
 }
 
@@ -1870,20 +1817,6 @@ double player_t::composite_tank_dodge() SC_CONST
 double player_t::composite_tank_parry() SC_CONST
 {
   double p = parry;
-
-  double delta = 5.0 * ( level - sim -> target -> level );
-
-  if( delta > 0 )
-  {
-    p += delta * 0.0004;
-  }
-  else
-  {
-    p += delta * 0.0002;
-  }
-
-  if      ( p > 1.0 ) p = 1.0;
-  else if ( p < 0.0 ) p = 0.0;
 
   return p;
 }
@@ -1959,16 +1892,23 @@ double player_t::composite_spell_haste() SC_CONST
 
   if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
-    if ( buffs.dark_intent -> check() ) h *= 1.0 / 1.03;
-    if (      buffs.bloodlust      -> check() ) h *= 1.0 / ( 1.0 + 0.30 );
-    else if ( buffs.power_infusion -> check() ) h *= 1.0 / ( 1.0 + 0.20 );
+    if ( buffs.dark_intent -> up() )
+      h *= 1.0 / 1.03;
 
-    if ( buffs.berserking -> check() )          h *= 1.0 / ( 1.0 + 0.20 );
+    if (      buffs.bloodlust      -> up() )
+      h *= 1.0 / ( 1.0 + 0.30 );
 
-    if ( ! is_pet() && ! is_enemy() && ! is_add() && ( sim -> auras.wrath_of_air -> check() || sim -> auras.moonkin -> check() || sim -> auras.mind_quickening -> check() ) )
-    {
-      h *= 1.0 / ( 1.0 + 0.05 );
-    }
+    else if ( buffs.power_infusion -> up() )
+      h *= 1.0 / ( 1.0 + 0.20 );
+
+    if ( buffs.berserking -> up() )
+      h *= 1.0 / ( 1.0 + 0.20 );
+
+    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+      if ( sim -> auras.wrath_of_air -> up() || sim -> auras.moonkin -> up() || sim -> auras.mind_quickening -> up() )
+      {
+        h *= 1.0 / ( 1.0 + 0.05 );
+      }
 
     if ( race == RACE_GOBLIN )
     {
@@ -2020,14 +1960,14 @@ double player_t::composite_spell_power_multiplier() SC_CONST
   double m = spell_power_multiplier;
   if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
-    if ( sim -> auras.demonic_pact -> check() )
+    if ( sim -> auras.demonic_pact -> up() )
     {
       m *= 1.10;
     }
     else
     {
        m *= 1.0 + std::max( sim -> auras.flametongue_totem -> value(),
-                            buffs.arcane_brilliance -> check() * 0.06 );
+                            buffs.arcane_brilliance -> up() * 0.06 );
     }
   }
   return m;
@@ -2041,13 +1981,13 @@ double player_t::composite_spell_crit() SC_CONST
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    if ( buffs.focus_magic -> check() ) sc += 0.03;
+    if ( buffs.focus_magic -> up() ) sc += 0.03;
 
-    if ( sim -> auras.leader_of_the_pack -> check() 
-      || sim -> auras.honor_among_thieves -> check() 
-      || sim -> auras.elemental_oath -> check()
-      || sim -> auras.rampage -> check()
-      || buffs.furious_howl -> check() )
+    if ( sim -> auras.leader_of_the_pack -> up()
+      || sim -> auras.honor_among_thieves -> up()
+      || sim -> auras.elemental_oath -> up()
+      || sim -> auras.rampage -> up()
+      || buffs.furious_howl -> up() )
     {
       sc += 0.05;
     }
@@ -2071,7 +2011,7 @@ double player_t::composite_spell_hit() SC_CONST
 
   // Changes here may need to be reflected in the corresponding pet_t
   // function in simulationcraft.h
-  if ( buffs.heroic_presence -> check() ) sh += 0.01;
+  if ( buffs.heroic_presence -> up() ) sh += 0.01;
 
   return sh;
 }
@@ -2113,9 +2053,11 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
   // MotW / BoK
   // ... increasing Strength, Agility, Stamina, and Intellect by 5%
   if ( attr == ATTR_STRENGTH || attr ==  ATTR_AGILITY || attr ==  ATTR_STAMINA || attr ==  ATTR_INTELLECT )
-    if ( buffs.blessing_of_kings -> check() || buffs.mark_of_the_wild -> check() ) m *= 1.05;
+    if ( buffs.blessing_of_kings -> up() || buffs.mark_of_the_wild -> up() )
+      m *= 1.05;
+
   if ( attr == ATTR_SPIRIT ) 
-    if ( buffs.mana_tide -> check() ) m *= 1.0 + buffs.mana_tide -> value();
+    m *= 1.0 + buffs.mana_tide -> value();
 
   return m;
 }
@@ -2128,25 +2070,25 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
+    if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
     {
       // ICC buff.
       m *= 1.30;
     }
 
-    if ( buffs.tricks_of_the_trade -> up() )
+    if ( buffs.tricks_of_the_trade -> check() )
     {
       // because of the glyph we now track the damage % increase in the buff value
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    if ( ! is_pet() && ! is_enemy() && ! is_add() &&
-       ( sim -> auras.ferocious_inspiration -> up()
-      || sim -> auras.communion             -> up()
-      || sim -> auras.arcane_tactics        -> up() ) )
-    {
-      m *= 1.03;
-    }
+    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+      if ( sim -> auras.ferocious_inspiration -> up() ||
+           sim -> auras.communion             -> up() ||
+           sim -> auras.arcane_tactics        -> up() )
+      {
+        m *= 1.03;
+      }
   }
 
   if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
@@ -2163,10 +2105,7 @@ double player_t::composite_player_td_multiplier( const school_type school ) SC_C
 {
   double m = 1.0;
 
-  if ( buffs.dark_intent_feedback -> up() )
-  {
-    m *= 1.0 + 0.03 * buffs.dark_intent_feedback -> stack();
-  }
+  m *= 1.0 + 0.03 * buffs.dark_intent_feedback -> stack();
 
   return m;
 }
@@ -2177,8 +2116,7 @@ double player_t::composite_movement_speed() SC_CONST
 {
   double speed = base_movement_speed;
 
-  if ( buffs.body_and_soul -> up() )
-    speed *= 1.0 + buffs.body_and_soul -> value();
+  speed *= 1.0 + buffs.body_and_soul -> value();
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
@@ -2215,6 +2153,7 @@ double player_t::composite_movement_speed() SC_CONST
 double player_t::strength() SC_CONST
 {
   double a = attribute[ ATTR_STRENGTH ];
+
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
@@ -2222,7 +2161,9 @@ double player_t::strength() SC_CONST
                    std::max( sim -> auras.battle_shout -> value(),
                              sim -> auras.roar_of_courage -> value() ) );
   }
+
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
+
   return a;
 }
 
@@ -2231,6 +2172,7 @@ double player_t::strength() SC_CONST
 double player_t::agility() SC_CONST
 {
   double a = attribute[ ATTR_AGILITY ];
+
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
@@ -2238,7 +2180,9 @@ double player_t::agility() SC_CONST
                    std::max( sim -> auras.battle_shout -> value(),
                              sim -> auras.roar_of_courage -> value() ) );
   }
+
   a *= composite_attribute_multiplier( ATTR_AGILITY );
+
   return a;
 }
 
@@ -2247,11 +2191,14 @@ double player_t::agility() SC_CONST
 double player_t::stamina() SC_CONST
 {
   double a = attribute[ ATTR_STAMINA ];
+
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += sim -> auras.qiraji_fortitude -> value();
   }
+
   a *= composite_attribute_multiplier( ATTR_STAMINA );
+
   return a;
 }
 
@@ -2260,7 +2207,9 @@ double player_t::stamina() SC_CONST
 double player_t::intellect() SC_CONST
 {
   double a = attribute[ ATTR_INTELLECT ];
+
   a *= composite_attribute_multiplier( ATTR_INTELLECT );
+
   return a;
 }
 
@@ -2269,11 +2218,14 @@ double player_t::intellect() SC_CONST
 double player_t::spirit() SC_CONST
 {
   double a = attribute[ ATTR_SPIRIT ];
+
   if ( race == RACE_HUMAN )
   {
     a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
   }
+
   a *= composite_attribute_multiplier( ATTR_SPIRIT );
+
   return a;
 }
 
@@ -2573,7 +2525,7 @@ void player_t::schedule_ready( double delta_time,
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 }
 
-// player_t::arise
+// player_t::arise ==========================================================
 
 void player_t::arise()
 {
@@ -2587,7 +2539,7 @@ void player_t::arise()
   schedule_ready();
 }
 
-// player_t::demise
+// player_t::demise =========================================================
 
 void player_t::demise()
 {
@@ -2949,9 +2901,7 @@ int player_t::normalize_by() SC_CONST
 double player_t::health_percentage() SC_CONST
 {
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
-
 }
-
 
 // player_t::stat_gain ======================================================
 
@@ -3153,6 +3103,7 @@ double player_t::target_mitigation( double            amount,
                                     action_t*         action )
 {
   double mitigated_amount = amount;
+
   if ( school == SCHOOL_PHYSICAL )
   {
     // Inspiration
@@ -5118,10 +5069,28 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
 
   if ( save_type == SAVE_ALL || save_type == SAVE_TALENTS )
   {
+    talents_str = "http://www.wowhead.com/talent#";
+    talents_str += util_t::player_type_string( type );
+    talents_str += "-";
+    // This is necessary because sometimes the talent trees change shape between live/ptr.
+    for( int i=0; i < MAX_TALENT_TREES; i++ )
+    {
+      for( unsigned j = 0; j < talent_trees[ i ].size(); j++ )
+      {
+        talent_t* t = talent_trees[ i ][ j ];
+        std::stringstream ss;
+        ss << t -> rank();
+        talents_str += ss.str();
+      }
+    }
+
     if ( talents_str.size() > 0 )
     {
       profile_str += "talents=" + talents_str + term;
     };
+
+
+
     if ( glyphs_str.size() > 0 )
     {
       profile_str += "glyphs=" + glyphs_str + term;

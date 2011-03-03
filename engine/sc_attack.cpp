@@ -328,8 +328,8 @@ int attack_t::build_table( double* chances,
   int delta_level = target -> level - player -> level;
 
   if ( may_miss   )   miss =   miss_chance( delta_level ) + target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( player -> level, target -> level ) + target -> composite_tank_dodge();
-  if ( may_parry  )  parry =  parry_chance( player -> level, target -> level ) + target -> composite_tank_parry();
+  if ( may_dodge  )  dodge =  dodge_chance( player -> level, target -> level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
+  if ( may_parry  )  parry =  parry_chance( player -> level, target -> level ) + target -> composite_tank_parry() - target -> diminished_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_block )
