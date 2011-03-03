@@ -3697,8 +3697,8 @@ struct action_t : public spell_id_t
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 
   virtual double   miss_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
-  virtual double  dodge_chance( int source_level, int target_level ) SC_CONST { return 0.0; }
-  virtual double  parry_chance( int source_level, int target_level ) SC_CONST { return 0.0; }
+  virtual double  dodge_chance( int delta_level ) SC_CONST { return 0.0; }
+  virtual double  parry_chance( int delta_level ) SC_CONST { return 0.0; }
   virtual double glance_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
   virtual double  block_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
   virtual double   crit_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
@@ -3747,8 +3747,8 @@ struct attack_t : public action_t
   virtual double total_expertise() SC_CONST;
 
   virtual double   miss_chance( int delta_level ) SC_CONST;
-  virtual double  dodge_chance( int source_level, int target_level ) SC_CONST;
-  virtual double  parry_chance( int source_level, int target_level ) SC_CONST;
+  virtual double  dodge_chance( int delta_level ) SC_CONST;
+  virtual double  parry_chance( int delta_level ) SC_CONST;
   virtual double glance_chance( int delta_level ) SC_CONST;
   virtual double  block_chance( int delta_level ) SC_CONST;
   virtual double  crit_block_chance( int delta_level ) SC_CONST;

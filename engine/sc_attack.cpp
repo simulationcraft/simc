@@ -220,45 +220,43 @@ double attack_t::total_expertise() SC_CONST
 
 double attack_t::miss_chance( int delta_level ) SC_CONST
 {
-  if ( delta_level > 2 )
+  if ( target -> is_enemy() || target -> is_add() )
   {
-    // FIXME: needs testing for delta_level > 3
-    return 0.07 + ( delta_level - 2 ) * 0.01 - total_hit();
+    if ( delta_level > 2 )
+    {
+      // FIXME: needs testing for delta_level > 3
+      return 0.06 + ( delta_level - 2 ) * 0.02 - total_hit();
+    }
+    else
+    {
+    return 0.05 + delta_level * 0.005 - total_hit();
+    }
   }
   else
   {
-    return 0.05 + delta_level * 0.005 - total_hit();
+    if ( delta_level >= 0 )
+      return 0.05 + delta_level * 0.02;
+    else
+      return 0.05 + delta_level * 0.01;
   }
 }
 
 // attack_t::dodge_chance ===================================================
 
-double attack_t::dodge_chance( int source_level, int target_level ) SC_CONST
+double attack_t::dodge_chance( int delta_level ) SC_CONST
 {
-  int delta_level = target_level - source_level;
-  double chance;
-
-  if ( ( target_level > 83 ) || ( target_level < 80 ) )
-    chance = 0.05;
-  else
-    chance = 0.04125;
-
-  return chance + delta_level * 0.005 - 0.25 * total_expertise();
+  return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::parry_chance ===================================================
 
-double attack_t::parry_chance( int source_level, int target_level ) SC_CONST
+double attack_t::parry_chance( int delta_level ) SC_CONST
 {
-  int delta_level = target_level - source_level;
-  double chance;
-
-  if ( ( target_level > 83 ) || ( target_level < 80 ) )
-    chance = 0.14;
+  // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
+  if ( delta_level > 2 )
+    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * total_expertise();
   else
-    chance = 0.13125;
-
-  return chance + delta_level * 0.005 - 0.25 * total_expertise();
+    return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::glance_chance ==================================================
@@ -328,8 +326,8 @@ int attack_t::build_table( double* chances,
   int delta_level = target -> level - player -> level;
 
   if ( may_miss   )   miss =   miss_chance( delta_level ) + target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( player -> level, target -> level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
-  if ( may_parry  )  parry =  parry_chance( player -> level, target -> level ) + target -> composite_tank_parry() - target -> diminished_parry();
+  if ( may_dodge  )  dodge =  dodge_chance( delta_level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
+  if ( may_parry  )  parry =  parry_chance( delta_level ) + target -> composite_tank_parry() - target -> diminished_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_block )
