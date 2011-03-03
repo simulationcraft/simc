@@ -30,10 +30,10 @@ actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.up
-actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up)
+actions+=/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.up|buff.berserking.up
+actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up&!buff.berserking.up)
 actions+=/steady_shot
-head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,heroic=1,ilevel=372,quality=epic,stats=215agi_143haste_143mastery_322sta,reforge=mastery_hit
 shoulders=lightningcharged_spaulders,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1911armor_171hit_191mastery_429sta,reforge=mastery_crit,gems=67agi_10mastery,enchant=50agi_25mastery
 chest=voltage_source_chestguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=345agi_2548armor_227crit_247haste_578sta,reforge=haste_hit,gems=67agi_40agi,enchant=20all
@@ -46,9 +46,9 @@ finger1=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_1
 finger2=mistral_circle_of_the_stormblast,heroic=1,ilevel=372,quality=epic,stats=321sta_214agi_143hit_143crit,enchant=40agi,suffix=133
 trinket1=essence_of_the_cyclone,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178crit_10%_10dur_50cd
 trinket2=prestors_talisman_of_machination,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178haste_10%_15dur_75cd
-back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=215agi_673armor_143crit_143mastery_322sta,enchant=65crit
-main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_257crit_257mastery_578sta,enchant=130agi,weapon=staff_2.40speed_1350min_2027max
-ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_81haste_181sta,enchant=gnomish_xray,weapon=crossbow_3.00speed_1688min_2533max
+back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=215agi_673armor_143crit_143mastery_322sta,reforge=mastery_haste,enchant=65crit
+main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_257crit_257mastery_578sta,reforge=mastery_haste,enchant=130agi,weapon=staff_2.40speed_1350min_2027max
+ranged=themios_the_darkbringer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_81mastery_181sta,reforge=mastery_haste,enchant=gnomish_xray,weapon=bow_2.90speed_1428min_2653max
 # Gear Summary
 # gear_strength=20
 # gear_agility=5325
@@ -58,14 +58,14 @@ ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_
 # gear_attack_power=190
 # gear_hit_rating=966
 # gear_crit_rating=2305
-# gear_haste_rating=1112
-# gear_mastery_rating=898
+# gear_haste_rating=1300
+# gear_mastery_rating=710
 # gear_armor=15326
 # meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # main_hand=malevolence,heroic=1,weapon=staff_2.40speed_1350min_2027max
-# ranged=dragonheart_piercer,heroic=1,weapon=crossbow_3.00speed_1688min_2533max,enchant=gnomish_xray
+# ranged=themios_the_darkbringer,heroic=1,weapon=bow_2.90speed_1428min_2653max,enchant=gnomish_xray
 pet=cat,cat
 talents=200000030300003010102000000000000000000000000000000000000000000
 active=owner
