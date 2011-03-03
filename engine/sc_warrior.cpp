@@ -1076,6 +1076,16 @@ struct melee_t : public warrior_attack_t
       }
     }
   }
+
+  virtual void player_buff()
+  {
+    warrior_attack_t::player_buff();
+
+    warrior_t* p = player -> cast_warrior();
+
+    if ( p -> ptr && p -> primary_tree() == TREE_FURY )
+      player_multiplier *= 1.40; // FIXME: Use DBC value when it's added
+  }
 };
 
 // Auto Attack ==============================================================
