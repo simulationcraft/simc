@@ -3578,7 +3578,13 @@ void hunter_t::init_actions()
       else
       {
         action_list_str += "/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.up";
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up)";
+        if ( race == RACE_TROLL )
+          action_list_str += "|buff.berserking.up";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up";
+        if ( race == RACE_TROLL )
+          action_list_str += "&!buff.berserking.up)";
+        else
+          action_list_str += ")";
       }
       action_list_str += "/steady_shot";
       break;
