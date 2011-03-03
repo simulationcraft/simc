@@ -875,13 +875,13 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> buffs_eradication -> up() )
     {
-      h *= 1.0 / ( 1.0 + p -> buffs_eradication -> effect_base_value( 1 ) / 100.0 );
+      h *= 1.0 / ( 1.0 + p -> buffs_eradication -> effect1().percent() );
     }
 
 
     if ( p -> buffs_demon_soul_felguard -> up() )
     {
-      h *= 1.0 / ( 1.0 + p -> buffs_demon_soul_felguard -> effect_base_value( 1 ) / 100.0 );
+      h *= 1.0 / ( 1.0 + p -> buffs_demon_soul_felguard -> effect1().percent() );
     }
 
     return h;
@@ -897,7 +897,7 @@ struct warlock_spell_t : public spell_t
 
     if ( base_execute_time > 0 && s_tree == WARLOCK_DESTRUCTION && p -> buffs_demon_soul_imp -> up() )
     {
-      player_crit += p -> buffs_demon_soul_imp -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> buffs_demon_soul_imp -> effect1().percent();
     }
 
     if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME ) player_multiplier *= 1.0 + trigger_deaths_embrace( this );
@@ -912,7 +912,7 @@ struct warlock_spell_t : public spell_t
     spell_t::target_debuff( t, dmg_type );
 
     if ( p -> buffs_bane_of_havoc -> up() )
-      target_multiplier *= ( 1.0 + p -> buffs_bane_of_havoc -> effect_base_value( 1 ) / 100.0 );
+      target_multiplier *= ( 1.0 + p -> buffs_bane_of_havoc -> effect1().percent() );
 
   }
 
@@ -924,11 +924,11 @@ struct warlock_spell_t : public spell_t
     //FIXME: These should be modeled as debuffs, and we need to check if they affect trinkets (if there is ever a shadow td trinket)
     if ( p -> buffs_shadow_embrace -> up() )
     {
-      shadow_td_multiplier *= 1.0 + p -> buffs_shadow_embrace ->  check() * p -> buffs_shadow_embrace -> effect_base_value( 1 ) / 100.0;
+      shadow_td_multiplier *= 1.0 + p -> buffs_shadow_embrace ->  check() * p -> buffs_shadow_embrace -> effect1().percent();
     }
     if ( p -> buffs_haunted -> up() )
     {
-      shadow_td_multiplier *= 1.0 + p -> buffs_haunted -> effect_base_value( 3 ) / 100.0 + ( p -> glyphs.haunt -> effect_base_value( 1 ) / 100.0 );
+      shadow_td_multiplier *= 1.0 + p -> buffs_haunted -> effect3().percent() + ( p -> glyphs.haunt -> effect1().percent() );
     }
 
     return spell_t::total_td_multiplier() * shadow_td_multiplier;
@@ -944,8 +944,8 @@ struct warlock_spell_t : public spell_t
       if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> rank() ? p -> talent_impending_doom -> proc_chance()  : 0 ) )
       {
         p -> procs_impending_doom -> occur();
-        if ( p -> cooldowns_metamorphosis -> remains() > p -> talent_impending_doom -> effect_base_value( 2 ) )
-          p -> cooldowns_metamorphosis -> ready -= p -> talent_impending_doom -> effect_base_value( 2 );
+        if ( p -> cooldowns_metamorphosis -> remains() > p -> talent_impending_doom -> effect2().base_value() )
+          p -> cooldowns_metamorphosis -> ready -= p -> talent_impending_doom -> effect2().base_value();
         else
           p -> cooldowns_metamorphosis -> reset();
       }
@@ -960,8 +960,8 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> talent_soul_leech -> rank() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect_base_value( 1 ) / 100.0, p ->gains_soul_leech );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect_base_value ( 1 ) / 100.0, p -> gains_soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect1().percent(), p ->gains_soul_leech );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech );
 
       p -> trigger_replenishment();
     }
@@ -973,7 +973,7 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = s -> player -> cast_warlock();
     if ( ( result !=  RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
-    if ( s -> target -> health_percentage() > p -> talent_decimation -> effect_base_value( 2 ) ) return;
+    if ( s -> target -> health_percentage() > p -> talent_decimation -> effect2().base_value() ) return;
     p -> buffs_decimation -> trigger();
   }
 
@@ -985,9 +985,9 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> rank_spell() -> effect_base_value( 3 ) )
+    if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> effect3().base_value() )
     {
-        return p -> talent_deaths_embrace -> effect_base_value( 2 ) / 100.0;
+        return p -> talent_deaths_embrace -> effect2().percent();
     }
 
     return 0;
@@ -1041,7 +1041,7 @@ struct warlock_pet_melee_t : public attack_t
 
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
-      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect1().percent();
     }
 
   }
@@ -1089,7 +1089,7 @@ struct warlock_pet_attack_t : public attack_t
 
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
-      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect1().percent();
     }
 
   }
@@ -1105,7 +1105,7 @@ static void trigger_mana_feed( action_t* s, double travel_result )
   {
     if ( travel_result == RESULT_CRIT )
     {
-      double mana = p -> resource_max[ RESOURCE_MANA ] / 100.0 * p -> talent_mana_feed -> effect_base_value( 3 );
+      double mana = p -> resource_max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect3().percent();
       if ( p -> ptr )
         if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
       p -> resource_gain( RESOURCE_MANA, mana, p -> gains_mana_feed );
@@ -1162,7 +1162,7 @@ struct warlock_pet_spell_t : public spell_t
 
     if ( o -> buffs_tier10_4pc_caster -> up() )
     {
-      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect1().percent();
     }
 
   }
@@ -1181,7 +1181,7 @@ struct imp_pet_t : public warlock_main_pet_t
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
       direct_power_mod = 0.649; // tested in-game as of 2011/01/22
-      base_execute_time += o -> talent_dark_arts -> effect_base_value( 1 ) / 1000.0;
+      base_execute_time += o -> talent_dark_arts -> effect1().seconds();
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
@@ -1248,7 +1248,7 @@ struct felguard_pet_t : public warlock_main_pet_t
       aoe               = -1;
       direct_power_mod  = 0.264;
       weapon   = &( p -> main_hand_weapon );
-      base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 2 ) / 100.0;
+      base_multiplier *= 1.0 + o -> talent_dark_arts -> effect2().percent();
     }
 
     virtual void execute()
@@ -1362,7 +1362,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
     {
       felhunter_pet_t* p = ( felhunter_pet_t* ) player -> cast_pet();
       warlock_t*       o = p -> owner -> cast_warlock();
-      base_multiplier *= 1.0 + o -> talent_dark_arts -> effect_base_value( 3 ) / 100.0;
+      base_multiplier *= 1.0 + o -> talent_dark_arts -> effect3().percent();
       direct_power_mod = 0.614; // tested in-game as of 2010/12/20
       base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
       base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
@@ -1384,7 +1384,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
       if ( player -> ptr )
         player_multiplier *= 1.0 + o -> active_dots() * 0.3;
       else
-        player_multiplier *= 1.0 + o -> active_dots() * effect_base_value( 3 ) / 100.0;
+        player_multiplier *= 1.0 + o -> active_dots() * effect3().percent();
     }
 
     virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -1729,7 +1729,7 @@ struct curse_of_elements_t : public warlock_spell_t
     {
       warlock_t* p = player -> cast_warlock();
       target -> debuffs.curse_of_elements -> expire();
-      target -> debuffs.curse_of_elements -> trigger( 1, effect_base_value( 2 ) );
+      target -> debuffs.curse_of_elements -> trigger( 1, effect2().base_value() );
       target -> debuffs.curse_of_elements -> source = p;
     }
   }
@@ -1782,7 +1782,7 @@ struct bane_of_agony_t : public warlock_spell_t
 
     may_crit   = false;
 
-    base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> talent_doom_and_gloom -> effect1().percent();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
     int extra_ticks = (int) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
@@ -1832,7 +1832,7 @@ struct bane_of_doom_t : public warlock_spell_t
     may_crit     = false;
 
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
-    base_crit += p -> talent_doom_and_gloom -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> talent_doom_and_gloom -> effect1().percent();
   }
 
   virtual void execute()
@@ -1860,7 +1860,7 @@ struct bane_of_doom_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( p -> bugs && p -> buffs_shadow_embrace -> check() )
     {
-      m /= 1.0 + p -> buffs_shadow_embrace -> check() * p -> buffs_shadow_embrace -> effect_base_value( 1 ) / 100.0;
+      m /= 1.0 + p -> buffs_shadow_embrace -> check() * p -> buffs_shadow_embrace -> effect1().percent();
     }
 
     return m;
@@ -1871,7 +1871,7 @@ struct bane_of_doom_t : public warlock_spell_t
     warlock_spell_t::tick();
 
     warlock_t* p = player -> cast_warlock();
-    double x = effect_base_value( 2 ) / 100.0 + p -> talent_impending_doom -> effect_base_value( 1 ) / 100.0;
+    double x = effect2().percent() + p -> talent_impending_doom -> effect1().percent();
     if ( p -> rng_ebon_imp -> roll ( x ) )
     {
       p -> procs_ebon_imp -> occur();
@@ -1945,11 +1945,11 @@ struct shadow_bolt_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time += p -> talent_bane -> effect1().seconds();
     base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
-    base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0 );
+    base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
 
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual double execute_time() SC_CONST
@@ -1959,7 +1959,7 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p -> buffs_shadow_trance -> up() ) h = 0;
     if ( p -> buffs_backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs_backdraft -> effect_base_value( 1 ) / 100.0;
+      h *= 1.0 + p -> buffs_backdraft -> effect1().percent();
     }
     return h;
   }
@@ -2002,7 +2002,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( p -> buffs_demon_soul_succubus -> up() )
     {
-      player_multiplier *= 1.0 + p -> buffs_demon_soul_succubus -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> buffs_demon_soul_succubus -> effect1().percent();
     }
   }
 
@@ -2015,7 +2015,7 @@ struct shadow_bolt_t : public warlock_spell_t
       trigger_decimation( this, travel_result );
       trigger_impending_doom( this );
       p -> buffs_shadow_embrace -> trigger();
-      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
+      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect1().percent() );
     }
   }
 
@@ -2070,7 +2070,7 @@ static void trigger_burning_embers ( spell_t* s, double dmg )
 
     double cap = ( 0.5 * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_min( 2 ) ) / num_ticks;
 
-    p -> spells_burning_embers -> base_td += ( dmg * p -> talent_burning_embers -> effect_base_value( 1 ) / 100.0 ) / num_ticks;
+    p -> spells_burning_embers -> base_td += ( dmg * p -> talent_burning_embers -> effect1().percent() ) / num_ticks;
 
     if( p -> spells_burning_embers -> base_td > cap ) p -> spells_burning_embers -> base_td = cap;
 
@@ -2090,8 +2090,8 @@ struct chaos_bolt_t : public warlock_spell_t
     may_resist        = false;
 
     warlock_t* p = player -> cast_warlock();
-    base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
-    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_execute_time += p -> talent_bane -> effect1().seconds();
+    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
   }
 
@@ -2101,7 +2101,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( p -> buffs_backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs_backdraft -> effect_base_value( 1 ) / 100.0;
+      h *= 1.0 + p -> buffs_backdraft -> effect1().percent();
     }
     return h;
   }
@@ -2128,7 +2128,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if ( p -> dots_immolate -> ticking )
     {
-      player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect1().percent();
     }
   }
 
@@ -2193,7 +2193,7 @@ struct shadowburn_t : public warlock_spell_t
     warlock_spell_t::player_buff();
     if ( p -> glyphs.shadowburn -> ok() )
     {
-      if ( p -> cooldowns_glyph_of_shadowburn -> remains() == 0 && target -> health_percentage() < p -> glyphs.shadowburn -> effect_base_value( 1 ) )
+      if ( p -> cooldowns_glyph_of_shadowburn -> remains() == 0 && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
       {
         cooldown -> reset();
         p -> cooldowns_glyph_of_shadowburn -> start();
@@ -2250,15 +2250,15 @@ struct corruption_t : public warlock_spell_t
 
     may_crit   = false;
 
-    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> talent_everlasting_affliction -> effect2().percent();
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    player_td_multiplier += p -> talent_improved_corruption -> effect_base_value( 1 ) / 100.0;
+    player_td_multiplier += p -> talent_improved_corruption -> effect1().percent();
   }
 
   virtual void tick()
@@ -2419,7 +2419,7 @@ struct drain_soul_t : public warlock_spell_t
       trigger_everlasting_affliction( this );
       if ( p -> talent_pandemic -> rank() )
       {
-        if ( (target -> health_percentage() < effect_base_value( 3 ) ) && (p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
+        if ( ( target -> health_percentage() < effect3().base_value() ) && ( p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
         {
           if ( p -> dots_unstable_affliction -> ticking )
           {
@@ -2485,10 +2485,10 @@ struct drain_soul_t : public warlock_spell_t
     if ( de_bonus ) player_multiplier /= 1.0 + de_bonus;
 
 
-      if ( target -> health_percentage() < effect_base_value( 3 ) )
-      {
-        player_multiplier *= 2.0 + de_bonus;
-      }
+    if ( target -> health_percentage() < effect3().base_value() )
+    {
+      player_multiplier *= 2.0 + de_bonus;
+    }
   }
 };
 
@@ -2507,7 +2507,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     may_crit   = false;
 
-    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> talent_everlasting_affliction -> effect2().percent();
     base_execute_time += p -> glyphs.unstable_affliction -> base_value() / 1000.0;
   }
 
@@ -2562,7 +2562,7 @@ struct haunt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_haunt -> rank() );
 
-    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     direct_power_mod = 0.429;
     // FIXME - Needs exact testing on the 4.1 PTR once the change is in
     if ( p -> ptr ) direct_power_mod *= 1.3;
@@ -2592,9 +2592,9 @@ struct immolate_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     warlock_t* p = player -> cast_warlock();
-    base_execute_time += p -> talent_bane -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time += p -> talent_bane -> effect1().seconds();
 
-    base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
+    base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect1().percent() );
 
     if ( p -> talent_inferno -> rank() ) num_ticks += 2;
   }
@@ -2603,7 +2603,7 @@ struct immolate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::player_buff();
-    player_td_multiplier += ( p -> glyphs.immolate -> base_value() + p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
+    player_td_multiplier += ( p -> glyphs.immolate -> base_value() + p -> talent_improved_immolate -> effect1().percent() );
   }
 
   virtual void execute()
@@ -2693,9 +2693,9 @@ struct conflagrate_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_conflagrate -> ok() );
-    base_crit += p -> talent_fire_and_brimstone -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> talent_fire_and_brimstone -> effect2().percent();
     cooldown -> duration += ( p -> glyphs.conflagrate -> base_value() / 1000.0 );
-    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() ) + ( p -> talent_improved_immolate -> effect_base_value( 1 ) / 100.0 );
+    base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() ) + ( p -> talent_improved_immolate -> effect1().percent() );
   }
 
   virtual void execute()
@@ -2708,7 +2708,7 @@ struct conflagrate_t : public warlock_spell_t
 
     int periodic_ticks = p -> dots_immolate -> action -> hasted_num_ticks();
 
-    base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * effect_base_value( 2 ) / 100.0 ;
+    base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * effect2().percent() ;
 
     warlock_spell_t::execute();
   }
@@ -2743,10 +2743,10 @@ struct incinerate_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     warlock_t* p = player -> cast_warlock();
-    base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect_base_value( 2 ) / 100.0);
-    base_execute_time += p -> talent_emberstorm -> effect_base_value( 3 ) / 1000.0;
+    base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent());
+    base_execute_time += p -> talent_emberstorm -> effect3().percent();
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void execute()
@@ -2777,7 +2777,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
     {
-      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect_base_value( 1 ) / 100.0 );
+      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect1().percent() );
     }
   }
 
@@ -2787,13 +2787,13 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::player_buff();
 
     if ( p -> buffs_molten_core -> up() ) {
-      player_multiplier *= 1 + p -> buffs_molten_core -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1 + p -> buffs_molten_core -> effect1().percent();
       p -> buffs_molten_core -> decrement();
     }
 
     if ( p -> dots_immolate -> ticking )
     {
-      player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect1().percent();
     }
   }
 
@@ -2804,11 +2804,11 @@ struct incinerate_t : public warlock_spell_t
 
     if ( p -> buffs_molten_core -> up() )
     {
-      h *= 1.0 + p -> buffs_molten_core -> effect_base_value( 3 ) / 100.0;
+      h *= 1.0 + p -> buffs_molten_core -> effect3().percent();
     }
     if ( p -> buffs_backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs_backdraft -> effect_base_value( 1 ) / 100.0;
+      h *= 1.0 + p -> buffs_backdraft -> effect1().percent();
     }
 
     return h;
@@ -2832,12 +2832,12 @@ struct searing_pain_t : public warlock_spell_t
 
     if ( target -> health_percentage() <= 25 && p -> talent_improved_searing_pain -> rank() )
     {
-      player_crit += p -> talent_improved_searing_pain -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talent_improved_searing_pain -> effect1().percent();
     }
 
-    if ( p -> buffs_soulburn -> check() ) player_crit +=  p -> buffs_soulburn -> effect_base_value( 3 ) / 100.0;
+    if ( p -> buffs_soulburn -> check() ) player_crit +=  p -> buffs_soulburn -> effect3().percent();
 
-    if ( p -> buffs_searing_pain_soulburn -> check() ) player_crit += p -> buffs_searing_pain_soulburn -> effect_base_value( 1 ) / 100.0;
+    if ( p -> buffs_searing_pain_soulburn -> check() ) player_crit += p -> buffs_searing_pain_soulburn -> effect1().percent();
 
   }
 
@@ -2864,8 +2864,8 @@ struct soul_fire_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     warlock_t* p = player -> cast_warlock();
-    base_execute_time += p -> talent_emberstorm -> effect_base_value( 1 ) / 1000.0;
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_execute_time += p -> talent_emberstorm -> effect1().seconds();
+    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void execute()
@@ -2886,7 +2886,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p -> buffs_decimation -> up() )
     {
-      t *= 1.0 - p -> talent_decimation -> effect_base_value( 1 ) / 100.0;
+      t *= 1.0 - p -> talent_decimation -> effect1().percent();
     }
     if ( p -> buffs_empowered_imp -> up() )
     {
@@ -2941,7 +2941,7 @@ struct life_tap_t : public warlock_spell_t
     harmful = false;
 
     if ( p -> glyphs.life_tap -> ok() )
-      trigger_gcd += p -> glyphs.life_tap -> effect_base_value( 1 ) / 1000.0;
+      trigger_gcd += p -> glyphs.life_tap -> effect1().seconds();
   }
 
   virtual void execute()
@@ -2949,13 +2949,13 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    double life = p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 3 ) / 100.0;
-    double mana = life * effect_base_value( 2 ) / 100.0 * ( 1.0 + p -> talent_improved_life_tap -> base_value() / 100.0 );
+    double life = p -> resource_max[ RESOURCE_HEALTH ] * effect3().percent();
+    double mana = life * effect2().percent() * ( 1.0 + p -> talent_improved_life_tap -> base_value() / 100.0 );
     p -> resource_loss( RESOURCE_HEALTH, life );
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
     if ( p -> talent_mana_feed -> rank() && p -> active_pet)
     {
-      p -> active_pet -> resource_gain( RESOURCE_MANA, mana * p -> talent_mana_feed -> effect_base_value( 1 ) / 100.0, p -> active_pet -> gains_mana_feed );
+      p -> active_pet -> resource_gain( RESOURCE_MANA, mana * p -> talent_mana_feed -> effect1().percent(), p -> active_pet -> gains_mana_feed );
     }
   }
 
@@ -3014,7 +3014,7 @@ struct fel_armor_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     dot -> current_tick = 0; // ticks indefinitely
-    p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * effect_base_value( 2 ) / 100.0 * ( 1.0 + p -> talent_demonic_aegis -> effect_base_value( 1 ) / 100.0 ), p -> gains_fel_armor, this );
+    p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * effect2().percent() * ( 1.0 + p -> talent_demonic_aegis -> effect1().percent() ), p -> gains_fel_armor, this );
   }
 
   virtual bool ready()
@@ -3040,7 +3040,7 @@ struct summon_pet_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     harmful = false;
-    base_execute_time += p -> talent_master_summoner -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time += p -> talent_master_summoner -> effect1().seconds();
   }
 
   summon_pet_t( const char* n, player_t* player, int id ) :
@@ -3049,7 +3049,7 @@ struct summon_pet_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     harmful = false;
-    base_execute_time += p -> talent_master_summoner -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time += p -> talent_master_summoner -> effect1().seconds();
   }
 
   virtual void execute()
@@ -3173,7 +3173,7 @@ struct summon_infernal_t : public summon_pet_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect_base_value( 1 ) / 1000.0;
+    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -3197,7 +3197,7 @@ struct summon_doomguard2_t : public summon_pet_t
     warlock_t* p = player -> cast_warlock();
     harmful = false;
     background = true;
-    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect_base_value( 1 ) / 1000.0;
+    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
   }
 
   virtual void execute()
@@ -3366,7 +3366,7 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_hand_of_guldan -> rank() );
-    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
+    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -3605,7 +3605,7 @@ struct hellfire_tick_t : public warlock_spell_t
     direct_tick = true;
 
     warlock_t* p = player -> cast_warlock();
-    base_multiplier *= 1.0 + p -> talent_cremation -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talent_cremation -> effect1().percent();
     stats = player -> get_stats( "hellfire" );
   }
 };
@@ -3639,7 +3639,7 @@ struct hellfire_t : public warlock_spell_t
 
     if ( p -> talent_inferno -> rank() )
     {
-      range += p -> talent_inferno -> effect_base_value( 1 );
+      range += p -> talent_inferno -> effect1().base_value();
     }
   }
 
@@ -3711,7 +3711,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
     add_child( seed_of_corruption_aoe );
 
-    base_crit += p -> talent_everlasting_affliction -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> talent_everlasting_affliction -> effect2().percent();
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -3732,7 +3732,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick();
 
-    if ( target -> total_dmg - dot_damage_done > effect_base_value ( 2 ) )
+    if ( target -> total_dmg - dot_damage_done > effect2().base_value() )
     {
       dot_damage_done=0.0;
       seed_of_corruption_aoe -> execute();
@@ -3830,19 +3830,19 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
   if ( buffs_metamorphosis -> up() )
   {
-    player_multiplier *= 1.0 + buffs_metamorphosis -> effect_base_value( 3 ) / 100.0 + ( mastery_spells.master_demonologist -> ok() * buffs_metamorphosis -> value() * mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
+    player_multiplier *= 1.0 + buffs_metamorphosis -> effect3().percent() + ( mastery_spells.master_demonologist -> ok() * buffs_metamorphosis -> value() * mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
   }
 
-  player_multiplier *= 1.0 + ( talent_demonic_pact -> effect_base_value( 3 ) / 100.0 );
+  player_multiplier *= 1.0 + ( talent_demonic_pact -> effect3().percent() );
 
   if ( buffs_tier10_4pc_caster -> up() )
   {
-    player_multiplier *= ( 1.0 + buffs_tier10_4pc_caster -> effect_base_value( 1 ) / 100.0 );
+    player_multiplier *= ( 1.0 + buffs_tier10_4pc_caster -> effect1().percent() );
   }
 
   if ( buffs_demon_soul_felguard -> up() && ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) )
   {
-      player_multiplier *= 1.0 + buffs_demon_soul_felguard -> effect_base_value( 2 ) / 100.0;
+      player_multiplier *= 1.0 + buffs_demon_soul_felguard -> effect2().percent();
   }
 
   double fire_multiplier=1.0;
@@ -3850,22 +3850,21 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
 
   // Fire
-  fire_multiplier *= 1.0 + ( passive_spells.cataclysm -> effect_base_value( 1 ) / 100.0 );
+  fire_multiplier *= 1.0 + ( passive_spells.cataclysm -> effect_base_value( 1 ) * 0.01 );
   if ( mastery_spells.fiery_apocalypse -> ok() )
     fire_multiplier *= 1.0 + ( mastery_spells.fiery_apocalypse -> ok() * composite_mastery() * mastery_spells.fiery_apocalypse -> effect_base_value( 2 ) / 10000.0 );
-  fire_multiplier *= 1.0 +  passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 ;
+  fire_multiplier *= 1.0 +  passive_spells.demonic_knowledge -> effect_base_value( 1 ) * 0.01 ;
 
   // Shadow
-  shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) / 100.0 );
+  shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) * 0.01 );
 
   // FIXME - Temporary override until we have new DBC data.
   if ( ptr )
   {
-    if ( passive_spells.shadow_mastery -> effect_base_value( 1 ) == 25 ) 
-      shadow_multiplier *= 1.30;
+    shadow_multiplier *= 1.30;
   }
   else
-    shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) / 100.0 );
+    shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) * 0.01 );
 
 
   if ( buffs_improved_soul_fire -> up() )
@@ -3902,7 +3901,7 @@ double warlock_t::composite_player_td_multiplier( const school_type school ) SC_
     }
     if ( buffs_demon_soul_felhunter -> up() )
     {
-      player_multiplier += buffs_demon_soul_felhunter -> effect_base_value( 1 ) / 100.0;
+      player_multiplier += buffs_demon_soul_felhunter -> effect1().percent();
     }
   }
 
@@ -3914,7 +3913,7 @@ double warlock_t::composite_player_td_multiplier( const school_type school ) SC_
 double warlock_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
   if ( ( attr == ATTR_INTELLECT ) && passive_spells.nethermancy -> ok() )
-    return ( passive_spells.nethermancy -> effect_base_value( 1 ) / 100.0 );
+    return ( passive_spells.nethermancy -> effect_base_value( 1 ) * 0.01 );
 
   return 0.0;
 }
@@ -4126,7 +4125,7 @@ void warlock_t::init_base()
 {
   player_t::init_base();
 
-  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talent_demonic_embrace -> effect_base_value ( 1 ) / 100.0;
+  attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + talent_demonic_embrace -> effect1().percent();
 
   base_attack_power = -10;
   initial_attack_power_per_strength = 2.0;
@@ -4159,7 +4158,7 @@ void warlock_t::init_buffs()
   buffs_backdraft             = new buff_t( this, talent_backdraft -> effect_trigger_spell( 1 ), "backdraft" );
   buffs_decimation            = new buff_t( this, talent_decimation -> effect_trigger_spell( 1 ), "decimation", talent_decimation -> ok() );
   buffs_demonic_empowerment   = new buff_t( this, "demonic_empowerment",   1 );
-  buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect_base_value( 1 ) / 100.0 );
+  buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect1().percent() );
   buffs_eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
   buffs_haunted               = new buff_t( this, talent_haunt -> spell_id(), "haunted", talent_haunt -> rank() );
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
@@ -4171,7 +4170,7 @@ void warlock_t::init_buffs()
   
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
-  buffs_improved_soul_fire -> cooldown -> duration  = dbc.effect( dbc.spell( 85113 ) -> effect3 -> id() ) -> base_value();
+  buffs_improved_soul_fire -> cooldown -> duration  = dbc.effect( dbc.spell( 85113 ) -> effect3().id() ) -> base_value();
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );
   buffs_demon_soul_felguard   = new buff_t( this, 79462, "demon_soul_felguard" );

@@ -386,11 +386,11 @@ struct hunter_pet_t : public pet_t
     base_attack_crit = 0.046; // Crit rate on gearless, talentless pet tested at 6.4%. Need further testing for confirmation. 
 
     resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
-    resource_base[ RESOURCE_FOCUS ] = 100 + o -> talents.kindred_spirits -> effect_base_value( 1 );
+    resource_base[ RESOURCE_FOCUS ] = 100 + o -> talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
 
     base_focus_regen_per_second  = ( 24.5 / 4.0 );
 
-    base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> effect_base_value( 1 ) / 100.0;
+    base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> effect1().percent();
 
     base_gcd = 1.20;
   }
@@ -438,7 +438,7 @@ struct hunter_pet_t : public pet_t
         talents.spiders_bite     -> set_rank( 3, true );
         talents.wild_hunt        -> set_rank( 2, true );
 
-        if( owner -> primary_tab() == HUNTER_BEAST_MASTERY ) // Should reference the talent in question, if possible
+        if( owner -> primary_tree() == TREE_BEAST_MASTERY ) // Should reference the talent in question, if possible
         {
           talents.shark_attack -> set_rank( 2, true );
         }
@@ -553,7 +553,7 @@ struct hunter_pet_t : public pet_t
     mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
 
     if ( buffs_call_of_the_wild -> up() )
-      mult *= 1.0 + buffs_call_of_the_wild -> effect_base_value( 1 ) / 100.0;
+      mult *= 1.0 + buffs_call_of_the_wild -> effect1().percent();
 
     if ( o -> buffs_tier10_4pc -> up() )
       mult *= 1.2;
@@ -790,7 +790,7 @@ static void trigger_piercing_shots( action_t* a )
     }
   };
 
-  double dmg = p -> talents.piercing_shots -> base_value() / 100.0 * a -> direct_dmg;
+  double dmg = p -> talents.piercing_shots -> effect1().percent() * a -> direct_dmg;
 
   if ( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
@@ -817,7 +817,7 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
 
   if ( p -> rng_thrill_of_the_hunt -> roll ( p -> talents.thrill_of_the_hunt -> proc_chance() ) )
   {
-    double gain = a -> base_cost * p -> talents.thrill_of_the_hunt -> base_value() / 100.0;
+    double gain = a -> base_cost * p -> talents.thrill_of_the_hunt -> effect1().percent();
   
     p -> procs_thrill_of_the_hunt -> occur();
     p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
@@ -904,7 +904,7 @@ struct hunter_pet_attack_t : public attack_t
 
     if ( p -> buffs_culling_the_herd -> up() )
     {
-      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
+      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
     }
     if ( p -> talents.feeding_frenzy -> rank() && ( target -> health_percentage() < 35 ) )
     {
@@ -988,7 +988,7 @@ struct claw_t : public hunter_pet_attack_t
       p -> buffs_frenzy -> trigger( 1 );
     if ( result == RESULT_CRIT )
     {
-      o -> resource_gain( RESOURCE_FOCUS, o -> talents.invigoration -> base_value(), o -> gains_invigoration );
+      o -> resource_gain( RESOURCE_FOCUS, o -> talents.invigoration -> effect1().resource( RESOURCE_FOCUS ), o -> gains_invigoration );
       if ( p -> talents.culling_the_herd -> rank() )
       {
         p -> buffs_culling_the_herd -> trigger();
@@ -1006,7 +1006,7 @@ struct claw_t : public hunter_pet_attack_t
 
     hunter_pet_attack_t::player_buff();
 
-    if ( o -> buffs_cobra_strikes -> up() ) player_crit += o -> buffs_cobra_strikes -> effect_base_value( 1 ) / 100.0;
+    if ( o -> buffs_cobra_strikes -> up() ) player_crit += o -> buffs_cobra_strikes -> effect1().percent();
 
     if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
     {
@@ -1029,7 +1029,7 @@ struct claw_t : public hunter_pet_attack_t
     if ( c == 0 ) return 0;
     if ( p -> buffs_owls_focus -> check() ) return 0;
     if ( p -> buffs_sic_em -> check() )
-      c *= 1.0 + o -> talents.sic_em -> base_value() / 100.0;
+      c *= 1.0 + o -> talents.sic_em -> effect1().percent();
     if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
     {
       c *= 1.0 + p -> talents.wild_hunt -> rank() * 0.50;
@@ -1049,7 +1049,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
 
     parse_options( NULL, options_str );
     base_dd_min = base_dd_max = 0;
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
@@ -1068,7 +1068,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
     parse_options( NULL, options_str );
 
     base_dd_min = base_dd_max  = 1;
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast   = true;
     direct_power_mod = 0.10; // http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/ The scaling in this post matches in-game testing.
 
@@ -1112,7 +1112,7 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     base_dd_min = 926;
     base_dd_max = 926;
 
-    base_crit += o -> talents.improved_kill_command -> effect_base_value( 1 ) / 100.0;
+    base_crit += o -> talents.improved_kill_command -> effect1().percent();
   }
 
   virtual void execute()
@@ -1187,7 +1187,7 @@ struct hunter_pet_spell_t : public spell_t
 
     if ( p -> buffs_culling_the_herd -> up() )
     {
-      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
+      player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
     }
     if ( p -> talents.feeding_frenzy -> rank() && ( target -> health_percentage() < 35 ) )
     {
@@ -1212,7 +1212,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
   }
@@ -1238,7 +1238,7 @@ struct rabid_t : public hunter_pet_spell_t
     hunter_t*     o = p -> owner -> cast_hunter();
 
     parse_options( NULL, options_str );
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
   }
 
@@ -1268,7 +1268,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     base_cost      = 0;
     num_ticks      = 3;
     base_tick_time = 3;
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
     harmful   = false;
   }
@@ -1304,7 +1304,7 @@ struct furious_howl_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
   }
@@ -1335,10 +1335,10 @@ struct roar_of_courage_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
-    bonus = p -> dbc.effect_min( p -> dbc.spell( id ) -> effect1 -> id(), p -> level );
+    bonus = p -> dbc.effect_min( p -> dbc.spell( id ) -> effect1().id(), p -> level );
   }
 
   virtual void execute()
@@ -1365,10 +1365,10 @@ struct qiraji_fortitude_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
-    bonus = p -> dbc.effect_min( p -> dbc.spell( id ) -> effect1 -> id(), p -> level );
+    bonus = p -> dbc.effect_min( p -> dbc.spell( id ) -> effect1().id(), p -> level );
   }
 
   virtual void execute()
@@ -1400,7 +1400,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1411,7 +1411,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       target -> debuffs.lightning_breath -> expire();
-      target -> debuffs.lightning_breath -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.lightning_breath -> trigger( 1, effect1().base_value() );
       target -> debuffs.lightning_breath -> source = p;
     }
   }
@@ -1429,7 +1429,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1438,7 +1438,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     hunter_pet_spell_t::execute();
     if ( result_is_hit() )
     {
-      target -> debuffs.corrosive_spit -> trigger(1, -1*effect_base_value( 1 ) );
+      target -> debuffs.corrosive_spit -> trigger(1, -1*effect1().base_value() );
     }
   }
 };
@@ -1455,7 +1455,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1467,7 +1467,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       target -> debuffs.demoralizing_screech -> expire();
-      target -> debuffs.demoralizing_screech -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.demoralizing_screech -> trigger( 1, effect1().base_value() );
       target -> debuffs.demoralizing_screech -> source = p;
     }
   }
@@ -1485,7 +1485,7 @@ struct ravage_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1496,7 +1496,7 @@ struct ravage_t : public hunter_pet_spell_t
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       target -> debuffs.ravage -> expire();
-      target -> debuffs.ravage -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.ravage -> trigger( 1, effect1().base_value() );
       target -> debuffs.ravage -> source = p;
     }
   }
@@ -1514,7 +1514,7 @@ struct tailspin_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1526,7 +1526,7 @@ struct tailspin_t : public hunter_pet_spell_t
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       target -> debuffs.tailspin -> expire();
-      target -> debuffs.tailspin -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.tailspin -> trigger( 1, effect1().base_value() );
       target -> debuffs.tailspin -> source = p;
     }
   }
@@ -1544,7 +1544,7 @@ struct tear_armor_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1553,7 +1553,7 @@ struct tear_armor_t : public hunter_pet_spell_t
     hunter_pet_spell_t::execute();
     if ( result_is_hit() )
     {
-      target -> debuffs.tear_armor -> trigger( 1, -1*effect_base_value( 1 ) );
+      target -> debuffs.tear_armor -> trigger( 1, -1*effect1().base_value() );
     }
   }
 };
@@ -1570,7 +1570,7 @@ struct tendon_rip_t : public hunter_pet_spell_t
 
     parse_options( 0, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
   }
 
@@ -1581,7 +1581,7 @@ struct tendon_rip_t : public hunter_pet_spell_t
     {
       hunter_pet_t* p = (hunter_pet_t*) player -> cast_pet();
       target -> debuffs.tendon_rip -> expire();
-      target -> debuffs.tendon_rip -> trigger( 1, effect_base_value( 1 ) );
+      target -> debuffs.tendon_rip -> trigger( 1, effect1().base_value() );
       target -> debuffs.tendon_rip -> source = p;
     }
   }
@@ -1613,7 +1613,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
 
     tick_spell = new froststorm_breath_tick_t( p );
@@ -1639,7 +1639,7 @@ double hunter_attack_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect_base_value( 1 ) / 100.0 );
+  if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
   return c;
 }
 
@@ -1663,13 +1663,13 @@ void hunter_attack_t::player_buff()
   attack_t::player_buff();
 
   if (  p -> buffs_beast_within -> up() )
-    player_multiplier *= 1.0 + p -> buffs_beast_within -> effect_base_value( 2 ) / 100.0;
+    player_multiplier *= 1.0 + p -> buffs_beast_within -> effect2().percent();
 
   if ( p -> dots_serpent_sting -> ticking )
-    player_multiplier *= 1.0 + p -> talents.noxious_stings -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p -> talents.noxious_stings -> effect1().percent();
 
   if ( p -> buffs_culling_the_herd -> up() )
-    player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect_base_value( 1 ) / 100.0 );
+    player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
 
   if ( p -> buffs_tier10_2pc -> up() )
     player_multiplier *= 1.15;
@@ -1790,9 +1790,9 @@ struct aimed_shot_mm_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect_base_value( 2 ) )
+    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
-      player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talents.careful_aim -> effect1().percent();
     }
   }
 
@@ -1805,7 +1805,7 @@ struct aimed_shot_mm_t : public hunter_attack_t
       if ( p -> active_pet )
         p -> active_pet -> buffs_sic_em -> trigger();
       trigger_piercing_shots( this );
-      p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
+      p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect1().resource( RESOURCE_FOCUS ), p -> gains_glyph_aimed_shot );
     }
     p -> buffs_master_marksman_fire -> expire();
   }
@@ -1869,9 +1869,9 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect_base_value( 2 ) )
+    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
-      player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talents.careful_aim -> effect1().percent();
     }
   }
 
@@ -1902,7 +1902,7 @@ struct aimed_shot_t : public hunter_attack_t
         if ( p -> active_pet )
           p -> active_pet -> buffs_sic_em -> trigger();
         trigger_piercing_shots( this );
-        p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect_base_value( 1 ), p -> gains_glyph_aimed_shot );
+        p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect1().resource( RESOURCE_FOCUS ), p -> gains_glyph_aimed_shot );
       }
     }
   }
@@ -1918,7 +1918,7 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     parse_options( NULL, options_str );
-    base_cost += p -> talents.efficiency -> effect_base_value( 2);
+    base_cost += p -> talents.efficiency -> effect2().resource( RESOURCE_FOCUS );
 
     // To trigger ppm-based abilities
     weapon = &( p -> ranged_weapon );
@@ -1979,7 +1979,7 @@ struct black_arrow_t : public hunter_attack_t
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> rank() * 0.10;
     base_crit_bonus_multiplier *= 0.5;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect1().percent();
 
     base_dd_min=base_dd_max=0;
     tick_power_mod=extra_coeff();
@@ -2066,7 +2066,7 @@ struct explosive_trap_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     if( trap_launcher )
-      return 20.0 + p -> glyphs.trap_launcher -> base_value();
+      return 20.0 + p -> glyphs.trap_launcher -> effect1().resource( RESOURCE_FOCUS );
     return hunter_attack_t::cost();
   }
 };
@@ -2089,7 +2089,7 @@ struct chimera_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
-    base_cost += p -> talents.efficiency -> effect_base_value( 1 );
+    base_cost += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
 
     normalize_weapon_speed = true;
 
@@ -2155,8 +2155,8 @@ struct cobra_shot_t : public hunter_attack_t
       double focus = 9;
       if ( p -> talents.termination -> rank() )
       {
-        if ( target -> health_percentage() <= p -> talents.termination -> effect_base_value( 2 ) )
-          focus += p -> talents.termination -> effect_base_value( 1 );
+        if ( target -> health_percentage() <= p -> talents.termination -> effect2().base_value() )
+          focus += p -> talents.termination -> effect1().resource( RESOURCE_FOCUS );
       }
       p -> resource_gain( RESOURCE_FOCUS, focus, p -> gains_cobra_shot );
     }
@@ -2166,12 +2166,12 @@ struct cobra_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect_base_value( 2 ) )
+    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
-      player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talents.careful_aim -> effect1().percent();
     }
     if ( p -> buffs_sniper_training -> up() )
-      player_multiplier *= 1.0 + p -> buffs_sniper_training -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> buffs_sniper_training -> effect1().percent();
   }
 };
 
@@ -2193,7 +2193,7 @@ struct explosive_shot_t : public hunter_attack_t
     may_block = false;
     may_crit  = false;
 
-    base_cost += p -> talents.efficiency -> effect_base_value( 1 );
+    base_cost += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
     tick_power_mod = 0.232;
     tick_zero = true;
@@ -2243,7 +2243,7 @@ struct kill_shot_t : public hunter_attack_t
     weapon_multiplier = effect_average( 2 ) / 100.0;
     direct_power_mod = 0.45;
 
-    base_crit += p -> talents.sniper_training -> effect_base_value( 2 ) / 100.0;
+    base_crit += p -> talents.sniper_training -> effect2().percent();
 
 
     normalize_weapon_speed = true;
@@ -2319,9 +2319,9 @@ struct serpent_sting_t : public hunter_attack_t
 
     base_crit += p -> talents.improved_serpent_sting -> mod_additive( P_CRIT );
     base_crit += p -> glyphs.serpent_sting -> mod_additive( P_CRIT );
-    base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) * 0.01;
     base_crit_bonus_multiplier *= 0.5;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect_base_value( 1 ) / 100.0;
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect1().percent();
     serpent_sting_burst = new serpent_sting_burst_t( p );
     add_child( serpent_sting_burst );
   }
@@ -2333,7 +2333,7 @@ struct serpent_sting_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> ok() )
     {
-      double t = ( p -> talents.improved_serpent_sting -> effect_base_value( 1 ) / 100.0 ) * 
+      double t = ( p -> talents.improved_serpent_sting -> effect1().percent() ) * 
         ( ceil( base_td ) * hasted_num_ticks() + total_power() * 0.4 );
 
       serpent_sting_burst -> base_dd_min = t;
@@ -2382,7 +2382,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
     hunter_t* p = player -> cast_hunter();
     if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> ok() )
     {
-      double t = ( p -> talents.improved_serpent_sting -> effect_base_value( 1 ) / 100.0 ) *
+      double t = ( p -> talents.improved_serpent_sting -> effect1().percent() ) *
         ( ceil( base_td ) * 5 + total_power() * 0.4 );
 
       serpent_sting_burst -> base_dd_min = t;
@@ -2455,7 +2455,7 @@ struct multi_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     if( p -> buffs_bombardment -> check() )
     {
-      return base_cost * ( 1 + p -> buffs_bombardment -> effect_base_value( 1 ) / 100.0 );
+      return base_cost * ( 1 + p -> buffs_bombardment -> effect1().percent() );
     }
     return hunter_attack_t::cost();
   }
@@ -2542,8 +2542,8 @@ struct steady_shot_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
       double focus = 9;
-      if ( target -> health_percentage() <= p -> talents.termination -> effect_base_value( 2 ) )
-        focus += p -> talents.termination -> effect_base_value( 1 );
+      if ( target -> health_percentage() <= p -> talents.termination -> effect2().base_value() )
+        focus += p -> talents.termination -> effect1().resource( RESOURCE_FOCUS );
 
       p -> resource_gain( RESOURCE_FOCUS, focus, p -> gains_steady_shot );
 
@@ -2560,12 +2560,12 @@ struct steady_shot_t : public hunter_attack_t
     hunter_attack_t::player_buff();
     
     player_multiplier *= 1.0 + p -> glyphs.steady_shot -> mod_additive( P_GENERIC );
-    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect_base_value( 2 ) )
+    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
-      player_crit += p -> talents.careful_aim -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talents.careful_aim -> effect1().percent();
     }
     if ( p -> buffs_sniper_training -> up() )
-      player_multiplier *= 1.0 + p -> buffs_sniper_training -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> buffs_sniper_training -> effect1().percent();
   }
 };
 
@@ -2643,7 +2643,7 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
       double value = effect_average( 1 );
       // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
       value = 2000.0;
-      p -> buffs_aspect_of_the_hawk -> trigger( 1, value * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
+      p -> buffs_aspect_of_the_hawk -> trigger( 1, value * ( 1.0 + p -> talents.one_with_nature -> effect1().percent() ) );
     }
     else if ( p -> active_aspect == ASPECT_HAWK )
     {
@@ -2656,7 +2656,7 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
       double value = effect_average( 1 );
       // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
       value = 2000.0;
-      p -> buffs_aspect_of_the_hawk -> trigger( 1, value * ( 1.0 + p -> talents.one_with_nature -> effect_base_value( 1 ) / 100.0 ) );
+      p -> buffs_aspect_of_the_hawk -> trigger( 1, value * ( 1.0 + p -> talents.one_with_nature -> effect1().percent() ) );
     }
 
   }
@@ -2719,7 +2719,7 @@ struct bestial_wrath_t : public hunter_spell_t
     check_talent( p -> talents.bestial_wrath -> rank() );
 
     cooldown -> duration += p -> glyphs.bestial_wrath -> mod_additive( P_COOLDOWN );
-    cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect_base_value( 1 ) / 100.0 );
+    cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect1().percent() );
     harmful = false;
   }
 
@@ -2791,10 +2791,10 @@ struct focus_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    double value = p -> active_pet -> buffs_frenzy -> stack() * ( p -> talents.focus_fire -> effect_base_value( 3 ) / 100.0 );
+    double value = p -> active_pet -> buffs_frenzy -> stack() * p -> talents.focus_fire -> effect3().percent();
     p -> buffs_focus_fire -> trigger( 1, value );
 
-    double gain = p -> talents.focus_fire -> effect_base_value( 2 );
+    double gain = p -> talents.focus_fire -> effect2().resource( RESOURCE_FOCUS );
     p -> active_pet -> resource_gain( RESOURCE_FOCUS, gain, p -> active_pet -> gains_focus_fire );
 
     hunter_spell_t::execute();
@@ -2875,7 +2875,7 @@ struct kill_command_t : public hunter_spell_t
     double cost = hunter_spell_t::cost();
 
     if ( p -> buffs_killing_streak -> check() )
-      cost -= p -> talents.killing_streak -> effect_base_value( 2 );
+      cost -= p -> talents.killing_streak -> effect2().resource( RESOURCE_FOCUS );
     if ( cost < 0.0 ) return 0;
     
     return cost;
@@ -2914,7 +2914,7 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.posthaste -> effect_base_value( 1 ) / 1000.0;
+    cooldown -> duration += p -> talents.posthaste -> effect1().seconds();
 
     harmful = false;
   }
@@ -2923,7 +2923,7 @@ struct rapid_fire_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    double value = ( 40 + p -> glyphs.rapid_fire -> base_value() ) / 100.0;
+    double value = 0.40 + p -> glyphs.rapid_fire -> effect1().percent();
     p -> buffs_rapid_fire -> trigger( 1, value );
 
     hunter_spell_t::execute();
@@ -3065,9 +3065,9 @@ struct trueshot_aura_t : public hunter_spell_t
 
 // Event Shedule Sniper Trainig
 
-struct snipertraining_hunter_t : public event_t
+struct hunter_sniper_training_event_t : public event_t
 {
-  snipertraining_hunter_t ( player_t* player ) :
+  hunter_sniper_training_event_t ( player_t* player ) :
     event_t( player -> sim, player )
   {
     name = "Sniper_Training_Check";
@@ -3077,13 +3077,19 @@ struct snipertraining_hunter_t : public event_t
   virtual void execute()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( !p -> in_combat )
-      p -> buffs_sniper_training -> trigger();
-    if ( !p -> buffs.moving -> up() && ( sim -> current_time - p -> buffs.moving -> last_start - p -> buffs.moving -> buff_duration - p -> talents.sniper_training -> effect_base_value( 1 ) ) > 0 )
+
+    if ( ! p -> in_combat ) p -> buffs_sniper_training -> trigger();
+
+    if ( ! p -> buffs.moving -> up() )
     {
-      p -> buffs_sniper_training -> trigger();
+      double finished_moving = p -> buffs.moving -> last_start + p -> buffs.moving -> buff_duration;
+
+      if ( ( sim -> current_time - finished_moving ) > p -> talents.sniper_training -> effect1().base_value() )
+      {
+	p -> buffs_sniper_training -> trigger();
+      }
     }
-    new (sim) snipertraining_hunter_t( p );
+    new (sim) hunter_sniper_training_event_t( p );
   }
 };
 
@@ -3313,7 +3319,7 @@ void hunter_t::init_base()
   player_t::init_base();
 
   attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + talents.hunting_party -> rank() * 0.02;
-  attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) / 100.0;
+  attribute_multiplier_initial[ ATTR_AGILITY ]   *= 1.0 + passive_spells.into_the_wildness -> effect_base_value( 1 ) * 0.01;
 
   attribute_multiplier_initial[ ATTR_STAMINA ]   *= 1.0 + talents.hunter_vs_wild -> rank() * 0.04;
 
@@ -3325,7 +3331,7 @@ void hunter_t::init_base()
   // FIXME! 
   base_focus_regen_per_second = 4;
   
-  resource_base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect_base_value( 1 );
+  resource_base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
 
   if ( hunter_position == "front" )
     position = POSITION_RANGED_FRONT;
@@ -3358,7 +3364,7 @@ void hunter_t::init_buffs()
   buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> ok() );
   buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
-  buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect_base_value( 1 ) / 100.0 );
+  buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
   buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
@@ -3614,8 +3620,11 @@ void hunter_t::combat_begin()
   if ( talents.hunting_party -> rank() )
     sim -> auras.hunting_party -> trigger( 1, 0.10, 1);
 
-  buffs_sniper_training -> trigger();
-  new (sim) snipertraining_hunter_t( this );
+  if ( talents.sniper_training -> rank() )
+  {
+    buffs_sniper_training -> trigger();
+    new ( sim ) hunter_sniper_training_event_t( this );
+  }
 }
 
 // hunter_t::reset ===========================================================
@@ -3658,7 +3667,7 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
   }
   if ( buffs_call_of_the_wild -> up() )
   {
-    mult *= 1.0 + buffs_call_of_the_wild -> effect_base_value( 1 ) / 100.0;
+    mult *= 1.0 + buffs_call_of_the_wild -> effect1().percent();
   }
 
   return mult;
@@ -3668,11 +3677,11 @@ double hunter_t::composite_attack_haste() SC_CONST
 {
   double h = player_t::composite_attack_haste();
 
-  h *= 1.0 / ( 1.0 + talents.pathing -> effect_base_value( 1 ) / 100.0 );
+  h *= 1.0 / ( 1.0 + talents.pathing -> effect1().percent() );
   h *= 1.0 / ( 1.0 + buffs_focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
   if ( buffs_improved_steady_shot -> up() )
-    h *= 1.0 / ( 1.0 + talents.improved_steady_shot -> base_value() / 100.0 );
+    h *= 1.0 / ( 1.0 + talents.improved_steady_shot -> effect1().percent() );
   return h;
 }
 
@@ -3966,12 +3975,12 @@ void player_t::hunter_combat_begin( sim_t* sim )
   if ( sim -> overrides.trueshot_aura         ) sim -> auras.trueshot -> override();
   if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
   if ( sim -> overrides.hunting_party         ) sim -> auras.hunting_party -> override( 1, 0.10);
-  if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 93435 ) -> effect1 -> id(), sim -> max_player_level ) );
-  if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 90364 ) -> effect1 -> id(), sim -> max_player_level ) );
+  if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 93435 ) -> effect1().id(), sim -> max_player_level ) );
+  if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 90364 ) -> effect1().id(), sim -> max_player_level ) );
 
   for ( target_t* t = sim -> target_list; t; t = t -> next )
   {
-    double v = sim -> dbc.effect_average( sim -> dbc.spell( 1130 ) -> effect2 -> id(), sim -> max_player_level );
+    double v = sim -> dbc.effect_average( sim -> dbc.spell( 1130 ) -> effect2().id(), sim -> max_player_level );
     if ( sim -> overrides.hunters_mark           ) t -> debuffs.hunters_mark -> override( 1, v );
     if ( sim -> overrides.lightning_breath       ) t -> debuffs.lightning_breath -> override( 1, 8 );
     if ( sim -> overrides.corrosive_spit         ) t -> debuffs.corrosive_spit -> override( 1, 12 );

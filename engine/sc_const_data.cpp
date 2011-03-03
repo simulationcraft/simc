@@ -60,12 +60,12 @@ void dbc_t::init()
   memset( &nil_ied, 0x00, sizeof( item_enchantment_data_t ) );
   memset( &nil_gpd, 0x00, sizeof( gem_property_data_t )     );
 
-  nil_sd.effect1 = &nil_sed;
-  nil_sd.effect2 = &nil_sed;
-  nil_sd.effect3 = &nil_sed;
+  nil_sd._effect1 = &nil_sed;
+  nil_sd._effect2 = &nil_sed;
+  nil_sd._effect3 = &nil_sed;
 
-  nil_sed.spell         = &nil_sd;
-  nil_sed.trigger_spell = &nil_sd;
+  nil_sed._spell         = &nil_sd;
+  nil_sed._trigger_spell = &nil_sd;
 
   nil_td.spell1 = &nil_sd;
   nil_td.spell2 = &nil_sd;
@@ -948,7 +948,7 @@ void spell_data_t::link( bool ptr )
   {
     spell_data_t& sd = spell_data[ i ];
 
-    spelleffect_data_t** effects[] = { &( sd.effect1 ), &( sd.effect2 ), &( sd.effect3 ) };
+    spelleffect_data_t** effects[] = { &( sd._effect1 ), &( sd._effect2 ), &( sd._effect3 ) };
 
     for( int j=0; j < 3; j++ )
     {
@@ -980,8 +980,8 @@ void spelleffect_data_t::link( bool ptr )
   {
     spelleffect_data_t& ed = spelleffect_data[ i ];
 
-    ed.spell         = spell_data_t::nil();
-    ed.trigger_spell = spell_data_t::nil();
+    ed._spell         = spell_data_t::nil();
+    ed._trigger_spell = spell_data_t::nil();
 
     if( ed.spell_id() > 0 )
     {
@@ -989,7 +989,7 @@ void spelleffect_data_t::link( bool ptr )
       {
         if( ed.spell_id() == spell_data[ j ].id() )
         {
-          ed.spell = spell_data + j;
+          ed._spell = spell_data + j;
           break;
         }
       }
@@ -1000,7 +1000,7 @@ void spelleffect_data_t::link( bool ptr )
       {
         if( ed.trigger_spell_id() == spell_data[ j ].id() )
         {
-          ed.trigger_spell = spell_data + j;
+          ed._trigger_spell = spell_data + j;
           break;
         }
       }
@@ -1048,9 +1048,9 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) SC_CONST
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
   
-  if ( e -> m_average() != 0 && e -> spell -> scaling_class() != 0 )
+  if ( e -> m_average() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> spell -> scaling_class(), level - 1 );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level - 1 );
 
     assert( m_scale != 0 );
 
@@ -1078,9 +1078,9 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) SC_CONST
   
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  if ( e -> m_delta() != 0 && e -> spell -> scaling_class() != 0 )
+  if ( e -> m_delta() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> spell -> scaling_class(), level - 1 );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level - 1 );
 
     assert( m_scale != 0 );
 
@@ -1101,9 +1101,9 @@ double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) SC_CONST
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  if ( e -> m_unk() != 0 && e -> spell -> scaling_class() != 0 )
+  if ( e -> m_unk() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> spell -> scaling_class(), level - 1 );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level - 1 );
 
     assert( m_scale != 0 );
 
@@ -1125,7 +1125,7 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) SC_CONST
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  unsigned c_id = util_t::class_id( e -> spell -> scaling_class() );
+  unsigned c_id = util_t::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
@@ -1166,7 +1166,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) SC_CONST
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  unsigned c_id = util_t::class_id( e -> spell -> scaling_class() );
+  unsigned c_id = util_t::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )

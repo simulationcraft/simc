@@ -316,11 +316,11 @@ struct mage_spell_t : public spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> talents.piercing_ice -> rank() )
     {
-      base_crit += p -> talents.piercing_ice -> sd->effect1->base_value()/100.0;
+      base_crit += p -> talents.piercing_ice -> effect1().percent();
     }
     if ( p -> talents.enduring_winter -> rank() )
     {
-      base_cost *= 1.0 + p -> talents.enduring_winter -> sd->effect1->base_value()/100.0;
+      base_cost *= 1.0 + p -> talents.enduring_winter -> effect1().percent();
     }
   }
 
@@ -386,7 +386,7 @@ struct water_elemental_pet_t : public pet_t
       spell_t::execute();
       mage_t* o = player -> cast_pet() -> owner -> cast_mage();
 
-      o -> buffs_fingers_of_frost -> trigger( 2, 1, o -> talents.improved_freeze -> effect_base_value( 1 ) / 100.0 );
+      o -> buffs_fingers_of_frost -> trigger( 2, 1, o -> talents.improved_freeze -> effect1().percent() );
     }
 
     virtual bool ready()
@@ -510,8 +510,8 @@ struct mirror_image_pet_t : public pet_t
     {
       spell_t::player_buff();
       mage_t* o = player -> cast_pet() -> owner -> cast_mage();
-      double ab_stack_multiplier = o -> spells.arcane_blast -> effect1 -> base_value() / 100.0;
-      double ab_glyph_multiplier = o -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0;
+      double ab_stack_multiplier = o -> spells.arcane_blast -> effect1().percent();
+      double ab_glyph_multiplier = o -> glyphs.arcane_blast -> effect1().percent();
       player_multiplier *= 1.0 + o ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ab_glyph_multiplier );
     }
 
@@ -776,7 +776,7 @@ static void trigger_hot_streak( mage_spell_t* s )
       {
         p -> buffs_hot_streak_crits -> expire();
 
-        hot_streak_chance = p -> talents.improved_hot_streak -> effect_base_value( 1 ) / 100.0;
+        hot_streak_chance = p -> talents.improved_hot_streak -> effect1().percent();
 
         p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance );
       }
@@ -827,7 +827,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
 
-  double ignite_dmg = dmg * p -> talents.ignite -> effect_base_value( 1 ) / 100.0;
+  double ignite_dmg = dmg * p -> talents.ignite -> effect1().percent();
 
   if ( p -> specialization == MAGE_FIRE )
   {
@@ -894,7 +894,7 @@ static void trigger_master_of_elements( spell_t* s )
   if ( ! p -> talents.master_of_elements -> rank() )
     return;
 
-  p -> resource_gain( RESOURCE_MANA, s -> base_cost * p -> talents.master_of_elements -> effect_base_value( 1 ) / 100.0, p -> gains_master_of_elements );
+  p -> resource_gain( RESOURCE_MANA, s -> base_cost * p -> talents.master_of_elements -> effect1().percent(), p -> gains_master_of_elements );
 }
 
 // trigger_replenishment ====================================================
@@ -961,7 +961,7 @@ double mage_spell_t::cost() SC_CONST
 
   if ( p -> buffs_arcane_power -> check() )
   {
-    c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
+    c *= 1.0 + p -> buffs_arcane_power -> effect2().percent();
   }
 
   return c;
@@ -975,7 +975,7 @@ double mage_spell_t::haste() SC_CONST
   double h = spell_t::haste();
   if ( p -> buffs_icy_veins -> up() )
   {
-    h *= 1.0 / ( 1.0 + p -> buffs_icy_veins -> effect_base_value( 1 ) / 100.0 );
+    h *= 1.0 / ( 1.0 + p -> buffs_icy_veins -> effect1().percent() );
   }
   if ( p -> buffs_tier10_2pc -> up() )
   {
@@ -1103,7 +1103,7 @@ void mage_spell_t::player_buff()
   {
     if ( target -> health_percentage() < 35 )
     {
-      player_multiplier *= 1.0 + p -> talents.molten_fury -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> talents.molten_fury -> effect1().percent();
     }
   }
   if ( p -> buffs_tier10_4pc -> up() )
@@ -1112,7 +1112,7 @@ void mage_spell_t::player_buff()
   }
   if ( p -> buffs_invocation -> up() )
   {
-    player_multiplier *= 1.0 + p -> talents.invocation -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p -> talents.invocation -> effect1().percent();
   }
   if ( p -> buffs_arcane_power -> up() )
   {
@@ -1120,7 +1120,7 @@ void mage_spell_t::player_buff()
   }
   if ( p -> buffs_arcane_potency -> up() )
   {
-    player_crit += p -> talents.arcane_potency -> effect_base_value( 1 ) / 100.0;
+    player_crit += p -> talents.arcane_potency -> effect1().percent();
   }
 
   double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
@@ -1130,14 +1130,14 @@ void mage_spell_t::player_buff()
   {
     if ( target -> debuffs.snared() && p -> talents.torment_the_weak -> rank() )
     {
-      player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect1().percent();
     }
     player_multiplier *= 1.0 + p -> specializations.arcane;
   }
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROSTFIRE )
   {
     player_multiplier *= 1.0 + p -> specializations.fire;
-    player_multiplier *= 1.0 + p -> talents.fire_power -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p -> talents.fire_power -> effect1().percent();
   }
   if ( school == SCHOOL_FROST || school == SCHOOL_FROSTFIRE )
   {
@@ -1187,7 +1187,7 @@ struct arcane_barrage_t : public mage_spell_t
   {
     check_spec( TREE_ARCANE );
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> glyphs.arcane_barrage -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> glyphs.arcane_barrage -> effect1().percent();
     consumes_arcane_blast = true;
   }
 };
@@ -1217,11 +1217,11 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p -> buffs_arcane_blast -> check() )
     {
-      c += c * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2 -> base_value() / 100.0;
+      c += c * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
     }
     if ( p -> buffs_arcane_power -> check() )
     {
-      c *= 1.0 + p -> buffs_arcane_power -> effect_base_value( 2 ) / 100.0;
+      c *= 1.0 + p -> buffs_arcane_power -> effect2().percent();
     }
     return c;
   }
@@ -1249,7 +1249,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     double t = mage_spell_t::execute_time();
-    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3 -> base_value() / 1000.0;
+    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3().seconds();
     return t;
   }
 
@@ -1257,8 +1257,8 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
-    double ab_stack_multiplier = p -> spells.arcane_blast -> effect1 -> base_value() / 100.0;
-    double ab_glyph_multiplier = p -> glyphs.arcane_blast -> effect_base_value( 1 ) / 100.0;
+    double ab_stack_multiplier = p -> spells.arcane_blast -> effect1().percent();
+    double ab_glyph_multiplier = p -> glyphs.arcane_blast -> effect1().percent();
     player_multiplier *= 1.0 + p ->  buffs_arcane_blast -> stack() * ( ab_stack_multiplier + ab_glyph_multiplier );
   }
 };
@@ -1272,8 +1272,8 @@ struct arcane_brilliance_t : public mage_spell_t
   arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
       mage_spell_t( "arcane_brilliance", 1459, p ), bonus( 0 )
   {
-    bonus      = p -> dbc.effect_average( p -> dbc.spell( 79058 ) -> effect1 -> id(), p -> level );
-    base_cost *= 1.0 + p -> glyphs.arcane_brilliance -> effect_base_value( 1 ) / 100.0;
+    bonus      = p -> dbc.effect_average( p -> dbc.spell( 79058 ) -> effect1().id(), p -> level );
+    base_cost *= 1.0 + p -> glyphs.arcane_brilliance -> effect1().percent();
   }
 
   virtual void execute()
@@ -1309,7 +1309,7 @@ struct arcane_explosion_t : public mage_spell_t
 
     if ( p -> talents.improved_arcane_explosion -> rank() )
     {
-      trigger_gcd += p -> talents.improved_arcane_explosion -> effect_base_value( 1 ) / 1000.0;
+      trigger_gcd += p -> talents.improved_arcane_explosion -> effect1().seconds();
     }
   }
 
@@ -1331,7 +1331,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     dual        = true;
     background  = true;
     direct_tick = true;
-    base_crit  += p -> glyphs.arcane_missiles -> effect_base_value( 1 ) / 100.0;
+    base_crit  += p -> glyphs.arcane_missiles -> effect1().percent();
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     stats = player -> get_stats( "arcane_missiles" );
   }
@@ -1395,14 +1395,14 @@ struct arcane_power_t : public mage_spell_t
     check_talent( p -> talents.arcane_power -> rank() );
     parse_options( NULL, options_str );
     harmful = false;
-    cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect_base_value( 1 ) / 100.0;
+    cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect1().percent();
   }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    p -> buffs_arcane_power -> trigger( 1, effect_base_value( 1 ) / 100.0 );
+    p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
   }
 };
 
@@ -1432,7 +1432,7 @@ struct cold_snap_t : public mage_spell_t
 
     harmful = false;
 
-    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
+    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect1().percent();
 
     cooldown_list.push_back( p -> get_cooldown( "cone_of_cold"  ) );
     cooldown_list.push_back( p -> get_cooldown( "deep_freeze"   ) );
@@ -1490,8 +1490,8 @@ struct cone_of_cold_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    base_multiplier *= 1.0 + p -> glyphs.cone_of_cold -> effect_base_value( 1 ) / 100.0;
-    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> glyphs.cone_of_cold -> effect1().percent();
+    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect1().percent();
 
     may_brain_freeze = true;
     may_chill = true;
@@ -1568,7 +1568,7 @@ struct deep_freeze_t : public mage_spell_t
     cooldown -> duration = 30.0;
 
     fof_frozen = true;
-    base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect1().percent();
     trigger_gcd = p -> base_gcd;
   }
 
@@ -1590,7 +1590,7 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    cooldown -> duration += p -> glyphs.dragons_breath -> effect_base_value( 1 ) / 1000.0;
+    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().percent();
   }
 };
 
@@ -1610,21 +1610,21 @@ struct evocation_t : public mage_spell_t
     harmful           = false;
     hasted_ticks      = false;
 
-    cooldown -> duration += p -> talents.arcane_flows -> effect_base_value( 2 ) / 1000.0;
+    cooldown -> duration += p -> talents.arcane_flows -> effect2().seconds();
   }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    double mana = p -> resource_max[ RESOURCE_MANA ] * effect_base_value( 1 ) / 100.0;
+    double mana = p -> resource_max[ RESOURCE_MANA ] * effect1().percent();
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
   }
 
   virtual void tick()
   {
     mage_t* p = player -> cast_mage();
-    double mana = p -> resource_max[ RESOURCE_MANA ] * effect_base_value( 1 ) / 100.0;
+    double mana = p -> resource_max[ RESOURCE_MANA ] * effect1().percent();
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
   }
 
@@ -1646,7 +1646,7 @@ struct fire_blast_t : public mage_spell_t
       mage_spell_t( "fire_blast", 2136, p )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> talents.improved_fire_blast -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> talents.improved_fire_blast -> effect1().percent();
     may_hot_streak = true;
   }
 };
@@ -1659,7 +1659,7 @@ struct fireball_t : public mage_spell_t
     mage_spell_t( "fireball", 133, p )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> glyphs.fireball -> effect1().percent();
     may_hot_streak = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
   }
@@ -1668,7 +1668,7 @@ struct fireball_t : public mage_spell_t
   {
     // When calculating Hot-Streak proc chance, do not include Fireball glyph
     mage_t* p = player -> cast_mage();
-    return base_crit + player_crit - p -> glyphs.fireball -> effect_base_value( 1 ) / 100.0;
+    return base_crit + player_crit - p -> glyphs.fireball -> effect1().percent();
   }
 
   virtual double cost() SC_CONST
@@ -1704,7 +1704,7 @@ struct flame_orb_explosion_t : public mage_spell_t
   {
     background = true;
     aoe = -1;
-    base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.critical_mass -> effect2().percent();
   }
 };
 
@@ -1715,7 +1715,7 @@ struct flame_orb_tick_t : public mage_spell_t
   {
     background = true;
     direct_tick = true;
-    base_multiplier *= 1.0 + p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.critical_mass -> effect2().percent();
   }
 };
 
@@ -1853,7 +1853,7 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", 116, p )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.frostbolt -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> glyphs.frostbolt -> effect1().percent();
     may_chill = true;
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
@@ -1902,7 +1902,7 @@ struct frostbolt_t : public mage_spell_t
     {
       if ( ! p -> cooldowns_early_frost -> remains() )
       {
-        ct += p -> talents.early_frost -> sd->effect1->base_value()/1000.0;
+        ct += p -> talents.early_frost -> effect1().seconds();
       }
     }
     return ct;
@@ -1934,7 +1934,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> glyphs.frostfire -> ok() )
     {
-      base_multiplier *= 1.0 + p -> glyphs.frostfire -> effect_base_value( 1 ) / 100.0;
+      base_multiplier *= 1.0 + p -> glyphs.frostfire -> effect1().percent();
       num_ticks = 4;
       base_tick_time = 3.0;
       dot_behavior = DOT_REFRESH;
@@ -2069,7 +2069,7 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t( "ice_lance", 30455, p )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effect1().percent();
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     fof_frozen = true;
   }
@@ -2095,7 +2095,7 @@ struct icy_veins_t : public mage_spell_t
   {
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
-    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect_base_value( 1 ) / 100.0;
+    cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect1().percent();
   }
 
   virtual void execute()
@@ -2117,8 +2117,8 @@ struct living_bomb_explosion_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
-    base_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-             p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 );
+    base_multiplier *= 1.0 + ( p -> glyphs.living_bomb    -> effect1().percent() +
+			       p -> talents.critical_mass -> effect2().percent() );
   }
 };
 
@@ -2146,9 +2146,9 @@ struct living_bomb_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     spell_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect_base_value( 1 ) / 100.0 +
-         p -> talents.critical_mass -> effect_base_value( 2 ) / 100.0 +
-         p -> specializations.flashburn * p -> composite_mastery() );
+    target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect1().percent() +
+				 p -> talents.critical_mass -> effect2().percent() +
+				 p -> specializations.flashburn * p -> composite_mastery() );
   }
 
   virtual void last_tick()
@@ -2310,7 +2310,7 @@ struct presence_of_mind_t : public mage_spell_t
 
     harmful = false;
 
-    cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect_base_value( 1 ) / 100.0;
+    cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect1().percent();
 
     if ( options_str.empty() )
     {
@@ -2361,7 +2361,7 @@ struct pyroblast_t : public mage_spell_t
   {
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> glyphs.pyroblast -> effect1().percent();
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
@@ -2388,7 +2388,7 @@ struct pyroblast_hs_t : public mage_spell_t
   {
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.pyroblast -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> glyphs.pyroblast -> effect1().percent();
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     dot = p -> get_dot( "pyroblast" );
     dot_behavior = DOT_REFRESH;
@@ -2443,7 +2443,7 @@ struct scorch_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost *= 1.0 + 0.01 * p -> talents.improved_scorch -> effect_base_value( 1 );
+    base_cost *= 1.0 + p -> talents.improved_scorch -> effect1().percent();
     may_hot_streak = true;
 
     if ( debuff )
@@ -2828,38 +2828,38 @@ void mage_t::init_spells()
 {
   player_t::init_spells();
 
-  spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast", dbc.ptr );
+  spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast",     dbc.ptr );
   spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles!", dbc.ptr );
-  spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak", dbc.ptr );
-  spells.mage_armor      = spell_data_t::find(  6117, "Mage Armor", dbc.ptr );
-  spells.molten_armor    = spell_data_t::find( 30482, "Molten Armor", dbc.ptr );
+  spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak",       dbc.ptr );
+  spells.mage_armor      = spell_data_t::find(  6117, "Mage Armor",       dbc.ptr );
+  spells.molten_armor    = spell_data_t::find( 30482, "Molten Armor",     dbc.ptr );
 
-  spells.flashburn  = spell_data_t::find( 76595, "Flashburn", dbc.ptr );
-  spells.frostburn  = spell_data_t::find( 76613, "Frostburn", dbc.ptr );
+  spells.flashburn  = spell_data_t::find( 76595, "Flashburn",  dbc.ptr );
+  spells.frostburn  = spell_data_t::find( 76613, "Frostburn",  dbc.ptr );
   spells.mana_adept = spell_data_t::find( 76547, "Mana Adept", dbc.ptr );
 
   spells.arcane_specialization = spell_data_t::find( 84671, "Arcane Specialization", dbc.ptr );
-  spells.fire_specialization   = spell_data_t::find( 84668, "Fire Specialization", dbc.ptr );
-  spells.frost_specialization  = spell_data_t::find( 84669, "Frost Specialization", dbc.ptr );
+  spells.fire_specialization   = spell_data_t::find( 84668, "Fire Specialization",   dbc.ptr );
+  spells.frost_specialization  = spell_data_t::find( 84669, "Frost Specialization",  dbc.ptr );
 
   memset( (void*) &specializations, 0x00, sizeof( specializations_t ) );
 
   if ( specialization == MAGE_ARCANE )
   {
-    specializations.arcane     = spells.arcane_specialization -> effect1 -> base_value() / 100.0;
-    specializations.mana_adept = spells.mana_adept -> effect2 -> base_value() / 10000.0;
+    specializations.arcane     = spells.arcane_specialization -> effect1().percent();
+    specializations.mana_adept = spells.mana_adept -> effect1().coeff() * 0.01;
   }
   else if ( specialization == MAGE_FIRE )
   {
-    specializations.fire      = spells.fire_specialization -> effect1 -> base_value() / 100.0;
-    specializations.flashburn = spells.flashburn -> effect2 -> base_value() / 10000.0;
+    specializations.fire      = spells.fire_specialization -> effect1().percent();
+    specializations.flashburn = spells.flashburn -> effect1().coeff() * 0.01;
   }
   else if ( specialization == MAGE_FROST )
   {
-    specializations.frost1    = spells.frost_specialization -> effect1 -> base_value() / 100.0;
-    specializations.frost2    = spells.frost_specialization -> effect2 -> base_value();
-    specializations.frost3    = spells.frost_specialization -> effect3 -> base_value() / 100.0;
-    specializations.frostburn = spells.frostburn -> effect2 -> base_value() / 10000.0;
+    specializations.frost1    = spells.frost_specialization -> effect1().percent();
+    specializations.frost2    = spells.frost_specialization -> effect2().base_value();
+    specializations.frost3    = spells.frost_specialization -> effect3().percent();
+    specializations.frostburn = spells.frostburn -> effect1().coeff() * 0.01;
   }
 
   glyphs.arcane_barrage       = find_glyph( "Glyph of Arcane Barrage" );
@@ -2931,7 +2931,7 @@ void mage_t::init_buffs()
   buffs_arcane_power         = new buff_t( this, talents.arcane_power,         "cooldown", 0.0, NULL ); // CD managed in action
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze,         NULL );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration, "cooldown", 15.0, NULL );
-  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     "chance", talents.fingers_of_frost->sd->effect1->base_value()/100.0, NULL );
+  buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     "chance", talents.fingers_of_frost->effect1().percent(), NULL );
   buffs_hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
   buffs_icy_veins            = new buff_t( this, talents.icy_veins,            "cooldown", 0.0, NULL ); // CD managed in action
   buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 15.0, NULL );
@@ -3276,7 +3276,7 @@ double mage_t::composite_spell_haste() SC_CONST
 
   if ( talents.netherwind_presence -> rank() )
   {
-    h *= 1.0 / ( 1.0 + talents.netherwind_presence -> effect_base_value( 1 ) / 100.0 );
+    h *= 1.0 / ( 1.0 + talents.netherwind_presence -> effect1().percent() );
   }
 
   return h;
@@ -3290,7 +3290,7 @@ double mage_t::composite_spell_power( const school_type school ) SC_CONST
 
   if ( buffs_improved_mana_gem -> check() )
   {
-    sp += resource_max[ RESOURCE_MANA ] * talents.improved_mana_gem->sd->effect1->base_value()/100.0;
+    sp += resource_max[ RESOURCE_MANA ] * talents.improved_mana_gem->effect1().percent();
   }
 
   return sp;
@@ -3315,7 +3315,8 @@ double mage_t::composite_spell_crit() SC_CONST
 
   if ( buffs_molten_armor -> up() )
   {
-    c += spells.molten_armor -> effect3 -> base_value() / 100.0 + glyphs.molten_armor -> effect_base_value( 1 ) / 100.0;
+    c += ( spells.molten_armor -> effect3().percent() + 
+	   glyphs.molten_armor -> effect1().percent() );
   }
 
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
@@ -3362,9 +3363,9 @@ void mage_t::regen( double periodicity )
 
   if ( buffs_mage_armor -> up() )
   {
-    double gain_amount = resource_max[ RESOURCE_MANA ] * spells.mage_armor -> effect2 -> base_value() / 100.0;
+    double gain_amount = resource_max[ RESOURCE_MANA ] * spells.mage_armor -> effect2().percent();
     gain_amount *= periodicity / 5.0;
-    gain_amount *= 1.0 + glyphs.mage_armor -> effect_base_value( 1 ) / 100.0;
+    gain_amount *= 1.0 + glyphs.mage_armor -> effect1().percent();
 
     resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
   }
@@ -3532,7 +3533,7 @@ void player_t::mage_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> level < MAX_LEVEL ? sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1 -> id(), sim -> max_player_level ) : 0, !p -> is_pet() );
+    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> level < MAX_LEVEL ? sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) : 0, !p -> is_pet() );
     p -> buffs.focus_magic       = new      buff_t( p, 54646, "focus_magic" );
     p -> debuffs.critical_mass   = new debuff_t( p, 22959, "critical_mass" );
     p -> debuffs.slow            = new debuff_t( p, 31589, "slow" );
@@ -3548,7 +3549,7 @@ void player_t::mage_combat_begin( sim_t* sim )
   {
     if ( p -> ooc_buffs() )
     {
-      if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1 -> id(), sim -> max_player_level ) );
+      if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) );
       if ( sim -> overrides.focus_magic       ) p -> buffs.focus_magic       -> override();
     }
   }

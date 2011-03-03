@@ -227,8 +227,6 @@ action_t::~action_t()
 
 void action_t::parse_data()
 {
-  const spell_data_t* spell = 0;
-
   if ( id > 0 && ( spell = player -> dbc.spell( id ) ) )
   {
     base_execute_time    = spell -> cast_time( player -> level );

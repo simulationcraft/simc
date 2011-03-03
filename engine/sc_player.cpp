@@ -1383,8 +1383,8 @@ void player_t::init_buffs()
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )  
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1 -> id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2 -> id(), sim -> max_player_level ) ), 1, 15.0 );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, 15.0 );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, 15.0 );
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0,            1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
   buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0,            1, 20.0       );

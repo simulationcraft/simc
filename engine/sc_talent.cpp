@@ -77,9 +77,9 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
 	 ( r == 2 ) ? td -> spell2 :
 	 ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
   trigger = 0;
-  if ( ! trigger && sd -> effect1 -> trigger_spell_id() ) trigger = sd -> effect1 -> trigger_spell;
-  if ( ! trigger && sd -> effect2 -> trigger_spell_id() ) trigger = sd -> effect2 -> trigger_spell;
-  if ( ! trigger && sd -> effect3 -> trigger_spell_id() ) trigger = sd -> effect3 -> trigger_spell;
+  if ( ! trigger && sd -> _effect1 -> trigger_spell_id() ) trigger = sd -> _effect1 -> _trigger_spell;
+  if ( ! trigger && sd -> _effect2 -> trigger_spell_id() ) trigger = sd -> _effect2 -> _trigger_spell;
+  if ( ! trigger && sd -> _effect3 -> trigger_spell_id() ) trigger = sd -> _effect3 -> _trigger_spell;
   // rank = r;
 
   if ( ! t_data || ! t_enabled )

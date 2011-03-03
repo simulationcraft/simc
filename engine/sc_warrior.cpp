@@ -615,7 +615,7 @@ static void trigger_enrage( attack_t* a )
   if ( p -> buffs_death_wish -> check() )
     return;
 
-  double enrage_value = p -> buffs_enrage -> effect_base_value( 1 ) / 100.0;
+  double enrage_value = p -> buffs_enrage -> effect1().percent();
 
   if ( p -> mastery.unshackled_fury -> ok() )
   {
@@ -842,11 +842,11 @@ void warrior_attack_t::player_buff()
 
   if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
   {
-    player_multiplier *= ( 1.0 + p -> buffs_battle_stance -> effect_base_value( 1 ) / 100.0 );
+    player_multiplier *= ( 1.0 + p -> buffs_battle_stance -> effect1().percent() );
   }
   else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
   {
-    player_multiplier *= ( 1.0 + p -> buffs_berserker_stance -> effect_base_value( 1 ) / 100.0 );
+    player_multiplier *= ( 1.0 + p -> buffs_berserker_stance -> effect1().percent() );
   }
   
   // --- Specializations --
@@ -883,12 +883,12 @@ void warrior_attack_t::player_buff()
     if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H ||
          p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
     {
-      player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effect1().percent();
     }
   }
 
   if ( p -> talents.rampage -> ok() )
-    player_crit += p -> talents.rampage -> effect_base_value( 2 ) / 100.0;
+    player_crit += p -> talents.rampage -> effect2().percent();
 
   // --- Buffs / Procs ---
 
@@ -1031,7 +1031,7 @@ struct melee_t : public warrior_attack_t
 
     if ( p -> buffs_executioner_talent -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() *
-                   p -> buffs_executioner_talent -> effect_base_value( 1 ) / 100.0 );
+                   p -> buffs_executioner_talent -> effect1().percent() );
 
     // FIXME: does unholy_frenzy benefit from mastery.unshackled_fury?
 
@@ -1072,7 +1072,7 @@ struct melee_t : public warrior_attack_t
     {      
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect_base_value( 3 ), p -> gains_blood_frenzy );
+        p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effect3().base_value(), p -> gains_blood_frenzy );
       }
     }
   }
@@ -1225,9 +1225,9 @@ struct bloodthirst_t : public warrior_attack_t
     direct_power_mod   = effect_min( 1 ) / 100.0;
     base_dd_min        = 0.0;
     base_dd_max        = 0.0;
-    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect_base_value( 1 ) / 100.0
+    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect1().percent()
                              + p -> set_bonus.tier11_2pc_melee() * 0.05;
-    base_crit         += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
+    base_crit         += p -> talents.cruelty -> effect1().percent();
   }
 
   virtual void execute()
@@ -1264,7 +1264,7 @@ struct charge_t : public warrior_attack_t
 
     if ( p -> ptr )
     {
-      cooldown -> duration += p -> talents.juggernaut -> effect_base_value( 3 ) / 1000.0;
+      cooldown -> duration += p -> talents.juggernaut -> effect3().seconds();
     }
 
     stancemask  = STANCE_BATTLE;
@@ -1282,7 +1282,7 @@ struct charge_t : public warrior_attack_t
     p -> buffs_juggernaut -> trigger();
 
     p -> resource_gain( RESOURCE_RAGE,
-                        effect_base_value( 2 ) / 10.0 + p -> talents.blitz -> effect_base_value( 2 ) / 10.0,
+                        effect2().resource( RESOURCE_RAGE ) + p -> talents.blitz -> effect2().resource( RESOURCE_RAGE ),
                         p -> gains_charge );
   }
 
@@ -1318,9 +1318,9 @@ struct cleave_t : public warrior_attack_t
     base_dd_min      = 6;
     base_dd_max      = 6;
 
-    base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
 
-    aoe = 1 +  p -> glyphs.cleaving -> effect_base_value( 1 );
+    aoe = 1 +  p -> glyphs.cleaving -> effect1().base_value();
   }
 
   virtual void execute()
@@ -1339,7 +1339,7 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    player_multiplier *= 1.0 + p -> talents.meat_cleaver -> effect_base_value( 1 ) / 100.0 * p -> buffs_meat_cleaver -> stack();
+    player_multiplier *= 1.0 + p -> talents.meat_cleaver -> effect1().percent() * p -> buffs_meat_cleaver -> stack();
   }
 
   virtual void update_ready()
@@ -1390,7 +1390,7 @@ struct concussion_blow_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod  = effect_base_value( 3 ) / 100.0;
+    direct_power_mod  = effect3().percent();
   }
 };
 
@@ -1407,10 +1407,10 @@ struct devastate_t : public warrior_attack_t
 
     base_dd_min = base_dd_max = 0;
 
-    base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.war_academy -> effect1().percent();
 
-    base_crit += p -> talents.sword_and_board -> effect_base_value( 2 ) / 100.0;
-    base_crit += p -> glyphs.devastate -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> talents.sword_and_board -> effect2().percent();
+    base_crit += p -> glyphs.devastate -> effect1().percent();
   }
 
   virtual void execute()
@@ -1481,7 +1481,7 @@ struct execute_t : public warrior_attack_t
     if ( p -> talents.sudden_death -> ok() )
     {
       double current_rage = p -> resource_current[ RESOURCE_RAGE ];
-      double sudden_death_rage = p -> talents.sudden_death -> effect_base_value( 1 );
+      double sudden_death_rage = p -> talents.sudden_death -> effect1().base_value();
 
       if ( current_rage < sudden_death_rage )
       {
@@ -1543,7 +1543,7 @@ struct heroic_strike_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
+    base_crit        += p -> talents.incite -> effect1().percent();
     base_dd_min       = base_dd_max = 8;
     direct_power_mod  = 0.6;
   }
@@ -1596,11 +1596,11 @@ struct mortal_strike_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    additive_multipliers = p -> glyphs.mortal_strike -> effect_base_value( 1 ) / 100.0
+    additive_multipliers = p -> glyphs.mortal_strike -> effect1().percent()
                            + p -> set_bonus.tier11_2pc_melee() * 0.05
-                           + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
-    base_crit                  += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
+                           + p -> talents.war_academy -> effect1().percent();
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
+    base_crit                  += p -> talents.cruelty -> effect1().percent();
   }
 
   virtual void execute()
@@ -1633,7 +1633,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_juggernaut -> up() )
-      player_crit += p -> buffs_juggernaut -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> buffs_juggernaut -> effect1().percent();
 
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
@@ -1654,9 +1654,9 @@ struct overpower_t : public warrior_attack_t
     may_parry  = false;
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
 
-    base_crit += p -> talents.taste_for_blood -> effect_base_value( 2 ) / 100.0;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
-    base_multiplier            *= 1.0 + p -> glyphs.overpower -> effect_base_value( 1 ) / 100.0;
+    base_crit += p -> talents.taste_for_blood -> effect2().percent();
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
+    base_multiplier            *= 1.0 + p -> glyphs.overpower -> effect1().percent();
 
     stancemask = STANCE_BATTLE;    
   }
@@ -1708,7 +1708,7 @@ struct pummel_t : public warrior_attack_t
 
     //id = 6552;
 
-    base_cost *= 1.0 + p -> talents.drums_of_war -> effect_base_value( 1 ) / 100.0;
+    base_cost *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -1734,8 +1734,8 @@ struct raging_blow_attack_t : public warrior_attack_t
 
     may_miss = may_dodge = may_parry = false;
     background = true;
-    base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
-    base_crit += p -> glyphs.raging_blow -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.war_academy -> effect1().percent();
+    base_crit += p -> glyphs.raging_blow -> effect1().percent();
   }
 
   virtual void player_buff()
@@ -1830,7 +1830,7 @@ struct rend_dot_t : public warrior_attack_t
     normalize_weapon_speed = false;
     base_td_init = base_td;
 
-    base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
+    base_multiplier       *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
 
   }
 
@@ -1897,8 +1897,8 @@ struct revenge_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect_base_value( 2 ) / 100.0
-                            + p -> glyphs.revenge -> effect_base_value( 1 ) / 100.0;
+    base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect2().percent()
+                            + p -> glyphs.revenge -> effect1().percent();
     stancemask = STANCE_DEFENSE;
 
     if ( p -> talents.improved_revenge -> rank() )
@@ -1973,7 +1973,7 @@ struct shield_bash_t : public warrior_attack_t
 
     //id = 72;
 
-    base_cost *= 1.0 + p -> talents.drums_of_war -> effect_base_value( 1 ) / 100.0;
+    base_cost *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -2000,8 +2000,8 @@ struct shield_slam_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    base_crit        += p -> talents.cruelty -> effect_base_value ( 1 ) / 100.0;
-    base_multiplier  *= 1.0  + p -> glyphs.shield_slam -> effect_base_value( 1 ) / 100.0;
+    base_crit        += p -> talents.cruelty -> effect1().percent();
+    base_multiplier  *= 1.0  + p -> glyphs.shield_slam -> effect1().percent();
   }
 
   virtual void player_buff()
@@ -2011,7 +2011,7 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_shield_block -> up() )
-      player_multiplier *= 1.0 + p -> talents.heavy_repercussions -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> talents.heavy_repercussions -> effect1().percent();
   }
 
   virtual void execute()
@@ -2048,11 +2048,11 @@ struct shockwave_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod  = effect_base_value( 3 ) / 100.0;
+    direct_power_mod  = effect3().percent();
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    cooldown -> duration += p -> glyphs.shockwave -> effect_base_value( 1 ) / 1000.0;
+    cooldown -> duration += p -> glyphs.shockwave -> effect1().seconds();
   }
 
   virtual void execute()
@@ -2071,7 +2071,7 @@ struct shockwave_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     player_multiplier *= 1.0 + p -> buffs_thunderstruck -> stack() *
-                               p -> talents.thunderstruck -> effect_base_value( 2 ) / 100.0;
+                               p -> talents.thunderstruck -> effect2().percent();
   }
 };
 
@@ -2089,13 +2089,13 @@ struct slam_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = false;
     background = true;
 
-    base_crit                  += p -> glyphs.slam -> effect_base_value( 1 ) / 100.0;
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect_base_value( 1 ) / 100.0;
-    base_execute_time          += p -> talents.improved_slam -> effect_base_value( 1 ) / 1000.0;
+    base_crit                  += p -> glyphs.slam -> effect1().percent();
+    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
+    base_execute_time          += p -> talents.improved_slam -> effect1().seconds();
 
     weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
-    additive_multipliers = p -> talents.improved_slam -> effect_base_value( 2 ) / 100.0 + 
-                           p -> talents.war_academy   -> effect_base_value( 1 ) / 100.0;
+    additive_multipliers = p -> talents.improved_slam -> effect2().percent() + 
+                           p -> talents.war_academy   -> effect1().percent();
   }
 
   virtual void player_buff()
@@ -2105,10 +2105,10 @@ struct slam_attack_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_juggernaut -> up() )
-      player_crit += p -> buffs_juggernaut -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> buffs_juggernaut -> effect1().percent();
 
     if ( p -> buffs_bloodsurge -> up() )
-      player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect_base_value( 1 ) / 100.0;
+      player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect1().percent();
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
                              + additive_multipliers;
@@ -2207,9 +2207,9 @@ struct thunder_clap_t : public warrior_attack_t
     may_parry         = false;
     may_block         = false;
     direct_power_mod  = 0.12; // FIXME: Is this correct?
-    base_multiplier  *= 1.0 + p -> talents.thunderstruck -> effect_base_value( 1 ) / 100.0;
-    base_crit        += p -> talents.incite -> effect_base_value( 1 ) / 100.0;
-    base_cost        += p -> glyphs.resonating_power -> effect_base_value( 1 ) / 10.0;
+    base_multiplier  *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
+    base_crit        += p -> talents.incite -> effect1().percent();
+    base_cost        += p -> glyphs.resonating_power -> effect1().resource( RESOURCE_RAGE );
   }
 
   virtual void execute()
@@ -2286,7 +2286,7 @@ struct victory_rush_t : public warrior_attack_t
 
     //id = 34428;
 
-    base_multiplier *= 1.0 + p -> talents.war_academy -> effect_base_value( 1 ) / 100.0;
+    base_multiplier *= 1.0 + p -> talents.war_academy -> effect1().percent();
   }
 
   virtual bool ready()
@@ -2385,8 +2385,8 @@ struct battle_shout_t : public warrior_spell_t
 
     harmful   = false;
 
-    rage_gain = 20 + p -> talents.booming_voice -> effect_base_value( 2 ) / 10.0;
-    cooldown -> duration += p -> talents.booming_voice -> effect_base_value( 1 ) / 1000.0;
+    rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
+    cooldown -> duration += p -> talents.booming_voice -> effect1().seconds();
   }
   
   virtual void execute()
@@ -2397,8 +2397,8 @@ struct battle_shout_t : public warrior_spell_t
     
     if ( ! sim -> overrides.battle_shout )
     {
-      sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect_base_value( 1 ) / 1000.0;
-      sim -> auras.battle_shout -> trigger( 1, p -> dbc.effect_average( p -> dbc.spell( 6673 ) -> effect1 -> id(), p -> level ) );
+      sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect1().seconds();
+      sim -> auras.battle_shout -> trigger( 1, p -> dbc.effect_average( p -> dbc.spell( 6673 ) -> effect1().id(), p -> level ) );
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
@@ -2417,7 +2417,7 @@ struct berserker_rage_t : public warrior_spell_t
     harmful = false;
 
     if ( p -> talents.intensify_rage -> ok() )
-      cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0 );
+      cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect1().percent() );
   }
 
   virtual void execute()
@@ -2487,7 +2487,7 @@ struct death_wish_t : public warrior_spell_t
     harmful = false;
 
     if ( p -> talents.intensify_rage -> ok() )
-      cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0 );
+      cooldown -> duration *= ( 1.0 + p -> talents.intensify_rage -> effect1().percent() );
   }
 
   virtual void execute()
@@ -2496,7 +2496,7 @@ struct death_wish_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();
 
-    enrage_bonus = p -> talents.death_wish -> effect_base_value( 1 ) / 100.0;
+    enrage_bonus = p -> talents.death_wish -> effect1().percent();
     enrage_bonus *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0; 
 
     p -> buffs_death_wish -> trigger( 1, enrage_bonus );
@@ -2555,7 +2555,7 @@ struct recklessness_t : public warrior_spell_t
 
     harmful = false;
 
-    cooldown -> duration *= 1.0 + p -> talents.intensify_rage -> effect_base_value( 1 ) / 100.0;
+    cooldown -> duration *= 1.0 + p -> talents.intensify_rage -> effect1().percent();
 
     stancemask  = STANCE_BERSERKER;
   }
@@ -2584,7 +2584,7 @@ struct shield_block_t : public warrior_spell_t
     harmful = false;
 
     if ( p -> talents.shield_mastery -> ok() )
-      cooldown -> duration += p -> talents.shield_mastery -> effect_base_value( 1 ) / 1000.0;
+      cooldown -> duration += p -> talents.shield_mastery -> effect1().seconds();
   }
 
   virtual void execute()
@@ -2669,7 +2669,7 @@ struct stance_t : public warrior_spell_t
     c -= 25.0; // Stance Mastery
 
     if ( p -> talents.tactical_mastery -> ok() )
-      c -= p -> talents.tactical_mastery -> effect_base_value( 1 );
+      c -= p -> talents.tactical_mastery -> effect1().base_value();
 
     if ( c < 0 ) c = 0;
 
@@ -2702,7 +2702,7 @@ struct sweeping_strikes_t : public warrior_spell_t
 
     harmful = false;
 
-    base_cost *= 1.0 + p -> glyphs.sweeping_strikes -> effect_base_value( 1 ) / 100.0;
+    base_cost *= 1.0 + p -> glyphs.sweeping_strikes -> effect1().percent();
 
     stancemask = STANCE_BERSERKER | STANCE_BATTLE;
   }
@@ -2955,7 +2955,7 @@ void warrior_t::init_base()
 
 
   if ( talents.toughness -> ok() )
-    initial_armor_multiplier *= 1.0 + talents.toughness -> effect_base_value( 1 ) / 100.0;
+    initial_armor_multiplier *= 1.0 + talents.toughness -> effect1().percent();
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -3375,7 +3375,7 @@ double warrior_t::composite_tank_crit( const school_type school ) SC_CONST
   double c = player_t::composite_tank_crit( school );
 
   if ( school == SCHOOL_PHYSICAL && talents.bastion_of_defense -> rank() )
-    c += talents.bastion_of_defense -> effect_base_value( 1 ) / 100.0;
+    c += talents.bastion_of_defense -> effect1().percent();
 
   return c;
 }
@@ -3579,7 +3579,7 @@ void player_t::warrior_init( sim_t* sim )
 void player_t::warrior_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.battle_shout ) 
-    sim -> auras.battle_shout -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 6673 ) -> effect1 -> id(), sim -> max_player_level ) );
+    sim -> auras.battle_shout -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 6673 ) -> effect1().id(), sim -> max_player_level ) );
 
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 

@@ -376,7 +376,7 @@ struct paladin_attack_t : public attack_t
       base_multiplier *= 1.0 + p() -> passives.two_handed_weapon_spec->base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
     }
 
-    base_multiplier *= 1.0 + 0.01 * p() -> talents.communion -> effect_base_value( 3 );
+    base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
 
     if ( p() -> set_bonus.tier10_2pc_melee() )
       base_multiplier *= 1.05;
@@ -901,7 +901,7 @@ struct seal_of_insight_proc_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     p -> resource_gain( RESOURCE_HEALTH, total_power() );
-    p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * effect_base_value( 2 ) / 100.0, p -> gains_seal_of_insight );
+    p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * effect2().resource( RESOURCE_MANA ), p -> gains_seal_of_insight );
   }
 };
 
@@ -918,7 +918,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee()
-                       + 0.01 * p -> talents.wrath_of_the_lightbringer->effect_base_value( 1 );
+                           + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
     direct_power_mod             = 1.0;
@@ -963,7 +963,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     may_block  = false;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
-    base_multiplier *= 1.0 + 0.01 * p -> talents.wrath_of_the_lightbringer -> effect_base_value( 1 )
+    base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent()
                        + 0.10 * p -> set_bonus.tier10_4pc_melee();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
@@ -992,7 +992,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
 
     aoe              = ( int ) p -> talents.seals_of_command -> mod_additive( P_TARGET );
     base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
-    base_multiplier *= 1.0 + ( 0.01 * p -> talents.seals_of_the_pure -> effect_base_value( 1 ) +
+    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() +
                                0.10 * p -> set_bonus.tier10_4pc_melee() );
 
     direct_power_mod             = 1.0;
@@ -1017,7 +1017,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee()
-                       + 0.01 * p -> talents.wrath_of_the_lightbringer->effect_base_value( 1 );
+                           + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
     base_dd_min = base_dd_max    = 1.0;
@@ -1052,7 +1052,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     tick_power_mod               = 1.0;
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
-    base_multiplier *= 1.0 + ( 0.01 * p -> talents.seals_of_the_pure -> effect_base_value( 1 ) +
+    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() +
                                p -> talents.inquiry_of_faith -> mod_additive( P_TICK_DAMAGE ) +
                                0.10 * p -> set_bonus.tier10_4pc_melee() );
   }
@@ -1095,8 +1095,8 @@ struct seal_of_truth_proc_t : public paladin_attack_t
       weapon_multiplier = 0.15; // files say 9% but in-game testing says 15%
 
     // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
-    base_multiplier *= ( 1.0 + 0.01 * p -> talents.seals_of_the_pure -> effect_base_value( 1 ) )
-                       *  ( 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee() );
+    base_multiplier *= 1.0 + p -> talents.seals_of_the_pure -> effect1().percent();
+    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee();
   }
   virtual void player_buff()
   {
@@ -1119,7 +1119,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee()
-                       + 0.01 * p -> talents.wrath_of_the_lightbringer->effect_base_value( 1 )
+                       + p -> talents.wrath_of_the_lightbringer -> effect1().percent()
                        + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
 
@@ -1342,7 +1342,7 @@ struct paladin_spell_t : public spell_t
 
   void initialize_()
   {
-    base_multiplier *= 1.0 + 0.01 * p() -> talents.communion -> effect_base_value( 3 );
+    base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
 
     if ( p() -> set_bonus.tier10_2pc_melee() )
       base_multiplier *= 1.05;
@@ -1439,7 +1439,7 @@ struct avenging_wrath_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     consume_resource();
     update_ready();
-    p -> buffs_avenging_wrath -> trigger( 1, effect_base_value( 1 ) / 100.0 );
+    p -> buffs_avenging_wrath -> trigger( 1, effect1().percent() );
   }
 };
 
@@ -1876,7 +1876,7 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
 
     if ( t -> health_percentage() <= 35 )
-      player_crit += p -> talents.last_word -> effect_base_value( 1 ) / 100.0;
+      player_crit += p -> talents.last_word -> effect1().percent();
   }
 };
 
@@ -1889,7 +1889,7 @@ struct holy_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
   }
 };
 
@@ -1913,7 +1913,7 @@ struct divine_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect_base_value( 1 ) / 1000.0;
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
   }
 };
 
@@ -1997,7 +1997,7 @@ void paladin_t::init_base()
   base_miss    = 0.05;
   base_parry   = 0.05;
   base_block   = 0.05;
-  initial_armor_multiplier *= 1.0 + 0.1 * talents.toughness -> effect_base_value( 1 );
+  initial_armor_multiplier *= 1.0 + talents.toughness -> effect1().percent();
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -2161,7 +2161,7 @@ void paladin_t::init_buffs()
   buffs_censure                = new buff_t( this, 31803, "censure" );
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
-  buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", 0.01 * talents.divine_purpose -> effect_base_value( 1 ) );
+  buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
   buffs_holy_shield            = new buff_t( this, 87342, "holy_shield" );
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
@@ -2512,7 +2512,7 @@ double paladin_t::composite_tank_crit( const school_type school ) SC_CONST
   double c = player_t::composite_tank_crit( school );
 
   if ( school == SCHOOL_PHYSICAL && talents.sanctuary -> rank() )
-    c += talents.sanctuary -> effect_base_value( 3 ) / 100.0;
+    c += talents.sanctuary -> effect3().percent();
 
   return c;
 }
@@ -2557,13 +2557,13 @@ void paladin_t::regen( double periodicity )
   }
   if ( buffs_judgements_of_the_wise -> up() )
   {
-    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect_base_value( 1 ) * 0.01;
+    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect1().percent();
     double amount = periodicity * tot_amount / buffs_judgements_of_the_wise -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
-    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect_base_value( 1 ) * 0.01;
+    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect1().percent();
     double amount = periodicity * tot_amount / buffs_judgements_of_the_bold -> buff_duration;
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
@@ -2580,7 +2580,7 @@ double paladin_t::assess_damage( double            amount,
 
   if ( talents.sanctuary -> rank() )
   {
-    amount *= 1.0 - talents.sanctuary -> effect_base_value( 1 ) / 100.0;
+    amount *= 1.0 - talents.sanctuary -> effect1().percent();
 
     if ( result == RESULT_DODGE || result == RESULT_BLOCK )
     {
@@ -2715,8 +2715,8 @@ void player_t::paladin_init( sim_t* sim )
 
 void player_t::paladin_combat_begin( sim_t* sim )
 {
-  double devo = sim -> dbc.effect_average( sim -> dbc.spell( 465 ) -> effect1 -> id(), sim -> max_player_level );
-  double bow  = sim -> dbc.effect_average( sim -> dbc.spell( 79101 ) -> effect3 -> id(), sim -> max_player_level );
+  double devo = sim -> dbc.effect_average( sim -> dbc.spell( 465   ) -> effect1().id(), sim -> max_player_level );
+  double bow  = sim -> dbc.effect_average( sim -> dbc.spell( 79101 ) -> effect3().id(), sim -> max_player_level );
 
   if( sim -> overrides.communion     ) sim -> auras.communion     -> override();
   if( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );

@@ -663,7 +663,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if ( p -> rng_relentless_strikes -> roll( chance * p -> combo_points -> count ) )
   {
     // actual energy gain is in Relentless Strike Effect (14181)
-    double gain = p -> dbc.spell( 14181 ) -> effect1 -> base_value();
+    double gain = p -> dbc.spell( 14181 ) -> effect1().resource( RESOURCE_ENERGY );
     p -> resource_gain( RESOURCE_ENERGY, gain, p -> gains_relentless_strikes );
   }
 }
@@ -820,7 +820,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
     if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
     {
-      double value = p -> dbc.spell( 57933 ) -> effect1 -> base_value();
+      double value = p -> dbc.spell( 57933 ) -> effect1().base_value();
       value += p -> glyphs.tricks_of_the_trade -> mod_additive( P_EFFECT_1 );
       
       t -> buffs.tricks_of_the_trade -> buff_duration = duration;
@@ -933,12 +933,12 @@ void rogue_attack_t::_init_rogue_attack_t()
   requires_stealth      = false;
   requires_combo_points = false;
   
-  if ( player -> dbc.spell( id ) -> effect1 -> type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect1 -> base_value();
-  else if ( player -> dbc.spell( id ) -> effect2 -> type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect2 -> base_value();
-  else if ( player -> dbc.spell( id ) -> effect3 -> type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect3 -> base_value();
+  if ( player -> dbc.spell( id ) -> effect1().type() == E_ADD_COMBO_POINTS )
+    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect1().base_value();
+  else if ( player -> dbc.spell( id ) -> effect2().type() == E_ADD_COMBO_POINTS )
+    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect2().base_value();
+  else if ( player -> dbc.spell( id ) -> effect3().type() == E_ADD_COMBO_POINTS )
+    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect3().base_value();
 
   combo_points_spent    = 0;
     
@@ -1241,7 +1241,7 @@ struct melee_t : public rogue_attack_t
     double h = rogue_attack_t::haste();
 
     if ( p -> talents.lightning_reflexes -> rank() )
-      h *= 1.0 / ( 1.0 + p -> talents.lightning_reflexes -> effect_base_value( 2 ) / 100.0 );
+      h *= 1.0 / ( 1.0 + p -> talents.lightning_reflexes -> effect2().percent() );
 
     if ( p -> buffs_slice_and_dice -> up() ) 
       h *= 1.0 / ( 1.0 + p -> buffs_slice_and_dice -> value() );
@@ -1359,7 +1359,7 @@ struct ambush_t : public rogue_attack_t
     if ( weapon -> type == WEAPON_DAGGER )
       weapon_multiplier   *= 1.447; // It'is in the description.
 
-    base_cost             += p -> talents.slaughter_from_the_shadows -> effect_base_value( 1 );
+    base_cost             += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
     base_multiplier       *= 1.0 + ( p -> talents.improved_ambush -> mod_additive( P_GENERIC ) +
                                      p -> talents.opportunity     -> mod_additive( P_GENERIC ) );
     base_crit             += p -> talents.improved_ambush -> mod_additive( P_CRIT );
@@ -1405,10 +1405,10 @@ struct backstab_t : public rogue_attack_t
     
     weapon_multiplier *= 1.0 + p -> spec_sinister_calling -> mod_additive( P_EFFECT_2 );
 
-    base_cost         += p -> talents.slaughter_from_the_shadows -> effect_base_value( 1 );
+    base_cost         += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
     base_multiplier   *= 1.0 + ( p -> talents.aggression  -> mod_additive( P_GENERIC ) +
                                  p -> talents.opportunity -> mod_additive( P_GENERIC ) );
-    base_crit         += p -> talents.puncturing_wounds -> effect_base_value( 1 ) / 100.0;
+    base_crit         += p -> talents.puncturing_wounds -> effect1().percent();
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     if ( p -> set_bonus.tier11_2pc_melee() )
@@ -1435,10 +1435,10 @@ struct backstab_t : public rogue_attack_t
       {
         // the first effect of the talent is the amount energy gained
         // and the second one is target health percent apparently
-        double health_pct = p -> talents.murderous_intent -> effect_base_value( 2 );
+        double health_pct = p -> talents.murderous_intent -> effect2().base_value();
         if ( target -> health_percentage() < health_pct )
         {
-          double amount = p -> talents.murderous_intent -> effect_base_value( 1 );
+          double amount = p -> talents.murderous_intent -> effect1().resource( RESOURCE_ENERGY );
           p -> resource_gain( RESOURCE_ENERGY, amount, p -> gains_murderous_intent );
         }
       }
@@ -1854,7 +1854,7 @@ struct hemorrhage_t : public rogue_attack_t
 
     weapon_multiplier *= 1.0 + p -> spec_sinister_calling -> mod_additive( P_EFFECT_2 );
 
-    base_cost       += p -> talents.slaughter_from_the_shadows -> effect_base_value( 2 );
+    base_cost       += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     parse_options( options_str );
@@ -1995,7 +1995,7 @@ struct mutilate_strike_t : public rogue_attack_t
     may_miss = may_dodge = may_parry = false;
 
     base_multiplier  *= 1.0 + p -> talents.opportunity -> mod_additive( P_GENERIC );
-    base_crit        += p -> talents.puncturing_wounds -> effect_base_value( 2 ) / 100.0;
+    base_crit        += p -> talents.puncturing_wounds -> effect2().percent();
     base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     if ( p -> set_bonus.tier11_2pc_melee() ) base_crit += .05;
@@ -2525,7 +2525,7 @@ struct vanish_t : public rogue_attack_t
 
     harmful = false;
 
-    cooldown -> duration += p -> talents.elusiveness -> effect_base_value( 1 ) / 1000.0;
+    cooldown -> duration += p -> talents.elusiveness -> effect1().seconds();
 
     parse_options( options_str );
   }

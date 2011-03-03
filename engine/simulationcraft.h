@@ -1142,9 +1142,13 @@ struct spell_data_t {
   const char * _desc_vars;          // Spell description variable stringblock, if present
 
   // Pointers for runtime linking
-  spelleffect_data_t* effect1;
-  spelleffect_data_t* effect2;
-  spelleffect_data_t* effect3;
+  spelleffect_data_t* _effect1;
+  spelleffect_data_t* _effect2;
+  spelleffect_data_t* _effect3;
+
+  const spelleffect_data_t& effect1() const { return *_effect1; }
+  const spelleffect_data_t& effect2() const { return *_effect2; }
+  const spelleffect_data_t& effect3() const { return *_effect3; }
 
   static spell_data_t* nil();
   static spell_data_t* find( unsigned, const std::string& confirmation = std::string(), bool ptr = false );
@@ -1222,8 +1226,8 @@ struct spelleffect_data_t {
   int              _die_sides;       // Effect damage range
 
   // Pointers for runtime linking
-  spell_data_t*    spell;
-  spell_data_t*    trigger_spell;
+  spell_data_t*    _spell;
+  spell_data_t*    _trigger_spell;
 
   static spelleffect_data_t* nil();
   static spelleffect_data_t* find( unsigned, bool ptr = false );
@@ -1257,6 +1261,18 @@ struct spelleffect_data_t {
   double                     pp_combo_points() SC_CONST;
   double                     real_ppl() SC_CONST;
   int                        die_sides() SC_CONST;
+
+  spell_data_t& spell()   const { return *_spell; }
+  spell_data_t& trigger() const { return *_trigger_spell; }
+  double percent() const { return _base_value / 100.0; }
+  double seconds() const { return _base_value / 1000.0; }
+  double resource( int type ) const
+  {
+    if( type == RESOURCE_RUNIC ) return _base_value / 10.0;
+    if( type == RESOURCE_RAGE  ) return _base_value / 10.0;
+    if( type == RESOURCE_MANA  ) return _base_value / 100.0;
+    return _base_value;
+  }
 };
 
 struct talent_data_t {
@@ -1740,12 +1756,6 @@ struct talent_t : spell_id_t
   const spell_id_t*    t_rank_spells[ MAX_RANK ];
   const spell_id_t*    t_default_rank;
 
-  // Future trimmed down access
-  talent_data_t* td;
-  spell_data_t* sd;
-  spell_data_t* trigger;
-  // unsigned rank;
-
   talent_t( player_t* p, talent_data_t* td );
   virtual ~talent_t();
   virtual bool set_rank( uint32_t value, bool overridden = false );
@@ -1757,6 +1767,18 @@ struct talent_t : spell_id_t
   virtual uint32_t max_rank() SC_CONST;
   virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
   virtual const spell_id_t* rank_spell( uint32_t r = 0 ) SC_CONST;
+
+  // Future trimmed down access
+  talent_data_t* td;
+  spell_data_t* sd;
+  spell_data_t* trigger;
+  // unsigned rank;
+
+  talent_data_t& data() { return *td; }
+  spell_data_t& spell() { return *sd; }
+  const spelleffect_data_t& effect1() const { return sd -> effect1(); }
+  const spelleffect_data_t& effect2() const { return sd -> effect2(); }
+  const spelleffect_data_t& effect3() const { return sd -> effect3(); }
 };
 
 // Active Spell ID class
@@ -1792,6 +1814,11 @@ struct glyph_t : public spell_id_t
   virtual ~glyph_t() {}
   
   virtual bool enable( bool override_value = true );
+
+  const spell_data_t& spell() { return *sd; }
+  const spelleffect_data_t& effect1() const { return sd -> effect1(); }
+  const spelleffect_data_t& effect2() const { return sd -> effect2(); }
+  const spelleffect_data_t& effect3() const { return sd -> effect3(); }
 };
 
 struct mastery_t : public spell_id_t
@@ -1979,6 +2006,10 @@ struct buff_t : public spell_id_t
   static buff_t* find( player_t*, const std::string& name );
 
   virtual void _init_buff_t();
+
+  const spelleffect_data_t& effect1() const { return s_data -> effect1(); }
+  const spelleffect_data_t& effect2() const { return s_data -> effect2(); }
+  const spelleffect_data_t& effect3() const { return s_data -> effect3(); }
 };
 
 struct stat_buff_t : public buff_t
@@ -3722,6 +3753,12 @@ struct action_t : public spell_id_t
   virtual double ppm_proc_chance( double PPM ) SC_CONST;
 
   virtual void add_child( action_t* child ) { stats -> children.push_back( child -> stats ); }
+
+  // Move to ability_t in future
+  const spell_data_t* spell;
+  const spelleffect_data_t& effect1() const { return spell -> effect1(); }
+  const spelleffect_data_t& effect2() const { return spell -> effect2(); }
+  const spelleffect_data_t& effect3() const { return spell -> effect3(); }
 };
 
 struct attack_t : public action_t

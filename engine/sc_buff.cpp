@@ -1141,11 +1141,11 @@ new_buff_t::new_buff_t( player_t*          p,
         continue;
       
       if ( i == 1 )
-        e_data[ i - 1 ] = spell -> effect1;
+        e_data[ i - 1 ] = spell -> _effect1;
       else if ( i == 2 )
-        e_data[ i - 1 ] = spell -> effect2;
+        e_data[ i - 1 ] = spell -> _effect2;
       else if ( i == 3 )
-        e_data[ i - 1 ] = spell -> effect3;
+        e_data[ i - 1 ] = spell -> _effect3;
 
       // Trigger spells will not be used in anything for now
       if ( e_data[ i - 1 ] -> trigger_spell_id() > 0 )

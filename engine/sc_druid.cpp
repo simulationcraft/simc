@@ -145,7 +145,7 @@ struct druid_t : public player_t
 
       if ( p -> talents.king_of_the_jungle -> rank() )
       {
-        p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect_base_value( 2 ), p -> gains_tigers_fury );
+        p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect2().resource( RESOURCE_ENERGY ), p -> gains_tigers_fury );
       }
     }
   };
@@ -632,7 +632,7 @@ static void trigger_earth_and_moon( spell_t* s )
 static void trigger_eclipse_proc( druid_t* p )
 {
   // All extra procs when eclipse pops
-  p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * 0.01 * p -> talents.euphoria -> effect_base_value( 3 ) , p -> gains_euphoria );
+  p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.euphoria -> effect3().resource( RESOURCE_MANA ), p -> gains_euphoria );
   p -> buffs_t11_4pc_caster -> trigger( 3 );
   p -> buffs_natures_grace -> cooldown -> reset();
   
@@ -934,7 +934,7 @@ double druid_cat_attack_t::cost() SC_CONST
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
   if ( harmful &&  p -> buffs_omen_of_clarity -> check() ) return 0;
-  if ( p -> buffs_berserk -> check() ) c *= 1.0 + p -> talents.berserk -> effect_base_value( 1 ) / 100.0;
+  if ( p -> buffs_berserk -> check() ) c *= 1.0 + p -> talents.berserk -> effect1().percent();
   return c;
 }
 
@@ -1219,7 +1219,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     if ( target -> debuffs.bleeding -> check() )
     {
-      player_crit += 0.01 * p -> talents.rend_and_tear -> effect_base_value( 2 );
+      player_crit += p -> talents.rend_and_tear -> effect2().percent();
     }
   }
 };
@@ -1391,8 +1391,8 @@ struct ravage_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
     if ( p -> talents.predatory_strikes -> rank() )
     {
-      if ( target -> health_percentage() >= p -> talents.predatory_strikes -> effect_base_value( 2 ) )
-        player_crit += p -> talents.predatory_strikes -> effect_base_value( 1 ) / 100.0;
+      if ( target -> health_percentage() >= p -> talents.predatory_strikes -> effect2().base_value() )
+        player_crit += p -> talents.predatory_strikes -> effect1().percent();
     }
 
     druid_cat_attack_t::player_buff();
@@ -1493,7 +1493,7 @@ struct savage_roar_t : public druid_cat_attack_t
 
     parse_options( NULL, options_str );
 
-    buff_value            = effect_base_value( 2 ) / 100.0;
+    buff_value            = effect2().percent();
     buff_value           += p -> glyphs.savage_roar ->base_value() / 100.0;
     harmful               = false;
     requires_combo_points = true;
@@ -1503,7 +1503,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
-    duration += p -> talents.endless_carnage -> effect_base_value( 2 ) / 1000.0;
+    duration += p -> talents.endless_carnage -> effect2().seconds();
 
     // execute clears CP, so has to be after calculation duration
     druid_cat_attack_t::execute();
@@ -1561,7 +1561,7 @@ struct shred_t : public druid_cat_attack_t
       target_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> up() )
-      target_multiplier *= 1.0 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
+      target_multiplier *= 1.0 + p -> talents.rend_and_tear -> effect1().percent();
   }
 
   virtual bool ready()
@@ -1591,7 +1591,7 @@ struct skull_bash_cat_t : public druid_cat_attack_t
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 3 ) / 1000.0;
+    cooldown -> duration  += p -> talents.brutal_impact -> effect3().seconds();
   }
 
   virtual bool ready()
@@ -1637,7 +1637,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
 
-    p -> buffs_tigers_fury -> trigger( 1, effect_base_value( 1 ) / 100.0 );
+    p -> buffs_tigers_fury -> trigger( 1, effect1().percent() );
   }
 
   virtual bool ready()
@@ -1739,7 +1739,7 @@ void druid_bear_attack_t::player_buff()
   }
   if ( p -> talents.king_of_the_jungle -> rank() && p -> buffs_enrage -> up() )
   {
-    player_multiplier *= 1.0 + p -> talents.king_of_the_jungle -> effect_base_value( 1 ) / 100.0;
+    player_multiplier *= 1.0 + p -> talents.king_of_the_jungle -> effect1().percent();
   }
   if ( p -> buffs_pulverize -> up() )
   {
@@ -1965,7 +1965,7 @@ struct maul_t : public druid_bear_attack_t
     weapon = &( player -> main_hand_weapon );
     
     aoe = 1;
-    base_add_multiplier = p -> glyphs.maul -> effect_base_value( 3 ) / 100.0;
+    base_add_multiplier = p -> glyphs.maul -> effect3().percent();
     // DBC data points to base scaling, tooltip states AP scaling which is correct
     base_dd_min = base_dd_max = 8;
     direct_power_mod = ( p -> ptr ) ? 0.264 : 0.24;
@@ -1991,7 +1991,7 @@ struct maul_t : public druid_bear_attack_t
       target_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> up() )
-      target_multiplier *= 1.0 + 0.01 * p -> talents.rend_and_tear -> effect_base_value( 1 );
+      target_multiplier *= 1.0 + p -> talents.rend_and_tear -> effect1().percent();
   }
 };
 
@@ -2044,7 +2044,7 @@ struct skull_bash_bear_t : public druid_bear_attack_t
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration  += p -> talents.brutal_impact -> effect_base_value( 2 ) / 1000.0;
+    cooldown -> duration  += p -> talents.brutal_impact -> effect2().seconds();
   }
 
   virtual bool ready()
@@ -2227,7 +2227,7 @@ void druid_spell_t::player_buff()
 
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
-    player_multiplier *= 1.0 + 0.01 * p -> talents.balance_of_power -> effect_base_value( 1 );
+    player_multiplier *= 1.0 + p -> talents.balance_of_power -> effect1().percent();
     
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
 
@@ -2245,7 +2245,7 @@ void druid_spell_t::player_buff()
       player_multiplier *= 1.10;
   }
 
-  player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect_base_value( 2 ) / 100.0;
+  player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect2().percent();
 
   // Add in Additive Multipliers
   player_multiplier *= 1.0 + additive_multiplier;
@@ -2300,7 +2300,7 @@ struct barkskin_t : public druid_spell_t
     druid_spell_t::execute();
 
     druid_t* p = player -> cast_druid();
-    p -> buffs_barkskin -> trigger( 1, effect_base_value( 2 ) / 100.0 );
+    p -> buffs_barkskin -> trigger( 1, effect2().percent() );
   }
 };
 
@@ -2356,7 +2356,7 @@ struct bear_form_t : public druid_spell_t
     p -> base_gcd = 1.0;
     p -> reset_gcd();
 
-    p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect_base_value( 1 ) / 100.0;
+    p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect1().percent();
     p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.thick_hide -> rank() );
 
     if ( p -> talents.leader_of_the_pack -> rank() )
@@ -2393,7 +2393,7 @@ struct berserk_t : public druid_spell_t
     druid_spell_t::execute();
     p -> buffs_berserk -> trigger();
     if ( p -> talents.primal_madness -> rank() )
-      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
+      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect1().resource( RESOURCE_RAGE ), p -> gains_primal_madness );
     p -> cooldowns_mangle_bear -> reset();
   }
 };
@@ -2483,9 +2483,9 @@ struct enrage_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
     p -> buffs_enrage -> trigger();
-    p -> resource_gain( RESOURCE_RAGE, effect_base_value( 2 ) / 10.0, p -> gains_enrage );
+    p -> resource_gain( RESOURCE_RAGE, effect2().resource( RESOURCE_RAGE ), p -> gains_enrage );
     if ( p -> talents.primal_madness -> rank() )
-      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect_base_value( 1 ) / 10.0, p -> gains_primal_madness );
+      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect1().resource( RESOURCE_RAGE ), p -> gains_primal_madness );
   }
 
   virtual bool ready()
@@ -2592,7 +2592,7 @@ struct innervate_t : public druid_spell_t
 
     if ( innervate_target == player )
     {
-      gain += 0.01 * p -> talents.dreamstate -> effect_base_value( 1 );
+      gain += p -> talents.dreamstate -> effect1().percent();
     }
     else
     {
@@ -2734,7 +2734,7 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();    
     // Lunar Shower and BoG are additive with Moonfury and only apply to DD
     additive_multiplier += p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
-                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+                         + p -> talents.blessing_of_the_grove -> effect2().percent();
 
     druid_spell_t::player_buff();
   }
@@ -2949,12 +2949,16 @@ struct starfire_t : public druid_spell_t
         // BUG (FEATURE?) ON LIVE 
         // #1 Euphoria does not proc, if you are more than 35 into the side the
         // Eclipse bar is moving towards, >35 for Starfire/towards Solar
-        int gain = effect_base_value( 2 );
-        if ( ! p -> buffs_eclipse_lunar -> check() 
-          && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
-          && !( p -> bugs && p -> eclipse_bar_value > 35 ) )
-        {
-          gain *= 2;
+        int gain = effect2().base_value();
+        if ( ! p -> buffs_eclipse_lunar -> check() )
+	{
+	  if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
+	  {
+	    if( !( p -> bugs && p -> eclipse_bar_value > 35 ) )
+	    {
+	      gain *= 2;
+	    }
+	  }
         }
         //trigger_eclipse_energy_gain( this, gain );
         trigger_eclipse_gain_delay( this, gain );
@@ -3098,7 +3102,7 @@ struct starsurge_t : public druid_spell_t
     {
       // gain is positive for p -> eclipse_bar_direction==0
       // else it is towards p -> eclipse_bar_direction
-      int gain = effect_base_value( 2 );
+      int gain = effect2().base_value();
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
       //trigger_eclipse_energy_gain( this, gain );
@@ -3198,7 +3202,7 @@ struct sunfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();    
     // Lunar Shower and BoG are additive with Moonfury and only apply to DD
     additive_multiplier += p -> buffs_lunar_shower -> mod_additive( P_GENERIC ) * p -> buffs_lunar_shower -> stack()
-                         + p -> talents.blessing_of_the_grove -> effect_base_value( 2 ) / 100.0;
+                         + p -> talents.blessing_of_the_grove -> effect2().percent();
 
     druid_spell_t::player_buff();
   }
@@ -3335,7 +3339,7 @@ struct typhoon_t : public druid_spell_t
     aoe                   = -1;
     base_dd_min           = p -> dbc.effect_min( effect_id( 2 ), p -> level );
     base_dd_max           = p -> dbc.effect_max( effect_id( 2 ), p -> level );
-    base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect_base_value( 1 ) / 100.0;
+    base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect1().percent();
     direct_power_mod      = p -> dbc.effect( effect_id( 2 ) ) -> coeff();
     cooldown -> duration += p -> glyphs.monsoon -> mod_additive( P_COOLDOWN );
     base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
@@ -3374,9 +3378,9 @@ struct wild_mushroom_detonate_t : public druid_spell_t
 
       // Actual ability is 88751, all damage is in spell 78777
       const spell_data_t* damage_spell = player -> dbc.spell( 78777 );
-      direct_power_mod   = damage_spell -> effect1 -> coeff();
-      base_dd_min        = player -> dbc.effect_min( damage_spell -> effect1 -> id(), player -> level );
-      base_dd_max        = player -> dbc.effect_max( damage_spell -> effect1 -> id(), player -> level );
+      direct_power_mod   = damage_spell -> effect1().coeff();
+      base_dd_min        = player -> dbc.effect_min( damage_spell -> effect1().id(), player -> level );
+      base_dd_max        = player -> dbc.effect_max( damage_spell -> effect1().id(), player -> level );
       school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
       stats -> school    = school;
       aoe                = -1;
@@ -3437,7 +3441,7 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     // Glyph of Wrath is additive with Moonfury
     if ( p -> glyphs.wrath -> ok() )
-      additive_multiplier += p -> glyphs.wrath -> effect_base_value( 1 ) / 100.0;
+      additive_multiplier += p -> glyphs.wrath -> effect1().percent();
 
     druid_spell_t::player_buff();
   }
@@ -3470,7 +3474,7 @@ struct wrath_t : public druid_spell_t
         // Gain:   -13 -13 -14 -13 -13 -14 -26 -27 -27
         
         // Wrath's second effect base value is positive in the DBC files
-        int gain = effect_base_value( 2 );
+        int gain = effect2().base_value();
         
         // Every wrath increases the counter by 1
         p -> eclipse_wrath_count++;
@@ -3478,13 +3482,17 @@ struct wrath_t : public druid_spell_t
         // BUG (FEATURE?) ON LIVE 
         // #1 Euphoria does not proc, if you are more than 35 into the side the
         // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
-        if ( ! p -> buffs_eclipse_solar -> check() 
-          && p -> rng_euphoria -> roll( 0.01 * p -> talents.euphoria -> effect_base_value( 1 ) )
-          && !( p -> bugs && p -> eclipse_bar_value < -35 ) )
-        {
-          gain *= 2;
-          // Euphoria procs also add 1 to the counter
-          p -> eclipse_wrath_count++;
+        if ( ! p -> buffs_eclipse_solar -> check() )
+	{
+	  if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
+	  {
+	    if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
+	    {
+	      gain *= 2;
+	      // Euphoria procs also add 1 to the counter
+	      p -> eclipse_wrath_count++;
+	    }
+	  }
         }
 
         if ( p -> eclipse_wrath_count > 2 )
@@ -3724,13 +3732,13 @@ void druid_t::init_base()
 
   base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
+  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
   initial_attack_power_per_strength = 2.0;
   initial_spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
   base_miss = 0.05;
-  initial_armor_multiplier  = 1.0 + talents.thick_hide -> effect_base_value( 1 ) / 100.0;
+  initial_armor_multiplier  = 1.0 + talents.thick_hide -> effect1().percent();
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_capi = 0.008555;
@@ -3743,8 +3751,8 @@ void druid_t::init_base()
   base_energy_regen_per_second = 10;
   
   // Furor: +5/10/15% max mana
-  resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect_base_value( 2 ) * 0.01;
-  mana_per_intellect             *= 1.0 + talents.furor -> effect_base_value( 2 ) * 0.01;
+  resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect2().percent();
+  mana_per_intellect             *= 1.0 + talents.furor -> effect2().percent();
   
   switch ( primary_tree() )
   {
@@ -3774,7 +3782,7 @@ void druid_t::init_buffs()
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
-  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect_base_value( 2 ) / 1000.0 );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
@@ -4179,7 +4187,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
 
   if ( buffs_cat_form -> check() )
   {
-    multiplier *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 2 ) * 0.01;
+    multiplier *= 1.0 + talents.heart_of_the_wild -> effect2().percent();
   }
   if ( spec_aggression -> ok() )
   {
@@ -4228,7 +4236,7 @@ double druid_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
   // BoP does not convert base spirit into hit!
-  hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * ( 0.01 * talents.balance_of_power -> effect_base_value( 2 ) ) / rating.spell_hit;
+  hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * ( talents.balance_of_power -> effect2().percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -4252,7 +4260,7 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
   // unfortunately that's before we're in cat form or bear form, so let's compensate here
   if ( attr == ATTR_STAMINA && buffs_bear_form -> check() )
   {
-    m *= 1.0 + talents.heart_of_the_wild -> effect_base_value( 1 ) * 0.01;
+    m *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
     if ( primary_tree() == TREE_FERAL)
       m *= 1.05;
   }
@@ -4291,7 +4299,7 @@ double druid_t::composite_tank_crit( const school_type school ) SC_CONST
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    c += talents.thick_hide -> effect_base_value( 3 ) / 100.0;
+    c += talents.thick_hide -> effect3().percent();
   }
 
   return c;
@@ -4432,7 +4440,7 @@ double druid_t::assess_damage( double            amount,
 {
   if ( result == RESULT_DODGE && talents.natural_reaction -> rank() )
   {
-    resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect_base_value( 2 ), gains_natural_reaction );
+    resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect2().base_value(), gains_natural_reaction );
   }
 
   // This needs to use unmitigated damage, which amount currently is
@@ -4442,12 +4450,12 @@ double druid_t::assess_damage( double            amount,
 
   if ( SCHOOL_SPELL_MASK & ( int64_t( 1 ) << school ) && talents.perseverance -> ok() )
   {
-    amount *= 1.0 + talents.perseverance -> effect_base_value( 1 ) / 100.0;
+    amount *= 1.0 + talents.perseverance -> effect1().percent();
   }
 
   if ( talents.natural_reaction -> rank() )
   {
-    amount *= 1.0 + talents.natural_reaction -> effect_base_value( 3 ) / 100.0;
+    amount *= 1.0 + talents.natural_reaction -> effect3().percent();
   }
  
   if ( buffs_barkskin -> up() )
