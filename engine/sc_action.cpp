@@ -294,6 +294,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     break;
 
     // Dot
+  case E_PERSISTENT_AREA_AURA:
   case E_APPLY_AURA:
     switch ( effect -> subtype() )
     {
@@ -331,7 +332,6 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
       break;
     case A_ADD_FLAT_MODIFIER:
       switch ( effect -> misc_value1() )
-    case E_PERSISTENT_AREA_AURA:
     case E_APPLY_AURA:
       switch ( effect -> subtype() )
       {

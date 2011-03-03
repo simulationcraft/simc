@@ -140,7 +140,7 @@ struct hunter_t : public player_t
     talent_t* wyvern_sting;
     talent_t* noxious_stings;
     talent_t* hunting_party;
-    talent_t* sniper_training; // implement for helter skelter
+    talent_t* sniper_training;
     talent_t* serpent_spread;
     talent_t* black_arrow;
   };
@@ -2010,13 +2010,11 @@ struct explosive_trap_effect_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     aoe = -1;
-    dual = true;
     background = true;
     tick_power_mod = extra_coeff();
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> rank() * 0.10;
-    //TODO: Test whether explosive trap is on spell or melee hit table and what
-    //its crit bonus is.
+    may_miss=false;
   }
 
   virtual void tick()
@@ -2051,6 +2049,8 @@ struct explosive_trap_t : public hunter_attack_t
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
     cooldown -> duration -= p -> talents.resourcefulness -> rank() * 2;
+
+    may_miss=false;
 
     trap_effect = new explosive_trap_effect_t( p );
     add_child( trap_effect );
