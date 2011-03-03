@@ -772,7 +772,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background         = true;
       base_tick_time     = 3.0;
-      num_ticks          = 7 + util_t::talent_rank( o -> talents.epidemic -> effect1().base_value(), 3, 1, 3, 4 ); // FIXME! Weird...
+      num_ticks          = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod  *= 0.055 * 1.15;
       may_miss           = false;
       hasted_ticks       = false;
@@ -861,7 +861,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_tick_time    = 3.0;
       hasted_ticks      = false;
       may_miss          = false;
-      num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> effect1().base_value(), 3, 1, 3, 4 );
+      num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod *= 0.055 * 1.15;
       base_multiplier  *= 1.0 + o -> glyphs.icy_touch * 0.2;
       base_multiplier  *= 0.50; // DRW Penalty
@@ -1736,7 +1736,7 @@ static void trigger_ebon_plaguebringer( action_t* a )
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
-  double duration = 21.0 + util_t::talent_rank( p -> talents.epidemic -> effect1().base_value(), 3, 3, 9, 12 ); 
+  double duration = 21.0 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 3, 9, 12 ); 
   if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
     a -> target -> debuffs.ebon_plaguebringer -> buff_duration = duration;
@@ -2290,7 +2290,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_tick_time   = 3.0;
     tick_may_crit    = true;
     background       = true;
-    num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> effect1().base_value(), 3, 1, 3, 4 );
+    num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
     tick_power_mod   = 0.055 * 1.15;
     dot_behavior     = DOT_REFRESH;
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect1().percent();
@@ -2772,7 +2772,7 @@ struct frost_fever_t : public death_knight_spell_t
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
     base_crit_bonus_multiplier /= 2.0;  // current bug, FF crits for 150% instead of 200%, which means half the bonus multiplier.
-    num_ticks         = 7 + util_t::talent_rank( p -> talents.epidemic -> effect1().base_value(), 3, 1, 3, 4 );
+    num_ticks         = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
                         + p -> talents.ebon_plaguebringer -> effect1().percent();
@@ -4504,7 +4504,7 @@ void death_knight_t::init_buffs()
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
   buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",	
-                                          1, 21.0 + util_t::talent_rank(talents.epidemic -> effect1().base_value(), 3, 3, 9, 12 ), 0.0, 1.0, true );
+                                          1, 21.0 + util_t::talent_rank( talents.epidemic -> rank(), 3, 3, 9, 12 ), 0.0, 1.0, true );
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
