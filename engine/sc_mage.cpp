@@ -3164,7 +3164,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
-      action_list_str += "/arcane_blast,if=target.time_to_die<40&mana_pct>5"; // final burn phase
+      action_list_str += "/arcane_blast,if=target.time_to_die<60&mana_pct>4"; // final burn phase
       if ( has_shard == true )
       {
         action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40&mana_pct>26"; // burn phase AB spam
