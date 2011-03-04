@@ -126,9 +126,12 @@ void action_t::_init_action_t()
   vulnerable                     = 0;
   invulnerable                   = 0;
   wait_on_ready                  = -1;
+  interrupt                      = 0;
   round_base_dmg                 = true;
   if_expr_str                    = "";
   if_expr                        = NULL;
+  interrupt_if_expr_str          = "";
+  interrupt_if_expr              = NULL;
   sync_str                       = "";
   sync_action                    = NULL;
   next                           = NULL;
@@ -220,6 +223,8 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
 action_t::~action_t()
 {
   if ( if_expr )
+    delete if_expr;
+  if ( interrupt_if_expr )
     delete if_expr;
 }
 
@@ -395,6 +400,8 @@ void action_t::parse_options( option_t*          options,
     { "health_percentage<",     OPT_FLT,    &max_health_percentage },
     { "health_percentage>",     OPT_FLT,    &min_health_percentage },
     { "if",                     OPT_STRING, &if_expr_str           },
+    { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
+    { "interrupt",              OPT_BOOL,   &interrupt             },
     { "invulnerable",           OPT_BOOL,   &invulnerable          },
     { "moving",                 OPT_BOOL,   &moving                },
     { "rank",                   OPT_INT,    &rank_index            },
@@ -996,11 +1003,12 @@ void action_t::consume_resource()
 
   resource_consumed = cost();
 
-  if ( sim -> debug )
-    log_t::output( sim, "%s consumes %.1f %s for %s", player -> name(),
-                   resource_consumed, util_t::resource_type_string( resource ), name() );
-
   player -> resource_loss( resource, resource_consumed, this );
+
+  if ( sim -> log )
+    log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                   resource_consumed, util_t::resource_type_string( resource ), 
+		   name(), player -> resource_current[ resource] );
 
   stats -> consume_resource( resource_consumed );
 }
@@ -1534,13 +1542,8 @@ bool action_t::ready()
 
   }
 
-  if ( if_expr )
-  {
-    int result_type = if_expr -> evaluate();
-    if ( result_type == TOK_NUM     ) return if_expr -> result_num != 0;
-    if ( result_type == TOK_STR     ) return true;
-    if ( result_type == TOK_UNKNOWN ) return false;
-  }
+  if ( if_expr && ! if_expr -> success() )
+    return false;
 
   return true;
 }

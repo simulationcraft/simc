@@ -2286,17 +2286,10 @@ struct corruption_t : public warlock_spell_t
 
 struct drain_life_t : public warlock_spell_t
 {
-  int interrupt;
   drain_life_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "drain_life", player, "Drain Life" ),
-    interrupt( false )
+    warlock_spell_t( "drain_life", player, "Drain Life" )
   {
-    option_t options[] =
-    {
-      { "interrupt",  OPT_BOOL, &interrupt },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     channeled    = true;
     binary       = true;
@@ -2374,20 +2367,6 @@ struct drain_life_t : public warlock_spell_t
     warlock_spell_t::tick();
     if ( p -> buffs_shadow_trance -> trigger() )
       p -> procs_shadow_trance -> occur();
-
-    if ( interrupt && ( dot -> ticks() > 0 ) )
-    {
-      // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
-      for ( action_t* action = p -> action_list; action != this; action = action -> next )
-      {
-        if ( action -> background ) continue;
-        if ( action -> ready() )
-        {
-          dot -> current_tick = dot -> num_ticks;
-          break;
-        }
-      }
-    }
   }
 };
 
@@ -2395,18 +2374,10 @@ struct drain_life_t : public warlock_spell_t
 
 struct drain_soul_t : public warlock_spell_t
 {
-  int interrupt;
-
   drain_soul_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "drain_soul", player, "Drain Soul" ),
-    interrupt( 0 )
+    warlock_spell_t( "drain_soul", player, "Drain Soul" )
   {
-    option_t options[] =
-    {
-      { "interrupt",  OPT_BOOL, &interrupt },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     channeled    = true;
     hasted_ticks = true; // informative
@@ -2429,21 +2400,6 @@ struct drain_soul_t : public warlock_spell_t
           {
             p -> dots_unstable_affliction -> action -> refresh_duration();
           }
-        }
-      }
-    }
-
-    if ( interrupt && ( dot -> ticks() > 0 ) )
-    {
-      warlock_t* p = player -> cast_warlock();
-      // If any spell ahead of DS in the action list is "ready", then cancel the DS channel
-      for ( action_t* action = p -> action_list; action != this; action = action -> next )
-      {
-        if ( action -> background ) continue;
-        if ( action -> ready() )
-        {
-          dot -> current_tick = dot -> num_ticks;
-          break;
         }
       }
     }
@@ -3617,20 +3573,14 @@ struct hellfire_tick_t : public warlock_spell_t
 
 struct hellfire_t : public warlock_spell_t
 {
-  int interrupt;
   hellfire_tick_t* hellfire_tick;
 
   hellfire_t( player_t* player, const std::string& options_str ) :
-    warlock_spell_t( "hellfire", player, 1949 ), interrupt( 0 )
+    warlock_spell_t( "hellfire", player, 1949 )
   {
     warlock_t* p = player -> cast_warlock();
 
-    option_t options[] =
-    {
-      { "interrupt",  OPT_BOOL, &interrupt },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     // Hellfire has it's own damage effect, which is actually the damage to the player himself, so harmful is set to false.
     harmful = false;
@@ -3655,21 +3605,6 @@ struct hellfire_t : public warlock_spell_t
   virtual void tick()
   {
     hellfire_tick -> execute();
-
-    if ( interrupt && ( dot -> ticks() > 0 ) )
-    {
-      warlock_t* p = player -> cast_warlock();
-      // If any spell ahead of Hellfire in the action list is "ready", then cancel the Hellfire channel
-      for ( action_t* action = p -> action_list; action != this; action = action -> next )
-      {
-        if ( action -> background ) continue;
-        if ( action -> ready() )
-        {
-          dot -> current_tick = dot -> num_ticks;
-          break;
-        }
-      }
-    }
   }
 
 };

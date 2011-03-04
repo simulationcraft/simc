@@ -2139,6 +2139,7 @@ struct action_expr_t
   virtual ~action_expr_t() { name_str.clear(); result_str.clear(); };
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
+  virtual bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
 
   static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
@@ -3665,10 +3666,12 @@ struct action_t : public spell_id_t
   double min_current_time, max_current_time;
   double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
-  int moving, vulnerable, invulnerable, wait_on_ready;
+  int moving, vulnerable, invulnerable, wait_on_ready, interrupt;
   bool round_base_dmg;
   std::string if_expr_str;
   action_expr_t* if_expr;
+  std::string interrupt_if_expr_str;
+  action_expr_t* interrupt_if_expr;
   std::string sync_str;
   action_t* sync_action;
   action_t* next;

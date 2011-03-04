@@ -165,6 +165,28 @@ void dot_tick_event_t::execute()
     dot -> action -> tick();
   }
 
+  if ( dot -> action -> channeled && ( dot -> ticks() > 0 ) )
+  {
+    action_expr_t* expr = dot -> action -> interrupt_if_expr;
+    if ( expr && expr -> success() )
+    {
+      dot -> current_tick = dot -> num_ticks;
+    }
+    if ( dot -> action -> interrupt )
+    {
+      // Interrupt if any higher priority action is ready.
+      for( action_t* a = player -> action_list; a != dot -> action; a = a -> next )
+      {
+        if ( a -> background ) continue;
+        if ( a -> ready() )
+        {
+          dot -> current_tick = dot -> num_ticks;
+          break;
+        }
+      }
+    }
+  }
+
   if ( dot -> current_tick == dot -> num_ticks )
   {
     dot -> action -> last_tick();

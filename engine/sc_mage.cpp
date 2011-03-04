@@ -1739,6 +1739,8 @@ struct flame_orb_t : public mage_spell_t
     add_child( explosion_spell );
 
     tick_spell = new flame_orb_tick_t( p );
+    tick_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work
+    tick_spell -> base_cost = base_cost / num_ticks;
     add_child( tick_spell );
   }
 
