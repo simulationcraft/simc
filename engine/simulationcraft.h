@@ -1821,10 +1821,10 @@ struct glyph_t : public spell_id_t
   
   virtual bool enable( bool override_value = true );
 
-  const spell_data_t& spell() { return *sd; }
-  const spelleffect_data_t& effect1() const { return sd -> effect1(); }
-  const spelleffect_data_t& effect2() const { return sd -> effect2(); }
-  const spelleffect_data_t& effect3() const { return sd -> effect3(); }
+  const spell_data_t& spell() { return *sd_enabled; }
+  const spelleffect_data_t& effect1() const { return sd_enabled -> effect1(); }
+  const spelleffect_data_t& effect2() const { return sd_enabled -> effect2(); }
+  const spelleffect_data_t& effect3() const { return sd_enabled -> effect3(); }
 };
 
 struct mastery_t : public spell_id_t
