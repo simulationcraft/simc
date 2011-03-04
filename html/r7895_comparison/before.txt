@@ -1,0 +1,734 @@
+
+SimulationCraft 406-10 for World of Warcraft 4.0.6 Live (build level 13623)
+
+Simulating... ( iterations=10000, max_time=450, vary_combat_length=0.20, optimal_raid=1, fight_style=Patchwerk )
+
+DPS Ranking:
+ 204704 100.0%  Raid
+  27629  13.5%  Warlock_Destruction_T11_372
+  27146  13.2%  Warlock_AffDrain_T11_372
+  26996  13.2%  Warlock_Affliction_T11_372
+  26769  13.1%  Warlock_Demonology_T11_372
+  24301  11.9%  Warlock_Destruction_T11_359
+  24121  11.8%  Warlock_AffDrain_T11_359
+  24022  11.7%  Warlock_Affliction_T11_359
+  23870  11.7%  Warlock_Demonology_T11_359
+
+Player: Warlock_AffDrain_T11_359 orc warlock affliction 85
+  DPS: 24121.1  Error=11.2/0.0%  Range=2033/8.4%  Convergence=70.6%  DPR=14.5  RPS-Out=1667.2 RPS-In=1518.6  Resource=(mana) Waiting=0.0 ApM=37.8
+  Origin: http://chardev.org/?profile=36735
+  Talents: http://www.wowhead.com/talent#warlock-22312210301332032123002000000000000000300000000000000000
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=7423|5723(5252)  intellect=5233|4575(4187)  spirit=203|203(20)  mastery=12.40|12.40(789)  health=141692|118046  mana=98168|88883
+  Spell Stats:  power=8597|6519(1954)  hit=17.00%|17.00%(1742)  crit=18.25%|12.24%(625)  penetration=0|0(0)  haste=25.57%|16.11%(2063)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.50%|14.50%(1742)  crit=14.50%|6.55%(625)  expertise=0.00|0.00(0)  haste=16.11%|16.11%(2063)
+  Defense Stats:  armor=11893|7817(7817) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/shadow_bolt/corruption/lash_of_pain/haunt
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor
+    summon_succubus/dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    corruption,if=(!ticking|remains<tick_time)&miss_react
+    unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
+    bane_of_doom,if=target.time_to_die>15&!ticking&miss_react/haunt
+    fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
+    shadowflame/summon_infernal/drain_soul,interrupt=1,if=target.health_pct<=25
+    soulburn/soul_fire,if=buff.soulburn.up/demon_soul,if=buff.shadow_trance.react
+    shadow_bolt,if=buff.shadow_trance.react/life_tap,mana_percentage<=5
+    drain_life,interrupt=1
+    life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct/fel_flame,moving=1
+    life_tap
+  Actions:
+    bane_of_doom           Count=  7.4|60.81sec  DPE=124677| 9%  DPET=122120  DPR=  40.5  pDPS=2106  Miss=0.00%  TickCount=28  MissTick=0.0%  Tick=24774|17091|37978  CritTick=51166|35119|78038|30.4%  UpTime=96.3%
+    corruption             Count=  1.0| 0.00sec  DPE=1470568|14%  DPET=1193990  DPR=1192.7  pDPS=3356  Miss=0.00%  TickCount=196  MissTick=0.0%  Tick=5361|3259|8792  CritTick=11078|6698|18065|37.4%  UpTime=99.5%
+    darkmoon_card_volcano  Count=  9.8|46.43sec  DPE=  2946| 0%  DPET=     0  DPR=   0.0  pDPS=  66  Miss=0.00%  Hit=2601|2507|3028  Crit= 4017| 3873| 4679|24.4%
+    demon_soul             Count=  3.0|130.32sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    drain_life             Count= 94.6| 3.56sec  DPE= 15418|14%  DPET=  7600  DPR=   6.3  pDPS=3330  Miss=0.00%  TickCount=209  MissTick=0.0%  Tick=5643|3539|8598  CritTick=11685|7272|17667|22.4%  UpTime=36.2%
+    drain_soul             Count= 14.5| 6.53sec  DPE= 77042|11%  DPET= 15525  DPR=  26.8  pDPS=2552  Miss=0.00%  TickCount=34  MissTick=0.0%  Tick=26180|15711|38957  CritTick=54179|32283|80051|22.4%  UpTime=15.7%
+    fel_flame              Count=  5.3|33.27sec  DPE= 21953| 1%  DPET= 18888  DPR=  17.8  pDPS= 267  Miss=0.00%  Hit=17731|15770|27782  Crit=36716|32405|59430|22.2%
+    haunt                  Count= 44.2| 9.90sec  DPE=  8680| 4%  DPET=  7480  DPR=   3.5  pDPS= 875  Miss=0.00%  Hit=7042|6114|11275  Crit=14560|12564|23169|22.3%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 16107| 0%  DPET=     0  DPR=   0.0  pDPS=  37  Miss=0.00%  Hit=12833|9505|13475  Crit=26439|19531|27689|24.1%
+    life_tap               Count=  6.4|44.66sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadow_bolt            Count= 25.7|12.95sec  DPE= 15861| 4%  DPET= 13625  DPR=   9.1  pDPS= 931  Miss=0.00%  Hit=12787|11025|22241  Crit=26503|22654|45702|22.4%
+    shadowflame            Count= 33.2|13.22sec  DPE= 22624| 7%  DPET= 19567  DPR=   4.4  pDPS=1715  Miss=0.00%  Hit=2440|2193|3508  Crit= 5037| 4506| 7012|22.3%
+    shadowflame_dot        Count= 33.2|13.22sec  DPE= 19605| 6%  DPET=     0  DPR=   0.0  pDPS=1486  TickCount=142  MissTick=0.0%  Tick=2992|0|5502  CritTick=6185|0|11305|22.4%  UpTime=48.1%
+    soul_fire              Count=  3.0|46.26sec  DPE= 13826| 0%  DPET= 11599  DPR=   7.5  pDPS=  95  Miss=0.00%  Hit=11008|8728|13357  Crit=22700|17934|27447|24.1%
+    soulburn               Count=  3.0|46.25sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    unstable_affliction    Count= 22.4|15.71sec  DPE= 70212|15%  DPET= 59132  DPR=  22.8  pDPS=3585  Miss=0.00%  TickCount=196  MissTick=0.0%  Tick=5736|3490|9301  CritTick=11855|7171|19111|37.4%  UpTime=99.0%
+   succubus  (DPS=4676.8)
+    lash_of_pain           Count=291.9| 1.51sec  DPE=  7015|100%  DPET=  4661  DPR=  12.3  pDPS=4677  Miss=0.00%  Hit=5640|4947|8438  Crit=11333| 9870|16835|24.1%
+   infernal  (DPS=3027.8)
+    infernal_immolation    Count=  1.0| 0.00sec  DPE= 53154|33%  DPET= 40000  DPR=   0.0  pDPS= 998  Miss=0.00%  MissTick=0.0%  Tick=2416|2019|3540
+    infernal_melee         Count= 56.0| 0.77sec  DPE=  1932|67%  DPET=  1234  DPR=   0.0  pDPS=2030  Miss=8.05%  Hit=2050|1852|2597  Crit= 4164| 3704| 5194|14.3%  Glance=1543|24.1%  Dodge=6.5%
+   ebon_imp  (DPS=188.0)
+    ebon_imp_melee         Count= 93.6| 0.78sec  DPE=   771|100%  DPET=   493  DPR=   0.0  pDPS= 188  Miss=8.03%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|14.3%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    bell_of_enraging_resonance : start=4.6  refresh=0.0   interval=105.4 trigger=105.4 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.8 trigger=120.8 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 7%
+    darkmoon_card_volcano      : start=9.8  refresh=0.0   interval= 46.4 trigger=46.4  uptime=27%
+    demon_soul_succubus        : start=3.0  refresh=0.0   interval=130.3 trigger=130.3 uptime=14%  benefit=27%
+    eradication                : start=9.0  refresh=2.8   interval= 45.1 trigger=33.6  uptime=24%  benefit=25%
+    haunted                    : start=1.1  refresh=42.9  interval=268.0 trigger=9.9   uptime=98%  benefit=99%
+    power_torrent_mh           : start=9.6  refresh=0.0   interval= 47.5 trigger=47.5  uptime=26%  benefit=27%
+    shadow_embrace             : start=1.1  refresh=68.6  interval=320.8 trigger=6.2   uptime=98%  benefit=99%
+    shadow_trance              : start=28.4 refresh=4.0   interval= 14.4 trigger=12.6  uptime=18%
+    soulburn                   : start=3.0  refresh=0.0   interval= 46.2 trigger=46.2  uptime= 0%  benefit= 3%
+    tier11_4pc_caster          : start=3.6  refresh=0.3   interval= 86.7 trigger=77.4  uptime= 9%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=346.1 trigger=346.1 uptime=10%
+    succubus-bloodlust         : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+    100.0% : backdraft_0                   
+  Procs:
+      5.6 |  63.55sec : ebon_imp
+     32.4 |  12.62sec : shadow_trance
+  Gains:
+     28473.6 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+     92318.0 : initial_mana     
+    195321.1 : life_tap         
+    299622.7 : mana_feed        
+     89687.4 : mp5_regen        
+     46505.4 : replenishment    
+  Pet "succubus" Gains:
+    55995.9 : initial_mana     
+      722.8 : mana_feed          (overflow=99.4%)
+     9317.6 : mana_spring_totem  (overflow=67.4%)
+    148147.7 : mp5_regen          (overflow=57.8%)
+     8637.8 : replenishment      (overflow=66.8%)
+
+Player: Warlock_AffDrain_T11_372 orc warlock affliction 85
+  DPS: 27145.9  Error=12.7/0.0%  Range=2281/8.4%  Convergence=69.7%  DPR=16.1  RPS-Out=1688.7 RPS-In=1544.9  Resource=(mana) Waiting=0.0 ApM=38.1
+  Origin: http://chardev.org/?profile=36745
+  Talents: http://www.wowhead.com/talent#warlock-22312210301332032123002000000000000000300000000000000000
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=8208|6470(5950)  intellect=5753|5070(4659)  spirit=203|203(20)  mastery=12.91|12.91(881)  health=152668|128504  mana=105968|96323
+  Spell Stats:  power=9447|7267(2207)  hit=16.89%|16.89%(1730)  crit=20.69%|14.64%(919)  penetration=0|0(0)  haste=28.66%|18.96%(2428)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.40%|14.40%(1730)  crit=16.14%|8.19%(919)  expertise=0.00|0.00(0)  haste=18.96%|18.96%(2428)
+  Defense Stats:  armor=12555|8479(8479) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/shadow_bolt/corruption/lash_of_pain/haunt
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor
+    summon_succubus/dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    corruption,if=(!ticking|remains<tick_time)&miss_react
+    unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
+    bane_of_doom,if=target.time_to_die>15&!ticking&miss_react/haunt
+    fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
+    shadowflame/summon_infernal/drain_soul,interrupt=1,if=target.health_pct<=25
+    soulburn/soul_fire,if=buff.soulburn.up/demon_soul,if=buff.shadow_trance.react
+    shadow_bolt,if=buff.shadow_trance.react/life_tap,mana_percentage<=5
+    drain_life,interrupt=1
+    life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct/fel_flame,moving=1
+    life_tap
+  Actions:
+    bane_of_doom           Count=  7.4|60.73sec  DPE=137084| 9%  DPET=134295  DPR=  44.5  pDPS=2321  Miss=0.11%  TickCount=28  MissTick=0.0%  Tick=26756|18549|40685  CritTick=55221|38115|83601|32.9%  UpTime=96.4%
+    corruption             Count=  1.0| 1.20sec  DPE=1673946|14%  DPET=1391537  DPR=1357.6  pDPS=3823  Miss=0.07%  TickCount=201  MissTick=0.0%  Tick=5845|3573|9462  CritTick=12075|7342|19444|39.9%  UpTime=99.5%
+    darkmoon_card_volcano  Count=  9.8|46.41sec  DPE=  3092| 0%  DPET=     0  DPR=   0.0  pDPS=  69  Miss=0.11%  Hit=2701|2602|3154  Crit= 4174| 4020| 4873|26.8%
+    demon_soul             Count=  3.0|129.91sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    drain_life             Count= 97.1| 3.47sec  DPE= 17385|14%  DPET=  8684  DPR=   7.1  pDPS=3853  Miss=0.11%  TickCount=216  MissTick=0.0%  Tick=6171|3701|9266  CritTick=12763|7604|19041|24.8%  UpTime=36.6%
+    drain_soul             Count= 14.4| 6.58sec  DPE= 89425|11%  DPET= 17738  DPR=  31.1  pDPS=2934  Miss=0.12%  TickCount=36  MissTick=0.0%  Tick=28619|16496|42064  CritTick=59168|33897|86436|24.8%  UpTime=15.8%
+    fel_flame              Count=  5.5|32.49sec  DPE= 24374| 1%  DPET= 21358  DPR=  19.8  pDPS= 305  Miss=0.11%  Hit=19284|17198|31044  Crit=39809|35339|63791|24.9%
+    haunt                  Count= 44.3| 9.88sec  DPE=  9545| 4%  DPET=  8377  DPR=   3.9  pDPS= 965  Miss=0.12%  Hit=7589|6621|12029  Crit=15685|13606|24718|24.8%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 17651| 0%  DPET=     0  DPR=   0.0  pDPS=  40  Miss=0.19%  Hit=13767|10229|14435  Crit=28313|21020|29661|26.9%
+    life_tap               Count=  4.6|53.88sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadow_bolt            Count= 26.6|12.45sec  DPE= 17534| 4%  DPET= 15338  DPR=  10.0  pDPS=1063  Miss=0.12%  Hit=13885|12023|22144  Crit=28728|24705|45503|24.7%
+    shadowflame            Count= 33.2|13.22sec  DPE= 24951| 7%  DPET= 21987  DPR=   4.9  pDPS=1892  Miss=0.11%  Hit=2571|2313|3688  Crit= 5305| 4753| 7578|24.8%
+    shadowflame_dot        Count= 33.2|13.22sec  DPE= 21705| 6%  DPET=     0  DPR=   0.0  pDPS=1646  TickCount=143  MissTick=0.0%  Tick=3244|0|5889  CritTick=6703|0|12100|24.9%  UpTime=46.9%
+    soul_fire              Count=  3.0|46.24sec  DPE= 14969| 0%  DPET= 12801  DPR=   8.1  pDPS= 102  Miss=0.10%  Hit=11649|9322|14145  Crit=24034|19154|29067|26.9%
+    soulburn               Count=  3.0|46.24sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    unstable_affliction    Count= 22.9|15.33sec  DPE= 77939|15%  DPET= 67031  DPR=  25.3  pDPS=4077  Miss=0.11%  TickCount=201  MissTick=0.0%  Tick=6243|3818|10004  CritTick=12900|7846|20557|39.9%  UpTime=99.0%
+   succubus  (DPS=5120.9)
+    lash_of_pain           Count=291.9| 1.51sec  DPE=  7681|100%  DPET=  5103  DPR=  13.4  pDPS=5121  Miss=1.01%  Hit=6119|5396|9033  Crit=12287|10766|18021|26.3%
+   infernal  (DPS=3355.2)
+    infernal_immolation    Count=  1.0| 1.30sec  DPE= 56861|32%  DPET= 43820  DPR=   0.0  pDPS=1081  Miss=0.98%  MissTick=1.0%  Tick=2637|2215|3799
+    infernal_melee         Count= 58.0| 0.75sec  DPE=  2083|68%  DPET=  1363  DPR=   0.0  pDPS=2274  Miss=8.02%  Hit=2152|1948|2724  Crit= 4365| 3895| 5447|16.7%  Glance=1621|24.0%  Dodge=6.5%
+   ebon_imp  (DPS=205.3)
+    ebon_imp_melee         Count= 99.1| 0.78sec  DPE=   792|100%  DPET=   518  DPR=   0.0  pDPS= 205  Miss=8.01%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|16.8%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    bell_of_enraging_resonance : start=4.6  refresh=0.0   interval=105.3 trigger=105.3 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.7 trigger=120.7 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 7%
+    darkmoon_card_volcano      : start=9.8  refresh=0.0   interval= 46.4 trigger=46.4  uptime=27%
+    demon_soul_succubus        : start=3.0  refresh=0.0   interval=129.9 trigger=129.9 uptime=14%  benefit=27%
+    eradication                : start=9.2  refresh=2.9   interval= 44.1 trigger=32.8  uptime=24%  benefit=26%
+    haunted                    : start=1.2  refresh=42.9  interval=224.0 trigger=9.9   uptime=98%  benefit=99%
+    power_torrent_mh           : start=9.6  refresh=0.0   interval= 47.5 trigger=47.5  uptime=26%  benefit=27%
+    shadow_embrace             : start=1.1  refresh=69.5  interval=260.2 trigger=6.1   uptime=98%  benefit=99%
+    shadow_trance              : start=29.3 refresh=4.2   interval= 14.0 trigger=12.2  uptime=18%
+    soulburn                   : start=3.0  refresh=0.0   interval= 46.2 trigger=46.2  uptime= 0%  benefit= 3%
+    tier11_4pc_caster          : start=3.7  refresh=0.3   interval= 85.9 trigger=76.8  uptime= 9%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=346.1 trigger=346.1 uptime=10%
+    succubus-bloodlust         : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+    100.0% : backdraft_0                   
+  Procs:
+      5.6 |  63.28sec : ebon_imp
+     33.5 |  12.24sec : shadow_trance
+  Gains:
+     28484.9 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+    100118.0 : initial_mana     
+    152716.5 : life_tap         
+    350297.6 : mana_feed        
+     89722.9 : mp5_regen        
+     49932.0 : replenishment    
+  Pet "succubus" Gains:
+    60142.7 : initial_mana     
+      482.4 : mana_feed          (overflow=99.5%)
+     8683.3 : mana_spring_totem  (overflow=69.6%)
+    149048.4 : mp5_regen          (overflow=60.9%)
+     8618.6 : replenishment      (overflow=69.1%)
+
+Player: Warlock_Affliction_T11_359 orc warlock affliction 85
+  DPS: 24022.2  Error=11.4/0.0%  Range=2171/9.0%  Convergence=70.6%  DPR=16.2  RPS-Out=1484.2 RPS-In=1308.3  Resource=(mana) Waiting=0.0 ApM=38.1
+  Origin: http://chardev.org/?profile=36739
+  Talents: http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=7215|5563(5252)  intellect=5233|4575(4187)  spirit=203|203(20)  mastery=12.40|12.40(789)  health=138822|115792  mana=98168|88883
+  Spell Stats:  power=8597|6519(1954)  hit=17.00%|17.00%(1742)  crit=18.25%|12.24%(625)  penetration=0|0(0)  haste=25.57%|16.11%(2063)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.50%|14.50%(1742)  crit=14.50%|6.55%(625)  expertise=0.00|0.00(0)  haste=16.11%|16.11%(2063)
+  Defense Stats:  armor=11893|7817(7817) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/shadow_bolt/corruption/lash_of_pain/haunt
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor
+    summon_succubus/dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    corruption,if=(!ticking|remains<tick_time)&miss_react
+    unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
+    bane_of_doom,if=target.time_to_die>15&!ticking&miss_react/haunt
+    fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
+    shadowflame/summon_infernal/drain_soul,interrupt=1,if=target.health_pct<=25
+    life_tap,mana_percentage<=35/soulburn/soul_fire,if=buff.soulburn.up/demon_soul
+    shadow_bolt/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+    fel_flame,moving=1/life_tap
+  Actions:
+    bane_of_doom           Count=  7.4|60.99sec  DPE=124591| 9%  DPET=123427  DPR=  40.4  pDPS=2100  Miss=0.00%  TickCount=28  MissTick=0.0%  Tick=24804|17091|37978  CritTick=51191|35119|78038|30.3%  UpTime=96.0%
+    corruption             Count=  1.0| 0.00sec  DPE=1478691|14%  DPET=1200744  DPR=1199.3  pDPS=3374  Miss=0.00%  TickCount=196  MissTick=0.0%  Tick=5385|3650|8792  CritTick=11131|7501|18065|37.4%  UpTime=99.5%
+    darkmoon_card_volcano  Count=  9.8|46.60sec  DPE=  2943| 0%  DPET=     0  DPR=   0.0  pDPS=  66  Miss=0.00%  Hit=2599|2507|3028  Crit= 4017| 3873| 4679|24.3%
+    demon_soul             Count=  3.3|121.52sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    drain_soul             Count= 14.0| 6.72sec  DPE= 79397|11%  DPET= 15551  DPR=  27.6  pDPS=2542  Miss=0.00%  TickCount=34  MissTick=0.0%  Tick=26167|15711|38957  CritTick=54120|32283|80051|22.4%  UpTime=15.6%
+    fel_flame              Count=  5.2|33.80sec  DPE= 22092| 1%  DPET= 19287  DPR=  17.9  pDPS= 264  Miss=0.00%  Hit=17791|15770|28922  Crit=36863|32405|59430|22.6%
+    haunt                  Count= 43.1|10.15sec  DPE=  8681| 4%  DPET=  7584  DPR=   3.5  pDPS= 855  Miss=0.00%  Hit=7035|6114|11275  Crit=14559|12564|23169|22.4%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 16133| 0%  DPET=     0  DPR=   0.0  pDPS=  37  Miss=0.00%  Hit=12835|9505|13475  Crit=26417|19531|27689|24.3%
+    life_tap               Count= 13.4|30.01sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadow_bolt            Count=117.8| 2.86sec  DPE= 15682|18%  DPET=  8437  DPR=   9.0  pDPS=4214  Miss=0.00%  Hit=12654|11025|20687  Crit=26204|22654|42509|22.3%
+    shadowflame            Count= 32.4|13.54sec  DPE= 22681| 7%  DPET= 19829  DPR=   4.4  pDPS=1676  Miss=0.00%  Hit=2440|2193|3508  Crit= 5038| 4506| 7209|22.3%
+    shadowflame_dot        Count= 32.4|13.54sec  DPE= 19662| 6%  DPET=     0  DPR=   0.0  pDPS=1453  TickCount=139  MissTick=0.0%  Tick=2994|0|5502  CritTick=6191|0|11305|22.4%  UpTime=46.9%
+    soul_fire              Count=  3.0|46.57sec  DPE= 13776| 0%  DPET= 11556  DPR=   7.5  pDPS=  94  Miss=0.00%  Hit=11008|8728|13357  Crit=22687|17934|27447|23.7%
+    soulburn               Count=  3.0|46.57sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    unstable_affliction    Count= 22.4|15.69sec  DPE= 70190|15%  DPET= 59209  DPR=  22.8  pDPS=3592  Miss=0.00%  TickCount=196  MissTick=0.0%  Tick=5746|3908|9301  CritTick=11873|8031|19111|37.4%  UpTime=99.0%
+   succubus  (DPS=4678.6)
+    lash_of_pain           Count=291.9| 1.51sec  DPE=  7018|100%  DPET=  4663  DPR=  12.3  pDPS=4679  Miss=0.00%  Hit=5638|4947|8438  Crit=11329| 9870|16835|24.2%
+   infernal  (DPS=3027.6)
+    infernal_immolation    Count=  1.0| 0.00sec  DPE= 53116|33%  DPET= 39968  DPR=   0.0  pDPS= 997  Miss=0.00%  MissTick=0.0%  Tick=2414|2019|3540
+    infernal_melee         Count= 56.0| 0.77sec  DPE=  1932|67%  DPET=  1234  DPR=   0.0  pDPS=2031  Miss=7.99%  Hit=2049|1852|2597  Crit= 4166| 3704| 5194|14.3%  Glance=1541|24.1%  Dodge=6.5%
+   ebon_imp  (DPS=188.8)
+    ebon_imp_melee         Count= 93.8| 0.78sec  DPE=   771|100%  DPET=   493  DPR=   0.0  pDPS= 189  Miss=8.04%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|14.4%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    bell_of_enraging_resonance : start=4.6  refresh=0.0   interval=105.5 trigger=105.5 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.9 trigger=120.9 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 8%
+    darkmoon_card_volcano      : start=9.8  refresh=0.0   interval= 46.6 trigger=46.6  uptime=26%
+    demon_soul_succubus        : start=3.3  refresh=0.0   interval=121.5 trigger=121.5 uptime=15%  benefit=20%
+    eradication                : start=9.0  refresh=2.8   interval= 44.8 trigger=33.4  uptime=24%  benefit=26%
+    haunted                    : start=1.8  refresh=41.1  interval=116.4 trigger=10.1  uptime=98%  benefit=99%
+    power_torrent_mh           : start=9.5  refresh=0.0   interval= 47.9 trigger=47.9  uptime=26%  benefit=27%
+    shadow_embrace             : start=1.1  refresh=159.6 interval=403.6 trigger=2.7   uptime=98%  benefit=99%
+    shadow_trance              : start=14.3 refresh=1.5   interval= 28.6 trigger=25.9  uptime=12%  benefit=10%
+    soulburn                   : start=3.0  refresh=0.0   interval= 46.6 trigger=46.6  uptime= 0%  benefit=60%
+    tier11_4pc_caster          : start=3.6  refresh=0.3   interval= 87.3 trigger=77.9  uptime= 9%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=346.0 trigger=346.0 uptime=10%
+    succubus-bloodlust         : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+    100.0% : backdraft_0                   
+  Procs:
+      5.6 |  63.21sec : ebon_imp
+     15.7 |  25.90sec : shadow_trance
+  Gains:
+     28510.3 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+     92318.0 : initial_mana     
+    402613.0 : life_tap         
+     89802.9 : mp5_regen        
+     46543.8 : replenishment    
+  Pet "succubus" Gains:
+    55995.9 : initial_mana     
+     9362.0 : mana_spring_totem  (overflow=67.3%)
+    148796.6 : mp5_regen          (overflow=57.6%)
+     8666.6 : replenishment      (overflow=66.7%)
+
+Player: Warlock_Affliction_T11_372 orc warlock affliction 85
+  DPS: 26995.9  Error=12.8/0.0%  Range=2437/9.0%  Convergence=69.9%  DPR=17.9  RPS-Out=1507.5 RPS-In=1316.9  Resource=(mana) Waiting=0.0 ApM=38.7
+  Origin: http://chardev.org/?profile=36750
+  Talents: http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=7977|6289(5950)  intellect=5753|5070(4659)  spirit=203|203(20)  mastery=12.91|12.91(881)  health=149490|125956  mana=105968|96323
+  Spell Stats:  power=9447|7267(2207)  hit=16.89%|16.89%(1730)  crit=20.69%|14.64%(919)  penetration=0|0(0)  haste=28.66%|18.96%(2428)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.40%|14.40%(1730)  crit=16.14%|8.19%(919)  expertise=0.00|0.00(0)  haste=18.96%|18.96%(2428)
+  Defense Stats:  armor=12555|8479(8479) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/shadow_bolt/corruption/lash_of_pain/haunt
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor
+    summon_succubus/dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    corruption,if=(!ticking|remains<tick_time)&miss_react
+    unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
+    bane_of_doom,if=target.time_to_die>15&!ticking&miss_react/haunt
+    fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
+    shadowflame/summon_infernal/drain_soul,interrupt=1,if=target.health_pct<=25
+    life_tap,mana_percentage<=35/soulburn/soul_fire,if=buff.soulburn.up/demon_soul
+    shadow_bolt/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+    fel_flame,moving=1/life_tap
+  Actions:
+    bane_of_doom           Count=  7.4|60.87sec  DPE=137407| 9%  DPET=136145  DPR=  44.6  pDPS=2319  Miss=0.12%  TickCount=28  MissTick=0.0%  Tick=26799|18549|40685  CritTick=55268|38115|83601|33.0%  UpTime=96.1%
+    corruption             Count=  1.0|178.93sec  DPE=1622583|14%  DPET=1351907  DPR=1316.0  pDPS=3840  Miss=0.11%  TickCount=201  MissTick=0.0%  Tick=5870|4002|9462  CritTick=12123|8224|19444|39.9%  UpTime=99.5%
+    darkmoon_card_volcano  Count=  9.8|46.58sec  DPE=  3092| 0%  DPET=     0  DPR=   0.0  pDPS=  69  Miss=0.11%  Hit=2700|2602|3154  Crit= 4169| 4020| 4873|26.9%
+    demon_soul             Count=  3.3|121.49sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    drain_soul             Count= 14.0| 6.75sec  DPE= 91721|11%  DPET= 17803  DPR=  31.9  pDPS=2925  Miss=0.10%  TickCount=35  MissTick=0.0%  Tick=28606|16496|42064  CritTick=59129|33897|86436|24.9%  UpTime=15.7%
+    fel_flame              Count=  5.4|33.18sec  DPE= 24427| 1%  DPET= 21713  DPR=  19.8  pDPS= 304  Miss=0.13%  Hit=19325|17198|32252  Crit=39957|35339|63791|24.9%
+    haunt                  Count= 43.8| 9.98sec  DPE=  9559| 4%  DPET=  8497  DPR=   3.9  pDPS= 956  Miss=0.11%  Hit=7596|6621|12029  Crit=15708|13606|24718|24.8%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 17657| 0%  DPET=     0  DPR=   0.0  pDPS=  40  Miss=0.12%  Hit=13767|10229|14435  Crit=28287|21020|29661|26.9%
+    life_tap               Count= 12.5|31.28sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadow_bolt            Count=121.3| 2.78sec  DPE= 17347|18%  DPET=  9559  DPR=   9.9  pDPS=4801  Miss=0.11%  Hit=13738|12023|22144  Crit=28417|24705|45503|24.7%
+    shadowflame            Count= 32.5|13.49sec  DPE= 25010| 7%  DPET= 22263  DPR=   4.9  pDPS=1854  Miss=0.11%  Hit=2572|2313|3688  Crit= 5305| 4753| 7578|24.7%
+    shadowflame_dot        Count= 32.5|13.49sec  DPE= 21765| 6%  DPET=     0  DPR=   0.0  pDPS=1613  TickCount=140  MissTick=0.0%  Tick=3246|0|5889  CritTick=6712|0|12100|24.8%  UpTime=45.9%
+    soul_fire              Count=  3.0|46.68sec  DPE= 15002| 0%  DPET= 12832  DPR=   8.1  pDPS= 103  Miss=0.09%  Hit=11665|9322|14145  Crit=24128|19154|29067|26.9%
+    soulburn               Count=  3.0|46.68sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    unstable_affliction    Count= 23.0|15.33sec  DPE= 77933|15%  DPET= 67330  DPR=  25.3  pDPS=4083  Miss=0.11%  TickCount=201  MissTick=0.0%  Tick=6254|4277|10004  CritTick=12912|8788|20557|39.9%  UpTime=99.0%
+   succubus  (DPS=5119.9)
+    lash_of_pain           Count=291.9| 1.51sec  DPE=  7680|100%  DPET=  5102  DPR=  13.4  pDPS=5120  Miss=1.00%  Hit=6118|5396|9033  Crit=12280|10766|18021|26.3%
+   infernal  (DPS=3350.3)
+    infernal_immolation    Count=  1.0| 1.30sec  DPE= 56726|32%  DPET= 43720  DPR=   0.0  pDPS=1080  Miss=1.12%  MissTick=1.0%  Tick=2634|2215|3799
+    infernal_melee         Count= 58.0| 0.75sec  DPE=  2079|68%  DPET=  1360  DPR=   0.0  pDPS=2270  Miss=8.08%  Hit=2152|1948|2724  Crit= 4365| 3895| 5447|16.7%  Glance=1620|24.0%  Dodge=6.5%
+   ebon_imp  (DPS=206.2)
+    ebon_imp_melee         Count= 99.6| 0.78sec  DPE=   791|100%  DPET=   518  DPR=   0.0  pDPS= 206  Miss=8.03%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|16.7%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    bell_of_enraging_resonance : start=4.6  refresh=0.0   interval=105.3 trigger=105.3 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.9 trigger=120.9 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 8%
+    darkmoon_card_volcano      : start=9.8  refresh=0.0   interval= 46.6 trigger=46.6  uptime=26%
+    demon_soul_succubus        : start=3.3  refresh=0.0   interval=121.5 trigger=121.5 uptime=15%  benefit=20%
+    eradication                : start=9.2  refresh=2.9   interval= 44.0 trigger=32.8  uptime=24%  benefit=26%
+    haunted                    : start=1.3  refresh=42.3  interval=230.9 trigger=10.0  uptime=98%  benefit=99%
+    power_torrent_mh           : start=9.5  refresh=0.0   interval= 47.9 trigger=47.9  uptime=26%  benefit=27%
+    shadow_embrace             : start=1.1  refresh=163.7 interval=400.7 trigger=2.6   uptime=98%  benefit=99%
+    shadow_trance              : start=14.6 refresh=1.5   interval= 28.0 trigger=25.4  uptime=12%  benefit=10%
+    soulburn                   : start=3.0  refresh=0.0   interval= 46.7 trigger=46.7  uptime= 0%  benefit=60%
+    tier11_4pc_caster          : start=3.7  refresh=0.3   interval= 86.4 trigger=77.1  uptime= 9%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=346.0 trigger=346.0 uptime=10%
+    succubus-bloodlust         : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+    100.0% : backdraft_0                   
+  Procs:
+      5.6 |  63.01sec : ebon_imp
+     16.1 |  25.36sec : shadow_trance
+  Gains:
+     28524.5 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+    100118.0 : initial_mana     
+    402896.5 : life_tap         
+     89847.8 : mp5_regen        
+     49979.0 : replenishment    
+  Pet "succubus" Gains:
+    60142.7 : initial_mana     
+     8748.9 : mana_spring_totem  (overflow=69.4%)
+    149387.4 : mp5_regen          (overflow=60.8%)
+     8696.2 : replenishment      (overflow=68.8%)
+
+Player: Warlock_Demonology_T11_359 orc warlock demonology 85
+  DPS: 23869.8  Error=12.6/0.1%  Range=2015/8.4%  Convergence=58.2%  DPR=14.9  RPS-Out=1603.2 RPS-In=1463.7  Resource=(mana) Waiting=0.0 ApM=42.2
+  Origin: http://chardev.org/?profile=36741
+  Talents: http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113320200000000000000
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=7631|5884(5252)  intellect=5233|4575(4187)  spirit=203|203(20)  mastery=12.77|12.77(856)  health=144576|120286  mana=98168|88883
+  Spell Stats:  power=8597|6519(1954)  hit=17.00%|17.00%(1742)  crit=18.25%|12.24%(625)  penetration=0|0(0)  haste=25.01%|15.59%(1996)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.50%|14.50%(1742)  crit=14.50%|6.55%(625)  expertise=0.00|0.00(0)  haste=15.59%|15.59%(1996)
+  Defense Stats:  armor=11893|7817(7817) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/shadow_bolt/metamorphosis/lash_of_pain/immolate
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor
+    summon_succubus/dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    metamorphosis/immolation,if=buff.metamorphosis.remains>10
+    bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+    immolate,if=!ticking&target.time_to_die>=4&miss_react
+    corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
+    fel_flame,if=buff.tier11_4pc_caster.react/shadowflame/hand_of_guldan
+    incinerate,if=buff.molten_core.react/soulburn
+    soul_fire,if=buff.decimation.react|buff.soulburn.up/summon_infernal
+    life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_succubus.down
+    demon_soul/shadow_bolt/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+    fel_flame,moving=1/life_tap
+  Actions:
+    bane_of_doom           Count=  7.4|60.90sec  DPE= 87951| 6%  DPET= 73621  DPR=  28.5  pDPS=1495  Miss=0.00%  TickCount=28  MissTick=0.0%  Tick=18749|13531|31764  CritTick=38573|27804|65271|22.3%  UpTime=96.8%
+    corruption             Count= 23.0|19.06sec  DPE= 32073| 7%  DPET= 27033  DPR=  26.0  pDPS=1684  Miss=0.00%  TickCount=186  MissTick=0.0%  Tick=3207|2361|5851  CritTick=6641|4852|12022|22.5%  UpTime=98.9%
+    darkmoon_card_volcano  Count=  9.9|46.49sec  DPE=  4083| 0%  DPET=     0  DPR=   0.0  pDPS=  92  Miss=0.00%  Hit=3605|2941|5170  Crit= 5574| 4543| 7988|24.3%
+    demon_soul             Count=  3.3|122.24sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    fel_flame              Count=  7.4|34.44sec  DPE= 24557| 2%  DPET= 20753  DPR=  19.9  pDPS= 412  Miss=0.00%  Hit=19870|14798|36741  Crit=41060|30409|75496|22.4%
+    hand_of_guldan         Count= 29.7|14.78sec  DPE= 21115| 6%  DPET= 14614  DPR=  14.7  pDPS=1430  Miss=0.00%  Hit=17027|12859|30898  Crit=35322|26424|63490|22.4%
+    immolate               Count=  1.0|354.59sec  DPE=1086133|10%  DPET=878042  DPR= 660.7  pDPS=2480  Miss=0.00%  Hit=7919|5828|9150  Crit=16358|13997|18803|24.2%  TickCount=186  MissTick=0.0%  Tick=4673|3510|8187  CritTick=9684|7212|16823|22.5%  UpTime=98.9%
+    immolation_aura        Count=  4.8|96.80sec  DPE= 59649| 3%  DPET= 61685  DPR=   5.7  pDPS= 656  Miss=0.00%  MissTick=0.0%  Tick=3123|2709|3968
+    incinerate             Count= 30.2|12.26sec  DPE= 14878| 4%  DPET= 11772  DPR=   5.2  pDPS=1025  Miss=0.00%  Hit=12071|7711|22208  Crit=24978|15846|45635|22.3%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 28647| 0%  DPET=     0  DPR=   0.0  pDPS=  65  Miss=0.00%  Hit=22604|13377|23004  Crit=46487|27487|47270|25.3%
+    life_tap               Count=  2.1|103.44sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    metamorphosis          Count=  4.8|96.82sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadow_bolt            Count= 99.0| 3.42sec  DPE= 17304|16%  DPET=  8507  DPR=   9.9  pDPS=3908  Miss=0.00%  Hit=13973|10346|28253  Crit=28900|21259|58057|22.3%
+    shadowflame            Count= 34.1|12.90sec  DPE= 21663| 7%  DPET= 18254  DPR=   4.2  pDPS=1687  Miss=0.00%  Hit=2650|2058|4278  Crit= 5473| 4228| 8791|22.4%
+    shadowflame_dot        Count= 34.1|12.90sec  DPE= 18380| 6%  DPET=     0  DPR=   0.0  pDPS=1431  TickCount=138  MissTick=0.0%  Tick=2934|0|6640  CritTick=6072|0|13644|22.3%  UpTime=49.2%
+    soul_fire              Count= 45.8| 9.58sec  DPE= 16066| 7%  DPET= 12319  DPR=   8.7  pDPS=1679  Miss=0.00%  Hit=13165|10238|22803  Crit=27240|21037|46858|22.5%
+    soulburn               Count=  3.0|46.86sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+   succubus  (DPS=6325.6)
+    lash_of_pain           Count=291.9| 1.51sec  DPE=  9488|100%  DPET=  6304  DPR=  16.6  pDPS=6326  Miss=0.00%  Hit=7087|6211|10594  Crit=14199|12391|21134|33.8%
+   infernal  (DPS=3037.0)
+    infernal_immolation    Count=  1.0| 0.00sec  DPE= 74346|32%  DPET= 55697  DPR=   0.0  pDPS= 986  Miss=0.00%  MissTick=0.0%  Tick=2323|2019|3540
+    infernal_melee         Count= 82.0| 0.78sec  DPE=  1885|68%  DPET=  1198  DPR=   0.0  pDPS=2051  Miss=8.00%  Hit=2001|1852|2597  Crit= 4042| 3704| 5194|14.4%  Glance=1504|24.0%  Dodge=6.5%
+   ebon_imp  (DPS=428.1)
+    ebon_imp_melee         Count=236.0| 0.79sec  DPE=   771|100%  DPET=   490  DPR=   0.0  pDPS= 428  Miss=8.01%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|14.4%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    bell_of_enraging_resonance : start=4.7  refresh=0.0   interval=104.6 trigger=104.6 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.8 trigger=120.8 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit=12%
+    darkmoon_card_volcano      : start=9.9  refresh=0.0   interval= 46.5 trigger=46.5  uptime=27%
+    decimation                 : start=1.0  refresh=50.3  interval= 65.8 trigger=1.8   uptime=21%  benefit=94%
+    demon_soul_succubus        : start=3.3  refresh=0.0   interval=122.2 trigger=122.2 uptime=15%  benefit=20%
+    hand_of_guldan             : start=11.0 refresh=18.6  interval= 36.9 trigger=14.8  uptime=96%  benefit=96%
+    metamorphosis              : start=4.8  refresh=0.0   interval= 96.9 trigger=96.9  uptime=39%  benefit=67%
+    molten_core                : start=9.7  refresh=1.5   interval= 41.1 trigger=35.2  uptime=16%  benefit=100%
+    power_torrent_mh           : start=9.6  refresh=0.0   interval= 47.7 trigger=47.7  uptime=26%  benefit=28%
+    soulburn                   : start=3.0  refresh=0.0   interval= 46.8 trigger=46.8  uptime= 0%  benefit= 6%
+    tier11_4pc_caster          : start=3.7  refresh=0.0   interval= 81.5 trigger=80.1  uptime= 2%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=345.7 trigger=345.7 uptime=10%
+    succubus-bloodlust         : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+    100.0% : backdraft_0                   
+  Procs:
+     14.2 |  29.26sec : ebon_imp
+     23.9 |  16.31sec : impending_doom
+  Gains:
+     28368.3 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+     92318.0 : initial_mana     
+     54696.6 : life_tap         
+    416907.6 : mana_feed          (overflow=1.1%)
+     89362.2 : mp5_regen        
+     46361.6 : replenishment    
+  Pet "succubus" Gains:
+    55995.9 : initial_mana     
+      211.6 : mana_feed          (overflow=99.4%)
+     9335.1 : mana_spring_totem  (overflow=67.3%)
+    148620.5 : mp5_regen          (overflow=57.7%)
+     8657.2 : replenishment      (overflow=66.8%)
+
+Player: Warlock_Demonology_T11_372 orc warlock demonology 85
+  DPS: 26769.2  Error=14.0/0.1%  Range=2200/8.2%  Convergence=60.3%  DPR=16.5  RPS-Out=1623.7 RPS-In=1510.8  Resource=(mana) Waiting=0.0 ApM=42.7
+  Origin: http://chardev.org/?profile=36757
+  Talents: http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113320200000000000000
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=8438|6652(5950)  intellect=5753|5070(4659)  spirit=203|203(20)  mastery=13.87|13.87(1053)  health=155860|131038  mana=105968|96323
+  Spell Stats:  power=9447|7267(2207)  hit=16.89%|16.89%(1730)  crit=20.69%|14.64%(919)  penetration=0|0(0)  haste=27.20%|17.62%(2256)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.40%|14.40%(1730)  crit=16.14%|8.19%(919)  expertise=0.00|0.00(0)  haste=17.62%|17.62%(2256)
+  Defense Stats:  armor=12555|8479(8479) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/shadow_bolt/immolate/lash_of_pain/metamorphosis
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor
+    summon_succubus/dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    metamorphosis/immolation,if=buff.metamorphosis.remains>10
+    bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+    immolate,if=!ticking&target.time_to_die>=4&miss_react
+    corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
+    fel_flame,if=buff.tier11_4pc_caster.react/shadowflame/hand_of_guldan
+    incinerate,if=buff.molten_core.react/soulburn
+    soul_fire,if=buff.decimation.react|buff.soulburn.up/summon_infernal
+    life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_succubus.down
+    demon_soul/shadow_bolt/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+    fel_flame,moving=1/life_tap
+  Actions:
+    bane_of_doom           Count=  7.5|60.74sec  DPE= 97597| 6%  DPET= 82958  DPR=  31.7  pDPS=1663  Miss=0.12%  TickCount=28  MissTick=0.0%  Tick=20418|14595|34330  CritTick=41968|29990|70543|24.7%  UpTime=96.9%
+    corruption             Count= 23.4|18.71sec  DPE= 35934| 7%  DPET= 30775  DPR=  29.1  pDPS=1921  Miss=0.11%  TickCount=189  MissTick=0.0%  Tick=3526|2574|6356  CritTick=7284|5289|13061|24.9%  UpTime=98.9%
+    darkmoon_card_volcano  Count=  9.8|46.68sec  DPE=  4319| 0%  DPET=     0  DPR=   0.0  pDPS=  97  Miss=0.12%  Hit=3771|3052|5466  Crit= 5822| 4715| 8444|26.9%
+    demon_soul             Count=  3.3|121.93sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    fel_flame              Count=  7.4|34.84sec  DPE= 27470| 2%  DPET= 23590  DPR=  22.3  pDPS= 467  Miss=0.12%  Hit=21811|16138|39923  Crit=45087|33162|82035|24.7%
+    hand_of_guldan         Count= 30.1|14.55sec  DPE= 23396| 6%  DPET= 16465  DPR=  16.3  pDPS=1609  Miss=0.12%  Hit=18524|13933|33470  Crit=38352|28630|68775|24.7%
+    immolate               Count=  1.0|227.32sec  DPE=1182822|10%  DPET=973016  DPR= 719.5  pDPS=2793  Miss=0.14%  Hit=8426|4297|9863  Crit=17408| 8830|20266|26.4%  TickCount=189  MissTick=0.0%  Tick=5066|3781|8843  CritTick=10489|7769|18170|24.9%  UpTime=98.9%
+    immolation_aura        Count=  4.9|95.97sec  DPE= 64110| 3%  DPET= 67168  DPR=   6.1  pDPS= 711  Miss=0.00%  MissTick=0.1%  Tick=3348|2914|4245
+    incinerate             Count= 30.6|12.14sec  DPE= 16549| 4%  DPET= 13299  DPR=   5.8  pDPS=1154  Miss=0.12%  Hit=13168|8381|24093  Crit=27222|17222|49508|24.7%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 31465| 0%  DPET=     0  DPR=   0.0  pDPS=  72  Miss=0.11%  Hit=24595|18621|25015  Crit=50583|42306|51403|26.5%
+    metamorphosis          Count=  4.9|95.97sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadow_bolt            Count=102.2| 3.30sec  DPE= 19384|17%  DPET=  9693  DPR=  11.1  pDPS=4522  Miss=0.11%  Hit=15339|11282|30701  Crit=31692|23183|63085|24.8%
+    shadowflame            Count= 33.3|13.22sec  DPE= 24159| 7%  DPET= 20694  DPR=   4.7  pDPS=1837  Miss=0.12%  Hit=2827|2171|4565  Crit= 5836| 4461| 9380|24.8%
+    shadowflame_dot        Count= 33.3|13.22sec  DPE= 20587| 6%  DPET=     0  DPR=   0.0  pDPS=1566  TickCount=135  MissTick=0.0%  Tick=3221|0|7215  CritTick=6656|0|14825|24.8%  UpTime=47.2%
+    soul_fire              Count= 46.7| 9.39sec  DPE= 17550| 7%  DPET= 13680  DPR=   9.5  pDPS=1869  Miss=0.11%  Hit=14111|10934|24514  Crit=29143|22468|50372|25.0%
+    soulburn               Count=  3.0|47.06sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+   succubus  (DPS=7039.5)
+    lash_of_pain           Count=291.9| 1.51sec  DPE= 10559|100%  DPET=  7015  DPR=  18.5  pDPS=7040  Miss=1.00%  Hit=7824|6893|11539  Crit=15658|13752|23020|35.9%
+   infernal  (DPS=3332.6)
+    infernal_immolation    Count=  1.0| 1.31sec  DPE= 79433|32%  DPET= 60545  DPR=   0.0  pDPS=1067  Miss=0.99%  MissTick=1.0%  Tick=2533|2215|3799
+    infernal_melee         Count= 84.0| 0.76sec  DPE=  2028|68%  DPET=  1312  DPR=   0.0  pDPS=2266  Miss=8.03%  Hit=2101|1948|2724  Crit= 4236| 3895| 5447|16.8%  Glance=1579|24.1%  Dodge=6.5%
+   ebon_imp  (DPS=464.7)
+    ebon_imp_melee         Count=249.7| 0.79sec  DPE=   791|100%  DPET=   512  DPR=   0.0  pDPS= 465  Miss=8.00%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|16.8%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    bell_of_enraging_resonance : start=4.7  refresh=0.0   interval=104.6 trigger=104.6 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.8 trigger=120.8 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit=12%
+    darkmoon_card_volcano      : start=9.8  refresh=0.0   interval= 46.7 trigger=46.7  uptime=27%
+    decimation                 : start=1.0  refresh=51.2  interval= 68.4 trigger=1.8   uptime=21%  benefit=94%
+    demon_soul_succubus        : start=3.3  refresh=0.0   interval=121.9 trigger=121.9 uptime=15%  benefit=21%
+    hand_of_guldan             : start=9.0  refresh=21.1  interval= 45.0 trigger=14.6  uptime=97%  benefit=97%
+    metamorphosis              : start=4.9  refresh=0.0   interval= 96.0 trigger=96.0  uptime=39%  benefit=67%
+    molten_core                : start=9.8  refresh=1.5   interval= 40.7 trigger=34.8  uptime=15%  benefit=100%
+    power_torrent_mh           : start=9.6  refresh=0.0   interval= 47.9 trigger=47.9  uptime=26%  benefit=28%
+    soulburn                   : start=3.0  refresh=0.0   interval= 47.1 trigger=47.1  uptime= 0%  benefit= 6%
+    tier11_4pc_caster          : start=3.7  refresh=0.1   interval= 81.8 trigger=80.3  uptime= 2%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=345.7 trigger=345.7 uptime=10%
+    succubus-bloodlust         : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+    100.0% : backdraft_0                   
+  Procs:
+     14.1 |  29.22sec : ebon_imp
+     24.4 |  16.03sec : impending_doom
+  Gains:
+     28155.8 : blessing_of_might  (overflow=1.5%)
+      4500.0 : flask            
+      1350.0 : food             
+    100118.0 : initial_mana     
+     21360.9 : life_tap         
+    468745.1 : mana_feed          (overflow=2.5%)
+     88700.6 : mp5_regen          (overflow=1.5%)
+     49394.6 : replenishment      (overflow=1.4%)
+  Pet "succubus" Gains:
+    60142.7 : initial_mana     
+       71.9 : mana_feed          (overflow=99.4%)
+     8707.6 : mana_spring_totem  (overflow=69.5%)
+    149407.8 : mp5_regen          (overflow=60.8%)
+     8644.7 : replenishment      (overflow=69.0%)
+
+Player: Warlock_Destruction_T11_359 orc warlock destruction 85
+  DPS: 24301.0  Error=8.9/0.0%  Range=1743/7.2%  Convergence=68.7%  DPR=11.9  RPS-Out=2050.4 RPS-In=1895.9  Resource=(mana) Waiting=0.0 ApM=48.0
+  Origin: http://chardev.org/?profile=36743
+  Talents: http://www.wowhead.com/talent#warlock-00300000000000000023002000000000000003320202312201312211
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=7423|5723(5252)  intellect=5233|4575(4187)  spirit=203|203(20)  mastery=12.40|12.40(789)  health=141692|118046  mana=98168|88883
+  Spell Stats:  power=8597|6519(1954)  hit=17.00%|17.00%(1742)  crit=18.25%|12.24%(625)  penetration=0|0(0)  haste=25.57%|16.11%(2063)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=14.50%|14.50%(1742)  crit=14.50%|6.55%(625)  expertise=0.00|0.00(0)  haste=16.11%|16.11%(2063)
+  Defense Stats:  armor=11893|7817(7817) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/immolate/conflagrate/imp
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor/summon_imp
+    dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    demon_soul/soulburn,if=buff.bloodlust.down/soul_fire,if=buff.soulburn.up
+    fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8
+    immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
+    conflagrate/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+    corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react/shadowflame
+    soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)
+    chaos_bolt/summon_infernal/soulburn,if=buff.bloodlust.down
+    soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight
+    shadowburn/incinerate/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+    fel_flame,moving=1/life_tap
+  Actions:
+    bane_of_doom           Count=  7.3|61.26sec  DPE= 68602| 5%  DPET= 58009  DPR=  22.3  pDPS=1149  Miss=0.00%  TickCount=28  MissTick=0.0%  Tick=14576|11535|20095  CritTick=30180|23703|41292|22.5%  UpTime=95.3%
+    burning_embers         Count=320.9| 1.36sec  DPE=  1772| 5%  DPET=     0  DPR=   0.0  pDPS=1297  Miss=0.00%  TickCount=435  MissTick=0.0%  Tick=1307|632|1997  UpTime=99.3%
+    chaos_bolt             Count= 29.9|14.58sec  DPE= 18517| 5%  DPET= 15409  DPR=  12.9  pDPS=1264  Miss=0.00%  Hit=14244|11852|20534  Crit=30093|24354|42194|27.5%
+    conflagrate            Count= 49.1| 8.95sec  DPE= 25620|12%  DPET= 21672  DPR=   7.8  pDPS=2868  Miss=0.00%  Hit=18343|14704|33933  Crit=37770|30215|69727|37.5%
+    corruption             Count= 23.2|19.08sec  DPE= 27260| 6%  DPET= 23065  DPR=  22.1  pDPS=1441  Miss=0.00%  TickCount=185  MissTick=0.0%  Tick=2760|2234|4109  CritTick=5723|4591|8443|22.4%  UpTime=97.9%
+    darkmoon_card_volcano  Count= 10.0|45.87sec  DPE=  4627| 0%  DPET=     0  DPR=   0.0  pDPS= 105  Miss=0.00%  Hit=4090|3658|4773  Crit= 6317| 5652| 7374|24.1%
+    demon_soul             Count=  4.1|120.73sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    fel_flame              Count=  7.1|35.77sec  DPE= 27872| 2%  DPET= 23680  DPR=  22.6  pDPS= 450  Miss=0.00%  Hit=22560|18410|33917  Crit=46704|37829|69695|22.3%
+    immolate               Count= 28.3|15.53sec  DPE= 52948|14%  DPET= 43703  DPR=  32.2  pDPS=3418  Miss=0.00%  Hit=5948|4982|8447  Crit=12494|10236|17358|28.2%  TickCount=186  MissTick=0.0%  Tick=5245|4366|7558  CritTick=11012|8972|15530|28.2%  UpTime=98.6%
+    incinerate             Count=107.1| 3.98sec  DPE= 15909|16%  DPET= 12045  DPR=   5.5  pDPS=3887  Miss=0.00%  Hit=12345|10169|18417  Crit=25887|20896|37844|26.8%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 26580| 0%  DPET=     0  DPR=   0.0  pDPS=  61  Miss=0.00%  Hit=20986|15793|21236  Crit=43143|32451|43637|25.3%
+    life_tap               Count=  2.3|68.49sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    shadowburn             Count=  4.7|17.85sec  DPE= 16716| 1%  DPET= 14920  DPR=   5.4  pDPS= 179  Miss=0.00%  Hit=13472|10863|19325  Crit=27866|22322|39710|22.5%
+    shadowflame            Count= 32.7|13.40sec  DPE= 23387| 7%  DPET= 19786  DPR=   4.6  pDPS=1745  Miss=0.00%  Hit=2063|1754|2707  Crit= 4259| 3604| 5562|22.4%
+    shadowflame_dot        Count= 32.7|13.40sec  DPE= 20831| 6%  DPET=     0  DPR=   0.0  pDPS=1554  TickCount=133  MissTick=0.0%  Tick=3325|0|6130  CritTick=6878|0|12596|22.4%  UpTime=46.9%
+    soul_fire              Count= 38.4|11.51sec  DPE= 19398| 7%  DPET=  9874  DPR=  10.5  pDPS=1701  Miss=0.00%  Hit=14899|12736|21051  Crit=31118|26171|43257|28.2%
+    soulburn               Count=  4.0|45.78sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+   imp  (DPS=4212.3)
+    firebolt               Count=284.2| 1.54sec  DPE=  6495|100%  DPET=  4216  DPR=  10.3  pDPS=4212  Miss=0.00%  Hit=5246|4560|7954  Crit=10555| 9098|15867|24.2%
+   infernal  (DPS=2824.1)
+    infernal_immolation    Count=  1.0| 0.00sec  DPE= 52175|33%  DPET= 39262  DPR=   0.0  pDPS= 929  Miss=0.00%  MissTick=0.0%  Tick=2372|2019|3540
+    infernal_melee         Count= 56.0| 0.77sec  DPE=  1899|67%  DPET=  1213  DPR=   0.0  pDPS=1895  Miss=8.08%  Hit=2019|1852|2597  Crit= 4083| 3704| 5194|14.3%  Glance=1518|24.0%  Dodge=6.5%
+   ebon_imp  (DPS=186.5)
+    ebon_imp_melee         Count= 92.6| 0.78sec  DPE=   771|100%  DPET=   492  DPR=   0.0  pDPS= 186  Miss=8.03%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|14.3%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    backdraft                  : start=31.1 refresh=18.0  interval= 14.1 trigger=9.0   uptime=83%  benefit=88%
+    bell_of_enraging_resonance : start=4.7  refresh=0.0   interval=103.9 trigger=103.9 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.7 trigger=120.7 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit=11%
+    darkmoon_card_volcano      : start=10.0 refresh=0.0   interval= 45.9 trigger=45.9  uptime=27%
+    demon_soul_imp             : start=4.1  refresh=0.0   interval=120.7 trigger=120.7 uptime=18%  benefit=17%
+    empowered_imp              : start=10.9 refresh=0.4   interval= 36.2 trigger=35.0  uptime= 5%  benefit=11%
+    improved_soul_fire         : start=6.5  refresh=31.8  interval= 67.3 trigger=11.5  uptime=98%  benefit=97%
+    power_torrent_mh           : start=9.8  refresh=0.0   interval= 46.5 trigger=46.5  uptime=27%  benefit=27%
+    soulburn                   : start=4.0  refresh=0.0   interval= 45.8 trigger=45.8  uptime= 0%  benefit=14%
+    tier11_4pc_caster          : start=3.5  refresh=0.2   interval= 85.5 trigger=80.4  uptime= 5%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=345.6 trigger=345.6 uptime=10%
+    imp-bloodlust              : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+     12.0% : backdraft_0                   
+     22.0% : backdraft_1                   
+     31.0% : backdraft_2                   
+     35.0% : backdraft_3                   
+  Procs:
+      5.6 |  63.75sec : ebon_imp
+     11.3 |  35.00sec : empowered_imp
+  Gains:
+     28470.1 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+     92318.0 : initial_mana     
+     59155.3 : life_tap         
+    293332.2 : mana_feed        
+     89677.3 : mp5_regen        
+     46564.8 : replenishment    
+    356430.1 : soul_leech         (overflow=50.6%)
+  Pet "imp" Gains:
+    70801.5 : initial_mana     
+      277.7 : mana_feed          (overflow=99.2%)
+     8019.2 : mana_spring_totem  (overflow=72.0%)
+    162049.7 : mp5_regen          (overflow=63.1%)
+     9157.8 : replenishment      (overflow=71.9%)
+
+Player: Warlock_Destruction_T11_372 orc warlock destruction 85
+  DPS: 27628.6  Error=10.3/0.0%  Range=1993/7.2%  Convergence=69.2%  DPR=13.0  RPS-Out=2119.9 RPS-In=1976.1  Resource=(mana) Waiting=0.0 ApM=49.2
+  Origin: http://chardev.org/?profile=36761
+  Talents: http://www.wowhead.com/talent#warlock-00300000000000000023002000000000000003320202312201312211
+  Core Stats:  strength=667|86(20)  agility=669|88(20)  stamina=8208|6470(5950)  intellect=5731|5049(4639)  spirit=203|203(20)  mastery=12.97|12.97(891)  health=152668|128504  mana=105638|96008
+  Spell Stats:  power=9423|7246(2207)  hit=15.47%|15.47%(1585)  crit=20.66%|14.61%(919)  penetration=0|0(0)  haste=30.05%|20.25%(2593)  mp5=1027|1027(0)
+  Attack Stats  power=1435|142(0)  hit=13.20%|13.20%(1585)  crit=16.14%|8.19%(919)  expertise=0.00|0.00(0)  haste=20.25%|20.25%(2593)
+  Defense Stats:  armor=12555|8479(8479) miss=0.00%|0.00%  dodge=4.23%|2.32%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%
+  Glyphs: life_tap/immolate/imp/conflagrate
+  Priorities:
+    flask,type=draconic_mind/food,type=seafood_magnifique_feast/fel_armor/summon_imp
+    dark_intent/snapshot_stats/blood_fury
+    volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+    demon_soul/soulburn,if=buff.bloodlust.down/soul_fire,if=buff.soulburn.up
+    fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8
+    immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
+    conflagrate/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+    corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react/shadowflame
+    soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)
+    chaos_bolt/summon_infernal/soulburn,if=buff.bloodlust.down
+    soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight
+    shadowburn/incinerate/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
+    fel_flame,moving=1/life_tap
+  Actions:
+    bane_of_doom           Count=  7.5|60.02sec  DPE= 73531| 5%  DPET= 64206  DPR=  23.9  pDPS=1253  Miss=1.54%  TickCount=28  MissTick=0.0%  Tick=15550|12416|21367  CritTick=32185|25514|43906|24.8%  UpTime=95.6%
+    burning_embers         Count=321.5| 1.36sec  DPE=  1924| 5%  DPET=     0  DPR=   0.0  pDPS=1411  Miss=1.53%  TickCount=435  MissTick=0.0%  Tick=1422|257|2141  UpTime=99.3%
+    chaos_bolt             Count= 30.1|14.53sec  DPE= 20059| 5%  DPET= 17147  DPR=  13.9  pDPS=1375  Miss=1.57%  Hit=15366|12828|21966  Crit=32347|26360|45137|29.7%
+    conflagrate            Count= 50.2| 8.76sec  DPE= 31713|13%  DPET= 27697  DPR=   9.6  pDPS=3629  Miss=1.51%  Hit=22659|18565|36297  Crit=46651|38149|72025|39.2%
+    corruption             Count= 24.4|18.11sec  DPE= 29772| 6%  DPET= 26015  DPR=  24.1  pDPS=1656  Miss=1.55%  TickCount=191  MissTick=0.0%  Tick=2998|2430|4391  CritTick=6204|4994|9023|24.8%  UpTime=98.0%
+    darkmoon_card_volcano  Count= 10.0|45.91sec  DPE=  4814| 0%  DPET=     0  DPR=   0.0  pDPS= 109  Miss=1.52%  Hit=4267|3817|4999  Crit= 6594| 5898| 7723|26.3%
+    demon_soul             Count=  4.1|120.70sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+    fel_flame              Count=  7.1|36.61sec  DPE= 30498| 2%  DPET= 26744  DPR=  24.7  pDPS= 492  Miss=1.62%  Hit=24556|20162|36494  Crit=50811|41429|74990|24.5%
+    immolate               Count= 26.0|16.94sec  DPE= 64457|14%  DPET= 54991  DPR=  39.2  pDPS=3819  Miss=1.52%  Hit=6407|5371|9017  Crit=13437|11036|18529|30.4%  TickCount=192  MissTick=0.0%  Tick=5667|4725|8084  CritTick=11883|9709|16612|30.7%  UpTime=98.4%
+    incinerate             Count=117.0| 3.64sec  DPE= 17378|17%  DPET= 13406  DPR=   6.0  pDPS=4638  Miss=1.52%  Hit=13403|10303|19785  Crit=28077|22808|40655|29.0%
+    infernal_awakening     Count=  1.0| 0.00sec  DPE= 28713| 0%  DPET=     0  DPR=   0.0  pDPS=  65  Miss=1.43%  Hit=22593|18178|22867  Crit=46343|37353|46988|27.1%
+    shadowburn             Count=  4.8|17.41sec  DPE= 18147| 1%  DPET= 16544  DPR=   5.9  pDPS= 199  Miss=1.53%  Hit=14554|11833|20771  Crit=30135|24316|44262|24.5%
+    shadowflame            Count= 32.4|13.51sec  DPE= 25401| 7%  DPET= 22198  DPR=   4.9  pDPS=1880  Miss=1.51%  Hit=2163|1848|2842  Crit= 4467| 3797| 5840|24.4%
+    shadowflame_dot        Count= 32.4|13.51sec  DPE= 22709| 6%  DPET=     0  DPR=   0.0  pDPS=1681  TickCount=130  MissTick=0.3%  Tick=3600|0|6595  CritTick=7461|0|13552|24.8%  UpTime=44.3%
+    soul_fire              Count= 38.7|11.41sec  DPE= 20914| 7%  DPET= 11016  DPR=  11.3  pDPS=1848  Miss=1.53%  Hit=15970|13668|22413  Crit=33313|28085|46056|30.4%
+    soulburn               Count=  4.0|45.64sec  DPE=     0| 0%  DPET=     0  DPR=   0.0  pDPS=   0  Miss=0.00%
+   imp  (DPS=4677.4)
+    firebolt               Count=290.9| 1.51sec  DPE=  7046|100%  DPET=  4681  DPR=  11.1  pDPS=4677  Miss=2.01%  Hit=5699|4983|8519  Crit=11451| 9942|16995|26.1%
+   infernal  (DPS=3126.9)
+    infernal_immolation    Count=  1.0| 1.28sec  DPE= 54365|32%  DPET= 42346  DPR=   0.0  pDPS= 994  Miss=2.02%  MissTick=2.0%  Tick=2577|2209|3794
+    infernal_melee         Count= 58.0| 0.74sec  DPE=  2052|68%  DPET=  1357  DPR=   0.0  pDPS=2133  Miss=7.99%  Hit=2124|1945|2721  Crit= 4286| 3890| 5442|16.7%  Glance=1598|24.0%  Dodge=6.5%
+   ebon_imp  (DPS=204.4)
+    ebon_imp_melee         Count= 99.0| 0.77sec  DPE=   791|100%  DPET=   523  DPR=   0.0  pDPS= 204  Miss=8.04%  Hit= 822| 822| 822  Crit= 1644| 1644| 1644|16.8%  Glance= 617|24.0%  Dodge=6.5%
+  Constant Buffs: arcane_brilliance/blessing_of_kings/blessing_of_might/blessing_of_might_regen/dark_intent
+  Constant Buffs: dark_intent_feedback/fel_armor/fortitude/mark_of_the_wild/replenishment
+  Dynamic Buffs:
+    backdraft                  : start=33.4 refresh=16.0  interval= 13.1 trigger=8.9   uptime=81%  benefit=85%
+    bell_of_enraging_resonance : start=4.7  refresh=0.0   interval=103.8 trigger=103.8 uptime=21%
+    blood_fury_sp              : start=4.1  refresh=0.0   interval=120.7 trigger=120.7 uptime=14%
+    bloodlust                  : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit=11%
+    darkmoon_card_volcano      : start=10.0 refresh=0.0   interval= 45.9 trigger=45.9  uptime=27%
+    demon_soul_imp             : start=4.1  refresh=0.0   interval=120.7 trigger=120.7 uptime=18%  benefit=17%
+    empowered_imp              : start=11.0 refresh=0.3   interval= 35.9 trigger=34.7  uptime= 5%  benefit=11%
+    improved_soul_fire         : start=6.8  refresh=31.3  interval= 65.1 trigger=11.6  uptime=97%  benefit=96%
+    power_torrent_mh           : start=9.8  refresh=0.0   interval= 46.6 trigger=46.6  uptime=26%  benefit=27%
+    soulburn                   : start=4.0  refresh=0.0   interval= 45.6 trigger=45.6  uptime= 0%  benefit=13%
+    tier11_4pc_caster          : start=3.6  refresh=0.2   interval= 84.2 trigger=78.7  uptime= 6%
+    volcanic_potion            : start=2.0  refresh=0.0   interval=345.6 trigger=345.6 uptime=10%
+    imp-bloodlust              : start=1.0  refresh=0.0   interval=  0.0 trigger=0.0   uptime= 9%  benefit= 9%
+  Up-Times:
+     14.8% : backdraft_0                   
+     22.1% : backdraft_1                   
+     30.1% : backdraft_2                   
+     33.0% : backdraft_3                   
+  Procs:
+      5.6 |  63.11sec : ebon_imp
+     11.4 |  34.67sec : empowered_imp
+  Gains:
+     28443.9 : blessing_of_might
+      4500.0 : flask            
+      1350.0 : food             
+     99788.0 : initial_mana     
+     21305.4 : life_tap         
+    344997.8 : mana_feed        
+     89597.7 : mp5_regen        
+     49781.8 : replenishment    
+    343733.5 : soul_leech         (overflow=55.3%)
+  Pet "imp" Gains:
+    74772.5 : initial_mana     
+       88.3 : mana_feed          (overflow=99.3%)
+     8192.3 : mana_spring_totem  (overflow=71.3%)
+    165621.5 : mp5_regen          (overflow=65.2%)
+     9834.0 : replenishment      (overflow=71.3%)
+
+
+ *** Targets *** 
+
+
+Target: Fluffy_Pillow humanoid enemy Unknown 88
+  DPS: 0.0  Error=0.0/0.0%  Range=0/0.0%  Convergence=0.0%  DPR=0.0  RPS-Out=194950.1 RPS-In=0.0  Resource=(health) Waiting=100.0 ApM=0.0
+  Core Stats:  strength=0|0(0)  agility=0|0(0)  stamina=0|0(0)  intellect=0|0(0)  spirit=0|0(0)  mastery=0.00|0.00(0)  health=0|95080577  mana=0|0
+  Spell Stats:  power=0|0(0)  hit=0.00%|0.00%(0)  crit=0.00%|0.00%(0)  penetration=0|0(0)  haste=0.00%|0.00%(0)  mp5=0|0(0)
+  Attack Stats  power=0|0(0)  hit=0.00%|0.00%(0)  crit=5.00%|5.00%(0)  expertise=0.00|0.00(0)  haste=0.00%|0.00%(0)
+  Defense Stats:  armor=10540|11977(0) miss=0.00%|0.00%  dodge=0.00%|0.00%(0)  parry=0.00%|0.00%(0)  block=5.00%|5.00%(0) crit=0.00%|0.00%
+  Priorities:
+    snapshot_stats
+  Actions:
+  Constant Buffs: bleeding/blood_frenzy_bleed/blood_frenzy_physical/corrosive_spit/critical_mass/curse_of_elements
+  Constant Buffs: demoralizing_roar/demoralizing_screech/demoralizing_shout/earth_and_moon/ebon_plague/expose_armor
+  Constant Buffs: faerie_fire/hemorrhage/hunters_mark/infected_wounds/judgements_of_the_just/lightning_breath/mangle
+  Constant Buffs: master_poisoner/poisoned/ravage/replenishment/savage_combat/scarlet_fever/shadow_and_flame/sunder_armor
+  Constant Buffs: tailspin/tear_armor/tendon_rip/thunder_clap/vindication
+  Dynamic Buffs:
+
+Auras:
+  Constant: abominations_might/arcane_tactics/battle_shout/communion/demonic_Pact/devotion_aura/elemental_oath
+  Constant: fel_intelligence/ferocious_inspiration/flametongue_totem/honor_among_thieves/horn_of_winter/hunting_party
+  Constant: improved_icy_talons/leader_of_the_pack/mana_spring_totem/moonkin/qiraji_fortitude/rampage/roar_of_courage
+  Constant: strength_of_earth/trueshot/unleashed_rage/windfury_totem/wrath_of_air
+  Dynamic:
+
+Waiting:
+    All players active 100% of the time.
+
+Baseline Performance:
+  TotalEvents   = 327418038
+  MaxEventQueue = 187
+  TargetHealth  = 95080577
+  SimSeconds    = 4385963
+  CpuSeconds    = 304.195
+  SpeedUp       = 14418
+
+RNG global Actual/Expected Roll=1.000081 Range=1.000000 Gauss=0.999954
+
