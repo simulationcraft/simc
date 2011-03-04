@@ -2812,6 +2812,8 @@ struct frost_strike_offhand_t : public death_knight_attack_t
     weapon     = &( p -> off_hand_weapon );
     // FIXME: Base Value is halfed in the DBC, should it be?
 
+    rp_gain = 0; // Incorrectly set to 10 in the DBC
+
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += 0.05;
     if ( p -> ptr )
