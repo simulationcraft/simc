@@ -1771,7 +1771,8 @@ struct raging_blow_t : public warrior_attack_t
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
     weapon_multiplier = direct_power_mod = 0; 
-    may_crit = false;
+    may_crit = false;   
+    weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
 
     parse_options( NULL, options_str );
 

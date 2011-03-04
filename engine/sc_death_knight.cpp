@@ -2999,9 +2999,9 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p -> ptr )
     {
       // FIXME: Remove once this is included in the DBC data
-      base_dd_min      *= 1.20;
-      base_dd_max      *= 1.20;
-      direct_power_mod *= 1.20;
+      base_dd_min      = 1441;
+      base_dd_max      = 1441;
+      direct_power_mod = 0.48;
     }
 
     if ( ! p -> frost_fever )
