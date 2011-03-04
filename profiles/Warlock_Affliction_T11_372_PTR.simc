@@ -23,9 +23,9 @@ actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target
 actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
-actions+=/shadowflame
 actions+=/summon_doomguard
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
+actions+=/shadowflame
 actions+=/life_tap,mana_percentage<=35
 actions+=/soulburn
 actions+=/soul_fire,if=buff.soulburn.up

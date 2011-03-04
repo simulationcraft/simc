@@ -4259,9 +4259,9 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
-      if ( level >= 75) action_list_str += "/shadowflame";
       if ( level >= 50) action_list_str += ( ptr ) ? "/summon_doomguard" : "/summon_infernal";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
+      if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";

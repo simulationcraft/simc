@@ -22,9 +22,9 @@ actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target
 actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
-actions+=/shadowflame
 actions+=/summon_infernal
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
+actions+=/shadowflame
 actions+=/soulburn
 actions+=/soul_fire,if=buff.soulburn.up
 actions+=/demon_soul,if=buff.shadow_trance.react
