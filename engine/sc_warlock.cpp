@@ -921,14 +921,17 @@ struct warlock_spell_t : public spell_t
     double shadow_td_multiplier = 1.0;
     warlock_t* p = player -> cast_warlock();
 
-    //FIXME: These should be modeled as debuffs, and we need to check if they affect trinkets (if there is ever a shadow td trinket)
-    if ( p -> buffs_shadow_embrace -> up() )
+    if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME )
     {
-      shadow_td_multiplier *= 1.0 + p -> buffs_shadow_embrace ->  check() * p -> buffs_shadow_embrace -> effect1().percent();
-    }
-    if ( p -> buffs_haunted -> up() )
-    {
-      shadow_td_multiplier *= 1.0 + p -> buffs_haunted -> effect3().percent() + ( p -> glyphs.haunt -> effect1().percent() );
+      //FIXME: These should be modeled as debuffs, and we need to check if they affect trinkets (if there is ever a shadow td trinket)
+      if ( p -> buffs_shadow_embrace -> up() )
+      {
+        shadow_td_multiplier *= 1.0 + p -> buffs_shadow_embrace ->  check() * p -> buffs_shadow_embrace -> effect1().percent();
+      }
+      if ( p -> buffs_haunted -> up() )
+      {
+        shadow_td_multiplier *= 1.0 + p -> buffs_haunted -> effect3().percent() + ( p -> glyphs.haunt -> effect1().percent() );
+      }
     }
 
     return spell_t::total_td_multiplier() * shadow_td_multiplier;
@@ -2655,7 +2658,6 @@ struct shadowflame_dot_t : public warlock_spell_t
   {
     proc       = true;
     background = true;
-    direct_tick= true;
   }
 };
 // Shadowflame Spell =============================================================
