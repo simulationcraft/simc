@@ -105,6 +105,8 @@ struct mage_t : public player_t
     spell_data_t* arcane_specialization;
     spell_data_t* fire_specialization;
     spell_data_t* frost_specialization;
+
+    spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   };
   spells_t spells;
 
@@ -3533,7 +3535,7 @@ void player_t::mage_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MANA, p -> level < MAX_LEVEL ? sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) : 0, !p -> is_pet() );
+    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MAX_MANA, p -> level < MAX_LEVEL ? sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) : 0, !p -> is_pet() );
     p -> buffs.focus_magic       = new      buff_t( p, 54646, "focus_magic" );
     p -> debuffs.critical_mass   = new debuff_t( p, 22959, "critical_mass" );
     p -> debuffs.slow            = new debuff_t( p, 31589, "slow" );

@@ -875,6 +875,8 @@ talent_data_t* talent_data_t::nil()
 
 spell_data_t* spell_data_t::find( unsigned spell_id, const std::string& confirmation, bool ptr ) 
 { 
+  if ( spell_id == 0 ) return spell_data_t::nil();
+
   spell_data_t* spell_data = spell_data_t::list( ptr );
 
   for( int i = 0; spell_data[ i ].name_cstr(); i++ )

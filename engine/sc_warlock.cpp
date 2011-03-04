@@ -988,7 +988,8 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> effect3().base_value() )
+    // The target health percentage is ONLY contained in the Rank-1 version of the talent.
+    if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> spell(1).effect3().base_value() )
     {
         return p -> talent_deaths_embrace -> effect2().percent();
     }

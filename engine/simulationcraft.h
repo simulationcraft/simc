@@ -1775,7 +1775,13 @@ struct talent_t : spell_id_t
   // unsigned rank;
 
   talent_data_t& data() { return *td; }
-  spell_data_t& spell() { return *sd; }
+  spell_data_t& spell( unsigned r=0 ) 
+  { 
+    if ( r == 1 ) return *( td -> spell1 );
+    if ( r == 2 ) return *( td -> spell2 );
+    if ( r == 3 ) return *( td -> spell3 );
+    return *sd; 
+  }
   const spelleffect_data_t& effect1() const { return sd -> effect1(); }
   const spelleffect_data_t& effect2() const { return sd -> effect2(); }
   const spelleffect_data_t& effect3() const { return sd -> effect3(); }

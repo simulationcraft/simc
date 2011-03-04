@@ -21,135 +21,6 @@ struct druid_t : public player_t
 
   double equipped_weapon_dps;
 
-  struct primal_madness_buff_t;
-  struct tigers_fury_buff_t;
-  struct berserk_buff_t;
-
-  struct primal_madness_buff_t : public buff_t
-  {
-    double energy_value;
-    double rage_value;
-
-    primal_madness_buff_t( player_t* player ) : 
-      buff_t( player, "primal_madness", 1 ), energy_value( 0.0 ), rage_value( 0.0 )
-    {
-      druid_t* p = player -> cast_druid();
-
-      if ( p -> talents.primal_madness -> rank() > 0 )
-      {
-        uint32_t sid = ( p -> talents.primal_madness -> rank() == 2 ) ? 80886 : 80879;
-        passive_spell_t spell_primal_madness_energy( p, "primal_madness_energy", sid );
-        energy_value = spell_primal_madness_energy.base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
-        rage_value = p -> talents.primal_madness -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL_WITH_VALUE ) * 0.1;
-      }
-    };
-
-    virtual void aura_loss()
-    {
-      druid_t* p = player -> cast_druid();
-
-      buff_t::aura_loss();
-
-      if ( p -> buffs_cat_form -> check() )
-      {
-        p -> stat_loss( STAT_MAX_ENERGY, energy_value );
-      }
-    }
-
-    virtual void aura_gain()
-    {
-      druid_t* p = player -> cast_druid();
-
-      buff_t::aura_gain();
-
-      if ( p -> buffs_cat_form -> check() )
-      {
-        p -> stat_gain( STAT_MAX_ENERGY, energy_value, p -> gains_primal_madness );
-      }
-    }
-
-    virtual bool trigger( int stacks=1, double value=-1.0, double chance=-1.0 )
-    {
-      druid_t* p = player -> cast_druid();
-
-      stacks = 1;
-      value  = energy_value;
-      chance = p -> talents.primal_madness -> rank(); 
-      return buff_t::trigger( stacks, value, chance );
-    }
-  };
-
-  struct berserk_buff_t : public buff_t
-  {
-    berserk_buff_t( player_t* player ) : 
-      buff_t( player, "berserk", 1, 15.0 + player -> cast_druid() -> glyphs.berserk -> mod_additive( P_DURATION ) )
-    {
-    }
-
-    virtual void aura_loss()
-    {
-      druid_t* p = player -> cast_druid();
-
-      buff_t::aura_loss();
-
-      if ( ! p -> buffs_tigers_fury -> check() )
-      {
-        p -> buffs_primal_madness -> expire();
-      }
-    }
-
-    virtual void aura_gain()
-    {
-      druid_t* p = player -> cast_druid();
-
-      buff_t::aura_gain();
-
-      if ( ! p -> buffs_tigers_fury -> check() )
-      {
-        p -> buffs_primal_madness -> trigger();
-      }
-    }
-  };
-
-  struct tigers_fury_buff_t : public buff_t
-  {
-    double dmg_value;
-
-    tigers_fury_buff_t( player_t* player ) : 
-      buff_t( player, "tigers_fury", 1, 6.0 ), dmg_value( 0.0 )
-    {
-    }
-
-    virtual void aura_loss()
-    {
-      druid_t* p = player -> cast_druid();
-
-      buff_t::aura_loss();
-
-      if ( ! p -> buffs_berserk -> check() )
-      {
-        p -> buffs_primal_madness -> expire();
-      }
-    }
-
-    virtual void aura_gain()
-    {
-      druid_t* p = player -> cast_druid();
-
-      buff_t::aura_gain();
-
-      if ( ! p -> buffs_berserk -> check() )
-      {
-        p -> buffs_primal_madness -> trigger();
-      }
-
-      if ( p -> talents.king_of_the_jungle -> rank() )
-      {
-        p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect2().resource( RESOURCE_ENERGY ), p -> gains_tigers_fury );
-      }
-    }
-  };
-
   // Buffs
   buff_t* buffs_barkskin;
   buff_t* buffs_bear_form;
@@ -177,9 +48,10 @@ struct druid_t : public player_t
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_t11_4pc_melee;
   buff_t* buffs_wild_mushroom;
-  berserk_buff_t*        buffs_berserk;
-  primal_madness_buff_t* buffs_primal_madness;
-  tigers_fury_buff_t*    buffs_tigers_fury;
+  buff_t* buffs_berserk;
+  buff_t* buffs_primal_madness_bear;
+  buff_t* buffs_primal_madness_cat;
+  buff_t* buffs_tigers_fury;
 
   // Cooldowns
   cooldown_t* cooldowns_mangle_bear;
@@ -252,20 +124,26 @@ struct druid_t : public player_t
   rng_t* rng_primal_fury;
   rng_t* rng_wrath_eclipsegain;
   
-  // Tree specialization passives
-  // Balance
-  passive_spell_t* spec_moonfury;
-  mastery_t* mastery_total_eclipse; // Mastery
+  // Spell Data
+  struct spells_t
+  {
+    spell_data_t* primal_madness_cat;
+    spell_data_t* moonfury;
+    spell_data_t* total_eclipse;
+    spell_data_t* aggression;
+    spell_data_t* vengence;
+    spell_data_t* razor_claws;
+    spell_data_t* savage_defender;
+
+    spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
+  };
+  spells_t spells;
+
+  // Eclipse Management
   int eclipse_bar_value; // Tracking the current value of the eclipse bar
   int eclipse_wrath_count; // Wrath gains eclipse in 13, 13, 14, 13, 13, 14, 13, 13
   int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
   
-  // Feral
-  passive_spell_t* spec_aggression;
-  passive_spell_t* spec_vengeance;
-  mastery_t* mastery_razor_claws; // Mastery
-  mastery_t* mastery_savage_defender; // Mastery
-
   // Up-Times
   uptime_t* uptimes_energy_cap;
   uptime_t* uptimes_rage_cap;
@@ -992,8 +870,10 @@ void druid_cat_attack_t::player_buff()
 
   player_multiplier *= 1.0 + p -> buffs_tigers_fury -> value();
   
-  if ( school == SCHOOL_BLEED )
-    player_multiplier *= 1.0 + p -> mastery_razor_claws -> base_value( E_APPLY_AURA, A_DUMMY ) * p -> composite_mastery();
+  if ( school == SCHOOL_BLEED && p -> primary_tree() == TREE_FERAL )
+  {
+    player_multiplier *= 1.0 + p -> spells.razor_claws -> effect1().coeff() * 0.01 * p -> composite_mastery();
+  }
 }
 
 // druid_cat_attack_t::ready ================================================
@@ -1634,19 +1514,24 @@ struct tigers_fury_t : public druid_cat_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-
     druid_cat_attack_t::execute();
-
     p -> buffs_tigers_fury -> trigger( 1, effect1().percent() );
+    if ( p -> talents.primal_madness -> rank() )
+    {
+      p -> buffs_primal_madness_cat -> buff_duration = p -> buffs_tigers_fury -> buff_duration;
+      p -> buffs_primal_madness_cat -> trigger();
+    }
+    if ( p -> talents.king_of_the_jungle -> rank() )
+    {
+      p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect2().resource( RESOURCE_ENERGY ), p -> gains_tigers_fury );
+    }
   }
 
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
-
     if ( p -> buffs_berserk -> check() )
       return false;
-
     return druid_cat_attack_t::ready();
   }
 };
@@ -2232,12 +2117,11 @@ void druid_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
 
     // Moonfury is actually additive with other player_multipliers, like glyphs, etc.
-    if ( p -> spec_moonfury -> ok() )
+    if ( p -> primary_tree() == TREE_BALANCE )
     {
-      double m = p -> spec_moonfury -> mod_additive( P_GENERIC );
+      double m = p -> spells.moonfury -> effect1().percent();
       // FIX-ME: Hotfix nerf to Moonfury. Remove once client is updated
       m = 0.10;
-
       additive_multiplier += m;
     }
 
@@ -2392,9 +2276,24 @@ struct berserk_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
     p -> buffs_berserk -> trigger();
-    if ( p -> talents.primal_madness -> rank() )
-      p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect1().resource( RESOURCE_RAGE ), p -> gains_primal_madness );
-    p -> cooldowns_mangle_bear -> reset();
+    if ( p -> buffs_cat_form -> check() )
+    {
+      if ( p -> talents.primal_madness -> rank() )
+      {
+	p -> buffs_primal_madness_cat -> buff_duration = p -> buffs_berserk -> buff_duration;
+	p -> buffs_primal_madness_cat -> trigger();
+      }
+    }
+    else if ( p -> buffs_bear_form -> check() )
+    {
+      if ( p -> talents.primal_madness -> rank() )
+      {
+	p -> resource_gain( RESOURCE_RAGE, p -> talents.primal_madness -> effect1().resource( RESOURCE_RAGE ), p -> gains_primal_madness );
+	p -> buffs_primal_madness_bear -> buff_duration = p -> buffs_berserk -> buff_duration;
+	p -> buffs_primal_madness_bear -> trigger();
+      }
+      p -> cooldowns_mangle_bear -> reset();
+    }
   }
 };
 
@@ -2721,7 +2620,7 @@ struct moonfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
@@ -2910,7 +2809,7 @@ struct starfire_t : public druid_spell_t
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
   virtual void execute()
@@ -3022,7 +2921,7 @@ struct starfall_star_t : public druid_spell_t
     stats       = player -> get_stats( "starfall" );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
   virtual void player_buff()
@@ -3087,7 +2986,7 @@ struct starsurge_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
     
     starfall_cd = p -> get_cooldown( "starfall" );
   }
@@ -3189,7 +3088,7 @@ struct sunfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
@@ -3433,7 +3332,7 @@ struct wrath_t : public druid_spell_t
     
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spec_moonfury -> mod_additive( P_CRIT_DAMAGE );
+      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
   virtual void player_buff()
@@ -3679,16 +3578,15 @@ void druid_t::init_spells()
   player_t::init_spells();
 
   // Specializations
-  
-  // Balance
-  spec_moonfury         = new passive_spell_t( this, "moonfury",      16913 );
-  mastery_total_eclipse = new mastery_t      ( this, "total_eclipse", 77492, TREE_BALANCE );
 
-  // Feral
-  spec_aggression         = new passive_spell_t( this, "aggression",      84735 );
-  spec_vengeance          = new passive_spell_t( this, "vengeance",       84840 );
-  mastery_razor_claws     = new mastery_t      ( this, "razor_claws",     77493, TREE_FERAL );
-  mastery_savage_defender = new mastery_t      ( this, "savage_defender", 77494, TREE_FERAL );
+  spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
+  spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
+  spells.aggression      = spell_data_t::find( 84735, "Aggression",      dbc.ptr );
+  spells.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
+  spells.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
+
+  unsigned primal_madness_ids[] = { 0, 80879, 80886 };
+  spells.primal_madness_cat = spell_data_t::find( primal_madness_ids[ talents.primal_madness -> rank() ], "Primal Madness", dbc.ptr );
 
   // Glyphs
   glyphs.berserk          = find_glyph( "Glyph of Berserk" );
@@ -3802,6 +3700,11 @@ void druid_t::init_buffs()
   buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
 
+  buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
+  buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
+  buffs_berserk             = new      buff_t( this, "berserk", 1, 15.0 + glyphs.berserk -> mod_additive( P_DURATION ) );
+  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, 6.0 );
+
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
   buffs_cat_form     = new buff_t( this, 768,   "cat_form" );
@@ -3809,10 +3712,6 @@ void druid_t::init_buffs()
   buffs_moonkin_form = new buff_t( this, 24858, "moonkin_form" );
   buffs_savage_roar  = new buff_t( this, 52610, "savage_roar" );
   buffs_stealthed    = new buff_t( this, 5215,  "stealthed" );
-
-  buffs_berserk        = new        berserk_buff_t( this );
-  buffs_primal_madness = new primal_madness_buff_t( this );
-  buffs_tigers_fury    = new    tigers_fury_buff_t( this );
 }
 
 // druid_t::init_scaling ====================================================
@@ -4189,9 +4088,9 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
   {
     multiplier *= 1.0 + talents.heart_of_the_wild -> effect2().percent();
   }
-  if ( spec_aggression -> ok() )
+  if ( primary_tree() == TREE_FERAL )
   {
-    multiplier *= 1.0 + spec_aggression -> base_value();
+    multiplier *= 1.0 + spells.aggression -> effect1().percent();
   }
   return multiplier;
 }
@@ -4216,17 +4115,26 @@ double druid_t::composite_player_multiplier( const school_type school) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // Both eclipse buffs need their own checks
-  if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
-    if ( buffs_eclipse_lunar -> up() )
-      m *= ( 1.0 + buffs_eclipse_lunar -> base_value() / 100.0 ) * 1.0 
-            + composite_mastery() * mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
-
-  if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
-    if ( buffs_eclipse_solar -> up() )
-      m *= ( 1.0 + buffs_eclipse_solar -> base_value() / 100.0 ) * 1.0
-            + composite_mastery() *  mastery_total_eclipse -> base_value( E_APPLY_AURA, A_DUMMY );
-
+  if ( primary_tree() == TREE_BALANCE )
+  {
+    // Both eclipse buffs need their own checks
+    if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
+    {
+      if ( buffs_eclipse_lunar -> up() )
+      {
+	m *= 1.0 + ( buffs_eclipse_lunar -> effect1().percent() +
+		     composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
+      }
+    }
+    if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
+    {
+      if ( buffs_eclipse_solar -> up() )
+      {
+	m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent() +
+		     composite_mastery() *  spells.total_eclipse -> effect1().coeff() * 0.01 );
+      }
+    }
+  }
   return m;
 }
 
