@@ -13,3 +13,5 @@ chardev=36175 name=Hunter_BM_T11_359 save=Hunter_BM_T11_359.simc
 chardev=36177 name=Hunter_SV_T11_359 save=Hunter_SV_T11_359.simc
 
 chardev=36158 name=Hunter_MM_T11_359 save=Hunter_MM_T11_359.simc
+
+chardev=66004 name=Hunter_MM_T11_359_Arcane save=Hunter_MM_T11_359_Arcane.simc

@@ -7,7 +7,7 @@ race=orc
 role=attack
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#hunter-0230020000000000000230232003212023122103000000000000000000
+talents=http://www.wowhead.com/talent#hunter-0320020000000000000230232003212023122103000000000000000000
 glyphs=steady_shot/rapid_fire/aimed_shot
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
@@ -47,7 +47,7 @@ trinket1=fluid_death,ilevel=359,quality=epic,stats=321hit,equip=onattackhit_38ag
 trinket2=essence_of_the_cyclone,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_1926crit_10%_10dur_50cd
 back=dorys_finery,ilevel=359,quality=epic,stats=190agi_625armor_127crit_127hit_286sta,enchant=65crit
 main_hand=malevolence,ilevel=359,quality=epic,stats=341agi_228crit_228mastery_512sta,enchant=130agi,weapon=staff_2.40speed_1196min_1796max
-ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,weapon=crossbow_3.00speed_1496min_2245max
+ranged=themios_the_darkbringer,ilevel=359,quality=epic,stats=107agi_72crit_72mastery_161sta,enchant=gnomish_xray,weapon=bow_2.90speed_1265min_2350max
 # Gear Summary
 # gear_strength=20
 # gear_agility=4491
@@ -57,14 +57,14 @@ ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 # gear_attack_power=190
 # gear_hit_rating=961
 # gear_crit_rating=2115
-# gear_haste_rating=1218
-# gear_mastery_rating=640
+# gear_haste_rating=1146
+# gear_mastery_rating=712
 # gear_armor=14616
 # meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # main_hand=malevolence,weapon=staff_2.40speed_1196min_1796max
-# ranged=dragonheart_piercer,weapon=crossbow_3.00speed_1496min_2245max
+# ranged=themios_the_darkbringer,weapon=bow_2.90speed_1265min_2350max,enchant=gnomish_xray
 pet=cat,cat
 talents=200000030300003010102000000000000000000000000000000000000000000
 active=owner

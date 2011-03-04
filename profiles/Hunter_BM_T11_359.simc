@@ -46,7 +46,7 @@ trinket1=fluid_death,ilevel=359,quality=epic,stats=321hit,equip=onattackhit_38ag
 trinket2=essence_of_the_cyclone,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_1926crit_10%_10dur_50cd
 back=dorys_finery,ilevel=359,quality=epic,stats=190agi_625armor_127crit_127hit_286sta,enchant=65crit
 main_hand=malevolence,ilevel=359,quality=epic,stats=341agi_228crit_228mastery_512sta,enchant=130agi,weapon=staff_2.40speed_1196min_1796max
-ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,weapon=crossbow_3.00speed_1496min_2245max
+ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,enchant=gnomish_xray,weapon=crossbow_3.00speed_1496min_2245max
 # Gear Summary
 # gear_strength=20
 # gear_agility=4491
@@ -63,7 +63,7 @@ ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # main_hand=malevolence,weapon=staff_2.40speed_1196min_1796max
-# ranged=dragonheart_piercer,weapon=crossbow_3.00speed_1496min_2245max
+# ranged=dragonheart_piercer,weapon=crossbow_3.00speed_1496min_2245max,enchant=gnomish_xray
 pet=cat,cat
 talents=200000030300003010122000000000000000000000000000000000000000000
 active=owner
