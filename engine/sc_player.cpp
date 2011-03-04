@@ -1301,6 +1301,11 @@ void player_t::init_actions()
   for ( action_t* action = action_list; action; action = action -> next )
   {
     action -> if_expr = action_expr_t::parse( action, action -> if_expr_str );
+
+    if ( action -> channeled )
+    {
+      action -> interrupt_if_expr = action_expr_t::parse( action, action -> interrupt_if_expr_str );
+    }
   }
 
   int capacity = std::max( 1200, (int) ( sim -> max_time / 2.0 ) );
