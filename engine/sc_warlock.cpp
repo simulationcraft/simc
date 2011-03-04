@@ -2746,7 +2746,7 @@ struct incinerate_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent());
-    base_execute_time += p -> talent_emberstorm -> effect3().percent();
+    base_execute_time += p -> talent_emberstorm -> effect3().seconds();
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
     base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
