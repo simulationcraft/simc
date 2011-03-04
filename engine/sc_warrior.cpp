@@ -653,8 +653,6 @@ static void trigger_flurry( attack_t* a, int stacks )
 
   // Default mult is the up -> down case
   double mult = 1 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
-  if ( p -> ptr )
-    mult = 1 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.16, 0.32, 0.50 );
 
   // down -> up case
   if ( ! up_before && up_after )
