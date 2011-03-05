@@ -583,13 +583,17 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   {
     if ( p -> eclipse_bar_value == 100 ) 
     {
-      if ( p -> buffs_eclipse_solar -> trigger() )
+      if ( p -> buffs_eclipse_solar -> trigger( 1, 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01 ) )
+      {
         trigger_eclipse_proc( p );
+      }
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
-      if ( p -> buffs_eclipse_lunar -> trigger() )
+      if ( p -> buffs_eclipse_lunar -> trigger( 1, 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01 ) )
+      {
         trigger_eclipse_proc( p );
+      }
     }
   }
 }
@@ -2850,14 +2854,14 @@ struct starfire_t : public druid_spell_t
         // Eclipse bar is moving towards, >35 for Starfire/towards Solar
         int gain = effect2().base_value();
         if ( ! p -> buffs_eclipse_lunar -> check() )
-	{
-	  if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
-	  {
-	    if( !( p -> bugs && p -> eclipse_bar_value > 35 ) )
-	    {
-	      gain *= 2;
-	    }
-	  }
+      	{
+          if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
+          {
+            if( !( p -> bugs && p -> eclipse_bar_value > 35 ) )
+            {
+              gain *= 2;
+            }
+          }
         }
         //trigger_eclipse_energy_gain( this, gain );
         trigger_eclipse_gain_delay( this, gain );
@@ -3382,16 +3386,16 @@ struct wrath_t : public druid_spell_t
         // #1 Euphoria does not proc, if you are more than 35 into the side the
         // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
         if ( ! p -> buffs_eclipse_solar -> check() )
-	{
-	  if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
-	  {
-	    if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
-	    {
-	      gain *= 2;
-	      // Euphoria procs also add 1 to the counter
-	      p -> eclipse_wrath_count++;
-	    }
-	  }
+        {
+          if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
+          {
+            if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
+            {
+              gain *= 2;
+              // Euphoria procs also add 1 to the counter
+              p -> eclipse_wrath_count++;
+            }
+          }
         }
 
         if ( p -> eclipse_wrath_count > 2 )
@@ -4122,16 +4126,16 @@ double druid_t::composite_player_multiplier( const school_type school) SC_CONST
     {
       if ( buffs_eclipse_lunar -> up() )
       {
-	m *= 1.0 + ( buffs_eclipse_lunar -> effect1().percent() +
-		     composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
+        m *= 1.0 + ( buffs_eclipse_lunar -> effect1().percent()
+                 +   buffs_eclipse_lunar -> current_value );
       }
     }
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
     {
       if ( buffs_eclipse_solar -> up() )
       {
-	m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent() +
-		     composite_mastery() *  spells.total_eclipse -> effect1().coeff() * 0.01 );
+        m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent()
+                 +   buffs_eclipse_solar -> current_value );
       }
     }
   }
