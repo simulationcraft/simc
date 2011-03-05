@@ -1990,8 +1990,10 @@ struct black_arrow_t : public hunter_attack_t
   {
     hunter_attack_t::tick();
     hunter_t* p = player -> cast_hunter();
-    if ( p -> buffs_lock_and_load -> trigger( 2 ) )
+    if ( p -> buffs_lock_and_load -> trigger( 2 ) ) {
       p -> procs_lock_and_load -> occur();
+      p -> get_cooldown( "explosive_shot" ) -> reset();
+    }
   }
 
   virtual void execute()
@@ -2025,7 +2027,10 @@ struct explosive_trap_effect_t : public hunter_attack_t
     hunter_attack_t::tick();
     hunter_t* p = player -> cast_hunter();
     if ( p -> buffs_lock_and_load -> trigger( 2 ) )
+    {
       p -> procs_lock_and_load -> occur();
+      p -> get_cooldown( "explosive_shot" ) -> reset();
+    }
   }
 };
 
