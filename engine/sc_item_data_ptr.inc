@@ -2,7 +2,7 @@
 
 #define PTR_ITEM_SIZE (5262)
 
-// 5262 items, ilevel 272-400, wow build level 13698
+// 5262 items, ilevel 272-400, wow build level 13707
 static struct item_data_t __ptr_item_data[] = {
   {    38, "Recruit's Shirt"                                      , "INV_Shirt_05"                          , 0x00000000, 0x00002000,    1,   0,  1,  4,  4,  0,  0,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   {    45, "Squire's Shirt"                                       , "INV_Shirt_01"                          , 0x00000000, 0x00002000,    1,   0,  1,  4,  4,  0,  0,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
@@ -590,7 +590,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 40900, "Glyph of Mangle"                                      , "inv_glyph_primedruid"                  , 0x00000040, 0x00002000,   25,  25,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54857,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 40901, "Glyph of Shred"                                       , "inv_glyph_primedruid"                  , 0x00000040, 0x00002000,   46,  46,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54859,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 40902, "Glyph of Rip"                                         , "inv_glyph_primedruid"                  , 0x00000040, 0x00002000,   54,  54,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54860,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
-  { 40903, "Glyph of Rake"                                        , "INV_Glyph_MajorDruid"                  , 0x00000040, 0x00002000,   25,  25,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54863,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
+  { 40903, "Glyph of Pounce"                                      , "INV_Glyph_MajorDruid"                  , 0x00000040, 0x00002000,   32,  32,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54863,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 40906, "Glyph of Swiftmend"                                   , "inv_glyph_primedruid"                  , 0x00000040, 0x00002000,   25,  25,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54864,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 40908, "Glyph of Innervate"                                   , "INV_Glyph_MajorDruid"                  , 0x00000040, 0x00002000,   28,  28,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54865,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 40909, "Glyph of Rebirth"                                     , "INV_Glyph_MajorDruid"                  , 0x00000040, 0x00002000,   25,  25,  1,  0, 16, 11,  0,     0, 0.000000,    0.000, 0x00000400, 0x7fffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {   483, 54866,     0,     0,     0 }, {   0,   6,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
@@ -2306,7 +2306,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 55818, "Cowl of the Unseen World"                             , "inv_helmet_mail_dungeonmail_c_03"      , 0x00000000, 0x00002000,  316,  81,  3,  1,  4,  3,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  36,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  229,  343,  164,  134,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 55819, "Tear of Blood"                                        , "Spell_Shadow_LifeDrain"                , 0x00081000, 0x00002000,  316,  81,  3, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  215,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 91137,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 55820, "Prophet's Scepter"                                    , "inv_offhand_utgarde_d_01"              , 0x00000000, 0x00002000,  316,  81,  3, 23,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  127,  191,   74,   91,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
-  { 55821, "Book of Dark Prophecies"                              , "inv_misc_book_17"                      , 0x00000000, 0x00002000,  316,  81,  3, 28,  4, 11,  1,     0, 0.000000,    0.000, 0x00007fff, 0xffffffff, {   5,   7,   6,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {   72,  108,   48,   48,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {  14,   0,   0 },    0,     0 },
+  { 55821, "Book of Dark Prophecies"                              , "inv_misc_book_17"                      , 0x00000000, 0x00002008,  316,  81,  3, 28,  4, 11,  1,     0, 0.000000,    0.000, 0x00007fff, 0xffffffff, {   5,   7,   6,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {   72,  108,   48,   48,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {  14,   0,   0 },    0,     0 },
   { 55822, "Heavy Geode Mace"                                     , "inv_mace_1h_cataclysm_c_02"            , 0x00000000, 0x00002000,  316,  81,  3, 13,  2,  4,  2,  2600, 0.600000,    0.000, 0xffffffff, 0xffffffff, {   3,   7,  37,  31,  -1,  -1,  -1,  -1,  -1,  -1 }, {   98,  147,   65,   65,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 55823, "Wand of Dark Worship"                                 , "inv_wand_1h_cataclysm_c_02"            , 0x00000000, 0x00002000,  316,  81,  3, 26,  2, 19,  2,  1800, 0.600000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  32,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {   72,  108,   48,   48,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 55824, "Skin of Stone"                                        , "inv_misc_cape_cataclysm_tank_c_01"     , 0x00000000, 0x00002000,  316,  81,  3, 16,  4,  1,  2,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   4,   7,  32,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  127,  191,   85,   85,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
@@ -2507,7 +2507,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 56347, "Leaden Despair"                                       , "quest_12252_icon"                      , 0x00080008, 0x00002000,  346,  85,  3, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   7,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  427,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 92185,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 56348, "Slippers of the Twilight Prophet"                     , "inv_boots_robe_dungeonrobe_c_03"       , 0x00000008, 0x00002000,  346,  85,  3,  8,  4,  1,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  31,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  205,  337,  130,  150,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   8,   0,   0 },    0,  4143 },
   { 56349, "Prophet's Scepter"                                    , "inv_offhand_utgarde_d_01"              , 0x00000008, 0x00002000,  346,  85,  3, 23,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  168,  252,   98,  120,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
-  { 56350, "Book of Dark Prophecies"                              , "inv_misc_book_17"                      , 0x00000008, 0x00002000,  346,  85,  3, 28,  4, 11,  1,     0, 0.000000,    0.000, 0x00007fff, 0xffffffff, {   5,   7,   6,  32,  -1,  -1,  -1,  -1,  -1,  -1 }, {   95,  143,   63,   63,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {  14,   0,   0 },    0,     0 },
+  { 56350, "Book of Dark Prophecies"                              , "inv_misc_book_17"                      , 0x00000008, 0x00002008,  346,  85,  3, 28,  4, 11,  1,     0, 0.000000,    0.000, 0x00007fff, 0xffffffff, {   5,   7,   6,  32,  -1,  -1,  -1,  -1,  -1,  -1 }, {   95,  143,   63,   63,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {  14,   0,   0 },    0,     0 },
   { 56351, "Tear of Blood"                                        , "Spell_Shadow_LifeDrain"                , 0x00081008, 0x00002000,  346,  85,  3, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  285,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 91140,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 56352, "Cowl of the Unseen World"                             , "inv_helmet_mail_dungeonmail_c_03"      , 0x00000008, 0x00002000,  346,  85,  3,  1,  4,  3,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  36,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  242,  454,  176,  157,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   1,   4,   0 },    0,  4128 },
   { 56353, "Heavy Geode Mace"                                     , "inv_mace_1h_cataclysm_c_02"            , 0x00000008, 0x00002000,  346,  85,  3, 13,  2,  4,  2,  2600, 0.600000,    0.000, 0xffffffff, 0xffffffff, {   3,   7,  37,  31,  -1,  -1,  -1,  -1,  -1,  -1 }, {  129,  194,   86,   86,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
@@ -3058,7 +3058,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 59497, "Shackles of the End of Days"                          , "inv_bracer_plate_raidpaladin_i_01"     , 0x00000000, 0x00002000,  359,  85,  4,  9,  4,  4,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  32,  -1,  -1,  -1,  -1,  -1,  -1 }, {  190,  286,  127,  127,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 59498, "Hands of the Twilight Council"                        , "inv_gauntlets_cloth_raidwarlock_i_01"  , 0x00000000, 0x00002000,  359,  85,  4, 10,  4,  1,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  32,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {  233,  380,  169,  149,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   2,   0,   0 },    0,  4151 },
   { 59499, "Kilt of the Forgotten Battle"                         , "inv_pant_raidshaman_i_01"              , 0x00000000, 0x00002000,  359,  85,  4,  7,  4,  3,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  301,  512,  228,  188,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   2,   4,   0 },    0,  4129 },
-  { 59500, "Fall of Mortality"                                    , "inv_misc_cat_trinket12"                , 0x00081000, 0x00002000,  359,  85,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  321,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 96967,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
+  { 59500, "Fall of Mortality"                                    , "inv_misc_cat_trinket12"                , 0x00081000, 0x00002000,  359,  85,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  321,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 91186,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 59501, "Signet of the Fifth Circle"                           , "inv_misc_diamondring2"                 , 0x00080000, 0x00002000,  359,  85,  4, 11,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  49,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {  190,  286,  127,  127,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0 },
   { 59502, "Dispersing Belt"                                      , "inv_belt_leatherraidrogue_i_01"        , 0x00000000, 0x00002000,  359,  85,  4,  6,  4,  2,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   3,   7,  36,  32,  -1,  -1,  -1,  -1,  -1,  -1 }, {  233,  380,  169,  149,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   8,   0,   0 },    0,  2782 },
   { 59503, "Terrastra's Legguards"                                , "inv_pants_plate_raidwarrior_i_01"      , 0x00000000, 0x00002000,  359,  85,  4,  7,  4,  4,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   4,   7,  36,  31,  -1,  -1,  -1,  -1,  -1,  -1 }, {  301,  512,  228,  188,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   4,   4,   0 },    0,  4140 },
@@ -5272,7 +5272,7 @@ static struct item_data_t __ptr_item_data[] = {
 
 #define PTR_RAND_PROP_POINTS_SIZE (400)
 
-// Random property points for item levels 1-400, wow build 13698
+// Random property points for item levels 1-400, wow build 13707
 static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
   {   1, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
   {   2, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
@@ -5679,7 +5679,7 @@ static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
 
 #define PTR_RAND_SUFFIX_SIZE (224)
 
-// Random "cataclysm" item suffixes, wow build 13698
+// Random "cataclysm" item suffixes, wow build 13707
 static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
   {    5, "of the Monkey"       , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {    6, "of the Eagle"        , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -5910,7 +5910,7 @@ static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
 
 #define PTR_SPELL_ITEM_ENCH_SIZE (3007)
 
-// Item enchantment data, wow build 13698
+// Item enchantment data, wow build 13707
 static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {    1, "Rockbiter 3"            ,     0, {   6,   0,   0 }, {    6,    0,    0 }, {     0,     0,     0 } },
   {    2, "Frostbrand"             ,     0, {   1,   0,   0 }, {    0,    0,    0 }, {  8034,     0,     0 } },
@@ -8922,7 +8922,7 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   { 0, 0, 0, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-400, wow build 13698
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   {    1, {    0.900000,    0.950000,    1.000000,    1.100000,    1.370000,    1.370000,    1.370000 } },
   {    2, {    0.900000,    0.950000,    1.000000,    1.100000,    1.370000,    1.370000,    1.370000 } },
@@ -9327,7 +9327,7 @@ static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-400, wow build 13698
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   {    1, {        28.0,        57.0,        91.0,       153.0,       199.0,       199.0,       199.0 } },
   {    2, {        57.0,        86.0,       119.0,       181.0,       234.0,       234.0,       234.0 } },
@@ -9732,7 +9732,7 @@ static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-400, wow build 13698
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-400, wow build 13707
 static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
   {    1, {    82.915703,   126.601997,   206.376007,   310.082001 } },
   {    2, {    97.447304,   148.789001,   242.544998,   364.425995 } },
@@ -10138,7 +10138,7 @@ static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
 };
 
 
-// Inventory type based armor multipliers, wow build 13698
+// Inventory type based armor multipliers, wow build 13707
 static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
   {   1, {    0.130000,    0.130000,    0.130000,    0.130000 } },
   {   2, {    0.000000,    0.000000,    0.000000,    0.000000 } },
@@ -10167,7 +10167,7 @@ static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
 };
 
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   {    1, {    0.761456,    0.780158,    1.269090,    3.899070,    6.957370,    6.957370,    6.957370 } },
   {    2, {    0.991986,    1.016350,    1.653310,    4.443200,    7.401560,    7.401560,    7.401560 } },
@@ -10572,7 +10572,7 @@ static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   {    1, {    0.380728,    0.390079,    0.634547,    1.949538,    3.478684,    3.478684,    3.478684 } },
   {    2, {    0.495993,    0.508175,    0.826655,    2.221599,    3.700778,    3.700778,    3.700778 } },
@@ -10977,7 +10977,7 @@ static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageRanged.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageRanged.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamageranged_data[] = {
   {    1, {    0.989892,    1.014210,    1.649820,    5.068800,    9.044580,    9.044580,    9.044580 } },
   {    2, {    1.289580,    1.321260,    2.149300,    5.776160,    9.622030,    9.622030,    9.622030 } },
@@ -11382,7 +11382,7 @@ static struct item_scale_data_t __ptr_itemdamageranged_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageThrown.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageThrown.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamagethrown_data[] = {
   {    1, {    0.990000,    1.014000,    1.650000,    5.069000,    9.045000,    9.045000,    9.045000 } },
   {    2, {    1.290000,    1.321000,    2.149000,    5.776000,    9.622000,    9.622000,    9.622000 } },
@@ -11787,7 +11787,7 @@ static struct item_scale_data_t __ptr_itemdamagethrown_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageWand.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageWand.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamagewand_data[] = {
   {    1, {    1.177165,    2.256540,    2.911347,    5.354722,    9.678668,    9.678668,    9.678668 } },
   {    2, {    1.327749,    2.545198,    3.283769,    5.772976,   10.560000,   10.560000,   10.560000 } },
@@ -12192,7 +12192,7 @@ static struct item_scale_data_t __ptr_itemdamagewand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   {    1, {    0.989892,    1.014205,    1.649821,    5.068797,    9.044580,    9.044580,    9.044580 } },
   {    2, {    1.289582,    1.321256,    2.149303,    5.776158,    9.622025,    9.622025,    9.622025 } },
@@ -12597,7 +12597,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-400, wow build 13698
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-400, wow build 13707
 static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   {    1, {    0.380728,    0.390079,    0.634547,    1.949538,    3.478684,    3.478684,    3.478684 } },
   {    2, {    0.495993,    0.508175,    0.826655,    2.221599,    3.700778,    3.700778,    3.700778 } },
@@ -13003,7 +13003,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
 };
 
 
-// Gem properties, wow build 13698
+// Gem properties, wow build 13707
 static struct gem_property_data_t __ptr_gem_property_data[] = {
   {     2,  2686,   2 },
   {     3,  2687,   8 },

@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13698
+// Class based active abilities, wow build 13707
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -447,11 +447,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       47476, // Strangulate
           0,
     },
-    // Frost tree, 12 abilities
+    // Frost tree, 13 abilities
     {
       45524, // Chains of Ice
       85948, // Festering Strike
       48266, // Frost Presence
+      49143, // Frost Strike
       49184, // Howling Blast
       49203, // Hungering Cold
       48792, // Icebound Fortitude
@@ -782,7 +783,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        5176, // Wrath
           0,
     },
-    // Feral tree, 37 abilities
+    // Feral tree, 38 abilities
     {
        1066, // Aquatic Form (Shapeshift)
        5211, // Bash (Bear Form)
@@ -814,6 +815,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        5221, // Shred (Cat Form)
       80965, // Skull Bash (Cat Form)
       80964, // Skull Bash (Bear Form)
+      77764, // Stampeding Roar (Cat Form)
       61336, // Survival Instincts (Cat or Bear Form)
       40120, // Swift Flight Form (Shapeshift)
       62078, // Swipe (Cat Form)
@@ -848,7 +850,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13698
+// Talent tree specialization abilities, wow build 13707
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1106,7 +1108,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13698
+// Class mastery abilities, wow build 13707
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1191,7 +1193,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13698
+// Racial abilities, wow build 13707
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1834,7 +1836,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13698
+// Glyph spells for classes, wow build 13707
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2306,7 +2308,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       54832, // Glyph of Innervate
       54811, // Glyph of Maul
       63056, // Glyph of Monsoon
-      54821, // Glyph of Rake
+      54821, // Glyph of Pounce
       54733, // Glyph of Rebirth
       54812, // Glyph of Solar Beam
       54828, // Glyph of Starfall
@@ -2349,7 +2351,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13698
+// Tier item set bonuses for class, wow build 13707
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {

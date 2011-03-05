@@ -36,7 +36,7 @@ static unsigned             idx_td_size[2]     = { 0, 0 };
 const char* dbc_t::build_level( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "13698" : "13623";
+  return ptr ? "13707" : "13623";
 #else
   return "13623";
 #endif
