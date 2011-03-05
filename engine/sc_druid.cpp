@@ -583,14 +583,14 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   {
     if ( p -> eclipse_bar_value == 100 ) 
     {
-      if ( p -> buffs_eclipse_solar -> trigger( 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01 ) )
+      if ( p -> buffs_eclipse_solar -> trigger( 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01, 1 ) )
       {
         trigger_eclipse_proc( p );
       }
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
-      if ( p -> buffs_eclipse_lunar -> trigger( 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01 ) )
+      if ( p -> buffs_eclipse_lunar -> trigger( 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01, 1 ) )
       {
         trigger_eclipse_proc( p );
       }
