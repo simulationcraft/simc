@@ -224,8 +224,9 @@ action_t::~action_t()
 {
   if ( if_expr )
     delete if_expr;
+
   if ( interrupt_if_expr )
-    delete if_expr;
+    delete interrupt_if_expr;
 }
 
 // action_t::parse_data ====================================================

@@ -94,7 +94,6 @@ struct mage_t : public player_t
   {
     spell_data_t* arcane_blast;
     spell_data_t* arcane_missiles;
-    spell_data_t* arcane_potency;
     spell_data_t* arcane_power;
     spell_data_t* hot_streak;
     spell_data_t* icy_veins;
@@ -2837,7 +2836,6 @@ void mage_t::init_spells()
 
   spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast",     dbc.ptr );
   spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles!", dbc.ptr );
-  spells.arcane_potency  = spell_data_t::find( 12042, "Arcane Potency",   dbc.ptr );
   spells.arcane_power    = spell_data_t::find( 12042, "Arcane Power",     dbc.ptr );
   spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak",       dbc.ptr );
   spells.icy_veins       = spell_data_t::find( 12472, "Icy Veins",        dbc.ptr );
@@ -2937,7 +2935,6 @@ void mage_t::init_buffs()
 
   buffs_arcane_blast         = new buff_t( this, spells.arcane_blast,          NULL );
   buffs_arcane_missiles      = new buff_t( this, spells.arcane_missiles,       "chance", 0.40, NULL );
-  buffs_arcane_potency       = new buff_t( this, spells.arcane_potency,       "stacks", 2, "chance", (double) talents.arcane_potency->rank(), NULL );
   buffs_arcane_power         = new buff_t( this, spells.arcane_power,          "cooldown", 0.0, NULL ); // CD managed in action
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze,         NULL );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration, "cooldown", 15.0, NULL );
@@ -2949,6 +2946,7 @@ void mage_t::init_buffs()
   buffs_mage_armor           = new buff_t( this, spells.mage_armor,            NULL );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
 
+  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
