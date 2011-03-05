@@ -2630,7 +2630,7 @@ struct death_coil_t : public death_knight_spell_t
     if ( result_is_hit() )
     {
       trigger_unholy_blight( this, direct_dmg );
-      p -> trigger_runic_empowerment(); // FIX ME: Confirm this needs to hit to trigger
+      p -> trigger_runic_empowerment();
     }
 
     if ( ! p -> buffs_dark_transformation -> check() )
@@ -2816,8 +2816,6 @@ struct frost_strike_offhand_t : public death_knight_attack_t
 
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += 0.05;
-    if ( p -> ptr )
-      weapon_multiplier = 1.30; // FIXME: Remove once this is included in the DBC data
   }
 
   virtual void player_buff()
@@ -2855,8 +2853,6 @@ struct frost_strike_t : public death_knight_attack_t
     base_cost -= p -> glyphs.frost_strike * 8;
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += 0.05;
-    if ( p -> ptr )
-      weapon_multiplier = 1.30; // FIXME: Remove once this is included in the DBC data
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new frost_strike_offhand_t( p );
@@ -2997,14 +2993,6 @@ struct howling_blast_t : public death_knight_spell_t
     extract_rune_cost( this , &cost_blood, &cost_frost, &cost_unholy );
     aoe               = 1; // Change to -1 once we support meteor split effect
     direct_power_mod  = 0.4;
-
-    if ( p -> ptr )
-    {
-      // FIXME: Remove once this is included in the DBC data
-      base_dd_min      = 1441;
-      base_dd_max      = 1441;
-      direct_power_mod = 0.48;
-    }
 
     if ( ! p -> frost_fever )
       p -> frost_fever = new frost_fever_t( p );
@@ -3650,7 +3638,7 @@ struct rune_strike_t : public death_knight_attack_t
     
     if ( result_is_hit() )
     {
-      p -> trigger_runic_empowerment();  // FIX ME: Does DW get 2 chances to proc this?
+      p -> trigger_runic_empowerment();
     }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )

@@ -877,8 +877,7 @@ void warrior_attack_t::player_buff()
 
   if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
   {
-    // FIXME: seems like you should need to have two 1Hers (&&)
-    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H ||
+     if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
          p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
     {
       player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effect1().percent();
@@ -1082,7 +1081,7 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> ptr && p -> primary_tree() == TREE_FURY )
-      player_multiplier *= 1.40; // FIXME: Use DBC value when it's added
+      player_multiplier *= 1.0 + p -> spec.precision -> effect_base_value( 3 ) / 100.0;
   }
 };
 
@@ -2215,7 +2214,7 @@ struct thunder_clap_t : public warrior_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    direct_power_mod  = 0.12; // FIXME: Is this correct?
+    direct_power_mod  = extra_coeff();
     base_multiplier  *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
     base_crit        += p -> talents.incite -> effect1().percent();
     base_cost        += p -> glyphs.resonating_power -> effect1().resource( RESOURCE_RAGE );
