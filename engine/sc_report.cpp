@@ -2734,6 +2734,17 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file,
         "\t\t\t\t\t\t\t</tr>\n" );
       util_t::fprintf( file,
+        "\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n" );
+      for ( int i=0; i < STAT_MAX; i++ )
+        if ( p -> scales_with[ i ] )
+          util_t::fprintf( file,
+            "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+            p -> sim -> report_precision,
+            p -> scaling_error.get_stat( i ) );
+      util_t::fprintf( file,
+        "\t\t\t\t\t\t\t</tr>\n" );
+      util_t::fprintf( file,
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Gear Ranking</th>\n"
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
