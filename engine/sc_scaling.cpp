@@ -282,17 +282,15 @@ void scaling_t::analyze_stats()
 	error /= 10.0;
       }
 
-      if ( scale_factor_noise <= 0 ||
-	   scale_factor_noise > ref_error / fabs( delta_score - ref_score ) )
+      if ( scale_factor_noise > 0 &&
+	   scale_factor_noise < ref_error / fabs( delta_score - ref_score ) )
       {
-	p -> scaling.set_stat( i, score );
-	p -> scaling_error.set_stat( i, error );
+	sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
+		       p -> name(), sim -> iterations, util_t::stat_type_string( i ), scale_factor_noise * 100.0 );
       }
-      else
-      {
-	sim -> errorf( "Player %s given insufficient iterations (%d) to calculate scale factor for %s\n",
-		       p -> name(), sim -> iterations, util_t::stat_type_string( i ) );
-      }
+
+      p -> scaling.set_stat( i, score );
+      p -> scaling_error.set_stat( i, error );
     }
 
     if ( debug_scale_factors )
