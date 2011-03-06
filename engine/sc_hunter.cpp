@@ -2188,15 +2188,22 @@ struct cobra_shot_t : public hunter_attack_t
 struct explosive_shot_t : public hunter_attack_t
 {
   int lock_and_load;
+  int non_consecutive;
 
   explosive_shot_t( player_t* player, const std::string& options_str ) :
       hunter_attack_t( "explosive_shot", player, "Explosive Shot" ),
-      lock_and_load( 0 )
+      lock_and_load( 0 ), non_consecutive( 1 )
   {
     hunter_t* p = player -> cast_hunter();
     check_spec ( TREE_SURVIVAL );
 
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "non_consecutive", OPT_BOOL, &non_consecutive },
+      { NULL, OPT_UNKNOWN, NULL}
+    };
+
+    parse_options( options, options_str );
 
     may_block = false;
     may_crit  = false;
@@ -2214,6 +2221,20 @@ struct explosive_shot_t : public hunter_attack_t
     return hunter_attack_t::cost();
   }
 
+  virtual bool ready()
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    if ( non_consecutive )
+    {
+      if ( ! p -> last_foreground_action )
+        return true;
+      if ( p -> last_foreground_action -> name_str == "explosive_shot" )
+        return false;
+    }
+
+    return hunter_attack_t::ready();
+  }
 
   virtual void update_ready()
   {
@@ -3598,7 +3619,7 @@ void hunter_t::init_actions()
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/rapid_fire";
-      action_list_str += "/explosive_shot,if=!ticking&!in_flight";
+      action_list_str += "/explosive_shot,non_consecutive=1";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
       action_list_str += "/kill_shot";
       action_list_str += "/arcane_shot,if=focus>=70&buff.lock_and_load.down";
