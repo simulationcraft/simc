@@ -1,4 +1,4 @@
-#!./simc 
+#!./simc
 
 mage=Mage_Frost_Frostfire_T11_372
 origin="http://chardev.org/?profile=35390"
@@ -7,7 +7,7 @@ race=troll
 role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525
-talents=http://www.wowhead.com/talent#mage-0020000000000000000002303000000000000000002323021013311301221
+talents=http://www.wowhead.com/talent#mage-0020000000000000000002303000000000000000002323021013331301021
 glyphs=ice_barrier/evocation/blink/slow_fall/conjuring/arcane_brilliance/ice_lance/frostfire/deep_freeze
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -31,8 +31,6 @@ actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
 actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
 actions+=/mage_armor,if=(mana_pct*15)<target.time_to_die
-actions+=/evocation,if=mana_pct<5&target.time_to_die>60
-actions+=/evocation,if=buff.mage_armor.up
 actions+=/frostbolt,if=!cooldown.early_frost.remains
 actions+=/frostfire_bolt
 actions+=/ice_lance,moving=1

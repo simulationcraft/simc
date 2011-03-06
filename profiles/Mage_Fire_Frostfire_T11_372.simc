@@ -1,4 +1,4 @@
-#!./simc 
+#!./simc
 
 mage=Mage_Fire_Frostfire_T11_372
 origin="http://chardev.org/?profile=35372"
@@ -27,7 +27,6 @@ actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/living_bomb,if=!ticking
 actions+=/pyroblast_hs,if=buff.hot_streak.react
 actions+=/flame_orb,if=target.time_to_die>=12
-actions+=/evocation,if=buff.mage_armor.up
 actions+=/frostfire_bolt
 actions+=/mage_armor,if=mana_pct<5&buff.mage_armor.down
 actions+=/scorch
