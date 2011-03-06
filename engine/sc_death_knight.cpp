@@ -2998,6 +2998,8 @@ struct howling_blast_t : public death_knight_spell_t
       p -> frost_fever = new frost_fever_t( p );
   }
 
+  virtual void consume_resource() {}
+
   virtual double cost() SC_CONST
   {
     // Rime also prevents getting RP because there are no runes used!
@@ -3010,10 +3012,11 @@ struct howling_blast_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_rime -> up() )
+    if ( ! p -> buffs_rime -> up() )
     {
-      // Don't use any runes if Rime is up
-      group_runes( p, 0, 0, 0, use );
+      // We only consume resources when rime is not up
+      // Rime procs generate no RP from rune abilites, which is handled in consume_resource as well
+      death_knight_spell_t::consume_resource();
     }
     death_knight_spell_t::execute();
 
@@ -3076,6 +3079,8 @@ struct icy_touch_t : public death_knight_spell_t
       p -> frost_fever = new frost_fever_t( p );
   }
 
+  virtual void consume_resource() {}
+
   virtual double cost() SC_CONST
   {
     // Rime also prevents getting RP because there are no runes used!
@@ -3088,10 +3093,11 @@ struct icy_touch_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_rime -> up() )
+    if ( ! p -> buffs_rime -> up() )
     {
-      // Don't use any runes if Rime is up
-      group_runes( p, 0, 0, 0, use );
+      // We only consume resources when rime is not up
+      // Rime procs generate no RP from rune abilites, which is handled in consume_resource as well
+      death_knight_spell_t::consume_resource();
     }
 
     death_knight_spell_t::execute();
