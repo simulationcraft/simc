@@ -2627,13 +2627,25 @@ struct wild_quiver_trigger_t : public action_callback_t
   virtual void trigger( action_t* a, void* call_data )
   {
     hunter_t* p = listener -> cast_hunter();
+    target_t* t = a -> target -> cast_target();
+    int num_targets = 1;
     if ( ! a -> weapon ) return;
     if ( a -> weapon -> slot != SLOT_RANGED ) return;
     if ( a -> proc ) return;
-    if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effect_coeff( 1 ) / 100.0 ) )
+    if ( a -> aoe == -1 )
     {
-      attack -> execute();
-      p -> procs_wild_quiver -> occur();
+      num_targets += t -> adds_nearby;
+    } else if ( a -> aoe )
+    {
+      num_targets += std::min( a -> aoe, t -> adds_nearby );
+    }
+    for ( int i = 0; i < num_targets; i++ )
+    {
+      if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effect_coeff( 1 ) / 100.0 ) )
+      {
+        attack -> execute();
+        p -> procs_wild_quiver -> occur();
+      }
     }
   }
 };
