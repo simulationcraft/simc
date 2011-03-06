@@ -1,0 +1,9 @@
+#!simc
+
+chardev=36311 save=Rogue_Assassination_T11_372.simc name=Rogue_Assassination_T11_372
+
+chardev=55921 save=Rogue_Combat_T11_372.simc name=Rogue_Combat_T11_372
+
+chardev=36352 save=Rogue_Subtlety_T11_372.simc name=Rogue_Subtlety_T11_372
+
+chardev=36366 save=Rogue_Subtlety_T11_359.simc name=Rogue_Subtlety_T11_359
