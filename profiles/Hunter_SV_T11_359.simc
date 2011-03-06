@@ -24,7 +24,7 @@ actions+=/multi_shot,if=target.adds>2
 actions+=/cobra_shot,if=target.adds>2
 actions+=/serpent_sting,if=!ticking
 actions+=/rapid_fire
-actions+=/explosive_shot,if=!ticking&!in_flight
+actions+=/explosive_shot,non_consecutive=1
 actions+=/black_arrow,if=!ticking
 actions+=/kill_shot
 actions+=/arcane_shot,if=focus>=70&buff.lock_and_load.down
