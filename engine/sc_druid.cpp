@@ -550,7 +550,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   int old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
 
-  if ( p -> eclipse_bar_value < 0 ) 
+  if ( p -> eclipse_bar_value <= 0 ) 
   {
     p -> buffs_eclipse_solar -> expire();
 
@@ -558,7 +558,7 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
       p -> eclipse_bar_value = -100;
   }
 
-  if ( p -> eclipse_bar_value > 0 ) 
+  if ( p -> eclipse_bar_value >= 0 ) 
   {
     p -> buffs_eclipse_lunar -> expire();
 
