@@ -2397,6 +2397,7 @@ struct sim_t
   int report_pets_separately;
   int report_targets;
   int report_details;
+  int report_rng;
   int hosted_html;
   int print_styles;
 

@@ -554,7 +554,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     path_str( "." ), output_file( stdout ), 
     armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
     // Report
-    report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), hosted_html( 0 ), print_styles( false ),
+    report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_rng( 0 ), hosted_html( 0 ), print_styles( false ),
     // Multi-Threading
     threads( 0 ), thread_handle( 0 ), thread_index( index ),
     spell_query( 0 )
@@ -2120,6 +2120,7 @@ void sim_t::create_options()
     { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
     { "report_targets",                   OPT_BOOL,   &( report_targets                           ) },
     { "report_details",                   OPT_BOOL,   &( report_details                           ) },
+    { "report_rng",                       OPT_BOOL,   &( report_rng                           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

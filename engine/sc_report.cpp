@@ -1187,6 +1187,25 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
       "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
       sim -> dpet_charts[ i ].c_str() );
   }
+  
+  // RNG chart
+  if ( sim -> report_rng )
+  {
+    util_t::fprintf( file,
+      "\t\t\t\t\t<ul>\n" );
+    for ( int i=0; i < ( int ) sim -> players_by_name.size(); i++ )
+    {
+      player_t* p = sim -> players_by_name[ i ];
+      util_t::fprintf( file,
+        "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
+        p -> name(),
+        ( ( p -> dps_max - p -> dps_min ) / 2 ),
+        p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
+    }
+    util_t::fprintf( file,
+      "\t\t\t\t\t</ul>\n" );
+  }
+
   util_t::fprintf( file,
     "\t\t\t\t</div>\n" );
 
