@@ -1445,12 +1445,14 @@ struct death_knight_attack_t : public attack_t
   int    cost_frost;
   int    cost_unholy;
   double convert_runes;
+  double m_dd_additive; // Multipler for Direct Damage that are all additive with each other
   bool   use[RUNE_SLOT_MAX];
 
   death_knight_attack_t( const char* n, death_knight_t* p, bool special = false ) :
     attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special ),
     requires_weapon( true ),
-    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 )
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
+    m_dd_additive( 0 )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
@@ -1460,7 +1462,8 @@ struct death_knight_attack_t : public attack_t
   death_knight_attack_t( const char* n, uint32_t id, death_knight_t* p ) :
     attack_t( n, id, p, 0, true ),
     requires_weapon( true ),
-    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 )
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
+    m_dd_additive( 0 )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
@@ -1892,7 +1895,11 @@ void death_knight_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
   if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
-    player_multiplier *= 1.0 + p -> talents.might_of_the_frozen_wastes -> effect3().percent();
+    m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
+
+  // Add in all m_dd_additive
+  player_multiplier *= 1.0 + m_dd_additive;
+  m_dd_additive = 0; // Reset
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
 
@@ -3205,11 +3212,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
     weapon     = &( p -> off_hand_weapon );
     // FIXME: Base Value is halfed in the DBC, should it be?
 
-    if ( p -> glyphs.obliterate )
-      weapon_multiplier *= 1.2;
-
-    base_multiplier *= 1.0 + p -> talents.annihilation -> mod_additive( P_GENERIC )
-                       + p -> set_bonus.tier10_2pc_melee() * 0.10;
+    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
   }
 
   virtual void execute()
@@ -3229,8 +3232,15 @@ struct obliterate_offhand_t : public death_knight_attack_t
 
   virtual void player_buff()
   {
-    death_knight_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
+
+    // This has to be called before player_buff()
+    // These both stack additive with MOTFW
+    // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
+    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
+                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
+
+    death_knight_attack_t::player_buff();
 
     player_crit += p -> buffs_killing_machine -> value();
   }
@@ -3264,11 +3274,8 @@ struct obliterate_t : public death_knight_attack_t
     if ( p -> primary_tree() == TREE_BLOOD )
       convert_runes = 1.0;
 
-    if ( p -> glyphs.obliterate )
-      weapon_multiplier *= 1.2;
+    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
 
-    base_multiplier *= 1.0 + p -> talents.annihilation -> mod_additive( P_GENERIC )
-                       + p -> set_bonus.tier10_2pc_melee() * 0.10;
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new obliterate_offhand_t( p );
   }
@@ -3304,8 +3311,15 @@ struct obliterate_t : public death_knight_attack_t
 
   virtual void player_buff()
   {
-    death_knight_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
+
+    // This has to be called before player_buff()
+    // These both stack additive with MOTFW
+    // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
+    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
+                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
+
+    death_knight_attack_t::player_buff();
 
     player_crit += p -> buffs_killing_machine -> value();
   }
