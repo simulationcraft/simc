@@ -3948,7 +3948,7 @@ void druid_t::init_actions()
       action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       if ( race == RACE_TROLL )
         action_list_str += "/berserking";
-      action_list_str += "/insect_swarm,if=dot.insect_swarm.remains<1|(dot.insect_swarm.remains<4&buff.solar_eclipse.up&eclipse<15)";
+      action_list_str += "/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<4&buff.solar_eclipse.up&eclipse<15)";
       if ( primary_tree() == TREE_BALANCE )
         action_list_str += "/starsurge,if=buff.t11_4pc_caster.up";
       action_list_str += "/starfire,if=buff.t11_4pc_caster.up&buff.lunar_eclipse.up";
@@ -3960,8 +3960,8 @@ void druid_t::init_actions()
       if ( talents.starfall -> rank() ) 
         action_list_str += "/starfall,if=buff.lunar_eclipse.up&buff.t11_4pc_caster.down";
       if ( talents.sunfire -> rank() )
-        action_list_str += "/sunfire,if=!ticking&buff.t11_4pc_caster.down&!dot.moonfire.remains>0";
-      action_list_str += "/moonfire,if=!ticking&buff.t11_4pc_caster.down";
+        action_list_str += "/sunfire,if=(!ticking|ticks_remain<2)&buff.t11_4pc_caster.down&!dot.moonfire.remains>0";
+      action_list_str += "/moonfire,if=(!ticking|ticks_remain<2)&buff.t11_4pc_caster.down";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
       if ( primary_tree() == TREE_BALANCE )
