@@ -4511,9 +4511,8 @@ struct result_t
   int type;
   bool hit;  // convenience
   bool crit; // convenience, two-roll (blocked crits, etc)
-  double direct_amount;
-  double tick_amount; 
-  // Perhaps this should be just "amount" and generate two travel events when there is direct damage and "aura applied"?
+  double amount;
+  double tick_amount;
 };
 
 struct ability_t : public action_t
@@ -4530,7 +4529,7 @@ struct ability_t : public action_t
     results.resize( num_targets );
     for( int i=0; i < num_targets; i++ )
     {
-      schedule_travel( results[ i ] = calculate_result( targets[ i ] ) );
+      schedule_travel( calculate_result( results[ i ], targets[ i ] ) );
       // "result" callbacks
     }
     consume_resource();
@@ -4539,16 +4538,19 @@ struct ability_t : public action_t
   }
   virtual void travel( result_t& result )
   {
-    if ( harmful )
-    {
-      assess_damage( result );
-    }
-    else if( healing )
-    {
-      assess_healing( result );
-    }
     if( result.hit )
     {
+      if ( result.amount > 0 )
+      {
+	if ( harmful )
+        {
+	  assess_damage( result );
+	}
+	else if( healing )
+        {
+	  assess_healing( result );
+	}
+      }
       if ( num_ticks > 0 )
       {
         ticker_t* ticker = get_ticker( result.target );  // caches aura_slot
@@ -4557,18 +4559,31 @@ struct ability_t : public action_t
 	// ticker -> pool = ticker -> num_ticks * result.tick_amount;
       }
     }
-    else // miss msg
+    else 
+    {
+      // miss msg
+      stat -> add_result( result );
+    }
   }
   virtual void      tick         ( ticker_t* );
   virtual void      last_tick    ( ticker_t* );
   virtual void      schedule_tick( ticker_t* );
+  virtual int       calculate_num_ticks();
   virtual double    cost();
   virtual double    haste();
   virtual bool      ready();
   virtual void      cancel();
   virtual void      reset();
   virtual void      consume_resource();
-  virtual result_t  calculate_result( actor_t* target );
+  virtual result_t& calculate_result( result_t& result, actor_t* target )
+  {
+    result.type = roll;
+    result.hit  = ( roll == ? );
+    result.crit = ( roll == ? ) || ( two_roll );
+    result.amount = calculate_direct_amount( target );
+    result.tick_amount = calculate_tick_amount( target );
+    return result;
+  }
   virtual double    calculate_weapon_amount( actor_t* target );
   virtual double    calculate_direct_amount( actor_t* target );
   virtual double    calculate_tick_amount  ( actor_t* target );
@@ -4578,17 +4593,26 @@ struct ability_t : public action_t
   virtual double    calculate_glance_chance( actor_t* target );
   virtual double    calculate_block_chance ( actor_t* target );
   virtual double    calculate_crit_chance  ( actor_t* target );
-  virtual double    calculate_multiplier       ();
-  virtual double    calculate_direct_multiplier();
-  virtual double    calculate_tick_multiplier  ();
-  virtual double    calculate_target_multiplier( actor_t* target ); // includes mitigation, not called during tick calculation
+  virtual double    calculate_source_multiplier();
+  virtual double    calculate_direct_multiplier() { return calculate_source_multiplier(); } // include crit bonus here
+  virtual double    calculate_tick_multiplier  () { return calculate_source_multiplier(); }
+  virtual double    calculate_target_multiplier( actor_t* target );
   virtual int       area_of_effect( actor_t* targets[] ) { targets[ 0 ] = self_cast ? actor : actor -> current_target; return 1; }
   virtual result_t& result(); // returns 0th "result", asserts if aoe
   virtual double    travel_time( actor_t* target );
   virtual void      schedule_travel( result_t& result );
-  virtual void      assess_damage  ( result_t& result );
-  virtual void      assess_healing ( result_t& result );
-  virtual int       calculate_num_ticks();
+  virtual void assess_damage( result_t& result )
+  {
+    result.amount *= calculate_target_multiplier( result.target ); // allows for action-specific target multipliers
+    result.target -> assess_damage( result ); // adjust result as needed for flexibility
+    stat -> add_result( result );
+  }
+  virtual void assess_healing( result_t& result )
+  {
+    result.amount *= calculate_target_multiplier( result.target ); // allows for action-specific target multipliers
+    result.target -> assess_healing( result ); // adjust result as needed for flexibility
+    stat -> add_result( result );
+  }
 };
 
 #endif

@@ -211,6 +211,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       std::string build_str;
       if( xml_t::get_value( build_str, xml_t::get_node( anchor_node, "span", "class", "name" ), "." ) )
       {
+	armory_t::format( build_str );
         if( util_t::str_compare_ci( talents_description, build_str ) )
         {
           talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ) );
