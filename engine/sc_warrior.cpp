@@ -324,6 +324,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_mastery() SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit_block() SC_CONST;
@@ -453,8 +454,6 @@ static void trigger_deep_wounds( action_t* a )
 
   if ( ! p -> talents.deep_wounds -> ok() )
     return;
-
-
 
   if ( ! p -> active_deep_wounds )
     assert( 0 );
@@ -835,17 +834,6 @@ void warrior_attack_t::player_buff()
   // abilities right.
 
   warrior_t* p = player -> cast_warrior();
-
-  // --- Stances ---
-
-  if ( p -> active_stance == STANCE_BATTLE && p -> buffs_battle_stance -> up() )
-  {
-    player_multiplier *= ( 1.0 + p -> buffs_battle_stance -> effect1().percent() );
-  }
-  else if ( p -> active_stance == STANCE_BERSERKER && p -> buffs_berserker_stance -> up() )
-  {
-    player_multiplier *= ( 1.0 + p -> buffs_berserker_stance -> effect1().percent() );
-  }
   
   // --- Specializations --
 
@@ -927,6 +915,8 @@ bool warrior_attack_t::ready()
   return true;
 }
 
+// Opportunity Strike =======================================================
+
 struct opportunity_strike_t : public warrior_attack_t
 {
   opportunity_strike_t( warrior_t* p ) :
@@ -936,6 +926,8 @@ struct opportunity_strike_t : public warrior_attack_t
     reset();
   }
 };
+
+// Deep Wounds ==============================================================
 
 struct deep_wounds_t : public warrior_attack_t
  {
@@ -3332,6 +3324,25 @@ double warrior_t::composite_mastery() SC_CONST
   if ( ptr )
     m += spec.precision -> effect_base_value( 2 ) / 100.0;
 
+  return m;
+}
+
+// warrior_t::composite_player_multiplier ===================================
+
+double warrior_t::composite_player_multiplier( const school_type school ) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  // Stances affect all damage done
+  if ( active_stance == STANCE_BATTLE && buffs_battle_stance -> up() )
+  {
+    m *= 1.0 + buffs_battle_stance -> effect1().percent();
+  }
+  else if ( active_stance == STANCE_BERSERKER && buffs_berserker_stance -> up() )
+  {
+    m *= 1.0 + buffs_berserker_stance -> effect1().percent();
+  }
+  
   return m;
 }
 
