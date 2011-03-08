@@ -4395,6 +4395,9 @@ struct rawr_t
 
 struct http_t
 {
+  static std::string proxy_type;
+  static std::string proxy_host;
+  static int proxy_port;
   static bool cache_load();
   static bool cache_save();
   static void cache_clear();

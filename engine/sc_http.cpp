@@ -12,6 +12,12 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
+// http_t::proxy_* ==========================================================
+
+std::string http_t::proxy_type = "none";
+std::string http_t::proxy_host = "";
+int         http_t::proxy_port = 0;
+
 // http_t::clear_cache ======================================================
 
 bool http_t::clear_cache( sim_t* sim,
@@ -43,10 +49,10 @@ static std::vector<url_cache_t> url_cache_db;
 
 // parse_url ================================================================
 
-static bool parse_url( std::string& host,
-                       std::string& path,
-                       short&       port,
-                       const char*  url )
+static bool parse_url( std::string&    host,
+                       std::string&    path,
+                       unsigned short& port,
+                       const char*     url )
 {
   if ( strncmp( url, "http://", 7 ) ) return false;
 
@@ -73,6 +79,53 @@ static bool parse_url( std::string& host,
   path += ( path_start + 1 );
 
   return true;
+}
+
+// build_request ============================================================
+
+static std::string build_request( std::string&   host,
+                                  std::string&   path,
+                                  unsigned short port )
+{
+  // reference : http://tools.ietf.org/html/rfc2616#page-36
+  char buffer[2048];
+  if (http_t::proxy_type == "http")
+  {
+    // append port info only if not the standard port
+    char portbuff[7] = "\0";
+    if (port != 80)
+    {
+      sprintf(portbuff, ":%i", port);
+    }
+    // building a proxified request : absoluteURI without Host header
+    sprintf( buffer,
+             "GET http://%s%s%s HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n"
+             "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             "Connection: close\r\n"
+             "\r\n",
+             host.c_str(),
+             portbuff,
+             path.c_str() );
+  }
+  else
+  {
+    // building a direct request : using abs_path and Host header
+    sprintf( buffer,
+             "GET %s HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n"
+             "Host: %s\r\n"
+             "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             "Connection: close\r\n"
+             "\r\n",
+             path.c_str(),
+             host.c_str() );
+  }
+  return std::string(buffer);
 }
 
 // throttle =================================================================
@@ -366,7 +419,7 @@ bool http_t::download( std::string& result,
 
   std::string host;
   std::string path;
-  short port;
+  unsigned short port;
 
   if ( ! parse_url( host, path, port, url.c_str() ) ) return false;
 
@@ -559,116 +612,57 @@ bool http_t::download( std::string& result,
 bool http_t::download( std::string& result,
                        const std::string& url )
 {
+  std::string current_url = url;
   std::string host;
   std::string path;
-  short port;
+  unsigned short port;
   int redirect = 0, redirect_max = 5;
 
-  if ( ! parse_url( host, path, port, url.c_str() ) ) return false;
-
-  struct hostent* h = gethostbyname( host.c_str() );
-  if ( ! h ) return false;
-
-  sockaddr_in a;
-  a.sin_family = AF_INET;
-  a.sin_addr = *( in_addr * )h->h_addr_list[0];
-  a.sin_port = htons( port );
-
-  int s;
-  s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-  if ( s < 0 ) return false;
-
-  int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
-  if ( r < 0 )
+  // get a page and if we find a redirect update current_url and loop
+  while ( redirect < redirect_max )
   {
-    close( s );
-    return false;
-  }
+    if ( ! parse_url( host, path, port, current_url.c_str() ) ) return false;
 
-  char buffer[2048];
-  sprintf( buffer,
-           "GET %s HTTP/1.0\r\n"
-           "User-Agent: Firefox/3.0\r\n"
-           "Accept: */*\r\n"
-           "Host: %s\r\n"
-           "Cookie: loginChecked=1\r\n"
-           "Cookie: cookieLangId=en_US\r\n"
-           "Connection: close\r\n"
-           "\r\n",
-           path.c_str(),
-           host.c_str() );
+    std::string request = build_request( host, path, port );
 
-  r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
-  if ( r != ( int ) strlen( buffer ) )
-  {
-    close( s );
-    return false;
-  }
+    struct hostent* h;
+    sockaddr_in a;
 
-  result = "";
-
-  while ( 1 )
-  {
-    r = ::recv( s, buffer, sizeof( buffer )-1, MSG_WAITALL );
-    if ( r > 0 )
+    if (proxy_type == "http")
     {
-      buffer[ r ] = '\0';
-      result += buffer;
+      h = gethostbyname( proxy_host.c_str() );
+      a.sin_port = htons( proxy_port );
     }
-    else break;
-  }
+    else
+    {
+      h = gethostbyname( host.c_str() );
+      a.sin_port = htons( port );
+    }
 
-  ::close( s );
-
-  // Moved, redo query
-  while ( ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos ) && ( redirect < redirect_max ) )
-  {
-    std::string::size_type pos_location = result.find( "Location: " );
-    if ( pos_location == result.npos ) return false;
-    
-    std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
-    std::string new_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
-    
-    if ( ! parse_url( host, path, port, new_url.c_str() ) ) return false;
-
-    h = gethostbyname( host.c_str() );
     if ( ! h ) return false;
-
     a.sin_family = AF_INET;
     a.sin_addr = *( in_addr * )h->h_addr_list[0];
-    a.sin_port = htons( port );
 
+    int s;
     s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( s < 0 ) return false;
 
-    r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
+    int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
     if ( r < 0 )
     {
       close( s );
       return false;
     }
 
-    sprintf( buffer,
-             "GET %s HTTP/1.0\r\n"
-             "User-Agent: Firefox/3.0\r\n"
-             "Accept: */*\r\n"
-             "Host: %s\r\n"
-             "Cookie: loginChecked=1\r\n"
-             "Cookie: cookieLangId=en_US\r\n"
-             "Connection: close\r\n"
-             "\r\n",
-             path.c_str(),
-             host.c_str() );
-
-    r = ::send( s, buffer, int( strlen( buffer ) ), MSG_WAITALL );
-    if ( r != ( int ) strlen( buffer ) )
+    r = ::send( s, request.c_str(), request.size(), MSG_WAITALL );
+    if ( r != ( int ) request.size() )
     {
       close( s );
       return false;
     }
 
     result = "";
-
+    char buffer[2048];
     while ( 1 )
     {
       r = ::recv( s, buffer, sizeof( buffer )-1, MSG_WAITALL );
@@ -681,20 +675,36 @@ bool http_t::download( std::string& result,
     }
 
     ::close( s );
-    
-    redirect++;
-  }
-  
-  std::string::size_type pos = result.find( "\r\n\r\n" );
-  if ( pos == result.npos )
-  {
-    result.clear();
-    return false;
-  }
 
-  result.erase( result.begin(), result.begin() + pos + 4 );
+    std::string::size_type pos = result.find( "\r\n\r\n" );
+    if ( pos == result.npos )
+    {
+      result.clear();
+      return false;
+    }
 
-  return true;
+    // reference : http://tools.ietf.org/html/rfc2616#section-14.30
+    // Checking for redirects via "Location:" in headers, which applies at least
+    // to 301 Moved Permanently, 302 Found, 303 See Other, 307 Temporary Redirect
+    std::string::size_type pos_location = result.find( "Location: " );
+    if ( pos_location != result.npos && pos_location < pos )
+    {
+      if ( redirect < redirect_max )
+      {
+        
+        std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
+        current_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
+        redirect ++;
+      }
+      else return false; 
+    }
+    else
+    {
+      result.erase( result.begin(), result.begin() + pos + 4 );
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif
@@ -708,7 +718,7 @@ int main( int argc, char** argv )
 {
   std::string result;
 
-  if ( http_t::get( result, "http://www.wowarmory.com/character-sheet.xml?r=Llane&n=Pagezero" ) )
+  if ( http_t::get( result, "http://us.battle.net/wow/en/character/llane/pagezero/advanced" ) )
   {
     util_t::printf( "%s\n", result.c_str() );
   }

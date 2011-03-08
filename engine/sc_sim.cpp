@@ -247,6 +247,34 @@ static bool parse_player( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
+// parse_proxy ==============================================================
+
+static bool parse_proxy( sim_t*             sim,
+                         const std::string& name,
+                         const std::string& value )
+{
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, value, "," );
+
+  if ( num_splits != 3 )
+  {
+    sim -> errorf( "Expected format is: proxy=type,host,port\n" );
+    return false;
+  }
+
+  int port = atoi( splits[ 2 ].c_str() );
+  if (splits[ 0 ] == "http" && port > 0 && port < 65536)
+  {
+    http_t::proxy_type = splits[ 0 ];
+    http_t::proxy_host = splits[ 1 ];
+    http_t::proxy_port = port;
+    return true;
+  }
+
+  return false;
+}
+
 // parse_armory =============================================================
 
 static bool parse_armory( sim_t*             sim,
@@ -1943,6 +1971,7 @@ void sim_t::create_options()
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
+    { "proxy",                            OPT_FUNC,   ( void* ) ::parse_proxy                       },
     // Lag
     { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
     { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
