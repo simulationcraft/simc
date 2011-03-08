@@ -1472,14 +1472,13 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
   s = "http://www.guildox.com/wr.asp?";
 
-  if( p -> origin_str.find( "wowarmory.com" ) != std::string::npos )
-  {
-    std::string formatted_name;
-    http_t::format( formatted_name, p -> name_str );
+  std::string region_str, server_str, name_str;
 
-    s += "&amp;grp=" + p -> region_str;
-    s += "&amp;ser=" + p -> server_str;
-    s += "&amp;usr=" + formatted_name;
+  if( ! util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+  {
+    s += "&amp;grp=" + region_str;
+    s += "&amp;ser=" + server_str;
+    s += "&amp;usr=" + name_str;
   } 
   else 
   {
@@ -1640,6 +1639,35 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
 
   s += "wt="  +    id_string + ";";
   s += "wtv=" + value_string + ";";
+
+  return s.c_str();
+}
+
+// chart_t::gear_weights_wowreforge ===========================================
+
+const char* chart_t::gear_weights_wowreforge( std::string& s,
+					      player_t*    p )
+{
+  char buffer[ 1024 ];
+
+  std::string region_str, server_str, name_str;
+
+  if( ! util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+  {
+    s = "";
+    return s.c_str();
+  }
+
+  s = "http://wowreforge.com/" + region_str + "/" + server_str + "/" + name_str + "?";
+
+  for ( int i=0; i < STAT_MAX; i++ )
+  {
+    double value = p -> scaling.get_stat( i );
+    if ( value == 0 ) continue;
+
+    snprintf( buffer, sizeof( buffer ), "&amp;%s=%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, value );
+    s += buffer;
+  }
 
   return s.c_str();
 }

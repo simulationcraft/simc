@@ -724,15 +724,17 @@ static void print_text_scale_factors( FILE* file, player_t* p )
   util_t::fprintf( file, "\n" );
 
 
-  std::string lootrank = p -> gear_weights_lootrank_link;
-  std::string wowhead  = p -> gear_weights_wowhead_link;
-  std::string pawn_std = p -> gear_weights_pawn_std_string;
-  std::string pawn_alt = p -> gear_weights_pawn_alt_string;
+  std::string lootrank   = p -> gear_weights_lootrank_link;
+  std::string wowhead    = p -> gear_weights_wowhead_link;
+  std::string wowreforge = p -> gear_weights_wowreforge_link;
+  std::string pawn_std   = p -> gear_weights_pawn_std_string;
+  std::string pawn_alt   = p -> gear_weights_pawn_alt_string;
 
-  simplify_html( lootrank );
-  simplify_html( wowhead  );
-  simplify_html( pawn_std );
-  simplify_html( pawn_alt );
+  simplify_html( lootrank   );
+  simplify_html( wowhead    );
+  simplify_html( wowreforge );
+  simplify_html( pawn_std   );
+  simplify_html( pawn_alt   );
 
   util_t::fprintf( file, "    Wowhead : %s\n", wowhead.c_str() );
 }
@@ -2776,13 +2778,27 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         colspan,
         p -> gear_weights_wowhead_link.c_str(),
         p -> gear_weights_lootrank_link.c_str() );
+#if 0
+ NOT READY FOR PRIME TIME YET I THINK
+      util_t::fprintf( file,
+        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+        "\t\t\t\t\t\t\t\t<th>Optimizers</th>\n"
+        "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
+        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowreforge</a></li>\n"
+        "\t\t\t\t\t\t\t\t\t</ul>\n"
+        "\t\t\t\t\t\t\t\t</td>\n"
+        "\t\t\t\t\t\t\t</tr>\n",
+        colspan,
+        p -> gear_weights_wowreforge_link.c_str() );
+#endif
       util_t::fprintf( file,
       "\t\t\t\t\t\t</table>\n" );
       if ( sim -> iterations < 10000 )
         util_t::fprintf( file,
           "\t\t\t\t<div class=\"alert\">\n"
           "\t\t\t\t\t<h3>Warning</h3>\n"
-          "\t\t\t\t\t<p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
+          "\t\t\t\t\t<p>Scale Factors generated using less than 10,000 iterations will vary significantly from run to run.</p>\n"
           "\t\t\t\t</div>\n" );
     }
   }

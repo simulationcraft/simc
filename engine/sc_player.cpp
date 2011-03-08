@@ -5278,6 +5278,8 @@ void player_t::create_options()
     // General
     { "name",                                 OPT_STRING,   &( name_str                               ) },
     { "origin",                               OPT_STRING,   &( origin_str                             ) },
+    { "region",                               OPT_STRING,   &( region_str                             ) },
+    { "server",                               OPT_STRING,   &( server_str                             ) },
     { "id",                                   OPT_STRING,   &( id_str                                 ) },
     { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                },
     { "glyphs",                               OPT_STRING,   &( glyphs_str                             ) },

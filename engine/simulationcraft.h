@@ -1580,6 +1580,8 @@ struct util_t
   static int parse_talent_tree                 ( const std::string& name );
   static int parse_weapon_type                 ( const std::string& name );
 
+  static bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
+
   static int class_id_mask( int type );
   static int class_id( int type );
   static unsigned race_mask( int type );
@@ -2974,7 +2976,7 @@ struct player_t
   std::string action_dpet_chart, action_dmg_chart, gains_chart;
   std::string timeline_resource_chart, timeline_dps_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string gear_weights_lootrank_link, gear_weights_wowhead_link;
+  std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
   std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
   std::string save_str;
   std::string save_gear_str;
@@ -4147,9 +4149,10 @@ struct chart_t
   static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* distribution_dps ( std::string& s, player_t* );
 
-  static const char* gear_weights_lootrank( std::string& s, player_t* );
-  static const char* gear_weights_wowhead ( std::string& s, player_t* );
-  static const char* gear_weights_pawn    ( std::string& s, player_t*, bool hit_expertise=true );
+  static const char* gear_weights_lootrank  ( std::string& s, player_t* );
+  static const char* gear_weights_wowhead   ( std::string& s, player_t* );
+  static const char* gear_weights_wowreforge( std::string& s, player_t* );
+  static const char* gear_weights_pawn      ( std::string& s, player_t*, bool hit_expertise=true );
 };
 
 // Log =======================================================================
@@ -4459,10 +4462,14 @@ struct ability_t : public action_t
     results.resize( num_targets );
     for( int i=0; i < num_targets; i++ )
     {
-      schedule_travel( calculate_result( results[ i ], targets[ i ] ) );
+      calculate_result( results[ i ], targets[ i ] );
       // "result" callbacks
     }
     consume_resource();
+    for( int i=0; i < num_targets; i++ )
+    {
+      schedule_travel( results[ i ] );
+    }
     update_ready();
     // "cast" callbacks
   }

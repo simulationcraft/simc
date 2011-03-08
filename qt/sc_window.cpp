@@ -146,14 +146,13 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
      fightLengthChoice->setCurrentIndex( tokens[  2 ].toInt() );
    fightVarianceChoice->setCurrentIndex( tokens[  3 ].toInt() );
-            addsChoice->setCurrentIndex( tokens[  4 ].toInt() );
-      fightStyleChoice->setCurrentIndex( tokens[  5 ].toInt() );
-      targetRaceChoice->setCurrentIndex( tokens[  6 ].toInt() );
-     playerSkillChoice->setCurrentIndex( tokens[  7 ].toInt() );
-         threadsChoice->setCurrentIndex( tokens[  8 ].toInt() );
-    armoryRegionChoice->setCurrentIndex( tokens[  9 ].toInt() );
-      armorySpecChoice->setCurrentIndex( tokens[ 10 ].toInt() );
-     defaultRoleChoice->setCurrentIndex( tokens[ 11 ].toInt() );
+      fightStyleChoice->setCurrentIndex( tokens[  4 ].toInt() );
+      targetRaceChoice->setCurrentIndex( tokens[  5 ].toInt() );
+     playerSkillChoice->setCurrentIndex( tokens[  6 ].toInt() );
+         threadsChoice->setCurrentIndex( tokens[  7 ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[  8 ].toInt() );
+      armorySpecChoice->setCurrentIndex( tokens[  9 ].toInt() );
+     defaultRoleChoice->setCurrentIndex( tokens[ 10 ].toInt() );
   }
 
   QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
@@ -194,12 +193,11 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
     .arg( fightVarianceChoice->currentIndex() )
-    .arg(          addsChoice->currentIndex() )
     .arg(    fightStyleChoice->currentIndex() )
     .arg(    targetRaceChoice->currentIndex() )
     .arg(   playerSkillChoice->currentIndex() )
@@ -464,7 +462,6 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(           "Adds",          addsChoice = createChoice( 5, "0", "1", "2", "3", "9" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "HelterSkelter" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
@@ -820,11 +817,6 @@ void SimulationCraftWindow::createToolTips()
   fightVarianceChoice->setToolTip( "Varying the fight length over a given spectrum improves\n"
                                    "the analysis of trinkets and abilities with long cooldowns." );
 
-  addsChoice->setToolTip( "Number of additional targets nearby boss for entire fight.\n"
-                          "See Examples tab for how to use raid_events to summon temporary adds.\n"
-                          "Support for multi-DoT has not yet been implemented.\n"
-                          "Many AoE abilities have not yet been implemented." );
-
   fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
                                 "HelterSkelter:\n"
                                 "    Movement, Stuns, Interrupts,\n"
@@ -1123,8 +1115,9 @@ QString SimulationCraftWindow::mergeOptions()
   options += variance[ fightVarianceChoice->currentIndex() ];
   options += "\n";
   options += "fight_style=" + fightStyleChoice->currentText() + "\n";
-  options += "target_adds=" + addsChoice->currentText() + "\n";
-  options += "target_race=" + targetRaceChoice->currentText() + "\n";
+  options += "enemy=Fluffy_Pillow\n";
+  options += "level=88\n";
+  options += "race=" + targetRaceChoice->currentText() + "\n";
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ playerSkillChoice->currentIndex() ];

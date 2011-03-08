@@ -1253,6 +1253,54 @@ stat_type util_t::parse_reforge_type( const std::string& name )
   }
 }
 
+// util_t::parse_origin ====================================================
+
+bool util_t::parse_origin( std::string& region_str,
+			   std::string& server_str,
+			   std::string& name_str,
+			   const std::string& origin_str )
+{
+  if ( ( origin_str.find( ".battle."    ) == std::string::npos ) &&
+       ( origin_str.find( ".wowarmory." ) == std::string::npos ) )
+    return false;
+
+  std::vector<std::string> tokens;
+  int num_tokens = util_t::string_split( tokens, origin_str, "/:.?&=" );
+
+  for( int i=0; i < num_tokens; i++ )
+  {
+    std::string& t = tokens[ i ];
+
+    if( t == "http" )
+    {
+      if ( (i+1) >= num_tokens ) return false;
+      region_str = tokens[ ++i ];
+    }
+    else if( t == "r" ) // old armory
+    {
+      if ( (i+1) >= num_tokens ) return false;
+      server_str = tokens[ ++i ];
+    }
+    else if( t == "n" || t == "cn" ) // old armory
+    {
+      if ( (i+1) >= num_tokens ) return false;
+      name_str = tokens[ ++i ];
+    }
+    else if( t == "character" ) // new battle.net
+    {
+      if ( (i+2) >= num_tokens ) return false;
+      server_str = tokens[ ++i ];
+      name_str   = tokens[ ++i ];
+    }
+  }
+
+  if ( region_str.empty() ) return false;
+  if ( server_str.empty() ) return false;
+  if (   name_str.empty() ) return false;
+
+  return true;
+}
+
 // util_t::class_id_max ====================================================
 
 int util_t::class_id_mask( int type )
