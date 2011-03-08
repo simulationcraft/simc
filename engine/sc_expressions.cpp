@@ -347,30 +347,30 @@ bool expression_t::convert_to_rpn( action_t* action, std::vector<expr_token_t>& 
     {
       while ( true )
       {
-	if ( stack.empty() ) { printf( "rpar stack empty\n" ); return false; }
-	expr_token_t& s = stack.back();
-	if ( s.type == TOK_LPAR )
-	{
-	  stack.pop_back();
-	  break;
-	}
-	else
-	{
-	  rpn.push_back( s );
-	  stack.pop_back();
-	}
+        if ( stack.empty() ) { printf( "rpar stack empty\n" ); return false; }
+        expr_token_t& s = stack.back();
+        if ( s.type == TOK_LPAR )
+        {
+	        stack.pop_back();
+	        break;
+        }
+        else
+        {
+	        rpn.push_back( s );
+	        stack.pop_back();
+        }
       }
     }
     else // operator
     {
       while ( true )
       {
-	if ( stack.empty() ) break;
-	expr_token_t& s = stack.back();
-	if ( s.type == TOK_LPAR ) break;
-	if ( precedence( t.type ) >= precedence( s.type ) ) break;
-	rpn.push_back( s );
-	stack.pop_back();
+        if ( stack.empty() ) break;
+        expr_token_t& s = stack.back();
+        if ( s.type == TOK_LPAR ) break;
+        if ( precedence( t.type ) >= precedence( s.type ) ) break;
+        rpn.push_back( s );
+        stack.pop_back();
       }
       stack.push_back( t );
     }
