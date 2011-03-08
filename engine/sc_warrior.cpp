@@ -706,9 +706,9 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
 {
   attack_t::assess_damage( t, amount, dmg_type, travel_result );
 
-  warrior_t* p = player -> cast_warrior();
+  /* warrior_t* p = player -> cast_warrior();
 
-  /*if ( t -> is_enemy() )
+  if ( t -> is_enemy() )
   {
     target_t* q =  t -> cast_target();
 

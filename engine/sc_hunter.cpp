@@ -2626,13 +2626,13 @@ struct wild_quiver_trigger_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* call_data )
   {
-    hunter_t* p = listener -> cast_hunter();
+    /* hunter_t* p = listener -> cast_hunter();
     //target_t* t = a -> target -> cast_target();
     int num_targets = 1;
     if ( ! a -> weapon ) return;
     if ( a -> weapon -> slot != SLOT_RANGED ) return;
     if ( a -> proc ) return;
-    /*if ( a -> aoe == -1 )
+    if ( a -> aoe == -1 )
     {
       num_targets += t -> adds_nearby;
     } else if ( a -> aoe )

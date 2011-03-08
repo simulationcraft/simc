@@ -1173,11 +1173,11 @@ void rogue_attack_t::assess_damage( player_t* t,
 {
   attack_t::assess_damage( t, amount, dmg_type, travel_result );
 
-  rogue_t* p = player -> cast_rogue();
+  /*rogue_t* p = player -> cast_rogue();
 
   // XXX: review, as not all of the damage is 'flurried' to an additional target
   // dots for example don't as far as I remember
-  /*if ( t -> is_enemy())
+  if ( t -> is_enemy())
   {
     target_t* q = t -> cast_target();
 

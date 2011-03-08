@@ -55,7 +55,7 @@ virtual int primary_resource() SC_CONST
 
 // target_t::base_armor ======================================================
 
-virtual double enemy_t::base_armor() SC_CONST
+virtual double base_armor() SC_CONST
 {
   return armor;
 }
@@ -67,7 +67,7 @@ virtual double composite_tank_block() SC_CONST;
 virtual void create_options();
 virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type );
 virtual pet_t* find_pet( const std::string& add_name );
-virtual void enemy_t::recalculate_health();
+virtual void recalculate_health();
 virtual action_expr_t* create_expression( action_t* action, const std::string& type );
 };
 

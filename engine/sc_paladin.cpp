@@ -696,7 +696,7 @@ struct divine_storm_t : public paladin_attack_t
 
   virtual void execute()
   {
-    paladin_t* p = player -> cast_paladin();
+    // paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
