@@ -2455,7 +2455,7 @@ struct multi_shot_t : public hunter_attack_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
-    target_t* q = t -> cast_target();
+    //target_t* q = t -> cast_target();
 
     hunter_attack_t::travel( t, travel_result, travel_dmg);
     int crit_occurred = 0;
@@ -2466,13 +2466,13 @@ struct multi_shot_t : public hunter_attack_t
         spread_sting -> execute();
       if( travel_result == RESULT_CRIT )
         crit_occurred++;
-      for( int i=0; i < q -> adds_nearby; i++ ) {
+      /*for( int i=0; i < q -> adds_nearby; i++ ) {
         // Calculate a result for each nearby add to determine whether to proc
         // bombardment
         int delta_level = q -> level - p -> level;
         if( sim -> real() <= crit_chance( delta_level ) )
           crit_occurred++;
-      }
+      }*/
     }
 
     if( p -> talents.bombardment -> rank() && crit_occurred )
@@ -2627,12 +2627,12 @@ struct wild_quiver_trigger_t : public action_callback_t
   virtual void trigger( action_t* a, void* call_data )
   {
     hunter_t* p = listener -> cast_hunter();
-    target_t* t = a -> target -> cast_target();
+    //target_t* t = a -> target -> cast_target();
     int num_targets = 1;
     if ( ! a -> weapon ) return;
     if ( a -> weapon -> slot != SLOT_RANGED ) return;
     if ( a -> proc ) return;
-    if ( a -> aoe == -1 )
+    /*if ( a -> aoe == -1 )
     {
       num_targets += t -> adds_nearby;
     } else if ( a -> aoe )
@@ -2646,7 +2646,7 @@ struct wild_quiver_trigger_t : public action_callback_t
         attack -> execute();
         p -> procs_wild_quiver -> occur();
       }
-    }
+    }*/
   }
 };
 
@@ -4025,7 +4025,7 @@ void player_t::hunter_combat_begin( sim_t* sim )
   if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 93435 ) -> effect1().id(), sim -> max_player_level ) );
   if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 90364 ) -> effect1().id(), sim -> max_player_level ) );
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     double v = sim -> dbc.effect_average( sim -> dbc.spell( 1130 ) -> effect2().id(), sim -> max_player_level );
     if ( sim -> overrides.hunters_mark           ) t -> debuffs.hunters_mark -> override( 1, v );

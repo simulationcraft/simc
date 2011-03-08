@@ -379,6 +379,7 @@ const char* util_t::pet_type_string( int type )
   case PET_SPIRIT_WOLF:         return "spirit_wolf";
   case PET_FIRE_ELEMENTAL:      return "fire_elemental";
   case PET_EARTH_ELEMENTAL:     return "earth_elemental";
+  case PET_ENEMY:               return "pet_enemy";
   }
   return "unknown";
 }

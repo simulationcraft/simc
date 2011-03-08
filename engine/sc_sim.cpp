@@ -606,11 +606,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     infinite_resource[ i ] = false;
   }
 
-  target = get_target( "Fluffy_Pillow" );
-
-  // Second Target for testing
-  //get_target( "Very_Fluffy_Pillow" );
-
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
 
@@ -636,6 +631,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     seed = parent -> seed;
   }
+
+
 }
 
 // sim_t::~sim_t ============================================================
@@ -644,7 +641,7 @@ sim_t::~sim_t()
 {
   flush_events();
 
-  while ( target_t* t = target_list )
+  while ( player_t* t = target_list )
   {
     target_list = t -> next;
     delete t;
@@ -711,7 +708,11 @@ void sim_t::add_event( event_t* e,
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
-  assert( delta_time <= wheel_seconds );
+  if ( ! ( delta_time <= wheel_seconds ) )
+  {
+    errorf( "sim_t::add_event assertion error! delta_time > wheel_seconds, event %s from %s.\n", e -> name, e -> player ? e -> player -> name() : "no-one" );
+    assert( 0 );
+  }
 
   uint32_t slice = ( uint32_t ) ( e -> time * wheel_granularity ) & wheel_mask;
 
@@ -812,8 +813,6 @@ void sim_t::combat( int iteration )
 
   combat_begin();
 
-  bool double_break = false;
-
   while ( event_t* e = next_event() )
   {
     current_time = e -> time;
@@ -822,37 +821,21 @@ void sim_t::combat( int iteration )
     {
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
-        for ( target_t* t = target_list; t; t = t -> next )
-        {
-          if ( t -> is_add() )
-            continue;
-          t -> recalculate_health();
-        }
+         target -> recalculate_health();
+
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
         delete e;
         break;
       }
 
-
-
-      for ( target_t* t = target_list; t; t = t -> next )
-      {
-        if ( t -> is_add() )
-          continue;
-
-        if ( t -> initial_health != 0 )
+        if ( target -> resource_base[ RESOURCE_HEALTH ] != 0 )
         {
-          if (  t -> current_health <= 0 )
+          if (  target -> resource_current[ RESOURCE_HEALTH ] <= 0 )
           {
-            for ( target_t* q = target_list; q; q = q -> next )
-            {
-              if ( q -> is_add() )
-                continue;
-            q -> recalculate_health();
-            }
-            if ( debug ) log_t::output( this, "Target %s has died, ending simulation", t -> name() );
+            target -> recalculate_health();
+
+            if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
             delete e;
-            double_break = true;
             break;
           }
         }
@@ -861,17 +844,10 @@ void sim_t::combat( int iteration )
           if ( current_time > ( expected_time / 2.0 ) )
           {
             if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
-            for ( target_t* t = target_list; t; t = t -> next )
-            {
-              if ( t -> is_add() )
-                continue;
-              t -> recalculate_health();
-            }
+            //target -> recalculate_health();
           }
         }
-      }
-      if ( double_break )
-        break;
+
     }
     else
     {
@@ -914,7 +890,7 @@ void sim_t::reset()
   {
     b -> reset();
   }
-  for ( target_t* t = target_list; t; t = t -> next )
+  for ( player_t* t = target_list; t; t = t -> next )
   {
     t -> reset();
   }
@@ -933,7 +909,7 @@ void sim_t::combat_begin()
 
   reset();
 
-  for ( target_t* t = target_list; t; t = t -> next )
+  for ( player_t* t = target_list; t; t = t -> next )
   {
     t -> combat_begin();
   }
@@ -962,7 +938,7 @@ void sim_t::combat_begin()
       }
       virtual void execute()
       {
-        target_t* t = sim -> target;
+        player_t* t = sim -> target;
         if ( ( sim -> bloodlust_percent  > 0 && t -> health_percentage() <  sim -> bloodlust_percent ) ||
              ( sim -> bloodlust_time     < 0 && t -> time_to_die()       < -sim -> bloodlust_time ) ||
              ( sim -> bloodlust_time     > 0 && t -> current_time        >  sim -> bloodlust_time ) )
@@ -999,7 +975,7 @@ void sim_t::combat_end()
 
   flush_events();
 
-  for ( target_t* t = target_list; t; t = t -> next )
+  for ( player_t* t = target_list; t; t = t -> next )
   {
     t -> combat_end();
   }
@@ -1062,28 +1038,34 @@ bool sim_t::init()
   if (     gcd_lag_stddev == 0 )     gcd_lag_stddev =     gcd_lag * 0.25;
   if ( channel_lag_stddev == 0 ) channel_lag_stddev = channel_lag * 0.25;
 
+  // Find Already defined target, otherwise create a new one.
+  if ( debug )
+    log_t::output( this, "Creating Enemys." );
+  if ( target_list )
+  {
+    target = target_list;
+  }
+  else
+    target = player_t::create( this, "enemy", "Fluffy_Pillow" );
+
+
+
   if ( max_player_level < 0 )
   {
     for ( player_t* p = player_list; p; p = p -> next )
     {
+      if ( p -> is_enemy() || p -> is_add() )
+        continue;
       if ( max_player_level < p -> level )
         max_player_level = p -> level;
-    }    
-  }
-
-  for ( target_t* t = target_list; t; t = t -> next )
-  {
-    t -> create_adds();
+    }
   }
 
   raid_event_t::init( this );
 
   if ( ! player_t::init( this ) ) return false;
 
-  for ( target_t* t = target_list; t; t = t -> next )
-  {
-    t -> init();
-  }
+
 
   if ( report_precision < 0 ) report_precision = 3;
 
@@ -1444,17 +1426,6 @@ void sim_t::analyze()
       chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
       chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
     }
-   if ( p -> is_enemy() )
-     for ( add_t* add = p -> cast_target() -> add_list; add; add = add -> next_add )
-      {
-        chart_t::action_dpet      ( add -> action_dpet_chart,       add );
-        chart_t::action_dmg       ( add -> action_dmg_chart,        add );
-        chart_t::gains            ( add -> gains_chart,             add );
-        chart_t::timeline_resource( add -> timeline_resource_chart, add );
-        chart_t::timeline_health  ( add -> timeline_resource_health_chart, add );
-        chart_t::timeline_dps     ( add -> timeline_dps_chart,      add );
-        chart_t::distribution_dps ( add -> distribution_dps_chart,  add );
-      }
     if ( p -> quiet ) continue;
 
     chart_t::action_dpet      ( p -> action_dpet_chart,       p );
@@ -1697,23 +1668,6 @@ cooldown_t* sim_t::get_cooldown( const std::string& name )
   return c;
 }
 
-// sim_t::get_target ===================================================
-
-target_t* sim_t::get_target( const std::string& name )
-{
-  target_t* t=0;
-
-  for ( t = target_list; t; t = t -> next )
-  {
-    if ( t -> name_str == name )
-      return t;
-  }
-
-  t = new target_t( this, name );
-
-  return t;
-}
-
 // sim_t::use_optimal_buffs_and_debuffs =====================================
 
 void sim_t::use_optimal_buffs_and_debuffs( int value )
@@ -1923,7 +1877,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
     }
     if ( splits[ 0 ] == "target" )
     {
-      target_t* target =target_t::find( this, splits[ 1 ] );
+      player_t* target = sim_t::find_player( splits[ 1 ] );
       if ( ! target ) return 0;
       return target -> create_expression( a, splits[ 2 ] );
     }
@@ -2108,6 +2062,7 @@ void sim_t::create_options()
     { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                      },
     { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                      },
     { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "enemy",                            OPT_FUNC,   ( void* ) ::parse_player                      },
     { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
     { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
     { "copy",                             OPT_FUNC,   ( void* ) ::parse_player                      },
@@ -2327,7 +2282,7 @@ int sim_t::main( int argc, char** argv )
   }
   else
   {
-    if ( max_time <= 0 && target -> fixed_health <= 0 )
+    if ( max_time <= 0 )
     {
       util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );

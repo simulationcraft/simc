@@ -708,7 +708,7 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
 
   warrior_t* p = player -> cast_warrior();
 
-  if ( t -> is_enemy() )
+  /*if ( t -> is_enemy() )
   {
     target_t* q =  t -> cast_target();
 
@@ -716,7 +716,7 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
     {
       attack_t::additional_damage( q, amount, dmg_type, travel_result );
     }
-  }
+  }*/
 }
 
 // warrior_attack_t::cost ===================================================
@@ -3602,7 +3602,7 @@ void player_t::warrior_combat_begin( sim_t* sim )
 
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
     if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );

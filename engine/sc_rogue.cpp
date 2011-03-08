@@ -873,7 +873,7 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
 
 static void apply_poison_debuff( rogue_t* p )
 {
-  target_t* t = p -> sim -> target;
+  player_t* t = p -> sim -> target;
 
   if ( p -> talents.master_poisoner -> rank() ) 
     t -> debuffs.master_poisoner -> increment();
@@ -888,7 +888,7 @@ static void apply_poison_debuff( rogue_t* p )
 
 static void remove_poison_debuff( rogue_t* p )
 {
-  target_t* t = p -> sim -> target;
+  player_t* t = p -> sim -> target;
 
   if ( p -> talents.master_poisoner -> rank() ) 
     t -> debuffs.master_poisoner -> decrement();
@@ -1177,13 +1177,13 @@ void rogue_attack_t::assess_damage( player_t* t,
 
   // XXX: review, as not all of the damage is 'flurried' to an additional target
   // dots for example don't as far as I remember
-  if ( t -> is_enemy())
+  /*if ( t -> is_enemy())
   {
     target_t* q = t -> cast_target();
 
     if ( p -> buffs_blade_flurry -> up() && q -> adds_nearby )
       attack_t::additional_damage( q, amount, dmg_type, travel_result );
-  }
+  }*/
 }
 
 // rogue_attack_t::add_combo_points ========================================
@@ -3916,7 +3916,7 @@ void player_t::rogue_combat_begin( sim_t* sim )
   if ( sim -> overrides.honor_among_thieves ) 
     sim -> auras.honor_among_thieves -> override();
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
     if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();

@@ -19,7 +19,7 @@ actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
 actions+=/wind_shear
 actions+=/bloodlust,health_percentage<=25
-actions+=/bloodlust,time_to_die<=60
+actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
 actions+=/elemental_mastery
 actions+=/unleash_elements,moving=1

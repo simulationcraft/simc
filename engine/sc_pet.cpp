@@ -101,7 +101,6 @@ const char* pet_t::id()
 void pet_t::init()
 {
   player_t::init();
-  level = owner -> level;
 }
 
 // pet_t::init_base =========================================================
@@ -133,6 +132,7 @@ void pet_t::summon( double duration )
 
   distance = owner -> distance;
 
+  owner -> active_pets++;
 
   summon_time = sim -> current_time;
   summoned=true;
@@ -161,6 +161,8 @@ void pet_t::summon( double duration )
 void pet_t::dismiss()
 {
   if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
+
+  owner -> active_pets--;
 
   demise();
 }

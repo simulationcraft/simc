@@ -1936,7 +1936,7 @@ struct fire_nova_t : public shaman_spell_t
     {
       if ( result_is_hit( dmg_result ) )
       {
-        target_t* t = target -> cast_target();
+        /*target_t* t = target -> cast_target();
 
         if ( t -> adds_nearby > 0 )
         {
@@ -1944,7 +1944,7 @@ struct fire_nova_t : public shaman_spell_t
           {
             additional_damage( t, dmg_amount, dmg_type, dmg_result );
           }
-        }
+        }*/
       }
     }
     else
@@ -3822,7 +3822,7 @@ void shaman_t::init_actions()
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
-      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,time_to_die<=60";
+      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -3886,7 +3886,7 @@ void shaman_t::init_actions()
       action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react";
       
       action_list_str += "/wind_shear";
-      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,time_to_die<=60";
+      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {

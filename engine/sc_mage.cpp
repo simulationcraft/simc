@@ -1887,7 +1887,7 @@ struct frostbolt_t : public mage_spell_t
       if ( result == RESULT_CRIT )
       {
         int max_targets = p -> talents.piercing_chill -> rank();
-        if ( target -> is_enemy() )
+       /* if ( target -> is_enemy() )
         {
           target_t* q = target -> cast_target();
 
@@ -1895,7 +1895,7 @@ struct frostbolt_t : public mage_spell_t
           {
             p -> buffs_fingers_of_frost -> trigger();
           }
-        }
+        }*/
       }
     }
   }
@@ -3559,7 +3559,7 @@ void player_t::mage_combat_begin( sim_t* sim )
     }
   }
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.critical_mass ) t -> debuffs.critical_mass -> override( 1 );
   }

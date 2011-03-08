@@ -16,14 +16,7 @@ actions+=/earthen_potion,if=!in_combat|health_pct<35&buff.earthen_potion.down
 actions+=/auto_attack
 actions+=/stance,choose=defensive
 actions+=/last_stand,if=health_pct<35
-actions+=/heroic_strike,if=rage>=35
-actions+=/revenge
-actions+=/shockwave
-actions+=/shield_block,sync=shield_slam
-actions+=/shield_slam
-actions+=/devastate
-actions+=/battle_shout
-actions+=/berserker_rage
+actions+=/cleave
 head=dragon_bone_warhelm,type=plate,ilevel=359,quality=epic,stats=2784armor_113exp_281mastery_512sta_259str,reforge=mastery_dodge,gems=austere_shadowspirit_20exp_20mastery_45sta,enchant=90sta_35dodge
 neck=mountains_mouth,ilevel=333,quality=rare,stats=100mastery_100parry_224sta_149str,reforge=parry_dodge
 shoulders=heaving_plates_of_protection,type=plate,ilevel=359,quality=epic,stats=2570armor_169mastery_129parry_380sta_253str,reforge=parry_dodge,gems=60sta_10mastery,enchant=75sta_25dodge
@@ -114,3 +107,30 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # tier11_4pc_heal=1
 # back=drape_of_the_twins,heroic=1,enchant=lightweave_embroidery_old
 # main_hand=andoros_fist_of_the_dragon_king,heroic=1,weapon=mace_1.80speed_82min_154max
+
+Priest_Shadow_T11_372.simc
+
+enemy=Overridden_Main_Target
+level=88
+role=tank
+actions+=/snapshot_stats
+#actions+=/auto_attack
+
+enemy=Second_Target
+level=84
+race=gnome
+role=tank
+actions=flask,type=draconic_mind
+actions+=/snapshot_stats
+actions+=/summon_add,name=Add_of_Second_Target,if=time>=50,cooldown=70,duration=40
+actions+=/spell_nuke,cooldown=30,target=Warrior_Tank
+actions+=/auto_attack,target=Warrior_Tank
+main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max,enchant=power_torrent
+
+pet=Add_of_Second_Target
+level=85
+#role=spell
+actions+=/snapshot_stats
+actions+=/auto_attack,target=Warrior_Tank,damage=10
+
+

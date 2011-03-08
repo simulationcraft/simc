@@ -2966,9 +2966,9 @@ struct starfall_t : public druid_spell_t
     
     // If there is at least one additional target around Starfall will
     // launch 2 Stars per tick, (10*2 = 20 max stars)
-    target_t* t = target -> cast_target(); 
+    /*target_t* t = target -> cast_target();
     if ( t -> adds_nearby > 0 )
-      starfall_star -> execute();
+      starfall_star -> execute();*/
     stats -> add_tick( time_to_tick );
   }
 };
@@ -4442,7 +4442,7 @@ void player_t::druid_combat_begin( sim_t* sim )
     }
   }
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.demoralizing_roar    ) t -> debuffs.demoralizing_roar    -> override();
     if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );

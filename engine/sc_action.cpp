@@ -118,8 +118,6 @@ void action_t::_init_action_t()
   haste_gain_percentage          = 0.0;
   min_current_time               = 0.0;
   max_current_time               = 0.0;
-  min_time_to_die                = 0.0;
-  max_time_to_die                = 0.0;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
   moving                         = -1;
@@ -409,8 +407,6 @@ void action_t::parse_options( option_t*          options,
     { "sync",                   OPT_STRING, &sync_str              },
     { "time<",                  OPT_FLT,    &max_current_time      },
     { "time>",                  OPT_FLT,    &min_current_time      },
-    { "time_to_die<",           OPT_FLT,    &max_time_to_die       },
-    { "time_to_die>",           OPT_FLT,    &min_time_to_die       },
     { "travel_speed",           OPT_FLT,    &travel_speed          },
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
@@ -684,18 +680,6 @@ void action_t::target_debuff( player_t* t, int dmg_type )
   }
 
   if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= t -> debuffs.vulnerable -> value();
-
-  if ( target -> is_enemy())
-  {
-    target_t* t = target -> cast_target();
-
-    if ( t -> resilience > 0 )
-    {
-      double percent_resil = t -> resilience / 94.3;
-      double damage_reduce = percent_resil * 2 * 0.01;
-      target_multiplier *= 1 - damage_reduce;
-    }
-  }
 
   if ( sim -> debug )
     log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
@@ -1188,19 +1172,6 @@ void action_t::assess_damage( player_t* t,
 
   stats -> add_result( dmg_adjusted, dmg_type, dmg_result );
 
-  if ( dmg_amount > 0 && t -> is_enemy() )
-  {
-    target_t* q = t -> cast_target();
-
-    if ( dmg_amount > 0 && aoe && q -> adds_nearby )
-    {
-      double dmg_aoe = dmg_amount * base_add_multiplier;
-      for ( int i=0; i < q -> adds_nearby && i < ( aoe > 0 ? aoe : 9 ); i++ )
-      {
-        additional_damage( q, dmg_aoe, dmg_type, dmg_result );
-      }
-    }
-  }
 }
 
 // action_t::additional_damage =============================================
@@ -1527,21 +1498,6 @@ bool action_t::ready()
   if ( max_health_percentage > 0 )
     if ( t -> health_percentage() > max_health_percentage )
       return false;
-
-  if ( target -> is_enemy())
-  {
-
-    target_t* t = target -> cast_target();
-
-    if ( min_time_to_die > 0 )
-      if ( t -> time_to_die() < min_time_to_die )
-        return false;
-
-    if ( max_time_to_die > 0 )
-      if ( t -> time_to_die() > max_time_to_die )
-        return false;
-
-  }
 
   if ( if_expr && ! if_expr -> success() )
     return false;

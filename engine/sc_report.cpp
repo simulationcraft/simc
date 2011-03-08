@@ -634,7 +634,7 @@ static void print_text_performance( FILE* file, sim_t* sim )
                    "  SpeedUp       = %.0f\n\n",
                    (long) sim -> total_events_processed,
                    (long) sim -> max_events_remaining,
-                   sim -> target -> initial_health,
+                   sim -> target -> resource_base[ RESOURCE_HEALTH ],
                    sim -> iterations * sim -> total_seconds,
                    sim -> elapsed_cpu_seconds,
                    sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
@@ -4157,7 +4157,10 @@ static void print_xml_player( FILE* file, player_t* p )
     util_t::fprintf( file, "\t\t\t<chart name=\"Resource Gains\" type=\"chart_gains\" url=\"%s\" />\n", p -> gains_chart.c_str() );
   }
 
-  util_t::fprintf( file, "\t\t\t<chart name=\"Resource Timeline\" type=\"chart_resource_timeline\" url=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+  if ( ! p -> timeline_resource_chart.empty() )
+  {
+    util_t::fprintf( file, "\t\t\t<chart name=\"Resource Timeline\" type=\"chart_resource_timeline\" url=\"%s\" />\n", p -> timeline_resource_chart.c_str() );
+  }
 
   util_t::fprintf( file, "\t\t\t<chart name=\"DPS Timeline\" type=\"chart_dps_timeline\" url=\"%s\" />\n", p -> timeline_dps_chart.c_str() );
 
@@ -4281,13 +4284,13 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     {
       print_text_player( file, sim, sim -> targets_by_name[ i ], i );
 
-      // Adds
-      if ( sim -> targets_by_name[i] -> is_enemy() )
+      // Pets
+      if ( sim -> report_pets_separately )
       {
-        for ( add_t* add = sim -> targets_by_name[ i ] -> cast_target() -> add_list; add; add = add -> next_add )
+        for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
         {
-          if ( add -> summoned )
-            print_text_player( file, sim, add, 1 );
+          if ( pet -> summoned )
+            print_text_player( file, sim, pet, 1 );
         }
       }
     }
@@ -4707,13 +4710,13 @@ void report_t::print_html( sim_t* sim )
           {
             print_html_player( file, sim, sim -> targets_by_name[ i ], i );
 
-            // Adds
-            if ( sim -> targets_by_name[i] )
+            // Pets
+            if ( sim -> report_pets_separately )
             {
-              for ( add_t* add = sim -> targets_by_name[ i ] -> cast_target() -> add_list; add; add = add -> next_add )
+              for ( pet_t* pet = sim -> targets_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
               {
-                if ( add -> summoned )
-                  print_html_player( file, sim, add, 1 );
+                //if ( pet -> summoned )
+                  print_html_player( file, sim, pet, 1 );
               }
             }
           }
@@ -5001,8 +5004,9 @@ void report_t::print_xml( sim_t* sim )
 
 void report_t::print_profiles( sim_t* sim )
 {
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     if ( p -> is_pet() ) continue;
 
     FILE* file = NULL;

@@ -701,12 +701,12 @@ struct divine_storm_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
-      if ( p -> ptr )
+      /*if ( p -> ptr )
         if ( target -> cast_target() -> adds_nearby >= 4 )
           {
             p -> resource_gain( RESOURCE_HOLY_POWER, 1,
                                       p -> gains_hp_divine_storm );
-          }
+          }*/
     }
   }
 };
@@ -2735,7 +2735,7 @@ void player_t::paladin_combat_begin( sim_t* sim )
     }
   }
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
     if ( sim -> overrides.vindication            ) t -> debuffs.vindication            -> override();

@@ -9,34 +9,6 @@
 // Raid Events
 // ==========================================================================
 
-// Adds =====================================================================
-
-struct adds_event_t : public raid_event_t
-{
-  int count;
-  adds_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "adds" ), count(1)
-  {
-    option_t options[] =
-    {
-      { "count", OPT_INT, &count },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-  }
-  virtual void start()
-  {
-    target_t* t = sim -> target;
-    raid_event_t::start();
-    t -> adds_nearby += count;
-  }
-  virtual void finish()
-  {
-    target_t* t = sim -> target;
-    t -> adds_nearby -= count;
-    raid_event_t::finish();
-  }
-};
 
 // Casting ==================================================================
 
@@ -49,9 +21,8 @@ struct casting_event_t : public raid_event_t
   }
   virtual void start()
   {
-    target_t* t = sim -> target;
     raid_event_t::start();
-    t -> debuffs.casting -> increment();
+    sim -> target -> debuffs.casting -> increment();
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> sleeping ) continue;
@@ -60,8 +31,7 @@ struct casting_event_t : public raid_event_t
   }
   virtual void finish()
   {
-    target_t* t = sim -> target;
-    t -> debuffs.casting -> decrement();
+    sim -> target -> debuffs.casting -> decrement();
     raid_event_t::finish();
   }
 };
@@ -115,9 +85,8 @@ struct invulnerable_event_t : public raid_event_t
   }
   virtual void start()
   {
-    target_t* t = sim -> target;
     raid_event_t::start();
-    t -> debuffs.invulnerable -> increment();
+    sim -> target -> debuffs.invulnerable -> increment();
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> sleeping ) continue;
@@ -127,9 +96,8 @@ struct invulnerable_event_t : public raid_event_t
   }
   virtual void finish()
   {
-    target_t* t = sim -> target;
-    t -> debuffs.invulnerable -> decrement();
-    if ( ! t -> debuffs.invulnerable -> check() )
+    sim -> target -> debuffs.invulnerable -> decrement();
+    if ( ! sim -> target -> debuffs.invulnerable -> check() )
     {
       // FIXME! restoring optimal_raid target debuffs?
     }
@@ -300,14 +268,12 @@ struct vulnerable_event_t : public raid_event_t
   }
   virtual void start()
   {
-    target_t* t = sim -> target;
     raid_event_t::start();
-    t -> debuffs.vulnerable -> increment( 1, multiplier );
+    sim -> target -> debuffs.vulnerable -> increment( 1, multiplier );
   }
   virtual void finish()
   {
-    target_t* t = sim -> target;
-    t -> debuffs.vulnerable -> decrement();
+    sim -> target -> debuffs.vulnerable -> decrement();
     raid_event_t::finish();
   }
 };
@@ -516,7 +482,6 @@ raid_event_t* raid_event_t::create( sim_t* sim,
                                     const std::string& name,
                                     const std::string& options_str )
 {
-  if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
   if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
   if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
   if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );

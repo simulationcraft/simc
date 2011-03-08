@@ -361,7 +361,21 @@ void rating_t::init( sim_t* sim, dbc_t& dbc, int level, int type )
 
   if ( type == ENEMY || type == ENEMY_ADD )
   {
-    memset( this, 1, sizeof( rating_t ) );
+    double max = +1.0E+50;
+    spell_haste       = max;
+    spell_hit         = max;
+    spell_crit        = max;
+    attack_haste      = max;
+    attack_hit        = max;
+    attack_crit       = max;
+    ranged_haste      = max;
+    ranged_hit        = max;
+    ranged_crit       = max;
+    expertise         = max;
+    dodge             = max;
+    parry             = max;
+    block             = max;
+    mastery           = max;
   }
   else
   {

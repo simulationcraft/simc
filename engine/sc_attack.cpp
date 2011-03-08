@@ -234,6 +234,8 @@ double attack_t::miss_chance( int delta_level ) SC_CONST
   }
   else
   {
+
+    // FIXME: needs testing
     if ( delta_level >= 0 )
       return 0.05 + delta_level * 0.02;
     else

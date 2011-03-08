@@ -286,13 +286,13 @@ player_t::player_t( sim_t*             s,
                     race_type          r ) :
     sim( s ), ptr( s -> dbc.ptr ), name_str( n ),
     region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
-    next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), level( 85 ), use_pre_potion( 1 ),
+    next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
     party( 0 ), member( 0 ),
     skill( 0 ), initial_skill( s->default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
     potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
     pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
     vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-    dbc( s -> dbc ),
+    active_pets( 0 ), dbc( s -> dbc ),
     race_str( "" ), race( r ),
     // Haste
     base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
@@ -359,6 +359,7 @@ player_t::player_t( sim_t*             s,
     dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ), 
     dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
     death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( FLT_MAX ),
+    total_dmg_taken( 0.0 ),
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
@@ -548,8 +549,9 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug )
     log_t::output( sim, "Creating Pets." );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> create_pets();
   }
 
@@ -566,6 +568,7 @@ bool player_t::init( sim_t* sim )
   player_t::shaman_init      ( sim );
   player_t::warlock_init     ( sim );
   player_t::warrior_init     ( sim );
+  player_t::enemy_init       ( sim );
 
   if ( sim -> debug )
     log_t::output( sim, "Initializing Players." );
@@ -574,8 +577,9 @@ bool player_t::init( sim_t* sim )
   bool too_quiet = true; // Check for at least 1 active player
   bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
@@ -647,8 +651,9 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug )
     log_t::output( sim, "Registering Callbacks." );
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[i];
     p -> register_callbacks();
   }
 
@@ -1388,8 +1393,9 @@ void player_t::init_buffs()
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )  
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, 15.0 );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, 15.0 );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, 15.0 );
+
   buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0,            1, 15.0, 60.0 );
   buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0,            1, 15.0, 60.0 );
   buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0,            1, 20.0       );
@@ -2162,9 +2168,9 @@ double player_t::strength() SC_CONST
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
-                             sim -> auras.horn_of_winter -> value() ),
-                   std::max( sim -> auras.battle_shout -> value(),
-                             sim -> auras.roar_of_courage -> value() ) );
+                             sim -> auras.horn_of_winter    -> value() ),
+                   std::max( sim -> auras.battle_shout      -> value(),
+                             sim -> auras.roar_of_courage   -> value() ) );
   }
 
   a *= composite_attribute_multiplier( ATTR_STRENGTH );
@@ -2181,9 +2187,9 @@ double player_t::agility() SC_CONST
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
-                             sim -> auras.horn_of_winter -> value() ),
-                   std::max( sim -> auras.battle_shout -> value(),
-                             sim -> auras.roar_of_courage -> value() ) );
+                             sim -> auras.horn_of_winter    -> value() ),
+                   std::max( sim -> auras.battle_shout      -> value(),
+                             sim -> auras.roar_of_courage   -> value() ) );
   }
 
   a *= composite_attribute_multiplier( ATTR_AGILITY );
@@ -2275,7 +2281,8 @@ void player_t::combat_begin()
     buffs.heroic_presence -> trigger();
   }
 
-  if ( sim -> overrides.replenishment ) buffs.replenishment -> override();
+  if ( sim -> overrides.replenishment )
+    buffs.replenishment -> override();
 
   init_resources( true );
 
@@ -2345,6 +2352,7 @@ void player_t::reset()
 
   last_cast = 0;
   gcd_ready = 0;
+  total_dmg_taken = 0;
 
   sleeping = 1;
 
@@ -2783,7 +2791,9 @@ double player_t::resource_loss( int       resource,
 
   if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action, (void*) &actual_amount );
 
-  if ( sim -> debug ) log_t::output( sim, "Player %s loses %.2f (%.2f) %s", name(), actual_amount, amount, util_t::resource_type_string( resource ) );
+  if ( sim -> debug )
+    log_t::output( sim, "Player %s loses %.2f (%.2f) %s",
+                   name(), actual_amount, amount, util_t::resource_type_string( resource ) );
 
   return actual_amount;
 }
@@ -2815,7 +2825,8 @@ double player_t::resource_gain( int       resource,
   {
     log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
                    name(), actual_amount, amount,
-                   util_t::resource_type_string( resource ), source ? source -> name() : action ? action -> name() : "unknown",
+                   util_t::resource_type_string( resource ),
+                   source ? source -> name() : action ? action -> name() : "unknown",
                    resource_current[ resource ] );
   }
 
@@ -2906,6 +2917,20 @@ int player_t::normalize_by() SC_CONST
 double player_t::health_percentage() SC_CONST
 {
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
+}
+
+// target_t::time_to_die =====================================================
+
+double player_t::time_to_die() SC_CONST
+{
+  if ( resource_base[ RESOURCE_HEALTH ] > 0 )
+  {
+    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / total_dmg_taken;
+  }
+  else
+  {
+    return sim -> expected_time - sim -> current_time;
+  }
 }
 
 // player_t::stat_gain ======================================================
@@ -3080,9 +3105,11 @@ double player_t::assess_damage( double            amount,
 {
   double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 
+  total_dmg_taken += mitigated_amount;
+
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount );
 
-  if ( resource_current[ RESOURCE_HEALTH ] <= 0 )
+  if ( resource_current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() )
   {
     if ( !sleeping )
     {
@@ -3096,7 +3123,7 @@ double player_t::assess_damage( double            amount,
   if ( vengeance_enabled )
     vengeance_damage += actual_amount;
 
-  return actual_amount;
+  return mitigated_amount;
 }
 
 // player_t::target_mitigation ==============================================
@@ -4782,6 +4809,17 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new focus_regen_expr_t( a );
   }
+  if ( name_str == "time_to_die" )
+  {
+    struct time_to_die_expr_t : public action_expr_t
+    {
+      player_t* player;
+      time_to_die_expr_t( action_t* a, player_t* p ) :
+        action_expr_t( a, "target_time_to_die", TOK_NUM ), player(p) {}
+      virtual int evaluate() { result_num = player -> time_to_die();  return TOK_NUM; }
+    };
+    return new time_to_die_expr_t( a, this );
+  }
   if ( name_str == "time_to_max_energy" )
   {
     struct time_to_max_energy_expr_t : public action_expr_t
@@ -5408,6 +5446,10 @@ player_t* player_t::create( sim_t*             sim,
   else if ( type == "warrior" )
   {
     return player_t::create_warrior( sim, name, r );
+  }
+  else if ( type == "enemy" )
+  {
+    return player_t::create_enemy( sim, name, r );
   }
   return 0;
 }

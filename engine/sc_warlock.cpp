@@ -4526,7 +4526,7 @@ void player_t::warlock_combat_begin( sim_t* sim )
     }
   }
 
-  for ( target_t* t = sim -> target_list; t; t = t -> next )
+  for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.curse_of_elements ) t -> debuffs.curse_of_elements -> override( 1, 8 );
     if ( sim -> overrides.shadow_and_flame  ) t -> debuffs.shadow_and_flame  -> override();

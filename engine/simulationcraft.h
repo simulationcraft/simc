@@ -85,7 +85,6 @@
 struct action_t;
 struct action_callback_t;
 struct action_expr_t;
-struct add_t;
 struct alias_t;
 struct attack_t;
 struct base_stats_t;
@@ -97,6 +96,7 @@ struct death_knight_t;
 struct druid_t;
 struct dot_t;
 struct effect_t;
+struct enemy_t;
 struct enchant_t;
 struct event_t;
 struct gain_t;
@@ -131,7 +131,6 @@ struct heal_t;
 struct stats_t;
 struct talent_t;
 struct talent_translation_t;
-struct target_t;
 struct unique_gear_t;
 struct uptime_t;
 struct warlock_t;
@@ -245,6 +244,8 @@ enum pet_type_t
   PET_FIRE_ELEMENTAL,
   PET_EARTH_ELEMENTAL,
   PET_SHAMAN,
+
+  PET_ENEMY,
 
   PET_MAX
 };
@@ -2190,8 +2191,8 @@ struct sim_t
   char**      argv;
   sim_t*      parent;
   event_t*    free_list;
-  target_t*   target;
-  target_t*   target_list;
+  player_t*   target;
+  player_t*   target_list;
   player_t*   player_list;
   player_t*   active_player;
   int         num_players;
@@ -2447,7 +2448,6 @@ struct sim_t
   player_t* find_player( const std::string& name );
   player_t* find_player( int index );
   cooldown_t* get_cooldown( const std::string& name );
-  target_t* get_target( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
@@ -2801,7 +2801,7 @@ struct player_t
   int         invert_scaling;
   bool        vengeance_enabled;
   double      vengeance_damage, vengeance_value, vengeance_max; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
-
+  int         active_pets;
 
   // Data access
   dbc_t       dbc;
@@ -2956,7 +2956,8 @@ struct player_t
   double    dpr, rps_gain, rps_loss;
   int       death_count;
   std::vector<double> death_time;
-  double avg_death_time, death_count_pct, min_death_time;
+  double    avg_death_time, death_count_pct, min_death_time;
+  double    total_dmg_taken;
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
@@ -3254,6 +3255,7 @@ struct player_t
   virtual int    normalize_by() SC_CONST;
 
   virtual double health_percentage() SC_CONST;
+  virtual double time_to_die() SC_CONST;
 
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
@@ -3304,6 +3306,7 @@ struct player_t
   virtual int decode_set( item_t& item ) { assert( item.name() ); return SET_NONE; }
 
   virtual void recalculate_haste();
+  virtual void recalculate_health() {};
 
   virtual void armory_extensions( const std::string& region, const std::string& server, const std::string& character ) {}
 
@@ -3321,6 +3324,7 @@ struct player_t
   static player_t * create_shaman      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t * create_warlock     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t * create_warrior     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t * create_enemy       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
 
   // Raid-wide aura/buff/debuff maintenance
   static bool init        ( sim_t* sim );
@@ -3377,7 +3381,12 @@ struct player_t
   static void warrior_combat_begin( sim_t* sim );
   static void warrior_combat_end  ( sim_t* sim ) { assert( sim ); }
   
-  bool is_pet() SC_CONST { return type == PLAYER_PET || type == PLAYER_GUARDIAN; }
+  // Raid-wide Enemy buff maintenance
+  static void enemy_init        ( sim_t* sim );
+  static void enemy_combat_begin( sim_t* sim );
+  static void enemy_combat_end  ( sim_t* sim ) { assert( sim ); }
+
+  bool is_pet() SC_CONST { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
   bool is_enemy() SC_CONST { return type == ENEMY; }
   bool is_add() SC_CONST { return type == ENEMY_ADD; }
 
@@ -3392,8 +3401,7 @@ struct player_t
   warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return ( warlock_t     * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
-  target_t      * cast_target      () { assert( is_enemy()           ); return ( target_t      * ) this; }
-  add_t         * cast_add         () { assert( is_add()             ); return ( add_t         * ) this; }
+  enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
 
   bool      in_gcd() SC_CONST { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
@@ -3458,86 +3466,6 @@ struct pet_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual const char* name() SC_CONST { return full_name_str.c_str(); }
   virtual const char* id();
-};
-
-// Target ====================================================================
-
-struct target_t : public player_t
-{
-  target_t* next;
-  int target_level;
-
-  int initial_armor, armor;
-  double attack_speed, attack_damage;
-  double fixed_health, initial_health, current_health, max_health;
-  double initial_health_percentage;
-  double fixed_health_percentage;
-  double total_dmg;
-  int adds_nearby, initial_adds_nearby;
-  double resilience;
-
-  add_t* add_list;
-
-  target_t( sim_t* s, const std::string& n, player_type pt = ENEMY );
-
-  virtual void init();
-  virtual void init_base();
-  virtual void init_items();
-  virtual void init_actions();
-  virtual void reset();
-  virtual void combat_begin();
-  virtual int primary_resource() SC_CONST;
-  virtual int primary_role() SC_CONST;
-
-  // Overrides to composite function so that no one can complain about the report.
-  virtual double composite_attack_haste() SC_CONST{ return attack_haste; }
-  virtual double composite_tank_miss( const school_type school ) SC_CONST { return 0.0; }
-  virtual double composite_tank_crit( const school_type school ) SC_CONST { return 0.0; }
-  virtual double composite_tank_block() SC_CONST;
-  virtual double composite_mastery() SC_CONST { return 0.0; }
-
-  virtual double assess_damage( double amount, const school_type school,
-                                int type, int travel_result, action_t* a );
-  void recalculate_health();
-  double time_to_die() SC_CONST;
-  virtual double health_percentage() SC_CONST;
-  double base_armor() SC_CONST;
-  void aura_gain( const char* name, int aura_id=0 );
-  void aura_loss( const char* name, int aura_id=0 );
-
-  virtual action_t* create_action( const std::string& name,
-                                     const std::string& options_str );
-  virtual void create_options();
-  virtual const char* name() SC_CONST { return name_str.c_str(); }
-  virtual const char* id();
-  static target_t* find(    sim_t*, const std::string& name );
-  virtual void      create_adds();
-  virtual add_t*    create_add( const std::string& name );
-  virtual add_t*    find_add  ( const std::string& name );
-  action_expr_t* create_expression( action_t*, const std::string& type );
-};
-
-// Add =======================================================================
-
-struct add_t : public target_t
-{
-  std::string full_name_str;
-  target_t* owner;
-  add_t* next_add;
-  double summon_time;
-  bool summoned;
-
-  void _init_add_t();
-  add_t( sim_t* sim, target_t* owner, const std::string& name );
-
-  virtual void init();
-  virtual void reset();
-  virtual void summon( double duration=0, double health=0 );
-  virtual void dismiss();
-  virtual double resource_loss( int resource, double amount, action_t* a=0 );
-  virtual bool ooc_buffs() { return false; }
-
-  virtual const char* name() SC_CONST { return full_name_str.c_str(); }
 };
 
 // Stats =====================================================================
@@ -3665,7 +3593,6 @@ struct action_t : public spell_id_t
   double max_haste;
   double haste_gain_percentage;
   double min_current_time, max_current_time;
-  double min_time_to_die, max_time_to_die;
   double min_health_percentage, max_health_percentage;
   int moving, vulnerable, invulnerable, wait_on_ready, interrupt;
   bool round_base_dmg;

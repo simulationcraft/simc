@@ -702,8 +702,10 @@ void buff_t::expire()
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
     uptime_sum += current_time - last_start;
   }
-  if ( ( sim -> target -> initial_health == 0 ||
-       sim -> target -> current_health > 0 ) && !overridden )
+
+  if (  sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||
+       sim -> target -> resource_current[ RESOURCE_HEALTH ] > 0 )
+  if ( !overridden )
   {
     constant = false;
   }
