@@ -2778,8 +2778,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         colspan,
         p -> gear_weights_wowhead_link.c_str(),
         p -> gear_weights_lootrank_link.c_str() );
-#if 0
- NOT READY FOR PRIME TIME YET I THINK
       util_t::fprintf( file,
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Optimizers</th>\n"
@@ -2791,7 +2789,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         "\t\t\t\t\t\t\t</tr>\n",
         colspan,
         p -> gear_weights_wowreforge_link.c_str() );
-#endif
       util_t::fprintf( file,
       "\t\t\t\t\t\t</table>\n" );
       if ( sim -> iterations < 10000 )
