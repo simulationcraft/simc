@@ -2634,6 +2634,7 @@ struct stance_t : public warrior_spell_t
     base_cost   = 0;
     trigger_gcd = 0;
     cooldown -> duration = 1.0;
+    resource    = RESOURCE_RAGE;
   }
 
   virtual void execute()

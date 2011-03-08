@@ -3538,6 +3538,15 @@ struct presence_t : public death_knight_spell_t
     trigger_gcd = 0;
     cooldown -> duration = 1.0;
     harmful     = false;
+    resource    = RESOURCE_RUNIC;
+  }
+
+  virtual double cost() SC_CONST
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    // Presence changes consume all runic power
+    return p -> resource_current [ RESOURCE_RUNIC ];
   }
 
   virtual void execute()
@@ -3559,7 +3568,6 @@ struct presence_t : public death_knight_spell_t
     case PRESENCE_BLOOD:
       p -> buffs_blood_presence  -> trigger();
       p -> armor_multiplier += p -> buffs_blood_presence -> effect1().percent();
-      group_runes( p, 1, 0, 0, use );
     break;
     case PRESENCE_FROST:
     {
@@ -3567,22 +3575,18 @@ struct presence_t : public death_knight_spell_t
       if ( p -> talents.improved_frost_presence -> rank() )
         fp_value += p -> talents.improved_frost_presence -> effect2().percent();
       p -> buffs_frost_presence -> trigger( 1, fp_value );
-      group_runes( p, 0, 1, 0, use );
     }
     break;
     case PRESENCE_UNHOLY:
       p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
       p -> base_gcd = 1.0;
-      group_runes( p, 0, 0, 1, use );
       break;
     }
     p -> reset_gcd();
 
-    // If not in combat, just do it without consuming runes.
-    if ( ! p -> in_combat )
-      group_runes( p, 0, 0, 0, use );
-
-    death_knight_spell_t::execute();
+    consume_resource();
+    update_ready();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(),name() );
   }
 
   virtual bool ready()
