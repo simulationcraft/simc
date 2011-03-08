@@ -583,14 +583,14 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
   {
     if ( p -> eclipse_bar_value == 100 ) 
     {
-      if ( p -> buffs_eclipse_solar -> trigger( 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01, 1 ) )
+      if ( p -> buffs_eclipse_solar -> trigger() )
       {
         trigger_eclipse_proc( p );
       }
     }
     else if ( p -> eclipse_bar_value == -100 ) 
     {
-      if ( p -> buffs_eclipse_lunar -> trigger( 1, p -> composite_mastery() * p -> spells.total_eclipse -> effect1().coeff() * 0.01, 1 ) )
+      if ( p -> buffs_eclipse_lunar -> trigger() )
       {
         trigger_eclipse_proc( p );
       }
@@ -4127,7 +4127,7 @@ double druid_t::composite_player_multiplier( const school_type school) SC_CONST
       if ( buffs_eclipse_lunar -> up() )
       {
         m *= 1.0 + ( buffs_eclipse_lunar -> effect1().percent()
-                 +   buffs_eclipse_lunar -> current_value );
+                 +   composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
       }
     }
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
@@ -4135,7 +4135,7 @@ double druid_t::composite_player_multiplier( const school_type school) SC_CONST
       if ( buffs_eclipse_solar -> up() )
       {
         m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent()
-                 +   buffs_eclipse_solar -> current_value );
+                 +   composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
       }
     }
   }
