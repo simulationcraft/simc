@@ -2,8 +2,8 @@
 REM This script is used for packaging a release built using MSVC 2008
 REM Update the "dir" and "rev" variables appropriately
 
-set dir=simc-406-11-win32
-set rev=r7916
+set dir=simc-406-13-win32
+set rev=r7969
 
 svn checkout https://simulationcraft.googlecode.com/svn/trunk/ %dir% --username natehieter --revision %rev%
 del /F /Q /S %dir%\html
