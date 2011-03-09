@@ -318,10 +318,6 @@ struct mage_spell_t : public spell_t
     dps_rotation = 0;
     dpm_rotation = 0;
     mage_t* p = player -> cast_mage();
-    if ( p -> talents.piercing_ice -> rank() )
-    {
-      base_crit += p -> talents.piercing_ice -> effect1().percent();
-    }
     if ( p -> talents.enduring_winter -> rank() )
     {
       base_cost *= 1.0 + p -> talents.enduring_winter -> effect1().percent();
@@ -3318,11 +3314,15 @@ double mage_t::composite_spell_crit() SC_CONST
 {
   double c = player_t::composite_spell_crit();
 
+  // These also increase the water elementals crit chance
+
   if ( buffs_molten_armor -> up() )
   {
     c += ( spells.molten_armor -> effect3().percent() +
-	   glyphs.molten_armor -> effect1().percent() );
+           glyphs.molten_armor -> effect1().percent() );
   }
+
+  c += talents.piercing_ice -> effect1().percent();
 
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
 

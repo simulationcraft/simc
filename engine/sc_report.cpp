@@ -2296,7 +2296,7 @@ static void print_html_stats (FILE* file, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       100 * ( 1 / a -> buffed_spell_haste - 1 ),
-      100 * ( 1 / a -> spell_haste - 1 ),
+      100 * ( 1 / a -> composite_spell_haste() - 1 ),
       a -> stats.haste_rating );
 
     util_t::fprintf( file,
