@@ -394,157 +394,6 @@ bool http_t::download( std::string& result,
   return false;
 }
 
-#elif defined( __MINGW32__ )
-
-// ==========================================================================
-// HTTP-DOWNLOAD FOR WINDOWS (MinGW Only)
-// ==========================================================================
-
-#include <windows.h>
-#include <wininet.h>
-#include <Winsock2.h>
-
-// http_t::download =========================================================
-
-bool http_t::download( std::string& result,
-                       const std::string& url )
-{
-  static bool initialized = false;
-  if ( ! initialized )
-  {
-    WSADATA wsa_data;
-    WSAStartup( MAKEWORD( 2,2 ), &wsa_data );
-    initialized = true;
-  }
-
-  std::string host;
-  std::string path;
-  unsigned short port;
-
-  if ( ! parse_url( host, path, port, url.c_str() ) ) return false;
-
-  struct hostent* h = gethostbyname( host.c_str() );
-  if ( ! h ) return false;
-
-  sockaddr_in a;
-  a.sin_family = AF_INET;
-  a.sin_addr = *( in_addr * )h->h_addr_list[0];
-  a.sin_port = htons( port );
-
-  uint32_t s;
-  s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
-  if ( s == 0xffffffffU ) return false;
-
-  int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
-  if ( r < 0 )
-  {
-    return false;
-  }
-
-
-  char buffer[2048];
-  sprintf( buffer,
-           "GET %s HTTP/1.0\r\n"
-           "User-Agent: Firefox/3.6\r\n"
-           "Accept: */*\r\n"
-           "Host: %s\r\n"
-           "Cookie: loginChecked=1\r\n"
-           "Cookie: cookieLangId=en_US\r\n"
-           "Connection: close\r\n"
-           "\r\n",
-           path.c_str(),
-           host.c_str() );
-
-  r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
-  if ( r != ( int ) strlen( buffer ) )
-  {
-    return false;
-  }
-
-  result = "";
-
-  while ( 1 )
-  {
-    r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
-    if ( r > 0 )
-    {
-      buffer[ r ] = '\0';
-      result += buffer;
-    }
-    else break;
-  }
-
-  // Moved, redo query
-  while ( result.find( "HTTP/1.1 302 Moved Temporarily" ) != result.npos )
-  {
-    std::string::size_type pos_location = result.find( "Location: " );
-    if ( pos_location == result.npos ) return false;
-    
-    std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
-    std::string new_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
-    
-    if ( ! parse_url( host, path, port, new_url.c_str() ) ) return false;
-
-    h = gethostbyname( host.c_str() );
-    if ( ! h ) return false;
-
-    a.sin_family = AF_INET;
-    a.sin_addr = *( in_addr * )h->h_addr_list[0];
-    a.sin_port = htons( port );
-
-    s = ::socket( AF_INET, SOCK_STREAM, getprotobyname( "tcp" ) -> p_proto );
-    if ( s == 0xffffffffU ) return false;
-  
-    r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
-    if ( r < 0 )
-    {
-      return false;
-    }
-
-    sprintf( buffer,
-             "GET %s HTTP/1.0\r\n"
-             "User-Agent: Firefox/3.0\r\n"
-             "Accept: */*\r\n"
-             "Host: %s\r\n"
-             "Cookie: loginChecked=1\r\n"
-             "Cookie: cookieLangId=en_US\r\n"
-             "Connection: close\r\n"
-             "\r\n",
-             path.c_str(),
-             host.c_str() );
-
-    r = ::send( s, buffer, int( strlen( buffer ) ), 0 );
-    if ( r != ( int ) strlen( buffer ) )
-    {
-      return false;
-    }
-
-    result = "";
-
-    while ( 1 )
-    {
-      r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
-      if ( r > 0 )
-      {
-        buffer[ r ] = '\0';
-        result += buffer;
-      }
-      else break;
-    }
-  }
-
-  std::string::size_type pos = result.find( "\r\n\r\n" );
-  if ( pos == result.npos )
-  {
-    result.clear();
-    return false;
-  }
-
-  result.erase( result.begin(), result.begin() + pos + 4 );
-
-  return true;
-}
-
 #elif defined( _MSC_VER )
 
 // ==========================================================================
@@ -599,19 +448,43 @@ bool http_t::download( std::string& result,
 #else
 
 // ==========================================================================
-// HTTP-DOWNLOAD FOR POSIX COMPLIANT PLATFORMS
+// HTTP-DOWNLOAD FOR WINDOWS (MinGW Only) and FOR POSIX COMPLIANT PLATFORMS
 // ==========================================================================
+
+#if defined( __MINGW32__ )
+
+#include <windows.h>
+#include <wininet.h>
+#include <Winsock2.h>
+#include <io.h> // for POSIX ::close
+
+#else
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
 
+#endif
+
 // http_t::download =========================================================
 
 bool http_t::download( std::string& result,
                        const std::string& url )
 {
+
+#if defined( __MINGW32__ )
+
+  static bool initialized = false;
+  if ( ! initialized )
+  {
+    WSADATA wsa_data;
+    WSAStartup( MAKEWORD( 2,2 ), &wsa_data );
+    initialized = true;
+  }
+
+#endif
+
   std::string current_url = url;
   std::string host;
   std::string path;
@@ -650,14 +523,14 @@ bool http_t::download( std::string& result,
     int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
     if ( r < 0 )
     {
-      close( s );
+      ::close( s );
       return false;
     }
 
-    r = ::send( s, request.c_str(), request.size(), MSG_WAITALL );
+    r = ::send( s, request.c_str(), request.size(), 0 );
     if ( r != ( int ) request.size() )
     {
-      close( s );
+      ::close( s );
       return false;
     }
 
@@ -665,7 +538,7 @@ bool http_t::download( std::string& result,
     char buffer[2048];
     while ( 1 )
     {
-      r = ::recv( s, buffer, sizeof( buffer )-1, MSG_WAITALL );
+      r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
       if ( r > 0 )
       {
         buffer[ r ] = '\0';
@@ -691,12 +564,12 @@ bool http_t::download( std::string& result,
     {
       if ( redirect < redirect_max )
       {
-        
+
         std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
         current_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
         redirect ++;
       }
-      else return false; 
+      else return false;
     }
     else
     {
