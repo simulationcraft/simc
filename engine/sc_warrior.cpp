@@ -2656,6 +2656,11 @@ struct stance_t : public warrior_spell_t
       case STANCE_DEFENSE:    p -> buffs_defensive_stance -> trigger(); break;
     }
 
+    // Switching stances causes the T11 4pc DPS buff to drop
+    // Unclear if this is intended by Blizz or not, so marked as bugs for now
+    if ( p -> bugs )
+      p -> buffs_tier11_4pc_melee -> expire();
+
     consume_resource();
 
     update_ready();
