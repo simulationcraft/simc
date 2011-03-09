@@ -370,8 +370,6 @@ struct water_elemental_pet_t : public pet_t
       may_crit             = true;
       base_crit_multiplier = 1.33;
       base_cost            = 0;
-      if ( player -> cast_pet() -> owner -> cast_mage() -> race == RACE_ORC )
-        base_multiplier *= 1.05;
     }
 
     virtual void player_buff()
@@ -413,8 +411,6 @@ struct water_elemental_pet_t : public pet_t
       may_crit             = true;
       base_crit_multiplier = 1.33;
       direct_power_mod     = 0.833;
-      if ( player -> cast_pet() -> owner -> cast_mage() -> race == RACE_ORC )
-        base_multiplier *= 1.05;
     }
 
     virtual void player_buff()
