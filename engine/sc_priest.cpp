@@ -1361,6 +1361,16 @@ struct holy_fire_t : public priest_spell_t
       trigger_atonement( player, result, direct_dmg );
   }
 
+  virtual void tick()
+  {
+    priest_spell_t::tick();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> ptr )
+      trigger_atonement( player, result, tick_dmg );
+  }
+
   virtual void player_buff()
   {
     priest_spell_t::player_buff();
