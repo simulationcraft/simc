@@ -1,7 +1,7 @@
 #!./simc 
 
 # Halfus Wyrmbreaker
-raid_events+=/vulnerable,multiplier=3,duration=598,first=0,cooldown=599
+#raid_events+=/vulnerable,multiplier=3,duration=598,first=0,cooldown=599
 
 priest=Priest_Heal_Atonement_T11_372
 origin=""
@@ -21,8 +21,8 @@ actions+=/mana_potion,trigger=40000
 actions+=/shadow_fiend,if=mana_pct<=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/archangel,if=buff.holy_evangelism.stack>=5
-#actions+=/power_word_shield,if=buff.weakened_soul.down
-actions+=/smite,if=buff.holy_evangelism.stack<5|buff.holy_evangelism.remains<cooldown.archangel.remains+0.5
+actions+=/power_word_shield,if=buff.weakened_soul.down
+actions+=/smite
 head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
 shoulders=mercurial_shoulderwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_266int_171spi_429sta,gems=67int_10haste,enchant=50int_25haste

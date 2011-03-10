@@ -198,6 +198,8 @@ struct priest_t : public player_t
   std::list<spell_t* >  shadowy_apparition_active_list;
   heal_t* heals_echo_of_light;
   bool echo_of_light_merged;
+  spell_t* atonement_nc;
+  spell_t* atonement_c;
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
@@ -320,6 +322,8 @@ struct priest_t : public player_t
     use_mind_blast                       = 1;
     recast_mind_blast                    = 0;
     heals_echo_of_light                  = 0;
+    atonement_nc                         = 0;
+    atonement_c                          = 0;
 
     distance                             = 40;
 
@@ -488,6 +492,40 @@ struct priest_spell_t : public spell_t
       }
     }
   }
+
+  static void trigger_atonement( player_t* player, int result, double damage )
+  {
+
+    priest_t* p = player -> cast_priest();
+
+  // Atonement
+  if ( p -> atonement_nc && p -> atonement_c)
+  {
+    double atonement_dmg = damage * p -> talents.atonement -> effect1().percent();
+    if ( result == RESULT_CRIT )
+    {
+      // Assuming there is no cap for crits, since it's not clear how much it would be.
+      p -> atonement_c -> base_dd_min = atonement_dmg;
+      p -> atonement_c -> base_dd_max = atonement_dmg;
+      p -> atonement_c -> round_base_dmg = false;
+      p -> atonement_c -> execute();
+    }
+    else
+    {
+      // Hotfix Cap from 05.01.2011
+      if ( atonement_dmg > p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
+      {
+        atonement_dmg = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+      }
+
+      p -> atonement_nc -> base_dd_min = atonement_dmg;
+      p -> atonement_nc -> base_dd_max = atonement_dmg;
+      p -> atonement_nc -> round_base_dmg = false;
+      p -> atonement_nc -> execute();
+    }
+  }
+  }
+
 
   static void    trigger_shadowy_apparition( player_t* player );
   static void    add_more_shadowy_apparitions( player_t* player );
@@ -1305,6 +1343,22 @@ struct holy_fire_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     base_execute_time += p -> talents.divine_fury -> effect1().seconds();
+
+    if ( p -> ptr )
+      base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> ptr )
+      p -> buffs_holy_evangelism  -> trigger();
+
+    if ( p -> ptr )
+      trigger_atonement( player, result, direct_dmg );
   }
 
   virtual void player_buff()
@@ -2282,6 +2336,11 @@ struct atonement_nc_t : public priest_heal_t
     background = true;
   }
 
+  virtual void calculate_result()
+  {
+    result = RESULT_HIT;
+  }
+
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     priest_heal_t::target_debuff( t, dmg_type );
@@ -2330,12 +2389,8 @@ struct atonement_c_t : public priest_heal_t
 
 struct smite_t : public priest_spell_t
 {
-  atonement_nc_t* atonement_nc;
-  atonement_c_t* atonement_c;
-
   smite_t( player_t* player, const std::string& options_str ) :
-      priest_spell_t( "smite", player, "Smite" ),
-      atonement_nc( 0 ),atonement_c( 0 )
+      priest_spell_t( "smite", player, "Smite" )
   {
     parse_options( NULL, options_str );
 
@@ -2345,11 +2400,6 @@ struct smite_t : public priest_spell_t
 
     base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
 
-    if ( p -> talents.atonement -> rank() )
-    {
-      atonement_nc = new atonement_nc_t( p );
-      atonement_c = new atonement_c_t( p );
-    }
   }
 
   virtual void execute()
@@ -2376,32 +2426,7 @@ struct smite_t : public priest_spell_t
       p -> cooldowns_chakra -> start();
     }
 
-    // Atonement
-    if ( atonement_nc && atonement_c)
-    {
-      double atonement_dmg = direct_dmg * p -> talents.atonement -> effect1().percent();
-      if ( result == RESULT_CRIT )
-      {
-        // Assuming there is no cap for crits, since it's not clear how much it would be.
-        atonement_c -> base_dd_min = atonement_dmg;
-        atonement_c -> base_dd_max = atonement_dmg;
-        atonement_c -> round_base_dmg = false;
-        atonement_c -> execute();
-      }
-      else
-      {
-        // Hotfix Cap from 05.01.2011
-        if ( atonement_dmg > p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
-        {
-          atonement_dmg = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
-        }
-
-        atonement_nc -> base_dd_min = atonement_dmg;
-        atonement_nc -> base_dd_max = atonement_dmg;
-        atonement_nc -> round_base_dmg = false;
-        atonement_nc -> execute();
-      }
-    }
+    trigger_atonement( player, result, direct_dmg );
 
     // Train of Thought
     if ( p -> talents.train_of_thought -> rank() )
@@ -2609,9 +2634,8 @@ struct flash_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     // Assuming a SoL Flash Heal can't proc SoL
-    if ( ! p -> buffs_surge_of_light -> up() )
-      if ( p -> buffs_surge_of_light -> trigger() )
-        p -> procs_surge_of_light -> occur();
+    if ( p -> buffs_surge_of_light -> trigger() )
+      p -> procs_surge_of_light -> occur();
 
     p -> buffs_serendipity -> trigger();
 
@@ -2731,6 +2755,9 @@ struct binding_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     p -> buffs_serendipity -> trigger( 1 );
+
+    if ( p -> ptr && p -> buffs_surge_of_light -> trigger() )
+          p -> procs_surge_of_light -> occur();
 
     // Inner Focus
     if ( p -> buffs_inner_focus -> up() )
@@ -3335,7 +3362,7 @@ struct penance_heal_tick_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_weakened_soul -> up() )
+    if ( p -> buffs_weakened_soul -> up() || p -> ptr )
       p -> buffs_indulgence_of_the_penitent -> trigger();
   }
 
@@ -4593,6 +4620,14 @@ void priest_t::reset()
   recast_mind_blast = 0;
 
   echo_of_light_merged = false;
+
+  if ( talents.atonement -> rank() )
+  {
+    if ( ! atonement_nc )
+      atonement_nc = new atonement_nc_t( this );
+    if ( ! atonement_c )
+      atonement_c = new atonement_c_t( this );
+  }
 
   was_sub_25 = false;
 
