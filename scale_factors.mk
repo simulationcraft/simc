@@ -29,14 +29,15 @@ MODELS =\
 REPORTS_LIVE := $(MODELS:%=$(HTML)/$(LIVE)/%.html)
 REPORTS_PTR  := $(MODELS:%=$(HTML)/$(PTR)/%.html)
 
-GLOBAL_DEP = engine/simulationcraft.h
+SRC        = engine
+DEPENDS    = $(SRC)/simulationcraft.h
 ITERATIONS = 25000
 THREADS    = 2
 SF         = 1
 OPTS       = iterations=$(ITERATIONS) threads=$(THREADS) calculate_scale_factors=$(SF) hosted_html=1
 GEAR       = T11_372
 
-.PHONY:	live ptr all
+.PHONY:	live ptr all clean
 
 live: $(REPORTS_LIVE)
 
@@ -44,13 +45,16 @@ ptr: $(REPORTS_PTR)
 
 all: live ptr
 
-$(HTML)/$(LIVE)/%.html: engine/sc_%.cpp $(GLOBAL_DEP)
+clean:
+	/bin/rm -f $(REPORTS_LIVE) $(REPORTS_PTR)
+
+$(HTML)/$(LIVE)/%.html: $(SRC)/sc_%.cpp $(DEPENDS)
 	-@echo Generating $@ 
 	-@$(MODULE) $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR).simc output=$(basename $(@F)).txt html=$@
 
 # We should make <class>_PTR_<etc>.simc files even if they just reload the live version
 
-$(HTML)/$(PTR)/%.html: engine/sc_%.cpp $(GLOBAL_DEP)
+$(HTML)/$(PTR)/%.html: $(SRC)/sc_%.cpp $(DEPENDS)
 	-@echo Generating $@ 
-	-@$(MODULE) ptr=1 $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR).simc output=$(basename $(@F)).txt html=$@
+	-@$(MODULE) ptr=1 $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR)_PTR.simc output=$(basename $(@F)).txt html=$@
 
