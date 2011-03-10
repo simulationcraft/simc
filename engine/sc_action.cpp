@@ -1545,6 +1545,8 @@ void action_t::reset()
 
 void action_t::cancel()
 {
+  if ( sim -> debug ) log_t::output( sim, "action %s of %s is canceled", name(), player -> name() );
+
   if ( dot -> ticking ) last_tick();
 
   if ( player -> executing  == this ) player -> executing  = 0;
@@ -1554,6 +1556,35 @@ void action_t::cancel()
   event_t::cancel( dot -> tick_event );
 
   dot -> reset();
+
+  player -> debuffs.casting -> expire();
+}
+
+// action_t::interrupt =========================================================
+
+void action_t::interrupt_action()
+{
+  if ( sim -> debug ) log_t::output( sim, "action %s of %s is interrupted", name(), player -> name() );
+
+  if ( cooldown -> duration > 0 && ! dual )
+  {
+    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
+
+    cooldown -> start();
+  }
+
+  if ( player -> executing  == this ) player -> executing  = 0;
+  if ( player -> channeling == this )
+    {
+    if ( dot -> ticking ) last_tick();
+    player -> channeling = 0;
+    event_t::cancel( dot -> tick_event );
+    dot -> reset();
+    }
+
+  event_t::cancel( execute_event );
+
+  player -> debuffs.casting -> expire();
 }
 
 // action_t::check_talent ===================================================

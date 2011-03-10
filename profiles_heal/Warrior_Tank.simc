@@ -16,7 +16,15 @@ actions+=/earthen_potion,if=!in_combat|health_pct<35&buff.earthen_potion.down
 actions+=/auto_attack
 actions+=/stance,choose=defensive
 actions+=/last_stand,if=health_pct<35
-actions+=/cleave
+actions+=/shield_bash,target=Second_Target
+actions+=/heroic_strike,if=rage>=35
+actions+=/revenge
+actions+=/shockwave
+actions+=/shield_block,sync=shield_slam
+actions+=/shield_slam
+actions+=/devastate
+actions+=/battle_shout
+actions+=/berserker_rage
 head=dragon_bone_warhelm,type=plate,ilevel=359,quality=epic,stats=2784armor_113exp_281mastery_512sta_259str,reforge=mastery_dodge,gems=austere_shadowspirit_20exp_20mastery_45sta,enchant=90sta_35dodge
 neck=mountains_mouth,ilevel=333,quality=rare,stats=100mastery_100parry_224sta_149str,reforge=parry_dodge
 shoulders=heaving_plates_of_protection,type=plate,ilevel=359,quality=epic,stats=2570armor_169mastery_129parry_380sta_253str,reforge=parry_dodge,gems=60sta_10mastery,enchant=75sta_25dodge

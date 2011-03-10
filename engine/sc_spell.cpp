@@ -208,6 +208,8 @@ void spell_t::execute()
 {
   action_t::execute();
 
+  player -> debuffs.casting -> expire();
+
   if ( harmful && callbacks )
   {
     if ( result != RESULT_NONE )
@@ -226,4 +228,14 @@ void spell_t::execute()
       action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
     }
   }
+}
+
+// spell_t::schedule_execute ===============================================
+
+void spell_t::schedule_execute()
+{
+  action_t::schedule_execute();
+
+  if ( time_to_execute > 0 )
+    player -> debuffs.casting -> trigger();
 }

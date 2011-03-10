@@ -2587,8 +2587,8 @@ void player_t::interrupt()
 
   if ( sim -> log ) log_t::output( sim, "%s is interrupted", name() );
 
-  if ( executing  ) executing  -> cancel();
-  if ( channeling ) channeling -> cancel();
+  if ( executing  ) executing  -> interrupt_action();
+  if ( channeling ) channeling -> interrupt_action();
 
   if ( buffs.stunned -> check() )
   {

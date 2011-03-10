@@ -1980,6 +1980,16 @@ struct shield_bash_t : public warrior_attack_t
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }
 
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    // Implement lock school
+
+    if ( target -> debuffs.casting -> check() )
+      target -> interrupt();
+  }
+
   virtual bool ready()
   {
     if ( ! target -> debuffs.casting -> check() )

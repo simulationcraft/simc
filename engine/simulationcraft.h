@@ -3661,6 +3661,7 @@ struct action_t : public spell_id_t
   virtual bool   ready();
   virtual void   reset();
   virtual void   cancel();
+  virtual void   interrupt_action();
   virtual void   check_talent( int talent_rank );
   virtual void   check_spec( int necessary_spec );
   virtual void   check_min_level( int level );
@@ -3752,6 +3753,8 @@ struct spell_t : public action_t
 
   virtual double miss_chance( int delta_level ) SC_CONST;
   virtual double crit_chance( int delta_level ) SC_CONST;
+
+  virtual void   schedule_execute();
 };
 
 // Heal ======================================================================
