@@ -352,6 +352,7 @@ struct mage_spell_t : public spell_t
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
+  virtual double total_crit() SC_CONST;
   virtual double hot_streak_crit() { return base_crit + player_crit; }
 };
 
@@ -1142,14 +1143,6 @@ void mage_spell_t::player_buff()
   if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
   {
     player_multiplier *= 1.0 + p -> specializations.frostburn * p -> composite_mastery();
-
-    double shatter = util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
-
-    if( shatter > 0 ) // Affects "player" and "base" crit only, not target_crit
-    {
-      player_crit += player_crit * shatter;
-      player_crit +=   base_crit * shatter;
-    }
   }
 
   if ( sim -> debug )
@@ -1168,6 +1161,22 @@ void mage_spell_t::target_debuff( player_t* t, int dmg_type )
     mage_t* p = player -> cast_mage();
     target_multiplier *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
   }
+}
+
+// mage_spell_t::total_crit =================================================
+
+double mage_spell_t::total_crit() SC_CONST
+{
+  mage_t* p = player -> cast_mage();
+
+  double crit = spell_t::total_crit();
+
+  if ( fof_frozen && p -> buffs_fingers_of_frost -> up() )
+  {
+    crit *= 1.0 + util_t::talent_rank( p -> talents.shatter -> rank(), 2, 1.0, 2.0 );
+  }
+
+  return crit;
 }
 
 // ==========================================================================
