@@ -1,6 +1,6 @@
-#define PTR_TALENT_SIZE (659)
+#define PTR_TALENT_SIZE (660)
 
-// 659 talents, wow build 13707
+// 660 talents, wow build 13726
 static struct talent_data_t __ptr_talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 }, 0, 0, 0 },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 }, 0, 0, 0 },
@@ -661,5 +661,6 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Improved Blood Tap"                , 12223, 0x00,  0, 0x020, 0x0,     0,  0,  0,  1, { 94553, 94555,     0 }, 0, 0, 0 },
   { "Rapid Renewal"                     , 14738, 0x00,  1, 0x010, 0x0,  9593,  1,  0,  3, { 95649,     0,     0 }, 0, 0, 0 },
   { "Death's Advance"                   , 15322, 0x00,  2, 0x020, 0x0,     0,  0,  0,  3, { 96269, 96270,     0 }, 0, 0, 0 },
+  { "Spirit Link Totem"                 , 15487, 0x00,  2, 0x040, 0x0,     0,  0,  3,  4, { 98008,     0,     0 }, 0, 0, 0 },
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0 }, 0, 0, 0 }
 };

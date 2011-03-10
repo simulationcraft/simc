@@ -71,18 +71,21 @@ class DBCParser(object):
             f.close()
             sys.exit(1)
 
+        first_id = 0
+        last_id = 0
         try:
             records, fields, record_size, string_block_size = struct.unpack('IIII', f.read(16))
             if is_db2:
                 table_hash, build, unk_1 = struct.unpack('III', f.read(12))
                 if build > 12880:
-                    unk_2, unk_3, locale, unk_5 = struct.unpack('IIII', f.read(16))
+                    first_id, last_id, locale, unk_5 = struct.unpack('IIII', f.read(16))
             
                     # Skip index table before real data starts
-                    if unk_3 != 0:
-                        f.read(unk_3 * 4 - hdr_size)
-                        f.read(unk_3 * 2 - hdr_size * 2)
-                        hdr_size += ( unk_3 * 4 - hdr_size ) + ( unk_3 * 2 - hdr_size * 2 )
+                    if last_id != 0:
+                        f.seek( ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2, os.SEEK_CUR )
+                        hdr_size += ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2
+                
+                # print hex(hdr_size), table_hash, build, unk_1, first_id, last_id, locale, unk_5
         except:
             sys.stderr.write('%s: Invalid DBC/DB2/WCH2 header format\n' % os.path.abspath(self._fname))
             f.close()
@@ -96,15 +99,12 @@ class DBCParser(object):
         size                    = hdr_size + records * record_size + string_block_size
         statinfo                = os.fstat(f.fileno())
         
-        #print records, fields, record_size, string_block_size, self._fname
+        # print records, fields, record_size, string_block_size, self._fname
         # Figure out a valid class for us from data, now that we know the DBC is sane
         if '%s%d' % ( os.path.basename(self._fname).split('.')[0].replace('-', '_'), self._options.build ) in dir(data):
             self._class = getattr(data, '%s%d' % ( 
                 os.path.basename(self._fname.replace('-', '_')).split('.')[0], self._options.build ) )
-        #else:
-        #    sys.stderr.write('Warning, could not deduce a proper class for dbc file "%s.dbc", wow build %d. You need exact capitalization.\n' % (
-        #        os.path.basename(self._fname).split('.')[0], self._options.build or data.current_patch_level() ))
-
+        
         # Sanity check file size
         if statinfo[stat.ST_SIZE] != size:
             sys.stderr.write('%s: Invalid DBC/DB2 File size, expected %u, got %u\n' % (os.path.abspath(self._fname), size, statinfo[stat.ST_SIZE]))
@@ -124,7 +124,7 @@ class DBCParser(object):
 
         # String block caching to avoid seeking all over the place
         if self._string_block_size > 1:
-            #print hdr_size + self._records * self._record_size
+            # print hdr_size + self._records * self._record_size
             self._dbc_file.seek(hdr_size + self._records * self._record_size)
             self._string_block = self._dbc_file.read(self._string_block_size)
             self._dbc_file.seek(old_pos)
@@ -132,11 +132,13 @@ class DBCParser(object):
             self._string_block = None
 
         # Figure out DBC max identifier, as it's the first uint32 field in every dbc record
-        if self._records > 0:
+        if ( is_db2 and not last_id ) or ( not is_db2 and self._records > 0 ):
             self._dbc_file.seek(hdr_size + (self._records - 1) * self._record_size)
             self._last_id = struct.unpack('I', self._dbc_file.read(4))[0]
             self._dbc_file.seek(old_pos)
-        #print self._last_id
+        else:
+            self._last_id = last_id
+        # print self._last_id
         
         return self
 
@@ -174,7 +176,7 @@ class RawDBCParser(DBCParser):
     def open_dbc(self):
         if self._dbc_file:
             return self
-            
+        
         if not os.access(os.path.abspath(self._fname), os.R_OK):
             sys.stderr.write('%s: Not found\n' % os.path.abspath(self._fname))
             sys.exit(1)
@@ -209,7 +211,6 @@ class RawDBCParser(DBCParser):
         self._dbc_file = f
 
         old_pos = self._dbc_file.tell()
-
         # String block caching to avoid seeking all over the place
         if self._string_block_size > 1:
             self._dbc_file.seek(20 + self._records * self._record_size)
@@ -222,6 +223,7 @@ class RawDBCParser(DBCParser):
         self._dbc_file.seek(20 + (self._records - 1) * self._record_size)
         self._last_id = struct.unpack('I', self._dbc_file.read(4))[0]
         self._dbc_file.seek(old_pos)
+        print self._last_id
 
         return self
 
