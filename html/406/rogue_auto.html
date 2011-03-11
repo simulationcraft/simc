@@ -31,9 +31,9 @@
 			<h2>for World of Warcraft 4.0.6 Live (build level 13623)</h2>
 
 			<ul class="params">
-				<li><b>Timestamp:</b> Thu Mar 10 20:26:04 2011
+				<li><b>Timestamp:</b> Fri Mar 11 02:33:22 2011
 </li>
-				<li><b>Iterations:</b> 10000</li>
+				<li><b>Iterations:</b> 25000</li>
 				<li class="linked"><a href="#help-fight-length" class="help"><b>Fight Length:</b> 360 - 540</a></li>
 				<li><b>Fight Style:</b> Patchwerk</li>
 			</ul>
@@ -46,6 +46,7 @@
 			<div class="toggle-content">
 				<ul class="toc toc-narrow">
 					<li><a href="#raid-summary">Raid Summary</a></li>
+					<li><a href="#raid-scale-factors">Scale Factors</a></li>
 					<li><a href="#Rogue_Assassination_T11_372">Rogue_Assassination_T11_372</a></li>
 					<li><a href="#Rogue_Combat_T11_372">Rogue_Combat_T11_372</a></li>
 				</ul>
@@ -64,19 +65,120 @@
 			<h2 class="toggle open">Raid Summary</h2>
 			<div class="toggle-content">
 				<div class="charts charts-left">
-					<a href="#help-dps" class="help"><img src="http://0.chart.apis.google.com/chart?chs=525x80&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:27181|27042|26636&amp;chds=0,67951&amp;chco=FFF569,FFF569,FFF569&amp;chm=t++27181++Rogue_Assassination_T11_372,C0B84F,0,0,15|t++27042++Rogue_Combat_T11_372,C0B84F,1,0,15|t++26636++Rogue_Subtlety_T11_372,C0B84F,2,0,15&amp;chtt=DPS+Ranking&amp;chts=dddddd,18" alt="DPS Chart" /></a>
+					<a href="#help-dps" class="help"><img src="http://0.chart.apis.google.com/chart?chs=525x80&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:27173|27033|26632&amp;chds=0,67931&amp;chco=FFF569,FFF569,FFF569&amp;chm=t++27173++Rogue_Assassination_T11_372,C0B84F,0,0,15|t++27033++Rogue_Combat_T11_372,C0B84F,1,0,15|t++26632++Rogue_Subtlety_T11_372,C0B84F,2,0,15&amp;chtt=DPS+Ranking&amp;chts=dddddd,18" alt="DPS Chart" /></a>
 					<img src="http://2.chart.apis.google.com/chart?chs=525x160&amp;cht=bhs&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:20,20,20|4837,4837,4879|20,20,20|20,20,20|0,0,0|0,0,0|0,0,0|95,95,95|197,781,774|1333,1086,961|874,1169,1152|1413,1839,1901|1749,676,628&amp;chds=0,10558&amp;chco=C79C6E,336600,69CCF0,C0C0C0,9482C9,8A8A8A,59ADCC,FFF569,C55D54,C41F3B,F58CBA,2459FF,C0B84F&amp;chxt=y&amp;chxl=0:|Rogue_Subtlety_T11_372|Rogue_Combat_T11_372|Rogue_Assassination_T11_372&amp;chxs=0,dddddd,14&amp;chdl=Str|Agi|Int|Spi|SP|SPen|MP5|AP|Exp|Hit|Crit|Haste|Mastery&amp;chdlp=t&amp;chdls=dddddd,12&amp;chtt=Gear+Overview&amp;chts=dddddd,18" alt="Gear Chart" />
-					<a href="#help-timeline-distribution" class="help"><img src="http://4.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chf=bg,s,333333&amp;chd=t:1,3,28,122,321,438,475,442,404,423,474,411,440,387,449,461,437,441,427,420,448,428,436,476,415,335,262,152,34,6,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1&amp;chds=0,476&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=316|avg=450|max=720&amp;chxp=0,1,33,100&amp;chtt=Timeline+Distribution&amp;chts=dddddd,18" alt="Timeline Distribution Chart" /></a>
+					<a href="#help-timeline-distribution" class="help"><img src="http://4.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chf=bg,s,333333&amp;chd=t:1,0,0,14,141,488,1081,1142,1193,1114,1063,1177,1145,1035,1102,1088,1236,1127,1075,1148,1124,1155,1130,1087,1151,1089,919,619,291,58,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1&amp;chds=0,1236&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=313|avg=450|max=720&amp;chxp=0,1,34,100&amp;chtt=Timeline+Distribution&amp;chts=dddddd,18" alt="Timeline Distribution Chart" /></a>
 				</div>
 				<div class="charts">
-					<img src="http://1.chart.apis.google.com/chart?chs=500x320&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=10&amp;chd=t:125570|57422|33997|30391|27493|26034|25178|23491|18365|16383|14434|10719|10535|8191|4685|4663|4076|3212|2338|1604&amp;chds=0,313924&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,336600,C79C6E,C79C6E,C55D54,C55D54,C79C6E,C79C6E,C79C6E,C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++125570++rupture+(Rogue_Subtlety_T11_372),C0B84F,0,0,10|t++57422++killing_spree+(Rogue_Combat_T11_372),C0B84F,1,0,10|t++33997++ambush+(Rogue_Subtlety_T11_372),C0B84F,2,0,10|t++30391++eviscerate+(Rogue_Combat_T11_372),C0B84F,3,0,10|t++27493++envenom+(Rogue_Assassination_T11_372),C0B84F,4,0,10|t++26034++eviscerate+(Rogue_Subtlety_T11_372),C0B84F,5,0,10|t++25178++backstab+(Rogue_Subtlety_T11_372),C0B84F,6,0,10|t++23491++rupture+(Rogue_Combat_T11_372),C0B84F,7,0,10|t++18365++garrote+(Rogue_Assassination_T11_372),C0B84F,8,0,10|t++16383++mutilate+(Rogue_Assassination_T11_372),C0B84F,9,0,10|t++14434++backstab+(Rogue_Assassination_T11_372),C0B84F,10,0,10|t++10719++sinister_strike+(Rogue_Combat_T11_372),C0B84F,11,0,10|t++10535++rupture+(Rogue_Assassination_T11_372),C0B84F,12,0,10|t++8191++revealing_strike+(Rogue_Combat_T11_372),C0B84F,13,0,10|t++4685++melee_main_hand+(Rogue_Subtlety_T11_372),C0B84F,14,0,10|t++4663++melee_main_hand+(Rogue_Combat_T11_372),C0B84F,15,0,10|t++4076++melee_off_hand+(Rogue_Combat_T11_372),C0B84F,16,0,10|t++3212++melee_main_hand+(Rogue_Assassination_T11_372),C0B84F,17,0,10|t++2338++melee_off_hand+(Rogue_Subtlety_T11_372),C0B84F,18,0,10|t++1604++melee_off_hand+(Rogue_Assassination_T11_372),C0B84F,19,0,10&amp;chtt=Raid+Damage+Per+Execute+Time&amp;chts=dddddd,18" alt="DPET Chart" />
+					<img src="http://1.chart.apis.google.com/chart?chs=500x320&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=10&amp;chd=t:126562|57400|34001|30391|27496|26026|25176|23494|18358|16376|14442|10723|10536|8192|4684|4664|4077|3211|2338|1603&amp;chds=0,316404&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,336600,C79C6E,C79C6E,C55D54,C55D54,C79C6E,C79C6E,C79C6E,C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++126562++rupture+(Rogue_Subtlety_T11_372),C0B84F,0,0,10|t++57400++killing_spree+(Rogue_Combat_T11_372),C0B84F,1,0,10|t++34001++ambush+(Rogue_Subtlety_T11_372),C0B84F,2,0,10|t++30391++eviscerate+(Rogue_Combat_T11_372),C0B84F,3,0,10|t++27496++envenom+(Rogue_Assassination_T11_372),C0B84F,4,0,10|t++26026++eviscerate+(Rogue_Subtlety_T11_372),C0B84F,5,0,10|t++25176++backstab+(Rogue_Subtlety_T11_372),C0B84F,6,0,10|t++23494++rupture+(Rogue_Combat_T11_372),C0B84F,7,0,10|t++18358++garrote+(Rogue_Assassination_T11_372),C0B84F,8,0,10|t++16376++mutilate+(Rogue_Assassination_T11_372),C0B84F,9,0,10|t++14442++backstab+(Rogue_Assassination_T11_372),C0B84F,10,0,10|t++10723++sinister_strike+(Rogue_Combat_T11_372),C0B84F,11,0,10|t++10536++rupture+(Rogue_Assassination_T11_372),C0B84F,12,0,10|t++8192++revealing_strike+(Rogue_Combat_T11_372),C0B84F,13,0,10|t++4684++melee_main_hand+(Rogue_Subtlety_T11_372),C0B84F,14,0,10|t++4664++melee_main_hand+(Rogue_Combat_T11_372),C0B84F,15,0,10|t++4077++melee_off_hand+(Rogue_Combat_T11_372),C0B84F,16,0,10|t++3211++melee_main_hand+(Rogue_Assassination_T11_372),C0B84F,17,0,10|t++2338++melee_off_hand+(Rogue_Subtlety_T11_372),C0B84F,18,0,10|t++1603++melee_off_hand+(Rogue_Assassination_T11_372),C0B84F,19,0,10&amp;chtt=Raid+Damage+Per+Execute+Time&amp;chts=dddddd,18" alt="DPET Chart" />
 				</div>
 				<div class="clear"></div>
 			</div>
 		</div>
 
-		<div id="Rogue_Assassination_T11_372" class="player section grouped-first">
-			<h2 class="toggle">Rogue_Assassination_T11_372&nbsp;:&nbsp;27181dps</h2>
+		<div id="raid-scale-factors" class="section grouped-first">
+
+			<h2 class="toggle">DPS Scale Factors (dps increase per unit stat)</h2>
+			<div class="toggle-content hide">
+				<table class="sc">
+					<tr>
+						<th class="left small">Profile</th>
+						<th class="small">Str</th>
+						<th class="small">Agi</th>
+						<th class="small">Sta</th>
+						<th class="small">Int</th>
+						<th class="small">Spi</th>
+						<th class="small">SP</th>
+						<th class="small">AP</th>
+						<th class="small">Exp</th>
+						<th class="small">Hit</th>
+						<th class="small">Crit</th>
+						<th class="small">Haste</th>
+						<th class="small">Mastery</th>
+						<th class="small">Wdps</th>
+						<th class="small">WOHdps</th>
+						<th class="small">Armor</th>
+						<th class="small">Dodge</th>
+						<th class="small">Parry</th>
+						<th class="small">BlockR</th>
+						<th class="small">wowhead</th>
+						<th class="small">lootrank</th>
+					</tr>
+					<tr>
+						<td class="left small">Rogue_Assassination_T11_372</td>
+						<td class="small">1.3607</td>
+						<td class="small">3.3650</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">1.3313</td>
+						<td class="small">1.0039</td>
+						<td class="small">2.1760</td>
+						<td class="small">1.1619</td>
+						<td class="small">1.4486</td>
+						<td class="small">1.7198</td>
+						<td class="small">4.2219</td>
+						<td class="small">1.3958</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=4;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=1.3607:3.3650:1.3313:1.0039:2.1760:1.1619:1.4486:1.7198:4.2219;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=8&amp;F=H&amp;Str=1.3607&amp;Agi=3.3650&amp;map=1.3313&amp;Exp=1.0039&amp;mhit=2.1760&amp;mcr=1.1619&amp;mh=1.4486&amp;Mr=1.7198&amp;dps=4.2219&amp;odps=1.3958&amp;Ver=6"> lootrank</a></td>
+					</tr>
+					<tr class="odd">
+						<td class="left small">Rogue_Combat_T11_372</td>
+						<td class="small">1.3735</td>
+						<td class="small">3.4975</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">1.3116</td>
+						<td class="small">2.3117</td>
+						<td class="small">1.8517</td>
+						<td class="small">1.2249</td>
+						<td class="small">1.6520</td>
+						<td class="small">1.5369</td>
+						<td class="small">6.4307</td>
+						<td class="small">2.0827</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=4;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=1.3735:3.4975:1.3116:2.3117:1.8517:1.2249:1.6520:1.5369:6.4307;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=8&amp;F=H&amp;Str=1.3735&amp;Agi=3.4975&amp;map=1.3116&amp;Exp=2.3117&amp;mhit=1.8517&amp;mcr=1.2249&amp;mh=1.6520&amp;Mr=1.5369&amp;dps=6.4307&amp;odps=2.0827&amp;Ver=6"> lootrank</a></td>
+					</tr>
+					<tr>
+						<td class="left small">Rogue_Subtlety_T11_372</td>
+						<td class="small">1.0246</td>
+						<td class="small">3.5544</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.9583</td>
+						<td class="small">1.2891</td>
+						<td class="small">1.2191</td>
+						<td class="small">1.1133</td>
+						<td class="small">1.4303</td>
+						<td class="small">0.7994</td>
+						<td class="small">7.1719</td>
+						<td class="small">1.1137</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=4;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=1.0246:3.5544:0.9583:1.2891:1.2191:1.1133:1.4303:0.7994:7.1719;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=8&amp;F=H&amp;Str=1.0246&amp;Agi=3.5544&amp;map=0.9583&amp;Exp=1.2891&amp;mhit=1.2191&amp;mcr=1.1133&amp;mh=1.4303&amp;Mr=0.7994&amp;dps=7.1719&amp;odps=1.1137&amp;Ver=6"> lootrank</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div id="Rogue_Assassination_T11_372" class="player section">
+			<h2 class="toggle">Rogue_Assassination_T11_372&nbsp;:&nbsp;27173dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> troll</li>
@@ -103,15 +205,15 @@
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>27180.5</td>
-								<td>11.9 / 0.0%</td>
-								<td>4397.8 / 16.2%</td>
-								<td>71.5%</td>
-								<td>1024.5</td>
+								<td>27172.5</td>
+								<td>7.6 / 0.0%</td>
+								<td>4220.3 / 15.5%</td>
+								<td>70.8%</td>
+								<td>1024.6</td>
 								<td>26.5</td>
 								<td>26.4</td>
 								<td>energy</td>
-								<td>42.37%</td>
+								<td>42.39%</td>
 								<td>36.1</td>
 							</tr>
 						</table>
@@ -136,20 +238,110 @@
 								</td>
 							</tr>
 						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+								<th>Str</th>
+								<th>Agi</th>
+								<th>AP</th>
+								<th>Exp</th>
+								<th>Hit</th>
+								<th>Crit</th>
+								<th>Haste</th>
+								<th>Mastery</th>
+								<th>Wdps</th>
+								<th>WOHdps</th>
+								<th>WOHspeed</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+								<td>1.3607</td>
+								<td>3.3650</td>
+								<td>1.3313</td>
+								<td>1.0039</td>
+								<td>2.1760</td>
+								<td>1.1619</td>
+								<td>1.4486</td>
+								<td>1.7198</td>
+								<td>4.2219</td>
+								<td>1.3958</td>
+								<td>0.0000</td>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+								<td>0.4044</td>
+								<td>1.0000</td>
+								<td>0.3956</td>
+								<td>0.2983</td>
+								<td>0.6467</td>
+								<td>0.3453</td>
+								<td>0.4305</td>
+								<td>0.5111</td>
+								<td>1.2547</td>
+								<td>0.4148</td>
+								<td>0.0000</td>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>-200</td>
+								<td>-300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>100</td>
+								<td>100</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+								<td>0.0253</td>
+								<td>0.0253</td>
+								<td>0.0253</td>
+								<td>0.0379</td>
+								<td>0.0253</td>
+								<td>0.0253</td>
+								<td>0.0253</td>
+								<td>0.0253</td>
+								<td>0.0758</td>
+								<td>0.0758</td>
+								<td>0.0000</td>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="11" class="filler">
+									<ul class="float">
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=4;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=1.3607:3.3650:1.3313:1.0039:2.1760:1.1619:1.4486:1.7198:4.2219;" class="ext">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=8&amp;F=H&amp;Str=1.3607&amp;Agi=3.3650&amp;map=1.3313&amp;Exp=1.0039&amp;mhit=2.1760&amp;mcr=1.1619&amp;mh=1.4486&amp;Mr=1.7198&amp;dps=4.2219&amp;odps=1.3958&amp;Ver=6" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="11" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="player-section">
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://5.chart.apis.google.com/chart?chs=550x240&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:27493|18365|16383|14434|10535|3212|1604&amp;chds=0,54985&amp;chco=336600,C55D54,C79C6E,C79C6E,C55D54,C79C6E,C79C6E&amp;chm=t++27493++envenom,336600,0,0,15|t++18365++garrote,C55D54,1,0,15|t++16383++mutilate,C79C6E,2,0,15|t++14434++backstab,C79C6E,3,0,15|t++10535++rupture,C55D54,4,0,15|t++3212++melee_main_hand,C79C6E,5,0,15|t++1604++melee_off_hand,C79C6E,6,0,15&amp;chtt=Rogue_Assassination_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://5.chart.apis.google.com/chart?chs=550x240&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:27496|18358|16376|14442|10536|3211|1603&amp;chds=0,54992&amp;chco=336600,C55D54,C79C6E,C79C6E,C55D54,C79C6E,C79C6E&amp;chm=t++27496++envenom,336600,0,0,15|t++18358++garrote,C55D54,1,0,15|t++16376++mutilate,C79C6E,2,0,15|t++14442++backstab,C79C6E,3,0,15|t++10536++rupture,C55D54,4,0,15|t++3211++melee_main_hand,C79C6E,5,0,15|t++1603++melee_off_hand,C79C6E,6,0,15&amp;chtt=Rogue_Assassination_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
               <span class="chart-action-dmg" title="Action Damage Chart">http://6.chart.apis.google.com/chart?chs=550x310&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:24,14,12,10,10,9,7,6,4,2,1&amp;chds=0,100&amp;chco=336600,336600,C79C6E,336600,336600,C79C6E,C79C6E,C79C6E,C79C6E,C55D54,C55D54&amp;chl=instant_poison|envenom|melee_main_hand|deadly_poison|venomous_wound|backstab|mutilate_mh|melee_off_hand|mutilate_oh|rupture|garrote&amp;chtt=Rogue_Assassination_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://7.chart.apis.google.com/chart?chs=550x280&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:45,18,15,12,5,2,2,1&amp;chds=0,100&amp;chco=C0B84F&amp;chl=energy_regen|murderous_intent|relentless_strikes|venomous_vim|energy_refund|overkill|backstab_glyph|cold_blood&amp;chtt=Rogue_Assassination_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://8.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:q4670qsonptrtqrpkijhgdbbaZZZZZWVWWWWXXXYYZZaabccddccbbaZZYYYXXXXXXXXXXXWWWWWWWWXXXXXXYYYYYYYYYXXXXXXXXXXXXWXXWWWWWWWWWWWWWYZZXXXYYZZaaaZZZZZZYYYXXXXXXXXXXXXXXXXXXXXXXXXXXYYYYYYXXXXXXYYYYZZYZZYYYXXXXXXXWWWWWWWWWWVVVVVWWWXXXYZZaabbbbccbbbbbbaaabdecaZZaaaabbbbcbbbbbbbbbaaaaaaaaaaaaaaaaaaaabbbbbbbcccccccdddddddeeeeffffgggghhiiiijjjjjjjjjjjjjjjjjjjjjjjjjjkkkkkkkkklmptutsrrrrqqqpqqqqqqqqqqqqqqpponmmmmnopqrtuwxz01223333210zyxwvutsrrqqpooonnnmmmmllllkkkk&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=90&amp;chtt=Rogue_Assassination_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://0.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:zz222333443567777320zxxutsrppnmmmmmmmlmlmlmmmmmllllkkkjjjiihhhggggggggggggggggghhhhhhhhhiiiihhhhhhhhhgggggggggffffgghhhiijjkkllmmmnnnoooooooonnnmmlllkkkjjjjjjiiiihhhhhhhhhiiiiiiiiiiiiiiiiiiiiiihhhhggggffffffffgggghhhiijjjkkllllmmmmmmlmmmmnnnnnnoooppppqqqrqqqqqqqppooonmmmllkkkjjjiiihhhhhiiiiiiiiijjjjjjkkkkkklllllmmmmnnnnnooooooooooooooooooonnnnnnnnnnnnoopqqrsttuuvvwxxyyz001110000000zzyyyyxxxxxxxxxxxxxxxxxyyyyyyyxxxwwvvuuttssrrqqqpppooonnnnnnnnmmmm&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=27181|max=41392&amp;chxp=1,1,66,100&amp;chtt=Rogue_Assassination_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,6,9,26,67,145,268,387,645,793,1044,1230,1168,1130,942,729,529,382,231,143,63,26,18,9,3,2&amp;chds=0,1230&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=20799|avg=27181|max=29595&amp;chxp=0,1,73,100&amp;chtt=Rogue_Assassination_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://9.chart.apis.google.com/chart?chs=525x330&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:4.2219|3.3650|2.1760|1.7198|1.4486|1.3958|1.3607|1.3313|1.1619|1.0039&amp;chds=0,8.4439&amp;chco=FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569&amp;chm=t++4.2219++Wdps,C0B84F,0,0,15|t++3.3650++Agi,C0B84F,1,0,15|t++2.1760++Hit,C0B84F,2,0,15|t++1.7198++Mastery,C0B84F,3,0,15|t++1.4486++Haste,C0B84F,4,0,15|t++1.3958++WOHdps,C0B84F,5,0,15|t++1.3607++Str,C0B84F,6,0,15|t++1.3313++AP,C0B84F,7,0,15|t++1.1619++Crit,C0B84F,8,0,15|t++1.0039++Exp,C0B84F,9,0,15&amp;chtt=Rogue_Assassination_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://8.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:q5680qsonptrtqrokijhgdbbaZZZZZWVWWWWXXXYYZZaabccdddccbaZZYYYXXXXXXXXXXXXWWWWWWXXXXXXXXYYYYYYYYYYXXXXXXXXXXXXXWWWWWWWXWWWXXYaZYXXYZZZaaaaZZZZZYYYYXXXXXXXXXXXXXXXXXXXXXXYYYYYYYYXXXXXXYYYYYZZZZZYYYXXXXXXXXXXWXWXWWWWWVVVWWWXXYYZZaabbbbbcccbbbbaaabdecaZZaaaabbbbbbcbbbbbbbaaaaaaaaaaaaaaaaaaaabbbbbbbbcccccdddddddeeeeeffffgghhhhiiiijjjjjjjjjjjjjjjjjjjjjjkjkkkkkkkkkkklmquutssrsrqqqqqqqqqqqqqqqqqqqponnmmmnopqstvwxz01223333210zyxwvutssrqpppoonnnmmmmlllllkkk&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=90&amp;chtt=Rogue_Assassination_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://0.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:zz222333443567777320zxxutsrppnmmmmmmmlmlllmmmmmllllkkkjjjiihhhggggggggggggggggghhhhhhhhiiiiiiihhhhhhhgggggggggffffgghhiijjjkkllmmnnnnoooooooonnnmmlllkkkjjjjjjiiiiihhhiiihiiiiiiiiijjiiiiiiiiiiiihhhhgggggfffffffgggghhiiijjjkkllllmmmmmllmmmmnnnnnnoooppppqqqrqqqqqqqpppoonnmmllkkkjjjiiiihhhhiiiiiiiiijjjjjjkkkkkkllllmmmmmnnnnnoooooooooooooooooooonnnnnnnnnnnoopqqrsttuuvwwxxyzz001111000000zzzyyyxxxxxxxxxxxxxxxxxyyyyyyyxxxwwvvuuttssrrrqqpppoooonnnnnnnmmmm&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=27173|max=41330&amp;chxp=1,1,66,100&amp;chtt=Rogue_Assassination_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,9,22,49,132,275,516,769,1265,1674,2190,2512,2787,2835,2522,2246,1751,1245,897,587,356,198,91,38,18,9,1,1&amp;chds=0,2835&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=21262|avg=27173|max=29702&amp;chxp=0,1,70,100&amp;chtt=Rogue_Assassination_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -184,23 +376,23 @@
 							</tr>
 							<tr>
 								<th class="left small">Rogue_Assassination_T11_372</th>
-								<th class="right small">27181</th>
+								<th class="right small">27173</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=53">backstab</a></td>
 								<td class="right small">2428</td>
 								<td class="right small">8.9%</td>
-								<td class="right small">74.4</td>
+								<td class="right small">74.3</td>
 								<td class="right small">1.94sec</td>
-								<td class="right small">14695</td>
-								<td class="right small">14434</td>
-								<td class="right small">8302</td>
-								<td class="right small">19787</td>
+								<td class="right small">14703</td>
+								<td class="right small">14442</td>
+								<td class="right small">8300</td>
+								<td class="right small">19790</td>
 								<td class="right small">25502</td>
 								<td class="right small">59.2%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">4.9%</td>
+								<td class="right small">4.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -225,13 +417,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">74.36</td>
-											<td class="right small">74.36</td>
+											<td class="right small">74.32</td>
+											<td class="right small">74.32</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0180</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1092687</td>
+											<td class="right small">1092681</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -247,25 +439,25 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">26.7</td>
-											<td class="right small">35.96%</td>
-											<td class="right small">8302.13</td>
+											<td class="right small">35.95%</td>
+											<td class="right small">8299.77</td>
 											<td class="right small">7521</td>
 											<td class="right small">10724</td>
-											<td class="right small">222025</td>
+											<td class="right small">221736</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">44.0</td>
-											<td class="right small">59.17%</td>
-											<td class="right small">19786.86</td>
+											<td class="right small">59.22%</td>
+											<td class="right small">19789.74</td>
 											<td class="right small">17886</td>
 											<td class="right small">25502</td>
-											<td class="right small">870662</td>
+											<td class="right small">870945</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">3.6</td>
-											<td class="right small">4.86%</td>
+											<td class="right small">4.83%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -313,11 +505,11 @@
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=2818">deadly_poison</a></td>
-								<td class="right small">2843</td>
+								<td class="right small">2842</td>
 								<td class="right small">10.5%</td>
-								<td class="right small">344.7</td>
+								<td class="right small">344.5</td>
 								<td class="right small">1.30sec</td>
-								<td class="right small">3711</td>
+								<td class="right small">3713</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -330,7 +522,7 @@
 								<td class="right small">0.0%</td>
 								<td class="right small">149</td>
 								<td class="right small">8012</td>
-								<td class="right small">12382</td>
+								<td class="right small">12380</td>
 								<td class="right small">13.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">99.3%</td>
@@ -349,13 +541,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">344.72</td>
+											<td class="right small">344.49</td>
 											<td class="right small">1.02</td>
 											<td class="right small">149.03</td>
 											<td class="right small">149.03</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">1279333</td>
+											<td class="right small">1279114</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -388,21 +580,21 @@
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">129.5</td>
-											<td class="right small">86.91%</td>
-											<td class="right small">8012.16</td>
+											<td class="right small">129.6</td>
+											<td class="right small">86.93%</td>
+											<td class="right small">8012.29</td>
 											<td class="right small">1449</td>
 											<td class="right small">10870</td>
-											<td class="right small">1037794</td>
+											<td class="right small">1037999</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">19.5</td>
-											<td class="right small">13.09%</td>
-											<td class="right small">12382.15</td>
+											<td class="right small">13.07%</td>
+											<td class="right small">12379.63</td>
 											<td class="right small">2239</td>
 											<td class="right small">16794</td>
-											<td class="right small">241539</td>
+											<td class="right small">241115</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -451,18 +643,18 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=32645">envenom</a></td>
-								<td class="right small">3915</td>
+								<td class="right small">3916</td>
 								<td class="right small">14.4%</td>
 								<td class="right small">62.3</td>
 								<td class="right small">7.18sec</td>
-								<td class="right small">28282</td>
-								<td class="right small">27493</td>
-								<td class="right small">20388</td>
-								<td class="right small">43266</td>
+								<td class="right small">28284</td>
+								<td class="right small">27496</td>
+								<td class="right small">20383</td>
+								<td class="right small">43293</td>
 								<td class="right small">63153</td>
 								<td class="right small">38.8%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">4.8%</td>
+								<td class="right small">4.9%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -493,7 +685,7 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 											<td class="right small">0.00</td>
 											<td class="right small">1.0287</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1761830</td>
+											<td class="right small">1762231</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -509,25 +701,25 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">35.1</td>
-											<td class="right small">56.38%</td>
-											<td class="right small">20388.11</td>
+											<td class="right small">56.32%</td>
+											<td class="right small">20383.10</td>
 											<td class="right small">8076</td>
 											<td class="right small">30657</td>
-											<td class="right small">716063</td>
+											<td class="right small">715192</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">24.2</td>
-											<td class="right small">38.80%</td>
-											<td class="right small">43266.09</td>
+											<td class="right small">38.82%</td>
+											<td class="right small">43293.06</td>
 											<td class="right small">16638</td>
 											<td class="right small">63153</td>
-											<td class="right small">1045767</td>
+											<td class="right small">1047039</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">3.0</td>
-											<td class="right small">4.82%</td>
+											<td class="right small">4.87%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -565,9 +757,9 @@ Instant Poison application frequency increased by $s2%.</span></li>
 										<h5>Direct Damage</h5>
 										<ul>
 											<li><span class="label">may_crit:</span>true</li>
-											<li><span class="label">direct_power_mod:</span>0.450000</li>
-											<li><span class="label">base_dd_min:</span>1203.99</li>
-											<li><span class="label">base_dd_max:</span>1203.99</li>
+											<li><span class="label">direct_power_mod:</span>0.360000</li>
+											<li><span class="label">base_dd_min:</span>963.19</li>
+											<li><span class="label">base_dd_max:</span>963.19</li>
 										</ul>
 										<h5>Weapon</h5>
 										<ul>
@@ -585,8 +777,8 @@ Instant Poison application frequency increased by $s2%.</span></li>
 								<td class="right small">0.6%</td>
 								<td class="right small">3.8</td>
 								<td class="right small">129.04sec</td>
-								<td class="right small">19043</td>
-								<td class="right small">18365</td>
+								<td class="right small">19037</td>
+								<td class="right small">18358</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -597,8 +789,8 @@ Instant Poison application frequency increased by $s2%.</span></li>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">21</td>
-								<td class="right small">2618</td>
-								<td class="right small">5432</td>
+								<td class="right small">2619</td>
+								<td class="right small">5435</td>
 								<td class="right small">27.3%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">14.2%</td>
@@ -619,11 +811,11 @@ Instant Poison application frequency increased by $s2%.</span></li>
 										<tr>
 											<td class="right small">3.79</td>
 											<td class="right small">3.79</td>
-											<td class="right small">21.32</td>
-											<td class="right small">21.32</td>
-											<td class="right small">1.0369</td>
+											<td class="right small">21.31</td>
+											<td class="right small">21.31</td>
+											<td class="right small">1.0370</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">72178</td>
+											<td class="right small">72171</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -639,7 +831,7 @@ Instant Poison application frequency increased by $s2%.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">3.6</td>
-											<td class="right small">95.14%</td>
+											<td class="right small">95.11%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -648,7 +840,7 @@ Instant Poison application frequency increased by $s2%.</span></li>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.2</td>
-											<td class="right small">4.86%</td>
+											<td class="right small">4.89%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -666,20 +858,20 @@ Instant Poison application frequency increased by $s2%.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">15.5</td>
-											<td class="right small">72.75%</td>
-											<td class="right small">2618.04</td>
+											<td class="right small">72.73%</td>
+											<td class="right small">2618.91</td>
 											<td class="right small">2341</td>
 											<td class="right small">3587</td>
-											<td class="right small">40612</td>
+											<td class="right small">40586</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">5.8</td>
-											<td class="right small">27.25%</td>
-											<td class="right small">5431.77</td>
+											<td class="right small">27.27%</td>
+											<td class="right small">5434.95</td>
 											<td class="right small">4823</td>
 											<td class="right small">7389</td>
-											<td class="right small">31567</td>
+											<td class="right small">31585</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -727,14 +919,14 @@ Instant Poison application frequency increased by $s2%.</span></li>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=8680">instant_poison</a></td>
-								<td class="right small">6628</td>
+								<td class="right small">6626</td>
 								<td class="right small">24.4%</td>
-								<td class="right small">668.9</td>
+								<td class="right small">668.7</td>
 								<td class="right small">0.70sec</td>
 								<td class="right small">4459</td>
 								<td class="right small">0</td>
-								<td class="right small">4162</td>
-								<td class="right small">6433</td>
+								<td class="right small">4163</td>
+								<td class="right small">6431</td>
 								<td class="right small">8655</td>
 								<td class="right small">13.1%</td>
 								<td class="right small">0.0%</td>
@@ -763,13 +955,13 @@ Instant Poison application frequency increased by $s2%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">668.89</td>
-											<td class="right small">668.89</td>
+											<td class="right small">668.72</td>
+											<td class="right small">668.72</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2982898</td>
+											<td class="right small">2981921</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -785,20 +977,20 @@ Instant Poison application frequency increased by $s2%.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">581.3</td>
-											<td class="right small">86.91%</td>
-											<td class="right small">4162.26</td>
+											<td class="right small">86.93%</td>
+											<td class="right small">4162.61</td>
 											<td class="right small">3736</td>
 											<td class="right small">5602</td>
-											<td class="right small">2419673</td>
+											<td class="right small">2419682</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">87.6</td>
-											<td class="right small">13.09%</td>
-											<td class="right small">6432.71</td>
+											<td class="right small">87.4</td>
+											<td class="right small">13.07%</td>
+											<td class="right small">6430.85</td>
 											<td class="right small">5773</td>
 											<td class="right small">8655</td>
-											<td class="right small">563225</td>
+											<td class="right small">562239</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -843,13 +1035,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_main_hand</a></td>
-								<td class="right small">3210</td>
+								<td class="right small">3208</td>
 								<td class="right small">11.8%</td>
 								<td class="right small">458.6</td>
 								<td class="right small">0.98sec</td>
-								<td class="right small">3150</td>
-								<td class="right small">3212</td>
-								<td class="right small">2969</td>
+								<td class="right small">3148</td>
+								<td class="right small">3211</td>
+								<td class="right small">2970</td>
 								<td class="right small">6147</td>
 								<td class="right small">8086</td>
 								<td class="right small">26.9%</td>
@@ -879,13 +1071,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">458.63</td>
-											<td class="right small">458.63</td>
+											<td class="right small">458.61</td>
+											<td class="right small">458.61</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.9805</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1444553</td>
+											<td class="right small">1443734</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -900,30 +1092,30 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">148.3</td>
-											<td class="right small">32.34%</td>
-											<td class="right small">2969.06</td>
+											<td class="right small">148.4</td>
+											<td class="right small">32.37%</td>
+											<td class="right small">2969.71</td>
 											<td class="right small">2695</td>
 											<td class="right small">3925</td>
-											<td class="right small">440388</td>
+											<td class="right small">440821</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">123.4</td>
-											<td class="right small">26.92%</td>
-											<td class="right small">6146.99</td>
+											<td class="right small">123.2</td>
+											<td class="right small">26.86%</td>
+											<td class="right small">6146.86</td>
 											<td class="right small">5551</td>
 											<td class="right small">8086</td>
-											<td class="right small">758834</td>
+											<td class="right small">757213</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">109.9</td>
-											<td class="right small">23.96%</td>
-											<td class="right small">2232.13</td>
+											<td class="right small">110.1</td>
+											<td class="right small">24.01%</td>
+											<td class="right small">2231.62</td>
 											<td class="right small">2021</td>
 											<td class="right small">2944</td>
-											<td class="right small">245332</td>
+											<td class="right small">245700</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -937,7 +1129,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">54.6</td>
-											<td class="right small">11.92%</td>
+											<td class="right small">11.91%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -985,12 +1177,12 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_off_hand</a></td>
-								<td class="right small">1603</td>
+								<td class="right small">1602</td>
 								<td class="right small">5.9%</td>
 								<td class="right small">588.7</td>
 								<td class="right small">0.76sec</td>
 								<td class="right small">1225</td>
-								<td class="right small">1604</td>
+								<td class="right small">1603</td>
 								<td class="right small">1155</td>
 								<td class="right small">2391</td>
 								<td class="right small">3146</td>
@@ -1021,13 +1213,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">588.72</td>
-											<td class="right small">588.72</td>
+											<td class="right small">588.70</td>
+											<td class="right small">588.70</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.7640</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">721273</td>
+											<td class="right small">721025</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1044,33 +1236,33 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<td class="left small">hit</td>
 											<td class="right small">190.4</td>
 											<td class="right small">32.35%</td>
-											<td class="right small">1155.04</td>
+											<td class="right small">1155.16</td>
 											<td class="right small">1048</td>
 											<td class="right small">1527</td>
-											<td class="right small">219976</td>
+											<td class="right small">219993</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">158.4</td>
-											<td class="right small">26.90%</td>
-											<td class="right small">2391.19</td>
+											<td class="right small">158.2</td>
+											<td class="right small">26.87%</td>
+											<td class="right small">2391.34</td>
 											<td class="right small">2160</td>
 											<td class="right small">3146</td>
-											<td class="right small">378703</td>
+											<td class="right small">378304</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">141.2</td>
-											<td class="right small">23.98%</td>
+											<td class="right small">141.4</td>
+											<td class="right small">24.01%</td>
 											<td class="right small">868.25</td>
 											<td class="right small">786</td>
 											<td class="right small">1145</td>
-											<td class="right small">122593</td>
+											<td class="right small">122728</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">28.6</td>
-											<td class="right small">4.85%</td>
+											<td class="right small">4.86%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1127,12 +1319,12 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1329">mutilate</a></td>
-								<td class="right small">2984</td>
+								<td class="right small">2981</td>
 								<td class="right small">11.0%</td>
 								<td class="right small">79.9</td>
 								<td class="right small">3.78sec</td>
-								<td class="right small">16800</td>
-								<td class="right small">16383</td>
+								<td class="right small">16793</td>
+								<td class="right small">16376</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -1163,8 +1355,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">79.93</td>
-											<td class="right small">79.93</td>
+											<td class="right small">79.88</td>
+											<td class="right small">79.88</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0254</td>
@@ -1185,7 +1377,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">76.0</td>
-											<td class="right small">95.10%</td>
+											<td class="right small">95.15%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1194,7 +1386,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">3.9</td>
-											<td class="right small">4.90%</td>
+											<td class="right small">4.85%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1229,16 +1421,16 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=5374">mutilate_mh</a></td>
-								<td class="right small">1990</td>
+								<td class="right small">1988</td>
 								<td class="right small">7.3%</td>
 								<td class="right small">76.0</td>
 								<td class="right small">3.98sec</td>
-								<td class="right small">11784</td>
+								<td class="right small">11774</td>
 								<td class="right small">0</td>
-								<td class="right small">7144</td>
+								<td class="right small">7143</td>
 								<td class="right small">17045</td>
 								<td class="right small">22115</td>
-								<td class="right small">46.9%</td>
+								<td class="right small">46.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -1265,13 +1457,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">76.01</td>
-											<td class="right small">76.01</td>
+											<td class="right small">76.00</td>
+											<td class="right small">76.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">895756</td>
+											<td class="right small">894889</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1286,21 +1478,21 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">40.4</td>
-											<td class="right small">53.13%</td>
-											<td class="right small">7143.51</td>
+											<td class="right small">40.5</td>
+											<td class="right small">53.23%</td>
+											<td class="right small">7143.27</td>
 											<td class="right small">6476</td>
 											<td class="right small">9300</td>
-											<td class="right small">288479</td>
+											<td class="right small">289008</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">35.6</td>
-											<td class="right small">46.87%</td>
-											<td class="right small">17044.61</td>
+											<td class="right small">35.5</td>
+											<td class="right small">46.77%</td>
+											<td class="right small">17045.35</td>
 											<td class="right small">15399</td>
 											<td class="right small">22115</td>
-											<td class="right small">607277</td>
+											<td class="right small">605881</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -1344,16 +1536,16 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=5374">mutilate_oh</a></td>
-								<td class="right small">993</td>
+								<td class="right small">992</td>
 								<td class="right small">3.7%</td>
 								<td class="right small">76.0</td>
 								<td class="right small">3.98sec</td>
-								<td class="right small">5881</td>
+								<td class="right small">5875</td>
 								<td class="right small">0</td>
-								<td class="right small">3565</td>
-								<td class="right small">8510</td>
+								<td class="right small">3566</td>
+								<td class="right small">8509</td>
 								<td class="right small">11034</td>
-								<td class="right small">46.8%</td>
+								<td class="right small">46.7%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -1380,13 +1572,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">76.01</td>
-											<td class="right small">76.01</td>
+											<td class="right small">76.00</td>
+											<td class="right small">76.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">447051</td>
+											<td class="right small">446525</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1401,21 +1593,21 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">40.4</td>
-											<td class="right small">53.16%</td>
-											<td class="right small">3565.25</td>
+											<td class="right small">40.5</td>
+											<td class="right small">53.28%</td>
+											<td class="right small">3565.83</td>
 											<td class="right small">3230</td>
 											<td class="right small">4640</td>
-											<td class="right small">144068</td>
+											<td class="right small">144402</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">35.6</td>
-											<td class="right small">46.84%</td>
-											<td class="right small">8510.02</td>
+											<td class="right small">35.5</td>
+											<td class="right small">46.72%</td>
+											<td class="right small">8508.60</td>
 											<td class="right small">7680</td>
 											<td class="right small">11034</td>
-											<td class="right small">302983</td>
+											<td class="right small">302123</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -1462,22 +1654,22 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="right small">676</td>
 								<td class="right small">2.5%</td>
 								<td class="right small">28.3</td>
-								<td class="right small">16.10sec</td>
-								<td class="right small">10771</td>
-								<td class="right small">10535</td>
+								<td class="right small">16.09sec</td>
+								<td class="right small">10773</td>
+								<td class="right small">10536</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">4.8%</td>
+								<td class="right small">4.9%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">216</td>
 								<td class="right small">1098</td>
 								<td class="right small">2268</td>
-								<td class="right small">26.9%</td>
+								<td class="right small">26.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">95.8%</td>
 							</tr>
@@ -1497,11 +1689,11 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr>
 											<td class="right small">28.26</td>
 											<td class="right small">28.26</td>
-											<td class="right small">215.58</td>
-											<td class="right small">215.58</td>
+											<td class="right small">215.60</td>
+											<td class="right small">215.60</td>
 											<td class="right small">1.0224</td>
 											<td class="right small">2.0000</td>
-											<td class="right small">304408</td>
+											<td class="right small">304432</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1517,7 +1709,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">26.9</td>
-											<td class="right small">95.16%</td>
+											<td class="right small">95.15%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1526,7 +1718,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">1.4</td>
-											<td class="right small">4.84%</td>
+											<td class="right small">4.85%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1543,21 +1735,21 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">157.7</td>
-											<td class="right small">73.13%</td>
-											<td class="right small">1097.62</td>
+											<td class="right small">157.8</td>
+											<td class="right small">73.17%</td>
+											<td class="right small">1098.04</td>
 											<td class="right small">572</td>
 											<td class="right small">1765</td>
-											<td class="right small">173046</td>
+											<td class="right small">173221</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">57.9</td>
-											<td class="right small">26.87%</td>
-											<td class="right small">2267.95</td>
+											<td class="right small">57.8</td>
+											<td class="right small">26.83%</td>
+											<td class="right small">2268.47</td>
 											<td class="right small">1178</td>
 											<td class="right small">3636</td>
-											<td class="right small">131362</td>
+											<td class="right small">131210</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -1591,9 +1783,9 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<ul>
 											<li><span class="label">tick_may_crit:</span>true</li>
 											<li><span class="label">tick_zero:</span>false</li>
-											<li><span class="label">tick_power_mod:</span>0.015000</li>
-											<li><span class="label">base_td:</span>162.03</li>
-											<li><span class="label">num_ticks:</span>6</li>
+											<li><span class="label">tick_power_mod:</span>0.030000</li>
+											<li><span class="label">base_td:</span>202.54</li>
+											<li><span class="label">num_ticks:</span>8</li>
 											<li><span class="label">base_tick_time:</span>2.00</li>
 											<li><span class="label">hasted_ticks:</span>false</li>
 											<li><span class="label">dot_behavior:</span>DOT_REFRESH</li>
@@ -1613,7 +1805,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">1.0</td>
-								<td class="right small">223.18sec</td>
+								<td class="right small">127.21sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -1708,14 +1900,14 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=79136">venomous_wound</a></td>
-								<td class="right small">2735</td>
+								<td class="right small">2733</td>
 								<td class="right small">10.1%</td>
 								<td class="right small">142.0</td>
 								<td class="right small">3.15sec</td>
-								<td class="right small">8665</td>
+								<td class="right small">8663</td>
 								<td class="right small">0</td>
-								<td class="right small">8088</td>
-								<td class="right small">12488</td>
+								<td class="right small">8087</td>
+								<td class="right small">12495</td>
 								<td class="right small">16875</td>
 								<td class="right small">13.1%</td>
 								<td class="right small">0.0%</td>
@@ -1744,13 +1936,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">142.03</td>
-											<td class="right small">142.03</td>
+											<td class="right small">141.99</td>
+											<td class="right small">141.99</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1230683</td>
+											<td class="right small">1230068</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1766,20 +1958,20 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">123.4</td>
-											<td class="right small">86.88%</td>
-											<td class="right small">8087.76</td>
+											<td class="right small">86.93%</td>
+											<td class="right small">8086.76</td>
 											<td class="right small">7280</td>
 											<td class="right small">10923</td>
-											<td class="right small">997930</td>
+											<td class="right small">998163</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">18.6</td>
-											<td class="right small">13.12%</td>
-											<td class="right small">12488.07</td>
+											<td class="right small">13.07%</td>
+											<td class="right small">12494.63</td>
 											<td class="right small">11247</td>
 											<td class="right small">16875</td>
-											<td class="right small">232753</td>
+											<td class="right small">231905</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -1830,31 +2022,31 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							<tr>
 								<td class="left small">backstab</td>
 								<td class="right small">37.4%</td>
-								<td class="right small">244.9</td>
+								<td class="right small">245.0</td>
 								<td class="right small">60</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">envenom</td>
 								<td class="right small">18.3%</td>
-								<td class="right small">808.0</td>
+								<td class="right small">808.1</td>
 								<td class="right small">35</td>
 							</tr>
 							<tr>
 								<td class="left small">garrote</td>
 								<td class="right small">1.4%</td>
-								<td class="right small">423.2</td>
+								<td class="right small">423.0</td>
 								<td class="right small">45</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">mutilate</td>
 								<td class="right small">36.8%</td>
-								<td class="right small">305.4</td>
+								<td class="right small">305.3</td>
 								<td class="right small">55</td>
 							</tr>
 							<tr>
 								<td class="left small">rupture</td>
 								<td class="right small">5.9%</td>
-								<td class="right small">430.8</td>
+								<td class="right small">430.9</td>
 								<td class="right small">25</td>
 							</tr>
 							<tr class="odd">
@@ -1950,7 +2142,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">deadly_proc</a></td>
-								<td class="right">339.6</td>
+								<td class="right">339.4</td>
 								<td class="right">0.0</td>
 								<td class="right">1.3sec</td>
 								<td class="right">1.3sec</td>
@@ -1988,7 +2180,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<li><span class="label">cooldown name:</span>buff_envenom</li>
 										<li><span class="label">tooltip:</span><span class="tooltip-wider">(null)</span></li>
 										<li><span class="label">max_stacks:</span>1</li>
-										<li><span class="label">duration:</span>6.00</li>
+										<li><span class="label">duration:</span>5.00</li>
 										<li><span class="label">cooldown:</span>0.00</li>
 										<li><span class="label">default_chance:</span>100.00%</li>
 									</ul>
@@ -1997,7 +2189,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">fluid_death</a></td>
 								<td class="right">1.0</td>
-								<td class="right">1259.3</td>
+								<td class="right">1259.2</td>
 								<td class="right">0.0sec</td>
 								<td class="right">0.4sec</td>
 								<td class="right">100%</td>
@@ -2021,7 +2213,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">landslide_mh</a></td>
 								<td class="right">11.4</td>
 								<td class="right">7.1</td>
-								<td class="right">38.6sec</td>
+								<td class="right">38.5sec</td>
 								<td class="right">23.1sec</td>
 								<td class="right">39%</td>
 								<td class="right">40%</td>
@@ -2044,7 +2236,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">landslide_oh</a></td>
 								<td class="right">9.4</td>
 								<td class="right">3.8</td>
-								<td class="right">45.2sec</td>
+								<td class="right">45.3sec</td>
 								<td class="right">31.3sec</td>
 								<td class="right">30%</td>
 								<td class="right">31%</td>
@@ -2067,8 +2259,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">overkill</a></td>
 								<td class="right">3.8</td>
 								<td class="right">0.0</td>
-								<td class="right">129.0sec</td>
-								<td class="right">129.0sec</td>
+								<td class="right">129.1sec</td>
+								<td class="right">129.1sec</td>
 								<td class="right">17%</td>
 								<td class="right">17%</td>
 							</tr>
@@ -2089,8 +2281,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">poison_doses</a></td>
 								<td class="right">1.0</td>
-								<td class="right">343.7</td>
-								<td class="right">283.7sec</td>
+								<td class="right">343.5</td>
+								<td class="right">284.7sec</td>
 								<td class="right">1.3sec</td>
 								<td class="right">100%</td>
 								<td class="right">100%</td>
@@ -2136,7 +2328,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">slice_and_dice</a></td>
 								<td class="right">1.0</td>
 								<td class="right">59.3</td>
-								<td class="right">206.1sec</td>
+								<td class="right">112.9sec</td>
 								<td class="right">7.5sec</td>
 								<td class="right">100%</td>
 								<td class="right">100%</td>
@@ -2180,10 +2372,10 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">tier11_4pc</a></td>
-								<td class="right">8.0</td>
+								<td class="right">8.1</td>
 								<td class="right">0.6</td>
-								<td class="right">49.6sec</td>
-								<td class="right">45.5sec</td>
+								<td class="right">49.3sec</td>
+								<td class="right">45.2sec</td>
 								<td class="right">8%</td>
 								<td class="right">13%</td>
 							</tr>
@@ -2251,8 +2443,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">vendetta</a></td>
 								<td class="right">4.3</td>
 								<td class="right">0.0</td>
-								<td class="right">120.3sec</td>
-								<td class="right">120.3sec</td>
+								<td class="right">120.4sec</td>
+								<td class="right">120.4sec</td>
 								<td class="right">27%</td>
 								<td class="right">100%</td>
 							</tr>
@@ -2432,23 +2624,23 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								</tr>
 								<tr class="odd">
 									<td class="left">combo_points_wasted</td>
-									<td class="right">17.8</td>
-									<td class="right">24.0sec</td>
+									<td class="right">17.7</td>
+									<td class="right">24.1sec</td>
 								</tr>
 								<tr>
 									<td class="left">deadly_poisons</td>
-									<td class="right">344.7</td>
+									<td class="right">344.5</td>
 									<td class="right">1.3sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">ruthlessness</td>
-									<td class="right">52.3</td>
+									<td class="right">52.4</td>
 									<td class="right">8.6sec</td>
 								</tr>
 								<tr>
 									<td class="left">seal_fate</td>
-									<td class="right">98.5</td>
-									<td class="right">4.5sec</td>
+									<td class="right">98.4</td>
+									<td class="right">4.6sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">venomous_wounds</td>
@@ -2479,21 +2671,21 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<tr class="odd">
 									<td class="left">cold_blood</td>
 									<td class="right">4.1</td>
-									<td class="right">101.9</td>
-									<td class="right">25.0</td>
+									<td class="right">101.8</td>
+									<td class="right">24.9</td>
 									<td class="right">0.2%</td>
 								</tr>
 								<tr>
 									<td class="left">energy_refund</td>
-									<td class="right">191.7</td>
-									<td class="right">626.6</td>
+									<td class="right">191.5</td>
+									<td class="right">622.9</td>
 									<td class="right">3.3</td>
 									<td class="right">1.5%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">energy_regen</td>
-									<td class="right">1800.2</td>
-									<td class="right">5341.3</td>
+									<td class="right">1800.1</td>
+									<td class="right">5341.1</td>
 									<td class="right">3.0</td>
 									<td class="right">0.4%</td>
 								</tr>
@@ -2506,22 +2698,22 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								</tr>
 								<tr class="odd">
 									<td class="left">overkill</td>
-									<td class="right">299.0</td>
-									<td class="right">269.8</td>
+									<td class="right">298.9</td>
+									<td class="right">269.7</td>
 									<td class="right">0.9</td>
 									<td class="right">1.7%</td>
 								</tr>
 								<tr>
 									<td class="left">relentless_strikes</td>
 									<td class="right">71.4</td>
-									<td class="right">1784.5</td>
+									<td class="right">1784.0</td>
 									<td class="right">25.0</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">venomous_vim</td>
 									<td class="right">142.0</td>
-									<td class="right">1408.5</td>
+									<td class="right">1408.3</td>
 									<td class="right">9.9</td>
 									<td class="right">0.8%</td>
 								</tr>
@@ -2624,7 +2816,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    01245689ABCJJEFJGGGJGDJJFJJFJDJFK9JFJDJFJFJJFDJFJDJJFJJFDJJFJDJJFJJDJCJEFJFJFJDJFJFJDJFJFJDJ8FJJFJFJDJJJFJJDJJFJK9FJGJGDJGJGJJDCJJEFJJFJDJJFJJFDJJFJDJJFJDDJJFJFJFJDJJFJDJFJFJDJ8FJCJFIIEFIDIIFIIFIIIFDDIIFIK9DIIFIIIFIIIFD4IIIFIIGIIDIIFIIGIIIGGIIGIIGIDIIIIFIIIFIDDIIIIFIIIICDIIFIIGIIIEFIIGIIDIIFIIIFIIIFDIIFIIIFDII8IFI
+                    01245689ACJBJJEFJGJGJGJJDJFK9JFJGDJGJGJJFJJFDJJFJDJJFJFJDJJFJJDJJFJJCFJDJJEFJDJJFJJFJDJFJJFJJFJDJF8JJFJJFJDJJFJDJJJFJK9FJDJJFJGJGGCJJDJFJJEFJJFJDJFJJFJJFJDJJJJFJFJDJJFJJFJDJJJFJJFDJJFJFJ8JCDIIFIIIFIIEFIIIDIIIFIIFIIIDIIK9FIIFIIIG4DIIIGIIGIIGIDIIIFIIGIIIGIDIIFIIIGIIIDIIFIIIFIIIFIDIIFIICFIIIIFIIDIIIEFIIIIFIIIFIIDIIIFIIIFIIFIDIIIFI
 									</div>
 								</div>
 							</div>
@@ -3216,11 +3408,36 @@ tricks_of_the_trade_target=other
 								</div>
 							</div>
 						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td>( Pawn: v1: "Rogue_Assassination_T11_372":  MeleeDps=4.2219, Agility=3.3650, HitRating=2.1760, MasteryRating=1.7198, HasteRating=1.4486, Strength=1.3607, Ap=1.3313, CritRating=1.1619, ExpertiseRating=1.0039 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( Pawn: v1: "Rogue_Assassination_T11_372":  MeleeDps=4.2219, Agility=3.3650, HitRating=0.0000, MasteryRating=1.7198, HasteRating=1.4486, Strength=1.3607, Ap=1.3313, CritRating=1.1619, ExpertiseRating=0.0000 )</td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td>( RhadaTip: "Rogue_Assassination_T11_372":  MeleeDps=4.2219, Agility=3.3650, HitRating=2.1760, MasteryRating=1.7198, HasteRating=1.4486, Strength=1.3607, Ap=1.3313, CritRating=1.1619, ExpertiseRating=1.0039 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( RhadaTip: "Rogue_Assassination_T11_372":  MeleeDps=4.2219, Agility=3.3650, HitRating=0.0000, MasteryRating=1.7198, HasteRating=1.4486, Strength=1.3607, Ap=1.3313, CritRating=1.1619, ExpertiseRating=0.0000 )</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
 		<div id="Rogue_Combat_T11_372" class="player section">
-			<h2 class="toggle">Rogue_Combat_T11_372&nbsp;:&nbsp;27042dps</h2>
+			<h2 class="toggle">Rogue_Combat_T11_372&nbsp;:&nbsp;27033dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> troll</li>
@@ -3247,16 +3464,16 @@ tricks_of_the_trade_target=other
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>27042.2</td>
-								<td>11.8 / 0.0%</td>
-								<td>2129.2 / 7.9%</td>
-								<td>71.8%</td>
+								<td>27033.5</td>
+								<td>7.4 / 0.0%</td>
+								<td>2546.6 / 9.4%</td>
+								<td>70.6%</td>
 								<td>1008.7</td>
 								<td>26.8</td>
-								<td>26.7</td>
+								<td>26.6</td>
 								<td>energy</td>
-								<td>23.91%</td>
-								<td>46.2</td>
+								<td>23.93%</td>
+								<td>46.1</td>
 							</tr>
 						</table>
 						<table class="sc mt">
@@ -3280,20 +3497,110 @@ tricks_of_the_trade_target=other
 								</td>
 							</tr>
 						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+								<th>Str</th>
+								<th>Agi</th>
+								<th>AP</th>
+								<th>Exp</th>
+								<th>Hit</th>
+								<th>Crit</th>
+								<th>Haste</th>
+								<th>Mastery</th>
+								<th>Wdps</th>
+								<th>WOHdps</th>
+								<th>WOHspeed</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+								<td>1.3735</td>
+								<td>3.4975</td>
+								<td>1.3116</td>
+								<td>2.3117</td>
+								<td>1.8517</td>
+								<td>1.2249</td>
+								<td>1.6520</td>
+								<td>1.5369</td>
+								<td>6.4307</td>
+								<td>2.0827</td>
+								<td>0.0000</td>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+								<td>0.3927</td>
+								<td>1.0000</td>
+								<td>0.3750</td>
+								<td>0.6609</td>
+								<td>0.5294</td>
+								<td>0.3502</td>
+								<td>0.4723</td>
+								<td>0.4394</td>
+								<td>1.8386</td>
+								<td>0.5955</td>
+								<td>0.0000</td>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>-200</td>
+								<td>-300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>100</td>
+								<td>100</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+								<td>0.0247</td>
+								<td>0.0247</td>
+								<td>0.0247</td>
+								<td>0.0372</td>
+								<td>0.0247</td>
+								<td>0.0247</td>
+								<td>0.0247</td>
+								<td>0.0247</td>
+								<td>0.0742</td>
+								<td>0.0742</td>
+								<td>0.0000</td>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="11" class="filler">
+									<ul class="float">
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=4;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=1.3735:3.4975:1.3116:2.3117:1.8517:1.2249:1.6520:1.5369:6.4307;" class="ext">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=8&amp;F=H&amp;Str=1.3735&amp;Agi=3.4975&amp;map=1.3116&amp;Exp=2.3117&amp;mhit=1.8517&amp;mcr=1.2249&amp;mh=1.6520&amp;Mr=1.5369&amp;dps=6.4307&amp;odps=2.0827&amp;Ver=6" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="11" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="player-section">
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://2.chart.apis.google.com/chart?chs=550x240&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:57422|30391|23491|10719|8191|4663|4076&amp;chds=0,114845&amp;chco=C79C6E,C79C6E,C55D54,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++57422++killing_spree,C79C6E,0,0,15|t++30391++eviscerate,C79C6E,1,0,15|t++23491++rupture,C55D54,2,0,15|t++10719++sinister_strike,C79C6E,3,0,15|t++8191++revealing_strike,C79C6E,4,0,15|t++4663++melee_main_hand,C79C6E,5,0,15|t++4076++melee_off_hand,C79C6E,6,0,15&amp;chtt=Rogue_Combat_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://2.chart.apis.google.com/chart?chs=550x240&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:57400|30391|23494|10723|8192|4664|4077&amp;chds=0,114800&amp;chco=C79C6E,C79C6E,C55D54,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++57400++killing_spree,C79C6E,0,0,15|t++30391++eviscerate,C79C6E,1,0,15|t++23494++rupture,C55D54,2,0,15|t++10723++sinister_strike,C79C6E,3,0,15|t++8192++revealing_strike,C79C6E,4,0,15|t++4664++melee_main_hand,C79C6E,5,0,15|t++4077++melee_off_hand,C79C6E,6,0,15&amp;chtt=Rogue_Combat_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
               <span class="chart-action-dmg" title="Action Damage Chart">http://3.chart.apis.google.com/chart?chs=550x310&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:20,17,15,14,8,8,8,4,3,2,1&amp;chds=0,100&amp;chco=C79C6E,C79C6E,C79C6E,336600,C79C6E,C79C6E,336600,C55D54,C79C6E,C79C6E,C79C6E&amp;chl=sinister_strike|melee_main_hand|melee_off_hand|instant_poison|main_gauche|eviscerate|deadly_poison|rupture|revealing_strike|killing_spree_mh|killing_spree_oh&amp;chtt=Rogue_Combat_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://4.chart.apis.google.com/chart?chs=550x240&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:57,18,13,12&amp;chds=0,100&amp;chco=C0B84F&amp;chl=energy_regen|combat_potency|adrenaline_rush|relentless_strikes&amp;chtt=Rogue_Combat_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:q7ynfgorsuqkhimqsrqsuw11xuuwyxtrsurmgdbZXVVUUUTTUUTTTUUUVXYXXXWWWWWWVVVVVVVVUUUUUUVVVVVVVVVVVVWWXYZabcceghiklnopqqrqqqpponmkjhgedcaZYXXWVVVUUUUUUUUUUUTUUUUUUUUUUUUUVVVVVVUVUUUUUVVVWXZabcdfhjkkkkllmnnooppppppoonmmlkigfdbaZYXWVVVUUUUUUUUUVVVVWWWWWXXXXXXXWWWWVVVVVUUUUUVVVVWWXXYYZabcdefghijklmnoooppoonnmlkjigfedcbbaZZZYYYYYXXXXXXXXXXXWWWWWWVVVVVVVVVVVVVWWWXXXYZZadfhjlnpqsttssssssttsssssssrrqqqponmlkjihfeddcbaaZZYYYXXXXXXXXXXXXXXWWWWWWWWWWWWXXXYYZZabb&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=76&amp;chtt=Rogue_Combat_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://7.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:vwxy01222345667877777654310yxwvtssrqppnmllkkkkkllmmnnoopppqqqqqqpppoonmllkkjjjjjjkkkllmmnnooppqqqrrrrrrrsssstttuuvvwwxxxyyyyyyxxwvutsrqponmlkjiihhhghhhhiijjkkllmmmmnnnnnnnnnnnnnoooppppqqrsttuvwxxyzzz0zzzzzyyxwvuutsrqponnmlllkkkklllmmnnnooppppqqqqppppoonnmmllkkkkkkkklllmnnoopqqrrsstttuuuuvvvvvwwwwwwwwxxxxxxwwwwvvvuutttssrrrqqqqqpppppppppppppppppppppppqqqrrsstuuvvwwxyzz0111222222222222111100zzzyyyxxxxwwwwwvvvvvvvuuuutttssrrrqqpppooooonnnoonnooooooo&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=27042|max=36841&amp;chxp=1,1,73,100&amp;chtt=Rogue_Combat_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://8.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:4,2,10,11,22,19,24,47,85,89,136,156,212,246,276,329,393,465,520,538,575,558,600,578,550,495,472,415,404,323,299,252,212,147,113,108,74,64,48,40,26,17,18,13,4,6,2,0,0,3&amp;chds=0,600&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=25141|avg=27042|max=29400&amp;chxp=0,1,45,100&amp;chtt=Rogue_Combat_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://0.chart.apis.google.com/chart?chs=525x330&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:6.4307|3.4975|2.3117|2.0827|1.8517|1.6520|1.5369|1.3735|1.3116|1.2249&amp;chds=0,12.8614&amp;chco=FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569&amp;chm=t++6.4307++Wdps,C0B84F,0,0,15|t++3.4975++Agi,C0B84F,1,0,15|t++2.3117++Exp,C0B84F,2,0,15|t++2.0827++WOHdps,C0B84F,3,0,15|t++1.8517++Hit,C0B84F,4,0,15|t++1.6520++Haste,C0B84F,5,0,15|t++1.5369++Mastery,C0B84F,6,0,15|t++1.3735++Str,C0B84F,7,0,15|t++1.3116++AP,C0B84F,8,0,15|t++1.2249++Crit,C0B84F,9,0,15&amp;chtt=Rogue_Combat_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:q8ynfgortuqkhimqsrrsuw11xutwyxtrsurlgcbZXVVUUUTTUUTTTUUUVXXXXXWWWWWWVVVVVVVVUUUUUUUVVUVVVVVVVVWWXYYZabcefhiklnopqqrqqqpponmkjhgedbaZYXXWVVUUUUUUUTUUUUUTUUUUUUUUUUUUVVVVVVVUUUUUUUVVWXZabcefhjkkkklmmnnoppppppponnmlkjigfdbaYXWWVVUUUUUUUUUUVVVVVWWWWXXXXXXWWWWWVVVVVUUUUUVVVVWWXXYYZabcddfghijklmnoooppoonmmlkihgfedcbbaZZZYYYYYXXXXXXXXXXWWWWWWWWWVVVVVVVVVVVWWWWXXYYZacfhjlnpqsttssssstttttsssssrrqqpponmlkjigfedccbaZZZYYYXXXXXXXXXXXXXWWWWWWWWWWWWWXXXYYZZaab&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=76&amp;chtt=Rogue_Combat_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://7.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wwyy01222345667777777654310yxwvtssrqppnmlljkkkkllmmnnoopppqqqqqqppponnmlkkkjjjjjjkkklllmnnoopppqqqrrrrrrsssstttuuvvwwxxxyyyyyxxxwvutsrqponmlkjiihhhghhhhiijjkkllmmmmnnnnnnnnnnnnnoooppppqqrsttuvwxxyzzzzzzzzzyyxwvuutsrqponnmllkkkkkkllmmmnnooppppqppppppoonnnmmllkkkkkkkklllmmnoopqqrrssstttuuuuvvvvvwwwwwwwwwwwwwwwwvvvuuutttssrrrqqqqqpppppppppppppppppppppppqqqrrssttuvvwwxyyz0011222222222222111000zzzyyxxxxwwwwwwvvvvvvvuuuutttssrrqqqpppooonnnnnnnnnnnnoooo&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=27033|max=36897&amp;chxp=1,1,73,100&amp;chtt=Rogue_Combat_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://8.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:2,0,3,0,5,11,21,33,60,100,136,208,354,467,577,774,930,1146,1332,1446,1644,1718,1820,1702,1585,1556,1388,1278,993,897,701,566,419,307,236,186,148,86,65,34,32,12,8,12,1,0,0,0,0,1&amp;chds=0,1820&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=24717|avg=27033|max=29810&amp;chxp=0,1,45,100&amp;chtt=Rogue_Combat_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -3328,16 +3635,16 @@ tricks_of_the_trade_target=other
 							</tr>
 							<tr>
 								<th class="left small">Rogue_Combat_T11_372</th>
-								<th class="right small">27042</th>
+								<th class="right small">27033</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=2818">deadly_poison</a></td>
 								<td class="right small">2179</td>
 								<td class="right small">8.1%</td>
-								<td class="right small">189.0</td>
-								<td class="right small">2.37sec</td>
-								<td class="right small">5190</td>
+								<td class="right small">188.7</td>
+								<td class="right small">2.38sec</td>
+								<td class="right small">5198</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -3349,9 +3656,9 @@ tricks_of_the_trade_target=other
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">148</td>
-								<td class="right small">6153</td>
-								<td class="right small">9507</td>
-								<td class="right small">14.7%</td>
+								<td class="right small">6152</td>
+								<td class="right small">9503</td>
+								<td class="right small">14.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">98.4%</td>
 							</tr>
@@ -3369,13 +3676,13 @@ tricks_of_the_trade_target=other
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">188.96</td>
-											<td class="right small">2.69</td>
-											<td class="right small">147.55</td>
-											<td class="right small">147.55</td>
+											<td class="right small">188.67</td>
+											<td class="right small">2.71</td>
+											<td class="right small">147.54</td>
+											<td class="right small">147.54</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">980708</td>
+											<td class="right small">980681</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3409,20 +3716,20 @@ tricks_of_the_trade_target=other
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">125.8</td>
-											<td class="right small">85.28%</td>
-											<td class="right small">6152.79</td>
+											<td class="right small">85.24%</td>
+											<td class="right small">6152.28</td>
 											<td class="right small">989</td>
 											<td class="right small">9733</td>
-											<td class="right small">774175</td>
+											<td class="right small">773718</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">21.7</td>
-											<td class="right small">14.72%</td>
-											<td class="right small">9506.72</td>
+											<td class="right small">21.8</td>
+											<td class="right small">14.76%</td>
+											<td class="right small">9503.48</td>
 											<td class="right small">1528</td>
 											<td class="right small">15038</td>
-											<td class="right small">206534</td>
+											<td class="right small">206963</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -3471,14 +3778,14 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=2098">eviscerate</a></td>
-								<td class="right small">2188</td>
+								<td class="right small">2185</td>
 								<td class="right small">8.1%</td>
-								<td class="right small">31.8</td>
-								<td class="right small">13.96sec</td>
-								<td class="right small">30969</td>
+								<td class="right small">31.7</td>
+								<td class="right small">13.99sec</td>
+								<td class="right small">30970</td>
 								<td class="right small">30391</td>
-								<td class="right small">21293</td>
-								<td class="right small">43818</td>
+								<td class="right small">21286</td>
+								<td class="right small">43790</td>
 								<td class="right small">58658</td>
 								<td class="right small">43.0%</td>
 								<td class="right small">0.0%</td>
@@ -3507,13 +3814,13 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">31.80</td>
-											<td class="right small">31.80</td>
+											<td class="right small">31.74</td>
+											<td class="right small">31.74</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0190</td>
+											<td class="right small">1.0191</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">984749</td>
+											<td class="right small">983098</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3529,20 +3836,20 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">18.1</td>
-											<td class="right small">57.04%</td>
-											<td class="right small">21292.70</td>
+											<td class="right small">56.97%</td>
+											<td class="right small">21286.16</td>
 											<td class="right small">13135</td>
 											<td class="right small">28475</td>
-											<td class="right small">386220</td>
+											<td class="right small">384907</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">13.7</td>
-											<td class="right small">42.96%</td>
-											<td class="right small">43817.78</td>
+											<td class="right small">43.03%</td>
+											<td class="right small">43789.70</td>
 											<td class="right small">27058</td>
 											<td class="right small">58658</td>
-											<td class="right small">598529</td>
+											<td class="right small">598190</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -3591,16 +3898,16 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=8680">instant_poison</a></td>
-								<td class="right small">3738</td>
+								<td class="right small">3733</td>
 								<td class="right small">13.8%</td>
-								<td class="right small">480.0</td>
+								<td class="right small">479.3</td>
 								<td class="right small">0.99sec</td>
 								<td class="right small">3505</td>
 								<td class="right small">0</td>
 								<td class="right small">3258</td>
 								<td class="right small">5033</td>
 								<td class="right small">7747</td>
-								<td class="right small">14.6%</td>
+								<td class="right small">14.7%</td>
 								<td class="right small">0.4%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -3627,13 +3934,13 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">480.01</td>
-											<td class="right small">480.01</td>
+											<td class="right small">479.26</td>
+											<td class="right small">479.26</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1682419</td>
+											<td class="right small">1679946</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3648,21 +3955,21 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">407.8</td>
-											<td class="right small">84.96%</td>
-											<td class="right small">3258.24</td>
+											<td class="right small">407.0</td>
+											<td class="right small">84.93%</td>
+											<td class="right small">3258.18</td>
 											<td class="right small">2549</td>
 											<td class="right small">5014</td>
-											<td class="right small">1328752</td>
+											<td class="right small">1326205</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">70.3</td>
-											<td class="right small">14.64%</td>
-											<td class="right small">5033.12</td>
+											<td class="right small">14.66%</td>
+											<td class="right small">5033.18</td>
 											<td class="right small">3938</td>
 											<td class="right small">7747</td>
-											<td class="right small">353666</td>
+											<td class="right small">353741</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
@@ -3716,12 +4023,12 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=51690">killing_spree</a></td>
-								<td class="right small">965</td>
+								<td class="right small">964</td>
 								<td class="right small">3.6%</td>
 								<td class="right small">7.5</td>
-								<td class="right small">62.62sec</td>
-								<td class="right small">57817</td>
-								<td class="right small">57422</td>
+								<td class="right small">62.68sec</td>
+								<td class="right small">57792</td>
+								<td class="right small">57400</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -3754,9 +4061,9 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr>
 											<td class="right small">7.51</td>
 											<td class="right small">7.51</td>
-											<td class="right small">37.45</td>
+											<td class="right small">37.42</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0069</td>
+											<td class="right small">1.0068</td>
 											<td class="right small">0.5000</td>
 											<td class="right small">0</td>
 										</tr>
@@ -3821,11 +4128,11 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">killing_spree_mh</a></td>
-								<td class="right small">610</td>
+								<td class="right small">609</td>
 								<td class="right small">2.3%</td>
 								<td class="right small">37.4</td>
-								<td class="right small">11.24sec</td>
-								<td class="right small">7330</td>
+								<td class="right small">11.25sec</td>
+								<td class="right small">7328</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -3838,7 +4145,7 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="right small">0.0%</td>
 								<td class="right small">0</td>
 								<td class="right small">5609</td>
-								<td class="right small">11582</td>
+								<td class="right small">11571</td>
 								<td class="right small">28.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -3857,13 +4164,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">37.45</td>
+											<td class="right small">37.42</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">37.45</td>
+											<td class="right small">37.42</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">274489</td>
+											<td class="right small">274205</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3878,21 +4185,21 @@ Damage dealt increased by $61851s3%.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">26.7</td>
-											<td class="right small">71.18%</td>
-											<td class="right small">5608.78</td>
+											<td class="right small">26.6</td>
+											<td class="right small">71.17%</td>
+											<td class="right small">5609.40</td>
 											<td class="right small">3854</td>
 											<td class="right small">7367</td>
-											<td class="right small">149509</td>
+											<td class="right small">149375</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">10.8</td>
-											<td class="right small">28.82%</td>
-											<td class="right small">11582.25</td>
+											<td class="right small">28.83%</td>
+											<td class="right small">11570.96</td>
 											<td class="right small">7938</td>
 											<td class="right small">15176</td>
-											<td class="right small">124981</td>
+											<td class="right small">124830</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -3939,7 +4246,7 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="right small">355</td>
 								<td class="right small">1.3%</td>
 								<td class="right small">37.4</td>
-								<td class="right small">11.24sec</td>
+								<td class="right small">11.25sec</td>
 								<td class="right small">4270</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -3952,8 +4259,8 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0</td>
-								<td class="right small">3267</td>
-								<td class="right small">6739</td>
+								<td class="right small">3265</td>
+								<td class="right small">6742</td>
 								<td class="right small">28.9%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -3972,13 +4279,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">37.45</td>
+											<td class="right small">37.42</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">37.45</td>
+											<td class="right small">37.42</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">159914</td>
+											<td class="right small">159782</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3995,19 +4302,19 @@ Damage dealt increased by $61851s3%.</span></li>
 											<td class="left small">hit</td>
 											<td class="right small">26.6</td>
 											<td class="right small">71.10%</td>
-											<td class="right small">3266.93</td>
+											<td class="right small">3265.37</td>
 											<td class="right small">2235</td>
 											<td class="right small">4327</td>
-											<td class="right small">86978</td>
+											<td class="right small">86868</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">10.8</td>
 											<td class="right small">28.90%</td>
-											<td class="right small">6738.96</td>
+											<td class="right small">6742.00</td>
 											<td class="right small">4604</td>
 											<td class="right small">8913</td>
-											<td class="right small">72936</td>
+											<td class="right small">72913</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4051,16 +4358,16 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">main_gauche</a></td>
-								<td class="right small">2209</td>
+								<td class="right small">2207</td>
 								<td class="right small">8.2%</td>
-								<td class="right small">156.5</td>
-								<td class="right small">2.86sec</td>
-								<td class="right small">6351</td>
+								<td class="right small">156.4</td>
+								<td class="right small">2.87sec</td>
+								<td class="right small">6352</td>
 								<td class="right small">0</td>
 								<td class="right small">4871</td>
-								<td class="right small">10060</td>
+								<td class="right small">10059</td>
 								<td class="right small">15176</td>
-								<td class="right small">28.5%</td>
+								<td class="right small">28.6%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -4087,13 +4394,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">156.52</td>
-											<td class="right small">156.52</td>
+											<td class="right small">156.36</td>
+											<td class="right small">156.36</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">994089</td>
+											<td class="right small">993289</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4108,21 +4415,21 @@ Damage dealt increased by $61851s3%.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">111.9</td>
-											<td class="right small">71.47%</td>
-											<td class="right small">4871.18</td>
+											<td class="right small">111.7</td>
+											<td class="right small">71.44%</td>
+											<td class="right small">4870.85</td>
 											<td class="right small">3854</td>
 											<td class="right small">7367</td>
-											<td class="right small">544933</td>
+											<td class="right small">544122</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">44.6</td>
-											<td class="right small">28.53%</td>
-											<td class="right small">10060.05</td>
+											<td class="right small">44.7</td>
+											<td class="right small">28.56%</td>
+											<td class="right small">10059.14</td>
 											<td class="right small">7938</td>
 											<td class="right small">15176</td>
-											<td class="right small">449156</td>
+											<td class="right small">449167</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4166,14 +4473,14 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_main_hand</a></td>
-								<td class="right small">4658</td>
+								<td class="right small">4659</td>
 								<td class="right small">17.2%</td>
 								<td class="right small">362.3</td>
 								<td class="right small">1.24sec</td>
-								<td class="right small">5785</td>
-								<td class="right small">4663</td>
+								<td class="right small">5786</td>
+								<td class="right small">4664</td>
 								<td class="right small">5147</td>
-								<td class="right small">10634</td>
+								<td class="right small">10636</td>
 								<td class="right small">16163</td>
 								<td class="right small">28.5%</td>
 								<td class="right small">12.0%</td>
@@ -4202,13 +4509,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">362.34</td>
-											<td class="right small">362.34</td>
+											<td class="right small">362.32</td>
+											<td class="right small">362.32</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.2407</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2096293</td>
+											<td class="right small">2096567</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4224,34 +4531,34 @@ Damage dealt increased by $61851s3%.</span></li>
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">128.8</td>
-											<td class="right small">35.55%</td>
-											<td class="right small">5146.54</td>
+											<td class="right small">35.56%</td>
+											<td class="right small">5146.51</td>
 											<td class="right small">4088</td>
 											<td class="right small">7846</td>
-											<td class="right small">663029</td>
+											<td class="right small">663081</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">103.1</td>
-											<td class="right small">28.47%</td>
-											<td class="right small">10634.50</td>
+											<td class="right small">103.2</td>
+											<td class="right small">28.49%</td>
+											<td class="right small">10635.79</td>
 											<td class="right small">8422</td>
 											<td class="right small">16163</td>
-											<td class="right small">1096925</td>
+											<td class="right small">1097753</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">87.0</td>
-											<td class="right small">24.01%</td>
-											<td class="right small">3865.83</td>
+											<td class="right small">86.9</td>
+											<td class="right small">23.97%</td>
+											<td class="right small">3865.23</td>
 											<td class="right small">3066</td>
 											<td class="right small">5885</td>
-											<td class="right small">336339</td>
+											<td class="right small">335732</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">43.4</td>
-											<td class="right small">11.97%</td>
+											<td class="right small">11.98%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4299,17 +4606,17 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_off_hand</a></td>
-								<td class="right small">4074</td>
+								<td class="right small">4075</td>
 								<td class="right small">15.1%</td>
 								<td class="right small">671.9</td>
 								<td class="right small">0.67sec</td>
 								<td class="right small">2729</td>
-								<td class="right small">4076</td>
+								<td class="right small">4077</td>
 								<td class="right small">2426</td>
-								<td class="right small">5014</td>
+								<td class="right small">5015</td>
 								<td class="right small">7617</td>
 								<td class="right small">28.5%</td>
-								<td class="right small">11.9%</td>
+								<td class="right small">12.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">24.0%</td>
@@ -4335,13 +4642,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">671.92</td>
-											<td class="right small">671.92</td>
+											<td class="right small">671.89</td>
+											<td class="right small">671.89</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.6695</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1833483</td>
+											<td class="right small">1833737</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4356,21 +4663,21 @@ Damage dealt increased by $61851s3%.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">239.0</td>
-											<td class="right small">35.58%</td>
-											<td class="right small">2426.25</td>
+											<td class="right small">238.8</td>
+											<td class="right small">35.53%</td>
+											<td class="right small">2426.38</td>
 											<td class="right small">1927</td>
 											<td class="right small">3697</td>
-											<td class="right small">579963</td>
+											<td class="right small">579306</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">191.4</td>
-											<td class="right small">28.49%</td>
-											<td class="right small">5014.46</td>
+											<td class="right small">191.6</td>
+											<td class="right small">28.51%</td>
+											<td class="right small">5014.51</td>
 											<td class="right small">3969</td>
 											<td class="right small">7617</td>
-											<td class="right small">959780</td>
+											<td class="right small">960689</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
@@ -4379,12 +4686,12 @@ Damage dealt increased by $61851s3%.</span></li>
 											<td class="right small">1822.31</td>
 											<td class="right small">1445</td>
 											<td class="right small">2773</td>
-											<td class="right small">293740</td>
+											<td class="right small">293741</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
-											<td class="right small">80.3</td>
-											<td class="right small">11.95%</td>
+											<td class="right small">80.4</td>
+											<td class="right small">11.96%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4435,13 +4742,13 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="right small">702</td>
 								<td class="right small">2.6%</td>
 								<td class="right small">37.8</td>
-								<td class="right small">11.76sec</td>
-								<td class="right small">8362</td>
-								<td class="right small">8191</td>
-								<td class="right small">6408</td>
-								<td class="right small">13231</td>
+								<td class="right small">11.78sec</td>
+								<td class="right small">8364</td>
+								<td class="right small">8192</td>
+								<td class="right small">6407</td>
+								<td class="right small">13233</td>
 								<td class="right small">16836</td>
-								<td class="right small">28.6%</td>
+								<td class="right small">28.7%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -4468,13 +4775,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">37.81</td>
-											<td class="right small">37.81</td>
+											<td class="right small">37.77</td>
+											<td class="right small">37.77</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0209</td>
+											<td class="right small">1.0210</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">316139</td>
+											<td class="right small">315935</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4489,21 +4796,21 @@ Damage dealt increased by $61851s3%.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">27.0</td>
-											<td class="right small">71.36%</td>
-											<td class="right small">6408.29</td>
+											<td class="right small">26.9</td>
+											<td class="right small">71.33%</td>
+											<td class="right small">6406.74</td>
 											<td class="right small">5110</td>
 											<td class="right small">8173</td>
-											<td class="right small">172891</td>
+											<td class="right small">172629</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">10.8</td>
-											<td class="right small">28.64%</td>
-											<td class="right small">13230.57</td>
+											<td class="right small">28.67%</td>
+											<td class="right small">13232.63</td>
 											<td class="right small">10527</td>
 											<td class="right small">16836</td>
-											<td class="right small">143247</td>
+											<td class="right small">143306</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4540,12 +4847,12 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1943">rupture</a></td>
-								<td class="right small">1012</td>
+								<td class="right small">1013</td>
 								<td class="right small">3.7%</td>
 								<td class="right small">19.0</td>
-								<td class="right small">23.30sec</td>
-								<td class="right small">23952</td>
-								<td class="right small">23491</td>
+								<td class="right small">23.27sec</td>
+								<td class="right small">23955</td>
+								<td class="right small">23494</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -4556,9 +4863,9 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">152</td>
-								<td class="right small">2304</td>
-								<td class="right small">4759</td>
-								<td class="right small">28.5%</td>
+								<td class="right small">2305</td>
+								<td class="right small">4764</td>
+								<td class="right small">28.4%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">67.4%</td>
 							</tr>
@@ -4576,13 +4883,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">19.02</td>
-											<td class="right small">19.02</td>
-											<td class="right small">151.62</td>
-											<td class="right small">151.62</td>
+											<td class="right small">19.03</td>
+											<td class="right small">19.03</td>
+											<td class="right small">151.77</td>
+											<td class="right small">151.77</td>
 											<td class="right small">1.0196</td>
 											<td class="right small">2.0000</td>
-											<td class="right small">455469</td>
+											<td class="right small">455958</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4615,21 +4922,21 @@ Damage dealt increased by $61851s3%.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">108.4</td>
-											<td class="right small">71.49%</td>
-											<td class="right small">2304.08</td>
+											<td class="right small">108.6</td>
+											<td class="right small">71.56%</td>
+											<td class="right small">2304.89</td>
 											<td class="right small">1464</td>
 											<td class="right small">3178</td>
-											<td class="right small">249733</td>
+											<td class="right small">250342</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">43.2</td>
-											<td class="right small">28.51%</td>
-											<td class="right small">4759.04</td>
+											<td class="right small">28.44%</td>
+											<td class="right small">4764.50</td>
 											<td class="right small">3015</td>
 											<td class="right small">6546</td>
-											<td class="right small">205736</td>
+											<td class="right small">205617</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4682,14 +4989,14 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1752">sinister_strike</a></td>
-								<td class="right small">5316</td>
+								<td class="right small">5317</td>
 								<td class="right small">19.7%</td>
 								<td class="right small">219.5</td>
 								<td class="right small">2.05sec</td>
-								<td class="right small">10897</td>
-								<td class="right small">10719</td>
+								<td class="right small">10901</td>
+								<td class="right small">10723</td>
 								<td class="right small">7449</td>
-								<td class="right small">17743</td>
+								<td class="right small">17746</td>
 								<td class="right small">22617</td>
 								<td class="right small">33.5%</td>
 								<td class="right small">0.0%</td>
@@ -4718,13 +5025,13 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">219.53</td>
-											<td class="right small">219.53</td>
+											<td class="right small">219.49</td>
+											<td class="right small">219.49</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0166</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2392170</td>
+											<td class="right small">2392611</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4739,21 +5046,21 @@ Damage dealt increased by $61851s3%.</span></li>
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">146.0</td>
-											<td class="right small">66.50%</td>
-											<td class="right small">7448.69</td>
+											<td class="right small">145.9</td>
+											<td class="right small">66.47%</td>
+											<td class="right small">7449.05</td>
 											<td class="right small">6012</td>
 											<td class="right small">9511</td>
-											<td class="right small">1087491</td>
+											<td class="right small">1086842</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">73.5</td>
-											<td class="right small">33.50%</td>
-											<td class="right small">17742.71</td>
+											<td class="right small">73.6</td>
+											<td class="right small">33.53%</td>
+											<td class="right small">17745.51</td>
 											<td class="right small">14296</td>
 											<td class="right small">22617</td>
-											<td class="right small">1304678</td>
+											<td class="right small">1305769</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4833,11 +5140,11 @@ Damage dealt increased by $61851s3%.</span></li>
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">16.12</td>
-											<td class="right small">16.12</td>
+											<td class="right small">16.13</td>
+											<td class="right small">16.13</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0184</td>
+											<td class="right small">1.0185</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0</td>
 										</tr>
@@ -4908,7 +5215,7 @@ Damage dealt increased by $61851s3%.</span></li>
 							<tr>
 								<td class="left small">eviscerate</td>
 								<td class="right small">9.2%</td>
-								<td class="right small">884.8</td>
+								<td class="right small">884.9</td>
 								<td class="right small">35</td>
 							</tr>
 							<tr class="odd">
@@ -4920,13 +5227,13 @@ Damage dealt increased by $61851s3%.</span></li>
 							<tr>
 								<td class="left small">rupture</td>
 								<td class="right small">3.9%</td>
-								<td class="right small">958.1</td>
+								<td class="right small">958.2</td>
 								<td class="right small">25</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">sinister_strike</td>
 								<td class="right small">71.0%</td>
-								<td class="right small">279.4</td>
+								<td class="right small">279.5</td>
 								<td class="right small">39</td>
 							</tr>
 							<tr>
@@ -4953,12 +5260,12 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">adrenaline_rush</a></td>
-								<td class="right">5.5</td>
+								<td class="right">5.4</td>
 								<td class="right">0.0</td>
 								<td class="right">87.8sec</td>
 								<td class="right">87.8sec</td>
 								<td class="right">24%</td>
-								<td class="right">35%</td>
+								<td class="right">34%</td>
 							</tr>
 							<tr class="details hide">
 								<td colspan="7" class="filler">
@@ -5022,7 +5329,7 @@ Damage dealt increased by $61851s3%.</span></li>
 							</tr>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">deadly_proc</a></td>
-								<td class="right">175.0</td>
+								<td class="right">174.6</td>
 								<td class="right">0.0</td>
 								<td class="right">2.5sec</td>
 								<td class="right">2.5sec</td>
@@ -5046,7 +5353,7 @@ Damage dealt increased by $61851s3%.</span></li>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">fluid_death</a></td>
 								<td class="right">1.0</td>
-								<td class="right">1381.8</td>
+								<td class="right">1381.4</td>
 								<td class="right">0.0sec</td>
 								<td class="right">0.3sec</td>
 								<td class="right">100%</td>
@@ -5070,8 +5377,8 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="left"><a href="#" class="toggle-details">killing_spree</a></td>
 								<td class="right">7.5</td>
 								<td class="right">0.0</td>
-								<td class="right">62.6sec</td>
-								<td class="right">62.6sec</td>
+								<td class="right">62.7sec</td>
+								<td class="right">62.7sec</td>
 								<td class="right">3%</td>
 								<td class="right">40%</td>
 							</tr>
@@ -5117,7 +5424,7 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="right">9.6</td>
 								<td class="right">4.2</td>
 								<td class="right">44.6sec</td>
-								<td class="right">30.1sec</td>
+								<td class="right">30.2sec</td>
 								<td class="right">31%</td>
 								<td class="right">32%</td>
 							</tr>
@@ -5138,8 +5445,8 @@ Damage dealt increased by $61851s3%.</span></li>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">poison_doses</a></td>
 								<td class="right">2.7</td>
-								<td class="right">185.5</td>
-								<td class="right">139.6sec</td>
+								<td class="right">185.2</td>
+								<td class="right">138.7sec</td>
 								<td class="right">2.4sec</td>
 								<td class="right">99%</td>
 								<td class="right">100%</td>
@@ -5162,8 +5469,8 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="left"><a href="#" class="toggle-details">prestors_talisman_of_machination</a></td>
 								<td class="right">6.2</td>
 								<td class="right">0.0</td>
-								<td class="right">78.4sec</td>
-								<td class="right">78.4sec</td>
+								<td class="right">78.5sec</td>
+								<td class="right">78.5sec</td>
 								<td class="right">20%</td>
 								<td class="right">20%</td>
 							</tr>
@@ -5208,7 +5515,7 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="left"><a href="#" class="toggle-details">slice_and_dice</a></td>
 								<td class="right">1.3</td>
 								<td class="right">14.8</td>
-								<td class="right">202.0sec</td>
+								<td class="right">202.7sec</td>
 								<td class="right">28.7sec</td>
 								<td class="right">100%</td>
 								<td class="right">100%</td>
@@ -5221,7 +5528,7 @@ Damage dealt increased by $61851s3%.</span></li>
 										<li><span class="label">cooldown name:</span>buff_slice_and_dice</li>
 										<li><span class="label">tooltip:</span><span class="tooltip-wider">(null)</span></li>
 										<li><span class="label">max_stacks:</span>1</li>
-										<li><span class="label">duration:</span>40.50</li>
+										<li><span class="label">duration:</span>22.50</li>
 										<li><span class="label">cooldown:</span>0.00</li>
 										<li><span class="label">default_chance:</span>100.00%</li>
 									</ul>
@@ -5231,8 +5538,8 @@ Damage dealt increased by $61851s3%.</span></li>
 								<td class="left"><a href="#" class="toggle-details">tier11_4pc</a></td>
 								<td class="right">7.8</td>
 								<td class="right">1.3</td>
-								<td class="right">51.7sec</td>
-								<td class="right">43.8sec</td>
+								<td class="right">51.8sec</td>
+								<td class="right">43.9sec</td>
 								<td class="right">14%</td>
 								<td class="right">20%</td>
 							</tr>
@@ -5438,27 +5745,27 @@ Damage dealt increased by $61851s3%.</span></li>
 								</tr>
 								<tr>
 									<td class="left">combo_points</td>
-									<td class="right">301.3</td>
+									<td class="right">301.1</td>
 									<td class="right">1.8sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">combo_points_wasted</td>
 									<td class="right">1.3</td>
-									<td class="right">118.3sec</td>
+									<td class="right">118.9sec</td>
 								</tr>
 								<tr>
 									<td class="left">deadly_poisons</td>
-									<td class="right">189.0</td>
+									<td class="right">188.7</td>
 									<td class="right">2.4sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">main_gauche</td>
-									<td class="right">156.5</td>
+									<td class="right">156.4</td>
 									<td class="right">2.9sec</td>
 								</tr>
 								<tr>
 									<td class="left">sinister_strike_glyph</td>
-									<td class="right">44.0</td>
+									<td class="right">43.8</td>
 									<td class="right">10.1sec</td>
 								</tr>
 							</table>
@@ -5477,29 +5784,29 @@ Damage dealt increased by $61851s3%.</span></li>
 								</tr>
 								<tr>
 									<td class="left">adrenaline_rush</td>
-									<td class="right">427.9</td>
-									<td class="right">1501.6</td>
+									<td class="right">427.6</td>
+									<td class="right">1501.0</td>
 									<td class="right">3.5</td>
 									<td class="right">6.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">combat_potency</td>
-									<td class="right">149.8</td>
-									<td class="right">2193.9</td>
+									<td class="right">149.5</td>
+									<td class="right">2190.2</td>
 									<td class="right">14.6</td>
-									<td class="right">2.3%</td>
+									<td class="right">2.4%</td>
 								</tr>
 								<tr>
 									<td class="left">energy_regen</td>
-									<td class="right">1800.2</td>
-									<td class="right">6814.8</td>
+									<td class="right">1800.1</td>
+									<td class="right">6815.0</td>
 									<td class="right">3.8</td>
 									<td class="right">1.2%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">relentless_strikes</td>
 									<td class="right">59.5</td>
-									<td class="right">1486.6</td>
+									<td class="right">1486.5</td>
 									<td class="right">25.0</td>
 									<td class="right">0.0%</td>
 								</tr>
@@ -5586,7 +5893,7 @@ Damage dealt increased by $61851s3%.</span></li>
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    012457G8GGAGGFDGGBGEGGGGCGG9GGGGFCGGGFDGGGGEGG9GGGDGAGGGFCGGGGFDG9GGGFEGGGGDGB9GGGGFCGGGCGGGGCGGGGDG9GGAGGFEGGGFDGGGCG8GGGGDGGGFEGGGFDG9GGGBF7CGGGGFCGGGFDGGG9GGGFEGAGGFDGGGGFEGG9GGGGDGGGGEGGG9GGGGFDGGGGFBEGGGFEGGGF9GGGGGCGGGFACGGGGFDGGGGFEGGG9GGGDGGGFEGGGGFDGG9GGAGFCGB7GGGFCGGGFCGGGFDGGGG9GGGGEGGGGFDGGGGEGAGGGFDGG94GGGGGCGGGFDGGGGFEGG9GGBGGFDGGGGCGGGCGGGGCGGGAFDGG9GGGGFDGGGFCGGGGDGG9GGGGGEGGGGFDGAGGGBF9G7G
+                    012457G8GGGGDGGGFAEGGGGBFCG9GGGGCGGGFDGGGFEGG9GGGGFDGGGGFCG9AGGGDGGGFEGG9GGGDGGGGGCGGBGGDGG9GGGFEGGGFCGGGFCGGGAGFDG9GGGGGEGGGG9GGGGGDGGGFCG7GGFEGGGGGDGB9GGGFCGGGGFCGGGGFCGGG9GGAGGFDGGFEGGGGFDGGG9GGGEGGFDGGGFEGGGGF9GAGGGBDGGGGFEGGGGFEGGGFDGGGFCGGG9GGGFDGGGEGAGGGFCGGG9GGGF7DGGGFEGBGGGGEGGFDG9GGGGFCGGGGEGAGGF9GGGGDGGG4FCGGGFCGGGFDGGGGFEG9GGGGFDGGBGGCGGGGF9GGGGGDGGGEGGGAFEGGGDGGGGCGGGCGG9GGGGDGGGFEGGGGGCG9GGGA7F
 									</div>
 								</div>
 							</div>
@@ -6174,11 +6481,36 @@ tricks_of_the_trade_target=other
 								</div>
 							</div>
 						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td>( Pawn: v1: "Rogue_Combat_T11_372":  MeleeDps=6.4307, Agility=3.4975, ExpertiseRating=2.3117, HitRating=1.8517, HasteRating=1.6520, MasteryRating=1.5369, Strength=1.3735, Ap=1.3116, CritRating=1.2249 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( Pawn: v1: "Rogue_Combat_T11_372":  MeleeDps=6.4307, Agility=3.4975, ExpertiseRating=0.0000, HitRating=0.0000, HasteRating=1.6520, MasteryRating=1.5369, Strength=1.3735, Ap=1.3116, CritRating=1.2249 )</td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td>( RhadaTip: "Rogue_Combat_T11_372":  MeleeDps=6.4307, Agility=3.4975, ExpertiseRating=2.3117, HitRating=1.8517, HasteRating=1.6520, MasteryRating=1.5369, Strength=1.3735, Ap=1.3116, CritRating=1.2249 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( RhadaTip: "Rogue_Combat_T11_372":  MeleeDps=6.4307, Agility=3.4975, ExpertiseRating=0.0000, HitRating=0.0000, HasteRating=1.6520, MasteryRating=1.5369, Strength=1.3735, Ap=1.3116, CritRating=1.2249 )</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
 		<div id="Rogue_Subtlety_T11_372" class="player section">
-			<h2 class="toggle">Rogue_Subtlety_T11_372&nbsp;:&nbsp;26636dps</h2>
+			<h2 class="toggle">Rogue_Subtlety_T11_372&nbsp;:&nbsp;26632dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> troll</li>
@@ -6205,15 +6537,15 @@ tricks_of_the_trade_target=other
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>26635.7</td>
-								<td>9.2 / 0.0%</td>
-								<td>1725.5 / 6.5%</td>
-								<td>70.2%</td>
-								<td>1201.4</td>
+								<td>26632.1</td>
+								<td>5.9 / 0.0%</td>
+								<td>1833.4 / 6.9%</td>
+								<td>70.5%</td>
+								<td>1201.2</td>
 								<td>22.2</td>
 								<td>22.0</td>
 								<td>energy</td>
-								<td>34.14%</td>
+								<td>34.15%</td>
 								<td>46.7</td>
 							</tr>
 						</table>
@@ -6238,20 +6570,110 @@ tricks_of_the_trade_target=other
 								</td>
 							</tr>
 						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+								<th>Str</th>
+								<th>Agi</th>
+								<th>AP</th>
+								<th>Exp</th>
+								<th>Hit</th>
+								<th>Crit</th>
+								<th>Haste</th>
+								<th>Mastery</th>
+								<th>Wdps</th>
+								<th>WOHdps</th>
+								<th>WOHspeed</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+								<td>1.0246</td>
+								<td>3.5544</td>
+								<td>0.9583</td>
+								<td>1.2891</td>
+								<td>1.2191</td>
+								<td>1.1133</td>
+								<td>1.4303</td>
+								<td>0.7994</td>
+								<td>7.1719</td>
+								<td>1.1137</td>
+								<td>0.0000</td>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+								<td>0.2883</td>
+								<td>1.0000</td>
+								<td>0.2696</td>
+								<td>0.3627</td>
+								<td>0.3430</td>
+								<td>0.3132</td>
+								<td>0.4024</td>
+								<td>0.2249</td>
+								<td>2.0178</td>
+								<td>0.3133</td>
+								<td>0.0000</td>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>-200</td>
+								<td>-300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>100</td>
+								<td>100</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+								<td>0.0196</td>
+								<td>0.0196</td>
+								<td>0.0196</td>
+								<td>0.0295</td>
+								<td>0.0196</td>
+								<td>0.0196</td>
+								<td>0.0196</td>
+								<td>0.0196</td>
+								<td>0.0589</td>
+								<td>0.0589</td>
+								<td>0.0000</td>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="11" class="filler">
+									<ul class="float">
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=4;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=1.0246:3.5544:0.9583:1.2891:1.2191:1.1133:1.4303:0.7994:7.1719;" class="ext">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=8&amp;F=H&amp;Str=1.0246&amp;Agi=3.5544&amp;map=0.9583&amp;Exp=1.2891&amp;mhit=1.2191&amp;mcr=1.1133&amp;mh=1.4303&amp;Mr=0.7994&amp;dps=7.1719&amp;odps=1.1137&amp;Ver=6" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="11" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="player-section">
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://9.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:125570|33997|26034|25178|4685|2338&amp;chds=0,251140&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++125570++rupture,C55D54,0,0,15|t++33997++ambush,C79C6E,1,0,15|t++26034++eviscerate,C79C6E,2,0,15|t++25178++backstab,C79C6E,3,0,15|t++4685++melee_main_hand,C79C6E,4,0,15|t++2338++melee_off_hand,C79C6E,5,0,15&amp;chtt=Rogue_Subtlety_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://9.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:126562|34001|26026|25176|4684|2338&amp;chds=0,253123&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++126562++rupture,C55D54,0,0,15|t++34001++ambush,C79C6E,1,0,15|t++26026++eviscerate,C79C6E,2,0,15|t++25176++backstab,C79C6E,3,0,15|t++4684++melee_main_hand,C79C6E,4,0,15|t++2338++melee_off_hand,C79C6E,5,0,15&amp;chtt=Rogue_Subtlety_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
               <span class="chart-action-dmg" title="Action Damage Chart">http://0.chart.apis.google.com/chart?chs=550x280&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:31,18,11,11,9,8,7,5&amp;chds=0,100&amp;chco=C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,336600,336600,C55D54&amp;chl=backstab|melee_main_hand|ambush|eviscerate|melee_off_hand|instant_poison|deadly_poison|rupture&amp;chtt=Rogue_Subtlety_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://1.chart.apis.google.com/chart?chs=550x250&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:56,22,17,5,0&amp;chds=0,100&amp;chco=C0B84F&amp;chl=energy_regen|relentless_strikes|recuperate|backstab_glyph|energy_refund&amp;chtt=Rogue_Subtlety_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:l8wdhWYXRWPXfdfgfnpgUbXYelfiqikdjnkaYdXdgkghcegegjidibimkedhegdpxxvnedYRTWabfcejhjghejghfdihhegchigfefdgbfbdgifffbhgfdedfgcfchlswytldXUVWXbbcdegggcfceffeefcgefegghgdgdgghfhhgiffegehgghhjjkjpsvurlfbYXXaaccdeegffegeffeffgggfgffffgfgegfffffefegfhghhhhgiilnrssqmhdaYYYabdefffgfgfgffeeededfeffffefeffgfggggfgfgfgffffghjkoqssrokgdbabcdeghhhhhgggggggggghghgggggghghghhiijjjkjkklllllmnopqpomjgdaZZabcefghijijjjjjjjkkkjjjjjjiiiiihhhhhhhhhhhhhgggghhjkmoppolifc&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=80&amp;chtt=Rogue_Subtlety_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:78675645665231zzxwvwvvtutvstronnpoppqprqrqqqpononopqponnoopopppppqqrqrrqqrsssrrpqppooonnmnmmmmmmmllkljkjjjjjjjjkkkjjjijjklnnoooopppppqqqrrsssrqoonnnnmmmlllkkjjjjjjijjjjjkkllllmmmmmmmnoopqqqqqrqrrrrrrrsssrrqpoonnnnnnnnnnnnnnnonoooooonnnnmnmmmmllllmnooppqqqrrrrrrrssssrrqponnmmlllkkkkkkjjjjjjjjjjkkkklllllllllmmnoprrsttuuvvwwxxyyyyyxwvuttsrrqqpoonnmmmmmmmmnnnooppqqqrrssttuvvwwxxxyyyyyzzzzzzzzyyyxxwwwwwwwwwxwxwwwwwwwwwvvuutssrrqppoonnnnnnoppppppqqqqrs&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=26636|max=37995&amp;chxp=1,1,70,100&amp;chtt=Rogue_Subtlety_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:7,8,7,12,20,35,33,51,63,108,148,184,241,253,311,380,441,496,514,563,561,584,609,576,581,489,472,417,402,299,260,218,164,130,92,73,50,54,22,29,19,13,2,4,4,0,0,0,0,1&amp;chds=0,609&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=25140|avg=26636|max=28591&amp;chxp=0,1,43,100&amp;chtt=Rogue_Subtlety_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://1.chart.apis.google.com/chart?chs=525x330&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:7.1719|3.5544|1.4303|1.2891|1.2191|1.1137|1.1133|1.0246|0.9583|0.7994&amp;chds=0,14.3438&amp;chco=FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569,FFF569&amp;chm=t++7.1719++Wdps,C0B84F,0,0,15|t++3.5544++Agi,C0B84F,1,0,15|t++1.4303++Haste,C0B84F,2,0,15|t++1.2891++Exp,C0B84F,3,0,15|t++1.2191++Hit,C0B84F,4,0,15|t++1.1137++WOHdps,C0B84F,5,0,15|t++1.1133++Crit,C0B84F,6,0,15|t++1.0246++Str,C0B84F,7,0,15|t++0.9583++AP,C0B84F,8,0,15|t++0.7994++Mastery,C0B84F,9,0,15&amp;chtt=Rogue_Subtlety_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:l7wdhWYXRWPXfdfgfnpgUbXYelfiqikdjnkaYdXdgkghcegegjidibimkedhegdpxxvnedYRTWabfcejhjghekhhfdhghegchihfefdgbfbdgifffchgfdecfgcfchlswyuldXUVWXbbcdegggcfceffeefcfdfehgihdfdggifhhhigfegfhgghhjjkjpsvurlfbYXYabccdeefffefeffeffgggfgffffgfgeffffffefegfhghhhhghilnrssqmhdZYYYabdefgfgfgfgffeeededfeffffeffgfgfggggfgfgfgffffghjkoqssrokgdbabcdeghhihhghgggggghghghgggggggghghgiijjjkjkkllllmmnopqpomjfdaZZabcefghiiijjjjjjjkkkjjjjjjjiihihhhhhhhhhhhhhgggghhjlnoppolifc&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=80&amp;chtt=Rogue_Subtlety_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:78675645665231yzxwvwvvtutvstqonnpoppqprqrqqqpononopqponnoopopppppqqrqrrqqrsssrrpqppooonnmnmmmmmmmllkljkjjjjjjjjkkkjjjijjklnnoooopppppqqqrrsssrqoonnnnmmmllkkkjjjjjjijjjjjkkllllmmmmmmmnnoppqqqqrqrrrrrrrsssrrqpoonnnnnnnnnnnnnnnonoooooonnnnmnmmmmllllmnooppqqqrrrrrrrssssrrqponnmmlllkkkkkkkjjjjjjjjjkkkllllllllllmmnoprrsttuuvvwwxxyyyyyxwvuttsrrqqpoonnmmmmmmmmnnnooppqqqrrssttuvvwwxxxyyyyyzzzzzzzzzyyxxwwwwwwwwwxwxwwwwwwwwwvvuutssrqqpponnnnnnnoppppppqqqrrs&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=26632|max=37985&amp;chxp=1,1,70,100&amp;chtt=Rogue_Subtlety_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,3,5,4,5,14,29,39,67,87,145,189,277,381,509,610,748,893,1064,1164,1361,1460,1547,1532,1505,1561,1423,1352,1249,1134,934,849,665,557,451,345,271,177,126,78,61,50,28,23,11,4,5,3,3,1&amp;chds=0,1561&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=24868|avg=26632|max=28535&amp;chxp=0,1,48,100&amp;chtt=Rogue_Subtlety_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -6286,7 +6708,7 @@ tricks_of_the_trade_target=other
 							</tr>
 							<tr>
 								<th class="left small">Rogue_Subtlety_T11_372</th>
-								<th class="right small">26636</th>
+								<th class="right small">26632</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
@@ -6295,10 +6717,10 @@ tricks_of_the_trade_target=other
 								<td class="right small">11.2%</td>
 								<td class="right small">38.6</td>
 								<td class="right small">11.47sec</td>
-								<td class="right small">34745</td>
-								<td class="right small">33997</td>
-								<td class="right small">16705</td>
-								<td class="right small">35582</td>
+								<td class="right small">34748</td>
+								<td class="right small">34001</td>
+								<td class="right small">16720</td>
+								<td class="right small">35585</td>
 								<td class="right small">57105</td>
 								<td class="right small">95.6%</td>
 								<td class="right small">0.0%</td>
@@ -6327,13 +6749,13 @@ tricks_of_the_trade_target=other
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">38.61</td>
-											<td class="right small">38.61</td>
+											<td class="right small">38.60</td>
+											<td class="right small">38.60</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0220</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1341419</td>
+											<td class="right small">1341316</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6350,19 +6772,19 @@ tricks_of_the_trade_target=other
 											<td class="left small">hit</td>
 											<td class="right small">1.7</td>
 											<td class="right small">4.32%</td>
-											<td class="right small">16704.53</td>
-											<td class="right small">14352</td>
-											<td class="right small">24967</td>
-											<td class="right small">27878</td>
+											<td class="right small">16720.18</td>
+											<td class="right small">13047</td>
+											<td class="right small">26920</td>
+											<td class="right small">27901</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">36.9</td>
 											<td class="right small">95.62%</td>
-											<td class="right small">35581.69</td>
+											<td class="right small">35585.12</td>
 											<td class="right small">26877</td>
 											<td class="right small">57105</td>
-											<td class="right small">1313541</td>
+											<td class="right small">1313415</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -6415,14 +6837,14 @@ tricks_of_the_trade_target=other
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=53">backstab</a></td>
-								<td class="right small">8182</td>
+								<td class="right small">8181</td>
 								<td class="right small">30.7%</td>
 								<td class="right small">142.2</td>
 								<td class="right small">3.07sec</td>
-								<td class="right small">25895</td>
-								<td class="right small">25178</td>
+								<td class="right small">25893</td>
+								<td class="right small">25176</td>
 								<td class="right small">13137</td>
-								<td class="right small">31355</td>
+								<td class="right small">31354</td>
 								<td class="right small">46055</td>
 								<td class="right small">70.1%</td>
 								<td class="right small">0.0%</td>
@@ -6451,13 +6873,13 @@ tricks_of_the_trade_target=other
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">142.21</td>
-											<td class="right small">142.21</td>
+											<td class="right small">142.20</td>
+											<td class="right small">142.20</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0285</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">3682411</td>
+											<td class="right small">3681862</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6474,24 +6896,24 @@ tricks_of_the_trade_target=other
 											<td class="left small">hit</td>
 											<td class="right small">42.5</td>
 											<td class="right small">29.88%</td>
-											<td class="right small">13137.01</td>
+											<td class="right small">13136.87</td>
 											<td class="right small">11839</td>
 											<td class="right small">19367</td>
-											<td class="right small">558171</td>
+											<td class="right small">558155</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">99.6</td>
-											<td class="right small">70.07%</td>
-											<td class="right small">31355.22</td>
+											<td class="right small">70.06%</td>
+											<td class="right small">31353.78</td>
 											<td class="right small">28152</td>
 											<td class="right small">46055</td>
-											<td class="right small">3124241</td>
+											<td class="right small">3123708</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.1</td>
-											<td class="right small">0.05%</td>
+											<td class="right small">0.06%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6539,11 +6961,11 @@ tricks_of_the_trade_target=other
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=2818">deadly_poison</a></td>
-								<td class="right small">1925</td>
+								<td class="right small">1924</td>
 								<td class="right small">7.2%</td>
 								<td class="right small">166.2</td>
-								<td class="right small">2.70sec</td>
-								<td class="right small">5213</td>
+								<td class="right small">2.69sec</td>
+								<td class="right small">5210</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -6555,9 +6977,9 @@ tricks_of_the_trade_target=other
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">146</td>
-								<td class="right small">5480</td>
-								<td class="right small">8467</td>
-								<td class="right small">14.7%</td>
+								<td class="right small">5479</td>
+								<td class="right small">8465</td>
+								<td class="right small">14.6%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">97.6%</td>
 							</tr>
@@ -6575,13 +6997,13 @@ tricks_of_the_trade_target=other
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">166.20</td>
-											<td class="right small">3.75</td>
-											<td class="right small">146.40</td>
-											<td class="right small">146.40</td>
+											<td class="right small">166.17</td>
+											<td class="right small">3.77</td>
+											<td class="right small">146.37</td>
+											<td class="right small">146.37</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">3.0000</td>
-											<td class="right small">866345</td>
+											<td class="right small">865823</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6596,7 +7018,7 @@ tricks_of_the_trade_target=other
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">3.7</td>
+											<td class="right small">3.8</td>
 											<td class="right small">100.00%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
@@ -6614,21 +7036,21 @@ tricks_of_the_trade_target=other
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">124.9</td>
-											<td class="right small">85.34%</td>
-											<td class="right small">5479.79</td>
+											<td class="right small">125.0</td>
+											<td class="right small">85.37%</td>
+											<td class="right small">5478.60</td>
 											<td class="right small">1079</td>
 											<td class="right small">7345</td>
-											<td class="right small">684631</td>
+											<td class="right small">684576</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">21.5</td>
-											<td class="right small">14.66%</td>
-											<td class="right small">8467.02</td>
+											<td class="right small">21.4</td>
+											<td class="right small">14.63%</td>
+											<td class="right small">8464.61</td>
 											<td class="right small">1667</td>
 											<td class="right small">11348</td>
-											<td class="right small">181714</td>
+											<td class="right small">181247</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -6677,14 +7099,14 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=2098">eviscerate</a></td>
-								<td class="right small">2960</td>
+								<td class="right small">2963</td>
 								<td class="right small">11.1%</td>
 								<td class="right small">49.9</td>
-								<td class="right small">8.86sec</td>
-								<td class="right small">26722</td>
-								<td class="right small">26034</td>
-								<td class="right small">17982</td>
-								<td class="right small">37027</td>
+								<td class="right small">8.84sec</td>
+								<td class="right small">26713</td>
+								<td class="right small">26026</td>
+								<td class="right small">17981</td>
+								<td class="right small">37046</td>
 								<td class="right small">52612</td>
 								<td class="right small">45.9%</td>
 								<td class="right small">0.0%</td>
@@ -6713,13 +7135,13 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">49.86</td>
-											<td class="right small">49.86</td>
+											<td class="right small">49.92</td>
+											<td class="right small">49.92</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0264</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1332249</td>
+											<td class="right small">1333403</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6734,21 +7156,21 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">26.9</td>
-											<td class="right small">54.00%</td>
-											<td class="right small">17981.90</td>
+											<td class="right small">27.0</td>
+											<td class="right small">54.09%</td>
+											<td class="right small">17980.59</td>
 											<td class="right small">15278</td>
 											<td class="right small">25540</td>
-											<td class="right small">484148</td>
+											<td class="right small">485442</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">22.9</td>
-											<td class="right small">45.94%</td>
-											<td class="right small">37027.21</td>
+											<td class="right small">45.86%</td>
+											<td class="right small">37046.06</td>
 											<td class="right small">31472</td>
 											<td class="right small">52612</td>
-											<td class="right small">848101</td>
+											<td class="right small">847961</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -6806,9 +7228,9 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=8680">instant_poison</a></td>
-								<td class="right small">2129</td>
+								<td class="right small">2127</td>
 								<td class="right small">8.0%</td>
-								<td class="right small">313.7</td>
+								<td class="right small">313.4</td>
 								<td class="right small">1.43sec</td>
 								<td class="right small">3054</td>
 								<td class="right small">0</td>
@@ -6842,13 +7264,13 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">313.72</td>
-											<td class="right small">313.72</td>
+											<td class="right small">313.39</td>
+											<td class="right small">313.39</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">958204</td>
+											<td class="right small">957095</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6863,26 +7285,26 @@ Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature 
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">258.2</td>
+											<td class="right small">257.9</td>
 											<td class="right small">82.30%</td>
-											<td class="right small">2935.39</td>
+											<td class="right small">2935.41</td>
 											<td class="right small">2781</td>
 											<td class="right small">3784</td>
-											<td class="right small">757859</td>
+											<td class="right small">757056</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">44.2</td>
+											<td class="right small">44.1</td>
 											<td class="right small">14.08%</td>
-											<td class="right small">4535.37</td>
+											<td class="right small">4534.86</td>
 											<td class="right small">4296</td>
 											<td class="right small">5846</td>
-											<td class="right small">200345</td>
+											<td class="right small">200038</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">11.4</td>
-											<td class="right small">3.62%</td>
+											<td class="right small">3.63%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6931,16 +7353,16 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">melee_main_hand</a></td>
-								<td class="right small">4681</td>
+								<td class="right small">4680</td>
 								<td class="right small">17.6%</td>
 								<td class="right small">507.6</td>
 								<td class="right small">0.89sec</td>
-								<td class="right small">4151</td>
-								<td class="right small">4685</td>
+								<td class="right small">4150</td>
+								<td class="right small">4684</td>
 								<td class="right small">3548</td>
 								<td class="right small">7368</td>
 								<td class="right small">10605</td>
-								<td class="right small">35.3%</td>
+								<td class="right small">35.2%</td>
 								<td class="right small">15.0%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
@@ -6967,13 +7389,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">507.58</td>
-											<td class="right small">507.58</td>
+											<td class="right small">507.57</td>
+											<td class="right small">507.57</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.8860</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2106989</td>
+											<td class="right small">2106415</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6988,30 +7410,30 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">130.5</td>
-											<td class="right small">25.70%</td>
-											<td class="right small">3548.27</td>
+											<td class="right small">130.4</td>
+											<td class="right small">25.69%</td>
+											<td class="right small">3548.14</td>
 											<td class="right small">3091</td>
 											<td class="right small">5148</td>
-											<td class="right small">462937</td>
+											<td class="right small">462622</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">179.0</td>
-											<td class="right small">35.26%</td>
+											<td class="right small">178.9</td>
+											<td class="right small">35.25%</td>
 											<td class="right small">7367.91</td>
 											<td class="right small">6368</td>
 											<td class="right small">10605</td>
-											<td class="right small">1318603</td>
+											<td class="right small">1318115</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">121.7</td>
-											<td class="right small">23.99%</td>
-											<td class="right small">2673.23</td>
+											<td class="right small">121.8</td>
+											<td class="right small">24.00%</td>
+											<td class="right small">2673.30</td>
 											<td class="right small">2319</td>
 											<td class="right small">3861</td>
-											<td class="right small">325449</td>
+											<td class="right small">325678</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -7024,8 +7446,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
-											<td class="right small">76.1</td>
-											<td class="right small">15.00%</td>
+											<td class="right small">76.2</td>
+											<td class="right small">15.01%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -7082,7 +7504,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="right small">1380</td>
 								<td class="right small">2865</td>
 								<td class="right small">4125</td>
-								<td class="right small">35.3%</td>
+								<td class="right small">35.2%</td>
 								<td class="right small">15.0%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
@@ -7109,13 +7531,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">651.70</td>
-											<td class="right small">651.70</td>
+											<td class="right small">651.68</td>
+											<td class="right small">651.68</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.6902</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1051848</td>
+											<td class="right small">1051709</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -7130,30 +7552,30 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">167.5</td>
+											<td class="right small">167.6</td>
 											<td class="right small">25.71%</td>
-											<td class="right small">1379.70</td>
+											<td class="right small">1379.63</td>
 											<td class="right small">1203</td>
 											<td class="right small">2003</td>
-											<td class="right small">231148</td>
+											<td class="right small">231173</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">229.7</td>
-											<td class="right small">35.25%</td>
-											<td class="right small">2864.74</td>
+											<td class="right small">229.6</td>
+											<td class="right small">35.24%</td>
+											<td class="right small">2864.93</td>
 											<td class="right small">2477</td>
 											<td class="right small">4125</td>
-											<td class="right small">658109</td>
+											<td class="right small">657915</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
 											<td class="right small">156.4</td>
 											<td class="right small">24.00%</td>
-											<td class="right small">1039.46</td>
+											<td class="right small">1039.58</td>
 											<td class="right small">902</td>
 											<td class="right small">1502</td>
-											<td class="right small">162591</td>
+											<td class="right small">162621</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -7255,7 +7677,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<td class="right small">14.77</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0218</td>
+											<td class="right small">1.0219</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0</td>
 										</tr>
@@ -7326,10 +7748,10 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1943">rupture</a></td>
 								<td class="right small">1441</td>
 								<td class="right small">5.4%</td>
-								<td class="right small">5.1</td>
-								<td class="right small">93.60sec</td>
-								<td class="right small">127879</td>
-								<td class="right small">125570</td>
+								<td class="right small">5.0</td>
+								<td class="right small">94.94sec</td>
+								<td class="right small">128885</td>
+								<td class="right small">126562</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -7341,7 +7763,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="right small">0.0%</td>
 								<td class="right small">219</td>
 								<td class="right small">2157</td>
-								<td class="right small">4456</td>
+								<td class="right small">4457</td>
 								<td class="right small">35.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">97.2%</td>
@@ -7360,13 +7782,13 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">5.07</td>
-											<td class="right small">5.07</td>
-											<td class="right small">218.73</td>
-											<td class="right small">218.73</td>
+											<td class="right small">5.03</td>
+											<td class="right small">5.03</td>
+											<td class="right small">218.74</td>
+											<td class="right small">218.74</td>
 											<td class="right small">1.0184</td>
 											<td class="right small">2.0000</td>
-											<td class="right small">648423</td>
+											<td class="right small">648390</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -7381,8 +7803,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">5.1</td>
-											<td class="right small">99.94%</td>
+											<td class="right small">5.0</td>
+											<td class="right small">99.95%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -7391,7 +7813,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.0</td>
-											<td class="right small">0.06%</td>
+											<td class="right small">0.05%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -7408,21 +7830,21 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">141.9</td>
-											<td class="right small">64.88%</td>
-											<td class="right small">2156.78</td>
+											<td class="right small">142.0</td>
+											<td class="right small">64.90%</td>
+											<td class="right small">2156.94</td>
 											<td class="right small">2058</td>
 											<td class="right small">2750</td>
-											<td class="right small">306055</td>
+											<td class="right small">306200</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">76.8</td>
-											<td class="right small">35.12%</td>
-											<td class="right small">4456.37</td>
+											<td class="right small">35.10%</td>
+											<td class="right small">4456.92</td>
 											<td class="right small">4238</td>
 											<td class="right small">5665</td>
-											<td class="right small">342368</td>
+											<td class="right small">342190</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -7586,19 +8008,19 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							<tr>
 								<td class="left small">ambush</td>
 								<td class="right small">15.5%</td>
-								<td class="right small">868.6</td>
+								<td class="right small">868.7</td>
 								<td class="right small">40</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">backstab</td>
 								<td class="right small">57.0%</td>
-								<td class="right small">647.4</td>
+								<td class="right small">647.3</td>
 								<td class="right small">40</td>
 							</tr>
 							<tr>
 								<td class="left small">eviscerate</td>
 								<td class="right small">17.5%</td>
-								<td class="right small">763.5</td>
+								<td class="right small">763.2</td>
 								<td class="right small">35</td>
 							</tr>
 							<tr class="odd">
@@ -7610,7 +8032,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							<tr>
 								<td class="left small">rupture</td>
 								<td class="right small">1.3%</td>
-								<td class="right small">5115.2</td>
+								<td class="right small">5155.4</td>
 								<td class="right small">25</td>
 							</tr>
 							<tr class="odd">
@@ -7683,7 +8105,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">deadly_proc</a></td>
-								<td class="right">142.1</td>
+								<td class="right">142.0</td>
 								<td class="right">0.0</td>
 								<td class="right">3.1sec</td>
 								<td class="right">3.1sec</td>
@@ -7730,7 +8152,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">fluid_death</a></td>
 								<td class="right">1.0</td>
-								<td class="right">1219.5</td>
+								<td class="right">1219.4</td>
 								<td class="right">0.0sec</td>
 								<td class="right">0.4sec</td>
 								<td class="right">100%</td>
@@ -7754,8 +8176,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">landslide_mh</a></td>
 								<td class="right">11.9</td>
 								<td class="right">8.1</td>
-								<td class="right">37.0sec</td>
-								<td class="right">21.5sec</td>
+								<td class="right">36.9sec</td>
+								<td class="right">21.4sec</td>
 								<td class="right">41%</td>
 								<td class="right">42%</td>
 							</tr>
@@ -7775,10 +8197,10 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">landslide_oh</a></td>
-								<td class="right">9.3</td>
-								<td class="right">3.6</td>
-								<td class="right">46.0sec</td>
-								<td class="right">32.2sec</td>
+								<td class="right">9.2</td>
+								<td class="right">3.7</td>
+								<td class="right">46.1sec</td>
+								<td class="right">32.1sec</td>
 								<td class="right">29%</td>
 								<td class="right">30%</td>
 							</tr>
@@ -7821,9 +8243,9 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">poison_doses</a></td>
-								<td class="right">3.7</td>
-								<td class="right">156.5</td>
-								<td class="right">108.9sec</td>
+								<td class="right">3.8</td>
+								<td class="right">156.4</td>
+								<td class="right">108.1sec</td>
 								<td class="right">2.8sec</td>
 								<td class="right">98%</td>
 								<td class="right">100%</td>
@@ -7867,9 +8289,9 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 							</tr>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">recuperate</a></td>
-								<td class="right">7.3</td>
-								<td class="right">7.5</td>
-								<td class="right">63.4sec</td>
+								<td class="right">7.2</td>
+								<td class="right">7.6</td>
+								<td class="right">63.9sec</td>
 								<td class="right">31.0sec</td>
 								<td class="right">95%</td>
 								<td class="right">95%</td>
@@ -7938,7 +8360,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">slice_and_dice</a></td>
 								<td class="right">8.7</td>
 								<td class="right">8.5</td>
-								<td class="right">52.5sec</td>
+								<td class="right">52.4sec</td>
 								<td class="right">26.9sec</td>
 								<td class="right">97%</td>
 								<td class="right">99%</td>
@@ -8007,8 +8429,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">tolvir_potion</a></td>
 								<td class="right">2.0</td>
 								<td class="right">0.0</td>
-								<td class="right">351.7sec</td>
-								<td class="right">351.7sec</td>
+								<td class="right">351.8sec</td>
+								<td class="right">351.8sec</td>
 								<td class="right">10%</td>
 								<td class="right">10%</td>
 							</tr>
@@ -8030,8 +8452,8 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<td class="left"><a href="#" class="toggle-details">vanish</a></td>
 								<td class="right">4.6</td>
 								<td class="right">0.0</td>
-								<td class="right">98.6sec</td>
-								<td class="right">98.6sec</td>
+								<td class="right">98.5sec</td>
+								<td class="right">98.5sec</td>
 								<td class="right">0%</td>
 								<td class="right">0%</td>
 							</tr>
@@ -8207,7 +8629,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								</tr>
 								<tr class="odd">
 									<td class="left">combo_points_wasted</td>
-									<td class="right">46.4</td>
+									<td class="right">46.3</td>
 									<td class="right">13.5sec</td>
 								</tr>
 								<tr>
@@ -8217,7 +8639,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								</tr>
 								<tr class="odd">
 									<td class="left">hat_donor</td>
-									<td class="right">301.9</td>
+									<td class="right">301.7</td>
 									<td class="right">1.5sec</td>
 								</tr>
 								<tr>
@@ -8227,7 +8649,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								</tr>
 								<tr class="odd">
 									<td class="left">serrated_blades</td>
-									<td class="right">49.8</td>
+									<td class="right">49.9</td>
 									<td class="right">8.9sec</td>
 								</tr>
 							</table>
@@ -8247,35 +8669,35 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<tr>
 									<td class="left">backstab_glyph</td>
 									<td class="right">99.6</td>
-									<td class="right">498.2</td>
+									<td class="right">498.1</td>
 									<td class="right">5.0</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">energy_refund</td>
 									<td class="right">174.6</td>
-									<td class="right">4.0</td>
+									<td class="right">4.2</td>
 									<td class="right">0.0</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr>
 									<td class="left">energy_regen</td>
-									<td class="right">1800.2</td>
-									<td class="right">5536.9</td>
+									<td class="right">1800.1</td>
+									<td class="right">5536.7</td>
 									<td class="right">3.1</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">recuperate</td>
 									<td class="right">142.2</td>
-									<td class="right">1705.4</td>
+									<td class="right">1705.5</td>
 									<td class="right">12.0</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr>
 									<td class="left">relentless_strikes</td>
 									<td class="right">86.9</td>
-									<td class="right">2172.3</td>
+									<td class="right">2172.6</td>
 									<td class="right">25.0</td>
 									<td class="right">0.0%</td>
 								</tr>
@@ -8390,7 +8812,7 @@ Each strike has a $8679h% chance of poisoning the enemy which instantly inflicts
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    0124568DEFHAFFIFJFFKLMKLMMKBBCEFGHLMKLBLMJBBBCFKMMKLMMHMMKL9999999ADFJEFKFFKLMHLMMKMMKLMMJMMKMLHLLMKMMKLL9J9ADEFKFFHFKLMKLMKLMMKMMHLMJLMMILMKLM8MHLM9K999ADEFKFFJFKMMKLMMHMMKBBBCEFKMMJLLMKMMHLLMKLLK999ADEFJFFKFFKLMHLLKLMMKLMJMMKLLHLLMKMMKLM9999999JADEFKFFKFHLMMKLMKMMKLMMHMMJL8MILLKLLMKBCEFGHL999999ADFKFFJFKMMKLMMHMMKCEFKLLJLM4MKLMHLLMKLLKLL9999ADFJEFKFFKFHLLMKMMKLLKLLMJLLHLLMILLKLMMKMM99J99999ADEFHFFKFKMMKLMMKLMHMLJ8LM
+                    0124568DEFHAFFIFJFFKLMKLMMKBBCEFGHLMKLMMJBBBLMKBBCEFKMMHLMMKM99999999ADFJEFKFKFKLMMHMMKLMMKLMJLMKLLHLLMKMMKLM99999JADEFKFFKFHLMMKMMKMMJLMMKLMHLLMKMM8KMMKLM999999J9ADEFHFFKFKMMKLLKLMMHBBBCEFJLLILMMKMMKLMMHMMJL999999ADFIEFKFFKMMHLMMKLMJMMKLLHLMMKMMKLLJLL9999ADFHEFIFFKFKMMKLMMJLMHLLILLMK8MLKLMMKMMHBCEFGJ99999ADFKFFKFKLLMKLMHLLJCEFMIMM4KLLMKLLMHLMKLLMJM99999ADFKEFKFFKLMHLMMKLMJMLKLLMKMMHLLKLMMJMMK9999ADEFKFFHFKMMKMLJLMMKLM
 									</div>
 								</div>
 							</div>
@@ -8989,6 +9411,31 @@ tricks_of_the_trade_target=other
 								</div>
 							</div>
 						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td>( Pawn: v1: "Rogue_Subtlety_T11_372":  MeleeDps=7.1719, Agility=3.5544, HasteRating=1.4303, ExpertiseRating=1.2891, HitRating=1.2191, CritRating=1.1133, Strength=1.0246, Ap=0.9583, MasteryRating=0.7994 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( Pawn: v1: "Rogue_Subtlety_T11_372":  MeleeDps=7.1719, Agility=3.5544, HasteRating=1.4303, ExpertiseRating=0.0000, HitRating=0.0000, CritRating=1.1133, Strength=1.0246, Ap=0.9583, MasteryRating=0.7994 )</td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td>( RhadaTip: "Rogue_Subtlety_T11_372":  MeleeDps=7.1719, Agility=3.5544, HasteRating=1.4303, ExpertiseRating=1.2891, HitRating=1.2191, CritRating=1.1133, Strength=1.0246, Ap=0.9583, MasteryRating=0.7994 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( RhadaTip: "Rogue_Subtlety_T11_372":  MeleeDps=7.1719, Agility=3.5544, HasteRating=1.4303, ExpertiseRating=0.0000, HitRating=0.0000, CritRating=1.1133, Strength=1.0246, Ap=0.9583, MasteryRating=0.7994 )</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -9121,7 +9568,7 @@ tricks_of_the_trade_target=other
 								<td>0.0 / 0.0%</td>
 								<td>0.0%</td>
 								<td>0.0</td>
-								<td>80807.3</td>
+								<td>80801.6</td>
 								<td>0.0</td>
 								<td>health</td>
 								<td>100.02%</td>
@@ -9129,6 +9576,40 @@ tricks_of_the_trade_target=other
 							</tr>
 						</table>
 						<table class="sc mt">
+						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="0" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowhead</a></li>
+										<li><a href="" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="0" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
 						</table>
 					</div>
 				</div>
@@ -9138,7 +9619,7 @@ tricks_of_the_trade_target=other
 						<div class="charts charts-left">
                                                         						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://6.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:t777777666665555554444443333333222222221111111100000000zzzzzzzzyyyyyyyyxxxxxxxxwwwwwwwwwvvvvvvvvuuuuuuuutttttttttssssssssrrrrrrrqqqqqqqppppppppooooooooonnnnnnnnmmmmmmmmmllllllllkkkkkkkkkjjjjjjjiiiiiiiihhhhhhhggggggggffffffffeeeeeeeedddddddddcccccccbbbbbbbbaaaaaaaZZZZZZZZYYYYYYYYXXXXXXXXWWWWWWWWVVVVVVVVUUUUUUUUTTTTTTTSSSSSSSRRRRRRRQQQQQQQPPPPPPPPOOOOOOOOONNNNNNNNNMMMMMMMMMMMLLLLLLLLLLLKKKKKKKKKKJJJJJJJJJJJJIIIIIIIIIIIHHHHHHHHHHHHHGGGGGGGGGGGGGGGGF&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=36278064&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=dddddd,18&amp;chco=336600</span>
+                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://6.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:t877777666665555554444443333333222222221111111100000000zzzzzzzzyyyyyyyyxxxxxxxxwwwwwwwwwvvvvvvvvuuuuuuuutttttttttssssssssrrrrrrrqqqqqqqppppppppoooooooonnnnnnnnnmmmmmmmmmllllllllkkkkkkkkkjjjjjjjiiiiiiiihhhhhhhggggggggffffffffeeeeeeeedddddddddcccccccbbbbbbbbaaaaaaaZZZZZZZZYYYYYYYYXXXXXXXXWWWWWWWWVVVVVVVVUUUUUUUUTTTTTTTSSSSSSSRRRRRRRQQQQQQQPPPPPPPPOOOOOOOOONNNNNNNNNMMMMMMMMMMMLLLLLLLLLLKKKKKKKKKKKJJJJJJJJJJJJIIIIIIIIIIIHHHHHHHHHHHHHGGGGGGGGGGGGGGGGF&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=36274329&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=dddddd,18&amp;chco=336600</span>
                             <span class="chart-timeline-dps" title="DPS Timeline Chart">http://8.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=0|max=0&amp;chxp=1,1,-nan,100&amp;chtt=Fluffy_Pillow+DPS+Timeline&amp;chts=dddddd,18</span>
                             						</div>
 						<div class="clear"></div>
@@ -9853,7 +10334,7 @@ Cannot stealth or turn invisible.</span></li>
 									<tr class="odd">
 										<th class="left">Health</th>
 										<td class="right">0</td>
-										<td class="right">43060044</td>
+										<td class="right">43347903</td>
 										<td class="right">0</td>
 									</tr>
 									<tr>
@@ -10359,6 +10840,31 @@ actions=snapshot_stats<br>
 # Gear Summary
 </p>
 								</div>
+							</div>
+						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td></td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td></td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td></td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td></td>
+									</tr>
+								</table>
 							</div>
 						</div>
 					</div>

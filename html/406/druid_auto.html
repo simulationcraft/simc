@@ -31,9 +31,9 @@
 			<h2>for World of Warcraft 4.0.6 Live (build level 13623)</h2>
 
 			<ul class="params">
-				<li><b>Timestamp:</b> Thu Mar 10 20:17:40 2011
+				<li><b>Timestamp:</b> Thu Mar 10 23:26:52 2011
 </li>
-				<li><b>Iterations:</b> 10000</li>
+				<li><b>Iterations:</b> 25000</li>
 				<li class="linked"><a href="#help-fight-length" class="help"><b>Fight Length:</b> 360 - 540</a></li>
 				<li><b>Fight Style:</b> Patchwerk</li>
 			</ul>
@@ -46,6 +46,7 @@
 			<div class="toggle-content">
 				<ul class="toc toc-narrow">
 					<li><a href="#raid-summary">Raid Summary</a></li>
+					<li><a href="#raid-scale-factors">Scale Factors</a></li>
 					<li><a href="#Druid_Balance_T11_372">Druid_Balance_T11_372</a></li>
 					<li><a href="#Druid_Feral_T11_372">Druid_Feral_T11_372</a></li>
 				</ul>
@@ -64,19 +65,120 @@
 			<h2 class="toggle open">Raid Summary</h2>
 			<div class="toggle-content">
 				<div class="charts charts-left">
-					<a href="#help-dps" class="help"><img src="http://0.chart.apis.google.com/chart?chs=525x80&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:26096|25522|25468&amp;chds=0,65241&amp;chco=FF7D0A,FF7D0A,FF7D0A&amp;chm=t++26096++Druid_Balance_T11_372,FF7D0A,0,0,15|t++25522++Druid_Feral_T11_372,FF7D0A,1,0,15|t++25468++Druid_Feral_T11_372_hitcap,FF7D0A,2,0,15&amp;chtt=DPS+Ranking&amp;chts=dddddd,18" alt="DPS Chart" /></a>
+					<a href="#help-dps" class="help"><img src="http://0.chart.apis.google.com/chart?chs=525x80&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:26090|25541|25467&amp;chds=0,65225&amp;chco=FF7D0A,FF7D0A,FF7D0A&amp;chm=t++26090++Druid_Balance_T11_372,FF7D0A,0,0,15|t++25541++Druid_Feral_T11_372,FF7D0A,1,0,15|t++25467++Druid_Feral_T11_372_hitcap,FF7D0A,2,0,15&amp;chtt=DPS+Ranking&amp;chts=dddddd,18" alt="DPS Chart" /></a>
 					<img src="http://2.chart.apis.google.com/chart?chs=525x160&amp;cht=bhs&amp;chf=bg,s,333333&amp;chbh=15&amp;chd=t:20,20,20|20,5366,5336|4595,20,20|1591,20,20|1898,0,0|0,0,0|0,0,0|0,95,95|0,0,313|143,436,961|778,2222,1408|2301,508,508|1138,2148,2184&amp;chds=0,12484&amp;chco=C79C6E,336600,69CCF0,C0C0C0,9482C9,8A8A8A,59ADCC,FFF569,C55D54,C41F3B,F58CBA,2459FF,C0B84F&amp;chxt=y&amp;chxl=0:|Druid_Feral_T11_372_hitcap|Druid_Feral_T11_372|Druid_Balance_T11_372&amp;chxs=0,dddddd,14&amp;chdl=Str|Agi|Int|Spi|SP|SPen|MP5|AP|Exp|Hit|Crit|Haste|Mastery&amp;chdlp=t&amp;chdls=dddddd,12&amp;chtt=Gear+Overview&amp;chts=dddddd,18" alt="Gear Chart" />
-					<a href="#help-timeline-distribution" class="help"><img src="http://4.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chf=bg,s,333333&amp;chd=t:1,0,3,32,144,347,414,465,419,440,484,408,484,433,462,392,491,391,429,493,435,459,442,447,405,412,407,201,50,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1&amp;chds=0,493&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=308|avg=450|max=720&amp;chxp=0,1,34,100&amp;chtt=Timeline+Distribution&amp;chts=dddddd,18" alt="Timeline Distribution Chart" /></a>
+					<a href="#help-timeline-distribution" class="help"><img src="http://4.chart.apis.google.com/chart?chs=525x130&amp;cht=bvs&amp;chf=bg,s,333333&amp;chd=t:1,2,38,229,627,1045,1063,1090,1071,1159,1081,1062,1209,1057,1077,1065,1098,1039,1069,1214,1091,1068,1116,1078,1012,1066,785,359,106,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1&amp;chds=0,1214&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=322|avg=450|max=720&amp;chxp=0,1,32,100&amp;chtt=Timeline+Distribution&amp;chts=dddddd,18" alt="Timeline Distribution Chart" /></a>
 				</div>
 				<div class="charts">
-					<img src="http://1.chart.apis.google.com/chart?chs=500x305&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=10&amp;chd=t:88396|78359|75153|68747|65845|42767|41261|35754|34825|34309|33237|22009|21134|16950|15895|14589|14078|4881|4817&amp;chds=0,220991&amp;chco=336600,69CCF0,69CCF0,C55D54,C55D54,336600,8AD0B1,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,69CCF0,336600,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++88396++sunfire+(Druid_Balance_T11_372),FF7D0A,0,0,10|t++78359++moonfire+(Druid_Balance_T11_372),FF7D0A,1,0,10|t++75153++starfall+(Druid_Balance_T11_372),FF7D0A,2,0,10|t++68747++rake+(Druid_Feral_T11_372_hitcap),FF7D0A,3,0,10|t++65845++rake+(Druid_Feral_T11_372),FF7D0A,4,0,10|t++42767++insect_swarm+(Druid_Balance_T11_372),FF7D0A,5,0,10|t++41261++starsurge+(Druid_Balance_T11_372),FF7D0A,6,0,10|t++35754++ferocious_bite+(Druid_Feral_T11_372_hitcap),FF7D0A,7,0,10|t++34825++ravage+(Druid_Feral_T11_372_hitcap),FF7D0A,8,0,10|t++34309++ferocious_bite+(Druid_Feral_T11_372),FF7D0A,9,0,10|t++33237++ravage+(Druid_Feral_T11_372),FF7D0A,10,0,10|t++22009++shred+(Druid_Feral_T11_372_hitcap),FF7D0A,11,0,10|t++21134++shred+(Druid_Feral_T11_372),FF7D0A,12,0,10|t++16950++starfire+(Druid_Balance_T11_372),FF7D0A,13,0,10|t++15895++wrath+(Druid_Balance_T11_372),FF7D0A,14,0,10|t++14589++mangle_cat+(Druid_Feral_T11_372_hitcap),FF7D0A,15,0,10|t++14078++mangle_cat+(Druid_Feral_T11_372),FF7D0A,16,0,10|t++4881++cat_melee+(Druid_Feral_T11_372_hitcap),FF7D0A,17,0,10|t++4817++cat_melee+(Druid_Feral_T11_372),FF7D0A,18,0,10&amp;chtt=Raid+Damage+Per+Execute+Time&amp;chts=dddddd,18" alt="DPET Chart" />
+					<img src="http://1.chart.apis.google.com/chart?chs=500x305&amp;cht=bhg&amp;chf=bg,s,333333&amp;chbh=10&amp;chd=t:88425|78441|75097|68722|65909|42757|41223|35702|34920|34354|33424|22005|21154|16944|15888|14597|14078|4882|4818&amp;chds=0,221063&amp;chco=336600,69CCF0,69CCF0,C55D54,C55D54,336600,8AD0B1,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E,69CCF0,336600,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++88425++sunfire+(Druid_Balance_T11_372),FF7D0A,0,0,10|t++78441++moonfire+(Druid_Balance_T11_372),FF7D0A,1,0,10|t++75097++starfall+(Druid_Balance_T11_372),FF7D0A,2,0,10|t++68722++rake+(Druid_Feral_T11_372_hitcap),FF7D0A,3,0,10|t++65909++rake+(Druid_Feral_T11_372),FF7D0A,4,0,10|t++42757++insect_swarm+(Druid_Balance_T11_372),FF7D0A,5,0,10|t++41223++starsurge+(Druid_Balance_T11_372),FF7D0A,6,0,10|t++35702++ferocious_bite+(Druid_Feral_T11_372_hitcap),FF7D0A,7,0,10|t++34920++ravage+(Druid_Feral_T11_372_hitcap),FF7D0A,8,0,10|t++34354++ferocious_bite+(Druid_Feral_T11_372),FF7D0A,9,0,10|t++33424++ravage+(Druid_Feral_T11_372),FF7D0A,10,0,10|t++22005++shred+(Druid_Feral_T11_372_hitcap),FF7D0A,11,0,10|t++21154++shred+(Druid_Feral_T11_372),FF7D0A,12,0,10|t++16944++starfire+(Druid_Balance_T11_372),FF7D0A,13,0,10|t++15888++wrath+(Druid_Balance_T11_372),FF7D0A,14,0,10|t++14597++mangle_cat+(Druid_Feral_T11_372_hitcap),FF7D0A,15,0,10|t++14078++mangle_cat+(Druid_Feral_T11_372),FF7D0A,16,0,10|t++4882++cat_melee+(Druid_Feral_T11_372_hitcap),FF7D0A,17,0,10|t++4818++cat_melee+(Druid_Feral_T11_372),FF7D0A,18,0,10&amp;chtt=Raid+Damage+Per+Execute+Time&amp;chts=dddddd,18" alt="DPET Chart" />
 				</div>
 				<div class="clear"></div>
 			</div>
 		</div>
 
-		<div id="Druid_Balance_T11_372" class="player section grouped-first">
-			<h2 class="toggle">Druid_Balance_T11_372&nbsp;:&nbsp;26096dps</h2>
+		<div id="raid-scale-factors" class="section grouped-first">
+
+			<h2 class="toggle">DPS Scale Factors (dps increase per unit stat)</h2>
+			<div class="toggle-content hide">
+				<table class="sc">
+					<tr>
+						<th class="left small">Profile</th>
+						<th class="small">Str</th>
+						<th class="small">Agi</th>
+						<th class="small">Sta</th>
+						<th class="small">Int</th>
+						<th class="small">Spi</th>
+						<th class="small">SP</th>
+						<th class="small">AP</th>
+						<th class="small">Exp</th>
+						<th class="small">Hit</th>
+						<th class="small">Crit</th>
+						<th class="small">Haste</th>
+						<th class="small">Mastery</th>
+						<th class="small">Wdps</th>
+						<th class="small">WOHdps</th>
+						<th class="small">Armor</th>
+						<th class="small">Dodge</th>
+						<th class="small">Parry</th>
+						<th class="small">BlockR</th>
+						<th class="small">wowhead</th>
+						<th class="small">lootrank</th>
+					</tr>
+					<tr>
+						<td class="left small">Druid_Balance_T11_372</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">3.2321</td>
+						<td class="small">2.4925</td>
+						<td class="small">2.4663</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">2.4626</td>
+						<td class="small">0.8874</td>
+						<td class="small">1.8799</td>
+						<td class="small">1.2630</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=11;gm=3;gb=1;rf=1;minle=346;wt=23:24:123:119:96:103:170;wtv=3.2321:2.4925:2.4663:2.4626:0.8874:1.8799:1.2630;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=1024&amp;F=H&amp;Int=3.2321&amp;Spi=2.4925&amp;spd=2.4663&amp;mhit=2.4626&amp;mcr=0.8874&amp;mh=1.8799&amp;Mr=1.2630&amp;Ver=6"> lootrank</a></td>
+					</tr>
+					<tr class="odd">
+						<td class="left small">Druid_Feral_T11_372</td>
+						<td class="small">2.4136</td>
+						<td class="small">3.1712</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">1.1409</td>
+						<td class="small">1.0299</td>
+						<td class="small">1.0117</td>
+						<td class="small">1.0381</td>
+						<td class="small">1.0641</td>
+						<td class="small">1.2372</td>
+						<td class="small">4.7333</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=11;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.4136:3.1712:1.1409:1.0299:1.0117:1.0381:1.0641:1.2372:4.7333;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=1024&amp;F=A&amp;Str=2.4136&amp;Agi=3.1712&amp;map=1.1409&amp;Exp=1.0299&amp;mhit=1.0117&amp;mcr=1.0381&amp;mh=1.0641&amp;Mr=1.2372&amp;dps=4.7333&amp;Ver=6"> lootrank</a></td>
+					</tr>
+					<tr>
+						<td class="left small">Druid_Feral_T11_372_hitcap</td>
+						<td class="small">2.4184</td>
+						<td class="small">3.2011</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">1.1483</td>
+						<td class="small">0.9687</td>
+						<td class="small">0.9862</td>
+						<td class="small">1.0358</td>
+						<td class="small">1.0628</td>
+						<td class="small">1.2364</td>
+						<td class="small">4.8863</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small">0.0000</td>
+						<td class="small"><a href="http://www.wowhead.com/?items&amp;filter=ub=11;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.4184:3.2011:1.1483:0.9687:0.9862:1.0358:1.0628:1.2364:4.8863;"> wowhead </a></td>
+						<td class="small"><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=1024&amp;F=A&amp;Str=2.4184&amp;Agi=3.2011&amp;map=1.1483&amp;Exp=0.9687&amp;mhit=0.9862&amp;mcr=1.0358&amp;mh=1.0628&amp;Mr=1.2364&amp;dps=4.8863&amp;Ver=6"> lootrank</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div id="Druid_Balance_T11_372" class="player section">
+			<h2 class="toggle">Druid_Balance_T11_372&nbsp;:&nbsp;26090dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> troll</li>
@@ -103,13 +205,13 @@
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>26096.4</td>
-								<td>11.4 / 0.0%</td>
-								<td>2174.5 / 8.3%</td>
-								<td>70.7%</td>
+								<td>26089.9</td>
+								<td>7.3 / 0.0%</td>
+								<td>2383.0 / 9.1%</td>
+								<td>71.2%</td>
 								<td>21.6</td>
-								<td>1209.2</td>
-								<td>1185.7</td>
+								<td>1208.7</td>
+								<td>1185.3</td>
 								<td>mana</td>
 								<td>0.00%</td>
 								<td>41.4</td>
@@ -141,20 +243,90 @@
 								</td>
 							</tr>
 						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+								<th>Int</th>
+								<th>Spi</th>
+								<th>SP</th>
+								<th>Hit</th>
+								<th>Crit</th>
+								<th>Haste</th>
+								<th>Mastery</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+								<td>3.2321</td>
+								<td>2.4925</td>
+								<td>2.4663</td>
+								<td>2.4626</td>
+								<td>0.8874</td>
+								<td>1.8799</td>
+								<td>1.2630</td>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+								<td>1.0000</td>
+								<td>0.7712</td>
+								<td>0.7631</td>
+								<td>0.7619</td>
+								<td>0.2746</td>
+								<td>0.5816</td>
+								<td>0.3908</td>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>-300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+								<td>0.0243</td>
+								<td>0.0243</td>
+								<td>0.0243</td>
+								<td>0.0243</td>
+								<td>0.0243</td>
+								<td>0.0243</td>
+								<td>0.0243</td>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="7" class="filler">
+									<ul class="float">
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=11;gm=3;gb=1;rf=1;minle=346;wt=23:24:123:119:96:103:170;wtv=3.2321:2.4925:2.4663:2.4626:0.8874:1.8799:1.2630;" class="ext">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=1024&amp;F=H&amp;Int=3.2321&amp;Spi=2.4925&amp;spd=2.4663&amp;mhit=2.4626&amp;mcr=0.8874&amp;mh=1.8799&amp;Mr=1.2630&amp;Ver=6" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="7" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="player-section">
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://0.chart.apis.google.com/chart?chs=550x270&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:88396|78359|75153|42767|41261|16950|15895|1924&amp;chds=0,176792&amp;chco=336600,69CCF0,69CCF0,336600,8AD0B1,69CCF0,336600,C79C6E&amp;chm=t++88396++sunfire,336600,0,0,15|t++78359++moonfire,69CCF0,1,0,15|t++75153++starfall,69CCF0,2,0,15|t++42767++insect_swarm,336600,3,0,15|t++41261++starsurge,8AD0B1,4,0,15|t++16950++starfire,69CCF0,5,0,15|t++15895++wrath,336600,6,0,15|t++1924++treant_melee,C79C6E,7,0,15&amp;chtt=Druid_Balance_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://0.chart.apis.google.com/chart?chs=550x270&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:88425|78441|75097|42757|41223|16944|15888|1924&amp;chds=0,176850&amp;chco=336600,69CCF0,69CCF0,336600,8AD0B1,69CCF0,336600,C79C6E&amp;chm=t++88425++sunfire,336600,0,0,15|t++78441++moonfire,69CCF0,1,0,15|t++75097++starfall,69CCF0,2,0,15|t++42757++insect_swarm,336600,3,0,15|t++41223++starsurge,8AD0B1,4,0,15|t++16944++starfire,69CCF0,5,0,15|t++15888++wrath,336600,6,0,15|t++1924++treant_melee,C79C6E,7,0,15&amp;chtt=Druid_Balance_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
               <span class="chart-action-dmg" title="Action Damage Chart">http://1.chart.apis.google.com/chart?chs=550x300&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:24,23,16,12,11,6,6,1,0,0&amp;chds=0,100&amp;chco=336600,69CCF0,8AD0B1,69CCF0,336600,336600,69CCF0,C79C6E,336600,C41F3B&amp;chl=wrath|starfire|starsurge|moonfire|insect_swarm|sunfire|starfall|treant_melee|wild_mushroom_detonate|darkmoon_card_volcano&amp;chtt=Druid_Balance_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://2.chart.apis.google.com/chart?chs=550x290&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:51,15,12,8,6,4,3,1,0&amp;chds=0,100&amp;chco=2459FF&amp;chl=euphoria|initial_mana|mp5_regen|replenishment|omen_of_clarity|blessing_of_might|innervate|flask|food&amp;chtt=Druid_Balance_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:o11110zyyyy2487643221100zzzyyyxxwwwxyzz000zzyxxwwwvvvuuuuuuvwxyz00000zzyyyxxxwwvvvvuvvwxxyzyyyxwwvvvuuutttttttuvwxyyyyyyxxxwwvvvuuuttttuuvwwxxxxxwwvvuuttttttttuuuvvwwxxxxwwwvvvuuttttssttuuvvvvvvvvuuttssssrrrssstuuvvvvvvvuuutttssssrrrrssstuvvvwvvvvuutttsssssssttuuvvvvvvvvuuutttsssssssttuuvvvvvvvvvuuutttssssstttuuuvvvvvuuuttttttssttttuuvvvvvvvvuuuuuutttttttttttuuuuttttssssssssssttttuuuuuuuuuuuttttttttttttttttttttsssssssssssttuuvvvvwvvvvuuuuutttttt&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=449|1:|0|max=117919&amp;chtt=Druid_Balance_T11_372+Mana+Timeline&amp;chts=dddddd,18&amp;chco=2459FF</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:zxy003445443468343453121zzwtssssrrqqqqqrstttstttutsssssssssrqqonoonnnnnmmmmllkkkjjklmnnopqrtuvwxxwwwwwwwwwwwvvvuttssrrsstsssrrqpppppppppqrttuvwwxxxxxwwvuttttsrrqpoonnmmmmlllmmmmnnnopqqrsttuvwxyzzzzzyyxxwvvuuuuuuuuuuuuuuuutttsssssstttttuuuuvuuvvvwvvuttsrqqpoonnmmmmmmmmnnnnnnnnnnnopqqrrsstttuuuuuttttttssrrrrqqqqqqqrstuuvwxxyzz00011111222211100zyyxwvuuutttttssssssstttuuvwxyyzz0001111111111100zzyxxwvvuutttttttttuuuvwwxxyzz023344555554432110000zyxwvu&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=449|1:|0|avg=26096|max=34054&amp;chxp=1,1,77,100&amp;chtt=Druid_Balance_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://6.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,0,0,4,9,9,17,25,42,74,97,126,167,246,263,346,413,481,528,562,578,593,637,583,565,546,487,442,407,334,281,251,199,174,129,100,76,54,34,41,21,19,7,14,7,2,4,3,2&amp;chds=0,637&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=24040|avg=26096|max=28388&amp;chxp=0,1,47,100&amp;chtt=Druid_Balance_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://4.chart.apis.google.com/chart?chs=525x240&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:3.2321|2.4925|2.4663|2.4626|1.8799|1.2630|0.8874&amp;chds=0,6.4642&amp;chco=FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A&amp;chm=t++3.2321++Int,FF7D0A,0,0,15|t++2.4925++Spi,FF7D0A,1,0,15|t++2.4663++SP,FF7D0A,2,0,15|t++2.4626++Hit,FF7D0A,3,0,15|t++1.8799++Haste,FF7D0A,4,0,15|t++1.2630++Mastery,FF7D0A,5,0,15|t++0.8874++Crit,FF7D0A,6,0,15&amp;chtt=Druid_Balance_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:o11110zyyyy2477643211100zzzyyyxxwwwxyzz000zzyxxwwwvvvuuuuuuvwxyz00000zzyyyxxxwwvvvvuvvwwxyyyyyxwwvvvuuutttttttuvwxyyyyyyxxxwwvvvuuuttttuuvwwxxxxxwwvvuutttttttttuuvvwwxxxxwwwvvvuuttttsssttuvvvvvvvvuuttssssrrrrssttuvvvvvvvuuutttssssrrrrssstuuvvvvvvvuutttsssssssttuuvvvvvvvvuuutttsssssssttuuvvvvvvvvvuuutttssssstttuuuvvvvuuuutttttsssttttuuvvvvvvvvuuuuutttttttttttttuuuttttssssssssssttttuuuuuuuuuuttttttttttttttttttttssssssrrssssttuuvvvvvvvvvuuuuttttttt&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=449|1:|0|max=117971&amp;chtt=Druid_Balance_T11_372+Mana+Timeline&amp;chts=dddddd,18&amp;chco=2459FF</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:zxy0z3445443467343453121zzwtssssrrqqqqqrstttstttutssssssssssqqonooonnnnmmmmllkkkjjklmnoopqrtuvwxxwwwwwxwwwwwvvvuutssrrssttssrrqpppppppppqrstuvwwxxxxxwwvtttttsrrqpoonnmmmmlllmmmmnnnopqqrsttuvwxyzzzzzyyxxwvvuuuuuuuuuuuuuuuuuttssssttttttuuuuuvuuvvvwvvuutsrqqpoonnmmmnmmmnnnnnnnnnnnnopqqrrssttuuuuuuutttttssrrrrqqqqqqqrstuuvwxxyzz00011111222211100zyyxwvuuttttttssssssstttuuvwxyyzz0001111111111100zzyxxwvvutttttttttttuuvvwxxyyz012344455554432100000zyxwvu&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=449|1:|0|avg=26090|max=34032&amp;chxp=1,1,77,100&amp;chtt=Druid_Balance_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://6.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:2,1,5,11,25,25,36,71,95,189,284,384,557,692,844,1025,1345,1353,1548,1612,1620,1625,1623,1575,1407,1252,1070,955,807,688,589,434,337,238,200,142,106,78,50,37,20,16,8,8,5,3,1,0,0,2&amp;chds=0,1625&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=24046|avg=26090|max=28812&amp;chxp=0,1,43,100&amp;chtt=Druid_Balance_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -189,7 +361,7 @@
 							</tr>
 							<tr>
 								<th class="left small">Druid_Balance_T11_372</th>
-								<th class="right small">26096</th>
+								<th class="right small">26090</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
@@ -197,13 +369,13 @@
 								<td class="right small">71</td>
 								<td class="right small">0.3%</td>
 								<td class="right small">10.2</td>
-								<td class="right small">46.44sec</td>
-								<td class="right small">3128</td>
+								<td class="right small">46.45sec</td>
+								<td class="right small">3130</td>
 								<td class="right small">0</td>
 								<td class="right small">2679</td>
-								<td class="right small">4141</td>
+								<td class="right small">4143</td>
 								<td class="right small">4845</td>
-								<td class="right small">30.8%</td>
+								<td class="right small">31.0%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -236,7 +408,7 @@
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">31814</td>
+											<td class="right small">31826</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -252,25 +424,25 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">7.0</td>
-											<td class="right small">69.06%</td>
-											<td class="right small">2679.49</td>
+											<td class="right small">68.95%</td>
+											<td class="right small">2678.70</td>
 											<td class="right small">2568</td>
 											<td class="right small">3136</td>
-											<td class="right small">18822</td>
+											<td class="right small">18778</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">3.1</td>
-											<td class="right small">30.85%</td>
-											<td class="right small">4140.83</td>
+											<td class="right small">30.98%</td>
+											<td class="right small">4142.77</td>
 											<td class="right small">3968</td>
 											<td class="right small">4845</td>
-											<td class="right small">12992</td>
+											<td class="right small">13047</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.0</td>
-											<td class="right small">0.09%</td>
+											<td class="right small">0.08%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -312,12 +484,12 @@
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=5570">insect_swarm</a></td>
-								<td class="right small">2813</td>
+								<td class="right small">2812</td>
 								<td class="right small">10.8%</td>
 								<td class="right small">25.8</td>
 								<td class="right small">17.79sec</td>
-								<td class="right small">49088</td>
-								<td class="right small">42767</td>
+								<td class="right small">49074</td>
+								<td class="right small">42757</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -328,7 +500,7 @@
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">301</td>
-								<td class="right small">3399</td>
+								<td class="right small">3398</td>
 								<td class="right small">5143</td>
 								<td class="right small">46.0%</td>
 								<td class="right small">0.0%</td>
@@ -350,11 +522,11 @@
 										<tr>
 											<td class="right small">25.79</td>
 											<td class="right small">25.79</td>
-											<td class="right small">301.31</td>
-											<td class="right small">301.31</td>
-											<td class="right small">1.1478</td>
-											<td class="right small">1.4885</td>
-											<td class="right small">1265760</td>
+											<td class="right small">301.32</td>
+											<td class="right small">301.32</td>
+											<td class="right small">1.1477</td>
+											<td class="right small">1.4884</td>
+											<td class="right small">1265482</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -397,20 +569,20 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">162.8</td>
-											<td class="right small">54.02%</td>
-											<td class="right small">3398.68</td>
+											<td class="right small">54.04%</td>
+											<td class="right small">3397.79</td>
 											<td class="right small">2428</td>
 											<td class="right small">6384</td>
-											<td class="right small">553158</td>
+											<td class="right small">553316</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">138.6</td>
-											<td class="right small">45.98%</td>
-											<td class="right small">5143.26</td>
+											<td class="right small">138.5</td>
+											<td class="right small">45.96%</td>
+											<td class="right small">5142.88</td>
 											<td class="right small">3752</td>
 											<td class="right small">9864</td>
-											<td class="right small">712602</td>
+											<td class="right small">712166</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -452,14 +624,14 @@
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=8921">moonfire</a></td>
-								<td class="right small">3008</td>
+								<td class="right small">3007</td>
 								<td class="right small">11.5%</td>
 								<td class="right small">15.5</td>
-								<td class="right small">29.80sec</td>
-								<td class="right small">87384</td>
-								<td class="right small">78359</td>
-								<td class="right small">4113</td>
-								<td class="right small">8685</td>
+								<td class="right small">29.85sec</td>
+								<td class="right small">87484</td>
+								<td class="right small">78441</td>
+								<td class="right small">4112</td>
+								<td class="right small">8696</td>
 								<td class="right small">15455</td>
 								<td class="right small">34.2%</td>
 								<td class="right small">0.1%</td>
@@ -468,11 +640,11 @@
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">190</td>
-								<td class="right small">4476</td>
-								<td class="right small">9091</td>
-								<td class="right small">47.5%</td>
+								<td class="right small">4479</td>
+								<td class="right small">9095</td>
+								<td class="right small">47.6%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">60.3%</td>
+								<td class="right small">60.2%</td>
 							</tr>
 							<tr class="details hide">
 								<td colspan="22" class="filler">
@@ -488,13 +660,13 @@
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">15.49</td>
-											<td class="right small">15.49</td>
-											<td class="right small">189.73</td>
-											<td class="right small">189.73</td>
-											<td class="right small">1.1152</td>
-											<td class="right small">1.4296</td>
-											<td class="right small">1353408</td>
+											<td class="right small">15.47</td>
+											<td class="right small">15.47</td>
+											<td class="right small">189.56</td>
+											<td class="right small">189.56</td>
+											<td class="right small">1.1153</td>
+											<td class="right small">1.4295</td>
+											<td class="right small">1353259</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -510,20 +682,20 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">10.2</td>
-											<td class="right small">65.68%</td>
-											<td class="right small">4113.33</td>
+											<td class="right small">65.74%</td>
+											<td class="right small">4111.74</td>
 											<td class="right small">2831</td>
 											<td class="right small">7395</td>
-											<td class="right small">41842</td>
+											<td class="right small">41814</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">5.3</td>
-											<td class="right small">34.25%</td>
-											<td class="right small">8684.99</td>
+											<td class="right small">34.18%</td>
+											<td class="right small">8695.87</td>
 											<td class="right small">5918</td>
 											<td class="right small">15455</td>
-											<td class="right small">46064</td>
+											<td class="right small">45978</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
@@ -545,21 +717,21 @@
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">99.5</td>
-											<td class="right small">52.46%</td>
-											<td class="right small">4476.32</td>
+											<td class="right small">99.3</td>
+											<td class="right small">52.41%</td>
+											<td class="right small">4478.74</td>
 											<td class="right small">2960</td>
 											<td class="right small">7959</td>
-											<td class="right small">445535</td>
+											<td class="right small">444929</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">90.2</td>
-											<td class="right small">47.54%</td>
-											<td class="right small">9090.95</td>
+											<td class="right small">47.59%</td>
+											<td class="right small">9095.45</td>
 											<td class="right small">6186</td>
 											<td class="right small">16634</td>
-											<td class="right small">819967</td>
+											<td class="right small">820539</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -608,12 +780,12 @@
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=48505">starfall</a></td>
-								<td class="right small">1608</td>
+								<td class="right small">1607</td>
 								<td class="right small">6.2%</td>
 								<td class="right small">8.6</td>
-								<td class="right small">49.85sec</td>
-								<td class="right small">83911</td>
-								<td class="right small">75153</td>
+								<td class="right small">49.82sec</td>
+								<td class="right small">83873</td>
+								<td class="right small">75097</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -624,9 +796,9 @@
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">85</td>
-								<td class="right small">6414</td>
-								<td class="right small">13510</td>
-								<td class="right small">29.5%</td>
+								<td class="right small">6413</td>
+								<td class="right small">13508</td>
+								<td class="right small">29.4%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">18.9%</td>
 							</tr>
@@ -646,11 +818,11 @@
 										<tr>
 											<td class="right small">8.62</td>
 											<td class="right small">8.62</td>
-											<td class="right small">85.11</td>
-											<td class="right small">85.11</td>
-											<td class="right small">1.1165</td>
+											<td class="right small">85.13</td>
+											<td class="right small">85.13</td>
+											<td class="right small">1.1169</td>
 											<td class="right small">1.0000</td>
-											<td class="right small">723350</td>
+											<td class="right small">723123</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -684,25 +856,25 @@
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">60.0</td>
-											<td class="right small">70.47%</td>
-											<td class="right small">6414.20</td>
+											<td class="right small">70.52%</td>
+											<td class="right small">6412.71</td>
 											<td class="right small">4178</td>
 											<td class="right small">10741</td>
-											<td class="right small">384689</td>
+											<td class="right small">385009</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">25.1</td>
-											<td class="right small">29.46%</td>
-											<td class="right small">13509.83</td>
+											<td class="right small">25.0</td>
+											<td class="right small">29.40%</td>
+											<td class="right small">13508.36</td>
 											<td class="right small">8732</td>
 											<td class="right small">22448</td>
-											<td class="right small">338662</td>
+											<td class="right small">338114</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.1</td>
-											<td class="right small">0.07%</td>
+											<td class="right small">0.08%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -780,14 +952,14 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=2912">starfire</a></td>
-								<td class="right small">5979</td>
+								<td class="right small">5977</td>
 								<td class="right small">22.9%</td>
 								<td class="right small">81.6</td>
 								<td class="right small">5.42sec</td>
-								<td class="right small">32971</td>
-								<td class="right small">16950</td>
+								<td class="right small">32962</td>
+								<td class="right small">16944</td>
 								<td class="right small">20810</td>
-								<td class="right small">48644</td>
+								<td class="right small">48630</td>
 								<td class="right small">80942</td>
 								<td class="right small">43.7%</td>
 								<td class="right small">0.1%</td>
@@ -816,13 +988,13 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">81.60</td>
-											<td class="right small">81.60</td>
+											<td class="right small">81.59</td>
+											<td class="right small">81.59</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.9452</td>
+											<td class="right small">1.9453</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2690486</td>
+											<td class="right small">2689512</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -837,26 +1009,26 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">45.8</td>
-											<td class="right small">56.17%</td>
-											<td class="right small">20809.52</td>
+											<td class="right small">45.9</td>
+											<td class="right small">56.19%</td>
+											<td class="right small">20809.93</td>
 											<td class="right small">14768</td>
 											<td class="right small">38728</td>
-											<td class="right small">953892</td>
+											<td class="right small">954167</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">35.7</td>
-											<td class="right small">43.75%</td>
-											<td class="right small">48644.37</td>
+											<td class="right small">43.73%</td>
+											<td class="right small">48630.24</td>
 											<td class="right small">30865</td>
 											<td class="right small">80942</td>
-											<td class="right small">1736594</td>
+											<td class="right small">1735345</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.1</td>
-											<td class="right small">0.08%</td>
+											<td class="right small">0.07%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -898,16 +1070,16 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=78674">starsurge</a></td>
-								<td class="right small">4251</td>
+								<td class="right small">4245</td>
 								<td class="right small">16.3%</td>
 								<td class="right small">37.1</td>
-								<td class="right small">12.15sec</td>
-								<td class="right small">51548</td>
-								<td class="right small">41261</td>
-								<td class="right small">32992</td>
-								<td class="right small">75906</td>
+								<td class="right small">12.18sec</td>
+								<td class="right small">51497</td>
+								<td class="right small">41223</td>
+								<td class="right small">33020</td>
+								<td class="right small">75860</td>
 								<td class="right small">123364</td>
-								<td class="right small">43.6%</td>
+								<td class="right small">43.5%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -934,13 +1106,13 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">37.11</td>
-											<td class="right small">37.00</td>
+											<td class="right small">37.09</td>
+											<td class="right small">36.98</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.2493</td>
+											<td class="right small">1.2492</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">1912742</td>
+											<td class="right small">1910118</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -955,21 +1127,21 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">20.8</td>
-											<td class="right small">56.29%</td>
-											<td class="right small">32992.23</td>
+											<td class="right small">20.9</td>
+											<td class="right small">56.38%</td>
+											<td class="right small">33020.34</td>
 											<td class="right small">22394</td>
 											<td class="right small">59026</td>
-											<td class="right small">687129</td>
+											<td class="right small">688494</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">16.1</td>
-											<td class="right small">43.64%</td>
-											<td class="right small">75906.26</td>
+											<td class="right small">43.55%</td>
+											<td class="right small">75859.76</td>
 											<td class="right small">46804</td>
 											<td class="right small">123364</td>
-											<td class="right small">1225613</td>
+											<td class="right small">1221624</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
@@ -1016,24 +1188,24 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=93402">sunfire</a></td>
-								<td class="right small">1681</td>
-								<td class="right small">6.4%</td>
+								<td class="right small">1686</td>
+								<td class="right small">6.5%</td>
 								<td class="right small">7.6</td>
-								<td class="right small">60.05sec</td>
-								<td class="right small">99675</td>
-								<td class="right small">88396</td>
-								<td class="right small">5037</td>
-								<td class="right small">10558</td>
+								<td class="right small">59.88sec</td>
+								<td class="right small">99678</td>
+								<td class="right small">88425</td>
+								<td class="right small">5041</td>
+								<td class="right small">10557</td>
 								<td class="right small">15455</td>
-								<td class="right small">33.4%</td>
+								<td class="right small">33.2%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">92</td>
-								<td class="right small">5366</td>
-								<td class="right small">11241</td>
+								<td class="right small">5370</td>
+								<td class="right small">11246</td>
 								<td class="right small">39.3%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">29.7%</td>
@@ -1052,13 +1224,13 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">7.59</td>
-											<td class="right small">7.59</td>
-											<td class="right small">91.73</td>
-											<td class="right small">91.73</td>
-											<td class="right small">1.1276</td>
-											<td class="right small">1.4554</td>
-											<td class="right small">756261</td>
+											<td class="right small">7.61</td>
+											<td class="right small">7.61</td>
+											<td class="right small">91.98</td>
+											<td class="right small">91.98</td>
+											<td class="right small">1.1273</td>
+											<td class="right small">1.4551</td>
+											<td class="right small">758496</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1073,26 +1245,26 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">5.0</td>
-											<td class="right small">66.56%</td>
-											<td class="right small">5036.51</td>
+											<td class="right small">5.1</td>
+											<td class="right small">66.73%</td>
+											<td class="right small">5040.63</td>
 											<td class="right small">4352</td>
 											<td class="right small">7395</td>
-											<td class="right small">25433</td>
+											<td class="right small">25595</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">2.5</td>
-											<td class="right small">33.36%</td>
-											<td class="right small">10558.15</td>
+											<td class="right small">33.20%</td>
+											<td class="right small">10557.21</td>
 											<td class="right small">9096</td>
 											<td class="right small">15455</td>
-											<td class="right small">26727</td>
+											<td class="right small">26672</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.0</td>
-											<td class="right small">0.08%</td>
+											<td class="right small">0.07%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1109,21 +1281,21 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">55.7</td>
-											<td class="right small">60.68%</td>
-											<td class="right small">5366.31</td>
+											<td class="right small">55.9</td>
+											<td class="right small">60.73%</td>
+											<td class="right small">5370.09</td>
 											<td class="right small">4549</td>
 											<td class="right small">7959</td>
-											<td class="right small">298685</td>
+											<td class="right small">299972</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">36.1</td>
-											<td class="right small">39.32%</td>
-											<td class="right small">11240.82</td>
+											<td class="right small">39.27%</td>
+											<td class="right small">11246.46</td>
 											<td class="right small">9508</td>
 											<td class="right small">16634</td>
-											<td class="right small">405416</td>
+											<td class="right small">406258</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -1176,12 +1348,12 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 								<td class="right small">0.3%</td>
 								<td class="right small">1.0</td>
 								<td class="right small">0.00sec</td>
-								<td class="right small">36150</td>
+								<td class="right small">36064</td>
 								<td class="right small">0</td>
 								<td class="right small">31361</td>
 								<td class="right small">48453</td>
 								<td class="right small">48453</td>
-								<td class="right small">28.1%</td>
+								<td class="right small">27.6%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -1214,7 +1386,7 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">36150</td>
+											<td class="right small">36064</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1230,25 +1402,25 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">0.7</td>
-											<td class="right small">71.84%</td>
+											<td class="right small">72.32%</td>
 											<td class="right small">31360.86</td>
 											<td class="right small">31361</td>
 											<td class="right small">31361</td>
-											<td class="right small">22530</td>
+											<td class="right small">22681</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">0.3</td>
-											<td class="right small">28.11%</td>
+											<td class="right small">27.62%</td>
 											<td class="right small">48452.53</td>
 											<td class="right small">48453</td>
 											<td class="right small">48453</td>
-											<td class="right small">13620</td>
+											<td class="right small">13383</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.0</td>
-											<td class="right small">0.05%</td>
+											<td class="right small">0.06%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -1290,16 +1462,16 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=5176">wrath</a></td>
-								<td class="right small">6224</td>
-								<td class="right small">23.9%</td>
+								<td class="right small">6222</td>
+								<td class="right small">23.8%</td>
 								<td class="right small">121.4</td>
 								<td class="right small">3.57sec</td>
-								<td class="right small">23077</td>
-								<td class="right small">15895</td>
-								<td class="right small">15148</td>
-								<td class="right small">33991</td>
+								<td class="right small">23066</td>
+								<td class="right small">15888</td>
+								<td class="right small">15141</td>
+								<td class="right small">34012</td>
 								<td class="right small">57447</td>
-								<td class="right small">42.5%</td>
+								<td class="right small">42.4%</td>
 								<td class="right small">0.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -1326,13 +1498,13 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">121.37</td>
-											<td class="right small">121.02</td>
+											<td class="right small">121.38</td>
+											<td class="right small">121.03</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.4518</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2800770</td>
+											<td class="right small">2799814</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -1347,21 +1519,21 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">69.5</td>
-											<td class="right small">57.44%</td>
-											<td class="right small">15147.63</td>
+											<td class="right small">69.6</td>
+											<td class="right small">57.52%</td>
+											<td class="right small">15141.40</td>
 											<td class="right small">10437</td>
 											<td class="right small">27487</td>
-											<td class="right small">1052983</td>
+											<td class="right small">1054045</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">51.4</td>
-											<td class="right small">42.49%</td>
-											<td class="right small">33990.93</td>
+											<td class="right small">51.3</td>
+											<td class="right small">42.41%</td>
+											<td class="right small">34011.98</td>
 											<td class="right small">21813</td>
 											<td class="right small">57447</td>
-											<td class="right small">1747786</td>
+											<td class="right small">1745770</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
@@ -1418,17 +1590,17 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 								<td class="right small">447</td>
 								<td class="right small">100.0%</td>
 								<td class="right small">60.3</td>
-								<td class="right small">6.42sec</td>
-								<td class="right small">2855</td>
+								<td class="right small">6.41sec</td>
+								<td class="right small">2854</td>
 								<td class="right small">1924</td>
-								<td class="right small">3030</td>
-								<td class="right small">6073</td>
+								<td class="right small">3031</td>
+								<td class="right small">6068</td>
 								<td class="right small">7453</td>
 								<td class="right small">0.2%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">23.9%</td>
+								<td class="right small">24.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -1451,11 +1623,11 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">60.32</td>
-											<td class="right small">60.32</td>
+											<td class="right small">60.33</td>
+											<td class="right small">60.33</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.4838</td>
+											<td class="right small">1.4836</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">172192</td>
 										</tr>
@@ -1472,30 +1644,30 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">45.8</td>
-											<td class="right small">75.87%</td>
-											<td class="right small">3030.42</td>
+											<td class="right small">45.7</td>
+											<td class="right small">75.76%</td>
+											<td class="right small">3030.97</td>
 											<td class="right small">2755</td>
 											<td class="right small">3727</td>
-											<td class="right small">138678</td>
+											<td class="right small">138522</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">0.1</td>
 											<td class="right small">0.20%</td>
-											<td class="right small">6073.33</td>
+											<td class="right small">6067.78</td>
 											<td class="right small">5510</td>
 											<td class="right small">7453</td>
-											<td class="right small">742</td>
+											<td class="right small">749</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">14.4</td>
-											<td class="right small">23.90%</td>
-											<td class="right small">2273.12</td>
+											<td class="right small">14.5</td>
+											<td class="right small">24.01%</td>
+											<td class="right small">2273.24</td>
 											<td class="right small">2066</td>
 											<td class="right small">2795</td>
-											<td class="right small">32773</td>
+											<td class="right small">32920</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -1560,14 +1732,14 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 							</tr>
 							<tr>
 								<td class="left small">insect_swarm</td>
-								<td class="right small">6.8%</td>
+								<td class="right small">6.9%</td>
 								<td class="right small">34.0</td>
 								<td class="right small">1445</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">moonfire</td>
 								<td class="right small">4.6%</td>
-								<td class="right small">53.7</td>
+								<td class="right small">53.8</td>
 								<td class="right small">1627</td>
 							</tr>
 							<tr>
@@ -1580,7 +1752,7 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 								<td class="left small">starfire</td>
 								<td class="right small">26.3%</td>
 								<td class="right small">18.8</td>
-								<td class="right small">1753</td>
+								<td class="right small">1752</td>
 							</tr>
 							<tr>
 								<td class="left small">starsurge</td>
@@ -1620,8 +1792,8 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 								<td class="left"><a href="#" class="toggle-details">bell_of_enraging_resonance</a></td>
 								<td class="right">4.8</td>
 								<td class="right">0.0</td>
-								<td class="right">104.4sec</td>
-								<td class="right">104.4sec</td>
+								<td class="right">104.5sec</td>
+								<td class="right">104.5sec</td>
 								<td class="right">21%</td>
 								<td class="right">21%</td>
 							</tr>
@@ -1735,8 +1907,8 @@ Shapeshifting into an animal form or mounting cancels the effect. Any effect whi
 								<td class="left"><a href="#" class="toggle-details">innervate</a></td>
 								<td class="right">0.3</td>
 								<td class="right">0.0</td>
-								<td class="right">220.8sec</td>
-								<td class="right">220.8sec</td>
+								<td class="right">205.8sec</td>
+								<td class="right">205.8sec</td>
 								<td class="right">1%</td>
 								<td class="right">100%</td>
 							</tr>
@@ -1874,7 +2046,7 @@ Spell haste of all party and raid members increased by $24907s1%</span></li>
 							</tr>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">omen_of_clarity</a></td>
-								<td class="right">21.4</td>
+								<td class="right">21.5</td>
 								<td class="right">0.9</td>
 								<td class="right">19.9sec</td>
 								<td class="right">19.1sec</td>
@@ -1921,7 +2093,7 @@ Spell haste of all party and raid members increased by $24907s1%</span></li>
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">shooting_stars</a></td>
 								<td class="right">21.7</td>
-								<td class="right">1.7</td>
+								<td class="right">1.6</td>
 								<td class="right">20.0sec</td>
 								<td class="right">18.5sec</td>
 								<td class="right">9%</td>
@@ -2183,17 +2355,17 @@ Spell haste of all party and raid members increased by $24907s1%</span></li>
 								<tr>
 									<td class="left">unaligned_eclipse_gain</td>
 									<td class="right">0.3</td>
-									<td class="right">125.2sec</td>
+									<td class="right">125.3sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">wrong_eclipse_starfire</td>
 									<td class="right">1.0</td>
-									<td class="right">140.1sec</td>
+									<td class="right">139.1sec</td>
 								</tr>
 								<tr>
 									<td class="left">wrong_eclipse_wrath</td>
 									<td class="right">3.7</td>
-									<td class="right">99.6sec</td>
+									<td class="right">100.5sec</td>
 								</tr>
 							</table>
 						</div>
@@ -2212,15 +2384,15 @@ Spell haste of all party and raid members increased by $24907s1%</span></li>
 								<tr>
 									<td class="left">blessing_of_might</td>
 									<td class="right">1800.3</td>
-									<td class="right">28976.0</td>
+									<td class="right">28978.1</td>
 									<td class="right">16.1</td>
 									<td class="right">1.3%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">euphoria</td>
 									<td class="right">18.5</td>
-									<td class="right">345301.6</td>
-									<td class="right">18660.7</td>
+									<td class="right">345432.8</td>
+									<td class="right">18666.9</td>
 									<td class="right">2.2%</td>
 								</tr>
 								<tr>
@@ -2246,29 +2418,29 @@ Spell haste of all party and raid members increased by $24907s1%</span></li>
 								</tr>
 								<tr class="odd">
 									<td class="left">innervate</td>
-									<td class="right">13.6</td>
-									<td class="right">17926.2</td>
-									<td class="right">1314.8</td>
-									<td class="right">26.4%</td>
+									<td class="right">13.4</td>
+									<td class="right">17595.9</td>
+									<td class="right">1310.9</td>
+									<td class="right">26.5%</td>
 								</tr>
 								<tr>
 									<td class="left">mp5_regen</td>
 									<td class="right">1800.3</td>
-									<td class="right">82746.8</td>
+									<td class="right">82752.6</td>
 									<td class="right">46.0</td>
 									<td class="right">1.3%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">omen_of_clarity</td>
-									<td class="right">21.3</td>
-									<td class="right">40639.1</td>
-									<td class="right">1906.3</td>
+									<td class="right">21.4</td>
+									<td class="right">40770.1</td>
+									<td class="right">1906.2</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr>
 									<td class="left">replenishment</td>
 									<td class="right">1800.3</td>
-									<td class="right">52726.8</td>
+									<td class="right">52729.3</td>
 									<td class="right">29.3</td>
 									<td class="right">1.2%</td>
 								</tr>
@@ -2419,7 +2591,7 @@ Spell haste of all party and raid members increased by $24907s1%</span></li>
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    013589AJKTNMNNQDDDAPIKPPPPPPPPPASBCCCHJKNANNNNKRDDIPPAPPPKPPKPPJPOABCCCHNJNNNAKNQDDDPIPPAKPPPPPPPCCABJNHNKNNNNARJDBDPPPPPAP9JPPKPMPPPOBCAHJNKNKNNNQADDIPKPPPKPPPAPPJPOBCHNNANJNNKNNQDADDDIPPKPPPKPAPOCCHJNKNANNNNQDDIKPPAPPPPPPPKJSOABCHNNNJKNNANN9RDDKMPIKPPAPPPPPKPPPJSCACCHKNKNJNKAR6RDDDPPPPKIAPPPPPPKSCCHNNJNAKNNNNNQDDDIAKPPPPPPPKPOCABCHJNNKNKNNADBDBDIPPPPAPPPKPPCCHJK
+                    013589AJKTTMNKNQDDAPIPPKPPPPPKPASBCHJNNKNNNANNJDDBDPPPAPPPJKPPPPPOACCHJKNNNNNANNJBDDPPPPAPPPJKPPPPPOACCHJKNNNKNANNQDDIKPPPAKP9PPPPKMSJSCCACHNKNJNNNARQDBDPPIPPPAKPPPPPOCCHJAKNKNNKNNQDADDDIPKPPPPPPAPOCBHJNNNANNNKRDDDIPAPPPKPPPPPPJPASBCCCHNJNAKN9NNNQDBMPPIPAPPPPPKPPPOCACHJNKNN6NNNARQDDIKPPPPPAPPPKPPPOCCJNNANKNNNQBDIPPAPPPPPKPPPJPOACCHKNNJNNANNQBDBPPIPAPPPPPKPPPCC
 									</div>
 								</div>
 							</div>
@@ -3042,11 +3214,36 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 								</div>
 							</div>
 						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td>( Pawn: v1: "Druid_Balance_T11_372":  Intellect=3.2321, Spirit=2.4925, SpellDamage=2.4663, HitRating=2.4626, HasteRating=1.8799, MasteryRating=1.2630, CritRating=0.8874 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( Pawn: v1: "Druid_Balance_T11_372":  Intellect=3.2321, Spirit=2.4925, SpellDamage=2.4663, HitRating=0.0000, HasteRating=1.8799, MasteryRating=1.2630, CritRating=0.8874 )</td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td>( RhadaTip: "Druid_Balance_T11_372":  Intellect=3.2321, Spirit=2.4925, SpellDamage=2.4663, HitRating=2.4626, HasteRating=1.8799, MasteryRating=1.2630, CritRating=0.8874 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( RhadaTip: "Druid_Balance_T11_372":  Intellect=3.2321, Spirit=2.4925, SpellDamage=2.4663, HitRating=0.0000, HasteRating=1.8799, MasteryRating=1.2630, CritRating=0.8874 )</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
 		<div id="Druid_Feral_T11_372" class="player section">
-			<h2 class="toggle">Druid_Feral_T11_372&nbsp;:&nbsp;25522dps</h2>
+			<h2 class="toggle">Druid_Feral_T11_372&nbsp;:&nbsp;25541dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> worgen</li>
@@ -3073,15 +3270,15 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>25521.9</td>
-								<td>10.1 / 0.0%</td>
-								<td>4254.1 / 16.7%</td>
-								<td>72.0%</td>
-								<td>1646.8</td>
+								<td>25541.4</td>
+								<td>6.5 / 0.0%</td>
+								<td>2815.0 / 11.0%</td>
+								<td>70.3%</td>
+								<td>1647.9</td>
 								<td>15.5</td>
 								<td>15.3</td>
 								<td>energy</td>
-								<td>47.36%</td>
+								<td>47.34%</td>
 								<td>34.1</td>
 							</tr>
 						</table>
@@ -3105,20 +3302,100 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 								</td>
 							</tr>
 						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+								<th>Str</th>
+								<th>Agi</th>
+								<th>AP</th>
+								<th>Exp</th>
+								<th>Hit</th>
+								<th>Crit</th>
+								<th>Haste</th>
+								<th>Mastery</th>
+								<th>Wdps</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+								<td>2.4136</td>
+								<td>3.1712</td>
+								<td>1.1409</td>
+								<td>1.0299</td>
+								<td>1.0117</td>
+								<td>1.0381</td>
+								<td>1.0641</td>
+								<td>1.2372</td>
+								<td>4.7333</td>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+								<td>0.7611</td>
+								<td>1.0000</td>
+								<td>0.3598</td>
+								<td>0.3248</td>
+								<td>0.3190</td>
+								<td>0.3273</td>
+								<td>0.3356</td>
+								<td>0.3901</td>
+								<td>1.4926</td>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>-200</td>
+								<td>-300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>100</td>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+								<td>0.0216</td>
+								<td>0.0216</td>
+								<td>0.0216</td>
+								<td>0.0324</td>
+								<td>0.0216</td>
+								<td>0.0216</td>
+								<td>0.0216</td>
+								<td>0.0216</td>
+								<td>0.0649</td>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="9" class="filler">
+									<ul class="float">
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=11;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.4136:3.1712:1.1409:1.0299:1.0117:1.0381:1.0641:1.2372:4.7333;" class="ext">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=1024&amp;F=A&amp;Str=2.4136&amp;Agi=3.1712&amp;map=1.1409&amp;Exp=1.0299&amp;mhit=1.0117&amp;mcr=1.0381&amp;mh=1.0641&amp;Mr=1.2372&amp;dps=4.7333&amp;Ver=6" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="9" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="player-section">
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://9.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:65845|34309|33237|21134|14078|4817&amp;chds=0,131691&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++65845++rake,C55D54,0,0,15|t++34309++ferocious_bite,C79C6E,1,0,15|t++33237++ravage,C79C6E,2,0,15|t++21134++shred,C79C6E,3,0,15|t++14078++mangle_cat,C79C6E,4,0,15|t++4817++cat_melee,C79C6E,5,0,15&amp;chtt=Druid_Feral_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://9.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:65909|34354|33424|21154|14078|4818&amp;chds=0,131818&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++65909++rake,C55D54,0,0,15|t++34354++ferocious_bite,C79C6E,1,0,15|t++33424++ravage,C79C6E,2,0,15|t++21154++shred,C79C6E,3,0,15|t++14078++mangle_cat,C79C6E,4,0,15|t++4818++cat_melee,C79C6E,5,0,15&amp;chtt=Druid_Feral_T11_372+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
               <span class="chart-action-dmg" title="Action Damage Chart">http://0.chart.apis.google.com/chart?chs=550x280&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:27,25,20,19,4,3,3,0&amp;chds=0,100&amp;chco=C55D54,C79C6E,C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chl=rip|shred|rake|cat_melee|fury_swipes|ferocious_bite|mangle_cat|ravage&amp;chtt=Druid_Feral_T11_372+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://1.chart.apis.google.com/chart?chs=550x240&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:65,14,13,7&amp;chds=0,100&amp;chco=C0B84F&amp;chl=energy_regen|omen_of_clarity|tigers_fury|energy_refund&amp;chtt=Druid_Feral_T11_372+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wzf07681tz41tmhfdbZYXWVUVZZVWVbtvpkfbZZYXYYYXXWWWXXWWWWXXYgqrnidaYYYXYYXXYXWWWVWXXXXXajrqmiebZZYYYYXXXXXXXWVVWWXYcjookgdbZXWWWWXWXXXXXXXWWWWYdjnnkgdbZYXXWWWWWXXXXXXXXXYafloomifcbZZYXXXWXXXXXXXXXXYafkmmkihjllljgdbZXWVUUUVVWWYaeikkifdbaZYYYXXXXXXWWWWXXXZcgjkkjgecaZYYYXYXXXXXWWWWXXZcgijjifdbaYYXXXXXXXXXXXXWXYZcfijjhfdcaZYYXXXXXXXXXYYYYYadgijjigecbaZYYXXXXXXXXXXXYYacfghhgedbaZZYYXXXXWXXXXXXYZadfghhhiijjjihfdbZYWWVVVVWXYacefffeecbaZYYYXXXXXXXWWWWXYacd&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=58&amp;chtt=Druid_Feral_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:suxz011111123467764321zxwvuutsrrqppoonnnnmmmllkkkllllmmmmmnnoooppppponmmlllkllmnnnnnnnnoooppppppponmlkkkklmmnnnnnnnnnnnnnoooonmlkjjjjkkllmmmmmmmmmmmmmmmmmmllkkkkkllmnnooppppppppppooonnnmmllllllmmnnopqrrsstttuuuutttttttssrrrqqqqppppppooonnmmllllmmmnnnnnnnnoooooooooonmllkkkllmmnnnnnnnnnooooopooonnmmllmmnooppppqqqqqqqqqrrqqqpppooppqqrrssstttttsssssssrrqqpppppppqqqrrrrrssssrrrrrqqppppppqqqrrstuuvwxyz011222221111111100zzyyxwwwvvuuuttsrqppooooooonnnnnn&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=25522|max=36518&amp;chxp=1,1,70,100&amp;chtt=Druid_Feral_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,4,18,25,84,199,366,559,890,1093,1336,1359,1243,994,743,514,283,164,70,30,18,5,1&amp;chds=0,1359&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=19010|avg=25522|max=27518&amp;chxp=0,1,77,100&amp;chtt=Druid_Feral_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://5.chart.apis.google.com/chart?chs=525x300&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:4.7333|3.1712|2.4136|1.2372|1.1409|1.0641|1.0381|1.0299|1.0117&amp;chds=0,9.4666&amp;chco=FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A&amp;chm=t++4.7333++Wdps,FF7D0A,0,0,15|t++3.1712++Agi,FF7D0A,1,0,15|t++2.4136++Str,FF7D0A,2,0,15|t++1.2372++Mastery,FF7D0A,3,0,15|t++1.1409++AP,FF7D0A,4,0,15|t++1.0641++Haste,FF7D0A,5,0,15|t++1.0381++Crit,FF7D0A,6,0,15|t++1.0299++Exp,FF7D0A,7,0,15|t++1.0117++Hit,FF7D0A,8,0,15&amp;chtt=Druid_Feral_T11_372+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://2.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:wzf07681tz42tmhfdbZYXWVUVZZVWVbtvpjeaZZYXYYYXXWVWXXWWWWXYYgrsnidaYYYYYYXXXXWWVVWXXXXXbkqqmhdbZZYYXXXXXXXXXWVVWWXYcjookgdbZXWWWWXXXXXXXXXWWWWYdjonkgdbZYXXWWWWWXXXXXXYXXXZfloolifcbZYYXXXWWXXXXXXXXXYafkmmkihjllkjgdbZXWVUUUUVWWXaeijjifdbaZYYYXXXXXXWWWXXXXZcgjlkigecaZYYYXXXXXXXWWWWWXZcfikjifdbaZYXXXXXXXXXXXXWXXZcfijjhfdcaZYYXXXXXXXXYYXYYYadgijjigecbaZYYXXXXXXXXXXXYYacfhhhgedbaZYYYXXXXWXXXXXXYZaceghhhiijjjihfdbZXWVVVVVWXYacefgfedcbaZYYYXXXXXXWWWWWXYacd&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=58&amp;chtt=Druid_Feral_T11_372+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:suxz011111123467764321zxwvuutsrrqpooonnmnmmmllkkkllllmmmmmnnoooppppponmmlllkllmnnnnnnnnoooopppppponmlkkkklmmnnnnnnnnnnnnnooonnmlkjjjjjkllmmmmmmmmmmmmmmmmmmllkkkkklmmnoooppppppppppooonnnmmllllllmmnnopqrrsstttuuuutttttttssrrrqqqqppppppooonnmmllllmmmnnnnnnnnoooooooooonmllkkkllmmnnnnnnnnnooooopooonnmmllmmnooppppqqqqqqqqqqqqqqppooopppqrrsssstttssssssssrrqqpppppppqqqrrrrrssssrrrrrqqppppppqqqrrsttuvwxyz011222211111111100zzyyxwwvvvuuuttsrqppoooooonnnnnnn&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=25541|max=36563&amp;chxp=1,1,70,100&amp;chtt=Druid_Feral_T11_372+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,0,0,1,0,0,0,0,0,1,2,1,3,11,25,42,94,163,239,390,581,776,1075,1446,1653,1881,2142,2187,2216,2066,1772,1579,1371,1003,719,571,372,252,160,83,47,30,20,14,6,2,0,1,2&amp;chds=0,2216&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=22295|avg=25541|max=27925&amp;chxp=0,1,58,100&amp;chtt=Druid_Feral_T11_372+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -3153,7 +3430,7 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 							</tr>
 							<tr>
 								<th class="left small">Druid_Feral_T11_372</th>
-								<th class="right small">25522</th>
+								<th class="right small">25541</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
@@ -3161,7 +3438,7 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">2.8</td>
-								<td class="right small">195.64sec</td>
+								<td class="right small">195.67sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -3253,12 +3530,12 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">cat_melee</a></td>
-								<td class="right small">4814</td>
+								<td class="right small">4815</td>
 								<td class="right small">18.9%</td>
 								<td class="right small">544.5</td>
 								<td class="right small">0.83sec</td>
-								<td class="right small">3979</td>
-								<td class="right small">4817</td>
+								<td class="right small">3980</td>
+								<td class="right small">4818</td>
 								<td class="right small">2924</td>
 								<td class="right small">6053</td>
 								<td class="right small">7505</td>
@@ -3289,13 +3566,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">544.47</td>
-											<td class="right small">544.47</td>
+											<td class="right small">544.46</td>
+											<td class="right small">544.46</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.8261</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2166467</td>
+											<td class="right small">2166963</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3311,34 +3588,34 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">85.4</td>
-											<td class="right small">15.69%</td>
-											<td class="right small">2924.23</td>
+											<td class="right small">15.68%</td>
+											<td class="right small">2924.22</td>
 											<td class="right small">1848</td>
 											<td class="right small">3643</td>
-											<td class="right small">249776</td>
+											<td class="right small">249633</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">269.1</td>
-											<td class="right small">49.43%</td>
-											<td class="right small">6053.49</td>
+											<td class="right small">269.2</td>
+											<td class="right small">49.44%</td>
+											<td class="right small">6053.40</td>
 											<td class="right small">3807</td>
 											<td class="right small">7505</td>
-											<td class="right small">1629046</td>
+											<td class="right small">1629341</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">130.7</td>
-											<td class="right small">24.00%</td>
-											<td class="right small">2201.21</td>
+											<td class="right small">130.8</td>
+											<td class="right small">24.03%</td>
+											<td class="right small">2201.57</td>
 											<td class="right small">1386</td>
 											<td class="right small">2732</td>
-											<td class="right small">287645</td>
+											<td class="right small">287989</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">35.4</td>
-											<td class="right small">6.51%</td>
+											<td class="right small">6.50%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3347,7 +3624,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">23.8</td>
-											<td class="right small">4.38%</td>
+											<td class="right small">4.36%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3388,16 +3665,16 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=22568">ferocious_bite</a></td>
-								<td class="right small">885</td>
+								<td class="right small">887</td>
 								<td class="right small">3.5%</td>
 								<td class="right small">11.4</td>
-								<td class="right small">38.68sec</td>
-								<td class="right small">34943</td>
-								<td class="right small">34309</td>
+								<td class="right small">38.53sec</td>
+								<td class="right small">34988</td>
+								<td class="right small">34354</td>
 								<td class="right small">21514</td>
-								<td class="right small">45027</td>
+								<td class="right small">45045</td>
 								<td class="right small">73912</td>
-								<td class="right small">67.1%</td>
+								<td class="right small">67.2%</td>
 								<td class="right small">4.4%</td>
 								<td class="right small">6.5%</td>
 								<td class="right small">0.0%</td>
@@ -3424,13 +3701,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">11.40</td>
-											<td class="right small">11.40</td>
+											<td class="right small">11.42</td>
+											<td class="right small">11.42</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0185</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">398256</td>
+											<td class="right small">399409</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3446,25 +3723,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">2.5</td>
-											<td class="right small">22.03%</td>
-											<td class="right small">21513.60</td>
-											<td class="right small">2977</td>
+											<td class="right small">21.84%</td>
+											<td class="right small">21513.73</td>
+											<td class="right small">2964</td>
 											<td class="right small">35880</td>
-											<td class="right small">54018</td>
+											<td class="right small">53636</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">7.6</td>
-											<td class="right small">67.08%</td>
-											<td class="right small">45027.21</td>
-											<td class="right small">6107</td>
+											<td class="right small">7.7</td>
+											<td class="right small">67.24%</td>
+											<td class="right small">45045.22</td>
+											<td class="right small">6108</td>
 											<td class="right small">73912</td>
-											<td class="right small">344238</td>
+											<td class="right small">345773</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.7</td>
-											<td class="right small">6.50%</td>
+											<td class="right small">6.48%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3473,7 +3750,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.5</td>
-											<td class="right small">4.40%</td>
+											<td class="right small">4.44%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3510,7 +3787,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<h5>Direct Damage</h5>
 										<ul>
 											<li><span class="label">may_crit:</span>true</li>
-											<li><span class="label">direct_power_mod:</span>0.436000</li>
+											<li><span class="label">direct_power_mod:</span>0.545000</li>
 											<li><span class="label">base_dd_min:</span>206.98</li>
 											<li><span class="label">base_dd_max:</span>450.11</li>
 										</ul>
@@ -3522,16 +3799,16 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=80861">fury_swipes</a></td>
 								<td class="right small">952</td>
 								<td class="right small">3.7%</td>
-								<td class="right small">51.5</td>
+								<td class="right small">51.4</td>
 								<td class="right small">8.69sec</td>
-								<td class="right small">8323</td>
+								<td class="right small">8333</td>
 								<td class="right small">0</td>
-								<td class="right small">6110</td>
-								<td class="right small">12640</td>
+								<td class="right small">6111</td>
+								<td class="right small">12633</td>
 								<td class="right small">15510</td>
-								<td class="right small">44.1%</td>
+								<td class="right small">44.3%</td>
 								<td class="right small">4.4%</td>
-								<td class="right small">6.6%</td>
+								<td class="right small">6.5%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -3556,13 +3833,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">51.45</td>
-											<td class="right small">51.45</td>
+											<td class="right small">51.43</td>
+											<td class="right small">51.43</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">428227</td>
+											<td class="right small">428607</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3578,25 +3855,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">23.1</td>
-											<td class="right small">44.95%</td>
-											<td class="right small">6109.87</td>
+											<td class="right small">44.89%</td>
+											<td class="right small">6111.08</td>
 											<td class="right small">5729</td>
 											<td class="right small">7529</td>
-											<td class="right small">141307</td>
+											<td class="right small">141081</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">22.7</td>
-											<td class="right small">44.12%</td>
-											<td class="right small">12639.56</td>
+											<td class="right small">22.8</td>
+											<td class="right small">44.25%</td>
+											<td class="right small">12632.98</td>
 											<td class="right small">11801</td>
 											<td class="right small">15510</td>
-											<td class="right small">286919</td>
+											<td class="right small">287526</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
-											<td class="right small">3.4</td>
-											<td class="right small">6.57%</td>
+											<td class="right small">3.3</td>
+											<td class="right small">6.47%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3604,8 +3881,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
-											<td class="right small">2.2</td>
-											<td class="right small">4.36%</td>
+											<td class="right small">2.3</td>
+											<td class="right small">4.39%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3646,16 +3923,16 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=33876">mangle_cat</a></td>
-								<td class="right small">697</td>
+								<td class="right small">696</td>
 								<td class="right small">2.7%</td>
 								<td class="right small">21.7</td>
-								<td class="right small">21.11sec</td>
-								<td class="right small">14445</td>
+								<td class="right small">21.10sec</td>
+								<td class="right small">14446</td>
 								<td class="right small">14078</td>
 								<td class="right small">10567</td>
-								<td class="right small">21800</td>
+								<td class="right small">21794</td>
 								<td class="right small">25644</td>
-								<td class="right small">44.7%</td>
+								<td class="right small">44.8%</td>
 								<td class="right small">4.4%</td>
 								<td class="right small">6.5%</td>
 								<td class="right small">0.0%</td>
@@ -3682,13 +3959,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">21.70</td>
-											<td class="right small">21.70</td>
+											<td class="right small">21.69</td>
+											<td class="right small">21.69</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0261</td>
+											<td class="right small">1.0262</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">313497</td>
+											<td class="right small">313372</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3704,25 +3981,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">9.6</td>
-											<td class="right small">44.39%</td>
-											<td class="right small">10567.27</td>
+											<td class="right small">44.40%</td>
+											<td class="right small">10567.33</td>
 											<td class="right small">9610</td>
 											<td class="right small">12449</td>
-											<td class="right small">101805</td>
+											<td class="right small">101775</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">9.7</td>
-											<td class="right small">44.74%</td>
-											<td class="right small">21800.04</td>
+											<td class="right small">44.76%</td>
+											<td class="right small">21794.04</td>
 											<td class="right small">19797</td>
 											<td class="right small">25644</td>
-											<td class="right small">211691</td>
+											<td class="right small">211597</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">1.4</td>
-											<td class="right small">6.49%</td>
+											<td class="right small">6.50%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3731,7 +4008,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.9</td>
-											<td class="right small">4.37%</td>
+											<td class="right small">4.35%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3779,25 +4056,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1822">rake</a></td>
-								<td class="right small">5009</td>
+								<td class="right small">5010</td>
 								<td class="right small">19.6%</td>
-								<td class="right small">33.4</td>
-								<td class="right small">13.51sec</td>
-								<td class="right small">67542</td>
-								<td class="right small">65845</td>
+								<td class="right small">33.3</td>
+								<td class="right small">13.52sec</td>
+								<td class="right small">67608</td>
+								<td class="right small">65909</td>
 								<td class="right small">1885</td>
 								<td class="right small">3900</td>
 								<td class="right small">4670</td>
 								<td class="right small">44.2%</td>
 								<td class="right small">4.4%</td>
-								<td class="right small">6.6%</td>
+								<td class="right small">6.5%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">146</td>
-								<td class="right small">9734</td>
-								<td class="right small">20145</td>
-								<td class="right small">49.4%</td>
+								<td class="right small">9735</td>
+								<td class="right small">20143</td>
+								<td class="right small">49.5%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">96.3%</td>
 							</tr>
@@ -3815,13 +4092,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">33.38</td>
-											<td class="right small">33.38</td>
+											<td class="right small">33.35</td>
+											<td class="right small">33.35</td>
 											<td class="right small">145.74</td>
 											<td class="right small">145.74</td>
 											<td class="right small">1.0258</td>
-											<td class="right small">2.9730</td>
-											<td class="right small">2254520</td>
+											<td class="right small">2.9729</td>
+											<td class="right small">2254713</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -3837,25 +4114,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">15.0</td>
-											<td class="right small">44.90%</td>
-											<td class="right small">1885.07</td>
+											<td class="right small">44.98%</td>
+											<td class="right small">1885.10</td>
 											<td class="right small">1778</td>
 											<td class="right small">2267</td>
-											<td class="right small">28254</td>
+											<td class="right small">28281</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">14.7</td>
 											<td class="right small">44.18%</td>
-											<td class="right small">3899.91</td>
+											<td class="right small">3899.85</td>
 											<td class="right small">3663</td>
 											<td class="right small">4670</td>
-											<td class="right small">57508</td>
+											<td class="right small">57458</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">2.2</td>
-											<td class="right small">6.55%</td>
+											<td class="right small">6.46%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -3882,20 +4159,20 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">73.7</td>
-											<td class="right small">50.56%</td>
-											<td class="right small">9733.55</td>
+											<td class="right small">50.55%</td>
+											<td class="right small">9734.78</td>
 											<td class="right small">9157</td>
 											<td class="right small">12018</td>
-											<td class="right small">717230</td>
+											<td class="right small">717162</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">72.1</td>
-											<td class="right small">49.44%</td>
-											<td class="right small">20145.24</td>
+											<td class="right small">49.45%</td>
+											<td class="right small">20143.23</td>
 											<td class="right small">18864</td>
 											<td class="right small">24756</td>
-											<td class="right small">1451529</td>
+											<td class="right small">1451813</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -3944,17 +4221,17 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=6785">ravage</a></td>
-								<td class="right small">74</td>
+								<td class="right small">75</td>
 								<td class="right small">0.3%</td>
 								<td class="right small">1.0</td>
 								<td class="right small">0.00sec</td>
-								<td class="right small">33455</td>
-								<td class="right small">33237</td>
-								<td class="right small">23092</td>
-								<td class="right small">47568</td>
+								<td class="right small">33650</td>
+								<td class="right small">33424</td>
+								<td class="right small">23093</td>
+								<td class="right small">47570</td>
 								<td class="right small">47613</td>
-								<td class="right small">53.0%</td>
-								<td class="right small">4.7%</td>
+								<td class="right small">53.4%</td>
+								<td class="right small">4.2%</td>
 								<td class="right small">6.6%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -3984,9 +4261,9 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<td class="right small">1.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0066</td>
+											<td class="right small">1.0068</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">33455</td>
+											<td class="right small">33650</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4002,25 +4279,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">0.4</td>
-											<td class="right small">35.68%</td>
-											<td class="right small">23092.09</td>
+											<td class="right small">35.76%</td>
+											<td class="right small">23092.65</td>
 											<td class="right small">20098</td>
 											<td class="right small">23113</td>
-											<td class="right small">8239</td>
+											<td class="right small">8259</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">0.5</td>
-											<td class="right small">53.01%</td>
-											<td class="right small">47567.54</td>
+											<td class="right small">53.38%</td>
+											<td class="right small">47570.41</td>
 											<td class="right small">41403</td>
 											<td class="right small">47613</td>
-											<td class="right small">25216</td>
+											<td class="right small">25391</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.1</td>
-											<td class="right small">6.64%</td>
+											<td class="right small">6.63%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4029,7 +4306,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">0.0</td>
-											<td class="right small">4.67%</td>
+											<td class="right small">4.23%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4077,12 +4354,12 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1079">rip</a></td>
-								<td class="right small">6810</td>
+								<td class="right small">6815</td>
 								<td class="right small">26.7%</td>
 								<td class="right small">17.1</td>
-								<td class="right small">22.79sec</td>
-								<td class="right small">179100</td>
-								<td class="right small">174562</td>
+								<td class="right small">22.84sec</td>
+								<td class="right small">179251</td>
+								<td class="right small">174700</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -4093,8 +4370,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">211</td>
-								<td class="right small">9479</td>
-								<td class="right small">19603</td>
+								<td class="right small">9481</td>
+								<td class="right small">19604</td>
 								<td class="right small">49.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">93.8%</td>
@@ -4115,11 +4392,11 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr>
 											<td class="right small">17.11</td>
 											<td class="right small">17.11</td>
-											<td class="right small">211.11</td>
-											<td class="right small">211.11</td>
+											<td class="right small">211.16</td>
+											<td class="right small">211.16</td>
 											<td class="right small">1.0260</td>
 											<td class="right small">2.0000</td>
-											<td class="right small">3064769</td>
+											<td class="right small">3066847</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4135,7 +4412,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">15.2</td>
-											<td class="right small">89.06%</td>
+											<td class="right small">89.05%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4144,7 +4421,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">1.1</td>
-											<td class="right small">6.56%</td>
+											<td class="right small">6.55%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4152,8 +4429,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">miss</td>
-											<td class="right small">0.7</td>
-											<td class="right small">4.38%</td>
+											<td class="right small">0.8</td>
+											<td class="right small">4.40%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4170,21 +4447,21 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">106.1</td>
-											<td class="right small">50.23%</td>
-											<td class="right small">9479.18</td>
+											<td class="right small">106.0</td>
+											<td class="right small">50.19%</td>
+											<td class="right small">9481.42</td>
 											<td class="right small">8719</td>
 											<td class="right small">11527</td>
-											<td class="right small">1005293</td>
+											<td class="right small">1004856</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">105.1</td>
-											<td class="right small">49.77%</td>
-											<td class="right small">19602.75</td>
+											<td class="right small">105.2</td>
+											<td class="right small">49.81%</td>
+											<td class="right small">19604.47</td>
 											<td class="right small">17962</td>
 											<td class="right small">23746</td>
-											<td class="right small">2059476</td>
+											<td class="right small">2061991</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -4267,8 +4544,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">13.96</td>
-											<td class="right small">13.96</td>
+											<td class="right small">13.97</td>
+											<td class="right small">13.97</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0250</td>
@@ -4329,16 +4606,16 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=5221">shred</a></td>
-								<td class="right small">6281</td>
+								<td class="right small">6291</td>
 								<td class="right small">24.6%</td>
-								<td class="right small">130.7</td>
-								<td class="right small">3.39sec</td>
-								<td class="right small">21624</td>
-								<td class="right small">21134</td>
+								<td class="right small">130.8</td>
+								<td class="right small">3.38sec</td>
+								<td class="right small">21645</td>
+								<td class="right small">21154</td>
 								<td class="right small">15890</td>
-								<td class="right small">32840</td>
+								<td class="right small">32841</td>
 								<td class="right small">39324</td>
-								<td class="right small">44.0%</td>
+								<td class="right small">44.1%</td>
 								<td class="right small">4.4%</td>
 								<td class="right small">6.5%</td>
 								<td class="right small">0.0%</td>
@@ -4365,13 +4642,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">130.73</td>
-											<td class="right small">130.73</td>
+											<td class="right small">130.80</td>
+											<td class="right small">130.80</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0232</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2826928</td>
+											<td class="right small">2831108</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -4386,26 +4663,26 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">58.9</td>
-											<td class="right small">45.09%</td>
-											<td class="right small">15890.05</td>
+											<td class="right small">58.8</td>
+											<td class="right small">44.97%</td>
+											<td class="right small">15890.38</td>
 											<td class="right small">15022</td>
 											<td class="right small">19089</td>
-											<td class="right small">936560</td>
+											<td class="right small">934741</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">57.6</td>
-											<td class="right small">44.03%</td>
-											<td class="right small">32839.53</td>
+											<td class="right small">57.7</td>
+											<td class="right small">44.15%</td>
+											<td class="right small">32841.44</td>
 											<td class="right small">30946</td>
 											<td class="right small">39324</td>
-											<td class="right small">1890368</td>
+											<td class="right small">1896367</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">8.5</td>
-											<td class="right small">6.53%</td>
+											<td class="right small">6.50%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4414,7 +4691,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">miss</td>
 											<td class="right small">5.7</td>
-											<td class="right small">4.36%</td>
+											<td class="right small">4.38%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -4574,25 +4851,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							<tr class="odd">
 								<td class="left small">ferocious_bite</td>
 								<td class="right small">6.8%</td>
-								<td class="right small">843.0</td>
+								<td class="right small">844.3</td>
 								<td class="right small">41</td>
 							</tr>
 							<tr>
 								<td class="left small">mangle_cat</td>
 								<td class="right small">10.1%</td>
-								<td class="right small">445.2</td>
+								<td class="right small">445.6</td>
 								<td class="right small">32</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">rake</td>
 								<td class="right small">14.3%</td>
-								<td class="right small">2252.5</td>
+								<td class="right small">2257.2</td>
 								<td class="right small">30</td>
 							</tr>
 							<tr>
 								<td class="left small">rip</td>
 								<td class="right small">6.6%</td>
-								<td class="right small">6661.8</td>
+								<td class="right small">6666.0</td>
 								<td class="right small">27</td>
 							</tr>
 							<tr class="odd">
@@ -4603,8 +4880,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr>
 								<td class="left small">shred</td>
-								<td class="right small">57.2%</td>
-								<td class="right small">708.1</td>
+								<td class="right small">57.3%</td>
+								<td class="right small">708.7</td>
 								<td class="right small">31</td>
 							</tr>
 						</table>
@@ -4627,8 +4904,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">berserk</a></td>
 								<td class="right">2.8</td>
 								<td class="right">0.0</td>
-								<td class="right">195.6sec</td>
-								<td class="right">195.6sec</td>
+								<td class="right">195.7sec</td>
+								<td class="right">195.7sec</td>
 								<td class="right">9%</td>
 								<td class="right">9%</td>
 							</tr>
@@ -4695,7 +4972,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">combo_points</a></td>
 								<td class="right">39.9</td>
-								<td class="right">137.1</td>
+								<td class="right">137.2</td>
 								<td class="right">11.4sec</td>
 								<td class="right">2.5sec</td>
 								<td class="right">79%</td>
@@ -4742,8 +5019,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">omen_of_clarity</a></td>
 								<td class="right">28.2</td>
 								<td class="right">0.3</td>
-								<td class="right">15.5sec</td>
-								<td class="right">15.3sec</td>
+								<td class="right">15.4sec</td>
+								<td class="right">15.2sec</td>
 								<td class="right">3%</td>
 								<td class="right">4%</td>
 							</tr>
@@ -4811,7 +5088,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">savage_roar</a></td>
 								<td class="right">5.8</td>
 								<td class="right">8.1</td>
-								<td class="right">79.7sec</td>
+								<td class="right">79.8sec</td>
 								<td class="right">32.9sec</td>
 								<td class="right">97%</td>
 								<td class="right">97%</td>
@@ -4857,7 +5134,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">t11_4pc_melee</a></td>
 								<td class="right">1.4</td>
 								<td class="right">17.9</td>
-								<td class="right">187.5sec</td>
+								<td class="right">189.3sec</td>
 								<td class="right">23.8sec</td>
 								<td class="right">100%</td>
 								<td class="right">100%</td>
@@ -5075,17 +5352,17 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								</tr>
 								<tr>
 									<td class="left">combo_points_wasted</td>
-									<td class="right">72.0</td>
+									<td class="right">72.2</td>
 									<td class="right">8.1sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">fury_swipes</td>
-									<td class="right">51.5</td>
+									<td class="right">51.4</td>
 									<td class="right">8.7sec</td>
 								</tr>
 								<tr>
 									<td class="left">primal_fury</td>
-									<td class="right">82.6</td>
+									<td class="right">82.7</td>
 									<td class="right">5.4sec</td>
 								</tr>
 							</table>
@@ -5104,29 +5381,29 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								</tr>
 								<tr>
 									<td class="left">energy_refund</td>
-									<td class="right">88.3</td>
-									<td class="right">562.7</td>
+									<td class="right">88.1</td>
+									<td class="right">563.2</td>
 									<td class="right">6.4</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">energy_regen</td>
 									<td class="right">1800.3</td>
-									<td class="right">4958.2</td>
+									<td class="right">4958.1</td>
 									<td class="right">2.8</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr>
 									<td class="left">omen_of_clarity</td>
-									<td class="right">28.1</td>
-									<td class="right">1080.5</td>
+									<td class="right">28.2</td>
+									<td class="right">1082.7</td>
 									<td class="right">38.4</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">tigers_fury</td>
 									<td class="right">16.5</td>
-									<td class="right">988.5</td>
+									<td class="right">988.7</td>
 									<td class="right">60.0</td>
 									<td class="right">0.0%</td>
 								</tr>
@@ -5261,7 +5538,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    013567BBBB9IJMRSSFSPSSSKNSSSSSSBII9KSSSSPSKSIIB9MKSLSPSSKSISSB9MLSKSSSSSIKSB9NSSSKLSISKSB9SQSSIKMSSKKI9BSSSSSMKLSSSIS9BJSSLFNSSSSKSSIISSS9BKSSSSSIIKKSMSLSBBSS9KSSSSISKKSNB9QSKSISSSKSBS9ISSKKMLSSSSSKIB9SSSSKMSLSIKB9SSSPSKSIISSB9JMSSSFSSSSIKSASSHSSSBB9HKSSSHLSSSMKSSB9HSKSHSSKLHS9BMSSKHSLSSHKS9BMSSSKHLSSSHK
+                    013567BBB9IIJMRSFLSSPSSSKSSSSI9BKMSLSLSSSSSKSISL9BMSSKSLSIKSS9BNSSKSSISSKS9BSSSSSIKLMSSSK9BSSSISKMSSSSB9IKSLSSSSSKMSLSSIB9SKSFLSSSSSSSKSISB9SMSKSSISKSB9SSSKKSISSMSKS9BSSSIIKSMSKS9BISSSKNSSSS9BIJSSSKLLSSIB9SKMSSSSKISBB9SNSKFSSSSSISASKHSSBB9LHSSSKHSSSSMSSKSB9HGSKSSMSKB9SISSKHSSKM9BSSSSISKSSSH9BKKS
 									</div>
 								</div>
 							</div>
@@ -5878,11 +6155,36 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 								</div>
 							</div>
 						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td>( Pawn: v1: "Druid_Feral_T11_372":  MeleeDps=4.7333, Agility=3.1712, Strength=2.4136, MasteryRating=1.2372, Ap=1.1409, HasteRating=1.0641, CritRating=1.0381, ExpertiseRating=1.0299, HitRating=1.0117 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( Pawn: v1: "Druid_Feral_T11_372":  MeleeDps=4.7333, Agility=3.1712, Strength=2.4136, MasteryRating=1.2372, Ap=1.1409, HasteRating=1.0641, CritRating=1.0381, ExpertiseRating=0.0000, HitRating=0.0000 )</td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td>( RhadaTip: "Druid_Feral_T11_372":  MeleeDps=4.7333, Agility=3.1712, Strength=2.4136, MasteryRating=1.2372, Ap=1.1409, HasteRating=1.0641, CritRating=1.0381, ExpertiseRating=1.0299, HitRating=1.0117 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( RhadaTip: "Druid_Feral_T11_372":  MeleeDps=4.7333, Agility=3.1712, Strength=2.4136, MasteryRating=1.2372, Ap=1.1409, HasteRating=1.0641, CritRating=1.0381, ExpertiseRating=0.0000, HitRating=0.0000 )</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
 		<div id="Druid_Feral_T11_372_hitcap" class="player section">
-			<h2 class="toggle">Druid_Feral_T11_372_hitcap&nbsp;:&nbsp;25468dps</h2>
+			<h2 class="toggle">Druid_Feral_T11_372_hitcap&nbsp;:&nbsp;25467dps</h2>
 			<div class="toggle-content hide">
 				<ul class="params">
 					<li><b>Race:</b> worgen</li>
@@ -5909,15 +6211,15 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 								<th><a href="#help-apm" class="help">APM</a></th>
 							</tr>
 							<tr>
-								<td>25468.2</td>
-								<td>10.0 / 0.0%</td>
-								<td>3356.4 / 13.2%</td>
-								<td>71.2%</td>
+								<td>25466.7</td>
+								<td>6.3 / 0.0%</td>
+								<td>2531.5 / 9.9%</td>
+								<td>70.6%</td>
 								<td>1734.4</td>
 								<td>14.7</td>
 								<td>14.5</td>
 								<td>energy</td>
-								<td>49.25%</td>
+								<td>49.26%</td>
 								<td>32.9</td>
 							</tr>
 						</table>
@@ -5941,20 +6243,100 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 								</td>
 							</tr>
 						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+								<th>Str</th>
+								<th>Agi</th>
+								<th>AP</th>
+								<th>Exp</th>
+								<th>Hit</th>
+								<th>Crit</th>
+								<th>Haste</th>
+								<th>Mastery</th>
+								<th>Wdps</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+								<td>2.4184</td>
+								<td>3.2011</td>
+								<td>1.1483</td>
+								<td>0.9687</td>
+								<td>0.9862</td>
+								<td>1.0358</td>
+								<td>1.0628</td>
+								<td>1.2364</td>
+								<td>4.8863</td>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+								<td>0.7555</td>
+								<td>1.0000</td>
+								<td>0.3587</td>
+								<td>0.3026</td>
+								<td>0.3081</td>
+								<td>0.3236</td>
+								<td>0.3320</td>
+								<td>0.3862</td>
+								<td>1.5264</td>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>-200</td>
+								<td>-300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+								<td>100</td>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+								<td>0.0211</td>
+								<td>0.0211</td>
+								<td>0.0211</td>
+								<td>0.0317</td>
+								<td>0.0211</td>
+								<td>0.0211</td>
+								<td>0.0211</td>
+								<td>0.0211</td>
+								<td>0.0633</td>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="9" class="filler">
+									<ul class="float">
+										<li><a href="http://www.wowhead.com/?items&amp;filter=ub=11;gm=3;gb=1;rf=1;minle=346;wt=20:21:77:117:119:96:103:170:32;wtv=2.4184:3.2011:1.1483:0.9687:0.9862:1.0358:1.0628:1.2364:4.8863;" class="ext">wowhead</a></li>
+										<li><a href="http://www.guildox.com/wr.asp?&amp;grp=&amp;ser=&amp;usr=&amp;Cla=1024&amp;F=A&amp;Str=2.4184&amp;Agi=3.2011&amp;map=1.1483&amp;Exp=0.9687&amp;mhit=0.9862&amp;mcr=1.0358&amp;mh=1.0628&amp;Mr=1.2364&amp;dps=4.8863&amp;Ver=6" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="9" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="player-section">
 					<h3 class="toggle open">Charts</h3>
 					<div class="toggle-content">
 						<div class="charts charts-left">
-              <span class="chart-action-dpet" title="Action DPET Chart">http://8.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:68747|35754|34825|22009|14589|4881&amp;chds=0,137494&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++68747++rake,C55D54,0,0,15|t++35754++ferocious_bite,C79C6E,1,0,15|t++34825++ravage,C79C6E,2,0,15|t++22009++shred,C79C6E,3,0,15|t++14589++mangle_cat,C79C6E,4,0,15|t++4881++cat_melee,C79C6E,5,0,15&amp;chtt=Druid_Feral_T11_372_hitcap+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
+              <span class="chart-action-dpet" title="Action DPET Chart">http://8.chart.apis.google.com/chart?chs=550x210&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:68722|35702|34920|22005|14597|4882&amp;chds=0,137443&amp;chco=C55D54,C79C6E,C79C6E,C79C6E,C79C6E,C79C6E&amp;chm=t++68722++rake,C55D54,0,0,15|t++35702++ferocious_bite,C79C6E,1,0,15|t++34920++ravage,C79C6E,2,0,15|t++22005++shred,C79C6E,3,0,15|t++14597++mangle_cat,C79C6E,4,0,15|t++4882++cat_melee,C79C6E,5,0,15&amp;chtt=Druid_Feral_T11_372_hitcap+Damage+Per+Execute+Time&amp;chts=dddddd,18</span>
               <span class="chart-action-dmg" title="Action Damage Chart">http://9.chart.apis.google.com/chart?chs=550x280&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:26,25,19,19,4,4,3,0&amp;chds=0,100&amp;chco=C55D54,C79C6E,C79C6E,C55D54,C79C6E,C79C6E,C79C6E,C79C6E&amp;chl=rip|shred|cat_melee|rake|fury_swipes|ferocious_bite|mangle_cat|ravage&amp;chtt=Druid_Feral_T11_372_hitcap+Damage+Sources&amp;chts=dddddd,18</span>
               <span class="chart-gains" title="Resource Gains Chart">http://0.chart.apis.google.com/chart?chs=550x240&amp;cht=p&amp;chf=bg,s,333333&amp;chd=t:68,16,14,3&amp;chds=0,100&amp;chco=C0B84F&amp;chl=energy_regen|omen_of_clarity|tigers_fury|energy_refund&amp;chtt=Druid_Feral_T11_372_hitcap+Resource+Gains&amp;chts=dddddd,18</span>
               						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:vwa4767vow3xkdZYWVUTTSSSUaZUVVdwskgaYXYXXYYWXXVVXYVVWVWXXXjtqjeaXXXXXXXXYYWVVUUWWWXXXcnsoidZYXXXXXXXWWXXWWVUVWWWYdlolgcaYWWVVWWWWWWWWWWWWVVWZfmnkfcaYYXWVVVVWWWXXXXXXXWXbhnolhdbZYYXXWWWWWWWXXXXXWXYbhlmjgefikjhebZWVUTSSSTUVWWYbgjjhecZYYXXXXXXXWWWWWWWWXXadhkkhecaZYXXXXXXXXXWWWVVWWXadhjigecaYXXWWWWWWXXXXWWWWWXaehiigecaZYXXWWWXXXXXXXXXXXYbehiigecaZYYXWWWWWWWWXXXXXYZbegggecbZZYXXXXWWWWWWWWWXXYabefgfffghiigebZXWUTTTTTUVWYZceefecbaZYXXXXXWWWWWWWVVWXYacef&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=58&amp;chtt=Druid_Feral_T11_372_hitcap+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
-                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:uw02222222234568763210ywuuttsrqqppoonnmmnmmllkkkkllllmmmmmnnoooppppoonmllkkkllmnnnnnnnnooooppppponmlkjjjklmmnnnnnnnmmnnnnnnnnmlkjiiijkklmmmmmmmmmlllmmmmmmlkkkkkkklmnnoopppppppoooooonnmmllllllllmmnopqqrsssttttutttttttsssrrqqqqppppppoooonnmmlllllmmnnnnnnnnnooooooooonmlkkkkklmmmnnnnnnnnnnoooooonnmlllllmnnoopppppppppqqqqqqqqppooooppqrrsssstsssssssssrrqqppoooppppqqqrrrrrrrrrrrqqqpppoopppqqrrsstuwxyzz01112111111111100zzyyxwwvvvuuuttsrqppooooooooooooooo&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=25468|max=36665&amp;chxp=1,1,69,100&amp;chtt=Druid_Feral_T11_372_hitcap+DPS+Timeline&amp;chts=dddddd,18</span>
-              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,3,11,16,51,104,175,259,447,629,783,927,1058,1072,1013,908,725,624,462,294,192,110,63,36,16,7,8,1,2&amp;chds=0,1072&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=20840|avg=25468|max=27553&amp;chxp=0,1,69,100&amp;chtt=Druid_Feral_T11_372_hitcap+DPS+Distribution&amp;chts=dddddd,18</span>
+              <span class="chart-scale-factors" title="Scale Factors Chart">http://6.chart.apis.google.com/chart?chs=525x300&amp;cht=bhg&amp;chf=bg,s,333333&amp;chd=t:4.8863|3.2011|2.4184|1.2364|1.1483|1.0628|1.0358|0.9862|0.9687&amp;chds=0,9.7726&amp;chco=FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A,FF7D0A&amp;chm=t++4.8863++Wdps,FF7D0A,0,0,15|t++3.2011++Agi,FF7D0A,1,0,15|t++2.4184++Str,FF7D0A,2,0,15|t++1.2364++Mastery,FF7D0A,3,0,15|t++1.1483++AP,FF7D0A,4,0,15|t++1.0628++Haste,FF7D0A,5,0,15|t++1.0358++Crit,FF7D0A,6,0,15|t++0.9862++Hit,FF7D0A,7,0,15|t++0.9687++Exp,FF7D0A,8,0,15&amp;chtt=Druid_Feral_T11_372_hitcap+Scale+Factors&amp;chts=dddddd,18</span>
+              <span class="chart-timeline-resource" title="Resource Timeline Chart">http://1.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:vwa4667vow2xkdYYWVUTTSSSUaZUVVdwtkfaYXYXXXYWXXVVXXVVVVWXXXjtqjeaXXXXXXXXYXWVVUVWWWXXXcnsoidaYXXXXXXXWWXXWWVUVWWWYdlolgcaYWWVVWWWWWWWWWWWWVVWYfmnkgcaYYXWVVVWWWWXXXXXXXWXbhnolhdbZYYXXWWWWWWWXXXXXXXYbhmmjgegikjhebYWVUTSSSTUVWWYbgjjhebaYYXXXXXXXWWWWWWWWXXZdikkhfcaZYXXXXXXXXXWWWVVWWXaehjigecaYXWWWWWWWXXXXWWWWWYaehiigecaZYXWWWWXXXXXXXXXXXZcfhiigecaZYYXXWWWWWWWXXXXXXZbegggfdbaYYXXXWWWWWWWWWWWXYZcefggfghiiigecZXWUTTTTTUVWXZceffedbaZXXXXWXXWWWWWWWWWWYacde&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=58&amp;chtt=Druid_Feral_T11_372_hitcap+Energy+Timeline&amp;chts=dddddd,18&amp;chco=C0B84F</span>
+                            <span class="chart-timeline-dps" title="DPS Timeline Chart">http://3.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:uw02222222234568763210ywvuttsrrqppoonnmmnmmllkkkkllllmmmmnnnoooppppoonmlllkklmmnnnnnnnnooopppppponmlkjjjklmmnnnnnnnmmnnnnnonnmlkjiiijkklmmmmmmmmmlllmmmmmllkkkkkkklmnnoooppppppooooooonmmllllllllmmnopqqrrsstttttttttssssssrrqqqpppppppoooonnmmlllllmmnnnnnnnnnooooooooonmlkkkkkllmmnnnnnnnnnnoooooonnmlllllmnnoopppppppppqqqqqqqqppooooppqrrssssttssssssssrrqqppoooppppqqqrrrrrrrrrrrqqqppppppppqqrrsttuwxyzz011222111111111000zyyxwwvvvuuuttsrqqpooooooooooooooo&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=25467|max=36642&amp;chxp=1,1,70,100&amp;chtt=Druid_Feral_T11_372_hitcap+DPS+Timeline&amp;chts=dddddd,18</span>
+              <span class="chart-distribution-dps" title="DPS Distribution Chart">http://4.chart.apis.google.com/chart?chs=525x185&amp;cht=bvs&amp;chf=bg,s,333333&amp;chg=100,100&amp;chd=t:1,0,1,0,0,0,0,0,0,0,0,0,6,5,15,27,41,98,143,241,347,524,732,1002,1260,1428,1722,1929,1995,1985,1988,1909,1605,1434,1156,962,690,556,384,306,184,129,80,54,28,10,10,5,3,5&amp;chds=0,1995&amp;chbh=5&amp;chxt=x&amp;chxl=0:|min=22483|avg=25467|max=27546&amp;chxp=0,1,59,100&amp;chtt=Druid_Feral_T11_372_hitcap+DPS+Distribution&amp;chts=dddddd,18</span>
               						</div>
 						<div class="clear"></div>
 					</div>
@@ -5989,7 +6371,7 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 							</tr>
 							<tr>
 								<th class="left small">Druid_Feral_T11_372_hitcap</th>
-								<th class="right small">25468</th>
+								<th class="right small">25467</th>
 								<td colspan="20" class="filler"></td>
 							</tr>
 							<tr>
@@ -6089,12 +6471,12 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=0">cat_melee</a></td>
-								<td class="right small">4878</td>
+								<td class="right small">4879</td>
 								<td class="right small">19.2%</td>
-								<td class="right small">544.6</td>
+								<td class="right small">544.5</td>
 								<td class="right small">0.83sec</td>
-								<td class="right small">4031</td>
-								<td class="right small">4881</td>
+								<td class="right small">4032</td>
+								<td class="right small">4882</td>
 								<td class="right small">2922</td>
 								<td class="right small">6041</td>
 								<td class="right small">7485</td>
@@ -6125,13 +6507,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">544.57</td>
-											<td class="right small">544.57</td>
+											<td class="right small">544.55</td>
+											<td class="right small">544.55</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.8260</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2195397</td>
+											<td class="right small">2195844</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6146,35 +6528,35 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">148.8</td>
-											<td class="right small">27.32%</td>
-											<td class="right small">2921.89</td>
+											<td class="right small">148.6</td>
+											<td class="right small">27.29%</td>
+											<td class="right small">2921.95</td>
 											<td class="right small">1843</td>
 											<td class="right small">3633</td>
-											<td class="right small">434740</td>
+											<td class="right small">434269</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">244.0</td>
-											<td class="right small">44.80%</td>
-											<td class="right small">6041.45</td>
+											<td class="right small">244.1</td>
+											<td class="right small">44.83%</td>
+											<td class="right small">6041.03</td>
 											<td class="right small">3796</td>
 											<td class="right small">7485</td>
-											<td class="right small">1473935</td>
+											<td class="right small">1474717</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">glance</td>
-											<td class="right small">130.5</td>
-											<td class="right small">23.97%</td>
-											<td class="right small">2196.56</td>
-											<td class="right small">1392</td>
+											<td class="right small">130.6</td>
+											<td class="right small">23.98%</td>
+											<td class="right small">2196.41</td>
+											<td class="right small">1382</td>
 											<td class="right small">2725</td>
-											<td class="right small">286722</td>
+											<td class="right small">286858</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
-											<td class="right small">21.3</td>
-											<td class="right small">3.91%</td>
+											<td class="right small">21.2</td>
+											<td class="right small">3.89%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6218,13 +6600,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="right small">900</td>
 								<td class="right small">3.5%</td>
 								<td class="right small">11.1</td>
-								<td class="right small">41.22sec</td>
-								<td class="right small">36442</td>
-								<td class="right small">35754</td>
-								<td class="right small">21313</td>
-								<td class="right small">44741</td>
+								<td class="right small">41.30sec</td>
+								<td class="right small">36391</td>
+								<td class="right small">35702</td>
+								<td class="right small">21344</td>
+								<td class="right small">44712</td>
 								<td class="right small">73687</td>
-								<td class="right small">68.2%</td>
+								<td class="right small">68.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">4.0%</td>
 								<td class="right small">0.0%</td>
@@ -6251,13 +6633,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">11.12</td>
-											<td class="right small">11.12</td>
+											<td class="right small">11.13</td>
+											<td class="right small">11.13</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0193</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">405260</td>
+											<td class="right small">405014</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6273,25 +6655,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">3.1</td>
-											<td class="right small">27.72%</td>
-											<td class="right small">21313.05</td>
+											<td class="right small">28.01%</td>
+											<td class="right small">21344.23</td>
 											<td class="right small">2956</td>
 											<td class="right small">35770</td>
-											<td class="right small">65700</td>
+											<td class="right small">66534</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">7.6</td>
-											<td class="right small">68.25%</td>
-											<td class="right small">44740.79</td>
-											<td class="right small">6100</td>
+											<td class="right small">68.02%</td>
+											<td class="right small">44712.33</td>
+											<td class="right small">6088</td>
 											<td class="right small">73687</td>
-											<td class="right small">339560</td>
+											<td class="right small">338479</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.4</td>
-											<td class="right small">4.03%</td>
+											<td class="right small">3.97%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6338,14 +6720,14 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=80861">fury_swipes</a></td>
-								<td class="right small">1043</td>
+								<td class="right small">1044</td>
 								<td class="right small">4.1%</td>
 								<td class="right small">54.2</td>
-								<td class="right small">8.26sec</td>
-								<td class="right small">8664</td>
+								<td class="right small">8.24sec</td>
+								<td class="right small">8666</td>
 								<td class="right small">0</td>
-								<td class="right small">6094</td>
-								<td class="right small">12602</td>
+								<td class="right small">6095</td>
+								<td class="right small">12601</td>
 								<td class="right small">15468</td>
 								<td class="right small">43.1%</td>
 								<td class="right small">0.0%</td>
@@ -6374,13 +6756,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">54.16</td>
-											<td class="right small">54.16</td>
+											<td class="right small">54.23</td>
+											<td class="right small">54.23</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.0000</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">469236</td>
+											<td class="right small">469972</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6396,20 +6778,20 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">28.7</td>
-											<td class="right small">53.01%</td>
-											<td class="right small">6094.20</td>
+											<td class="right small">52.98%</td>
+											<td class="right small">6094.74</td>
 											<td class="right small">5712</td>
 											<td class="right small">7509</td>
-											<td class="right small">174966</td>
+											<td class="right small">175136</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">23.4</td>
-											<td class="right small">43.11%</td>
-											<td class="right small">12602.21</td>
+											<td class="right small">43.14%</td>
+											<td class="right small">12600.70</td>
 											<td class="right small">11766</td>
 											<td class="right small">15468</td>
-											<td class="right small">294270</td>
+											<td class="right small">294836</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
@@ -6455,16 +6837,16 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr>
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=33876">mangle_cat</a></td>
-								<td class="right small">661</td>
+								<td class="right small">662</td>
 								<td class="right small">2.6%</td>
 								<td class="right small">19.8</td>
-								<td class="right small">23.26sec</td>
-								<td class="right small">15020</td>
-								<td class="right small">14589</td>
-								<td class="right small">10519</td>
-								<td class="right small">21699</td>
+								<td class="right small">23.21sec</td>
+								<td class="right small">15027</td>
+								<td class="right small">14597</td>
+								<td class="right small">10521</td>
+								<td class="right small">21703</td>
 								<td class="right small">25582</td>
-								<td class="right small">43.9%</td>
+								<td class="right small">44.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">3.9%</td>
 								<td class="right small">0.0%</td>
@@ -6491,13 +6873,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">19.80</td>
-											<td class="right small">19.80</td>
+											<td class="right small">19.83</td>
+											<td class="right small">19.83</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0295</td>
+											<td class="right small">1.0294</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">297389</td>
+											<td class="right small">297985</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6513,25 +6895,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">10.3</td>
-											<td class="right small">52.26%</td>
-											<td class="right small">10519.28</td>
+											<td class="right small">52.15%</td>
+											<td class="right small">10521.10</td>
 											<td class="right small">9586</td>
 											<td class="right small">12419</td>
-											<td class="right small">108852</td>
+											<td class="right small">108807</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">8.7</td>
-											<td class="right small">43.88%</td>
-											<td class="right small">21699.07</td>
+											<td class="right small">43.96%</td>
+											<td class="right small">21702.97</td>
 											<td class="right small">19746</td>
 											<td class="right small">25582</td>
-											<td class="right small">188537</td>
+											<td class="right small">189179</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.8</td>
-											<td class="right small">3.86%</td>
+											<td class="right small">3.89%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6579,12 +6961,12 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1822">rake</a></td>
-								<td class="right small">4878</td>
-								<td class="right small">19.2%</td>
+								<td class="right small">4875</td>
+								<td class="right small">19.1%</td>
 								<td class="right small">31.1</td>
-								<td class="right small">14.54sec</td>
-								<td class="right small">70667</td>
-								<td class="right small">68747</td>
+								<td class="right small">14.56sec</td>
+								<td class="right small">70644</td>
+								<td class="right small">68722</td>
 								<td class="right small">1889</td>
 								<td class="right small">3908</td>
 								<td class="right small">4676</td>
@@ -6596,8 +6978,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="right small">0.0%</td>
 								<td class="right small">146</td>
 								<td class="right small">9747</td>
-								<td class="right small">20168</td>
-								<td class="right small">44.9%</td>
+								<td class="right small">20171</td>
+								<td class="right small">44.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">96.8%</td>
 							</tr>
@@ -6617,11 +6999,11 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr>
 											<td class="right small">31.06</td>
 											<td class="right small">31.06</td>
-											<td class="right small">146.37</td>
-											<td class="right small">146.37</td>
-											<td class="right small">1.0279</td>
-											<td class="right small">2.9749</td>
-											<td class="right small">2195225</td>
+											<td class="right small">146.36</td>
+											<td class="right small">146.36</td>
+											<td class="right small">1.0280</td>
+											<td class="right small">2.9751</td>
+											<td class="right small">2194176</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6637,25 +7019,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">16.5</td>
-											<td class="right small">52.96%</td>
-											<td class="right small">1889.17</td>
+											<td class="right small">52.98%</td>
+											<td class="right small">1889.04</td>
 											<td class="right small">1780</td>
 											<td class="right small">2270</td>
-											<td class="right small">31077</td>
+											<td class="right small">31084</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">13.4</td>
-											<td class="right small">43.18%</td>
-											<td class="right small">3907.52</td>
+											<td class="right small">43.17%</td>
+											<td class="right small">3908.01</td>
 											<td class="right small">3667</td>
 											<td class="right small">4676</td>
-											<td class="right small">52417</td>
+											<td class="right small">52400</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">1.2</td>
-											<td class="right small">3.86%</td>
+											<td class="right small">3.85%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6672,21 +7054,21 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">80.6</td>
-											<td class="right small">55.09%</td>
-											<td class="right small">9746.98</td>
+											<td class="right small">80.7</td>
+											<td class="right small">55.16%</td>
+											<td class="right small">9746.63</td>
 											<td class="right small">9160</td>
 											<td class="right small">12026</td>
-											<td class="right small">785955</td>
+											<td class="right small">786848</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">65.7</td>
-											<td class="right small">44.91%</td>
-											<td class="right small">20167.84</td>
+											<td class="right small">65.6</td>
+											<td class="right small">44.84%</td>
+											<td class="right small">20170.86</td>
 											<td class="right small">18870</td>
 											<td class="right small">24774</td>
-											<td class="right small">1325776</td>
+											<td class="right small">1323843</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -6739,14 +7121,14 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="right small">0.3%</td>
 								<td class="right small">1.0</td>
 								<td class="right small">0.00sec</td>
-								<td class="right small">35059</td>
-								<td class="right small">34825</td>
-								<td class="right small">23056</td>
-								<td class="right small">47494</td>
+								<td class="right small">35156</td>
+								<td class="right small">34920</td>
+								<td class="right small">23053</td>
+								<td class="right small">47486</td>
 								<td class="right small">47499</td>
-								<td class="right small">52.7%</td>
+								<td class="right small">53.2%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">3.8%</td>
+								<td class="right small">3.9%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -6775,9 +7157,9 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<td class="right small">1.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
-											<td class="right small">1.0067</td>
+											<td class="right small">1.0068</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">35059</td>
+											<td class="right small">35156</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6793,25 +7175,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">0.4</td>
-											<td class="right small">43.46%</td>
-											<td class="right small">23056.44</td>
+											<td class="right small">42.88%</td>
+											<td class="right small">23053.34</td>
 											<td class="right small">20050</td>
 											<td class="right small">23058</td>
-											<td class="right small">10020</td>
+											<td class="right small">9884</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">0.5</td>
-											<td class="right small">52.72%</td>
-											<td class="right small">47494.42</td>
+											<td class="right small">53.22%</td>
+											<td class="right small">47486.08</td>
 											<td class="right small">41304</td>
 											<td class="right small">47499</td>
-											<td class="right small">25039</td>
+											<td class="right small">25272</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.0</td>
-											<td class="right small">3.82%</td>
+											<td class="right small">3.90%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6859,18 +7241,18 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=1079">rip</a></td>
-								<td class="right small">6628</td>
+								<td class="right small">6629</td>
 								<td class="right small">26.0%</td>
 								<td class="right small">15.9</td>
-								<td class="right small">24.56sec</td>
-								<td class="right small">187906</td>
-								<td class="right small">182795</td>
+								<td class="right small">24.57sec</td>
+								<td class="right small">188134</td>
+								<td class="right small">183020</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
-								<td class="right small">3.9%</td>
+								<td class="right small">3.8%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">0.0%</td>
@@ -6895,13 +7277,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">15.88</td>
-											<td class="right small">15.88</td>
-											<td class="right small">211.77</td>
-											<td class="right small">211.77</td>
-											<td class="right small">1.0280</td>
+											<td class="right small">15.86</td>
+											<td class="right small">15.86</td>
+											<td class="right small">211.78</td>
+											<td class="right small">211.78</td>
+											<td class="right small">1.0279</td>
 											<td class="right small">2.0000</td>
-											<td class="right small">2983060</td>
+											<td class="right small">2983329</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -6916,8 +7298,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										</tr>
 										<tr class="odd">
 											<td class="left small">hit</td>
-											<td class="right small">15.3</td>
-											<td class="right small">96.11%</td>
+											<td class="right small">15.2</td>
+											<td class="right small">96.16%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6926,7 +7308,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">0.6</td>
-											<td class="right small">3.89%</td>
+											<td class="right small">3.84%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -6944,20 +7326,20 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">116.0</td>
-											<td class="right small">54.80%</td>
-											<td class="right small">9499.42</td>
+											<td class="right small">54.79%</td>
+											<td class="right small">9498.87</td>
 											<td class="right small">8726</td>
 											<td class="right small">11539</td>
-											<td class="right small">1102309</td>
+											<td class="right small">1102090</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
-											<td class="right small">95.7</td>
-											<td class="right small">45.20%</td>
-											<td class="right small">19647.27</td>
+											<td class="right small">95.8</td>
+											<td class="right small">45.21%</td>
+											<td class="right small">19646.75</td>
 											<td class="right small">17976</td>
 											<td class="right small">23771</td>
-											<td class="right small">1880751</td>
+											<td class="right small">1881239</td>
 										</tr>
 									</table>
 									<div class="clear"></div>
@@ -7007,7 +7389,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="right small">0</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">14.0</td>
-								<td class="right small">32.86sec</td>
+								<td class="right small">32.87sec</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
 								<td class="right small">0</td>
@@ -7040,8 +7422,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">13.98</td>
-											<td class="right small">13.98</td>
+											<td class="right small">13.97</td>
+											<td class="right small">13.97</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0252</td>
@@ -7102,16 +7484,16 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr class="odd">
 								<td class="left small"><a href="#" class="toggle-details" rel="spell=5221">shred</a></td>
-								<td class="right small">6402</td>
+								<td class="right small">6399</td>
 								<td class="right small">25.1%</td>
-								<td class="right small">127.8</td>
+								<td class="right small">127.7</td>
 								<td class="right small">3.47sec</td>
-								<td class="right small">22547</td>
-								<td class="right small">22009</td>
-								<td class="right small">15862</td>
+								<td class="right small">22544</td>
+								<td class="right small">22005</td>
+								<td class="right small">15861</td>
 								<td class="right small">32787</td>
 								<td class="right small">39230</td>
-								<td class="right small">43.2%</td>
+								<td class="right small">43.1%</td>
 								<td class="right small">0.0%</td>
 								<td class="right small">3.9%</td>
 								<td class="right small">0.0%</td>
@@ -7138,13 +7520,13 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 											<th class="small">total dmg</th>
 										</tr>
 										<tr>
-											<td class="right small">127.79</td>
-											<td class="right small">127.79</td>
+											<td class="right small">127.74</td>
+											<td class="right small">127.74</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0.00</td>
 											<td class="right small">1.0245</td>
 											<td class="right small">0.0000</td>
-											<td class="right small">2881263</td>
+											<td class="right small">2879633</td>
 										</tr>
 									</table>
 									<table  class="details">
@@ -7160,25 +7542,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<tr class="odd">
 											<td class="left small">hit</td>
 											<td class="right small">67.7</td>
-											<td class="right small">52.95%</td>
-											<td class="right small">15861.66</td>
+											<td class="right small">52.99%</td>
+											<td class="right small">15860.55</td>
 											<td class="right small">14983</td>
 											<td class="right small">19043</td>
-											<td class="right small">1073271</td>
+											<td class="right small">1073560</td>
 										</tr>
 										<tr>
 											<td class="left small">crit</td>
 											<td class="right small">55.1</td>
-											<td class="right small">43.15%</td>
-											<td class="right small">32787.39</td>
+											<td class="right small">43.12%</td>
+											<td class="right small">32787.28</td>
 											<td class="right small">30865</td>
 											<td class="right small">39230</td>
-											<td class="right small">1807992</td>
+											<td class="right small">1806073</td>
 										</tr>
 										<tr class="odd">
 											<td class="left small">dodge</td>
 											<td class="right small">5.0</td>
-											<td class="right small">3.90%</td>
+											<td class="right small">3.89%</td>
 											<td class="right small">0.00</td>
 											<td class="right small">0</td>
 											<td class="right small">0</td>
@@ -7338,25 +7720,25 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							<tr class="odd">
 								<td class="left small">ferocious_bite</td>
 								<td class="right small">7.0%</td>
-								<td class="right small">872.8</td>
+								<td class="right small">870.7</td>
 								<td class="right small">42</td>
 							</tr>
 							<tr>
 								<td class="left small">mangle_cat</td>
 								<td class="right small">9.7%</td>
-								<td class="right small">465.4</td>
+								<td class="right small">465.5</td>
 								<td class="right small">32</td>
 							</tr>
 							<tr class="odd">
 								<td class="left small">rake</td>
 								<td class="right small">13.9%</td>
-								<td class="right small">2390.6</td>
+								<td class="right small">2388.9</td>
 								<td class="right small">30</td>
 							</tr>
 							<tr>
 								<td class="left small">rip</td>
 								<td class="right small">6.4%</td>
-								<td class="right small">7073.0</td>
+								<td class="right small">7078.1</td>
 								<td class="right small">27</td>
 							</tr>
 							<tr class="odd">
@@ -7391,8 +7773,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">berserk</a></td>
 								<td class="right">2.8</td>
 								<td class="right">0.0</td>
-								<td class="right">195.3sec</td>
-								<td class="right">195.3sec</td>
+								<td class="right">195.2sec</td>
+								<td class="right">195.2sec</td>
 								<td class="right">9%</td>
 								<td class="right">9%</td>
 							</tr>
@@ -7459,7 +7841,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							<tr class="odd">
 								<td class="left"><a href="#" class="toggle-details">combo_points</a></td>
 								<td class="right">40.4</td>
-								<td class="right">139.0</td>
+								<td class="right">139.1</td>
 								<td class="right">11.3sec</td>
 								<td class="right">2.5sec</td>
 								<td class="right">79%</td>
@@ -7483,8 +7865,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">essence_of_the_cyclone</a></td>
 								<td class="right">8.5</td>
 								<td class="right">0.0</td>
-								<td class="right">55.6sec</td>
-								<td class="right">55.6sec</td>
+								<td class="right">55.5sec</td>
+								<td class="right">55.5sec</td>
 								<td class="right">19%</td>
 								<td class="right">19%</td>
 							</tr>
@@ -7506,7 +7888,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">omen_of_clarity</a></td>
 								<td class="right">30.4</td>
 								<td class="right">0.3</td>
-								<td class="right">14.3sec</td>
+								<td class="right">14.4sec</td>
 								<td class="right">14.2sec</td>
 								<td class="right">3%</td>
 								<td class="right">5%</td>
@@ -7529,8 +7911,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">prestors_talisman_of_machination</a></td>
 								<td class="right">6.0</td>
 								<td class="right">0.0</td>
-								<td class="right">80.7sec</td>
-								<td class="right">80.7sec</td>
+								<td class="right">80.8sec</td>
+								<td class="right">80.8sec</td>
 								<td class="right">20%</td>
 								<td class="right">20%</td>
 							</tr>
@@ -7575,8 +7957,8 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<td class="left"><a href="#" class="toggle-details">savage_roar</a></td>
 								<td class="right">5.9</td>
 								<td class="right">8.1</td>
-								<td class="right">79.1sec</td>
-								<td class="right">32.8sec</td>
+								<td class="right">78.9sec</td>
+								<td class="right">32.9sec</td>
 								<td class="right">97%</td>
 								<td class="right">97%</td>
 							</tr>
@@ -7588,7 +7970,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 										<li><span class="label">cooldown name:</span>buff_savage_roar</li>
 										<li><span class="label">tooltip:</span><span class="tooltip-wider">Autoattack damage done increased by $w2%.</span></li>
 										<li><span class="label">max_stacks:</span>1</li>
-										<li><span class="label">duration:</span>37.00</li>
+										<li><span class="label">duration:</span>42.00</li>
 										<li><span class="label">cooldown:</span>0.00</li>
 										<li><span class="label">default_chance:</span>100.00%</li>
 									</ul>
@@ -7619,9 +8001,9 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 							</tr>
 							<tr>
 								<td class="left"><a href="#" class="toggle-details">t11_4pc_melee</a></td>
-								<td class="right">1.2</td>
+								<td class="right">1.3</td>
 								<td class="right">17.8</td>
-								<td class="right">207.4sec</td>
+								<td class="right">203.8sec</td>
 								<td class="right">24.2sec</td>
 								<td class="right">100%</td>
 								<td class="right">100%</td>
@@ -7839,17 +8221,17 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								</tr>
 								<tr>
 									<td class="left">combo_points_wasted</td>
-									<td class="right">71.0</td>
+									<td class="right">70.9</td>
 									<td class="right">8.0sec</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">fury_swipes</td>
 									<td class="right">54.2</td>
-									<td class="right">8.3sec</td>
+									<td class="right">8.2sec</td>
 								</tr>
 								<tr>
 									<td class="left">primal_fury</td>
-									<td class="right">77.8</td>
+									<td class="right">77.7</td>
 									<td class="right">5.8sec</td>
 								</tr>
 							</table>
@@ -7868,29 +8250,29 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								</tr>
 								<tr>
 									<td class="left">energy_refund</td>
-									<td class="right">31.4</td>
-									<td class="right">189.7</td>
+									<td class="right">31.3</td>
+									<td class="right">189.4</td>
 									<td class="right">6.0</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">energy_regen</td>
 									<td class="right">1800.3</td>
-									<td class="right">4959.4</td>
+									<td class="right">4959.2</td>
 									<td class="right">2.8</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr>
 									<td class="left">omen_of_clarity</td>
 									<td class="right">30.4</td>
-									<td class="right">1168.5</td>
+									<td class="right">1167.6</td>
 									<td class="right">38.5</td>
 									<td class="right">0.0%</td>
 								</tr>
 								<tr class="odd">
 									<td class="left">tigers_fury</td>
 									<td class="right">16.5</td>
-									<td class="right">992.0</td>
+									<td class="right">991.9</td>
 									<td class="right">60.0</td>
 									<td class="right">0.0%</td>
 								</tr>
@@ -8025,7 +8407,7 @@ In addition, when activated this ability causes your Mangle (Bear) ability to hi
 								<div class="subsection subsection-small">
 									<h4>Sample Sequence</h4>
 									<div class="force-wrap mono">
-                    013567BBB9IJMRSSFSPSSKKSSNSSS9BIKSSPSSKSIS9BSSMKSSLSIKS9BSSSSSKSISMKSB9SSSSIKSMLSSSSB9KSSSISSKKSMSB9SKISSSKSSSIB9SSSMFKSSSSSSSIKSB9SSSSKKSISMKSSB9LNSSSSIKSSSB9JSSISLSKMSSSSB9IKSSSPSSSKKSIS9BLKMSSSLSIKS9BSLSSKSISMKB9SSSSFSIKSSSSSSMSASKH9BSSSHSKSSHSSSS9BHJMSSKGSLS9BHKMSSSSHKSSHLB9MSSSKSHSSKSLB9HSSM
+                    013567BBBKM9RSSISFLSSKSPSSSSSSI9BBBJNSSLSSKSIIS9SSBKNSSKSI9SSBPSKSSNSLSIK9SBLSPSKSSSISM9KBSSSKISSSSSM9SBKSSSISKSSSSS9BSSKIFSSSMSSSKSSSBBIS9SKPSSSLKNSBS9SIKSSSSKSBII9SSSMKSSSSIBB9JSSSSMSKSISBS9KSSSSSSIKSMB9SSKSISSSKSM9BSSIFKSSAHSSSSHSSKSH9BSSSHKSMLLSSSHKB9SSSHSKSMLSSHB9JSHSSKSMSB9KISSSSKHSS
 									</div>
 								</div>
 							</div>
@@ -8643,6 +9025,31 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 								</div>
 							</div>
 						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td>( Pawn: v1: "Druid_Feral_T11_372_hitcap":  MeleeDps=4.8863, Agility=3.2011, Strength=2.4184, MasteryRating=1.2364, Ap=1.1483, HasteRating=1.0628, CritRating=1.0358, HitRating=0.9862, ExpertiseRating=0.9687 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( Pawn: v1: "Druid_Feral_T11_372_hitcap":  MeleeDps=4.8863, Agility=3.2011, Strength=2.4184, MasteryRating=1.2364, Ap=1.1483, HasteRating=1.0628, CritRating=1.0358, HitRating=0.0000, ExpertiseRating=0.0000 )</td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td>( RhadaTip: "Druid_Feral_T11_372_hitcap":  MeleeDps=4.8863, Agility=3.2011, Strength=2.4184, MasteryRating=1.2364, Ap=1.1483, HasteRating=1.0628, CritRating=1.0358, HitRating=0.9862, ExpertiseRating=0.9687 )</td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td>( RhadaTip: "Druid_Feral_T11_372_hitcap":  MeleeDps=4.8863, Agility=3.2011, Strength=2.4184, MasteryRating=1.2364, Ap=1.1483, HasteRating=1.0628, CritRating=1.0358, HitRating=0.0000, ExpertiseRating=0.0000 )</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -8775,7 +9182,7 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 								<td>0.0 / 0.0%</td>
 								<td>0.0%</td>
 								<td>0.0</td>
-								<td>77020.7</td>
+								<td>77045.7</td>
 								<td>0.0</td>
 								<td>health</td>
 								<td>100.02%</td>
@@ -8783,6 +9190,40 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 							</tr>
 						</table>
 						<table class="sc mt">
+						</table>
+						<table class="sc mt">
+							<tr>
+								<th><a href="#help-scale-factors" class="help">?</a></th>
+							</tr>
+							<tr>
+								<th class="left">Scale Factors</th>
+							</tr>
+							<tr>
+								<th class="left">Normalized</th>
+							</tr>
+							<tr>
+								<th class="left">Scale Deltas</th>
+							</tr>
+							<tr>
+								<th class="left">Error</th>
+							</tr>
+							<tr class="left">
+								<th>Gear Ranking</th>
+								<td colspan="0" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowhead</a></li>
+										<li><a href="" class="ext">lootrank</a></li>
+									</ul>
+								</td>
+							</tr>
+							<tr class="left">
+								<th>Optimizers</th>
+								<td colspan="0" class="filler">
+									<ul class="float">
+										<li><a href="" class="ext">wowreforge</a></li>
+									</ul>
+								</td>
+							</tr>
 						</table>
 					</div>
 				</div>
@@ -8792,7 +9233,7 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 						<div class="charts charts-left">
                                                         						</div>
 						<div class="charts">
-                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:t77777777666665555544444433333333222222221111111100000000zzzzzzzzyyyyyyyxxxxxxxxxxwwwwwwwwvvvvvvvuuuuuuuttttttttttssssssrrrrrrrrqqqqqqqqqppppppppooooooonnnnnnnnnmmmmmmmmllllllllkkkkkkkkjjjjjjjjiiiiiiihhhhhhhgggggggfffffffeeeeeeeeddddddddcccccccbbbbbbbbbaaaaaaaZZZZZZZZYYYYYYYYYXXXXXXXXWWWWWWWVVVVVVVVUUUUUUUUUTTTTTTTSSSSSSSRRRRRRRRQQQQQQPPPPPPPOOOOOOONNNNNNNNNMMMMMMMMMMMMLLLLLLLLLLLLLLLKKKKKKKKKKKKJJJJJJJJJJJIIIIIIIIIIIHHHHHHHHHHHHGGGGGGGGGGGGGFFFF&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=34562968&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=dddddd,18&amp;chco=336600</span>
+                            <span class="chart-timeline-resource" title="Resource Timeline Chart">http://5.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:t87777777666665555544444433333333222222221111111100000000zzzzzzzzyyyyyyyxxxxxxxxxxwwwwwwwwvvvvvvvuuuuuuuttttttttttssssssrrrrrrrrqqqqqqqqqppppppppooooooonnnnnnnnnmmmmmmmmllllllllkkkkkkkkjjjjjjjjiiiiiiihhhhhhhgggggggfffffffeeeeeeeeddddddddcccccccbbbbbbbbbaaaaaaaZZZZZZZZYYYYYYYYYXXXXXXXXWWWWWWWVVVVVVVVUUUUUUUUUTTTTTTTSSSSSSSRRRRRRRRQQQQQQPPPPPPPOOOOOOONNNNNNNNNMMMMMMMMMMMMLLLLLLLLLLLLLLKKKKKKKKKKKKKJJJJJJJJJJJIIIIIIIIIIIIHHHHHHHHHHHGGGGGGGGGGGGGGFFF&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|max=34573613&amp;chtt=Fluffy_Pillow+Health+Timeline&amp;chts=dddddd,18&amp;chco=336600</span>
                             <span class="chart-timeline-dps" title="DPS Timeline Chart">http://7.chart.apis.google.com/chart?chs=525x185&amp;cht=lc&amp;chf=bg,s,333333&amp;chg=100,20&amp;chd=s:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&amp;chco=FDD017&amp;chds=0,60&amp;chxt=x,y&amp;chxl=0:|0|sec=450|1:|0|avg=0|max=0&amp;chxp=1,1,-nan,100&amp;chtt=Fluffy_Pillow+DPS+Timeline&amp;chts=dddddd,18</span>
                             						</div>
 						<div class="clear"></div>
@@ -9507,7 +9948,7 @@ Cannot stealth or turn invisible.</span></li>
 									<tr class="odd">
 										<th class="left">Health</th>
 										<td class="right">0</td>
-										<td class="right">41942150</td>
+										<td class="right">41326167</td>
 										<td class="right">0</td>
 									</tr>
 									<tr>
@@ -10013,6 +10454,31 @@ actions=snapshot_stats<br>
 # Gear Summary
 </p>
 								</div>
+							</div>
+						</div>
+						<div class="player-section gear-weights">
+							<h3 class="toggle">Gear Weights</h3>
+							<div class="toggle-content hide">
+								<table class="sc mb">
+									<tr class="left">
+										<th>Pawn Standard</th>
+										<td></td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td></td>
+									</tr>
+								</table>
+								<table class="sc">
+									<tr class="left">
+										<th>RhadaTip Standard</th>
+										<td></td>
+									</tr>
+									<tr class="left">
+										<th>Zero Hit/Expertise</th>
+										<td></td>
+									</tr>
+								</table>
 							</div>
 						</div>
 					</div>
