@@ -495,7 +495,9 @@ bool buff_t::trigger( int    stacks,
   // new buff cooldown impl
   if ( cooldown -> duration > 0 )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f", player -> name(), name(), cooldown -> name(), cooldown -> duration );
+    if ( sim -> debug ) 
+      log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f", 
+		     ( source ? source -> name() : "someone" ), name(), cooldown -> name(), cooldown -> duration );
 
     cooldown -> start();
   }
