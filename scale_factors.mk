@@ -5,7 +5,7 @@
 
 # Ugh
 
-profile = $(subst death_knight,Death_Knight,$(subst dr,Dr,$(subst hu,Hu,$(subst mag,Mag,$(subst p,P,$(subst ro,Ro,$(subst sh,Sh,$(subst wa,Wa,$1))))))))
+profile = $(subst _auto,,$(subst death_knight,Death_Knight,$(subst dr,Dr,$(subst hu,Hu,$(subst mag,Mag,$(subst p,P,$(subst ro,Ro,$(subst sh,Sh,$(subst wa,Wa,$1)))))))))
 
 # Regenerate html reports when class models change
 
@@ -26,8 +26,8 @@ MODELS =\
 	warlock		\
 	warrior 
 
-REPORTS_LIVE := $(MODELS:%=$(HTML)/$(LIVE)/%.html)
-REPORTS_PTR  := $(MODELS:%=$(HTML)/$(PTR)/%.html)
+REPORTS_LIVE := $(MODELS:%=$(HTML)/$(LIVE)/%_auto.html)
+REPORTS_PTR  := $(MODELS:%=$(HTML)/$(PTR)/%_auto.html)
 
 SRC        = engine
 DEPENDS    = $(SRC)/simulationcraft.h
@@ -48,13 +48,13 @@ all: live ptr
 clean:
 	/bin/rm -f $(REPORTS_LIVE) $(REPORTS_PTR)
 
-$(HTML)/$(LIVE)/%.html: $(SRC)/sc_%.cpp $(DEPENDS)
+$(HTML)/$(LIVE)/%_auto.html: $(SRC)/sc_%.cpp $(DEPENDS)
 	-@echo Generating $@ 
 	-@$(MODULE) $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR).simc output=$(basename $(@F)).txt html=$@
 
 # We should make <class>_PTR_<etc>.simc files even if they just reload the live version
 
-$(HTML)/$(PTR)/%.html: $(SRC)/sc_%.cpp $(DEPENDS)
+$(HTML)/$(PTR)/%_auto.html: $(SRC)/sc_%.cpp $(DEPENDS)
 	-@echo Generating $@ 
 	-@$(MODULE) ptr=1 $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR)_PTR.simc output=$(basename $(@F)).txt html=$@
 
