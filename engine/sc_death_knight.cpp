@@ -2329,7 +2329,7 @@ struct blood_strike_offhand_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * effect3().percent();
+    target_multiplier *= 1 + p -> diseases() * 0.19; // Currently giving a 19% increase per disease instead of expected 12.5
   }
 };
 
@@ -2375,7 +2375,7 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * effect3().percent();
+    target_multiplier *= 1 + p -> diseases() * 0.19; // Currently giving a 19% increase per disease instead of expected 12.5
   }
 };
 
@@ -2582,8 +2582,7 @@ struct death_and_decay_t : public death_knight_spell_t
     aoe              = -1;
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
-    base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
-    base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
+    base_td          = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_tick_time   = 1.0;
     num_ticks        = 11;
     tick_zero        = true;
@@ -2817,7 +2816,9 @@ struct frost_strike_offhand_t : public death_knight_attack_t
 
     background = true;
     weapon     = &( p -> off_hand_weapon );
-    // FIXME: Base Value is halfed in the DBC, should it be?
+    // Base damage is halved in the DBC, but is not on live
+    base_dd_min *= 2;
+    base_dd_max *= 2;
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
 
@@ -3210,7 +3211,9 @@ struct obliterate_offhand_t : public death_knight_attack_t
 
     background = true;
     weapon     = &( p -> off_hand_weapon );
-    // FIXME: Base Value is halfed in the DBC, should it be?
+    // Base damage is halved in the DBC, but is not on live
+    base_dd_min *= 2;
+    base_dd_max *= 2;
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
   }
@@ -3434,7 +3437,9 @@ struct plague_strike_offhand_t : public death_knight_attack_t
     
     background = true;
     weapon     = &( p -> off_hand_weapon );
-    // FIXME: Base Value is halfed in the DBC, should it be?
+    // Base damage is halved in the DBC, but is not on live
+    base_dd_min *= 2;
+    base_dd_max *= 2;
 
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect1().percent();
   }

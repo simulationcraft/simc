@@ -831,6 +831,9 @@ double action_t::calculate_weapon_damage()
 
   double dmg = sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
 
+  // DK Testing is showing for normalized weapon attacks, that only the speed is normalized, not the weapon_damage as well
+  // More testing from other classes is needed before we make the switch to
+  // double weapon_damage = dmg;
   double weapon_damage = normalize_weapon_damage ? dmg * 2.8 / weapon -> swing_time : dmg;
   double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
