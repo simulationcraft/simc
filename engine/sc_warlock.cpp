@@ -2365,7 +2365,7 @@ struct drain_life_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    if ( p -> buffs_shadow_trance -> trigger() )
+    if ( p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talent_nightfall -> proc_chance() ) )
       p -> procs_shadow_trance -> occur();
   }
 };
@@ -4265,21 +4265,29 @@ void warlock_t::init_actions()
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";
-        action_list_str += "/soulburn";
-        if ( talent_improved_soul_fire -> ok() && level >= 54)
+        if ( ! glyphs.lash_of_pain -> ok() ) 
         {
-          if ( talent_emberstorm -> ok() )
+          action_list_str += "/soulburn,if=buff.demon_soul_felhunter.up";
+          action_list_str += "/drain_life,if=buff.demon_soul_felhunter.up";
+        }
+        else
+        {
+          action_list_str += "/soulburn";
+          if ( talent_improved_soul_fire -> ok() && level >= 54)
           {
-            action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
-          } 
+            if ( talent_emberstorm -> ok() )
+            {
+              action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight";
+            } 
+            else
+            {
+              action_list_str += "/soul_fire,if=buff.soulburn.up";
+            }
+          }
           else
           {
             action_list_str += "/soul_fire,if=buff.soulburn.up";
           }
-        }
-        else
-        {
-          action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
         if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
         action_list_str += "/shadow_bolt";
@@ -4288,7 +4296,7 @@ void warlock_t::init_actions()
       {
         action_list_str += "/soulburn";
         if ( level >= 54) action_list_str += "/soul_fire,if=buff.soulburn.up";
-        if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
+        if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
         action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
         action_list_str += "/life_tap,mana_percentage<=5";
          if ( talent_improved_soul_fire -> ok() && level >= 54)

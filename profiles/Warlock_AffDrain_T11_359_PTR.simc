@@ -28,7 +28,6 @@ actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/shadowflame
 actions+=/soulburn
 actions+=/soul_fire,if=buff.soulburn.up
-actions+=/demon_soul,if=buff.shadow_trance.react
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/life_tap,mana_percentage<=5
 actions+=/drain_life,interrupt=1
