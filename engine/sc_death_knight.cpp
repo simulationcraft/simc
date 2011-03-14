@@ -2293,7 +2293,7 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    base_td          = 1.0;
+    base_td          = 38; // value in DBC is wrong
     base_tick_time   = 3.0;
     tick_may_crit    = true;
     background       = true;
@@ -2770,7 +2770,7 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    base_td           = 1.0;
+    base_td           = 31; // value in DBC is wrong
     base_tick_time    = 3.0;
     hasted_ticks      = false;
     may_miss          = false;
@@ -2778,7 +2778,6 @@ struct frost_fever_t : public death_knight_spell_t
     background        = true;
     tick_may_crit     = true;
     dot_behavior      = DOT_REFRESH;
-    base_crit_bonus_multiplier /= 2.0;  // current bug, FF crits for 150% instead of 200%, which means half the bonus multiplier.
     num_ticks         = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
     tick_power_mod    = 0.055 * 1.15;
     base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
