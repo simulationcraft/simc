@@ -18,6 +18,7 @@
 #define TAB_EXAMPLES  5
 #define TAB_LOG       6
 #define TAB_RESULTS   7
+#define TAB_SITE      8
 
 #define TAB_BATTLE_NET 0
 #define TAB_CHAR_DEV   1
@@ -116,6 +117,7 @@ public:
     QButtonGroup* plotsButtonGroup;
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* charDevView;
+    SimulationCraftWebView* siteView;
     SimulationCraftWebView* visibleWebView;
     PersistentCookieJar* charDevCookies;
     QPushButton* rawrButton;
@@ -188,7 +190,9 @@ public:
     void createExamplesTab();
     void createLogTab();
     void createResultsTab();
+    void createSiteTab();
     void createToolTips();
+    void updateVisibleWebView( SimulationCraftWebView* );
 
 protected:
     virtual void closeEvent( QCloseEvent* );

@@ -365,6 +365,7 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   createExamplesTab();
   createLogTab();
   createResultsTab();
+  createSiteTab();
   createCmdLine();
   createToolTips();
 
@@ -802,6 +803,13 @@ void SimulationCraftWindow::createResultsTab()
   mainTab->addTab( resultsTab, "Results" );
 }
 
+void SimulationCraftWindow::createSiteTab()
+{
+  siteView = new SimulationCraftWebView( this );
+  siteView->setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
+  mainTab->addTab( siteView, "Site" );
+}
+
 void SimulationCraftWindow::createToolTips()
 {
   versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
@@ -842,6 +850,14 @@ void SimulationCraftWindow::createToolTips()
   
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
+}
+
+void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
+{
+  visibleWebView = wv;
+  progressBar->setFormat( "%p%" );
+  progressBar->setValue( visibleWebView->progress );
+  cmdLine->setText( visibleWebView->url().toString() );
 }
 
 // ==========================================================================
@@ -1296,6 +1312,7 @@ void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
   case TAB_SIMULATE:  cmdLineText = s; break;
   case TAB_OVERRIDES: cmdLineText = s; break;
   case TAB_EXAMPLES:  cmdLineText = s; break;
+  case TAB_SITE:      cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
   case TAB_IMPORT:    break;
@@ -1338,6 +1355,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
   case TAB_SIMULATE:  startSim(); break;
   case TAB_OVERRIDES: startSim(); break;
   case TAB_EXAMPLES:  startSim(); break;
+  case TAB_SITE:      startSim(); break;
   case TAB_IMPORT:
     switch( importTab->currentIndex() )
     {
@@ -1382,7 +1400,6 @@ void SimulationCraftWindow::backButtonClicked( bool checked )
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
     case TAB_LOG:       break;
     case TAB_RESULTS:   break;
-    case TAB_EXAMPLES:  break;
     }
   }
 }
@@ -1406,7 +1423,6 @@ void SimulationCraftWindow::forwardButtonClicked( bool checked )
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
     case TAB_LOG:       break;
     case TAB_RESULTS:   break;
-    case TAB_EXAMPLES:  break;
     }
   }
 }
@@ -1451,6 +1467,11 @@ void SimulationCraftWindow::mainTabChanged( int index )
     mainButton->setText( "Save!" ); 
     resultsTabChanged( resultsTab->currentIndex() ); 
     break;
+  case TAB_SITE:
+    cmdLine->setText( cmdLineText ); 
+    mainButton->setText( sim ? "Cancel!" : "Simulate!" );
+    updateVisibleWebView( siteView );
+    break;
   default: assert(0);
   }
   if( visibleWebView ) 
@@ -1478,10 +1499,7 @@ void SimulationCraftWindow::importTabChanged( int index )
   }
   else
   {
-    visibleWebView = (SimulationCraftWebView*) importTab->widget( index );
-    progressBar->setFormat( "%p%" );
-    progressBar->setValue( visibleWebView->progress );
-    cmdLine->setText( visibleWebView->url().toString() );
+    updateVisibleWebView( (SimulationCraftWebView*) importTab->widget( index ) );
   }
 }
 
@@ -1493,8 +1511,7 @@ void SimulationCraftWindow::resultsTabChanged( int index )
   }
   else
   {
-    visibleWebView = (SimulationCraftWebView*) resultsTab->widget( index );
-    progressBar->setValue( visibleWebView->progress );
+    updateVisibleWebView( (SimulationCraftWebView*) resultsTab->widget( index ) );
     QString s = visibleWebView->url().toString();
     if( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
