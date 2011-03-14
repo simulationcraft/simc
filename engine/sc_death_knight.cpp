@@ -2293,7 +2293,7 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    base_td          = 38; // value in DBC is wrong
+    base_td          = effect_average( 1 ) * 1.15;
     base_tick_time   = 3.0;
     tick_may_crit    = true;
     background       = true;
@@ -2301,7 +2301,7 @@ struct blood_plague_t : public death_knight_spell_t
     tick_power_mod   = 0.055 * 1.15;
     dot_behavior     = DOT_REFRESH;
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect1().percent();
-    base_multiplier  *= 1.0 + p -> talents.virulence -> mod_additive( P_TICK_DAMAGE );
+    base_multiplier *= 1.0 + p -> talents.virulence -> mod_additive( P_TICK_DAMAGE );
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;
@@ -2770,19 +2770,19 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    base_td           = 31; // value in DBC is wrong
-    base_tick_time    = 3.0;
-    hasted_ticks      = false;
-    may_miss          = false;
-    may_crit          = false;
-    background        = true;
-    tick_may_crit     = true;
-    dot_behavior      = DOT_REFRESH;
-    num_ticks         = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
-    tick_power_mod    = 0.055 * 1.15;
-    base_multiplier  *= 1.0 + p -> glyphs.icy_touch * 0.2
-                        + p -> talents.ebon_plaguebringer -> effect1().percent();
-    base_multiplier  *= 1.0 + p -> talents.virulence -> effect1().percent();
+    base_td          = effect_average( 1 ) * 1.15;
+    base_tick_time   = 3.0;
+    hasted_ticks     = false;
+    may_miss         = false;
+    may_crit         = false;
+    background       = true;
+    tick_may_crit    = true;
+    dot_behavior     = DOT_REFRESH;
+    num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
+    tick_power_mod   = 0.055 * 1.15;
+    base_multiplier *= 1.0 + p -> glyphs.icy_touch * 0.2
+                       + p -> talents.ebon_plaguebringer -> effect1().percent();
+    base_multiplier *= 1.0 + p -> talents.virulence -> effect1().percent();
     reset(); // Not a real action
   }
 
@@ -4245,7 +4245,7 @@ void death_knight_t::init_actions()
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
         action_list_str += "/pillar_of_frost";
-      action_list_str += "/raise_dead,time>=5";
+      action_list_str += "/raise_dead,time>=15";
       // Priority Taken from Frost DK OP
       // Diseases
       if ( level > 81 )
@@ -4912,7 +4912,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 void player_t::death_knight_init( sim_t* sim )
 {
   sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1,   0.0 );
-  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0, sim -> dbc.effect_average( sim -> dbc.spell( 57330 ) -> effect1().id(), sim -> max_player_level ) );
+  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0 );
   sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,   0.0 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )

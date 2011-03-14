@@ -1779,11 +1779,11 @@ double player_t::composite_armor() SC_CONST
     a += sim -> auras.devotion_aura -> value();
 
   a *= 1.0 - std::max( debuffs.sunder_armor -> stack() * 0.04,
-               std::max( debuffs.faerie_fire  -> check() * debuffs.faerie_fire -> value(),
-                 std::max( debuffs.expose_armor -> value(),
-                   std::max( debuffs.corrosive_spit -> check() * debuffs.corrosive_spit -> value() * 0.01,
-                     debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01) ) ) )
-           - debuffs.shattering_throw -> stack() * 0.20;
+             std::max( debuffs.faerie_fire  -> check() * debuffs.faerie_fire -> value(),
+             std::max( debuffs.expose_armor -> value(),
+             std::max( debuffs.corrosive_spit -> check() * debuffs.corrosive_spit -> value() * 0.01,
+                       debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01) ) ) )
+             - debuffs.shattering_throw -> stack() * 0.20;
 
   if ( buffs.stoneform -> up() )
     a *= 1.10;

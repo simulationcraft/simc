@@ -667,7 +667,7 @@ void action_t::target_debuff( player_t* t, int dmg_type )
   if ( base_attack_power_multiplier > 0 )
   {
     bool ranged = ( player -> position == POSITION_RANGED_FRONT || 
-		    player -> position == POSITION_RANGED_BACK );
+                    player -> position == POSITION_RANGED_BACK );
 
     if ( ranged )
     {

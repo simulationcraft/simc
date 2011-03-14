@@ -509,11 +509,11 @@ void attack_t::execute()
     {
       if ( direct_tick )
       {
-	action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+        action_callback_t::trigger( player -> tick_callbacks[ result ], this );
       }
       else
       {
-	action_callback_t::trigger( player -> attack_callbacks[ result ], this );
+        action_callback_t::trigger( player -> attack_callbacks[ result ], this );
       }
     }
   }
