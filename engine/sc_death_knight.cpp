@@ -1177,8 +1177,8 @@ struct ghoul_pet_t : public pet_t
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
-    main_hand_weapon.max_dmg    = 100; // FIXME only level 80 value
+    main_hand_weapon.min_dmg    = 506; // FIXME: Needs further testing
+    main_hand_weapon.max_dmg    = 720; // FIXME: Needs further testing
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
@@ -1192,7 +1192,6 @@ struct ghoul_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      weapon_power_mod *= 0.84; // What is this based off?
     }
 
     virtual void player_buff()
@@ -1221,9 +1220,9 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL )
     {
       base_execute_time = weapon -> swing_time;
-      base_dd_min       = base_dd_max = 1;
       background        = true;
       repeating         = true;
+      weapon_power_mod  = 0.0845 / weapon -> swing_time; // FIXME: Needs further testing
     }
   };
 
@@ -1259,8 +1258,8 @@ struct ghoul_pet_t : public pet_t
     {
       id = 91776;
       parse_data();
+      weapon_power_mod = 0.105 / weapon -> swing_time; // FIXME: Needs further testing
     }
-
   };
 
   struct ghoul_pet_sweeping_claws_t : public ghoul_pet_attack_t
@@ -1271,6 +1270,7 @@ struct ghoul_pet_t : public pet_t
       id = 91778;
       aoe = 2;
       parse_data();
+      weapon_power_mod = 0.105 / weapon -> swing_time; // FIXME: Copied from claw, but most likely scales better
     }
 
     virtual bool ready()
@@ -2612,7 +2612,7 @@ struct death_coil_t : public death_knight_spell_t
     base_multiplier *= 1 + p -> talents.morbidity -> mod_additive( P_GENERIC )
                        + p -> glyphs.death_coil * 0.15;
     if ( p -> set_bonus.tier11_2pc_melee() )
-      base_crit        += 0.05;
+      base_crit     += 0.05;
 
     if ( p -> talents.runic_corruption -> rank() )
       base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST ) / 10.0;
