@@ -738,6 +738,7 @@ struct hunter_spell_t : public spell_t
   }
 
   virtual double gcd() SC_CONST;
+  virtual double cost() SC_CONST;
 };
 
 namespace { // ANONYMOUS NAMESPACE =========================================
@@ -2648,6 +2649,17 @@ double hunter_spell_t::gcd() SC_CONST
 {
   // Hunter gcd unaffected by haste
   return trigger_gcd;
+}
+
+// hunter_spell_t::cost ===================================================
+
+double hunter_spell_t::cost() SC_CONST
+{
+  hunter_t* p = player -> cast_hunter();
+  double c = spell_t::cost();
+  if ( c == 0 ) return 0;
+  if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
+  return c;
 }
 
 // Aspect of the Hawk
