@@ -164,7 +164,7 @@ void scaling_t::init_deltas()
   if ( stats.mastery_rating == 0 ) stats.mastery_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
   // Defensive
-  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 6000 : 12000;
+  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 1500 : 3000;
   if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
   if ( stats.parry_rating  == 0 ) stats.parry_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
   if ( stats.block_rating  == 0 ) stats.block_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
@@ -295,10 +295,10 @@ void scaling_t::analyze_stats()
 
     if ( debug_scale_factors )
     {
+      log_t::output( ref_sim, "\nref_sim report for %s...\n", util_t::stat_type_string( i ) );
       report_t::print_text( sim -> output_file,   ref_sim, true );
+      log_t::output( delta_sim, "\ndelta_sim report for %s...\n", util_t::stat_type_string( i ) );
       report_t::print_text( sim -> output_file, delta_sim, true );
-      if (ref_sim2)   report_t::print_text( sim -> output_file,   ref_sim2, true );
-      if (delta_sim2) report_t::print_text( sim -> output_file, delta_sim2, true );
     }
 
     if ( ref_sim != baseline_sim && ref_sim != sim ) 
@@ -513,8 +513,11 @@ bool scaling_t::has_scale_factors()
 
 double scaling_t::scale_over_function( sim_t* s, player_t* p )
 {
-  if ( scale_over == "raid_dps" ) return s -> raid_dps;
-  if ( scale_over == "deaths"   ) return p -> death_count;
+  if ( scale_over == "raid_dps"       ) return s -> raid_dps;
+  if ( scale_over == "deaths"         ) return p -> death_count;
+  if ( scale_over == "min_death_time" ) return p -> min_death_time * 1000;
+  if ( scale_over == "avg_death_time" ) return p -> avg_death_time * 1000;
+  if ( scale_over == "dmg_taken"      ) return p -> total_dmg_taken;
   return p -> dps;
 }
 
@@ -523,8 +526,11 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
 
 double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
 {
-  if ( scale_over == "raid_dps" ) return 0;
-  if ( scale_over == "deaths"   ) return 0;
+  if ( scale_over == "raid_dps"       ) return 0;
+  if ( scale_over == "deaths"         ) return 0;
+  if ( scale_over == "min_death_time" ) return 0;
+  if ( scale_over == "avg_death_time" ) return 0;
+  if ( scale_over == "dmg_taken"      ) return 0;
   return p -> dps_error;
 }
 

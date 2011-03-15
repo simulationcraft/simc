@@ -2220,6 +2220,7 @@ struct sim_t
   std::string current_name, default_region_str, default_server_str, save_prefix_str;
   bool        input_is_utf8;
   std::vector<player_t*> actor_list;
+  std::string main_target_str;
   
   // Data access
   dbc_t       dbc;

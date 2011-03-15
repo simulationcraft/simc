@@ -570,7 +570,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     normalized_stat( STAT_NONE ),
     default_region_str( "us" ),
     save_prefix_str( "save_" ),
-    input_is_utf8( false ),
+    input_is_utf8( false ), main_target_str( "" ),
     rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
     smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale(2),
     timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -817,7 +817,7 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( ! fixed_time )
+    if ( ! fixed_time && target -> is_enemy() )
     {
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
@@ -1041,11 +1041,19 @@ bool sim_t::init()
   // Find Already defined target, otherwise create a new one.
   if ( debug )
     log_t::output( this, "Creating Enemys." );
+
   if ( target_list )
   {
     target = target_list;
   }
-  else
+
+  if ( ! main_target_str.empty() )
+  {
+      target = find_player( main_target_str );
+  }
+
+
+  if ( ! target )
     target = player_t::create( this, "enemy", "Fluffy_Pillow" );
 
 
@@ -1107,6 +1115,7 @@ void sim_t::analyze_player( player_t* p )
   p -> total_seconds /= iterations;
   p -> total_waiting /= iterations;
   p -> total_foreground_actions /= iterations;
+  p -> total_dmg_taken /= iterations;
 
   std::vector<stats_t*> stats_list;
 
@@ -2050,6 +2059,7 @@ void sim_t::create_options()
     { "fight_style",                      OPT_FUNC,   ( void* ) ::parse_fight_style                 },
     { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
+    { "main_target",                      OPT_STRING, &( main_target_str                          ) },
     // Character Creation
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
     { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },

@@ -1494,7 +1494,7 @@ void player_t::init_scaling()
     int tank   = role == ROLE_TANK ? 1 : 0;
 
     scales_with[ STAT_STRENGTH  ] = attack;
-    scales_with[ STAT_AGILITY   ] = attack;
+    scales_with[ STAT_AGILITY   ] = attack || tank;
     scales_with[ STAT_STAMINA   ] = tank;
     scales_with[ STAT_INTELLECT ] = spell;
     scales_with[ STAT_SPIRIT    ] = spell;
@@ -1629,10 +1629,10 @@ void player_t::init_scaling()
 
       case STAT_ARMOR:          initial_armor       += v; break;
       case STAT_BONUS_ARMOR:    initial_bonus_armor += v; break;
-      case STAT_DODGE_RATING:   initial_dodge       += v; break;
-      case STAT_PARRY_RATING:   initial_parry       += v; break;
+      case STAT_DODGE_RATING:   initial_dodge       += v / rating.dodge; break;
+      case STAT_PARRY_RATING:   initial_parry       += v / rating.parry; break;
 
-      case STAT_BLOCK_RATING: initial_block       += v; break;
+      case STAT_BLOCK_RATING: initial_block       += v / rating.block; break;
 
 
       case STAT_MAX: break;
@@ -2352,7 +2352,6 @@ void player_t::reset()
 
   last_cast = 0;
   gcd_ready = 0;
-  total_dmg_taken = 0;
 
   sleeping = 1;
 
@@ -2904,6 +2903,8 @@ int player_t::normalize_by() SC_CONST
 
   if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return STAT_INTELLECT;
+  else if ( primary_role() == ROLE_TANK )
+    return STAT_ARMOR;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE )
     return STAT_AGILITY;
   else if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
