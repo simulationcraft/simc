@@ -44,55 +44,55 @@ Here are the results assuming 3/3 Darkness and Mind Quickening (the 5% haste buf
 Shadow Word: Pain
 -----------------
 
-Ticks		Rating Required
-------		---------------
-6		0
-7		21
-8		1993
-9		3970
-10		5945
-11		7913
+Ticks		Rating Required		w/Dark Intent
+------		---------------		-------------
+6		0			0
+7		21			0
+8		1993			1562
+9		3970			3482
+10		5945			5399
+11		7913			7310
 
 
 Vampiric Touch
 --------------
 
-Ticks		Rating Required
-------		---------------
-5		0
-6		218
-7		2589
-8		4951
-9		7326
+Ticks		Rating Required		w/Dark Intent
+------		---------------		-------------
+5		0			0
+6		218			0
+7		2589			2141
+8		4951			4434
+9		7326			6740
 
 
 Devouring Plague
 ----------------
 
-Ticks		Rating Required
-------		---------------
-8		n/a
-9		0 (thanks to Darkness and Mind Quickening)
-10		1255
-11		2737
-12		4211
-13		5691
-14		7179
+Ticks		Rating Required		w/Dark Intent
+------		---------------		-------------
+8		0			0
+9		0			0		
+10		1255			845
+11		2737			2284
+12		4211			3724
+13		5691			5152
+14		7179			6597
 
 
 
 Improved Devouring Plague
 -------------------------
 
-Ticks		Rating Required
-------		---------------
-8		0
-9		3
-10		1602
-11		3205
-12		4805
-13		6408
-14		8000
+Ticks		Rating Required		w/Dark Intent
+------		---------------		-------------
+8		0			0
+9		3			3
+10		1602			1602
+11		3199			3199
+12		4805			4805
+13		6408			6408
+14		8000			8000
 
 
 
