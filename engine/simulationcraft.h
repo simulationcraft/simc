@@ -2960,7 +2960,7 @@ struct player_t
   int       death_count;
   std::vector<double> death_time;
   double    avg_death_time, death_count_pct, min_death_time;
-  double    total_dmg_taken;
+  double    dmg_taken, total_dmg_taken;
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;

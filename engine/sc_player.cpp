@@ -359,7 +359,7 @@ player_t::player_t( sim_t*             s,
     dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ), 
     dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
     death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( FLT_MAX ),
-    total_dmg_taken( 0.0 ),
+    dmg_taken( 0.0 ), total_dmg_taken( 0.0 ),
     buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
     save_str( "" ), save_gear_str( "" ), save_talents_str( "" ), save_actions_str( "" ),
     comment_str( "" ),
@@ -2355,6 +2355,8 @@ void player_t::reset()
 
   sleeping = 1;
 
+  dmg_taken = 0;
+
   stats = initial_stats;
 
   vengeance_damage = vengeance_value = vengeance_max = 0.0;
@@ -2926,7 +2928,7 @@ double player_t::time_to_die() SC_CONST
 {
   if ( resource_base[ RESOURCE_HEALTH ] > 0 )
   {
-    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / total_dmg_taken;
+    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / dmg_taken;
   }
   else
   {
@@ -3106,6 +3108,7 @@ double player_t::assess_damage( double            amount,
 {
   double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 
+  dmg_taken += mitigated_amount;
   total_dmg_taken += mitigated_amount;
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount );

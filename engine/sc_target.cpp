@@ -69,6 +69,7 @@ virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_t
 virtual pet_t* find_pet( const std::string& add_name );
 virtual void recalculate_health();
 virtual action_expr_t* create_expression( action_t* action, const std::string& type );
+virtual void reset();
 };
 
 // ==========================================================================
@@ -359,25 +360,26 @@ void enemy_t::recalculate_health()
 
   if ( fixed_health != 0.0 )
   {
-    resource_base[ RESOURCE_HEALTH ] = fixed_health;
-    max_health = initial_health / ( initial_health_percentage / 100.0 );
+    resource_current[ RESOURCE_HEALTH ] = fixed_health;
+    max_health = resource_base[ RESOURCE_HEALTH ] = fixed_health / ( initial_health_percentage / 100.0 );
     return;
   }
 
-  if ( initial_health == 0 )
+  if ( resource_base[ RESOURCE_HEALTH ] == 0 || sim -> current_iteration == 0 )
   {
-    resource_current[ RESOURCE_HEALTH ] = total_dmg_taken;
-    resource_base[ RESOURCE_HEALTH ] = resource_current[ RESOURCE_HEALTH ] * ( sim -> expected_time / sim -> current_time );
+    initial_health = dmg_taken * ( sim -> expected_time / sim -> current_time );
+    resource_base[ RESOURCE_HEALTH ] = resource_max[ RESOURCE_HEALTH ] = initial_health;
+    resource_current[ RESOURCE_HEALTH ] = initial_health - dmg_taken;
   }
   else
   {
     double delta_time = sim -> current_time - sim -> expected_time;
-    delta_time /= sim -> current_iteration + 1; // dampening factor
+    delta_time /= log( sim -> current_iteration + 1 ); // dampening factor
     double time_factor = ( delta_time / sim -> expected_time );
 
-    double delta_dmg = resource_base[ RESOURCE_HEALTH ] - total_dmg_taken * ( sim -> expected_time / sim -> current_time );
-    delta_dmg /= sim -> current_iteration + 1; // dampening factor
-    double dmg_factor = ( delta_dmg / ( total_dmg_taken * ( sim -> expected_time / sim -> current_time ) )  );
+    double delta_dmg = initial_health - dmg_taken * ( sim -> expected_time / sim -> current_time );
+    delta_dmg /= log( sim -> current_iteration + 1 ); // dampening factor
+    double dmg_factor = ( delta_dmg / ( dmg_taken * ( sim -> expected_time / sim -> current_time ) )  );
 
     double factor = 1.0;
     if ( fabs( time_factor ) > fabs( dmg_factor ) )
@@ -388,12 +390,12 @@ void enemy_t::recalculate_health()
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 
-    resource_base[ RESOURCE_HEALTH ] *= factor;
+    initial_health *= factor;
   }
 
   max_health = resource_base[ RESOURCE_HEALTH ] / ( initial_health_percentage / 100.0 );
 
-  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Total Damage was %.0f", name(), initial_health, total_dmg );
+  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), resource_base[ RESOURCE_HEALTH ], dmg_taken );
 }
 
 
@@ -416,6 +418,15 @@ action_expr_t* enemy_t::create_expression( action_t* action,
    }
 
    return player_t::create_expression( action, name_str );
+}
+
+void enemy_t::reset()
+{
+  resource_base[ RESOURCE_HEALTH ] = initial_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
+
+
+  player_t::reset();
+
 }
 
 // ==========================================================================

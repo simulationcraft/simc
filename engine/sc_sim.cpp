@@ -844,7 +844,7 @@ void sim_t::combat( int iteration )
           if ( current_time > ( expected_time / 2.0 ) )
           {
             if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
-            //target -> recalculate_health();
+            target -> recalculate_health();
           }
         }
 
