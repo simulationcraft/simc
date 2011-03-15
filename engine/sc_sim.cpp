@@ -817,7 +817,7 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( ! fixed_time && target -> is_enemy() )
+    if ( ! fixed_time )
     {
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
@@ -1047,13 +1047,14 @@ bool sim_t::init()
     target = target_list;
   }
 
-  if ( ! main_target_str.empty() )
+  else if ( ! main_target_str.empty() )
   {
-      target = find_player( main_target_str );
+      player_t* p = find_player( main_target_str );
+      if ( p )
+        target = p;
   }
 
-
-  if ( ! target )
+  else
     target = player_t::create( this, "enemy", "Fluffy_Pillow" );
 
 
