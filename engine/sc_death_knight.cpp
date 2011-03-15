@@ -2780,9 +2780,9 @@ struct frost_fever_t : public death_knight_spell_t
     dot_behavior     = DOT_REFRESH;
     num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
     tick_power_mod   = 0.055 * 1.15;
+    base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.icy_touch * 0.2
-                       + p -> talents.ebon_plaguebringer -> effect1().percent();
-    base_multiplier *= 1.0 + p -> talents.virulence -> effect1().percent();
+                       + p -> talents.virulence -> effect1().percent();
     reset(); // Not a real action
   }
 
