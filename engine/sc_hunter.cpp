@@ -712,6 +712,7 @@ struct hunter_attack_t : public attack_t
 
   virtual double cost() SC_CONST;
   virtual double execute_time() SC_CONST;
+  virtual double swing_haste() SC_CONST;
   virtual void   player_buff();
 };
 
@@ -1644,6 +1645,18 @@ double hunter_attack_t::cost() SC_CONST
   return c;
 }
 
+// hunter_attack_t::swing_haste =============================================
+
+double hunter_attack_t::swing_haste() SC_CONST
+{
+  hunter_t* p = player -> cast_hunter();
+  double h = attack_t::swing_haste();
+
+  if ( p -> buffs_improved_steady_shot -> up() )
+    h *= 1.0/ (1.0 + p -> talents.improved_steady_shot -> effect1().percent() );
+
+  return h;
+}
 
 // hunter_attack_t::execute_time ============================================
 
@@ -3727,8 +3740,6 @@ double hunter_t::composite_attack_haste() SC_CONST
   h *= 1.0 / ( 1.0 + talents.pathing -> effect1().percent() );
   h *= 1.0 / ( 1.0 + buffs_focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
-  if ( buffs_improved_steady_shot -> up() )
-    h *= 1.0 / ( 1.0 + talents.improved_steady_shot -> effect1().percent() );
   return h;
 }
 
