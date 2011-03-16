@@ -3935,7 +3935,7 @@ struct lifeblood_t : public action_t
 
   virtual bool ready()
   {
-    if ( player -> profession[ PROF_HERBALISM ] < 525 )
+    if ( player -> profession[ PROF_HERBALISM ] < 450 )
       return false;
 
     return action_t::ready();

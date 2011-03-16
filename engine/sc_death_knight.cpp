@@ -4196,6 +4196,9 @@ void death_knight_t::init_actions()
         action_list_str += ",time>=10";
       }
     }
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
 
     // Use slightly into the fight, when debuffs are up
     switch ( race )

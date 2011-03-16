@@ -3169,6 +3169,10 @@ void rogue_t::init_actions()
       }
     }
 
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
+
     if ( race == RACE_ORC )
     {
       action_list_str += "/blood_fury";

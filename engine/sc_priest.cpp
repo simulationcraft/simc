@@ -4378,6 +4378,10 @@ void priest_t::init_actions()
       }
     }
 
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
+
     switch ( primary_tree() )
     {
     // SHADOW

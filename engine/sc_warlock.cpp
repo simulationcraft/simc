@@ -4224,6 +4224,10 @@ void warlock_t::init_actions()
       }
     }
 
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
+
     // Race Skills
     if ( race == RACE_ORC )
     {

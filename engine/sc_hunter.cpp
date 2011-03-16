@@ -509,8 +509,8 @@ struct hunter_pet_t : public pet_t
       const char* special = unique_special();
       if ( special )
       {
-	action_list_str += "/";
-	action_list_str += special;
+        action_list_str += "/";
+        action_list_str += special;
       }
       if ( talents.wolverine_bite -> rank() )
       {
@@ -3573,6 +3573,9 @@ void hunter_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
     switch ( race )
     {
     case RACE_ORC:       action_list_str += "/blood_fury";     break;

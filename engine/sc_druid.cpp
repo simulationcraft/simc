@@ -3852,6 +3852,9 @@ void druid_t::init_actions()
         action_list_str += "/barkskin"; // For now use it on CD
         action_list_str += "/enrage,time<=5"; // Use only at the start
         action_list_str += use_str;
+        // Lifeblood
+        if ( profession[ PROF_HERBALISM ] >= 450 )
+          action_list_str += "/lifeblood";
         action_list_str += "/maul,if=rage>=75";
         action_list_str += "/mangle_bear";
         action_list_str += "/demoralizing_roar,if=!debuff.demoralizing_roar.up";
@@ -3908,6 +3911,9 @@ void druid_t::init_actions()
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=25";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=25";
         action_list_str += use_str;
+        // Lifeblood
+        if ( profession[ PROF_HERBALISM ] >= 450 )
+          action_list_str += "/lifeblood";
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
         action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<multiplier)";
         action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
@@ -3970,6 +3976,9 @@ void druid_t::init_actions()
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
       action_list_str += use_str;
+      // Lifeblood
+      if ( profession[ PROF_HERBALISM ] >= 450 )
+        action_list_str += "/lifeblood";
       action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
       action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-87";
       action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";

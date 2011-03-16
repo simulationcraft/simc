@@ -3152,7 +3152,6 @@ void warrior_t::init_actions()
     break; default: break;
     }
 
-
     action_list_str += "/snapshot_stats";
 
     // Potion
@@ -3184,6 +3183,10 @@ void warrior_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
+
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
 
     // Race Skills
     if ( race == RACE_ORC )

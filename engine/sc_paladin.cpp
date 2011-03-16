@@ -2231,6 +2231,10 @@ void paladin_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
+      // Lifeblood
+      if ( profession[ PROF_HERBALISM ] >= 450 )
+        action_list_str += "/lifeblood";
+
       std::string hp_proc_str = "divine_purpose";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       if ( level >= 85 )
@@ -2270,6 +2274,18 @@ void paladin_t::init_actions()
       action_list_str += "/seal_of_truth";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
+      int num_items = ( int ) items.size();
+      for ( int i=0; i < num_items; i++ )
+      {
+        if ( items[ i ].use.active() )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ i ].name();
+        }
+      }
+      // Lifeblood
+      if ( profession[ PROF_HERBALISM ] >= 450 )
+        action_list_str += "/lifeblood";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/avenging_wrath";
       action_list_str += "/word_of_glory,if=health_pct<=50";
@@ -2297,6 +2313,18 @@ void paladin_t::init_actions()
       action_list_str += "/seal_of_truth";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
+      int num_items = ( int ) items.size();
+      for ( int i=0; i < num_items; i++ )
+      {
+        if ( items[ i ].use.active() )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ i ].name();
+        }
+      }
+      // Lifeblood
+      if ( profession[ PROF_HERBALISM ] >= 450 )
+        action_list_str += "/lifeblood";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/avenging_wrath";
       action_list_str += "/judgement";

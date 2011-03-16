@@ -3092,6 +3092,9 @@ void mage_t::init_actions()
         }
       }
     }
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+      action_list_str += "/lifeblood";
     //Potions
     if ( level > 80 )
     {
