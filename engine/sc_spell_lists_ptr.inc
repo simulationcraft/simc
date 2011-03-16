@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13726
+// Class based active abilities, wow build 13750
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -851,7 +851,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13726
+// Talent tree specialization abilities, wow build 13750
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1109,7 +1109,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13726
+// Class mastery abilities, wow build 13750
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1194,7 +1194,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13726
+// Racial abilities, wow build 13750
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1837,7 +1837,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13726
+// Glyph spells for classes, wow build 13750
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1973,7 +1973,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     {
       57904, // Glyph of Aspect of the Pack
       57903, // Glyph of Feign Death
-      57870, // Glyph of Mend Pet
+      57870, // Glyph of Lesser Proprotion
       57866, // Glyph of Revive Pet
       57902, // Glyph of Scare Beast
           0,
@@ -2188,13 +2188,14 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Mage
   {
-    // Major Glyphs (13 spells)
+    // Major Glyphs (14 spells)
     {
       56381, // Glyph of Arcane Power
       62126, // Glyph of Blast Wave
       56365, // Glyph of Blink
       56373, // Glyph of Dragon's Breath
       56380, // Glyph of Evocation
+      98397, // Glyph of Frost Armor
       56376, // Glyph of Frost Nova
       63095, // Glyph of Ice Barrier
       56372, // Glyph of Ice Block
@@ -2352,7 +2353,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13726
+// Tier item set bonuses for class, wow build 13750
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -2480,9 +2481,9 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
     },
     // Tier 4 bonuses (4 spells)
     {
-      37184, // Justicar Armor - 2 Piece Bonus (Increased Right./Venge./Corruption)
-      37185, // Justicar Armor - 4 Piece Bonus (Increased Holy Shield)
-      37186, // Justicar Battlegear - 2 Piece Bonus (Increased Judgement of Crusader)
+      37184, // Justicar Armor - 2 Piece Bonus (Increased Right./Truth)
+      37185, // Justicar Armor - 4 Piece Bonus (Increased Shield of the Righteous)
+      37186, // Justicar Battlegear - 2 Piece Bonus (Increased Crusader Strike)
       37187, // Justicar Battlegear - 4 Piece Bonus (Increased Judgement of Command)
           0,
     },
@@ -3119,7 +3120,7 @@ static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
       37295, // Malorne Regalia - 2 Piece Bonus (Mana Restore)
       37297, // Malorne Regalia - 4 Piece Bonus (Improved Innervate)
       37298, // Malorne Harness - 4 Piece Bonus (Bear Armor)
-      37299, // Malorne Harness - 4 Piece Bonus (Cat Strength)
+      37299, // Malorne Harness - 4 Piece Bonus (Cat Agility)
       37306, // Malorne Harness - 2 Piece Bonus (Bear Rage)
       37311, // Malorne Harness - 2 Piece Bonus (Cat Energy)
     },

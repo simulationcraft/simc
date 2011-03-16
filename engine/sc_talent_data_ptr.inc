@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (660)
 
-// 660 talents, wow build 13726
+// 660 talents, wow build 13750
 static struct talent_data_t __ptr_talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 }, 0, 0, 0 },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 }, 0, 0, 0 },
@@ -230,7 +230,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Nature's Swiftness"                ,  8249, 0x00,  2, 0x400, 0x0,     0,  0,  2,  2, { 17116,     0,     0 }, 0, 0, 0 },
   { "Living Seed"                       ,  8253, 0x00,  2, 0x400, 0x0,     0,  0,  0,  2, { 48496, 48499, 48500 }, 0, 0, 0 },
   { "Nature's Bounty"                   ,  8255, 0x00,  2, 0x400, 0x0,     0,  0,  1,  3, { 17074, 17075, 17076 }, 0, 0, 0 },
-  { "Efflorescence"                     ,  8263, 0x00,  2, 0x400, 0x0,  8253,  2,  0,  4, { 34151, 81274, 81275 }, 0, 0, 0 },
+  { "Efflorescence"                     ,  8263, 0x00,  2, 0x400, 0x0,     0,  0,  0,  4, { 34151, 81274, 81275 }, 0, 0, 0 },
   { "Swift Rejuvenation"                ,  8265, 0x00,  2, 0x400, 0x0,     0,  0,  2,  5, { 33886,     0,     0 }, 0, 0, 0 },
   { "Nature's Ward"                     ,  8267, 0x00,  2, 0x400, 0x0,     0,  0,  3,  4, { 33881, 33882,     0 }, 0, 0, 0 },
   { "Revitalize"                        ,  8269, 0x00,  2, 0x400, 0x0,     0,  0,  1,  2, { 48539, 48544,     0 }, 0, 0, 0 },
