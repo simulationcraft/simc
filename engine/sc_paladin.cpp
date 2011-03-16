@@ -2286,8 +2286,8 @@ void paladin_t::init_actions()
     {
       if ( level > 80 )
       {
-        action_list_str = "flask,type=steelskin/food,type=beer_basted_crocolisk";
-        action_list_str += "/earthen_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
+        action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
       else
       {
