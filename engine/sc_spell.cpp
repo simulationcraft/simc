@@ -208,7 +208,8 @@ void spell_t::execute()
 {
   action_t::execute();
 
-  player -> debuffs.casting -> expire();
+  if ( player -> last_foreground_action == this )
+    player -> debuffs.casting -> expire();
 
   if ( harmful && callbacks )
   {
