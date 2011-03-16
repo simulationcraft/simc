@@ -469,18 +469,17 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 // Army of the Dead Ghoul
 // ==========================================================================
 
-// Army of the Dead ghouls are basically a copy of the pet ghoul, but with a 50% damage penalty, but you get 8 of them
 struct army_ghoul_pet_t : public pet_t
 {
-  double snapshot_haste, snapshot_hit, snapshot_crit, snapshot_expertise;
+  double snapshot_crit, snapshot_haste, snapshot_hit, snapshot_strength;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "army_of_the_dead_ghoul_8" ),
-    snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_crit( 0 ), snapshot_expertise( 0 )
+    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 100; // FIXME only level 80 value
-    main_hand_weapon.max_dmg    = 100; // FIXME only level 80 value
+    main_hand_weapon.min_dmg    = 156; // FIXME: Needs further testing
+    main_hand_weapon.max_dmg    = 220; // FIXME: Needs further testing
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
@@ -494,8 +493,7 @@ struct army_ghoul_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      weapon_power_mod *= 0.84; // What is this based off?
-      base_multiplier *= 4.0; // 50% of damage x 8 ghouls
+      base_multiplier *= 8.0; // 8 ghouls
     }
   };
 
@@ -505,9 +503,9 @@ struct army_ghoul_pet_t : public pet_t
       army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL )
     {
       base_execute_time = weapon -> swing_time;
-      base_dd_min       = base_dd_max = 1;
       background        = true;
       repeating         = true;
+      weapon_power_mod  = 0.0051 / weapon -> swing_time; // FIXME: Needs further testing
     }
   };
 
@@ -543,6 +541,7 @@ struct army_ghoul_pet_t : public pet_t
     {
       id = 91776;
       parse_data();
+      weapon_power_mod  = 0.0061 / weapon -> swing_time; // FIXME: Needs further testing
     }
   };
 
@@ -577,10 +576,11 @@ struct army_ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    snapshot_haste     = o -> composite_attack_haste();
-    snapshot_hit       = o -> composite_attack_hit();
-    snapshot_crit      = o -> composite_pet_attack_crit();
-    snapshot_expertise = o -> composite_attack_expertise();
+    // Pets don't seem to inherit their master's crit at the moment.
+    snapshot_crit     = o -> composite_pet_attack_crit();
+    snapshot_haste    = o -> composite_attack_haste();
+    snapshot_hit      = o -> composite_attack_hit();
+    snapshot_strength = o -> strength();
     o -> active_army_ghoul = this;
   }
 
@@ -591,32 +591,24 @@ struct army_ghoul_pet_t : public pet_t
     o -> active_army_ghoul = 0;
   }
 
+  virtual double composite_attack_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+
   virtual double composite_attack_expertise() SC_CONST
   {
-    // Divide hit by 0.25; expertise is stored not as a percent or
-    // rating but as the effective "expertise" amount, which is 0.25%
-    // antidodge/antiparry per point.  Since hit is a percent, we need
-    // to divide by 0.25 to get an expertise value of the equivalentb
-    // percents, as percent-equivalent is apparently how the game
-    // functions.
-    return std::max( snapshot_hit / 0.25, snapshot_expertise ); // Hit gains equal to expertise
+    return ( ( 100.0 * snapshot_hit ) * 26.0 / 8.0 ) / 100.0; // Hit gains equal to expertise
   }
 
   virtual double composite_attack_haste() SC_CONST
   {
-    // Ghouls receive 100% of their master's haste.
-    // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
-    return snapshot_haste;
+      return snapshot_haste;
   }
 
   virtual double composite_attack_hit() SC_CONST
   {
     return snapshot_hit;
-  }
-
-  virtual double composite_attack_crit() SC_CONST
-  {
-    return snapshot_crit;
   }
 
   virtual int primary_resource() SC_CONST
@@ -1308,8 +1300,7 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    double strength_scaling = 1.0; // % of str ghould gets from the DK
-    strength_scaling += o -> glyphs.raise_dead * .4; // But the glyph is additive!
+    double strength_scaling = 1.0 + o -> glyphs.raise_dead * 0.4;
 
     // Perma Ghouls are updated constantly
     if ( o -> primary_tree() == TREE_UNHOLY )
@@ -1343,10 +1334,8 @@ struct ghoul_pet_t : public pet_t
     o -> active_ghoul = 0;
   }
 
-
   virtual double composite_attack_crit() SC_CONST
   {
-    // Ghouls recieve 100% of their master's crit
     death_knight_t* o = owner -> cast_death_knight();
 
     // Perma Ghouls are updated constantly
@@ -1367,12 +1356,11 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> primary_tree() == TREE_UNHOLY )
     {
-      // See comment above about expertise and pets.
-      return std::max( o -> composite_attack_hit() / 0.25, o -> composite_attack_expertise() );
+      return ( ( 100.0 * o -> attack_hit ) * 26.0 / 8.0 ) / 100.0;
     }
     else
     {
-      return snapshot_hit;
+      return ( ( 100.0 * snapshot_hit ) * 26.0 / 8.0 ) / 100.0;
     }
   }
 
@@ -1395,7 +1383,6 @@ struct ghoul_pet_t : public pet_t
 
   virtual double composite_attack_hit() SC_CONST
   {
-    // Hit is rounded down, 7.99% hit is 7%
     death_knight_t* o = owner -> cast_death_knight();
 
     // Perma Ghouls are updated constantly
