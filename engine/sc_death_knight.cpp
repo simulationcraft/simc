@@ -3890,7 +3890,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
     else if ( util_t::str_compare_ci( splits[ 0 ], "death" ) || util_t::str_compare_ci( splits[ 0 ], "d" ) ) 
       rt = RUNE_TYPE_DEATH;
 
-    if ( rt != RUNE_TYPE_NONE && util_t::str_compare_ci( splits[ 1 ], "remains" ) )
+    if ( rt != RUNE_TYPE_NONE && util_t::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
     {
       struct rune_cooldown_expr_t : public action_expr_t
       {
