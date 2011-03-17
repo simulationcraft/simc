@@ -374,11 +374,11 @@ void enemy_t::recalculate_health()
   else
   {
     double delta_time = sim -> current_time - sim -> expected_time;
-    delta_time /= log( 1.0 * ( sim -> current_iteration + 1 ) ); // dampening factor
+    delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
     double time_factor = ( delta_time / sim -> expected_time );
 
     double delta_dmg = initial_health - dmg_taken * ( sim -> expected_time / sim -> current_time );
-    delta_dmg /= log( 1.0 * ( sim -> current_iteration + 1 ) ); // dampening factor
+    delta_dmg /= ( sim -> current_iteration + 1 ); // dampening factor
     double dmg_factor = ( delta_dmg / ( dmg_taken * ( sim -> expected_time / sim -> current_time ) )  );
 
     double factor = 1.0;
