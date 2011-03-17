@@ -445,7 +445,8 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
   if ( p -> sim -> debug )
   {
-    log_t::output( p -> sim, "rune %d regen rate %.3f with haste %.2f percent", slot_number, runes_per_second, 100.0 / p -> composite_attack_haste() );
+    log_t::output( p -> sim, "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
+                   slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> composite_attack_haste() - 1 ) );
   }
 
   if ( state == STATE_FULL )
