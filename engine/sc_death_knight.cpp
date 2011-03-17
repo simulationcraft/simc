@@ -2385,8 +2385,6 @@ struct blood_tap_t : public death_knight_spell_t
 
   void execute()
   {
-    death_knight_spell_t::execute();
-
     death_knight_t* p = player -> cast_death_knight();
 
     // Blood tap has some odd behavior.  One of the oddest is that, if
@@ -2434,6 +2432,9 @@ struct blood_tap_t : public death_knight_spell_t
         break;
       }
     }
+    
+    // Called last so we print the correct runes
+    death_knight_spell_t::execute();
   }
 };
 
