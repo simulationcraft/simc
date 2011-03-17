@@ -261,16 +261,22 @@ void action_t::parse_data()
 // action_t::parse_effect_data ==============================================
 void action_t::parse_effect_data( int spell_id, int effect_nr )
 {
-  if ( ! spell_id)
+  if ( ! spell_id )
+  {
+    sim -> errorf( "%s %s: parse_effect_data: no spell_id provided.\n", player -> name(), name() );
     return;
+  }
 
-  const spell_data_t* spell = player -> dbc.spell( id );
+  const spell_data_t* spell = player -> dbc.spell( spell_id );
   const spelleffect_data_t* effect = player -> dbc.effect( spell -> effect_id( effect_nr ) );
 
   assert( spell );
   
   if ( ! effect )
+  {
+    sim -> errorf( "%s %s: parse_effect_data: no effect to parse.\n", player -> name(), name() );
     return;
+  }
 
   switch ( effect -> type() )
   {
