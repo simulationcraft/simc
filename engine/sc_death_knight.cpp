@@ -3876,57 +3876,163 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 action_expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
 {
-  if ( name_str == "blood" )
-  {
-    struct blood_expr_t : public action_expr_t
-    {
-      blood_expr_t( action_t* a ) : action_expr_t( a, "blood" ) { result_type = TOK_NUM; }
-      virtual int evaluate()
-      {
-        result_num = GET_BLOOD_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
-      }
-    };
-    return new blood_expr_t( a );
-  }
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( name_str == "frost" )
+  if ( num_splits == 2 )
   {
-    struct frost_expr_t : public action_expr_t
-    {
-      frost_expr_t( action_t* a ) : action_expr_t( a, "frost" ) { result_type = TOK_NUM; }
-      virtual int evaluate()
-      {
-        result_num = GET_FROST_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
-      }
-    };
-    return new frost_expr_t( a );
-  }
+    rune_type rt = RUNE_TYPE_NONE;
+    if ( util_t::str_compare_ci( splits[ 0 ], "blood" ) || util_t::str_compare_ci( splits[ 0 ], "b" ) )
+      rt = RUNE_TYPE_BLOOD;
+    else if ( util_t::str_compare_ci( splits[ 0 ], "frost" ) || util_t::str_compare_ci( splits[ 0 ], "f" ) )
+      rt = RUNE_TYPE_FROST;
+    else if ( util_t::str_compare_ci( splits[ 0 ], "unholy" ) || util_t::str_compare_ci( splits[ 0 ], "u" ) )
+      rt = RUNE_TYPE_UNHOLY;
+    else if ( util_t::str_compare_ci( splits[ 0 ], "death" ) || util_t::str_compare_ci( splits[ 0 ], "d" ) ) 
+      rt = RUNE_TYPE_DEATH;
 
-  if ( name_str == "unholy" )
-  {
-    struct unholy_expr_t : public action_expr_t
+    if ( rt != RUNE_TYPE_NONE && util_t::str_compare_ci( splits[ 1 ], "remains" ) )
     {
-      unholy_expr_t( action_t* a ) : action_expr_t( a, "unholy" ) { result_type = TOK_NUM; }
-      virtual int evaluate()
+      struct rune_cooldown_expr_t : public action_expr_t
       {
-        result_num = GET_UNHOLY_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
-      }
-    };
-    return new unholy_expr_t( a );
-  }
+        rune_type r;
 
-  if ( name_str == "death" || name_str == "inactive_death" )
+        rune_cooldown_expr_t( action_t* a, rune_type r ) : action_expr_t( a, "rune_cooldown_remains", TOK_NUM ), r( r ) {}
+        virtual int evaluate()
+        {
+          death_knight_t* dk = action -> player -> cast_death_knight();
+          const dk_rune_t* rune = 0;
+          
+          if ( r != RUNE_TYPE_DEATH )
+          {
+            if ( ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_ready() ) || 
+                 ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() && dk -> _runes.slot[ r ].paired_rune -> is_ready() ) )
+            {
+              result_num = 0;
+              return TOK_NUM;
+            }
+
+            // Neither is up, choose the non-death rune that's regenerating.
+            if ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_regenerating() )
+              rune = &( dk -> _runes.slot[ r ] );
+            else if ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() && 
+                        dk -> _runes.slot[ r ].paired_rune -> is_regenerating() )
+              rune = dk -> _runes.slot[ r ].paired_rune;
+          }
+          else
+          {
+            for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
+            {
+              // If there's a ready death rune, result is 0
+              if ( dk -> _runes.slot[ i ].is_death() && dk -> _runes.slot[ i ].is_ready() )
+              {
+                result_num = 0;
+                return TOK_NUM;
+              }
+              
+              // If the rune is a death rune and it's regenerating, see if we need to use it 
+              // for the expression
+              if ( dk -> _runes.slot[ i ].is_death() && dk -> _runes.slot[ i ].is_regenerating() )
+              {
+                if ( ! rune )
+                  rune = &( dk -> _runes.slot[ i ] );
+                else
+                {
+                  // Pick the death rune that's the most regened, out of all six runes
+                  if ( rune -> value < dk -> _runes.slot[ i ].value )
+                    rune = &( dk -> _runes.slot[ i ] );
+                }
+              }
+            }
+          }
+
+          // No regenerating rune found
+          if ( ! rune )
+          {
+            result_num = 0;
+            return TOK_NUM;
+          }
+
+          double runes_per_second = 1.0 / 10.0 / dk -> composite_attack_haste();
+
+          if ( dk -> buffs_blood_presence -> check() && dk -> talents.improved_blood_presence -> rank() )
+          {
+            runes_per_second *= 1.0 + dk -> talents.improved_blood_presence -> effect3().percent();
+          }
+
+          // Unholy Presence's 10% (or, talented, 15%) increase is factored in elsewhere as melee haste.
+          if ( dk -> buffs_runic_corruption -> check() )
+          {
+            runes_per_second *= 1.0 + ( dk -> talents.runic_corruption -> effect1().percent() );
+          }
+
+          result_num = ( 1.0 - rune -> value ) / runes_per_second;
+          if ( action -> sim -> debug )
+          {
+            log_t::output( action -> sim, "rune_cooldown_remains: req_type=%d type=%d slot=%d ready=%fs", 
+              r, rune -> type, rune -> slot_number, result_num );
+          }
+          return TOK_NUM; 
+        }
+      };
+      
+      return new rune_cooldown_expr_t( a, rt );
+    }
+  }
+  else
   {
-    struct death_expr_t : public action_expr_t
+    if ( name_str == "blood" )
     {
-      std::string name;
-      death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in ), name( name_in ) { result_type = TOK_NUM; }
-      virtual int evaluate()
+      struct blood_expr_t : public action_expr_t
       {
-        result_num = count_death_runes( action -> player -> cast_death_knight(), name == "inactive_death" ); return TOK_NUM;
-      }
-    };
-    return new death_expr_t( a, name_str );
+        blood_expr_t( action_t* a ) : action_expr_t( a, "blood" ) { result_type = TOK_NUM; }
+        virtual int evaluate()
+        {
+          result_num = GET_BLOOD_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
+        }
+      };
+      return new blood_expr_t( a );
+    }
+
+    if ( name_str == "frost" )
+    {
+      struct frost_expr_t : public action_expr_t
+      {
+        frost_expr_t( action_t* a ) : action_expr_t( a, "frost" ) { result_type = TOK_NUM; }
+        virtual int evaluate()
+        {
+          result_num = GET_FROST_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
+        }
+      };
+      return new frost_expr_t( a );
+    }
+
+    if ( name_str == "unholy" )
+    {
+      struct unholy_expr_t : public action_expr_t
+      {
+        unholy_expr_t( action_t* a ) : action_expr_t( a, "unholy" ) { result_type = TOK_NUM; }
+        virtual int evaluate()
+        {
+          result_num = GET_UNHOLY_RUNE_COUNT( count_runes( action -> player -> cast_death_knight() ) ); return TOK_NUM;
+        }
+      };
+      return new unholy_expr_t( a );
+    }
+
+    if ( name_str == "death" || name_str == "inactive_death" )
+    {
+      struct death_expr_t : public action_expr_t
+      {
+        std::string name;
+        death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in ), name( name_in ) { result_type = TOK_NUM; }
+        virtual int evaluate()
+        {
+          result_num = count_death_runes( action -> player -> cast_death_knight(), name == "inactive_death" ); return TOK_NUM;
+        }
+      };
+      return new death_expr_t( a, name_str );
+    }
   }
 
   return player_t::create_expression( a, name_str );
