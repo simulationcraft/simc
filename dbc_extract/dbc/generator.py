@@ -391,7 +391,7 @@ class SpellDataGenerator(DataGenerator):
         (),
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ) ), # Rogue poison effects
         ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit
-        ( ( 50401, 0 ), ( 70890, 0 ), ), # DK Razorice runeforge, weird Scourge Strike secondary effect
+        ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 4 ) ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike
         ( ( 12470, 4 ), ( 13376, 4 ), ( 57984, 4 ) ),   # Shaman Greater Fire Elemental abilities
         ( 
             ( 5405, 0 ),  ( 92283, 3 ), ( 84721, 0 ), ( 79058, 0 ), # Mana Gem, Frostfire Orb x2, Arcane Brilliance
