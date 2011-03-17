@@ -1113,10 +1113,9 @@ struct gargoyle_pet_t : public pet_t
       repeating   = true;
       may_crit    = false;
 
-      base_dd_min                  = 130;
-      base_dd_max                  = 150;
-      direct_power_mod             = 0.40;
-      base_execute_time            = 2.0;
+      id = 51963;
+      parse_data();
+
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
     }
