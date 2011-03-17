@@ -413,7 +413,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
     runes_per_second *= 1.0 + o -> talents.improved_blood_presence -> effect3().percent();
   }
   // Unholy Presence's 10% (or, talented, 15%) increase is factored in elsewhere as melee haste.
-  if ( o -> buffs_runic_corruption -> check() )
+  if ( o -> buffs_runic_corruption -> up() )
   {
     runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect1().percent() );
   }
@@ -1118,7 +1118,6 @@ struct gargoyle_pet_t : public pet_t
       base_execute_time            = 2.0;
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
-
     }
   };
 
@@ -4964,7 +4963,7 @@ void death_knight_t::trigger_runic_empowerment()
 
   if ( talents.runic_corruption -> rank() )
   {
-    if ( buffs_runic_corruption -> up() )
+    if ( buffs_runic_corruption -> check() )
     {
       buffs_runic_corruption -> extend_duration( this, 3 );
     }
