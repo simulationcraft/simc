@@ -402,6 +402,16 @@ int js_t::get_value( std::vector<std::string>& value,
   return size;
 }
 
+// js_t::get_name ========================================================
+
+const char* js_t::get_name( js_node_t* node )
+{
+  if ( node -> name_str.empty() )
+    return 0;
+
+  return node -> name();
+}
+
 // js_t::print ============================================================
 
 void js_t::print( js_node_t* root,

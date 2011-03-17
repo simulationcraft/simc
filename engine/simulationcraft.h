@@ -4380,6 +4380,7 @@ struct js_t
   static js_node_t* create( sim_t* sim, const std::string& input );
   static js_node_t* create( sim_t* sim, FILE* input );
   static void print( js_node_t* root, FILE* f=0, int spacing=0 );
+  static const char* get_name( js_node_t* root );
 };
 
 #ifdef WHAT_IF

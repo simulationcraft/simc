@@ -3932,13 +3932,24 @@ void hunter_t::armory_extensions( const std::string& region,
         if ( pet_name[ j ] == ' ' )
           pet_name[ j ] = '_';
       }
+      
+      // Pets can have the same name, so suffix names with an unique 
+      // identifier from Battle.net, if one is found
+      if ( js_t::get_name( pet_records[ i ] ) )
+      {
+        pet_name += "_";
+        pet_name += js_t::get_name( pet_records[ i ] );
+      }
 
+      // Pets can have zero talents also, we should probably support it.
+      /*
       bool all_zeros = true;
       for( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
         if( pet_talents[ j ] != '0' )
           all_zeros = false;
       if( all_zeros ) continue;
-
+      */
+      
       if( pet_family > num_families || pet_types[ pet_family ] == PET_NONE ) 
       {
         sim -> errorf( "\nHunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
@@ -3959,7 +3970,40 @@ void hunter_t::armory_extensions( const std::string& region,
       }
     }
 
-    if( pet_list ) summon_pet_str = pet_list -> name_str;
+    // If we have valid pets, figure out which to summon by parsing Battle.net
+    if ( pet_list )
+    {
+      std::vector<xml_node_t*> pet_nodes;
+      
+      int n_pet_nodes = xml_t::get_nodes( pet_nodes, pet_list_xml, "a", "class", "pet" );
+      for ( int i = 0; i < n_pet_nodes; i++ )
+      {
+        xml_node_t* summoned_node = xml_t::get_node( pet_nodes[ i ], "span", "class", "summoned" );
+        std::string summoned_pet_name;
+        std::string summoned_pet_id;
+
+        if ( ! summoned_node )
+          continue;
+        
+        xml_t::get_value( summoned_pet_id, pet_nodes[ i ], "data-id" );
+        
+        if ( ! xml_t::get_value( summoned_pet_name, xml_t::get_node( pet_nodes[ i ], "span", "class", "name" ), "." ) )
+          continue;
+        
+        util_t::html_special_char_decode( summoned_pet_name );
+        if ( ! summoned_pet_name.empty() )
+        {
+          summon_pet_str = summoned_pet_name.substr( 1, summoned_pet_name.size() - 2 ); // Fix quotation
+          if ( ! summoned_pet_id.empty() )
+            summon_pet_str += "_" + summoned_pet_id;
+        }
+      }
+      
+      // Pick first pet on the list, if no pet is summoned in the battle net profile
+      if ( summon_pet_str.empty() )
+        summon_pet_str = pet_list -> name_str;
+    }
+    
   }
 }
 
