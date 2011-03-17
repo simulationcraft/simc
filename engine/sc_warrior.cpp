@@ -1365,6 +1365,9 @@ struct colossus_smash_t : public warrior_attack_t
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
 
     armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
+    // FIXME: DBC Data hasn't been reverted yet to 100 for PTR
+    if ( p -> ptr )
+      armor_pen_value = 1.0;
   }
 
   virtual void execute()
