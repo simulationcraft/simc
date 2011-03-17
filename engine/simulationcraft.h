@@ -3209,6 +3209,7 @@ struct player_t
 
   virtual double composite_armor()                 SC_CONST;
   virtual double composite_armor_multiplier()      SC_CONST;
+  virtual double composite_spell_resistance( const school_type school ) SC_CONST;
   virtual double composite_tank_miss( const school_type school ) SC_CONST;
   virtual double composite_tank_dodge()            SC_CONST;
   virtual double composite_tank_parry()            SC_CONST;

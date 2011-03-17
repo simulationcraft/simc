@@ -1798,6 +1798,13 @@ double player_t::composite_armor_multiplier() SC_CONST
   return a;
 }
 
+double player_t::composite_spell_resistance( const school_type school ) SC_CONST
+{
+  double a = spell_resistance[ school ];
+
+  return a;
+}
+
 // player_t::composite_tank_miss ===========================================
 
 double player_t::composite_tank_miss( const school_type school ) SC_CONST

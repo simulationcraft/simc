@@ -742,27 +742,27 @@ double action_t::resistance() SC_CONST
   }
   else
   {
-    double resist_rating = t -> spell_resistance[ school ];
+    double resist_rating = t -> composite_spell_resistance( school );
 
     if ( school == SCHOOL_FROSTFIRE )
     {
-      resist_rating = std::min( t -> spell_resistance[ SCHOOL_FROST ],
-                                t -> spell_resistance[ SCHOOL_FIRE  ] );
+      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_FROST ),
+                                t -> composite_spell_resistance( SCHOOL_FIRE  ) );
     }
     else if ( school == SCHOOL_SPELLSTORM )
     {
-      resist_rating = std::min( t -> spell_resistance[ SCHOOL_ARCANE ],
-                                t -> spell_resistance[ SCHOOL_NATURE ] );
+      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_ARCANE ),
+                                t -> composite_spell_resistance( SCHOOL_NATURE ) );
     }
     else if ( school == SCHOOL_SHADOWFROST )
     {
-      resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
-                                t -> spell_resistance[ SCHOOL_FROST ] );
+      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_SHADOW ),
+                                t -> composite_spell_resistance( SCHOOL_FROST  ) );
     }
     else if ( school == SCHOOL_SHADOWFLAME )
     {
-      resist_rating = std::min( t -> spell_resistance[ SCHOOL_SHADOW ],
-                                t -> spell_resistance[ SCHOOL_FIRE ] );
+      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_SHADOW ),
+                                t -> composite_spell_resistance( SCHOOL_FIRE   ) );
     }
 
     resist_rating -= penetration;
