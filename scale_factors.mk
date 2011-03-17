@@ -30,7 +30,7 @@ REPORTS_LIVE := $(MODELS:%=$(HTML)/$(LIVE)/%_auto.html)
 REPORTS_PTR  := $(MODELS:%=$(HTML)/$(PTR)/%_auto.html)
 
 SRC        = engine
-DEPENDS    = $(SRC)/simulationcraft.h
+DEPENDS    = 
 ITERATIONS = 25000
 THREADS    = 2
 SF         = 1
