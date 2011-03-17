@@ -50,11 +50,11 @@ clean:
 
 $(HTML)/$(LIVE)/%_auto.html: $(SRC)/sc_%.cpp $(DEPENDS)
 	-@echo Generating $@ 
-	-@$(MODULE) $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR).simc output=$(basename $(@F)).txt html=$@
+	-@$(MODULE) $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR).simc output=$(basename $(@F))_live.txt html=$@
 
 # We should make <class>_PTR_<etc>.simc files even if they just reload the live version
 
 $(HTML)/$(PTR)/%_auto.html: $(SRC)/sc_%.cpp $(DEPENDS)
 	-@echo Generating $@ 
-	-@$(MODULE) ptr=1 $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR)_PTR.simc output=$(basename $(@F)).txt html=$@
+	-@$(MODULE) ptr=1 $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR)_PTR.simc output=$(basename $(@F))_ptr.txt html=$@
 
