@@ -336,6 +336,7 @@ struct death_knight_t : public player_t
   virtual void      init_glyphs();
   virtual void      init_resources( bool force );
   double composite_pet_attack_crit();
+  virtual double    composite_armor_multiplier() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
@@ -3558,7 +3559,6 @@ struct presence_t : public death_knight_spell_t
     {
     case PRESENCE_BLOOD:
       p -> buffs_blood_presence  -> trigger();
-      p -> armor_multiplier += p -> buffs_blood_presence -> effect1().percent();
     break;
     case PRESENCE_FROST:
     {
@@ -4752,6 +4752,20 @@ double death_knight_t::composite_pet_attack_crit()
   // 35-40% but get solidly 9-10% after lvl 83 crit suppression.
   // Needs more testing to confirm.
   return 0.14;
+}
+
+// death_knight_t::composite_armor_multiplier ===============================
+
+double death_knight_t::composite_armor_multiplier() SC_CONST
+{
+  double a = player_t::composite_armor_multiplier();
+
+  if ( buffs_blood_presence -> check() )
+  {
+    a += buffs_blood_presence -> effect1().percent();
+  }
+
+  return a;
 }
 
 // death_knight_t::composite_attack_power ===================================

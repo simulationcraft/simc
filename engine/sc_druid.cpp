@@ -262,6 +262,7 @@ struct druid_t : public player_t
   virtual void      clear_debuffs();
   virtual void      regen( double periodicity );
   virtual double    available() SC_CONST;
+  virtual double    composite_armor_multiplier() SC_CONST;
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
@@ -2245,7 +2246,6 @@ struct bear_form_t : public druid_spell_t
     p -> reset_gcd();
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect1().percent();
-    p -> armor_multiplier += 3.7 * ( 1.0 + 0.11 * p -> talents.thick_hide -> rank() );
 
     if ( p -> talents.leader_of_the_pack -> rank() )
     {
@@ -4070,6 +4070,20 @@ void druid_t::combat_begin()
 
   // Moonkins can precast 3 wild mushrooms without aggroing the boss
   buffs_wild_mushroom -> trigger( 3 );
+}
+
+// druid_t::composite_armor_multiplier ======================================
+
+double druid_t::composite_armor_multiplier() SC_CONST
+{
+  double a = player_t::composite_armor_multiplier();
+
+  if ( buffs_bear_form -> check() )
+  {
+    a += 3.7 * ( 1.0 + 0.11 * talents.thick_hide -> rank() );
+  }
+
+  return a;
 }
 
 // druid_t::composite_attack_power ==========================================

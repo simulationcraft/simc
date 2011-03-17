@@ -1771,7 +1771,7 @@ double player_t::composite_armor() SC_CONST
 {
   double a = armor;
 
-  a *= armor_multiplier;
+  a *= composite_armor_multiplier();
 
   a += bonus_armor;
 
@@ -1787,6 +1787,13 @@ double player_t::composite_armor() SC_CONST
 
   if ( buffs.stoneform -> up() )
     a *= 1.10;
+
+  return a;
+}
+
+double player_t::composite_armor_multiplier() SC_CONST
+{
+  double a = armor_multiplier;
 
   return a;
 }
