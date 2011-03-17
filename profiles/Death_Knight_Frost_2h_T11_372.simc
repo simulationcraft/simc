@@ -30,7 +30,7 @@ actions+=/blood_strike,if=blood=2
 actions+=/frost_strike,if=runic_power>=90
 actions+=/howling_blast,if=buff.rime.react
 actions+=/obliterate
-actions+=/blood_strike
+actions+=/blood_strike,if=blood=1
 actions+=/frost_strike
 actions+=/empower_rune_weapon
 actions+=/horn_of_winter

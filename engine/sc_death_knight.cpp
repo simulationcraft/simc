@@ -4366,7 +4366,7 @@ void death_knight_t::init_actions()
       // OB -> BS -> FS
       action_list_str += "/obliterate";
       if ( ! ptr )
-        action_list_str += "/blood_strike";
+        action_list_str += "/blood_strike,if=blood=1";
       action_list_str += "/frost_strike";
       if ( ptr )
         action_list_str += "/howling_blast"; // Use HB to consume any extra runes, putting it after FS is a dps increase
