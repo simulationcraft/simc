@@ -483,9 +483,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       48265, // Unholy Presence
           0,
     },
-    // Pet tree, 4 abilities
+    // Pet tree, 5 abilities
     {
       47468, // Claw
+      51963, // Gargoyle Strike
       47481, // Gnaw
       47484, // Huddle
       47482, // Leap
