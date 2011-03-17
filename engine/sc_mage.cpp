@@ -32,6 +32,7 @@ struct mage_t : public player_t
   buff_t* buffs_clearcasting;
   buff_t* buffs_fingers_of_frost;
   buff_t* buffs_focus_magic_feedback;
+  buff_t* buffs_frost_armor;
   buff_t* buffs_hot_streak;
   buff_t* buffs_hot_streak_crits;
   buff_t* buffs_icy_veins;
@@ -53,6 +54,7 @@ struct mage_t : public player_t
   gain_t* gains_clearcasting;
   gain_t* gains_empowered_fire;
   gain_t* gains_evocation;
+  gain_t* gains_frost_armor;
   gain_t* gains_mage_armor;
   gain_t* gains_mana_gem;
   gain_t* gains_master_of_elements;
@@ -67,6 +69,7 @@ struct mage_t : public player_t
     glyph_t* cone_of_cold;
     glyph_t* deep_freeze;
     glyph_t* fireball;
+    glyph_t* frost_armor;
     glyph_t* frostbolt;
     glyph_t* frostfire;
     glyph_t* ice_lance;
@@ -95,6 +98,7 @@ struct mage_t : public player_t
     spell_data_t* arcane_blast;
     spell_data_t* arcane_missiles;
     spell_data_t* arcane_power;
+    spell_data_t* frost_armor;
     spell_data_t* hot_streak;
     spell_data_t* icy_veins;
     spell_data_t* mage_armor;
@@ -1856,6 +1860,36 @@ struct focus_magic_t : public mage_spell_t
   }
 };
 
+// Frost Armor Spell ========================================================
+
+struct frost_armor_t : public mage_spell_t
+{
+  frost_armor_t( mage_t* p, const std::string& options_str ) :
+      mage_spell_t( "frost_armor", 7302, p )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = player -> cast_mage();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    p -> buffs_molten_armor -> expire();
+    p -> buffs_mage_armor -> expire();
+    p -> buffs_frost_armor -> trigger();
+
+    // FIXME: This should also increase armor and resistance as well for better damage taken modeling
+  }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+    if( p -> buffs_frost_armor -> check() ) return false;
+    return mage_spell_t::ready();
+  }
+};
+
 // Frostbolt Spell ==========================================================
 
 struct frostbolt_t : public mage_spell_t
@@ -2183,6 +2217,8 @@ struct mage_armor_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    p -> buffs_frost_armor -> expire();
     p -> buffs_molten_armor -> expire();
     p -> buffs_mage_armor -> trigger();
   }
@@ -2296,6 +2332,8 @@ struct molten_armor_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    update_ready();
+    p -> buffs_frost_armor -> expire();
     p -> buffs_mage_armor -> expire();
     p -> buffs_molten_armor -> trigger();
   }
@@ -2727,6 +2765,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flame_orb"         ) return new               flame_orb_t( this, options_str );
   if ( name == "focus_magic"       ) return new             focus_magic_t( this, options_str );
+  if ( name == "frost_armor"       ) return new             frost_armor_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
   if ( name == "frostfire_orb"     ) return new           frostfire_orb_t( this, options_str );
@@ -2842,6 +2881,7 @@ void mage_t::init_spells()
   spells.arcane_blast    = spell_data_t::find( 36032, "Arcane Blast",     dbc.ptr );
   spells.arcane_missiles = spell_data_t::find( 79683, "Arcane Missiles!", dbc.ptr );
   spells.arcane_power    = spell_data_t::find( 12042, "Arcane Power",     dbc.ptr );
+  spells.frost_armor     = spell_data_t::find(  7302, "Frost Armor",      dbc.ptr );
   spells.hot_streak      = spell_data_t::find( 48108, "Hot Streak",       dbc.ptr );
   spells.icy_veins       = spell_data_t::find( 12472, "Icy Veins",        dbc.ptr );
   spells.mage_armor      = spell_data_t::find(  6117, "Mage Armor",       dbc.ptr );
@@ -2884,6 +2924,7 @@ void mage_t::init_spells()
   glyphs.deep_freeze          = find_glyph( "Glyph of Deep Freeze" );
   glyphs.dragons_breath       = find_glyph( "Glyph of Dragon's Breath" );
   glyphs.fireball             = find_glyph( "Glyph of Fireball" );
+  glyphs.frost_armor          = ( ptr ) ? find_glyph( "Glyph of Frost Armor" ) : 0;
   glyphs.frostbolt            = find_glyph( "Glyph of Frostbolt" );
   glyphs.frostfire            = find_glyph( "Glyph of Frostfire" );
   glyphs.ice_lance            = find_glyph( "Glyph of Ice Lance" );
@@ -2944,6 +2985,7 @@ void mage_t::init_buffs()
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze,         NULL );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration, "cooldown", 15.0, NULL );
   buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     "chance", talents.fingers_of_frost->effect1().percent(), NULL );
+  buffs_frost_armor          = new buff_t( this, spells.frost_armor,           NULL );
   buffs_hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
   buffs_icy_veins            = new buff_t( this, spells.icy_veins,             "cooldown", 0.0, NULL ); // CD managed in action
   buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 15.0, NULL );
@@ -2966,6 +3008,7 @@ void mage_t::init_gains()
 
   gains_clearcasting       = get_gain( "clearcasting"       );
   gains_evocation          = get_gain( "evocation"          );
+  gains_frost_armor        = get_gain( "frost_armor"        );
   gains_mage_armor         = get_gain( "mage_armor"         );
   gains_mana_gem           = get_gain( "mana_gem"           );
   gains_master_of_elements = get_gain( "master_of_elements" );
@@ -3385,6 +3428,13 @@ void mage_t::regen( double periodicity )
     gain_amount *= 1.0 + glyphs.mage_armor -> effect1().percent();
 
     resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
+  }
+
+  if ( buffs_frost_armor -> up() && glyphs.frost_armor -> ok() )
+  {
+    double gain_amount = resource_max[ RESOURCE_MANA ] * glyphs.frost_armor -> effect1().percent();
+    gain_amount *= periodicity / 5.0;
+    resource_gain( RESOURCE_MANA, gain_amount, gains_frost_armor );
   }
 
   uptimes_water_elemental -> update( active_water_elemental != 0 );
