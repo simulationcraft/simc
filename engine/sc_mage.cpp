@@ -284,10 +284,12 @@ struct mage_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual double    composite_armor_multiplier() SC_CONST;
   virtual double    composite_mastery() SC_CONST;
+  virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_spell_crit() SC_CONST;
+  virtual double    composite_spell_resistance( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
 
   // Event Tracking
@@ -1878,8 +1880,6 @@ struct frost_armor_t : public mage_spell_t
     p -> buffs_molten_armor -> expire();
     p -> buffs_mage_armor -> expire();
     p -> buffs_frost_armor -> trigger();
-
-    // FIXME: This should also increase armor and resistance as well for better damage taken modeling
   }
 
   virtual bool ready()
@@ -3324,32 +3324,18 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::composite_spell_haste ============================================
+// mage_t::composite_armor_multiplier =======================================
 
-double mage_t::composite_spell_haste() SC_CONST
+double mage_t::composite_armor_multiplier() SC_CONST
 {
-  double h = player_t::composite_spell_haste();
+  double a = player_t::composite_armor_multiplier();
 
-  if ( talents.netherwind_presence -> rank() )
+  if ( buffs_frost_armor -> check() )
   {
-    h *= 1.0 / ( 1.0 + talents.netherwind_presence -> effect1().percent() );
+    a *= 1.0 + spells.frost_armor -> effect1().percent();
   }
 
-  return h;
-}
-
-// mage_t::composite_spell_power ============================================
-
-double mage_t::composite_spell_power( const school_type school ) SC_CONST
-{
-  double sp = player_t::composite_spell_power( school );
-
-  if ( buffs_improved_mana_gem -> check() )
-  {
-    sp += resource_max[ RESOURCE_MANA ] * talents.improved_mana_gem->effect1().percent();
-  }
-
-  return sp;
+  return a;
 }
 
 // mage_t::composite_mastery ================================================
@@ -3382,6 +3368,52 @@ double mage_t::composite_spell_crit() SC_CONST
   if ( buffs_focus_magic_feedback -> up() ) c += 0.03;
 
   return c;
+}
+
+// mage_t::composite_spell_haste ============================================
+
+double mage_t::composite_spell_haste() SC_CONST
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( talents.netherwind_presence -> rank() )
+  {
+    h *= 1.0 / ( 1.0 + talents.netherwind_presence -> effect1().percent() );
+  }
+
+  return h;
+}
+
+// mage_t::composite_spell_power ============================================
+
+double mage_t::composite_spell_power( const school_type school ) SC_CONST
+{
+  double sp = player_t::composite_spell_power( school );
+
+  if ( buffs_improved_mana_gem -> check() )
+  {
+    sp += resource_max[ RESOURCE_MANA ] * talents.improved_mana_gem->effect1().percent();
+  }
+
+  return sp;
+}
+
+// mage_t::composite_spell_resistance =======================================
+
+double mage_t::composite_spell_resistance( const school_type school ) SC_CONST
+{
+  double sr = player_t::composite_spell_resistance( school );
+
+  if ( buffs_frost_armor -> check() && school == SCHOOL_FROST )
+  {
+    sr += spells.frost_armor -> effect3().base_value();
+  }
+  else if ( buffs_mage_armor -> check() )
+  {
+    sr += spells.mage_armor -> effect1().base_value();
+  }
+
+  return sr;
 }
 
 // mage_t::matching_gear_multiplier =========================================
@@ -3429,8 +3461,7 @@ void mage_t::regen( double periodicity )
 
     resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
   }
-
-  if ( buffs_frost_armor -> up() && glyphs.frost_armor -> ok() )
+  else if ( buffs_frost_armor -> up() && glyphs.frost_armor -> ok() )
   {
     double gain_amount = resource_max[ RESOURCE_MANA ] * glyphs.frost_armor -> effect1().percent();
     gain_amount *= periodicity / 5.0;
