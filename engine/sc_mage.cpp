@@ -1484,12 +1484,16 @@ struct combustion_t : public mage_spell_t
 
   virtual void execute()
   {
+    // Apparently, Combustion double-dips mastery....
+    // In addition, Ignite contribution uses current mastery which we do not yet support since original mastery is included in base_td.
+    // http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p3/#post1824829
+
     mage_t* p = player -> cast_mage();
     base_td = 0;
     base_td += calculate_dot_dps( p -> dots_frostfire_bolt );
     base_td += calculate_dot_dps( p -> dots_ignite         );
-    base_td += calculate_dot_dps( p -> dots_living_bomb    );
-    base_td += calculate_dot_dps( p -> dots_pyroblast      );
+    base_td += calculate_dot_dps( p -> dots_living_bomb    ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
+    base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
     mage_spell_t::execute();
   }
 
