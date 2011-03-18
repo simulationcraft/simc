@@ -1809,6 +1809,8 @@ struct focus_magic_t : public mage_spell_t
       assert ( focus_magic_target != p );
     }
 
+    trigger_gcd = 0;
+
     struct focus_magic_feedback_callback_t : public action_callback_t
     {
       focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
@@ -1870,6 +1872,7 @@ struct frost_armor_t : public mage_spell_t
       mage_spell_t( "frost_armor", 7302, p )
   {
     parse_options( NULL, options_str );
+    harmful = false;
   }
 
   virtual void execute()
@@ -2211,6 +2214,7 @@ struct mage_armor_t : public mage_spell_t
       mage_spell_t( "mage_armor", 6117, p )
   {
     parse_options( NULL, options_str );
+    harmful = false;
   }
 
   virtual void execute()
@@ -2326,6 +2330,7 @@ struct molten_armor_t : public mage_spell_t
       mage_spell_t( "molten_armor", 30482, p )
   {
     parse_options( NULL, options_str );
+    harmful = false;
   }
 
   virtual void execute()
