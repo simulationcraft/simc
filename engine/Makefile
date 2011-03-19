@@ -96,6 +96,7 @@ SRC =\
 	sc_raid_event.cpp	\
 	sc_rating.cpp		\
 	sc_rawr.cpp		\
+	sc_reforge_plot.cpp \
 	sc_report.cpp		\
 	sc_rng.cpp		\
 	sc_rogue.cpp		\

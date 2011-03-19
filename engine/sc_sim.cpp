@@ -608,6 +608,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
+  reforge_plot = new reforge_plot_t( this );
 
   use_optimal_buffs_and_debuffs( 1 );
 
@@ -681,6 +682,7 @@ sim_t::~sim_t()
   if ( deterministic_rng ) delete deterministic_rng;
   if ( scaling )           delete scaling;
   if ( plot    )           delete plot;
+  if ( reforge_plot )      delete reforge_plot;
 
   int num_events = ( int ) raid_events.size();
   for ( int i=0; i < num_events; i++ )
@@ -2310,6 +2312,7 @@ int sim_t::main( int argc, char** argv )
     {
       scaling -> analyze();
       plot    -> analyze();
+      reforge_plot -> analyze();
       util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
       report_t::print_suite( this );
     }

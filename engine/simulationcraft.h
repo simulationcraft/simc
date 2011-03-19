@@ -114,6 +114,7 @@ struct proc_t;
 struct raid_event_t;
 struct rank_t;
 struct rating_t;
+struct reforge_plot_t;
 struct report_t;
 struct rng_t;
 struct talent_t;
@@ -2375,6 +2376,7 @@ struct sim_t
   report_t*  report;
   scaling_t* scaling;
   plot_t*    plot;
+  reforge_plot_t* reforge_plot;
   double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds;
   int        report_progress;
   int        bloodlust_percent, bloodlust_time;
@@ -2518,6 +2520,35 @@ struct plot_t
 
   plot_t( sim_t* s );
 
+  void analyze();
+  void analyze_stats();
+  double progress( std::string& phase );
+  void create_options();
+};
+
+// Reforge Plot ===============================================================
+
+struct reforge_plot_t
+{
+  sim_t* sim;
+  std::string reforge_plot_stat_str;
+  std::string reforge_plot_output_file_str;
+  FILE* reforge_plot_output_file;
+  std::vector<int> reforge_plot_stat_indices;
+  int    reforge_plot_step;
+  int    reforge_plot_amount;
+  int    reforge_plot_iterations;
+  int    reforge_plot_debug;
+  int    current_stat_combo;
+  int    num_stat_combos;
+
+  reforge_plot_t( sim_t* s );
+
+  void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
+                           const std::vector<int> &stat_indices,
+                           int cur_add_stat,
+                           std::vector<int> cur_stat_mods,
+                           int cur_subtract_stat );
   void analyze();
   void analyze_stats();
   double progress( std::string& phase );
@@ -2967,6 +2998,7 @@ struct player_t
   stats_t*  stats_list;
   uptime_t* uptime_list;
   std::vector<double> dps_plot_data[ STAT_MAX ];
+  std::vector<std::vector<double> > reforge_plot_data;
   std::vector<double> timeline_resource;
   std::vector<double> timeline_health;
   std::vector<double> timeline_dmg;
