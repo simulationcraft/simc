@@ -47,6 +47,7 @@ SOURCES += engine/sc_priest.cpp
 SOURCES += engine/sc_raid_event.cpp
 SOURCES += engine/sc_rating.cpp
 SOURCES += engine/sc_rawr.cpp
+SOURCES += engine/sc_reforge_plot.cpp
 SOURCES += engine/sc_report.cpp
 SOURCES += engine/sc_rng.cpp
 SOURCES += engine/sc_rogue.cpp

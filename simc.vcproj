@@ -335,6 +335,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_reforge_plot.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_priest.cpp"
 			>
 		</File>
