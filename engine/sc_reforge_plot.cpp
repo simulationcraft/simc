@@ -126,15 +126,27 @@ void reforge_plot_t::analyze_stats()
       reforge_plot_stat_indices.push_back( i );
 
   //Create vector of all stat_add combinations recursively
+  std::vector<int> cur_stat_mods;
+  cur_stat_mods.resize( reforge_plot_stat_indices.size() );
   for ( int i=0; i < (int) reforge_plot_stat_indices.size(); i++ ) {
     for ( int cur_add = reforge_plot_step; cur_add <= reforge_plot_amount;
           cur_add += reforge_plot_step )
     {
-      std::vector<int> cur_stat_mods;
-      cur_stat_mods.resize( reforge_plot_stat_indices.size() );
       cur_stat_mods[ i ] = cur_add;
       generate_stat_mods( stat_mods, reforge_plot_stat_indices, i, 
                           cur_stat_mods, 0 );
+    }
+  }
+  //Generate combinations where multiple stats are added to and one is
+  //subtracted from for 3 or more stats
+  if ( reforge_plot_stat_indices.size() > 2 )
+  {
+    int num_combos = stat_mods.size();
+    for ( int i=0; i < num_combos; i++ )
+    {
+      for ( int j=0; j < (int) cur_stat_mods.size(); j++ )
+        cur_stat_mods[ j ] = -1 * stat_mods[ i ][ j ];
+      stat_mods.push_back( cur_stat_mods );
     }
   }
 
