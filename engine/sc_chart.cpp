@@ -1211,7 +1211,7 @@ const char* chart_t::reforge_dps( std::string& s,
     s = get_chart_base_url();
     s += "chs=525x300";
     s += "&amp;";
-    s += "cht=lc";
+    s += "cht=s";
     s += "&amp;";
     if ( ! p -> sim -> print_styles )
     {
@@ -1221,7 +1221,7 @@ const char* chart_t::reforge_dps( std::string& s,
     s += "chd=t:";
     for ( int i=0; i < num_points; i++ ) 
     {
-      snprintf( buffer, sizeof( buffer ), "%f", pd[ i ][ 0 ] );
+      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 0 ] );
       s += buffer;
       if ( i < num_points - 1 )
         s+= ",";
@@ -1229,14 +1229,14 @@ const char* chart_t::reforge_dps( std::string& s,
     s += "|";
     for ( int i=0; i < num_points; i++ ) 
     {
-      snprintf( buffer, sizeof( buffer ), "%f", pd[ i ][ 2 ] );
+      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 2 ] );
       s += buffer;
       if ( i < num_points - 1 )
         s+= ",";
     }
 
     s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chds=%.0f,%.0f", min_dps, max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chds=%d,%d,%.0f,%.0f", -range, +range, floor(min_dps), ceil(max_dps) ); s += buffer;
     s += "&amp;";
     s += "chxt=x,y,x";
     s += "&amp;";
