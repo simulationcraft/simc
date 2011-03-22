@@ -252,6 +252,8 @@ void reforge_plot_t::analyze()
                          p -> reforge_plot_data[ i ][ j ] );
       util_t::fprintf( reforge_plot_output_file, "\n" );
     }
+
+    chart_t::reforge_dps( p -> reforge_dps_chart, p );
   }
 }
 
