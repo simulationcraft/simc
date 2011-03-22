@@ -2876,14 +2876,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   }
   if ( ! p -> reforge_dps_chart.empty() )
   {
-    if ( num_players == 1)
-    {
-//      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n", p -> reforge_dps_chart.c_str() );
-    }
-    else
-    {
-//      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-scaling-dps\" title=\"Reforge DPS Chart\">%s</span>\n", p -> reforge_dps_chart.c_str() );
-    }
     if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
     {
       snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n", p -> reforge_dps_chart.c_str() );
@@ -2972,6 +2964,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "              %s"
     "\t\t\t\t\t\t</div>\n"
     "\t\t\t\t\t\t<div class=\"charts\">\n"
+    "              %s"
     "              %s"
     "              %s"
     "              %s"

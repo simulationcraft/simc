@@ -1836,7 +1836,7 @@ double sim_t::iteration_adjust()
     return 0.0;
 
   if ( current_iteration == 0 )
-    return 1.0;
+    return 0.0;
 
   return ( 2.0 * current_iteration / (double) iterations ) - 1.0;
 }
