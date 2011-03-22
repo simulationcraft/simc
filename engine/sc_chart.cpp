@@ -1184,13 +1184,13 @@ const char* chart_t::reforge_dps( std::string& s,
 
   std::vector< std::vector<double> >& pd = p -> reforge_plot_data;
   int num_stats = pd[ 0 ].size() - 1;
-  if ( num_stats != 3 )
+  if ( num_stats != 3 && num_stats != 2 )
   {
-    p -> sim -> errorf( "Cannot generate ternary plot.\n" );
+    p -> sim -> errorf( "Cannot generate reforge plot for more than 3 stats.\n" );
     return 0;
   }
 
-  for ( int i=0; i < (int) pd.size(); i++ )
+ for ( int i=0; i < (int) pd.size(); i++ )
   {
     if ( pd[ i ][ num_stats ] < min_dps )
       min_dps = pd[ i ][ num_stats ];
@@ -1200,99 +1200,173 @@ const char* chart_t::reforge_dps( std::string& s,
 
   dps_range = max_dps - min_dps;
 
-  if ( max_dps == 0 ) return 0;
-
-  std::vector<std::vector<double> > triangle_points;
-  std::vector< std::string > colors;
-  for ( int i=0; i < (int) pd.size(); i++ ) {
-    std::vector<double> scaled_dps = pd[ i ];
-    int ref_plot_amount = p -> sim -> reforge_plot -> reforge_plot_amount;
-    for( int j=0; j < 3; j++ )
-      scaled_dps[ j ] = ( scaled_dps[ j ] + ref_plot_amount ) / ( 3. * ref_plot_amount );
-    triangle_points.push_back( ternary_coords( scaled_dps ) );
-    colors.push_back( color_temperature_gradient( pd[ i ][ 3 ], min_dps, dps_range ) );
-  }
-
-  char buffer[ 1024 ];
-
-  s = "<form action='";
-  s += get_chart_base_url();
-  s += "'method='POST'>";
-  s += "<input type='hidden' name='chs' value='525x425' />";
-  s += "\n";
-  s += "<input type='hidden' name='cht' value='s' />";
-  s += "\n";
-  if ( ! p -> sim -> print_styles )
+  if ( num_stats == 2 ) 
   {
-    s += "<input type='hidden' name='chf' value='bg,s,333333' />";
-    s += "\n";
-  }
+    p -> sim -> errorf( "Generating binary plot.\n" );
+    int range = p -> sim -> reforge_plot -> reforge_plot_amount;
+    int num_points = (int) pd.size();
+    std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    char buffer[ 1024 ];
 
-  s += "<input type='hidden' name='chd' value='t:";
-  for( int j=0; j < 2; j++ )
-  {
-    for ( int i=0; i < (int) triangle_points.size(); i++ ) 
+    s = get_chart_base_url();
+    s += "chs=525x300";
+    s += "&amp;";
+    s += "cht=lc";
+    s += "&amp;";
+    if ( ! p -> sim -> print_styles )
     {
-      snprintf( buffer, sizeof( buffer ), "%f", triangle_points[ i ][ j ] );
+      s += "chf=bg,s,333333";
+      s += "&amp;";
+    }
+    s += "chd=t:";
+    for ( int i=0; i < num_points; i++ ) 
+    {
+      snprintf( buffer, sizeof( buffer ), "%f", pd[ i ][ 0 ] );
       s += buffer;
-      if ( i < (int) triangle_points.size() - 1 )
+      if ( i < num_points - 1 )
         s+= ",";
     }
-    if ( j == 0 )
-      s+= "|";
-  }
-  s+="' />";
-  s += "\n";
-  s += "<input type='hidden' name='chco' value='";
-  for ( int i=0; i < (int) colors.size(); i++ ) {
-    s += colors[ i ];
-    if ( i < (int) colors.size() - 1 )
-      s+= "|";
-  }
-  s += "' />\n";
-  s += "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
-  s += "\n";
+    s += "|";
+    for ( int i=0; i < num_points; i++ ) 
+    {
+      snprintf( buffer, sizeof( buffer ), "%f", pd[ i ][ 2 ] );
+      s += buffer;
+      if ( i < num_points - 1 )
+        s+= ",";
+    }
 
-  if ( ! p -> sim -> print_styles )
+    s += "&amp;";
+    snprintf( buffer, sizeof( buffer ), "chds=%.0f,%.0f", min_dps, max_dps ); s += buffer;
+    s += "&amp;";
+    s += "chxt=x,y,x";
+    s += "&amp;";
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%d|0|%%2b%d|%%2b%d|1:|%.0f|%.0f|%.0f", (-range), (-range)/2, (+range)/2, (+range), min_dps, p -> dps, max_dps );
+    s += buffer;
+    snprintf( buffer, sizeof( buffer ), "|2:|%s||%s", util_t::stat_type_string( stat_indices[ 1 ] ), util_t::stat_type_string( stat_indices[ 0 ] ) );
+    s += buffer;
+    s += "&amp;";
+    snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+    s += "&amp;";
+    if ( ! p -> sim -> print_styles )
+    {
+      s += "chdls=dddddd,12";
+      s += "&amp;";
+    }
+    s += "chco=";
+    s += stat_color( stat_indices[ 0 ] );
+    s += "&amp;";
+    s += "chg=5,10,1,3";
+    s += "&amp;";
+    std::string formatted_name = p -> name_str;
+    util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+    snprintf( buffer, sizeof( buffer ), "chtt=%s+Reforge+Scaling", formatted_name.c_str() ); s += buffer;
+    s += "&amp;";
+    if ( p -> sim -> print_styles )
+    {
+      s += "chts=666666,18";
+    }
+    else
+    {
+      s += "chts=dddddd,18";
+    }
+
+  }
+  else if ( num_stats == 3 )
   {
-    s += "<input type='hidden' name='chdls' value='dddddd,12' />";
+     if ( max_dps == 0 ) return 0;
+
+    std::vector<std::vector<double> > triangle_points;
+    std::vector< std::string > colors;
+    for ( int i=0; i < (int) pd.size(); i++ ) {
+      std::vector<double> scaled_dps = pd[ i ];
+      int ref_plot_amount = p -> sim -> reforge_plot -> reforge_plot_amount;
+      for( int j=0; j < 3; j++ )
+        scaled_dps[ j ] = ( scaled_dps[ j ] + ref_plot_amount ) / ( 3. * ref_plot_amount );
+      triangle_points.push_back( ternary_coords( scaled_dps ) );
+      colors.push_back( color_temperature_gradient( pd[ i ][ 3 ], min_dps, dps_range ) );
+    }
+
+    char buffer[ 1024 ];
+
+    s = "<form action='";
+    s += get_chart_base_url();
+    s += "'method='POST'>";
+    s += "<input type='hidden' name='chs' value='525x425' />";
     s += "\n";
+    s += "<input type='hidden' name='cht' value='s' />";
+    s += "\n";
+    if ( ! p -> sim -> print_styles )
+    {
+      s += "<input type='hidden' name='chf' value='bg,s,333333' />";
+      s += "\n";
+    }
+
+    s += "<input type='hidden' name='chd' value='t:";
+    for( int j=0; j < 2; j++ )
+    {
+      for ( int i=0; i < (int) triangle_points.size(); i++ ) 
+      {
+        snprintf( buffer, sizeof( buffer ), "%f", triangle_points[ i ][ j ] );
+        s += buffer;
+        if ( i < (int) triangle_points.size() - 1 )
+          s+= ",";
+      }
+      if ( j == 0 )
+        s+= "|";
+    }
+    s+="' />";
+    s += "\n";
+    s += "<input type='hidden' name='chco' value='";
+    for ( int i=0; i < (int) colors.size(); i++ ) {
+      s += colors[ i ];
+      if ( i < (int) colors.size() - 1 )
+        s+= "|";
+    }
+    s += "' />\n";
+    s += "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
+    s += "\n";
+
+    if ( ! p -> sim -> print_styles )
+    {
+      s += "<input type='hidden' name='chdls' value='dddddd,12' />";
+      s += "\n";
+    }
+    s += "\n";
+    s += "<input type='hidden' name='chg' value='5,10,1,3'";
+    s += "\n";
+    std::string formatted_name = p -> name_str;
+    util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+    snprintf( buffer, sizeof( buffer ), "<input type='hidden' name='chtt' value='%s+Reforge+Scaling' />", formatted_name.c_str() ); s += buffer;
+    s += "\n";
+    if ( p -> sim -> print_styles )
+    {
+      s += "<input type='hidden' name='chts' value='666666,18' />";
+    }
+    else
+    {
+      s += "<input type='hidden' name='chts' value='dddddd,18' />";
+    }
+    s += "\n";
+    s += "<input type='hidden' name='chem' value='";
+    std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    s += "y;s=text_outline;d=FF9473,18,l,000000,_,";
+    snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 0 ] ) );
+    s += buffer;
+    s += ";py=1.0;po=0.0,0.01;";
+    s += "|y;s=text_outline;d=FF9473,18,r,000000,_,";
+    snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 1 ] ) );
+    s += buffer;
+    s += ";py=1.0;po=1.0,0.01;";
+    s += "|y;s=text_outline;d=FF9473,18,h,000000,_,";
+    snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 2 ] ) );
+    s += buffer;
+    s += ";py=1.0;po=0.5,0.9' />";
+    s += "\n";
+    s += "<input type='submit'>";
+    s += "\n";
+    s += "</form>";
+    s += "</n>";
   }
-  s += "\n";
-  s += "<input type='hidden' name='chg' value='5,10,1,3'";
-  s += "\n";
-  std::string formatted_name = p -> name_str;
-  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "<input type='hidden' name='chtt' value='%s+Reforge+Scaling' />", formatted_name.c_str() ); s += buffer;
-  s += "\n";
-  if ( p -> sim -> print_styles )
-  {
-    s += "<input type='hidden' name='chts' value='666666,18' />";
-  }
-  else
-  {
-    s += "<input type='hidden' name='chts' value='dddddd,18' />";
-  }
-  s += "\n";
-  s += "<input type='hidden' name='chem' value='";
-  std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
-  s += "y;s=text_outline;d=FF9473,18,l,000000,_,";
-  snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 0 ] ) );
-  s += buffer;
-  s += ";py=1.0;po=0.0,0.01;";
-  s += "|y;s=text_outline;d=FF9473,18,r,000000,_,";
-  snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 1 ] ) );
-  s += buffer;
-  s += ";py=1.0;po=1.0,0.01;";
-  s += "|y;s=text_outline;d=FF9473,18,h,000000,_,";
-  snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 2 ] ) );
-  s += buffer;
-  s += ";py=1.0;po=0.5,0.9' />";
-  s += "\n";
-  s += "<input type='submit'>";
-  s += "\n";
-  s += "</form>";
-  s += "</n>";
 
   return s.c_str();
 }
