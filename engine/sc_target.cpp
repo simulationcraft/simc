@@ -11,15 +11,13 @@
 
 struct enemy_t : public player_t
 {
-  double fixed_health, initial_health, max_health, initial_health_percentage, fixed_health_percentage;
-  double total_dmg;
-// enemy_t::enemy_t =======================================================
+  double fixed_health, initial_health;
+  double fixed_health_percentage, initial_health_percentage;
 
 enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
-    fixed_health( 0 ), initial_health( 0 ), max_health( 0 ),
-    initial_health_percentage( 100.0 ), fixed_health_percentage( 0 ),
-    total_dmg( 0.0 )
+    fixed_health( 0 ), initial_health( 0 ), 
+    initial_health_percentage( 100.0 ), fixed_health_percentage( 0 )
 
 {
   player_t** last = &( sim -> target_list );
@@ -62,14 +60,16 @@ virtual double base_armor() SC_CONST
 
 virtual action_t* create_action( const std::string& name, const std::string& options_str );
 virtual void init_base();
+virtual void init_resources( bool force=false );
 virtual void init_actions();
 virtual double composite_tank_block() SC_CONST;
 virtual void create_options();
 virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type );
 virtual pet_t* find_pet( const std::string& add_name );
+virtual double health_percentage() SC_CONST;
+virtual void combat_end();
 virtual void recalculate_health();
 virtual action_expr_t* create_expression( action_t* action, const std::string& type );
-virtual void reset();
 };
 
 // ==========================================================================
@@ -239,6 +239,8 @@ action_t* enemy_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
+// enemy_t::init_base =======================================================
+
 void enemy_t::init_base()
 {
   health_per_stamina = 10;
@@ -267,9 +269,32 @@ void enemy_t::init_base()
   }
   player_t::base_armor = initial_armor;
 
+  initial_health = fixed_health;
+
+  if ( ( initial_health_percentage < 1   ) || 
+       ( initial_health_percentage > 100 ) )
+  {
+    initial_health_percentage = 100.0;
+  }
 }
 
-// target_t::init_base =====================================================
+// enemy_t::init_resources =====================================================
+
+void enemy_t::init_resources( bool force )
+{
+  double health_adjust = 1.0 + sim -> vary_combat_length * sim -> iteration_adjust();
+
+  resource_base[ RESOURCE_HEALTH ] = initial_health * health_adjust;
+
+  player_t::init_resources( true );
+
+  if ( initial_health_percentage > 0 )
+  {
+    resource_max[ RESOURCE_HEALTH ] *= 100.0 / initial_health_percentage;
+  }
+}
+
+// enemy_t::init_actions =======================================================
 
 void enemy_t::init_actions()
 {
@@ -296,7 +321,7 @@ void enemy_t::init_actions()
   player_t::init_actions();
 }
 
-// target_t::composite_tank_block ==================================================
+// enemy_t::composite_tank_block ===============================================
 
 double enemy_t::composite_tank_block() SC_CONST
 {
@@ -307,7 +332,7 @@ double enemy_t::composite_tank_block() SC_CONST
   return b;
 }
 
-// target_t::create_options ====================================================
+// enemy_t::create_options ====================================================
 
 void enemy_t::create_options()
 {
@@ -325,7 +350,7 @@ void enemy_t::create_options()
 }
 
 
-// target_t::create_add =====================================================
+// enemy_t::create_add ======================================================
 
 pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& pet_type )
 {
@@ -338,8 +363,7 @@ pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& pet_
   return 0;
 }
 
-
-// target_t::find_add =======================================================
+// enemy_t::find_add =========================================================
 
 pet_t* enemy_t::find_pet( const std::string& add_name )
 {
@@ -349,43 +373,35 @@ pet_t* enemy_t::find_pet( const std::string& add_name )
 
   return 0;
 }
-// enemy_t::recalculate_health ==============================================
+// enemy_t::health_percentage() ==============================================
+
+double enemy_t::health_percentage() SC_CONST
+{
+  if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
+
+  if ( resource_base[ RESOURCE_HEALTH ] == 0 ) // first iteration
+  {
+    return ( sim -> current_time / sim -> expected_time ) * initial_health_percentage;
+  }
+
+  return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
+}
+
+// enemy_t::recalculate_health ===============================================
 
 void enemy_t::recalculate_health()
 {
-  if ( sim -> expected_time == 0 ) return;
+  if ( sim -> expected_time <= 0 || fixed_health > 0 ) return;
 
-  if ( ( initial_health_percentage < 0.001 ) || ( initial_health_percentage > 100.0 ) )
-    initial_health_percentage = 100.0;
-
-  if ( fixed_health != 0.0 )
-  {
-    resource_current[ RESOURCE_HEALTH ] = fixed_health;
-    max_health = resource_base[ RESOURCE_HEALTH ] = fixed_health / ( initial_health_percentage / 100.0 );
-    return;
-  }
-
-  if ( resource_base[ RESOURCE_HEALTH ] == 0 || sim -> current_iteration == 0 )
+  if ( initial_health == 0 ) // first iteration
   {
     initial_health = dmg_taken * ( sim -> expected_time / sim -> current_time );
-    resource_base[ RESOURCE_HEALTH ] = resource_max[ RESOURCE_HEALTH ] = initial_health;
-    resource_current[ RESOURCE_HEALTH ] = initial_health - dmg_taken;
   }
   else
   {
     double delta_time = sim -> current_time - sim -> expected_time;
     delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
-    double time_factor = ( delta_time / sim -> expected_time );
-
-    double delta_dmg = initial_health - dmg_taken * ( sim -> expected_time / sim -> current_time );
-    delta_dmg /= ( sim -> current_iteration + 1 ); // dampening factor
-    double dmg_factor = ( delta_dmg / ( dmg_taken * ( sim -> expected_time / sim -> current_time ) )  );
-
-    double factor = 1.0;
-    if ( fabs( time_factor ) > fabs( dmg_factor ) )
-      factor = 1- time_factor;
-    else
-      factor = 1 - dmg_factor;
+    double factor = 1.0 - ( delta_time / sim -> expected_time );
 
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
@@ -393,13 +409,11 @@ void enemy_t::recalculate_health()
     initial_health *= factor;
   }
 
-  max_health = resource_base[ RESOURCE_HEALTH ] / ( initial_health_percentage / 100.0 );
-
-  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), resource_base[ RESOURCE_HEALTH ], dmg_taken );
+  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, dmg_taken );
 }
 
 
-// target_t::create_expression ================================================
+// enemy_t::create_expression ================================================
 
 action_expr_t* enemy_t::create_expression( action_t* action,
                                           const std::string& name_str )
@@ -420,13 +434,11 @@ action_expr_t* enemy_t::create_expression( action_t* action,
    return player_t::create_expression( action, name_str );
 }
 
-void enemy_t::reset()
+void enemy_t::combat_end()
 {
-  resource_base[ RESOURCE_HEALTH ] = initial_health * ( 1.0 + sim -> vary_combat_length * sim -> iteration_adjust() );
+  player_t::combat_end();
 
-
-  player_t::reset();
-
+  recalculate_health();
 }
 
 // ==========================================================================
@@ -447,7 +459,7 @@ action_t* enemy_add_t::create_action( const std::string& name,
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_warrior =================================================
+// player_t::create_enemy ===================================================
 
 player_t* player_t::create_enemy( sim_t* sim, const std::string& name, race_type r )
 {

@@ -3344,7 +3344,6 @@ struct player_t
   virtual int decode_set( item_t& item ) { assert( item.name() ); return SET_NONE; }
 
   virtual void recalculate_haste();
-  virtual void recalculate_health() {};
 
   virtual void armory_extensions( const std::string& region, const std::string& server, const std::string& character ) {}
 

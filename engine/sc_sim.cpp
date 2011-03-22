@@ -819,44 +819,30 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( ! fixed_time )
+    if ( fixed_time || ( target -> resource_base[ RESOURCE_HEALTH ] == 0 ) )
+    {
+      // The first iteration is always time-limited since we do not yet have inferred health
+      
+      if ( current_time > expected_time )
+      {
+        delete e;
+        break;
+      }
+    }
+    else
     {
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
-         target -> recalculate_health();
-
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
         delete e;
         break;
       }
 
-        if ( target -> resource_base[ RESOURCE_HEALTH ] != 0 )
-        {
-          if (  target -> resource_current[ RESOURCE_HEALTH ] <= 0 )
-          {
-            target -> recalculate_health();
-
-            if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
-            delete e;
-            break;
-          }
-        }
-        else // initial_health == 0
-        {
-          if ( current_time > ( expected_time / 2.0 ) )
-          {
-            if ( debug ) log_t::output( this, "Initializing target health half-way through simulation" );
-            target -> recalculate_health();
-          }
-        }
-
-    }
-    else
-    {
-      if ( current_time > expected_time )
+      if (  target -> resource_current[ RESOURCE_HEALTH ] <= 0 )
       {
-        delete e;
-        break;
+	if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
+	delete e;
+	break;
       }
     }
 
@@ -1848,7 +1834,11 @@ double sim_t::iteration_adjust()
 {
   if ( iterations <= 1 )
     return 0.0;
-  return 2.0 * ( ( current_iteration / (double) iterations ) - 0.5 );
+
+  if ( current_iteration == 0 )
+    return 1.0;
+
+  return ( 2.0 * current_iteration / (double) iterations ) - 1.0;
 }
 
 // sim_t::create_expression =================================================
