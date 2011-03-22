@@ -1118,8 +1118,8 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
       dot -> recalculate_ready();
 
       if ( sim -> debug )
-	log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
-		       player -> name(), dot -> ready, name(), dot -> name() );
+        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
+                       player -> name(), dot -> ready, name(), dot -> name() );
     }
   }
   else

@@ -2115,8 +2115,10 @@ struct slam_attack_t : public warrior_attack_t
     base_execute_time          += p -> talents.improved_slam -> effect1().seconds();
 
     weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
-    additive_multipliers = p -> talents.improved_slam -> effect2().percent() + 
-                           p -> talents.war_academy   -> effect1().percent();
+    // FIXME: PTR Data is lagging behind
+    additive_multipliers = ( p -> ptr ) ? p -> talents.improved_slam -> rank() * 0.10 :
+                                          p -> talents.improved_slam -> effect2().percent()
+                           + p -> talents.war_academy -> effect1().percent();
   }
 
   virtual void player_buff()
