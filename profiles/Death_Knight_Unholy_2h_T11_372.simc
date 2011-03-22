@@ -1,7 +1,7 @@
 #!./simc 
 
 deathknight=Death_Knight_Unholy_2h_T11_372
-origin="http://chardev.org/?profile=34615"
+origin="http://chardev.org/?profile=82225"
 level=85
 race=orc
 role=attack
@@ -41,21 +41,21 @@ actions+=/blood_tap,if=unholy=0&inactive_death=1
 actions+=/empower_rune_weapon,if=unholy=0
 actions+=/horn_of_winter
 head=magma_plated_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_hit,gems=reverberating_shadowspirit_20mastery_20str_30str,enchant=60str_35mastery
-neck=rage_of_ages,heroic=1,ilevel=372,quality=epic,stats=143hit_143mastery_322sta_215str
+neck=rage_of_ages,heroic=1,ilevel=372,quality=epic,stats=143hit_143mastery_322sta_215str,reforge=mastery_haste
 shoulders=pauldrons_of_the_great_ettin,heroic=1,type=plate,ilevel=372,quality=epic,stats=2669armor_191crit_171mastery_429sta_266str,reforge=crit_hit,gems=40str,enchant=50str_25crit
 chest=magma_plated_battleplate,heroic=1,type=plate,ilevel=372,quality=epic,stats=3559armor_257crit_217haste_578sta_345str,reforge=crit_hit,gems=40str_20hit_20str_20str,enchant=20all
-waist=sky_strider_belt_of_the_faultline,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_429sta_266str_180haste_180mastery,reforge=haste_hit,gems=40str_67str,suffix=223
-legs=magma_plated_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_217hit_257mastery_578sta_345str,gems=40str_40str,enchant=190ap_55crit
+waist=sky_strider_belt_of_the_faultline,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_429sta_266str_180haste_180mastery,gems=40str_67str,suffix=223
+legs=magma_plated_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_217hit_257mastery_578sta_345str,reforge=mastery_haste,gems=40str_40str,enchant=190ap_55crit
 feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_171exp_191mastery_429sta_266str,reforge=exp_hit,gems=40str,enchant=50mastery
-wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=haste_mastery,gems=40str_67str,enchant=50str
-hands=magma_plated_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191haste_171mastery_429sta_266str,reforge=haste_hit,gems=40str_67str,enchant=50str
-finger1=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,gems=40str
-finger2=cloudburst_ring_of_the_faultline,heroic=1,ilevel=372,quality=epic,stats=321sta_214str_143haste_143mastery,reforge=haste_hit,suffix=118
+wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=crit_mastery,gems=40str_67str,enchant=50str
+hands=magma_plated_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191haste_171mastery_429sta_266str,gems=40str_67str,enchant=50str
+finger1=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,reforge=crit_hit,gems=40str
+finger2=cloudburst_ring_of_the_faultline,heroic=1,ilevel=372,quality=epic,stats=321sta_214str_143haste_143mastery,reforge=mastery_hit,suffix=118
 trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_50cd
-trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_mastery,equip=onattackhit_2178str_10%_20dur_100cd
+trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_haste,equip=onattackhit_2178str_10%_20dur_100cd
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,reforge=crit_hit,enchant=65crit
-main_hand=shalugdoom_the_axe_of_unmaking,heroic=1,ilevel=372,quality=epic,stats=257crit_257exp_578sta_385str,reforge=exp_mastery,enchant=rune_of_the_fallen_crusader,weapon=axe2h_3.60speed_2026min_3040max
-ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107str,reforge=exp_mastery,gems=40str
+main_hand=shalugdoom_the_axe_of_unmaking,heroic=1,ilevel=372,quality=epic,stats=257crit_257exp_578sta_385str,reforge=exp_hit,enchant=rune_of_the_fallen_crusader,weapon=axe2h_3.60speed_2026min_3040max
+ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107str,reforge=exp_haste,gems=40str
 # Gear Summary
 # gear_strength=5011
 # gear_agility=20
@@ -64,10 +64,10 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=639
-# gear_hit_rating=966
-# gear_crit_rating=1096
-# gear_haste_rating=994
-# gear_mastery_rating=1834
+# gear_hit_rating=965
+# gear_crit_rating=990
+# gear_haste_rating=1576
+# gear_mastery_rating=1359
 # gear_armor=21168
 # meta_gem=reverberating_shadowspirit
 # tier11_2pc_melee=1
