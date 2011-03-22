@@ -1603,6 +1603,10 @@ struct mortal_strike_t : public warrior_attack_t
                            + p -> talents.war_academy -> effect1().percent();
     base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
     base_crit                  += p -> talents.cruelty -> effect1().percent();
+
+    // FIXME: PTR Data is lagging behind
+    if ( p -> ptr )
+      weapon_multiplier = 1.50;
   }
 
   virtual void execute()
@@ -1661,6 +1665,10 @@ struct overpower_t : public warrior_attack_t
     base_multiplier            *= 1.0 + p -> glyphs.overpower -> effect1().percent();
 
     stancemask = STANCE_BATTLE;    
+
+    // FIXME: PTR Data is lagging behind
+    if ( p -> ptr )
+      weapon_multiplier = 1.25;
   }
 
   virtual void execute()
