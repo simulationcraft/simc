@@ -97,9 +97,7 @@ void reforge_plot_t::analyze_stats()
 
   if ( reforge_plot_stat_str.empty() ) return;
 
-  // for now only deal with 1 player
   int num_players = ( int ) sim -> players_by_name.size();
-  if ( num_players != 1 ) return;
 
   for ( int i=0; i < STAT_MAX; i++ )
     if ( is_plot_stat( sim, i ) )

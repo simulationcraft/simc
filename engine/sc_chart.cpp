@@ -1182,7 +1182,12 @@ const char* chart_t::reforge_dps( std::string& s,
 {
   double dps_range=0, min_dps=FLT_MAX, max_dps=0;
 
+  if ( ! p )
+    return 0;
   std::vector< std::vector<double> >& pd = p -> reforge_plot_data;
+  if ( pd.size() == 0 )
+    return 0;
+
   int num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
   {
@@ -1202,7 +1207,6 @@ const char* chart_t::reforge_dps( std::string& s,
 
   if ( num_stats == 2 ) 
   {
-    p -> sim -> errorf( "Generating binary plot.\n" );
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = (int) pd.size();
     std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
@@ -1290,7 +1294,7 @@ const char* chart_t::reforge_dps( std::string& s,
 
     s = "<form action='";
     s += get_chart_base_url();
-    s += "'method='POST'>";
+    s += "' method='POST'>";
     s += "<input type='hidden' name='chs' value='525x425' />";
     s += "\n";
     s += "<input type='hidden' name='cht' value='s' />";
@@ -1365,7 +1369,7 @@ const char* chart_t::reforge_dps( std::string& s,
     s += "<input type='submit'>";
     s += "\n";
     s += "</form>";
-    s += "</n>";
+    s += "\n";
   }
 
   return s.c_str();

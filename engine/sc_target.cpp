@@ -17,7 +17,7 @@ struct enemy_t : public player_t
 enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ), 
-    initial_health_percentage( 100.0 ), fixed_health_percentage( 0 )
+    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 )
 
 {
   player_t** last = &( sim -> target_list );

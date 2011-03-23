@@ -2878,12 +2878,30 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   {
     if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
     {
-      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n", p -> reforge_dps_chart.c_str() );
+      if ( num_players == 1 )
+      {
+        snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n", p -> reforge_dps_chart.c_str() );
+      }
+      else
+      {
+        snprintf( buffer, sizeof( buffer ), "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n", p -> reforge_dps_chart.c_str() );
+      }
       reforge_dps_str = buffer;
     }
     else
     {
-      reforge_dps_str = p -> reforge_dps_chart;
+      if ( num_players == 1 )
+      {
+//        reforge_dps_str = "<iframe>";
+        reforge_dps_str = p -> reforge_dps_chart;
+//        reforge_dps_str += "</iframe>\n";
+      }
+      else
+      {
+//        reforge_dps_str = "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">";
+        reforge_dps_str = p -> reforge_dps_chart;
+//        reforge_dps_str += "</span>\n";
+      }
     }
   }
 
