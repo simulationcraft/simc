@@ -496,6 +496,7 @@ struct army_ghoul_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       base_multiplier *= 8.0; // 8 ghouls
+      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
   };
 
@@ -1119,6 +1120,7 @@ struct gargoyle_pet_t : public pet_t
 
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
+      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
   };
 
@@ -1184,6 +1186,7 @@ struct ghoul_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
+      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
     virtual void player_buff()
