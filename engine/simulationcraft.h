@@ -2546,9 +2546,8 @@ struct reforge_plot_t
 
   void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
                            const std::vector<int> &stat_indices,
-                           int cur_add_stat,
-                           std::vector<int> cur_stat_mods,
-                           int cur_subtract_stat );
+                           int cur_mod_stat,
+                           std::vector<int> cur_stat_mods );
   void analyze();
   void analyze_stats();
   double progress( std::string& phase );

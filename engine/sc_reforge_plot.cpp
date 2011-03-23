@@ -61,51 +61,31 @@ reforge_plot_t::reforge_plot_t( sim_t* s ) :
 void reforge_plot_t::generate_stat_mods(
                          std::vector<std::vector<int> > &stat_mods,
                          const std::vector<int> &stat_indices, 
-                         int cur_add_stat,
-                         std::vector<int> cur_stat_mods,
-                         int cur_subtract_stat )
+                         int cur_mod_stat,
+                         std::vector<int> cur_stat_mods )
 {
-  if ( cur_subtract_stat >= (int) stat_indices.size() - 1 ||
-       ( cur_subtract_stat == (int) stat_indices.size() - 2 &&
-         cur_add_stat == (int) stat_indices.size() - 1 )
-     )
+  if ( cur_mod_stat >= (int) stat_indices.size() - 1 )
   {
-    int total_subtract_amount = 0;
+    int sum = 0;
     for ( int i = 0; i < (int) cur_stat_mods.size(); i++ )
     {
-      if ( i == cur_add_stat )
-        continue;
-      total_subtract_amount += cur_stat_mods[i];
+      sum += cur_stat_mods[ i ];
     }
 
-    cur_stat_mods[ cur_subtract_stat ] = -1 * ( cur_stat_mods[ cur_add_stat ] + 
-                                                total_subtract_amount );
+    if ( abs( sum ) > reforge_plot_amount )
+      return;
+
+    cur_stat_mods[ cur_mod_stat ] = -1 * sum;
     stat_mods.push_back( cur_stat_mods );
     return;
   }
 
-  if ( cur_subtract_stat == cur_add_stat )
+  for ( int mod_amount = -reforge_plot_amount;
+        mod_amount <= reforge_plot_amount;
+        mod_amount += reforge_plot_step ) 
   {
-    generate_stat_mods( stat_mods, stat_indices, cur_add_stat, cur_stat_mods,
-                        cur_subtract_stat + 1 );
-    return;
-  }
-
-  int total_subtract_amount = 0;
-  for ( int i = 0; i < (int) cur_stat_mods.size(); i++ )
-  {
-    if ( i == cur_add_stat )
-      continue;
-    total_subtract_amount += cur_stat_mods[i];
-  }
-
-  for ( int subtract_amount = 0;
-        cur_stat_mods[ cur_add_stat ] + subtract_amount + total_subtract_amount >= 0;
-        subtract_amount -= reforge_plot_step ) 
-  {
-    cur_stat_mods[ cur_subtract_stat ] = subtract_amount;
-    generate_stat_mods( stat_mods, stat_indices, cur_add_stat, cur_stat_mods,
-                        cur_subtract_stat + 1 );
+    cur_stat_mods[ cur_mod_stat ] = mod_amount;
+    generate_stat_mods( stat_mods, stat_indices, cur_mod_stat + 1, cur_stat_mods );
   }
 }
 
@@ -126,29 +106,10 @@ void reforge_plot_t::analyze_stats()
       reforge_plot_stat_indices.push_back( i );
 
   //Create vector of all stat_add combinations recursively
-  for ( int i=0; i < (int) reforge_plot_stat_indices.size(); i++ ) {
-    for ( int cur_add = reforge_plot_step; cur_add <= reforge_plot_amount;
-          cur_add += reforge_plot_step )
-    {
-      std::vector<int> cur_stat_mods;
-      cur_stat_mods.resize( reforge_plot_stat_indices.size() );
-      cur_stat_mods[ i ] = cur_add;
-      generate_stat_mods( stat_mods, reforge_plot_stat_indices, i, 
-                          cur_stat_mods, 0 );
-    }
-  }
-  if ( reforge_plot_stat_indices.size() >= 3 )
-  {
-    int num_combos = stat_mods.size();
-    for ( int i=0; i < num_combos; i++ )
-    {
-      std::vector<int> cur_stat_mods;
-      cur_stat_mods.resize( reforge_plot_stat_indices.size() );
-      for ( int j=0; j < (int) cur_stat_mods.size(); j++ )
-        cur_stat_mods[ j ] = -1 * stat_mods[ i ][ j ];
-      stat_mods.push_back( cur_stat_mods );
-    }
-  }
+  std::vector<int> cur_stat_mods;
+  cur_stat_mods.resize( reforge_plot_stat_indices.size() );
+  generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0, 
+                      cur_stat_mods );
 
   num_stat_combos = stat_mods.size();
 
