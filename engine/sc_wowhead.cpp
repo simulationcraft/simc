@@ -140,7 +140,7 @@ static bool parse_gems( item_t&           item,
 
   util_t::string_strip_quotes( temp_stats_str );
 
-  int sockets[ 3 ] = { 0, 0, 0 };
+  int sockets[ 3 ] = { GEM_NONE, GEM_NONE, GEM_NONE };
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, temp_stats_str, "," );
   int num_sockets = 0;
@@ -176,11 +176,12 @@ static bool parse_gems( item_t&           item,
 
     switch ( sockets[ i ] )
     {
-    case 0: sockets[ i ] = GEM_NONE;   break;
-    case 1: sockets[ i ] = GEM_META;   break;
-    case 2: sockets[ i ] = GEM_RED;    break;
-    case 4: sockets[ i ] = GEM_YELLOW; break;
-    case 8: sockets[ i ] = GEM_BLUE;   break;
+    case  0: sockets[ i ] = GEM_NONE;     break;
+    case  1: sockets[ i ] = GEM_META;     break;
+    case  2: sockets[ i ] = GEM_RED;      break;
+    case  4: sockets[ i ] = GEM_YELLOW;   break;
+    case  8: sockets[ i ] = GEM_BLUE;     break;
+    case 32: sockets[ i ] = GEM_COGWHEEL; break;
     }
 
     if ( ! util_t::socket_gem_match( sockets[ i ], gem ) )
