@@ -1906,6 +1906,9 @@ struct frostbolt_t : public mage_spell_t
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     base_multiplier *= 1.0 + p -> specializations.frost3;
+
+    if ( p -> ptr )
+      base_multiplier *= 1.10; // FIXME: Remove once DBC data is updated
   }
 
   virtual void schedule_execute()
@@ -2129,7 +2132,7 @@ struct ice_lance_t : public mage_spell_t
     if ( p -> buffs_fingers_of_frost -> up() )
     {
       player_multiplier *= 2.0; // Built in bonus against frozen targets
-      player_multiplier *= 1.15;
+      player_multiplier *= ( p -> ptr ) ? 1.25 : 1.15;
     }
   }
 };
