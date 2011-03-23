@@ -154,9 +154,7 @@ void action_t::_init_action_t()
   cooldown = player -> get_cooldown( name_str );
   dot      = player -> get_dot     ( name_str );
 
-  stats = player -> get_stats( name_str );
-  stats -> school = school;
-  stats -> resource = resource;
+  stats = player -> get_stats( name_str, this );
   
   id = spell_id();
   tree = util_t::talent_tree(s_tree, player -> type );
@@ -172,8 +170,6 @@ void action_t::_init_action_t()
 
     background = true; // prevent action from being executed
   }
-
-
 }
 
 action_t::action_t( int               ty,
@@ -1543,8 +1539,6 @@ void action_t::reset()
   result = RESULT_NONE;
   execute_event = 0;
   travel_event = 0;
-
-  if ( ! dual ) stats -> reset( this );
 }
 
 // action_t::cancel =========================================================

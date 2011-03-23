@@ -9,7 +9,7 @@
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
     name_str( n ), sim( p->sim ), player( p ), next( 0 ), school( SCHOOL_NONE ),
-    type( STATS_DMG ), channeled( false ), analyzed( false ), initialized( false ),
+    type( STATS_DMG ), analyzed( false ), initialized( false ),
     quiet( false ), resource( RESOURCE_NONE ), resource_consumed( 0 ), last_execute( -1 )
 {
 }
@@ -58,9 +58,8 @@ void stats_t::init()
 
 // stats_t::reset ===========================================================
 
-void stats_t::reset( action_t* a )
+void stats_t::reset()
 {
-  channeled = a -> channeled;
   last_execute = -1;
 }
 
@@ -132,6 +131,16 @@ void stats_t::analyze()
 {
   if ( analyzed ) return;
   analyzed = true;
+
+  bool channeled = false;
+  int num_actions = action_list.size();
+  for ( int i=0; i < num_actions; i++ )
+  {
+    action_t* a = action_list[ i ];
+    if ( a -> channeled ) channeled = true;
+    school   = a -> school;
+    resource = a -> resource;
+  }
 
   int num_iterations = sim -> iterations;
 

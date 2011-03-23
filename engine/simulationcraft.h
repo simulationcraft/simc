@@ -2391,7 +2391,7 @@ struct sim_t
   std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
-  std::string output_file_str, html_file_str,  wiki_file_str, xml_file_str;
+  std::string output_file_str, html_file_str,  xml_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
@@ -3455,7 +3455,7 @@ struct player_t
   dot_t*      get_dot     ( const std::string& name );
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
-  stats_t*    get_stats   ( const std::string& name );
+  stats_t*    get_stats   ( const std::string& name, action_t* action=0 );
   uptime_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
   double      get_player_distance( player_t* p );
@@ -3514,7 +3514,7 @@ struct stats_t
   stats_t* next;
   school_type school;
   stats_type type;
-  bool channeled;
+  std::vector<action_t*> action_list;
   bool analyzed;
   bool initialized;
   bool quiet;
@@ -3549,7 +3549,7 @@ struct stats_t
   void add_tick   ( double time );
   void add_execute( double time );
   void init();
-  void reset( action_t* );
+  void reset();
   void analyze();
   void merge( stats_t* other );
   stats_t( const std::string& name, player_t* );
@@ -4161,7 +4161,6 @@ struct report_t
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
-  static void print_wiki( sim_t* );
   static void print_xml( sim_t* );
   static void print_suite( sim_t* );
 };

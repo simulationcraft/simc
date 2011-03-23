@@ -2918,7 +2918,7 @@ struct kill_command_t : public hunter_spell_t
 
     for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
     {
-      stats -> children.push_back( pet -> get_stats( "kill_command") );
+      stats -> children.push_back( pet -> get_stats( "kill_command" ) );
     }
   }
 

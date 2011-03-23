@@ -1171,7 +1171,7 @@ struct pounce_bleed_t : public druid_cat_attack_t
     druid_cat_attack_t( "pounce_bleed", 9007, player )
   {
     background     = true;
-    stats          = player -> get_stats( "pounce" );
+    stats          = player -> get_stats( "pounce", this );
     tick_power_mod = 0; // FIXME: Does pounce scale?
   }
 };
@@ -2922,7 +2922,7 @@ struct starfall_star_t : public druid_spell_t
     background  = true;
     dual        = true;
     direct_tick = true;
-    stats       = player -> get_stats( "starfall" );
+    stats       = player -> get_stats( "starfall", this );
 
     if ( p -> primary_tree() == TREE_BALANCE )
       base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();

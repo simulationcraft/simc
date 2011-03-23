@@ -1290,7 +1290,7 @@ struct felguard_pet_t : public warlock_main_pet_t
       background  = true;
       aoe         = -1;
       direct_tick = true;
-      stats       = player -> get_stats( "felstorm" );
+      stats       = player -> get_stats( "felstorm", this );
     }
   };
 
@@ -1576,7 +1576,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       aoe         = -1;
       direct_tick = true;
       may_crit    = false;
-      stats = player -> get_stats( "infernal_immolation" );
+      stats = player -> get_stats( "infernal_immolation", this );
       direct_power_mod  = 0.4;
     }
   };
@@ -3210,7 +3210,7 @@ struct immolation_damage_t : public warlock_spell_t
     direct_tick = true;
     may_crit    = false;
 
-    stats = player -> get_stats( "immolation_aura" );
+    stats = player -> get_stats( "immolation_aura", this );
   }
 };
 
@@ -3565,7 +3565,7 @@ struct hellfire_tick_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     base_multiplier *= 1.0 + p -> talent_cremation -> effect1().percent();
-    stats = player -> get_stats( "hellfire" );
+    stats = player -> get_stats( "hellfire", this );
   }
 };
 
@@ -3691,7 +3691,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     aoe         = -1;
     direct_tick = true;
 
-    stats = player -> get_stats( "rain_of_fire" );
+    stats = player -> get_stats( "rain_of_fire", this );
   }
 };
 

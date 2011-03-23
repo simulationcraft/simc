@@ -1471,6 +1471,8 @@ struct inner_will_t : public priest_spell_t
 
 struct mind_blast_t : public priest_spell_t
 {
+  stats_t* orb_stats[ 4 ];
+
   mind_blast_t( player_t* player, const std::string& options_str ) :
       priest_spell_t( "mind_blast", player, "Mind Blast" )
   {
@@ -1479,13 +1481,21 @@ struct mind_blast_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     cooldown -> duration -= p -> talents.improved_mind_blast -> rank() * 0.5;
+
+    for( int i=0; i < 4; i++ )
+    {
+      std::string str = "mind_blast_";
+      orb_stats[ i ] = p -> get_stats( str + (char) ( i + (int) '0' ), this );
+    }
   }
 
   virtual void execute()
   {
-    priest_spell_t::execute();
-
     priest_t* p = player -> cast_priest();
+
+    stats = orb_stats[ p -> buffs_shadow_orb -> stack() ];
+
+    priest_spell_t::execute();
 
     for ( int i=0; i < 4; i++ )
     {
@@ -1734,7 +1744,7 @@ struct penance_tick_t : public priest_spell_t
     dual        = true;
     direct_tick = true;
 
-    stats = player -> get_stats( "penance" );
+    stats = player -> get_stats( "penance", this );
   }
 
   virtual void player_buff()
@@ -2021,7 +2031,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
 
-    stats -> children.push_back( player -> get_stats( "shadowy_apparition") );
+    stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }
 
   virtual double cost() SC_CONST
@@ -2253,7 +2263,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
 
     harmful     = false;
 
-    stats = player -> get_stats( "hymn_of_hope" );
+    stats = player -> get_stats( "hymn_of_hope", this );
   }
 
   virtual void execute()
@@ -3363,7 +3373,7 @@ struct penance_heal_tick_t : public priest_heal_t
     dual        = true;
     direct_tick = true;
 
-    stats = player -> get_stats( "penance_heal" );
+    stats = player -> get_stats( "penance_heal", this );
   }
 
   virtual void execute()
@@ -3454,8 +3464,7 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
     background  = true;
     direct_tick = true;
 
-    stats = player -> get_stats( "holy_word_sanctuary" );
-
+    stats = player -> get_stats( "holy_word_sanctuary", this );
   }
   virtual void execute()
    {

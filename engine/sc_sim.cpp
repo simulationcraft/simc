@@ -1950,7 +1950,6 @@ void sim_t::create_options()
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "output",                           OPT_STRING, &( output_file_str                          ) },
-    { "wiki",                             OPT_STRING, &( wiki_file_str                            ) },
     { "path",                             OPT_STRING, &( path_str                                 ) },
     { "path+",                            OPT_APPEND, &( path_str                                 ) },
     // Overrides"

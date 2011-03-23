@@ -1344,7 +1344,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect1().percent();
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    stats = player -> get_stats( "arcane_missiles" );
+    stats = player -> get_stats( "arcane_missiles", this );
   }
 };
 

@@ -2482,6 +2482,8 @@ void player_t::reset()
 
   for ( dot_t* d = dot_list; d; d = d -> next ) d -> reset();
 
+  for ( stats_t* s = stats_list; s; s = s -> next ) s -> reset();
+
   potion_used = 0;
 }
 
@@ -3512,20 +3514,24 @@ proc_t* player_t::get_proc( const std::string& name )
 
 // player_t::get_stats ======================================================
 
-stats_t* player_t::get_stats( const std::string& n )
+stats_t* player_t::get_stats( const std::string& n, action_t* a )
 {
   stats_t* stats=0;
 
   for ( stats = stats_list; stats; stats = stats -> next )
   {
     if ( stats -> name_str == n )
+    {
+      if ( a ) stats -> action_list.push_back( a );
       return stats;
+    }
   }
 
   if ( ! stats )
   {
     stats = new stats_t( n, this );
     stats -> init();
+    if ( a ) stats -> action_list.push_back( a );
     stats_t** tail= &stats_list;
     while ( *tail && n > ( ( *tail ) -> name_str ) )
     {
