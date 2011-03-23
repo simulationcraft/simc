@@ -188,7 +188,6 @@ void plot_t::create_options()
     { "dps_plot_points",     OPT_INT,    &( dps_plot_points     ) },
     { "dps_plot_stat",       OPT_STRING, &( dps_plot_stat_str   ) },
     { "dps_plot_step",       OPT_FLT,    &( dps_plot_step       ) },
-    { "dps_plot_step",       OPT_FLT,    &( dps_plot_step       ) },
     { "dps_plot_debug",      OPT_BOOL,   &( dps_plot_debug      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };

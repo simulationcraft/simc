@@ -370,14 +370,14 @@ struct water_elemental_pet_t : public pet_t
 {
   struct freeze_t : public spell_t
   {
-    freeze_t( player_t* player):
+    freeze_t( player_t* player, const std::string& options_str ):
       spell_t( "freeze", 33395, player )
     {
+      parse_options( NULL, options_str );
       aoe                  = -1;
       may_crit             = true;
       base_crit_multiplier = 1.33;
       base_cost            = 0;
-
       if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
@@ -403,24 +403,19 @@ struct water_elemental_pet_t : public pet_t
       if ( ! o -> talents.improved_freeze -> rank() )
         return false;
 
-      if ( o -> buffs_fingers_of_frost -> stack() ) // || o -> cooldowns_deep_freeze -> remains() )
-      {
-        return false;
-      }
-
       return spell_t::ready();
     }
   };
 
   struct water_bolt_t : public spell_t
   {
-    water_bolt_t( player_t* player ):
+    water_bolt_t( player_t* player, const std::string& options_str ):
       spell_t( "water_bolt", 31707, player )
     {
+      parse_options( NULL, options_str );
       may_crit             = true;
       base_crit_multiplier = 1.33;
       direct_power_mod     = 0.833;
-
       if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
@@ -435,7 +430,8 @@ struct water_elemental_pet_t : public pet_t
   water_elemental_pet_t( sim_t* sim, player_t* owner ) :
       pet_t( sim, owner, "water_elemental" )
   {
-    action_list_str = "freeze/water_bolt";
+    action_list_str = "freeze,if=owner.buff.fingers_of_frost.stack=0/water_bolt";
+    create_options();
   }
 
   virtual void init_base()
@@ -476,8 +472,8 @@ struct water_elemental_pet_t : public pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "freeze"     ) return new     freeze_t( this );
-    if ( name == "water_bolt" ) return new water_bolt_t( this );
+    if ( name == "freeze"     ) return new     freeze_t( this, options_str );
+    if ( name == "water_bolt" ) return new water_bolt_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
