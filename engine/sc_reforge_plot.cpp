@@ -95,13 +95,17 @@ void reforge_plot_t::analyze_stats()
 {
   std::vector<std::vector<int> > stat_mods;
 
-  if ( reforge_plot_stat_str.empty() ) return;
+  if ( reforge_plot_stat_str.empty() ) 
+    return;
 
   int num_players = ( int ) sim -> players_by_name.size();
 
   for ( int i=0; i < STAT_MAX; i++ )
     if ( is_plot_stat( sim, i ) )
       reforge_plot_stat_indices.push_back( i );
+
+  if ( reforge_plot_stat_indices.empty() ) 
+    return;
 
   //Create vector of all stat_add combinations recursively
   std::vector<int> cur_stat_mods;

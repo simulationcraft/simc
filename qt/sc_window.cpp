@@ -714,6 +714,10 @@ void SimulationCraftWindow::createBestInSlotTab()
       if( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
         player = j;
 
+    // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
+    if ( profile.contains( "Death_Knight" ) )
+      player = DEATH_KNIGHT;
+
     int tier = TIER_MAX;
     for( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
       if( profile.contains( tierNames[ j ] ) )
