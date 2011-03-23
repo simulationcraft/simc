@@ -226,8 +226,8 @@ double reforge_plot_t::progress( std::string& phase )
 
   if ( current_stat_combo <= 0 ) return 0.0;
 
-  phase = "Reforge Plot - ";
-  double combo_progress = ( num_stat_combos - current_stat_combo ) / (double) num_stat_combos;
+  phase = "Reforge Plot";
+  double combo_progress = current_stat_combo / (double) num_stat_combos;
 
   return combo_progress;
 }

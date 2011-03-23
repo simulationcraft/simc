@@ -2231,6 +2231,10 @@ double sim_t::progress( std::string& phase )
   {
     return scaling -> progress( phase );
   }
+  else if ( reforge_plot -> num_stat_combos > 0 )
+  {
+    return reforge_plot -> progress( phase );
+  }
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";

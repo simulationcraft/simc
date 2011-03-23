@@ -100,7 +100,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 44C41689107BB68700242308 /* simcqt.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 378B49D42B8DCB6689885ABA /* simcqt */;
+			remoteGlobalIDString = 378B49D42B8DCB6689885ABA;
 			remoteInfo = simcqt;
 		};
 		444CCF8F107DCCD300229DD2 /* PBXContainerItemProxy */ = {
@@ -228,7 +228,7 @@
 		6EC66C6C12AA5A580075FB57 /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8.h; sourceTree = "<group>"; };
 		6EC66C6F12AA5A920075FB57 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* simc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = simc; sourceTree = BUILT_PRODUCTS_DIR; };
-		B8596919133A7D7200E290B9 /* sc_reforge_plot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_reforge_plot.cpp; path = engine/sc_reforge_plot.cpp; sourceTree = "<group>"; };
+		B8596919133A7D7200E290B9 /* sc_reforge_plot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sc_reforge_plot.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,7 +253,6 @@
 		08FB7794FE84155DC02AAC07 /* simc */ = {
 			isa = PBXGroup;
 			children = (
-				B8596919133A7D7200E290B9 /* sc_reforge_plot.cpp */,
 				6E539C0D129ECAA900472FA2 /* qt */,
 				4438981B107BB7C700462773 /* simcqt.app */,
 				44C41689107BB68700242308 /* simcqt.xcodeproj */,
@@ -308,6 +307,7 @@
 				44E3D1D210545A7500677DEB /* sc_raid_event.cpp */,
 				44E3D1D310545A7500677DEB /* sc_rating.cpp */,
 				44E3D1D410545A7500677DEB /* sc_rawr.cpp */,
+				B8596919133A7D7200E290B9 /* sc_reforge_plot.cpp */,
 				44E3D1D510545A7500677DEB /* sc_report.cpp */,
 				44E3D1D610545A7500677DEB /* sc_rng.cpp */,
 				44E3D1D710545A7500677DEB /* sc_rogue.cpp */,
