@@ -114,6 +114,21 @@ static OptionEntry* getPlotOptions()
   return options;
 }
 
+static OptionEntry* getReforgePlotOptions()
+{
+  static OptionEntry options[] =
+    {
+      { "Plot Reforge Options for Spirit",            "spi",     "Generate refroge plot data for Spirit"           },
+      { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate refroge plot data for Expertise Rating" },
+      { "Plot Reforge Options for Hit Rating",        "hit",     "Generate refroge plot data for Hit Rating"       },
+      { "Plot Reforge Options for Crit Rating",       "crit",    "Generate refroge plot data for Crit Rating"      },
+      { "Plot Reforge Options for Haste Rating",      "haste",   "Generate refroge plot data for Haste Rating"     },
+      { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate refroge plot data for Mastery Rating"   },
+      { NULL, NULL, NULL }
+    };
+  return options;
+}
+
 static QString defaultSimulateText()
 {
   return QString( "# Profile will be downloaded into here.\n"
@@ -155,15 +170,17 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      defaultRoleChoice->setCurrentIndex( tokens[ 10 ].toInt() );
   }
 
-  QList<QAbstractButton*>    buff_buttons =   buffsButtonGroup->buttons();
-  QList<QAbstractButton*>  debuff_buttons = debuffsButtonGroup->buttons();
-  QList<QAbstractButton*> scaling_buttons = scalingButtonGroup->buttons();
-  QList<QAbstractButton*>    plot_buttons =   plotsButtonGroup->buttons();
+  QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
+  QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup->buttons();
+  QList<QAbstractButton*>    scaling_buttons  =      scalingButtonGroup->buttons();
+  QList<QAbstractButton*>        plot_buttons =        plotsButtonGroup->buttons();
+  QList<QAbstractButton*> reforgeplot_buttons = reforgeplotsButtonGroup->buttons();
 
-  OptionEntry*   buffs = getBuffOptions();
-  OptionEntry* debuffs = getDebuffOptions();
-  OptionEntry* scaling = getScalingOptions();
-  OptionEntry*   plots = getPlotOptions();
+  OptionEntry*        buffs = getBuffOptions();
+  OptionEntry*      debuffs = getDebuffOptions();
+  OptionEntry*      scaling = getScalingOptions();
+  OptionEntry*        plots = getPlotOptions();
+  OptionEntry* reforgeplots = getReforgePlotOptions();
 
   for(int i = 12; i < tokens.count(); i++)
   {
@@ -172,10 +189,11 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      OptionEntry* options=0;
      QList<QAbstractButton*>* buttons=0;
 
-     if(      ! opt_tokens[ 0 ].compare( "buff"    ) ) { options = buffs;   buttons = &buff_buttons;    }
-     else if( ! opt_tokens[ 0 ].compare( "debuff"  ) ) { options = debuffs; buttons = &debuff_buttons;  }
-     else if( ! opt_tokens[ 0 ].compare( "scaling" ) ) { options = scaling; buttons = &scaling_buttons; }
-     else if( ! opt_tokens[ 0 ].compare( "plots"   ) ) { options = plots;   buttons = &plot_buttons;    }
+     if(      ! opt_tokens[ 0 ].compare( "buff"         ) ) { options = buffs;        buttons = &buff_buttons;        }
+     else if( ! opt_tokens[ 0 ].compare( "debuff"       ) ) { options = debuffs;      buttons = &debuff_buttons;      }
+     else if( ! opt_tokens[ 0 ].compare( "scaling"      ) ) { options = scaling;      buttons = &scaling_buttons;     }
+     else if( ! opt_tokens[ 0 ].compare( "plots"        ) ) { options = plots;        buttons = &plot_buttons;        }
+     else if( ! opt_tokens[ 0 ].compare( "reforgeplots" ) ) { options = reforgeplots; buttons = &reforgeplot_buttons; }
 
      if ( ! options ) continue;
 
@@ -243,6 +261,16 @@ QString SimulationCraftWindow::encodeOptions()
   {
     encoded += " plots:";
     encoded += plots[ i ].option;
+    encoded += "=";
+    encoded += buttons.at( i )->isChecked() ? "1" : "0";
+  }
+
+  buttons = reforgeplotsButtonGroup->buttons();
+  OptionEntry* reforgeplots = getReforgePlotOptions();
+  for( int i=1; reforgeplots[ i ].label; i++ )
+  {
+    encoded += " reforge_plots:";
+    encoded += reforgeplots[ i ].option;
     encoded += "=";
     encoded += buttons.at( i )->isChecked() ? "1" : "0";
   }
@@ -443,6 +471,7 @@ void SimulationCraftWindow::createOptionsTab()
   createDebuffsTab();
   createScalingTab();
   createPlotsTab();
+  createReforgePlotsTab();
 
   QAbstractButton* allBuffs   =   buffsButtonGroup->buttons().at( 0 );
   QAbstractButton* allDebuffs = debuffsButtonGroup->buttons().at( 0 );
@@ -560,6 +589,26 @@ void SimulationCraftWindow::createPlotsTab()
   plotsGroupBox->setLayout( plotsLayout );
 
   optionsTab->addTab( plotsGroupBox, "Plots" );
+}
+
+void SimulationCraftWindow::createReforgePlotsTab()
+{
+  QVBoxLayout* reforgeplotsLayout = new QVBoxLayout();
+  reforgeplotsButtonGroup = new QButtonGroup();
+  reforgeplotsButtonGroup->setExclusive( false );
+  OptionEntry* reforgeplots = getReforgePlotOptions();
+  for( int i=0; reforgeplots[ i ].label; i++ )
+  {
+    QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
+    checkBox->setToolTip( reforgeplots[ i ].tooltip );
+    reforgeplotsButtonGroup->addButton( checkBox );
+    reforgeplotsLayout->addWidget( checkBox );
+  }
+  reforgeplotsLayout->addStretch( 1 );
+  QGroupBox* reforgeplotsGroupBox = new QGroupBox();
+  reforgeplotsGroupBox->setLayout( reforgeplotsLayout );
+
+  optionsTab->addTab( reforgeplotsGroupBox, "Reforge Plots" );
 }
 
 void SimulationCraftWindow::createImportTab()
@@ -1085,6 +1134,7 @@ void SimulateThread::run()
     {
       sim -> scaling -> analyze();
       sim -> plot -> analyze();
+      sim -> reforge_plot -> analyze();
       report_t::print_suite( sim );
     }
   }
@@ -1191,6 +1241,20 @@ QString SimulationCraftWindow::mergeOptions()
       options += plots[ i ].option;
     }
   }
+  options += "\n";
+  options += "reforge_plot_stat=none";
+  buttons = reforgeplotsButtonGroup->buttons();
+  OptionEntry* reforgeplots = getReforgePlotOptions();
+  for( int i=0; reforgeplots[ i ].label; i++ )
+  {
+    if( buttons.at( i )->isChecked() )
+    {
+      options += ",";
+      options += reforgeplots[ i ].option;
+    }
+  }
+  options += "\n";
+  options += "reforge_plot_output_file=reforge_plot.csv"; // This should be set in the gui if possible
   options += "\n";
   options += simulateText->toPlainText();
   options += "\n";

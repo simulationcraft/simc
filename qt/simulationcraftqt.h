@@ -115,6 +115,7 @@ public:
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
     QButtonGroup* plotsButtonGroup;
+    QButtonGroup* reforgeplotsButtonGroup;
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* charDevView;
     SimulationCraftWebView* siteView;
@@ -181,6 +182,7 @@ public:
     void createDebuffsTab();
     void createScalingTab();
     void createPlotsTab();
+    void createReforgePlotsTab();
     void createImportTab();
     void createRawrTab();
     void createBestInSlotTab();
