@@ -2986,6 +2986,7 @@ struct player_t
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
   double    dps, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
+  double    dps_10_percentile,dps_90_percentile;
   double    dpr, rps_gain, rps_loss;
   int       death_count;
   std::vector<double> death_time;

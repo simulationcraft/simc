@@ -3468,6 +3468,103 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t</div>\n" );
   }
 
+  util_t::fprintf( file,
+      "\t\t\t\t\t<div class=\"player-section gains\">\n"
+      "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
+      "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+      "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+      "\t\t\t\t\t\t\t\t<tr>\n"
+      "\t\t\t\t\t\t\t\t\t<th>DPS</th>\n"
+      "\t\t\t\t\t\t\t\t\t<th></th>\n"
+      "\t\t\t\t\t\t\t\t</tr>\n" );
+
+    util_t::fprintf( file,
+      "\t\t\t\t\t\t\t\t<tr>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Convergence</td>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t</tr>\n",
+      p -> dps_convergence * 100 );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"left\">&#x03C3; of the average dps</td>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+          "\t\t\t\t\t\t\t\t</tr>\n",
+          p -> dps_error / 2.0 );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall ( &#x03BC; &#xb1; 2&#x03C3; )</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps - p -> dps_error, p -> dps + p -> dps_error );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">99.7%% Confidence Intervall ( &#x03BC; &#xb1; 3&#x03C3; )</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps - 1.50 * p -> dps_error, p -> dps + 1.50 * p -> dps_error );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n" );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"left\">&#x03C3;</td>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+          "\t\t\t\t\t\t\t\t</tr>\n",
+          p -> dps_std_dev );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps_min );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps_max );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps_max - p -> dps_min );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps_10_percentile );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps_90_percentile );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps_90_percentile - p -> dps_10_percentile );
+
+    util_t::fprintf( file,
+      "\t\t\t\t\t\t\t\t</table>\n"
+      "\t\t\t\t\t\t\t</div>\n"
+      "\t\t\t\t\t\t</div>\n" );
 
   util_t::fprintf( file,
     "\t\t\t\t\t\t<div class=\"player-section action-priority-list\">\n"

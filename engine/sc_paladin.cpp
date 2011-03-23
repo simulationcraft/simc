@@ -882,7 +882,7 @@ struct paladin_seal_t : public paladin_attack_t
 struct seal_of_insight_proc_t : public paladin_attack_t
 {
   seal_of_insight_proc_t( paladin_t* p ) :
-    paladin_attack_t( "seal_of_insight", p, SCHOOL_HOLY )
+    paladin_attack_t( "seal_of_insight", 20167, p )
   {
     background  = true;
     proc        = true;

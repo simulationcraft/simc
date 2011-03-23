@@ -1300,7 +1300,7 @@ void sim_t::analyze_player( player_t* p )
   if ( p -> dps_min >= 1.0E+50 ) p -> dps_min = 0.0;
   if ( p -> dps_max < 0.0      ) p -> dps_max = 0.0;
 
-  p -> dps_std_dev /= iterations;
+  if ( iterations > 1 ) p -> dps_std_dev /= (iterations - 1 );
   p -> dps_std_dev = sqrt( p -> dps_std_dev );
   p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
 
@@ -1329,6 +1329,11 @@ void sim_t::analyze_player( player_t* p )
       p -> distribution_dps[ index ]++;
     }
   }
+
+  std::sort( p -> iteration_dps.begin(), p -> iteration_dps.end() );
+
+  p -> dps_10_percentile = p -> iteration_dps[ (int) floor( 0.1 * p -> iteration_dps.size() + 1.0 ) ];
+  p -> dps_90_percentile = p -> iteration_dps[ (int) floor( 0.9 * p -> iteration_dps.size() + 1.0 ) ];
 
   // Death analysis
   double count_death_time = p -> death_time.size();
