@@ -118,12 +118,12 @@ static OptionEntry* getReforgePlotOptions()
 {
   static OptionEntry options[] =
     {
-      { "Plot Reforge Options for Spirit",            "spi",     "Generate refroge plot data for Spirit"           },
-      { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate refroge plot data for Expertise Rating" },
-      { "Plot Reforge Options for Hit Rating",        "hit",     "Generate refroge plot data for Hit Rating"       },
-      { "Plot Reforge Options for Crit Rating",       "crit",    "Generate refroge plot data for Crit Rating"      },
-      { "Plot Reforge Options for Haste Rating",      "haste",   "Generate refroge plot data for Haste Rating"     },
-      { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate refroge plot data for Mastery Rating"   },
+      { "Plot Reforge Options for Spirit",            "spi",     "Generate reforge plot data for Spirit"           },
+      { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate reforge plot data for Expertise Rating" },
+      { "Plot Reforge Options for Hit Rating",        "hit",     "Generate reforge plot data for Hit Rating"       },
+      { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
+      { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
+      { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
       { NULL, NULL, NULL }
     };
   return options;
