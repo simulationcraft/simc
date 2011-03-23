@@ -221,7 +221,7 @@ const char* util_t::race_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_race_type =================================================
+// util_t::parse_race_type ==================================================
 
 race_type util_t::parse_race_type( const std::string& name )
 {
@@ -232,7 +232,7 @@ race_type util_t::parse_race_type( const std::string& name )
   return RACE_NONE;
 }
 
-// util_t::profession_type_string ==========================================
+// util_t::profession_type_string ===========================================
 
 const char* util_t::profession_type_string( int type )
 {
@@ -254,7 +254,7 @@ const char* util_t::profession_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_profession_type ===========================================
+// util_t::parse_profession_type ============================================
 
 int util_t::parse_profession_type( const std::string& name )
 {
@@ -265,7 +265,7 @@ int util_t::parse_profession_type( const std::string& name )
   return PROFESSION_NONE;
 }
 
-// util_t::player_type_string ==============================================
+// util_t::player_type_string ===============================================
 
 const char* util_t::player_type_string( int type )
 {
@@ -290,6 +290,8 @@ const char* util_t::player_type_string( int type )
   return "unknown";
 }
 
+// util_t::translate_class_str ==============================================
+
 int util_t::translate_class_str( std::string& s )
 {
   std::string fmt_s = armory_t::format( s );
@@ -307,7 +309,7 @@ int util_t::translate_class_str( std::string& s )
   return PLAYER_NONE;
 }
 
-// util_t::parse_player_type ===============================================
+// util_t::parse_player_type ================================================
 
 player_type util_t::parse_player_type( const std::string& name )
 {
