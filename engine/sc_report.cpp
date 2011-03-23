@@ -23,28 +23,6 @@ static const char* beta_warnings[] =
 };
 #endif
 
-// player_type_string ========================================================
-
-static const char* player_type_string( player_t* p )
-{
-  switch( p -> type )
-  {
-  case DEATH_KNIGHT:    return "DeathKnight";
-  case DRUID:           return "Druid";
-  case HUNTER:          return "Hunter";
-  case MAGE:            return "Mage";
-  case PALADIN:         return "Paladin";
-  case PRIEST:          return "Priest";
-  case ROGUE:           return "Rogue";
-  case SHAMAN:          return "Shaman";
-  case WARLOCK:         return "Warlock";
-  case WARRIOR:         return "Warrior";
-  default: break;
-  }
-  assert(0);
-  return 0;
-}
-
 // simplify_html =============================================================
 
 static void simplify_html( std::string& buffer )
