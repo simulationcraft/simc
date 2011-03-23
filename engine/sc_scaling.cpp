@@ -531,6 +531,6 @@ double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
   if ( scale_over == "min_death_time" ) return 0;
   if ( scale_over == "avg_death_time" ) return 0;
   if ( scale_over == "dmg_taken"      ) return 0;
-  return p -> dps_error;
+  return p -> dps_error * 2.76 / 2.0;
 }
 
