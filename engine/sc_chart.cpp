@@ -1878,20 +1878,26 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
 
   std::string region_str, server_str, name_str;
 
-  if( ! util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+  if( util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
   {
-    s = "";
-    return s.c_str();
+    s = "http://wowreforge.com/" + region_str + "/" + server_str + "/" + name_str + "?Spec=Main&amp;template=";
+  }
+  else
+  {
+    s = "http://wowreforge.com/?template=";
   }
 
-  s = "http://wowreforge.com/" + region_str + "/" + server_str + "/" + name_str + "?";
+  s += "for:";
+  s += util_t::player_type_string( p -> type );
+  s += "-";
+  s += util_t::talent_tree_string( p -> primary_tree() );
 
   for ( int i=0; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
 
-    snprintf( buffer, sizeof( buffer ), "&amp;%s=%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, value );
+    snprintf( buffer, sizeof( buffer ), ",%s:%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, value );
     s += buffer;
   }
 
