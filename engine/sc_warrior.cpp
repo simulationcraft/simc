@@ -2449,7 +2449,8 @@ struct berserker_rage_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> glyphs.berserker_rage -> ok() ) {
+    if ( p -> glyphs.berserker_rage -> ok() )
+    {
       double ragegain = 5.0;
       ragegain *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
       p -> resource_gain( RESOURCE_RAGE, ragegain, p -> gains_berserker_rage );

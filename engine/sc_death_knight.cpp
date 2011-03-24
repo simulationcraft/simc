@@ -2304,7 +2304,7 @@ struct blood_plague_t : public death_knight_spell_t
 struct blood_strike_offhand_t : public death_knight_attack_t
 {
   blood_strike_offhand_t( death_knight_t* player ) :
-    death_knight_attack_t( "blood_strike_offhand", 45902, player )
+    death_knight_attack_t( "blood_strike_offhand", 66215, player )
   {
     death_knight_t* p = player -> cast_death_knight();
     
@@ -2807,9 +2807,6 @@ struct frost_strike_offhand_t : public death_knight_attack_t
 
     background = true;
     weapon     = &( p -> off_hand_weapon );
-    // Base damage is halved in the DBC, but is not on live
-    base_dd_min *= 2;
-    base_dd_max *= 2;
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
 
@@ -2832,7 +2829,7 @@ struct frost_strike_offhand_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 };
 
@@ -3202,9 +3199,6 @@ struct obliterate_offhand_t : public death_knight_attack_t
 
     background = true;
     weapon     = &( p -> off_hand_weapon );
-    // Base damage is halved in the DBC, but is not on live
-    base_dd_min *= 2;
-    base_dd_max *= 2;
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
   }
@@ -3428,9 +3422,6 @@ struct plague_strike_offhand_t : public death_knight_attack_t
     
     background = true;
     weapon     = &( p -> off_hand_weapon );
-    // Base damage is halved in the DBC, but is not on live
-    base_dd_min *= 2;
-    base_dd_max *= 2;
 
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect1().percent();
   }
