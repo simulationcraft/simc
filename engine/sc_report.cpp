@@ -2550,7 +2550,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t</tr>\n"
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n"
+    "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -3472,6 +3472,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"left\">2 * &#x03C3; / &#x03BC;</td>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f%%</td>\n"
+          "\t\t\t\t\t\t\t\t</tr>\n",
+          p -> dps ? p -> dps_error / p -> dps * 100: 0);
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall ( &#x03BC; &#xb1; 2&#x03C3; )</td>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
@@ -3560,7 +3567,39 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t</tr>\n",
               p -> dps_90_percentile - p -> dps_10_percentile );
 
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for</b></td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n" );
 
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% dps error</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              (int) ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) ) );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% dps error</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              (int) ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) ) );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 scale factor error with delta=300</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              (int) ( ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 scale factor error with delta=300</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              (int) ( ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );
 
 
     util_t::fprintf( file,
