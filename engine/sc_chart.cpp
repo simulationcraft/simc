@@ -1511,11 +1511,6 @@ const char* chart_t::timeline_dps_error( std::string& s,
    {
      s += simple_encoding( ( int ) ( p -> dps_convergence_error[ i ] * dps_adjust ) );
    }
-   s += ",";
-   for ( int i=0; i < max_buckets - 1; i += increment )
-   {
-     s += simple_encoding( ( int ) ( p -> dps_convergence_error[ i + 1 ] / p -> dps_convergence_error[ i ] * dps_range ) );
-   }
    s += "&amp;";
    s += "chxt=x,y";
    s += "&amp;";
@@ -1530,9 +1525,9 @@ const char* chart_t::timeline_dps_error( std::string& s,
 
    }
    s += "&amp;";
-   snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%d|1:|0|dps error=%.0f", max_buckets, dps_max_error ); s += buffer;
+   snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%d|1:|0|max dps error=%.0f", max_buckets, dps_max_error ); s += buffer;
    s += "&amp;";
-   s += "chdl=DPS Error|Rate of Convergence";
+   s += "chdl=DPS Error";
    s += "&amp;";
    s += "chtt=Standard Error";
    s += "&amp;";
