@@ -3598,14 +3598,14 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 scale factor error with delta=300</td>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
-              (int) ( ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
+		       (int) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 scale factor error with delta=300</td>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
-              (int) ( ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );
+              (int) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );
 
 
     util_t::fprintf( file,

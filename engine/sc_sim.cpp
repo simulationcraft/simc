@@ -1304,7 +1304,7 @@ void sim_t::analyze_player( player_t* p )
       }
       p -> dps_convergence_error[i] /= i;
       p -> dps_convergence_error[i] = sqrt( p -> dps_convergence_error[i] );
-      p -> dps_convergence_error[i] = 2.0 * p -> dps_convergence_error[i] / sqrt ( i );
+      p -> dps_convergence_error[i] = 2.0 * p -> dps_convergence_error[i] / sqrt ( (float) i );
 
     }
   }
