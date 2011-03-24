@@ -1938,9 +1938,9 @@ void death_knight_attack_t::target_debuff( player_t* t, int dmg_type )
   attack_t::target_debuff( t, dmg_type );
   death_knight_t* p = player -> cast_death_knight();
 
-  if ( dmg_type == SCHOOL_FROST  )
+  if ( school == SCHOOL_FROST  )
   {
-    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> value();
+    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * 0.02;
   }
 }
 
@@ -2048,9 +2048,9 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
   spell_t::target_debuff( t, dmg_type );
   death_knight_t* p = player -> cast_death_knight();
 
-  if ( dmg_type == SCHOOL_FROST  )
+  if ( school == SCHOOL_FROST  )
   {
-    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> value();
+    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * 0.02;
   }
 }
 
@@ -4482,7 +4482,8 @@ void death_knight_t::init_enchant()
     buff_t* buff;
     spell_t* razorice_damage_proc;
 
-    razorice_callback_t( death_knight_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
+    razorice_callback_t( death_knight_t* p, int s, buff_t* b ) :
+      action_callback_t( p -> sim, p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
     {
       razorice_damage_proc = new razorice_spell_t( p );
     }
@@ -4497,7 +4498,7 @@ void death_knight_t::init_enchant()
       // double PPM        = 2.0;
       // double swing_time = a -> time_to_execute;
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      buff -> trigger( 1, 0.02, 1.0 );
+      buff -> trigger();
 
       razorice_damage_proc -> base_dd_min = w -> min_dmg;
       razorice_damage_proc -> base_dd_max = w -> max_dmg;
