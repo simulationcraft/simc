@@ -1478,7 +1478,8 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
     "\t\t<div id=\"help-convergence\">\n"
     "\t\t\t<div class=\"help-box\">\n"
     "\t\t\t\t<h3>Convergence</h3>\n"
-    "\t\t\t\t<p>Rate at which increasing iterations reduces error</p>\n"
+    "\t\t\t\t<p>Rate at which multipling iterations by convergence_scale reduces error</p>\n"
+    "\t\t\t\t<p>For default convergence_scale=2 it should itself approach 70.71%% according to the central limit theorem</p>\n"
     "\t\t\t</div>\n"
     "\t\t</div>\n" );
 
@@ -2540,8 +2541,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">Error</a></th>\n"
-    "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">Range</a></th>\n"
-    "\t\t\t\t\t\t\t\t<th><a href=\"#help-convergence\" class=\"help\">Convergence</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
     "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
@@ -2552,8 +2551,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2565,9 +2562,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     p -> dps,
     p -> dps_error,
     p -> dps ? p -> dps_error * 100 / p -> dps : 0,
-    ( ( p -> dps_max - p -> dps_min ) / 2 ),
-    p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0,
-    p -> dps_convergence * 100,
     p -> dpr,
     p -> rps_loss,
     p -> rps_gain,
@@ -3456,9 +3450,15 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       "\t\t\t\t\t\t\t\t\t<th></th>\n"
       "\t\t\t\t\t\t\t\t</tr>\n" );
 
+  util_t::fprintf( file,
+      "\t\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Population</b></td>\n"
+          "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+          "\t\t\t\t\t\t\t\t</tr>\n" );
+
     util_t::fprintf( file,
       "\t\t\t\t\t\t\t\t<tr>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Convergence</td>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#help-convergence\" class=\"help\">Convergence</a></td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
       p -> dps_convergence * 100 );
@@ -3476,6 +3476,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
               p -> dps - p -> dps_error, p -> dps + p -> dps_error );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized 95%% Confidence Intervall ( 1 &#xb1; 2&#x03C3;/&#x03BC; )</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps ? 100 - p -> dps_error * 100 / p -> dps : 0, p -> dps ? 100 + p -> dps_error * 100 / p -> dps : 0 );
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
@@ -3517,6 +3524,20 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
               p -> dps_max - p -> dps_min );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range ( max - min ) / 2</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              ( ( p -> dps_max - p -> dps_min ) / 2 ) );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range%%</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
