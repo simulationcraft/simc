@@ -3354,7 +3354,7 @@ double warrior_t::composite_mastery() SC_CONST
   double m = player_t::composite_mastery();
 
   if ( ptr )
-    m += spec.precision -> effect_base_value( 2 ) / 100.0;
+    m += spec.precision -> effect_base_value( 2 );
 
   return m;
 }
