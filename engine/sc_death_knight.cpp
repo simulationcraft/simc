@@ -2135,6 +2135,7 @@ struct auto_attack_t : public death_knight_attack_t
       p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+      p -> off_hand_attack -> base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     }
 
     trigger_gcd = 0;
