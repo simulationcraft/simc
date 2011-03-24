@@ -2791,7 +2791,7 @@ double player_t::resource_loss( int       resource,
 
   double actual_amount;
 
-  if ( sim -> infinite_resource[ resource ] == 0 )
+  if ( sim -> infinite_resource[ resource ] == 0 || is_enemy())
   {
     actual_amount = std::min( amount, resource_current[ resource ] );
     resource_current[ resource ] -= actual_amount;
