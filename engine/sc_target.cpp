@@ -128,7 +128,7 @@ struct auto_attack_t : public attack_t
       base_execute_time = 2.0;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
-    stats = player -> get_stats( name_str + "_" + target -> name() );
+    stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
@@ -162,7 +162,7 @@ struct spell_nuke_t : public spell_t
       base_execute_time = 3.0;
 
 
-    stats = player -> get_stats( name_str + "_" + target -> name() );
+    stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
 

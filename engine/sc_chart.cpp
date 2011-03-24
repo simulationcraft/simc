@@ -1036,7 +1036,7 @@ const char* chart_t::scale_factors( std::string& s,
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util_t::stat_type_abbrev( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%st++%.*f++%s,%s,0,%d,15,0.1", ( i?"|":"" ),
+    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1", ( i?"|":"" ),
 	      p -> sim -> report_precision, factor, name, class_text_color( p -> type ), i ); s += buffer;
   }
 
