@@ -3539,10 +3539,26 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t</tr>\n",
               p -> dps_90_percentile - p -> dps_10_percentile );
 
+
+
+
     util_t::fprintf( file,
-      "\t\t\t\t\t\t\t\t</table>\n"
+      "\t\t\t\t\t\t\t\t</table>\n" );
+
+    std::string timeline_dps_error_str                    = "";
+
+    if ( ! p -> timeline_dps_error_chart.empty() )
+      {
+          snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n", p -> timeline_dps_error_chart.c_str() );
+          timeline_dps_error_str = buffer;
+      }
+    util_t::fprintf( file,
+        "%s\n"
       "\t\t\t\t\t\t\t</div>\n"
-      "\t\t\t\t\t\t</div>\n" );
+      "\t\t\t\t\t\t</div>\n",
+        timeline_dps_error_str.c_str() );
+
+
 
   util_t::fprintf( file,
     "\t\t\t\t\t\t<div class=\"player-section action-priority-list\">\n"

@@ -1294,6 +1294,18 @@ void sim_t::analyze_player( player_t* p )
 	double delta = i_dps - convergence_dps;
 	convergence_std_dev += delta * delta;
       }
+
+      p -> dps_convergence_error.push_back( 0 );
+      for ( int j=0; j < i; j++ )
+      {
+        double j_dps = p -> iteration_dps[ j ];
+        double delta = j_dps - convergence_dps;
+        p -> dps_convergence_error[i] += delta * delta;
+      }
+      p -> dps_convergence_error[i] /= i;
+      p -> dps_convergence_error[i] = sqrt( p -> dps_convergence_error[i] );
+      p -> dps_convergence_error[i] = 2.0 * p -> dps_convergence_error[i] / sqrt ( i );
+
     }
   }
 
@@ -1421,23 +1433,24 @@ void sim_t::analyze()
    player_t* p = actor_list[i];
    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
     {
-      chart_t::action_dpet      ( pet -> action_dpet_chart,       pet );
-      chart_t::action_dmg       ( pet -> action_dmg_chart,        pet );
-      chart_t::gains            ( pet -> gains_chart,             pet );
-      chart_t::timeline_resource( pet -> timeline_resource_chart, pet );
-      chart_t::timeline_health  ( pet -> timeline_resource_health_chart, pet );
-      chart_t::timeline_dps     ( pet -> timeline_dps_chart,      pet );
-      chart_t::distribution_dps ( pet -> distribution_dps_chart,  pet );
+      chart_t::action_dpet        ( pet -> action_dpet_chart,               pet );
+      chart_t::action_dmg         ( pet -> action_dmg_chart,                pet );
+      chart_t::gains              ( pet -> gains_chart,                     pet );
+      chart_t::timeline_resource  ( pet -> timeline_resource_chart,         pet );
+      chart_t::timeline_health    ( pet -> timeline_resource_health_chart,  pet );
+      chart_t::timeline_dps       ( pet -> timeline_dps_chart,              pet );
+      chart_t::timeline_dps_error ( pet -> timeline_dps_error_chart,        pet );
+      chart_t::distribution_dps   ( pet -> distribution_dps_chart,          pet );
     }
     if ( p -> quiet ) continue;
 
-    chart_t::action_dpet      ( p -> action_dpet_chart,       p );
-    chart_t::action_dmg       ( p -> action_dmg_chart,        p );
-    chart_t::gains            ( p -> gains_chart,             p );
-    chart_t::timeline_resource( p -> timeline_resource_chart, p );
-    chart_t::timeline_health  ( p -> timeline_resource_health_chart, p );
-    chart_t::timeline_dps     ( p -> timeline_dps_chart,      p );
-    chart_t::distribution_dps ( p -> distribution_dps_chart,  p );
+    chart_t::action_dpet        ( p -> action_dpet_chart,               p );
+    chart_t::action_dmg         ( p -> action_dmg_chart,                p );
+    chart_t::gains              ( p -> gains_chart,                     p );
+    chart_t::timeline_resource  ( p -> timeline_resource_chart,         p );
+    chart_t::timeline_health    ( p -> timeline_resource_health_chart,  p );
+    chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
+    chart_t::distribution_dps   ( p -> distribution_dps_chart,          p );
 
   }
 }
