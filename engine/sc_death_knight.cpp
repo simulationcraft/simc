@@ -1465,7 +1465,6 @@ struct death_knight_attack_t : public attack_t
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
-  virtual double calculate_weapon_damage();
   virtual bool   ready();
   virtual double swing_haste() SC_CONST;
   virtual void   target_debuff( player_t* t, int dmg_type );
@@ -1854,22 +1853,6 @@ void death_knight_attack_t::execute()
       if ( ! proc )
         p -> buffs_rune_of_cinderglacier -> decrement();
   }
-}
-
-// death_knight_attack_t::calculate_weapon_damage() =========================
-
-double death_knight_attack_t::calculate_weapon_damage()
-{
-  double dmg = attack_t::calculate_weapon_damage();
-
-  death_knight_t* p = player -> cast_death_knight();
-
-  if ( weapon -> slot == SLOT_OFF_HAND && p -> talents.nerves_of_cold_steel -> rank() )
-  {
-    dmg *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
-  }
-
-  return dmg;
 }
 
 // death_knight_attack_t::player_buff() =====================================
