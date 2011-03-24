@@ -2835,7 +2835,18 @@ double player_t::resource_gain( int       resource,
 
   resource_gained [ resource ] += actual_amount;
 
-  if ( source ) source -> add( actual_amount, amount - actual_amount );
+  if ( source )
+  {
+    if ( source -> type == RESOURCE_NONE )
+      source -> type = (resource_type) resource;
+    if ( resource != source -> type )
+    {
+      sim -> errorf( "player_t::resource_gain: player=%s gain=%s resource_gain type not identical to gain resource type..\n resource=%s gain=%s",
+          name(), source -> name_str.c_str(), util_t::resource_type_string( resource ), util_t::resource_type_string( source -> type ) );
+      assert ( 0 );
+    }
+    source -> add( actual_amount, amount - actual_amount );
+  }
 
   if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action, (void*) &actual_amount );
 

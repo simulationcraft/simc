@@ -298,6 +298,7 @@ struct warlock_t : public player_t
   gain_t* gains_felhunter;
   gain_t* gains_life_tap;
   gain_t* gains_soul_leech;
+  gain_t* gains_soul_leech_health;
   gain_t* gains_mana_feed;
 
   // Uptimes
@@ -963,7 +964,7 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> talent_soul_leech -> rank() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect1().percent(), p ->gains_soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech_health );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech );
 
       p -> trigger_replenishment();
@@ -4131,6 +4132,7 @@ void warlock_t::init_gains()
   gains_felhunter  = get_gain( "felhunter"  );
   gains_life_tap   = get_gain( "life_tap"   );
   gains_soul_leech = get_gain( "soul_leech" );
+  gains_soul_leech_health = get_gain( "soul_leech_health" );
   gains_mana_feed  = get_gain( "mana_feed"  );
 }
 

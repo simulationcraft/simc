@@ -2029,11 +2029,13 @@ static void print_html_action_resource( FILE* file, stats_t* s, player_t* p, int
 
   util_t::fprintf( file,
     "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
     s -> name_str.c_str(),
+    util_t::resource_type_string( s -> resource ),
     s -> resource_portion * 100,
     s -> dpr,
     s -> rpe );
@@ -3022,6 +3024,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t<table class=\"sc mt\">\n"
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<th class=\"left small\">Resource Usage</th>\n"
+    "\t\t\t\t\t\t\t\t<th class=\"small\">Type</th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\">Res%%</th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\">RPE</th>\n"
@@ -3030,7 +3033,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<th class=\"left small\">%s</th>\n"
-    "\t\t\t\t\t\t\t\t<td colspan=\"3\" class=\"filler\"></td>\n"
+    "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
     n.c_str() );
 
@@ -3323,6 +3326,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t<table class=\"sc\">\n"
     "\t\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t\t<th></th>\n"
+    "\t\t\t\t\t\t\t\t\t<th>Type</th>\n"
     "\t\t\t\t\t\t\t\t\t<th>Count</th>\n"
     "\t\t\t\t\t\t\t\t\t<th>%s</th>\n"
     "\t\t\t\t\t\t\t\t\t<th>Average</th>\n"
@@ -3343,12 +3347,14 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file, ">\n" );
       util_t::fprintf( file,
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
         g -> name(),
+        util_t::resource_type_string( g -> type ),
         g -> count,
         g -> actual,
         g -> actual / g -> count,

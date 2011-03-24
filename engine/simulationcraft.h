@@ -4108,7 +4108,7 @@ struct gain_t
   int id;
   gain_t* next;
   gain_t( const std::string& n, int _id=0 ) :
-    name_str( n ), actual( 0 ), overflow( 0 ), count( 0 ), id( _id ) {}
+    name_str( n ), actual( 0 ), overflow( 0 ), count( 0 ), type( RESOURCE_NONE ), id( _id ) {}
   void add( double a, double o=0 ) { actual += a; overflow += o; count++; }
   void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; count += other -> count; }
   void analyze( sim_t* sim ) { actual /= sim -> iterations; overflow /= sim -> iterations; count /= sim -> iterations; }
