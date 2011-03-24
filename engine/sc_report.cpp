@@ -2901,10 +2901,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     }
     scale_factors_str = buffer;
   }
-  if ( num_players == 1 )
+  if ( ! sim -> timeline_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Encounter Timeline Distribution Chart\" />\n", sim -> timeline_chart.c_str() );
-    distribution_encounter_timeline_str = buffer;
+    if ( num_players == 1 )
+    {
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Encounter Timeline Distribution Chart\" />\n", sim -> timeline_chart.c_str() );
+      distribution_encounter_timeline_str = buffer;
+    }
   }
 
   util_t::fprintf( file,
@@ -3384,13 +3387,19 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
         util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td>%s</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          g -> name(),
-          g -> actual,
-          overflow_pct );
+            "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+            "\t\t\t\t\t\t\t\t</tr>\n",
+            g -> name(),
+            util_t::resource_type_string( g -> type ),
+            g -> count,
+            g -> actual,
+            g -> actual / g -> count,
+            overflow_pct );
       }
     }
   }
@@ -3584,14 +3593,14 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% dps error</td>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
-              (int) ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) ) );
+              (int) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) ) : 0 ) );
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% dps error</td>\n"
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
-              (int) ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) ) );
+              (int) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) ) : 0 ) );
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
@@ -3599,6 +3608,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
               "\t\t\t\t\t\t\t\t</tr>\n",
 		       (int) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
+
+      util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 scale factor error with delta=300</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              (int) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) ) );
 
       util_t::fprintf( file,
           "\t\t\t\t\t\t\t\t<tr>\n"
