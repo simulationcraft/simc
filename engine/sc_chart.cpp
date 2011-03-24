@@ -1002,30 +1002,44 @@ const char* chart_t::scale_factors( std::string& s,
     s += "chf=bg,s,333333";
     s += "&amp;";
   }
-  s += "chd=t:";
+  snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
   for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?"|":"" ), p -> sim -> report_precision, factor ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+  }
+  s += "|";
+  for ( int i=0; i < num_scaling_stats; i++ )
+  {
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
+    if ( factor < 0 )
+      factor = 0;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+  }
+  s += "|";
+  for ( int i=0; i < num_scaling_stats; i++ )
+  {
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
+    if ( factor < 0 )
+      factor = 0;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_scale_factor * 2 ); s += buffer;
   s += "&amp;";
   s += "chco=";
-  for ( int i=0; i < num_scaling_stats; i++ )
-  {
-    if ( i ) s += ",";
-    s += class_color( p -> type );
-  }
+  s += class_color( p -> type );
   s += "&amp;";
   s += "chm=";
+  snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
   for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util_t::stat_type_abbrev( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%st++%.*f++%s,%s,%d,0,15", ( i?"|":"" ), 
+    snprintf( buffer, sizeof( buffer ), "%st++%.*f++%s,%s,0,%d,15,0.1", ( i?"|":"" ),
 	      p -> sim -> report_precision, factor, name, class_text_color( p -> type ), i ); s += buffer;
   }
+
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
