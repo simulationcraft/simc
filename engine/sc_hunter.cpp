@@ -3377,7 +3377,7 @@ void hunter_t::init_base()
 
   attribute_multiplier_initial[ ATTR_STAMINA ]   *= 1.0 + talents.hunter_vs_wild -> rank() * 0.04;
 
-  base_attack_power = level * 2 - 10;
+  base_attack_power = level * 2;
 
   initial_attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
   initial_attack_power_per_agility  = 2.0;
