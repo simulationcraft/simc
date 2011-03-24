@@ -1466,9 +1466,9 @@ struct death_knight_attack_t : public attack_t
   virtual void   execute();
   virtual void   player_buff();
   virtual double calculate_weapon_damage();
-  virtual void   target_debuff( player_t* t, int dmg_type );
   virtual bool   ready();
   virtual double swing_haste() SC_CONST;
+  virtual void   target_debuff( player_t* t, int dmg_type );
 };
 
 // ==========================================================================
@@ -2308,10 +2308,11 @@ struct blood_strike_offhand_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     
-    background = true;
-    weapon     = &( p -> off_hand_weapon );
-    rp_gain    = 0;
-    cost_blood = 0;
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+    rp_gain          = 0;
+    cost_blood       = 0;
+    base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -2805,8 +2806,9 @@ struct frost_strike_offhand_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    background = true;
-    weapon     = &( p -> off_hand_weapon );
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+    base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
 
@@ -3197,9 +3199,9 @@ struct obliterate_offhand_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    background = true;
-    weapon     = &( p -> off_hand_weapon );
-
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+    base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
   }
 
@@ -3420,10 +3422,9 @@ struct plague_strike_offhand_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     
-    background = true;
-    weapon     = &( p -> off_hand_weapon );
-
-    base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect1().percent();
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+    base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
   }
 
   virtual void execute()
