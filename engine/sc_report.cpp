@@ -2918,7 +2918,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "              %s"
     "              %s"
     "              %s"
-    "              %s"
     "\t\t\t\t\t\t</div>\n"
     "\t\t\t\t\t\t<div class=\"charts\">\n"
     "              %s"
@@ -2934,7 +2933,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t</div>\n",
     action_dpet_str.c_str(),
     action_dmg_str.c_str(),
-    gains_str.c_str(),
     scaling_dps_str.c_str(),
     reforge_dps_str.c_str(),
     scale_factors_str.c_str(),
@@ -2944,6 +2942,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     distribution_dps_str.c_str(),
     distribution_encounter_timeline_str.c_str() );
 
+  // Abilities Section
   util_t::fprintf( file,
     "\t\t\t\t<div class=\"player-section\">\n"
     "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
@@ -3023,7 +3022,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
     "\t\t\t\t\t\t</table>\n" );
 
+
+  // Resources Section
   util_t::fprintf( file,
+
+    "\t\t\t\t<div class=\"player-section gains\">\n"
+    "\t\t\t\t\t<h3 class=\"toggle\">Resources</h3>\n"
+    "\t\t\t\t\t<div class=\"toggle-content hide\">\n"
     "\t\t\t\t\t\t<table class=\"sc mt\">\n"
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<th class=\"left small\">Resource Usage</th>\n"
@@ -3077,10 +3082,100 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   }
 
   util_t::fprintf( file,
-    "\t\t\t\t\t\t</table>\n"
-    "\t\t\t\t\t</div>\n"
-    "\t\t\t\t</div>\n" );
+    "\t\t\t\t\t\t</table>\n" );
 
+  // Resource Gains Section
+    util_t::fprintf( file,
+
+      "\t\t\t\t\t\t<table class=\"sc\">\n"
+      "\t\t\t\t\t\t\t<tr>\n"
+      "\t\t\t\t\t\t\t\t<th>Resource Gains</th>\n"
+      "\t\t\t\t\t\t\t\t<th>Type</th>\n"
+      "\t\t\t\t\t\t\t\t<th>Count</th>\n"
+      "\t\t\t\t\t\t\t\t<th>%s</th>\n"
+      "\t\t\t\t\t\t\t\t<th>Average</th>\n"
+      "\t\t\t\t\t\t\t\t<th>Overflow</th>\n"
+      "\t\t\t\t\t\t\t</tr>\n",
+      util_t::resource_type_string( p -> primary_resource() ) );
+    i = 1;
+    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 )
+      {
+        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+        util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) ) {
+          util_t::fprintf( file, " class=\"odd\"" );
+        }
+        util_t::fprintf( file, ">\n" );
+        util_t::fprintf( file,
+          "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+          "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+          "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+          "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+          "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+          "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+          "\t\t\t\t\t\t\t</tr>\n",
+          g -> name(),
+          util_t::resource_type_string( g -> type ),
+          g -> count,
+          g -> actual,
+          g -> actual / g -> count,
+          overflow_pct );
+        i++;
+      }
+    }
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    {
+      if ( pet -> total_dmg <= 0 ) continue;
+      bool first = true;
+      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+      {
+        if ( g -> actual > 0 )
+        {
+          if ( first )
+          {
+            first = false;
+            util_t::fprintf( file,
+              "\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
+              "\t\t\t\t\t\t\t\t<th>%s</th>\n"
+              "\t\t\t\t\t\t\t</tr>\n",
+              pet -> name_str.c_str(),
+              util_t::resource_type_string( pet -> primary_resource() ) );
+          }
+          double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+          util_t::fprintf( file,
+              "\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+              "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+              "\t\t\t\t\t\t\t</tr>\n",
+              g -> name(),
+              util_t::resource_type_string( g -> type ),
+              g -> count,
+              g -> actual,
+              g -> actual / g -> count,
+              overflow_pct );
+        }
+      }
+    }
+    util_t::fprintf( file,
+      "\t\t\t\t\t\t</table>\n" );
+
+    util_t::fprintf( file,
+      "\t\t\t\t\t\t%s\n",
+      gains_str.c_str() );
+
+    util_t::fprintf( file,
+      "\t\t\t\t\t</div>\n"
+      "\t\t\t\t</div>\n" );
+
+  // Buff Section
   util_t::fprintf( file,
     "\t\t\t\t<div class=\"player-section buffs\">\n"
     "\t\t\t\t\t<h3 class=\"toggle open\">Buffs</h3>\n"
@@ -3283,6 +3378,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t</div>\n"
     "\t\t\t\t\t</div>\n" );
 
+  // Procs Section
   util_t::fprintf( file,
     "\t\t\t\t\t<div class=\"player-section procs\">\n"
     "\t\t\t\t\t\t<h3 class=\"toggle\">Procs</h3>\n"
@@ -3322,91 +3418,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t</div>\n"
     "\t\t\t\t\t</div>\n" );
 
-  util_t::fprintf( file,
-    "\t\t\t\t\t<div class=\"player-section gains\">\n"
-    "\t\t\t\t\t\t<h3 class=\"toggle\">Gains</h3>\n"
-    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-    "\t\t\t\t\t\t\t<table class=\"sc\">\n"
-    "\t\t\t\t\t\t\t\t<tr>\n"
-    "\t\t\t\t\t\t\t\t\t<th></th>\n"
-    "\t\t\t\t\t\t\t\t\t<th>Type</th>\n"
-    "\t\t\t\t\t\t\t\t\t<th>Count</th>\n"
-    "\t\t\t\t\t\t\t\t\t<th>%s</th>\n"
-    "\t\t\t\t\t\t\t\t\t<th>Average</th>\n"
-    "\t\t\t\t\t\t\t\t\t<th>Overflow</th>\n"
-    "\t\t\t\t\t\t\t\t</tr>\n",
-    util_t::resource_type_string( p -> primary_resource() ) );
-  i = 1;
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
-  {
-    if ( g -> actual > 0 )
-    {
-      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-      util_t::fprintf( file,
-        "\t\t\t\t\t\t\t\t<tr" );
-      if ( !( i & 1 ) ) {
-        util_t::fprintf( file, " class=\"odd\"" );
-      }
-      util_t::fprintf( file, ">\n" );
-      util_t::fprintf( file,
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n",
-        g -> name(),
-        util_t::resource_type_string( g -> type ),
-        g -> count,
-        g -> actual,
-        g -> actual / g -> count,
-        overflow_pct );
-      i++;
-    }
-  }
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-  {
-    if ( pet -> total_dmg <= 0 ) continue;
-    bool first = true;
-    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
-    {
-      if ( g -> actual > 0 )
-      {
-        if ( first )
-        {
-          first = false;
-          util_t::fprintf( file,
-            "\t\t\t\t\t\t\t\t<tr>\n"
-            "\t\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
-            "\t\t\t\t\t\t\t\t\t<th>%s</th>\n"
-            "\t\t\t\t\t\t\t\t</tr>\n",
-            pet -> name_str.c_str(),
-            util_t::resource_type_string( pet -> primary_resource() ) );
-        }
-        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-        util_t::fprintf( file,
-          "\t\t\t\t\t\t\t\t<tr>\n"
-            "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-            "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-            "\t\t\t\t\t\t\t\t</tr>\n",
-            g -> name(),
-            util_t::resource_type_string( g -> type ),
-            g -> count,
-            g -> actual,
-            g -> actual / g -> count,
-            overflow_pct );
-      }
-    }
-  }
-  util_t::fprintf( file,
-    "\t\t\t\t\t\t\t\t</table>\n"
-    "\t\t\t\t\t\t\t</div>\n"
-    "\t\t\t\t\t\t</div>\n" );
+
 
 
   // Death Analysis
