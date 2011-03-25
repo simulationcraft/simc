@@ -3132,9 +3132,9 @@ struct hunter_sniper_training_event_t : public event_t
 
     if ( ! p -> in_combat ) p -> buffs_sniper_training -> trigger();
 
-    if ( ! p -> buffs.moving -> up() )
+    if ( ! p -> buffs.raid_movement -> up() )
     {
-      double finished_moving = p -> buffs.moving -> last_start + p -> buffs.moving -> buff_duration;
+      double finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
 
       if ( ( sim -> current_time - finished_moving ) > p -> talents.sniper_training -> effect1().base_value() )
       {

@@ -2165,7 +2165,7 @@ struct auto_attack_t : public action_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
-    if ( p -> buffs.moving -> check() )
+    if ( p -> is_moving() )
       return false;
 
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
@@ -2674,7 +2674,7 @@ struct moonfire_t : public druid_spell_t
         p -> dots_sunfire -> action -> cancel();
 
       // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
+      p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     }
   }
@@ -3142,7 +3142,7 @@ struct sunfire_t : public druid_spell_t
         p -> dots_moonfire -> action -> cancel();
 
       // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( p -> buffs.moving -> check() ? 3 : 1 );
+      p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     }
   }

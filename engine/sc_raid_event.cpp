@@ -137,13 +137,13 @@ struct movement_event_t : public raid_event_t
       if ( p -> is_pet() && players_only ) continue;
       if ( move_distance )
       {
-        p -> buffs.moving -> buff_duration = move_distance / p -> composite_movement_speed();
-        p -> buffs.moving -> trigger();
+        p -> buffs.raid_movement -> buff_duration = move_distance / p -> composite_movement_speed();
+        p -> buffs.raid_movement -> trigger();
       }
       else
       {
-        p -> buffs.moving -> buff_duration = saved_duration;
-        p -> buffs.moving -> trigger();
+        p -> buffs.raid_movement -> buff_duration = saved_duration;
+        p -> buffs.raid_movement -> trigger();
       }
 
       if ( p -> sleeping ) continue;

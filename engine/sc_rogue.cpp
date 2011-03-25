@@ -1326,7 +1326,7 @@ struct auto_attack_t : public action_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    if ( p -> buffs.moving -> check() ) 
+    if ( p -> is_moving() ) 
       return false;
 
     return ( p -> main_hand_attack -> execute_event == 0 ); // not swinging

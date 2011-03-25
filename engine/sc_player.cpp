@@ -1387,10 +1387,7 @@ void player_t::init_buffs()
   buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1,  4.0 );
   buffs.grace                     = new buff_t( this,        "grace",               3, 15.0 );
 
-  // Infinite-Stacking Buffs
-  buffs.moving  = new buff_t( this, "moving",  1 );
-  buffs.stunned = new buff_t( this, "stunned", -1 );
-
+  buffs.raid_movement = new buff_t( this, "raid_movement", 1 );
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )  
@@ -1408,11 +1405,13 @@ void player_t::init_buffs()
   buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0,            1, 15.0, 60.0 );
   buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0,            1, 15.0, 60.0 );
 
-  // Infinite-Stacking De-Buffs
-  debuffs.bleeding     = new debuff_t( this, "bleeding",     1 );
-  debuffs.casting      = new debuff_t( this, "casting",      1 );
-  debuffs.invulnerable = new debuff_t( this, "invulnerable", 1 );
-  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   1 );
+  // Infinite-Stacking Buffs and De-Buffs
+
+    buffs.stunned      = new   buff_t( this, "stunned",      -1 );
+  debuffs.bleeding     = new debuff_t( this, "bleeding",     -1 );
+  debuffs.casting      = new debuff_t( this, "casting",      -1 );
+  debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
+  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
 }
 
 // player_t::init_gains ====================================================
@@ -3663,7 +3662,6 @@ struct start_moving_t : public action_t
   virtual void execute()
   {   
     player -> buffs.self_movement -> trigger();
-    player -> buffs.moving -> increment();
 
     if ( sim -> log ) log_t::output( sim, "%s starts moving.", player -> name() );
     update_ready();
@@ -3692,7 +3690,6 @@ struct stop_moving_t : public action_t
   virtual void execute()
   {    
     player -> buffs.self_movement -> expire();
-    player -> buffs.moving -> decrement();
 
     if ( sim -> log ) log_t::output( sim, "%s stops moving.", player -> name() );
     update_ready();

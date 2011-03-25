@@ -1475,12 +1475,12 @@ bool action_t::ready()
     if ( harmful )
       return false;
 
-  if ( player -> buffs.moving -> check() )
+  if ( player -> is_moving() )
     if ( ! usable_moving() )
       return false;
 
   if ( moving != -1 )
-    if ( moving != ( player -> buffs.moving -> check() ? 1 : 0 ) )
+    if ( moving != ( player -> is_moving() ? 1 : 0 ) )
       return false;
 
   if ( vulnerable )

@@ -3072,9 +3072,9 @@ struct player_t
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
-    buff_t* moving;
     buff_t* power_infusion;
     buff_t* replenishment;
+    buff_t* raid_movement;
     buff_t* self_movement;
     buff_t* speed_potion;
     buff_t* stoneform;
@@ -3306,6 +3306,8 @@ struct player_t
   virtual void dismiss_pet( const char* name );
 
   virtual bool ooc_buffs() { return true; }
+
+  virtual bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
 
   virtual void register_callbacks();
   virtual void register_resource_gain_callback( int resource,        action_callback_t* );

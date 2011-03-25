@@ -1123,7 +1123,7 @@ struct auto_attack_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> buffs.moving -> check() )
+    if ( p -> is_moving() )
       return false;
 
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging

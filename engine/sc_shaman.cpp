@@ -1319,7 +1319,7 @@ struct auto_attack_t : public shaman_attack_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
-    if ( p -> buffs.moving -> check() ) return false;
+    if ( p -> is_moving() ) return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };

@@ -2154,7 +2154,7 @@ struct auto_attack_t : public death_knight_attack_t
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs.moving -> check() )
+    if ( p -> is_moving() )
       return false;
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
   }

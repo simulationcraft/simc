@@ -1061,7 +1061,7 @@ void priest_spell_t::trigger_shadowy_apparition( player_t* player )
 
   if ( p -> talents.shadowy_apparition -> rank() )
   {
-    double h = p -> talents.shadowy_apparition -> rank() * ( p -> buffs.moving -> up() ? 0.2 : 0.04 );
+    double h = p -> talents.shadowy_apparition -> rank() * ( p -> is_moving() ? 0.2 : 0.04 );
     if ( p -> sim -> roll( h ) && ( !p -> shadowy_apparition_free_list.empty() ) )
     {
       s = p -> shadowy_apparition_free_list.front();
