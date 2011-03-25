@@ -1527,7 +1527,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
     "\t\t<div id=\"help-miss-pct\">\n"
     "\t\t\t<div class=\"help-box\">\n"
     "\t\t\t\t<h3>M%%</h3>\n"
-    "\t\t\t\t<p>Percentage of executes that resulted in misses.</p>\n"
+    "\t\t\t\t<p>Percentage of executes that resulted in misses, dodges or parries.</p>\n"
     "\t\t\t</div>\n"
     "\t\t</div>\n" );
 
@@ -1615,7 +1615,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
     "\t\t<div id=\"help-ticks-miss-pct\">\n"
     "\t\t\t<div class=\"help-box\">\n"
     "\t\t\t\t<h3>T-M%%</h3>\n"
-    "\t\t\t\t<p>Percentage of ticks that resulted in misses.</p>\n"
+    "\t\t\t\t<p>Percentage of ticks that resulted in misses, dodges or parries.</p>\n"
     "\t\t\t</div>\n"
     "\t\t</div>\n" );
 
@@ -1705,8 +1705,6 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
@@ -1724,8 +1722,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     s -> direct_results[ RESULT_CRIT ].avg_dmg,
     s -> direct_results[ RESULT_CRIT ].max_dmg ? s -> direct_results[ RESULT_CRIT ].max_dmg : s -> direct_results[ RESULT_HIT ].max_dmg,
     s -> direct_results[ RESULT_CRIT ].pct,
-    s -> direct_results[ RESULT_MISS ].pct,
-    s -> direct_results[ RESULT_DODGE  ].pct,
+    s -> direct_results[ RESULT_MISS ].pct +
+    s -> direct_results[ RESULT_DODGE  ].pct +
     s -> direct_results[ RESULT_PARRY  ].pct,
     s -> direct_results[ RESULT_GLANCE ].pct,
     s -> direct_results[ RESULT_BLOCK  ].pct,
@@ -1733,14 +1731,16 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     s -> tick_results[ RESULT_HIT  ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].avg_dmg,
     s -> tick_results[ RESULT_CRIT ].pct,
-    s -> tick_results[ RESULT_MISS ].pct,
+    s -> tick_results[ RESULT_MISS ].pct +
+    s -> tick_results[ RESULT_DODGE ].pct +
+    s -> tick_results[ RESULT_PARRY ].pct,
     100 * s -> total_tick_time / s -> player -> total_seconds );
 
   if ( p -> sim -> report_details )
   {
   util_t::fprintf( file,
     "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-    "\t\t\t\t\t\t\t\t<td colspan=\"22\" class=\"filler\">\n" );
+    "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\">\n" );
 
   // Stat Details
   util_t::fprintf (file,
@@ -2788,14 +2788,14 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   }
   if ( ! p -> gains_chart.empty() )
   {
-    if ( num_players == 1)
-    {
+    //if ( num_players == 1)
+    //{
       snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Gains Chart\" />\n", p -> gains_chart.c_str() );
-    }
-    else
-    {
-      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\" title=\"Resource Gains Chart\">%s</span>\n", p -> gains_chart.c_str() );
-    }
+    //}
+    //else
+    //{
+    //  snprintf( buffer, sizeof( buffer ), "<span class=\"chart-gains\" title=\"Resource Gains Chart\">%s</span>\n", p -> gains_chart.c_str() );
+    //}
     gains_str = buffer;
   }
   if ( ! p -> scaling_dps_chart.empty() )
@@ -2960,16 +2960,14 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-max\" class=\"help\">Max</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%%</a></th>\n"
-    "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">M%%</a></th>\n"
-    "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dodge-pct\" class=\"help\">D%%</a></th>\n"
-    "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-parry-pct\" class=\"help\">P%%</a></th>\n"
+    "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%%</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%%</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%%</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%%</a></th>\n"
-    "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-M%%</a></th>\n"
+    "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%%</a></th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%%</a></th>\n"
     "\t\t\t\t\t\t\t</tr>\n" );
 
@@ -2977,7 +2975,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     "\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t<th class=\"left small\">%s</th>\n"
     "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f</th>\n"
-    "\t\t\t\t\t\t\t\t<td colspan=\"20\" class=\"filler\"></td>\n"
+    "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
     n.c_str(),
     p -> dps );
@@ -3008,7 +3006,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       "\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
       "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f</th>\n"
-      "\t\t\t\t\t\t\t\t<td colspan=\"20\" class=\"filler\"></td>\n"
+      "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
       "\t\t\t\t\t\t\t</tr>\n",
       pet -> name_str.c_str(),
       pet -> dps );
@@ -3020,7 +3018,9 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   }
 
   util_t::fprintf( file,
-    "\t\t\t\t\t\t</table>\n" );
+    "\t\t\t\t\t\t</table>\n"
+      "\t\t\t\t\t</div>\n"
+      "\t\t\t\t</div>\n");
 
 
   // Resources Section
@@ -3082,7 +3082,8 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   }
 
   util_t::fprintf( file,
-    "\t\t\t\t\t\t</table>\n" );
+    "\t\t\t\t\t\t</table>\n"
+);
 
   // Resource Gains Section
     util_t::fprintf( file,
