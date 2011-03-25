@@ -2240,10 +2240,8 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if ( non_consecutive )
+    if ( non_consecutive && p -> last_foreground_action )
     {
-      if ( ! p -> last_foreground_action )
-        return true;
       if ( p -> last_foreground_action -> name_str == "explosive_shot" )
         return false;
     }
