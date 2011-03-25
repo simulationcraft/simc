@@ -132,7 +132,6 @@ struct priest_t : public player_t
     
     // Shadow
     passive_spell_t* shadow_power;
-    passive_spell_t* empowered_shadow;
     passive_spell_t* shadow_orbs;
     passive_spell_t* shadowy_apparition_num;
   };
@@ -1527,7 +1526,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
 
     player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * p -> shadow_orb_amount() );
   }
@@ -1608,7 +1607,7 @@ struct mind_flay_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_td_multiplier += p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+    player_td_multiplier += p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
 
     if ( p -> glyphs.mind_flay -> ok() )
     {
@@ -1727,7 +1726,7 @@ struct mind_spike_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
 
     player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * p -> shadow_orb_amount() );
   }
@@ -1994,7 +1993,7 @@ struct shadow_word_death_t : public priest_spell_t
     if ( p -> glyphs.shadow_word_death -> ok() && ( target -> health_percentage() <= 25 ) )
       player_multiplier *= 3.0;
 
-    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> stack() * p -> constants.dark_archangel_damage_value;
+    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
   }
 
   virtual bool ready()
@@ -2194,7 +2193,7 @@ struct archangel_t : public priest_spell_t
     if ( p -> buffs_holy_evangelism -> up() && delta > 0)
     {
       cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect2().id() ) -> base_value();
-      p -> buffs_holy_archangel -> trigger( p -> buffs_holy_evangelism -> stack() , 1.0, 1.0 );
+      p -> buffs_holy_archangel -> trigger( 1, p -> buffs_holy_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
@@ -2202,7 +2201,7 @@ struct archangel_t : public priest_spell_t
     else if ( p -> buffs_dark_evangelism -> up() && delta < 0 )
     {
       cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect3().id() ) -> base_value();
-      p -> buffs_dark_archangel -> trigger( p -> buffs_dark_evangelism -> stack() , 1.0, 1.0 );
+      p -> buffs_dark_archangel -> trigger( 1, p -> buffs_dark_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_dark_evangelism -> expire();
     }
@@ -4255,7 +4254,6 @@ void priest_t::init_spells()
 
   // Shadow
   passive_spells.shadow_power           = new passive_spell_t( this, "shadow_power", "Shadow Power" );
-  passive_spells.empowered_shadow       = new passive_spell_t( this, "empowered_shadow", 95799 );
   passive_spells.shadow_orbs            = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
   passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
 
@@ -4318,15 +4316,15 @@ void priest_t::init_buffs()
 
   // Discipline
   buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
-  buffs_dark_evangelism            = new buff_t( this, "dark_evangelism",            5, 20.0, 0, 1.0             );
-  buffs_holy_evangelism            = new buff_t( this, "holy_evangelism",            5, 20.0, 0, 1.0             );
-  buffs_dark_archangel             = new buff_t( this, "dark_archangel",             5, 18.0                     );
-  buffs_holy_archangel             = new buff_t( this, "holy_archangel",             5, 18.0                     );
-  buffs_inner_fire                 = new buff_t( this, 588, "inner_fire"                                              );
+  buffs_dark_evangelism            = new buff_t( this, 81661, "dark_evangelism" );
+  buffs_holy_evangelism            = new buff_t( this, 81661, "holy_evangelism" );
+  buffs_dark_archangel             = new buff_t( this, 87153, "dark_archangel" );
+  buffs_holy_archangel             = new buff_t( this, 81700, "holy_archangel" );
+  buffs_inner_fire                 = new buff_t( this,   588, "inner_fire"                                              );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
-  buffs_weakened_soul              = new buff_t( this, 6788, "weakened_soul" );
+  buffs_weakened_soul              = new buff_t( this,  6788, "weakened_soul" );
 
   // Holy
   buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
@@ -4339,12 +4337,12 @@ void priest_t::init_buffs()
 
 
   // Shadow
-  buffs_empowered_shadow           = new buff_t( this, "empowered_shadow",           1, passive_spells.empowered_shadow->duration() );
+  buffs_empowered_shadow           = new buff_t( this, 95799, "empowered_shadow" );
   buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
-  buffs_mind_melt                  = new buff_t( this, "mind_melt",                  2, 6.0, 0,1                 );
+  buffs_mind_melt                  = new buff_t( this, "mind_melt"                 );
   buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
   buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
-  buffs_shadow_orb                 = new buff_t( this, "shadow_orb",      3, 60.0                                );
+  buffs_shadow_orb                 = new buff_t( this, 77487, "shadow_orb" );
   buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
   buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
   buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );

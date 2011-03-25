@@ -3371,18 +3371,18 @@ action_t* player_t::find_action( const std::string& str )
 
 // player_t::aura_gain ======================================================
 
-void player_t::aura_gain( const char* aura_name , int aura_id )
+void player_t::aura_gain( const char* aura_name , double value )
 {
   if ( sim -> log && ! sleeping )
   {
-    log_t::output( sim, "%s gains %s", name(), aura_name );
+    log_t::output( sim, "%s gains %s ( value=%.2f )", name(), aura_name, value );
   }
 
 }
 
 // player_t::aura_loss ======================================================
 
-void player_t::aura_loss( const char* aura_name , int aura_id )
+void player_t::aura_loss( const char* aura_name , double value )
 {
   if ( sim -> log && ! sleeping )
   {

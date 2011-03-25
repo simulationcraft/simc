@@ -3447,8 +3447,8 @@ struct player_t
   action_t* find_action( const std::string& );
   double    mana_regen_per_second();
   bool      dual_wield() SC_CONST { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  void      aura_gain( const char* name, int aura_id=0 );
-  void      aura_loss( const char* name, int aura_id=0 );
+  void      aura_gain( const char* name, double value=0 );
+  void      aura_loss( const char* name, double value=0 );
 
   cooldown_t* find_cooldown( const std::string& name );
   dot_t*      find_dot     ( const std::string& name );

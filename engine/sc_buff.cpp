@@ -649,6 +649,8 @@ void buff_t::bump( int    stacks,
 
   if ( max_stack == 0 ) return;
 
+  if ( value >= 0 ) current_value = value;
+
   if ( max_stack < 0 )
   {
     current_stack += stacks;
@@ -669,7 +671,7 @@ void buff_t::bump( int    stacks,
     }
   }
 
-  if ( value >= 0 ) current_value = value;
+
 }
 
 // buff_t::override =========================================================
@@ -735,7 +737,7 @@ void buff_t::aura_gain()
 
     if ( player )
     {
-      player -> aura_gain( s, aura_id );
+      player -> aura_gain( s, current_value );
     }
     else
     {
@@ -750,7 +752,7 @@ void buff_t::aura_loss()
 {
   if ( player )
   {
-    player -> aura_loss( name(), aura_id );
+    player -> aura_loss( name(), current_value );
   }
   else
   {
