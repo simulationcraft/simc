@@ -2535,7 +2535,7 @@ struct steady_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-    normalize_weapon_damage = true;
+    normalize_weapon_damage = false;
     normalize_weapon_speed  = true;
     
     direct_power_mod = 0.021;
