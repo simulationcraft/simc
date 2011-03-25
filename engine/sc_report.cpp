@@ -961,17 +961,17 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     }
     ci = 1;
     snprintf( buffer, sizeof( buffer ),
-      "\t\t\t\t<ul class=\"toc %s\">\n",
-	  toc_class.c_str() );
-	cols[i] += buffer;
+              "\t\t\t\t<ul class=\"toc %s\">\n",
+              toc_class.c_str() );
+              cols[i] += buffer;
     if ( i == 0 )
     {
       cols[i] += "\t\t\t\t\t<li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
       ci++;
       if ( sim -> scaling -> has_scale_factors() )
       {
-	    cols[i] += "\t\t\t\t\t<li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
-	    ci++;
+        cols[i] += "\t\t\t\t\t<li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
+        ci++;
       }
     }
     while ( ci <= cs )
@@ -980,31 +980,31 @@ static void print_html_contents( FILE*  file, sim_t* sim )
       {
         player_t* p = sim -> players_by_name[ pi ];
         snprintf( buffer, sizeof( buffer ),
-          "\t\t\t\t\t<li><a href=\"#%s\">%s</a>",
-	      p -> name(),
-	      p -> name() );
-	    cols[i] += buffer;
-	    ci++; 
+                  "\t\t\t\t\t<li><a href=\"#%s\">%s</a>",
+                  p -> name(),
+                  p -> name() );
+        cols[i] += buffer;
+        ci++; 
         if ( sim -> report_pets_separately )
         {
-	      cols[i] += "\n\t\t\t\t\t\t<ul>\n";
-	      for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
-	      {
-		    if ( pet -> summoned )
-		    {
-		      snprintf( buffer, sizeof( buffer ),
-		        "\t\t\t\t\t\t\t<li><a href=\"#%s\">%s</a></li>\n",
-		        pet -> name(),
-		        pet -> name() );
-		      cols[i] += buffer;
-		      ci++;
-		    }
-	      }
-	      cols[i] += "\t\t\t\t\t\t</ul>";
-	    }
-	    cols[i] += "</li>\n";
-	    pi++;
-	  }
+          cols[i] += "\n\t\t\t\t\t\t<ul>\n";
+          for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
+          {
+            if ( pet -> summoned )
+            {
+              snprintf( buffer, sizeof( buffer ),
+                        "\t\t\t\t\t\t\t<li><a href=\"#%s\">%s</a></li>\n",
+                        pet -> name(),
+                        pet -> name() );
+              cols[i] += buffer;
+              ci++;
+            }
+          }
+          cols[i] += "\t\t\t\t\t\t</ul>";
+        }
+        cols[i] += "</li>\n";
+        pi++;
+      }
       if ( pi == (int) sim -> players_by_name.size() )
       {
         if ( ab == 0 )

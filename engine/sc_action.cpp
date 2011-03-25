@@ -102,7 +102,6 @@ void action_t::_init_action_t()
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
   base_add_multiplier            = 1.0;
-  normalize_weapon_damage        = false;
   normalize_weapon_speed         = false;
   rng_travel                     = NULL;
   stats                          = NULL;
@@ -833,12 +832,11 @@ double action_t::calculate_weapon_damage()
 
   double dmg = sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
 
-  double weapon_damage = normalize_weapon_damage ? dmg * 2.8 / weapon -> swing_time : dmg;
   double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
   double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
 
-  double total_dmg = weapon_damage + power_damage;
+  double total_dmg = dmg + power_damage;
     
   // OH penalty
   if ( weapon -> slot == SLOT_OFF_HAND )
@@ -847,7 +845,7 @@ double action_t::calculate_weapon_damage()
   if ( sim -> debug )
   {
     log_t::output( sim, "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-		   player -> name(), name(), total_dmg, weapon_damage, weapon -> bonus_dmg, weapon_speed, power_damage, total_attack_power() );
+		   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed, power_damage, total_attack_power() );
   }
 
   return total_dmg;

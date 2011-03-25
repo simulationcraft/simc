@@ -2535,7 +2535,6 @@ struct steady_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-    normalize_weapon_damage = false;
     normalize_weapon_speed  = true;
     
     direct_power_mod = 0.021;
@@ -2545,7 +2544,6 @@ struct steady_shot_t : public hunter_attack_t
     weapon_multiplier = effect_average( 2 ) / 100.0;
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
-
   }
 
   virtual void trigger_improved_steady_shot()
@@ -3390,7 +3388,7 @@ void hunter_t::init_base()
   if ( hunter_position == "front" )
     position = POSITION_RANGED_FRONT;
   else if ( hunter_position == "back" )
-      position = POSITION_RANGED_BACK;
+    position = POSITION_RANGED_BACK;
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
@@ -3479,7 +3477,6 @@ void hunter_t::init_rng()
 
   rng_frenzy               = get_rng( "frenzy",                      RNG_DISTRIBUTED );
   rng_rabid_power          = get_rng( "rabid_power",                 RNG_DISTRIBUTED );
-
 }
 
 // hunter_t::init_scaling ====================================================
@@ -3699,7 +3696,6 @@ void hunter_t::reset()
   // Active
   active_pet            = 0;
   active_aspect         = ASPECT_NONE;
-
 }
 
 // hunter_t::composite_attack_power ==========================================
@@ -3736,6 +3732,8 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
   return mult;
 }
 
+// hunter_t::composite_attack_haste =========================================
+
 double hunter_t::composite_attack_haste() SC_CONST
 {
   double h = player_t::composite_attack_haste();
@@ -3745,6 +3743,8 @@ double hunter_t::composite_attack_haste() SC_CONST
   h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
   return h;
 }
+
+// hunter_t::composite_player_multiplier ====================================
 
 double hunter_t::composite_player_multiplier( const school_type school ) SC_CONST
 {
@@ -4003,7 +4003,6 @@ void hunter_t::armory_extensions( const std::string& region,
       if ( summon_pet_str.empty() )
         summon_pet_str = pet_list -> name_str;
     }
-    
   }
 }
 

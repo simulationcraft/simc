@@ -3617,7 +3617,6 @@ struct action_t : public spell_id_t
   weapon_t* weapon;
   double weapon_multiplier;
   double base_add_multiplier;
-  bool normalize_weapon_damage;
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;
