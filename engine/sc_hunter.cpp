@@ -1703,6 +1703,7 @@ struct ranged_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     base_execute_time = weapon -> swing_time;
 
+    normalize_weapon_speed=false;
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -2618,6 +2619,7 @@ struct wild_quiver_shot_t : public ranged_t
   {
     repeating   = false;
     proc = true;
+    normalize_weapon_speed=true;
   }
   virtual void execute()
    {
