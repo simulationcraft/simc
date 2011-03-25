@@ -1732,6 +1732,46 @@ struct mind_spike_t : public priest_spell_t
   }
 };
 
+// Mind Spike Spell =========================================================
+
+struct mind_sear_tick_t : public priest_spell_t
+{
+  mind_sear_tick_t( player_t* player ) :
+      priest_spell_t( "mind_sear_tick", player, 49821 )
+  {
+    background  = true;
+    dual        = true;
+    direct_tick = true;
+
+    stats = player -> get_stats( "mind_sear", this );
+  }
+};
+
+struct mind_sear_t : public priest_spell_t
+{
+  mind_sear_tick_t* mind_sear_tick;
+
+  mind_sear_t( player_t* player, const std::string& options_str ) :
+      priest_spell_t( "mind_sear", player, "Mind Sear" ),
+      mind_sear_tick( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    channeled = true;
+    may_crit  = false;
+
+    mind_sear_tick = new mind_sear_tick_t( player );
+  }
+
+  virtual void tick()
+  {
+    if ( mind_sear_tick )
+      mind_sear_tick -> execute();
+
+    stats -> add_tick( time_to_tick );
+  }
+};
+
 // Penance Spell ============================================================
 
 struct penance_tick_t : public priest_spell_t
@@ -4008,6 +4048,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
+  if ( name == "mind_sear"              ) return new mind_sear_t             ( this, options_str );
   if ( name == "penance"                ) return new penance_t               ( this, options_str );
   if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );

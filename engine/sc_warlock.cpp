@@ -1594,6 +1594,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       callbacks    = false;
       num_ticks    = 1;
       hasted_ticks = false;
+      harmful = false;
       trigger_gcd=1.5;
 
       warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
