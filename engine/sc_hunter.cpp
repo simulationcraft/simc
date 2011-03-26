@@ -1993,7 +1993,9 @@ struct black_arrow_t : public hunter_attack_t
     cooldown -> duration -= p -> talents.resourcefulness -> rank() * 2;
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> rank() * 0.10;
-    base_crit_bonus_multiplier *= 0.5;
+    // Testing shows BA crits for 2.09x dmg with the crit dmg meta gem, this
+    // yields the right result
+    base_crit_bonus = 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect1().percent();
 
     base_dd_min=base_dd_max=0;
@@ -2225,6 +2227,11 @@ struct explosive_shot_t : public hunter_attack_t
 
     base_cost += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
+    // Testing shows ES crits for 2.09x dmg with the crit dmg meta gem, this
+    // yields the right result
+    base_crit_bonus = 0.5;
+    base_crit_bonus_multiplier *= 2.0;
+
     tick_power_mod = 0.232;
     tick_zero = true;
   }
@@ -2362,7 +2369,9 @@ struct serpent_sting_t : public hunter_attack_t
     base_crit += p -> talents.improved_serpent_sting -> mod_additive( P_CRIT );
     base_crit += p -> glyphs.serpent_sting -> mod_additive( P_CRIT );
     base_crit += p -> sets -> set ( SET_T11_2PC_MELEE ) -> effect_base_value( 1 ) * 0.01;
-    base_crit_bonus_multiplier *= 0.5;
+    // Testing shows SS crits for 2.09x dmg with the crit dmg meta gem, this
+    // yields the right result
+    base_crit_bonus = 0.5;
     base_crit_bonus_multiplier *= 1.0 + p -> talents.toxicology -> effect1().percent();
     serpent_sting_burst = new serpent_sting_burst_t( p );
     add_child( serpent_sting_burst );
