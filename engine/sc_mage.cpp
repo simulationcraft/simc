@@ -3118,7 +3118,7 @@ void mage_t::init_actions()
     // Counterspell
     action_list_str += "/counterspell";
     //Conjure Mana Gem
-    if ( primary_tree() == TREE_ARCANE ) action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<44&target.time_to_die<44&mana_gem_charges=0";
+    if ( primary_tree() == TREE_ARCANE ) action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<44&target.time_to_die>20&mana_gem_charges=0";
     action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3"; // for HelterSkelter
 
     // Usable Items
