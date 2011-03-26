@@ -4065,8 +4065,8 @@ struct unique_gear_t
 struct enchant_t
 {
   static void init( player_t* );
-  static bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id );
-  static bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id   );
+  static bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, const bool ptr );
+  static bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, const bool ptr );
   static bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
   static int  get_reforge_id      ( stat_type stat_from, stat_type stat_to );
   static bool download        ( item_t&, const std::string& enchant_id );
