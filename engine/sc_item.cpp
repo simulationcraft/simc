@@ -102,8 +102,8 @@ static int parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-    sim(p->sim), player(p), slot(SLOT_NONE), quality( 0 ), ilevel( 0 ), unique(false), unique_enchant(false), unique_addon( false ), is_heroic( false ), is_matching_type( false ), 
-    is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
+    sim(p->sim), player(p), slot(SLOT_NONE), quality( 0 ), ilevel( 0 ), unique(false), unique_enchant(false), unique_addon( false ), is_heroic( false ), is_ptr( p -> ptr ), 
+    is_matching_type( false ), is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
     options_str(o)
 {
 }
@@ -123,6 +123,13 @@ bool item_t::heroic() SC_CONST
 {
   if ( slot == SLOT_NONE ) return false;
   return is_heroic;
+}
+
+// item_t::ptr ===========================================================
+
+bool item_t::ptr() SC_CONST
+{
+  return is_ptr;
 }
 
 // item_t::matching_type ===========================================================
@@ -317,8 +324,8 @@ bool item_t::init()
   
   if ( ! decode_quality() ) return false;
 
-  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), id_str );
-  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), id_str );
+  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), ptr(), id_str );
+  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), ptr(), id_str );
 
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
@@ -715,7 +722,7 @@ bool item_t::decode_enchant()
   }
 
   std::string use_str;
-  if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic() ) )
+  if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), ptr() ) )
   {
     unique_enchant = true;
     use.name_str = encoded_enchant_str;
@@ -723,7 +730,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic() ) )
+  if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), ptr() ) )
   {
     unique_enchant = true;
     enchant.name_str = encoded_enchant_str;
@@ -765,7 +772,7 @@ bool item_t::decode_addon()
   }
 
   std::string use_str;
-  if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic() ) )
+  if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), ptr() ) )
   {
     unique_addon = true;
     use.name_str = encoded_addon_str;
@@ -773,7 +780,7 @@ bool item_t::decode_addon()
   }
 
   std::string equip_str;
-  if( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic() ) )
+  if( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), ptr() ) )
   {
     unique_addon = true;
     addon.name_str = encoded_addon_str;

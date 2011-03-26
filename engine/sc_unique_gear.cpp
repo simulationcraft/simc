@@ -1319,6 +1319,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
 bool unique_gear_t::get_equip_encoding( std::string&       encoding,
                                         const std::string& name,
                                         const bool         heroic,
+                                        const bool         ptr,
                                         const std::string& id )
 {
   std::string e;
@@ -1420,10 +1421,10 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Enchants
   else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
   else if ( name == "lightweave_embroidery_old"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave"                          ) e = "OnSpellDamage_580Int_20%_15Dur_50Cd";
-  else if ( name == "lightweave_embroidery"               ) e = "OnSpellDamage_580Int_20%_15Dur_50Cd";  
+  else if ( name == "lightweave"                          ) e = ( ptr ? "OnSpellDamage_580Int_25%_15Dur_50Cd" : "OnSpellDamage_580Int_20%_15Dur_50Cd" );
+  else if ( name == "lightweave_embroidery"               ) e = ( ptr ? "OnSpellDamage_580Int_25%_15Dur_50Cd" : "OnSpellDamage_580Int_20%_15Dur_50Cd" );
   else if ( name == "darkglow_embroidery_old"             ) e = "OnSpellCast_400Mana_35%_15Dur_60Cd";
-  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_15%_15Dur_45Cd";       // TO-DO: Confirm ICD.
+  else if ( name == "darkglow_embroidery"                 ) e = ( ptr ? "OnSpellCast_800Mana_30%_15Dur_45Cd" : "OnSpellCast_800Mana_15%_15Dur_45Cd" );       // TO-DO: Confirm ICD.
   else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_1000AP_15%_15Dur_45Cd";        // TO-DO: Confirm ICD.
 
@@ -1448,6 +1449,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 bool unique_gear_t::get_use_encoding( std::string&       encoding,
                                       const std::string& name,
                                       const bool         heroic,
+                                      const bool         ptr,
                                       const std::string& id )
 {
   std::string e;

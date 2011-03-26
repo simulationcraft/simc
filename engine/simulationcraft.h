@@ -2639,7 +2639,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   int slot, quality, ilevel;
-  bool unique, unique_enchant, unique_addon, is_heroic, is_matching_type, is_reforged;
+  bool unique, unique_enchant, unique_addon, is_heroic, is_ptr, is_matching_type, is_reforged;
   stat_type reforged_from;
   stat_type reforged_to;
 
@@ -2719,6 +2719,7 @@ struct item_t
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   bool heroic() SC_CONST;
+  bool ptr() SC_CONST;
   bool reforged() SC_CONST;
   bool matching_type();
   const char* name() SC_CONST;
@@ -4049,11 +4050,13 @@ struct unique_gear_t
   static bool get_equip_encoding( std::string& encoding,
                                   const std::string& item_name,
                                   const bool         item_heroic,
+                                  const bool         ptr,
                                   const std::string& item_id=std::string() );
 
   static bool get_use_encoding  ( std::string& encoding,
                                   const std::string& item_name,
                                   const bool         item_heroic,
+                                  const bool         ptr,
                                   const std::string& item_id=std::string() );
 };
 
