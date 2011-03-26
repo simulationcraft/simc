@@ -18,6 +18,7 @@ actions+=/blood_fury,time>=10
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/pillar_of_frost
+actions+=/blood_tap,if=death!=2
 actions+=/raise_dead,time>=15
 actions+=/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2
 actions+=/howling_blast,if=dot.frost_fever.remains<=2

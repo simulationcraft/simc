@@ -4321,7 +4321,7 @@ void death_knight_t::init_actions()
       if ( talents.pillar_of_frost -> rank() )
       {
         action_list_str += "/pillar_of_frost";
-        action_list_str += "/blood_tap";
+        action_list_str += "/blood_tap,if=death!=2";
       }
       action_list_str += "/raise_dead,time>=15";
       // Priority Taken from Frost DK OP
