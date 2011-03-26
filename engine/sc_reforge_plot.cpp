@@ -75,6 +75,16 @@ void reforge_plot_t::generate_stat_mods(
     if ( abs( sum ) > reforge_plot_amount )
       return;
 
+    int negative_stat = 0;
+    for ( player_t* p = sim -> player_list; p; p = p -> next ) {
+      if ( p -> quiet )
+        continue;
+      if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
+        negative_stat = 1;
+    }
+    if ( negative_stat )
+      return;
+
     cur_stat_mods[ cur_mod_stat ] = -1 * sum;
     stat_mods.push_back( cur_stat_mods );
     return;
@@ -84,6 +94,16 @@ void reforge_plot_t::generate_stat_mods(
         mod_amount <= reforge_plot_amount;
         mod_amount += reforge_plot_step ) 
   {
+    int negative_stat = 0;
+    for ( player_t* p = sim -> player_list; p; p = p -> next ) {
+      if ( p -> quiet )
+        continue;
+      if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) + mod_amount < 0 )
+        negative_stat = 1;
+    }
+    if ( negative_stat )
+      continue;
+        
     cur_stat_mods[ cur_mod_stat ] = mod_amount;
     generate_stat_mods( stat_mods, stat_indices, cur_mod_stat + 1, cur_stat_mods );
   }
