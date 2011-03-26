@@ -4319,7 +4319,10 @@ void death_knight_t::init_actions()
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
+      {
         action_list_str += "/pillar_of_frost";
+        action_list_str += "/blood_tap";
+      }
       action_list_str += "/raise_dead,time>=15";
       // Priority Taken from Frost DK OP
       // Diseases
@@ -4334,7 +4337,8 @@ void death_knight_t::init_actions()
       if ( ! ptr )
       {
         // BS if both blood are up
-        action_list_str += "/blood_tap";
+    	if ( ! talents.pillar_of_frost -> rank() )
+    		action_list_str += "/blood_tap";
         action_list_str += "/blood_strike,if=blood=2";
       }
       // FS if capped; using 30 less than cap was a DPS gain in all cases
