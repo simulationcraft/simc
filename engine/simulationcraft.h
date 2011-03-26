@@ -2517,6 +2517,7 @@ struct plot_t
   int    dps_plot_debug;
   int    current_plot_stat, num_plot_stats, remaining_plot_stats;
   int    remaining_plot_points;
+  bool	 dps_plot_positive;
 
   plot_t( sim_t* s );
 

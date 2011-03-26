@@ -1078,7 +1078,9 @@ const char* chart_t::scaling_dps( std::string& s,
 
   double step = p -> sim -> plot -> dps_plot_step;
   int range = p -> sim -> plot -> dps_plot_points / 2;
-  int num_points = 1 + 2 * range;
+  const int start = 0;	// start and end only used for dps_plot_positive
+  const int end = 2 * range;
+  int num_points = 1 + 2*range;
   
   char buffer[ 1024 ];
 
@@ -1112,7 +1114,14 @@ const char* chart_t::scaling_dps( std::string& s,
   s += "&amp;";
   s += "chxt=x,y";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", (-range*step), (-range*step)/2, (+range*step)/2, (+range*step), min_dps, p -> dps, max_dps ); s += buffer;
+  if ( ! p -> sim -> plot -> dps_plot_positive )
+  {
+	  snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", (-range*step), (-range*step)/2, (+range*step)/2, (+range*step), min_dps, p -> dps, max_dps ); s += buffer;
+  }
+  else
+  {
+	  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", (start + (1.0/4)*end)*step, (start + (2.0/4)*end)*step, (start + (3.0/4)*end)*step, (start + end)*step, min_dps, p -> dps, max_dps ); s += buffer;
+  }
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
   s += "&amp;";
