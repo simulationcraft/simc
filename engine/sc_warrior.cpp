@@ -2103,7 +2103,7 @@ struct slam_attack_t : public warrior_attack_t
   double additive_multipliers;
 
   slam_attack_t( warrior_t* p, const char* name ) :
-    warrior_attack_t( name, 50783, p ),
+    warrior_attack_t( name, p -> ptr ? 50782 : 50783, p ),
     additive_multipliers( 0 )
   {
     base_cost = 0;
