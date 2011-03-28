@@ -475,7 +475,7 @@ struct earth_elemental_pet_t : public pet_t
   struct melee_t : public attack_t
   {
     melee_t( player_t* player ) :
-      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      attack_t( "earth_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       may_crit          = true;
       background        = true;
@@ -2835,21 +2835,14 @@ struct earth_elemental_totem_t : public shaman_totem_t
   earth_elemental_totem_t( player_t* player, const std::string& options_str ) :
     shaman_totem_t( "earth_elemental_totem", "Earth Elemental Totem", player, options_str, TOTEM_EARTH )
   {
-    shaman_t* p = player -> cast_shaman();
-    num_ticks = 1; 
-    base_tick_time = totem_duration;
-    
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }
   
   virtual void execute()
   {
-    shaman_t* p = player -> cast_shaman();
-
     shaman_totem_t::execute();
-
-    p -> summon_pet( "earth_elemental" );
+    player -> summon_pet( "earth_elemental" );
   }
   
   virtual void last_tick()
@@ -2873,8 +2866,6 @@ struct fire_elemental_totem_t : public shaman_totem_t
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
     shaman_t* p = player -> cast_shaman();
-    num_ticks = 1; 
-    base_tick_time = totem_duration;
     cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
@@ -4058,6 +4049,7 @@ void shaman_t::init_actions()
       action_list_str += "/earth_shock";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
+      action_list_str += "/earth_elemental_totem";
       action_list_str += "/fire_nova";
       if ( ptr )
         action_list_str +=  ",if=target.adds>1";
@@ -4131,6 +4123,7 @@ void shaman_t::init_actions()
         action_list_str += "/earth_shock,if=buff.lightning_shield.stack>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
       action_list_str += "/fire_elemental_totem";
+      action_list_str += "/earth_elemental_totem";
       action_list_str += "/searing_totem";
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/chain_lightning,if=target.adds>2";

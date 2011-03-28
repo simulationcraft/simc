@@ -32,6 +32,7 @@ actions+=/flame_shock,if=!ticking|(buff.unleash_flame.up&ticks_remain<=2)
 actions+=/earth_shock
 actions+=/stormstrike
 actions+=/spirit_wolf
+actions+=/earth_elemental_totem
 actions+=/fire_nova
 actions+=/spiritwalkers_grace,moving=1
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react
