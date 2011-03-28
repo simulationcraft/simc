@@ -1,7 +1,7 @@
-#!./simc
+#!./simc 
 
 mage=Mage_Frost_T11_372
-origin="http://chardev.org/?profile=35396"
+origin="http://chardev.org/?profile=87204"
 level=85
 race=troll
 role=spell
@@ -34,21 +34,21 @@ actions+=/mage_armor,if=(mana_pct*12)<target.time_to_die
 actions+=/frostbolt
 actions+=/ice_lance,moving=1
 actions+=/fire_blast,moving=1
-head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=haste_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
+head=crown_of_the_twilight_queen,heroic=1,type=cloth,ilevel=379,quality=epic,stats=1136armor_264crit_244haste_351int_617sta,reforge=crit_hit,gems=burning_shadowspirit_20hit_20int_30int,enchant=60int_35crit
 neck=valionas_medallion,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit
-shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,reforge=haste_crit,gems=20hit_20int_10haste,enchant=50int_25haste
+shoulders=firelords_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_191haste_171hit_266int_429sta,reforge=haste_crit,gems=40int_10haste,enchant=50int_25haste
 shirt=captain_sanders_shirt,ilevel=1
-chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=haste_hit,gems=40int_20hit_20int_20int,enchant=20all
+chest=firelords_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_227haste_345int_578sta,reforge=crit_hit,gems=40int_20hit_20int_20int,enchant=20all
 waist=belt_of_arcane_storms,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_191haste_266int_429sta,reforge=haste_hit,gems=40int_40int
 legs=firelords_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_257haste_217hit_345int_578sta,reforge=haste_crit,gems=20crit_20int_40int_20int,enchant=95int_80sta
-feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=haste_hit,gems=40int_10haste,enchant=50hit
+feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_191haste_266int_171mastery_429sta,reforge=haste_hit,gems=40int_10haste,enchant=35mastery
 wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=50int
-hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=mastery_hit,gems=40int,enchant=50haste
+hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_171crit_266int_191mastery_429sta,reforge=mastery_hit,gems=40int,enchant=65mastery
 finger1=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,enchant=40int,suffix=129
 finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_hit,enchant=40int
 trinket1=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-trinket2=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,equip=onspellcast_2178sp_30%_20dur_100cd
-back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_hit,gems=20crit_20int_10int,enchant=lightweave_embroidery
+trinket2=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_hit,gems=40int,enchant=lightweave_embroidery
 main_hand=stormwake_the_tempests_reach_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=2207sp_247sta_165int_110hit_110crit,enchant=power_torrent,weapon=sword_1.60speed_73min_137max,suffix=129
 off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,reforge=haste_crit,enchant=40int
 ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_crit
@@ -56,13 +56,13 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5950
-# gear_intellect=4529
+# gear_intellect=4922
 # gear_spirit=21
 # gear_spell_power=2207
-# gear_hit_rating=1741
-# gear_crit_rating=1807
-# gear_haste_rating=1527
-# gear_mastery_rating=873
+# gear_hit_rating=1687
+# gear_crit_rating=1221
+# gear_haste_rating=1664
+# gear_mastery_rating=973
 # gear_armor=8479
 # meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1

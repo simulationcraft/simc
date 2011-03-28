@@ -8,6 +8,6 @@ chardev=35372 save=Mage_Fire_Frostfire_T11_372.simc name=Mage_Fire_Frostfire_T11
 
 chardev=35380 save=Mage_Fire_T11_372.simc name=Mage_Fire_T11_372
 
-chardev=35390 save=Mage_Frost_Frostfire_T11_372.simc name=Mage_Frost_Frostfire_T11_372
+chardev=87205 save=Mage_Frost_Frostfire_T11_372.simc name=Mage_Frost_Frostfire_T11_372
 
-chardev=35396 save=Mage_Frost_T11_372.simc name=Mage_Frost_T11_372
+chardev=87204 save=Mage_Frost_T11_372.simc name=Mage_Frost_T11_372
