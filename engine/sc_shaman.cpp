@@ -432,6 +432,162 @@ struct spirit_wolf_pet_t : public pet_t
   }
 };
 
+struct earth_elemental_pet_t : public pet_t
+{
+  double owner_sp;
+
+  struct travel_t : public action_t
+  {
+    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
+    virtual void execute() { player -> distance = 1; }
+    virtual double execute_time() SC_CONST { return ( player -> distance / 10.0 ); }
+    virtual bool ready() { return ( player -> distance > 1 ); }
+    virtual bool usable_moving() { return true; }
+  };
+  
+  struct auto_attack_t : public attack_t
+  {
+    auto_attack_t( player_t* player ) :
+        attack_t( "auto_attack", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    {
+      pet_t* p = player -> cast_pet();
+
+      assert( p -> main_hand_weapon.type != WEAPON_NONE );
+      p -> main_hand_attack = new melee_t( player );
+
+      trigger_gcd = 0;
+    }
+
+    virtual void execute()
+    {
+      pet_t* p = player -> cast_pet();
+      p -> main_hand_attack -> schedule_execute();
+    }
+
+    virtual bool ready()
+    {
+      pet_t* p = player -> cast_pet();
+      if ( p -> is_moving() ) return false;
+      return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+    }
+  };
+
+  struct melee_t : public attack_t
+  {
+    melee_t( player_t* player ) :
+      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    {
+      may_crit          = true;
+      background        = true;
+      repeating         = true;
+      weapon            = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      weapon_power_mod  = 0.098475 / base_execute_time;
+
+      base_attack_power_multiplier = 0;
+      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
+    }
+    
+    virtual double swing_haste() SC_CONST
+    {
+      return 1.0;
+    }
+    
+    // Earth elemental scales purely with spell power
+    virtual double total_attack_power() SC_CONST
+    {
+      return player -> composite_spell_power( SCHOOL_MAX );
+    }
+    
+    // Melee swings have a ~3% crit rate on boss level mobs
+    virtual double crit_chance( int delta_level ) SC_CONST
+    {
+      return 0.03;
+    }
+  };
+
+  earth_elemental_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "earth_elemental", true /*GUARDIAN*/ ), owner_sp( 0.0 )
+  {
+    stamina_per_owner   = 1.0;
+
+    // Approximated from lvl 85 earth elemental
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 370; // Level 85 Values, approximated
+    main_hand_weapon.max_dmg    = 409;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = 2.0;
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    resource_base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
+    resource_base[ RESOURCE_MANA   ] = 0; // 
+
+    health_per_stamina = 13.75; // See above
+    mana_per_intellect = 0;
+
+    // Simple as it gets, travel to target, kick off melee
+    action_list_str = "travel/auto_attack,moving=0";
+  }
+
+  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+
+  virtual void regen( double periodicity ) { }
+
+  virtual void summon( double duration )
+  {
+    pet_t::summon();
+    owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
+  }
+  
+  virtual double composite_spell_power( const school_type ) SC_CONST
+  {
+    return owner_sp;
+  }
+
+  virtual double composite_attack_power() SC_CONST
+  {
+    return 0.0;
+  }
+
+  virtual double composite_attack_hit() SC_CONST
+  {
+      return owner -> composite_spell_hit();
+  }
+
+  virtual double composite_attack_expertise() SC_CONST
+  {
+      return owner -> composite_spell_hit() * 26.0 / 17.0; 
+  }
+
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "travel"      ) return new travel_t( this );
+    if ( name == "auto_attack" ) return new auto_attack_t ( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+  
+  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  {
+    double m = 1.0;
+    
+    // 10/14 21:18:26.413  SPELL_AURA_APPLIED,0x0000000000000000,nil,0x80000000,0xF1303C4E0000E927,"Greater Fire Elemental",0x2111,73828,"Strength of Wrynn",0x1,BUFF
+    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
+    {
+      // ICC buff.
+      m *= 1.3;
+    }
+    
+    return m;
+  }
+};
+
 // ==========================================================================
 // Pet Fire Elemental
 // New modeling for fire elemental, based on cata beta tests
@@ -2672,6 +2828,43 @@ struct shaman_totem_t : public shaman_spell_t
   }
 };
 
+// Earth Elemental Totem Spell =================================================
+
+struct earth_elemental_totem_t : public shaman_totem_t
+{
+  earth_elemental_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "earth_elemental_totem", "Earth Elemental Totem", player, options_str, TOTEM_EARTH )
+  {
+    shaman_t* p = player -> cast_shaman();
+    num_ticks = 1; 
+    base_tick_time = totem_duration;
+    
+    // Skip a pointless cancel call (and debug=1 cancel line)
+    dot_behavior = DOT_REFRESH;
+  }
+  
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    shaman_totem_t::execute();
+
+    p -> summon_pet( "earth_elemental" );
+  }
+  
+  virtual void last_tick()
+  {
+    shaman_totem_t::last_tick();
+    player -> dismiss_pet( "earth_elemental" );
+  }
+  
+  // Earth Elemental Totem will always override any earth totem you have
+  virtual bool ready()
+  {
+    return shaman_spell_t::ready();
+  }
+};
+
 // Fire Elemental Totem Spell =================================================
 
 struct fire_elemental_totem_t : public shaman_totem_t
@@ -2683,6 +2876,8 @@ struct fire_elemental_totem_t : public shaman_totem_t
     num_ticks = 1; 
     base_tick_time = totem_duration;
     cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
+    // Skip a pointless cancel call (and debug=1 cancel line)
+    dot_behavior = DOT_REFRESH;
   }
   
   virtual void execute()
@@ -3497,6 +3692,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
+  if ( name == "earth_elemental_totem"   ) return new    earth_elemental_totem_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new     fire_elemental_totem_t( this, options_str );
@@ -3540,8 +3736,9 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "spirit_wolf"    ) return new spirit_wolf_pet_t   ( sim, this );
-  if ( pet_name == "fire_elemental" ) return new fire_elemental_pet_t( sim, this );
+  if ( pet_name == "spirit_wolf"     ) return new spirit_wolf_pet_t    ( sim, this );
+  if ( pet_name == "fire_elemental"  ) return new fire_elemental_pet_t ( sim, this );
+  if ( pet_name == "earth_elemental" ) return new earth_elemental_pet_t( sim, this );
 
   return 0;
 }
@@ -3552,6 +3749,7 @@ void shaman_t::create_pets()
 {
   create_pet( "spirit_wolf" );
   create_pet( "fire_elemental" );
+  create_pet( "earth_elemental" );
 }
 
 // shaman_t::init_talents ======================================================
