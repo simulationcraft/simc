@@ -3966,8 +3966,14 @@ void druid_t::init_actions()
       if ( talents.starfall -> rank() ) 
         action_list_str += "/starfall,if=buff.lunar_eclipse.up&buff.t11_4pc_caster.down";
       if ( talents.sunfire -> rank() )
-        action_list_str += "/sunfire,if=(!ticking|ticks_remain<2)&buff.t11_4pc_caster.down&!dot.moonfire.remains>0";
-      action_list_str += "/moonfire,if=(!ticking|ticks_remain<2)&buff.t11_4pc_caster.down";
+      {
+        action_list_str += "/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0";
+        if ( set_bonus.tier11_4pc_caster() )
+          action_list_str += "&buff.t11_4pc_caster.down";
+      }
+      action_list_str += "/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))";
+      if ( set_bonus.tier11_4pc_caster() )
+        action_list_str += "&buff.t11_4pc_caster.down";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
       if ( primary_tree() == TREE_BALANCE )

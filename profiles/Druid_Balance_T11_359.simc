@@ -27,8 +27,8 @@ actions+=/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/typhoon,moving=1
 actions+=/starfall,if=buff.lunar_eclipse.up&buff.t11_4pc_caster.down
-actions+=/sunfire,if=(!ticking|ticks_remain<2)&buff.t11_4pc_caster.down&!dot.moonfire.remains>0
-actions+=/moonfire,if=(!ticking|ticks_remain<2)&buff.t11_4pc_caster.down&!dot.sunfire.remains>0
+actions+=/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0&buff.t11_4pc_caster.down
+actions+=/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))&buff.t11_4pc_caster.down&!dot.sunfire.remains>0
 actions+=/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))
 actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
