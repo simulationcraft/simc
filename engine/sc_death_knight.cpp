@@ -3097,10 +3097,11 @@ struct icy_touch_t : public death_knight_spell_t
         p -> frost_fever -> execute();
       trigger_ebon_plaguebringer( this );
     }
-    p -> buffs_killing_machine -> expire();
+    // p -> buffs_killing_machine -> expire(); // KM does not interact with IT
     p -> buffs_rime -> expire();
   }
 
+  /* KM does not interact with IT
   virtual void player_buff()
   {
     death_knight_spell_t::player_buff();
@@ -3108,6 +3109,7 @@ struct icy_touch_t : public death_knight_spell_t
 
     player_crit += p -> buffs_killing_machine -> value();
   }
+  */
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
