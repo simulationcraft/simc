@@ -1852,14 +1852,6 @@ void death_knight_attack_t::execute()
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
       if ( ! proc )
         p -> buffs_rune_of_cinderglacier -> decrement();
-
-    if ( weapon -> slot == SLOT_MAIN_HAND )
-    {
-      // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
-      double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
-      if ( p -> buffs_killing_machine -> trigger( 1, 1.0, chance ) && p -> ptr )
-        p -> buffs_tier11_4pc_melee -> trigger();
-    }
   }
 }
 
@@ -2090,6 +2082,11 @@ struct melee_t : public death_knight_attack_t
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
         p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
+
+        // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
+        double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
+        if ( p -> buffs_killing_machine -> trigger( 1, 1.0, chance ) && p -> ptr )
+          p -> buffs_tier11_4pc_melee -> trigger();
       }
 
       if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
