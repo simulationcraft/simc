@@ -1165,6 +1165,7 @@ struct judgement_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
+    may_crit   = false;
     trigger_dp = true;
     seal_of_justice       = new seal_of_justice_judgement_t      ( p );
     seal_of_insight       = new seal_of_insight_judgement_t      ( p );
@@ -1197,8 +1198,10 @@ struct judgement_t : public paladin_attack_t
     if ( ! seal )
       return;
 
-    seal -> trigger_gcd = trigger_gcd;
-    seal -> execute();
+    attack_t::execute();
+
+    // FIXME: Should all of this be inside a result_is_hit() ?
+    seal -> execute(); 
 
     if ( seal -> result_is_hit() )
     {
@@ -1218,8 +1221,6 @@ struct judgement_t : public paladin_attack_t
     p -> buffs_judgements_of_the_wise -> trigger();
 
     if ( p -> talents.communion -> rank() ) p -> trigger_replenishment();
-
-    update_ready();
 
     p -> last_foreground_action = seal; // Necessary for DPET calculations.
   }

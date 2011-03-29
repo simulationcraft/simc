@@ -1779,6 +1779,8 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
   }
 }
 
+// action_t::tick_time ======================================================
+
 double action_t::tick_time() SC_CONST
 {
   double t = base_tick_time;
@@ -1788,6 +1790,8 @@ double action_t::tick_time() SC_CONST
   }
   return t;
 }
+
+// action_t::hasted_num_ticks ===============================================
 
 int action_t::hasted_num_ticks( double d ) SC_CONST
 {
