@@ -1867,8 +1867,9 @@ void death_knight_attack_t::player_buff()
     if ( ! proc )
       player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
-  if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
-    m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
+  if ( p -> main_hand_attack ) // is this reasonable to fail when there's no auto_attack?
+    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
+      m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
 
   // Add in all m_dd_additive
   player_multiplier *= 1.0 + m_dd_additive;
@@ -2083,6 +2084,7 @@ struct melee_t : public death_knight_attack_t
       {
         p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
         // TODO: Confirm PPM for ranks 1/2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
+        // FIXME: This needs to happen for every melee strike/auto attack, not just auto attacks.
         double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
         if ( p -> buffs_killing_machine -> trigger( 1, 1.0, chance ) && p -> ptr )
           p -> buffs_tier11_4pc_melee -> trigger();
@@ -2962,6 +2964,7 @@ struct horn_of_winter_t : public death_knight_spell_t
 
 // Howling Blast ============================================================
 
+// FIXME: -3% spell crit suppression? Seems to have the same crit chance as FS in the absence of KM
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_t( death_knight_t* player, const std::string& options_str ) :
@@ -3097,19 +3100,9 @@ struct icy_touch_t : public death_knight_spell_t
         p -> frost_fever -> execute();
       trigger_ebon_plaguebringer( this );
     }
-    // p -> buffs_killing_machine -> expire(); // KM does not interact with IT
+
     p -> buffs_rime -> expire();
   }
-
-  /* KM does not interact with IT
-  virtual void player_buff()
-  {
-    death_knight_spell_t::player_buff();
-    death_knight_t* p = player -> cast_death_knight();
-
-    player_crit += p -> buffs_killing_machine -> value();
-  }
-  */
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
