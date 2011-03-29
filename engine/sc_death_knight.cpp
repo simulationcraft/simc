@@ -2305,7 +2305,7 @@ struct blood_strike_offhand_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * 0.19; // Currently giving a 19% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + p -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2351,7 +2351,7 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * 0.19; // Currently giving a 19% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + p -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2583,7 +2583,7 @@ struct death_coil_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.23; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
+    direct_power_mod = 0.23;
     base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
     base_multiplier *= 1 + p -> talents.morbidity -> mod_additive( P_GENERIC )
