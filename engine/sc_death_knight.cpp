@@ -1875,9 +1875,8 @@ void death_knight_attack_t::player_buff()
     if ( ! proc )
       player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
-  if ( p -> main_hand_attack ) // is this reasonable to fail when there's no auto_attack?
-    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_2H )
-      m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
+  if ( weapon -> group() == WEAPON_2H )
+    m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
 
   // Add in all m_dd_additive
   player_multiplier *= 1.0 + m_dd_additive;
