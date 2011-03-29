@@ -1344,8 +1344,8 @@ void sim_t::analyze_player( player_t* p )
 
   std::sort( p -> iteration_dps.begin(), p -> iteration_dps.end() );
 
-  p -> dps_10_percentile = p -> iteration_dps[ (int) floor( 0.1 * p -> iteration_dps.size() + 1.0 ) ];
-  p -> dps_90_percentile = p -> iteration_dps[ (int) floor( 0.9 * p -> iteration_dps.size() + 1.0 ) ];
+  p -> dps_10_percentile = p -> iteration_dps[ (int) floor( 0.1 * p -> iteration_dps.size() ) ];
+  p -> dps_90_percentile = p -> iteration_dps[ (int) floor( 0.9 * p -> iteration_dps.size() ) ];
 
   // Death analysis
   double count_death_time = p -> death_time.size();
