@@ -4156,7 +4156,7 @@ double druid_t::composite_player_multiplier( const school_type school) SC_CONST
       if ( buffs_eclipse_lunar -> up() )
       {
         m *= 1.0 + ( buffs_eclipse_lunar -> effect1().percent()
-                 + floor( composite_mastery() * spells.total_eclipse -> effect1().coeff() ) * 0.01 );
+                 + composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
       }
     }
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
@@ -4164,7 +4164,7 @@ double druid_t::composite_player_multiplier( const school_type school) SC_CONST
       if ( buffs_eclipse_solar -> up() )
       {
         m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent()
-                 + floor( composite_mastery() * spells.total_eclipse -> effect1().coeff() ) * 0.01 );
+                 + composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
       }
     }
   }
