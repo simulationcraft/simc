@@ -1165,11 +1165,6 @@ struct judgement_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_block  = false;
-    may_crit   = false;
-    may_dodge  = false;
-    may_miss   = false; // This is handled by the Seal
-    may_parry  = false;
     trigger_dp = true;
     seal_of_justice       = new seal_of_justice_judgement_t      ( p );
     seal_of_insight       = new seal_of_insight_judgement_t      ( p );
@@ -1202,8 +1197,9 @@ struct judgement_t : public paladin_attack_t
     if ( ! seal )
       return;
 
-    attack_t::execute(); // Called so it appears in the report and the cost, etc is known
-
+    seal -> base_cost   = base_cost;
+    seal -> cooldown    = cooldown;
+    seal -> trigger_gcd = trigger_gcd;
     seal -> execute(); 
 
     if ( seal -> result_is_hit() )
