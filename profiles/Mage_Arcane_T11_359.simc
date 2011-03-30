@@ -1,4 +1,4 @@
-#!./simc
+#!./simc 
 
 mage=Mage_Arcane_T11_359
 origin="http://chardev.org/?profile=34631"
@@ -7,7 +7,7 @@ race=gnome
 role=spell
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#ohIrMRhoMRRofMZc
+talents=http://www.wowhead.com/talent#mage-3033220212301002121212302000000000000000000300000000000000000
 glyphs=evocation/arcane_power/slow/mirror_image/arcane_brilliance/conjuring/arcane_blast/arcane_missiles/mage_armor
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -36,34 +36,34 @@ actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 actions+=/restart_sequence,name=conserve
-head=firelords_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_40int,enchant=60int_35crit
-neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit
-shoulders=firelords_mantle,type=cloth,ilevel=359,quality=epic,stats=938armor_169haste_149hit_233int_380sta,gems=40int_10haste,enchant=50int_25haste
-chest=shadowblaze_robes,type=cloth,ilevel=359,quality=epic,stats=1251armor_188hit_301int_228mastery_512sta,reforge=mastery_haste,gems=40int_40int,enchant=20all
-waist=soul_breath_belt_of_the_flameblaze,type=cloth,ilevel=359,quality=epic,stats=704armor_380sta_232int_160mastery_160hit,reforge=mastery_haste,gems=40int_40int,suffix=211
-legs=firelords_leggings,type=cloth,ilevel=359,quality=epic,stats=1094armor_228haste_188hit_301int_512sta,gems=20haste_20int_40int_20int,enchant=95int_80sta
-feet=desert_walker_sandals,type=cloth,ilevel=359,quality=epic,stats=860armor_149haste_169hit_233int_380sta,gems=40int,enchant=50hit
-wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547armor_127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=50int
+head=firelords_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_hit,gems=burning_shadowspirit_20hit_20int_30crit,enchant=60int_35crit
+neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=haste_hit
+shoulders=firelords_mantle,type=cloth,ilevel=359,quality=epic,stats=938armor_169haste_149hit_233int_380sta,reforge=haste_mastery,gems=40int_10haste,enchant=50int_25haste
+chest=shadowblaze_robes,type=cloth,ilevel=359,quality=epic,stats=1251armor_188hit_301int_228mastery_512sta,gems=40int_40int,enchant=20all
+waist=soul_breath_belt_of_the_feverflare,type=cloth,ilevel=359,quality=epic,stats=704armor_380sta_232int_160haste_160mastery,reforge=haste_hit,gems=40int_40int,suffix=213
+legs=firelords_leggings,type=cloth,ilevel=359,quality=epic,stats=1094armor_228haste_188hit_301int_512sta,reforge=haste_mastery,gems=20haste_20int_40int_20int,enchant=95int_80sta
+feet=desert_walker_sandals,type=cloth,ilevel=359,quality=epic,stats=860armor_149haste_169hit_233int_380sta,reforge=haste_mastery,gems=40int,enchant=50hit
+wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547armor_127haste_190int_127mastery_286sta,reforge=haste_hit,enchant=50int
 hands=firelords_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_149crit_233int_169mastery_380sta,reforge=crit_hit,gems=40int,enchant=65mastery
-finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_hit,enchant=40int
+finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=haste_hit,enchant=40int
 finger2=planetary_band_of_the_flameblaze,ilevel=359,quality=epic,stats=285sta_190int_126mastery_126hit,reforge=hit_haste,enchant=40int,suffix=114
 trinket1=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=lightweave_embroidery
-main_hand=stormwake_the_tempests_reach_of_the_flameblaze,ilevel=359,quality=epic,stats=1954sp_219sta_146int_97mastery_97hit,reforge=mastery_haste,enchant=power_torrent,weapon=sword_1.60speed_40min_75max,suffix=114
-off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
-ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_haste
+main_hand=stormwake_the_tempests_reach_of_the_flameblaze,ilevel=359,quality=epic,stats=1954sp_219sta_146int_97mastery_97hit,enchant=power_torrent,weapon=sword_1.60speed_40min_75max,suffix=114
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,reforge=haste_mastery,enchant=40int
+ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=hit_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=5251
-# gear_intellect=4397
+# gear_intellect=4377
 # gear_spirit=21
 # gear_spell_power=1954
-# gear_hit_rating=1746
-# gear_crit_rating=125
-# gear_haste_rating=1675
-# gear_mastery_rating=1322
+# gear_hit_rating=1642
+# gear_crit_rating=155
+# gear_haste_rating=1161
+# gear_mastery_rating=1960
 # gear_armor=7817
 # meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
