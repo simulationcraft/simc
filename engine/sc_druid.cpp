@@ -2624,7 +2624,7 @@ struct moonfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
@@ -2813,7 +2813,7 @@ struct starfire_t : public druid_spell_t
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
   virtual void execute()
@@ -2925,7 +2925,7 @@ struct starfall_star_t : public druid_spell_t
     stats       = player -> get_stats( "starfall", this );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
   virtual void player_buff()
@@ -2990,7 +2990,7 @@ struct starsurge_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
     
     starfall_cd = p -> get_cooldown( "starfall" );
   }
@@ -3092,7 +3092,7 @@ struct sunfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
@@ -3336,7 +3336,7 @@ struct wrath_t : public druid_spell_t
     
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
-      base_crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
   virtual void player_buff()

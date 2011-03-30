@@ -31,6 +31,11 @@ void heal_t::_init_heal_t()
   tick_may_crit     = true;
 
   stats -> type = STATS_HEAL;
+
+  if ( player -> meta_gem == META_REVITALIZING_SHADOWSPIRIT )
+  {
+    crit_multiplier *= 1.03;
+  }
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
@@ -72,8 +77,6 @@ void heal_t::player_buff()
   player_td_multiplier           = 1.0;
   player_hit                     = 0;
   player_crit                    = 0;
-  player_crit_multiplier         = 1.0;
-  player_crit_bonus_multiplier   = 1.0;
   player_penetration             = 0;
   player_dd_adder                = 0;
   player_spell_power             = 0;
@@ -82,11 +85,6 @@ void heal_t::player_buff()
   player_attack_power_multiplier = 1.0;
 
   player_t* p = player;
-
-  if ( p -> meta_gem == META_REVITALIZING_SHADOWSPIRIT )
-  {
-    player_crit_multiplier *= 1.03;
-  }
 
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
@@ -122,8 +120,6 @@ void heal_t::target_debuff( player_t* t, int dmg_type )
   target_multiplier            = 1.0;
   target_hit                   = 0;
   target_crit                  = 0;
-  target_crit_multiplier       = 1.0;
-  target_crit_bonus_multiplier = 1.0;
   target_attack_power          = 0;
   target_spell_power           = 0;
   target_penetration           = 0;
@@ -509,8 +505,6 @@ void absorb_t::player_buff()
   player_td_multiplier           = 1.0;
   player_hit                     = 0;
   player_crit                    = 0;
-  player_crit_multiplier         = 1.0;
-  player_crit_bonus_multiplier   = 1.0;
   player_penetration             = 0;
   player_dd_adder                = 0;
   player_spell_power             = 0;
@@ -551,8 +545,6 @@ void absorb_t::target_debuff( player_t* t, int dmg_type )
   target_multiplier            = 1.0;
   target_hit                   = 0;
   target_crit                  = 0;
-  target_crit_multiplier       = 1.0;
-  target_crit_bonus_multiplier = 1.0;
   target_attack_power          = 0;
   target_spell_power           = 0;
   target_penetration           = 0;

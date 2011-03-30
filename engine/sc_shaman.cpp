@@ -628,7 +628,7 @@ struct fire_elemental_pet_t : public pet_t
       int_multiplier( 0.85 ), sp_multiplier ( 0.53419 ) 
     { 
       // Apparently, fire elemental spell crit damage bonus is 100% now.
-      base_crit_bonus_multiplier = 2.0;
+      crit_bonus_multiplier = 2.0;
     }
     
     virtual double total_spell_power() SC_CONST
@@ -726,7 +726,7 @@ struct fire_elemental_pet_t : public pet_t
       base_spell_power_multiplier  = 1.0;
       base_attack_power_multiplier = 0.0;
       base_execute_time            = 3.5;
-      base_crit_bonus_multiplier   = 2.5;
+      crit_bonus_multiplier   = 2.5;
       
       base_dd_min                = 427;
       base_dd_max                = 460;
@@ -981,7 +981,7 @@ struct lava_burst_overload_t : public shaman_spell_t
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
       p -> talent_call_of_flame -> effect2().percent();
             
-    base_crit_bonus_multiplier *= 1.0 + 
+    crit_bonus_multiplier *= 1.0 + 
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
   }
@@ -1012,7 +1012,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     direct_power_mod    += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       
     // Elemental fury
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC );
@@ -1046,7 +1046,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       
     // Elemental fury
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -1121,7 +1121,7 @@ struct lightning_charge_t : public shaman_spell_t
     base_multiplier *= 1.0 + 
       p -> talent_improved_shields -> mod_additive( P_GENERIC );
 
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
       
     consume_threshold = ( int ) p -> talent_fulmination -> base_value();
   }
@@ -1152,7 +1152,7 @@ struct unleash_flame_t : public shaman_spell_t
     background           = true;
     proc                 = true;
     
-    base_crit_bonus_multiplier *= 1.0 + 
+    crit_bonus_multiplier *= 1.0 + 
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     // Don't cooldown here, unleash elements ability will handle it
@@ -1916,7 +1916,7 @@ struct chain_lightning_t : public shaman_spell_t
     maelstrom          = true;
     direct_power_mod  += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -2046,7 +2046,7 @@ struct fire_nova_t : public shaman_spell_t
       cooldown -> duration += p -> talent_improved_fire_nova -> mod_additive( P_COOLDOWN );
     }
 
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
     
     // Scaling information is from another spell (8349)
     base_dd_min           = p -> dbc.effect_min( p -> dbc.spell( 8349 ) -> effect1().id(), p -> level );
@@ -2136,7 +2136,7 @@ struct lava_burst_t : public shaman_spell_t
       p -> talent_call_of_flame -> effect2().percent() +
       p -> glyph_lava_burst -> mod_additive( P_GENERIC );
       
-    base_crit_bonus_multiplier *= 1.0 + 
+    crit_bonus_multiplier *= 1.0 + 
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
 
@@ -2221,7 +2221,7 @@ struct lightning_bolt_t : public shaman_spell_t
     direct_power_mod  += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     // Elemental fury
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     // Tier11 4pc Melee bonus
     base_crit            = p -> sets -> set( SET_T11_4PC_MELEE ) -> mod_additive( P_CRIT );
@@ -2539,7 +2539,7 @@ struct earth_shock_t : public shaman_spell_t
       p -> talent_concussion -> mod_additive( P_GENERIC );
                                   
     base_cost_reduction  += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown = p -> cooldowns_shock;
     cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
@@ -2607,7 +2607,7 @@ struct flame_shock_t : public shaman_spell_t
     // Tier11 2pc Caster Bonus
     base_crit             = p -> sets -> set( SET_T11_2PC_CASTER ) -> mod_additive( P_CRIT );
     
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     num_ticks = (int) floor( ( (double) num_ticks ) * ( 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION ) ) );
 
@@ -2673,7 +2673,7 @@ struct frost_shock_t : public shaman_spell_t
 
     base_cost_reduction  += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
 
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown              = p -> cooldowns_shock;
     cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
@@ -2957,7 +2957,7 @@ struct magma_totem_t : public shaman_totem_t
     // the effect number
     base_multiplier  *= 1.0 + p -> talent_call_of_flame -> effect1().percent();
     
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
     
     // Spell id 8188 does the triggering of magma totem's aura
     base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period();
@@ -3080,7 +3080,7 @@ struct searing_totem_t : public shaman_totem_t
     // Base multiplier has to be applied like this, because the talent has two identical effects
     base_multiplier     *= 1.0 + p -> talent_call_of_flame -> effect1().percent();
     
-    base_crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
     
     // Scaling information is found in Searing Bolt (3606)
     // Tooltip and spell data is wrong for 4.0.4, the base_dd_min/max are higher in beta than in 

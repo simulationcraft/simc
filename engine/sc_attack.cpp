@@ -13,23 +13,25 @@
 
 void attack_t::_init_attack_t()
 {
+  player_t* p = player;
+
   may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
 
   if ( special ) may_glance = false;
 
-  if ( player -> position == POSITION_BACK )
+  if ( p -> position == POSITION_BACK )
   {
     may_block = false;
     may_parry = false;
   }
-  else if ( player -> position == POSITION_RANGED_FRONT )
+  else if ( p -> position == POSITION_RANGED_FRONT )
   {
     may_block  = true;
     may_dodge  = false;
     may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
     may_parry  = false;
   }
-  else if ( player -> position == POSITION_RANGED_BACK )
+  else if ( p -> position == POSITION_RANGED_BACK )
   {
     may_block  = false;
     may_dodge  = false;
@@ -38,13 +40,25 @@ void attack_t::_init_attack_t()
   }
 
   base_attack_power_multiplier = 1.0;
-  base_crit_bonus = 1.0;
+  crit_bonus = 1.0;
 
   min_gcd = 1.0;
   hasted_ticks = false;
 
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 ) range = 5; 
+
+  if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
+       p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
+       p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
+       p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
+       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
+       p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
+       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
+  {
+    crit_multiplier *= 1.03;
+  }
 }
 
 attack_t::attack_t( const active_spell_t& s, int t, bool special ) :
@@ -177,21 +191,9 @@ void attack_t::player_buff()
     }
   }
 
-  if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
-       p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
-       p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
-       p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
-       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
-       p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
-       p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
-       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
-  {
-    player_crit_multiplier *= 1.03;
-  }
-
   if ( sim -> debug )
-    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
-                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
+    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
+                   name(), player_hit, player_expertise, player_crit );
 }
 
 // attack_t::target_debuff ==================================================

@@ -895,8 +895,8 @@ void warrior_attack_t::player_buff()
     player_multiplier *= 1.05;
 
   if ( sim -> debug )
-    log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f crit_multiplier=%.2f",
-                   name(), player_hit, player_expertise, player_crit, player_crit_multiplier );
+    log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
+                   name(), player_hit, player_expertise, player_crit );
 }
 
 // warrior_attack_t::ready() ================================================
@@ -1601,7 +1601,7 @@ struct mortal_strike_t : public warrior_attack_t
     additive_multipliers = p -> glyphs.mortal_strike -> effect1().percent()
                            + p -> set_bonus.tier11_2pc_melee() * 0.05
                            + p -> talents.war_academy -> effect1().percent();
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
     base_crit                  += p -> talents.cruelty -> effect1().percent();
 
     // FIXME: PTR Data is lagging behind
@@ -1661,7 +1661,7 @@ struct overpower_t : public warrior_attack_t
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
 
     base_crit += p -> talents.taste_for_blood -> effect2().percent();
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
     base_multiplier            *= 1.0 + p -> glyphs.overpower -> effect1().percent();
 
     stancemask = STANCE_BATTLE;    
@@ -2111,7 +2111,7 @@ struct slam_attack_t : public warrior_attack_t
     background = true;
 
     base_crit                  += p -> glyphs.slam -> effect1().percent();
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
     base_execute_time          += p -> talents.improved_slam -> effect1().seconds();
 
     weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.

@@ -405,11 +405,15 @@ struct priest_spell_t : public spell_t
 {
   void _init_priest_spell_t()
   {
+    priest_t* p = player -> cast_priest();
+
     may_crit          = true;
     tick_may_crit     = true;
 
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
+
+    crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
   }
 
   priest_spell_t( const char* n, player_t* player, const school_type s, int t ) :
@@ -441,8 +445,6 @@ struct priest_spell_t : public spell_t
     spell_t::player_buff();
 
     priest_t* p = player -> cast_priest();
-
-    player_crit_bonus_multiplier *= 1.0 + p -> constants.shadow_power_crit_value;
 
     for ( int i=0; i < 6; i++ )
     {
@@ -839,8 +841,8 @@ struct shadow_fiend_pet_t : public pet_t
 
       if ( o -> bugs )
       {
-        base_crit_bonus = 1.0;
-        base_crit_multiplier = 1.333333;
+        crit_bonus = 1.0;
+        crit_multiplier *= 1.333333;
       }
     }
 

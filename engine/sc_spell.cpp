@@ -15,9 +15,23 @@ void spell_t::_init_spell_t()
 {
   may_miss = may_resist = true;
   base_spell_power_multiplier = 1.0;
-  base_crit_bonus = 0.5;
+  crit_bonus = 0.5;
   min_gcd = 1.0;
   hasted_ticks = true;
+
+  player_t* p = player;
+
+  if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
+       p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
+       p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
+       p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
+       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
+       p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
+       p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
+       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
+  {
+    crit_multiplier *= 1.03;
+  }
 }
 
 spell_t::spell_t( const active_spell_t& s, int t ) :
@@ -90,20 +104,8 @@ void spell_t::player_buff()
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
 
-  if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
-       p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
-       p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
-       p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
-       p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
-       p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
-       p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
-       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
-  {
-    player_crit_multiplier *= 1.03;
-  }
-
-  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f crit_multiplier=%.2f",
-                                       name(), player_hit, player_crit, player_crit_multiplier );
+  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f",
+                                       name(), player_hit, player_crit );
 }
 
 // spell_t::target_debuff =====================================================

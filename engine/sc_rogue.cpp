@@ -1409,7 +1409,7 @@ struct backstab_t : public rogue_attack_t
     base_multiplier   *= 1.0 + ( p -> talents.aggression  -> mod_additive( P_GENERIC ) +
                                  p -> talents.opportunity -> mod_additive( P_GENERIC ) );
     base_crit         += p -> talents.puncturing_wounds -> effect1().percent();
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += .05;
@@ -1855,7 +1855,7 @@ struct hemorrhage_t : public rogue_attack_t
     weapon_multiplier *= 1.0 + p -> spec_sinister_calling -> mod_additive( P_EFFECT_2 );
 
     base_cost       += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     parse_options( options_str );
     
@@ -1996,7 +1996,7 @@ struct mutilate_strike_t : public rogue_attack_t
 
     base_multiplier  *= 1.0 + p -> talents.opportunity -> mod_additive( P_GENERIC );
     base_crit        += p -> talents.puncturing_wounds -> effect2().percent();
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     if ( p -> set_bonus.tier11_2pc_melee() ) base_crit += .05;
   }
@@ -2279,7 +2279,7 @@ struct sinister_strike_t : public rogue_attack_t
     base_cost       += p -> talents.improved_sinister_strike -> mod_additive( P_RESOURCE_COST );
     base_multiplier *= 1.0 + ( p -> talents.aggression               -> mod_additive( P_GENERIC ) +
                                p -> talents.improved_sinister_strike -> mod_additive( P_GENERIC ) );
-    base_crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
+    crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += .05;

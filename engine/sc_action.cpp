@@ -85,12 +85,8 @@ void action_t::_init_action_t()
   base_attack_power_multiplier   = 0.0;
   player_spell_power_multiplier  = 1.0;
   player_attack_power_multiplier = 1.0;
-  base_crit_multiplier           = 1.0;
-  base_crit_bonus_multiplier     = 1.0;
-  player_crit_multiplier         = 1.0;
-  player_crit_bonus_multiplier   = 1.0;
-  target_crit_multiplier         = 1.0;
-  target_crit_bonus_multiplier   = 1.0;
+  crit_multiplier           = 1.0;
+  crit_bonus_multiplier     = 1.0;
   base_dd_adder                  = 0.0;
   player_dd_adder                = 0.0;
   target_dd_adder                = 0.0;
@@ -556,8 +552,6 @@ void action_t::player_buff()
   player_td_multiplier           = 1.0;
   player_hit                     = 0;
   player_crit                    = 0;
-  player_crit_multiplier         = 1.0;
-  player_crit_bonus_multiplier   = 1.0;
   player_penetration             = 0;
   player_dd_adder                = 0;
   player_spell_power             = 0;
@@ -619,8 +613,6 @@ void action_t::target_debuff( player_t* t, int dmg_type )
   target_multiplier            = 1.0;
   target_hit                   = 0;
   target_crit                  = 0;
-  target_crit_multiplier       = 1.0;
-  target_crit_bonus_multiplier = 1.0;
   target_attack_power          = 0;
   target_spell_power           = 0;
   target_penetration           = 0;
@@ -791,25 +783,15 @@ double action_t::resistance() SC_CONST
 
 double action_t::total_crit_bonus() SC_CONST
 {
-  double crit_multiplier = (   base_crit_multiplier *
-                             player_crit_multiplier *
-                             target_crit_multiplier );
-
-  double crit_bonus_multiplier = (   base_crit_bonus_multiplier *
-                                   player_crit_bonus_multiplier *
-                                   target_crit_bonus_multiplier );
-
-  double crit_bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
+  double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f p_cm=%.2f t_cm=%.2f b_cbm=%.2f p_cbm=%.2f t_cbm=%.2f",
-                   player -> name(), name(), crit_bonus, base_crit_bonus,
-                   base_crit_multiplier,       player_crit_multiplier,       target_crit_multiplier,
-                   base_crit_bonus_multiplier, player_crit_bonus_multiplier, target_crit_bonus_multiplier );
+    log_t::output( sim, "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
+                   player -> name(), name(), bonus, crit_bonus, crit_multiplier, crit_bonus_multiplier );
   }
 
-  return crit_bonus;
+  return bonus;
 }
 
 // action_t::total_power =====================================================

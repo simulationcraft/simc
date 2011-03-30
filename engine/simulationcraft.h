@@ -3610,9 +3610,7 @@ struct action_t : public spell_id_t
   double target_spell_power, target_attack_power;
   double   base_spell_power_multiplier,   base_attack_power_multiplier;
   double player_spell_power_multiplier, player_attack_power_multiplier;
-  double   base_crit_multiplier,   base_crit_bonus_multiplier, base_crit_bonus;
-  double player_crit_multiplier, player_crit_bonus_multiplier;
-  double target_crit_multiplier, target_crit_bonus_multiplier;
+  double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double player_haste;
   double resource_consumed;
@@ -4490,7 +4488,7 @@ struct result_t
   int type;
   bool hit;  // convenience
   bool crit; // convenience, two-roll (blocked crits, etc)
-  double amount;
+  double direct_amount;
   double tick_amount;
 };
 
@@ -4538,8 +4536,7 @@ struct ability_t : public action_t
       {
         ticker_t* ticker = get_ticker( result.target );  // caches aura_slot
         ticker -> trigger( this, result );
-	// ticker_t::trigger() handles dot work in existing action_t::travel(), plus:
-	// ticker -> pool = ticker -> num_ticks * result.tick_amount;
+	// ticker_t::trigger() handles dot work in existing action_t::travel()
       }
     }
     else 
@@ -4563,7 +4560,7 @@ struct ability_t : public action_t
     result.type = roll;
     result.hit  = ( roll == ? );
     result.crit = ( roll == ? ) || ( two_roll );
-    result.amount = calculate_direct_amount( target );
+    result.direct_amount = calculate_direct_amount( target );
     result.tick_amount = calculate_tick_amount( target );
     return result;
   }

@@ -1530,7 +1530,7 @@ struct death_knight_spell_t : public spell_t
     // I have no explanation other than having verified it at many
     // different attack power levels and it is consistent within one
     // point of damage.
-    base_crit_bonus_multiplier = 2.0;
+    crit_bonus_multiplier = 2.0;
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
   }

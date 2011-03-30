@@ -315,7 +315,7 @@ struct mage_spell_t : public spell_t
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
-    base_crit_multiplier = 1.33;
+    crit_multiplier *= 1.33;
     may_chill = false;
     may_hot_streak = false;
     may_brain_freeze = false;
@@ -374,10 +374,10 @@ struct water_elemental_pet_t : public pet_t
       spell_t( "freeze", 33395, player )
     {
       parse_options( NULL, options_str );
-      aoe                  = -1;
-      may_crit             = true;
-      base_crit_multiplier = 1.33;
-      base_cost            = 0;
+      aoe = -1;
+      may_crit = true;
+      crit_multiplier *= 1.33;
+      base_cost = 0;
       if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
@@ -413,9 +413,9 @@ struct water_elemental_pet_t : public pet_t
       spell_t( "water_bolt", 31707, player )
     {
       parse_options( NULL, options_str );
-      may_crit             = true;
-      base_crit_multiplier = 1.33;
-      direct_power_mod     = 0.833;
+      may_crit = true;
+      crit_multiplier *= 1.33;
+      direct_power_mod = 0.833;
       if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 

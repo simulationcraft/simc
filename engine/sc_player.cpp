@@ -689,13 +689,13 @@ void player_t::init()
   init_consumables();
   init_scaling();
   init_buffs();
+  init_values();
   init_actions();
   init_gains();
   init_procs();
   init_uptimes();
   init_rng();
   init_stats();
-  init_values();
 }
 
 // player_t::init_base =====================================================
