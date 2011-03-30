@@ -2037,20 +2037,6 @@ struct shadow_bolt_t : public warlock_spell_t
 
 // Burning Embers Spell ===========================================================
 
-struct burning_embers_t : public warlock_spell_t
-{
-  burning_embers_t( player_t* player ) :
-    warlock_spell_t( "burning_embers", player, 85421 )
-  {
-    background = true;
-    tick_may_crit = false;
-    hasted_ticks = false;
-    reset();
-  }
-
-  virtual double calculate_tick_damage() { return base_td; }
-};
-
 // Trigger Burning Embers =========================================================
 
 static void trigger_burning_embers ( spell_t* s, double dmg )
@@ -2068,6 +2054,20 @@ static void trigger_burning_embers ( spell_t* s, double dmg )
 
   if ( p -> talent_burning_embers -> rank() )
   {
+    struct burning_embers_t : public warlock_spell_t
+    {
+      burning_embers_t( player_t* player ) :
+	warlock_spell_t( "burning_embers", player, 85421 )
+      {
+	background = true;
+	tick_may_crit = false;
+	hasted_ticks = false;
+	init();
+      }
+
+      virtual double calculate_tick_damage() { return base_td; }
+    };
+
     if ( ! p -> spells_burning_embers ) p -> spells_burning_embers = new burning_embers_t( p );
 
     if ( ! p -> spells_burning_embers -> dot -> ticking ) p -> spells_burning_embers -> base_td = 0;

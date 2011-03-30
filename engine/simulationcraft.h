@@ -3591,7 +3591,8 @@ struct action_t : public spell_id_t
   uint32_t id;
   school_type school;
   int resource, tree, result, aoe;
-  bool dual, callbacks, special, binary, channeled, background, sequence, direct_tick, repeating, harmful, proc, auto_cast;
+  bool dual, callbacks, special, binary, channeled, background, sequence;
+  bool direct_tick, repeating, harmful, proc, auto_cast, initialized;
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   int dot_behavior;
@@ -3696,6 +3697,7 @@ struct action_t : public spell_id_t
   virtual void   update_ready();
   virtual bool   usable_moving();
   virtual bool   ready();
+  virtual void   init();
   virtual void   reset();
   virtual void   cancel();
   virtual void   interrupt_action();

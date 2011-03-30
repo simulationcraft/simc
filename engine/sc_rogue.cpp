@@ -786,7 +786,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
           normalize_weapon_speed = true; // XXX: it's normalized
           proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
 
-          reset();
+          init();
         }
 
         virtual void execute()
@@ -855,7 +855,7 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
           background       = true;
           proc             = true;
           direct_power_mod = extra_coeff();
-          reset();
+          init();
         }
       };
       p -> active_venomous_wound = new venomous_wound_t( p );

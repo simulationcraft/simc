@@ -814,7 +814,7 @@ static void trigger_ignite( spell_t* s, double dmg )
       tick_may_crit = false;
       hasted_ticks  = false;
       dot_behavior  = DOT_REFRESH;
-      reset();
+      init();
     }
     virtual void travel( player_t* t, int travel_result, double ignite_dmg )
     {

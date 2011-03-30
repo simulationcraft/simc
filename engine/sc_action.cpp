@@ -31,6 +31,7 @@ void action_t::_init_action_t()
   harmful                        = true;
   proc                           = false;
   auto_cast                      = false;
+  initialized                    = false;
   may_hit                        = true;
   may_miss                       = false;
   may_resist                     = false;
@@ -121,11 +122,11 @@ void action_t::_init_action_t()
   wait_on_ready                  = -1;
   interrupt                      = 0;
   round_base_dmg                 = true;
-  if_expr_str                    = "";
+  if_expr_str.clear();
   if_expr                        = NULL;
-  interrupt_if_expr_str          = "";
+  interrupt_if_expr_str.clear();
   interrupt_if_expr              = NULL;
-  sync_str                       = "";
+  sync_str.clear();
   sync_action                    = NULL;
   next                           = NULL;
   marker                         = 0;
@@ -984,6 +985,8 @@ void action_t::consume_resource()
 
 void action_t::execute()
 {
+  assert( initialized );
+
   if ( sim -> log && ! dual ) 
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(), 
@@ -1487,23 +1490,22 @@ bool action_t::ready()
   return true;
 }
 
-// action_t::reset ==========================================================
+// action_t::init ===========================================================
 
-void action_t::reset()
+void action_t::init()
 {
-  if( ! rng[ 0 ] )
+  if ( initialized )return;
+
+  std::string buffer;
+  for ( int i=0; i < RESULT_MAX; i++ )
   {
-    std::string buffer;
-    for ( int i=0; i < RESULT_MAX; i++ )
-    {
-      buffer  = name();
-      buffer += "_";
-      buffer += util_t::result_type_string( i );
-      rng[ i ] = player -> get_rng( buffer, ( ( i == RESULT_CRIT ) ? RNG_DISTRIBUTED : RNG_CYCLIC ) );
-    }
+    buffer  = name();
+    buffer += "_";
+    buffer += util_t::result_type_string( i );
+    rng[ i ] = player -> get_rng( buffer, ( ( i == RESULT_CRIT ) ? RNG_DISTRIBUTED : RNG_CYCLIC ) );
   }
 
-  if ( ! sync_str.empty() && ! sync_action )
+  if ( ! sync_str.empty() )
   {
     sync_action = player -> find_action( sync_str );
 
@@ -1514,6 +1516,23 @@ void action_t::reset()
     }
   }
 
+  if ( ! if_expr_str.empty() ) 
+  {
+    if_expr = action_expr_t::parse( this, if_expr_str );
+  }
+
+  if ( ! interrupt_if_expr_str.empty() )
+  {
+    interrupt_if_expr = action_expr_t::parse( this, interrupt_if_expr_str );
+  }
+
+  initialized = true;
+}
+
+// action_t::reset ==========================================================
+
+void action_t::reset()
+{
   cooldown -> reset();
   dot -> reset();
   result = RESULT_NONE;

@@ -607,7 +607,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
         background  = true;
         proc = true;
         base_spell_power_multiplier = 0;
-        reset();
+        init();
       }
     };
 

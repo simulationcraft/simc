@@ -103,7 +103,7 @@ struct discharge_proc_callback_t : public action_callback_t
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
         background  = true;
-        reset();
+        init();
       }
     };
 
@@ -119,7 +119,7 @@ struct discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN );
         may_dodge = may_parry = may_glance = false;
         background  = true;
-        reset();
+        init();
       }
     };
 
@@ -207,7 +207,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN );
         background  = true;
-        reset();
+        init();
       }
     };
 
@@ -223,7 +223,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN );
         may_dodge = may_parry = may_glance = false;
         background  = true;
-        reset();
+        init();
       }
     };
 
@@ -332,7 +332,7 @@ static void register_black_bruise( item_t* item )
       trigger_gcd = 0;
       base_dd_min = base_dd_max = 1;
       base_dd_multiplier *= ( heroic ? 0.10 : 0.09 );
-      reset();
+      init();
     }
     virtual void player_buff() { }
     virtual double total_dd_multiplier() SC_CONST { return base_dd_multiplier; }
@@ -510,7 +510,7 @@ static void register_empowered_deathbringer( item_t* item )
       base_dd_min = 1313;
       base_dd_max = 1687;
       base_spell_power_multiplier = 0;
-      reset();
+      init();
     }
     virtual void player_buff()
     {
@@ -562,7 +562,7 @@ static void register_raging_deathbringer( item_t* item )
       base_dd_min = 1458;
       base_dd_max = 1874;
       base_spell_power_multiplier = 0;
-      reset();
+      init();
     }
     virtual void player_buff()
     {
@@ -695,7 +695,7 @@ static void register_nibelung( item_t* item )
       base_dd_min = heroic ? 1803 : 1591;
       base_dd_max = heroic ? 2022 : 1785;
       base_crit = 0.05;
-      reset();
+      init();
     }
     virtual void player_buff() {}
   };
@@ -776,7 +776,7 @@ static void register_shadowmourne( item_t* item )
       trigger_gcd = 0;
       base_dd_min = 1900;
       base_dd_max = 2100;
-      reset();
+      init();
     }
     virtual void player_buff() { }
   };
@@ -987,7 +987,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
         background = true;
         base_spell_power_multiplier = 0;
         cooldown -> duration = 60.0;
-        reset();
+        init();
       }
   };
 

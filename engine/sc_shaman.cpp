@@ -1186,7 +1186,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     background         = true;
     proc               = true;
 
-    reset();
+    init();
   }
 };
 
@@ -1202,7 +1202,7 @@ struct windfury_weapon_attack_t : public shaman_attack_t
     background       = true;
     base_multiplier *= 1.0 + p -> talent_elemental_weapons -> effect3().percent();
     
-    reset();
+    init();
   }
   
   virtual void player_buff()

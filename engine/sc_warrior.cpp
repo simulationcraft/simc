@@ -445,6 +445,9 @@ static void trigger_bloodsurge( action_t* a )
   p -> buffs_bloodsurge -> trigger();
 }
 
+// Deep Wounds ==============================================================
+
+
 // trigger_deep_wounds ======================================================
 
 static void trigger_deep_wounds( action_t* a )
@@ -456,8 +459,52 @@ static void trigger_deep_wounds( action_t* a )
     return;
 
   if ( ! p -> active_deep_wounds )
-    assert( 0 );
+  {
+    struct deep_wounds_t : public warrior_attack_t
+    {
+      deep_wounds_t( warrior_t* p ) :
+	warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
+      {
+	background = true;
+	trigger_gcd = 0;
+	weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
+	may_crit = false;
+	base_tick_time = 1.0;
+	num_ticks = 6;
+	tick_may_crit = false;
+	hasted_ticks  = false;
+	dot_behavior  = DOT_REFRESH;
+	id = 12834;
+	init(); // required since construction occurs after player_t::init()
+      }
+      virtual void target_debuff( player_t* t, int dmg_type )
+      {
+	warrior_attack_t::target_debuff( t, dmg_type );
+	// Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
+	if ( t -> debuffs.blood_frenzy_bleed  -> check() ||
+	     t -> debuffs.savage_combat       -> check() )
+	  target_multiplier /= 1.04;
+      }
+      virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
+      virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
+      virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
+      {
+	warrior_attack_t::travel( t, travel_result, 0 );
+	if ( result_is_hit( travel_result ) )
+	{
+	  base_td = deep_wounds_dmg / dot -> num_ticks;
+	  trigger_blood_frenzy( this );
+	}
+      }
+      virtual void tick()
+      {
+	warrior_attack_t::tick();
+	player -> cast_warrior() -> buffs_tier10_2pc_melee -> trigger();
+      }
+    };
 
+    p -> active_deep_wounds = new deep_wounds_t( p );
+  }
 
   if ( a -> weapon )
     p -> active_deep_wounds -> weapon = a -> weapon;
@@ -561,13 +608,23 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( p -> sim -> debug )
     log_t::output( p -> sim, "Opportunity Strike procced from %s", a -> name() );
 
-  if ( p -> active_opportunity_strike )
+  if ( ! p -> active_opportunity_strike )
   {
-    p -> procs_strikes_of_opportunity -> occur();
-    p -> active_opportunity_strike -> execute();
+    struct opportunity_strike_t : public warrior_attack_t
+    {
+      opportunity_strike_t( warrior_t* p ) :
+	warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
+      {
+	background = true;
+	init();
+      }
+    };
+
+    p -> active_opportunity_strike = new opportunity_strike_t( p );
   }
-  else
-    assert( 0 );
+
+  p -> procs_strikes_of_opportunity -> occur();
+  p -> active_opportunity_strike -> execute();
 }
 
 // trigger_sudden_death =====================================================
@@ -914,82 +971,6 @@ bool warrior_attack_t::ready()
 
   return true;
 }
-
-// Opportunity Strike =======================================================
-
-struct opportunity_strike_t : public warrior_attack_t
-{
-  opportunity_strike_t( warrior_t* p ) :
-      warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
-  {
-    background = true;
-    reset();
-  }
-};
-
-// Deep Wounds ==============================================================
-
-struct deep_wounds_t : public warrior_attack_t
- {
-   deep_wounds_t( warrior_t* p ) :
-     warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
-   {
-     background = true;
-     trigger_gcd = 0;
-     weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
-     may_crit = false;
-     base_tick_time = 1.0;
-     num_ticks = 6;
-     tick_may_crit = false;
-     hasted_ticks  = false;
-     dot_behavior  = DOT_REFRESH;
-     reset(); // required since construction occurs after player_t::init()
-
-     id = 12834;
-   }
-
-   virtual void target_debuff( player_t* t, int dmg_type )
-   {
-     warrior_attack_t::target_debuff( t, dmg_type );
-
-     // Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
-     if ( t -> debuffs.blood_frenzy_bleed  -> check() ||
-          t -> debuffs.savage_combat       -> check() )
-     {
-       target_multiplier /= 1.04;
-     }
-   }
-
-   virtual double total_td_multiplier() SC_CONST
-   {
-     return target_multiplier;
-   }
-
-   virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
-   {
-     warrior_attack_t::travel( t, travel_result, 0 );
-
-     if ( result_is_hit( travel_result ) )
-     {
-       base_td = deep_wounds_dmg / dot -> num_ticks;
-       trigger_blood_frenzy( this );
-     }
-   }
-
-   virtual double travel_time()
-   {
-     return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
-   }
-
-   virtual void tick()
-   {
-     warrior_attack_t::tick();
-
-     warrior_t* p = player -> cast_warrior();
-
-     p -> buffs_tier10_2pc_melee -> trigger();
-   }
- };
 
 // Melee Attack =============================================================
 
@@ -3318,12 +3299,6 @@ void warrior_t::reset()
 {
   player_t::reset();
   active_stance = STANCE_BATTLE;
-
-  if ( ! active_opportunity_strike )
-    active_opportunity_strike = new opportunity_strike_t( this );
-
-  if ( ! active_deep_wounds )
-    active_deep_wounds = new deep_wounds_t( this );
 }
 
 // warrior_t::composite_attack_power_multiplier =============================

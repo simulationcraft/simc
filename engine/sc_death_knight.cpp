@@ -778,7 +778,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
 
-      reset();
+      init();
     }
 
     virtual bool ready() { return false; }
@@ -894,7 +894,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
         base_multiplier *= 1.05;
       }
 
-      reset();
+      init();
     }
 
     void target_debuff( player_t* t, int dmg_type )
@@ -1521,15 +1521,8 @@ struct death_knight_spell_t : public spell_t
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit = true;
-    // The Chaotic Skyflare Diamonds plays oddly for death knight
-    // spells.  For a death coil where base damage is 1747, we would
-    // expect the crit bonus to be 1747, then multiply by the CSD, for
-    // a total of 3599 damage.  In reality, we get 3653.  It would
-    // appear the CSD bonus is applied to overall damage AND the boost
-    // from "Runic Focus", resulting in 1.03 * (1747 + 1747 * 1.03).
-    // I have no explanation other than having verified it at many
-    // different attack power levels and it is consistent within one
-    // point of damage.
+    // DKs have 2.09x spell crits with meta gem so they must use the "hybrid" formula of adjusting the crit-bonus multiplier
+    // (As opposed to the native 1.33 crit multiplier used by Mages and Warlocks.)
     crit_bonus_multiplier = 2.0;
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
@@ -1685,7 +1678,7 @@ static void trigger_blood_caked_blade( action_t* a )
         base_dd_min = base_dd_max = 0.01;
         weapon = &( player -> main_hand_weapon );
         normalize_weapon_speed = false;
-        reset();
+        init();
       }
 
       virtual void target_debuff( player_t* t, int dmg_type )
@@ -1766,7 +1759,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
       may_miss       = false;
       hasted_ticks   = false;
 
-      reset();
+      init();
     }
 
     void target_debuff( player_t* t, int dmg_type )
@@ -2282,7 +2275,7 @@ struct blood_plague_t : public death_knight_spell_t
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;
-    reset(); // Not a real action
+    init(); // Not a real action
   }
 };
 
@@ -2762,7 +2755,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.icy_touch * 0.2
                        + p -> talents.virulence -> effect1().percent();
-    reset(); // Not a real action
+    init(); // Not a real action
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -4454,7 +4447,7 @@ void death_knight_t::init_enchant()
       background  = true;
       proc        = true;
       trigger_gcd = 0;
-      reset();
+      init();
     }
   };
 

@@ -629,7 +629,7 @@ struct priest_heal_t : public heal_t
         hasted_ticks   = false;
         may_crit       = false;
 
-        reset();
+        init();
       }
     };
 
@@ -1026,7 +1026,7 @@ struct shadowy_apparition_t : public priest_spell_t
       base_dd_max *= 1.0625;
     }
 
-    reset();
+    init();
   }
 
   virtual void travel( player_t* t, int result, double dmg )

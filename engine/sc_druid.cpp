@@ -662,7 +662,7 @@ static void trigger_fury_swipes( action_t* a )
           background  = true; 
           proc        = true;
           trigger_gcd = 0;
-          reset();
+          init();
         }
       };
       p -> active_fury_swipes = new fury_swipes_t( p );
@@ -769,7 +769,7 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
       num_ticks       = 2;
       hasted_ticks    = false;
       id              = 71023;
-      reset();
+      init();
     }
     void player_buff() {}
     void target_debuff( player_t* t, int dmg_type ) {}
