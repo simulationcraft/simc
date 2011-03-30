@@ -1444,9 +1444,7 @@ struct death_knight_attack_t : public attack_t
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
   {
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
-    may_crit   = true;
-    may_glance = false;
+    _init_dk_attack();
   }
 
   death_knight_attack_t( const char* n, uint32_t id, death_knight_t* p ) :
@@ -1455,9 +1453,17 @@ struct death_knight_attack_t : public attack_t
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
   {
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+    _init_dk_attack();
+  }
+
+  void _init_dk_attack()
+  {
+   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
     may_glance = false;
+    death_knight_t* p = player -> cast_death_knight();
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+      m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
   }
 
   virtual void   reset();
@@ -1863,16 +1869,12 @@ void death_knight_attack_t::player_buff()
 
   attack_t::player_buff();
   
-  if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
+  if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     if ( ! proc )
       player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
-  if ( weapon -> group() == WEAPON_2H )
-    m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
-
   // Add in all m_dd_additive
   player_multiplier *= 1.0 + m_dd_additive;
-  m_dd_additive = 0; // Reset
 
   player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
 
@@ -3181,6 +3183,11 @@ struct obliterate_offhand_t : public death_knight_attack_t
     weapon           = &( p -> off_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
+    
+    // These both stack additive with MOTFW
+    // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
+    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
+                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
   }
 
   virtual void execute()
@@ -3201,12 +3208,6 @@ struct obliterate_offhand_t : public death_knight_attack_t
   virtual void player_buff()
   {
     death_knight_t* p = player -> cast_death_knight();
-
-    // This has to be called before player_buff()
-    // These both stack additive with MOTFW
-    // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
-    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
-                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
 
     death_knight_attack_t::player_buff();
 
@@ -3244,6 +3245,11 @@ struct obliterate_t : public death_knight_attack_t
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
 
+    // These both stack additive with MOTFW
+    // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
+    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
+                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
+
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new obliterate_offhand_t( p );
   }
@@ -3280,12 +3286,6 @@ struct obliterate_t : public death_knight_attack_t
   virtual void player_buff()
   {
     death_knight_t* p = player -> cast_death_knight();
-
-    // This has to be called before player_buff()
-    // These both stack additive with MOTFW
-    // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
-    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
-                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
 
     death_knight_attack_t::player_buff();
 
