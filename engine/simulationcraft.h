@@ -3924,7 +3924,7 @@ struct dot_t
     // new finish time for the DoT, start from the time of the next tick and add the time 
     // for the remaining ticks to that event.
     int remaining_ticks = num_ticks - current_tick;
-    ready = 0.01 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
+    ready = 0.001 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
   }
   virtual double remains()
   {
@@ -4428,7 +4428,13 @@ struct js_t
 
 #define AOE_CAP 10
 
-struct ticker_t; // replacement for dot_t, handles any ticking buff/debuff
+struct ticker_t // replacement for dot_t, handles any ticking buff/debuff
+{
+  dot_t stuff
+  double crit;
+  double haste;
+  double mastery;
+};
 
 struct sim_t
 {
@@ -4464,10 +4470,10 @@ struct pet_t : public actor_t
   pet_t( const std::string& n, int type ) : actor_t( n, type ) {}
 };
 
-struct mob_t : public actor_t
+struct enemy_t : public actor_t
 {
   health_by_time, health_per_player, arrise_at_time, arise_at_percent, ...
-  mob_t( const std::string& n ) : actor_t( n, ACTOR_MOB ) { sim.mob_list.push_back(this); }
+  enemy_t( const std::string& n ) : actor_t( n, ACTOR_ENEMY ) { sim.enemy_list.push_back(this); }
 };
 
 struct action_t
@@ -4490,8 +4496,8 @@ struct result_t
   int type;
   bool hit;  // convenience
   bool crit; // convenience, two-roll (blocked crits, etc)
-  double direct_amount;
-  double tick_amount;
+  double amount;
+  ticker_t ticker;
 };
 
 struct ability_t : public action_t
@@ -4537,7 +4543,7 @@ struct ability_t : public action_t
       if ( num_ticks > 0 )
       {
         ticker_t* ticker = get_ticker( result.target );  // caches aura_slot
-        ticker -> trigger( this, result );
+	ticker -> trigger( this, result.ticker );
 	// ticker_t::trigger() handles dot work in existing action_t::travel()
       }
     }
@@ -4547,25 +4553,64 @@ struct ability_t : public action_t
       stat -> add_result( result );
     }
   }
-  virtual void      tick         ( ticker_t* );
-  virtual void      last_tick    ( ticker_t* );
-  virtual void      schedule_tick( ticker_t* );
-  virtual int       calculate_num_ticks();
-  virtual double    cost();
-  virtual double    haste();
-  virtual bool      ready();
-  virtual void      cancel();
-  virtual void      reset();
-  virtual void      consume_resource();
-  virtual result_t& calculate_result( result_t& result, actor_t* target )
+  virtual void   tick         ( ticker_t* );
+  virtual void   last_tick    ( ticker_t* );
+  virtual void   schedule_tick( ticker_t* );
+  virtual int    calculate_num_ticks( double haste, double duration=0 );
+  virtual double cost();
+  virtual double haste();
+  virtual bool   ready();
+  virtual void   cancel();
+  virtual void   reset();
+  virtual void   consume_resource();
+  virtual void   calculate_result( result_t& result, actor_t* target )
   {
     result.type = roll;
     result.hit  = ( roll == ? );
     result.crit = ( roll == ? ) || ( two_roll );
-    result.direct_amount = calculate_direct_amount( target );
-    result.tick_amount = calculate_tick_amount( target );
+    result.amount = calculate_direct_amount( target );
+    if ( result.hit && num_ticks )
+    {
+      calculate_ticker( &( result.ticker ), target );
+    }
     return result;
   }
+  virtual void calculate_ticker( ticker_t* ticker, target )
+  {
+    if ( target ) ticker -> target = target;
+    ticker -> amount  = calculate_tick_amount( ticker -> target );
+    ticker -> crit    = calculate_crit_chance( ticker -> target );
+    ticker -> haste   = calculate_haste      ( ticker -> target );
+    ticker -> mastery = calculate_mastery    ( ticker -> target );
+  }
+  virtual void refresh_ticker( ticker_t* ticker )
+  {
+    calculate_ticker( ticker );
+    ticker -> current_tick = 0;
+    ticker -> added_ticks = 0;
+    ticker -> added_time = 0;
+    ticker -> num_ticks = calculate_num_ticks( ticker -> haste );
+    ticker -> recalculate_finish();
+  }
+  virtual void extend_ticker_by_time( ticker_t* ticker, double extra_time )
+  {
+    int    full_tick_count   = ticker -> ticks() - 1;
+    double full_tick_remains = ticker -> finish - ticker -> tick_event -> time;
+
+    ticker -> haste = calculate_haste( ticker -> target );
+    ticker -> num_ticks += calculate_num_ticks( ticker -> haste, full_tick_remains ) - full_tick_count;
+    ticker -> recalculate_finish();
+  }
+  virtual void extend_ticker_by_ticks( ticker_t* ticker, double extra_ticks )
+  {
+    calculate_ticker( ticker );
+    ticker -> added_ticks += extra_ticks;
+    ticker -> num_ticks   += extra_ticks;
+    ticker -> recalculate_finish();
+  }
+  virtual double    calculate_haste        ( actor_t* target );
+  virtual double    calculate_mastery      ( actor_t* target );
+  virtual double    calculate_power        ( actor_t* target );
   virtual double    calculate_weapon_amount( actor_t* target );
   virtual double    calculate_direct_amount( actor_t* target );
   virtual double    calculate_tick_amount  ( actor_t* target );
@@ -4575,6 +4620,7 @@ struct ability_t : public action_t
   virtual double    calculate_glance_chance( actor_t* target );
   virtual double    calculate_block_chance ( actor_t* target );
   virtual double    calculate_crit_chance  ( actor_t* target );
+  virtual double    calculate_crit_chance  ( ticker_t* ticker );
   virtual double    calculate_source_multiplier();
   virtual double    calculate_direct_multiplier() { return calculate_source_multiplier(); } // include crit bonus here
   virtual double    calculate_tick_multiplier  () { return calculate_source_multiplier(); }
