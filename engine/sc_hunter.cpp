@@ -781,6 +781,8 @@ static void trigger_piercing_shots( action_t* a )
       tick_power_mod  = 0;
       num_ticks       = 8;
       base_tick_time  = 1.0;
+
+      init();
     }
     void player_buff() {}
     void target_debuff( player_t* t, int dmg_type )
