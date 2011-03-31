@@ -29,8 +29,24 @@ MODELS =\
 REPORTS_LIVE := $(MODELS:%=$(HTML)/$(LIVE)/%_auto.html)
 REPORTS_PTR  := $(MODELS:%=$(HTML)/$(PTR)/%_auto.html)
 
-SRC        = engine
-DEPENDS    = 
+SRC = engine
+
+DEP_LIVE =\
+	$(SRC)/sc_extra_data.inc	\
+	$(SRC)/sc_item_data.inc		\
+	$(SRC)/sc_scale_data.inc	\
+	$(SRC)/sc_spell_data.inc	\
+	$(SRC)/sc_spell_lists.inc	\
+	$(SRC)/sc_talent_data.inc
+
+DEP_PTR =\
+	$(SRC)/sc_extra_data_ptr.inc	\
+	$(SRC)/sc_item_data_ptr.inc	\
+	$(SRC)/sc_scale_data_ptr.inc	\
+	$(SRC)/sc_spell_data_ptr.inc	\
+	$(SRC)/sc_spell_lists_ptr.inc	\
+	$(SRC)/sc_talent_data_ptr.inc
+
 ITERATIONS = 25000
 THREADS    = 2
 SF         = 1
@@ -48,13 +64,13 @@ all: live ptr
 clean:
 	/bin/rm -f $(REPORTS_LIVE) $(REPORTS_PTR)
 
-$(HTML)/$(LIVE)/%_auto.html: $(SRC)/sc_%.cpp $(DEPENDS)
+$(HTML)/$(LIVE)/%_auto.html: $(SRC)/sc_%.cpp $(DEP_LIVE)
 	-@echo Generating $@ 
 	-@$(MODULE) $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR).simc output=$(basename $(@F))_live.txt html=$@
 
 # We should make <class>_PTR_<etc>.simc files even if they just reload the live version
 
-$(HTML)/$(PTR)/%_auto.html: $(SRC)/sc_%.cpp $(DEPENDS)
+$(HTML)/$(PTR)/%_auto.html: $(SRC)/sc_%.cpp $(DEP_PTR)
 	-@echo Generating $@ 
 	-@$(MODULE) ptr=1 $(OPTS) $(call profile,$(basename $(@F)))_$(GEAR)_PTR.simc output=$(basename $(@F))_ptr.txt html=$@
 
