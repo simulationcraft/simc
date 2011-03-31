@@ -2982,8 +2982,8 @@ struct howling_blast_t : public death_knight_spell_t
   // FIXME: need to verify this for other spells as well (and get definitive confirmation for HB).
   virtual double crit_chance( int delta_level ) SC_CONST
   {
-	death_knight_t* p = player -> cast_death_knight();
-	return p -> buffed_attack_crit - delta_level*0.006; // eww
+    death_knight_t* p = player -> cast_death_knight();
+    return p -> composite_attack_crit() - delta_level*0.006; // eww
   }
 
   virtual double cost() SC_CONST
