@@ -381,7 +381,9 @@ double enemy_t::health_percentage() SC_CONST
 
   if ( resource_base[ RESOURCE_HEALTH ] == 0 ) // first iteration
   {
-    return ( sim -> current_time / sim -> expected_time ) * initial_health_percentage;
+    double remainder = std::max( 0.0, ( sim -> expected_time - sim -> current_time ) );
+
+    return ( remainder / sim -> expected_time ) * initial_health_percentage;
   }
 
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
