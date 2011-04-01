@@ -2649,13 +2649,16 @@ void player_t::clear_debuffs()
 }
 
 // player_t::execute_action =================================================
-std::string player_t::print_action_map()
+std::string player_t::print_action_map( int iterations, int precision )
 {
   std::map<std::string,int>::const_iterator it = action_map.begin();
   std::map<std::string,int>::const_iterator end = action_map.end();
-  std::string ret = "";
+  std::string ret = "Label: Number of executes (Average number of executes per iteration)";
+  ret += "<br />\n";
   while ( it != action_map.end() ) {
-    ret += it->first + ": " + util_t::to_string( it -> second ) + "<br />\n";
+    ret += it->first + ": " + util_t::to_string( it -> second );
+    if ( iterations > 0 ) ret += " (" + util_t::to_string( ((double)it -> second) / iterations, precision ) + ")";
+    ret += "<br />\n";
     it++;
   }
 

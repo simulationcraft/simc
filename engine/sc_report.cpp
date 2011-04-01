@@ -3707,7 +3707,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         "                    %s\n"
         "\t\t\t\t\t\t\t\t\t</div>\n"
         "\t\t\t\t\t\t\t\t</div>\n",
-        p -> print_action_map().c_str() );
+        p -> print_action_map( sim -> iterations, 2 ).c_str() );
     }
   }
 

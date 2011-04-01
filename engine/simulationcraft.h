@@ -3285,7 +3285,7 @@ struct player_t
   virtual double    available() SC_CONST { return 0.1; }
   virtual action_t* execute_action();
 
-  virtual std::string print_action_map();
+  virtual std::string print_action_map( int iterations, int precision );
 
   virtual void   regen( double periodicity=2.0 );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
