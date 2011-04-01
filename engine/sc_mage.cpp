@@ -1211,7 +1211,9 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", 30451, p )
   {
     parse_options( NULL, options_str );
-    if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+
+    if ( p -> ptr ) base_execute_time = 2.0; // FIXME: DBC Data is behind the PTR notes
+    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
 
     if ( ! p -> ptr )
       base_cost *= 0.05 / 0.07; // FIXME: Hotfixed value from: http://blue.mmo-champion.com/topic/158233/arcane-hotfixes
