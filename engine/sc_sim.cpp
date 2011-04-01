@@ -1567,6 +1567,19 @@ void sim_t::merge( sim_t& other_sim )
     {
       uptime -> merge( other_p -> get_uptime( uptime -> name_str ) );
     }
+
+    // this will likely crash with low iterations (if action maps don't match across threads) :)
+
+    std::map<std::string,int>::const_iterator it1 = p -> action_map.begin();
+    std::map<std::string,int>::const_iterator end1 = p -> action_map.end();
+    std::map<std::string,int>::const_iterator it2 = other_p -> action_map.begin();
+    std::map<std::string,int>::const_iterator end2 = other_p -> action_map.end();
+
+    while ( it1 != end1 ) {
+      p -> action_map[ it1 -> first ] += it2 -> second;
+      it1++;
+      it2++;
+    }
   }
 }
 
