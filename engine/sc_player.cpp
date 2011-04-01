@@ -2655,7 +2655,7 @@ std::string player_t::print_action_map()
   std::map<std::string,int>::const_iterator end = action_map.end();
   std::string ret = "";
   while ( it != action_map.end() ) {
-    ret += it->first + ": " + util_t::to_string( it -> second );
+    ret += it->first + ": " + util_t::to_string( it -> second ) + "<br />\n";
     it++;
   }
 
