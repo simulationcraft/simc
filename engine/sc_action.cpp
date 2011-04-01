@@ -131,6 +131,7 @@ void action_t::_init_action_t()
   next                           = NULL;
   marker                         = 0;
   target_str                     = "";
+  label_str                      = "";
  
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -409,6 +410,7 @@ void action_t::parse_options( option_t*          options,
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
     { "target",                 OPT_STRING, &target_str            },
+    { "label",                  OPT_STRING, &label_str             },
     { NULL,                     0,          NULL                   }
   };
 

@@ -2978,6 +2978,7 @@ struct player_t
   int         action_list_default;
   cooldown_t* cooldown_list;
   dot_t*      dot_list;
+  std::map<std::string,int> action_map;
 
   // Reporting
   int       quiet;
@@ -3283,6 +3284,8 @@ struct player_t
   virtual void      demise();
   virtual double    available() SC_CONST { return 0.1; }
   virtual action_t* execute_action();
+
+  virtual std::string print_action_map();
 
   virtual void   regen( double periodicity=2.0 );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
@@ -3646,6 +3649,7 @@ struct action_t : public spell_id_t
   char marker;
   std::string signature_str;
   std::string target_str;
+  std::string label_str;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const active_spell_t& s, int t=TREE_NONE, bool special=false );

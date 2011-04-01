@@ -2649,6 +2649,18 @@ void player_t::clear_debuffs()
 }
 
 // player_t::execute_action =================================================
+std::string player_t::print_action_map()
+{
+  std::map<std::string,int>::const_iterator it = action_map.begin();
+  std::map<std::string,int>::const_iterator end = action_map.end();
+  std::string ret = "";
+  while ( it != action_map.end() ) {
+    ret += it->first + ": " + util_t::to_string( it -> second );
+    it++;
+  }
+
+  return ret;
+}
 
 action_t* player_t::execute_action()
 {
@@ -2679,6 +2691,13 @@ action_t* player_t::execute_action()
     action -> schedule_execute();
     total_foreground_actions++;
     if ( action -> marker ) action_sequence += action -> marker;
+    if ( action -> label_str != "" )
+    {
+      if ( ! action_map[ action -> label_str ] )
+        action_map[ action -> label_str ] = 0;
+
+      action_map [ action -> label_str ] += 1;
+    }
   }
 
   return action;

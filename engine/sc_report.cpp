@@ -3699,6 +3699,15 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
         "\t\t\t\t\t\t\t\t\t</div>\n"
         "\t\t\t\t\t\t\t\t</div>\n",
         seq.c_str() );
+
+      util_t::fprintf( file,
+        "\t\t\t\t\t\t\t\t<div class=\"subsection subsection-small\">\n"
+        "\t\t\t\t\t\t\t\t\t<h4>Labels</h4>\n"
+        "\t\t\t\t\t\t\t\t\t<div class=\"force-wrap mono\">\n"
+        "                    %s\n"
+        "\t\t\t\t\t\t\t\t\t</div>\n"
+        "\t\t\t\t\t\t\t\t</div>\n",
+        p -> print_action_map().c_str() );
     }
   }
 
