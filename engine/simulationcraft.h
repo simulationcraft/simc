@@ -4563,9 +4563,18 @@ struct ability_t : public action_t
   virtual void   cancel();
   virtual void   reset();
   virtual void   consume_resource();
-  virtual void   calculate_result( result_t& result, actor_t* target )
+  virtual result_type calculate_attack_roll( actor_t* target );
+  virtual result_type calculate_spell_roll( actor_t* target );
+  virtual result_type calculate_roll( actor_t* target )
   {
-    result.type = roll;
+    if ( weapon )
+      return calculate_attack_roll( target );
+    else
+      return calculate_spell_roll( target );
+  }
+  virtual void calculate_result( result_t& result, actor_t* target )
+  {
+    result.type = calculate_roll( target );
     result.hit  = ( roll == ? );
     result.crit = ( roll == ? ) || ( two_roll );
     result.amount = calculate_direct_amount( target );
@@ -4608,23 +4617,74 @@ struct ability_t : public action_t
     ticker -> num_ticks   += extra_ticks;
     ticker -> recalculate_finish();
   }
-  virtual double    calculate_haste        ( actor_t* target );
-  virtual double    calculate_mastery      ( actor_t* target );
-  virtual double    calculate_power        ( actor_t* target );
-  virtual double    calculate_weapon_amount( actor_t* target );
-  virtual double    calculate_direct_amount( actor_t* target );
-  virtual double    calculate_tick_amount  ( actor_t* target );
-  virtual double    calculate_miss_chance  ( actor_t* target );
-  virtual double    calculate_dodge_chance ( actor_t* target );
-  virtual double    calculate_parry_chance ( actor_t* target );
-  virtual double    calculate_glance_chance( actor_t* target );
-  virtual double    calculate_block_chance ( actor_t* target );
-  virtual double    calculate_crit_chance  ( actor_t* target );
-  virtual double    calculate_crit_chance  ( ticker_t* ticker );
-  virtual double    calculate_source_multiplier();
-  virtual double    calculate_direct_multiplier() { return calculate_source_multiplier(); } // include crit bonus here
-  virtual double    calculate_tick_multiplier  () { return calculate_source_multiplier(); }
-  virtual double    calculate_target_multiplier( actor_t* target );
+  virtual double calculate_weapon_amount( actor_t* target );
+  virtual double calculate_direct_amount( actor_t* target );
+  virtual double calculate_tick_amount  ( actor_t* target );
+  virtual double calculate_power( actor_t* target )
+  {
+    return AP_multiplier * AP() + SP_multiplier * SP();
+  }
+  virtual double calculate_haste( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_haste( target );
+    else
+      return calculate_spell_haste( target );
+  }
+  virtual double calculate_mastery( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_mastery( target );
+    else
+      return calculate_spell_mastery( target );
+  }
+  virtual double calculate_miss_chance( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_miss_chance( target );
+    else
+      return calculate_spell_miss_chance( target );
+  }
+  virtual double calculate_dodge_chance( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_dodge_chance( target );
+    else
+      return 0;
+  }
+  virtual double calculate_parry_chance( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_parry_chance( target );
+    else
+      return 0;
+  }
+  virtual double calculate_glance_chance( actor_t* target )
+  {
+    if ( weapon && auto_attack )
+      return calculate_attack_glance_chance( target );
+    else
+      return 0;
+  }
+  virtual double calculate_block_chance( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_block_chance( target );
+    else
+      return 0;
+  }
+  virtual double calculate_crit_chance( actor_t* target )
+  {
+    if ( weapon )
+      return calculate_attack_crit_chance( target );
+    else
+      return calculate_spell_crit_chance( target );
+  }
+  virtual double calculate_crit_chance( ticker_t* ticker );
+  virtual double calculate_source_multiplier();
+  virtual double calculate_direct_multiplier() { return calculate_source_multiplier(); } // include crit bonus here
+  virtual double calculate_tick_multiplier  () { return calculate_source_multiplier(); }
+  virtual double calculate_target_multiplier( actor_t* target );
   virtual int       area_of_effect( actor_t* targets[] ) { targets[ 0 ] = self_cast ? actor : actor -> current_target; return 1; }
   virtual result_t& result(); // returns 0th "result", asserts if aoe
   virtual double    travel_time( actor_t* target );
