@@ -1046,9 +1046,10 @@ void rogue_attack_t::execute()
       // attached buff get's triggered only on successfull hit
       trigger_buff();
 
-      trigger_apply_poisons( this );
-      trigger_main_gauche( this );
+      if ( may_crit )  // Rupture and Garrote can't proc MG, issue 581
+        trigger_main_gauche( this );
 
+      trigger_apply_poisons( this );
       trigger_tricks_of_the_trade( this );
     }
 
