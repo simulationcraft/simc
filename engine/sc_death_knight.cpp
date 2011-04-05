@@ -490,8 +490,8 @@ struct army_ghoul_pet_t : public pet_t
 
   struct army_ghoul_pet_attack_t : public attack_t
   {
-    army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL ) :
-      attack_t( n, player, r, SCHOOL_PHYSICAL )
+    army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+      attack_t( n, player, r, SCHOOL_PHYSICAL, t, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
@@ -503,7 +503,7 @@ struct army_ghoul_pet_t : public pet_t
   struct army_ghoul_pet_melee_t : public army_ghoul_pet_attack_t
   {
     army_ghoul_pet_melee_t( player_t* player ) :
-      army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL )
+      army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -1181,8 +1181,8 @@ struct ghoul_pet_t : public pet_t
 
   struct ghoul_pet_attack_t : public attack_t
   {
-    ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL ) :
-      attack_t( n, player, RESOURCE_ENERGY, SCHOOL_PHYSICAL )
+    ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+      attack_t( n, player, RESOURCE_ENERGY, SCHOOL_PHYSICAL, t, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
@@ -1212,7 +1212,7 @@ struct ghoul_pet_t : public pet_t
   struct ghoul_pet_melee_t : public ghoul_pet_attack_t
   {
     ghoul_pet_melee_t( player_t* player ) :
-      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL )
+      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
