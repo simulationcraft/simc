@@ -605,6 +605,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   {
     infinite_resource[ i ] = false;
   }
+  infinite_resource[ RESOURCE_HEALTH ] = true;
 
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
