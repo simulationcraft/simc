@@ -4259,13 +4259,19 @@ void death_knight_t::init_actions()
     {
       action_list_str += "/presence,choose=unholy"; // 2H Frost/Unholy
     }
-    else
+    else if ( primary_tree() == TREE_BLOOD && role == ROLE_TANK )
     {
-      action_list_str += "/presence,choose=frost"; // 1H Frost/Blood
+      action_list_str += "/presence,choose=blood"; // Blood
+    }
+    else // 1H Frost/Blood DPS
+    {
+      action_list_str += "/presence,choose=frost,if=!buff.bloodlust.react&runic_power<=20";
+      action_list_str += "/presence,choose=unholy,if=buff.bloodlust.react";
     }
     action_list_str +="/army_of_the_dead";
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
+    bool has_hor = false;
     for ( int i=0; i < num_items; i++ )
     {
       if ( items[ i ].use.active() )
@@ -4273,6 +4279,11 @@ void death_knight_t::init_actions()
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
         action_list_str += ",time>=10";
+      }
+      // check for Heart of Rage
+      if ( strstr( items[ i ].name(), "heart_of_rage") )
+      {
+        has_hor = true;
       }
     }
     // Lifeblood
@@ -4315,39 +4326,39 @@ void death_knight_t::init_actions()
       if ( talents.pillar_of_frost -> rank() )
       {
         action_list_str += "/pillar_of_frost";
-        action_list_str += "/blood_tap,if=death!=2";
       }
+      // Try and time a better ghoul
+      action_list_str += "/raise_dead,if=buff.rune_of_the_fallen_crusader.react";
+      if ( has_hor )
+        action_list_str += "&buff.heart_of_rage.react";
       action_list_str += "/raise_dead,time>=15";
-      // Priority Taken from Frost DK OP
-      // Diseases
       if ( level > 81 )
         action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/howling_blast,if=dot.frost_fever.remains<=2";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
-      //  Ob if both Frost/Unholy pairs and/or both Death runes are up, or if KM is procced
       action_list_str += "/obliterate,if=frost=2&unholy=2";
       action_list_str += "/obliterate,if=death=2";
       action_list_str += "/obliterate,if=buff.killing_machine.react"; // All 3 are seperated for Sample Sequence
+      action_list_str += "/blood_tap,if=buff.killing_machine.react";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react";
       if ( ! ptr )
-      {
-        // BS if both blood are up
-    	if ( ! talents.pillar_of_frost -> rank() )
-    		action_list_str += "/blood_tap";
         action_list_str += "/blood_strike,if=blood=2";
+      action_list_str +="/frost_strike,if=runic_power>=90&!buff.bloodlust.react";
+      action_list_str +="/frost_strike,if=runic_power>=95";
+      if ( talents.howling_blast -> rank() )
+      { 
+        if ( talents.rime -> rank() )
+          action_list_str += "/howling_blast,if=buff.rime.react";
+        action_list_str += "/howling_blast,if=(death+unholy)=0&!buff.bloodlust.react";
       }
-      // FS if capped; using 30 less than cap was a DPS gain in all cases
-      action_list_str +="/frost_strike,if=runic_power>=90";
-      // Rime
-      if ( talents.howling_blast -> rank() && talents.rime -> rank() )
-        action_list_str += "/howling_blast,if=buff.rime.react"; 
-      // OB -> BS -> FS
       action_list_str += "/obliterate";
-      if ( ! ptr )
-        action_list_str += "/blood_strike,if=blood=1";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
       action_list_str += "/frost_strike";
-      if ( ptr )
-        action_list_str += "/howling_blast"; // Use HB to consume any extra runes, putting it after FS is a dps increase
-      // Other
+      if ( talents.howling_blast -> rank() )
+        action_list_str += "/howling_blast";
+      action_list_str += "/blood_tap";
+      if ( ! ptr )
+        action_list_str += "/blood_strike,if=death=0";
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
       break;
