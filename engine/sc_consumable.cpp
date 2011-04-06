@@ -161,7 +161,7 @@ struct flask_t : public action_t
 };
 
 // ==========================================================================
-// Flask
+// Food
 // ==========================================================================
 
 struct food_t : public action_t
@@ -408,11 +408,7 @@ struct destruction_potion_t : public action_t
   destruction_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "destruction_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -462,11 +458,7 @@ struct speed_potion_t : public action_t
   speed_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "speed_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -516,11 +508,7 @@ struct wild_magic_potion_t : public action_t
   wild_magic_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "wild_magic_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -573,11 +561,7 @@ struct earthen_potion_t : public action_t
   earthen_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "earthen_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -626,11 +610,7 @@ struct golemblood_potion_t : public action_t
   golemblood_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "golemblood_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -679,11 +659,7 @@ struct tolvir_potion_t : public action_t
   tolvir_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "tolvir_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -732,11 +708,7 @@ struct volcanic_potion_t : public action_t
   volcanic_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "volcanic_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -785,11 +757,7 @@ struct indestructible_potion_t : public action_t
   indestructible_potion_t( player_t* p, const std::string& options_str ) :
       action_t( ACTION_USE, "indestructible_potion", p )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     trigger_gcd = 0;
     harmful = false;
@@ -1032,6 +1000,7 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "health_stone"          ) return new          health_stone_t( p, options_str );
   if ( name == "indestructible_potion" ) return new indestructible_potion_t( p, options_str );
   if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
+  if ( name == "mythical_mana_potion"  ) return new           mana_potion_t( p, options_str );
   if ( name == "speed_potion"          ) return new          speed_potion_t( p, options_str );
   if ( name == "earthen_potion"        ) return new        earthen_potion_t( p, options_str );
   if ( name == "golemblood_potion"     ) return new     golemblood_potion_t( p, options_str );
