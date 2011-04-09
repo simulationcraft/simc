@@ -3423,16 +3423,16 @@ struct dark_intent_t : public warlock_spell_t
       if ( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Dark Intent", p -> name() );
       p -> buffs.dark_intent_feedback -> override( 3 );
       if ( p -> buffs.dark_intent -> check() ) p -> buffs.dark_intent -> expire();
-      p -> buffs.dark_intent -> override( 1 );
+      p -> buffs.dark_intent -> override( 1, 0.03 );
     }
     else
     {
       warlock_t* p = player -> cast_warlock();
       if ( sim -> log ) log_t::output( sim, "%s grants %s Dark Intent", p -> name(), dark_intent_target -> name() );
-      dark_intent_target -> buffs.dark_intent -> trigger();
+      dark_intent_target -> buffs.dark_intent -> trigger( 1, dark_intent_target -> ptr ? 0.01 : 0.03 );
       dark_intent_target -> dark_intent_cb -> active = true;
 
-      p -> buffs.dark_intent -> trigger();
+      p -> buffs.dark_intent -> trigger( 1, 0.03 );
       p -> dark_intent_cb -> active = true;
     }
   }

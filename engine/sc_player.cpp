@@ -2125,7 +2125,7 @@ double player_t::composite_player_td_multiplier( const school_type school ) SC_C
 {
   double m = 1.0;
 
-  m *= 1.0 + 0.03 * buffs.dark_intent_feedback -> stack();
+  m *= 1.0 + buffs.dark_intent -> value() * buffs.dark_intent_feedback -> stack();
 
   return m;
 }
