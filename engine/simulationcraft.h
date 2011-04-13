@@ -2278,6 +2278,7 @@ struct sim_t
     int earth_and_moon;
     int ebon_plaguebringer;
     int elemental_oath;
+    int essence_of_the_red;
     int exhaustion;
     int expose_armor;
     int faerie_fire;
@@ -3058,6 +3059,7 @@ struct player_t
     buff_t* dark_intent_feedback;
     buff_t* destruction_potion;
     buff_t* earthen_potion;
+    buff_t* essence_of_the_red;
     buff_t* exhaustion;
     buff_t* focus_magic;
     buff_t* fortitude;
@@ -3146,6 +3148,7 @@ struct player_t
     gain_t* blessing_of_might;
     gain_t* dark_rune;
     gain_t* energy_regen;
+    gain_t* essence_of_the_red;
     gain_t* focus_regen;
     gain_t* innervate;
     gain_t* glyph_of_innervate;

@@ -1370,6 +1370,7 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
+  buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.replenishment             = new buff_t( this, 57669, "replenishment"                );
   buffs.stoneform                 = new buff_t( this, 65116, "stoneform"                    );
@@ -1417,6 +1418,7 @@ void player_t::init_gains()
   gains.blessing_of_might      = get_gain( "blessing_of_might" );
   gains.dark_rune              = get_gain( "dark_rune" );
   gains.energy_regen           = get_gain( "energy_regen" );
+  gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.innervate              = get_gain( "innervate" );
   gains.mana_potion            = get_gain( "mana_potion" );
@@ -1682,6 +1684,11 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.30 );
     }
 
+    if ( buffs.essence_of_the_red -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 1.0 );
+    }
+
     if ( buffs.berserking -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
@@ -1915,8 +1922,11 @@ double player_t::composite_spell_haste() SC_CONST
     if ( buffs.dark_intent -> up() )
       h *= 1.0 / 1.03;
 
-    if (      buffs.bloodlust      -> up() )
+    if ( buffs.bloodlust -> up() )
       h *= 1.0 / ( 1.0 + 0.30 );
+
+    if ( buffs.essence_of_the_red -> up() )
+      h *= 1.0 / ( 1.0 + 1.0 );
 
     else if ( buffs.power_infusion -> up() )
       h *= 1.0 / ( 1.0 + 0.20 );
@@ -2276,6 +2286,10 @@ void player_t::combat_begin()
     arise();
   }
 
+  if ( sim -> overrides.essence_of_the_red )
+  {
+    buffs.essence_of_the_red -> trigger();
+  }
   if ( sim -> overrides.strength_of_wrynn )
   {
     buffs.strength_of_wrynn -> trigger();
@@ -2753,6 +2767,13 @@ void player_t::regen( double periodicity )
         double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010 / 1.0;
 
         resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+      }
+
+      if ( buffs.essence_of_the_red -> up() )
+      {
+        double essence_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.05;
+
+        resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
       }
 
       double bow = buffs.blessing_of_might_regen -> current_value;
