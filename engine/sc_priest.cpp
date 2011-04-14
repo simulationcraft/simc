@@ -783,6 +783,14 @@ struct priest_heal_t : public heal_t
     if ( p -> talents.grace -> rank() )
       t -> buffs.grace -> trigger( 1, p -> dbc.effect( p -> dbc.spell( p -> talents.grace -> effect_trigger_spell( 1 ) ) -> effect1().id() ) -> base_value() / 100.0 );
   }
+
+  void trigger_strength_of_soul( player_t* t )
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> talents.strength_of_soul -> rank() && p -> buffs_weakened_soul -> up() )
+      p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
+  }
 };
 
 
@@ -2652,15 +2660,10 @@ struct _heal_t : public priest_heal_t
   {
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
-    priest_t* p = player -> cast_priest();
-
     trigger_inspiration( travel_result, t );
 
     trigger_grace( t );
-
-    // Strength of Soul
-    if ( p -> talents.strength_of_soul -> rank() && p -> buffs_weakened_soul -> up() )
-      p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
+    trigger_strength_of_soul( t );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -2733,6 +2736,7 @@ struct flash_heal_t : public priest_heal_t
     trigger_inspiration( travel_result, t );
 
     trigger_grace( t );
+    trigger_strength_of_soul( t );
   }
 
   virtual void player_buff()
@@ -2941,6 +2945,7 @@ struct greater_heal_t : public priest_heal_t
     trigger_inspiration( travel_result, t );
 
     trigger_grace( t );
+    trigger_strength_of_soul( t );
   }
 
   virtual void player_buff()
@@ -3367,8 +3372,6 @@ struct power_word_shield_t : public priest_absorb_t
 
     p -> buffs_borrowed_time -> trigger();
     p -> buffs_weakened_soul -> trigger();
-
-
 
     // Rapture
     if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
