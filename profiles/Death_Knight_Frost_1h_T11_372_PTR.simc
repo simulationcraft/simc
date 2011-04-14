@@ -54,8 +54,8 @@ finger2=ring_of_rivalry,heroic=1,ilevel=372,quality=epic,stats=143haste_143maste
 trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_50cd
 trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_crit,equip=onattackhit_2178str_10%_20dur_100cd
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,enchant=65crit
-main_hand=stormwake_the_tempests_reach_of_the_landslide,heroic=1,ilevel=372,quality=epic,stats=247sta_165str_110hit_110exp,reforge=hit_haste,enchant=rune_of_razorice,weapon=sword_2.60speed_949min_1764max,suffix=121
-off_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,enchant=rune_of_the_fallen_crusader,weapon=sword_2.60speed_949min_1764max
+main_hand=stormwake_the_tempests_reach_of_the_landslide,heroic=1,ilevel=372,quality=epic,stats=247sta_165str_110hit_110exp,reforge=hit_haste,enchant=rune_of_the_fallen_crusader,weapon=sword_2.60speed_949min_1764max,suffix=121
+off_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,enchant=rune_of_razorice,weapon=sword_2.60speed_949min_1764max
 ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107str,gems=40str
 # Gear Summary
 # gear_strength=4957
@@ -73,5 +73,5 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 # meta_gem=reverberating_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# main_hand=stormwake_the_tempests_reach_of_the_landslide,heroic=1,weapon=sword_2.60speed_949min_1764max,enchant=rune_of_razorice
-# off_hand=lava_spine,heroic=1,weapon=sword_2.60speed_949min_1764max,enchant=rune_of_the_fallen_crusader
+# main_hand=stormwake_the_tempests_reach_of_the_landslide,heroic=1,weapon=sword_2.60speed_949min_1764max,enchant=rune_of_the_fallen_crusader
+# off_hand=lava_spine,heroic=1,weapon=sword_2.60speed_949min_1764max,enchant=rune_of_razorice
