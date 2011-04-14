@@ -3338,6 +3338,10 @@ struct power_word_shield_t : public priest_absorb_t
 
     cooldown -> duration += p -> talents.soul_warding -> effect1().seconds();
 
+    // hotfix from Feb 16
+    if ( ! p -> ptr )
+      base_cost = floor ( 0.34 * player -> resource_base[ RESOURCE_MANA ] );
+  
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
