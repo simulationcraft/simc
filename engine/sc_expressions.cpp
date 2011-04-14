@@ -193,7 +193,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
   if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) ) return TOK_SUB;
   if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( expr_str[ current_index ] ) ) return TOK_SUB;
   if ( c == '*' ) return TOK_MULT;
-  if ( c == '/' ) return TOK_DIV;
+  if ( c == '%' ) return TOK_DIV;
   if ( c == '&' ) 
   {
     if ( expr_str[ current_index ] == '&' ) current_index++;
