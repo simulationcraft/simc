@@ -2091,14 +2091,11 @@ struct slam_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = false;
     background = true;
 
-    base_crit                  += p -> glyphs.slam -> effect1().percent();
+    base_crit             += p -> glyphs.slam -> effect1().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
-    base_execute_time          += p -> talents.improved_slam -> effect1().seconds();
+    base_execute_time     += p -> talents.improved_slam -> effect1().seconds();
 
-    weapon_multiplier = 1.45;  // FIXME!  Should be right in DBC.
-    // FIXME: PTR Data is lagging behind
-    additive_multipliers = ( p -> ptr ) ? p -> talents.improved_slam -> rank() * 0.10 :
-                                          p -> talents.improved_slam -> effect2().percent()
+    additive_multipliers = p -> talents.improved_slam -> effect2().percent()
                            + p -> talents.war_academy -> effect1().percent();
   }
 
