@@ -1844,7 +1844,6 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   case RACE_WORGEN:
   case RACE_DRAENEI: s += "&amp;F=A"; break;
 
-
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_UNDEAD:
@@ -1878,7 +1877,8 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
     case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
-    case STAT_WEAPON_SPEED:             name = "msp"; break;
+    case STAT_WEAPON_SPEED:
+      if ( HUNTER == p -> type ) name = "rsp"; else name = "msp"; break;
     case STAT_WEAPON_OFFHAND_SPEED:     name = "osp"; break;
     }
 
