@@ -54,14 +54,14 @@ player_t* battle_net_t::download_player( sim_t* sim,
   if ( ! sheet_xml )
   {
     sim -> errorf( "Unable to download character %s|%s|%s from the Armory: Is the Armory down or throttled?\n",
-		   region.c_str(), server.c_str(), name.c_str() );
+                   region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
   if ( xml_t::get_node( sheet_xml, "h3", ".", "Character Not Available" ) )
   {
-    sim -> errorf( "Unable to download character %s|%s|%s from the Armory: Character Not Available\n", 
-		   region.c_str(), server.c_str(), name.c_str() );
+    sim -> errorf( "Unable to download character %s|%s|%s from the Armory: Character Not Available\n",
+                   region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -73,7 +73,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   {
     talents_xml = download_character_talents( sim, region, server, name, "secondary" );
   }
-  
+
   xml_node_t* profile_info = xml_t::get_node( sheet_xml, "div", "class", "profile-info" );
   if ( ! profile_info )
   {
@@ -92,16 +92,16 @@ player_t* battle_net_t::download_player( sim_t* sim,
        ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) )
   {
     sim -> errorf( "Unable to determine name/class/race/level from armory xml for %s|%s|%s.\n",
-      region.c_str(), server.c_str(), name.c_str() );
+                   region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
   size_t pos = 0;
   name_str.erase( name_str.end() - 1 );
-  
+
   if ( ( pos = name_str.rfind( '/' ) ) == std::string::npos )
   {
-    sim -> errorf("Could not find '/' in %s, no how to parse the player name.\n", name_str.c_str() );
+    sim -> errorf( "Could not find '/' in %s, no how to parse the player name.\n", name_str.c_str() );
     return 0;
   }
   else
@@ -112,7 +112,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   if ( ( pos = type_str.rfind( '/' ) ) == std::string::npos )
   {
-    sim -> errorf("Could not find '/' in %s, no how to parse the player class.\n", type_str.c_str() );
+    sim -> errorf( "Could not find '/' in %s, no how to parse the player class.\n", type_str.c_str() );
     return 0;
   }
   else
@@ -123,7 +123,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   if ( ( pos = race_str.rfind( '/' ) ) == std::string::npos )
   {
-    sim -> errorf("Could not find '/' in %s, no how to parse the player race.\n", race_str.c_str() );
+    sim -> errorf( "Could not find '/' in %s, no how to parse the player race.\n", race_str.c_str() );
     return 0;
   }
   else
@@ -136,7 +136,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   armory_t::format( type_str );
   armory_t::format( race_str );
-  
+
   if ( race_str == "forsaken" )
     race_str = "undead";
 
@@ -209,11 +209,11 @@ player_t* battle_net_t::download_player( sim_t* sim,
         talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ) );
         break;
       }
-      
+
       std::string build_str;
       if( xml_t::get_value( build_str, xml_t::get_node( anchor_node, "span", "class", "name" ), "." ) )
       {
-	armory_t::format( build_str );
+        armory_t::format( build_str );
         if( util_t::str_compare_ci( talents_description, build_str ) )
         {
           talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ) );
@@ -225,14 +225,14 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   if( ! talents_xml )
   {
-    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Is the Armory down or throttled?\n", 
+    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Is the Armory down or throttled?\n",
                    region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
     return 0;
   }
 
   if ( xml_t::get_node( talents_xml, "h3", ".", "Character Not Available" ) )
   {
-    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Character Not Available\n", 
+    sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Character Not Available\n",
                    region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
     return 0;
   }
@@ -255,12 +255,12 @@ player_t* battle_net_t::download_player( sim_t* sim,
     sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
   }
-  else 
+  else
   {
     // HACK: We need primary_tree() to return something sensible, so we can filter out tanks/healers in guild download
     p -> player_t::init_talents();
   }
-  
+
   p -> talents_str = "http://www.wowhead.com/talent#";
   p -> talents_str += util_t::player_type_string( p -> type );
   p -> talents_str += "-" + talents_encoding;
@@ -279,24 +279,24 @@ player_t* battle_net_t::download_player( sim_t* sim,
       // Revert to name based lookup
       if ( ! xml_t::get_value( glyph_name, xml_t::get_node( glyph_nodes[ i ], "span", "class", "name" ), "." ) )
       {
-        sim -> errorf( "Could not fetch a valid glyph id or name string.");
+        sim -> errorf( "Could not fetch a valid glyph id or name string." );
       }
       else
       {
         if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
         else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
         armory_t::format( glyph_name );
-        
+
         if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
         p -> glyphs_str += glyph_name;
       }
-      
+
       continue;
     }
-    
+
     if ( ( pos = glyph_id.rfind( '/' ) ) == std::string::npos )
     {
-      sim -> errorf("Could not parse glyph_id string \"%s\".\n", glyph_id.c_str() );
+      sim -> errorf( "Could not parse glyph_id string \"%s\".\n", glyph_id.c_str() );
       continue;
     }
     else
@@ -311,7 +311,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       p -> glyphs_str += glyph_name;
     }
   }
-  
+
   xml_node_t* inventory_node = xml_t::get_node( sheet_xml, "div", "id", "summary-inventory" );
 
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -325,10 +325,10 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
     xml_node_t* slot_node = xml_t::get_node( inventory_node, "div", "data-id", slot_id );
     xml_node_t* anchor_node = xml_t::get_node( slot_node, "a" );
-    
+
     std::string data_item_str;
     xml_t::get_value( data_item_str, anchor_node, "data-item" );
-    
+
     std::vector<std::string> tokens;
     int num_tokens = util_t::string_split( tokens, data_item_str, "&=" );
 
@@ -348,7 +348,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     xml_node_t* sockets_root_node = xml_t::get_node( slot_node, "span", "class", "sockets" );
     std::vector<xml_node_t*> socket_nodes;
     int num_sockets = xml_t::get_children( socket_nodes, sockets_root_node );
-    
+
     for( int i=0; i < num_sockets; i++ )
     {
       std::string href_str;
@@ -356,7 +356,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       std::string::size_type index = href_str.rfind( "/" );
       if( index != std::string::npos ) gem_ids[ i ] = href_str.substr( index+1 );
     }
-    
+
     if( ! id_str.empty() )
     {
       if( ! item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
@@ -401,13 +401,13 @@ bool battle_net_t::download_guild( sim_t* sim,
   {
     int c_level, c_rank, c_class;
     std::string c_name, c_url, c_class_str;
-    
+
     if ( ! xml_t::get_value( c_level, characters[ i ], "data-level" ) )
       return false;
 
     if ( ! xml_t::get_value( c_rank, xml_t::get_node( characters[ i ], "td", "class", "rank" ), "data-raw" ) )
       return false;
-      
+
     if ( ! xml_t::get_value( c_class_str, xml_t::get_node( characters[ i ], "td", "class", "cls" ), "data-raw" ) )
       return false;
     else
@@ -422,7 +422,7 @@ bool battle_net_t::download_guild( sim_t* sim,
 
       if ( ( pos = c_url.rfind( '/' ) ) == std::string::npos )
       {
-        sim -> errorf("Could not find '/' in %s, no way to parse the player name.\n", c_url.c_str() );
+        sim -> errorf( "Could not find '/' in %s, no way to parse the player name.\n", c_url.c_str() );
         return 0;
       }
       else
@@ -473,7 +473,7 @@ bool battle_net_t::download_guild( sim_t* sim,
         sim -> errorf( "Setting quiet=1 on healer %s\n", character_name.c_str() );
         p -> quiet = true;
       }
-      
+
       if ( tree == TREE_PROTECTION || tree == TREE_BLOOD )
       {
         sim -> errorf( "Setting quiet=1 on tank %s\n", character_name.c_str() );

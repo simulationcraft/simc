@@ -39,7 +39,7 @@ static void stat_search( std::string&              encoding_str,
       {
         match = false;
       }
-      else 
+      else
       {
         if ( stat_tokens[ j ][ 0 ] == '!' )
         {
@@ -92,7 +92,7 @@ static bool is_proc_description( const std::string& description_str )
   if ( ( description_str.find( "_sec"   ) != std::string::npos ) &&
        ! ( ( description_str.find( "restores" ) != std::string::npos ) &&
            ( ( description_str.find( "_per_5_sec" ) != std::string::npos ) ||
-           ( description_str.find( "_every_5_sec" ) != std::string::npos ) ) ) )
+             ( description_str.find( "_every_5_sec" ) != std::string::npos ) ) ) )
     return true;
 
   return false;
@@ -332,7 +332,7 @@ static bool parse_item_stats( item_t& item,
 // parse_item_reforge =========================================================
 
 static bool parse_item_reforge( item_t& item,
-                              xml_node_t* xml )
+                                xml_node_t* xml )
 {
   item.armory_reforge_str.clear();
 
@@ -463,7 +463,7 @@ static bool parse_item_enchant( item_t& item,
 // parse_item_enchant =======================================================
 
 static bool parse_item_addon( item_t& item,
-                                xml_node_t* xml )
+                              xml_node_t* xml )
 {
   item.armory_addon_str.clear();
 
@@ -471,7 +471,7 @@ static bool parse_item_addon( item_t& item,
 
   // TO-DO: support when armory updated
 
-  if ( xml_t::get_value( enchant, xml, "addon/." ) )  
+  if ( xml_t::get_value( enchant, xml, "addon/." ) )
   {
     std::string& s = item.armory_addon_str;
 
@@ -847,7 +847,7 @@ player_t* armory_t::download_player( sim_t* sim,
        ! xml_t::get_value( name_str, sheet_xml, "character/name"    ) ||
        ! xml_t::get_value(    level, sheet_xml, "character/level"   ) ||
        ! xml_t::get_value( race_str, sheet_xml, "character/race"    )
-       )
+     )
   {
     sim -> errorf( "Unable to determine class/name/level/race from armory xml for %s|%s|%s.\n",
                    region.c_str(), server.c_str(), name.c_str() );

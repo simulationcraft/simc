@@ -118,6 +118,7 @@ struct druid_t : public player_t
 
   // Procs
   proc_t* procs_combo_points_wasted;
+  proc_t* procs_empowered_touch;
   proc_t* procs_fury_swipes;
   proc_t* procs_parry_haste;
   proc_t* procs_primal_fury;
@@ -129,6 +130,7 @@ struct druid_t : public player_t
   // Random Number Generation
   rng_t* rng_berserk;
   rng_t* rng_blood_in_the_water;
+  rng_t* rng_empowered_touch;
   rng_t* rng_euphoria;
   rng_t* rng_fury_swipes;
   rng_t* rng_primal_fury;
@@ -213,16 +215,16 @@ struct druid_t : public player_t
     // Resto
     talent_t* blessing_of_the_grove;
     talent_t* efflorescence; // NYI
-    talent_t* empowered_touch; // NYI
+    talent_t* empowered_touch;
     talent_t* fury_of_stormrage; // NYI
     talent_t* gift_of_the_earthmother; // NYI
     talent_t* heart_of_the_wild;
     talent_t* improved_rejuvenation; // NYI
     talent_t* living_seed;
-    talent_t* malfurions_gift; // NYI
+    talent_t* malfurions_gift;
     talent_t* master_shapeshifter;
     talent_t* natural_shapeshifter;
-    talent_t* natures_bounty; // NYI
+    talent_t* natures_bounty;
     talent_t* natures_cure; // NYI
     talent_t* natures_swiftness;
     talent_t* natures_ward; // NYI
@@ -700,6 +702,22 @@ static void trigger_eclipse_gain_delay( spell_t* s, int gain )
     }
   };
   new ( s -> sim ) eclipse_delay_t( s, gain );
+}
+
+// trigger_empowered_touch ==================================================
+
+static void trigger_empowered_touch( heal_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( p -> rng_empowered_touch -> roll( p -> talents.empowered_touch -> effect2().percent() ) )
+  {
+    if ( p -> dots_lifebloom -> ticking )
+    {
+      p -> dots_lifebloom -> action -> refresh_duration();
+      p -> procs_empowered_touch -> occur();
+    }
+  }
 }
 
 // trigger_energy_refund ====================================================
@@ -2220,12 +2238,15 @@ struct healing_touch_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+    base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
+    base_execute_time  += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
   }
 
   virtual void execute()
   {
     druid_heal_t::execute();
+
+    trigger_empowered_touch( this );
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
@@ -2299,12 +2320,19 @@ struct lifebloom_t : public druid_heal_t
 
     druid_heal_t::last_tick();
     druid_t* p = player -> cast_druid();
-    p -> buffs_lifebloom -> expire();    
+    p -> buffs_lifebloom -> expire();
   }
 
   virtual void tick()
   {
+    druid_t* p = player -> cast_druid();
+
     druid_heal_t::tick();
+
+    if ( p -> talents.malfurions_gift -> rank() )
+    {
+      p -> buffs_omen_of_clarity -> trigger( 1, 1, p -> talents.malfurions_gift -> proc_chance() );
+    }
 
     trigger_revitalize( this );
   }
@@ -2319,7 +2347,18 @@ struct nourish_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+    base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
+    base_execute_time  += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+  }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+
+    trigger_empowered_touch( this );
+
+    if ( result == RESULT_CRIT )
+      trigger_living_seed( this );
   }
 
   virtual void player_buff()
@@ -2328,14 +2367,6 @@ struct nourish_t : public druid_heal_t
     druid_t* p = player -> cast_druid();
     if ( p -> hot_counter() )
       player_multiplier *= 1.20;
-  }
-
-  virtual void execute()
-  {
-    druid_heal_t::execute();
-
-    if ( result == RESULT_CRIT )
-      trigger_living_seed( this );
   }
 };
 
@@ -2348,7 +2379,9 @@ struct regrowth_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
 
-    additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
+    additive_factors   += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
+    base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
+    base_crit          += p -> talents.natures_bounty -> mod_additive( P_CRIT );
   }
 
   virtual void execute()
@@ -2358,6 +2391,7 @@ struct regrowth_t : public druid_heal_t
     druid_heal_t::execute();
 
     p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
+    trigger_empowered_touch( this );
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
@@ -4321,6 +4355,7 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   procs_combo_points_wasted    = get_proc( "combo_points_wasted"    );
+  procs_empowered_touch        = get_proc( "empowered_touch"        );
   procs_fury_swipes            = get_proc( "fury_swipes"            );
   procs_parry_haste            = get_proc( "parry_haste"            );
   procs_primal_fury            = get_proc( "primal_fury"            );
@@ -4349,6 +4384,7 @@ void druid_t::init_rng()
 
   rng_berserk             = get_rng( "berserk"            );
   rng_blood_in_the_water  = get_rng( "blood_in_the_water" );
+  rng_empowered_touch     = get_rng( "empowered_touch"    );
   rng_euphoria            = get_rng( "euphoria"           );
   rng_fury_swipes         = get_rng( "fury_swipes"        );
   rng_primal_fury         = get_rng( "primal_fury"        );
