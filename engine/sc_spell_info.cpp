@@ -218,7 +218,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   s << tmp_buffer;
 
   if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
-       effect_type_strings[ e -> type() ] != 0 )
+       _effect_type_strings[ e -> type() ] != 0 )
   {
     s << _effect_type_strings[ e -> type() ];
     // Put some nice handling on some effect types
