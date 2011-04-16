@@ -39,6 +39,7 @@ struct druid_t : public player_t
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_omen_of_clarity;
   buff_t* buffs_pulverize;
+  buff_t* buffs_revitalize;
   buff_t* buffs_savage_defense;
   buff_t* buffs_savage_roar;
   buff_t* buffs_shooting_stars;
@@ -84,6 +85,7 @@ struct druid_t : public player_t
   gain_t* gains_omen_of_clarity;
   gain_t* gains_primal_fury;
   gain_t* gains_primal_madness;
+  gain_t* gains_revitalize;
   gain_t* gains_tigers_fury;
 
   // Glyphs
@@ -119,6 +121,7 @@ struct druid_t : public player_t
   proc_t* procs_fury_swipes;
   proc_t* procs_parry_haste;
   proc_t* procs_primal_fury;
+  proc_t* procs_revitalize;
   proc_t* procs_wrong_eclipse_wrath;
   proc_t* procs_wrong_eclipse_starfire;
   proc_t* procs_unaligned_eclipse_gain;
@@ -850,6 +853,21 @@ static void trigger_rage_gain( druid_bear_attack_t* a )
   double rage_gain = 16.0;
 
   p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gains_bear_melee );
+}
+
+// trigger_revitalize =======================================================
+
+static void trigger_revitalize( druid_heal_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( p -> buffs_revitalize -> trigger() )
+  {
+    p -> procs_revitalize -> occur();
+    p -> resource_gain( RESOURCE_MANA, 
+                        p -> resource_max[ RESOURCE_MANA ] * p -> talents.revitalize -> effect1().percent(), 
+                        p -> gains_revitalize );
+  }
 }
 
 // trigger_t10_4pc_caster ===================================================
@@ -2168,6 +2186,7 @@ void druid_heal_t::player_buff()
   heal_t::player_buff();
 
   player_multiplier *= 1.0 + additive_factors;
+  player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> effect1().percent();
 
   // FIXME: If we're refreshing a hot, that doesn't count towards the count
   // eg: Only rejuv is up, refresh rejuv, rejuv doesn't get the bonus
@@ -2271,6 +2290,7 @@ struct lifebloom_t : public druid_heal_t
     druid_heal_t::execute();
     druid_t* p = player -> cast_druid();
     p -> buffs_lifebloom -> trigger();
+    p -> trigger_replenishment();
   }
 
   virtual void last_tick()
@@ -2280,6 +2300,13 @@ struct lifebloom_t : public druid_heal_t
     druid_heal_t::last_tick();
     druid_t* p = player -> cast_druid();
     p -> buffs_lifebloom -> expire();    
+  }
+
+  virtual void tick()
+  {
+    druid_heal_t::tick();
+
+    trigger_revitalize( this );
   }
 };
 
@@ -2358,7 +2385,15 @@ struct rejuvenation_t : public druid_heal_t
     may_crit = false;
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
-                        p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE );
+                        p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
+                        p -> talents.improved_rejuvenation -> mod_additive( P_TICK_DAMAGE );
+  }
+
+  virtual void tick()
+  {
+    druid_heal_t::tick();
+
+    trigger_revitalize( this );
   }
 };
 
@@ -2372,6 +2407,8 @@ struct swiftmend_t : public druid_heal_t
     check_spec( TREE_RESTORATION );
 
     parse_options( NULL, options_str );
+    
+    additive_factors += p -> talents.improved_rejuvenation -> mod_additive( P_GENERIC );
   }
 
   virtual void execute()
@@ -4191,6 +4228,7 @@ void druid_t::init_buffs()
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
+  buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell(1).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
   buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
@@ -4272,6 +4310,7 @@ void druid_t::init_gains()
   gains_omen_of_clarity    = get_gain( "omen_of_clarity"    );
   gains_primal_fury        = get_gain( "primal_fury"        );
   gains_primal_madness     = get_gain( "primal_madness"     );
+  gains_revitalize         = get_gain( "revitalize"         );
   gains_tigers_fury        = get_gain( "tigers_fury"        );
 }
 
@@ -4285,6 +4324,7 @@ void druid_t::init_procs()
   procs_fury_swipes            = get_proc( "fury_swipes"            );
   procs_parry_haste            = get_proc( "parry_haste"            );
   procs_primal_fury            = get_proc( "primal_fury"            );
+  procs_revitalize             = get_proc( "revitalize"             );
   procs_unaligned_eclipse_gain = get_proc( "unaligned_eclipse_gain" );
   procs_wrong_eclipse_wrath    = get_proc( "wrong_eclipse_wrath"    );
   procs_wrong_eclipse_starfire = get_proc( "wrong_eclipse_starfire" );

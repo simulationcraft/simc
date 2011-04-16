@@ -70,7 +70,7 @@ void event_t::deallocate( event_t* e )
 player_ready_event_t::player_ready_event_t( sim_t*    sim,
                                             player_t* p,
                                             double    delta_time ) :
-    event_t( sim, p )
+                                            event_t( sim, p )
 {
   name = "Player-Ready";
   if ( sim -> debug ) log_t::output( sim, "New Player-Ready Event: %s", p -> name() );
@@ -96,7 +96,7 @@ void player_ready_event_t::execute()
 action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 action_t* a,
                                                 double    time_to_execute ) :
-    event_t( sim, a -> player ), action( a )
+                                                event_t( sim, a -> player ), action( a )
 {
   name = "Action-Execute";
   if ( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
@@ -155,7 +155,7 @@ void dot_tick_event_t::execute()
        dot -> current_tick == dot -> num_ticks &&
        player -> skill < 1.0 )
   {
-    if ( sim -> roll( player -> skill ) ) 
+    if ( sim -> roll( player -> skill ) )
     {
       dot -> action -> tick();
     }
@@ -211,7 +211,7 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
                                               player_t* t,
                                               action_t* a,
                                               double    time_to_travel ) :
-    event_t( sim, a -> player ), action( a ), target( t )
+                                              event_t( sim, a -> player ), action( a ), target( t )
 {
   name   = "Action Travel";
   result = a -> result;

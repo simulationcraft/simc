@@ -32,7 +32,7 @@ static bool only_white_space( char* s )
 
 static FILE* open_file( sim_t* sim, const std::string& name )
 {
-  if ( sim -> path_str.empty() ) 
+  if ( sim -> path_str.empty() )
   {
     return fopen( name.c_str(), "r" );
   }
@@ -187,15 +187,15 @@ bool option_t::parse( sim_t*             sim,
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case OPT_LIST:  
-      ( ( std::vector<std::string>* ) address ) -> push_back( v ); 
+    case OPT_LIST:
+      ( ( std::vector<std::string>* ) address ) -> push_back( v );
       break;
-    case OPT_FUNC: 
+    case OPT_FUNC:
       return ( ( option_function_t ) address )( sim, n, v );
-    case OPT_TALENT_RANK:   
-      return ( ( struct talent_t *) address )->set_rank( atoi( v.c_str() ), true );
-    case OPT_SPELL_ENABLED: 
-      return ( ( struct spell_id_t *) address)->enable( atoi( v.c_str() ) != 0 );
+    case OPT_TALENT_RANK:
+      return ( ( struct talent_t * ) address )->set_rank( atoi( v.c_str() ), true );
+    case OPT_SPELL_ENABLED:
+      return ( ( struct spell_id_t * ) address )->enable( atoi( v.c_str() ) != 0 );
     case OPT_DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );
       if ( address ) sim -> errorf( "Please use option '%s' instead.\n", ( char* ) address );
@@ -294,7 +294,7 @@ bool option_t::parse_file( sim_t* sim,
     {
       // Skip the Windows UTF-8 magic cookie.
       uint32_t len = strlen( b );
-      if ( ( len >= 3 ) && ( (unsigned char) b[ 0 ] == 0xEF ) && ( (unsigned char) b[ 1 ] == 0xBB ) && ( (unsigned char) b[ 2 ] == 0xBF ) )
+      if ( ( len >= 3 ) && ( ( unsigned char ) b[ 0 ] == 0xEF ) && ( ( unsigned char ) b[ 1 ] == 0xBB ) && ( ( unsigned char ) b[ 2 ] == 0xBF ) )
       {
         b += 3;
       }
