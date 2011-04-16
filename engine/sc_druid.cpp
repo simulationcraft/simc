@@ -12,6 +12,7 @@
 struct druid_t : public player_t
 {
   // Active
+  heal_t*   active_efflorescence;
   action_t* active_fury_swipes;
   heal_t*   active_living_seed;
   action_t* active_t10_4pc_caster_dot;
@@ -214,12 +215,12 @@ struct druid_t : public player_t
 
     // Resto
     talent_t* blessing_of_the_grove;
-    talent_t* efflorescence; // NYI
+    talent_t* efflorescence;
     talent_t* empowered_touch;
     talent_t* fury_of_stormrage; // NYI
-    talent_t* gift_of_the_earthmother; // NYI
+    talent_t* gift_of_the_earthmother;
     talent_t* heart_of_the_wild;
-    talent_t* improved_rejuvenation; // NYI
+    talent_t* improved_rejuvenation;
     talent_t* living_seed;
     talent_t* malfurions_gift;
     talent_t* master_shapeshifter;
@@ -230,9 +231,9 @@ struct druid_t : public player_t
     talent_t* natures_ward; // NYI
     talent_t* naturalist;
     talent_t* perseverance;
-    talent_t* revitalize; // NYI
-    talent_t* swift_rejuvenation; // NYI
-    talent_t* tree_of_life; // NYI
+    talent_t* revitalize;
+    talent_t* swift_rejuvenation;
+    talent_t* tree_of_life;
     talent_t* wild_growth;
 
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
@@ -247,6 +248,7 @@ struct druid_t : public player_t
     tree_type[ DRUID_FERAL       ] = TREE_FERAL;
     tree_type[ DRUID_RESTORATION ] = TREE_RESTORATION;
 
+    active_efflorescence      = 0;
     active_fury_swipes        = NULL;
     active_living_seed        = 0;
     active_t10_4pc_caster_dot = 0;
@@ -704,6 +706,37 @@ static void trigger_eclipse_gain_delay( spell_t* s, int gain )
   new ( s -> sim ) eclipse_delay_t( s, gain );
 }
 
+// trigger_efflorescence ====================================================
+
+static void trigger_efflorescence( heal_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! p -> talents.efflorescence -> rank() ) return;
+
+  struct efflorescence_t : public druid_heal_t
+  {
+    efflorescence_t( druid_t* player ) :
+      druid_heal_t( "efflorescence", player, 81269 )
+    {
+      aoe            = 6; // DRs kick in after 6
+      background     = true;
+      base_tick_time = 1.0;
+      hasted_ticks   = false;
+      num_ticks      = 7;
+      proc           = true;
+
+      init();
+    }
+  };
+
+  if ( ! p -> active_efflorescence ) p -> active_efflorescence = new efflorescence_t( p );
+
+  double heal = a -> direct_dmg * p -> talents.efflorescence -> effect1().percent();
+  p -> active_efflorescence -> base_td = heal / p -> active_efflorescence -> num_ticks;
+  p -> active_efflorescence -> execute();
+}
+
 // trigger_empowered_touch ==================================================
 
 static void trigger_empowered_touch( heal_t* a )
@@ -794,7 +827,7 @@ static void trigger_living_seed( heal_t* a )
 
   struct living_seed_t : public druid_heal_t
   {
-    living_seed_t ( druid_t* player ) :
+    living_seed_t( druid_t* player ) :
       druid_heal_t( "living_seed", player, 48504 )
     {
       background = true;
@@ -2205,6 +2238,7 @@ void druid_heal_t::player_buff()
 
   player_multiplier *= 1.0 + additive_factors;
   player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> effect1().percent();
+  player_multiplier *= 1.0 + p -> buffs_tree_of_life -> value();
 
   // FIXME: If we're refreshing a hot, that doesn't count towards the count
   // eg: Only rejuv is up, refresh rejuv, rejuv doesn't get the bonus
@@ -2271,6 +2305,8 @@ struct lifebloom_bloom_t : public druid_heal_t
     base_dd_min        = player -> dbc.effect_min( damage_spell -> effect2().id(), player -> level );
     base_dd_max        = player -> dbc.effect_max( damage_spell -> effect2().id(), player -> level );
     school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
+
+    base_dd_multiplier *= 1.0 + p -> talents.gift_of_the_earthmother -> effect1().percent();
   }
 
   virtual void execute()
@@ -2397,6 +2433,16 @@ struct regrowth_t : public druid_heal_t
       trigger_living_seed( this );
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> buffs_tree_of_life -> check() )
+      return 0;
+
+    return druid_heal_t::execute_time();
+  }
+
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
@@ -2416,11 +2462,25 @@ struct rejuvenation_t : public druid_heal_t
     druid_heal_t( "rejuvenation", p, 774 )
   {
     parse_options( NULL, options_str );
-    may_crit = false;
+
+    may_crit     = p -> talents.gift_of_the_earthmother -> rank() ? true : false;
+    trigger_gcd += p -> talents.swift_rejuvenation -> mod_additive( P_GCD );
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.improved_rejuvenation -> mod_additive( P_TICK_DAMAGE );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_heal_t::execute();
+
+    if ( p -> talents.gift_of_the_earthmother -> rank() )
+    {
+      base_dd_min = base_dd_max = tick_dmg * num_ticks * p -> talents.gift_of_the_earthmother -> effect2().percent();
+    }
   }
 
   virtual void tick()
@@ -2474,6 +2534,8 @@ struct swiftmend_t : public druid_heal_t
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
+
+    trigger_efflorescence( this );
   }
 
   virtual bool ready()
@@ -2518,6 +2580,19 @@ struct wild_growth_t : public druid_heal_t
     aoe = effect3().base_value(); // Heals 5 targets
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> buffs_tree_of_life -> check() )
+      aoe += 2;
+
+    druid_heal_t::execute();
+
+    // Reset AoE
+    aoe = effect3().base_value();
   }
 };
 
@@ -3784,7 +3859,7 @@ struct tree_of_life_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    p -> buffs_tree_of_life -> trigger();
+    p -> buffs_tree_of_life -> trigger( 1, p -> dbc.spell( 5420 ) -> effect1().percent() );
   }
 };
 
@@ -3900,6 +3975,18 @@ struct wrath_t : public druid_spell_t
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
   }
 
+  virtual double execute_time() SC_CONST
+  {
+    druid_t* p = player ->cast_druid();
+
+    double t = druid_spell_t::execute_time();
+
+    if ( p -> buffs_tree_of_life -> check() )
+      t *= 0.50;
+
+    return t;
+  }
+
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
@@ -3908,6 +3995,9 @@ struct wrath_t : public druid_spell_t
       additive_multiplier += p -> glyphs.wrath -> effect1().percent();
 
     druid_spell_t::player_buff();
+
+    if ( p -> buffs_tree_of_life -> check() )
+      player_multiplier *= 1.30;
   }
 
   virtual void travel( player_t* t, int    travel_result,

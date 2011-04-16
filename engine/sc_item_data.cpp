@@ -7,40 +7,40 @@
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
-  
+
 static std::string stat_to_str( int stat, int stat_amount )
 {
   std::string stat_str;
   char        stat_buf[64];
   stat_type          s = util_t::translate_item_mod( stat );
-  
+
   if ( ! stat_amount || s == STAT_NONE ) return "";
-  
+
   snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util_t::stat_type_abbrev( s ) );
   stat_str = stat_buf;
-  
+
   return armory_t::format( stat_str );
 }
 
 static std::string encode_stats( const std::vector<std::string>& stats )
 {
   std::ostringstream s;
-  
+
   for ( unsigned i = 0; i < stats.size(); i++ )
   {
     s << stats[ i ];
-    
+
     if ( i < stats.size() - 1 )
       s << "_";
   }
-  
+
   return s.str();
 }
 
 static size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<std::string>& stats )
 {
   assert( enchantment.id );
-  
+
   for ( int i = 0; i < 3; i++ )
   {
     if ( enchantment.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
@@ -49,14 +49,14 @@ static size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantm
     std::string stat_str = stat_to_str( enchantment.ench_prop[ i ], enchantment.ench_amount[ i ] );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
-  
+
   return stats.size();
 }
 
 static size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats )
 {
   assert( item );
-  
+
   for ( int i = 0; i < 10; i++ )
   {
     if ( item -> stat_type[ i ] < 0 )
@@ -65,10 +65,10 @@ static size_t encode_item_stats( const item_data_t* item, std::vector<std::strin
     std::string stat_str = stat_to_str( item -> stat_type[ i ], item -> stat_val[ i ] );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
-  
+
   return stats.size();
 }
-  
+
 static bool parse_item_quality( item_t& item, const item_data_t* item_data )
 {
   assert( item_data );
@@ -159,7 +159,7 @@ static bool parse_item_stats( item_t&            item,
     snprintf( b, sizeof( b ), "%darmor", armor );
     stats.push_back( b );
   }
-  
+
   if ( encode_item_stats( item_data, stats ) > 0 )
     item.armory_stats_str = encode_stats( stats );
 
@@ -189,15 +189,15 @@ static bool parse_weapon_type( item_t&            item,
   if ( w == WEAPON_NONE || w == WEAPON_WAND )
     return true;
 
-  snprintf( stat_buf, sizeof( stat_buf ), "%s_%4.2fspeed_%umin_%umax", 
-    util_t::weapon_type_string( w ), speed, min_dam, max_dam );
+  snprintf( stat_buf, sizeof( stat_buf ), "%s_%4.2fspeed_%umin_%umax",
+            util_t::weapon_type_string( w ), speed, min_dam, max_dam );
   item.armory_weapon_str = stat_buf;
 
   return true;
 }
 
-static bool parse_gems( item_t&            item, 
-                        const item_data_t* item_data, 
+static bool parse_gems( item_t&            item,
+                        const item_data_t* item_data,
                         const std::string  gem_ids[ 3 ] )
 {
   bool match = true;
@@ -214,16 +214,16 @@ static bool parse_gems( item_t&            item,
         match = false;
       continue;
     }
-    
+
     if ( item_data -> socket_color[ i ] )
     {
       if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data -> socket_color[ i ] ) )
         match = false;
     }
-    else 
+    else
     {
-      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a 
-      // single extra one. Wrist/hands should be checked against player professions at 
+      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
+      // single extra one. Wrist/hands should be checked against player professions at
       // least ..
       if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST )
       {
@@ -232,7 +232,7 @@ static bool parse_gems( item_t&            item,
       }
     }
   }
-  
+
   // Socket bonus
   const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item_data -> id_socket_bonus );
   if ( match && socket_bonus.id )
@@ -242,29 +242,29 @@ static bool parse_gems( item_t&            item,
 
     item.armory_gems_str += encode_stats( stats );
   }
-  
+
   return true;
 }
 
-static bool parse_enchant( item_t&            item, 
+static bool parse_enchant( item_t&            item,
                            const item_data_t* item_data,
                            const std::string& enchant_id )
 {
   if ( enchant_id.empty() || enchant_id == "none" ) return true;
-  
+
   long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
   bool                              has_spell = true;
   std::vector<std::string> stats;
-  
+
   const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
   if ( ! item_enchant.id )
   {
-    item.player -> sim -> errorf("Unable to find enchant id %u from item enchantment database", eid );
+    item.player -> sim -> errorf( "Unable to find enchant id %u from item enchantment database", eid );
     return true;
   }
-  
+
   item.armory_enchant_str.clear();
-  
+
   for ( unsigned i = 0; i < 3; i++ )
   {
     if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
@@ -273,7 +273,7 @@ static bool parse_enchant( item_t&            item,
       break;
     }
   }
-  
+
   // For now, if there's a spell in the enchant, defer back to old ways
   if ( has_spell )
   {
@@ -284,7 +284,7 @@ static bool parse_enchant( item_t&            item,
     if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
       item.armory_enchant_str = encode_stats( stats );
   }
-  
+
   return true;
 }
 
@@ -295,20 +295,20 @@ static bool parse_enchant( item_t&            item,
 bool item_database_t::initialize_item_sources( const item_t& item, std::vector<std::string>& source_list )
 {
   source_list = item.sim -> item_db_sources;
-  
+
   if ( ! item.option_data_source_str.empty() )
   {
     std::vector<std::string> item_sources_split;
     util_t::string_split( item_sources_split, item.option_data_source_str, ":/|", false );
-    
+
     source_list.clear();
-    
+
     for ( unsigned i = 0; i < item_sources_split.size(); i++ )
     {
       if ( ! util_t::str_compare_ci( item_sources_split[ i ], "local" ) &&
-           ! util_t::str_compare_ci( item_sources_split[ i ], "mmoc" ) && 
+           ! util_t::str_compare_ci( item_sources_split[ i ], "mmoc" ) &&
            ! util_t::str_compare_ci( item_sources_split[ i ], "wowhead" ) &&
-           ! util_t::str_compare_ci( item_sources_split[ i ], "ptrhead" ) && 
+           ! util_t::str_compare_ci( item_sources_split[ i ], "ptrhead" ) &&
            ! util_t::str_compare_ci( item_sources_split[ i ], "armory" ) )
       {
         continue;
@@ -316,13 +316,13 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
 
       source_list.push_back( armory_t::format( item_sources_split[ i ] ) );
     }
-    
+
     if ( source_list.empty() )
     {
       return false;
     }
   }
-  
+
   return true;
 }
 
@@ -337,32 +337,32 @@ int item_database_t::random_suffix_type( const item_t& item )
   {
     switch ( w -> type )
     {
-      // Two-hand weapons use the first point allocation budget
-      case WEAPON_AXE_2H:
-      case WEAPON_MACE_2H:
-      case WEAPON_POLEARM:
-      case WEAPON_SWORD_2H:
-      case WEAPON_STAFF:
-      {
-        f = 0;
-        break;
-      }
-      // Various ranged types use the fifth point allocation budget
-      case WEAPON_BOW:
-      case WEAPON_CROSSBOW:
-      case WEAPON_GUN:
-      case WEAPON_THROWN:
-      case WEAPON_WAND:
-      {
-        f = 4;
-        break;
-      }
-      // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
-      default:
-      {
-        f = 3;
-        break;
-      }
+    // Two-hand weapons use the first point allocation budget
+    case WEAPON_AXE_2H:
+    case WEAPON_MACE_2H:
+    case WEAPON_POLEARM:
+    case WEAPON_SWORD_2H:
+    case WEAPON_STAFF:
+    {
+      f = 0;
+      break;
+    }
+    // Various ranged types use the fifth point allocation budget
+    case WEAPON_BOW:
+    case WEAPON_CROSSBOW:
+    case WEAPON_GUN:
+    case WEAPON_THROWN:
+    case WEAPON_WAND:
+    {
+      f = 4;
+      break;
+    }
+    // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
+    default:
+    {
+      f = 3;
+      break;
+    }
     }
   }
   // Armor handling goes by slot
@@ -370,44 +370,44 @@ int item_database_t::random_suffix_type( const item_t& item )
   {
     switch ( item.slot )
     {
-      case SLOT_HEAD:
-      case SLOT_CHEST:
-      case SLOT_LEGS:
-      {
-        f = 0;
-        break;
-      }
-      case SLOT_SHOULDERS:
-      case SLOT_WAIST:
-      case SLOT_FEET:
-      case SLOT_HANDS:
-      case SLOT_TRINKET_1:
-      case SLOT_TRINKET_2:
-      {
-        f = 1;
-        break;
-      }
-      case SLOT_NECK:
-      case SLOT_WRISTS:
-      case SLOT_FINGER_1:
-      case SLOT_FINGER_2:
-      case SLOT_OFF_HAND: // Shields, off hand items
-      case SLOT_BACK:
-      {
-        f = 2;
-        break;
-      }
-      // Ranged non-weapons are relics, which do not have a point allocation
-      case SLOT_RANGED:
-      case SLOT_TABARD:
-      {
-        return f;
-      }
-      default:
-        return f;
+    case SLOT_HEAD:
+    case SLOT_CHEST:
+    case SLOT_LEGS:
+    {
+      f = 0;
+      break;
+    }
+    case SLOT_SHOULDERS:
+    case SLOT_WAIST:
+    case SLOT_FEET:
+    case SLOT_HANDS:
+    case SLOT_TRINKET_1:
+    case SLOT_TRINKET_2:
+    {
+      f = 1;
+      break;
+    }
+    case SLOT_NECK:
+    case SLOT_WRISTS:
+    case SLOT_FINGER_1:
+    case SLOT_FINGER_2:
+    case SLOT_OFF_HAND: // Shields, off hand items
+    case SLOT_BACK:
+    {
+      f = 2;
+      break;
+    }
+    // Ranged non-weapons are relics, which do not have a point allocation
+    case SLOT_RANGED:
+    case SLOT_TABARD:
+    {
+      return f;
+    }
+    default:
+      return f;
     }
   }
-  
+
   return f;
 }
 
@@ -416,42 +416,42 @@ int item_database_t::random_suffix_type( const item_t& item )
 uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
 {
   const item_data_t* item = item_struct.player -> dbc.item( item_id );
-  
-  if ( ! item || item -> quality > 5 ) 
+
+  if ( ! item || item -> quality > 5 )
     return 0;
-  
+
   // Shield have separate armor table, bypass normal calculation
   if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
     return ( uint32_t ) floor( item_struct.player -> dbc.item_armor_shield( item -> level ).values[ item -> quality ] + 0.5 );
-  
+
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
   if ( item -> item_subclass != ITEM_SUBCLASS_ARMOR_MISC && item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
-  
+
   double m_invtype = 0, m_quality = 0, total_armor = 0;
 
   switch ( item -> inventory_type )
   {
-    case INVTYPE_HEAD:
-    case INVTYPE_SHOULDERS:
-    case INVTYPE_CHEST:
-    case INVTYPE_WAIST:
-    case INVTYPE_LEGS:
-    case INVTYPE_FEET:
-    case INVTYPE_WRISTS:
-    case INVTYPE_HANDS:
-    case INVTYPE_CLOAK:
-    case INVTYPE_ROBE:
-    {
-      total_armor = item_struct.player -> dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
-      m_quality   = item_struct.player -> dbc.item_armor_quality( item -> level ).values[ item -> quality ];
-      if ( item -> inventory_type == INVTYPE_ROBE )
-        m_invtype = item_struct.player -> dbc.item_armor_inv_type( INVTYPE_CHEST ).armor_type[ item -> item_subclass - 1 ];
-      else
-        m_invtype = item_struct.player -> dbc.item_armor_inv_type( item -> inventory_type ).armor_type[ item -> item_subclass - 1 ];
-      break;
-    }
-    default: return 0;
+  case INVTYPE_HEAD:
+  case INVTYPE_SHOULDERS:
+  case INVTYPE_CHEST:
+  case INVTYPE_WAIST:
+  case INVTYPE_LEGS:
+  case INVTYPE_FEET:
+  case INVTYPE_WRISTS:
+  case INVTYPE_HANDS:
+  case INVTYPE_CLOAK:
+  case INVTYPE_ROBE:
+  {
+    total_armor = item_struct.player -> dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
+    m_quality   = item_struct.player -> dbc.item_armor_quality( item -> level ).values[ item -> quality ];
+    if ( item -> inventory_type == INVTYPE_ROBE )
+      m_invtype = item_struct.player -> dbc.item_armor_inv_type( INVTYPE_CHEST ).armor_type[ item -> item_subclass - 1 ];
+    else
+      m_invtype = item_struct.player -> dbc.item_armor_inv_type( item -> inventory_type ).armor_type[ item -> item_subclass - 1 ];
+    break;
+  }
+  default: return 0;
   }
 
   return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
@@ -461,24 +461,24 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
 
 uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
 {
-  return (uint32_t) floor( item.player -> dbc.weapon_dps( item_id ) * 
-    item.player -> dbc.item( item_id ) -> delay / 1000.0 * 
-    ( 1 - item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
+  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
+                             item.player -> dbc.item( item_id ) -> delay / 1000.0 *
+                             ( 1 - item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
 {
-  return (uint32_t) floor( item.player -> dbc.weapon_dps( item_id ) * 
-    item.player -> dbc.item( item_id ) -> delay / 1000.0 * 
-    ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
+  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
+                             item.player -> dbc.item( item_id ) -> delay / 1000.0 *
+                             ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
 }
 
 // item_database_t::download_slot ===========================================
 
-bool item_database_t::download_slot( item_t&            item, 
-                                     const std::string& item_id, 
-                                     const std::string& enchant_id, 
-                                     const std::string& addon_id, 
+bool item_database_t::download_slot( item_t&            item,
+                                     const std::string& item_id,
+                                     const std::string& enchant_id,
+                                     const std::string& addon_id,
                                      const std::string& reforge_id,
                                      const std::string& rsuffix_id,
                                      const std::string  gem_ids[ 3 ] )
@@ -506,7 +506,7 @@ bool item_database_t::download_slot( item_t&            item,
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
   }
-  
+
   if ( ! enchant_t::download_addon( item, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
@@ -521,24 +521,24 @@ bool item_database_t::download_slot( item_t&            item,
   {
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
   }
-  
+
   if ( item.sim -> debug )
   {
     log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
-      item.armory_name_str.c_str(),
-      item.armory_quality_str.c_str(),
-      item.armory_ilevel_str.c_str(),
-      item.armory_heroic_str.c_str(),
-      item.armory_armor_type_str.c_str(),
-      item.armory_stats_str.c_str(),
-      item.armory_weapon_str.c_str(),
-      item.armory_gems_str.c_str(),
-      item.armory_enchant_str.c_str(),
-      item.armory_reforge_str.c_str(),
-      item.armory_random_suffix_str.c_str(),
-      item.armory_addon_str.c_str() );
+                   item.armory_name_str.c_str(),
+                   item.armory_quality_str.c_str(),
+                   item.armory_ilevel_str.c_str(),
+                   item.armory_heroic_str.c_str(),
+                   item.armory_armor_type_str.c_str(),
+                   item.armory_stats_str.c_str(),
+                   item.armory_weapon_str.c_str(),
+                   item.armory_gems_str.c_str(),
+                   item.armory_enchant_str.c_str(),
+                   item.armory_reforge_str.c_str(),
+                   item.armory_random_suffix_str.c_str(),
+                   item.armory_addon_str.c_str() );
   }
-  
+
   return true;
 }
 
@@ -560,18 +560,18 @@ bool item_database_t::download_item( item_t& item, const std::string& item_id )
   if ( item.sim -> debug )
   {
     log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
-      item.armory_name_str.c_str(),
-      item.armory_quality_str.c_str(),
-      item.armory_ilevel_str.c_str(),
-      item.armory_heroic_str.c_str(),
-      item.armory_armor_type_str.c_str(),
-      item.armory_stats_str.c_str(),
-      item.armory_weapon_str.c_str(),
-      item.armory_gems_str.c_str(),
-      item.armory_enchant_str.c_str(),
-      item.armory_reforge_str.c_str(),
-      item.armory_random_suffix_str.c_str(),
-      item.armory_addon_str.c_str() );
+                   item.armory_name_str.c_str(),
+                   item.armory_quality_str.c_str(),
+                   item.armory_ilevel_str.c_str(),
+                   item.armory_heroic_str.c_str(),
+                   item.armory_armor_type_str.c_str(),
+                   item.armory_stats_str.c_str(),
+                   item.armory_weapon_str.c_str(),
+                   item.armory_gems_str.c_str(),
+                   item.armory_enchant_str.c_str(),
+                   item.armory_reforge_str.c_str(),
+                   item.armory_random_suffix_str.c_str(),
+                   item.armory_addon_str.c_str() );
   }
 
   return true;
@@ -583,13 +583,13 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
   const item_data_t* glyph = player -> dbc.item( gid );
 
   if ( ! gid || ! glyph ) return false;
-  
+
   glyph_name = glyph -> name;
-  
+
   if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
   else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
   armory_t::format( glyph_name );
-  
+
   return true;
 }
 
@@ -600,12 +600,12 @@ int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
   const item_data_t* gem                   = 0;
   int gc                                   = SOCKET_COLOR_NONE;
   std::vector<std::string> stats;
-  
+
   if ( ! ( gem = item.player -> dbc.item( gid ) ) )
     return gc;
 
   const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
-  
+
   if ( ! gem_prop.id )
     return gc;
 
@@ -613,7 +613,7 @@ int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
   if ( gem_prop.color == 1 )
   {
     std::string gem_name = gem -> name;
-    size_t cut_pt = gem_name.rfind( " Diamond");
+    size_t cut_pt = gem_name.rfind( " Diamond" );
     if ( cut_pt != gem_name.npos )
     {
       gem_name = gem_name.substr( 0, cut_pt );

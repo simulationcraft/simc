@@ -46,7 +46,7 @@ void attack_t::_init_attack_t()
   hasted_ticks = false;
 
   // Prevent melee from being scheduled when player is moving
-  if ( range < 0 ) range = 5; 
+  if ( range < 0 ) range = 5;
 
   if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
        p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
@@ -62,28 +62,28 @@ void attack_t::_init_attack_t()
 }
 
 attack_t::attack_t( const active_spell_t& s, int t, bool special ) :
-    action_t( ACTION_ATTACK, s, t, special )
+                    action_t( ACTION_ATTACK, s, t, special )
 {
   _init_attack_t();
 }
 
 attack_t::attack_t( const char* n, player_t* p, int resource, const school_type school, int tree, bool special ) :
-    action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
-    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+                    action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
+                    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   _init_attack_t();
 }
 
 attack_t::attack_t( const char* name, const char* sname, player_t* p, int t, bool special ) :
-    action_t( ACTION_ATTACK, name, sname, p, t, special ),
-    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+                    action_t( ACTION_ATTACK, name, sname, p, t, special ),
+                    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   _init_attack_t();
 }
 
 attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, bool special ) :
-    action_t( ACTION_ATTACK, name, id, p, t, special ),
-    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+                    action_t( ACTION_ATTACK, name, id, p, t, special ),
+                    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   _init_attack_t();
 }
@@ -141,8 +141,8 @@ void attack_t::player_buff()
       case WEAPON_AXE:
       case WEAPON_AXE_2H:
       case WEAPON_FIST:
-              player_expertise += 0.03;
-              break;
+        player_expertise += 0.03;
+        break;
       }
     }
     else if ( p -> race == RACE_TROLL )
@@ -150,8 +150,8 @@ void attack_t::player_buff()
       switch ( weapon -> type )
       {
       case WEAPON_BOW:
-              player_crit += 0.01;
-              break;
+        player_crit += 0.01;
+        break;
       }
     }
     else if ( p -> race == RACE_HUMAN )
@@ -162,21 +162,21 @@ void attack_t::player_buff()
       case WEAPON_MACE_2H:
       case WEAPON_SWORD:
       case WEAPON_SWORD_2H:
-              player_expertise += 0.03;
-              break;
+        player_expertise += 0.03;
+        break;
       }
     }
     else if ( p -> race == RACE_DWARF )
     {
       switch ( weapon -> type )
       {
-      case WEAPON_GUN: 
-              player_crit += 0.01;
-              break;
+      case WEAPON_GUN:
+        player_crit += 0.01;
+        break;
       case WEAPON_MACE:
       case WEAPON_MACE_2H:
-              player_expertise += 0.03;
-              break;
+        player_expertise += 0.03;
+        break;
       }
     }
     else if ( p -> race == RACE_GNOME )
@@ -185,8 +185,8 @@ void attack_t::player_buff()
       {
       case WEAPON_DAGGER:
       case WEAPON_SWORD:
-              player_expertise += 0.03;
-              break;
+        player_expertise += 0.03;
+        break;
       }
     }
   }
@@ -231,7 +231,7 @@ double attack_t::miss_chance( int delta_level ) SC_CONST
     }
     else
     {
-    return 0.05 + delta_level * 0.005 - total_hit();
+      return 0.05 + delta_level * 0.005 - total_hit();
     }
   }
   else
@@ -304,11 +304,11 @@ double attack_t::crit_chance( int delta_level ) SC_CONST
   {
     if ( delta_level > 2 )
     {
-    chance -= ( 0.03 + delta_level * 0.006 );
+      chance -= ( 0.03 + delta_level * 0.006 );
     }
     else
     {
-    chance -= ( delta_level * 0.002 );
+      chance -= ( delta_level * 0.002 );
     }
   }
   else
