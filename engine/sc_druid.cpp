@@ -54,6 +54,7 @@ struct druid_t : public player_t
   buff_t* buffs_primal_madness_bear;
   buff_t* buffs_primal_madness_cat;
   buff_t* buffs_tigers_fury;
+  buff_t* buffs_tree_of_life;
 
   // Cooldowns
   cooldown_t* cooldowns_mangle_bear;
@@ -217,12 +218,12 @@ struct druid_t : public player_t
     talent_t* living_seed;
     talent_t* malfurions_gift; // NYI
     talent_t* master_shapeshifter;
-    talent_t* natural_shapeshifter; // NYI
+    talent_t* natural_shapeshifter;
     talent_t* natures_bounty; // NYI
     talent_t* natures_cure; // NYI
     talent_t* natures_swiftness;
     talent_t* natures_ward; // NYI
-    talent_t* naturalist; // NYI
+    talent_t* naturalist;
     talent_t* perseverance;
     talent_t* revitalize; // NYI
     talent_t* swift_rejuvenation; // NYI
@@ -420,13 +421,22 @@ struct druid_bear_attack_t : public attack_t
 
 struct druid_heal_t : public heal_t
 {
+  double additive_factors;
+
   druid_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t )
+    heal_t( n, player, id, t ), additive_factors( 0 )
   {
     dot_behavior      = DOT_REFRESH;
     may_crit          = true;
     tick_may_crit     = true;
     weapon_multiplier = 0;
+
+    druid_t* p = player -> cast_druid();
+
+    if ( p -> primary_tree() == TREE_RESTORATION )
+    {
+      additive_factors += p -> spells.gift_of_nature -> effect1().percent();
+    }
   }
 
   virtual void   consume_resource();
@@ -2105,7 +2115,7 @@ void druid_heal_t::consume_resource()
   }
 }
 
-// druid_spell_t::cost =====================================================
+// druid_heal_t::cost =======================================================
 
 double druid_heal_t::cost() SC_CONST
 {
@@ -2117,7 +2127,7 @@ double druid_heal_t::cost() SC_CONST
   return c;
 }
 
-// druid_heal_t::cost_reduction ===========================================
+// druid_heal_t::cost_reduction =============================================
 
 double druid_heal_t::cost_reduction() SC_CONST
 {
@@ -2127,7 +2137,7 @@ double druid_heal_t::cost_reduction() SC_CONST
   return cr;
 }
 
-// druid_heal_t::execute_time =============================================
+// druid_heal_t::execute_time ===============================================
 
 double druid_heal_t::execute_time() SC_CONST
 {
@@ -2138,7 +2148,7 @@ double druid_heal_t::execute_time() SC_CONST
   return heal_t::execute_time();
 }
 
-// druid_heal_t::haste ====================================================
+// druid_heal_t::haste ======================================================
 
 double druid_heal_t::haste() SC_CONST
 {
@@ -2157,10 +2167,7 @@ void druid_heal_t::player_buff()
   druid_t* p = player -> cast_druid();
   heal_t::player_buff();
 
-  if ( p -> primary_tree() == TREE_RESTORATION )
-  {
-    player_multiplier *= 1.0 + p -> spells.gift_of_nature -> effect1().percent();
-  }
+  player_multiplier *= 1.0 + additive_factors;
 
   // FIXME: If we're refreshing a hot, that doesn't count towards the count
   // eg: Only rejuv is up, refresh rejuv, rejuv doesn't get the bonus
@@ -2193,6 +2200,8 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t( "healing_touch", p, 5185 )
   {
     parse_options( NULL, options_str );
+
+    base_execute_time += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
   }
 
   virtual void execute()
@@ -2244,6 +2253,8 @@ struct lifebloom_t : public druid_heal_t
 
     may_crit = false;
 
+    additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
+
     bloom = new lifebloom_bloom_t( p );
     
     // This can be only cast on one target, unless Tree of Life is up
@@ -2280,6 +2291,8 @@ struct nourish_t : public druid_heal_t
     druid_heal_t( "nourish", p, 50464 )
   {
     parse_options( NULL, options_str );
+
+    base_execute_time += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
   }
 
   virtual void player_buff()
@@ -2307,7 +2320,8 @@ struct regrowth_t : public druid_heal_t
     druid_heal_t( "regrowth", p, 8936 )
   {
     parse_options( NULL, options_str );
-    // FIXME: Data is not being parsed automagically
+
+    additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
   }
 
   virtual void execute()
@@ -2321,6 +2335,16 @@ struct regrowth_t : public druid_heal_t
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
   }
+
+  virtual void player_buff()
+  {
+    druid_t* p = player -> cast_druid();
+
+    // The direct heal portion doesn't benefit from Genesis, so remove it and then add it back in
+    additive_factors -= p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
+    druid_heal_t::player_buff();
+    additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
+  }
 };
 
 // Rejuvenation =============================================================
@@ -2332,6 +2356,9 @@ struct rejuvenation_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
     may_crit = false;
+
+    additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
+                        p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE );
   }
 };
 
@@ -2418,6 +2445,8 @@ struct wild_growth_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     aoe = effect3().base_value(); // Heals 5 targets
+
+    additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
   }
 };
 
@@ -3677,6 +3706,15 @@ struct tree_of_life_t : public druid_spell_t
 
     parse_options( NULL, options_str );
   }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_spell_t::execute();
+
+    p -> buffs_tree_of_life -> trigger();
+  }
 };
 
 // Typhoon ==================================================================
@@ -4173,6 +4211,8 @@ void druid_t::init_buffs()
   buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
+  buffs_tree_of_life       = new buff_t( this, talents.tree_of_life, "tree_of_life" );
+  buffs_tree_of_life -> buff_duration += talents.natural_shapeshifter -> mod_additive( P_DURATION );
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );

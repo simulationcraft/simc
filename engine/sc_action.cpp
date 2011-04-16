@@ -132,7 +132,7 @@ void action_t::_init_action_t()
   marker                         = 0;
   target_str                     = "";
   label_str                      = "";
- 
+
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
   if ( ! player -> initialized )
@@ -152,14 +152,14 @@ void action_t::_init_action_t()
   dot      = player -> get_dot     ( name_str );
 
   stats = player -> get_stats( name_str, this );
-  
+
   id = spell_id();
-  tree = util_t::talent_tree(s_tree, player -> type );
+  tree = util_t::talent_tree( s_tree, player -> type );
 
   parse_data();
 
   const spell_data_t* spell = player -> dbc.spell( id );
-  
+
   if ( id && spell && ! spell -> is_level( player -> level ) && spell -> level() <= MAX_LEVEL )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
@@ -177,8 +177,8 @@ action_t::action_t( int               ty,
                     int               tr,
                     bool              sp ) :
   spell_id_t( p, n ),
-  sim( s_player->sim ), type( ty ), name_str( s_token ), 
-  player( s_player ), target( s_player -> sim -> target ), school( s ), resource( r ), 
+  sim( s_player->sim ), type( ty ), name_str( s_token ),
+  player( s_player ), target( s_player -> sim -> target ), school( s ), resource( r ),
   tree( tr ), special( sp )
 {
   _init_action_t();
@@ -186,17 +186,17 @@ action_t::action_t( int               ty,
 
 action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
   spell_id_t( p, name, sname ),
-  sim( s_player->sim ), type( ty ), name_str( s_token ), 
-  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ), 
+  sim( s_player->sim ), type( ty ), name_str( s_token ),
+  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
   _init_action_t();
 }
 
 action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
-  spell_id_t( s ), 
-  sim( s_player->sim ), type( ty ), name_str( s_token ), 
-  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ), 
+  spell_id_t( s ),
+  sim( s_player->sim ), type( ty ), name_str( s_token ),
+  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
   _init_action_t();
@@ -204,8 +204,8 @@ action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
 
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
   spell_id_t( p, name, id ),
-  sim( s_player->sim ), type( type ), name_str( s_token ), 
-  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ), 
+  sim( s_player->sim ), type( type ), name_str( s_token ),
+  player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
   _init_action_t();
@@ -244,7 +244,7 @@ void action_t::parse_data()
     else
       base_cost = spell -> cost();
 
-    for ( int i=1; i <= MAX_EFFECTS; i++)
+    for ( int i=1; i <= MAX_EFFECTS; i++ )
     {
       parse_effect_data( id, i );
     }
@@ -264,7 +264,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
   const spelleffect_data_t* effect = player -> dbc.effect( spell -> effect_id( effect_nr ) );
 
   assert( spell );
-  
+
   if ( ! effect )
   {
     sim -> errorf( "%s %s: parse_effect_data: no effect to parse.\n", player -> name(), name() );
@@ -283,7 +283,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
 
   case E_NORMALIZED_WEAPON_DMG:
     normalize_weapon_speed = true;
-  case E_WEAPON_DAMAGE:         
+  case E_WEAPON_DAMAGE:
     base_dd_min      = player -> dbc.effect_min( effect -> id(), player -> level );
     base_dd_max      = player -> dbc.effect_max( effect -> id(), player -> level );
     weapon = &( player -> main_hand_weapon );
@@ -304,7 +304,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
       base_td_init     = player -> dbc.effect_average( effect -> id(), player -> level );
       base_td          = base_td_init;
       base_tick_time   = effect -> period();
-      num_ticks        = (int) ( spell -> duration() / base_tick_time );
+      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
       if ( school == SCHOOL_PHYSICAL )
         school = stats -> school = SCHOOL_BLEED;
       break;
@@ -313,11 +313,11 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
       base_td_init     = player -> dbc.effect_min ( effect -> id(), player -> level );
       base_td          = base_td_init;
       base_tick_time   = effect -> period();
-      num_ticks        = (int) ( spell -> duration() / base_tick_time );
+      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
       break;
     case A_PERIODIC_TRIGGER_SPELL:
       base_tick_time   = effect -> period();
-      num_ticks        = (int) ( spell -> duration() / base_tick_time );
+      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
       break;
     case A_SCHOOL_ABSORB:
       direct_power_mod = effect -> coeff();
@@ -329,11 +329,11 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
       base_td_init     = player -> dbc.effect_min( effect -> id(), player -> level );
       base_td          = base_td_init;
       base_tick_time   = effect -> period();
-      num_ticks        = (int) ( spell -> duration() / base_tick_time );
+      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
       break;
     case A_ADD_FLAT_MODIFIER:
       switch ( effect -> misc_value1() )
-    case E_APPLY_AURA:
+      case E_APPLY_AURA:
       switch ( effect -> subtype() )
       {
       case P_CRIT:
@@ -353,10 +353,10 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
         break;
       }
       break;
-      default: break;
+    default: break;
     }
     break;
-    default: break;
+  default: break;
   }
 }
 
@@ -477,7 +477,7 @@ rank_t* action_t::init_rank( rank_t* rank_list,
       base_td      = base_td_init;
       base_cost    = rank -> cost;
 
-      if (id_override) id = id_override;
+      if ( id_override ) id = id_override;
 
       return rank;
     }
@@ -631,16 +631,16 @@ void action_t::target_debuff( player_t* t, int dmg_type )
     }
     else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() || t -> debuffs.ravage -> value() )
     {
-      target_multiplier *= 1.0 + std::max( 
-          std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
-                    t -> debuffs.brittle_bones         -> value() ),
-                    t -> debuffs.ravage                -> value() * 0.01);
-                                                
+      target_multiplier *= 1.0 + std::max(
+                                 std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
+                                           t -> debuffs.brittle_bones         -> value() ),
+                                           t -> debuffs.ravage                -> value() * 0.01 );
+
     }
   }
   else
   {
-    target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(), 
+    target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
                                  std::max( t -> debuffs.earth_and_moon     -> value(),
                                  std::max( t -> debuffs.ebon_plaguebringer -> value(),
                                            t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
@@ -662,7 +662,7 @@ void action_t::target_debuff( player_t* t, int dmg_type )
 
   if ( base_attack_power_multiplier > 0 )
   {
-    bool ranged = ( player -> position == POSITION_RANGED_FRONT || 
+    bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
                     player -> position == POSITION_RANGED_BACK );
 
     if ( ranged )
@@ -720,7 +720,7 @@ double action_t::armor() SC_CONST
 double action_t::resistance() SC_CONST
 {
   if ( ! may_resist ) return 0;
-  
+
   player_t* t = target;
   double resist=0;
 
@@ -822,7 +822,7 @@ double action_t::calculate_weapon_damage()
   double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
 
   double total_dmg = dmg + power_damage;
-    
+
   // OH penalty
   if ( weapon -> slot == SLOT_OFF_HAND )
     total_dmg *= 0.5;
@@ -885,7 +885,7 @@ double action_t::calculate_direct_damage()
 
   double base_direct_dmg = dmg;
   double weapon_dmg = 0;
-  
+
   dmg += base_dd_adder + player_dd_adder + target_dd_adder;
 
   if ( weapon_multiplier > 0 )
@@ -910,7 +910,7 @@ double action_t::calculate_direct_damage()
 
     double max_glance = 1.3 - 0.03 * delta_skill;
 
-    if ( max_glance > 0.99 ) 
+    if ( max_glance > 0.99 )
       max_glance = 0.99;
     else if ( max_glance < 0.2 )
       max_glance = 0.20;
@@ -977,8 +977,8 @@ void action_t::consume_resource()
 
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                   resource_consumed, util_t::resource_type_string( resource ), 
-		   name(), player -> resource_current[ resource] );
+                   resource_consumed, util_t::resource_type_string( resource ),
+                   name(), player -> resource_current[ resource] );
 
   stats -> consume_resource( resource_consumed );
 }
@@ -989,9 +989,9 @@ void action_t::execute()
 {
   assert( initialized );
 
-  if ( sim -> log && ! dual ) 
+  if ( sim -> log && ! dual )
   {
-    log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(), 
+    log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
                    player -> resource_current[ player -> primary_resource() ] );
   }
 
@@ -1040,7 +1040,7 @@ void action_t::tick()
   if ( tick_may_crit )
   {
     int delta_level = target -> level - player -> level;
-    
+
     if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
     {
       result = RESULT_CRIT;
@@ -1099,7 +1099,7 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
       dot -> recalculate_ready();
 
       if ( sim -> debug )
-        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)", 
+        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
                        player -> name(), dot -> ready, name(), dot -> name() );
     }
   }
@@ -1115,12 +1115,12 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 // action_t::assess_damage ==================================================
 
 void action_t::assess_damage( player_t* t,
-			      double dmg_amount,
-			      int    dmg_type, 
-			      int    dmg_result )
+                              double dmg_amount,
+                              int    dmg_type,
+                              int    dmg_result )
 {
   double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
-    
+
   if ( dmg_type == DMG_DIRECT )
   {
     if ( dmg_amount > 0 )
@@ -1146,12 +1146,12 @@ void action_t::assess_damage( player_t* t,
 
       if ( sim -> log )
       {
-	log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-		       player -> name(), name(),
-		       dot -> current_tick, dot -> num_ticks,
-		       t -> name(), dmg_adjusted,
-		       util_t::school_type_string( school ),
-		       util_t::result_type_string( result ) );
+        log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       dot -> current_tick, dot -> num_ticks,
+                       t -> name(), dmg_adjusted,
+                       util_t::school_type_string( school ),
+                       util_t::result_type_string( result ) );
       }
       if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
     }
@@ -1334,7 +1334,7 @@ void action_t::extend_duration_seconds( double extra_seconds )
 {
   // Make sure this DoT is still ticking......
   assert( dot -> tick_event );
-  
+
   // Treat extra_ticks as 'seconds added' instead of 'ticks added'
   // Duration left needs to be calculated with old haste for tick_time()
   // First we need the number of ticks remaining after the next one =>
@@ -1348,7 +1348,7 @@ void action_t::extend_duration_seconds( double extra_seconds )
 
   // Add the added seconds
   duration_left += extra_seconds;
-  
+
   // Switch to new haste values and calculate resulting ticks
   // ONLY updates haste, modifiers/spellpower are left untouched.
   player_haste = haste();
@@ -1359,15 +1359,15 @@ void action_t::extend_duration_seconds( double extra_seconds )
   int new_remaining_ticks = hasted_num_ticks( duration_left );
   dot -> num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
-  if ( sim -> debug ) 
+  if ( sim -> debug )
   {
-    log_t::output( sim, "%s extends duration of %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d", 
-                  player -> name(), name(), extra_seconds, 
-                  old_haste_factor, (1.0 / player_haste), 
-                  old_num_ticks, dot -> num_ticks,
-                  old_remaining_ticks, new_remaining_ticks );
+    log_t::output( sim, "%s extends duration of %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
+                   player -> name(), name(), extra_seconds,
+                   old_haste_factor, ( 1.0 / player_haste ),
+                   old_num_ticks, dot -> num_ticks,
+                   old_remaining_ticks, new_remaining_ticks );
   }
-  else if ( sim -> log ) 
+  else if ( sim -> log )
   {
     log_t::output( sim, "%s extends duration of %s by %.1f second(s).", player -> name(), name(), extra_seconds );
   }
@@ -1389,8 +1389,8 @@ void action_t::update_ready()
   {
     if( result_is_miss() )
     {
-      if ( sim -> debug ) 
-        log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)", 
+      if ( sim -> debug )
+        log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), sim -> reaction_time, name(), dot -> name() );
 
       dot -> miss_time = sim -> current_time;
@@ -1518,7 +1518,7 @@ void action_t::init()
     }
   }
 
-  if ( ! if_expr_str.empty() ) 
+  if ( ! if_expr_str.empty() )
   {
     if_expr = action_expr_t::parse( this, if_expr_str );
   }
@@ -1576,12 +1576,12 @@ void action_t::interrupt_action()
 
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this )
-    {
+  {
     if ( dot -> ticking ) last_tick();
     player -> channeling = 0;
     event_t::cancel( dot -> tick_event );
     dot -> reset();
-    }
+  }
 
   event_t::cancel( execute_event );
 
@@ -1597,7 +1597,7 @@ void action_t::check_talent( int talent_rank )
   if ( player -> is_pet() )
   {
     pet_t* p = player -> cast_pet();
-    sim -> errorf( "Player %s has pet %s attempting to execute action %s without the required talent.\n", 
+    sim -> errorf( "Player %s has pet %s attempting to execute action %s without the required talent.\n",
                    p -> owner -> name(), p -> name(), name() );
   }
   else
@@ -1614,7 +1614,7 @@ void action_t::check_spec( int necessary_spec )
 {
   if ( player -> primary_tree() != necessary_spec )
   {
-    sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n", 
+    sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n",
                    player -> name(), name(), util_t::talent_tree_string( necessary_spec ) );
 
     background = true; // prevent action from being executed
@@ -1627,7 +1627,7 @@ void action_t::check_min_level( int action_level )
 {
   if ( action_level <= player -> level ) return;
 
-  sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n", 
+  sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
                  player -> name(), name(), player -> level, action_level );
 
   background = true; // prevent action from being executed
@@ -1696,7 +1696,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t* a ) : action_expr_t( a, "tick_time", TOK_NUM ) {}
-          virtual int evaluate() { result_num = ( action -> dot -> ticking ) ? action -> dot -> action -> tick_time() : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> dot -> ticking ) ? action -> dot -> action -> tick_time() : 0; return TOK_NUM; }
     };
     return new tick_time_expr_t( this );
   }
@@ -1714,7 +1714,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct travel_time_expr_t : public action_expr_t
     {
       travel_time_expr_t( action_t* a ) : action_expr_t( a, "travel_time", TOK_NUM ) {}
-    virtual int evaluate() { result_num = action -> travel_time(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> travel_time(); return TOK_NUM; }
     };
     return new travel_time_expr_t( this );
   }
@@ -1732,17 +1732,18 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct miss_react_expr_t : public action_expr_t
     {
       miss_react_expr_t( action_t* a ) : action_expr_t( a, "miss_react", TOK_NUM ) {}
-      virtual int evaluate() { 
-        if ( action -> dot -> miss_time == -1 
-          || action -> sim -> current_time >= action -> dot -> miss_time + action -> sim -> reaction_time )
+      virtual int evaluate()
+      {
+        if ( action -> dot -> miss_time == -1 ||
+             action -> sim -> current_time >= action -> dot -> miss_time + action -> sim -> reaction_time )
         {
           result_num = 1;
         }
         else
         {
-          result_num = 0; 
+          result_num = 0;
         }
-        return TOK_NUM; 
+        return TOK_NUM;
       }
     };
     return new miss_react_expr_t( this );
@@ -1752,14 +1753,14 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   int num_splits = util_t::string_split( splits, name_str, "." );
 
   if ( num_splits == 3 )
-   {
-     if ( splits[ 0 ] == "debuff" )
-     {
-       buff_t* buff = buff_t::find( target, splits[ 1 ] );
-       if ( ! buff ) return 0;
-       return buff -> create_expression( this, splits[ 2 ] );
-     }
-   }
+  {
+    if ( splits[ 0 ] == "debuff" )
+    {
+      buff_t* buff = buff_t::find( target, splits[ 1 ] );
+      if ( ! buff ) return 0;
+      return buff -> create_expression( this, splits[ 2 ] );
+    }
+  }
 
   return player -> create_expression( this, name_str );
 }
@@ -1810,6 +1811,6 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
 
   double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
 
-  return (int) ceil( ( d / t ) - 0.5 );
+  return ( int ) ceil( ( d / t ) - 0.5 );
 }
 
