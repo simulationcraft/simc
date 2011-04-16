@@ -95,6 +95,7 @@ struct druid_t : public player_t
     glyph_t* berserk;
     glyph_t* ferocious_bite;
     glyph_t* focus;
+    glyph_t* healing_touch;
     glyph_t* innervate;
     glyph_t* insect_swarm;
     glyph_t* lacerate;
@@ -115,6 +116,7 @@ struct druid_t : public player_t
     glyph_t* swiftmend;
     glyph_t* tigers_fury;
     glyph_t* typhoon;
+    glyph_t* wild_growth;
     glyph_t* wrath;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
@@ -2271,23 +2273,34 @@ void druid_heal_t::schedule_execute()
 
 struct healing_touch_t : public druid_heal_t
 {
+  cooldown_t* ns_cd;
+
   healing_touch_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "healing_touch", p, 5185 )
+    druid_heal_t( "healing_touch", p, 5185 ), ns_cd( 0 )
   {
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
     base_execute_time  += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+
+    ns_cd = p -> get_cooldown( "natures_swiftness" );
   }
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
+
     druid_heal_t::execute();
 
     trigger_empowered_touch( this );
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
+
+    if ( p -> glyphs.healing_touch -> enabled() )
+    {
+      ns_cd -> ready -= p -> glyphs.healing_touch -> effect1().base_value();
+    }
   }
 };
 
@@ -2596,7 +2609,7 @@ struct wild_growth_t : public druid_heal_t
 
     parse_options( NULL, options_str );
 
-    aoe = effect3().base_value(); // Heals 5 targets
+    aoe = effect3().base_value() + ( int ) p -> glyphs.wild_growth -> mod_additive( P_EFFECT_3 ); // Heals 5 targets
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
   }
@@ -2611,7 +2624,7 @@ struct wild_growth_t : public druid_heal_t
     druid_heal_t::execute();
 
     // Reset AoE
-    aoe = effect3().base_value();
+    aoe = effect3().base_value() + ( int ) p -> glyphs.wild_growth -> mod_additive( P_EFFECT_3 );
   }
 };
 
@@ -4293,6 +4306,7 @@ void druid_t::init_spells()
   glyphs.berserk          = find_glyph( "Glyph of Berserk" );
   glyphs.ferocious_bite   = find_glyph( "Glyph of Ferocious Bite" );
   glyphs.focus            = find_glyph( "Glyph of Focus" );
+  glyphs.healing_touch    = find_glyph( "Glyph of Healing Touch" );
   glyphs.innervate        = find_glyph( "Glyph of Innervate" );
   glyphs.insect_swarm     = find_glyph( "Glyph of Insect Swarm" );
   glyphs.lacerate         = find_glyph( "Glyph of Lacerate" );
@@ -4313,6 +4327,7 @@ void druid_t::init_spells()
   glyphs.swiftmend        = find_glyph( "Glyph of Swiftmend" );
   glyphs.tigers_fury      = find_glyph( "Glyph of Tiger's Fury" );
   glyphs.typhoon          = find_glyph( "Glyph of Typhoon" );
+  glyphs.wild_growth      = find_glyph( "Glyph of Wild Growth" );
   glyphs.wrath            = find_glyph( "Glyph of Wrath" );
 
   // Tier Bonuses
