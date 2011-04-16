@@ -134,13 +134,13 @@ struct druid_t : public player_t
   struct spells_t
   {
     spell_data_t* aggression;
-    spell_data_t* gift_of_nature; // NYI
-    spell_data_t* meditation; // NYI
+    spell_data_t* gift_of_nature;
+    spell_data_t* meditation;
     spell_data_t* moonfury;
     spell_data_t* primal_madness_cat;
     spell_data_t* razor_claws;
     spell_data_t* savage_defender; // NYI
-    spell_data_t* symbiosis; // NYI
+    spell_data_t* symbiosis;
     spell_data_t* total_eclipse;
     spell_data_t* vengeance;
 
@@ -329,8 +329,8 @@ struct druid_t : public player_t
   int hot_counter()
   {
     int hots = 0;
-    if ( dots_rejuvenation -> ticking ) hots++;
     if ( dots_regrowth -> ticking     ) hots++;
+    if ( dots_rejuvenation -> ticking ) hots++;
     if ( dots_lifebloom -> ticking    ) hots++;
     if ( dots_wild_growth -> ticking  ) hots++;
     return hots;
@@ -434,6 +434,7 @@ struct druid_heal_t : public heal_t
   virtual double cost_reduction() SC_CONST;
   virtual double execute_time() SC_CONST;
   virtual double haste() SC_CONST;
+  virtual void   player_buff();
   virtual void   schedule_execute();
 };
 
@@ -2149,6 +2150,27 @@ double druid_heal_t::haste() SC_CONST
   return h;
 }
 
+// druid_heal_t::player_buff ================================================
+
+void druid_heal_t::player_buff()
+{
+  druid_t* p = player -> cast_druid();
+  heal_t::player_buff();
+
+  if ( p -> primary_tree() == TREE_RESTORATION )
+  {
+    player_multiplier *= 1.0 + p -> spells.gift_of_nature -> effect1().percent();
+  }
+
+  // FIXME: If we're refreshing a hot, that doesn't count towards the count
+  // eg: Only rejuv is up, refresh rejuv, rejuv doesn't get the bonus
+  // If regrowth is up and we refresh rejuv, we get the bonus
+  if ( p -> primary_tree() == TREE_RESTORATION && p -> hot_counter() )
+  {
+    player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
+  }
+}
+
 // druid_heal_t::schedule_execute =========================================
 
 void druid_heal_t::schedule_execute()
@@ -2347,11 +2369,6 @@ struct swiftmend_t : public druid_heal_t
     {
       p -> dots_rejuvenation -> action -> cancel();
     }
-    else
-    {
-      // should never get here
-      assert( 0 );
-    }
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
@@ -2395,6 +2412,8 @@ struct wild_growth_t : public druid_heal_t
     check_talent( p -> talents.tree_of_life -> ok() );
 
     parse_options( NULL, options_str );
+
+    aoe = effect3().base_value(); // Heals 5 targets
   }
 };
 
@@ -4111,20 +4130,9 @@ void druid_t::init_base()
   // Furor: +5/10/15% max mana
   resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect2().percent();
   mana_per_intellect             *= 1.0 + talents.furor -> effect2().percent();
-
-  switch ( primary_tree() )
-  {
-  case TREE_BALANCE:
-    break;
-  case TREE_RESTORATION:
-    // Meditation for choosing resto
-    mana_regen_while_casting = 0.50;
-    break;
-  case TREE_FERAL:
-    break;
-  default:
-    break;
-  }
+  
+  if ( primary_tree() == TREE_RESTORATION )
+    mana_regen_while_casting = spells.meditation -> effect1().percent();
 
   base_gcd = 1.5;
 }

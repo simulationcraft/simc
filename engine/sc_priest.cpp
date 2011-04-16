@@ -4714,7 +4714,6 @@ void priest_t::regen( double periodicity )
   player_t::regen( periodicity );
 }
 
-
 // priest_t::create_expression =================================================
 
 action_expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )

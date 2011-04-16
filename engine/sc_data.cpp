@@ -12,7 +12,7 @@ bool spell_data_t::is_used() SC_CONST
 
 void spell_data_t::set_used( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 ); 
+  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 );
   _flags |= value ? 0x01 : 0x00;
 }
 
@@ -24,7 +24,7 @@ bool spell_data_t::is_enabled() SC_CONST
 
 void spell_data_t::set_enabled( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 ); 
+  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 );
   _flags |= value ? 0x02 : 0x00;
 }
 
@@ -109,18 +109,18 @@ player_type spell_data_t::scaling_class() SC_CONST
 {
   switch ( _scaling_type )
   {
-    case -1: return PLAYER_SPECIAL_SCALE;
-    case 1:  return WARRIOR;
-    case 2:  return PALADIN;
-    case 3:  return HUNTER;
-    case 4:  return ROGUE;
-    case 5:  return PRIEST;
-    case 6:  return DEATH_KNIGHT;
-    case 7:  return SHAMAN;
-    case 8:  return MAGE;
-    case 9:  return WARLOCK;
-    case 11: return DRUID;
-    default: break;
+  case -1: return PLAYER_SPECIAL_SCALE;
+  case 1:  return WARRIOR;
+  case 2:  return PALADIN;
+  case 3:  return HUNTER;
+  case 4:  return ROGUE;
+  case 5:  return PRIEST;
+  case 6:  return DEATH_KNIGHT;
+  case 7:  return SHAMAN;
+  case 8:  return MAGE;
+  case 9:  return WARLOCK;
+  case 11: return DRUID;
+  default: break;
   }
   return PLAYER_NONE;
 }
@@ -165,7 +165,7 @@ double spell_data_t::cost() SC_CONST
   double divisor = 1.0;
 
   switch ( _power_type )
-  { 
+  {
   case POWER_MANA:        divisor = 100.0; break;
   case POWER_RAGE:        divisor =  10.0; break;
   case POWER_RUNIC_POWER: divisor =  10.0; break;
@@ -215,7 +215,7 @@ double spell_data_t::cast_time( uint32_t level ) SC_CONST
 
   if ( level >= ( uint32_t ) div_cast )
     return max_cast / 1000.0;
-  
+
   return ( 1.0 * min_cast + ( 1.0 * max_cast - min_cast ) * ( level - 1 ) / ( 1.0 * div_cast - 1 ) ) / 1000.0;
 }
 
@@ -251,12 +251,12 @@ const char* spell_data_t::tooltip() SC_CONST
 
 double spell_data_t::scaling_multiplier() SC_CONST
 {
- return _c_scaling;
+  return _c_scaling;
 }
 
 double spell_data_t::extra_coeff() SC_CONST
 {
- return _extra_coeff;
+  return _extra_coeff;
 }
 
 unsigned spell_data_t::scaling_threshold() SC_CONST
@@ -271,7 +271,7 @@ bool spelleffect_data_t::is_used() SC_CONST
 
 void spelleffect_data_t::set_used( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 ); 
+  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 );
   _flags |= value ? 0x01 : 0x00;
 }
 
@@ -282,7 +282,7 @@ bool spelleffect_data_t::is_enabled() SC_CONST
 
 void spelleffect_data_t::set_enabled( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 ); 
+  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 );
   _flags |= value ? 0x02 : 0x00;
 }
 
@@ -386,7 +386,7 @@ bool talent_data_t::is_used() SC_CONST
 
 void talent_data_t::set_used( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 ); 
+  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 );
   _flags |= value ? 0x01 : 0x00;
 }
 
@@ -397,7 +397,7 @@ bool talent_data_t::is_enabled() SC_CONST
 
 void talent_data_t::set_enabled( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 ); 
+  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 );
   _flags |= value ? 0x00 : 0x02;
 }
 
