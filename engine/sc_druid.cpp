@@ -98,17 +98,21 @@ struct druid_t : public player_t
     glyph_t* innervate;
     glyph_t* insect_swarm;
     glyph_t* lacerate;
+    glyph_t* lifebloom;
     glyph_t* mangle;
     glyph_t* mark_of_the_wild;
     glyph_t* maul;
     glyph_t* monsoon;
     glyph_t* moonfire;
+    glyph_t* regrowth;
+    glyph_t* rejuvenation;
     glyph_t* rip;
     glyph_t* savage_roar;
     glyph_t* shred;
     glyph_t* starfall;
     glyph_t* starfire;
     glyph_t* starsurge;
+    glyph_t* swiftmend;
     glyph_t* tigers_fury;
     glyph_t* typhoon;
     glyph_t* wrath;
@@ -2306,6 +2310,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     base_dd_max        = player -> dbc.effect_max( damage_spell -> effect2().id(), player -> level );
     school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
 
+    base_crit          += p -> glyphs.lifebloom -> mod_additive( P_CRIT );
     base_dd_multiplier *= 1.0 + p -> talents.gift_of_the_earthmother -> effect1().percent();
   }
 
@@ -2327,7 +2332,8 @@ struct lifebloom_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
 
-    may_crit = false;
+    base_crit += p -> glyphs.lifebloom -> mod_additive( P_CRIT );
+    may_crit   = false;
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
 
@@ -2431,6 +2437,14 @@ struct regrowth_t : public druid_heal_t
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
+
+    if ( p -> glyphs.regrowth -> enabled() )
+    {
+      if ( target -> health_percentage() <= p -> glyphs.regrowth ->effect1().percent() && p -> dots_regrowth -> ticking )
+      {
+        p -> dots_regrowth -> action -> refresh_duration();
+      }
+    }
   }
 
   virtual double execute_time() SC_CONST
@@ -2468,7 +2482,8 @@ struct rejuvenation_t : public druid_heal_t
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
-                        p -> talents.improved_rejuvenation -> mod_additive( P_TICK_DAMAGE );
+                        p -> talents.improved_rejuvenation -> mod_additive( P_TICK_DAMAGE ) + 
+                        p -> glyphs.rejuvenation -> mod_additive( P_TICK_DAMAGE );
   }
 
   virtual void execute()
@@ -2511,25 +2526,28 @@ struct swiftmend_t : public druid_heal_t
 
     druid_t* p = player -> cast_druid();
 
-    // Will consume the shortest of the two HoTs if both are up
-    if ( p -> dots_regrowth -> ticking && p -> dots_rejuvenation -> ticking )
+    if ( ! p -> glyphs.swiftmend -> enabled() )
     {
-      if ( p -> dots_regrowth -> remains() > p -> dots_rejuvenation -> remains() )
+      // Will consume the shortest of the two HoTs if both are up
+      if ( p -> dots_regrowth -> ticking && p -> dots_rejuvenation -> ticking )
       {
-        p -> dots_rejuvenation -> action -> cancel();
+        if ( p -> dots_regrowth -> remains() > p -> dots_rejuvenation -> remains() )
+        {
+          p -> dots_rejuvenation -> action -> cancel();
+        }
+        else
+        {
+          p -> dots_regrowth -> action -> cancel();
+        }
       }
-      else
+      else if ( p -> dots_regrowth -> ticking )
       {
         p -> dots_regrowth -> action -> cancel();
       }
-    }
-    else if ( p -> dots_regrowth -> ticking )
-    {
-      p -> dots_regrowth -> action -> cancel();
-    }
-    else if ( p -> dots_rejuvenation -> ticking )
-    {
-      p -> dots_rejuvenation -> action -> cancel();
+      else if ( p -> dots_rejuvenation -> ticking )
+      {
+        p -> dots_rejuvenation -> action -> cancel();
+      }
     }
 
     if ( result == RESULT_CRIT )
@@ -2542,6 +2560,7 @@ struct swiftmend_t : public druid_heal_t
   {
     druid_t* p = player -> cast_druid();
 
+    // Note: with the glyph you can use other people's regrowth/rejuv
     if ( ! ( p -> dots_regrowth -> ticking || p -> dots_rejuvenation -> ticking ) )
       return false;
 
@@ -4277,17 +4296,21 @@ void druid_t::init_spells()
   glyphs.innervate        = find_glyph( "Glyph of Innervate" );
   glyphs.insect_swarm     = find_glyph( "Glyph of Insect Swarm" );
   glyphs.lacerate         = find_glyph( "Glyph of Lacerate" );
+  glyphs.lifebloom        = find_glyph( "Glyph of Lifebloom" );
   glyphs.mangle           = find_glyph( "Glyph of Mangle" );
   glyphs.mark_of_the_wild = find_glyph( "Glyph of Mark of the Wild" );
   glyphs.maul             = find_glyph( "Glyph of Maul" );
   glyphs.monsoon          = find_glyph( "Glyph of Monsoon" );
   glyphs.moonfire         = find_glyph( "Glyph of Moonfire" );
+  glyphs.regrowth         = find_glyph( "Glyph of Regrowth" );
+  glyphs.rejuvenation     = find_glyph( "Glyph of Rejuvenation" );
   glyphs.rip              = find_glyph( "Glyph of Rip" );
   glyphs.savage_roar      = find_glyph( "Glyph of Savage Roar" );
   glyphs.shred            = find_glyph( "Glyph of Shred" );
   glyphs.starfall         = find_glyph( "Glyph of Starfall" );
   glyphs.starfire         = find_glyph( "Glyph of Starfire" );
   glyphs.starsurge        = find_glyph( "Glyph of Starsurge" );
+  glyphs.swiftmend        = find_glyph( "Glyph of Swiftmend" );
   glyphs.tigers_fury      = find_glyph( "Glyph of Tiger's Fury" );
   glyphs.typhoon          = find_glyph( "Glyph of Typhoon" );
   glyphs.wrath            = find_glyph( "Glyph of Wrath" );

@@ -62,28 +62,28 @@ void attack_t::_init_attack_t()
 }
 
 attack_t::attack_t( const active_spell_t& s, int t, bool special ) :
-                    action_t( ACTION_ATTACK, s, t, special )
+  action_t( ACTION_ATTACK, s, t, special )
 {
   _init_attack_t();
 }
 
 attack_t::attack_t( const char* n, player_t* p, int resource, const school_type school, int tree, bool special ) :
-                    action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
-                    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   _init_attack_t();
 }
 
 attack_t::attack_t( const char* name, const char* sname, player_t* p, int t, bool special ) :
-                    action_t( ACTION_ATTACK, name, sname, p, t, special ),
-                    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  action_t( ACTION_ATTACK, name, sname, p, t, special ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   _init_attack_t();
 }
 
 attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, bool special ) :
-                    action_t( ACTION_ATTACK, name, id, p, t, special ),
-                    base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  action_t( ACTION_ATTACK, name, id, p, t, special ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   _init_attack_t();
 }
