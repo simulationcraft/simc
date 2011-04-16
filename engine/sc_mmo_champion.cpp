@@ -313,7 +313,7 @@ static bool parse_item_stats( item_t&     item,
 // parse_item_stats =========================================================
 
 static bool parse_item_reforge( item_t&     item,
-                              xml_node_t* node )
+                                xml_node_t* node )
 {
   item.armory_reforge_str.clear();
 
@@ -339,7 +339,7 @@ static bool parse_item_name( item_t&            item,
   if ( pos != std::string::npos ) s.erase( pos );
 
   // The MMO-Champion names often have numbers embedded in the name.....
-  for ( int i=0; i < (int) s.size(); i++ )
+  for ( int i=0; i < ( int ) s.size(); i++ )
   {
     if ( isdigit( s[ i ] ) )
     {
@@ -399,18 +399,18 @@ static bool parse_item_level( item_t&     item,
                               xml_node_t* node )
 {
   item.armory_ilevel_str.clear();
-  
+
   std::string info_str;
   if ( ! get_tti_value( info_str, node, "tti-level" ) ) return false;
-  
+
   size_t p_lvl = info_str.rfind( "Item Level " );
-  
+
   if ( p_lvl == info_str.npos ) return false;
-  
+
   p_lvl += strlen( "Item Level " );
-  
+
   item.armory_ilevel_str = info_str.substr( p_lvl );
-  
+
   return true;
 }
 
@@ -420,12 +420,12 @@ static bool parse_quality( item_t&     item,
                            xml_node_t* node )
 {
   item.armory_quality_str.clear();
-  
+
   std::string info_str;
   if ( ! get_tti_value( info_str, node, "tti-quality" ) ) return false;
-  
+
   item.armory_quality_str = tolower( info_str );
-  
+
   return true;
 }
 
@@ -445,7 +445,7 @@ int mmo_champion_t::parse_gem( item_t&            item,
   if ( ! node )
   {
     if ( ! cache_only )
-      item.sim -> errorf( "Player %s unable to download gem id %s from mmo-champion.\n", 
+      item.sim -> errorf( "Player %s unable to download gem id %s from mmo-champion.\n",
                           item.player -> name(), gem_id.c_str() );
     return GEM_NONE;
   }
@@ -674,7 +674,7 @@ bool mmo_champion_t::download_slot( item_t&            item,
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
     return false;
   }
-  
+
   return true;
 }
 

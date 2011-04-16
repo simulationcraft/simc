@@ -10,8 +10,9 @@ bool my_isdigit( char c );
 
 // pred_ci =================================================================
 
-static bool pred_ci ( char a, char b ) {
-    return tolower( a ) == tolower( b );
+static bool pred_ci ( char a, char b )
+{
+  return tolower( a ) == tolower( b );
 }
 
 // compare_ci ==============================================================
@@ -187,9 +188,9 @@ const char* util_t::role_type_string( int role )
 
 role_type util_t::parse_role_type( const std::string& name )
 {
-  for ( int i=(int) ROLE_NONE; i < (int)ROLE_MAX; i++ )
+  for ( int i=( int ) ROLE_NONE; i < ( int )ROLE_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::role_type_string( i ) ) )
-      return (role_type) i;
+      return ( role_type ) i;
 
   return ROLE_HYBRID;
 }
@@ -225,9 +226,9 @@ const char* util_t::race_type_string( int type )
 
 race_type util_t::parse_race_type( const std::string& name )
 {
-  for ( int i=(int) RACE_NONE; i < (int)RACE_MAX; i++ )
+  for ( int i=( int ) RACE_NONE; i < ( int )RACE_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::race_type_string( i ) ) )
-      return (race_type) i;
+      return ( race_type ) i;
 
   return RACE_NONE;
 }
@@ -313,9 +314,9 @@ int util_t::translate_class_str( std::string& s )
 
 player_type util_t::parse_player_type( const std::string& name )
 {
-  for ( int i=(int) PLAYER_NONE; i < (int) PLAYER_MAX; i++ )
+  for ( int i=( int ) PLAYER_NONE; i < ( int ) PLAYER_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
-      return (player_type) i;
+      return ( player_type ) i;
 
   return PLAYER_NONE;
 }
@@ -390,9 +391,9 @@ const char* util_t::pet_type_string( int type )
 
 pet_type_t util_t::parse_pet_type( const std::string& name )
 {
-  for ( int i=(int)PET_NONE; i < (int)PET_MAX; i++ )
+  for ( int i=( int )PET_NONE; i < ( int )PET_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::pet_type_string( i ) ) )
-      return (pet_type_t)i;
+      return ( pet_type_t )i;
 
   return PET_NONE;
 }
@@ -642,74 +643,74 @@ int util_t::talent_tree( int tree, player_type ptype )
   switch ( ptype )
   {
   case DEATH_KNIGHT:
-  switch ( tree )
-  {
-  case DEATH_KNIGHT_BLOOD:    return TREE_BLOOD;
-  case DEATH_KNIGHT_FROST:    return TREE_FROST;
-  case DEATH_KNIGHT_UNHOLY:   return TREE_UNHOLY;
-  }
+    switch ( tree )
+    {
+    case DEATH_KNIGHT_BLOOD:    return TREE_BLOOD;
+    case DEATH_KNIGHT_FROST:    return TREE_FROST;
+    case DEATH_KNIGHT_UNHOLY:   return TREE_UNHOLY;
+    }
   case DRUID:
-  switch ( tree )
-  {
-  case DRUID_BALANCE:         return TREE_BALANCE;
-  case DRUID_FERAL:           return TREE_FERAL;
-  case DRUID_RESTORATION:     return TREE_RESTORATION;
-  }
+    switch ( tree )
+    {
+    case DRUID_BALANCE:         return TREE_BALANCE;
+    case DRUID_FERAL:           return TREE_FERAL;
+    case DRUID_RESTORATION:     return TREE_RESTORATION;
+    }
   case HUNTER:
-  switch ( tree )
-  {
-  case HUNTER_BEAST_MASTERY:  return TREE_BEAST_MASTERY;
-  case HUNTER_MARKSMANSHIP:   return TREE_MARKSMANSHIP;
-  case HUNTER_SURVIVAL:       return TREE_SURVIVAL;
-  }
+    switch ( tree )
+    {
+    case HUNTER_BEAST_MASTERY:  return TREE_BEAST_MASTERY;
+    case HUNTER_MARKSMANSHIP:   return TREE_MARKSMANSHIP;
+    case HUNTER_SURVIVAL:       return TREE_SURVIVAL;
+    }
   case MAGE:
-  switch ( tree )
-  {
-  case MAGE_ARCANE:           return TREE_ARCANE;
-  case MAGE_FIRE:             return TREE_FIRE;
-  case MAGE_FROST:            return TREE_FROST;
-  }
+    switch ( tree )
+    {
+    case MAGE_ARCANE:           return TREE_ARCANE;
+    case MAGE_FIRE:             return TREE_FIRE;
+    case MAGE_FROST:            return TREE_FROST;
+    }
   case PALADIN:
-  switch ( tree )
-  {
-  case PALADIN_HOLY:          return TREE_HOLY;
-  case PALADIN_PROTECTION:    return TREE_PROTECTION;
-  case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
-  }
+    switch ( tree )
+    {
+    case PALADIN_HOLY:          return TREE_HOLY;
+    case PALADIN_PROTECTION:    return TREE_PROTECTION;
+    case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
+    }
   case PRIEST:
-  switch ( tree )
-  {
-  case PRIEST_DISCIPLINE:     return TREE_DISCIPLINE;
-  case PRIEST_HOLY:           return TREE_HOLY;
-  case PRIEST_SHADOW:         return TREE_SHADOW;
-  }
+    switch ( tree )
+    {
+    case PRIEST_DISCIPLINE:     return TREE_DISCIPLINE;
+    case PRIEST_HOLY:           return TREE_HOLY;
+    case PRIEST_SHADOW:         return TREE_SHADOW;
+    }
   case ROGUE:
-  switch ( tree )
-  {
-  case ROGUE_ASSASSINATION:   return TREE_ASSASSINATION;
-  case ROGUE_COMBAT:          return TREE_COMBAT;
-  case ROGUE_SUBTLETY:        return TREE_SUBTLETY;
-  }
+    switch ( tree )
+    {
+    case ROGUE_ASSASSINATION:   return TREE_ASSASSINATION;
+    case ROGUE_COMBAT:          return TREE_COMBAT;
+    case ROGUE_SUBTLETY:        return TREE_SUBTLETY;
+    }
   case SHAMAN:
-  switch ( tree )
-  {
-  case SHAMAN_ELEMENTAL:      return TREE_ELEMENTAL;
-  case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
-  }
+    switch ( tree )
+    {
+    case SHAMAN_ELEMENTAL:      return TREE_ELEMENTAL;
+    case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
+    }
   case WARLOCK:
-  switch ( tree )
-  {
-  case WARLOCK_AFFLICTION:    return TREE_AFFLICTION;
-  case WARLOCK_DEMONOLOGY:    return TREE_DEMONOLOGY;
-  case WARLOCK_DESTRUCTION:   return TREE_DESTRUCTION;
-  }
+    switch ( tree )
+    {
+    case WARLOCK_AFFLICTION:    return TREE_AFFLICTION;
+    case WARLOCK_DEMONOLOGY:    return TREE_DEMONOLOGY;
+    case WARLOCK_DESTRUCTION:   return TREE_DESTRUCTION;
+    }
   case WARRIOR:
-  switch ( tree )
-  {
-  case WARRIOR_ARMS:          return TREE_ARMS;
-  case WARRIOR_FURY:          return TREE_FURY;
-  case WARRIOR_PROTECTION:    return TREE_PROTECTION;
-  }
+    switch ( tree )
+    {
+    case WARRIOR_ARMS:          return TREE_ARMS;
+    case WARRIOR_FURY:          return TREE_FURY;
+    case WARRIOR_PROTECTION:    return TREE_PROTECTION;
+    }
   default:
     break;
   }
@@ -720,7 +721,7 @@ int util_t::talent_tree( int tree, player_type ptype )
 
 const char* util_t::talent_tree_string( int tree, bool armory_format )
 {
-  if ( armory_format)
+  if ( armory_format )
   {
     switch ( tree )
     {
@@ -887,7 +888,7 @@ const char* util_t::food_type_string( int food )
   case FOOD_BEER_BASTED_CROCOLISK:    return "beer_basted_crocolisk";
   case FOOD_BLACKBELLY_SUSHI:         return "blackbelly_sushi";
   case FOOD_BLACKENED_BASILISK:       return "blackened_basilisk";
-  case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin"; 
+  case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin";
   case FOOD_CROCOLISK_AU_GRATIN:      return "crocolisk_au_gratin";
   case FOOD_CRUNCHY_SERPENT:          return "crunchy_serpent";
   case FOOD_DELICIOUS_SAGEFISH_TAIL:  return "delicious_sagefish_tail";
@@ -974,8 +975,8 @@ const char* util_t::set_bonus_string( set_type type )
 set_type util_t::parse_set_bonus( const std::string& name )
 {
   for ( int i=0; i < SET_MAX; i++ )
-    if ( util_t::str_compare_ci( name, util_t::set_bonus_string( (set_type) i ) ) )
-      return (set_type) i;
+    if ( util_t::str_compare_ci( name, util_t::set_bonus_string( ( set_type ) i ) ) )
+      return ( set_type ) i;
 
   return SET_NONE;
 }
@@ -1012,17 +1013,17 @@ const char* util_t::slot_type_string( int slot )
 const char* util_t::armor_type_string( player_type ptype, int slot_type )
 {
   bool has_armor_type = false;
-  
+
   switch ( slot_type )
   {
-  case SLOT_HEAD:   
+  case SLOT_HEAD:
   case SLOT_SHOULDERS:
-  case SLOT_CHEST:    
-  case SLOT_WAIST:    
-  case SLOT_LEGS:     
-  case SLOT_FEET:      
-  case SLOT_WRISTS:   
-  case SLOT_HANDS:     
+  case SLOT_CHEST:
+  case SLOT_WAIST:
+  case SLOT_LEGS:
+  case SLOT_FEET:
+  case SLOT_WRISTS:
+  case SLOT_HANDS:
     has_armor_type = true;
     break;
   default:
@@ -1218,15 +1219,15 @@ stat_type util_t::parse_stat_type( const std::string& name )
 {
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::stat_type_string( i ) ) )
-      return (stat_type) i;
+      return ( stat_type ) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::stat_type_abbrev( i ) ) )
-      return (stat_type) i;
+      return ( stat_type ) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
-      return (stat_type) i;
+      return ( stat_type ) i;
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
@@ -1238,7 +1239,7 @@ stat_type util_t::parse_stat_type( const std::string& name )
 stat_type util_t::parse_reforge_type( const std::string& name )
 {
   stat_type s = util_t::parse_stat_type( name );
-  
+
   switch ( s )
   {
   case STAT_EXPERTISE_RATING:
@@ -1258,9 +1259,9 @@ stat_type util_t::parse_reforge_type( const std::string& name )
 // util_t::parse_origin ====================================================
 
 bool util_t::parse_origin( std::string& region_str,
-			   std::string& server_str,
-			   std::string& name_str,
-			   const std::string& origin_str )
+                           std::string& server_str,
+                           std::string& name_str,
+                           const std::string& origin_str )
 {
   if ( ( origin_str.find( ".battle."    ) == std::string::npos ) &&
        ( origin_str.find( ".wowarmory." ) == std::string::npos ) )
@@ -1275,22 +1276,22 @@ bool util_t::parse_origin( std::string& region_str,
 
     if( t == "http" )
     {
-      if ( (i+1) >= num_tokens ) return false;
+      if ( ( i+1 ) >= num_tokens ) return false;
       region_str = tokens[ ++i ];
     }
     else if( t == "r" ) // old armory
     {
-      if ( (i+1) >= num_tokens ) return false;
+      if ( ( i+1 ) >= num_tokens ) return false;
       server_str = tokens[ ++i ];
     }
     else if( t == "n" || t == "cn" ) // old armory
     {
-      if ( (i+1) >= num_tokens ) return false;
+      if ( ( i+1 ) >= num_tokens ) return false;
       name_str = tokens[ ++i ];
     }
     else if( t == "character" ) // new battle.net
     {
-      if ( (i+2) >= num_tokens ) return false;
+      if ( ( i+2 ) >= num_tokens ) return false;
       server_str = tokens[ ++i ];
       name_str   = tokens[ ++i ];
     }
@@ -1479,9 +1480,10 @@ race_type util_t::translate_race_id( int rid )
   case  6: return RACE_TAUREN;
   case  7: return RACE_GNOME;
   case  8: return RACE_TROLL;
+  case  9: return RACE_GOBLIN;
   case 10: return RACE_BLOOD_ELF;
   case 11: return RACE_DRAENEI;
-  // Find out Goblin and Worgen race id
+  case 22: return RACE_WORGEN;
   }
 
   return RACE_NONE;
@@ -1512,7 +1514,7 @@ stat_type util_t::translate_item_mod( int item_mod )
   case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
   case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
   }
-  
+
   return STAT_NONE;
 }
 
@@ -1520,24 +1522,24 @@ weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
 {
   switch ( id )
   {
-    case ITEM_SUBCLASS_WEAPON_AXE:          return WEAPON_AXE;
-    case ITEM_SUBCLASS_WEAPON_AXE2:         return WEAPON_AXE_2H;
-    case ITEM_SUBCLASS_WEAPON_BOW:          return WEAPON_BOW;
-    case ITEM_SUBCLASS_WEAPON_GUN:          return WEAPON_GUN;
-    case ITEM_SUBCLASS_WEAPON_MACE:         return WEAPON_MACE;
-    case ITEM_SUBCLASS_WEAPON_MACE2:        return WEAPON_MACE_2H;
-    case ITEM_SUBCLASS_WEAPON_POLEARM:      return WEAPON_POLEARM;
-    case ITEM_SUBCLASS_WEAPON_SWORD:        return WEAPON_SWORD;
-    case ITEM_SUBCLASS_WEAPON_SWORD2:       return WEAPON_SWORD_2H;
-    case ITEM_SUBCLASS_WEAPON_STAFF:        return WEAPON_STAFF;
-    case ITEM_SUBCLASS_WEAPON_FIST:         return WEAPON_FIST;
-    case ITEM_SUBCLASS_WEAPON_DAGGER:       return WEAPON_DAGGER;
-    case ITEM_SUBCLASS_WEAPON_THROWN:       return WEAPON_THROWN;
-    case ITEM_SUBCLASS_WEAPON_CROSSBOW:     return WEAPON_CROSSBOW;
-    case ITEM_SUBCLASS_WEAPON_WAND:         return WEAPON_WAND;
-    default: return WEAPON_NONE;
+  case ITEM_SUBCLASS_WEAPON_AXE:          return WEAPON_AXE;
+  case ITEM_SUBCLASS_WEAPON_AXE2:         return WEAPON_AXE_2H;
+  case ITEM_SUBCLASS_WEAPON_BOW:          return WEAPON_BOW;
+  case ITEM_SUBCLASS_WEAPON_GUN:          return WEAPON_GUN;
+  case ITEM_SUBCLASS_WEAPON_MACE:         return WEAPON_MACE;
+  case ITEM_SUBCLASS_WEAPON_MACE2:        return WEAPON_MACE_2H;
+  case ITEM_SUBCLASS_WEAPON_POLEARM:      return WEAPON_POLEARM;
+  case ITEM_SUBCLASS_WEAPON_SWORD:        return WEAPON_SWORD;
+  case ITEM_SUBCLASS_WEAPON_SWORD2:       return WEAPON_SWORD_2H;
+  case ITEM_SUBCLASS_WEAPON_STAFF:        return WEAPON_STAFF;
+  case ITEM_SUBCLASS_WEAPON_FIST:         return WEAPON_FIST;
+  case ITEM_SUBCLASS_WEAPON_DAGGER:       return WEAPON_DAGGER;
+  case ITEM_SUBCLASS_WEAPON_THROWN:       return WEAPON_THROWN;
+  case ITEM_SUBCLASS_WEAPON_CROSSBOW:     return WEAPON_CROSSBOW;
+  case ITEM_SUBCLASS_WEAPON_WAND:         return WEAPON_WAND;
+  default: return WEAPON_NONE;
   }
-  
+
   return WEAPON_NONE;
 }
 
@@ -1744,7 +1746,7 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   std::string day   = splits[ 1 ];
   std::string year  = splits[ 2 ];
 
-  std::transform(month.begin(), month.end(), month.begin(), (int(*)(int)) std::tolower );  
+  std::transform( month.begin(), month.end(), month.begin(), ( int( * )( int ) ) std::tolower );
 
   if ( month.find( "jan" ) != std::string::npos ) month = "01";
   if ( month.find( "feb" ) != std::string::npos ) month = "02";
@@ -1843,10 +1845,10 @@ std::string& util_t::str_to_utf8( std::string& str )
 {
   std::string temp;
   int l = str.length();
-  
+
   if ( ! l ) return str;
   if ( utf8::is_valid( str.begin(), str.end() ) ) return str;
-  
+
   for ( int i = 0; i < l; i++ )
     utf8::append( ( unsigned char ) str[ i ], std::back_inserter( temp ) );
 
@@ -1866,7 +1868,7 @@ std::string& util_t::str_to_latin1( std::string& str )
     temp += ( unsigned char ) utf8::next( i, str.end() );
 
   str = temp;
-  
+
   return str;
 }
 
@@ -1894,7 +1896,7 @@ std::string& util_t::urlencode( std::string& str )
     else
       temp += c;
   }
-  
+
   str = temp;
   return str;
 }
@@ -1905,7 +1907,7 @@ std::string& util_t::urldecode( std::string& str )
   int l = str.length();
 
   if ( ! l ) return str;
-  
+
   for ( int i = 0; i < l; i++ )
   {
     unsigned char c = ( unsigned char ) str[ i ];
@@ -1915,7 +1917,7 @@ std::string& util_t::urldecode( std::string& str )
       long c = 0;
       sub = str.substr( i + 1, 2 );
       c = strtol( sub.c_str(), 0, 16 );
-      if ( c ) temp += (unsigned char) c;
+      if ( c ) temp += ( unsigned char ) c;
       i += 2;
     }
     else if ( c == '+' )
@@ -1923,7 +1925,7 @@ std::string& util_t::urldecode( std::string& str )
     else
       temp += c;
   }
-  
+
   str = temp;
   return str;
 }
@@ -1932,7 +1934,7 @@ std::string& util_t::format_text( std::string& name, bool input_is_utf8 )
 {
   if ( name.empty() ) return name;
   bool is_utf8 = utf8::is_valid( name.begin(), name.end() );
-  
+
   if ( is_utf8 && ! input_is_utf8 )
     util_t::str_to_latin1( name );
   else if ( ! is_utf8 && input_is_utf8 )
@@ -1950,7 +1952,7 @@ std::string& util_t::html_special_char_decode( std::string& str )
     if ( str[ pos+1 ] == '#' )
     {
       std::string::size_type end = str.find( ';', pos + 2 );
-      char encoded = (char) atoi( str.substr( pos + 2, end ).c_str() );
+      char encoded = ( char ) atoi( str.substr( pos + 2, end ).c_str() );
       str.erase( pos, end - pos + 1 );
       str.insert( pos, 1, encoded );
     }

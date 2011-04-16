@@ -12,13 +12,13 @@
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
-    action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 )
+  action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 )
 {
   trigger_gcd = 0;
 
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, sub_action_str, ":" );
-  
+
   option_t options[] =
   {
     { "name", OPT_STRING,  &name_str },

@@ -41,19 +41,19 @@ spell_t::spell_t( const active_spell_t& s, int t ) :
 }
 
 spell_t::spell_t( const char* n, player_t* p, int r, const school_type s, int t ) :
-    action_t( ACTION_SPELL, n, p, r, s, t, true )
+  action_t( ACTION_SPELL, n, p, r, s, t, true )
 {
   _init_spell_t();
 }
 
 spell_t::spell_t( const char* name, const char* sname, player_t* p, int t ) :
-    action_t( ACTION_SPELL, name, sname, p, t, true )
+  action_t( ACTION_SPELL, name, sname, p, t, true )
 {
   _init_spell_t();
 }
 
 spell_t::spell_t( const char* name, const uint32_t id, player_t* p, int t ) :
-    action_t( ACTION_SPELL, name, id, p, t, true )
+  action_t( ACTION_SPELL, name, id, p, t, true )
 {
   _init_spell_t();
 }
@@ -88,7 +88,7 @@ double spell_t::execute_time() SC_CONST
     return 0;
 
   if ( t <= 0 ) return 0;
-    t *= haste();
+  t *= haste();
 
   return t;
 }
@@ -152,12 +152,12 @@ double spell_t::miss_chance( int delta_level ) SC_CONST
 double spell_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
-        
+
   if ( ! player -> is_pet() && delta_level > 2 )
   {
     chance -= delta_level * 0.006;
   }
-        
+
   return chance;
 }
 

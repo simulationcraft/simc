@@ -169,9 +169,9 @@ static xml_node_t* create_node( sim_t*                  sim,
   {
     if( sim )
     {
-      int start = std::min( 0, ( (int) index - 32 ) );
-      sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n", 
-		     c, ( int ) index, node -> name(), input.substr( start, index-start ).c_str() );
+      int start = std::min( 0, ( ( int ) index - 32 ) );
+      sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n",
+                     c, ( int ) index, node -> name(), input.substr( start, index-start ).c_str() );
       fprintf( sim -> output_file, "%s\n", input.c_str() );
       sim -> cancel();
     }
@@ -247,14 +247,14 @@ static int create_children( sim_t*                  sim,
       std::string::size_type start = index;
       while ( input[ index ] )
       {
-	if ( input[ index ] == '<' )
-	{
-	  if ( isalpha( input[ index+ 1 ] ) ) break;
-	  if ( input[ index+1 ] == '/' ) break;
-	  if ( input[ index+1 ] == '?' ) break;
-	  if ( input[ index+1 ] == '!' ) break;
-	}
-	index++;
+        if ( input[ index ] == '<' )
+        {
+          if ( isalpha( input[ index+ 1 ] ) ) break;
+          if ( input[ index+1 ] == '/' ) break;
+          if ( input[ index+1 ] == '?' ) break;
+          if ( input[ index+1 ] == '!' ) break;
+        }
+        index++;
       }
       root -> parameters.push_back( xml_parm_t( ".", input.substr( start, index-start ) ) );
     }
@@ -358,7 +358,7 @@ xml_node_t* xml_t::download( sim_t*             sim,
 
   xml_node_t* node = 0;
 
-  if( xml_cache.find( url ) != xml_cache.end() ) 
+  if( xml_cache.find( url ) != xml_cache.end() )
   {
     node = xml_cache[ url ];
   }
@@ -371,9 +371,9 @@ xml_node_t* xml_t::download( sim_t*             sim,
     {
       node = xml_t::create( sim, result );
 
-      if ( node ) 
+      if ( node )
       {
-	xml_cache[ url ] = node;
+        xml_cache[ url ] = node;
       }
     }
   }
@@ -395,7 +395,7 @@ xml_node_t* xml_t::download_cache( sim_t*             sim,
 
   xml_node_t* node = 0;
 
-  if( xml_cache.find( url ) != xml_cache.end() ) 
+  if( xml_cache.find( url ) != xml_cache.end() )
   {
     node = xml_cache[ url ];
   }
@@ -408,9 +408,9 @@ xml_node_t* xml_t::download_cache( sim_t*             sim,
     {
       node = xml_t::create( sim, result );
 
-      if ( node ) 
+      if ( node )
       {
-	xml_cache[ url ] = node;
+        xml_cache[ url ] = node;
       }
     }
   }
@@ -559,7 +559,7 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
   if ( path.empty() || path.size() == 0 || path == root -> name() )
   {
     xml_parm_t* parm = root -> get_parm( parm_name );
-    if ( parm && parm -> value_str == parm_value ) 
+    if ( parm && parm -> value_str == parm_value )
     {
       nodes.push_back( root );
     }

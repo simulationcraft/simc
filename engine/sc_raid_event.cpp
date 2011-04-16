@@ -15,7 +15,7 @@
 struct casting_event_t : public raid_event_t
 {
   casting_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "casting" )
+    raid_event_t( s, "casting" )
   {
     parse_options( NULL, options_str );
   }
@@ -43,7 +43,7 @@ struct distraction_event_t : public raid_event_t
   double skill;
 
   distraction_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "distraction" ), skill( 0.2 )
+    raid_event_t( s, "distraction" ), skill( 0.2 )
   {
     option_t options[] =
     {
@@ -79,7 +79,7 @@ struct distraction_event_t : public raid_event_t
 struct invulnerable_event_t : public raid_event_t
 {
   invulnerable_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "invulnerable" )
+    raid_event_t( s, "invulnerable" )
   {
     parse_options( NULL, options_str );
   }
@@ -158,7 +158,7 @@ struct movement_event_t : public raid_event_t
 struct stun_event_t : public raid_event_t
 {
   stun_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "stun" )
+    raid_event_t( s, "stun" )
   {
     parse_options( NULL, options_str );
   }
@@ -197,7 +197,7 @@ struct stun_event_t : public raid_event_t
 struct interrupt_event_t : public raid_event_t
 {
   interrupt_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "interrupt" )
+    raid_event_t( s, "interrupt" )
   {
     parse_options( NULL, options_str );
   }
@@ -222,7 +222,7 @@ struct damage_event_t : public raid_event_t
   double amount_stddev;
 
   damage_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 )
+    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 )
   {
     option_t options[] =
     {
@@ -257,7 +257,7 @@ struct vulnerable_event_t : public raid_event_t
 {
   double multiplier;
   vulnerable_event_t( sim_t* s, const std::string& options_str ) :
-      raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
+    raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
     option_t options[] =
     {
@@ -281,11 +281,11 @@ struct vulnerable_event_t : public raid_event_t
 // raid_event_t::raid_event_t ===============================================
 
 raid_event_t::raid_event_t( sim_t* s, const char* n ) :
-    sim( s ), name_str( n ),
-    num_starts( 0 ), first( 0 ), last( 0 ),
-    cooldown( 0 ), cooldown_stddev( 0 ), cooldown_min( 0 ), cooldown_max( 0 ),
-    duration( 0 ), duration_stddev( 0 ), duration_min( 0 ), duration_max( 0 ),
-    distance_min( 0 ), distance_max( 0 ), saved_duration( 0 )
+  sim( s ), name_str( n ),
+  num_starts( 0 ), first( 0 ), last( 0 ),
+  cooldown( 0 ), cooldown_stddev( 0 ), cooldown_min( 0 ), cooldown_max( 0 ),
+  duration( 0 ), duration_stddev( 0 ), duration_min( 0 ), duration_max( 0 ),
+  distance_min( 0 ), distance_max( 0 ), saved_duration( 0 )
 {
   rng = ( sim -> deterministic_roll ) ? sim -> deterministic_rng : sim -> rng;
 }
@@ -332,7 +332,7 @@ double raid_event_t::duration_time() SC_CONST
 
 void raid_event_t::start()
 {
-  if ( sim -> log ) log_t::output( sim, "Raid event %s starts (%x).", name(), (void*) this );
+  if ( sim -> log ) log_t::output( sim, "Raid event %s starts (%x).", name(), ( void* ) this );
 
   num_starts++;
 
@@ -356,7 +356,7 @@ void raid_event_t::start()
 
 void raid_event_t::finish()
 {
-  if ( sim -> log ) log_t::output( sim, "Raid event %s finishes (%x).", name(), (void*) this );
+  if ( sim -> log ) log_t::output( sim, "Raid event %s finishes (%x).", name(), ( void* ) this );
 }
 
 // raid_event_t::schedule ===================================================

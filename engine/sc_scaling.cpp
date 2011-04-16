@@ -47,7 +47,7 @@ static bool stat_may_cap( int stat )
 
 // parse_normalize_scale_factors ============================================
 
-static bool parse_normalize_scale_factors( sim_t* sim, 
+static bool parse_normalize_scale_factors( sim_t* sim,
                                            const std::string& name,
                                            const std::string& value )
 {
@@ -112,13 +112,13 @@ double scaling_t::progress( std::string& phase )
   {
     phase = "Baseline";
     if ( ! baseline_sim ) return 0;
-    return baseline_sim -> current_iteration / (double) sim -> iterations;
+    return baseline_sim -> current_iteration / ( double ) sim -> iterations;
   }
 
   phase  = "Scaling - ";
   phase += util_t::stat_type_abbrev( current_scaling_stat );
 
-  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / (double) num_scaling_stats;
+  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / ( double ) num_scaling_stats;
 
   double divisor = num_scaling_stats * 2.0;
 
@@ -147,13 +147,13 @@ void scaling_t::init_deltas()
 
   if ( stats.attack_power == 0 ) stats.attack_power = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
 
-  if ( stats.expertise_rating == 0 ) 
+  if ( stats.expertise_rating == 0 )
   {
     stats.expertise_rating =  scale_delta_multiplier * ( smooth_scale_factors ? -100 : -200 );
     if ( positive_scale_delta ) stats.expertise_rating *= -1;
   }
 
-  if ( stats.hit_rating == 0 ) 
+  if ( stats.hit_rating == 0 )
   {
     stats.hit_rating = scale_delta_multiplier * ( smooth_scale_factors ? -150 : -300 );
     if ( positive_scale_delta ) stats.hit_rating *= -1;
@@ -240,17 +240,17 @@ void scaling_t::analyze_stats()
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = i;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
-    if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) delta_sim -> iterations = (int) (delta_sim -> iterations * scale_haste_iterations);
+    if ( i == STAT_HASTE_RATING && ( scale_haste_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_haste_iterations );
     delta_sim -> execute();
 
     if ( center )
     {
       ref_sim -> scaling -> scale_stat = i;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
-      if ( i == STAT_HASTE_RATING && (scale_haste_iterations != 0)) ref_sim -> iterations = (int) (ref_sim -> iterations * scale_haste_iterations);
+      if ( i == STAT_HASTE_RATING && ( scale_haste_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_haste_iterations );
       ref_sim -> execute();
     }
-    
+
     for ( int j=0; j < num_players; j++ )
     {
       player_t* p = sim -> players_by_name[ j ];
@@ -270,7 +270,7 @@ void scaling_t::analyze_stats()
       double delta_score = scale_over_function( delta_sim, delta_p );
       double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-    //double delta_error = scale_over_function_error( delta_sim, delta_p );
+      //double delta_error = scale_over_function_error( delta_sim, delta_p );
       double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
 
       double score = ( delta_score - ref_score ) / divisor;
@@ -279,14 +279,14 @@ void scaling_t::analyze_stats()
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
       {
         score /= 10.0;
-	error /= 10.0;
+        error /= 10.0;
       }
 
       if ( scale_factor_noise > 0 &&
-	   scale_factor_noise < ref_error / fabs( delta_score - ref_score ) )
+           scale_factor_noise < ref_error / fabs( delta_score - ref_score ) )
       {
-	sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
-		       p -> name(), sim -> iterations, util_t::stat_type_string( i ), scale_factor_noise * 100.0 );
+        sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
+                       p -> name(), sim -> iterations, util_t::stat_type_string( i ), scale_factor_noise * 100.0 );
       }
 
       p -> scaling.set_stat( i, score );
@@ -301,7 +301,7 @@ void scaling_t::analyze_stats()
       report_t::print_text( sim -> output_file, delta_sim, true );
     }
 
-    if ( ref_sim != baseline_sim && ref_sim != sim ) 
+    if ( ref_sim != baseline_sim && ref_sim != sim )
     {
       delete ref_sim;
       ref_sim = 0;
@@ -361,20 +361,20 @@ void scaling_t::analyze_lag()
     double delta_score = scale_over_function( delta_sim, delta_p );
     double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-  //double delta_error = scale_over_function_error( delta_sim, delta_p );
+    //double delta_error = scale_over_function_error( delta_sim, delta_p );
     double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
 
     double score = ( delta_score - ref_score ) / divisor;
 
-    if ( scale_factor_noise <= 0 || 
-	 scale_factor_noise > ref_error / fabs( delta_score - ref_score ) )
+    if ( scale_factor_noise <= 0 ||
+         scale_factor_noise > ref_error / fabs( delta_score - ref_score ) )
     {
       p -> scaling_lag = score;
     }
     else
     {
       sim -> errorf( "Player %s given insufficient iterations (%d) to calculate scale factor for lag\n",
-		     p -> name(), sim -> iterations );
+                     p -> name(), sim -> iterations );
     }
   }
 
@@ -423,7 +423,7 @@ void scaling_t::normalize()
 
       if ( normalize_scale_factors ) // For report purposes.
       {
-	p -> scaling_error.set_stat( i, p -> scaling_error.get_stat( i ) / divisor );
+        p -> scaling_error.set_stat( i, p -> scaling_error.get_stat( i ) / divisor );
       }
     }
   }
@@ -495,7 +495,7 @@ void scaling_t::create_options()
 bool scaling_t::has_scale_factors()
 {
   if ( ! calculate_scale_factors ) return false;
-  
+
   for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( stats.get_stat( i ) != 0 )

@@ -11,7 +11,8 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-struct _stat_list_t {
+struct _stat_list_t
+{
   int id;
   double stats[ BASE_STAT_MAX ];
 };
@@ -251,7 +252,7 @@ static const _stat_list_t rogue_stats[] =
   {	84, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
   {	85, {   93,  169,   85,   23,   47,   7604,    100,  0.0120,  0.0000,  0.0225, -0.29560,  0.0000 } },
   { 0, { 0 } }
-}; 
+};
 
 static const _stat_list_t shaman_stats[] =
 {
@@ -282,7 +283,7 @@ static const _stat_list_t shaman_stats[] =
   {	84, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
   {	85, {  100,   54,  116,  108,  123,   6960,   4396,  0.0120,  0.0060,  0.0190,  2.92384,  2.20283 } },
   { 0, { 0 } }
-}; 
+};
 
 static const _stat_list_t warlock_stats[] =
 {
@@ -313,7 +314,7 @@ static const _stat_list_t warlock_stats[] =
   {	84, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
   {	85, {   39,   47,   69,  139,  146,   7164,   3856,  0.0199,  0.0060,  0.0192,  2.61372,  1.70458 } },
   { 0, { 0 } }
-}; 
+};
 
 static const _stat_list_t warrior_stats[] =
 {
@@ -344,7 +345,7 @@ static const _stat_list_t warrior_stats[] =
   {	84, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
   {	85, {  154,   93,  139,   16,   39,   8121,    100,  0.0161,  0.0000,  0.0121,  3.17876,  0.0000 } },
   { 0, { 0 } }
-}; 
+};
 
 
 
@@ -357,7 +358,7 @@ static const _stat_list_t warrior_stats[] =
 void rating_t::init( sim_t* sim, dbc_t& dbc, int level, int type )
 {
   if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%d type=%s",
-									 level, util_t::player_type_string( type ) );
+                                     level, util_t::player_type_string( type ) );
 
   if ( type == ENEMY || type == ENEMY_ADD )
   {
@@ -455,7 +456,7 @@ double rating_t::get_attribute_base( sim_t* sim, dbc_t& dbc, int level, player_t
   case BASE_STAT_AGILITY:            res = dbc.race_base( race ).agility + dbc.attribute_base( class_type, level ).agility; break;
   case BASE_STAT_STAMINA:            res = dbc.race_base( race ).stamina + dbc.attribute_base( class_type, level ).stamina; break;
   case BASE_STAT_INTELLECT:          res = dbc.race_base( race ).intellect + dbc.attribute_base( class_type, level ).intellect; break;
-  case BASE_STAT_SPIRIT:             res = dbc.race_base( race ).spirit + dbc.attribute_base( class_type, level ).spirit; 
+  case BASE_STAT_SPIRIT:             res = dbc.race_base( race ).spirit + dbc.attribute_base( class_type, level ).spirit;
                                      if ( race == RACE_HUMAN ) res *= 1.03; break;
   case BASE_STAT_HEALTH:             res = dbc.attribute_base( class_type, level ).base_health; break;
   case BASE_STAT_MANA:               res = dbc.attribute_base( class_type, level ).base_resource; break;

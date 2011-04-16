@@ -141,7 +141,7 @@ bool set_bonus_t::init( player_t* p )
 }
 
 action_expr_t* set_bonus_t::create_expression( action_t* action,
-                                          const std::string& type )
+                                               const std::string& type )
 {
   set_type bonus_type = util_t::parse_set_bonus( type );
 
@@ -165,7 +165,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N
   p ( p )
 {
   memset( set_bonuses, 0, sizeof( set_bonuses ) );
-  
+
   // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
   // array, based on set_type enum
   for ( int i = 0; i < N_TIER; i++ )
@@ -176,37 +176,37 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N
 
       switch( j )
       {
-        // 2pc/4pc caster
-        case 0:
-        case 1:
-          b = j + 1;
-          break;
-        // 2pc/4pc melee
-        case 2:
-        case 3:
-          b = j + 2;
-          break;
-        case 4:
-        case 5:
-          b = j + 3;
-          break;
-        case 6:
-        case 7:
-          b = j + 4;
-          break;
-        default:
-          break;
+      // 2pc/4pc caster
+      case 0:
+      case 1:
+        b = j + 1;
+        break;
+      // 2pc/4pc melee
+      case 2:
+      case 3:
+        b = j + 2;
+        break;
+      case 4:
+      case 5:
+        b = j + 3;
+        break;
+      case 6:
+      case 7:
+        b = j + 4;
+        break;
+      default:
+        break;
       }
-      
+
       set_bonuses[ 1 + i * 12 + b ] = create_set_bonus( p, a_bonus[ i ][ j ] );
-      
+
       // if ( set_bonuses[ 1 + i * 12 + b ] )
       //  log_t::output( p -> sim, "Initializing set bonus %u to slot %d", a_bonus[ i ][ j ], 1 + i * 9 + b );
     }
   }
-  
-  // Dummy default value that returns 0 always to everything, so missing 
-  // set bonuses will never give out a value nor crash, even if you dont 
+
+  // Dummy default value that returns 0 always to everything, so missing
+  // set bonuses will never give out a value nor crash, even if you dont
   // if ( p -> set_bonus.tierX_Ypc_caster() ), which isnt even necessary
   // in this system
   default_value = new spell_id_t( p, 0 );
@@ -232,10 +232,10 @@ bool set_bonus_array_t::has_set_bonus( set_type s ) SC_CONST
   int tier  = ( s - 1 ) / 12,
       btype = ( ( s - 1 ) - tier * 12 ) / 3,
       bonus = ( s - 1 ) % 3;
-    
+
   if ( p -> set_bonus.count[ s ] > 0 || ( p -> set_bonus.count[ s ] < 0 && p -> set_bonus.count[ 1 + tier * 12 + btype * 3 ] >= bonus * 2 ) )
     return true;
-      
+
   return false;
 }
 
@@ -254,9 +254,9 @@ const spell_id_t* set_bonus_array_t::create_set_bonus( player_t* p, uint32_t spe
   {
     if ( spell_id > 0 )
     {
-      p -> sim -> errorf( "Set bonus spell identifier %u for %s not found in spell data.", 
-        spell_id,
-        p -> name_str.c_str() );
+      p -> sim -> errorf( "Set bonus spell identifier %u for %s not found in spell data.",
+      spell_id,
+      p -> name_str.c_str() );
     }
     return 0;
   }

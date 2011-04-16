@@ -32,7 +32,7 @@ void pet_t::_init_pet_t()
 
   // By default, only report statistics in the context of the owner
   quiet = 1;
-  
+
   // Inherit owner's dbc state
   dbc.ptr = owner -> dbc.ptr;
 }
@@ -40,7 +40,7 @@ pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
               bool               g ) :
-    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
+              player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
 {
   _init_pet_t();
 }
@@ -50,7 +50,7 @@ pet_t::pet_t( sim_t*             s,
               const std::string& n,
               pet_type_t         pt,
               bool               g ) :
-    player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
+              player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
 {
   _init_pet_t();
 }
@@ -111,7 +111,7 @@ void pet_t::init_base()
 
 void pet_t::init_talents()
 {
-   specialization = primary_tab();
+  specialization = primary_tab();
 }
 // pet_t::reset =============================================================
 
@@ -170,10 +170,10 @@ void pet_t::dismiss()
 // pet_t::assess_damage ==================================================
 
 double pet_t::assess_damage( double            amount,
-        const school_type school,
-        int               dmg_type,
-        int               result,
-        action_t*         action )
+                             const school_type school,
+                             int               dmg_type,
+                             int               result,
+                             action_t*         action )
 {
   if ( ! action )
     amount *= 0.10;

@@ -44,7 +44,7 @@ static bool is_plot_stat( sim_t* sim,
 // plot_t::plot_t ===========================================================
 
 plot_t::plot_t( sim_t* s ) :
-  sim( s ), 
+  sim( s ),
   dps_plot_step( 20.0 ),
   dps_plot_points( 20 ),
   dps_plot_iterations ( -1 ),
@@ -71,9 +71,9 @@ double plot_t::progress( std::string& phase )
   phase  = "Plot - ";
   phase += util_t::stat_type_abbrev( current_plot_stat );
 
-  double stat_progress = ( num_plot_stats - remaining_plot_stats ) / (double) num_plot_stats;
+  double stat_progress = ( num_plot_stats - remaining_plot_stats ) / ( double ) num_plot_stats;
 
-  double point_progress = ( dps_plot_points - remaining_plot_points ) / (double) dps_plot_points;
+  double point_progress = ( dps_plot_points - remaining_plot_points ) / ( double ) dps_plot_points;
 
   stat_progress += point_progress / num_plot_stats;
 
@@ -115,13 +115,13 @@ void plot_t::analyze_stats()
 
     if ( dps_plot_positive )
     {
-    	start = 0;
-    	end = dps_plot_points;
+      start = 0;
+      end = dps_plot_points;
     }
     else
     {
-    	start = - dps_plot_points / 2;
-    	end = - start;
+      start = - dps_plot_points / 2;
+      end = - start;
     }
 
     for( int j = start; j <= end; j++ )
@@ -136,7 +136,7 @@ void plot_t::analyze_stats()
         if ( dps_plot_iterations > 0 ) delta_sim -> iterations = dps_plot_iterations;
         delta_sim -> enchant.add_stat( i, j * dps_plot_step );
         delta_sim -> execute();
-        if ( dps_plot_debug ) 
+        if ( dps_plot_debug )
         {
           util_t::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util_t::stat_type_string( i ), j );
           report_t::print_text( sim -> output_file, delta_sim, true );
@@ -161,7 +161,7 @@ void plot_t::analyze_stats()
         }
       }
 
-      if ( delta_sim ) 
+      if ( delta_sim )
       {
         delete delta_sim;
         delta_sim = 0;

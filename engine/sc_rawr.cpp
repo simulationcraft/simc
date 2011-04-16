@@ -517,8 +517,8 @@ player_t* rawr_t::load_player( sim_t* sim,
       const char* glyph_name = translate_glyph_name( p, i );
       if ( glyph_name )
       {
-	if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
-	p -> glyphs_str += glyph_name;
+        if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
+        p -> glyphs_str += glyph_name;
       }
     }
   }
@@ -533,12 +533,12 @@ player_t* rawr_t::load_player( sim_t* sim,
       spell_data_t* sd = spell_data_t::find( spell_id );
       if ( sd )
       {
-	std::string glyph_name = sd -> name_cstr();
-	if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-	else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-	armory_t::format( glyph_name );
-	if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
-	p -> glyphs_str += glyph_name;
+        std::string glyph_name = sd -> name_cstr();
+        if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+        else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+        armory_t::format( glyph_name );
+        if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
+        p -> glyphs_str += glyph_name;
       }
       else
       {
@@ -569,24 +569,24 @@ player_t* rawr_t::load_player( sim_t* sim,
 
       if ( num_splits == 7 )
       {
-	item_id      = splits[ 0 ];
-	gem_ids[ 0 ] = splits[ 1 ];
-	gem_ids[ 1 ] = splits[ 2 ];
-	gem_ids[ 2 ] = splits[ 3 ];
-	enchant_id   = splits[ 4 ];
-	reforge_id   = splits[ 5 ];
-	addon_id     = splits[ 6 ];
+        item_id      = splits[ 0 ];
+        gem_ids[ 0 ] = splits[ 1 ];
+        gem_ids[ 1 ] = splits[ 2 ];
+        gem_ids[ 2 ] = splits[ 3 ];
+        enchant_id   = splits[ 4 ];
+        reforge_id   = splits[ 5 ];
+        addon_id     = splits[ 6 ];
       }
       else if ( num_splits == 8 )
       {
-	item_id      = splits[ 0 ];
-	rsuffix_id   = splits[ 1 ];
-	gem_ids[ 0 ] = splits[ 2 ];
-	gem_ids[ 1 ] = splits[ 3 ];
-	gem_ids[ 2 ] = splits[ 4 ];
-	enchant_id   = splits[ 5 ];
-	reforge_id   = splits[ 6 ];
-	addon_id     = splits[ 7 ];
+        item_id      = splits[ 0 ];
+        rsuffix_id   = splits[ 1 ];
+        gem_ids[ 0 ] = splits[ 2 ];
+        gem_ids[ 1 ] = splits[ 3 ];
+        gem_ids[ 2 ] = splits[ 4 ];
+        enchant_id   = splits[ 5 ];
+        reforge_id   = splits[ 6 ];
+        addon_id     = splits[ 7 ];
       }
       else
       {

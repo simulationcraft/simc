@@ -12,13 +12,13 @@
 // rng_t::rng_t =============================================================
 
 rng_t::rng_t( const std::string& n, bool avg_range, bool avg_gauss ) :
-    name_str( n ), gauss_pair_use( false ),
-    expected_roll( 0 ),  actual_roll( 0 ),  num_roll( 0 ),
-    expected_range( 0 ), actual_range( 0 ), num_range( 0 ),
-    expected_gauss( 0 ), actual_gauss( 0 ), num_gauss( 0 ),
-    average_range( avg_range ),
-    average_gauss( avg_gauss ),
-    next( 0 )
+  name_str( n ), gauss_pair_use( false ),
+  expected_roll( 0 ),  actual_roll( 0 ),  num_roll( 0 ),
+  expected_range( 0 ), actual_range( 0 ), num_range( 0 ),
+  expected_gauss( 0 ), actual_gauss( 0 ), num_gauss( 0 ),
+  average_range( avg_range ),
+  average_gauss( avg_gauss ),
+  next( 0 )
 {}
 
 // rng_t::real ==============================================================
@@ -339,7 +339,7 @@ inline static double gen_rand_real( rng_sfmt_t* r )
 // rng_sfmt_t::rng_sfmt_t ===================================================
 
 rng_sfmt_t::rng_sfmt_t( const std::string& name, bool avg_range, bool avg_gauss ) :
-    rng_t( name, avg_range, avg_gauss )
+  rng_t( name, avg_range, avg_gauss )
 {
   psfmt32 = &sfmt[0].u[0];
   idx = N32;
@@ -370,7 +370,7 @@ struct rng_normalized_t : public rng_t
   rng_t* base;
 
   rng_normalized_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
-      rng_t( name, avg_range, avg_gauss ), base( b ) {}
+    rng_t( name, avg_range, avg_gauss ), base( b ) {}
   virtual ~rng_normalized_t() {}
 
   virtual double real() { return base -> real(); }
@@ -390,7 +390,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   int range_index, gauss_index;
 
   rng_phase_shift_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
-      rng_normalized_t( name, b, avg_range, avg_gauss )
+    rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     range_distribution.resize( 10 );
     for ( int i=0; i < 5; i++ )
@@ -463,7 +463,7 @@ struct rng_pre_fill_t : public rng_normalized_t
   int roll_index, range_index, gauss_index;
 
   rng_pre_fill_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
-      rng_normalized_t( name, b, avg_range, avg_gauss )
+    rng_normalized_t( name, b, avg_range, avg_gauss )
   {
     range_distribution.resize( 10 );
     for ( int i=0; i < 5; i++ )
@@ -580,7 +580,7 @@ struct distribution_t
   std::vector<int> counts;
 
   distribution_t( int s ) :
-      size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
+    size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
   {
     chances.insert( chances.begin(), size, 0.0 );
     values .insert( values .begin(), size, 0.0 );
@@ -742,9 +742,9 @@ struct rng_distance_simple_t : public rng_normalized_t
   gauss_distribution_t gauss_d;
 
   rng_distance_simple_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
-      rng_normalized_t( name, b, avg_range, avg_gauss )
+    rng_normalized_t( name, b, avg_range, avg_gauss )
   {
-     roll_d.actual = real();
+    roll_d.actual = real();
     range_d.actual = real();
     gauss_d.actual = real() * 2.5;
   }
@@ -794,7 +794,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
   roll_distribution_t roll_bands[ 10 ];
 
   rng_distance_bands_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
-      rng_distance_simple_t( name, b, avg_range, avg_gauss )
+    rng_distance_simple_t( name, b, avg_range, avg_gauss )
   {
     for ( int i=0; i < 10; i++ ) roll_bands[ i ].actual = real() - 0.5;
   }

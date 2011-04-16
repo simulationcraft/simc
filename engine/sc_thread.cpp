@@ -86,7 +86,7 @@ void thread_t::de_init()
   while ( ! cs_list.empty() )
   {
     void *& b = cs_list.back();
-    CRITICAL_SECTION* cs = (CRITICAL_SECTION*) b;
+    CRITICAL_SECTION* cs = ( CRITICAL_SECTION* ) b;
     DeleteCriticalSection( cs );
     cs_list.pop_back();
     delete cs;
@@ -183,7 +183,7 @@ void thread_t::de_init()
   while ( ! cs_list.empty() )
   {
     void *& b = cs_list.back();
-    CRITICAL_SECTION* cs = (CRITICAL_SECTION*) b;
+    CRITICAL_SECTION* cs = ( CRITICAL_SECTION* ) b;
     DeleteCriticalSection( cs );
     cs_list.pop_back();
     delete cs;
@@ -279,7 +279,7 @@ void thread_t::de_init()
   while ( ! cs_list.empty() )
   {
     void *& b = cs_list.back();
-    pthread_mutex_t* cs = (pthread_mutex_t*) b;
+    pthread_mutex_t* cs = ( pthread_mutex_t* ) b;
     pthread_mutex_destroy( cs );
     cs_list.pop_back();
     delete cs;

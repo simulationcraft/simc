@@ -642,28 +642,28 @@ struct priest_heal_t : public heal_t
       {
         // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
         p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td *
-                                                p -> heals_echo_of_light -> dot -> ticks() + 
-                                                a -> direct_dmg * p -> composite_mastery() * 
-                                                p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) / 
-                                                p -> heals_echo_of_light -> num_ticks;
+                                                p -> heals_echo_of_light -> dot -> ticks() +
+                                                a -> direct_dmg * p -> composite_mastery() *
+                                                p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) /
+                                              p -> heals_echo_of_light -> num_ticks;
         p -> heals_echo_of_light -> refresh_duration();
       }
       else
       {
         // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
-        p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td * 
-                                              ( p -> heals_echo_of_light -> dot -> ticks() - 1 ) + 
-                                                a -> direct_dmg * p -> composite_mastery() * 
+        p -> heals_echo_of_light -> base_td = ( p -> heals_echo_of_light -> base_td *
+                                                ( p -> heals_echo_of_light -> dot -> ticks() - 1 ) +
+                                                a -> direct_dmg * p -> composite_mastery() *
                                                 p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) /
-                                                p -> heals_echo_of_light -> num_ticks;
+                                              p -> heals_echo_of_light -> num_ticks;
         p -> heals_echo_of_light -> refresh_duration();
         p -> echo_of_light_merged = true;
       }
     }
     else
     {
-      p -> heals_echo_of_light -> base_td = a -> direct_dmg * p -> composite_mastery() * 
-                                            p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 / 
+      p -> heals_echo_of_light -> base_td = a -> direct_dmg * p -> composite_mastery() *
+                                            p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 /
                                             p -> heals_echo_of_light -> num_ticks;
       p -> heals_echo_of_light -> execute();
       p -> echo_of_light_merged = false;

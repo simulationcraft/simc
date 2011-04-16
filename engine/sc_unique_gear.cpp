@@ -18,8 +18,8 @@ struct stat_proc_callback_t : public action_callback_t
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
                         double proc_chance, double duration, double cooldown,
                         double t=0, bool reverse=false, int rng_type=RNG_DEFAULT ) :
-      action_callback_t( p -> sim, p ),
-      name_str( n ), stat( s ), amount( a ), tick( t )
+    action_callback_t( p -> sim, p ),
+    name_str( n ), stat( s ), amount( a ), tick( t )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
@@ -84,18 +84,18 @@ struct discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  discharge_proc_callback_t( const std::string& n, player_t* p, int ms, 
-                             const school_type school, double amount, double scaling, 
+  discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
+                             const school_type school, double amount, double scaling,
                              double pc, double cd, int rng_type=RNG_DEFAULT ) :
-      action_callback_t( p -> sim, p ),
-      name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
+    action_callback_t( p -> sim, p ),
+    name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
-          spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -110,7 +110,7 @@ struct discharge_proc_callback_t : public action_callback_t
     struct discharge_attack_t : public attack_t
     {
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
-          attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -146,7 +146,7 @@ struct discharge_proc_callback_t : public action_callback_t
   virtual void trigger( action_t* a, void* call_data )
   {
     if ( cooldown -> remains() > 0 )
-        return;
+      return;
 
     if ( proc_chance )
     {
@@ -185,9 +185,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   stat_buff_t* buff;
   action_t* discharge_action;
 
-  stat_discharge_proc_callback_t( const std::string& n, player_t* p, 
+  stat_discharge_proc_callback_t( const std::string& n, player_t* p,
                                   int stat, int max_stacks, double stat_amount,
-                                  const school_type school, double discharge_amount, double discharge_scaling, 
+                                  const school_type school, double discharge_amount, double discharge_scaling,
                                   double proc_chance, double duration, double cooldown ) :
     action_callback_t( p -> sim, p ), name_str( n )
   {
@@ -199,7 +199,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
-          spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -214,7 +214,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     struct discharge_attack_t : public attack_t
     {
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
-          attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -267,7 +267,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     buff_t* apparatus_of_khazgoroth;
     stat_buff_t* blessing_of_khazgoroth;
 
-    apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) : 
+    apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
       apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 60.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
@@ -285,7 +285,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
 
         // FIXME: This really should be a /use action
         if( apparatus_of_khazgoroth -> check() == 5 )
-        { 
+        {
           // Highest of Crits/Master/haste is chosen
           blessing_of_khazgoroth -> stat = STAT_CRIT_RATING;
           if ( a -> player -> stats.haste_rating   > a -> player -> stats.crit_rating ||
@@ -437,7 +437,7 @@ static void register_deathbringers_will( item_t* item )
     rng_t* rng;
 
     deathbringers_will_callback_t( player_t* p, bool h ) :
-        stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ), heroic( h )
+      stat_proc_callback_t( "deathbringers_will", p, STAT_STRENGTH, 1, 600, 0.35, 30.0, 105.0 ), heroic( h )
     {
       rng = p -> get_rng( "deathbringers_will_stat" );
     }
@@ -501,7 +501,7 @@ static void register_empowered_deathbringer( item_t* item )
   struct deathbringer_spell_t : public spell_t
   {
     deathbringer_spell_t( player_t* p ) :
-        spell_t( "empowered_deathbringer", p, RESOURCE_NONE, SCHOOL_SHADOW )
+      spell_t( "empowered_deathbringer", p, RESOURCE_NONE, SCHOOL_SHADOW )
     {
       trigger_gcd = 0;
       background  = true;
@@ -525,7 +525,7 @@ static void register_empowered_deathbringer( item_t* item )
     rng_t* rng;
 
     deathbringer_callback_t( player_t* p, spell_t* s ) :
-        action_callback_t( p -> sim, p ), spell( s )
+      action_callback_t( p -> sim, p ), spell( s )
     {
       rng  = p -> get_rng ( "empowered_deathbringer", RNG_DEFAULT );
     }
@@ -553,7 +553,7 @@ static void register_raging_deathbringer( item_t* item )
   struct deathbringer_spell_t : public spell_t
   {
     deathbringer_spell_t( player_t* p ) :
-        spell_t( "raging_deathbringer", p, RESOURCE_NONE, SCHOOL_SHADOW )
+      spell_t( "raging_deathbringer", p, RESOURCE_NONE, SCHOOL_SHADOW )
     {
       trigger_gcd = 0;
       background  = true;
@@ -577,7 +577,7 @@ static void register_raging_deathbringer( item_t* item )
     rng_t* rng;
 
     deathbringer_callback_t( player_t* p, spell_t* s ) :
-        action_callback_t( p -> sim, p ), spell( s )
+      action_callback_t( p -> sim, p ), spell( s )
     {
       rng  = p -> get_rng ( "raging_deathbringer", RNG_DEFAULT );
     }
@@ -607,7 +607,7 @@ static void register_fury_of_angerforge( item_t* item )
     buff_t* raw_fury;
     stat_buff_t* blackwing_dragonkin;
 
-    fury_of_angerforge_callback_t( player_t* p ) : 
+    fury_of_angerforge_callback_t( player_t* p ) :
       action_callback_t( p -> sim, p )
     {
       raw_fury = new buff_t( p, "raw_fury", 5, 15.0, 5.0, 0.5, true );
@@ -686,7 +686,7 @@ static void register_nibelung( item_t* item )
     bool heroic;
 
     nibelung_spell_t( player_t* p, bool h ) :
-        spell_t( "valkyr_smite", p, RESOURCE_NONE, SCHOOL_HOLY ), heroic( h )
+      spell_t( "valkyr_smite", p, RESOURCE_NONE, SCHOOL_HOLY ), heroic( h )
     {
       trigger_gcd = 0;
       background  = true;
@@ -726,7 +726,7 @@ static void register_nibelung( item_t* item )
     rng_t* rng;
 
     nibelung_callback_t( player_t* p, spell_t* s ) :
-        action_callback_t( p -> sim, p ), spell( s )
+      action_callback_t( p -> sim, p ), spell( s )
     {
       proc = p -> get_proc( "nibelung" );
       rng  = p -> get_rng ( "nibelung" );
@@ -737,7 +737,7 @@ static void register_nibelung( item_t* item )
       if (   a -> aoe      ||
              a -> proc     ||
              a -> dual     ||
-           ! a -> harmful   )
+             ! a -> harmful   )
         return;
 
       if ( rng -> roll( 0.02 ) )
@@ -817,9 +817,9 @@ static void register_shadowmourne( item_t* item )
 static void register_shard_of_woe( item_t* item )
 {
   // February 15 - Hotfix
-  // Shard of Woe (Heroic trinket) now reduces the base mana cost of 
-  // spells by 205, with the exception of Holy and Nature spells -- 
-  // the base mana cost of Holy and Nature spells remains reduced 
+  // Shard of Woe (Heroic trinket) now reduces the base mana cost of
+  // spells by 205, with the exception of Holy and Nature spells --
+  // the base mana cost of Holy and Nature spells remains reduced
   // by 405 with this trinket.
   player_t* p = item -> player;
 
@@ -884,10 +884,10 @@ static void register_tiny_abom( item_t* item )
     double time_to_execute;
     bool manifesting_anger;
 
-    tiny_abom_trigger_t( player_t* p, buff_t* b ) : 
-      action_callback_t( p -> sim, p ), buff( b ), 
+    tiny_abom_trigger_t( player_t* p, buff_t* b ) :
+      action_callback_t( p -> sim, p ), buff( b ),
       proc_name( "manifest_anger" ),
-      old_stats( p -> get_stats( "manifest_anger" ) ), 
+      old_stats( p -> get_stats( "manifest_anger" ) ),
       first_stack_attack( NULL )
     {
       old_stats -> school = SCHOOL_PHYSICAL;
@@ -978,17 +978,17 @@ static void register_tyrandes_favorite_doll( item_t* item )
   {
     tyrandes_spell_t( player_t* p, double max_mana ) :
       spell_t( "tyrandes_doll", p, RESOURCE_NONE, SCHOOL_ARCANE )
-      {
-        trigger_gcd = 0;
-        base_dd_min = max_mana;
-        base_dd_max = max_mana;
-        may_crit = true;
-        aoe = -1;
-        background = true;
-        base_spell_power_multiplier = 0;
-        cooldown -> duration = 60.0;
-        init();
-      }
+    {
+      trigger_gcd = 0;
+      base_dd_min = max_mana;
+      base_dd_max = max_mana;
+      may_crit = true;
+      aoe = -1;
+      background = true;
+      base_spell_power_multiplier = 0;
+      cooldown -> duration = 60.0;
+      init();
+    }
   };
 
   struct tyrandes_callback_t : public action_callback_t
@@ -998,7 +998,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
     spell_t* discharge_spell;
     gain_t* gain_source;
 
-    tyrandes_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), max_mana(4200), mana_stored(0)
+    tyrandes_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), max_mana( 4200 ), mana_stored( 0 )
     {
       discharge_spell = new tyrandes_spell_t( p, max_mana );
       gain_source = p -> get_gain( "tyrandes_doll" );
@@ -1008,7 +1008,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      double mana_spent = *( (double*) call_data );
+      double mana_spent = *( ( double* ) call_data );
 
       mana_stored += mana_spent * 0.20;
       if( mana_stored > max_mana ) mana_stored = max_mana;
@@ -1031,7 +1031,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
 static void register_unheeded_warning( item_t* item )
 {
   player_t* p = item -> player;
-  
+
   item -> unique = true;
 
   struct uhw_buff_t : public buff_t
@@ -1278,8 +1278,8 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
-  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player, 
-                             e.stat, e.max_stacks, e.stat_amount, 
+  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player,
+                             e.stat, e.max_stacks, e.stat_amount,
                              e.proc_chance, e.duration, e.cooldown, e.tick, e.reverse );
 }
 
@@ -1292,8 +1292,8 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
-  return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player, 
-                                  e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling, 
+  return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
+                                  e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
                                   e.proc_chance, e.cooldown );
 }
 
@@ -1306,9 +1306,9 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
 {
   const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
 
-  return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player, 
-                                       e.max_stacks, e.stat, e.stat_amount, 
-                                       e.school, e.discharge_amount, e.discharge_scaling, 
+  return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
+                                       e.max_stacks, e.stat, e.stat_amount,
+                                       e.school, e.discharge_amount, e.discharge_scaling,
                                        e.proc_chance, e.duration, e.cooldown );
 }
 
@@ -1353,7 +1353,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "fluid_death"                         ) e = "OnAttackHit_38Agi_10Stack_15Dur";
   else if ( name == "forge_ember"                         ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"            ) e = "OnAttackHit_16AP_20Stack_10Dur";
-  else if ( name == "gale_of_shadows"                     ) e = ( heroic ? "OnSpellTickDamage_17SP_20Stack_15Dur" : "OnSpellTickDamage_15SP_20Stack_15Dur" ); 
+  else if ( name == "gale_of_shadows"                     ) e = ( heroic ? "OnSpellTickDamage_17SP_20Stack_15Dur" : "OnSpellTickDamage_15SP_20Stack_15Dur" );
   else if ( name == "grace_of_the_herald"                 ) e = ( heroic ? "OnAttackHit_1710Crit_10%_10Dur_75Cd" : "OnAttackHit_924Crit_10%_10Dur_75Cd" );
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd"; // TO-DO: Confirm ICD
@@ -1371,7 +1371,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "mithril_pocketwatch"                 ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "mjolnir_runestone"                   ) e = "OnAttackHit_665Haste_15%_10Dur_45Cd";
   else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
-  else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_48Mastery_10Stack_10Dur" : "OnSpellTickDamage_42Mastery_10Stack_10Dur" ); 
+  else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_48Mastery_10Stack_10Dur" : "OnSpellTickDamage_42Mastery_10Stack_10Dur" );
   else if ( name == "needleencrusted_scorpion"            ) e = "OnAttackCrit_678crit_10%_10Dur_50Cd";
   else if ( name == "pandoras_plea"                       ) e = "OnSpellCast_751SP_10%_10Dur_45Cd";
   else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_95Cd" : "OnAttackHit_918Mastery_10%_20Dur_95Cd" ); // TO-DO: Confirm ICD.
@@ -1419,7 +1419,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 
   // Enchants
-  else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";  
+  else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
   else if ( name == "lightweave_embroidery_old"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
   else if ( name == "lightweave"                          ) e = ( ptr ? "OnSpellDamage_580Int_25%_15Dur_50Cd" : "OnSpellDamage_580Int_20%_15Dur_50Cd" );
   else if ( name == "lightweave_embroidery"               ) e = ( ptr ? "OnSpellDamage_580Int_25%_15Dur_50Cd" : "OnSpellDamage_580Int_20%_15Dur_50Cd" );
@@ -1436,7 +1436,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   if ( e.empty() ) return false;
 
   util_t::tolower( e );
-  
+
   encoding = e;
 
   return true;
@@ -1460,7 +1460,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "electrospark_heartstarter"   ) e = "567Int_20Dur_120Cd";
   else if ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
   else if ( name == "ephemeral_snowflake"         ) e = "464Haste_20Dur_120Cd";
-  else if ( name == "essence_of_the_eternal_flame") e = ( heroic ? "1441Str_15Dur_120Cd" : "1277Str_15Dur_120Cd" );
+  else if ( name == "essence_of_the_eternal_flame" ) e = ( heroic ? "1441Str_15Dur_120Cd" : "1277Str_15Dur_120Cd" );
   else if ( name == "fiery_quintessence"          ) e = ( heroic ? "1297Int_25Dur_90Cd"  : "1149Int_25Dur_90Cd" );
   else if ( name == "figurine__demon_panther"     ) e = "1425Agi_20Dur_120Cd";
   else if ( name == "figurine__dream_owl"         ) e = "1425Spi_20Dur_120Cd";

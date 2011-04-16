@@ -371,13 +371,13 @@ static bool parse_item_quality( item_t&     item,
                                 xml_node_t* node )
 {
   std::string info_str;
-  
+
   item.armory_quality_str.clear();
-  
+
   if ( ! xml_t::get_value( info_str, node, "quality/id" ) )
     return false;
 
-  // Let's just convert the quality id to text, and then 
+  // Let's just convert the quality id to text, and then
   // in decode() parse it into an integer
   if ( info_str == "4" )
     item.armory_quality_str = "epic";
@@ -395,9 +395,9 @@ static bool parse_item_level( item_t&     item,
                               xml_node_t* node )
 {
   std::string info_str;
-  
+
   item.armory_ilevel_str.clear();
-  
+
   if ( ! xml_t::get_value( info_str, node, "level/." ) )
     return false;
 
@@ -615,7 +615,7 @@ bool wowhead_t::download_item( item_t&            item,
     item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
-  
+
   if ( ! parse_item_level( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -670,13 +670,13 @@ bool wowhead_t::download_slot( item_t&            item,
       item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
-  
+
   if ( ! parse_item_quality( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item quality for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
-  
+
   if ( ! parse_item_level( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -748,7 +748,7 @@ bool wowhead_t::download_slot( item_t&            item,
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
     return false;
   }
-  
+
   return true;
 }
 
@@ -918,7 +918,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );
       return 0;
     }
-    
+
     std::string talent_encoding;
     if ( ! js_t::get_value( talent_encoding, build, "talents" ) )
     {
@@ -932,7 +932,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
       return 0;
     }
     p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + talent_encoding;
-    
+
     std::string glyph_encoding;
     if ( ! js_t::get_value( glyph_encoding, build, "glyphs" ) )
     {

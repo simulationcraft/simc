@@ -8,9 +8,9 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-    name_str( n ), sim( p->sim ), player( p ), next( 0 ), school( SCHOOL_NONE ),
-    type( STATS_DMG ), analyzed( false ), initialized( false ),
-    quiet( false ), resource( RESOURCE_NONE ), resource_consumed( 0 ), last_execute( -1 )
+  name_str( n ), sim( p->sim ), player( p ), next( 0 ), school( SCHOOL_NONE ),
+  type( STATS_DMG ), analyzed( false ), initialized( false ),
+  quiet( false ), resource( RESOURCE_NONE ), resource_consumed( 0 ), last_execute( -1 )
 {
 }
 
@@ -66,15 +66,15 @@ void stats_t::reset()
 // stats_t::add_result ======================================================
 
 void stats_t::add_result( double amount,
-			  int    dmg_type,
-			  int    result )
+                          int    dmg_type,
+                          int    result )
 {
   player -> iteration_dmg += amount;
   total_dmg += amount;
 
   stats_results_t* r = 0;
 
-  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB ) 
+  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
   {
     r = &( direct_results[ result ] );
     num_direct_results++;
@@ -151,7 +151,7 @@ void stats_t::analyze()
       stats_results_t& r = direct_results[ i ];
 
       r.avg_dmg = r.total_dmg / r.count;
-      r.pct = 100.0 * r.count / (double) num_direct_results;
+      r.pct = 100.0 * r.count / ( double ) num_direct_results;
       r.count     /= num_iterations;
       r.total_dmg /= num_iterations;
     }
@@ -160,7 +160,7 @@ void stats_t::analyze()
       stats_results_t& r = tick_results[ i ];
 
       r.avg_dmg = r.total_dmg / r.count;
-      r.pct = 100.0 * r.count / (double) num_tick_results;
+      r.pct = 100.0 * r.count / ( double ) num_tick_results;
       r.count     /= num_iterations;
       r.total_dmg /= num_iterations;
     }
@@ -214,7 +214,7 @@ void stats_t::analyze()
 
   for ( int i=0; i < num_buckets; i++ )
   {
-    if( i == (int) sim -> divisor_timeline.size() ) break;
+    if( i == ( int ) sim -> divisor_timeline.size() ) break;
     timeline_dmg[ i ] /= sim -> divisor_timeline[ i ];
   }
 
