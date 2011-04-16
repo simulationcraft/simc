@@ -128,7 +128,6 @@ struct priest_t : public player_t
     // Holy
     passive_spell_t* spiritual_healing;
     passive_spell_t* meditation_holy;
-    passive_spell_t* surge_of_light;
 
     // Shadow
     passive_spell_t* shadow_power;
@@ -4296,7 +4295,6 @@ void priest_t::init_spells()
   // Holy
   passive_spells.spiritual_healing      = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
   passive_spells.meditation_holy        = new passive_spell_t( this, "meditation_holy", 95861 );
-  passive_spells.surge_of_light         = new passive_spell_t( this, "surge_of_light", 88687 );
 
   // Shadow
   passive_spells.shadow_power           = new passive_spell_t( this, "shadow_power", "Shadow Power" );
@@ -4379,7 +4377,7 @@ void priest_t::init_buffs()
   buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
   buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
-  buffs_surge_of_light             = new buff_t( this, 88688, "surge_of_light", passive_spells.surge_of_light -> proc_chance() );
+  buffs_surge_of_light             = new buff_t( this, talents.surge_of_light );
 
 
   // Shadow
