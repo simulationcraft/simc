@@ -434,7 +434,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   else
     state = STATE_REGENERATING;
 
-  if ( overflow > 0.0 && (paired_rune -> state == STATE_REGENERATING || paired_rune -> state == STATE_DEPLETED) )
+  if ( overflow > 0.0 && ( paired_rune -> state == STATE_REGENERATING || paired_rune -> state == STATE_DEPLETED ) )
   {
     paired_rune -> value = std::min( 1.0, paired_rune -> value + overflow );
     if ( paired_rune -> value >= 1.0 )
@@ -606,7 +606,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_haste() SC_CONST
   {
-      return snapshot_haste;
+    return snapshot_haste;
   }
 
   virtual double composite_attack_hit() SC_CONST
@@ -886,7 +886,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_add_multiplier = 0.75;
       trigger_gcd         = 0;
       base_multiplier    *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07
-                              + o -> glyphs.heart_strike          * 0.30;
+                            + o -> glyphs.heart_strike          * 0.30;
       base_multiplier    *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
@@ -1458,7 +1458,7 @@ struct death_knight_attack_t : public attack_t
 
   void _init_dk_attack()
   {
-   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
     may_crit   = true;
     may_glance = false;
     death_knight_t* p = player -> cast_death_knight();
@@ -1485,7 +1485,7 @@ void extract_rune_cost( spell_id_t* spell, int* cost_blood, int* cost_frost, int
   // Rune costs appear to be in binary: 0a0b0c where 'c' is whether the ability
   // costs a blood rune, 'b' is whether it costs an unholy rune, and 'a'
   // is whether it costs a frost rune.
-  
+
   uint32_t spell_id = spell -> spell_id();
   if ( spell_id == 0 ) return;
 
@@ -1727,7 +1727,7 @@ static void trigger_ebon_plaguebringer( action_t* a )
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
-  double duration = 21.0 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 3, 9, 12 ); 
+  double duration = 21.0 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 3, 9, 12 );
   if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
     a -> target -> debuffs.ebon_plaguebringer -> buff_duration = duration;
@@ -1861,7 +1861,7 @@ void death_knight_attack_t::player_buff()
   death_knight_t* p = player -> cast_death_knight();
 
   attack_t::player_buff();
-  
+
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     if ( ! proc )
       player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
@@ -1906,7 +1906,7 @@ double death_knight_attack_t::swing_haste() SC_CONST
   if ( p -> talents.improved_icy_talons -> rank() )
     haste *= 1.0 / ( 1.0 + p -> talents.improved_icy_talons -> effect3().percent() );
 
-    return haste;
+  return haste;
 }
 
 // death_knight_attack_t::target_debuff =====================================
@@ -2086,7 +2086,7 @@ struct melee_t : public death_knight_attack_t
 
       if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
         p -> buffs_crimson_scourge -> trigger();
-      
+
       trigger_blood_caked_blade( this );
       if ( p -> buffs_scent_of_blood -> up() )
       {
@@ -2239,7 +2239,7 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> buffs_crimson_scourge -> up() )
       return 0;
-    
+
     return death_knight_spell_t::cost();
   }
 
@@ -2287,7 +2287,7 @@ struct blood_strike_offhand_t : public death_knight_attack_t
     death_knight_attack_t( "blood_strike_offhand", 66215, player )
   {
     death_knight_t* p = player -> cast_death_knight();
-    
+
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     rp_gain          = 0;
@@ -2320,7 +2320,7 @@ struct blood_strike_t : public death_knight_attack_t
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> primary_tree() == TREE_FROST ||
-	 p -> primary_tree() == TREE_UNHOLY )
+         p -> primary_tree() == TREE_UNHOLY )
       convert_runes = 1.0;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -2360,7 +2360,7 @@ struct blood_tap_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
-    
+
     base_cost = 0.0; // Cost is stored as 6 in the DBC for some odd reason
     harmful   = false;
     if ( p -> talents.improved_blood_tap -> rank() )
@@ -2416,7 +2416,7 @@ struct blood_tap_t : public death_knight_spell_t
         break;
       }
     }
-    
+
     // Called last so we print the correct runes
     death_knight_spell_t::execute();
   }
@@ -2806,7 +2806,7 @@ struct frost_strike_offhand_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_attack_t::target_debuff( t, dmg_type);
+    death_knight_attack_t::target_debuff( t, dmg_type );
 
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2838,9 +2838,9 @@ struct frost_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();    
+    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
-   
+
     if( result_is_hit() )
       p -> trigger_runic_empowerment();
 
@@ -2864,12 +2864,12 @@ struct frost_strike_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_attack_t::target_debuff( t, dmg_type);
+    death_knight_attack_t::target_debuff( t, dmg_type );
 
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+         player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 };
 
@@ -2889,8 +2889,8 @@ struct heart_strike_t : public death_knight_attack_t
 
     base_multiplier *= 1 + p -> set_bonus.tier10_2pc_melee() * 0.07
                        + p -> glyphs.heart_strike            * 0.30;
-    
-    aoe = 2;                   
+
+    aoe = 2;
     base_add_multiplier *= 0.75;
   }
 
@@ -3023,12 +3023,12 @@ struct howling_blast_t : public death_knight_spell_t
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_spell_t::target_debuff( t, dmg_type);
+    death_knight_spell_t::target_debuff( t, dmg_type );
 
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+         player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 
   virtual bool ready()
@@ -3112,7 +3112,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-     player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+         player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 
   virtual bool ready()
@@ -3183,7 +3183,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
     weapon           = &( p -> off_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
-    
+
     // These both stack additive with MOTFW
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
@@ -3348,13 +3348,13 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_spell_t( "pestilence", 50842, player )
   {
     death_knight_t* p = player -> cast_death_knight();
-    
+
     parse_options( NULL, options_str );
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> primary_tree() == TREE_FROST ||
-	 p -> primary_tree() == TREE_UNHOLY )
+         p -> primary_tree() == TREE_UNHOLY )
       convert_runes = 1.0;
   }
 
@@ -3399,7 +3399,7 @@ struct plague_strike_offhand_t : public death_knight_attack_t
     death_knight_attack_t( "plague_strike_offhand", 66216, player )
   {
     death_knight_t* p = player -> cast_death_knight();
-    
+
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
@@ -3407,7 +3407,7 @@ struct plague_strike_offhand_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();    
+    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
 
     if ( result_is_hit() )
@@ -3427,7 +3427,7 @@ struct plague_strike_t : public death_knight_attack_t
     death_knight_attack_t( "plague_strike", 45462, player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
-    
+
     parse_options( NULL, options_str );
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
@@ -3439,7 +3439,7 @@ struct plague_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();    
+    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
@@ -3613,7 +3613,7 @@ struct rune_strike_t : public death_knight_attack_t
     death_knight_attack_t( "rune_strike", 56815, player )
   {
     death_knight_t* p = player -> cast_death_knight();
-    
+
     parse_options( NULL, options_str );
 
     base_crit       += p -> glyphs.rune_strike * 0.10;
@@ -3629,7 +3629,7 @@ struct rune_strike_t : public death_knight_attack_t
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
     death_knight_attack_t::consume_resource();
-    
+
     if ( result_is_hit() )
     {
       p -> trigger_runic_empowerment();
@@ -3861,7 +3861,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
       rt = RUNE_TYPE_FROST;
     else if ( util_t::str_compare_ci( splits[ 0 ], "unholy" ) || util_t::str_compare_ci( splits[ 0 ], "u" ) )
       rt = RUNE_TYPE_UNHOLY;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "death" ) || util_t::str_compare_ci( splits[ 0 ], "d" ) ) 
+    else if ( util_t::str_compare_ci( splits[ 0 ], "death" ) || util_t::str_compare_ci( splits[ 0 ], "d" ) )
       rt = RUNE_TYPE_DEATH;
 
     if ( rt != RUNE_TYPE_NONE && util_t::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
@@ -3875,10 +3875,10 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
         {
           death_knight_t* dk = action -> player -> cast_death_knight();
           const dk_rune_t* rune = 0;
-          
+
           if ( r != RUNE_TYPE_DEATH )
           {
-            if ( ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_ready() ) || 
+            if ( ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_ready() ) ||
                  ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() && dk -> _runes.slot[ r ].paired_rune -> is_ready() ) )
             {
               result_num = 0;
@@ -3888,8 +3888,8 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
             // Neither is up, choose the non-death rune that's regenerating.
             if ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_regenerating() )
               rune = &( dk -> _runes.slot[ r ] );
-            else if ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() && 
-                        dk -> _runes.slot[ r ].paired_rune -> is_regenerating() )
+            else if ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() &&
+                      dk -> _runes.slot[ r ].paired_rune -> is_regenerating() )
               rune = dk -> _runes.slot[ r ].paired_rune;
           }
           else
@@ -3902,8 +3902,8 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
                 result_num = 0;
                 return TOK_NUM;
               }
-              
-              // If the rune is a death rune and it's regenerating, see if we need to use it 
+
+              // If the rune is a death rune and it's regenerating, see if we need to use it
               // for the expression
               if ( dk -> _runes.slot[ i ].is_death() && dk -> _runes.slot[ i ].is_regenerating() )
               {
@@ -3942,13 +3942,13 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
           result_num = ( 1.0 - rune -> value ) / runes_per_second;
           if ( action -> sim -> debug )
           {
-            log_t::output( action -> sim, "rune_cooldown_remains: req_type=%d type=%d slot=%d ready=%fs", 
-              r, rune -> type, rune -> slot_number, result_num );
+            log_t::output( action -> sim, "rune_cooldown_remains: req_type=%d type=%d slot=%d ready=%fs",
+                           r, rune -> type, rune -> slot_number, result_num );
           }
-          return TOK_NUM; 
+          return TOK_NUM;
         }
       };
-      
+
       return new rune_cooldown_expr_t( a, rt );
     }
   }
@@ -4025,7 +4025,7 @@ void death_knight_t::create_pets()
 // death_knight_t::create_pet ===============================================
 
 pet_t* death_knight_t::create_pet( const std::string& pet_name,
-				   const std::string& pet_type )
+                                   const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -4091,7 +4091,7 @@ void death_knight_t::init()
     {
       if ( _runes.slot[i].type == RUNE_TYPE_BLOOD )
       {
-	_runes.slot[i].make_permanent_death_rune();
+        _runes.slot[i].make_permanent_death_rune();
       }
     }
   }
@@ -4114,14 +4114,14 @@ void death_knight_t::init_base()
   double str_mult = ( talents.abominations_might -> effect2().percent() +
                       talents.brittle_bones      -> effect2().percent() );
 
-  if ( primary_tree() == TREE_UNHOLY ) 
+  if ( primary_tree() == TREE_UNHOLY )
   {
     str_mult += spells.unholy_might -> effect1().percent();
   }
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
-  if ( primary_tree() == TREE_BLOOD ) 
+  if ( primary_tree() == TREE_BLOOD )
   {
     attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
     base_attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
@@ -4228,7 +4228,7 @@ void death_knight_t::init_spells()
   spells.runic_empowerment    = spell_data_t::find( 81229, "Runic Empowerment",    dbc.ptr );
 
   // Tier Bonuses
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
+  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     {     0,     0, 70655, 70656, 70650, 70652,     0,     0 }, // Tier10
@@ -4281,7 +4281,7 @@ void death_knight_t::init_actions()
         action_list_str += ",time>=10";
       }
       // check for Heart of Rage
-      if ( strstr( items[ i ].name(), "heart_of_rage") )
+      if ( strstr( items[ i ].name(), "heart_of_rage" ) )
       {
         has_hor = true;
       }
@@ -4346,7 +4346,7 @@ void death_knight_t::init_actions()
       action_list_str +="/frost_strike,if=runic_power>=90&!buff.bloodlust.react";
       action_list_str +="/frost_strike,if=runic_power>=95";
       if ( talents.howling_blast -> rank() )
-      { 
+      {
         if ( talents.rime -> rank() )
           action_list_str += "/howling_blast,if=buff.rime.react";
         action_list_str += "/howling_blast,if=(death+unholy)=0&!buff.bloodlust.react";
@@ -4425,7 +4425,7 @@ void death_knight_t::init_enchant()
     {
       weapon_t* w = a -> weapon;
       if ( ! w || w -> slot != slot ) return;
-      
+
       // FIX ME: What is the proc rate? For now assuming the same as FC
       buff -> trigger( 2, 0.2, w -> proc_chance_on_swing( 2.0 ) );
 
@@ -4612,7 +4612,7 @@ void death_knight_t::init_buffs()
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
   buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
-  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",	
+  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",
                                           1, 21.0 + util_t::talent_rank( talents.epidemic -> rank(), 3, 3, 9, 12 ), 0.0, 1.0, true );
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
@@ -4798,7 +4798,7 @@ double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_
 {
   int tree = primary_tree();
 
-  if ( tree == TREE_UNHOLY || tree == TREE_FROST ) 
+  if ( tree == TREE_UNHOLY || tree == TREE_FROST )
     if ( attr == ATTR_STRENGTH )
       return spells.plate_specialization -> effect1().percent();
 
@@ -4987,7 +4987,7 @@ void death_knight_t::trigger_runic_empowerment()
 
   if ( num_depleted > 0 )
   {
-    int rune_to_regen = depleted_runes[ (int) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
+    int rune_to_regen = depleted_runes[ ( int ) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
     _runes.slot[rune_to_regen].fill_rune();
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();

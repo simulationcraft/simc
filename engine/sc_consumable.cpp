@@ -19,7 +19,7 @@ struct flask_t : public action_t
   gain_t* gain;
 
   flask_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
+    action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
   {
     std::string type_str;
 
@@ -70,7 +70,7 @@ struct flask_t : public action_t
     case FLASK_ENDLESS_RAGE:
       p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 244 : 180 );
       break;
-   case FLASK_ENHANCEMENT:
+    case FLASK_ENHANCEMENT:
       if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
         if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
@@ -170,7 +170,7 @@ struct food_t : public action_t
   gain_t* gain;
 
   food_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
+    action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
   {
     std::string type_str;
 
@@ -406,7 +406,7 @@ struct food_t : public action_t
 struct destruction_potion_t : public action_t
 {
   destruction_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "destruction_potion", p )
+    action_t( ACTION_USE, "destruction_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -456,7 +456,7 @@ struct destruction_potion_t : public action_t
 struct speed_potion_t : public action_t
 {
   speed_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "speed_potion", p )
+    action_t( ACTION_USE, "speed_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -506,7 +506,7 @@ struct speed_potion_t : public action_t
 struct wild_magic_potion_t : public action_t
 {
   wild_magic_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "wild_magic_potion", p )
+    action_t( ACTION_USE, "wild_magic_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -559,7 +559,7 @@ struct wild_magic_potion_t : public action_t
 struct earthen_potion_t : public action_t
 {
   earthen_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "earthen_potion", p )
+    action_t( ACTION_USE, "earthen_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -608,7 +608,7 @@ struct earthen_potion_t : public action_t
 struct golemblood_potion_t : public action_t
 {
   golemblood_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "golemblood_potion", p )
+    action_t( ACTION_USE, "golemblood_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -651,13 +651,13 @@ struct golemblood_potion_t : public action_t
 };
 
 // ==========================================================================
-// Potion of the Tol'vir 
+// Potion of the Tol'vir
 // ==========================================================================
 
 struct tolvir_potion_t : public action_t
 {
   tolvir_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "tolvir_potion", p )
+    action_t( ACTION_USE, "tolvir_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -706,7 +706,7 @@ struct tolvir_potion_t : public action_t
 struct volcanic_potion_t : public action_t
 {
   volcanic_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "volcanic_potion", p )
+    action_t( ACTION_USE, "volcanic_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -755,7 +755,7 @@ struct volcanic_potion_t : public action_t
 struct indestructible_potion_t : public action_t
 {
   indestructible_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "indestructible_potion", p )
+    action_t( ACTION_USE, "indestructible_potion", p )
   {
     parse_options( NULL, options_str );
 
@@ -809,7 +809,7 @@ struct mana_potion_t : public action_t
   int max;
 
   mana_potion_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
+    action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
   {
     option_t options[] =
     {
@@ -866,7 +866,7 @@ struct health_stone_t : public action_t
   int health;
 
   health_stone_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "health_stone", p ), trigger( 0 ), health( 0 )
+    action_t( ACTION_USE, "health_stone", p ), trigger( 0 ), health( 0 )
   {
     option_t options[] =
     {
@@ -915,7 +915,7 @@ struct dark_rune_t : public action_t
   int mana;
 
   dark_rune_t( player_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "dark_rune", p ), trigger( 0 ), health( 0 ), mana( 0 )
+    action_t( ACTION_USE, "dark_rune", p ), trigger( 0 ), health( 0 ), mana( 0 )
   {
     option_t options[] =
     {

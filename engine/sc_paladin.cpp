@@ -439,10 +439,10 @@ struct paladin_attack_t : public attack_t
           p -> active_seal_of_truth_dot -> execute();
         }
 
-        // It seems like it's the seal-triggering attacks that stack up ancient power		
-        if ( ! p -> guardian_of_ancient_kings -> sleeping )		
-        {		
-          p -> buffs_ancient_power -> trigger();		
+        // It seems like it's the seal-triggering attacks that stack up ancient power
+        if ( ! p -> guardian_of_ancient_kings -> sleeping )
+        {
+          p -> buffs_ancient_power -> trigger();
         }
       }
       if ( trigger_dp )
@@ -475,7 +475,7 @@ struct paladin_attack_t : public attack_t
     }
 
     return attack_t::cost();
-   }
+  }
 
   virtual void consume_resource()
   {
@@ -601,7 +601,7 @@ struct avengers_shield_t : public paladin_attack_t
 
     if ( p -> glyphs.focused_shield -> ok() )
     {
-      aoe             += (int) p -> glyphs.focused_shield -> mod_additive( P_TARGET );
+      aoe             += ( int ) p -> glyphs.focused_shield -> mod_additive( P_TARGET );
       base_multiplier *= 1.0 + p -> glyphs.focused_shield -> mod_additive( P_GENERIC );
     }
   }
@@ -618,7 +618,7 @@ struct crusader_strike_t : public paladin_attack_t
     parse_options( NULL, options_str );
 
     spell_haste  = true;
-    trigger_seal = true;    
+    trigger_seal = true;
 
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
     cooldown -> duration += p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN );
@@ -637,11 +637,11 @@ struct crusader_strike_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    
+
     if ( result_is_hit() )
     {
       p -> resource_gain( RESOURCE_HOLY_POWER, p -> buffs_zealotry -> up() ? 3 : 1,
-                                p -> gains_hp_crusader_strike );
+                          p -> gains_hp_crusader_strike );
 
       trigger_hand_of_light( this );
       if ( sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
@@ -792,7 +792,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
     base_crit += p -> talents.sanctified_wrath -> mod_additive( P_CRIT )
                  + p -> talents.wrath_of_the_lightbringer -> mod_additive( P_CRIT );
     base_cost *= p -> glyphs.hammer_of_wrath -> mod_additive( P_RESOURCE_COST );
-    
+
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
     direct_power_mod             = 1.0;
@@ -1200,7 +1200,7 @@ struct judgement_t : public paladin_attack_t
     seal -> base_cost   = base_cost;
     seal -> cooldown    = cooldown;
     seal -> trigger_gcd = trigger_gcd;
-    seal -> execute(); 
+    seal -> execute();
 
     if ( seal -> result_is_hit() )
     {
@@ -1213,7 +1213,7 @@ struct judgement_t : public paladin_attack_t
 
       p -> buffs_divine_purpose -> trigger();
       p -> buffs_judgements_of_the_pure -> trigger();
-      p -> buffs_sacred_duty-> trigger();      
+      p -> buffs_sacred_duty-> trigger();
     }
 
     p -> buffs_judgements_of_the_bold -> trigger();
@@ -1407,7 +1407,7 @@ struct paladin_spell_t : public spell_t
     }
 
     return spell_t::cost();
-   }
+  }
 
   virtual void consume_resource()
   {
@@ -1543,7 +1543,7 @@ struct divine_plea_t : public paladin_spell_t
     if ( hopo )
     {
       p -> resource_gain( RESOURCE_HOLY_POWER, hopo,
-                                p -> gains_hp_divine_plea );
+                          p -> gains_hp_divine_plea );
     }
   }
 };
@@ -1701,7 +1701,7 @@ struct holy_shock_t : public paladin_spell_t
     if ( result_is_hit() )
     {
       p -> resource_gain( RESOURCE_HOLY_POWER, 1,
-                                p -> gains_hp_holy_shock );
+                          p -> gains_hp_holy_shock );
     }
   }
 };
@@ -1803,13 +1803,13 @@ struct paladin_heal_t : public heal_t
     weapon_multiplier = 0.0;
   }
   paladin_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-      heal_t( n, player, sname, t )
+    heal_t( n, player, sname, t )
   {
     _init_paladin_heal_t();
   }
 
   paladin_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-      heal_t( n, player, id, t )
+    heal_t( n, player, id, t )
   {
     _init_paladin_heal_t();
   }
@@ -1832,7 +1832,7 @@ struct paladin_heal_t : public heal_t
     }
 
     return heal_t::cost();
-   }
+  }
 
   virtual void consume_resource()
   {
@@ -1843,7 +1843,6 @@ struct paladin_heal_t : public heal_t
     p -> buffs_divine_purpose -> expire();
   }
 };
-
 
 // Word of Glory Spell
 
@@ -2417,7 +2416,7 @@ void paladin_t::init_spells()
 {
   player_t::init_spells();
 
-  // Spells 
+  // Spells
   spells.divine_favor                  = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
   spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
 
@@ -2687,9 +2686,9 @@ void paladin_t::combat_begin()
 int paladin_t::holy_power_stacks() SC_CONST
 {
   if ( buffs_divine_purpose -> up() )
-    return (int) resource_max[ RESOURCE_HOLY_POWER ];
+    return ( int ) resource_max[ RESOURCE_HOLY_POWER ];
 
-   return (int) resource_current[ RESOURCE_HOLY_POWER ];
+  return ( int ) resource_current[ RESOURCE_HOLY_POWER ];
 }
 
 // paladin_t::get_divine_bulwark =============================================
