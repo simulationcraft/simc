@@ -2695,12 +2695,12 @@ struct flash_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     // Assuming a SoL Flash Heal can't proc SoL
-    if ( p -> buffs_surge_of_light -> trigger() )
+    if ( p -> buffs_surge_of_light -> up() )
+      p -> buffs_surge_of_light -> expire();
+    else if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
 
     p -> buffs_serendipity -> trigger();
-
-    p -> buffs_surge_of_light -> expire();
 
     // Inner Focus
     if ( p -> buffs_inner_focus -> up() )
