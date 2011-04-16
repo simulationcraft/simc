@@ -30,7 +30,7 @@ actions+=/soulburn
 actions+=/soul_fire,if=buff.soulburn.up
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/life_tap,mana_percentage<=5
-actions+=/drain_life,interrupt=1
+actions+=/drain_life
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
 actions+=/life_tap

@@ -797,21 +797,66 @@ struct warlock_main_pet_t : public warlock_pet_t
 
 struct warlock_guardian_pet_t : public warlock_pet_t
 {
+  double snapshot_crit, snapshot_haste, snapshot_sp;
+
   warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
-    warlock_pet_t( sim, owner, pet_name, pt, true )
+    warlock_pet_t( sim, owner, pet_name, pt, true ),
+    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 )
   {}
 
   virtual void summon( double duration=0 )
   {
     warlock_pet_t::summon( duration );
+    // Guardians use snapshots
+    snapshot_crit = owner -> composite_spell_crit();
+    snapshot_haste = owner -> composite_spell_haste();
+    snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX ); // Get the max SP for simplicity
     reset();
   }
 
-  virtual double composite_attack_hit() SC_CONST
-  { return 0; }
-
+  virtual double composite_attack_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+    
   virtual double composite_attack_expertise() SC_CONST
-  { return 0; }
+  {
+    return 0;
+  }
+
+  virtual double composite_attack_haste() SC_CONST
+  {
+    return snapshot_haste * player_t::composite_attack_haste();
+  }
+
+  virtual double composite_attack_hit() SC_CONST
+  {
+    return 0;
+  }
+
+  virtual double composite_attack_power() SC_CONST
+  {
+    double ap = pet_t::composite_attack_power();
+    ap += snapshot_sp * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
+    return ap;
+  }
+
+  virtual double composite_spell_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+
+  virtual double composite_spell_haste() SC_CONST
+  {
+    return snapshot_haste * player_t::composite_spell_haste();
+  }
+
+  virtual double composite_spell_power( const school_type school ) SC_CONST
+  {
+    double sp = pet_t::composite_spell_power( school );
+    sp += snapshot_sp * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
+    return sp;
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -1550,7 +1595,6 @@ struct voidwalker_pet_t : public warlock_main_pet_t
 
 struct infernal_pet_t : public warlock_guardian_pet_t
 {
-
   // Immolation Damage Spell =====================================================
 
   struct immolation_damage_t : public warlock_pet_spell_t
@@ -1595,7 +1639,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
   };
 
   infernal_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
+    warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     action_list_str += "/snapshot_stats";
     if ( level >= 50) action_list_str += "/immolation,if=!ticking";
@@ -1629,9 +1673,12 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
     {
       //FIXME: This needs re-testing on the 4.1 PTR
-      base_dd_min *= 1.333; // Based on testing 2010/11/20
-      base_dd_max *= 1.333; // Based on testing 2010/11/20
-      direct_power_mod = 0.95; // Based on testing 2010/11/20
+      if ( ! player -> ptr )
+      {
+        base_dd_min *= 1.333; // Based on testing 2010/11/20
+        base_dd_max *= 1.333; // Based on testing 2010/11/20
+        direct_power_mod = 0.95; // Based on testing 2010/11/20
+      }
       base_execute_time = 2.5;
     }
   };
@@ -4285,7 +4332,7 @@ void warlock_t::init_actions()
             action_list_str += "/soul_fire,if=buff.soulburn.up";
           }
         }
-        action_list_str += "/drain_life,interrupt=1";
+        action_list_str += "/drain_life";
       }
 
     break;
