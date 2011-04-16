@@ -2312,7 +2312,11 @@ struct regrowth_t : public druid_heal_t
 
   virtual void execute()
   {
+    druid_t* p = player -> cast_druid();
+
     druid_heal_t::execute();
+
+    p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
 
     if ( result == RESULT_CRIT )
       trigger_living_seed( this );
