@@ -2171,7 +2171,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     aoe = -1;
     background = true;
     base_multiplier *= 1.0 + ( p -> glyphs.living_bomb    -> effect1().percent() +
-			       p -> talents.critical_mass -> effect2().percent() );
+                               p -> talents.critical_mass -> effect2().percent() );
   }
 };
 

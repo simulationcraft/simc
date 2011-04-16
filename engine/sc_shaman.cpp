@@ -1089,7 +1089,6 @@ struct searing_flames_t : public shaman_spell_t
     tick_power_mod   = 0.0;
   }
   
-
   // Don't double dip
   virtual void target_debuff( player_t* t, int dmg_type ) { }
   

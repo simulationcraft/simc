@@ -13,6 +13,7 @@ struct druid_t : public player_t
 {
   // Active
   action_t* active_fury_swipes;
+  heal_t*   active_living_seed;
   action_t* active_t10_4pc_caster_dot;
 
   // Auto-attacks
@@ -31,6 +32,7 @@ struct druid_t : public player_t
   buff_t* buffs_enrage;
   buff_t* buffs_glyph_of_innervate;
   buff_t* buffs_lacerate;
+  buff_t* buffs_lifebloom;
   buff_t* buffs_lunar_shower;
   buff_t* buffs_moonkin_form;
   buff_t* buffs_natures_grace;
@@ -60,10 +62,14 @@ struct druid_t : public player_t
   // DoTs
   dot_t* dots_insect_swarm;
   dot_t* dots_lacerate;
+  dot_t* dots_lifebloom;
   dot_t* dots_moonfire;
   dot_t* dots_rake;
+  dot_t* dots_regrowth;
+  dot_t* dots_rejuvenation;
   dot_t* dots_rip;
   dot_t* dots_sunfire;
+  dot_t* dots_wild_growth;
 
   // Gains
   gain_t* gains_bear_melee;
@@ -127,13 +133,16 @@ struct druid_t : public player_t
   // Spell Data
   struct spells_t
   {
-    spell_data_t* primal_madness_cat;
-    spell_data_t* moonfury;
-    spell_data_t* total_eclipse;
     spell_data_t* aggression;
-    spell_data_t* vengence;
+    spell_data_t* gift_of_nature; // NYI
+    spell_data_t* meditation; // NYI
+    spell_data_t* moonfury;
+    spell_data_t* primal_madness_cat;
     spell_data_t* razor_claws;
-    spell_data_t* savage_defender;
+    spell_data_t* savage_defender; // NYI
+    spell_data_t* symbiosis; // NYI
+    spell_data_t* total_eclipse;
+    spell_data_t* vengeance;
 
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   };
@@ -205,7 +214,7 @@ struct druid_t : public player_t
     talent_t* gift_of_the_earthmother; // NYI
     talent_t* heart_of_the_wild;
     talent_t* improved_rejuvenation; // NYI
-    talent_t* living_seed; // NYI
+    talent_t* living_seed;
     talent_t* malfurions_gift; // NYI
     talent_t* master_shapeshifter;
     talent_t* natural_shapeshifter; // NYI
@@ -233,6 +242,7 @@ struct druid_t : public player_t
     tree_type[ DRUID_RESTORATION ] = TREE_RESTORATION;
 
     active_fury_swipes        = NULL;
+    active_living_seed        = 0;
     active_t10_4pc_caster_dot = 0;
 
     eclipse_bar_value     = 0;
@@ -246,10 +256,14 @@ struct druid_t : public player_t
 
     dots_insect_swarm = get_dot( "insect_swarm" );
     dots_lacerate     = get_dot( "lacerate"     );
+    dots_lifebloom    = get_dot( "lifebloom"    );
     dots_moonfire     = get_dot( "moonfire"     );
     dots_rake         = get_dot( "rake"         );
+    dots_regrowth     = get_dot( "regrowth"     );
+    dots_rejuvenation = get_dot( "rejuvenation" );
     dots_rip          = get_dot( "rip"          );
     dots_sunfire      = get_dot( "sunfire"      );
+    dots_wild_growth  = get_dot ( "wild_growth" );
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -310,6 +324,16 @@ struct druid_t : public player_t
   {
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
     return combo_point_rank( cp_list );
+  }
+
+  int hot_counter()
+  {
+    int hots = 0;
+    if ( dots_rejuvenation -> ticking ) hots++;
+    if ( dots_regrowth -> ticking     ) hots++;
+    if ( dots_lifebloom -> ticking    ) hots++;
+    if ( dots_wild_growth -> ticking  ) hots++;
+    return hots;
   }
 
   void reset_gcd()
@@ -728,6 +752,37 @@ static void trigger_infected_wounds( action_t* a )
   }
 }
 
+// trigger_living_seed ======================================================
+
+static void trigger_living_seed( heal_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! p -> talents.living_seed -> ok() ) return;
+
+  struct living_seed_t : public druid_heal_t
+  {
+    living_seed_t ( druid_t* player ) :
+      druid_heal_t( "living_seed", player, 48504 )
+    {
+      background = true;
+      may_crit   = false;
+      proc       = true;
+
+      init();
+    }
+  };
+
+  if ( ! p -> active_living_seed ) p -> active_living_seed = new living_seed_t( p );
+
+  // Technically this should be a buff on the target, then bloom when they're attacked
+  // For simplicity we're going to assume it always heals the target
+  double heal = a -> direct_dmg * p -> talents.living_seed -> effect1().percent();
+  p -> active_living_seed -> base_dd_min = heal;
+  p -> active_living_seed -> base_dd_max = heal;
+  p -> active_living_seed -> execute();
+};
+
 // trigger_omen_of_clarity ==================================================
 
 static void trigger_omen_of_clarity( action_t* a )
@@ -796,7 +851,8 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
 
   struct t10_4pc_caster_dot_t : public druid_spell_t
   {
-    t10_4pc_caster_dot_t( player_t* player ) : druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
+    t10_4pc_caster_dot_t( player_t* player ) :
+      druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
     {
       may_miss        = false;
       may_resist      = false;
@@ -1592,7 +1648,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 // druid_bear_attack_t::parse_options ======================================
 
 void druid_bear_attack_t::parse_options( option_t*          options,
-    const std::string& options_str )
+                                         const std::string& options_str )
 {
   option_t base_options[] =
   {
@@ -2115,21 +2171,82 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t( "healing_touch", p, 5185 )
   {
     parse_options( NULL, options_str );
+  }
 
-    // FIXME: Data is not being parsed automagically
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+
+    if ( result == RESULT_CRIT )
+      trigger_living_seed( this );
   }
 };
 
 // Lifebloom ================================================================
 
+struct lifebloom_bloom_t : public druid_heal_t
+{
+  lifebloom_bloom_t( druid_t* p ) :
+    druid_heal_t( "lifebloom_bloom", p, 0 )
+  {
+    background = true;
+    dual       = true;
+    // stats      = player -> get_stats( "lifebloom", this );
+    // The stats doesn't work as expected when merging
+
+    // All the data exists in the original lifebloom spell
+    const spell_data_t* damage_spell = player -> dbc.spell( 33763 );
+    direct_power_mod   = damage_spell -> effect2().coeff();
+    base_dd_min        = player -> dbc.effect_min( damage_spell -> effect2().id(), player -> level );
+    base_dd_max        = player -> dbc.effect_max( damage_spell -> effect2().id(), player -> level );
+    school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+    base_dd_multiplier = p -> buffs_lifebloom -> check();
+
+    druid_heal_t::execute();
+  }
+};
+
 struct lifebloom_t : public druid_heal_t
 {
+  lifebloom_bloom_t* bloom;
+
   lifebloom_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "lifebloom", p, 33763 )
+    druid_heal_t( "lifebloom", p, 33763 ), bloom( 0 )
   {
     parse_options( NULL, options_str );
+
+    may_crit = false;
+
+    bloom = new lifebloom_bloom_t( p );
     
-    // FIXME: Does this know how to stack automatically?
+    // This can be only cast on one target, unless Tree of Life is up
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    druid_t* p = player -> cast_druid();
+    return druid_heal_t::calculate_tick_damage() * p -> buffs_lifebloom -> check();
+  }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+    druid_t* p = player -> cast_druid();
+    p -> buffs_lifebloom -> trigger();
+  }
+
+  virtual void last_tick()
+  {
+    bloom -> execute();
+
+    druid_heal_t::last_tick();
+    druid_t* p = player -> cast_druid();
+    p -> buffs_lifebloom -> expire();    
   }
 };
 
@@ -2141,6 +2258,22 @@ struct nourish_t : public druid_heal_t
     druid_heal_t( "nourish", p, 50464 )
   {
     parse_options( NULL, options_str );
+  }
+
+  virtual void player_buff()
+  {
+    druid_heal_t::player_buff();
+    druid_t* p = player -> cast_druid();
+    if ( p -> hot_counter() )
+      player_multiplier *= 1.20;
+  }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+
+    if ( result == RESULT_CRIT )
+      trigger_living_seed( this );
   }
 };
 
@@ -2154,6 +2287,14 @@ struct regrowth_t : public druid_heal_t
     parse_options( NULL, options_str );
     // FIXME: Data is not being parsed automagically
   }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+
+    if ( result == RESULT_CRIT )
+      trigger_living_seed( this );
+  }
 };
 
 // Rejuvenation =============================================================
@@ -2164,6 +2305,66 @@ struct rejuvenation_t : public druid_heal_t
     druid_heal_t( "rejuvenation", p, 774 )
   {
     parse_options( NULL, options_str );
+    may_crit = false;
+  }
+};
+
+// Swiftmend ================================================================
+
+struct swiftmend_t : public druid_heal_t
+{
+  swiftmend_t( druid_t* p, const std::string& options_str ) :
+    druid_heal_t( "swiftmend", p, 18562 )
+  {
+    check_spec( TREE_RESTORATION );
+
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+
+    druid_t* p = player -> cast_druid();
+
+    // Will consume the shortest of the two HoTs if both are up
+    if ( p -> dots_regrowth -> ticking && p -> dots_rejuvenation -> ticking )
+    {
+      if ( p -> dots_regrowth -> remains() > p -> dots_rejuvenation -> remains() )
+      {
+        p -> dots_rejuvenation -> action -> cancel();
+      }
+      else
+      {
+        p -> dots_regrowth -> action -> cancel();
+      }
+    }
+    else if ( p -> dots_regrowth -> ticking )
+    {
+      p -> dots_regrowth -> action -> cancel();
+    }
+    else if ( p -> dots_rejuvenation -> ticking )
+    {
+      p -> dots_rejuvenation -> action -> cancel();
+    }
+    else
+    {
+      // should never get here
+      assert( 0 );
+    }
+
+    if ( result == RESULT_CRIT )
+      trigger_living_seed( this );
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( ! ( p -> dots_regrowth -> ticking || p -> dots_rejuvenation -> ticking ) )
+      return false;
+
+    return druid_heal_t::ready();
   }
 };
 
@@ -2175,6 +2376,12 @@ struct tranquility_t : public druid_heal_t
     druid_heal_t( "tranquility", p, 740 )
   {
     parse_options( NULL, options_str );
+
+    aoe = effect3().base_value(); // Heals 5 targets
+
+    // Healing is in spell effect 1
+    parse_effect_data( this -> effect_trigger_spell( 1 ), 1 ); // Initial Hit
+    parse_effect_data( this -> effect_trigger_spell( 1 ), 2 ); // HoT
   }
 };
 
@@ -3714,6 +3921,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
   if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
+  if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
   if ( name == "thrash"                 ) return new                 thrash_t( this, options_str );
   if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
@@ -3827,12 +4035,15 @@ void druid_t::init_spells()
   player_t::init_spells();
 
   // Specializations
-
-  spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
-  spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
   spells.aggression      = spell_data_t::find( 84735, "Aggression",      dbc.ptr );
+  spells.gift_of_nature  = spell_data_t::find( 87305, "Gift of Nature",  dbc.ptr );
+  spells.meditation      = spell_data_t::find( 85101, "Meditation",      dbc.ptr );
+  spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
   spells.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
   spells.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
+  spells.symbiosis       = spell_data_t::find( 77495, "Symbiosis",       dbc.ptr );
+  spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
+  spells.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
 
   unsigned primal_madness_ids[] = { 0, 80879, 80886 };
   spells.primal_madness_cat = spell_data_t::find( primal_madness_ids[ talents.primal_madness -> rank() ], "Primal Madness", dbc.ptr );
@@ -3937,12 +4148,14 @@ void druid_t::init_buffs()
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
 
-  // buff_t ( sim, id, name, chance, duration, quiet, reverse, rng_type )
+  // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )
   buffs_barkskin           = new buff_t( this, 22812, "barkskin" );
   buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
   buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
   buffs_enrage             = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
   buffs_lacerate           = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
+  buffs_lifebloom          = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0, true );
+  buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
   buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );
   buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600

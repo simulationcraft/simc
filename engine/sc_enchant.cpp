@@ -535,16 +535,17 @@ static enchant_data_t enchant_db[] =
 // Add-Ons use the same enchant data-base for now
 static enchant_data_t* addon_db = enchant_db;
 
-static const stat_type reforge_stats[] = { 
-  STAT_SPIRIT, 
+static const stat_type reforge_stats[] =
+{
+  STAT_SPIRIT,
   STAT_DODGE_RATING,
   STAT_PARRY_RATING,
   STAT_HIT_RATING,
-  STAT_CRIT_RATING, 
+  STAT_CRIT_RATING,
   STAT_HASTE_RATING,
   STAT_EXPERTISE_RATING,
-  STAT_MASTERY_RATING, 
-  STAT_NONE 
+  STAT_MASTERY_RATING,
+  STAT_NONE
 };
 
 // Weapon Stat Proc Callback ==================================================
@@ -557,7 +558,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   bool all_damage;
 
   weapon_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, double ppm=0.0, bool all=false ) :
-    action_callback_t( p -> sim, p ), weapon(w), buff(b), PPM(ppm), all_damage(all) {}
+    action_callback_t( p -> sim, p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all ) {}
 
   virtual void trigger( action_t* a, void* call_data )
   {
@@ -590,15 +591,15 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   rng_t* rng;
 
   weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, double cd=0, int rng_type=RNG_DEFAULT ) :
-      action_callback_t( p -> sim, p ),
-      name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm )
+    action_callback_t( p -> sim, p ),
+    name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_CYCLIC; // default is CYCLIC since discharge should not have duration
 
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double dmg, const school_type s ) :
-          spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = dmg;
@@ -630,7 +631,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     if( weapon && a -> weapon != weapon ) return;
 
     if ( cooldown -> remains() > 0 )
-        return;
+      return;
 
     double chance = fixed_chance;
     if( weapon && PPM > 0 )
@@ -774,7 +775,7 @@ void enchant_t::init( player_t* p )
     {
       buff_t *mh_buff, *oh_buff, *s_buff;
       hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
-        action_callback_t( p -> sim, p ), mh_buff(mhb), oh_buff(ohb), s_buff(sb)
+        action_callback_t( p -> sim, p ), mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
       {
       }
       virtual void trigger( action_t* a, void* call_data )
@@ -1001,7 +1002,7 @@ int enchant_t::get_reforge_id( stat_type stat_from,
   for( index_to=0; reforge_stats[ index_to ] != STAT_NONE; index_to++ )
     if ( reforge_stats[ index_to ] == stat_to )
       break;
-  
+
   int id=0;
   for( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
   {

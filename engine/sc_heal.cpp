@@ -57,9 +57,9 @@ heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
 // heal_t::parse_options ====================================================
 
 void heal_t::parse_options( option_t*          options,
-                              const std::string& options_str )
+                            const std::string& options_str )
 {
-  spell_t::parse_options(options, options_str );
+  spell_t::parse_options( options, options_str );
 
   if ( target )
   {
@@ -109,8 +109,8 @@ void heal_t::player_buff()
 
   if ( sim -> debug )
     log_t::output( sim, "heal_t::player_buff: %s hit=%.2f crit=%.2f pen=%.0f sp=%.2f ap=%.2f mult=%.2f ",
-		   name(), player_hit, player_crit, player_penetration, 
-		   player_spell_power, player_attack_power, player_multiplier );
+                   name(), player_hit, player_crit, player_penetration,
+                   player_spell_power, player_attack_power, player_multiplier );
 }
 
 // heal_t::target_buff ====================================================
@@ -124,13 +124,13 @@ void heal_t::target_debuff( player_t* t, int dmg_type )
   target_spell_power           = 0;
   target_penetration           = 0;
   target_dd_adder              = 0;
-  
+
   target_multiplier *= 1.0 + t -> buffs.grace -> value();
-  
+
   if ( sim -> debug )
     log_t::output( sim, "heal_t::target_buff: %s hit=%.2f crit=%.2f pen=%.0f ap=%.2f sp=%.2f mult=%.2f",
-		   name(), target_hit, target_crit, target_penetration, 
-		   target_attack_power, target_spell_power, target_multiplier );
+                   name(), target_hit, target_crit, target_penetration,
+                   target_attack_power, target_spell_power, target_multiplier );
 }
 
 // heal_t::haste ============================================================
@@ -138,7 +138,7 @@ void heal_t::target_debuff( player_t* t, int dmg_type )
 double heal_t::haste() SC_CONST
 {
   double h = spell_t::haste();
-  
+
   return h;
 }
 
@@ -149,7 +149,7 @@ void heal_t::execute()
   if ( sim -> log && ! dual )
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
-		   player -> resource_current[ player -> primary_resource() ] );
+                   player -> resource_current[ player -> primary_resource() ] );
   }
 
   player_buff();
@@ -172,9 +172,9 @@ void heal_t::execute()
   update_ready();
 
   if ( ! dual ) stats -> add_execute( time_to_execute );
-  
+
   if ( harmful ) player -> in_combat = true;
-    
+
   if ( repeating && ! proc ) schedule_execute();
 }
 
@@ -196,8 +196,8 @@ void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
       assert( dot -> tick_event );
       if ( ! channeled )
       {
-	// Recasting a dot while it's still ticking gives it an extra tick in total
-	dot -> num_ticks++;
+        // Recasting a dot while it's still ticking gives it an extra tick in total
+        dot -> num_ticks++;
       }
     }
     else
@@ -207,7 +207,7 @@ void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
     dot -> recalculate_ready();
     if ( sim -> debug )
       log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
-		     player -> name(), dot -> ready, name(), dot -> name() );
+                     player -> name(), dot -> ready, name(), dot -> name() );
   }
 }
 
@@ -291,8 +291,8 @@ double heal_t::calculate_direct_damage()
   if ( sim -> debug )
   {
     log_t::output( sim, "%s heal for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
-		   player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
-		   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
+                   player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
+                   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
   }
 
   return dmg;
@@ -323,19 +323,19 @@ double heal_t::calculate_tick_damage()
   if ( sim -> debug )
   {
     log_t::output( sim, "%s heal for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
-		   player -> name(), name(), tick_dmg, init_tick_dmg, base_td, tick_power_mod,
-		   total_power(), base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
+                   player -> name(), name(), tick_dmg, init_tick_dmg, base_td, tick_power_mod,
+                   total_power(), base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
   }
-  
+
   return dmg;
 }
 
 // heal_t::asses_damage ========================================================
 
-void heal_t::assess_damage( player_t* t, 
-			    double heal_amount,
-			    int    heal_type, 
-			    int    heal_result )
+void heal_t::assess_damage( player_t* t,
+                            double heal_amount,
+                            int    heal_type,
+                            int    heal_result )
 {
   double heal_actual = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 
@@ -347,11 +347,11 @@ void heal_t::assess_damage( player_t* t,
     if ( sim -> log )
     {
       log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
-		     player -> name(), name(),
-		     t -> name(), heal_actual, heal_amount,
-		     util_t::result_type_string( result ) );
+                     player -> name(), name(),
+                     t -> name(), heal_actual, heal_amount,
+                     util_t::result_type_string( result ) );
     }
-    
+
     if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
   else
@@ -359,15 +359,15 @@ void heal_t::assess_damage( player_t* t,
     if ( sim -> log )
     {
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
-		     player -> name(), name(),
-		     dot -> current_tick, dot -> num_ticks,
-		     heal_target[0] -> name(), heal_actual, heal_amount,
-		     util_t::result_type_string( result ) );
+                     player -> name(), name(),
+                     dot -> current_tick, dot -> num_ticks,
+                     heal_target[0] -> name(), heal_actual, heal_amount,
+                     util_t::result_type_string( result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
-  
+
   stats -> add_result( heal_amount, heal_type, heal_result );
 }
 
@@ -460,9 +460,9 @@ void absorb_t::_init_absorb_t()
   target = player;
   target_str = "";
   total_heal = total_actual = 0;
-  
+
   weapon_multiplier = 0.0;
-  
+
   stats -> type = STATS_ABSORB;
 }
 
@@ -487,7 +487,7 @@ absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) 
 void absorb_t::parse_options( option_t*          options,
                               const std::string& options_str )
 {
-  spell_t::parse_options(options, options_str );
+  spell_t::parse_options( options, options_str );
 
   if ( target )
   {
@@ -511,13 +511,13 @@ void absorb_t::player_buff()
   player_attack_power            = 0;
   player_spell_power_multiplier  = 1.0;
   player_attack_power_multiplier = 1.0;
-  
+
   player_t* p = player;
 
   player_multiplier    = p -> composite_player_multiplier   ( school );
   player_dd_multiplier = p -> composite_player_dd_multiplier( school );
   player_td_multiplier = p -> composite_player_td_multiplier( school );
-  
+
   if ( base_attack_power_multiplier > 0 )
   {
     player_attack_power            = p -> composite_attack_power();
@@ -529,13 +529,13 @@ void absorb_t::player_buff()
     player_spell_power            = p -> composite_spell_power( school );
     player_spell_power_multiplier = p -> composite_spell_power_multiplier();
   }
-  
+
   player_haste = haste();
-  
+
   if ( sim -> debug )
     log_t::output( sim, "absorb_t::player_buff: %s hit=%.2f crit=%.2f pen=%.0f sp=%.2f ap=%.2f mult=%.2f",
-		   name(), player_hit, player_crit, player_penetration, 
-		   player_spell_power, player_attack_power, player_multiplier );
+                   name(), player_hit, player_crit, player_penetration,
+                   player_spell_power, player_attack_power, player_multiplier );
 }
 
 // absorb_t::target_debu ====================================================
@@ -549,11 +549,11 @@ void absorb_t::target_debuff( player_t* t, int dmg_type )
   target_spell_power           = 0;
   target_penetration           = 0;
   target_dd_adder              = 0;
-  
+
   if ( sim -> debug )
     log_t::output( sim, "absorb_t::target_debuff: %s hit=%.2f crit=%.2f pen=%.0f ap=%.2f sp=%.2f mult=%.2f",
-		   name(), target_hit, target_crit, target_penetration, 
-		   target_attack_power, target_spell_power, target_multiplier );
+                   name(), target_hit, target_crit, target_penetration,
+                   target_attack_power, target_spell_power, target_multiplier );
 }
 
 // absorb_t::haste ============================================================
@@ -572,7 +572,7 @@ void absorb_t::execute()
   if ( sim -> log && ! dual )
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
-		   player -> resource_current[ player -> primary_resource() ] );
+                   player -> resource_current[ player -> primary_resource() ] );
   }
 
   if ( harmful )
@@ -595,7 +595,7 @@ void absorb_t::execute()
 
     schedule_travel( heal_target[i] );
   }
-  
+
   consume_resource();
 
   update_ready();
@@ -617,10 +617,10 @@ void absorb_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 
 // absorb_t::asses_heal ========================================================
 
-void absorb_t::assess_damage( player_t* t, 
-			      double    heal_amount,
-			      int       heal_type, 
-			      int       heal_result )
+void absorb_t::assess_damage( player_t* t,
+                              double    heal_amount,
+                              int       heal_type,
+                              int       heal_result )
 {
   double heal_actual = direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 
@@ -632,13 +632,13 @@ void absorb_t::assess_damage( player_t* t,
     if ( sim -> log )
     {
       log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
-		     player -> name(), name(),
-		     t -> name(), heal_actual, heal_amount,
-		     util_t::result_type_string( result ) );
+                     player -> name(), name(),
+                     t -> name(), heal_actual, heal_amount,
+                     util_t::result_type_string( result ) );
     }
 
   }
-  
+
   stats -> add_result( heal_amount, heal_type, heal_result );
 }
 
@@ -676,12 +676,12 @@ double absorb_t::calculate_direct_damage()
   double init_direct_dmg = dmg;
 
   if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
-      
+
   if ( sim -> debug )
   {
     log_t::output( sim, "%s heal for %s: dd=%.0f i_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
-		   player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
-		   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
+                   player -> name(), name(), dmg, init_direct_dmg, base_direct_dmg, direct_power_mod,
+                   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier );
   }
 
   return dmg;
