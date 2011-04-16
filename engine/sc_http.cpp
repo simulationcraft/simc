@@ -89,13 +89,13 @@ static std::string build_request( std::string&   host,
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   char buffer[2048];
-  if (http_t::proxy_type == "http")
+  if ( http_t::proxy_type == "http" )
   {
     // append port info only if not the standard port
     char portbuff[7] = "\0";
-    if (port != 80)
+    if ( port != 80 )
     {
-      sprintf(portbuff, ":%i", port);
+      sprintf( portbuff, ":%i", port );
     }
     // building a proxified request : absoluteURI without Host header
     sprintf( buffer,
@@ -125,7 +125,7 @@ static std::string build_request( std::string&   host,
              path.c_str(),
              host.c_str() );
   }
-  return std::string(buffer);
+  return std::string( buffer );
 }
 
 // throttle =================================================================
@@ -422,7 +422,7 @@ bool http_t::download( std::string& result,
 
     std::wstring wHeaders = L"";
     wHeaders += L"Cookie: loginChecked=1\r\n";
-          wHeaders += L"Cookie: cookieLangId=en_US\r\n";
+    wHeaders += L"Cookie: cookieLangId=en_US\r\n";
 
     hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
     if ( hFile )
@@ -501,7 +501,7 @@ bool http_t::download( std::string& result,
     struct hostent* h;
     sockaddr_in a;
 
-    if (proxy_type == "http")
+    if ( proxy_type == "http" )
     {
       h = gethostbyname( proxy_host.c_str() );
       a.sin_port = htons( proxy_port );

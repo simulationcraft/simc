@@ -435,9 +435,10 @@ struct druid_bear_attack_t : public attack_t
 struct druid_heal_t : public heal_t
 {
   double additive_factors;
+  bool consume_ooc;
 
   druid_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t ), additive_factors( 0 )
+    heal_t( n, player, id, t ), additive_factors( 0 ), consume_ooc( false )
   {
     dot_behavior      = DOT_REFRESH;
     may_crit          = true;
@@ -2178,7 +2179,7 @@ void druid_heal_t::consume_resource()
 {
   druid_t* p = player -> cast_druid();
   spell_t::consume_resource();
-  if ( harmful && p -> buffs_omen_of_clarity -> up() && heal_t::execute_time() )
+  if ( consume_ooc && p -> buffs_omen_of_clarity -> up() )
   {
     // Treat the savings like a mana gain.
     double amount = heal_t::cost();
@@ -2195,7 +2196,7 @@ void druid_heal_t::consume_resource()
 double druid_heal_t::cost() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() ) return 0;
+  if ( consume_ooc && p -> buffs_omen_of_clarity -> check() ) return 0;
   double c = heal_t::cost();
   c *= 1.0 + cost_reduction();
   if ( c < 0 ) c = 0.0;
@@ -2207,7 +2208,7 @@ double druid_heal_t::cost() SC_CONST
 double druid_heal_t::cost_reduction() SC_CONST
 {
   druid_t* p = player -> cast_druid();
-  double   cr = 0.0;
+  double cr = 0.0;
   cr += p -> talents.moonglow -> base_value();
   return cr;
 }
@@ -2282,6 +2283,7 @@ struct healing_touch_t : public druid_heal_t
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
     base_execute_time  += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+    consume_ooc         = true;
 
     ns_cd = p -> get_cooldown( "natures_swiftness" );
   }
@@ -2437,6 +2439,7 @@ struct regrowth_t : public druid_heal_t
     additive_factors   += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
     base_crit          += p -> talents.natures_bounty -> mod_additive( P_CRIT );
+    consume_ooc         = true;
   }
 
   virtual void execute()
@@ -2531,6 +2534,7 @@ struct swiftmend_t : public druid_heal_t
     parse_options( NULL, options_str );
     
     additive_factors += p -> talents.improved_rejuvenation -> mod_additive( P_GENERIC );
+    consume_ooc       = true;
   }
 
   virtual void execute()
