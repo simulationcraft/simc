@@ -726,12 +726,16 @@ static void trigger_efflorescence( heal_t* a )
     efflorescence_t( druid_t* player ) :
       druid_heal_t( "efflorescence", player, 81269 )
     {
-      aoe            = 6; // DRs kick in after 6
+      druid_t* p = player -> cast_druid();
+
+      aoe            = p -> ptr ? 3 : 6; // DRs kick in after 6
       background     = true;
       base_tick_time = 1.0;
-      hasted_ticks   = false;
+      hasted_ticks   = p -> ptr ? true : false;
+      may_crit       = false;
       num_ticks      = 7;
       proc           = true;
+      tick_may_crit  = p -> ptr ? false : true;
 
       init();
     }
@@ -740,7 +744,7 @@ static void trigger_efflorescence( heal_t* a )
   if ( ! p -> active_efflorescence ) p -> active_efflorescence = new efflorescence_t( p );
 
   double heal = a -> direct_dmg * p -> talents.efflorescence -> effect1().percent();
-  p -> active_efflorescence -> base_td = heal / p -> active_efflorescence -> num_ticks;
+  p -> active_efflorescence -> base_td = ( p -> ptr ) ? heal : heal / p -> active_efflorescence -> num_ticks;
   p -> active_efflorescence -> execute();
 }
 
@@ -2254,6 +2258,11 @@ void druid_heal_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
   }
+
+  if ( p -> ptr && p -> buffs_natures_swiftness -> check() && execute_time() > 0 )
+  {
+    player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect1().percent();
+  }
 }
 
 // druid_heal_t::schedule_execute =========================================
@@ -2594,11 +2603,16 @@ struct tranquility_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
 
-    aoe = effect3().base_value(); // Heals 5 targets
+    aoe               = effect3().base_value(); // Heals 5 targets
+    base_execute_time = duration();
+    channeled         = true;
 
     // Healing is in spell effect 1
     parse_effect_data( this -> effect_trigger_spell( 1 ), 1 ); // Initial Hit
     parse_effect_data( this -> effect_trigger_spell( 1 ), 2 ); // HoT
+
+    if ( p -> ptr )
+      cooldown -> duration += p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN );
   }
 };
 
