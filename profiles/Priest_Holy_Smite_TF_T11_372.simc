@@ -7,7 +7,7 @@ race=troll
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#bcZfuRrRkbkMdoRb0b
+talents=http://www.wowhead.com/talent#priest-030000000000000000000233112221211201102211122000200000000000000
 glyphs=penance/smite/shadow_word_pain/divine_accuracy
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

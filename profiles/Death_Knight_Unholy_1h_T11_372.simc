@@ -51,7 +51,7 @@ wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats
 hands=magma_plated_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191haste_171mastery_429sta_266str,reforge=haste_exp,gems=40str_67str,enchant=50str
 finger1=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,reforge=crit_exp,gems=40str
 finger2=cloudburst_ring_of_the_faultline,heroic=1,ilevel=372,quality=epic,stats=321sta_214str_143haste_143mastery,reforge=haste_exp,suffix=118
-trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_50cd
+trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_75cd
 trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_mastery,equip=onattackhit_2178str_10%_20dur_100cd
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_143crit_143haste_322sta_215str,reforge=haste_hit,enchant=65crit
 main_hand=lava_spine,heroic=1,ilevel=372,quality=epic,stats=110crit_110haste_248sta_165str,reforge=haste_exp,enchant=rune_of_the_fallen_crusader,weapon=sword_2.60speed_949min_1764max

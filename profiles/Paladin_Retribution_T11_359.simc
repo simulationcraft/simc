@@ -43,7 +43,7 @@ wrists=electron_inductor_coils,type=plate,ilevel=359,quality=epic,stats=1499armo
 hands=reinforced_sapphirium_gauntlets,type=plate,ilevel=359,quality=epic,stats=2141armor_169haste_149mastery_380sta_233str,reforge=haste_hit,gems=40str_67str,enchant=50str
 finger1=band_of_bees,ilevel=359,quality=epic,stats=127haste_127mastery_286sta_190str,reforge=haste_hit
 finger2=blauvelts_family_crest,ilevel=359,quality=epic,stats=127haste_127mastery_286sta_190str,reforge=haste_hit
-trinket1=crushing_weight,ilevel=359,quality=epic,stats=321str,equip=onattackhit_1926haste_10%_15dur_50cd
+trinket1=crushing_weight,ilevel=359,quality=epic,stats=321str,equip=onattackhit_1926haste_10%_15dur_75cd
 trinket2=heart_of_rage,ilevel=359,quality=epic,stats=321exp,reforge=exp_mastery,equip=onattackhit_1926str_10%_20dur_100cd
 back=floating_web,ilevel=359,quality=epic,stats=625armor_127exp_127mastery_286sta_190str,enchant=65crit
 main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,ilevel=359,quality=epic,stats=228crit_228hit_512sta_341str,reforge=crit_mastery,enchant=landslide,weapon=sword2h_3.80speed_1894min_2843max
