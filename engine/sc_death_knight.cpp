@@ -4327,6 +4327,7 @@ void death_knight_t::init_actions()
       {
         action_list_str += "/pillar_of_frost";
       }
+      action_list_str += "/blood_tap,if=death!=2";
       // Try and time a better ghoul
       action_list_str += "/raise_dead,if=buff.rune_of_the_fallen_crusader.react";
       if ( has_hor )
@@ -4339,7 +4340,6 @@ void death_knight_t::init_actions()
       action_list_str += "/obliterate,if=frost=2&unholy=2";
       action_list_str += "/obliterate,if=death=2";
       action_list_str += "/obliterate,if=buff.killing_machine.react"; // All 3 are seperated for Sample Sequence
-      action_list_str += "/blood_tap,if=buff.killing_machine.react";
       action_list_str += "/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react";
       if ( ! ptr )
         action_list_str += "/blood_strike,if=blood=2";
