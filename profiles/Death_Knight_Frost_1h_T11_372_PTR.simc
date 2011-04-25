@@ -11,8 +11,7 @@ talents=http://www.wowhead.com/talent#deathknight-203200000000000000003033001223
 glyphs=horn_of_winter/frost_strike/howling_blast/obliterate
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
-actions+=/presence,choose=frost,if=!buff.bloodlust.react&runic_power<=20
-actions+=/presence,choose=unholy,if=buff.bloodlust.react
+actions+=/presence,choose=unholy
 actions+=/army_of_the_dead
 actions+=/snapshot_stats
 actions+=/blood_fury,time>=10

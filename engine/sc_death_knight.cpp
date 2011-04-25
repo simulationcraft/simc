@@ -4265,8 +4265,7 @@ void death_knight_t::init_actions()
     }
     else // 1H Frost/Blood DPS
     {
-      action_list_str += "/presence,choose=frost,if=!buff.bloodlust.react&runic_power<=20";
-      action_list_str += "/presence,choose=unholy,if=buff.bloodlust.react";
+      action_list_str += "/presence,choose=unholy";
     }
     action_list_str +="/army_of_the_dead";
     action_list_str += "/snapshot_stats";
