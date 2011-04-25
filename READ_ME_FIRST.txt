@@ -18,6 +18,8 @@ SimulationCraft allows raid/party creation of arbitrary size, generating detaile
 reports for both individual and raid performance. Currently, it is a command-line tool in 
 which the player profiles are specified via parameter files. 
 
+Documentation can be found here: http://code.google.com/p/simulationcraft/wiki/
+
 =============================================================================================
 
 What is in the Install?
@@ -64,6 +66,8 @@ simc.exe wowhead=14320165 save=Paladin_T9_05_11_55.simc
 Unix users will find that these generated script files can be marked as executable and
 then simply be invoked directly via #! magic.
 
+A starter's guide can be found here: http://code.google.com/p/simulationcraft/wiki/StartersGuide
+
 =============================================================================================
 
 What about a Graphic User Interface?
@@ -79,7 +83,8 @@ to start it running.
 
 Parameter Reference
 
-Detailed information on the many parameters can be found in Examples.simc
+Detailed information on the many parameters can be found in the online documentation.
+http://code.google.com/p/simulationcraft/wiki/TextualConfigurationInterface
 
 =============================================================================================
 
