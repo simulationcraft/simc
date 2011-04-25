@@ -7,7 +7,7 @@ race=orc
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#deathknight-103000000000000000003203101223311201203103300000000000000000
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000003203002223311201203103000000000000000000
 glyphs=horn_of_winter/frost_strike/howling_blast/obliterate
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
