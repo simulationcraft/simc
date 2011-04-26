@@ -5,21 +5,21 @@
 
 #include "simulationcraft.h"
 
-static const char * _class_strings[] =
+static const struct { const char* name; player_type pt; } _class_map[] =
 {
-  0,
-  "Warrior",
-  "Paladin",
-  "Hunter",
-  "Rogue",
-  "Priest",
-  "Death Knight",
-  "Shaman",
-  "Mage",
-  "Warlock",
-  0,
-  "Druid",
-  0
+  { 0, PLAYER_NONE },
+  { "Warrior", WARRIOR },
+  { "Paladin", PALADIN },
+  { "Hunter", HUNTER },
+  { "Rogue", ROGUE },
+  { "Priest", PRIEST },
+  { "Death Knight", DEATH_KNIGHT },
+  { "Shaman", SHAMAN },
+  { "Mage", MAGE },
+  { "Warlock", WARLOCK },
+  { 0, PLAYER_NONE },
+  { "Druid", DRUID },
+  { 0, PLAYER_NONE },
 };
 
 static const char * _race_strings[] =
@@ -361,9 +361,9 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     {
       if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
       {
-        s << _class_strings[ i ] << ", ";
+        s << _class_map[ i ].name << ", ";
         if ( ! pt )
-          pt = ( player_type ) ( i - 1 );
+          pt = _class_map[ i ].pt;
       }
     }
 
@@ -539,7 +539,7 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
     for ( unsigned int i = 0; i < 12; i++ )
     {
       if ( talent -> mask_class() & ( 1 << ( i - 1 ) ) )
-        s << _class_strings[ i ] << ", ";
+        s << _class_map[ i ].name << ", ";
     }
 
     s.seekp( -2, std::ios_base::cur );
