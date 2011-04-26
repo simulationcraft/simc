@@ -1255,6 +1255,11 @@ struct charge_t : public warrior_attack_t
 
     p -> buffs_juggernaut -> trigger();
 
+    if ( p -> position == POSITION_RANGED_FRONT )
+      p -> position = POSITION_FRONT;
+    else if ( ( p -> position == POSITION_RANGED_BACK ) || ( p -> position == POSITION_MAX ) )
+      p -> position = POSITION_BACK;
+
     p -> resource_gain( RESOURCE_RAGE,
                         effect2().resource( RESOURCE_RAGE ) + p -> talents.blitz -> effect2().resource( RESOURCE_RAGE ),
                         p -> gains_charge );
@@ -1271,6 +1276,14 @@ struct charge_t : public warrior_attack_t
 
       else if ( ! use_in_combat )
         return false;
+
+      if ( ( p -> position == POSITION_BACK ) || ( p -> position == POSITION_FRONT ) )
+      {
+        if ( ! p -> sim -> target -> big_hitbox )
+        {
+          return false;
+        }
+      }
     }
 
     return warrior_attack_t::ready();
@@ -3171,6 +3184,10 @@ void warrior_t::init_actions()
     {
       action_list_str += "/stance,choose=berserker,if=cooldown.recklessness.remains=0&rage<=50&((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
       action_list_str += "/stance,choose=battle,if=(cooldown.recklessness.remains>0&rage<=50)";
+      if ( talents.juggernaut -> ok() )
+      {
+        action_list_str += "/charge,use_in_combat=1,if=big_hitbox=1";
+      }      
       action_list_str += "/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage,if=!buff.deadly_calm.up&rage<70";
       if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30&((target.health_pct>20&target.time_to_die>130)|(target.health_pct<=20&buff.recklessness.up))";

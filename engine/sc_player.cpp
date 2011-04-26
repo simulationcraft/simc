@@ -292,7 +292,7 @@ player_t::player_t( sim_t*             s,
   potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
   pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-  active_pets( 0 ), dbc( s -> dbc ),
+  active_pets( 0 ), big_hitbox( 0 ), dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
   base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
@@ -3654,10 +3654,10 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 
 double player_t::get_player_distance( player_t* p )
 {
-  // Euclidean Distance
+  // Euclidean Distance *Squared* as sqrt() is slow
   double distance = 0;
 
-  distance = sqrt( ( p -> x_position - this -> x_position ) * ( p -> x_position - this -> x_position ) + ( p -> y_position - this -> y_position ) * ( p -> y_position - this -> y_position ) );
+  distance = ( ( p -> x_position - this -> x_position ) * ( p -> x_position - this -> x_position ) + ( p -> y_position - this -> y_position ) * ( p -> y_position - this -> y_position ) );
 
   return distance;
 }
@@ -3666,10 +3666,10 @@ double player_t::get_player_distance( player_t* p )
 
 double player_t::get_position_distance( double m, double v )
 {
-  // Euclidean Distance
+  // Euclidean Distance *Squared* as sqrt() is slow
   double distance = 0;
 
-  distance = sqrt( ( this -> x_position - m ) * ( this -> x_position - m ) + ( this -> y_position - v ) * ( this -> y_position - v ) );
+  distance = ( ( this -> x_position - m ) * ( this -> x_position - m ) + ( this -> y_position - v ) * ( this -> y_position - v ) );
 
   return distance;
 }
@@ -4974,7 +4974,15 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new ptr_expr_t( a );
   }
-
+  if ( name_str == "big_hitbox" )
+  {
+    struct big_hitbox_expr_t : public action_expr_t
+    {
+      big_hitbox_expr_t( action_t* a ) : action_expr_t( a, "big_hitbox", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> sim -> target -> big_hitbox  ? 1 : 0 ); return TOK_NUM; }
+    };
+    return new big_hitbox_expr_t( a );
+  }
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
   if ( splits[ 0 ] == "pet" )
@@ -5486,6 +5494,7 @@ void player_t::create_options()
     { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]        ) },
     { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]        ) },
     // Misc
+    { "big_hitbox",                           OPT_BOOL,   &( big_hitbox                               ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                              ) },
     { "flask",                                OPT_STRING, &( flask_str                                ) },

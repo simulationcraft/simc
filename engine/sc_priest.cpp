@@ -2802,7 +2802,7 @@ struct binding_heal_t : public priest_heal_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        if ( !q -> is_pet() && q != heal_target[0] && p -> get_player_distance( q ) < range )
+        if ( !q -> is_pet() && q != heal_target[0] && p -> get_player_distance( q ) < ( range * range ) )
         {
           heal_target.push_back( q );
           break;
@@ -3031,7 +3031,7 @@ struct prayer_of_healing_t : public priest_heal_t
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
       if( h > 3 ) continue; // This is actually not correct, but since simc partys aren't automatically limited to 5 people it would screw the results on large simulations.
-      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( heal_target[0] ) < range && q -> party == p -> party )
+      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( heal_target[0] ) < ( range * range ) && q -> party == p -> party )
       {
         heal_target.push_back( q );
       }
@@ -3180,7 +3180,7 @@ struct circle_of_healing_t : public priest_heal_t
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
       if( h > ( p -> glyphs.circle_of_healing -> ok() ? 4 : 3 ) ) continue;
-      if ( !q -> is_pet() && q != player && q -> get_player_distance( heal_target[0] ) < range )
+      if ( !q -> is_pet() && q != player && q -> get_player_distance( heal_target[0] ) < ( range * range ) )
       {
         heal_target.push_back( q );
       }
@@ -3509,7 +3509,7 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
     heal_target.clear();
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
-      if ( !q -> is_pet() && q -> get_player_distance( player ) < range )
+      if ( !q -> is_pet() && q -> get_player_distance( player ) < ( range * range ) )
       {
         heal_target.push_back( q );
       }
