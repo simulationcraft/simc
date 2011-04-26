@@ -125,8 +125,6 @@ void heal_t::target_debuff( player_t* t, int dmg_type )
   target_penetration           = 0;
   target_dd_adder              = 0;
 
-  target_multiplier *= 1.0 + t -> buffs.grace -> value();
-
   if ( sim -> debug )
     log_t::output( sim, "heal_t::target_buff: %s hit=%.2f crit=%.2f pen=%.0f ap=%.2f sp=%.2f mult=%.2f",
                    name(), target_hit, target_crit, target_penetration,

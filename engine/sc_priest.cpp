@@ -713,6 +713,10 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
+    // Grace
+    if ( p -> talents.grace -> ok() )
+      target_multiplier *= 1.0 + t -> buffs.grace -> value();
+
     // Test of Faith
     if ( p -> talents.test_of_faith -> rank() )
     {
