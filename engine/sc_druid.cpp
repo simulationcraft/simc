@@ -4424,7 +4424,7 @@ void druid_t::init_buffs()
   buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
-  buffs_tree_of_life       = new buff_t( this, talents.tree_of_life, "tree_of_life" );
+  buffs_tree_of_life       = new buff_t( this, talents.tree_of_life, NULL );
   buffs_tree_of_life -> buff_duration += talents.natural_shapeshifter -> mod_additive( P_DURATION );
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );

@@ -4371,7 +4371,7 @@ void priest_t::init_buffs()
   buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
   buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
-  buffs_surge_of_light             = new buff_t( this, talents.surge_of_light );
+  buffs_surge_of_light             = new buff_t( this, talents.surge_of_light, NULL );
 
 
   // Shadow
