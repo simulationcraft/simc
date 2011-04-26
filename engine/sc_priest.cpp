@@ -3439,6 +3439,7 @@ struct penance_heal_tick_t : public priest_heal_t
     priest_heal_t::travel( t, travel_result, travel_dmg );
 
     trigger_inspiration( travel_result, t );
+    trigger_grace( t );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
