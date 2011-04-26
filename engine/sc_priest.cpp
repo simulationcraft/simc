@@ -1398,8 +1398,6 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * 0.03 );
-
     c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
 
     return c;
