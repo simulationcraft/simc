@@ -7,7 +7,7 @@ race=troll
 role=spell
 use_pre_potion=1
 professions=alchemy=525/enchanting=525
-talents=http://www.wowhead.com/talent#shaman-303202321223110132120300220000000000000000000000000000000
+talents=http://www.wowhead.com/talent#shaman-3032023212231101321203002200000000000000000000000000000000
 glyphs=chain_lightning/thunder/healing_stream_totem/thunderstorm/astral_recall/renewed_life/flame_shock/lightning_bolt/lava_burst
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

@@ -2080,7 +2080,7 @@ struct melee_t : public death_knight_attack_t
 
         // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
         double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
-        if ( p -> buffs_killing_machine -> trigger( 1, 1.0, chance ) && p -> ptr )
+        if ( p -> buffs_killing_machine -> trigger( 1, 1.0, chance ) )
           p -> buffs_tier11_4pc_melee -> trigger();
       }
 
@@ -4085,7 +4085,7 @@ void death_knight_t::init()
     }
   }
 
-  if ( ptr && ( primary_tree() == TREE_FROST ) )
+  if ( ( primary_tree() == TREE_FROST ) )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
@@ -4340,8 +4340,6 @@ void death_knight_t::init_actions()
       action_list_str += "/obliterate,if=death=2";
       action_list_str += "/obliterate,if=buff.killing_machine.react"; // All 3 are seperated for Sample Sequence
       action_list_str += "/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react";
-      if ( ! ptr )
-        action_list_str += "/blood_strike,if=blood=2";
       action_list_str +="/frost_strike,if=runic_power>=90&!buff.bloodlust.react";
       action_list_str +="/frost_strike,if=runic_power>=95";
       if ( talents.howling_blast -> rank() )
@@ -4356,8 +4354,6 @@ void death_knight_t::init_actions()
       if ( talents.howling_blast -> rank() )
         action_list_str += "/howling_blast";
       action_list_str += "/blood_tap";
-      if ( ! ptr )
-        action_list_str += "/blood_strike,if=death=0";
       action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
       break;

@@ -7,7 +7,7 @@ race=orc
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#deathknight-103000000000000000003203101223311201203103300000000000000000
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000003203002223311201203103000000000000000000
 glyphs=horn_of_winter/frost_strike/howling_blast/obliterate
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
@@ -28,7 +28,6 @@ actions+=/obliterate,if=frost=2&unholy=2
 actions+=/obliterate,if=death=2
 actions+=/obliterate,if=buff.killing_machine.react
 actions+=/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react
-actions+=/blood_strike,if=blood=2
 actions+=/frost_strike,if=runic_power>=90&!buff.bloodlust.react
 actions+=/frost_strike,if=runic_power>=95
 actions+=/howling_blast,if=buff.rime.react
@@ -38,7 +37,6 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=45
 actions+=/frost_strike
 actions+=/howling_blast
 actions+=/blood_tap
-actions+=/blood_strike,if=death=0
 actions+=/empower_rune_weapon
 actions+=/horn_of_winter
 head=magma_plated_helmet,heroic=1,type=plate,ilevel=372,quality=epic,stats=2891armor_197exp_257haste_578sta_325str,reforge=exp_hit,gems=reverberating_shadowspirit_20haste_20str_30str,enchant=60str_35mastery

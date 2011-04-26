@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (64)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13623
+// Class based active abilities, wow build 13914
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -39,7 +39,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        6343, // Thunder Clap (Battle, Defensive Stance)
           0,
     },
-    // Fury tree, 23 abilities
+    // Fury tree, 24 abilities
     {
        6673, // Battle Shout
       18499, // Berserker Rage
@@ -58,15 +58,16 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       20252, // Intercept (Berserker Stance)
        5246, // Intimidating Shout
       12323, // Piercing Howl
-       6552, // Pummel (Battle, Berserker Stance)
+       6552, // Pummel
       85288, // Raging Blow (Berserker Stance)
+      97462, // Rallying Cry
        1719, // Recklessness (Berserker Stance)
        1464, // Slam
       34428, // Victory Rush
        1680, // Whirlwind (Berserker Stance)
           0,
     },
-    // Protection tree, 16 abilities
+    // Protection tree, 15 abilities
     {
       12809, // Concussion Blow
          71, // Defensive Stance
@@ -75,7 +76,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        3411, // Intervene (Defensive Stance)
       12975, // Last Stand
        6572, // Revenge (Defensive Stance)
-         72, // Shield Bash (Battle, Defensive Stance)
        2565, // Shield Block (Defensive Stance)
       23922, // Shield Slam
         871, // Shield Wall (Defensive Stance)
@@ -447,11 +447,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       47476, // Strangulate
           0,
     },
-    // Frost tree, 12 abilities
+    // Frost tree, 13 abilities
     {
       45524, // Chains of Ice
       85948, // Festering Strike
       48266, // Frost Presence
+      49143, // Frost Strike
       49184, // Howling Blast
       49203, // Hungering Cold
       48792, // Icebound Fortitude
@@ -545,7 +546,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        3738, // Wrath of Air Totem
           0,
     },
-    // Restoration tree, 15 abilities
+    // Restoration tree, 16 abilities
     {
        1064, // Chain Heal
       51886, // Cleanse Spirit
@@ -559,6 +560,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       16190, // Mana Tide Totem
       16188, // Nature's Swiftness
       61295, // Riptide
+      98008, // Spirit Link Totem
       87718, // Totem of Tranquil Mind
        8143, // Tremor Totem
       52127, // Water Shield
@@ -783,7 +785,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        5176, // Wrath
           0,
     },
-    // Feral tree, 37 abilities
+    // Feral tree, 38 abilities
     {
        1066, // Aquatic Form (Shapeshift)
        5211, // Bash (Bear Form)
@@ -815,6 +817,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        5221, // Shred (Cat Form)
       80965, // Skull Bash (Cat Form)
       80964, // Skull Bash (Bear Form)
+      77764, // Stampeding Roar (Cat Form)
       61336, // Survival Instincts (Cat or Bear Form)
       40120, // Swift Flight Form (Shapeshift)
       62078, // Swipe (Cat Form)
@@ -849,7 +852,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13623
+// Talent tree specialization abilities, wow build 13914
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -959,17 +962,17 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
   {
     // Specialization abilities for Discipline tree
     {
+      33167, // Absolution
       84732, // Enlightenment
       95860, // Meditation
       47540, // Penance
-          0,
     },
     // Specialization abilities for Holy tree
     {
+      33167, // Absolution
       88625, // Holy Word: Chastise
       95861, // Meditation
       87336, // Spiritual Healing
-          0,
     },
     // Specialization abilities for Shadow tree
     {
@@ -1107,7 +1110,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13623
+// Class mastery abilities, wow build 13914
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1192,7 +1195,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13623
+// Racial abilities, wow build 13914
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1730,7 +1733,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1739,7 +1741,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1748,7 +1749,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1757,7 +1757,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1766,7 +1765,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1775,7 +1773,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1784,7 +1781,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1793,7 +1789,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1802,7 +1797,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1812,7 +1806,6 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
       68976, // Aberration
       68992, // Darkflight
       94293, // Enable Worgen Altered Form
-      69001, // Transform: Worgen
       68975, // Viciousness
           0,
     },
@@ -1835,7 +1828,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13623
+// Glyph spells for classes, wow build 13914
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1971,7 +1964,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     {
       57904, // Glyph of Aspect of the Pack
       57903, // Glyph of Feign Death
-      57870, // Glyph of Mend Pet
+      57870, // Glyph of Lesser Proprotion
       57866, // Glyph of Revive Pet
       57902, // Glyph of Scare Beast
           0,
@@ -2111,10 +2104,10 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     // Minor Glyphs (6 spells)
     {
       58640, // Glyph of Blood Tap
+      60200, // Glyph of Death Gate
       58677, // Glyph of Death's Embrace
       58680, // Glyph of Horn of Winter
       59307, // Glyph of Path of Frost
-      60200, // Glyph of Raise Ally
       59309, // Glyph of Resilient Grip
           0,
     },
@@ -2186,13 +2179,14 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Mage
   {
-    // Major Glyphs (13 spells)
+    // Major Glyphs (14 spells)
     {
       56381, // Glyph of Arcane Power
       62126, // Glyph of Blast Wave
       56365, // Glyph of Blink
       56373, // Glyph of Dragon's Breath
       56380, // Glyph of Evocation
+      98397, // Glyph of Frost Armor
       56376, // Glyph of Frost Nova
       63095, // Glyph of Ice Barrier
       56372, // Glyph of Ice Block
@@ -2307,7 +2301,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       54832, // Glyph of Innervate
       54811, // Glyph of Maul
       63056, // Glyph of Monsoon
-      54821, // Glyph of Rake
+      54821, // Glyph of Pounce
       54733, // Glyph of Rebirth
       54812, // Glyph of Solar Beam
       54828, // Glyph of Starfall
@@ -2350,7 +2344,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13623
+// Tier item set bonuses for class, wow build 13914
 static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
   {
     {
@@ -2478,9 +2472,9 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
     },
     // Tier 4 bonuses (4 spells)
     {
-      37184, // Justicar Armor - 2 Piece Bonus (Increased Right./Venge./Corruption)
-      37185, // Justicar Armor - 4 Piece Bonus (Increased Holy Shield)
-      37186, // Justicar Battlegear - 2 Piece Bonus (Increased Judgement of Crusader)
+      37184, // Justicar Armor - 2 Piece Bonus (Increased Right./Truth)
+      37185, // Justicar Armor - 4 Piece Bonus (Increased Shield of the Righteous)
+      37186, // Justicar Battlegear - 2 Piece Bonus (Increased Crusader Strike)
       37187, // Justicar Battlegear - 4 Piece Bonus (Increased Judgement of Command)
           0,
     },
@@ -3092,7 +3086,7 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
     },
     // Tier 1 bonuses (3 spells)
     {
-      23556, // Cenarion Raiment - 8 Piece Bonus (Decreased Tranquility and Hurricane Cooldown)
+      23556, // Cenarion Raiment - 8 Piece Bonus (Increased Tranquility and Hurricane Effect)
       23557, // Cenarion Raiment - 3 Piece Bonus (Improved Thorns Damage)
       39507, // Cenarion Raiment - 5 Piece Bonus (Increased Critical Spell)
           0,
@@ -3117,7 +3111,7 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       37295, // Malorne Regalia - 2 Piece Bonus (Mana Restore)
       37297, // Malorne Regalia - 4 Piece Bonus (Improved Innervate)
       37298, // Malorne Harness - 4 Piece Bonus (Bear Armor)
-      37299, // Malorne Harness - 4 Piece Bonus (Cat Strength)
+      37299, // Malorne Harness - 4 Piece Bonus (Cat Agility)
       37306, // Malorne Harness - 2 Piece Bonus (Bear Rage)
       37311, // Malorne Harness - 2 Piece Bonus (Cat Energy)
     },

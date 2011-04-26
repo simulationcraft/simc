@@ -726,16 +726,14 @@ static void trigger_efflorescence( heal_t* a )
     efflorescence_t( druid_t* player ) :
       druid_heal_t( "efflorescence", player, 81269 )
     {
-      druid_t* p = player -> cast_druid();
-
-      aoe            = p -> ptr ? 3 : 6; // DRs kick in after 6
+      aoe            = 3; // DRs kick in after 6
       background     = true;
       base_tick_time = 1.0;
-      hasted_ticks   = p -> ptr ? true : false;
+      hasted_ticks   = true;
       may_crit       = false;
       num_ticks      = 7;
       proc           = true;
-      tick_may_crit  = p -> ptr ? false : true;
+      tick_may_crit  = false;
 
       init();
     }
@@ -744,7 +742,7 @@ static void trigger_efflorescence( heal_t* a )
   if ( ! p -> active_efflorescence ) p -> active_efflorescence = new efflorescence_t( p );
 
   double heal = a -> direct_dmg * p -> talents.efflorescence -> effect1().percent();
-  p -> active_efflorescence -> base_td = ( p -> ptr ) ? heal : heal / p -> active_efflorescence -> num_ticks;
+  p -> active_efflorescence -> base_td = heal;
   p -> active_efflorescence -> execute();
 }
 
@@ -2049,7 +2047,7 @@ struct maul_t : public druid_bear_attack_t
     base_add_multiplier = p -> glyphs.maul -> effect3().percent();
     // DBC data points to base scaling, tooltip states AP scaling which is correct
     base_dd_min = base_dd_max = 8;
-    direct_power_mod = ( p -> ptr ) ? 0.264 : 0.24;
+    direct_power_mod = 0.264;
   }
 
   virtual void execute()
@@ -2163,11 +2161,9 @@ struct thrash_t : public druid_bear_attack_t
     parse_options( NULL, options_str );
     check_min_level( 81 );
 
-    druid_t* p = player -> cast_druid();
-
     aoe               = -1;
-    direct_power_mod  = ( p -> ptr ) ? 0.128 : 0.154;
-    tick_power_mod    = ( p -> ptr ) ? 0.0217 : 0.026;
+    direct_power_mod  = 0.128;
+    tick_power_mod    = 0.0217;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
@@ -2259,7 +2255,7 @@ void druid_heal_t::player_buff()
     player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
   }
 
-  if ( p -> ptr && p -> buffs_natures_swiftness -> check() && execute_time() > 0 )
+  if (p -> buffs_natures_swiftness -> check() && execute_time() > 0 )
   {
     player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect1().percent();
   }
@@ -2611,8 +2607,7 @@ struct tranquility_t : public druid_heal_t
     parse_effect_data( this -> effect_trigger_spell( 1 ), 1 ); // Initial Hit
     parse_effect_data( this -> effect_trigger_spell( 1 ), 2 ); // HoT
 
-    if ( p -> ptr )
-      cooldown -> duration += p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN );
   }
 };
 

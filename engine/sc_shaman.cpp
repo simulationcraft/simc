@@ -2033,17 +2033,7 @@ struct fire_nova_t : public shaman_spell_t
 
     aoe                   = -1;
 
-    if ( p -> ptr )
-    {
-      m_additive =  p -> talent_call_of_flame -> effect1().percent();
-    }
-    else
-    {
-      m_additive            =  
-        p -> talent_improved_fire_nova -> mod_additive( P_GENERIC ) +
-        p -> talent_call_of_flame      -> effect1().percent();
-      cooldown -> duration += p -> talent_improved_fire_nova -> mod_additive( P_COOLDOWN );
-    }
+    m_additive =  p -> talent_call_of_flame -> effect1().percent();
 
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
     
@@ -2069,41 +2059,26 @@ struct fire_nova_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( p -> ptr && ! p -> dot_flame_shock -> ticking )
+    if ( ! p -> dot_flame_shock -> ticking )
       return false;
-
-    if ( ! p -> ptr )
-    {
-      if ( ! p -> totems[ TOTEM_FIRE ] || ! p -> totems[ TOTEM_FIRE ] -> dot -> ticking )
-        return false;
-
-
-      if ( p -> totems[ TOTEM_FIRE ] -> id == 3599 )
-        return false;
-    }
 
     return shaman_spell_t::ready();
   }
 
   virtual void assess_damage( player_t* target, double dmg_amount, int dmg_type, int dmg_result )
   {
-    if ( player -> ptr )
+    if ( result_is_hit( dmg_result ) )
     {
-      if ( result_is_hit( dmg_result ) )
-      {
-        /*target_t* t = target -> cast_target();
+      /*target_t* t = target -> cast_target();
 
-        if ( t -> adds_nearby > 0 )
+      if ( t -> adds_nearby > 0 )
+      {
+        for ( int i = 0; i < t -> adds_nearby; i++ )
         {
-          for ( int i = 0; i < t -> adds_nearby; i++ )
-          {
-            additional_damage( t, dmg_amount, dmg_type, dmg_result );
-          }
-        }*/
-      }
+          additional_damage( t, dmg_amount, dmg_type, dmg_result );
+        }
+      }*/
     }
-    else
-      shaman_spell_t::assess_damage( target, dmg_amount, dmg_type, dmg_result );
   }
 };
 
@@ -3759,7 +3734,7 @@ void shaman_t::init_talents()
   talent_elemental_precision      = find_talent( "Elemental Precision" );
   talent_feedback                 = find_talent( "Feedback" );
   talent_fulmination              = find_talent( "Fulmination" );
-  talent_improved_fire_nova       = ptr ? 0 : find_talent( "Improved Fire Nova" );
+  talent_improved_fire_nova       = 0;
   talent_lava_flows               = find_talent( "Lava Flows" );
   talent_lava_surge               = find_talent( "Lava Surge" );
   talent_reverberation            = find_talent( "Reverberation" );
@@ -4050,8 +4025,7 @@ void shaman_t::init_actions()
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/earth_elemental_totem";
       action_list_str += "/fire_nova";
-      if ( ptr )
-        action_list_str +=  ",if=target.adds>1";
+      action_list_str +=  ",if=target.adds>1";
       if ( set_bonus.tier10_2pc_melee() )
       {
         if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";

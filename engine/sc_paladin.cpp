@@ -701,7 +701,7 @@ struct divine_storm_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
-      /*if ( p -> ptr )
+      /*
         if ( target -> cast_target() -> adds_nearby >= 4 )
           {
             p -> resource_gain( RESOURCE_HOLY_POWER, 1,

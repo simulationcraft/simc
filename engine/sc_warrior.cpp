@@ -897,9 +897,6 @@ void warrior_attack_t::player_buff()
   if ( weapon && weapon -> group() == WEAPON_2H )
   {
     double bonus = p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
-    // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-    if ( bonus > 0.0 )
-      bonus = 0.20;
     player_multiplier *= 1.0 + bonus;
   }
 
@@ -1053,7 +1050,7 @@ struct melee_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> ptr && p -> primary_tree() == TREE_FURY )
+    if ( p -> primary_tree() == TREE_FURY )
       player_multiplier *= 1.0 + p -> spec.precision -> effect_base_value( 3 ) / 100.0;
   }
 };
@@ -1242,10 +1239,7 @@ struct charge_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    if ( p -> ptr )
-    {
-      cooldown -> duration += p -> talents.juggernaut -> effect3().seconds();
-    }
+    cooldown -> duration += p -> talents.juggernaut -> effect3().seconds();
 
     stancemask  = STANCE_BATTLE;
 
@@ -1346,9 +1340,6 @@ struct colossus_smash_t : public warrior_attack_t
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
 
     armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
-    // FIXME: DBC Data hasn't been reverted yet to 100 for PTR
-    if ( p -> ptr )
-      armor_pen_value = 1.0;
   }
 
   virtual void execute()
@@ -1584,10 +1575,6 @@ struct mortal_strike_t : public warrior_attack_t
                            + p -> talents.war_academy -> effect1().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
     base_crit                  += p -> talents.cruelty -> effect1().percent();
-
-    // FIXME: PTR Data is lagging behind
-    if ( p -> ptr )
-      weapon_multiplier = 1.50;
   }
 
   virtual void execute()
@@ -1608,7 +1595,7 @@ struct mortal_strike_t : public warrior_attack_t
         p -> buffs_wrecking_crew -> trigger( 1, value );
       }
 
-      if ( p -> ptr && p -> talents.lambs_to_the_slaughter -> rank() && p -> dots_rend -> ticking )
+      if ( p -> talents.lambs_to_the_slaughter -> rank() && p -> dots_rend -> ticking )
         p -> dots_rend -> action -> refresh_duration();
     }
   }
@@ -1646,10 +1633,6 @@ struct overpower_t : public warrior_attack_t
     base_multiplier            *= 1.0 + p -> glyphs.overpower -> effect1().percent();
 
     stancemask = STANCE_BATTLE;    
-
-    // FIXME: PTR Data is lagging behind
-    if ( p -> ptr )
-      weapon_multiplier = 1.25;
   }
 
   virtual void execute()
@@ -2084,7 +2067,7 @@ struct slam_attack_t : public warrior_attack_t
   double additive_multipliers;
 
   slam_attack_t( warrior_t* p, const char* name ) :
-    warrior_attack_t( name, p -> ptr ? 50782 : 50783, p ),
+    warrior_attack_t( name, 50782, p ),
     additive_multipliers( 0 )
   {
     base_cost = 0;
@@ -2657,10 +2640,6 @@ struct stance_t : public warrior_spell_t
       case STANCE_BERSERKER:  p -> buffs_berserker_stance -> trigger(); break;
       case STANCE_DEFENSE:    p -> buffs_defensive_stance -> trigger(); break;
     }
-
-    // Switching stances causes the T11 4pc DPS buff to drop on live
-    if ( ! p -> ptr )
-      p -> buffs_tier11_4pc_melee -> expire();
 
     consume_resource();
 
@@ -3325,8 +3304,7 @@ double warrior_t::composite_mastery() SC_CONST
 {
   double m = player_t::composite_mastery();
 
-  if ( ptr )
-    m += spec.precision -> effect_base_value( 2 );
+  m += spec.precision -> effect_base_value( 2 );
 
   return m;
 }

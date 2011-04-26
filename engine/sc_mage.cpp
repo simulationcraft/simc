@@ -1067,13 +1067,6 @@ void mage_spell_t::travel( player_t* t, int travel_result, double travel_dmg )
 void mage_spell_t::tick()
 {
   spell_t::tick();
-
-  mage_t* p = player -> cast_mage();
-
-  if ( result == RESULT_CRIT && ! p -> ptr )
-  {
-    trigger_ignite( this, tick_dmg );
-  }
 }
 
 // mage_spell_t::consume_resource ===========================================
@@ -1212,11 +1205,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> ptr ) base_execute_time = 2.0; // FIXME: DBC Data is behind the PTR notes
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
-
-    if ( ! p -> ptr )
-      base_cost *= 0.05 / 0.07; // FIXME: Hotfixed value from: http://blue.mmo-champion.com/topic/158233/arcane-hotfixes
   }
 
   virtual double cost() SC_CONST
@@ -1908,9 +1897,6 @@ struct frostbolt_t : public mage_spell_t
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     base_multiplier *= 1.0 + p -> specializations.frost3;
-
-    if ( p -> ptr )
-      base_multiplier *= 1.10; // FIXME: Remove once DBC data is updated
   }
 
   virtual void schedule_execute()
@@ -2134,7 +2120,7 @@ struct ice_lance_t : public mage_spell_t
     if ( p -> buffs_fingers_of_frost -> up() )
     {
       player_multiplier *= 2.0; // Built in bonus against frozen targets
-      player_multiplier *= ( p -> ptr ) ? 1.25 : 1.15;
+      player_multiplier *= 1.25;
     }
   }
 };
@@ -2934,7 +2920,7 @@ void mage_t::init_spells()
   glyphs.deep_freeze          = find_glyph( "Glyph of Deep Freeze" );
   glyphs.dragons_breath       = find_glyph( "Glyph of Dragon's Breath" );
   glyphs.fireball             = find_glyph( "Glyph of Fireball" );
-  glyphs.frost_armor          = ( ptr ) ? find_glyph( "Glyph of Frost Armor" ) : 0;
+  glyphs.frost_armor          = find_glyph( "Glyph of Frost Armor" );
   glyphs.frostbolt            = find_glyph( "Glyph of Frostbolt" );
   glyphs.frostfire            = find_glyph( "Glyph of Frostfire" );
   glyphs.ice_lance            = find_glyph( "Glyph of Ice Lance" );

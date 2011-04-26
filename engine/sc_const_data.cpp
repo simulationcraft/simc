@@ -36,18 +36,18 @@ static unsigned             idx_td_size[2]     = { 0, 0 };
 const char* dbc_t::build_level( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "13914" : "13623";
+  return ptr ? "13914" : "13914";
 #else
-  return "13623";
+  return "13914";
 #endif
 }
 
 const char* dbc_t::wow_version( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "4.1.0" : "4.0.6";
+  return ptr ? "4.1.0" : "4.1.0";
 #else
-  return "4.0.6";
+  return "4.1.0";
 #endif
 }
 
@@ -779,7 +779,7 @@ const spelleffect_data_t* dbc_t::effect( unsigned effect_id ) SC_CONST
 #if SC_USE_PTR
   if ( effect_id > ( ptr ? __ptr_spelleffect_data[ __PTR_SPELLEFFECT_SIZE - 1 ].id() : __spelleffect_data[ __SPELLEFFECT_SIZE - 1 ].id() ) ) return &nil_sed;
 #else
-  if ( effect_id <= __spelleffect_data[ __SPELLEFFECT_SIZE - 1 ].id() ) return &nil_sed;
+  if ( effect_id > __spelleffect_data[ __SPELLEFFECT_SIZE - 1 ].id() ) return &nil_sed;
 #endif
   if ( ! idx_sed[ ptr ][ effect_id ] )
     return &nil_sed;
@@ -793,6 +793,7 @@ const item_data_t* dbc_t::item( unsigned item_id ) SC_CONST
   const item_data_t* item_data = ( ptr ? __ptr_item_data : __item_data );
 #else
   assert( item_id <= __item_data[ ITEM_SIZE - 1 ].id );
+  const item_data_t* item_data = __item_data;
 #endif
 
   for ( int i = 0; item_data[ i ].id; i++ )

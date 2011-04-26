@@ -1144,8 +1144,7 @@ static void trigger_mana_feed( action_t* s, double travel_result )
     if ( travel_result == RESULT_CRIT )
     {
       double mana = p -> resource_max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect3().percent();
-      if ( p -> ptr )
-        if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
+      if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
       p -> resource_gain( RESOURCE_MANA, mana, p -> gains_mana_feed );
       a -> procs_mana_feed -> occur();
     }
@@ -1403,13 +1402,11 @@ struct felhunter_pet_t : public warlock_main_pet_t
       direct_power_mod = 0.614; // tested in-game as of 2010/12/20
       base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
       base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
-      if ( player -> ptr )
-      {
-        // FIXME - Naive assumption, needs testing on the 4.1 PTR!
-        base_dd_min *= 2;
-        base_dd_max *= 2;
-        direct_power_mod *= 2;
-      }
+
+      // FIXME - Naive assumption, needs testing on the 4.1 PTR!
+      base_dd_min *= 2;
+      base_dd_max *= 2;
+      direct_power_mod *= 2;
     }
 
     virtual void player_buff()
@@ -1417,11 +1414,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
       warlock_pet_spell_t::player_buff();
 
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      // FIXME - Temporary override awaiting updated DBC data.
-      if ( player -> ptr )
-        player_multiplier *= 1.0 + o -> active_dots() * 0.3;
-      else
-        player_multiplier *= 1.0 + o -> active_dots() * effect3().percent();
+      player_multiplier *= 1.0 + o -> active_dots() * effect3().percent();
     }
 
     virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -1673,12 +1666,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
     {
       //FIXME: This needs re-testing on the 4.1 PTR
-      if ( ! player -> ptr )
-      {
-        base_dd_min *= 1.333; // Based on testing 2010/11/20
-        base_dd_max *= 1.333; // Based on testing 2010/11/20
-        direct_power_mod = 0.95; // Based on testing 2010/11/20
-      }
+
       base_execute_time = 2.5;
     }
   };
@@ -2550,9 +2538,7 @@ struct haunt_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
-    direct_power_mod = 0.429;
-    // FIXME - Needs exact testing on the 4.1 PTR once the change is in
-    if ( p -> ptr ) direct_power_mod *= 1.3;
+    direct_power_mod = 0.5577;
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -3476,7 +3462,7 @@ struct dark_intent_t : public warlock_spell_t
     {
       warlock_t* p = player -> cast_warlock();
       if ( sim -> log ) log_t::output( sim, "%s grants %s Dark Intent", p -> name(), dark_intent_target -> name() );
-      dark_intent_target -> buffs.dark_intent -> trigger( 1, dark_intent_target -> ptr ? 0.01 : 0.03 );
+      dark_intent_target -> buffs.dark_intent -> trigger( 1, 0.01 );
       dark_intent_target -> dark_intent_cb -> active = true;
 
       p -> buffs.dark_intent -> trigger( 1, 0.03 );
@@ -3813,10 +3799,7 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
   shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) * 0.01 );
 
   // FIXME - Temporary override until we have new DBC data.
-  if ( ptr && ( passive_spells.shadow_mastery -> effect_base_value( 1 ) == 25 ) )
-    shadow_multiplier *= 1.30;
-  else
-    shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) * 0.01 );
+  shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) * 0.01 );
 
   if ( buffs_improved_soul_fire -> up() )
   {
@@ -4281,7 +4264,7 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
-      if ( level >= 50) action_list_str += ( ptr ) ? "/summon_doomguard" : "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_doomguard";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_bane -> rank() == 3 )
@@ -4355,7 +4338,7 @@ void warlock_t::init_actions()
         action_list_str += "/soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)";
       }
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
-      if ( level >= 50) action_list_str += ( ptr ) ? "/summon_doomguard" : "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_doomguard";
       action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
@@ -4387,7 +4370,7 @@ void warlock_t::init_actions()
           action_list_str += "/soul_fire,if=buff.decimation.react|buff.soulburn.up";
         }
       }
-      if ( level >= 50) action_list_str += ( ptr ) ? "/summon_doomguard" : "/summon_infernal";
+      if ( level >= 50) action_list_str += "/summon_doomguard";
       action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
       if ( glyphs.imp -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
       else if ( glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_succubus.down";

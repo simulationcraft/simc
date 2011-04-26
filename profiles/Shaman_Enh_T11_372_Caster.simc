@@ -7,7 +7,7 @@ race=orc
 role=hybrid
 use_pre_potion=1
 professions=alchemy=525/enchanting=525
-talents=http://www.wowhead.com/talent#shaman-302200300000000000023033200130230123210000000000000000000
+talents=http://www.wowhead.com/talent#shaman-3022003000000000000230332001302301232100000000000000000000
 glyphs=ghost_wolf/lightning_shield/chain_lightning/astral_recall/renewed_life/water_walking/feral_spirit/lava_lash/stormstrike
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
@@ -33,7 +33,7 @@ actions+=/earth_shock
 actions+=/stormstrike
 actions+=/spirit_wolf
 actions+=/earth_elemental_totem
-actions+=/fire_nova
+actions+=/fire_nova,if=target.adds>1
 actions+=/spiritwalkers_grace,moving=1
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time+0.5

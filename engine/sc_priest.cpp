@@ -1356,8 +1356,7 @@ struct holy_fire_t : public priest_spell_t
 
     base_execute_time += p -> talents.divine_fury -> effect1().seconds();
 
-    if ( p -> ptr )
-      base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
+    base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
   }
 
   virtual void execute()
@@ -1366,21 +1365,16 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> ptr )
-      p -> buffs_holy_evangelism  -> trigger();
+    p -> buffs_holy_evangelism  -> trigger();
 
-    if ( p -> ptr )
-      trigger_atonement( player, result, direct_dmg );
+    trigger_atonement( player, result, direct_dmg );
   }
 
   virtual void tick()
   {
     priest_spell_t::tick();
 
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> ptr )
-      trigger_atonement( player, result, tick_dmg );
+    trigger_atonement( player, result, tick_dmg );
   }
 
   virtual void player_buff()
@@ -2820,7 +2814,7 @@ struct binding_heal_t : public priest_heal_t
 
     p -> buffs_serendipity -> trigger( 1 );
 
-    if ( p -> ptr && p -> buffs_surge_of_light -> trigger() )
+    if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
 
     // Inner Focus
@@ -3336,10 +3330,6 @@ struct power_word_shield_t : public priest_absorb_t
 
     cooldown -> duration += p -> talents.soul_warding -> effect1().seconds();
 
-    // hotfix from Feb 16
-    if ( ! p -> ptr )
-      base_cost = floor ( 0.34 * player -> resource_base[ RESOURCE_MANA ] );
-
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
@@ -3428,7 +3418,7 @@ struct penance_heal_tick_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_weakened_soul -> up() || p -> ptr )
+    if ( p -> buffs_weakened_soul -> up() )
       p -> buffs_indulgence_of_the_penitent -> trigger();
   }
 
