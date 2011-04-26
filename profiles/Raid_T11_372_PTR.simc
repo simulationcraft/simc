@@ -3,8 +3,8 @@
 optimal_raid=1
 ptr=1
 
-Death_Knight_Frost_1h_T11_372_PTR.simc
-Death_Knight_Frost_2h_T11_372_PTR.simc
+Death_Knight_Frost_1h_T11_372.simc
+Death_Knight_Frost_2h_T11_372.simc
 Death_Knight_Unholy_1h_T11_372.simc
 Death_Knight_Unholy_2h_T11_372.simc
 
@@ -37,10 +37,10 @@ Shaman_Elemental_T11_372.simc
 Shaman_Enh_T11_372.simc
 Shaman_Enh_T11_372_Caster.simc
 
-Warlock_AffDrain_T11_372_PTR.simc
-Warlock_Affliction_T11_372_PTR.simc
-Warlock_Demonology_T11_372_PTR.simc
-Warlock_Destruction_T11_372_PTR.simc
+Warlock_AffDrain_T11_372.simc
+Warlock_Affliction_T11_372.simc
+Warlock_Demonology_T11_372.simc
+Warlock_Destruction_T11_372.simc
 
 Warrior_Arms_T11_372.simc
 Warrior_Fury_1h_T11_372.simc
