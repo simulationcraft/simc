@@ -3418,8 +3418,7 @@ struct penance_heal_tick_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_weakened_soul -> up() )
-      p -> buffs_indulgence_of_the_penitent -> trigger();
+    p -> buffs_indulgence_of_the_penitent -> trigger();
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
