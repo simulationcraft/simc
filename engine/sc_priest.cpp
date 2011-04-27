@@ -855,12 +855,6 @@ struct shadow_fiend_pet_t : public pet_t
       may_parry  = false; // Technically it can be parried on the first swing or if the rear isn't reachable
       may_crit   = true;
       may_block  = false; // Technically it can be blocked on the first swing or if the rear isn't reachable
-
-      if ( o -> bugs )
-      {
-        crit_bonus = 1.0;
-        crit_multiplier *= 1.333333;
-      }
     }
 
     void assess_damage( player_t* t, double amount, int dmg_type, int travel_result )
