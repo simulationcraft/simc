@@ -7,8 +7,8 @@ race=worgen
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#warrior-3202030312021231221103220000000000000000010200000000000000000
-glyphs=thunder_clap/cleaving/sweeping_strikes/battle/berserker_rage/intimidating_shout/slam/overpower/mortal_strike
+talents=http://www.wowhead.com/talent#warrior-3022030312021231221103220000000000000000010200000000000000000
+glyphs=thunder_clap/rapid_charge/sweeping_strikes/battle/berserker_rage/intimidating_shout/slam/overpower/mortal_strike
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats

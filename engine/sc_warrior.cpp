@@ -160,6 +160,7 @@ struct warrior_t : public player_t
     glyph_t* mortal_strike;
     glyph_t* overpower;
     glyph_t* raging_blow;
+    glyph_t* rapid_charge;
     glyph_t* resonating_power;
     glyph_t* revenge;
     glyph_t* shield_slam;
@@ -1240,6 +1241,7 @@ struct charge_t : public warrior_attack_t
     parse_options( options, options_str );
 
     cooldown -> duration += p -> talents.juggernaut -> effect3().seconds();
+    cooldown -> duration += p -> glyphs.rapid_charge -> effect1().seconds();
 
     stancemask  = STANCE_BATTLE;
 
@@ -2911,6 +2913,7 @@ void warrior_t::init_spells()
   glyphs.mortal_strike       = find_glyph( "Glyph of Mortal Strike" );
   glyphs.overpower           = find_glyph( "Glyph of Overpower" );
   glyphs.raging_blow         = find_glyph( "Glyph of Raging Blow" );
+  glyphs.rapid_charge        = find_glyph( "Glyph of Rapid Charge" );
   glyphs.resonating_power    = find_glyph( "Glyph of Resonating Power" );
   glyphs.revenge             = find_glyph( "Glyph of Revenge" );
   glyphs.shield_slam         = find_glyph( "Glyph of Shield Slam" );
