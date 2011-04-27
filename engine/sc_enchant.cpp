@@ -55,6 +55,7 @@ static enchant_data_t enchant_db[] =
   { "4188",  "Grounded Plasma Shield",                                    "",                               NULL,        NULL },
   { "4187",  "Invisibility Field",                                        "",                               NULL,        NULL },
   { "4182",  "Spinal Healing Injector",                                   "",                               NULL,        NULL },
+  { "4183",  "Injects a Mythical Mana Potion directly into your bloodstream, increasing potency and and restoring 11600 mana.", "", NULL, NULL },
   { "4181",  "Tazik Shocker",                                             "tazik_shocker",                  NULL,        NULL },
   { "4180",  "Quickflip Deflection Plates",                               "quickflip_deflection_plates",    NULL,        NULL },
   { "4179",  "Synapse Springs",                                           "synapse_springs",                NULL,        NULL },
