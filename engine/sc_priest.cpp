@@ -375,6 +375,7 @@ struct priest_t : public player_t
   virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_player_td_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_heal_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_movement_speed() SC_CONST;
 
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -712,6 +713,7 @@ struct priest_heal_t : public heal_t
     heal_t::target_debuff( t, dmg_type );
 
     priest_t* p = player -> cast_priest();
+
 
     // Grace
     if ( p -> talents.grace -> ok() )
@@ -3995,6 +3997,18 @@ double priest_t::composite_player_td_multiplier( const school_type school ) SC_C
   }
 
   return player_multiplier;
+}
+
+// priest_t::composite_player_heal_multiplier ====================================
+
+double priest_t::composite_player_heal_multiplier( const school_type school ) SC_CONST
+{
+  double m = player_t::composite_player_heal_multiplier( school );
+
+  if ( spell_id_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
+    m *= 1.0 + constants.twin_disciplines_value;
+
+  return m;
 }
 
 double priest_t::composite_movement_speed() SC_CONST

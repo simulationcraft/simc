@@ -89,9 +89,9 @@ void heal_t::player_buff()
   player_hit  = p -> composite_spell_hit();
   player_crit = p -> composite_spell_crit();
 
-  player_multiplier    = p -> composite_player_multiplier   ( school );
-  player_dd_multiplier = p -> composite_player_dd_multiplier( school );
-  player_td_multiplier = p -> composite_player_td_multiplier( school );
+  player_multiplier    = p -> composite_player_heal_multiplier   ( school );
+  player_dd_multiplier = p -> composite_player_dh_multiplier( school );
+  player_td_multiplier = p -> composite_player_th_multiplier( school );
 
   if ( base_attack_power_multiplier > 0 )
   {
@@ -512,9 +512,7 @@ void absorb_t::player_buff()
 
   player_t* p = player;
 
-  player_multiplier    = p -> composite_player_multiplier   ( school );
-  player_dd_multiplier = p -> composite_player_dd_multiplier( school );
-  player_td_multiplier = p -> composite_player_td_multiplier( school );
+  player_multiplier    = p -> composite_player_absorb_multiplier   ( school );
 
   if ( base_attack_power_multiplier > 0 )
   {

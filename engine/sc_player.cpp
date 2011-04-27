@@ -2140,6 +2140,53 @@ double player_t::composite_player_td_multiplier( const school_type school ) SC_C
   return m;
 }
 
+// player_t::composite_player_heal_multiplier ================================
+
+double player_t::composite_player_heal_multiplier( const school_type /* school */ ) SC_CONST
+{
+  double m = 1.0;
+
+  if ( type != PLAYER_GUARDIAN )
+  {
+    if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
+    {
+      // ICC buff.
+      m *= 1.30;
+    }
+  }
+
+  return m;
+}
+
+// player_t::composite_player_th_multiplier ==============================
+
+double player_t::composite_player_th_multiplier( const school_type /* school */ ) SC_CONST
+{
+  double m = 1.0;
+
+  m *= 1.0 + buffs.dark_intent -> value() * buffs.dark_intent_feedback -> stack();
+
+  return m;
+}
+
+// player_t::composite_player_absorb_multiplier ================================
+
+double player_t::composite_player_absorb_multiplier( const school_type /* school */ ) SC_CONST
+{
+  double m = 1.0;
+
+  if ( type != PLAYER_GUARDIAN )
+  {
+    if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
+    {
+      // ICC buff.
+      m *= 1.30;
+    }
+  }
+
+  return m;
+}
+
 // player_t::composite_movement_speed =====================================
 
 double player_t::composite_movement_speed() SC_CONST
