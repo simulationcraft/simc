@@ -4635,8 +4635,11 @@ void druid_t::init_actions()
         action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
         action_list_str += "/ravage,if=buff.stampede_cat.up&buff.stampede_cat.remains<=1";
         if ( talents.berserk -> rank() )action_list_str += "/berserk,if=time_to_max_energy>=2.0&!buff.tigers_fury.up&cooldown.tigers_fury.remains>15";
-        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=25";
-        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=25";
+        if ( talents.blood_in_the_water -> rank() )
+        {
+          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=25";
+          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=25";
+        }
         action_list_str += use_str;
         // Lifeblood
         if ( profession[ PROF_HERBALISM ] >= 450 )
