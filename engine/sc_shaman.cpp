@@ -1808,7 +1808,7 @@ void shaman_spell_t::schedule_execute()
     // we clip swings instead of outright reset the swing timer(s)
     if ( maelstrom && p -> buffs_maelstrom_weapon -> check() )
     {
-      if ( player -> main_hand_attack && 
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event &&
            sim -> current_time + time_to_execute > player -> main_hand_attack -> execute_event -> occurs() )
       {
         p -> procs_swings_clipped_mh -> occur();
@@ -1817,7 +1817,7 @@ void shaman_spell_t::schedule_execute()
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
       
-      if ( player -> off_hand_attack &&
+      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event &&
            sim -> current_time + time_to_execute > player -> off_hand_attack -> execute_event -> occurs() )
       {
         p -> procs_swings_clipped_oh -> occur();
@@ -1830,14 +1830,14 @@ void shaman_spell_t::schedule_execute()
     {
       // While a non-maelstromable spell is casting, main/offhand swing times are _RESET_
       // Mainhand
-      if ( player -> main_hand_attack )
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> main_hand_attack -> execute_time();
         time_to_next_hit += time_to_execute;
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
       // Offhand
-      if ( player -> off_hand_attack )
+      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> off_hand_attack -> execute_time();
         time_to_next_hit += time_to_execute;
