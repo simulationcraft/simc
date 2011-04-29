@@ -4551,21 +4551,22 @@ void death_knight_t::init_glyphs()
     else if ( n == "rune_strike"     ) glyphs.rune_strike = 1;
     else if ( n == "scourge_strike"  ) glyphs.scourge_strike = 1;
     // To prevent warnings
-    else if ( n == "antimagic_shell"     ) ;
-    else if ( n == "blood_boil"          ) ;
-    else if ( n == "blood_tap"           ) ;
-    else if ( n == "bone_shield"         ) ;
-    else if ( n == "chains_of_ice"       ) ;
-    else if ( n == "dancing_rune_weapon" ) ;
-    else if ( n == "death_grip"          ) ;
-    else if ( n == "deaths_embrace"      ) ;
-    else if ( n == "hungering_cold"      ) ;
-    else if ( n == "path_of_frost"       ) ;
-    else if ( n == "pestilence"          ) ;
-    else if ( n == "pilar_of_frost"      ) ;
-    else if ( n == "raise_ally"          ) ;
-    else if ( n == "resilient_grip"      ) ;
-    else if ( n == "rune_tap"            ) ;
+    else if ( n == "antimagic_shell"     );
+    else if ( n == "blood_boil"          );
+    else if ( n == "blood_tap"           );
+    else if ( n == "bone_shield"         );
+    else if ( n == "chains_of_ice"       );
+    else if ( n == "dancing_rune_weapon" );
+    else if ( n == "death_gate"          );
+    else if ( n == "death_grip"          );
+    else if ( n == "deaths_embrace"      );
+    else if ( n == "hungering_cold"      );
+    else if ( n == "path_of_frost"       );
+    else if ( n == "pestilence"          );
+    else if ( n == "pilar_of_frost"      );
+    else if ( n == "raise_ally"          );
+    else if ( n == "resilient_grip"      );
+    else if ( n == "rune_tap"            );
     else if ( n == "strangulate"         );
     else if ( n == "vampiric_blood"      );
     else if ( ! sim -> parent )
