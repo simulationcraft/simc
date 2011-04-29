@@ -8,7 +8,7 @@ role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#deathknight-203100000000000000000000000000000000000013300321230331121231
-glyphs=blood_boil/pestilence/antimagic_shell/horn_of_winter/blood_tap/raise_ally/scourge_strike/raise_dead/death_coil
+glyphs=blood_boil/pestilence/antimagic_shell/horn_of_winter/blood_tap/death_gate/scourge_strike/raise_dead/death_coil
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/presence,choose=unholy
