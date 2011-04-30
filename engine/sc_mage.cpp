@@ -2057,6 +2057,7 @@ struct frostfire_orb_tick_t : public mage_spell_t
     background = true;
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
+    may_brain_freeze = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
 };
 
