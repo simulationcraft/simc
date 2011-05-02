@@ -1003,18 +1003,18 @@ void mage_spell_t::execute()
     trigger_master_of_elements( this );
   }
 
-  if( background ) return;
+  if ( background ) return;
 
-  if( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
+  if ( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
 
   p -> buffs_arcane_potency -> decrement();
 
-  if( fof_frozen )
+  if ( fof_frozen )
   {
     p -> buffs_fingers_of_frost -> decrement();
   }
 
-  if( may_brain_freeze )
+  if ( may_brain_freeze )
   {
     p -> buffs_brain_freeze -> trigger();
   }
@@ -2057,7 +2057,6 @@ struct frostfire_orb_tick_t : public mage_spell_t
     background = true;
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
-    may_brain_freeze = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
 };
 
@@ -2088,6 +2087,11 @@ struct frostfire_orb_t : public mage_spell_t
   {
     tick_spell -> execute();
     stats -> add_tick( time_to_tick );
+
+    // Trigger Brain Freeze
+    mage_t* p = player -> cast_mage();
+    if ( p -> talents.frostfire_orb -> rank() == 2 )
+      p -> buffs_brain_freeze -> trigger();
   }
 
   virtual void last_tick()
