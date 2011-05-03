@@ -3224,6 +3224,8 @@ struct insect_swarm_t : public druid_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
+      if ( p -> ptr ) 
+        trigger_eclipse_gain_delay( this, -8 );
     }
   }
 };
@@ -3335,6 +3337,9 @@ struct moonfire_t : public druid_spell_t
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
+      
+      if ( p -> ptr ) 
+        trigger_eclipse_gain_delay( this, 8 );
     }
   }
 
@@ -3803,6 +3808,9 @@ struct sunfire_t : public druid_spell_t
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
+
+      if ( p -> ptr ) 
+        trigger_eclipse_gain_delay( this, -8 );
     }
   }
 
