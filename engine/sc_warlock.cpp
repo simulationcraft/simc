@@ -2750,7 +2750,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
     {
-      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect1().percent() );
+      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
     }
   }
 
