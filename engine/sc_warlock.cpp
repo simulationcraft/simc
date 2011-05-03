@@ -2039,7 +2039,7 @@ struct shadow_bolt_t : public warlock_spell_t
       trigger_decimation( this, travel_result );
       trigger_impending_doom( this );
       p -> buffs_shadow_embrace -> trigger();
-      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> effect1().percent() );
+      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
     }
   }
 
