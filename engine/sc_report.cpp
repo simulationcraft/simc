@@ -3214,7 +3214,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     buff_t* b = dynamic_buffs[ i ];
 
     std::string buff_name = "";
-    if( b -> player -> is_pet() )
+    if( b -> player && b -> player -> is_pet() )
     {
       buff_name += b -> player -> name_str + "-";
     }
