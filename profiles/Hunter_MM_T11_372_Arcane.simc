@@ -1,14 +1,14 @@
 #!./simc 
 
 hunter=Hunter_MM_T11_372_Arcane
-origin="http://chardev.org/?profile=34115"
+origin="http://chardev.org/?profile=116024"
 level=85
 race=troll
 role=attack
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#hunter-0230030000000000000230232103211023122102000000000000000000
-glyphs=steady_shot/rapid_fire/arcane_shot
+talents=http://www.wowhead.com/talent#hunter-0230020000000000000230232003212023122103000000000000000000
+glyphs=steady_shot/arcane_shot/rapid_fire
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/hunters_mark
@@ -34,33 +34,32 @@ actions+=/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.u
 actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up&!buff.berserking.up)
 actions+=/steady_shot
 head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=325agi_2071armor_257crit_197mastery_578sta,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
-neck=necklace_of_strife,heroic=1,ilevel=372,quality=epic,stats=215agi_143haste_143mastery_322sta,reforge=mastery_hit
+neck=mistral_pendant_of_the_windflurry,ilevel=372,quality=epic,stats=321sta_214agi_143crit_143haste,reforge=haste_hit,suffix=135
 shoulders=lightningcharged_spaulders,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1911armor_171hit_191mastery_429sta,reforge=mastery_crit,gems=67agi_10mastery,enchant=50agi_25mastery
 chest=voltage_source_chestguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=345agi_2548armor_227crit_247haste_578sta,reforge=haste_hit,gems=67agi_40agi,enchant=20all
 waist=coil_of_tenthousand_screams,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1433armor_171crit_191haste_429sta,gems=67agi_40agi_10haste
 legs=lightningcharged_legguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=345agi_2230armor_257crit_217haste_578sta,gems=40agi_40agi,enchant=190ap_55crit
-feet=boots_of_vertigo,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1752armor_191haste_171hit_429sta,reforge=haste_crit,gems=20agi_20hit_10agi,enchant=25agi
+feet=boots_of_vertigo,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1752armor_191haste_171hit_429sta,gems=20agi_20hit_10agi,enchant=35agi
 wrists=chimaeron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=215agi_1115armor_143crit_143hit_322sta,enchant=50agi
-hands=lightningcharged_gloves,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1593armor_191crit_171haste_429sta,gems=20agi_20hit_10agi,enchant=65mastery
+hands=lightningcharged_gloves,heroic=1,type=mail,ilevel=372,quality=epic,stats=266agi_1593armor_191crit_171haste_429sta,gems=20agi_20hit_10agi,enchant=20agi
 finger1=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_143crit_143hit_322sta,enchant=40agi
 finger2=mistral_circle_of_the_stormblast,heroic=1,ilevel=372,quality=epic,stats=321sta_214agi_143hit_143crit,enchant=40agi,suffix=133
 trinket1=essence_of_the_cyclone,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178crit_10%_10dur_50cd
 trinket2=prestors_talisman_of_machination,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178haste_10%_15dur_75cd
-back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=215agi_673armor_143crit_143mastery_322sta,reforge=mastery_haste,enchant=65crit
+back=mistral_drape_of_the_windflurry,ilevel=372,quality=epic,stats=673armor_321sta_214agi_143crit_143haste,enchant=22agi,suffix=135
 main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_257crit_257mastery_578sta,reforge=mastery_haste,enchant=130agi,weapon=staff_2.40speed_1350min_2027max
 ranged=themios_the_darkbringer,heroic=1,ilevel=372,quality=epic,stats=121agi_81crit_81mastery_181sta,reforge=mastery_haste,enchant=gnomish_xray,weapon=bow_2.90speed_1428min_2653max
-tabard=tabard_of_the_kirin_tor,ilevel=75
 # Gear Summary
 # gear_strength=20
-# gear_agility=5325
-# gear_stamina=5838
+# gear_agility=5375
+# gear_stamina=5836
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_hit_rating=966
-# gear_crit_rating=2305
-# gear_haste_rating=1300
-# gear_mastery_rating=710
+# gear_crit_rating=2307
+# gear_haste_rating=1405
+# gear_mastery_rating=473
 # gear_armor=15326
 # meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
