@@ -4185,8 +4185,7 @@ void warlock_t::init_actions()
       action_list_str += "/flask,type=frost_wyrm";
 
     // Food
-    // TO-DO: Revert to >= 80 once Cata is out
-    if ( level > 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
+    if ( level >= 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
     else if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
 
     // Armor
@@ -4362,7 +4361,8 @@ void warlock_t::init_actions()
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54) action_list_str += "/soulburn";
-      if ( level >= 54) {
+      if ( level >= 54)
+      {
         if ( talent_improved_soul_fire -> ok() )
         {
           action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight&miss_react";
