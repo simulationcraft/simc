@@ -47,8 +47,6 @@ struct priest_t : public player_t
   // Set Bonus
   buff_t* buffs_indulgence_of_the_penitent;
 
-
-
   // Talents
 
   struct talents_list_t
@@ -182,6 +180,7 @@ struct priest_t : public player_t
 
   // Uptimes
   uptime_t* uptimes_mind_spike[ 4 ];
+  uptime_t* uptimes_dark_flames;
   uptime_t* uptimes_dark_evangelism[ 6 ];
   uptime_t* uptimes_holy_evangelism[ 6 ];
   uptime_t* uptimes_shadow_orb[ 4 ];
@@ -1494,11 +1493,28 @@ struct mind_blast_t : public priest_spell_t
 
   virtual void execute()
   {
+    double saved_cooldown = cooldown -> duration;
+
     priest_t* p = player -> cast_priest();
 
     stats = orb_stats[ p -> buffs_shadow_orb -> stack() ];
 
+    if ( p -> ptr && p -> set_bonus.tier12_4pc_caster() )
+    {
+      if ( p -> dots_shadow_word_pain -> ticking && p -> dots_vampiric_touch -> ticking && p -> dots_devouring_plague -> ticking )
+      {
+        cooldown -> duration -= 3.0;
+        p -> uptimes_dark_flames -> update( 1 );
+      }
+      else
+      {
+        p -> uptimes_dark_flames -> update( 0 );
+      }     
+    }
+
     priest_spell_t::execute();
+
+    cooldown -> duration = saved_cooldown;
 
     for ( int i=0; i < 4; i++ )
     {
@@ -4182,6 +4198,8 @@ void priest_t::init_uptimes()
   uptimes_mind_spike[ 2 ]  = get_uptime( "mind_spike_2" );
   uptimes_mind_spike[ 3 ]  = get_uptime( "mind_spike_3" );
 
+  uptimes_dark_flames      = get_uptime( "dark_flames" );
+
   uptimes_dark_evangelism[ 0 ]  = get_uptime( "dark_evangelism_0" );
   uptimes_dark_evangelism[ 1 ]  = get_uptime( "dark_evangelism_1" );
   uptimes_dark_evangelism[ 2 ]  = get_uptime( "dark_evangelism_2" );
@@ -4350,7 +4368,7 @@ void priest_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 70800, 70801,     0,     0,     0,     0,     0,     0 }, // Tier10
     { 89915, 89922,     0,     0,     0,     0,     0,     0 }, // Tier11
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    {     0,     0,     0,     0,     0,     0,     0,     0 }, // Tier12
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4398,7 +4416,6 @@ void priest_t::init_buffs()
 
   // Set Bonus
   buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
-
 }
 
 // priest_t::init_actions =====================================================

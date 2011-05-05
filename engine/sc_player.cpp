@@ -5363,6 +5363,33 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     if ( set_bonus.tier11_2pc_heal()   ) profile_str += "# tier11_2pc_heal=1" + term;
     if ( set_bonus.tier11_4pc_heal()   ) profile_str += "# tier11_4pc_heal=1" + term;
 
+    if ( set_bonus.tier12_2pc_caster() ) profile_str += "# tier12_2pc_caster=1" + term;
+    if ( set_bonus.tier12_4pc_caster() ) profile_str += "# tier12_4pc_caster=1" + term;
+    if ( set_bonus.tier12_2pc_melee()  ) profile_str += "# tier12_2pc_melee=1" + term;
+    if ( set_bonus.tier12_4pc_melee()  ) profile_str += "# tier12_4pc_melee=1" + term;
+    if ( set_bonus.tier12_2pc_tank()   ) profile_str += "# tier12_2pc_tank=1" + term;
+    if ( set_bonus.tier12_4pc_tank()   ) profile_str += "# tier12_4pc_tank=1" + term;
+    if ( set_bonus.tier12_2pc_heal()   ) profile_str += "# tier12_2pc_heal=1" + term;
+    if ( set_bonus.tier12_4pc_heal()   ) profile_str += "# tier12_4pc_heal=1" + term;
+
+    if ( set_bonus.tier13_2pc_caster() ) profile_str += "# tier13_2pc_caster=1" + term;
+    if ( set_bonus.tier13_4pc_caster() ) profile_str += "# tier13_4pc_caster=1" + term;
+    if ( set_bonus.tier13_2pc_melee()  ) profile_str += "# tier13_2pc_melee=1" + term;
+    if ( set_bonus.tier13_4pc_melee()  ) profile_str += "# tier13_4pc_melee=1" + term;
+    if ( set_bonus.tier13_2pc_tank()   ) profile_str += "# tier13_2pc_tank=1" + term;
+    if ( set_bonus.tier13_4pc_tank()   ) profile_str += "# tier13_4pc_tank=1" + term;
+    if ( set_bonus.tier13_2pc_heal()   ) profile_str += "# tier13_2pc_heal=1" + term;
+    if ( set_bonus.tier13_4pc_heal()   ) profile_str += "# tier13_4pc_heal=1" + term;
+
+    if ( set_bonus.tier14_2pc_caster() ) profile_str += "# tier14_2pc_caster=1" + term;
+    if ( set_bonus.tier14_4pc_caster() ) profile_str += "# tier14_4pc_caster=1" + term;
+    if ( set_bonus.tier14_2pc_melee()  ) profile_str += "# tier14_2pc_melee=1" + term;
+    if ( set_bonus.tier14_4pc_melee()  ) profile_str += "# tier14_4pc_melee=1" + term;
+    if ( set_bonus.tier14_2pc_tank()   ) profile_str += "# tier14_2pc_tank=1" + term;
+    if ( set_bonus.tier14_4pc_tank()   ) profile_str += "# tier14_4pc_tank=1" + term;
+    if ( set_bonus.tier14_2pc_heal()   ) profile_str += "# tier14_2pc_heal=1" + term;
+    if ( set_bonus.tier14_4pc_heal()   ) profile_str += "# tier14_4pc_heal=1" + term;
+
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
@@ -5492,12 +5519,40 @@ void player_t::create_options()
     { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]   ) },
     { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]    ) },
     { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]    ) },
+    { "tier10_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_HEAL ]    ) },
+    { "tier10_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_HEAL ]    ) },
     { "tier11_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_CASTER ]  ) },
     { "tier11_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_CASTER ]  ) },
     { "tier11_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_MELEE ]   ) },
     { "tier11_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_MELEE ]   ) },
     { "tier11_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_TANK ]    ) },
     { "tier11_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_TANK ]    ) },
+    { "tier11_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_HEAL ]    ) },
+    { "tier11_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_HEAL ]    ) },
+    { "tier12_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T12_2PC_CASTER ]  ) },
+    { "tier12_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T12_4PC_CASTER ]  ) },
+    { "tier12_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T12_2PC_MELEE ]   ) },
+    { "tier12_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T12_4PC_MELEE ]   ) },
+    { "tier12_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T12_2PC_TANK ]    ) },
+    { "tier12_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T12_4PC_TANK ]    ) },
+    { "tier12_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T12_2PC_HEAL ]    ) },
+    { "tier12_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T12_4PC_HEAL ]    ) },
+    { "tier13_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T13_2PC_CASTER ]  ) },
+    { "tier13_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T13_4PC_CASTER ]  ) },
+    { "tier13_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T13_2PC_MELEE ]   ) },
+    { "tier13_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T13_4PC_MELEE ]   ) },
+    { "tier13_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T13_2PC_TANK ]    ) },
+    { "tier13_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T13_4PC_TANK ]    ) },
+    { "tier13_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T13_2PC_HEAL ]    ) },
+    { "tier13_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T13_4PC_HEAL ]    ) },
+    { "tier14_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T14_2PC_CASTER ]  ) },
+    { "tier14_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T14_4PC_CASTER ]  ) },
+    { "tier14_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T14_2PC_MELEE ]   ) },
+    { "tier14_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T14_4PC_MELEE ]   ) },
+    { "tier14_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_2PC_TANK ]    ) },
+    { "tier14_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_4PC_TANK ]    ) },
+    { "tier14_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_2PC_HEAL ]    ) },
+    { "tier14_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_4PC_HEAL ]    ) },
     // Gear Stats
     { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]           ) },
     { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]           ) },
