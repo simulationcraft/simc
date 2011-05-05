@@ -36,7 +36,7 @@ static unsigned             idx_td_size[2]     = { 0, 0 };
 const char* dbc_t::build_level( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "13914" : "13914";
+  return ptr ? "14002" : "13914";
 #else
   return "13914";
 #endif
@@ -45,7 +45,7 @@ const char* dbc_t::build_level( bool ptr )
 const char* dbc_t::wow_version( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "4.1.0" : "4.1.0";
+  return ptr ? "4.2.0" : "4.1.0";
 #else
   return "4.1.0";
 #endif

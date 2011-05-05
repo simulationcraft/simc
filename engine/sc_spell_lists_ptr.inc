@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 13914
+// Class based active abilities, wow build 14002
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -31,7 +31,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       12294, // Mortal Strike
        7384, // Overpower (Battle Stance)
         772, // Rend (Battle, Defensive Stance)
-      20230, // Retaliation (Battle Stance)
+      20230, // Retaliation
       64382, // Shattering Throw (Battle Stance)
       88161, // Strike
       12328, // Sweeping Strikes (Battle, Berserker Stance)
@@ -61,7 +61,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        6552, // Pummel
       85288, // Raging Blow (Berserker Stance)
       97462, // Rallying Cry
-       1719, // Recklessness (Berserker Stance)
+       1719, // Recklessness
        1464, // Slam
       34428, // Victory Rush
        1680, // Whirlwind (Berserker Stance)
@@ -78,7 +78,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        6572, // Revenge (Defensive Stance)
        2565, // Shield Block (Defensive Stance)
       23922, // Shield Slam
-        871, // Shield Wall (Defensive Stance)
+        871, // Shield Wall
       46968, // Shockwave
       23920, // Spell Reflection (Battle, Defensive Stance)
        7386, // Sunder Armor
@@ -447,7 +447,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       47476, // Strangulate
           0,
     },
-    // Frost tree, 13 abilities
+    // Frost tree, 14 abilities
     {
       45524, // Chains of Ice
       85948, // Festering Strike
@@ -457,6 +457,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       49203, // Hungering Cold
       48792, // Icebound Fortitude
       45477, // Icy Touch
+      49039, // Lichborne
       47528, // Mind Freeze
       49020, // Obliterate
        3714, // Path of Frost
@@ -852,7 +853,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 13914
+// Talent tree specialization abilities, wow build 14002
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1110,7 +1111,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 13914
+// Class mastery abilities, wow build 14002
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1195,7 +1196,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 13914
+// Racial abilities, wow build 14002
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1828,7 +1829,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 13914
+// Glyph spells for classes, wow build 14002
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -1964,7 +1965,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     {
       57904, // Glyph of Aspect of the Pack
       57903, // Glyph of Feign Death
-      57870, // Glyph of Lesser Proprotion
+      57870, // Glyph of Lesser Proportion
       57866, // Glyph of Revive Pet
       57902, // Glyph of Scare Beast
           0,
@@ -2344,7 +2345,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_SIZE (6)
 
-// Tier item set bonuses for class, wow build 13914
+// Tier item set bonuses for class, wow build 14002
 static unsigned __ptr_tier_bonuses_data[][12][PTR_TIER_BONUSES_SIZE] = {
   {
     {
