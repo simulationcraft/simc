@@ -24,7 +24,12 @@ _DIFF_DATA = {
         'SkillLine.dbc' : [
             ( 'id_skill_cost', _REMOVE_FIELD )
         ],
-    }
+    },
+    14002: {
+        'Spell.dbc' : [
+            ( 'unk_14002', _ADD_FIELD, 'flags_8' ),
+        ],
+    },
 }
 
 # Base DBC/DB2 fields, works for 12604, as that's our first DBC/DB2 data version
