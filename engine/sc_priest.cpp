@@ -815,6 +815,43 @@ struct shadow_fiend_pet_t : public pet_t
   double bad_spell_power;
   bool extra_tick;
 
+  struct tier12_flame_attack_t : public spell_t
+  {
+    tier12_flame_attack_t( player_t* player ) : 
+      spell_t( "tier12_flame_attack", player, SCHOOL_FIRE )
+    {
+      background       = true;
+      may_miss         = false;    
+      proc             = true;      
+      may_crit         = false;
+      direct_power_mod = 0.0;
+      trigger_gcd      = false;
+      school           = SCHOOL_FIRE;
+    }
+    
+/*
+    // Don't double dip
+    virtual void target_debuff( player_t* t, int dmg_type ) { }
+    
+    virtual double total_dd_multiplier() SC_CONST
+    {
+      return 0.2;
+    }
+*/
+
+    virtual double calculate_direct_damage()
+    {
+      double dmg = base_dd_min;
+
+      if ( ! binary )
+      {
+        dmg *= 1.0 - resistance();
+      }
+
+      return dmg;
+    }
+  };
+
   struct shadowcrawl_t : public spell_t
   {
     shadowcrawl_t( player_t* player ) :
@@ -835,8 +872,10 @@ struct shadow_fiend_pet_t : public pet_t
 
   struct melee_t : public attack_t
   {
+    tier12_flame_attack_t* tier12_flame_attack_spell;
+
     melee_t( player_t* player ) :
-      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW )
+      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW ), tier12_flame_attack_spell( 0 )
     {
       priest_t* o = player -> cast_pet() -> owner -> cast_priest();
       weapon = &( player -> main_hand_weapon );
@@ -854,6 +893,13 @@ struct shadow_fiend_pet_t : public pet_t
       may_parry  = false; // Technically it can be parried on the first swing or if the rear isn't reachable
       may_crit   = true;
       may_block  = false; // Technically it can be blocked on the first swing or if the rear isn't reachable
+
+      if ( o -> set_bonus.tier12_2pc_caster() )
+      {
+        tier12_flame_attack_spell = new tier12_flame_attack_t( player );
+
+        add_child( tier12_flame_attack_spell );
+      }
     }
 
     void assess_damage( player_t* t, double amount, int dmg_type, int travel_result )
@@ -879,6 +925,19 @@ struct shadow_fiend_pet_t : public pet_t
         p -> bad_swing = false;
 
       player_multiplier *= 1.0 + p -> buffs_shadowcrawl -> value();
+    }
+
+    void execute()
+    {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+  
+      attack_t::execute();
+
+      if ( tier12_flame_attack_spell )
+      {
+        tier12_flame_attack_spell -> base_dd_min = direct_dmg * 0.2;
+        tier12_flame_attack_spell -> execute();
+      }
     }
   };
 
@@ -4677,7 +4736,8 @@ void priest_t::init_values()
   constants.devouring_plague_health_mod     = 0.15;
 
   cooldowns_shadow_fiend -> duration        = active_spells.shadow_fiend        -> cooldown() +
-                                              talents.veiled_shadows            -> effect2().seconds();
+                                              talents.veiled_shadows            -> effect2().seconds() +
+                                              ( set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
 
   constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
 }
