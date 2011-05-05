@@ -143,6 +143,7 @@ struct warrior_t : public player_t
   gain_t* gains_melee_off_hand;
   gain_t* gains_shield_specialization;
   gain_t* gains_sudden_death;
+  gain_t* gains_tier12_2pc_melee;
 
   // Glyphs
   struct glyphs_t
@@ -3051,6 +3052,7 @@ void warrior_t::init_gains()
   gains_melee_off_hand         = get_gain( "melee_off_hand"        );
   gains_shield_specialization  = get_gain( "shield_specialization" );
   gains_sudden_death           = get_gain( "sudden_death"          );
+  gains_tier12_2pc_melee       = get_gain( "tier12_2pc_melee"      );
 }
 
 // warrior_t::init_procs ====================================================
@@ -3411,6 +3413,9 @@ void warrior_t::regen( double periodicity )
   {
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
+
+  if ( ptr && set_bonus.tier12_2pc_melee() && sim -> auras.battle_shout -> check() )
+    resource_gain( RESOURCE_RAGE, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
 
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                               resource_max    [ RESOURCE_RAGE] );
