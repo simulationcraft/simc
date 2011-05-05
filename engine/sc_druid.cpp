@@ -141,6 +141,7 @@ struct druid_t : public player_t
   rng_t* rng_euphoria;
   rng_t* rng_fury_swipes;
   rng_t* rng_primal_fury;
+  rng_t* rng_tier12_4pc_melee;
   rng_t* rng_wrath_eclipsegain;
 
   // Spell Data
@@ -1035,8 +1036,17 @@ void druid_cat_attack_t::execute()
 
   if ( result_is_hit() )
   {
-    if ( requires_combo_points ) p -> buffs_combo_points -> expire();
-    if (     adds_combo_points ) add_combo_point ( p );
+    if ( requires_combo_points )
+    {
+      if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
+      {
+        if ( p -> rng_tier12_4pc_melee -> roll( p -> buffs_combo_points -> check() / 5 ) )
+          p -> buffs_berserk -> extend_duration( p, 2.0 );
+      }
+
+      p -> buffs_combo_points -> expire();
+    }
+    if ( adds_combo_points ) add_combo_point ( p );
 
     if ( result == RESULT_CRIT )
     {
@@ -4550,6 +4560,7 @@ void druid_t::init_rng()
   rng_euphoria            = get_rng( "euphoria"           );
   rng_fury_swipes         = get_rng( "fury_swipes"        );
   rng_primal_fury         = get_rng( "primal_fury"        );
+  rng_tier12_4pc_melee    = get_rng( "tier12_4pc_melee"   );
   rng_wrath_eclipsegain   = get_rng( "wrath_eclipsegain"  );
 }
 

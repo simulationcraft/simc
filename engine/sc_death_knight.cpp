@@ -152,6 +152,7 @@ struct death_knight_t : public player_t
   gain_t* gains_power_refund;
   gain_t* gains_rune_abilities;
   gain_t* gains_scent_of_blood;
+  gain_t* gains_tier12_2pc_melee;
 
   // Glyphs
   struct glyphs_t
@@ -4656,6 +4657,7 @@ void death_knight_t::init_gains()
   gains_power_refund               = get_gain( "power_refund"               );
   gains_rune_abilities             = get_gain( "rune_abilities"             );
   gains_scent_of_blood             = get_gain( "scent_of_blood"             );
+  gains_tier12_2pc_melee           = get_gain( "tier12_2pc_melee"           );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -4880,6 +4882,9 @@ void death_knight_t::regen( double periodicity )
   if ( talents.butchery -> rank() )
     resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect2().resource( RESOURCE_RUNIC ) / 5.0 * periodicity ), gains_butchery );
 
+  if ( ptr && set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
+    resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
+    
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     _runes.slot[i].regen_rune( this, periodicity );

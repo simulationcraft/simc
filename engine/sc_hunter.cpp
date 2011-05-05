@@ -40,6 +40,7 @@ struct hunter_t : public player_t
   buff_t* buffs_trueshot_aura;
   buff_t* buffs_tier10_2pc;
   buff_t* buffs_tier10_4pc;
+  buff_t* buffs_tier12_4pc;
 
   // Cooldowns
   cooldown_t* cooldowns_glyph_kill_shot;
@@ -63,6 +64,7 @@ struct hunter_t : public player_t
   gain_t* gains_glyph_aimed_shot;
   gain_t* gains_cobra_shot;
   gain_t* gains_tier11_4pc;
+  gain_t* gains_tier12_4pc;
 
   // Procs
   proc_t* procs_thrill_of_the_hunt;
@@ -474,8 +476,8 @@ struct hunter_pet_t : public pet_t
   virtual void init_gains()
   {
     pet_t::init_gains();
-    gains_fervor            = get_gain( "fervor" );
-    gains_focus_fire        = get_gain( "focus_fire" );
+    gains_fervor            = get_gain( "fervor"            );
+    gains_focus_fire        = get_gain( "focus_fire"        );
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
   }
 
@@ -711,6 +713,7 @@ struct hunter_attack_t : public attack_t
   }
 
   virtual double cost() SC_CONST;
+  virtual void   consume_resource();
   virtual double execute_time() SC_CONST;
   virtual double swing_haste() SC_CONST;
   virtual void   player_buff();
@@ -725,17 +728,17 @@ struct hunter_spell_t : public spell_t
   hunter_spell_t( const char* n, player_t* p, const school_type s, int t=TREE_NONE ) :
       spell_t( n, p, RESOURCE_FOCUS, s, t )
   {
-    range=-1;
+    range = -1;
   }
   hunter_spell_t( const char* n, player_t* p, const char* sname ) :
       spell_t( n, sname, p )
   {
-    range=-1;
+    range = -1;
   }
   hunter_spell_t( const char* n, player_t* p, const uint32_t id ) :
       spell_t( n, id, p )
   {
-    range=-1;
+    range = -1;
   }
 
   virtual double gcd() SC_CONST;
@@ -896,7 +899,6 @@ struct hunter_pet_attack_t : public attack_t
     }
   }
 
-
   virtual void player_buff()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
@@ -968,6 +970,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   }
 };
 
+// Pet Claw =================================================================
 
 struct claw_t : public hunter_pet_attack_t
 {
@@ -1293,7 +1296,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
 };
 
 // ============================================================================
-// Unique Pet Specials=========================================================
+// Unique Pet Specials
 // ============================================================================
 
 // Wolf/Devilsaur Furious Howl ================================================
@@ -1631,7 +1634,6 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   }
 };
 
-
 // =========================================================================
 // Hunter Attacks
 // =========================================================================
@@ -1643,8 +1645,24 @@ double hunter_attack_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
+  if ( p -> ptr && p -> buffs_tier12_4pc -> check() ) return 0; // To-Do: confirm if this does affect all shots
   if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
   return c;
+}
+
+void hunter_attack_t::consume_resource()
+{
+  hunter_t* p = player -> cast_hunter();
+  if ( harmful && p -> ptr && p -> buffs_tier12_4pc -> up() )
+  {
+    // Treat the savings like a gain
+    double amount = attack_t::cost();
+    if ( amount > 0 )
+    {
+      p -> gains_tier12_4pc -> add( amount );
+      p -> buffs_tier12_4pc -> expire();
+    }
+  }
 }
 
 // hunter_attack_t::swing_haste =============================================
@@ -1728,6 +1746,7 @@ struct ranged_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
       p -> buffs_tier10_2pc -> trigger();
+      p -> buffs_tier12_4pc -> trigger();
       if ( result == RESULT_CRIT ) 
         trigger_go_for_the_throat( this );
     }
@@ -3432,6 +3451,7 @@ void hunter_t::init_buffs()
 
   buffs_tier10_2pc                  = new buff_t( this, "tier10_2pc",                  1, 10.0,  0.0, ( set_bonus.tier10_2pc_melee() ? 0.05 : 0 ) );
   buffs_tier10_4pc                  = new buff_t( this, "tier10_4pc",                  1, 10.0,  0.0, ( set_bonus.tier10_4pc_melee() ? 0.05 : 0 ) );
+  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, 0, 0, 0.10 ); // TO-DO: fill in the remaining details
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
@@ -3443,16 +3463,17 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
   gains_glyph_of_arcane_shot = get_gain( "glyph_of_arcane_shot" );
-  gains_invigoration         = get_gain( "invigoration" );
-  gains_fervor               = get_gain( "fervor" );
-  gains_focus_fire           = get_gain( "focus_fire" );
-  gains_rapid_recuperation   = get_gain( "rapid_recuperation" );
-  gains_roar_of_recovery     = get_gain( "roar_of_recovery" );
-  gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt" );
-  gains_steady_shot          = get_gain( "steady_shot" );
-  gains_glyph_aimed_shot     = get_gain( "glyph_aimed_shot" );
-  gains_cobra_shot           = get_gain( "cobra_shot" );
-  gains_tier11_4pc           = get_gain( "tier11_4pc" );
+  gains_invigoration         = get_gain( "invigoration"         );
+  gains_fervor               = get_gain( "fervor"               );
+  gains_focus_fire           = get_gain( "focus_fire"           );
+  gains_rapid_recuperation   = get_gain( "rapid_recuperation"   );
+  gains_roar_of_recovery     = get_gain( "roar_of_recovery"     );
+  gains_thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt"   );
+  gains_steady_shot          = get_gain( "steady_shot"          );
+  gains_glyph_aimed_shot     = get_gain( "glyph_aimed_shot"     );
+  gains_cobra_shot           = get_gain( "cobra_shot"           );
+  gains_tier11_4pc           = get_gain( "tier11_4pc"           );
+  gains_tier12_4pc           = get_gain( "tier12_4pc"           );
 }
 
 // hunter_t::init_procs ======================================================

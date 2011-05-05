@@ -1780,6 +1780,8 @@ struct zealotry_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_zealotry -> trigger();
+    if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() )
+      p -> buffs_zealotry -> extend_duration( p, 15 );
   }
 
   virtual void consume_resource()
