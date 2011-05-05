@@ -3517,6 +3517,13 @@ struct starfire_t : public druid_spell_t
         // #1 Euphoria does not proc, if you are more than 35 into the side the
         // Eclipse bar is moving towards, >35 for Starfire/towards Solar
         int gain = effect2().base_value();
+
+        // TODO: Setbonus applied before or after euphoria proc?
+        if ( p -> set_bonus.tier12_4pc_caster() )
+        {
+          gain += 5;
+        }
+
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
@@ -4076,7 +4083,7 @@ struct wrath_t : public druid_spell_t
         // leads to predictable patterns where Ephoria is the only random thing
         // Example, ignoring eclipse procs / elipse bar value:
         // ++:      +1  +1  +1  +1  +1  +1  +2  +2  +2
-        // Count: 0  1   2   3   1   2   3   2   1   0
+        // Count: 0  1   2   3   1   2   3   2   4   3
         // Mod 3: 0  1   2   0   1   2   0   2   1   0
         // Gain:   -13 -13 -14 -13 -13 -14 -26 -27 -27
 
@@ -4091,6 +4098,12 @@ struct wrath_t : public druid_spell_t
         // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
         if ( ! p -> buffs_eclipse_solar -> check() )
         {
+          // TODO: Setbonus applied before or after euphoria proc?
+          if ( p -> set_bonus.tier12_4pc_caster() )
+          {
+            gain += 3;
+          }
+
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
           {
             if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
