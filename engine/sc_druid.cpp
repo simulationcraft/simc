@@ -608,8 +608,6 @@ static void trigger_eclipse_proc( druid_t* p )
   p -> buffs_t11_4pc_caster -> trigger( 3 );
   p -> buffs_natures_grace -> cooldown -> reset();
 
-  // When eclipse procs the direction of the bar switches!
-  p -> eclipse_bar_direction = - p -> eclipse_bar_direction;
 }
 
 // trigger_eclipse_energy_gain ==============================================
@@ -620,25 +618,17 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
 
   druid_t* p = s -> player -> cast_druid();
 
-  if ( p -> eclipse_bar_direction == 0 )
+  // Gain will only happen if it is either aligned with the bar direction or
+  // the bar direction has not been set yet.
+  if ( p -> eclipse_bar_direction == -1 && gain > 0 )
   {
-    // No eclipse gained at all by now => Start of the encounter
-    // Set the direction to the direction of the first gain!
-    p -> eclipse_bar_direction = ( gain > 0 ? 1 : -1 );
+    p -> procs_unaligned_eclipse_gain -> occur();
+    return;
   }
-  else
+  else if ( p -> eclipse_bar_direction ==  1 && gain < 0 )
   {
-    // If the gain isn't not alligned with the direction of the bar it won't happen
-    if ( p -> eclipse_bar_direction == -1 && gain > 0 )
-    {
-      p -> procs_unaligned_eclipse_gain -> occur();
-      return;
-    }
-    else if ( p -> eclipse_bar_direction ==  1 && gain < 0 )
-    {
-      p -> procs_unaligned_eclipse_gain -> occur();
-      return;
-    }
+    p -> procs_unaligned_eclipse_gain -> occur();
+    return;
   }
 
   int old_eclipse_bar_value = p -> eclipse_bar_value;
@@ -679,6 +669,8 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
       if ( p -> buffs_eclipse_solar -> trigger() )
       {
         trigger_eclipse_proc( p );
+        // Solar proc => bar direction changes to -1 (towards Lunar)
+        p -> eclipse_bar_direction = -1;
       }
     }
     else if ( p -> eclipse_bar_value == -100 )
@@ -686,6 +678,8 @@ static void trigger_eclipse_energy_gain( spell_t* s, int gain )
       if ( p -> buffs_eclipse_lunar -> trigger() )
       {
         trigger_eclipse_proc( p );
+        // Lunar proc => bar direction changes to +1 (towards Solar)
+        p -> eclipse_bar_direction = 1;
       }
     }
   }
