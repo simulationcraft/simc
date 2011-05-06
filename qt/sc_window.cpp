@@ -489,7 +489,7 @@ void SimulationCraftWindow::createGlobalsTab()
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
-  globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 3, "100", "1000", "10000" ) );
+  globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "HelterSkelter" ) );
@@ -652,7 +652,7 @@ void SimulationCraftWindow::createRawrTab()
                                   " approach.  Since they come from different directions, one can be confident"
                                   " in the result when they arrive at the same destination.\n\n"
                                   " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
-				  " Alternatively, paste xml from the Rawr in-game addon into the space below." );
+                                  " Alternatively, paste xml from the Rawr in-game addon into the space below." );
   rawrLabel->setWordWrap( true );
   rawrLayout->addWidget( rawrLabel );
   rawrLayout->addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
@@ -871,7 +871,9 @@ void SimulationCraftWindow::createToolTips()
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
                                 "1000:  Sufficient for DPS Analysis\n"
-                                "10000: Recommended for Scale Factor Generation" );
+                                "10000: Recommended for Scale Factor Generation\n"
+                                "25000: Use if 10,000 isn't enough for Scale Factors\n"
+                                "50000: If you're patient" );
 
   fightLengthChoice->setToolTip( "For custom fight lengths use max_time=seconds." );
 
