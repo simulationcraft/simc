@@ -929,8 +929,6 @@ struct shadow_fiend_pet_t : public pet_t
 
     void execute()
     {
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
-  
       attack_t::execute();
 
       if ( tier12_flame_attack_spell )
