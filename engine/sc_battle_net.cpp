@@ -237,7 +237,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     return 0;
   }
 
-  xml_node_t* character_talents_node = xml_t::get_node( talents_xml, "div", "class", "character-talents" );
+  xml_node_t* character_talents_node = xml_t::get_node( talents_xml, "div", "class", "character-talents-wrapper" );
   xml_node_t* build_script_node      = xml_t::get_node( character_talents_node, "script", "type", "text/javascript" );
 
   std::string talents_encoding;
