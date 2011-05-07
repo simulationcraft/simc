@@ -1653,7 +1653,7 @@ double hunter_attack_t::cost() SC_CONST
 void hunter_attack_t::consume_resource()
 {
   hunter_t* p = player -> cast_hunter();
-  if ( harmful && p -> ptr && p -> buffs_tier12_4pc -> up() )
+  if ( p -> ptr && p -> buffs_tier12_4pc -> up() )
   {
     // Treat the savings like a gain
     double amount = attack_t::cost();
@@ -3451,7 +3451,7 @@ void hunter_t::init_buffs()
 
   buffs_tier10_2pc                  = new buff_t( this, "tier10_2pc",                  1, 10.0,  0.0, ( set_bonus.tier10_2pc_melee() ? 0.05 : 0 ) );
   buffs_tier10_4pc                  = new buff_t( this, "tier10_4pc",                  1, 10.0,  0.0, ( set_bonus.tier10_4pc_melee() ? 0.05 : 0 ) );
-  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, 0, 0, 0.10 ); // TO-DO: fill in the remaining details
+  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, 0, 0, 0.10 * set_bonus.tier12_4pc_melee() ); // TO-DO: fill in the remaining details
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
