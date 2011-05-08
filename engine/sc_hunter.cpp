@@ -1652,6 +1652,7 @@ double hunter_attack_t::cost() SC_CONST
 
 void hunter_attack_t::consume_resource()
 {
+  attack_t::consume_resource();
   hunter_t* p = player -> cast_hunter();
   if ( p -> ptr && p -> buffs_tier12_4pc -> up() )
   {
