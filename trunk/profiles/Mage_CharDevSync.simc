@@ -1,0 +1,13 @@
+#!simc
+
+chardev=34631 save=Mage_Arcane_T11_359.simc name=Mage_Arcane_T11_359
+
+chardev=35357 save=Mage_Arcane_T11_372.simc name=Mage_Arcane_T11_372
+
+chardev=88851 save=Mage_Fire_Frostfire_T11_372.simc name=Mage_Fire_Frostfire_T11_372
+
+chardev=88793 save=Mage_Fire_T11_372.simc name=Mage_Fire_T11_372
+
+chardev=87205 save=Mage_Frost_Frostfire_T11_372.simc name=Mage_Frost_Frostfire_T11_372
+
+chardev=87885 save=Mage_Frost_T11_372.simc name=Mage_Frost_T11_372

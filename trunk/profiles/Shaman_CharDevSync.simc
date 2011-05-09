@@ -1,0 +1,7 @@
+#!simc
+
+chardev=14385 name=Shaman_Elemental_T11_372 save=Shaman_Elemental_T11_372.simc
+
+chardev=39863 name=Shaman_Enh_T11_372 save=Shaman_Enh_T11_372.simc
+
+chardev=39882 name=Shaman_Enh_T11_372_Caster save=Shaman_Enh_T11_372_Caster.simc
