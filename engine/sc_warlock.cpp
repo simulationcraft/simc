@@ -1216,7 +1216,7 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_pet_spell_t( "firebolt", player, "Firebolt" )
     {
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      direct_power_mod = 0.649; // tested in-game as of 2011/01/22
+      direct_power_mod = 0.618; // tested in-game as of 2011/05/10
       base_execute_time += o -> talent_dark_arts -> effect1().seconds();
       if ( o -> bugs ) min_gcd = 1.5;
     }
@@ -1232,10 +1232,14 @@ struct imp_pet_t : public warlock_main_pet_t
         // Glyph is additive with orc racial
         player_multiplier /= 1.05;
         player_multiplier *= 1.05 + o -> glyphs.imp -> base_value();
+        // Since 4.1 there's a bug causing the imp to benefit twice from the orc racial and the glyph
+        if ( o -> bugs ) player_multiplier *= 1.05 * ( 1.0 + o -> glyphs.imp -> base_value() );
       }
       else
       {
         player_multiplier *= 1.0 + o -> glyphs.imp -> base_value();
+        // Since 4.1 there's a bug causing the imp to benefit twice from the orc racial and the glyph
+        if ( o -> bugs ) player_multiplier *= 1.0 + o -> glyphs.imp -> base_value();
       }
     }
 
