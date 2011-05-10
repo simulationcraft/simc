@@ -3228,8 +3228,8 @@ struct insect_swarm_t : public druid_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
-      if ( p -> ptr ) 
-        trigger_eclipse_gain_delay( this, -8 );
+      // FIXIT: Did build 14040 remove this?
+      //if ( p -> ptr ) trigger_eclipse_gain_delay( this, -8 );
     }
   }
 };
@@ -3338,12 +3338,13 @@ struct moonfire_t : public druid_spell_t
       if ( p -> dots_sunfire -> ticking )
         p -> dots_sunfire -> action -> cancel();
 
+      if ( p -> ptr && p -> buffs_lunar_shower -> check() ) 
+        trigger_eclipse_gain_delay( this, 8 );
+        
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
       
-      if ( p -> ptr ) 
-        trigger_eclipse_gain_delay( this, 8 );
     }
   }
 
@@ -3816,12 +3817,13 @@ struct sunfire_t : public druid_spell_t
       if ( p -> dots_moonfire -> ticking )
         p -> dots_moonfire -> action -> cancel();
 
+      if ( p -> ptr && p -> buffs_lunar_shower -> check() ) 
+        trigger_eclipse_gain_delay( this, -8 );
+        
       // If moving trigger all 3 stacks, because it will stack up immediately
       p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
 
-      if ( p -> ptr ) 
-        trigger_eclipse_gain_delay( this, -8 );
     }
   }
 
