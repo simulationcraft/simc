@@ -44,12 +44,12 @@ struct paladin_t : public player_t
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
   buff_t* buffs_divine_purpose;
+  buff_t* buffs_grand_crusader;
   buff_t* buffs_holy_shield;
   buff_t* buffs_inquisition;
   buff_t* buffs_judgements_of_the_bold;
   buff_t* buffs_judgements_of_the_pure;
   buff_t* buffs_judgements_of_the_wise;
-  buff_t* buffs_grand_crusader;
   buff_t* buffs_reckoning;
   buff_t* buffs_sacred_duty;
   buff_t* buffs_the_art_of_war;
