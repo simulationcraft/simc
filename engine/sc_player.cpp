@@ -1508,7 +1508,7 @@ void player_t::init_scaling()
     scales_with[ STAT_MP5               ] = 0;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
-    scales_with[ STAT_EXPERTISE_RATING         ] = attack;
+    scales_with[ STAT_EXPERTISE_RATING         ] = attack || tank;
 
     scales_with[ STAT_HIT_RATING                ] = 1;
     scales_with[ STAT_CRIT_RATING               ] = 1;

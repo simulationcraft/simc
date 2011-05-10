@@ -49,6 +49,7 @@ struct paladin_t : public player_t
   buff_t* buffs_judgements_of_the_bold;
   buff_t* buffs_judgements_of_the_pure;
   buff_t* buffs_judgements_of_the_wise;
+  buff_t* buffs_grand_crusader;
   buff_t* buffs_reckoning;
   buff_t* buffs_sacred_duty;
   buff_t* buffs_the_art_of_war;
@@ -63,15 +64,16 @@ struct paladin_t : public player_t
   gain_t* gains_seal_of_insight;
 
   // Holy Power
-  gain_t* gains_hp_crusader_strike;
-  gain_t* gains_hp_holy_shock;
   gain_t* gains_hp_blessed_life;
-  gain_t* gains_hp_tower_of_radiance;
-  gain_t* gains_hp_hammer_of_the_righteous;
+  gain_t* gains_hp_crusader_strike;
   gain_t* gains_hp_divine_plea;
-  gain_t* gains_hp_pursuit_of_justice;
-  gain_t* gains_hp_zealotry;
   gain_t* gains_hp_divine_storm;
+  gain_t* gains_hp_grand_crusader;
+  gain_t* gains_hp_hammer_of_the_righteous;
+  gain_t* gains_hp_holy_shock;
+  gain_t* gains_hp_pursuit_of_justice;
+  gain_t* gains_hp_tower_of_radiance;
+  gain_t* gains_hp_zealotry;
 
   // Passives
   struct passives_t
@@ -270,6 +272,19 @@ static void trigger_hand_of_light( action_t* a )
   {
     p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = a -> direct_dmg;
     p -> active_hand_of_light_proc -> execute();
+  }
+}
+
+// trigger_grand_crusader ===================================================
+
+static void trigger_grand_crusader( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( a -> sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
+  {
+    p -> get_cooldown( "avengers_shield" ) -> reset();
+    p -> buffs_grand_crusader -> trigger();
   }
 }
 
@@ -605,6 +620,18 @@ struct avengers_shield_t : public paladin_attack_t
       base_multiplier *= 1.0 + p -> glyphs.focused_shield -> mod_additive( P_GENERIC );
     }
   }
+
+  virtual void execute()
+  {
+    paladin_attack_t::execute();
+
+    paladin_t* p = player -> cast_paladin();
+    if ( p -> buffs_grand_crusader -> up() )
+    {
+      p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_grand_crusader );
+      p -> buffs_grand_crusader -> expire();
+    }
+  }
 };
 
 // Crusader Strike ==========================================================
@@ -643,11 +670,8 @@ struct crusader_strike_t : public paladin_attack_t
       p -> resource_gain( RESOURCE_HOLY_POWER, p -> buffs_zealotry -> up() ? 3 : 1,
                           p -> gains_hp_crusader_strike );
 
+      trigger_grand_crusader( this );
       trigger_hand_of_light( this );
-      if ( sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
-      {
-        p -> get_cooldown( "avengers_shield" ) -> reset();
-      }
     }
   }
 
@@ -766,10 +790,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       proc -> execute();
-      if ( sim -> roll( p() -> talents.grand_crusader -> proc_chance() ) )
-      {
-        p() -> get_cooldown( "avengers_shield" ) -> reset();
-      }
+      trigger_grand_crusader( this );
     }
   }
 };
@@ -2051,15 +2072,16 @@ void paladin_t::init_gains()
   gains_seal_of_insight        = get_gain( "seal_of_insight"        );
 
   // Holy Power
-  gains_hp_crusader_strike          = get_gain( "holy_power_crusader_strike" );
-  gains_hp_holy_shock               = get_gain( "holy_power_holy_shock" );
   gains_hp_blessed_life             = get_gain( "holy_power_blessed_life" );
-  gains_hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
-  gains_hp_hammer_of_the_righteous  = get_gain( "holy_power_hammer_of_the_righteous" );
+  gains_hp_crusader_strike          = get_gain( "holy_power_crusader_strike" );
   gains_hp_divine_plea              = get_gain( "holy_power_divine_plea" );
-  gains_hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
-  gains_hp_zealotry                 = get_gain( "holy_power_zealotry" );
   gains_hp_divine_storm             = get_gain( "holy_power_divine_storm" );
+  gains_hp_grand_crusader           = get_gain( "holy_power_grand_crusader" );
+  gains_hp_hammer_of_the_righteous  = get_gain( "holy_power_hammer_of_the_righteous" );
+  gains_hp_holy_shock               = get_gain( "holy_power_holy_shock" );
+  gains_hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
+  gains_hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
+  gains_hp_zealotry                 = get_gain( "holy_power_zealotry" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2088,6 +2110,7 @@ void paladin_t::init_scaling()
   {
     scales_with[ STAT_PARRY_RATING ] = 1;
     scales_with[ STAT_BLOCK_RATING ] = 1;
+    scales_with[ STAT_STRENGTH     ] = 1;
   }
 }
 
@@ -2163,6 +2186,7 @@ void paladin_t::init_buffs()
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
+  buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 87342, "holy_shield" );
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
