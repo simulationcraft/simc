@@ -4393,7 +4393,7 @@ void druid_t::init_base()
   base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
-  initial_attack_power_per_strength = 2.0;
+  initial_attack_power_per_strength = ( ptr ) ? 1.0 : 2.0;
   initial_spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
