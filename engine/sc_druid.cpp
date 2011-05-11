@@ -1214,10 +1214,11 @@ struct ferocious_bite_t : public druid_cat_attack_t
 {
   double base_dmg_per_point;
   double excess_energy;
+  double max_excess_energy;
 
   ferocious_bite_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( "ferocious_bite", 22568, player ),
-    base_dmg_per_point( 0 ), excess_energy( 0 )
+    base_dmg_per_point( 0 ), excess_energy( 0 ), max_excess_energy( 0 )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1225,6 +1226,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.feral_aggression -> mod_additive( P_GENERIC );
+    max_excess_energy     = effect2().base_value();
     requires_combo_points = true;
   }
 
@@ -1247,9 +1249,9 @@ struct ferocious_bite_t : public druid_cat_attack_t
     {
       excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
 
-      if ( excess_energy > 35 )
+      if (excess_energy > max_excess_energy )
       {
-        excess_energy = 35;
+        excess_energy = max_excess_energy;
       }
       else if ( excess_energy < 0 )
       {
@@ -1292,7 +1294,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     druid_cat_attack_t::player_buff();
 
-    player_multiplier *= 1.0 + excess_energy / 35.0;
+    player_multiplier *= 1.0 + excess_energy / max_excess_energy;
 
     if ( target -> debuffs.bleeding -> check() )
     {
