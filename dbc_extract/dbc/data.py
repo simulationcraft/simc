@@ -35,10 +35,13 @@ _DIFF_DATA = {
             ( 'unk_14002', _REMOVE_FIELD ),
         ],
     },
-    14008: {
+    14040: {
         'Spell.dbc' : [
             ( 'unk_14002', _ADD_FIELD, 'flags_8' ),
         ],
+	'SpellEffect.dbc' : [
+	    ( 'unk_14040', _ADD_FIELD, 'index' ),
+	],
     },
 }
 
