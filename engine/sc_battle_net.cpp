@@ -333,7 +333,10 @@ player_t* battle_net_t::download_player( sim_t* sim,
     if ( util_t::str_compare_ci( region, "us" ) )
     {
       xml_t::get_value( id_str, anchor_node, "href" );
-      id_str = id_str.substr( id_str.rfind('/') + 1 );
+      if ( id_str.rfind('/') != std::string::npos )
+        id_str = id_str.substr( id_str.rfind('/') + 1 );
+      else
+        id_str = "";
     }
     
     std::vector<std::string> tokens;
