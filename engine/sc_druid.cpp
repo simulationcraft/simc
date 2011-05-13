@@ -1249,7 +1249,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     {
       excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
 
-      if (excess_energy > max_excess_energy )
+      if ( excess_energy > max_excess_energy )
       {
         excess_energy = max_excess_energy;
       }

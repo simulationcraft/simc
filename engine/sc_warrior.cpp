@@ -2908,6 +2908,7 @@ void warrior_t::init_spells()
   glyphs.bloodthirst         = find_glyph( "Glyph of Bloodthirst" );
   glyphs.bloody_healing      = find_glyph( "Glyph of Bloody Healing" );
   glyphs.cleaving            = find_glyph( "Glyph of Cleaving" );
+  glyphs.colossus_smash      = find_glyph( "Glyph of Colossus Smash" );
   glyphs.command             = find_glyph( "Glyph of Command" );
   glyphs.devastate           = find_glyph( "Glyph of Devastate" );
   glyphs.heroic_throw        = find_glyph( "Glyph of Heroic Throw" );
