@@ -326,13 +326,20 @@ player_t* battle_net_t::download_player( sim_t* sim,
     xml_node_t* slot_node = xml_t::get_node( inventory_node, "div", "data-id", slot_id );
     xml_node_t* anchor_node = xml_t::get_node( slot_node, "a" );
 
-    std::string data_item_str;
+    std::string data_item_str, id_str;
     xml_t::get_value( data_item_str, anchor_node, "data-item" );
-
+    // US Battle.net profile format changed, data-item no longer contains i=<item_id>, it 
+    // needs to be extracted from the href of the anchor. 
+    if ( util_t::str_compare_ci( region, "us" ) )
+    {
+      xml_t::get_value( id_str, anchor_node, "href" );
+      id_str = id_str.substr( id_str.rfind('/') + 1 );
+    }
+    
     std::vector<std::string> tokens;
     int num_tokens = util_t::string_split( tokens, data_item_str, "&=" );
 
-    std::string id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
+    std::string enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
     for( int i=0; i < num_tokens-1; i += 2 )
     {
       std::string& name  = tokens[ i ];
