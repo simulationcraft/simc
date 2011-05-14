@@ -80,6 +80,7 @@ struct druid_t : public player_t
   gain_t* gains_enrage;
   gain_t* gains_euphoria;
   gain_t* gains_glyph_of_innervate;
+  gain_t* gains_glyph_ferocious_bite;
   gain_t* gains_incoming_damage;
   gain_t* gains_moonkin_form;
   gain_t* gains_natural_reaction;
@@ -1241,7 +1242,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     // Assume 100/35 = 2.857% per additional energy consumed
 
     // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
-    if ( p -> glyphs.ferocious_bite -> enabled() )
+    if ( ! p -> ptr && p -> glyphs.ferocious_bite -> enabled() )
     {
       excess_energy = 0;
     }
@@ -1260,6 +1261,15 @@ struct ferocious_bite_t : public druid_cat_attack_t
     }
 
     druid_cat_attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      if ( p -> ptr && p -> glyphs.ferocious_bite -> enabled() )
+      {
+        double amount = p -> resource_max[ RESOURCE_HEALTH ] * 0.01 * ( (int) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
+        p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains_glyph_ferocious_bite );
+      }
+    }
 
     if ( result_is_hit() && target -> health_percentage() <= p -> talents.blood_in_the_water -> base_value() )
     {
@@ -4337,7 +4347,7 @@ void druid_t::init_spells()
   spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
   spells.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
   spells.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
-  spells.symbiosis       = spell_data_t::find( 77495, "Symbiosis",       dbc.ptr );
+  spells.symbiosis       = spell_data_t::find( 77495, "Harmony",         dbc.ptr );
   spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
   spells.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
 
@@ -4503,19 +4513,20 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_bear_melee         = get_gain( "bear_melee"         );
-  gains_energy_refund      = get_gain( "energy_refund"      );
-  gains_enrage             = get_gain( "enrage"             );
-  gains_euphoria           = get_gain( "euphoria"           );
-  gains_glyph_of_innervate = get_gain( "glyph_of_innervate" );
-  gains_incoming_damage    = get_gain( "incoming_damage"    );
-  gains_moonkin_form       = get_gain( "moonkin_form"       );
-  gains_natural_reaction   = get_gain( "natural_reaction"   );
-  gains_omen_of_clarity    = get_gain( "omen_of_clarity"    );
-  gains_primal_fury        = get_gain( "primal_fury"        );
-  gains_primal_madness     = get_gain( "primal_madness"     );
-  gains_revitalize         = get_gain( "revitalize"         );
-  gains_tigers_fury        = get_gain( "tigers_fury"        );
+  gains_bear_melee           = get_gain( "bear_melee"           );
+  gains_energy_refund        = get_gain( "energy_refund"        );
+  gains_enrage               = get_gain( "enrage"               );
+  gains_euphoria             = get_gain( "euphoria"             );
+  gains_glyph_ferocious_bite = get_gain( "glyph_ferocious_bite" );
+  gains_glyph_of_innervate   = get_gain( "glyph_of_innervate"   );
+  gains_incoming_damage      = get_gain( "incoming_damage"      );
+  gains_moonkin_form         = get_gain( "moonkin_form"         );
+  gains_natural_reaction     = get_gain( "natural_reaction"     );
+  gains_omen_of_clarity      = get_gain( "omen_of_clarity"      );
+  gains_primal_fury          = get_gain( "primal_fury"          );
+  gains_primal_madness       = get_gain( "primal_madness"       );
+  gains_revitalize           = get_gain( "revitalize"           );
+  gains_tigers_fury          = get_gain( "tigers_fury"          );
 }
 
 // druid_t::init_procs ======================================================
