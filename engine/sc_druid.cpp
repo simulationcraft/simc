@@ -4347,7 +4347,7 @@ void druid_t::init_spells()
   spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
   spells.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
   spells.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
-  spells.symbiosis       = spell_data_t::find( 77495, "Harmony",         dbc.ptr );
+  spells.symbiosis       = spell_data_t::find( 77495, ( ptr ) ? "Harmony" : "Symbiosis",         dbc.ptr );
   spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
   spells.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
 
