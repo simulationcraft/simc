@@ -1755,7 +1755,7 @@ class GlyphListGenerator(SpellDataGenerator):
 
                 # Filter some erroneous glyph data out
                 glyph_data = self._glyphproperties_db[effect.misc_value]
-                if not glyph_data.id or not glyph_data.id_spell or not glyph_data.unk_3:
+                if not glyph_data.id or not glyph_data.id_spell:
                     continue
 
                 if ids.get(glyph_data.id_spell):
