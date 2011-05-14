@@ -1844,9 +1844,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warrior
   {
-    // Major Glyphs (16 spells)
+    // Major Glyphs (17 spells)
     {
       58366, // Glyph of Cleaving
+      89003, // Glyph of Colossus Smash
       94374, // Glyph of Death Wish
       58357, // Glyph of Heroic Throw
       94372, // Glyph of Intercept
@@ -2198,9 +2199,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       63091, // Glyph of Slow
           0,
     },
-    // Minor Glyphs (6 spells)
+    // Minor Glyphs (7 spells)
     {
       57924, // Glyph of Arcane Brilliance
+      89749, // Glyph of Armors
       57928, // Glyph of Conjuring
       63093, // Glyph of Mirror Image
       57925, // Glyph of Slow Fall
