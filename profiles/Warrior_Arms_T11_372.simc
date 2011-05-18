@@ -14,8 +14,8 @@ actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
-actions+=/stance,choose=berserker,if=cooldown.recklessness.remains=0&rage<=50&((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)
-actions+=/stance,choose=battle,if=(cooldown.recklessness.remains>0&rage<=50)
+actions+=/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)
+actions+=/stance,choose=battle,if=(dot.rend.remains=0|(buff.taste_for_blood.up&cooldown.mortal_strike.remains>1)&rage<=75)
 actions+=/charge,use_in_combat=1,if=big_hitbox=1
 actions+=/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)
 actions+=/berserker_rage,if=!buff.deadly_calm.up&rage<70

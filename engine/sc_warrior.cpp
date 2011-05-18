@@ -3146,7 +3146,6 @@ void warrior_t::init_actions()
     // Potion
     if ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY )
     {
-      // TO-DO: Revert to >= 80 when Cata is out
       if ( level >= 80 )
         action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react";
       else if ( level >= 70 )
@@ -3188,8 +3187,8 @@ void warrior_t::init_actions()
     // Arms
     if ( primary_tree() == TREE_ARMS )
     {
-      action_list_str += "/stance,choose=berserker,if=cooldown.recklessness.remains=0&rage<=50&((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
-      action_list_str += "/stance,choose=battle,if=(cooldown.recklessness.remains>0&rage<=50)";
+      action_list_str += "/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)";
+      action_list_str += "/stance,choose=battle,if=(dot.rend.remains=0|(buff.taste_for_blood.up&cooldown.mortal_strike.remains>1)&rage<=75)";
       if ( talents.juggernaut -> ok() )
       {
         action_list_str += "/charge,use_in_combat=1,if=big_hitbox=1";
