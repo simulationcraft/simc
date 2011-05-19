@@ -632,7 +632,6 @@ int armory_t::parse_meta_gem( const std::string& description )
   if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_STARFLARE;
   if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFIRE;
   if ( description == "+21 Dodge Rating and +1% Shield Block Value"                       ) return META_ETERNAL_EARTHSIEGE;
-  if ( description == "+21 Dodge Rating and +3% Shield Block Value"                       ) return META_ETERNAL_EARTHSIEGE;
   if ( description == "+81 Stamina and +5% Shield Block Value"                            ) return META_ETERNAL_SHADOWSPIRIT;
   if ( description == "+54 Mastery Rating and Minor Run Speed Increase"                   ) return META_FLEET_SHADOWSPIRIT;
   if ( description == "+54 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SHADOWSPIRIT;
