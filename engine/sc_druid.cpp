@@ -4748,7 +4748,16 @@ void druid_t::init_actions()
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
       if ( primary_tree() == TREE_BALANCE )
-        action_list_str += "/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))";
+      {
+        if ( set_bonus.tier12_4pc_caster() )
+        {
+          action_list_str += "/starsurge,if=!((eclipse<=-84&eclipse_dir=-1)|(eclipse>=75&eclipse_dir=1))";
+        }
+        else
+        {
+          action_list_str += "/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))";
+        }
+      }
       action_list_str += "/innervate,if=mana_pct<50";
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
@@ -4756,10 +4765,20 @@ void druid_t::init_actions()
       // Lifeblood
       if ( profession[ PROF_HERBALISM ] >= 450 )
         action_list_str += "/lifeblood";
-      action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
-      action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-87";
-      action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
-      action_list_str += "/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=80";
+      if ( set_bonus.tier12_4pc_caster() )
+      {
+        action_list_str += "/starfire,if=eclipse_dir=1&eclipse<75";
+        action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-84";
+        action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-84";
+        action_list_str += "/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=75";
+      }
+      else
+      {
+        action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
+        action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-87";
+        action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
+        action_list_str += "/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=80";
+      }
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
