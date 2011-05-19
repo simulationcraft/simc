@@ -4204,11 +4204,13 @@ void warlock_t::init_actions()
         action_list_str += "/summon_succubus";
       else if ( glyphs.imp -> ok() )
         action_list_str += "/summon_imp";
+      else if ( glyphs.felguard -> ok() )
+        action_list_str += "/summon_felguard";
       else
-        action_list_str += ( primary_tree() == TREE_DEMONOLOGY ) ? "/summon_felguard" : "/summon_felhunter";
+        action_list_str += "/summon_felhunter";
     }
     else
-      action_list_str += "/summon_succubus";
+      action_list_str += "/summon_imp";
 
     // Dark Intent
     if ( level >= 83 )
