@@ -4380,7 +4380,8 @@ void warlock_t::init_actions()
       action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
       if ( glyphs.imp -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
       else if ( glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_succubus.down";
-      else action_list_str += "&buff.demon_soul_felguard.down";
+      else if ( glyphs.felguard -> ok() ) action_list_str += "&buff.demon_soul_felguard.down";
+      else action_list_str += "&buff.demon_soul_felhunter.down";
       if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/shadow_bolt";
 

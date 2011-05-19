@@ -12,7 +12,7 @@ chardev=36745 name=Warlock_AffDrain_T11_372 save=Warlock_AffDrain_T11_372.simc
 
 chardev=36750 name=Warlock_Affliction_T11_372 save=Warlock_Affliction_T11_372.simc
 
-chardev=36757 name=Warlock_Demonology_T11_372 save=Warlock_Demonology_T11_372.simc
+chardev=128609 name=Warlock_Demonology_T11_372 save=Warlock_Demonology_T11_372.simc
 
 chardev=36761 name=Warlock_Destruction_T11_372 save=Warlock_Destruction_T11_372.simc
 
