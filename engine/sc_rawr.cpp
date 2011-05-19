@@ -127,7 +127,7 @@ static const char* translate_glyph_name( player_t* p,
     //case 23: return "light_of_dawn"; // Rawr has these numbers repeated
     //case 24: return "rebuke";
     case 23: return "salvation";
-    case 24: return "ascetic_crusader";
+    case 24: return "the_ascetic_crusader";
     case 25: return "long_word";
     case 26: return "turn_evil";
     case 27: return "blessing_of_kings";
