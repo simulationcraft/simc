@@ -328,9 +328,9 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
     std::string data_item_str, id_str;
     xml_t::get_value( data_item_str, anchor_node, "data-item" );
-    // US Battle.net profile format changed, data-item no longer contains i=<item_id>, it 
+    // US/EU Battle.net profile format changed, data-item no longer contains i=<item_id>, it 
     // needs to be extracted from the href of the anchor. 
-    if ( util_t::str_compare_ci( region, "us" ) )
+    if ( util_t::str_compare_ci( region, "us" ) || util_t::str_compare_ci( region, "eu" ) )
     {
       xml_t::get_value( id_str, anchor_node, "href" );
       if ( id_str.rfind('/') != std::string::npos )
