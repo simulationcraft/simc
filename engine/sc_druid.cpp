@@ -5111,6 +5111,23 @@ int druid_t::decode_set( item_t& item )
     if ( is_melee  ) return SET_T11_MELEE;
   }
 
+  if ( strstr( s, "obsidian_arborweave" ) )
+  {
+    bool is_caster = ( strstr( s, "cover"         ) ||
+                       strstr( s, "shoulderwraps" ) ||
+                       strstr( s, "vestment"      ) ||
+                       strstr( s, "leggings"      ) ||
+                       strstr( s, "gloves"        ) );
+
+    bool is_melee = ( strstr( s, "headpiece"    ) ||
+                      strstr( s, "spaulders"    ) ||
+                      strstr( s, "raiment"      ) ||
+                      strstr( s, "legguards"    ) ||
+                      strstr( s, "grips"        ) );
+    if ( is_caster ) return SET_T12_CASTER;
+    if ( is_melee  ) return SET_T12_MELEE;
+  }
+  
   return SET_NONE;
 }
 
