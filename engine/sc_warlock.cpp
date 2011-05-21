@@ -2317,8 +2317,8 @@ struct drain_life_t : public warlock_spell_t
     may_crit     = false;
 
     //FIXME: 2010/05/20 hotfix, should probably remove when 4.2 hits
-    tick_power_mod = 0.168;
-    base_td = 105.8;
+    tick_power_mod = 0.129;
+    base_td = 82.2797;
   }
 
   virtual void execute()
