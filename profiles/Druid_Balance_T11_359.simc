@@ -52,7 +52,7 @@ feet=fading_violet_sandals,type=leather,ilevel=359,quality=epic,stats=1148armor_
 wrists=manacles_of_the_sleeping_beast,type=leather,ilevel=359,quality=epic,stats=730armor_190int_127mastery_127spi_286sta,reforge=mastery_haste,enchant=50int
 hands=stormriders_gloves,type=leather,ilevel=359,quality=epic,stats=1043armor_169crit_149haste_233int_380sta,reforge=crit_spi,gems=67int_10crit,enchant=50haste
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
-finger2=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta,reforge=crit_haste
+finger2=security_measure_alpha,ilevel=359,quality=epic,stats=127crit_190int_127spi_286sta,reforge=crit_haste
 trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_haste,equip=onspellcast_1926sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=drape_of_the_twins,ilevel=359,quality=epic,stats=625armor_127haste_190int_127spi_286sta,enchant=lightweave_embroidery
@@ -62,13 +62,13 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=5208
-# gear_intellect=4073
-# gear_spirit=1578
+# gear_stamina=5172
+# gear_intellect=4048
+# gear_spirit=1562
 # gear_spell_power=1954
 # gear_hit_rating=127
-# gear_crit_rating=607
-# gear_haste_rating=2288
+# gear_crit_rating=598
+# gear_haste_rating=2281
 # gear_mastery_rating=757
 # gear_armor=10222
 # meta_gem=burning_shadowspirit

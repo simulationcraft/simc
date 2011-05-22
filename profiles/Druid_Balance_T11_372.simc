@@ -56,7 +56,7 @@ finger2=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_21
 trinket1=bell_of_enraging_resonance,heroic=1,ilevel=372,quality=epic,stats=363crit,reforge=crit_haste,equip=onspellcast_2178sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
-main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max
+main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,enchant=power_torrent,weapon=dagger_1.80speed_328min_611max
 off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
 ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_161sta,reforge=crit_spi,gems=40int
 # Gear Summary
@@ -75,4 +75,4 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
-# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_82min_154max,enchant=power_torrent
+# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_328min_611max,enchant=power_torrent
