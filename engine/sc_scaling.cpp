@@ -507,8 +507,6 @@ bool scaling_t::has_scale_factors()
   return false;
 }
 
-
-
 // scaling_t::scale_over_function ==================================================
 
 double scaling_t::scale_over_function( sim_t* s, player_t* p )

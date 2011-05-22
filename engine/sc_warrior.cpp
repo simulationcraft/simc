@@ -3188,7 +3188,7 @@ void warrior_t::init_actions()
     if ( primary_tree() == TREE_ARMS )
     {
       action_list_str += "/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)";
-      action_list_str += "/stance,choose=battle,if=(dot.rend.remains=0|(buff.taste_for_blood.up&cooldown.mortal_strike.remains>1)&rage<=75)";
+      action_list_str += "/stance,choose=battle,if=(dot.rend.remains=0|((buff.overpower.up|buff.taste_for_blood.up)&cooldown.mortal_strike.remains>1)&rage<=75)";
       if ( talents.juggernaut -> ok() )
       {
         action_list_str += "/charge,use_in_combat=1,if=big_hitbox=1";
