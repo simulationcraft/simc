@@ -354,7 +354,6 @@ struct mage_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual void   travel( player_t* t, int travel_result, double travel_dmg );
-  virtual void   tick();
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
@@ -1062,13 +1061,6 @@ void mage_spell_t::travel( player_t* t, int travel_result, double travel_dmg )
   }
 }
 
-// mage_spell_t::tick =======================================================
-
-void mage_spell_t::tick()
-{
-  spell_t::tick();
-}
-
 // mage_spell_t::consume_resource ===========================================
 
 void mage_spell_t::consume_resource()
@@ -1723,6 +1715,12 @@ struct flame_orb_tick_t : public mage_spell_t
     direct_tick = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect2().percent();
   }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    // Ticks don't trigger ignite
+    spell_t::travel( t, travel_result, travel_dmg );
+  }
 };
 
 struct flame_orb_t : public mage_spell_t
@@ -2057,6 +2055,17 @@ struct frostfire_orb_tick_t : public mage_spell_t
     background = true;
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
+  }
+  
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    // Ticks don't trigger ignite
+    spell_t::travel( t, travel_result, travel_dmg );
+    
+    mage_t* p = player -> cast_mage();
+
+    if( may_chill && result_is_hit( travel_result ) )
+      p -> buffs_fingers_of_frost -> trigger();
   }
 };
 
