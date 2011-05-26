@@ -1448,7 +1448,15 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t<div id=\"help-dps\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>DPS</h3>\n"
-                   "\t\t\t\t<p>Average damage per second.</p>\n"
+                   "\t\t\t\t<p>Average damage per active player duration.</p>\n"
+                   "\t\t\t</div>\n"
+                   "\t\t</div>\n" );
+
+  util_t::fprintf( file,
+                   "\t\t<div id=\"help-dpse\">\n"
+                   "\t\t\t<div class=\"help-box\">\n"
+                   "\t\t\t\t<h3>Effective DPS</h3>\n"
+                   "\t\t\t\t<p>Average damage per fight duration.</p>\n"
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
@@ -1472,16 +1480,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t<div id=\"help-error\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Error</h3>\n"
-                   "\t\t\t\t<p>( 2 * dps_stddev / sqrt( iterations ) ) / dps_avg</p>\n"
-                   "\t\t\t</div>\n"
-                   "\t\t</div>\n" );
-
-  util_t::fprintf( file,
-                   "\t\t<div id=\"help-convergence\">\n"
-                   "\t\t\t<div class=\"help-box\">\n"
-                   "\t\t\t\t<h3>Convergence</h3>\n"
-                   "\t\t\t\t<p>Rate at which multipling iterations by convergence_scale reduces error</p>\n"
-                   "\t\t\t\t<p>For default convergence_scale=2 it should itself approach 70.71%% according to the central limit theorem</p>\n"
+                   "\t\t\t\t<p>Estimator for the 95%% confidence intervall.</p>\n"
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
@@ -2544,6 +2543,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t<table class=\"sc\">\n"
                    "\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">Error</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
@@ -2553,6 +2553,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
                    "\t\t\t\t\t\t\t</tr>\n"
                    "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2564,6 +2565,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t</tr>\n"
                    "\t\t\t\t\t\t</table>\n",
                    p -> dps,
+                   p -> dpse,
                    p -> dps_error,
                    p -> dps ? p -> dps_error * 100 / p -> dps : 0,
                    p -> dpr,
@@ -3483,53 +3485,6 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t\t<th></th>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n" );
 
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Population</b></td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n" );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#help-convergence\" class=\"help\">Convergence</a></td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps_convergence * 100 );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">&#x03C3; of the average dps</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps_error / 2.0 );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">2 * &#x03C3; / &#x03BC;</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f%%</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps ? p -> dps_error / p -> dps * 100: 0 );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall ( &#x03BC; &#xb1; 2&#x03C3; )</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps - p -> dps_error, p -> dps + p -> dps_error );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized 95%% Confidence Intervall ( 1 &#xb1; 2&#x03C3;/&#x03BC; )</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps ? 100 - p -> dps_error * 100 / p -> dps : 0, p -> dps ? 100 + p -> dps_error * 100 / p -> dps : 0 );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">99.7%% Confidence Intervall ( &#x03BC; &#xb1; 3&#x03C3; )</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps - 1.50 * p -> dps_error, p -> dps + 1.50 * p -> dps_error );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
@@ -3539,7 +3494,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">&#x03C3;</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
                    p -> dps_std_dev );
@@ -3567,14 +3522,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range ( max - min ) / 2</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( ( p -> dps_max - p -> dps_min ) / 2 ) );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range%%</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100% ]</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
                    p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
@@ -3600,9 +3548,44 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t</tr>\n",
                    p -> dps_90_percentile - p -> dps_10_percentile );
 
+
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for</b></td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Population</b></td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n" );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation of the Average DPS(e)</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_error / 2.0 );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dpse - p -> dps_error, p -> dpse + p -> dps_error );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized 95%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dpse ? 100 - p -> dps_error * 100 / p -> dpse : 0, p -> dpse ? 100 + p -> dps_error * 100 / p -> dpse : 0 );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">99.7%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dpse - 1.50 * p -> dps_error, p -> dpse + 1.50 * p -> dps_error );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n" );
 
@@ -3611,14 +3594,14 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% dps error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) ) : 0 ) );
+                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) ) : 0 ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% dps error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) ) : 0 ) );
+                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) ) : 0 ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
@@ -3645,18 +3628,29 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t</table>\n" );
 
-  std::string timeline_dps_error_str                    = "";
+  std::string timeline_dps_error_str           = "";
+  std::string dps_error_str                    = "";
 
   if ( ! p -> timeline_dps_error_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n", p -> timeline_dps_error_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" />\n", p -> timeline_dps_error_chart.c_str() );
     timeline_dps_error_str = buffer;
+  }
+
+  util_t::fprintf( file,
+                   "%s\n",
+                   timeline_dps_error_str.c_str() );
+
+  if ( ! p -> dps_error_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\"/>\n", p -> dps_error_chart.c_str() );
+    dps_error_str = buffer;
   }
   util_t::fprintf( file,
                    "%s\n"
                    "\t\t\t\t\t\t\t</div>\n"
                    "\t\t\t\t\t\t</div>\n",
-                   timeline_dps_error_str.c_str() );
+                   dps_error_str.c_str() );
 
 
 

@@ -2991,7 +2991,7 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
+  double    dps, dpse, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
   double    dps_10_percentile,dps_90_percentile;
   double    dpr, rps_gain, rps_loss;
   int       death_count;
@@ -3016,7 +3016,7 @@ struct player_t
   std::string action_dpet_chart, action_dmg_chart, gains_chart;
   std::string timeline_resource_chart, timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string reforge_dps_chart;
+  std::string reforge_dps_chart, dps_error_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
   std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
   std::string save_str;
@@ -4213,6 +4213,8 @@ struct chart_t
   static const char* gear_weights_wowhead   ( std::string& s, player_t* );
   static const char* gear_weights_wowreforge( std::string& s, player_t* );
   static const char* gear_weights_pawn      ( std::string& s, player_t*, bool hit_expertise=true );
+
+  static const char* dps_error( std::string& s, player_t* );
 };
 
 // Log =======================================================================

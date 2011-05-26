@@ -270,11 +270,12 @@ void scaling_t::analyze_stats()
       double delta_score = scale_over_function( delta_sim, delta_p );
       double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-      //double delta_error = scale_over_function_error( delta_sim, delta_p );
+      double delta_error = scale_over_function_error( delta_sim, delta_p );
       double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
 
       double score = ( delta_score - ref_score ) / divisor;
-      double error = fabs( ref_error / divisor );
+      double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
+      error = fabs( error / divisor );
 
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
       {
@@ -529,6 +530,6 @@ double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
   if ( scale_over == "min_death_time" ) return 0;
   if ( scale_over == "avg_death_time" ) return 0;
   if ( scale_over == "dmg_taken"      ) return 0;
-  return p -> dps_error * sqrt( 2.0 );
+  return p -> dps_error;
 }
 

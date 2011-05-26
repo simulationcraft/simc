@@ -543,6 +543,8 @@ const char* chart_t::raid_timeline( std::string& s,
   s += "&amp;";
   s += "cht=bvs";
   s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
+  s += "&amp;";
   if ( ! sim -> print_styles )
   {
     s += "chf=bg,s,333333";
@@ -844,6 +846,8 @@ const char* chart_t::action_dmg( std::string& s,
   s += "&amp;";
   s += "chds=0,100";
   s += "&amp;";
+  s += "chdls=ffffff";
+  s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_stats; i++ )
   {
@@ -856,6 +860,7 @@ const char* chart_t::action_dmg( std::string& s,
       assert( 0 );
     }
     s += school;
+
   }
   s += "&amp;";
   s += "chl=";
@@ -997,6 +1002,8 @@ const char* chart_t::scale_factors( std::string& s,
   snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_scaling_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
   s += "cht=bhg";
+  s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
   {
@@ -1437,6 +1444,8 @@ const char* chart_t::timeline_dps( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
+  s += "&amp;";
   if ( p -> sim -> print_styles )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
@@ -1520,6 +1529,8 @@ const char* chart_t::timeline_dps_error( std::string& s,
   s += "cht=lc";
   s += "&amp;";
   s += "chg=20,20";
+  s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
   s += "&amp;";
   s += "chco=FF0000,0000FF";
   s += "&amp;";
@@ -1611,6 +1622,8 @@ const char* chart_t::timeline_resource( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
+  s += "&amp;";
   if ( p -> sim -> print_styles )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
@@ -1691,6 +1704,8 @@ const char* chart_t::timeline_health( std::string& s,
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
+  s += "&amp;";
   if ( p -> sim -> print_styles )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
@@ -1768,6 +1783,8 @@ const char* chart_t::distribution_dps( std::string& s,
   }
   s += "&amp;";
   s += "chg=100,100";
+  s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
   s += "&amp;";
   s += "chd=t:";
   for ( int i=0; i < max_buckets; i++ )
@@ -2089,6 +2106,64 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   }
 
   s += " )";
+
+  return s.c_str();
+}
+
+// chart_t::timeline_dps_error =====================================================
+
+const char* chart_t::dps_error( std::string& s,
+                                         player_t* p )
+{
+
+  char buffer[ 1024 ];
+
+  s = get_chart_base_url();
+  s += "chs=525x185";
+  s += "&amp;";
+  s += "cht=lc";
+  s += "&amp;";
+  s += "chg=20,20";
+  s += "&amp;";
+  s += "chco=FF0000";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dpse - p -> dps_error * 2, p -> dpse + p -> dps_error * 2, 1 / sqrt ( 0.5 * 3.14 * p -> dps_error * p -> dps_error )); s += buffer;
+
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
+  s += "&amp;";
+  s += "chxt=x,x,y,y";
+  s += "&amp;";
+  s += "chxl=1:|DPS|3:|p";
+  s += "&amp;";
+  s += "chtt=95% Confidence Intervall";
+  s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.0f,%.0f,1,100*exp(-(x-%.0f)^2/(2*%.0f^2))", p -> dpse - p -> dps_error * 2, p -> dpse + p -> dps_error * 2, p -> dpse, p -> dps_error / 2 ); s += buffer;
+
+  s += "&amp;";
+  s += "chd=t:-1";
+
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.0f:%.0f,0", p -> dps_error, p -> dps_error * 3 ); s += buffer;
+
 
   return s.c_str();
 }

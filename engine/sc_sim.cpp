@@ -1259,12 +1259,19 @@ void sim_t::analyze_player( player_t* p )
   p -> dps_max = -1.0E+50;
   p -> dps_std_dev = 0.0;
 
+  p -> dpse = 0.0;
+  for ( int i=0; i < iterations; i++ )
+  {
+    p -> dpse += p -> iteration_dps[ i ];
+  }
+  p -> dpse /= iterations;
+
   for ( int i=0; i < iterations; i++ )
   {
     double i_dps = p -> iteration_dps[ i ];
     if ( p -> dps_min > i_dps ) p -> dps_min = i_dps;
     if ( p -> dps_max < i_dps ) p -> dps_max = i_dps;
-    double delta = i_dps - p -> dps;
+    double delta = i_dps - p -> dpse;
     p -> dps_std_dev += delta * delta;
   }
 
@@ -1442,6 +1449,7 @@ void sim_t::analyze()
       chart_t::timeline_health    ( pet -> timeline_resource_health_chart,  pet );
       chart_t::timeline_dps       ( pet -> timeline_dps_chart,              pet );
       chart_t::timeline_dps_error ( pet -> timeline_dps_error_chart,        pet );
+      chart_t::dps_error          ( pet -> dps_error_chart,                 pet );
       chart_t::distribution_dps   ( pet -> distribution_dps_chart,          pet );
     }
     if ( p -> quiet ) continue;
@@ -1453,6 +1461,7 @@ void sim_t::analyze()
     chart_t::timeline_health    ( p -> timeline_resource_health_chart,  p );
     chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );
     chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
+    chart_t::dps_error          ( p -> dps_error_chart,                 p );
     chart_t::distribution_dps   ( p -> distribution_dps_chart,          p );
 
   }
