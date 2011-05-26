@@ -7,7 +7,7 @@ race=gnome
 role=spell
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#mage-3033220212301002121212302000000000000000000300000000000000000
+talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000
 glyphs=evocation/arcane_power/slow/mirror_image/arcane_brilliance/conjuring/arcane_blast/arcane_missiles/mage_armor
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
