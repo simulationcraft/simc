@@ -2214,10 +2214,10 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual void player_buff()
+  virtual void update_ready()
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::player_buff();
+    warlock_spell_t::update_ready();
     if ( p -> glyphs.shadowburn -> ok() )
     {
       if ( p -> cooldowns_glyph_of_shadowburn -> remains() == 0 && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
