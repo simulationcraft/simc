@@ -4022,6 +4022,7 @@ void warlock_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 70839, 70841,     0,     0,     0,     0,     0,     0 }, // Tier10
     { 89934, 89935,     0,     0,     0,     0,     0,     0 }, // Tier11
+    { 99220, 99229,     0,     0,     0,     0,     0,     0 }, // Tier12
     {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
   sets                        = new set_bonus_array_t( this, set_bonuses );  

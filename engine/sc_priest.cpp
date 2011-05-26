@@ -4425,7 +4425,8 @@ void priest_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 70800, 70801,     0,     0,     0,     0,     0,     0 }, // Tier10
     { 89915, 89922,     0,     0,     0,     0,     0,     0 }, // Tier11
-    {     0,     0,     0,     0,     0,     0,     0,     0 }, // Tier12
+    { 99154, 99157,     0,     0,     0,     0, 99134, 99135 }, // Tier12
+    {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

@@ -2345,10 +2345,14 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 
 #define TIER_BONUSES_SIZE (6)
+#define TIER_BONUSES_MAX_TIER (14)
 
 // Tier item set bonuses for class, wow build 14007
-static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
+static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
+    {
+          0,
+    },
     {
           0,
     },
@@ -2444,6 +2448,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       90297, // Earthen Battleplate - 4 Piece Bonus (Item - Warrior T11 Protection 4P Bonus)
           0,
     },
+    {
+          0,
+    },
+    {
+          0,
+    },
   },
   // Tier bonuses for Paladin
   {
@@ -2537,6 +2547,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       90310, // Reinforced Sapphirium Regalia - 2 Piece Bonus (Item - Paladin T11 Holy 2P Bonus)
       90313, // Reinforced Sapphirium Regalia - 4 Piece Bonus (Item - Paladin T11 Holy 4P Bonus)
     },
+    {
+          0,
+    },
+    {
+          0,
+    },
   },
   // Tier bonuses for Hunter
   {
@@ -2613,6 +2629,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       96411, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
           0,
     },
+    {
+          0,
+    },
+    {
+          0,
+    },
   },
   // Tier bonuses for Rogue
   {
@@ -2687,6 +2709,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
     {
       90460, // Wind Dancer's Regalia - 2 Piece Bonus (Item - Rogue T11 2P Bonus)
       90473, // Wind Dancer's Regalia - 4 Piece Bonus (Item - Rogue T11 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+    {
           0,
     },
   },
@@ -2766,6 +2794,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       89922, // Mercurial Regalia - 4 Piece Bonus (Item - Priest T11 Shadow 4P Bonus)
           0,
     },
+    {
+          0,
+    },
+    {
+          0,
+    },
   },
   // Tier bonuses for Death Knight
   {
@@ -2828,6 +2862,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       90456, // Magma Plated Battlearmor - 4 Piece Bonus (Item - Death Knight T11 Blood 4P Bonus)
       90457, // Magma Plated Battlegear - 2 Piece Bonus (Item - Death Knight T11 DPS 2P Bonus)
       90459, // Magma Plated Battlegear - 4 Piece Bonus (Item - Death Knight T11 DPS 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+    {
           0,
     },
   },
@@ -2923,6 +2963,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       90503, // Regalia of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Elemental 2P Bonus)
       90505, // Regalia of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Elemental 4P Bonus)
     },
+    {
+          0,
+    },
+    {
+          0,
+    },
   },
   // Tier bonuses for Mage
   {
@@ -2997,6 +3043,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
     {
       90290, // Firelord's Vestments - 2 Piece Bonus (Item - Mage T11 2P Bonus)
       90291, // Firelord's Vestments - 4 Piece Bonus (Item - Mage T11 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+    {
           0,
     },
   },
@@ -3075,8 +3127,17 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       89935, // Shadowflame Regalia - 4 Piece Bonus (Item - Warlock T11 4P Bonus)
           0,
     },
+    {
+          0,
+    },
+    {
+          0,
+    },
   },
   {
+    {
+          0,
+    },
     {
           0,
     },
@@ -3173,6 +3234,12 @@ static unsigned __tier_bonuses_data[][12][TIER_BONUSES_SIZE] = {
       90162, // Stormrider's Battlegarb - 2 Piece Bonus (Item - Druid T11 Feral 2P Bonus)
       90163, // Stormrider's Regalia - 4 Piece Bonus (Item - Druid T11 Balance 4P Bonus)
       90165, // Stormrider's Battlegarb - 4 Piece Bonus (Item - Druid T11 Feral 4P Bonus)
+    },
+    {
+          0,
+    },
+    {
+          0,
     },
   },
 };

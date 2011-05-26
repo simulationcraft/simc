@@ -374,7 +374,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     {
       for ( unsigned cls = 0; cls < 12; cls++ )
       {
-        for ( unsigned tier = 0; tier < 12; tier++ )
+        for ( unsigned tier = 0; tier < N_TIER; tier++ )
         {
           for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
           {
