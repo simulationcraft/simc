@@ -569,7 +569,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
-  save_prefix_str( "save_" ),
+  save_prefix_str( "save_" ), save_suffix_str( "" ),
   input_is_utf8( false ), main_target_str( "" ),
   big_hitbox( 1 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
@@ -2123,6 +2123,7 @@ void sim_t::create_options()
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
     { "default_server",                   OPT_STRING, &( default_server_str                       ) },
     { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
+    { "save_suffix",                      OPT_STRING, &( save_suffix_str                          ) },
     // Stat Enchants
     { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
     { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },
