@@ -28,6 +28,7 @@ struct paladin_t : public player_t
 {
   // Active
   int       active_seal;
+  action_t* active_flames_of_the_faithful_proc;
   action_t* active_hand_of_light_proc;
   action_t* active_seal_of_insight_proc;
   action_t* active_seal_of_justice_proc;
@@ -261,6 +262,18 @@ struct paladin_t : public player_t
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// trigger_flames_of_the_faithful ===========================================
+
+static void trigger_flames_of_the_faithful( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+  if ( p -> ptr && p -> set_bonus.tier12_2pc_melee() )
+  {
+    p -> active_flames_of_the_faithful_proc -> base_dd_max = p -> active_flames_of_the_faithful_proc -> base_dd_min = a -> direct_dmg;
+    p -> active_flames_of_the_faithful_proc -> execute();
+  }
+}
 
 // trigger_hand_of_light ====================================================
 
@@ -670,6 +683,7 @@ struct crusader_strike_t : public paladin_attack_t
       p -> resource_gain( RESOURCE_HOLY_POWER, p -> buffs_zealotry -> up() ? 3 : 1,
                           p -> gains_hp_crusader_strike );
 
+      trigger_flames_of_the_faithful( this );
       trigger_grand_crusader( this );
       trigger_hand_of_light( this );
     }
@@ -732,6 +746,24 @@ struct divine_storm_t : public paladin_attack_t
                                       p -> gains_hp_divine_storm );
           }*/
     }
+  }
+};
+
+// Flames of the Faithful (T12 2pc) proc ===================================
+
+struct flames_of_the_faithful_proc_t : public attack_t
+{
+  flames_of_the_faithful_proc_t( paladin_t* p )
+    : attack_t( "flames_of_the_faithful", 99092, p, TREE_RETRIBUTION, true )
+  {
+    may_crit    = false;
+    may_miss    = false;
+    may_dodge   = false;
+    may_parry   = false;
+    proc        = true;
+    background  = true;
+
+    base_multiplier = 0.01 * p -> sets -> set(SET_T12_2PC_MELEE) -> base_value( E_APPLY_AURA, A_DUMMY );
   }
 };
 
@@ -1802,7 +1834,7 @@ struct zealotry_t : public paladin_spell_t
     update_ready();
     p -> buffs_zealotry -> trigger();
     if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() )
-      p -> buffs_zealotry -> extend_duration( p, 15 );
+      p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION ) );
   }
 
   virtual void consume_resource()
@@ -2209,14 +2241,15 @@ void paladin_t::init_actions()
     return;
   }
 
-  active_hand_of_light_proc         = new hand_of_light_proc_t        ( this );
-  active_seals_of_command_proc      = new seals_of_command_proc_t     ( this );
-  active_seal_of_justice_proc       = new seal_of_justice_proc_t      ( this );
-  active_seal_of_insight_proc       = new seal_of_insight_proc_t      ( this );
-  active_seal_of_righteousness_proc = new seal_of_righteousness_proc_t( this );
-  active_seal_of_truth_proc         = new seal_of_truth_proc_t        ( this );
-  active_seal_of_truth_dot          = new seal_of_truth_dot_t         ( this );
-  ancient_fury_explosion            = new ancient_fury_t              ( this );
+  active_flames_of_the_faithful_proc = new flames_of_the_faithful_proc_t( this );
+  active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
+  active_seals_of_command_proc       = new seals_of_command_proc_t      ( this );
+  active_seal_of_justice_proc        = new seal_of_justice_proc_t       ( this );
+  active_seal_of_insight_proc        = new seal_of_insight_proc_t       ( this );
+  active_seal_of_righteousness_proc  = new seal_of_righteousness_proc_t ( this );
+  active_seal_of_truth_proc          = new seal_of_truth_proc_t         ( this );
+  active_seal_of_truth_dot           = new seal_of_truth_dot_t          ( this );
+  ancient_fury_explosion             = new ancient_fury_t               ( this );
 
   if ( action_list_str.empty() )
   {
