@@ -325,6 +325,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
+  virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_mastery() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -927,9 +928,6 @@ void warrior_attack_t::player_buff()
       player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effect1().percent();
     }
   }
-
-  if ( p -> talents.rampage -> ok() )
-    player_crit += p -> talents.rampage -> effect2().percent();
 
   // --- Buffs / Procs ---
 
@@ -3319,6 +3317,17 @@ double warrior_t::composite_attack_hit() SC_CONST
   ah += spec.precision -> effect_base_value( 1 ) / 100.0;
 
   return ah;
+}
+
+// warriot_t::composite_attack_crit =========================================
+
+double warrior_t::composite_attack_crit() SC_CONST
+{
+  double c = player_t::composite_attack_crit();
+
+  c +=  talents.rampage -> effect2().percent();
+
+  return c;
 }
 
 // warrior_t::composite_mastery =============================================
