@@ -3319,13 +3319,13 @@ double warrior_t::composite_attack_hit() SC_CONST
   return ah;
 }
 
-// warriot_t::composite_attack_crit =========================================
+// warrior_t::composite_attack_crit =========================================
 
 double warrior_t::composite_attack_crit() SC_CONST
 {
   double c = player_t::composite_attack_crit();
 
-  c +=  talents.rampage -> effect2().percent();
+  c += talents.rampage -> effect2().percent();
 
   return c;
 }
