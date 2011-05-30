@@ -37,20 +37,22 @@ struct shaman_t : public player_t
   action_t* totems[ TOTEM_MAX ];
 
   // Buffs
-  buff_t* buffs_flurry;
-  buff_t* buffs_stormstrike;
-  buff_t* buffs_shamanistic_rage;
-  buff_t* buffs_elemental_focus;
   buff_t* buffs_elemental_devastation;
-  buff_t* buffs_elemental_rage;
-  buff_t* buffs_maelstrom_weapon;
-  buff_t* buffs_elemental_mastery_insta;
+  buff_t* buffs_elemental_focus;
   buff_t* buffs_elemental_mastery;
+  buff_t* buffs_elemental_mastery_insta;
+  buff_t* buffs_elemental_rage;
+  buff_t* buffs_flurry;
+  buff_t* buffs_lava_surge;
   buff_t* buffs_lightning_shield;
   buff_t* buffs_maelstrom_power;
+  buff_t* buffs_maelstrom_weapon;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_searing_flames;
+  buff_t* buffs_shamanistic_rage;
   buff_t* buffs_spiritwalkers_grace;
+  buff_t* buffs_stormfire;
+  buff_t* buffs_stormstrike;
   buff_t* buffs_unleash_flame;
   buff_t* buffs_unleash_wind;
   buff_t* buffs_water_shield;
@@ -71,6 +73,7 @@ struct shaman_t : public player_t
 
   // Cooldowns
   cooldown_t* cooldowns_elemental_mastery;
+  cooldown_t* cooldowns_fire_elemental_totem;
   cooldown_t* cooldowns_flametongue_weapon;
   cooldown_t* cooldowns_lava_burst;
   cooldown_t* cooldowns_shock;
@@ -89,6 +92,7 @@ struct shaman_t : public player_t
 
   // Procs
   proc_t* procs_elemental_overload;
+  proc_t* procs_ft_icd;
   proc_t* procs_lava_surge;
   proc_t* procs_maelstrom_weapon;
   proc_t* procs_rolling_thunder;
@@ -97,7 +101,6 @@ struct shaman_t : public player_t
   proc_t* procs_swings_clipped_oh;
   proc_t* procs_wasted_ls;
   proc_t* procs_wasted_mw;
-  proc_t* procs_ft_icd;
   proc_t* procs_windfury;
   
   proc_t* procs_fulmination[7];
@@ -109,6 +112,7 @@ struct shaman_t : public player_t
   rng_t* rng_rolling_thunder;
   rng_t* rng_searing_flames;
   rng_t* rng_static_shock;
+  rng_t* rng_t12_2pc_caster;
   rng_t* rng_windfury_weapon;
 
   // Talents
@@ -169,6 +173,7 @@ struct shaman_t : public player_t
   glyph_t* glyph_lava_lash;
   glyph_t* glyph_lightning_bolt;
   glyph_t* glyph_stormstrike;
+  glyph_t* glyph_unleashed_lightning;
   glyph_t* glyph_water_shield;
   glyph_t* glyph_windfury_weapon;
   
@@ -194,12 +199,13 @@ struct shaman_t : public player_t
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
 
     // Cooldowns
-    cooldowns_elemental_mastery = get_cooldown( "elemental_mastery"  );
-    cooldowns_flametongue_weapon= get_cooldown( "flametongue_weapon" );
-    cooldowns_lava_burst        = get_cooldown( "lava_burst"         );
-    cooldowns_shock             = get_cooldown( "shock"              );
-    cooldowns_strike            = get_cooldown( "strike"             );
-    cooldowns_windfury_weapon   = get_cooldown( "windfury_weapon"    );
+    cooldowns_elemental_mastery    = get_cooldown( "elemental_mastery"    );
+    cooldowns_flametongue_weapon   = get_cooldown( "flametongue_weapon"   );
+    cooldowns_lava_burst           = get_cooldown( "lava_burst"           );
+    cooldowns_shock                = get_cooldown( "shock"                );
+    cooldowns_strike               = get_cooldown( "strike"               );
+    cooldowns_windfury_weapon      = get_cooldown( "windfury_weapon"      );
+    cooldowns_fire_elemental_totem = get_cooldown( "fire_elemental_totem" );
 
     // Dots
     dot_flame_shock = get_dot( "flame_shock" );
@@ -1328,6 +1334,9 @@ void shaman_attack_t::player_buff()
   
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
+  
+  if ( p -> ptr && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
+    player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 
   if ( p -> buffs_elemental_rage -> up() )
     player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
@@ -1485,13 +1494,11 @@ struct lava_lash_t : public shaman_attack_t
 {
   int    wf_cd_only;
   double flametongue_bonus,
-         sf_bonus,
-         i_weapon_multiplier;
+         sf_bonus;
 
   lava_lash_t( player_t* player, const std::string& options_str ) :
     shaman_attack_t( "lava_lash", "Lava Lash", player ), 
-    wf_cd_only( 0 ), flametongue_bonus( 0 ), sf_bonus( 0 ),
-    i_weapon_multiplier( 0 )
+    wf_cd_only( 0 ), flametongue_bonus( 0 ), sf_bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
     check_spec( TREE_ENHANCEMENT );
@@ -1504,7 +1511,6 @@ struct lava_lash_t : public shaman_attack_t
     parse_options( options, options_str );
 
     weapon              = &( player -> off_hand_weapon );
-    i_weapon_multiplier = weapon_multiplier;
 
     if ( weapon -> type == WEAPON_NONE ) 
       background        = true; // Do not allow execution.
@@ -1513,7 +1519,8 @@ struct lava_lash_t : public shaman_attack_t
     flametongue_bonus   = base_value( E_DUMMY ) / 100.0;
 
     // Searing flames bonus to base weapon damage
-    sf_bonus            = p -> talent_improved_lava_lash -> base_value( E_APPLY_AURA, A_DUMMY ) / 100.0;
+    sf_bonus            = p -> talent_improved_lava_lash -> base_value( E_APPLY_AURA, A_DUMMY ) / 100.0+
+                          p -> sets -> set( SET_T12_2PC_MELEE ) -> base_value() / 100.0;
   }
 
   virtual void execute()
@@ -1537,18 +1544,16 @@ struct lava_lash_t : public shaman_attack_t
 
     shaman_attack_t::player_buff();
     
-    // Searing Flames most likely boosts base weapon multiplier
-    weapon_multiplier = i_weapon_multiplier + sf_bonus * p -> buffs_searing_flames -> stack();
+    // Lava lash damage calculation from: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
     
-    // Additive bonuses Glyph and Improved Lava Lash, put tier bonuses here as well for now, 
-    // as they are additive in spell data
-    player_multiplier *= 1.0 + 
-          p -> glyph_lava_lash -> mod_additive( P_GENERIC ) + 
-          p -> talent_improved_lava_lash -> mod_additive( P_GENERIC ) +
-          p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
-
-    // Flametongue is multiplicative
-    player_multiplier *= 1.0 + ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * flametongue_bonus;
+    // First group, Searing Flames + Flametongue bonus
+    player_multiplier *= 1.0 + p -> buffs_searing_flames -> check() * sf_bonus + 
+                               flametongue_bonus;
+                               
+    // Second group, Improved Lava Lash + Glyph of Lava Lash + T11 2Piece bonus
+    player_multiplier *= 1.0 + p -> glyph_lava_lash -> mod_additive( P_GENERIC ) + 
+                               p -> talent_improved_lava_lash -> mod_additive( P_GENERIC ) +
+                               p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
 
   virtual bool ready()
@@ -1639,6 +1644,8 @@ struct stormstrike_t : public shaman_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_stormstrike -> trigger();
+      if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() )
+        p -> buffs_stormfire -> trigger();
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
 
@@ -1744,6 +1751,10 @@ void shaman_spell_t::player_buff()
   
   if ( p -> buffs_elemental_rage -> up() )
     player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
+
+  // Apply Tier12 4 piece enhancement bonus as multiplicative for now, needs checking if this works on totems
+  if ( p -> ptr && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
+    player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 }
 
 // shaman_spell_t::execute =================================================
@@ -1773,6 +1784,9 @@ void shaman_spell_t::execute()
     
     if ( school == SCHOOL_FIRE )
       p -> buffs_unleash_flame -> expire();
+      
+    if ( p -> ptr && p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      p -> cooldowns_fire_elemental_totem -> reset();
   }
 }
 
@@ -2122,6 +2136,8 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     p -> buffs_elemental_mastery_insta -> expire();
+    if ( p -> ptr && p -> buffs_lava_surge -> check() )
+      p -> buffs_lava_surge -> expire();
   }
 
   virtual double execute_time() SC_CONST
@@ -2132,6 +2148,9 @@ struct lava_burst_t : public shaman_spell_t
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> mod_additive( P_CAST_TIME );
       
+    if ( p -> ptr && p -> buffs_lava_surge -> up() )
+      return 0;
+    
     return t;
   }
 
@@ -2269,6 +2288,16 @@ struct lightning_bolt_t : public shaman_spell_t
           p -> gains_telluric_currents );
       }
     }
+  }
+
+  virtual bool usable_moving()
+  {
+    shaman_t* p = player -> cast_shaman();
+    
+    if ( p -> ptr && p -> glyph_unleashed_lightning -> ok() )
+      return true;
+    
+    return shaman_spell_t::usable_moving();
   }
 };
 
@@ -2623,6 +2652,8 @@ struct flame_shock_t : public shaman_spell_t
     {
       p -> procs_lava_surge -> occur();
       p -> cooldowns_lava_burst -> reset();
+      if ( p -> ptr && p -> set_bonus.tier12_4pc_caster() )
+        p -> buffs_lava_surge -> trigger();
     }
   }
 };
@@ -2869,9 +2900,15 @@ struct fire_elemental_totem_t : public shaman_totem_t
     player -> dismiss_pet( "fire_elemental" );
   }
   
-  // Fire Elemental Totem will always override any fire totem you have
+  // Fire Elemental Totem will always override any fire totem you have, except if you have 
+  // T12 2PC, it will not override itself
   virtual bool ready()
   {
+    shaman_t* p = player -> cast_shaman();
+
+    if ( p -> ptr && p -> set_bonus.tier12_2pc_caster() && 
+         p -> totems[ TOTEM_FIRE ] && p -> totems[ TOTEM_FIRE ] == this )
+      return false;
     return shaman_spell_t::ready();
   }
 };
@@ -3805,6 +3842,8 @@ void shaman_t::init_spells()
   glyph_lava_lash             = find_glyph( "Glyph of Lava Lash" );
   glyph_lightning_bolt        = find_glyph( "Glyph of Lightning Bolt" );
   glyph_stormstrike           = find_glyph( "Glyph of Stormstrike" );
+  if ( ptr )
+    glyph_unleashed_lightning = find_glyph( "Glyph of Unleashed Lightning" );
   glyph_water_shield          = find_glyph( "Glyph of Water Shield" );
   glyph_windfury_weapon       = find_glyph( "Glyph of Windfury Weapon" );
   
@@ -3885,6 +3924,8 @@ void shaman_t::init_buffs()
   // Note the chance override, as the spell itself does not have a proc chance
   buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery",         1.0 );
   buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() );
+  // TBD how this is handled for reals
+  buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true );
   buffs_lightning_shield        = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),         "lightning_shield"      );
   // Enhancement T10 4Piece Bonus
   buffs_maelstrom_power         = new maelstrom_power_t      ( this, 70831,                                                    "maelstrom_power"       );
@@ -3892,7 +3933,10 @@ void shaman_t::init_buffs()
   buffs_natures_swiftness       = new buff_t                 ( this, talent_natures_swiftness -> spell_id(),                   "natures_swiftness"     );
   buffs_searing_flames          = new searing_flames_buff_t  ( this, talent_searing_flames -> spell_id(),                      "searing_flames"        );
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );
-  buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace", 1.0, 0 );
+  buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace",       1.0, 0 );
+  // Enhancement T12 4Piece Bonus
+  if ( ptr )
+    buffs_stormfire             = new buff_t                 ( this, 99212,                                                    "stormfire"             );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
   buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame"         );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
@@ -3947,6 +3991,7 @@ void shaman_t::init_rng()
   rng_rolling_thunder      = get_rng( "rolling_thunder"      );
   rng_searing_flames       = get_rng( "searing_flames"       );
   rng_static_shock         = get_rng( "static_shock"         );  
+  rng_t12_2pc_caster       = get_rng( "t12_2pc_caster"       );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
