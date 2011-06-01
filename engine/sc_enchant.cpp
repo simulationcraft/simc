@@ -18,9 +18,9 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
-  { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL ),
+  { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL },
   { "4266",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
-  { "4265",  "+50 Intellect",                                             "50int",                          NULL,        NULL ),
+  { "4265",  "+50 Intellect",                                             "50int",                          NULL,        NULL },
   { "4258",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
   { "4257",  "+50 Intellect",                                             "50int",                          NULL,        NULL },
   { "4256",  "+50 Strength",                                              "50str",                          NULL,        NULL },
