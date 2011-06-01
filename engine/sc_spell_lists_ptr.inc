@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 14179
+// Class based active abilities, wow build 14199
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -19,12 +19,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warrior
   {
-    // Arms tree, 16 abilities
+    // Arms tree, 17 abilities
     {
        2457, // Battle Stance
       46924, // Bladestorm
         100, // Charge (Battle Stance)
       86346, // Colossus Smash (Battle, Berserker Stance)
+      85730, // Deadly Calm
        1715, // Hamstring (Battle, Berserker Stance)
          78, // Heroic Strike
       57755, // Heroic Throw
@@ -113,7 +114,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       85673, // Word of Glory
           0,
     },
-    // Protection tree, 20 abilities
+    // Protection tree, 21 abilities
     {
       31850, // Ardent Defender
       31935, // Avenger's Shield
@@ -129,6 +130,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       62124, // Hand of Reckoning
        6940, // Hand of Sacrifice
        1038, // Hand of Salvation
+      20925, // Holy Shield
       19891, // Resistance Aura
       31789, // Righteous Defense
       25780, // Righteous Fury
@@ -315,11 +317,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       13218, // Wound Poison
           0,
     },
-    // Combat tree, 13 abilities
+    // Combat tree, 14 abilities
     {
       13750, // Adrenaline Rush
          53, // Backstab
       13877, // Blade Flurry
+      74001, // Combat Readiness
        5277, // Evasion
       51723, // Fan of Knives
        1966, // Feint
@@ -853,7 +856,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 14179
+// Talent tree specialization abilities, wow build 14199
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1111,7 +1114,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 14179
+// Class mastery abilities, wow build 14199
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1196,7 +1199,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 14179
+// Racial abilities, wow build 14199
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1829,7 +1832,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 14179
+// Glyph spells for classes, wow build 14199
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2349,7 +2352,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 #define PTR_TIER_BONUSES_SIZE (6)
 #define PTR_TIER_BONUSES_MAX_TIER (14)
 
-// Tier item set bonuses for class, wow build 14179
+// Tier item set bonuses for class, wow build 14199
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
