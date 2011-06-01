@@ -154,6 +154,7 @@ struct priest_t : public player_t
   };
   active_spells_t   active_spells;
 
+  spell_data_t*     dark_flames;
 
   // Cooldowns
   cooldown_t*       cooldowns_mind_blast;
@@ -1556,19 +1557,6 @@ struct mind_blast_t : public priest_spell_t
 
     stats = orb_stats[ p -> buffs_shadow_orb -> stack() ];
 
-    if ( p -> ptr && p -> set_bonus.tier12_4pc_caster() )
-    {
-      if ( p -> dots_shadow_word_pain -> ticking && p -> dots_vampiric_touch -> ticking && p -> dots_devouring_plague -> ticking )
-      {
-        cooldown -> duration -= 3.0;
-        p -> uptimes_dark_flames -> update( 1 );
-      }
-      else
-      {
-        p -> uptimes_dark_flames -> update( 0 );
-      }     
-    }
-
     priest_spell_t::execute();
 
     cooldown -> duration = saved_cooldown;
@@ -1600,10 +1588,26 @@ struct mind_blast_t : public priest_spell_t
   virtual void player_buff()
   {
     priest_t* p = player -> cast_priest();
+    double m = 1.0;
 
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
+    if ( p -> ptr && p -> set_bonus.tier12_4pc_caster() )
+    {
+      if ( p -> dots_shadow_word_pain -> ticking && p -> dots_vampiric_touch -> ticking && p -> dots_devouring_plague -> ticking )
+      {
+        m += p -> dark_flames -> effect1().percent();
+        p -> uptimes_dark_flames -> update( 1 );
+      }
+      else
+      {
+        p -> uptimes_dark_flames -> update( 0 );
+      }     
+    }
+
+    m += p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
+
+    player_multiplier *= m;
 
     player_multiplier *= 1.0 + ( p -> buffs_shadow_orb -> stack() * p -> shadow_orb_amount() );
   }
@@ -4396,6 +4400,8 @@ void priest_t::init_spells()
   active_spells.holy_archangel  = new active_spell_t( this, "holy_archangel", 87152 );
   active_spells.holy_archangel2 = new active_spell_t( this, "holy_archangel2", 81700 );
   active_spells.dark_archangel  = new active_spell_t( this, "dark_archangel", 87153 );
+
+  dark_flames                   = spell_data_t::find( 99158, "Dark Flames", dbc.ptr );
 
 
 
