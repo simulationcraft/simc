@@ -1229,7 +1229,10 @@ stat_type util_t::parse_stat_type( const std::string& name )
     if ( util_t::str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
       return ( stat_type ) i;
 
+  // Fixes wowhead's inconsistenties
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
+  if ( name == "critRating"      ) return STAT_CRIT_RATING;
+  if ( name == "hasteRating"     ) return STAT_HASTE_RATING;
 
   return STAT_NONE;
 }
