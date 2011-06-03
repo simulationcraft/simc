@@ -139,6 +139,7 @@ static bool parse_gems( item_t&           item,
   std::string temp_stats_str = stats_str;
 
   util_t::string_strip_quotes( temp_stats_str );
+  util_t::tolower( temp_stats_str );
 
   int sockets[ 3 ] = { GEM_NONE, GEM_NONE, GEM_NONE };
   std::vector<std::string> splits;
