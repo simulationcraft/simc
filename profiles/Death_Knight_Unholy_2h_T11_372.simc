@@ -49,7 +49,7 @@ legs=sky_strider_greaves_of_the_faultline,heroic=1,type=plate,ilevel=372,quality
 feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_171exp_191mastery_429sta_266str,reforge=exp_haste,gems=20hit_20str_10str,enchant=50haste
 wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_153crit_113haste_344sta_229str,reforge=crit_mastery,gems=20haste_20str_67str_10str,enchant=50str
 hands=magma_plated_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_191haste_171mastery_429sta_266str,gems=20hit_20str_67str_10str,enchant=50str
-finger1=ring_of_rivalry,heroic=1,ilevel=372,quality=epic,stats=143haste_143mastery_322sta_215str,reforge=mastery_hit
+finger1=ring_of_rivalry,heroic=1,ilevel=372,quality=epic,stats=143exp_143haste_322sta_215str
 finger2=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=113crit_153mastery_344sta_229str,reforge=mastery_haste,gems=20haste_20str_10str
 trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_75cd
 trinket2=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_haste,equip=onattackhit_2178str_10%_20dur_100cd
@@ -63,11 +63,11 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107st
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=484
-# gear_hit_rating=982
+# gear_expertise_rating=627
+# gear_hit_rating=925
 # gear_crit_rating=818
 # gear_haste_rating=2274
-# gear_mastery_rating=1123
+# gear_mastery_rating=1037
 # gear_armor=21168
 # meta_gem=reverberating_shadowspirit
 # tier11_2pc_melee=1
