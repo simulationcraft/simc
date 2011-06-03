@@ -44,6 +44,7 @@ class DBCParser(object):
 
     def open_dbc(self):
         is_db2 = False
+        is_adb = False
         hdr_size = 20
         f = None
 
@@ -62,8 +63,12 @@ class DBCParser(object):
 
         hdr = f.read(4)
 
-        if hdr == DB2_HDR or hdr == WC2_HDR: 
+        if hdr == DB2_HDR:
             is_db2 = True
+            hdr_size = 48
+
+        if hdr == WC2_HDR: 
+            is_adb = True
             hdr_size = 48
 
         if hdr != DBC_HDR and hdr != DB2_HDR and hdr != WC2_HDR:
@@ -75,7 +80,7 @@ class DBCParser(object):
         last_id = 0
         try:
             records, fields, record_size, string_block_size = struct.unpack('IIII', f.read(16))
-            if is_db2:
+            if is_db2 or is_adb:
                 table_hash, build, unk_1 = struct.unpack('III', f.read(12))
                 if build > 12880:
                     first_id, last_id, locale, unk_5 = struct.unpack('IIII', f.read(16))
@@ -86,11 +91,20 @@ class DBCParser(object):
                         hdr_size += ( last_id - first_id + 1 ) * 4 + ( last_id - first_id + 1 ) * 2
                 
                 # print hex(hdr_size), table_hash, build, unk_1, first_id, last_id, locale, unk_5
+            
+            # Cache files need some field mangling
+            if is_adb:
+                # Presume adb fields are all 4 bytes, as "fields" no longer always carries the amount 
+                # of fields in the record
+                fields = record_size / 4
+                first_id = 0
+                last_id = 0
         except:
             sys.stderr.write('%s: Invalid DBC/DB2/WCH2 header format\n' % os.path.abspath(self._fname))
             f.close()
             sys.exit(1)
 
+        self._hdr_size          = hdr_size
         self._records           = records
         self._fields            = fields
         self._record_size       = record_size
@@ -99,7 +113,6 @@ class DBCParser(object):
         size                    = hdr_size + records * record_size + string_block_size
         statinfo                = os.fstat(f.fileno())
         
-        # print records, fields, record_size, string_block_size, self._fname
         # Figure out a valid class for us from data, now that we know the DBC is sane
         if '%s%d' % ( os.path.basename(self._fname).split('.')[0].replace('-', '_'), self._options.build ) in dir(data):
             self._class = getattr(data, '%s%d' % ( 
@@ -124,7 +137,6 @@ class DBCParser(object):
 
         # String block caching to avoid seeking all over the place
         if self._string_block_size > 1:
-            # print hdr_size + self._records * self._record_size
             self._dbc_file.seek(hdr_size + self._records * self._record_size)
             self._string_block = self._dbc_file.read(self._string_block_size)
             self._dbc_file.seek(old_pos)
@@ -132,13 +144,12 @@ class DBCParser(object):
             self._string_block = None
 
         # Figure out DBC max identifier, as it's the first uint32 field in every dbc record
-        if ( is_db2 and not last_id ) or ( not is_db2 and self._records > 0 ):
+        if ( is_db2 and not last_id ) or ( not is_db2 and not is_adb and self._records > 0 ):
             self._dbc_file.seek(hdr_size + (self._records - 1) * self._record_size)
             self._last_id = struct.unpack('I', self._dbc_file.read(4))[0]
             self._dbc_file.seek(old_pos)
         else:
             self._last_id = last_id
-        # print self._last_id
         
         return self
 
@@ -154,8 +165,11 @@ class DBCParser(object):
     def next_record(self):
         if not self._dbc_file and not self.open_dbc():
             return None
-
-        if self._last_record_id == self._last_id:
+        
+        if self._last_id > 0 and self._last_record_id == self._last_id:
+            return None
+        # No last id, go by file size (needed for cache files)
+        elif self._dbc_file.tell() == self._hdr_size + self._records * self._record_size:
             return None
 
         raw_record = self._dbc_file.read(self._record_size)

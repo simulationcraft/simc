@@ -312,6 +312,32 @@ class ItemDataGenerator(DataGenerator):
 
         DataGenerator.__init__(self, options)
 
+    def initialize(self):
+        DataGenerator.initialize(self)
+        
+        # Go through a local client cache file if provided, overriding any data 
+        # found in Item-sparse.db2 client file
+        if self._options.item_cache_dir != '': 
+            for i in [ 'Item-sparse.adb', 'Item.adb' ]:
+                dbcname = i[0:i.find('.')].replace('-', '_').lower()
+                setattr(self, '_%s_cache' % dbcname, 
+                    parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.item_cache_dir, i))))
+                dbc = getattr(self, '_%s_cache' % dbcname)
+
+                if not dbc.open_dbc():
+                    return False
+
+                if '_%s_db' % dbc.name() not in dir(self):
+                    setattr(self, '_%s_db' % dbc.name(), db.DBCDB(dbc._class))
+
+                dbase = getattr(self, '_%s_db' % dbc.name())
+                record = dbc.next_record()
+                while record != None:
+                    dbase[record.id] = record
+                    record = dbc.next_record()
+                
+        return True
+
     def filter(self):
         ids = []
         for item_id, data in self._item_sparse_db.iteritems():
