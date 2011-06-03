@@ -35,9 +35,9 @@ actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.he
 actions+=/steady_shot
 head=lightningcharged_headguard,type=mail,ilevel=359,quality=epic,stats=281agi_1977armor_228crit_168mastery_512sta,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_127haste_127mastery_286sta,reforge=mastery_crit
-shoulders=lightningcharged_spaulders,type=mail,ilevel=359,quality=epic,stats=233agi_1825armor_149hit_169mastery_380sta,reforge=mastery_crit,gems=67agi_10mastery,enchant=30agi_20mastery
+shoulders=lightningcharged_spaulders,type=mail,ilevel=359,quality=epic,stats=233agi_1825armor_149hit_169mastery_380sta,reforge=mastery_crit,gems=67agi_10mastery,enchant=50agi_25mastery
 chest=voltage_source_chestguard,type=mail,ilevel=359,quality=epic,stats=301agi_2433armor_198crit_218haste_512sta,gems=67agi_40agi,enchant=20all
-waist=corded_viper_belt,type=mail,ilevel=359,quality=epic,stats=253agi_1369armor_169crit_169mastery_380sta,reforge=mastery_haste,gems=67agi
+waist=corded_viper_belt,type=mail,ilevel=359,quality=epic,stats=233agi_1369armor_159crit_159mastery_380sta,reforge=mastery_haste,gems=67agi_10agi
 legs=lightningcharged_legguards,type=mail,ilevel=359,quality=epic,stats=301agi_2129armor_228crit_188haste_512sta,gems=40agi_40agi,enchant=190ap_55crit
 feet=boots_of_vertigo,type=mail,ilevel=359,quality=epic,stats=233agi_1673armor_169haste_149hit_380sta,reforge=hit_crit,gems=20agi_20hit_10agi,enchant=25agi
 wrists=chimaeron_armguards,type=mail,ilevel=359,quality=epic,stats=190agi_1064armor_127crit_127hit_286sta,enchant=50agi
@@ -51,15 +51,15 @@ main_hand=malevolence,ilevel=359,quality=epic,stats=341agi_228crit_228mastery_51
 ranged=themios_the_darkbringer,ilevel=359,quality=epic,stats=107agi_72crit_72mastery_161sta,enchant=gnomish_xray,weapon=bow_2.90speed_1265min_2350max
 # Gear Summary
 # gear_strength=20
-# gear_agility=4491
+# gear_agility=4501
 # gear_stamina=5178
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_hit_rating=961
-# gear_crit_rating=2115
-# gear_haste_rating=1146
-# gear_mastery_rating=712
+# gear_crit_rating=2105
+# gear_haste_rating=1142
+# gear_mastery_rating=711
 # gear_armor=14616
 # meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
