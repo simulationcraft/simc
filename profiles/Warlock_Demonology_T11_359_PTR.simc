@@ -18,7 +18,7 @@ actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
 actions+=/metamorphosis
-actions+=/immolation,if=buff.metamorphosis.remains>10
+actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
 actions+=/immolate,if=!ticking&target.time_to_die>=4&miss_react
 actions+=/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react

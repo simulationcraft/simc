@@ -3883,7 +3883,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "fel_armor"           ) return new           fel_armor_t( this, options_str );
   if ( name == "haunt"               ) return new               haunt_t( this, options_str );
   if ( name == "immolate"            ) return new            immolate_t( this, options_str );
-  if ( name == "immolation"          ) return new     immolation_aura_t( this, options_str );
+  if ( name == "immolation_aura"     ) return new     immolation_aura_t( this, options_str );
   if ( name == "shadowflame"         ) return new         shadowflame_t( this, options_str );
   if ( name == "incinerate"          ) return new          incinerate_t( this, options_str );
   if ( name == "life_tap"            ) return new            life_tap_t( this, options_str );
@@ -4338,7 +4338,7 @@ void warlock_t::init_actions()
     case TREE_DEMONOLOGY:
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() && ! glyphs.imp -> ok() ) action_list_str += "/demon_soul";
-      if ( level >= 60 ) action_list_str += "/immolation,if=buff.metamorphosis.remains>10";
+      if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
