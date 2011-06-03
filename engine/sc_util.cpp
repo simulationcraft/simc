@@ -1175,7 +1175,7 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_AGILITY:   return "agi";
   case STAT_STAMINA:   return "sta";
   case STAT_INTELLECT: return "int";
-  case STAT_SPIRIT:    return "spi";
+  case STAT_SPIRIT:    return "spr";
 
   case STAT_HEALTH: return "health";
   case STAT_MANA:   return "mana";
@@ -1189,24 +1189,22 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_MP5:               return "manargn";
 
   case STAT_ATTACK_POWER:             return "atkpwr";
-  case STAT_EXPERTISE_RATING:         return "exprtng";
+  case STAT_EXPERTISE_RATING:         return "expertiseRating";
 
-  case STAT_HIT_RATING:   return "hitrtng";
-  case STAT_CRIT_RATING:  return "critstrkrtng";
-  case STAT_HASTE_RATING: return "hastertng";
+  case STAT_HIT_RATING:   return "hitRating";
+  case STAT_CRIT_RATING:  return "critRating";
+  case STAT_HASTE_RATING: return "hasteRating";
 
-  case STAT_WEAPON_DPS:   return "__wdps";
-  case STAT_WEAPON_SPEED: return "__wspeed";
+  case STAT_WEAPON_DPS:   return "__dps";
+  case STAT_WEAPON_SPEED: return "__speed";
 
   case STAT_ARMOR:             return "armor";
   case STAT_BONUS_ARMOR:       return "__armor"; // FIXME! Does wowhead distinguish "bonus" armor?
-  case STAT_RESILIENCE_RATING: return "resiliencertng";
-  case STAT_DODGE_RATING:      return "dodgertng";
-  case STAT_PARRY_RATING:      return "parryrtng";
+  case STAT_RESILIENCE_RATING: return "resilRating";
+  case STAT_DODGE_RATING:      return "dodgeRating";
+  case STAT_PARRY_RATING:      return "parryRating";
 
-  case STAT_BLOCK_RATING: return "blockrtng";
-
-  case STAT_MASTERY_RATING: return "mastrtng";
+  case STAT_MASTERY_RATING: return "masteryRating";
 
   case STAT_MAX: return "__all";
   }
@@ -1229,10 +1227,7 @@ stat_type util_t::parse_stat_type( const std::string& name )
     if ( util_t::str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
       return ( stat_type ) i;
 
-  // Fixes wowhead's inconsistenties
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
-  if ( name == "critRating"      ) return STAT_CRIT_RATING;
-  if ( name == "hasteRating"     ) return STAT_HASTE_RATING;
 
   return STAT_NONE;
 }

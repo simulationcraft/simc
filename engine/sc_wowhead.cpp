@@ -237,8 +237,8 @@ static bool parse_weapon( item_t&     item,
     {
       if ( type_str == "speed"   ) speed  = value_str;
       if ( type_str == "dps"     ) dps    = value_str;
-      if ( type_str == "dmgmin1" ) dmgmin = value_str;
-      if ( type_str == "dmgmax1" ) dmgmax = value_str;
+      if ( type_str == "dmgMin" ) dmgmin = value_str;
+      if ( type_str == "dmgMax" ) dmgmax = value_str;
     }
   }
 
