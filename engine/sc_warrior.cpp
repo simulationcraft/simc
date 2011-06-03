@@ -899,12 +899,14 @@ void warrior_attack_t::player_buff()
 
   if ( weapon && weapon -> group() == WEAPON_2H )
   {
-    double bonus = p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
+    // FIXME: DBC data is behind latest notes
+    double bonus = ( p -> ptr ) ? 0.12 : p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
     player_multiplier *= 1.0 + bonus;
   }
 
+  // FIXME: DBC data is behind latest notes
   if ( p -> dual_wield() && school == SCHOOL_PHYSICAL )
-    player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
+    player_multiplier *= 1.0 + ( p -> ptr ? 0.05 : p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0 );
 
   // --- Enrages ---
 
@@ -2465,6 +2467,9 @@ struct deadly_calm_t : public warrior_spell_t
     if ( p -> buffs_inner_rage -> check() )
       return false;
 
+    if ( p -> ptr && p -> buffs_recklessness -> check() )
+      return false;
+
     return warrior_spell_t::ready();
   }
 };
@@ -2566,6 +2571,16 @@ struct recklessness_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_recklessness -> trigger( 3 );
+  }
+  
+  virtual bool ready()
+  {
+    warrior_t* p = player -> cast_warrior();
+
+    if ( p -> ptr && p -> buffs_deadly_calm -> check() )
+      return false;
+
+    return warrior_spell_t::ready();
   }
 };
 

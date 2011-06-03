@@ -1227,7 +1227,8 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.feral_aggression -> mod_additive( P_GENERIC );
-    max_excess_energy     = effect2().base_value();
+    // FIXME: DBC data is behind latest notes
+    max_excess_energy     = ( p -> ptr ) ? 35 : effect2().base_value();
     requires_combo_points = true;
   }
 
@@ -1974,8 +1975,8 @@ struct lacerate_t : public druid_bear_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod     = 0.0766;
-    tick_power_mod       = 0.00512;
+    direct_power_mod     = ( p -> ptr ) ? 0.0552 : 0.0766;
+    tick_power_mod       = ( p -> ptr ) ? 0.0185 : 0.0256;
     dot_behavior         = DOT_REFRESH;
     base_crit           += p -> glyphs.lacerate -> mod_additive( P_CRIT );
     mangle_bear_cooldown = p -> get_cooldown( "mangle_bear" );
@@ -2062,8 +2063,8 @@ struct maul_t : public druid_bear_attack_t
     aoe = 1;
     base_add_multiplier = p -> glyphs.maul -> effect3().percent();
     // DBC data points to base scaling, tooltip states AP scaling which is correct
-    base_dd_min = base_dd_max = 8;
-    direct_power_mod = 0.264;
+    base_dd_min = base_dd_max = ( p -> ptr ) ? 35 : 8;
+    direct_power_mod = ( p -> ptr ) ? 0.19 : 0.264;
   }
 
   virtual void execute()
@@ -2171,15 +2172,21 @@ struct swipe_bear_t : public druid_bear_attack_t
 
 struct thrash_t : public druid_bear_attack_t
 {
-  thrash_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "thrash", 77758, player )
+  thrash_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "thrash", 77758, p )
   {
     parse_options( NULL, options_str );
     check_min_level( 81 );
 
     aoe               = -1;
-    direct_power_mod  = 0.128;
-    tick_power_mod    = 0.0217;
+    direct_power_mod  = ( p -> ptr ) ? 0.0982 : 0.128;
+    tick_power_mod    = ( p -> ptr ) ? 0.0167 : 0.0217;
+    if ( p -> ptr )
+    {
+      // FIXME: DBC data is behind latest notes
+      base_dd_min = base_dd_max = 1042;
+      base_td = 581;
+    }
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
@@ -3085,9 +3092,9 @@ struct faerie_fire_feral_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_attack_power_multiplier = extra_coeff();
+    base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier  = 0;
-    direct_power_mod             = 1.0;
+    direct_power_mod             = extra_coeff();
     cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown(); // Cooldown is stored in another version of FF
     trigger_gcd                  = player -> dbc.spell( 16857 ) -> gcd();
   }

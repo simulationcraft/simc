@@ -1826,7 +1826,9 @@ struct aimed_shot_mm_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
     hunter_attack_t::player_buff();
-    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
+    // FIXME: DBC data is behind latest notes
+    int32_t ca = ( p -> ptr ) ? 90 : p -> talents.careful_aim -> effect2().base_value();
+    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > ca )
     {
       player_crit += p -> talents.careful_aim -> effect1().percent();
     }

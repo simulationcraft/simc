@@ -1308,7 +1308,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    if ( p -> talents.holy_shield -> rank() )
+    if ( ! p -> ptr && p -> talents.holy_shield -> rank() )
       p -> buffs_holy_shield -> trigger();
     if ( result_is_hit() )
       p -> buffs_sacred_duty -> expire();
@@ -1728,6 +1728,26 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   }
 };
 
+// Holy Shield ==============================================================
+
+struct holy_shield_t : public paladin_spell_t
+{
+  holy_shield_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_shield", 20925, p )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_spell_t::execute();
+
+    p -> buffs_holy_shield -> trigger();
+  }
+};
+
 // Holy Shock ==============================================================
 
 // TODO: fix the fugly hack
@@ -1799,13 +1819,11 @@ struct inquisition_t : public paladin_spell_t
   {
     paladin_t* p = player -> cast_paladin();
 
-
-
     p -> buffs_inquisition -> buff_duration = base_duration * p -> holy_power_stacks();
     if ( p -> set_bonus.tier11_4pc_melee() )
       p -> buffs_inquisition -> buff_duration += base_duration;
     p -> buffs_inquisition -> trigger( 1, base_value() );
-    if ( p -> talents.holy_shield -> rank() )
+    if ( ! p -> ptr && p -> talents.holy_shield -> rank() )
       p -> buffs_holy_shield -> trigger();
     p -> buffs_divine_purpose -> trigger();
 
@@ -2004,6 +2022,8 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
+  if ( ptr )
+    if ( name == "holy_shield"               ) return new holy_shield_t              ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );

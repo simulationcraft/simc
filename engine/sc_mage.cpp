@@ -1198,6 +1198,9 @@ struct arcane_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    // FIXME: DBC data is behind latest notes
+    if ( p -> ptr )
+      base_multiplier *= 0.95;
   }
 
   virtual double cost() SC_CONST

@@ -2056,6 +2056,16 @@ struct fire_nova_t : public shaman_spell_t
     base_dd_max           = p -> dbc.effect_max( p -> dbc.spell( 8349 ) -> effect1().id(), p -> level );
     direct_power_mod      = p -> dbc.spell( 8349 ) -> effect1().coeff();
   }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+
+    shaman_t* p = player -> cast_shaman();
+
+    if ( p -> ptr && result_is_hit() && p ->talent_call_of_flame -> ok() && p -> dot_flame_shock -> ticking )
+      p -> dot_flame_shock -> action -> extend_duration_seconds( p -> talent_call_of_flame -> effect3().base_value() );
+  }
   
   virtual void player_buff()
   {
@@ -2079,11 +2089,11 @@ struct fire_nova_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  virtual void assess_damage( player_t* target, double dmg_amount, int dmg_type, int dmg_result )
+  /*virtual void assess_damage( player_t* target, double dmg_amount, int dmg_type, int dmg_result )
   {
     if ( result_is_hit( dmg_result ) )
     {
-      /*target_t* t = target -> cast_target();
+      target_t* t = target -> cast_target();
 
       if ( t -> adds_nearby > 0 )
       {
@@ -2091,9 +2101,9 @@ struct fire_nova_t : public shaman_spell_t
         {
           additional_damage( t, dmg_amount, dmg_type, dmg_result );
         }
-      }*/
+      }
     }
-  }
+  }*/
 };
 
 // Lava Burst Spell =========================================================
