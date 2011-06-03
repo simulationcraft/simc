@@ -4580,6 +4580,7 @@ void death_knight_t::init_glyphs()
     else if ( n == "rune_tap"            );
     else if ( n == "strangulate"         );
     else if ( n == "vampiric_blood"      );
+    else if ( n == "dark_succor"         );
     else if ( ! sim -> parent )
     {
       sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
