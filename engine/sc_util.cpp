@@ -1184,11 +1184,10 @@ const char* util_t::stat_type_wowhead( int stat )
   case STAT_FOCUS:  return "focus";
   case STAT_RUNIC:  return "runic";
 
-  case STAT_SPELL_POWER:       return "splpwr";
-  case STAT_SPELL_PENETRATION: return "splpen";
-  case STAT_MP5:               return "manargn";
+  case STAT_SPELL_POWER:       return "spellPower";
+  case STAT_SPELL_PENETRATION: return "spellPen";
 
-  case STAT_ATTACK_POWER:             return "atkpwr";
+  case STAT_ATTACK_POWER:             return "attackPower";
   case STAT_EXPERTISE_RATING:         return "expertiseRating";
 
   case STAT_HIT_RATING:   return "hitRating";
