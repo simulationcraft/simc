@@ -48,7 +48,7 @@ finger2=planetary_band_of_the_undertow,heroic=1,ilevel=372,quality=epic,stats=32
 trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
-main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max
+main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=110haste_165int_110mastery_2207sp_248sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_328min_611max
 off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=143haste_143hit_215int_322sta,enchant=40int
 ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta,reforge=mastery_haste
 # Gear Summary
@@ -67,4 +67,4 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
-# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_82min_154max,enchant=power_torrent
+# main_hand=incineratus,heroic=1,weapon=dagger_1.80speed_328min_611max,enchant=power_torrent

@@ -1228,6 +1228,22 @@ stat_type util_t::parse_stat_type( const std::string& name )
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
+  // in-case wowhead changes their mind again
+  if ( name == "atkpwr"         ) return STAT_ATTACK_POWER;
+  if ( name == "critstrkrtng"   ) return STAT_CRIT_RATING;
+  if ( name == "dodgertng"      ) return STAT_DODGE_RATING;
+  if ( name == "exprtng"        ) return STAT_EXPERTISE_RATING;
+  if ( name == "hastertng"      ) return STAT_HASTE_RATING;
+  if ( name == "hitrtng"        ) return STAT_HIT_RATING;
+  if ( name == "mastrtng"       ) return STAT_MASTERY_RATING;
+  if ( name == "parryrtng"      ) return STAT_PARRY_RATING;
+  if ( name == "resiliencertng" ) return STAT_RESILIENCE_RATING;
+  if ( name == "splpwr"         ) return STAT_SPELL_POWER;
+  if ( name == "splpen"         ) return STAT_SPELL_PENETRATION;
+  if ( name == "spi"            ) return STAT_SPIRIT;
+  if ( util_t::str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
+  if ( util_t::str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
+
   return STAT_NONE;
 }
 

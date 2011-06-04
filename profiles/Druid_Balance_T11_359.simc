@@ -56,7 +56,7 @@ finger2=security_measure_alpha,ilevel=359,quality=epic,stats=127crit_190int_127s
 trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_haste,equip=onspellcast_1926sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=drape_of_the_twins,ilevel=359,quality=epic,stats=625armor_127haste_190int_127spi_286sta,enchant=lightweave_embroidery
-main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_45min_84max
+main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
 off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
 ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_161sta,reforge=crit_spi,gems=40int
 # Gear Summary
@@ -75,4 +75,4 @@ ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_16
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # back=drape_of_the_twins,enchant=lightweave_embroidery
-# main_hand=incineratus,weapon=dagger_1.80speed_45min_84max,enchant=power_torrent
+# main_hand=incineratus,weapon=dagger_1.80speed_291min_541max,enchant=power_torrent

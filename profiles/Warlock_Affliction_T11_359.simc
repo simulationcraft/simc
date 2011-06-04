@@ -47,7 +47,7 @@ finger2=band_of_secret_names,ilevel=359,quality=epic,stats=127crit_127haste_190i
 trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_hit,equip=onspellcast_1926sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_hit,gems=40int,enchant=50int
-main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_45min_84max
+main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_hit,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
 off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
 ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_161sta,reforge=mastery_haste
 # Gear Summary
@@ -65,4 +65,4 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=72hit_107int_72mastery_1
 # meta_gem=burning_shadowspirit
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
-# main_hand=incineratus,weapon=dagger_1.80speed_45min_84max,enchant=power_torrent
+# main_hand=incineratus,weapon=dagger_1.80speed_291min_541max,enchant=power_torrent
