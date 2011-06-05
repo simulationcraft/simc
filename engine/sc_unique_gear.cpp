@@ -1340,9 +1340,11 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "chuchus_tiny_box_of_horrors"         ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
   else if ( name == "comets_trail"                        ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
   else if ( name == "corens_chromium_coaster"             ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
+  else if ( name == "corens_chilled_chromium_coaster"     ) e = "OnAttackCrit_4000AP_10%_10Dur_50Cd"; // FIXME: Verify ICD
   else if ( name == "crushing_weight"                     ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" );
   else if ( name == "dark_matter"                         ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "darkmoon_card_crusade"               ) e = "OnDamage_8SP_10Stack_10Dur";
+  else if ( name == "dwyers_caber"                        ) e = "OnDamage_1020Crit_15%_20Dur_100Cd"; // FIXME: Verify ICD
   else if ( name == "dying_curse"                         ) e = "OnSpellCast_765SP_15%_10Dur_45Cd";
   else if ( name == "elemental_focus_stone"               ) e = "OnSpellCast_522Haste_10%_10Dur_45Cd";
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellCast_505Haste_10%_10Dur_45Cd";
@@ -1369,11 +1371,13 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "mark_of_defiance"                    ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                     ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "mithril_pocketwatch"                 ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
+  else if ( name == "mithril_stopwatch"                   ) e = "OnSpellCast_2040SP_10%_10Dur_50Cd"; // FIXME: Confirm ICD
   else if ( name == "mjolnir_runestone"                   ) e = "OnAttackHit_665Haste_15%_10Dur_45Cd";
   else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
   else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_48Mastery_10Stack_10Dur" : "OnSpellTickDamage_42Mastery_10Stack_10Dur" );
   else if ( name == "needleencrusted_scorpion"            ) e = "OnAttackCrit_678crit_10%_10Dur_50Cd";
   else if ( name == "pandoras_plea"                       ) e = "OnSpellCast_751SP_10%_10Dur_45Cd";
+  else if ( name == "petrified_pickled_egg"               ) e = "OnSpellDamage_2040Haste_10%_10Dur_50Cd"; // FIXME: Confirm ICD
   else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_95Cd" : "OnAttackHit_918Mastery_10%_20Dur_95Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "prestors_talisman_of_machination"    ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" ); // TO-DO: Confirm ICD.
   else if ( name == "purified_lunar_dust"                 ) e = "OnSpellCast_304MP5_10%_15Dur_45Cd";
@@ -1455,41 +1459,46 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   std::string e;
 
   // Simple
-  if      ( name == "ancient_petrified_seed"      ) e = ( heroic ? "1441Agi_15Dur_60Cd"  : "1277Agi_15Dur_60Cd" );
-  else if ( name == "core_of_ripeness"            ) e = "1926Spi_20Dur_120Cd";
-  else if ( name == "electrospark_heartstarter"   ) e = "567Int_20Dur_120Cd";
-  else if ( name == "energy_siphon"               ) e = "408SP_20Dur_120Cd";
-  else if ( name == "ephemeral_snowflake"         ) e = "464Haste_20Dur_120Cd";
+  if      ( name == "aellas_bottle"                ) e = "1700Crit_20Dur_120Cd"; // FIXME: "Occasionally attracts passing celestial objects."
+  else if ( name == "ancient_petrified_seed"       ) e = ( heroic ? "1441Agi_15Dur_60Cd"  : "1277Agi_15Dur_60Cd" );
+  else if ( name == "brawlers_trophy"              ) e = "1700Dodge_20Dur_120Cd";
+  else if ( name == "core_of_ripeness"             ) e = "1926Spi_20Dur_120Cd";
+  else if ( name == "electrospark_heartstarter"    ) e = "567Int_20Dur_120Cd";
+  else if ( name == "energy_siphon"                ) e = "408SP_20Dur_120Cd";
+  else if ( name == "ephemeral_snowflake"          ) e = "464Haste_20Dur_120Cd";
   else if ( name == "essence_of_the_eternal_flame" ) e = ( heroic ? "1441Str_15Dur_120Cd" : "1277Str_15Dur_120Cd" );
-  else if ( name == "fiery_quintessence"          ) e = ( heroic ? "1297Int_25Dur_90Cd"  : "1149Int_25Dur_90Cd" );
-  else if ( name == "figurine__demon_panther"     ) e = "1425Agi_20Dur_120Cd";
-  else if ( name == "figurine__dream_owl"         ) e = "1425Spi_20Dur_120Cd";
-  else if ( name == "figurine__jeweled_serpent"   ) e = "1425Sp_20Dur_120Cd";
-  else if ( name == "figurine__king_of_boars"     ) e = "1425Str_20Dur_120Cd";
-  else if ( name == "impatience_of_youth"         ) e = "1605Str_20Dur_120Cd";
-  else if ( name == "living_flame"                ) e = "505SP_20Dur_120Cd";
-  else if ( name == "maghias_misguided_quill"     ) e = "716SP_20Dur_120Cd";
-  else if ( name == "magnetite_mirror"            ) e = ( heroic ? "1425Str_15Dur_90Cd" : "1075Str_15Dur_90Cd" );
-  else if ( name == "mark_of_khardros"            ) e = ( heroic ? "1425Mastery_15Dur_90Cd" : "1260Mastery_15Dur_90Cd" );
-  else if ( name == "mark_of_norgannon"           ) e = "491Haste_20Dur_120Cd";
-  else if ( name == "mark_of_supremacy"           ) e = "1024AP_20Dur_120Cd";
-  else if ( name == "mark_of_the_firelord"        ) e = ( heroic ? "1441Int_15Dur_60Cd"  : "1277Int_15Dur_60Cd" );
-  else if ( name == "might_of_the_ocean"          ) e = ( heroic ? "1425Str_15Dur_90Cd" : "765Str_15Dur_90Cd" );
-  else if ( name == "platinum_disks_of_battle"    ) e = "752AP_20Dur_120Cd";
-  else if ( name == "platinum_disks_of_sorcery"   ) e = "440SP_20Dur_120Cd";
-  else if ( name == "platinum_disks_of_swiftness" ) e = "375Haste_20Dur_120Cd";
-  else if ( name == "scale_of_fates"              ) e = "432Haste_20Dur_120Cd";
-  else if ( name == "sea_star"                    ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
-  else if ( name == "shard_of_the_crystal_heart"  ) e = "512Haste_20Dur_120Cd";
-  else if ( name == "shard_of_woe"                ) e = "1935Haste_10Dur_60Cd";
-  else if ( name == "skardyns_grace"              ) e = ( heroic ? "1425Mastery_20Dur_120Cd" : "1260Mastery_20Dur_120Cd" );
-  else if ( name == "sliver_of_pure_ice"          ) e = "1625Mana_120Cd";
-  else if ( name == "soul_casket"                 ) e = "1926Sp_20Dur_120Cd";
-  else if ( name == "souls_anguish"               ) e = "765Str_15Dur_90Cd";
-  else if ( name == "spirit_world_glass"          ) e = "336Spi_20Dur_120Cd";
-  else if ( name == "talisman_of_resurgence"      ) e = "599SP_20Dur_120Cd";
-  else if ( name == "unsolvable_riddle"           ) e = "1605Agi_20Dur_120Cd";
-  else if ( name == "wrathstone"                  ) e = "856AP_20Dur_120Cd";
+  else if ( name == "fiery_quintessence"           ) e = ( heroic ? "1297Int_25Dur_90Cd"  : "1149Int_25Dur_90Cd" );
+  else if ( name == "figurine__demon_panther"      ) e = "1425Agi_20Dur_120Cd";
+  else if ( name == "figurine__dream_owl"          ) e = "1425Spi_20Dur_120Cd";
+  else if ( name == "figurine__jeweled_serpent"    ) e = "1425Sp_20Dur_120Cd";
+  else if ( name == "figurine__king_of_boars"      ) e = "1425Str_20Dur_120Cd";
+  else if ( name == "impatience_of_youth"          ) e = "1605Str_20Dur_120Cd";
+  else if ( name == "living_flame"                 ) e = "505SP_20Dur_120Cd";
+  else if ( name == "maghias_misguided_quill"      ) e = "716SP_20Dur_120Cd";
+  else if ( name == "magnetite_mirror"             ) e = ( heroic ? "1425Str_15Dur_90Cd" : "1075Str_15Dur_90Cd" );
+  else if ( name == "mark_of_khardros"             ) e = ( heroic ? "1425Mastery_15Dur_90Cd" : "1260Mastery_15Dur_90Cd" );
+  else if ( name == "mark_of_norgannon"            ) e = "491Haste_20Dur_120Cd";
+  else if ( name == "mark_of_supremacy"            ) e = "1024AP_20Dur_120Cd";
+  else if ( name == "mark_of_the_firelord"         ) e = ( heroic ? "1441Int_15Dur_60Cd"  : "1277Int_15Dur_60Cd" );
+  else if ( name == "moonwell_chalice"             ) e = "1700Int_20Dur_120Cd";
+  else if ( name == "moonwell_phial"               ) e = "1700Dodge_20Dur_120Cd";
+  else if ( name == "might_of_the_ocean"           ) e = ( heroic ? "1425Str_15Dur_90Cd" : "765Str_15Dur_90Cd" );
+  else if ( name == "platinum_disks_of_battle"     ) e = "752AP_20Dur_120Cd";
+  else if ( name == "platinum_disks_of_sorcery"    ) e = "440SP_20Dur_120Cd";
+  else if ( name == "platinum_disks_of_swiftness"  ) e = "375Haste_20Dur_120Cd";
+  else if ( name == "rickets_mangetic_fireball"    ) e = "1700Crit_20Dur_120Cd"; // FIXME: "Your attacks may occasionally attract small celestial objects."
+  else if ( name == "scale_of_fates"               ) e = "432Haste_20Dur_120Cd";
+  else if ( name == "sea_star"                     ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
+  else if ( name == "shard_of_the_crystal_heart"   ) e = "512Haste_20Dur_120Cd";
+  else if ( name == "shard_of_woe"                 ) e = "1935Haste_10Dur_60Cd";
+  else if ( name == "skardyns_grace"               ) e = ( heroic ? "1425Mastery_20Dur_120Cd" : "1260Mastery_20Dur_120Cd" );
+  else if ( name == "sliver_of_pure_ice"           ) e = "1625Mana_120Cd";
+  else if ( name == "soul_casket"                  ) e = "1926Sp_20Dur_120Cd";
+  else if ( name == "souls_anguish"                ) e = "765Str_15Dur_90Cd";
+  else if ( name == "spirit_world_glass"           ) e = "336Spi_20Dur_120Cd";
+  else if ( name == "talisman_of_resurgence"       ) e = "599SP_20Dur_120Cd";
+  else if ( name == "unsolvable_riddle"            ) e = "1605Agi_20Dur_120Cd";
+  else if ( name == "wrathstone"                   ) e = "856AP_20Dur_120Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnSpellCast_57Haste_8Stack_20Dur_120Cd" );
