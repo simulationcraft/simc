@@ -542,7 +542,7 @@ static void register_empowered_deathbringer( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new deathbringer_callback_t( p, new deathbringer_spell_t( p ) ) );
 }
 
-// register_raging_deathbringer ==========================================
+// register_raging_deathbringer =============================================
 
 static void register_raging_deathbringer( item_t* item )
 {
@@ -594,7 +594,7 @@ static void register_raging_deathbringer( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new deathbringer_callback_t( p, new deathbringer_spell_t( p ) ) );
 }
 
-// register_fury_of_angerforge =========================================
+// register_fury_of_angerforge ==============================================
 
 static void register_fury_of_angerforge( item_t* item )
 {
@@ -636,7 +636,7 @@ static void register_fury_of_angerforge( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new fury_of_angerforge_callback_t( p ) );
 }
 
-// register_heart_of_ignacious =========================================
+// register_heart_of_ignacious ==============================================
 
 static void register_heart_of_ignacious( item_t* item )
 {
@@ -671,6 +671,59 @@ static void register_heart_of_ignacious( item_t* item )
   stat_proc_callback_t* cb = new heart_of_ignacious_callback_t( p, item -> heroic() );
   p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
   p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+}
+
+// register_matrix_restabilizer =============================================
+
+static void register_matrix_restabilizer( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct matrix_restabilizer_callback_t : public stat_proc_callback_t
+  {
+    bool heroic;
+    stat_type max_stat;
+
+    matrix_restabilizer_callback_t( player_t* p, bool h ) :
+      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, heroic ? 1730 : 1532, 0.35, 15.0, 45.0 ), heroic( h )
+      // FIXME: Proc Chance, Dur, CD
+    {
+    }
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      if ( buff -> cooldown -> remains() > 0 ) return;
+
+      player_t* p = a -> player;
+
+      if ( p -> stats.crit_rating > p -> stats.haste_rating )
+      {
+        if ( p -> stats.crit_rating > p -> stats.mastery_rating )
+        {
+          max_stat = STAT_CRIT_RATING;
+        }
+        else
+        {
+          max_stat = STAT_MASTERY_RATING;
+        }
+      }
+      else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
+      {
+        max_stat = STAT_HASTE_RATING;
+      }
+      else
+      {
+        max_stat = STAT_MASTERY_RATING;
+      }
+
+      buff -> stat = max_stat;
+      stat_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  p -> register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( p, item -> heroic() ) );
 }
 
 // register_nibelung ========================================================
@@ -812,7 +865,7 @@ static void register_shadowmourne( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new shadowmourne_trigger_t( p, buff_stacks, buff_final, new shadowmourne_spell_t( p ), item -> slot ) );
 }
 
-// register_shard_of_woe ===============================================
+// register_shard_of_woe ====================================================
 
 static void register_shard_of_woe( item_t* item )
 {
@@ -833,7 +886,7 @@ static void register_shard_of_woe( item_t* item )
   p -> initial_resource_reduction[ SCHOOL_NATURE ] += 200;
 }
 
-// register_sorrowsong =================================================
+// register_sorrowsong ======================================================
 
 static void register_sorrowsong( item_t* item )
 {
@@ -861,7 +914,7 @@ static void register_sorrowsong( item_t* item )
   p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
 }
 
-// register_tiny_abom ====================================================
+// register_tiny_abom =======================================================
 
 static void register_tiny_abom( item_t* item )
 {
@@ -966,7 +1019,7 @@ static void register_tiny_abom( item_t* item )
   p -> register_direct_damage_callback( -1, new tiny_abom_trigger_t( p, buff ) );
 }
 
-// register_tyrandes_favorite_doll =====================================
+// register_tyrandes_favorite_doll ==========================================
 
 static void register_tyrandes_favorite_doll( item_t* item )
 {
@@ -1026,7 +1079,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
 }
 
-// register_unheeded_warning ===========================================
+// register_unheeded_warning ================================================
 
 static void register_unheeded_warning( item_t* item )
 {
@@ -1114,6 +1167,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "raging_deathbringer"       ) ) register_raging_deathbringer    ( &item );
     if ( ! strcmp( item.name(), "fury_of_angerforge"        ) ) register_fury_of_angerforge     ( &item );
     if ( ! strcmp( item.name(), "heart_of_ignacious"        ) ) register_heart_of_ignacious     ( &item );
+    if ( ! strcmp( item.name(), "matrix_restabilizer"        ) ) register_matrix_restabilizer    ( &item );
     if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
     if ( ! strcmp( item.name(), "shard_of_woe"              ) ) register_shard_of_woe           ( &item );
@@ -1394,6 +1448,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_75Cd" : "OnSpellCast_1290SP_10%_15Dur_75Cd" ); // TO-DO: Confirm ICD
   else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnSpellCast_1926Mastery_10%_20Dur_100Cd" ); // TO-DO: Confirm ICD
   else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_34Agi_10Stack_15Dur" );
+  else if ( name == "vessel_of_acceleration"              ) e = ( heroic ? "OnAttackHit_87Crit_5Stack_20Dur" : "OnAttackHit_77Crit_5Stack_20Dur" );
   else if ( name == "witching_hourglass"                  ) e = ( heroic ? "OnSpellCast_1710Haste_10%_15Dur_75Cd" : "OnSpellCast_918Haste_10%_15Dur_75Cd" );
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellHit_132SP_5%_10Dur";
 
@@ -1487,6 +1542,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "platinum_disks_of_sorcery"    ) e = "440SP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_swiftness"  ) e = "375Haste_20Dur_120Cd";
   else if ( name == "rickets_mangetic_fireball"    ) e = "1700Crit_20Dur_120Cd"; // FIXME: "Your attacks may occasionally attract small celestial objects."
+  else if ( name == "rune_of_zeth"                 ) e = ( heroic ? "1441Int_15Dur_60Cd" : "1277Int_15Dur_60Cd" );
   else if ( name == "scale_of_fates"               ) e = "432Haste_20Dur_120Cd";
   else if ( name == "sea_star"                     ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
   else if ( name == "shard_of_the_crystal_heart"   ) e = "512Haste_20Dur_120Cd";
