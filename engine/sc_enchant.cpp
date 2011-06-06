@@ -62,7 +62,7 @@ static enchant_data_t enchant_db[] =
   { "4181",  "Tazik Shocker",                                             "tazik_shocker",                  NULL,        NULL },
   { "4180",  "Quickflip Deflection Plates",                               "quickflip_deflection_plates",    NULL,        NULL },
   { "4179",  "Synapse Springs",                                           "synapse_springs",                NULL,        NULL },
-  { "4177",  "Safety Catch Removal Kit",                                  "88haste",                        NULL,        NULL },
+  { "4177",  "Safety Catch Removal Kit",                                  "",                               NULL,        NULL },
   { "4176",  "R19 Threatfinder",                                          "88Hit",                          NULL,        NULL },
   { "4175",  "Gnomish X-Ray Scope",                                       "gnomish_xray",                   NULL,        NULL },
   { "4127",  "+145 Stamina and +55 Agility",                              "145sta_55agi",                   NULL,        NULL },
