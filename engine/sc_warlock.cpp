@@ -797,11 +797,11 @@ struct warlock_main_pet_t : public warlock_pet_t
 
 struct warlock_guardian_pet_t : public warlock_pet_t
 {
-  double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery, snapshot_meta;
+  double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery;
 
   warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     warlock_pet_t( sim, owner, pet_name, pt, true ),
-    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 ), snapshot_meta( 0 )
+    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
   {}
 
   virtual void summon( double duration=0 )
@@ -812,7 +812,6 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     snapshot_haste = owner -> composite_spell_haste();
     snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX ); // Get the max SP for simplicity
     snapshot_mastery = owner -> composite_mastery();
-    snapshot_meta = owner -> cast_warlock() -> buffs_metamorphosis -> value();
     reset();
   }
 
@@ -859,6 +858,17 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     double sp = pet_t::composite_spell_power( school );
     sp += snapshot_sp * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
     return sp;
+  }
+
+  virtual double composite_spell_power_multiplier() SC_CONST
+  {
+    double m = pet_t::composite_spell_power_multiplier();
+    warlock_t* o = owner -> cast_warlock();
+  
+    // Guardians normally don't gain demonic pact, but when they provide it they also provide it to themselves
+    if ( o -> talent_demonic_pact -> rank() ) m *= 1.10;
+
+    return m;
   }
 
 };
@@ -1709,9 +1719,6 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
     warlock_t* o = owner -> cast_warlock();
 
     m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
-
-    if ( snapshot_meta > 0 ) m *= 1.0 + o -> buffs_metamorphosis -> effect3().percent()
-                                + ( snapshot_meta * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
 
     return m;
   }
@@ -4379,7 +4386,7 @@ void warlock_t::init_actions()
           action_list_str += "/soul_fire,if=buff.decimation.react|buff.soulburn.up";
         }
       }
-      if ( level >= 50) action_list_str += "/summon_doomguard,if=buff.metamorphosis.up";
+      if ( level >= 50) action_list_str += "/summon_doomguard,if=buff.metamorphosis.down";
       action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
       if ( glyphs.imp -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
       else if ( glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_succubus.down";
