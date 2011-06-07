@@ -1855,10 +1855,6 @@ struct hemorrhage_t : public rogue_attack_t
 
     weapon_multiplier *= 1.0 + p -> spec_sinister_calling -> mod_additive( P_EFFECT_2 );
 
-    // FIXME: DBC data is behind latest notes
-    if ( p -> ptr )
-      weapon_multiplier *= 1.4;
-
     base_cost       += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
     crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 

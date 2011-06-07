@@ -2181,12 +2181,6 @@ struct thrash_t : public druid_bear_attack_t
     aoe               = -1;
     direct_power_mod  = ( p -> ptr ) ? 0.0982 : 0.128;
     tick_power_mod    = ( p -> ptr ) ? 0.0167 : 0.0217;
-    if ( p -> ptr )
-    {
-      // FIXME: DBC data is behind latest notes
-      base_dd_min = base_dd_max = 1042;
-      base_td = 581;
-    }
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }

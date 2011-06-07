@@ -898,15 +898,10 @@ void warrior_attack_t::player_buff()
   // --- Specializations --
 
   if ( weapon && weapon -> group() == WEAPON_2H )
-  {
-    // FIXME: DBC data is behind latest notes
-    double bonus = ( p -> ptr ) ? 0.12 : p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
-    player_multiplier *= 1.0 + bonus;
-  }
+    player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
 
-  // FIXME: DBC data is behind latest notes
   if ( p -> dual_wield() && school == SCHOOL_PHYSICAL )
-    player_multiplier *= 1.0 + ( p -> ptr ? 0.05 : p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0 );
+    player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
 
   // --- Enrages ---
 
