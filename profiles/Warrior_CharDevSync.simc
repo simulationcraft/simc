@@ -1,5 +1,7 @@
 #!simc
 
+chardev=133579 talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000010200000000000000000 save=Warrior_Arms_T11_372_NoCharge.simc name=Warrior_Arms_T11_372_NoCharge
+
 chardev=133579 save=Warrior_Arms_T11_372.simc name=Warrior_Arms_T11_372
 
 chardev=36557 save=Warrior_Fury_1h_T11_372.simc name=Warrior_Fury_1h_T11_372
