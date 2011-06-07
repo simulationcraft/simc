@@ -470,7 +470,7 @@ uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
 {
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *
-                             ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
+                             ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) + 0.5 );
 }
 
 // item_database_t::download_slot ===========================================
