@@ -1270,6 +1270,11 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
   {
     player -> register_spell_callback( mask, cb );
   }
+  else if ( type == PROC_SPELL_AND_TICK )
+  {
+    player -> register_spell_callback( mask, cb );
+    player -> register_tick_callback( mask, cb );
+  }
 
   return cb;
 }
@@ -1472,8 +1477,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
 
   // Some Normal/Heroic items have same name
-  else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellCrit_2117Fire_3Stack_2.0Cd" : "OnSpellCrit_1882Fire_3Stack_2.0Cd" );
-  else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellCrit_2117Fire_3Stack_2.0Cd" : "OnSpellCrit_1882Fire_3Stack_2.0Cd" );
+  else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
+  else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "solace_of_the_defeated"              ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
   else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
 

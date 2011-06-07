@@ -1023,6 +1023,18 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.full == "onspellcrit" )
     {
       effect.trigger_str = t.full;
+      effect.trigger_type = PROC_SPELL_AND_TICK;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onspelltickcrit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_TICK;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onspelldirectcrit" )
+    {
+      effect.trigger_str = t.full;
       effect.trigger_type = PROC_SPELL;
       effect.trigger_mask = RESULT_CRIT_MASK;
     }

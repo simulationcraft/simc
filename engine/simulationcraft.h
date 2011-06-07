@@ -297,6 +297,7 @@ enum proc_type
   PROC_ATTACK,
   PROC_SPELL,
   PROC_TICK,
+  PROC_SPELL_AND_TICK,
   PROC_MAX
 };
 
