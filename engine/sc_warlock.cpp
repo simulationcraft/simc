@@ -862,7 +862,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
   virtual double composite_spell_power_multiplier() SC_CONST
   {
-    double m = pet_t::composite_spell_power_multiplier();
+    double m = pet_t::composite_spell_power_multiplier(); 
     warlock_t* o = owner -> cast_warlock();
   
     // Guardians normally don't gain demonic pact, but when they provide it they also provide it to themselves

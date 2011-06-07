@@ -1220,10 +1220,17 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
       {
-        util_t::fprintf( file,
-                         "\t\t\t\t\t\t<td class=\"small\">%.*f</td>\n",
-                         sim -> report_precision,
-                         p -> scaling.get_stat( j ) );
+        if ( p -> scaling.get_stat( j ) == 0 )
+        {
+          util_t::fprintf( file, "\t\t\t\t\t\t<td class=\"small\">-</td>\n" );
+        } 
+        else
+        {
+          util_t::fprintf( file,
+                           "\t\t\t\t\t\t<td class=\"small\">%.*f</td>\n",
+                           sim -> report_precision,
+                           p -> scaling.get_stat( j ) );
+        }
       }
     }
     util_t::fprintf( file,
