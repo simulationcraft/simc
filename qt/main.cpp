@@ -1,6 +1,8 @@
 #include <QtGui/QApplication>
 #include "simulationcraftqt.h"
+#ifndef SIMC_NO_AUTOUPDATE
 #include "sc_autoupdate.h"
+#endif /* SIMC_NO_AUTOUPDATE */
 
 int main(int argc, char *argv[])
 {
@@ -8,7 +10,7 @@ int main(int argc, char *argv[])
   dbc_t::init();
 
   QApplication a(argc, argv);
-
+#ifndef SIMC_NO_AUTOUPDATE
   AutoUpdater* updater = 0;
 
 #ifdef Q_WS_MAC
@@ -20,13 +22,14 @@ int main(int argc, char *argv[])
 
 #endif
   
-  SimulationCraftWindow w;
-  
   if( updater)
   {
     updater->checkForUpdates();
   }
+#endif /* SIMC_NO_AUTOUPDATE */
 
+  SimulationCraftWindow w;
+    
   if( w.historyWidth  != 0 &&
       w.historyHeight != 0 )
   {

@@ -8,7 +8,7 @@
 
 #include <QtGui/QtGui>
 #include <QtWebKit>
-#include <simulationcraft.h>
+#include "simulationcraft.h"
 
 #define TAB_WELCOME   0
 #define TAB_OPTIONS   1
