@@ -17,8 +17,6 @@ int main(int argc, char *argv[])
 
   CocoaInitializer cocoaInitializer;
   updater = new SparkleAutoUpdater("http://simc.rungie.com/simcqt/update.xml");
-  QDir::home().mkpath("Library/Application Support/simcqt");
-  QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
 
 #endif
   
@@ -27,6 +25,11 @@ int main(int argc, char *argv[])
     updater->checkForUpdates();
   }
 #endif /* SIMC_NO_AUTOUPDATE */
+  
+#ifdef Q_WS_MAC
+  QDir::home().mkpath("Library/Application Support/simcqt");
+  QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
+#endif
 
   SimulationCraftWindow w;
     
