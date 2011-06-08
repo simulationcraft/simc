@@ -429,6 +429,9 @@ bool http_t::download( std::string& result,
     std::wstring wHeaders = L"";
     wHeaders += L"Cookie: loginChecked=1\r\n";
     wHeaders += L"Cookie: cookieLangId=en_US\r\n";
+    // Skip arenapass 2011 advertisement .. can we please have a sensible
+    // API soon?
+    wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n"
 
     hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
     if ( hFile )
