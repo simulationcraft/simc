@@ -42,23 +42,23 @@ actions+=/starfire
 actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
-head=stormriders_cover,type=leather,ilevel=359,quality=epic,stats=1356armor_228crit_168haste_281int_512sta,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
-neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
-shoulders=stormriders_shoulderwraps,type=leather,ilevel=359,quality=epic,stats=1252armor_149haste_233int_169mastery_380sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=50int_25haste
-chest=scorched_wormling_vest,type=leather,ilevel=359,quality=epic,stats=1669armor_301int_228mastery_188spi_512sta,reforge=mastery_haste,gems=67int_67int,enchant=20all
-waist=lightning_lash,type=leather,ilevel=359,quality=epic,stats=939armor_169haste_233int_149spi_380sta,gems=40int_10int
-legs=stormriders_leggings,type=leather,ilevel=359,quality=epic,stats=1460armor_228haste_301int_188spi_512sta,gems=40int_20int_20spi_20int,enchant=95int_55spi
-feet=fading_violet_sandals,type=leather,ilevel=359,quality=epic,stats=1148armor_169haste_233int_149spi_380sta,gems=20haste_20int_10haste,enchant=35mastery
-wrists=manacles_of_the_sleeping_beast,type=leather,ilevel=359,quality=epic,stats=730armor_190int_127mastery_127spi_286sta,reforge=mastery_haste,enchant=50int
-hands=stormriders_gloves,type=leather,ilevel=359,quality=epic,stats=1043armor_169crit_149haste_233int_380sta,reforge=crit_spi,gems=67int_10crit,enchant=50haste
-finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
-finger2=security_measure_alpha,ilevel=359,quality=epic,stats=127crit_190int_127spi_286sta,reforge=crit_haste
+head=stormriders_cover,type=leather,ilevel=359,quality=epic,stats=1356armor_281int_512sta_228crit_168haste,reforge=crit_spi,gems=burning_shadowspirit_20int_20spi_30int,enchant=60int_35crit
+neck=valionas_medallion,ilevel=359,quality=epic,stats=190int_286sta_127haste_127mastery,reforge=mastery_spi
+shoulders=stormriders_shoulderwraps,type=leather,ilevel=359,quality=epic,stats=1252armor_233int_380sta_149haste_169mastery,reforge=mastery_spi,gems=20int_20haste_10int,enchant=50int_25haste
+chest=scorched_wormling_vest,type=leather,ilevel=359,quality=epic,stats=1669armor_301int_512sta_188spi_228mastery,reforge=mastery_haste,gems=67int_67int,enchant=20all
+waist=lightning_lash,type=leather,ilevel=359,quality=epic,stats=939armor_233int_149spi_380sta_169haste,gems=40int_10int
+legs=stormriders_leggings,type=leather,ilevel=359,quality=epic,stats=1460armor_301int_512sta_228haste_188spi,gems=40int_20int_20spi_20int,enchant=95int_55spi
+feet=fading_violet_sandals,type=leather,ilevel=359,quality=epic,stats=1148armor_233int_380sta_149spi_169haste,gems=20int_20haste_10haste,enchant=35mastery
+wrists=manacles_of_the_sleeping_beast,type=leather,ilevel=359,quality=epic,stats=730armor_190int_286sta_127spi_127mastery,reforge=mastery_haste,enchant=50int
+hands=stormriders_gloves,type=leather,ilevel=359,quality=epic,stats=1043armor_233int_380sta_169crit_149haste,reforge=crit_spi,gems=67int_10crit,enchant=50haste
+finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=190int_286sta_127mastery_127haste,reforge=mastery_spi
+finger2=security_measure_alpha,ilevel=359,quality=epic,stats=190int_286sta_127spi_127crit,reforge=crit_haste
 trinket1=bell_of_enraging_resonance,ilevel=359,quality=epic,stats=321crit,reforge=crit_haste,equip=onspellcast_1926sp_30%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=drape_of_the_twins,ilevel=359,quality=epic,stats=625armor_127haste_190int_127spi_286sta,enchant=lightweave_embroidery
-main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
-off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
-ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=72crit_72haste_107int_161sta,reforge=crit_spi,gems=40int
+back=drape_of_the_twins,ilevel=359,quality=epic,stats=625armor_190int_286sta_127spi_127haste,enchant=lightweave_embroidery
+main_hand=incineratus,ilevel=359,quality=epic,stats=146int_219sta_97mastery_97haste_1954sp,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=190int_286sta_127haste_127hit,enchant=40int
+ranged=relic_of_norgannon,ilevel=359,quality=epic,stats=107int_161sta_72crit_72haste,reforge=crit_spi,gems=40int
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

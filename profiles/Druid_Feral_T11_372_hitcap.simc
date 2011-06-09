@@ -38,22 +38,22 @@ actions+=/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=14.0&buf
 actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health_pct>25
 actions+=/ravage,if=buff.stampede_cat.up&!buff.omen_of_clarity.react&buff.tigers_fury.up
 actions+=/shred
-head=stormriders_headpiece,heroic=1,type=leather,ilevel=372,quality=epic,stats=325agi_1439armor_257crit_197hit_578sta,reforge=crit_mastery,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
-neck=necklace_of_strife,heroic=1,ilevel=372,quality=epic,stats=215agi_143haste_143mastery_322sta,reforge=haste_hit
-shoulders=stormriders_spaulders,heroic=1,type=leather,ilevel=372,quality=epic,stats=266agi_1328armor_171crit_191haste_429sta,reforge=haste_mastery,gems=20agi_20hit_10agi,enchant=50agi_25mastery
-chest=sark_of_the_unwatched,heroic=1,type=leather,ilevel=372,quality=epic,stats=345agi_1771armor_227crit_247mastery_578sta,reforge=crit_exp,gems=40agi_20agi_20mastery_20mastery,enchant=20all
-waist=belt_of_the_fallen_brood,heroic=1,type=leather,ilevel=379,quality=epic,stats=266agi_1028armor_204crit_164mastery_458sta,reforge=crit_exp,gems=20agi_20hit_40agi_67agi_20agi
-legs=stormriders_legguards,heroic=1,type=leather,ilevel=372,quality=epic,stats=345agi_1550armor_217crit_257mastery_578sta,reforge=crit_hit,gems=20agi_20mastery_20agi_20hit_20agi,enchant=190ap_55crit
-feet=storm_riders_boots,heroic=1,type=leather,ilevel=372,quality=epic,stats=266agi_1218armor_171haste_191mastery_429sta,reforge=haste_hit,gems=40agi,enchant=35mastery
-wrists=parasitic_bands,heroic=1,type=leather,ilevel=372,quality=epic,stats=215agi_775armor_143crit_143mastery_322sta,reforge=crit_hit,gems=67agi,enchant=50agi
-hands=stormriders_grips,heroic=1,type=leather,ilevel=372,quality=epic,stats=266agi_1107armor_191haste_171hit_429sta,reforge=haste_mastery,gems=40agi_67agi_10haste,enchant=65mastery
-finger1=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_143crit_143hit_322sta,reforge=crit_mastery
+head=stormriders_headpiece,heroic=1,type=leather,ilevel=372,quality=epic,stats=1439armor_325agi_578sta_257crit_197hit,reforge=crit_mastery,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
+neck=necklace_of_strife,heroic=1,ilevel=372,quality=epic,stats=215agi_322sta_143mastery_143haste,reforge=haste_hit
+shoulders=stormriders_spaulders,heroic=1,type=leather,ilevel=372,quality=epic,stats=1328armor_266agi_429sta_171crit_191haste,reforge=haste_mastery,gems=20agi_20hit_10agi,enchant=50agi_25mastery
+chest=sark_of_the_unwatched,heroic=1,type=leather,ilevel=372,quality=epic,stats=1771armor_345agi_578sta_227crit_247mastery,reforge=crit_exp,gems=40agi_20agi_20mastery_20mastery,enchant=20all
+waist=belt_of_the_fallen_brood,heroic=1,type=leather,ilevel=379,quality=epic,stats=1028armor_266agi_458sta_204crit_164mastery,reforge=crit_exp,gems=20agi_20hit_40agi_67agi_20agi
+legs=stormriders_legguards,heroic=1,type=leather,ilevel=372,quality=epic,stats=1550armor_345agi_578sta_217crit_257mastery,reforge=crit_hit,gems=20agi_20mastery_20agi_20hit_20agi,enchant=190ap_55crit
+feet=storm_riders_boots,heroic=1,type=leather,ilevel=372,quality=epic,stats=1218armor_266agi_429sta_191mastery_171haste,reforge=haste_hit,gems=40agi,enchant=35mastery
+wrists=parasitic_bands,heroic=1,type=leather,ilevel=372,quality=epic,stats=775armor_215agi_322sta_143crit_143mastery,reforge=crit_hit,gems=67agi,enchant=50agi
+hands=stormriders_grips,heroic=1,type=leather,ilevel=372,quality=epic,stats=1107armor_266agi_429sta_191haste_171hit,reforge=haste_mastery,gems=40agi_67agi_10haste,enchant=65mastery
+finger1=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_322sta_143crit_143hit,reforge=crit_mastery
 finger2=mistral_circle_of_the_windstorm,heroic=1,ilevel=372,quality=epic,stats=321sta_214agi_143crit_143mastery,reforge=crit_exp,suffix=137
 trinket1=essence_of_the_cyclone,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178crit_10%_10dur_50cd
 trinket2=prestors_talisman_of_machination,heroic=1,ilevel=372,quality=epic,stats=363agi,equip=onattackhit_2178haste_10%_15dur_75cd
-back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=215agi_673armor_143crit_143mastery_322sta,reforge=crit_exp,enchant=65crit
-main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_257crit_257mastery_578sta,reforge=crit_hit,enchant=130agi,weapon=staff_2.40speed_1350min_2027max
-ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,reforge=haste_exp,gems=40agi
+back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=673armor_215agi_322sta_143crit_143mastery,reforge=crit_exp,enchant=65crit
+main_hand=malevolence,heroic=1,ilevel=372,quality=epic,stats=385agi_578sta_257crit_257mastery,reforge=crit_hit,enchant=130agi,weapon=staff_2.40speed_1350min_2026max
+ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_161sta_72crit_72haste,reforge=haste_exp,gems=40agi
 # Gear Summary
 # gear_strength=20
 # gear_agility=5336
@@ -70,4 +70,4 @@ ranged=relic_of_golganneth,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 # meta_gem=agile_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# main_hand=malevolence,heroic=1,weapon=staff_2.40speed_1350min_2027max
+# main_hand=malevolence,heroic=1,weapon=staff_2.40speed_1350min_2026max

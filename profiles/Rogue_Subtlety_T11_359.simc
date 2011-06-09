@@ -33,23 +33,23 @@ actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
 actions+=/backstab,if=combo_points<3&energy>60
 actions+=/backstab,if=cooldown.honor_among_thieves.remains>1.75
 actions+=/backstab,if=combo_points<5&energy>80&cooldown.honor_among_thieves.remains=0
-head=wind_dancers_helmet,type=leather,ilevel=359,quality=epic,stats=281agi_1356armor_228crit_168hit_512sta,reforge=crit_haste,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
-neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_127haste_127mastery_286sta,reforge=mastery_exp
-shoulders=wind_dancers_spaulders,type=leather,ilevel=359,quality=epic,stats=233agi_1252armor_149crit_169haste_380sta,reforge=crit_exp,gems=40agi,enchant=50agi_25mastery
-chest=wind_dancers_tunic,type=leather,ilevel=359,quality=epic,stats=301agi_1669armor_188exp_228haste_512sta,gems=40agi_20agi_20hit_20agi,enchant=20all
-waist=dispersing_belt,type=leather,ilevel=359,quality=epic,stats=233agi_939armor_149crit_169haste_380sta,reforge=crit_exp,gems=40agi_67agi
-legs=aberrations_leggings,type=leather,ilevel=359,quality=epic,stats=301agi_1460armor_228crit_188haste_512sta,reforge=haste_exp,gems=40agi_40agi,enchant=190ap_55crit
-feet=treads_of_fleeting_joy,type=leather,ilevel=359,quality=epic,stats=233agi_1148armor_149crit_169haste_380sta,reforge=crit_exp,gems=40agi,enchant=25agi
-wrists=parasitic_bands,type=leather,ilevel=359,quality=epic,stats=190agi_730armor_127crit_127mastery_286sta,reforge=mastery_haste,gems=67agi,enchant=50agi
-hands=wind_dancers_gloves,type=leather,ilevel=359,quality=epic,stats=233agi_1043armor_169haste_149hit_380sta,reforge=hit_exp,gems=40agi_67agi_10haste,enchant=50haste
-finger1=gilnean_ring_of_ruination,ilevel=359,quality=epic,stats=190agi_138haste_108hit_286sta,reforge=hit_exp
+head=wind_dancers_helmet,type=leather,ilevel=359,quality=epic,stats=1356armor_281agi_512sta_228crit_168hit,reforge=crit_haste,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
+neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_286sta_127mastery_127haste,reforge=mastery_exp
+shoulders=wind_dancers_spaulders,type=leather,ilevel=359,quality=epic,stats=1252armor_233agi_380sta_149crit_169haste,reforge=crit_exp,gems=40agi,enchant=50agi_25mastery
+chest=wind_dancers_tunic,type=leather,ilevel=359,quality=epic,stats=1669armor_301agi_512sta_228haste_188exp,gems=40agi_20agi_20hit_20agi,enchant=20all
+waist=dispersing_belt,type=leather,ilevel=359,quality=epic,stats=939armor_233agi_380sta_169haste_149crit,reforge=crit_exp,gems=40agi_67agi
+legs=aberrations_leggings,type=leather,ilevel=359,quality=epic,stats=1460armor_301agi_512sta_228crit_188haste,reforge=haste_exp,gems=40agi_40agi,enchant=190ap_55crit
+feet=treads_of_fleeting_joy,type=leather,ilevel=359,quality=epic,stats=1148armor_233agi_380sta_149crit_169haste,reforge=crit_exp,gems=40agi,enchant=25agi
+wrists=parasitic_bands,type=leather,ilevel=359,quality=epic,stats=730armor_190agi_286sta_127crit_127mastery,reforge=mastery_haste,gems=67agi,enchant=50agi
+hands=wind_dancers_gloves,type=leather,ilevel=359,quality=epic,stats=1043armor_233agi_380sta_169haste_149hit,reforge=hit_exp,gems=40agi_67agi_10haste,enchant=50haste
+finger1=gilnean_ring_of_ruination,ilevel=359,quality=epic,stats=190agi_286sta_108hit_138haste,reforge=hit_exp
 finger2=mistral_circle_of_the_windflurry,ilevel=359,quality=epic,stats=285sta_190agi_126crit_126haste,reforge=crit_exp,suffix=135
 trinket1=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_-5000nature_1ppm
 trinket2=fluid_death,ilevel=359,quality=epic,stats=321hit,reforge=hit_haste,equip=onattackhit_38agi_10stack_15dur
-back=viewless_wings,ilevel=359,quality=epic,stats=190agi_625armor_127crit_127hit_286sta,reforge=crit_haste,enchant=22agi
-main_hand=organic_lifeform_inverter,ilevel=359,quality=epic,stats=146agi_97exp_97mastery_219sta,reforge=mastery_haste,enchant=landslide,weapon=dagger_1.80speed_665min_999max
-off_hand=uhnagh_fash_the_darkest_betrayal,ilevel=359,quality=epic,stats=146agi_97crit_97haste_219sta,reforge=crit_exp,enchant=landslide,weapon=dagger_1.40speed_453min_842max
-ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_161sta,reforge=crit_exp,weapon=crossbow_3.00speed_1496min_2245max
+back=viewless_wings,ilevel=359,quality=epic,stats=625armor_190agi_286sta_127crit_127hit,reforge=crit_haste,enchant=22agi
+main_hand=organic_lifeform_inverter,ilevel=359,quality=epic,stats=146agi_219sta_97exp_97mastery,reforge=mastery_haste,enchant=landslide,weapon=dagger_1.80speed_665min_999max
+off_hand=uhnagh_fash_the_darkest_betrayal,ilevel=359,quality=epic,stats=146agi_219sta_97haste_97crit,reforge=crit_exp,enchant=landslide,weapon=dagger_1.40speed_453min_841max
+ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_161sta_72crit_72haste,reforge=crit_exp,weapon=crossbow_3.00speed_1496min_2244max
 # Gear Summary
 # gear_strength=20
 # gear_agility=4337
@@ -67,8 +67,8 @@ ranged=dragonheart_piercer,ilevel=359,quality=epic,stats=107agi_72crit_72haste_1
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
 # main_hand=organic_lifeform_inverter,weapon=dagger_1.80speed_665min_999max,enchant=landslide
-# off_hand=uhnagh_fash_the_darkest_betrayal,weapon=dagger_1.40speed_453min_842max,enchant=landslide
-# ranged=dragonheart_piercer,weapon=crossbow_3.00speed_1496min_2245max
+# off_hand=uhnagh_fash_the_darkest_betrayal,weapon=dagger_1.40speed_453min_841max,enchant=landslide
+# ranged=dragonheart_piercer,weapon=crossbow_3.00speed_1496min_2244max
 # These values represent the avg HAT donor interval of the raid.
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.

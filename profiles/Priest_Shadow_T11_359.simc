@@ -34,23 +34,23 @@ actions+=/dispersion,moving=1
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
-head=mercurial_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_188haste_281int_208mastery_512sta,reforge=mastery_spi,gems=burning_shadowspirit_20int_20spi_30crit,enchant=60int_35crit
-neck=valionas_medallion,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta,reforge=mastery_spi
-shoulders=mercurial_shoulderwraps,type=cloth,ilevel=359,quality=epic,stats=938armor_169haste_233int_149spi_380sta,gems=67int_10haste,enchant=50int_25haste
-chest=mercurial_vestment,type=cloth,ilevel=359,quality=epic,stats=1251armor_218crit_198haste_301int_512sta,reforge=crit_spi,gems=67int_20int_20spi_20int,enchant=20all
-waist=soul_breath_belt_of_the_undertow,type=cloth,ilevel=359,quality=epic,stats=704armor_380sta_232int_160haste_160spi,gems=20haste_20int_67int_10int,suffix=214
-legs=mercurial_leggings,type=cloth,ilevel=359,quality=epic,stats=1094armor_228haste_301int_188spi_512sta,gems=20haste_20int_40int_20int,enchant=95int_55spi
-feet=slippers_of_moving_waters,type=cloth,ilevel=359,quality=epic,stats=860armor_149haste_233int_169spi_380sta,gems=20haste_20int_10spi,enchant=35mastery
-wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547armor_127haste_190int_127mastery_286sta,reforge=mastery_spi,enchant=50int
-hands=brackish_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_169haste_233int_149spi_380sta,gems=40int_10haste,enchant=65mastery
-finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=127haste_190int_127mastery_286sta
+head=mercurial_hood,type=cloth,ilevel=359,quality=epic,stats=1016armor_281int_512sta_208mastery_188haste,reforge=mastery_spi,gems=burning_shadowspirit_20int_20spi_30crit,enchant=60int_35crit
+neck=valionas_medallion,ilevel=359,quality=epic,stats=190int_286sta_127haste_127mastery,reforge=mastery_spi
+shoulders=mercurial_shoulderwraps,type=cloth,ilevel=359,quality=epic,stats=938armor_233int_380sta_169haste_149spi,gems=67int_10haste,enchant=50int_25haste
+chest=mercurial_vestment,type=cloth,ilevel=359,quality=epic,stats=1251armor_301int_512sta_218crit_198haste,reforge=crit_spi,gems=67int_20int_20spi_20int,enchant=20all
+waist=soul_breath_belt_of_the_undertow,type=cloth,ilevel=359,quality=epic,stats=704armor_380sta_232int_160haste_160spi,gems=20int_20haste_67int_10int,suffix=214
+legs=mercurial_leggings,type=cloth,ilevel=359,quality=epic,stats=1094armor_301int_512sta_228haste_188spi,gems=20int_20haste_40int_20int,enchant=95int_55spi
+feet=slippers_of_moving_waters,type=cloth,ilevel=359,quality=epic,stats=860armor_233int_380sta_169spi_149haste,gems=20int_20haste_10spi,enchant=35mastery
+wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547armor_190int_286sta_127mastery_127haste,reforge=mastery_spi,enchant=50int
+hands=brackish_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_233int_380sta_149spi_169haste,gems=40int_10haste,enchant=65mastery
+finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=190int_286sta_127mastery_127haste
 finger2=planetary_band_of_the_undertow,ilevel=359,quality=epic,stats=285sta_190int_126haste_126spi,suffix=131
 trinket1=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 trinket2=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
-back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_107haste_170int_127mastery_286sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
-main_hand=incineratus,ilevel=359,quality=epic,stats=97haste_146int_97mastery_1954sp_219sta,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
-off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=127haste_127hit_190int_286sta,enchant=40int
-ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_72mastery_72spi_161sta,reforge=mastery_hit
+back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_170int_286sta_127mastery_107haste,reforge=mastery_spi,gems=20int_20haste_10int,enchant=lightweave_embroidery
+main_hand=incineratus,ilevel=359,quality=epic,stats=146int_219sta_97mastery_97haste_1954sp,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
+off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=190int_286sta_127haste_127hit,enchant=40int
+ranged=finkles_mixer_upper,ilevel=359,quality=epic,stats=107int_161sta_72spi_72mastery,reforge=mastery_hit
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
