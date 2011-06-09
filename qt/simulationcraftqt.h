@@ -111,6 +111,7 @@ public:
     QComboBox* armorySpecChoice;
     QComboBox* defaultRoleChoice;
     QComboBox* debugChoice;
+    QListWidget* itemDbOrder;
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
@@ -194,6 +195,7 @@ public:
     void createResultsTab();
     void createSiteTab();
     void createToolTips();
+    void createItemDataSourceSelector( QFormLayout* );
     void updateVisibleWebView( SimulationCraftWebView* );
 
 protected:

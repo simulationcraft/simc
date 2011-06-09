@@ -45,6 +45,21 @@ static OptionEntry* getBuffOptions()
   return options;
 }
 
+static OptionEntry* getItemSourceOptions()
+{
+  static OptionEntry options[] =
+    {
+      { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
+      { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
+      { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
+      { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+      { "Local Item Database", "local",   "Use Simulationcraft item database" },
+      { NULL, NULL, NULL }
+    };
+    
+  return options;
+}
+
 static OptionEntry* getDebuffOptions()
 {
   static OptionEntry options[] =
@@ -189,12 +204,30 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      OptionEntry* options=0;
      QList<QAbstractButton*>* buttons=0;
 
-     if(      ! opt_tokens[ 0 ].compare( "buff"         ) ) { options = buffs;        buttons = &buff_buttons;        }
-     else if( ! opt_tokens[ 0 ].compare( "debuff"       ) ) { options = debuffs;      buttons = &debuff_buttons;      }
-     else if( ! opt_tokens[ 0 ].compare( "scaling"      ) ) { options = scaling;      buttons = &scaling_buttons;     }
-     else if( ! opt_tokens[ 0 ].compare( "plots"        ) ) { options = plots;        buttons = &plot_buttons;        }
-     else if( ! opt_tokens[ 0 ].compare( "reforgeplots" ) ) { options = reforgeplots; buttons = &reforgeplot_buttons; }
-
+     if(      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffs;           buttons = &buff_buttons;        }
+     else if( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
+     else if( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
+     else if( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
+     else if( ! opt_tokens[ 0 ].compare( "reforgeplots"   ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
+     else if( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
+     {
+       QStringList item_db_list = opt_tokens[ 1 ].split('/');
+       QListWidgetItem* items[item_db_list.size()];
+       for ( int opt = 0; opt < item_db_list.size(); opt++ )
+       {
+         for ( int source = 0; itemDbOrder -> count(); source++ )
+         {
+           if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
+          {
+            items[ opt ] = itemDbOrder -> takeItem( source );
+            break;
+          }
+         }
+       }
+       
+       for ( int j = 0; j < item_db_list.size(); j++ )
+         itemDbOrder -> addItem( items[ j ] );
+     }
      if ( ! options ) continue;
 
      QStringList opt_value = opt_tokens[ 1 ].split('=');
@@ -273,6 +306,18 @@ QString SimulationCraftWindow::encodeOptions()
     encoded += reforgeplots[ i ].option;
     encoded += "=";
     encoded += buttons.at( i )->isChecked() ? "1" : "0";
+  }
+
+  if ( itemDbOrder -> count() > 0 )
+  {
+    encoded += " item_db_source:";
+    for ( int i = 0; i < itemDbOrder -> count(); i++ )
+    {
+      QListWidgetItem *it = itemDbOrder -> item( i );
+      encoded += it -> data( Qt::UserRole ).toString();
+      if ( i < itemDbOrder -> count() - 1 )
+        encoded += "/";
+    }
   }
   
   return encoded;
@@ -507,6 +552,8 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsGroupBox->setLayout( globalsLayout );
 
   optionsTab->addTab( globalsGroupBox, "Globals" );
+  
+  createItemDataSourceSelector( globalsLayout );
 }
 
 void SimulationCraftWindow::createBuffsTab()
@@ -907,6 +954,29 @@ void SimulationCraftWindow::createToolTips()
   forwardButton->setToolTip( "Forwards" );
 }
 
+void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
+{
+  itemDbOrder = new QListWidget( this );
+  itemDbOrder -> setDragDropMode( QAbstractItemView::InternalMove );
+  itemDbOrder -> setResizeMode( QListView::Fixed );
+  itemDbOrder -> setSelectionRectVisible( false );
+  itemDbOrder -> setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  OptionEntry* item_sources = getItemSourceOptions();
+  
+  for ( int i = 0; item_sources[ i ].label; i++ )
+  {
+    QListWidgetItem* item = new QListWidgetItem( item_sources[ i ].label );
+    item -> setData( Qt::UserRole, QVariant( item_sources[ i ].option ) );
+    item -> setToolTip( item_sources[ i ].tooltip );
+    itemDbOrder -> addItem( item );
+  }
+
+  itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
+  
+  layout->addRow("Item Source Order", itemDbOrder );
+}
+
 void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
 {
   visibleWebView = wv;
@@ -1176,6 +1246,18 @@ QString SimulationCraftWindow::mergeOptions()
 #if SC_USE_PTR
   options += "ptr="; options += ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
 #endif
+  if ( itemDbOrder -> count() > 0 )
+  {
+    options += "item_db_source=";
+    for ( int i = 0; i < itemDbOrder -> count(); i++ )
+    {
+      QListWidgetItem *it = itemDbOrder -> item( i );
+      options += it -> data( Qt::UserRole ).toString();
+      if ( i < itemDbOrder -> count() - 1 )
+        options += "/";
+    }
+    options += "\n";
+  }
   options += "iterations=" + iterationsChoice->currentText() + "\n";
   if( iterationsChoice->currentText() == "10000" )
   {
