@@ -599,7 +599,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   // Initialize the default item database source order, leave local item db to last for now
   // until it has proven to be trustworthy
-  const char* dbsources[] = { "local", "mmoc", "wowhead", "armory", "ptrhead" };
+  const char* dbsources[] = { "local", "wowhead", "mmoc", "armory", "ptrhead" };
   item_db_sources = std::vector<std::string>( dbsources, dbsources + sizeof( dbsources ) / sizeof( const char* ) );
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
