@@ -92,7 +92,6 @@
 		6E6C54D41396A64100407A6A /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
 		6E6C54D51396A64800407A6A /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
 		6E6C54D61396A64C00407A6A /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
-		6E6C54D81396A70600407A6A /* Examples.simc in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D71396A6FF00407A6A /* Examples.simc */; };
 		6EC618ED139677F0006B7A89 /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B4139677F0006B7A89 /* sc_action.cpp */; };
 		6EC618EE139677F0006B7A89 /* sc_armory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B5139677F0006B7A89 /* sc_armory.cpp */; };
 		6EC618EF139677F0006B7A89 /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B6139677F0006B7A89 /* sc_attack.cpp */; };
@@ -405,7 +404,6 @@
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
 		6E6C54D31396A63000407A6A /* Legend.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Legend.html; sourceTree = "<group>"; };
-		6E6C54D71396A6FF00407A6A /* Examples.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Examples.simc; sourceTree = "<group>"; };
 		6EC618AB13967766006B7A89 /* simc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = simc; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EC618B4139677F0006B7A89 /* sc_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_action.cpp; path = engine/sc_action.cpp; sourceTree = "<group>"; };
 		6EC618B5139677F0006B7A89 /* sc_armory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_armory.cpp; path = engine/sc_armory.cpp; sourceTree = "<group>"; };
@@ -621,7 +619,6 @@
 			isa = PBXGroup;
 			children = (
 				6EF04C46139F7D1A009AA411 /* profiles */,
-				6E6C54D71396A6FF00407A6A /* Examples.simc */,
 				6E6C54D31396A63000407A6A /* Legend.html */,
 				6E6C54D21396A62600407A6A /* Welcome.html */,
 				6E6C54D11396A61C00407A6A /* Welcome.png */,
@@ -958,7 +955,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E6C54D81396A70600407A6A /* Examples.simc in Resources */,
 				6E6C54D61396A64C00407A6A /* Welcome.png in Resources */,
 				6E6C54D51396A64800407A6A /* Welcome.html in Resources */,
 				6E6C54D41396A64100407A6A /* Legend.html in Resources */,
@@ -996,7 +992,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" ${PROJECT_DIR}/engine/simulationcraft.h|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$(svn info $PROJECT_DIR|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nCONTENTS_FOLDER_PATH=/tmp/SimulationCraft.app/Contents\n\n$CP -rf ${PROJECT_DIR}/SimulationCraft.app /tmp\nmacdeployqt /tmp/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force ${PROJECT_DIR} /tmp/source\nrm -rf /tmp/source/dbc_extract /tmp/source/html /tmp/source/qt/icon/SIMC-LOGO-MK.psd\n\nhdiutil create -srcfolder /tmp/SimulationCraft.app -srcfolder /tmp/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder ${PROJECT_DIR}/simc -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx.dmg";
+			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" ${PROJECT_DIR}/engine/simulationcraft.h|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$(svn info $PROJECT_DIR|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nCONTENTS_FOLDER_PATH=/tmp/SimulationCraft.app/Contents\n\n$CP -rf ${PROJECT_DIR}/SimulationCraft.app /tmp\nmacdeployqt /tmp/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force ${PROJECT_DIR} /tmp/source\nrm -rf /tmp/source/dbc_extract /tmp/source/html /tmp/source/qt/icon/SIMC-LOGO-MK.psd\n\nhdiutil create -srcfolder /tmp/SimulationCraft.app -srcfolder /tmp/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder ${PROJECT_DIR}/simc -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg";
 		};
 		6EF04D13139F987E009AA411 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

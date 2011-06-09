@@ -15,7 +15,7 @@
 #define TAB_IMPORT    2
 #define TAB_SIMULATE  3
 #define TAB_OVERRIDES 4
-#define TAB_EXAMPLES  5
+#define TAB_HELP      5
 #define TAB_LOG       6
 #define TAB_RESULTS   7
 #define TAB_SITE      8
@@ -120,6 +120,7 @@ public:
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* charDevView;
     SimulationCraftWebView* siteView;
+    SimulationCraftWebView* helpView;
     SimulationCraftWebView* visibleWebView;
     PersistentCookieJar* charDevCookies;
     QPushButton* rawrButton;
@@ -190,7 +191,7 @@ public:
     void createCustomTab();
     void createSimulateTab();
     void createOverridesTab();
-    void createExamplesTab();
+    void createHelpTab();
     void createLogTab();
     void createResultsTab();
     void createSiteTab();

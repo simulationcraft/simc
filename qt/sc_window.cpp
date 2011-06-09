@@ -49,11 +49,11 @@ static OptionEntry* getItemSourceOptions()
 {
   static OptionEntry options[] =
     {
+      { "Local Item Database", "local",   "Use Simulationcraft item database" },
       { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
       { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
       { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
       { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
-      { "Local Item Database", "local",   "Use Simulationcraft item database" },
       { NULL, NULL, NULL }
     };
     
@@ -435,7 +435,7 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   createImportTab();
   createSimulateTab();
   createOverridesTab();
-  createExamplesTab();
+  createHelpTab();
   createLogTab();
   createResultsTab();
   createSiteTab();
@@ -840,32 +840,11 @@ void SimulationCraftWindow::createLogTab()
   mainTab->addTab( logText, "Log" );
 }
 
-void SimulationCraftWindow::createExamplesTab()
+void SimulationCraftWindow::createHelpTab()
 {
-  QString s = "# If you are seeing this text, then Examples.simc was unable to load.";
-  QString exampleFile = "Examples.simc";
-#ifdef Q_WS_MAC
-  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Examples" ), CFSTR( "simc" ), 0 );
-  if ( fileRef )
-  {
-    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-    exampleFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
-
-    CFRelease( fileRef );
-    CFRelease( macPath );
-  }
-#endif
-
-  QFile file( exampleFile );
-  if( file.open( QIODevice::ReadOnly ) )
-  {
-    s = file.readAll();
-    file.close();
-  }
-
-  QTextBrowser* examplesText = new QTextBrowser();
-  examplesText->setPlainText( s );
-  mainTab->addTab( examplesText, "Examples" );
+  helpView = new SimulationCraftWebView( this );
+  helpView->setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
+  mainTab->addTab( helpView, "Help" );
 }
  
 void SimulationCraftWindow::createResultsTab()
@@ -1463,7 +1442,7 @@ void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
   case TAB_OPTIONS:   cmdLineText = s; break;
   case TAB_SIMULATE:  cmdLineText = s; break;
   case TAB_OVERRIDES: cmdLineText = s; break;
-  case TAB_EXAMPLES:  cmdLineText = s; break;
+  case TAB_HELP:      cmdLineText = s; break;
   case TAB_SITE:      cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
@@ -1506,7 +1485,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
   case TAB_OPTIONS:   startSim(); break;
   case TAB_SIMULATE:  startSim(); break;
   case TAB_OVERRIDES: startSim(); break;
-  case TAB_EXAMPLES:  startSim(); break;
+  case TAB_HELP:      startSim(); break;
   case TAB_SITE:      startSim(); break;
   case TAB_IMPORT:
     switch( importTab->currentIndex() )
@@ -1609,7 +1588,7 @@ void SimulationCraftWindow::mainTabChanged( int index )
   case TAB_OPTIONS:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_SIMULATE:  cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_OVERRIDES: cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_EXAMPLES:  cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_HELP:      cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
   case TAB_IMPORT:    
     mainButton->setText( sim ? "Cancel!" : "Import!" ); 
