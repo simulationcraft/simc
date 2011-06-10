@@ -412,12 +412,12 @@ class SpellDataGenerator(DataGenerator):
     # they pass the "activated" check
     _spell_id_list = [
         (),
-        (),
-        ( ( 54158, 0 ), ( 90174, 0 ) ),     # Paladin "Judgement" damage portion on some Seals
-        (),
+        (), 
+        ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Tier 12 2pc effect
+        ( ( 99058, 0 ), ), # Hunter T12 2pc.
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ), ( 99173, 0 ), ( 99186, 0 ), ( 99187, 0 ), ( 99188, 0 ), ), # Rogue poison effects, Tier 12 bonus spells
         ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ( 99156, 4 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit, sfiend tier12 bonus
-        ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 4 ) ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike
+        ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 4 ), ( 99000, 0 ), ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike. Tier 12 4pc spell.
         ( ( 12470, 4 ), ( 13376, 4 ), ( 57984, 4 ) ),   # Shaman Greater Fire Elemental abilities
         ( 
             ( 5405, 0 ),  ( 92283, 3 ), ( 84721, 0 ), ( 79058, 0 ), # Mana Gem, Frostfire Orb x2, Arcane Brilliance
@@ -426,7 +426,7 @@ class SpellDataGenerator(DataGenerator):
         ), 
         ( ( 85692, 4 ), ( 99226, 4 ), ),     # Warlock doomguard "Doom Bolt", Tier 12 bonus spell
         (),
-        ( ( 81070, 0 ), ),     # Euphoria mana feed for Balance droods
+        ( ( 81070, 0 ), ( 99002, 0 ), ( 99026, 4 ) ),     # Euphoria mana feed for Balance droods, Tier 12 2pc Feral Fiery Claws. Tier 12 2pc Balance attack.
     ]
 
     # Class specific item sets, t6-t11 i guess ...

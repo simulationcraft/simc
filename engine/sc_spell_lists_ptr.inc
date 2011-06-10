@@ -850,7 +850,9 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       48438, // Wild Growth
           0,
     },
+    // Pet tree, 1 abilities
     {
+      99026, // Fireseed (Basic Attack)
           0,
     },
   },
