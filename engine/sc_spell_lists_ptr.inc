@@ -639,11 +639,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       31687, // Summon Water Elemental
           0,
     },
-    // Pet tree, 6 abilities
+    // Pet tree, 7 abilities
     {
       88084, // Arcane Blast
       59637, // Fire Blast
       88082, // Fireball
+      99062, // Fireball
       33395, // Freeze
       59638, // Frostbolt
       31707, // Waterbolt
@@ -722,7 +723,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        6353, // Soul Fire
           0,
     },
-    // Pet tree, 20 abilities
+    // Pet tree, 21 abilities
     {
       89766, // Axe Toss (Special Ability)
        6307, // Blood Pact (Special Ability)
@@ -732,6 +733,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       54424, // Fel Intelligence (Special Ability)
       89751, // Felstorm (Special Ability)
        3110, // Firebolt (Basic Attack)
+      99226, // Flame Blast (Basic Attack)
       89792, // Flee (Special Ability)
        7814, // Lash of Pain (Basic Attack)
       30213, // Legion Strike (Basic Attack)

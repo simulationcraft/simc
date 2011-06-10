@@ -415,16 +415,16 @@ class SpellDataGenerator(DataGenerator):
         (),
         ( ( 54158, 0 ), ( 90174, 0 ) ),     # Paladin "Judgement" damage portion on some Seals
         (),
-        ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ) ), # Rogue poison effects
-        ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit
+        ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ), ( 99173, 0 ), ( 99186, 0 ), ( 99187, 0 ), ( 99188, 0 ), ), # Rogue poison effects, Tier 12 bonus spells
+        ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ( 99156, 4 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit, sfiend tier12 bonus
         ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 4 ) ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike
         ( ( 12470, 4 ), ( 13376, 4 ), ( 57984, 4 ) ),   # Shaman Greater Fire Elemental abilities
         ( 
             ( 5405, 0 ),  ( 92283, 3 ), ( 84721, 0 ), ( 79058, 0 ), # Mana Gem, Frostfire Orb x2, Arcane Brilliance
-            ( 88084, 4 ), ( 59637, 4 ), ( 88082, 4 ), ( 59638, 4 ), # Mirror Image spells
+            ( 88084, 4 ), ( 59637, 4 ), ( 88082, 4 ), ( 59638, 4 ), ( 99062, 4 ), # Mirror Image spells. incl T12 Fireball
             ( 80354, 0 ),                                           # Temporal Displacement
         ), 
-        ( ( 85692, 4 ), ),     # Warlock doomguard "Doom Bolt"
+        ( ( 85692, 4 ), ( 99226, 4 ), ),     # Warlock doomguard "Doom Bolt", Tier 12 bonus spell
         (),
         ( ( 81070, 0 ), ),     # Euphoria mana feed for Balance droods
     ]
