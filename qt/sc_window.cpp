@@ -212,7 +212,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      else if( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
      {
        QStringList item_db_list = opt_tokens[ 1 ].split('/');
-       QListWidgetItem* items[item_db_list.size()];
+       QListWidgetItem** items = new QListWidgetItem *[item_db_list.size()];
+       
        for ( int opt = 0; opt < item_db_list.size(); opt++ )
        {
          for ( int source = 0; itemDbOrder -> count(); source++ )
@@ -227,6 +228,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
        
        for ( int j = 0; j < item_db_list.size(); j++ )
          itemDbOrder -> addItem( items[ j ] );
+
+       delete [] items;
      }
      if ( ! options ) continue;
 
