@@ -287,8 +287,10 @@ struct death_knight_t : public player_t
   };
   talents_t talents;
 
+  double tier12_4pc_melee_value;
+
   death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
-    player_t( sim, DEATH_KNIGHT, name, r )
+    player_t( sim, DEATH_KNIGHT, name, r ), tier12_4pc_melee_value( 0.0 )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
 
@@ -2043,6 +2045,36 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
   }
 }
 
+struct flaming_torment_t : public death_knight_spell_t
+{
+  flaming_torment_t( death_knight_t* player ) : 
+    death_knight_spell_t( "Flaming Torment", player, RESOURCE_NONE, SCHOOL_FIRE )
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    background       = true;
+    may_miss         = false;    
+    proc             = true;      
+    may_crit         = false;
+    direct_power_mod = 0.0;
+    trigger_gcd      = false;
+    school           = SCHOOL_FIRE;
+  }
+  
+  virtual double calculate_direct_damage()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+    double dmg = base_dd_min * p -> tier12_4pc_melee_value;
+
+    if ( ! binary )
+    {
+      dmg *= 1.0 - resistance();
+    }
+
+    return dmg;
+  }
+};
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -3185,8 +3217,10 @@ struct necrotic_strike_t : public death_knight_attack_t
 
 struct obliterate_offhand_t : public death_knight_attack_t
 {
+  flaming_torment_t* flaming_torment;
+
   obliterate_offhand_t( death_knight_t* player ) :
-    death_knight_attack_t( "obliterate_offhand", 66198, player )
+    death_knight_attack_t( "obliterate_offhand", 66198, player ), flaming_torment( NULL )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3199,6 +3233,13 @@ struct obliterate_offhand_t : public death_knight_attack_t
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
                      + ( p -> glyphs.obliterate ? 0.2 : 0 );
+
+    if ( p -> set_bonus.tier12_4pc_caster() )
+    {
+      flaming_torment = new flaming_torment_t( player );
+
+      add_child( flaming_torment );
+    }
   }
 
   virtual void execute()
@@ -3212,6 +3253,11 @@ struct obliterate_offhand_t : public death_knight_attack_t
       {
         p -> cooldowns_howling_blast -> reset();
         update_ready();
+      }
+      if ( flaming_torment )
+      {
+        flaming_torment -> base_dd_min = direct_dmg;
+        flaming_torment -> execute();
       }
     }
   }
@@ -3240,9 +3286,10 @@ struct obliterate_offhand_t : public death_knight_attack_t
 struct obliterate_t : public death_knight_attack_t
 {
   attack_t* oh_attack;
+  flaming_torment_t* flaming_torment;
 
   obliterate_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "obliterate", 49020, player ), oh_attack( 0 )
+    death_knight_attack_t( "obliterate", 49020, player ), oh_attack( 0 ), flaming_torment( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3260,6 +3307,13 @@ struct obliterate_t : public death_knight_attack_t
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
                      + ( p -> glyphs.obliterate ? 0.2 : 0 );
+
+    if ( p -> set_bonus.tier12_4pc_caster() )
+    {
+      flaming_torment = new flaming_torment_t( player );
+
+      add_child( flaming_torment );
+    }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new obliterate_offhand_t( p );
@@ -3280,6 +3334,11 @@ struct obliterate_t : public death_knight_attack_t
       {
         p -> cooldowns_howling_blast -> reset();
         update_ready();
+      }
+      if ( flaming_torment )
+      {
+        flaming_torment -> base_dd_min = direct_dmg;
+        flaming_torment -> execute();
       }
     }
 
@@ -3671,11 +3730,14 @@ struct rune_strike_t : public death_knight_attack_t
 struct scourge_strike_t : public death_knight_attack_t
 {
   spell_t* scourge_strike_shadow;
+  flaming_torment_t* flaming_torment;
 
   struct scourge_strike_shadow_t : public death_knight_spell_t
   {
+    flaming_torment_t* flaming_torment;
+
     scourge_strike_shadow_t( death_knight_t* player ) :
-      death_knight_spell_t( "scourge_strike_shadow", player, RESOURCE_NONE, SCHOOL_SHADOW )
+      death_knight_spell_t( "scourge_strike_shadow", player, RESOURCE_NONE, SCHOOL_SHADOW ), flaming_torment( 0 )
     {
       death_knight_t* p = player -> cast_death_knight();
       check_spec( TREE_UNHOLY );
@@ -3689,6 +3751,13 @@ struct scourge_strike_t : public death_knight_attack_t
       trigger_gcd       = 0;
       weapon_multiplier = 0;
       base_multiplier  *= 1.0 + p -> glyphs.scourge_strike * 0.3;
+
+      if ( p -> set_bonus.tier12_4pc_caster() )
+      {
+        flaming_torment = new flaming_torment_t( player );
+
+        add_child( flaming_torment );
+      }
     }
 
     virtual void target_debuff( player_t* t, int dmg_type )
@@ -3704,11 +3773,25 @@ struct scourge_strike_t : public death_knight_attack_t
         target_multiplier *= 1.08;
     }
 
+    void execute()
+    {
+      death_knight_spell_t::execute();
+
+      if ( result_is_hit() )
+      {
+        if ( flaming_torment )
+        {
+          flaming_torment -> base_dd_min = direct_dmg;
+          flaming_torment -> execute();
+        }
+      }
+    }
+
   };
 
   scourge_strike_t( death_knight_t* player, const std::string& options_str ) :
     death_knight_attack_t( "scourge_strike", 55090, player ),
-    scourge_strike_shadow( 0 )
+    scourge_strike_shadow( 0 ), flaming_torment( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3719,6 +3802,13 @@ struct scourge_strike_t : public death_knight_attack_t
 
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1
                        + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
+
+    if ( p -> set_bonus.tier12_4pc_caster() )
+    {
+      flaming_torment = new flaming_torment_t( player );
+
+      add_child( flaming_torment );
+    }
   }
 
   void execute()
@@ -3726,6 +3816,11 @@ struct scourge_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
+      if ( flaming_torment )
+      {
+        flaming_torment -> base_dd_min = direct_dmg;
+        flaming_torment -> execute();
+      }
       // We divide out our composite_player_multiplier here because we
       // don't want to double dip; in particular, 3% damage from ret
       // paladins, arcane mages, and beastmaster hunters do not affect
@@ -4237,6 +4332,12 @@ void death_knight_t::init_spells()
   // General
   spells.plate_specialization = spell_data_t::find( 86524, "Plate Specialization", dbc.ptr );
   spells.runic_empowerment    = spell_data_t::find( 81229, "Runic Empowerment",    dbc.ptr );
+
+  spell_data_t* tier12_4pc_melee_spell = spell_data_t::find( 98996, "Item - Death Knight T12 DPS 4P Bonus", dbc.ptr );
+  if ( tier12_4pc_melee_spell )
+  {
+    tier12_4pc_melee_value = tier12_4pc_melee_spell -> effect1().percent();
+  }
 
   // Tier Bonuses
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
