@@ -1810,6 +1810,11 @@ struct inquisition_t : public paladin_spell_t
     harmful = false;
     trigger_dp = true;
     base_duration = duration() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
+    // FIXME: DBC Data is behind
+    if ( p -> ptr && p -> talents.inquiry_of_faith -> rank() )
+    {
+      base_duration *= 1.33;
+    }
   }
 
   virtual void execute()

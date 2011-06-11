@@ -1352,6 +1352,12 @@ struct mangle_cat_t : public druid_cat_attack_t
 
     adds_combo_points = 1; // Not in the DBC
     base_multiplier  *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
+    // FIXME: DBC Data is behind
+    if ( p -> ptr )
+    {
+      base_dd_min = base_dd_max = 302;
+      weapon_multiplier = 5.40;
+    }
   }
 
   virtual void execute()
@@ -1408,18 +1414,21 @@ struct pounce_t : public druid_cat_attack_t
 
 struct rake_t : public druid_cat_attack_t
 {
-  rake_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "rake", 1822, player )
+  rake_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "rake", 1822, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     dot_behavior        = DOT_REFRESH;
-    direct_power_mod    = 0.0207;
-    tick_power_mod      = 0.378 / 3.0;
+    direct_power_mod    = ( p -> ptr ) ? 0.147 : 0.0207;
+    tick_power_mod      = ( p -> ptr ) ? 0.147 : 0.378 / 3.0;
     num_ticks          += p -> talents.endless_carnage -> rank();
     base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
+    // FIXME: DBC Data is behind
+    if ( p -> ptr )
+    {
+      base_dd_min = base_dd_max = base_td = 56.0;
+    }
   }
 };
 
@@ -1577,15 +1586,13 @@ struct rip_t : public druid_cat_attack_t
 struct savage_roar_t : public druid_cat_attack_t
 {
   double buff_value;
-  savage_roar_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "savage_roar", 52610, player )
+  savage_roar_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "savage_roar", 52610, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
-    buff_value            = effect2().percent();
-    buff_value           += p -> glyphs.savage_roar ->base_value() / 100.0;
+    buff_value            = ( p -> ptr ) ? 0.80 : effect2().percent();
+    buff_value           += p -> glyphs.savage_roar -> base_value() / 100.0;
     harmful               = false;
     requires_combo_points = true;
   }
@@ -1610,8 +1617,8 @@ struct shred_t : public druid_cat_attack_t
 {
   int extend_rip;
 
-  shred_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "shred", 5221, player ),
+  shred_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "shred", 5221, p ),
     extend_rip( 0 )
   {
     option_t options[] =
@@ -1622,6 +1629,13 @@ struct shred_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     requires_position  = POSITION_BACK;
+
+        // FIXME: DBC Data is behind
+    if ( p -> ptr )
+    {
+      base_dd_min = base_dd_max = 302;
+      weapon_multiplier = 5.40;
+    }
   }
 
   virtual void execute()
@@ -2777,7 +2791,7 @@ void druid_spell_t::player_tick()
 
   player_crit = p -> composite_spell_crit();
 
-  player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
+  player_crit += ( p -> ptr ? 0.05 : 0.33 ) * p -> buffs_t11_4pc_caster -> stack();
 }
 
 // druid_spell_t::player_buff ==============================================
@@ -2817,7 +2831,7 @@ void druid_spell_t::player_buff()
   // Reset Additive_Multiplier
   additive_multiplier = 0.0;
 
-  player_crit += 0.33 * p -> buffs_t11_4pc_caster -> stack();
+  player_crit += ( p -> ptr ? 0.05 : 0.33 ) * p -> buffs_t11_4pc_caster -> stack();
 }
 
 // Auto Attack =============================================================
@@ -3478,12 +3492,10 @@ struct starfire_t : public druid_spell_t
   std::string prev_str;
   int extend_moonfire;
 
-  starfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfire", 2912, player ),
+  starfire_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "starfire", 2912, p ),
     extend_moonfire( 0 )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { "extendmf", OPT_BOOL,   &extend_moonfire },
@@ -3496,6 +3508,10 @@ struct starfire_t : public druid_spell_t
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+
+    // FIXME: DBC Data is behind
+    if ( p -> ptr )
+      base_multiplier *= 1.23;
   }
 
   virtual void execute()
@@ -4037,11 +4053,9 @@ struct wrath_t : public druid_spell_t
 {
   std::string prev_str;
 
-  wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "wrath", 5176, player )
+  wrath_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "wrath", 5176, p )
   {
-    druid_t* p = player -> cast_druid();
-
     option_t options[] =
     {
       { "prev",    OPT_STRING, &prev_str    },
@@ -4052,6 +4066,10 @@ struct wrath_t : public druid_spell_t
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+    
+    // FIXME: DBC Data is behind
+    if ( p -> ptr )
+      base_multiplier *= 1.23;
   }
 
   virtual double execute_time() SC_CONST
