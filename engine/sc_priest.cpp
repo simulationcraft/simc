@@ -818,9 +818,14 @@ struct shadow_fiend_pet_t : public pet_t
 
   struct tier12_flame_attack_t : public spell_t
   {
+    spell_data_t* shadowflame;
+    double dmg_mult;
+
     tier12_flame_attack_t( player_t* player ) : 
-      spell_t( "tier12_flame_attack", player, SCHOOL_FIRE )
+      spell_t( "Shadowflame", player, SCHOOL_FIRE ), shadowflame( NULL ), dmg_mult( 0.2 )
     {
+      priest_t* o = player -> cast_pet() -> owner -> cast_priest();
+
       background       = true;
       may_miss         = false;    
       proc             = true;      
@@ -828,21 +833,17 @@ struct shadow_fiend_pet_t : public pet_t
       direct_power_mod = 0.0;
       trigger_gcd      = false;
       school           = SCHOOL_FIRE;
-    }
-    
-/*
-    // Don't double dip
-    virtual void target_debuff( player_t* t, int dmg_type ) { }
-    
-    virtual double total_dd_multiplier() SC_CONST
-    {
-      return 0.2;
-    }
-*/
 
+      shadowflame = spell_data_t::find( 99156, "Shadowflame", o -> dbc.ptr );
+      if ( shadowflame )
+      {
+        dmg_mult = shadowflame->effect1().percent();
+      }
+    }
+    
     virtual double calculate_direct_damage()
     {
-      double dmg = base_dd_min;
+      double dmg = base_dd_min * dmg_mult;
 
       if ( ! binary )
       {
@@ -934,7 +935,7 @@ struct shadow_fiend_pet_t : public pet_t
 
       if ( tier12_flame_attack_spell )
       {
-        tier12_flame_attack_spell -> base_dd_min = direct_dmg * 0.2;
+        tier12_flame_attack_spell -> base_dd_min = direct_dmg;
         tier12_flame_attack_spell -> execute();
       }
     }
@@ -1596,7 +1597,7 @@ struct mind_blast_t : public priest_spell_t
     {
       if ( p -> dots_shadow_word_pain -> ticking && p -> dots_vampiric_touch -> ticking && p -> dots_devouring_plague -> ticking )
       {
-        m += p -> dark_flames -> effect1().percent();
+        m += p -> dark_flames ? p -> dark_flames -> effect1().percent() : 0.25;
         p -> uptimes_dark_flames -> update( 1 );
       }
       else
