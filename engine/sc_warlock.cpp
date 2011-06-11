@@ -4146,7 +4146,6 @@ void warlock_t::init_buffs()
   
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
-  buffs_improved_soul_fire -> cooldown -> duration  = dbc.effect( dbc.spell( 85113 ) -> effect3().id() ) -> base_value();
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );
   buffs_demon_soul_felguard   = new buff_t( this, 79462, "demon_soul_felguard" );
