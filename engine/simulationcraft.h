@@ -306,13 +306,13 @@ enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_SEQUENCE, A
 enum school_type
 {
   SCHOOL_NONE=0,
-  SCHOOL_ARCANE,      SCHOOL_BLEED,       SCHOOL_CHAOS,       SCHOOL_FIRE,        SCHOOL_FROST,
-  SCHOOL_FROSTFIRE,   SCHOOL_HOLY,        SCHOOL_NATURE,      SCHOOL_PHYSICAL,    SCHOOL_SHADOW,
+  SCHOOL_ARCANE,      SCHOOL_FIRE,        SCHOOL_FROST,       SCHOOL_HOLY,        SCHOOL_NATURE,      
+  SCHOOL_SHADOW,      SCHOOL_PHYSICAL,    SCHOOL_MAX_PRIMARY, SCHOOL_FROSTFIRE,       
   SCHOOL_HOLYSTRIKE,  SCHOOL_FLAMESTRIKE, SCHOOL_HOLYFIRE,    SCHOOL_STORMSTRIKE, SCHOOL_HOLYSTORM,
   SCHOOL_FIRESTORM,   SCHOOL_FROSTSTRIKE, SCHOOL_HOLYFROST,   SCHOOL_FROSTSTORM,  SCHOOL_SHADOWSTRIKE,
   SCHOOL_SHADOWLIGHT, SCHOOL_SHADOWFLAME, SCHOOL_SHADOWSTORM, SCHOOL_SHADOWFROST, SCHOOL_SPELLSTRIKE,
   SCHOOL_DIVINE,      SCHOOL_SPELLFIRE,   SCHOOL_SPELLSTORM,  SCHOOL_SPELLFROST,  SCHOOL_SPELLSHADOW,
-  SCHOOL_ELEMENTAL,   SCHOOL_CHROMATIC,   SCHOOL_MAGIC,
+  SCHOOL_ELEMENTAL,   SCHOOL_CHROMATIC,   SCHOOL_MAGIC,       SCHOOL_CHAOS,       SCHOOL_BLEED,       
   SCHOOL_DRAIN,
   SCHOOL_MAX
 };
@@ -1549,6 +1549,7 @@ struct util_t
   static const char* role_type_string          ( int type );
   static const char* resource_type_string      ( int type );
   static const char* result_type_string        ( int type );
+  static int         school_type_component     ( int s_type, int c_type );
   static const char* school_type_string        ( int type );
   static const char* armor_type_string         ( player_type ptype, int slot_type );
   static const char* set_bonus_string          ( set_type type );
@@ -1994,7 +1995,7 @@ struct buff_t : public spell_id_t
   void   extend_duration( player_t* p, double seconds );
 
   virtual void start    ( int stacks=1, double value=-1.0 );
-          void refresh  ( int stacks=0, double value=-1.0 );
+  virtual void refresh  ( int stacks=0, double value=-1.0 );
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void override ( int stacks=1, double value=-1.0 );
   virtual bool may_react( int stacks=1 );
@@ -2038,6 +2039,26 @@ struct stat_buff_t : public buff_t
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
+};
+
+struct cost_reduction_buff_t : public buff_t
+{
+  int school;
+  double amount;
+  bool refreshes;
+
+  cost_reduction_buff_t( player_t*, const std::string& name,
+                         int school, double amount,
+                         int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+                         double chance=1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+  cost_reduction_buff_t( player_t*, const uint32_t id, const std::string& name,
+                         int school, double amount,
+                         double chance=1.0, double buff_cooldown=-1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+  virtual ~cost_reduction_buff_t() { };
+  virtual void bump     ( int stacks=1, double value=-1.0 );
+  virtual void decrement( int stacks=1, double value=-1.0 );
+  virtual void expire();
+  virtual void refresh  ( int stacks=0, double value=-1.0 );
 };
 
 struct debuff_t : public buff_t
@@ -2710,13 +2731,15 @@ struct item_t
     int max_stacks;
     double stat_amount, discharge_amount, discharge_scaling;
     double proc_chance, duration, cooldown, tick;
+    bool cost_reduction;
+    bool no_refresh;
     bool chance_to_discharge;
     bool reverse;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
         max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
         proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
-        tick( 0 ), chance_to_discharge( false ), reverse( false ) {}
+        tick( 0 ), cost_reduction( false ), no_refresh( false ), chance_to_discharge( false ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
@@ -3316,6 +3339,9 @@ struct player_t
 
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
+
+  virtual void cost_reduction_gain( int school, double amount, gain_t* g=0, action_t* a=0 );
+  virtual void cost_reduction_loss( int school, double amount, action_t* a=0 );
 
   virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
   virtual double target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
@@ -4052,6 +4078,11 @@ struct unique_gear_t
                                                 double proc_chance, double duration, double cooldown,
                                                 double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
 
+  static action_callback_t* register_cost_reduction_proc( int type, int64_t mask, const std::string& name, player_t*,
+                                                          int school, int max_stacks, double amount,
+                                                          double proc_chance, double duration, double cooldown,
+                                                          bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT );
+
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                      int max_stacks, const school_type school, double amount, double scaling,
                                                      double proc_chance, double cooldown, int rng_type=RNG_DEFAULT );
@@ -4066,6 +4097,7 @@ struct unique_gear_t
                                                           double proc_chance, double duration, double cooldown );
 
   static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
+  static action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );

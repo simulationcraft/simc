@@ -72,6 +72,47 @@ struct stat_proc_callback_t : public action_callback_t
   }
 };
 
+// cost_reduction_proc_callback =======================================================
+
+struct cost_reduction_proc_callback_t : public action_callback_t
+{
+  std::string name_str;
+  int school;
+  double amount;
+  cost_reduction_buff_t* buff;
+
+  cost_reduction_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
+                                double proc_chance, double duration, double cooldown,
+                                bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT ) :
+    action_callback_t( p -> sim, p ),
+    name_str( n ), school( s ), amount( a )
+  {
+    if ( max_stacks == 0 ) max_stacks = 1;
+    if ( proc_chance == 0 ) proc_chance = 1;
+    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
+
+    buff = new cost_reduction_buff_t( p, n, school, amount, max_stacks, duration, cooldown, proc_chance, refreshes, false, reverse, rng_type );
+  }
+
+  virtual void activate()
+  {
+    action_callback_t::activate();
+    if ( buff -> reverse ) buff -> start( buff -> max_stack );
+  }
+
+  virtual void deactivate()
+  {
+    action_callback_t::deactivate();
+    buff -> expire();
+  }
+
+  virtual void trigger( action_t* a, void* call_data )
+  {
+    buff -> trigger( a );
+  }
+};
+
+
 // discharge_proc_callback ==================================================
 
 struct discharge_proc_callback_t : public action_callback_t
@@ -380,8 +421,8 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
-      apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 60.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
-      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, ( heroic ? 1725 : 1530 ), 1, 20.0, 120.0 );
+      apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 30.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
+      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, ( heroic ? 1725 : 1530 ), 1, 15.0, 120.0 );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1261,6 +1302,10 @@ void unique_gear_t::init( player_t* p )
     {
       register_stat_proc( item, item.equip );
     }
+    else if ( item.equip.cost_reduction && item.equip.school )
+    {
+      register_cost_reduction_proc( item, item.equip );
+    }
     else if ( item.equip.school && item.equip.proc_chance && item.equip.chance_to_discharge )
     {
       register_chance_discharge_proc( item, item.equip );
@@ -1310,6 +1355,55 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       int                rng_type )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, rng_type );
+
+  if ( type == PROC_DAMAGE )
+  {
+    player -> register_tick_damage_callback( mask, cb );
+    player -> register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_TICK_DAMAGE )
+  {
+    player -> register_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_DAMAGE )
+  {
+    player -> register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_TICK )
+  {
+    player -> register_tick_callback( mask, cb );
+  }
+  else if ( type == PROC_ATTACK )
+  {
+    player -> register_attack_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL )
+  {
+    player -> register_spell_callback( mask, cb );
+  }
+
+  return cb;
+}
+
+// ==========================================================================
+// unique_gear_t::register_cost_reduction_proc
+// ==========================================================================
+
+action_callback_t* unique_gear_t::register_cost_reduction_proc( int                type,
+                                                                int64_t            mask,
+                                                                const std::string& name,
+                                                                player_t*          player,
+                                                                int                school,
+                                                                int                max_stacks,
+                                                                double             amount,
+                                                                double             proc_chance,
+                                                                double             duration,
+                                                                double             cooldown,
+                                                                bool               refreshes,
+                                                                bool               reverse,
+                                                                int                rng_type )
+{
+  action_callback_t* cb = new cost_reduction_proc_callback_t( name, player, school, max_stacks, amount, proc_chance, duration, cooldown, refreshes, reverse, rng_type );
 
   if ( type == PROC_DAMAGE )
   {
@@ -1509,6 +1603,20 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 }
 
 // ==========================================================================
+// unique_gear_t::register_cost_reduction_proc
+// ==========================================================================
+
+action_callback_t* unique_gear_t::register_cost_reduction_proc( item_t& i,
+                                                                item_t::special_effect_t& e )
+{
+  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+
+  return register_cost_reduction_proc( e.trigger_type, e.trigger_mask, name, i.player,
+                                       e.school, e.max_stacks, e.discharge_amount,
+                                       e.proc_chance, e.duration, e.cooldown, ! e.no_refresh, e.reverse );
+}
+
+// ==========================================================================
 // unique_gear_t::register_discharge_proc
 // ==========================================================================
 
@@ -1631,6 +1739,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "sundial_of_the_exiled"               ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_95Cd"; // TO-DO: Confirm ICD.
   else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_75Cd" : "OnSpellCast_1290SP_10%_15Dur_75Cd" ); // TO-DO: Confirm ICD
+  else if ( name == "the_hungerer"                        ) e = ( heroic ? "OnAttackHit_1730Haste_100%_15Dur_60Cd" : "OnAttackHit_1532Haste_100%_15Dur_60Cd" );
   else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnSpellCast_1926Mastery_10%_20Dur_100Cd" ); // TO-DO: Confirm ICD
   else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_34Agi_10Stack_15Dur" );
   else if ( name == "vessel_of_acceleration"              ) e = ( heroic ? "OnAttackHit_87Crit_5Stack_20Dur" : "OnAttackHit_77Crit_5Stack_20Dur" );
@@ -1716,6 +1825,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "figurine__jeweled_serpent"    ) e = "1425Sp_20Dur_120Cd";
   else if ( name == "figurine__king_of_boars"      ) e = "1425Str_20Dur_120Cd";
   else if ( name == "impatience_of_youth"          ) e = "1605Str_20Dur_120Cd";
+  else if ( name == "jaws_of_defeat"               ) e = ( heroic ? "OnSpellCast_125HolyStorm_CostRd_10Stack_20Dur_120Cd" : "OnSpellCast_110HolyStorm_CostRd_10Stack_20Dur_120Cd" );
   else if ( name == "living_flame"                 ) e = "505SP_20Dur_120Cd";
   else if ( name == "maghias_misguided_quill"      ) e = "716SP_20Dur_120Cd";
   else if ( name == "magnetite_mirror"             ) e = ( heroic ? "1425Str_15Dur_90Cd" : "1075Str_15Dur_90Cd" );

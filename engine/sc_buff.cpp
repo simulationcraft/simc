@@ -1043,6 +1043,116 @@ void stat_buff_t::expire()
   }
 }
 
+
+// ==========================================================================
+// COST_REDUCTION_BUFF
+// ==========================================================================
+
+// cost_reduction_buff_t::cost_reduction_buff_t =================================================
+
+cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
+                                              const std::string& n,
+                                              int                sch,
+                                              double             a,
+                                              int                ms,
+                                              double             d,
+                                              double             cd,
+                                              double             ch,
+                                              bool               re,
+                                              bool               q,
+                                              bool               r,
+                                              int                rng_type,
+                                              int                id ) :
+  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id ), school( sch ), amount( a ), refreshes( re )
+{
+}
+
+// cost_reduction_buff_t::cost_reduction_buff_t =================================================
+
+cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
+                                              const uint32_t     id,
+                                              const std::string& n,
+                                              int                sch,
+                                              double             a,
+                                              double             ch,
+                                              double             cd,
+                                              bool               re,
+                                              bool               q,
+                                              bool               r,
+                                              int                rng_type ) :
+  buff_t( p, id, n, ch, cd, q, r, rng_type ), school( sch ), amount( a ), refreshes( re )
+{
+}
+
+// cost_reduction_buff_t::bump ========================================================
+
+void cost_reduction_buff_t::bump( int    stacks,
+                                  double value )
+{
+  if ( max_stack == 0 ) return;
+  if ( value > 0 )
+  {
+    if ( value < amount ) return;
+    amount = value;
+  }
+  buff_t::bump( stacks );
+  double delta = amount * current_stack - current_value;
+  if( delta > 0 )
+  {
+    player -> cost_reduction_gain( school, delta );
+    current_value += delta;
+  }
+  else assert( delta == 0 );
+}
+
+// cost_reduction_buff_t::decrement ===================================================
+
+void cost_reduction_buff_t::decrement( int    stacks,
+                                       double value )
+{
+  if ( max_stack == 0 ) return;
+  if ( stacks == 0 || current_stack <= stacks )
+  {
+    expire();
+  }
+  else
+  {
+    double delta = amount * stacks;
+    player -> cost_reduction_loss( school, delta );
+    current_stack -= stacks;
+    current_value -= delta;
+  }
+}
+
+// cost_reduction_buff_t::expire ======================================================
+
+void cost_reduction_buff_t::expire()
+{
+  if ( current_stack > 0 )
+  {
+    player -> cost_reduction_loss( school, current_value );
+    buff_t::expire();
+  }
+}
+
+// cost_reduction_buff_t::refresh ==========================================================
+
+void cost_reduction_buff_t::refresh( int    stacks,
+                                     double value )
+{
+  if ( ! refreshes ) 
+  {
+    if ( max_stack == 0 ) return;
+
+    refresh_count++;
+
+    bump( stacks, value );    
+    return;
+  }
+
+  buff_t::refresh( stacks, value );
+}
+
 // ==========================================================================
 // DEBUFF
 // ==========================================================================

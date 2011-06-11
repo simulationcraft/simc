@@ -874,6 +874,15 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.chance_to_discharge = true;
     }
+    else if ( t.name == "costrd" )
+    {
+      effect.cost_reduction = true;
+      effect.no_refresh = true;
+    }
+    else if ( t.name == "norefresh" )
+    {
+      effect.no_refresh = true;
+    }
     else if ( t.full == "ondamage" )
     {
       effect.trigger_str  = t.full;

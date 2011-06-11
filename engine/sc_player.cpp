@@ -3211,6 +3211,59 @@ void player_t::stat_loss( int       stat,
   }
 }
 
+// player_t::cost_reduction_gain ======================================================
+
+void player_t::cost_reduction_gain( int       school,
+                                    double    amount,
+                                    gain_t*   gain,
+                                    action_t* action )
+{
+  if( amount <= 0 ) return;
+
+  if ( sim -> log ) log_t::output( sim, "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount, util_t::school_type_string( school ) );
+
+  if ( school > SCHOOL_MAX_PRIMARY )
+  {
+    for ( int i = 1; i < SCHOOL_MAX_PRIMARY; i++ )
+    {
+      if ( util_t::school_type_component( school, i ) )
+      {
+        resource_reduction[ i ] += amount;
+      }
+    }
+  }
+  else
+  {
+    resource_reduction[ school ] += amount;
+  }
+}
+
+// player_t::cost_reduction_loss ======================================================
+
+void player_t::cost_reduction_loss( int       school,
+                                    double    amount,
+                                    action_t* action )
+{
+  if( amount <= 0 ) return;
+
+  if ( sim -> log ) log_t::output( sim, "%s loses a cost reduction %.0f on abilities of school %s", name(), amount, util_t::school_type_string( school ) );
+
+  if ( school > SCHOOL_MAX_PRIMARY )
+  {
+    for ( int i = 1; i < SCHOOL_MAX_PRIMARY; i++ )
+    {
+      if ( util_t::school_type_component( school, i ) )
+      {
+        resource_reduction[ i ] -= amount;
+      }
+    }
+  }
+  else
+  {
+    resource_reduction[ school ] -= amount;
+  }
+}
+
 // player_t::assess_damage ==================================================
 
 double player_t::assess_damage( double            amount,
@@ -4344,7 +4397,13 @@ struct use_item_t : public action_t
 
     if ( e.trigger_type )
     {
-      if ( e.stat )
+      if ( e.cost_reduction && e.school && e.discharge_amount )
+      {
+        trigger = unique_gear_t::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
+                                                     e.school, e.max_stacks, e.discharge_amount,
+                                                     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, false, e.reverse, 0 );
+      }
+      else if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                      e.stat, e.max_stacks, e.stat_amount,

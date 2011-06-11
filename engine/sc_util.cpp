@@ -601,6 +601,16 @@ int util_t::parse_resource_type( const std::string& name )
   return RESOURCE_NONE;
 }
 
+// util_t::school_type_component ===========================================
+
+int util_t::school_type_component( int s_type, int c_type )
+{
+  uint32_t s_mask = spell_id_t::get_school_mask( ( school_type ) s_type );
+  uint32_t c_mask = spell_id_t::get_school_mask( ( school_type ) c_type );
+
+  return s_mask & c_mask;
+}
+
 // util_t::school_type_string ==============================================
 
 const char* util_t::school_type_string( int school )
@@ -617,9 +627,29 @@ const char* util_t::school_type_string( int school )
   case SCHOOL_NATURE:           return "nature";
   case SCHOOL_PHYSICAL:         return "physical";
   case SCHOOL_SHADOW:           return "shadow";
-  case SCHOOL_SPELLSTORM:       return "spellstorm";
-  case SCHOOL_SHADOWFROST:      return "shadowfrost";
+  case SCHOOL_HOLYSTRIKE:       return "holystrike";
+  case SCHOOL_FLAMESTRIKE:      return "flamestrike";
+  case SCHOOL_HOLYFIRE:         return "holyfire";
+  case SCHOOL_STORMSTRIKE:      return "stormstrike";
+  case SCHOOL_HOLYSTORM:        return "holystorm";
+  case SCHOOL_FIRESTORM:        return "firestorm";
+  case SCHOOL_FROSTSTRIKE:      return "froststrike";
+  case SCHOOL_HOLYFROST:        return "holyfrost";
+  case SCHOOL_FROSTSTORM:       return "froststorm";
+  case SCHOOL_SHADOWSTRIKE:     return "shadowstrike";
+  case SCHOOL_SHADOWLIGHT:      return "shadowlight";
   case SCHOOL_SHADOWFLAME:      return "shadowflame";
+  case SCHOOL_SHADOWSTORM:      return "shadowstorm";
+  case SCHOOL_SHADOWFROST:      return "shadowfrost";
+  case SCHOOL_SPELLSTRIKE:      return "spellstrike";
+  case SCHOOL_DIVINE:           return "divine";
+  case SCHOOL_SPELLFIRE:        return "spellfire";
+  case SCHOOL_SPELLSTORM:       return "spellstorm";
+  case SCHOOL_SPELLFROST:       return "spellfrost";
+  case SCHOOL_SPELLSHADOW:      return "spellshadow";
+  case SCHOOL_ELEMENTAL:        return "elemental";
+  case SCHOOL_CHROMATIC:        return "chromatic";
+  case SCHOOL_MAGIC:            return "magic";
   case SCHOOL_DRAIN:            return "drain";
   }
   return "unknown";
