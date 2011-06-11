@@ -294,21 +294,22 @@ struct shaman_spell_t : public spell_t
 {
   double base_cost_reduction;
   bool   maelstrom;
+  bool   is_totem;
   
   /* Old style construction, spell data will not be accessed */
   shaman_spell_t( const char* n, player_t* p, const school_type s, int t ) :
-    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 ), maelstrom( false ) { }
+    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ) { }
   
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p ) :
-    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false )
+    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false )
   {
     may_crit = true;
   }
 
   /* Spell data based construction, spell id in spell_id */
   shaman_spell_t( const char* n, uint32_t spell_id, player_t* p ) :
-    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false )
+    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false )
   {
     may_crit = true;
   }
@@ -1752,8 +1753,8 @@ void shaman_spell_t::player_buff()
   if ( p -> buffs_elemental_rage -> up() )
     player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
 
-  // Apply Tier12 4 piece enhancement bonus as multiplicative for now, needs checking if this works on totems
-  if ( p -> ptr && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
+  // Apply Tier12 4 piece enhancement bonus as multiplicative for now
+  if ( p -> ptr && ! is_totem && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 }
 
@@ -2735,6 +2736,7 @@ struct shaman_totem_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
+    is_totem             = true;
     harmful              = false;
     hasted_ticks         = false;
     callbacks            = false;
