@@ -2710,12 +2710,13 @@ struct item_t
     int max_stacks;
     double stat_amount, discharge_amount, discharge_scaling;
     double proc_chance, duration, cooldown, tick;
+    bool chance_to_discharge;
     bool reverse;
     special_effect_t() :
         trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
         max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
         proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
-        tick( 0 ), reverse( false ) {}
+        tick( 0 ), chance_to_discharge( false ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
@@ -4055,6 +4056,10 @@ struct unique_gear_t
                                                      int max_stacks, const school_type school, double amount, double scaling,
                                                      double proc_chance, double cooldown, int rng_type=RNG_DEFAULT );
 
+  static action_callback_t* register_chance_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
+                                                            int max_stacks, const school_type school, double amount, double scaling,
+                                                            double proc_chance, double cooldown, int rng_type=RNG_DEFAULT );
+
   static action_callback_t* register_stat_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                           int stat, int max_stacks, double stat_amount,
                                                           const school_type school, double discharge_amount, double discharge_scaling,
@@ -4062,6 +4067,7 @@ struct unique_gear_t
 
   static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
+  static action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
 
   static bool get_equip_encoding( std::string& encoding,

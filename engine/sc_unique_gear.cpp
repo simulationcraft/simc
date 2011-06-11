@@ -166,12 +166,122 @@ struct discharge_proc_callback_t : public action_callback_t
 
     if ( ++stacks < max_stacks )
     {
-      listener -> aura_gain( name_str.c_str() );
+      listener -> aura_gain( name_str.c_str(), stacks );
     }
     else
     {
       stacks = 0;
       discharge_action -> execute();
+      proc -> occur();
+    }
+  }
+};
+
+// chance_discharge_proc_callback ==================================================
+
+struct chance_discharge_proc_callback_t : public action_callback_t
+{
+  std::string name_str;
+  int stacks, max_stacks;
+  double proc_chance;
+  cooldown_t* cooldown;
+  action_t* discharge_action;
+  proc_t* proc;
+  rng_t* rng;
+
+  chance_discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
+                             const school_type school, double amount, double scaling,
+                             double pc, double cd, int rng_type=RNG_DEFAULT ) :
+    action_callback_t( p -> sim, p ),
+    name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
+  {
+    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
+
+    struct discharge_spell_t : public spell_t
+    {
+      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+      {
+        trigger_gcd = 0;
+        base_dd_min = amount;
+        base_dd_max = amount;
+        direct_power_mod = scaling;
+        may_crit = ( s != SCHOOL_DRAIN );
+        background  = true;
+        init();
+      }
+    };
+
+    struct discharge_attack_t : public attack_t
+    {
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s ) :
+        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+      {
+        trigger_gcd = 0;
+        base_dd_min = amount;
+        base_dd_max = amount;
+        direct_power_mod = scaling;
+        may_crit = ( s != SCHOOL_DRAIN );
+        may_dodge = may_parry = may_glance = false;
+        background  = true;
+        init();
+      }
+    };
+
+    cooldown = p -> get_cooldown( name_str );
+    cooldown -> duration = cd;
+
+    if( amount > 0 )
+    {
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school );
+    }
+    else
+    {
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school );
+    }
+
+    proc = p -> get_proc( name_str.c_str() );
+    rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
+  }
+
+  virtual void reset() { stacks=0; }
+
+  virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
+
+  virtual void trigger( action_t* a, void* call_data )
+  {
+    /* Always adds a stack if not on cooldown. The proc chance is the chance to discharge */
+    if ( cooldown -> remains() > 0 )
+      return;
+
+    cooldown -> start();
+
+    if ( ++stacks < max_stacks )
+    {
+      listener -> aura_gain( name_str.c_str(), stacks );
+      if ( proc_chance )
+      {
+        if ( proc_chance < 0 )
+        {
+          if ( ! rng -> roll( a -> ppm_proc_chance( -proc_chance ) ) )
+            return;
+        }
+        else
+        {
+          if ( ! rng -> roll( proc_chance ) )
+            return;
+        }
+      }
+      discharge_action -> base_dd_multiplier = stacks;
+      discharge_action -> execute();
+      stacks = 0;
+      proc -> occur();
+    }
+    else
+    {
+      discharge_action -> base_dd_multiplier = stacks;
+      discharge_action -> execute();
+      stacks = 0;
       proc -> occur();
     }
   }
@@ -687,8 +797,7 @@ static void register_matrix_restabilizer( item_t* item )
     stat_type max_stat;
 
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, heroic ? 1730 : 1532, 0.35, 15.0, 45.0 ), heroic( h )
-      // FIXME: Proc Chance, Dur, CD
+      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, heroic ? 1730 : 1532, 0.15, 30.0, 105.0 ), heroic( h )
     {
     }
 
@@ -1152,29 +1261,33 @@ void unique_gear_t::init( player_t* p )
     {
       register_stat_proc( item, item.equip );
     }
+    else if ( item.equip.school && item.equip.proc_chance && item.equip.chance_to_discharge )
+    {
+      register_chance_discharge_proc( item, item.equip );
+    }
     else if ( item.equip.school )
     {
       register_discharge_proc( item, item.equip );
     }
 
-    if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"   ) ) register_apparatus_of_khazgoroth( &item );
-    if ( ! strcmp( item.name(), "black_bruise"              ) ) register_black_bruise           ( &item );
-    if ( ! strcmp( item.name(), "darkmoon_card_greatness"   ) ) register_darkmoon_card_greatness( &item );
-    if ( ! strcmp( item.name(), "deathbringers_will"        ) ) register_deathbringers_will     ( &item );
-    if ( ! strcmp( item.name(), "deaths_choice"             ) ) register_deaths_choice          ( &item );
-    if ( ! strcmp( item.name(), "deaths_verdict"            ) ) register_deaths_choice          ( &item );
-    if ( ! strcmp( item.name(), "empowered_deathbringer"    ) ) register_empowered_deathbringer ( &item );
-    if ( ! strcmp( item.name(), "raging_deathbringer"       ) ) register_raging_deathbringer    ( &item );
-    if ( ! strcmp( item.name(), "fury_of_angerforge"        ) ) register_fury_of_angerforge     ( &item );
-    if ( ! strcmp( item.name(), "heart_of_ignacious"        ) ) register_heart_of_ignacious     ( &item );
-    if ( ! strcmp( item.name(), "matrix_restabilizer"        ) ) register_matrix_restabilizer    ( &item );
-    if ( ! strcmp( item.name(), "nibelung"                  ) ) register_nibelung               ( &item );
-    if ( ! strcmp( item.name(), "shadowmourne"              ) ) register_shadowmourne           ( &item );
-    if ( ! strcmp( item.name(), "shard_of_woe"              ) ) register_shard_of_woe           ( &item );
-    if ( ! strcmp( item.name(), "sorrowsong"                ) ) register_sorrowsong             ( &item );
-    if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar" ) ) register_tiny_abom              ( &item );
-    if ( ! strcmp( item.name(), "tyrandes_favorite_doll"    ) ) register_tyrandes_favorite_doll ( &item );
-    if ( ! strcmp( item.name(), "unheeded_warning"          ) ) register_unheeded_warning       ( &item );
+    if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
+    if ( ! strcmp( item.name(), "black_bruise"                        ) ) register_black_bruise                      ( &item );
+    if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );
+    if ( ! strcmp( item.name(), "deathbringers_will"                  ) ) register_deathbringers_will                ( &item );
+    if ( ! strcmp( item.name(), "deaths_choice"                       ) ) register_deaths_choice                     ( &item );
+    if ( ! strcmp( item.name(), "deaths_verdict"                      ) ) register_deaths_choice                     ( &item );
+    if ( ! strcmp( item.name(), "empowered_deathbringer"              ) ) register_empowered_deathbringer            ( &item );
+    if ( ! strcmp( item.name(), "raging_deathbringer"                 ) ) register_raging_deathbringer               ( &item );
+    if ( ! strcmp( item.name(), "fury_of_angerforge"                  ) ) register_fury_of_angerforge                ( &item );
+    if ( ! strcmp( item.name(), "heart_of_ignacious"                  ) ) register_heart_of_ignacious                ( &item );
+    if ( ! strcmp( item.name(), "matrix_restabilizer"                 ) ) register_matrix_restabilizer               ( &item );
+    if ( ! strcmp( item.name(), "nibelung"                            ) ) register_nibelung                          ( &item );
+    if ( ! strcmp( item.name(), "shadowmourne"                        ) ) register_shadowmourne                      ( &item );
+    if ( ! strcmp( item.name(), "shard_of_woe"                        ) ) register_shard_of_woe                      ( &item );
+    if ( ! strcmp( item.name(), "sorrowsong"                          ) ) register_sorrowsong                        ( &item );
+    if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar"           ) ) register_tiny_abom                         ( &item );
+    if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
+    if ( ! strcmp( item.name(), "unheeded_warning"                    ) ) register_unheeded_warning                  ( &item );
   }
 }
 
@@ -1280,6 +1393,59 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
 }
 
 // ==========================================================================
+// unique_gear_t::register_chance_discharge_proc
+// ==========================================================================
+
+action_callback_t* unique_gear_t::register_chance_discharge_proc( int                type,
+                                                                  int64_t            mask,
+                                                                  const std::string& name,
+                                                                  player_t*          player,
+                                                                  int                max_stacks,
+                                                                  const school_type  school,
+                                                                  double             amount,
+                                                                  double             scaling,
+                                                                  double             proc_chance,
+                                                                  double             cooldown,
+                                                                  int                rng_type )
+{
+  action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown, rng_type );
+
+  if ( type == PROC_DAMAGE )
+  {
+    player -> register_tick_damage_callback( mask, cb );
+    player -> register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_TICK_DAMAGE )
+  {
+    player -> register_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_DAMAGE )
+  {
+    player -> register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_TICK )
+  {
+    player -> register_tick_callback( mask, cb );
+  }
+  else if ( type == PROC_ATTACK )
+  {
+    player -> register_attack_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL )
+  {
+    player -> register_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_AND_TICK )
+  {
+    player -> register_spell_callback( mask, cb );
+    player -> register_tick_callback( mask, cb );
+  }
+
+  return cb;
+}
+
+
+// ==========================================================================
 // unique_gear_t::register_stat_proc
 // ==========================================================================
 
@@ -1354,6 +1520,20 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                   e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
                                   e.proc_chance, e.cooldown );
+}
+
+// ==========================================================================
+// unique_gear_t::register_chance_discharge_proc
+// ==========================================================================
+
+action_callback_t* unique_gear_t::register_chance_discharge_proc( item_t& i,
+                                                                  item_t::special_effect_t& e )
+{
+  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+
+  return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
+                                         e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
+                                         e.proc_chance, e.cooldown );
 }
 
 // ==========================================================================
@@ -1475,6 +1655,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
+
+  // Variable Stack Discharge Procs
+  else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_1269.5Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_1125.5Nature_15%_10Stack_2.5Cd_chance" );
 
   // Some Normal/Heroic items have same name
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );

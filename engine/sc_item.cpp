@@ -870,6 +870,10 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.reverse = true;
     }
+    else if ( t.full == "chance" )
+    {
+      effect.chance_to_discharge = true;
+    }
     else if ( t.full == "ondamage" )
     {
       effect.trigger_str  = t.full;
