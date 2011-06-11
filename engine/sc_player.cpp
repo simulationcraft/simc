@@ -19,6 +19,8 @@ struct dark_intent_callback_t : public action_callback_t
   }
 };
 
+// hymn_of_hope_buff ========================================================
+
 struct hymn_of_hope_buff_t : public buff_t
 {
   double mana_gain;
@@ -964,8 +966,6 @@ void player_t::init_spell()
 
   initial_spell_penetration = base_spell_penetration + initial_stats.spell_penetration;
 
-
-
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
   if ( type != ENEMY && type != ENEMY_ADD )
@@ -1353,7 +1353,7 @@ void player_t::init_glyphs()
   {
     glyph_t* g = find_glyph( glyph_names[ i ] );
 
-    if( g ) g -> enable();
+    if ( g ) g -> enable();
   }
 }
 
@@ -1364,12 +1364,12 @@ void player_t::init_spells()
 
 }
 
-
 // player_t::init_buffs ====================================================
 
 void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
+  buffs.corruption_absolute       = new buff_t( this, 82170, "corruption_absolute"          );
   buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.replenishment             = new buff_t( this, 57669, "replenishment"                );
@@ -1403,7 +1403,7 @@ void player_t::init_buffs()
 
   // Infinite-Stacking Buffs and De-Buffs
 
-  buffs.stunned      = new   buff_t( this, "stunned",      -1 );
+  buffs.stunned        = new   buff_t( this, "stunned",      -1 );
   debuffs.bleeding     = new debuff_t( this, "bleeding",     -1 );
   debuffs.casting      = new debuff_t( this, "casting",      -1 );
   debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
@@ -1825,7 +1825,6 @@ double player_t::composite_tank_miss( const school_type school ) SC_CONST
   else if ( m < 0.0 ) m = 0.0;
 
   return m;
-  return m;
 }
 
 // player_t::composite_tank_dodge ====================================
@@ -1923,26 +1922,31 @@ double player_t::composite_spell_haste() SC_CONST
       h *= 1.0 / 1.03;
 
     if ( buffs.bloodlust -> up() )
+    {
       h *= 1.0 / ( 1.0 + 0.30 );
+    }
+    else if ( buffs.power_infusion -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
 
     if ( buffs.essence_of_the_red -> up() )
       h *= 1.0 / ( 1.0 + 1.0 );
-
-    else if ( buffs.power_infusion -> up() )
-      h *= 1.0 / ( 1.0 + 0.20 );
 
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + 0.20 );
 
     if ( ! is_pet() && ! is_enemy() && ! is_add() )
+    {
       if ( sim -> auras.wrath_of_air -> up() || sim -> auras.moonkin -> up() || sim -> auras.mind_quickening -> up() )
       {
         h *= 1.0 / ( 1.0 + 0.05 );
       }
+    }
 
     if ( race == RACE_GOBLIN )
     {
-      h *= 1 / ( 1.0 + 0.01 );
+      h *= 1.0 / ( 1.0 + 0.01 );
     }
   }
 
@@ -2105,6 +2109,9 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
       // ICC buff.
       m *= 1.30;
     }
+
+    if ( buffs.corruption_absolute -> up() )
+      m *= 2.0;
 
     if ( buffs.tricks_of_the_trade -> check() )
     {
@@ -2336,6 +2343,10 @@ void player_t::combat_begin()
   if ( sim -> overrides.essence_of_the_red )
   {
     buffs.essence_of_the_red -> trigger();
+  }
+  if ( sim -> overrides.corruption_absolute )
+  {
+    buffs.corruption_absolute -> trigger();
   }
   if ( sim -> overrides.strength_of_wrynn )
   {

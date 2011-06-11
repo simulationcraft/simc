@@ -2290,6 +2290,7 @@ struct sim_t
     int brittle_bones;
     int communion;
     int corrosive_spit;
+    int corruption_absolute;
     int critical_mass;
     int curse_of_elements;
     int dark_intent;
@@ -3082,6 +3083,7 @@ struct player_t
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* body_and_soul;
+    buff_t* corruption_absolute;
     buff_t* dark_intent;
     buff_t* dark_intent_feedback;
     buff_t* destruction_potion;

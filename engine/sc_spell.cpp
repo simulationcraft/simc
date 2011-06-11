@@ -87,6 +87,9 @@ double spell_t::execute_time() SC_CONST
   if ( ! harmful && ! player -> in_combat )
     return 0;
 
+  if ( player -> buffs.corruption_absolute -> up() )
+    return 0;
+
   if ( t <= 0 ) return 0;
   t *= haste();
 

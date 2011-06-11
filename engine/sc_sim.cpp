@@ -2011,6 +2011,7 @@ void sim_t::create_options()
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
     { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
     { "override.corrosive_spit",          OPT_BOOL,   &( overrides.corrosive_spit                 ) },
+    { "override.corruption_absolute",     OPT_BOOL,   &( overrides.corruption_absolute            ) },
     { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
     { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
     { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
