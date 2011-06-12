@@ -3552,12 +3552,6 @@ struct starfire_t : public druid_spell_t
         // Eclipse bar is moving towards, >35 for Starfire/towards Solar
         int gain = effect2().base_value();
 
-        // TODO: Setbonus applied before or after euphoria proc?
-        if ( p -> set_bonus.tier12_4pc_caster() )
-        {
-          gain += 5;
-        }
-
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
@@ -3567,6 +3561,10 @@ struct starfire_t : public druid_spell_t
               gain *= 2;
             }
           }
+        }
+        if ( p -> set_bonus.tier12_4pc_caster() )
+        {
+          gain += 5;
         }
         //trigger_eclipse_energy_gain( this, gain );
         trigger_eclipse_gain_delay( this, gain );
@@ -4135,12 +4133,6 @@ struct wrath_t : public druid_spell_t
         // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
         if ( ! p -> buffs_eclipse_solar -> check() )
         {
-          // TODO: Setbonus applied before or after euphoria proc?
-          if ( p -> set_bonus.tier12_4pc_caster() )
-          {
-            gain += 3;
-          }
-
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
           {
             if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
@@ -4149,6 +4141,10 @@ struct wrath_t : public druid_spell_t
               // Euphoria procs also add 1 to the counter
               p -> eclipse_wrath_count++;
             }
+          }
+          if ( p -> set_bonus.tier12_4pc_caster() )
+          {
+            gain += 3;
           }
         }
 
