@@ -3212,6 +3212,7 @@ struct player_t
     rng_t* lag_channel;
     rng_t* lag_gcd;
     rng_t* lag_queue;
+    rng_t* lag_ability;
     void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };
@@ -3640,6 +3641,7 @@ struct action_t : public spell_id_t
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   int dot_behavior;
+  double ability_lag, ability_lag_stddev;
   double rp_gain;
   double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;

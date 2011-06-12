@@ -208,6 +208,8 @@ struct death_knight_t : public player_t
   // Procs
   proc_t* proc_runic_empowerment;
   proc_t* proc_runic_empowerment_wasted;
+  proc_t* proc_oblit_killing_machine;
+  proc_t* proc_fs_killing_machine;
 
   // RNGs
   rng_t* rng_blood_caked_blade;
@@ -2894,6 +2896,10 @@ struct frost_strike_t : public death_knight_attack_t
         oh_attack -> execute();
       }
     }
+    if ( p -> buffs_killing_machine -> check() )
+    {
+      p -> proc_fs_killing_machine -> occur();
+    }
     p -> buffs_killing_machine -> expire();
   }
 
@@ -3350,7 +3356,12 @@ struct obliterate_t : public death_knight_attack_t
       }
     }
 
+    if ( p -> buffs_killing_machine -> check() )
+    {
+      p -> proc_oblit_killing_machine -> occur();
+    }
     p -> buffs_killing_machine -> expire();
+
   }
 
   virtual void player_buff()
@@ -4779,9 +4790,12 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  proc_runic_empowerment        = get_proc( "runic_empowerment"        );
-  proc_runic_empowerment_wasted = get_proc( "runic_empowerment_wasted" );
+  proc_runic_empowerment        = get_proc( "runic_empowerment"            );
+  proc_runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
+  proc_oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
+  proc_fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
 }
+
 
 // death_knight_t::init_resources ===========================================
 

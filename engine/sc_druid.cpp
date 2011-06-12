@@ -61,6 +61,7 @@ struct druid_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_mangle_bear;
   cooldown_t* cooldowns_fury_swipes;
+  cooldown_t* cooldowns_burning_treant;
 
   // DoTs
   dot_t* dots_insect_swarm;
@@ -134,6 +135,7 @@ struct druid_t : public player_t
   proc_t* procs_wrong_eclipse_wrath;
   proc_t* procs_wrong_eclipse_starfire;
   proc_t* procs_unaligned_eclipse_gain;
+  proc_t* procs_burning_treant;
 
   // Random Number Generation
   rng_t* rng_berserk;
@@ -144,6 +146,7 @@ struct druid_t : public player_t
   rng_t* rng_primal_fury;
   rng_t* rng_tier12_4pc_melee;
   rng_t* rng_wrath_eclipsegain;
+  rng_t* rng_burning_treant;
 
   // Spell Data
   struct spells_t
@@ -267,6 +270,8 @@ struct druid_t : public player_t
 
     cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
     cooldowns_fury_swipes = get_cooldown( "fury_swipes" );
+    cooldowns_burning_treant = get_cooldown( "burning_treant" );
+    cooldowns_burning_treant -> duration = 45.0;
 
     distance = 30;
 
@@ -572,6 +577,87 @@ struct treants_pet_t : public pet_t
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
+  }
+};
+
+// ==========================================================================
+// Pet Burning Treant Tier 12 set bonus
+// ==========================================================================
+
+struct burning_treant_pet_t : public pet_t
+{
+  double snapshot_crit;
+
+  burning_treant_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "burning_treant", true /*guardian*/ ),
+      snapshot_crit( 0 )
+  {
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/fireseed";
+  }
+
+  virtual void summon( double duration=0 )
+  {
+    pet_t::summon( duration );
+    // Guardians use snapshots
+    snapshot_crit = owner -> composite_spell_crit();
+    if ( owner -> bugs )
+    {
+      snapshot_crit = 0.00; // Rough guess
+    }
+    reset();
+    sleeping = 0;
+  }
+
+  virtual void dismiss()
+  {
+    pet_t::dismiss();
+    sleeping = 1;
+  }
+
+  virtual double composite_spell_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+
+  virtual double composite_spell_haste() SC_CONST
+  {
+    return 1.0;
+  }
+
+  struct fireseed_t : public spell_t
+  {
+    fireseed_t( burning_treant_pet_t* p ):
+      spell_t( "fireseed", 99026, p )
+    {
+      may_crit          = true;
+      trigger_gcd = 1.5;
+      if ( p -> owner -> bugs )
+      {
+        ability_lag = 0.74;
+        ability_lag_stddev = 0.62 / 2.0;
+      }
+    }
+  };
+
+  virtual void schedule_ready( double delta_time,
+                               bool   waiting  )
+  {
+    pet_t::schedule_ready( delta_time, waiting );
+  }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "fireseed" ) return new fireseed_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  virtual void halt()
+  {
+    pet_t::halt();
+    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };
 
@@ -973,6 +1059,25 @@ static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int sch
   p -> active_t10_4pc_caster_dot -> base_td = dmg / p -> active_t10_4pc_caster_dot -> num_ticks;
   p -> active_t10_4pc_caster_dot -> execute();
 }
+
+// trigger_burning_treant ============================================
+
+static void trigger_burning_treant( spell_t* s )
+{
+  druid_t* p = s -> player -> cast_druid();
+
+  if ( p -> dbc.ptr && p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_burning_treant -> remains() == 0 ) )
+  {
+    if ( p -> rng_burning_treant -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    {
+      p -> procs_burning_treant -> occur();
+      p -> dismiss_pet( "burning_treant" );
+      p -> summon_pet( "burning_treant", p -> dbc.spell( 99035 ) -> duration() - 0.01 );
+      p -> cooldowns_burning_treant -> start();
+    }
+  }
+}
+
 
 // ==========================================================================
 // Druid Cat Attack
@@ -3519,6 +3624,8 @@ struct starfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     druid_spell_t::execute();
 
+    trigger_burning_treant( this );
+
     if ( result_is_hit() )
     {
       trigger_earth_and_moon( this );
@@ -4166,6 +4273,8 @@ struct wrath_t : public druid_spell_t
     // Cast wrath, but lunar eclipse was up?
     if ( p -> buffs_eclipse_lunar -> check() )
       p -> procs_wrong_eclipse_wrath -> occur();
+
+    trigger_burning_treant( this );
   }
 
   virtual bool ready()
@@ -4267,6 +4376,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
   if ( p ) return p;
 
   if ( pet_name == "treants" ) return new treants_pet_t( sim, this, pet_name );
+  if ( pet_name == "burning_treant" ) return new burning_treant_pet_t( sim, this );
 
   return 0;
 }
@@ -4276,6 +4386,10 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 void druid_t::create_pets()
 {
   create_pet( "treants" );
+  if ( dbc.ptr )
+  {
+    create_pet( "burning_treant" );
+  }
 }
 
 // druid_t::init_talents =====================================================
@@ -4560,7 +4674,7 @@ void druid_t::init_procs()
   procs_unaligned_eclipse_gain = get_proc( "unaligned_eclipse_gain" );
   procs_wrong_eclipse_wrath    = get_proc( "wrong_eclipse_wrath"    );
   procs_wrong_eclipse_starfire = get_proc( "wrong_eclipse_starfire" );
-
+  procs_burning_treant         = get_proc( "burning_treant"         );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -4579,14 +4693,15 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_berserk             = get_rng( "berserk"            );
-  rng_blood_in_the_water  = get_rng( "blood_in_the_water" );
-  rng_empowered_touch     = get_rng( "empowered_touch"    );
-  rng_euphoria            = get_rng( "euphoria"           );
-  rng_fury_swipes         = get_rng( "fury_swipes"        );
-  rng_primal_fury         = get_rng( "primal_fury"        );
-  rng_tier12_4pc_melee    = get_rng( "tier12_4pc_melee"   );
-  rng_wrath_eclipsegain   = get_rng( "wrath_eclipsegain"  );
+  rng_berserk             = get_rng( "berserk"             );
+  rng_blood_in_the_water  = get_rng( "blood_in_the_water"  );
+  rng_empowered_touch     = get_rng( "empowered_touch"     );
+  rng_euphoria            = get_rng( "euphoria"            );
+  rng_fury_swipes         = get_rng( "fury_swipes"         );
+  rng_primal_fury         = get_rng( "primal_fury"         );
+  rng_tier12_4pc_melee    = get_rng( "tier12_4pc_melee"    );
+  rng_wrath_eclipsegain   = get_rng( "wrath_eclipsegain"   );
+  rng_burning_treant      = get_rng( "burning_treant_proc" );
 }
 
 // druid_t::init_actions ====================================================

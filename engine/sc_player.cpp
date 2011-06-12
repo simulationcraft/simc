@@ -1454,6 +1454,7 @@ void player_t::init_rng()
   rngs.lag_channel = get_rng( "lag_channel" );
   rngs.lag_gcd     = get_rng( "lag_gcd"     );
   rngs.lag_queue   = get_rng( "lag_queue"   );
+  rngs.lag_ability = get_rng( "lag_ability" );
 }
 
 // player_t::init_stats ====================================================
@@ -2580,7 +2581,22 @@ void player_t::schedule_ready( double delta_time,
 
     if ( last_foreground_action && ! last_foreground_action -> auto_cast )
     {
-      if ( last_foreground_action -> gcd() == 0 )
+      if ( last_foreground_action -> ability_lag > 0.0 )
+      {
+        double ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
+        double gcd_lag     = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
+        double diff        = ( gcd_ready + gcd_lag ) - ( sim -> current_time + ability_lag );
+        if ( diff > 0 && sim -> strict_gcd_queue )
+        {
+          lag = gcd_lag;
+        }
+        else
+        {
+          lag = ability_lag;
+          action_queued = true;
+        }
+      }
+      else if ( last_foreground_action -> gcd() == 0 )
       {
         lag = 0;
       }

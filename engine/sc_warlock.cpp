@@ -214,6 +214,7 @@ struct warlock_t : public player_t
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
   cooldown_t* cooldowns_glyph_of_shadowburn;
+  cooldown_t* cooldowns_fiery_imp;
 
   // Talents
 
@@ -310,6 +311,7 @@ struct warlock_t : public player_t
   proc_t* procs_impending_doom;
   proc_t* procs_shadow_trance;
   proc_t* procs_ebon_imp;
+  proc_t* procs_fiery_imp;
 
   // Random Number Generators
   rng_t* rng_soul_leech;
@@ -319,6 +321,7 @@ struct warlock_t : public player_t
   rng_t* rng_impending_doom;
   rng_t* rng_siphon_life;
   rng_t* rng_ebon_imp;
+  rng_t* rng_fiery_imp;
 
   // Spells
   spell_t* spells_burning_embers;
@@ -379,6 +382,8 @@ struct warlock_t : public player_t
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_glyph_of_shadowburn             = get_cooldown ( "glyph_of_shadowburn" );
     cooldowns_glyph_of_shadowburn -> duration = dbc.spell( 91001 ) -> duration();
+    cooldowns_fiery_imp = get_cooldown( "fiery_imp" );
+    cooldowns_fiery_imp -> duration = 45.0;
 
     use_pre_soulburn = 0;
 
@@ -967,6 +972,20 @@ struct warlock_spell_t : public spell_t
       target_multiplier *= 1.0 + p -> buffs_bane_of_havoc -> effect1().percent();
   }
 
+  // warlock_spell_t::tick ==================================================
+
+  virtual void tick()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    spell_t::tick();
+
+    if ( tick_dmg > 0 )
+    {
+      trigger_fiery_imp( this );
+    }
+  }
+
   // warlock_spell_t::total_td_multiplier ===================================
 
   virtual double total_td_multiplier() SC_CONST
@@ -1061,6 +1080,24 @@ struct warlock_spell_t : public spell_t
     if ( p -> rng_everlasting_affliction -> roll( p -> talent_everlasting_affliction -> proc_chance() ) )
     {
       p -> dots_corruption -> action -> refresh_duration();
+    }
+  }
+
+  // trigger_fiery_imp ============================================
+
+  static void trigger_fiery_imp( spell_t* s )
+  {
+    warlock_t* p = s -> player -> cast_warlock();
+
+    if ( p -> dbc.ptr && p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_fiery_imp -> remains() == 0 ) )
+    {
+      if ( p -> rng_fiery_imp -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      {
+        p -> procs_fiery_imp -> occur();
+        p -> dismiss_pet( "fiery_imp" );
+        p -> summon_pet( "fiery_imp", p -> dbc.spell( 99221 ) -> duration() - 0.01 );
+        p -> cooldowns_fiery_imp -> start();
+      }
     }
   }
 };
@@ -1748,6 +1785,81 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     warlock_guardian_pet_t::init_base();
 
     main_hand_attack = new warlock_pet_melee_t( this, "ebon_imp_melee" );
+  }
+};
+
+// ==========================================================================
+// Pet Fiery Imp Tier 12 set bonus
+// ==========================================================================
+
+struct fiery_imp_pet_t : public pet_t
+{
+  double snapshot_crit;
+
+  fiery_imp_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "fiery_imp", true /*guardian*/ ),
+      snapshot_crit( 0 )
+  {
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/flame_blast";
+  }
+
+  virtual void summon( double duration=0 )
+  {
+    pet_t::summon( duration );
+    // Guardians use snapshots
+    snapshot_crit = owner -> composite_spell_crit();
+    if ( owner -> bugs )
+    {
+      snapshot_crit = 0.00; // Rough guess
+    }
+    reset();
+    sleeping = 0;
+  }
+
+  virtual void dismiss()
+  {
+    pet_t::dismiss();
+    sleeping = 1;
+  }
+
+  virtual double composite_spell_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+
+  virtual double composite_spell_haste() SC_CONST
+  {
+    return 1.0;
+  }
+
+  struct flame_blast_t : public spell_t
+  {
+    flame_blast_t( fiery_imp_pet_t* p ):
+      spell_t( "flame_blast", 99226, p )
+    {
+      may_crit          = true;
+      trigger_gcd = 1.5;
+      if ( p -> owner -> bugs )
+      {
+        ability_lag = 0.74;
+        ability_lag_stddev = 0.62 / 2.0;
+      }
+    }
+  };
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "flame_blast" ) return new flame_blast_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  virtual void halt()
+  {
+    pet_t::halt();
+    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };
 
@@ -3960,6 +4072,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
   if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
   if ( pet_name == "ebon_imp"     ) return new    ebon_imp_pet_t( sim, this );
+  if ( pet_name == "fiery_imp"    ) return new   fiery_imp_pet_t( sim, this );
 
   return 0;
 }
@@ -3976,6 +4089,10 @@ void warlock_t::create_pets()
   create_pet( "infernal"  );
   create_pet( "doomguard" );
   create_pet( "ebon_imp"  );
+  if ( dbc.ptr )
+  {
+    create_pet( "fiery_imp" );
+  }
 }
 
 // warlock_t::init_talents ==================================================
@@ -4195,6 +4312,7 @@ void warlock_t::init_procs()
   procs_empowered_imp    = get_proc( "empowered_imp"  );
   procs_shadow_trance    = get_proc( "shadow_trance"  );
   procs_ebon_imp         = get_proc( "ebon_imp"       );
+  procs_fiery_imp        = get_proc( "fiery_imp"      );
 }
 
 // warlock_t::init_rng ======================================================
@@ -4210,6 +4328,7 @@ void warlock_t::init_rng()
   rng_impending_doom          = get_rng( "impending_doom"         );
   rng_siphon_life             = get_rng( "siphon_life"            );
   rng_ebon_imp                = get_rng( "ebon_imp_proc"          );
+  rng_fiery_imp               = get_rng( "fiery_imp_proc"         );
 }
 
 // warlock_t::init_actions ==================================================

@@ -45,6 +45,8 @@ void action_t::_init_action_t()
   tick_zero                      = false;
   hasted_ticks                   = false;
   dot_behavior                   = DOT_CLIP;
+  ability_lag                    = 0.0;
+  ability_lag_stddev             = 0.0;
   rp_gain                        = 0.0;
   min_gcd                        = 0.0;
   trigger_gcd                    = player -> base_gcd;

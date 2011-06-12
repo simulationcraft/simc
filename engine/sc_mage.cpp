@@ -725,20 +725,14 @@ struct mirror_image_pet_t : public pet_t
 
 struct tier12_mirror_image_pet_t : public pet_t
 {
-  double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery;
+  double snapshot_crit;
 
   tier12_mirror_image_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "tier12_mirror_image", true /*guardian*/ ),
-      snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
+      snapshot_crit( 0 )
   {
     action_list_str += "/snapshot_stats";
     action_list_str += "/fireball";
-
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 0;
-    main_hand_weapon.max_dmg    = 0;
-    main_hand_weapon.damage     = 0;
-    main_hand_weapon.swing_time = 1.5;
   }
 
   virtual void summon( double duration=0 )
@@ -746,37 +740,18 @@ struct tier12_mirror_image_pet_t : public pet_t
     pet_t::summon( duration );
     // Guardians use snapshots
     snapshot_crit = owner -> composite_spell_crit();
-    snapshot_haste = owner -> composite_spell_haste();
-    snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX ); // Get the max SP for simplicity
-    snapshot_mastery = owner -> composite_mastery();
+    if ( owner -> bugs )
+    {
+      snapshot_crit = 0.00; // Rough guess
+    }
     reset();
+    sleeping = 0;
   }
 
-  virtual double composite_attack_crit() SC_CONST
+  virtual void dismiss()
   {
-    return snapshot_crit;
-  }
-    
-  virtual double composite_attack_expertise() SC_CONST
-  {
-    return 0;
-  }
-
-  virtual double composite_attack_haste() SC_CONST
-  {
-    return snapshot_haste * player_t::composite_attack_haste();
-  }
-
-  virtual double composite_attack_hit() SC_CONST
-  {
-    return 0;
-  }
-
-  virtual double composite_attack_power() SC_CONST
-  {
-    double ap = pet_t::composite_attack_power();
-    ap += snapshot_sp * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
-    return ap;
+    pet_t::dismiss();
+    sleeping = 1;
   }
 
   virtual double composite_spell_crit() SC_CONST
@@ -786,15 +761,7 @@ struct tier12_mirror_image_pet_t : public pet_t
 
   virtual double composite_spell_haste() SC_CONST
   {
-    // FIXME: Needs testing, but Doomguard seems to not scale with our haste after 4.1 or so
     return 1.0;
-  }
-
-  virtual double composite_spell_power( const school_type school ) SC_CONST
-  {
-    double sp = pet_t::composite_spell_power( school );
-    sp += snapshot_sp * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
-    return sp;
   }
 
   struct fireball_t : public spell_t
@@ -803,21 +770,12 @@ struct tier12_mirror_image_pet_t : public pet_t
       spell_t( "fireball", 99062, mirror_image )
     {
       may_crit          = true;
-      background        = true;
-    }
-    virtual void execute()
-    {
-      spell_t::execute();
-    }
-    virtual double execute_time() SC_CONST
-    {
-      double h = spell_t::execute_time();
-      return h;
-    }
-
-    virtual void schedule_execute()
-    {
-      spell_t::schedule_execute();
+      trigger_gcd = 1.5;
+      if ( mirror_image -> owner -> bugs )
+      {
+        ability_lag = 0.74;
+        ability_lag_stddev = 0.62 / 2.0;
+      }
     }
   };
 
@@ -828,32 +786,6 @@ struct tier12_mirror_image_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
-  virtual void schedule_ready( double delta_time=0,
-                               bool   waiting=false )
-  {
-    if ( main_hand_attack && ! main_hand_attack -> execute_event )
-    {
-      main_hand_attack -> schedule_execute();
-    }
-
-    pet_t::schedule_ready( delta_time, waiting );
-  }
-
-  virtual void init_base()
-  {
-    pet_t::init_base();
-
-    // Stolen from Priest's Shadowfiend
-    attribute_base[ ATTR_STRENGTH  ] = 145;
-    attribute_base[ ATTR_AGILITY   ] =  38;
-    attribute_base[ ATTR_STAMINA   ] = 190;
-    attribute_base[ ATTR_INTELLECT ] = 133;
-
-    health_per_stamina = 7.5;
-    mana_per_intellect = 5;
-  }
-
 
   virtual void halt()
   {
@@ -1068,13 +1000,13 @@ static void trigger_tier12_mirror_image( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> set_bonus.tier12_2pc_caster() && ( p ->cooldowns_tier12_mirror_image -> remains() == 0 ) )
+  if ( p -> dbc.ptr && p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_tier12_mirror_image -> remains() == 0 ) )
   {
     if ( p -> rng_tier12_mirror_image -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
       p -> procs_tier12_mirror_image -> occur();
       p -> dismiss_pet( "tier12_mirror_image" );
-      p -> summon_pet( "tier12_mirror_image", 14.99 );
+      p -> summon_pet( "tier12_mirror_image", p -> dbc.spell( 99063 ) -> duration() - 0.01 );
       p -> cooldowns_tier12_mirror_image -> start();
     }
   }
@@ -2991,7 +2923,7 @@ void mage_t::create_pets()
 {
   create_pet( "mirror_image_3"  );
   create_pet( "water_elemental" );
-  if ( dbc.ptr && set_bonus.tier12_2pc_caster() )
+  if ( dbc.ptr )
   {
     create_pet( "tier12_mirror_image" );
   }
