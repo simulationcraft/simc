@@ -49,6 +49,7 @@ struct mage_t : public player_t
   cooldown_t* cooldowns_deep_freeze;
   cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_early_frost;
+  cooldown_t* cooldowns_tier12_mirror_image;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -136,6 +137,7 @@ struct mage_t : public player_t
   proc_t* procs_rolled_ignite;
   proc_t* procs_mana_gem;
   proc_t* procs_early_frost;
+  proc_t* procs_tier12_mirror_image;
 
   // Random Number Generation
   rng_t* rng_arcane_missiles;
@@ -145,6 +147,7 @@ struct mage_t : public player_t
   rng_t* rng_impact;
   rng_t* rng_improved_freeze;
   rng_t* rng_nether_vortex;
+  rng_t* rng_tier12_mirror_image;
 
   // Rotation (DPS vs DPM)
   struct rotation_t
@@ -251,6 +254,8 @@ struct mage_t : public player_t
     cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
     cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
     cooldowns_early_frost = get_cooldown( "early_frost" );
+    cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
+    cooldowns_tier12_mirror_image -> duration = 45.0;
 
     distance = 40;
     mana_gem_charges = 3;
@@ -714,6 +719,149 @@ struct mirror_image_pet_t : public pet_t
   }
 };
 
+// ==========================================================================
+// Pet Mirror Image Tier 12 set bonus
+// ==========================================================================
+
+struct tier12_mirror_image_pet_t : public pet_t
+{
+  double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery;
+
+  tier12_mirror_image_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "tier12_mirror_image", true /*guardian*/ ),
+      snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
+  {
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/fireball";
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 0;
+    main_hand_weapon.max_dmg    = 0;
+    main_hand_weapon.damage     = 0;
+    main_hand_weapon.swing_time = 1.5;
+  }
+
+  virtual void summon( double duration=0 )
+  {
+    pet_t::summon( duration );
+    // Guardians use snapshots
+    snapshot_crit = owner -> composite_spell_crit();
+    snapshot_haste = owner -> composite_spell_haste();
+    snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX ); // Get the max SP for simplicity
+    snapshot_mastery = owner -> composite_mastery();
+    reset();
+  }
+
+  virtual double composite_attack_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+    
+  virtual double composite_attack_expertise() SC_CONST
+  {
+    return 0;
+  }
+
+  virtual double composite_attack_haste() SC_CONST
+  {
+    return snapshot_haste * player_t::composite_attack_haste();
+  }
+
+  virtual double composite_attack_hit() SC_CONST
+  {
+    return 0;
+  }
+
+  virtual double composite_attack_power() SC_CONST
+  {
+    double ap = pet_t::composite_attack_power();
+    ap += snapshot_sp * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
+    return ap;
+  }
+
+  virtual double composite_spell_crit() SC_CONST
+  {
+    return snapshot_crit;
+  }
+
+  virtual double composite_spell_haste() SC_CONST
+  {
+    // FIXME: Needs testing, but Doomguard seems to not scale with our haste after 4.1 or so
+    return 1.0;
+  }
+
+  virtual double composite_spell_power( const school_type school ) SC_CONST
+  {
+    double sp = pet_t::composite_spell_power( school );
+    sp += snapshot_sp * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
+    return sp;
+  }
+
+  struct fireball_t : public spell_t
+  {
+    fireball_t( tier12_mirror_image_pet_t* mirror_image ):
+      spell_t( "fireball", 99062, mirror_image )
+    {
+      may_crit          = true;
+      background        = true;
+    }
+    virtual void execute()
+    {
+      spell_t::execute();
+    }
+    virtual double execute_time() SC_CONST
+    {
+      double h = spell_t::execute_time();
+      return h;
+    }
+
+    virtual void schedule_execute()
+    {
+      spell_t::schedule_execute();
+    }
+  };
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "fireball" ) return new fireball_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  virtual void schedule_ready( double delta_time=0,
+                               bool   waiting=false )
+  {
+    if ( main_hand_attack && ! main_hand_attack -> execute_event )
+    {
+      main_hand_attack -> schedule_execute();
+    }
+
+    pet_t::schedule_ready( delta_time, waiting );
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    // Stolen from Priest's Shadowfiend
+    attribute_base[ ATTR_STRENGTH  ] = 145;
+    attribute_base[ ATTR_AGILITY   ] =  38;
+    attribute_base[ ATTR_STAMINA   ] = 190;
+    attribute_base[ ATTR_INTELLECT ] = 133;
+
+    health_per_stamina = 7.5;
+    mana_per_intellect = 5;
+  }
+
+
+  virtual void halt()
+  {
+    pet_t::halt();
+    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
+  }
+};
+
 // calculate_dot_dps ========================================================
 
 static double calculate_dot_dps( dot_t* dot )
@@ -912,6 +1060,24 @@ static void trigger_replenishment( spell_t* s )
     return;
 
   p -> trigger_replenishment();
+}
+
+// trigger_tier12_mirror_image ====================================================
+
+static void trigger_tier12_mirror_image( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+
+  if ( p -> set_bonus.tier12_2pc_caster() && ( p ->cooldowns_tier12_mirror_image -> remains() == 0 ) )
+  {
+    if ( p -> rng_tier12_mirror_image -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    {
+      p -> procs_tier12_mirror_image -> occur();
+      p -> dismiss_pet( "tier12_mirror_image" );
+      p -> summon_pet( "tier12_mirror_image", 14.99 );
+      p -> cooldowns_tier12_mirror_image -> start();
+    }
+  }
 }
 
 // ==========================================================================
@@ -1237,6 +1403,7 @@ struct arcane_blast_t : public mage_spell_t
         target -> debuffs.slow -> source = p;
       }
     }
+    trigger_tier12_mirror_image( this );
   }
 
   virtual double execute_time() SC_CONST
@@ -1690,6 +1857,7 @@ struct fireball_t : public mage_spell_t
   {
     mage_spell_t::execute();
     consume_brain_freeze( this );
+    trigger_tier12_mirror_image( this );
   }
 };
 
@@ -1910,6 +2078,8 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
+
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
@@ -1929,6 +2099,7 @@ struct frostbolt_t : public mage_spell_t
         }*/
       }
     }
+    trigger_tier12_mirror_image( this );
   }
 
   virtual double execute_time() SC_CONST
@@ -2014,6 +2185,7 @@ struct frostfire_bolt_t : public mage_spell_t
     fof_frozen = p -> buffs_brain_freeze -> up();
     mage_spell_t::execute();
     consume_brain_freeze( this );
+    trigger_tier12_mirror_image( this );
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -2808,6 +2980,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
   if ( pet_name == "mirror_image_3"  ) return new mirror_image_pet_t   ( sim, this );
   if ( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
+  if ( pet_name == "tier12_mirror_image" ) return new tier12_mirror_image_pet_t( sim, this );
 
   return 0;
 }
@@ -2818,6 +2991,10 @@ void mage_t::create_pets()
 {
   create_pet( "mirror_image_3"  );
   create_pet( "water_elemental" );
+  if ( dbc.ptr && set_bonus.tier12_2pc_caster() )
+  {
+    create_pet( "tier12_mirror_image" );
+  }
 }
 
 // mage_t::init_talents =====================================================
@@ -3031,11 +3208,12 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_deferred_ignite = get_proc( "deferred_ignite" );
-  procs_munched_ignite  = get_proc( "munched_ignite"  );
-  procs_rolled_ignite   = get_proc( "rolled_ignite"   );
-  procs_mana_gem        = get_proc( "mana_gem"        );
-  procs_early_frost     = get_proc( "early_frost"     );
+  procs_deferred_ignite     = get_proc( "deferred_ignite"     );
+  procs_munched_ignite      = get_proc( "munched_ignite"      );
+  procs_rolled_ignite       = get_proc( "rolled_ignite"       );
+  procs_mana_gem            = get_proc( "mana_gem"            );
+  procs_early_frost         = get_proc( "early_frost"         );
+  procs_tier12_mirror_image = get_proc( "tier12_mirror_image" );
 }
 
 // mage_t::init_uptimes =====================================================
@@ -3060,13 +3238,14 @@ void mage_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_arcane_missiles = get_rng( "arcane_missiles" );
-  rng_empowered_fire  = get_rng( "empowered_fire"  );
-  rng_enduring_winter = get_rng( "enduring_winter" );
-  rng_fire_power      = get_rng( "fire_power"      );
-  rng_impact          = get_rng( "impact"          );
-  rng_improved_freeze = get_rng( "improved_freeze" );
-  rng_nether_vortex   = get_rng( "nether_vortex"   );
+  rng_arcane_missiles     = get_rng( "arcane_missiles"     );
+  rng_empowered_fire      = get_rng( "empowered_fire"      );
+  rng_enduring_winter     = get_rng( "enduring_winter"     );
+  rng_fire_power          = get_rng( "fire_power"          );
+  rng_impact              = get_rng( "impact"              );
+  rng_improved_freeze     = get_rng( "improved_freeze"     );
+  rng_nether_vortex       = get_rng( "nether_vortex"       );
+  rng_tier12_mirror_image = get_rng( "tier12_mirror_image" );
 }
 
 // mage_t::init_actions =====================================================
