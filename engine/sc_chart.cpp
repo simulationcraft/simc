@@ -1162,7 +1162,7 @@ const char* chart_t::scaling_dps( std::string& s,
     s += stat_color( i );
   }
   s += "&amp;";
-  s += "chg=5,10,1,3";
+  snprintf( buffer, sizeof( buffer ), "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 ); s += buffer;
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );

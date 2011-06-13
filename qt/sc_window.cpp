@@ -218,7 +218,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
        {
          for ( int source = 0; itemDbOrder -> count(); source++ )
          {
-           if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
+          if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
           {
             items[ opt ] = itemDbOrder -> takeItem( source );
             break;

@@ -2010,8 +2010,6 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_t* p = player -> cast_mage();
-
     mage_spell_t::execute();
     if ( result_is_hit() )
     {

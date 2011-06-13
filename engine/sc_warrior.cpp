@@ -2992,7 +2992,7 @@ void warrior_t::init_scaling()
   if ( talents.single_minded_fury -> ok() || talents.titans_grip -> ok() )
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = 1;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors;
   }
 
   if ( primary_role() == ROLE_TANK )

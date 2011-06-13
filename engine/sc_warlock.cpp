@@ -976,8 +976,6 @@ struct warlock_spell_t : public spell_t
 
   virtual void tick()
   {
-    warlock_t* p = player -> cast_warlock();
-
     spell_t::tick();
 
     if ( tick_dmg > 0 )
