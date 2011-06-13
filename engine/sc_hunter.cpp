@@ -70,6 +70,7 @@ struct hunter_t : public player_t
   proc_t* procs_thrill_of_the_hunt;
   proc_t* procs_wild_quiver;  
   proc_t* procs_lock_and_load;
+  proc_t* procs_flaming_arrow;
 
   // Random Number Generation
   rng_t* rng_frenzy;
@@ -78,6 +79,7 @@ struct hunter_t : public player_t
   rng_t* rng_rabid_power;
   rng_t* rng_thrill_of_the_hunt;
   rng_t* rng_tier11_4pc;
+  rng_t* rng_tier12_2pc;
 
   // Talents
   struct talents_t
@@ -181,6 +183,8 @@ struct hunter_t : public player_t
   };
   passive_spells_t passive_spells;
 
+  action_t* flaming_arrow;
+
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -208,6 +212,7 @@ struct hunter_t : public player_t
     hunter_position = "back";
     distance = 40;
     base_gcd = 1.0;
+    flaming_arrow = NULL;
 
     create_talents();
     create_glyphs();
@@ -656,12 +661,15 @@ struct hunter_pet_t : public pet_t
 
 struct hunter_attack_t : public attack_t
 {
+  bool  consumes_tier12_4pc;
+
   void _init_hunter_attack_t()
   {
     range = -1;
     may_crit               = true;
     tick_may_crit          = true;
     normalize_weapon_speed = true;
+    consumes_tier12_4pc    = false;
   }
   hunter_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_FOCUS, s, t, special )
@@ -725,24 +733,27 @@ struct hunter_attack_t : public attack_t
 
 struct hunter_spell_t : public spell_t
 {
+  bool consumes_tier12_4pc;
+
   hunter_spell_t( const char* n, player_t* p, const school_type s, int t=TREE_NONE ) :
-      spell_t( n, p, RESOURCE_FOCUS, s, t )
+      spell_t( n, p, RESOURCE_FOCUS, s, t ), consumes_tier12_4pc( false )
   {
     range = -1;
   }
   hunter_spell_t( const char* n, player_t* p, const char* sname ) :
-      spell_t( n, sname, p )
+      spell_t( n, sname, p ), consumes_tier12_4pc( false )
   {
     range = -1;
   }
   hunter_spell_t( const char* n, player_t* p, const uint32_t id ) :
-      spell_t( n, id, p )
+      spell_t( n, id, p ), consumes_tier12_4pc( false )
   {
     range = -1;
   }
 
   virtual double gcd() SC_CONST;
   virtual double cost() SC_CONST;
+  virtual void consume_resource();
 };
 
 namespace { // ANONYMOUS NAMESPACE =========================================
@@ -830,6 +841,31 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
     p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
   }
 }
+
+
+// trigger_tier12_2pc_melee ========================================
+
+static void trigger_tier12_2pc_melee( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> dbc.ptr ) return;
+
+  if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
+
+  if ( ! a -> weapon ) return;
+  if ( a -> weapon -> slot != SLOT_RANGED ) return;
+  if ( a -> proc ) return;
+
+  assert( p -> flaming_arrow );
+
+  if ( p -> rng_tier12_2pc -> roll( p -> dbc.spell( 99057 ) -> proc_chance() ) )
+  {
+    p -> procs_flaming_arrow -> occur();
+    p -> flaming_arrow -> execute();
+  }  
+}
+
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -1645,7 +1681,7 @@ double hunter_attack_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> ptr && p -> buffs_tier12_4pc -> check() ) return 0; // To-Do: confirm if this does affect all shots
+  if ( p -> ptr && p -> buffs_tier12_4pc -> check() && consumes_tier12_4pc ) return 0;
   if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
   return c;
 }
@@ -1885,6 +1921,8 @@ struct aimed_shot_t : public hunter_attack_t
 
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
+
+    consumes_tier12_4pc = true;
   }
 
   virtual double cost() SC_CONST
@@ -1965,6 +2003,7 @@ struct arcane_shot_t : public hunter_attack_t
 
     base_multiplier *= 1.0 + p -> glyphs.arcane_shot -> mod_additive( P_GENERIC );
 
+    consumes_tier12_4pc = true;
   }
 
   virtual double cost() SC_CONST
@@ -1992,6 +2031,25 @@ struct arcane_shot_t : public hunter_attack_t
     p -> buffs_lock_and_load -> decrement();
   }
 };
+
+// Flaming Arrow Attack =========================================================
+
+struct flaming_arrow_t : public hunter_attack_t
+{
+  flaming_arrow_t( player_t* player ) :
+      hunter_attack_t( "flaming_arrow", player, 99058 )
+  {
+    background = true;
+    repeating = false;
+    proc = true;
+    normalize_weapon_speed=true;
+  }
+  virtual void execute()
+  {
+    hunter_attack_t::execute();
+  }
+};
+
 
 // Black Arrow =================================================================
 
@@ -2140,6 +2198,8 @@ struct chimera_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
 
     cooldown -> duration += p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN );
+
+    consumes_tier12_4pc = true;
   }
 
 
@@ -2208,6 +2268,12 @@ struct cobra_shot_t : public hunter_attack_t
     }
   }
 
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    hunter_attack_t::travel( t, travel_result, travel_dmg);
+    trigger_tier12_2pc_melee( this );
+  }
+
   void player_buff()
   {
     hunter_t* p = player -> cast_hunter();
@@ -2255,6 +2321,8 @@ struct explosive_shot_t : public hunter_attack_t
 
     tick_power_mod = 0.232;
     tick_zero = true;
+
+    consumes_tier12_4pc = true;
   }
 
   virtual double cost() SC_CONST
@@ -2484,6 +2552,8 @@ struct multi_shot_t : public hunter_attack_t
     normalize_weapon_speed = true;
     if( p -> talents.serpent_spread -> rank() )
       spread_sting = new serpent_sting_spread_t( player, options_str );
+
+    consumes_tier12_4pc = true;
   }
 
   virtual void execute()
@@ -2597,6 +2667,7 @@ struct steady_shot_t : public hunter_attack_t
         }
       }
     }
+    trigger_tier12_2pc_melee( this );
   }
 
   virtual bool usable_moving()
@@ -2699,8 +2770,27 @@ double hunter_spell_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = spell_t::cost();
   if ( c == 0 ) return 0;
+  if ( p -> dbc.ptr && p -> buffs_tier12_4pc -> check() && consumes_tier12_4pc ) return 0;
   if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
   return c;
+}
+
+// hunter_spell_t::consume_resource ===================================================
+
+void hunter_spell_t::consume_resource()
+{
+  spell_t::consume_resource();
+  hunter_t* p = player -> cast_hunter();
+  if ( p -> dbc.ptr && p -> buffs_tier12_4pc -> up() )
+  {
+    // Treat the savings like a gain
+    double amount = spell_t::cost();
+    if ( amount > 0 )
+    {
+      p -> gains_tier12_4pc -> add( amount );
+      p -> buffs_tier12_4pc -> expire();
+    }
+  }
 }
 
 // Aspect of the Hawk
@@ -2944,6 +3034,8 @@ struct kill_command_t : public hunter_spell_t
     {
       stats -> children.push_back( pet -> get_stats( "kill_command" ) );
     }
+
+    consumes_tier12_4pc = true;
   }
 
   virtual double cost() SC_CONST
@@ -3164,7 +3256,7 @@ struct hunter_sniper_training_event_t : public event_t
 
       if ( ( sim -> current_time - finished_moving ) > p -> talents.sniper_training -> effect1().base_value() )
       {
-	p -> buffs_sniper_training -> trigger();
+        p -> buffs_sniper_training -> trigger();
       }
     }
     new (sim) hunter_sniper_training_event_t( p );
@@ -3425,6 +3517,11 @@ void hunter_t::init_base()
   {
     register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
   }
+
+  if ( dbc.ptr )
+  {
+    flaming_arrow = new flaming_arrow_t( this );
+  }
 }
 
 // hunter_t::init_buffs =======================================================
@@ -3488,6 +3585,7 @@ void hunter_t::init_procs()
   procs_thrill_of_the_hunt = get_proc( "thrill_of_the_hunt" );
   procs_wild_quiver        = get_proc( "wild_quiver"        );
   procs_lock_and_load      = get_proc( "lock_and_load"      );
+  procs_flaming_arrow      = get_proc( "flaming_arrow"      );
 }
 
 // hunter_t::init_rng ========================================================
@@ -3500,6 +3598,7 @@ void hunter_t::init_rng()
   rng_owls_focus           = get_rng( "owls_focus"         );
   rng_thrill_of_the_hunt   = get_rng( "thrill_of_the_hunt" );
   rng_tier11_4pc           = get_rng( "tier11_4pc" );
+  rng_tier12_2pc           = get_rng( "tier12_2pc" );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
   // also useful for frequent checks with low probability of proc and timed effect
