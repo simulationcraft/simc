@@ -16,6 +16,7 @@ struct druid_t : public player_t
   action_t* active_fury_swipes;
   heal_t*   active_living_seed;
   action_t* active_t10_4pc_caster_dot;
+  spell_t*  active_tier12_2pc_melee;
 
   // Auto-attacks
   attack_t* cat_melee_attack;
@@ -136,6 +137,8 @@ struct druid_t : public player_t
   proc_t* procs_wrong_eclipse_starfire;
   proc_t* procs_unaligned_eclipse_gain;
   proc_t* procs_burning_treant;
+  proc_t* procs_munched_tier12_2pc_melee;
+  proc_t* procs_rolled_tier12_2pc_melee;
 
   // Random Number Generation
   rng_t* rng_berserk;
@@ -263,6 +266,7 @@ struct druid_t : public player_t
     active_fury_swipes        = NULL;
     active_living_seed        = 0;
     active_t10_4pc_caster_dot = 0;
+    active_tier12_2pc_melee   = 0;
 
     eclipse_bar_value     = 0;
     eclipse_wrath_count   = 0;
@@ -1078,6 +1082,86 @@ static void trigger_burning_treant( spell_t* s )
   }
 }
 
+// trigger_tier12_2pc_melee ===========================================================
+
+static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
+{
+  if ( s -> school != SCHOOL_PHYSICAL ) return;
+
+  druid_t* p = s -> player -> cast_druid();
+  sim_t* sim = s -> sim;
+
+  if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
+
+  if ( ! p -> dbc.ptr ) return;
+
+  struct fiery_claws_t : public druid_spell_t
+  {
+    fiery_claws_t( druid_t* player ) :
+      druid_spell_t( "fiery_claws", 99002, player )
+    {
+      background    = true;
+      proc          = true;
+      may_resist    = true;
+      tick_may_crit = false;
+      hasted_ticks  = false;
+      dot_behavior  = DOT_REFRESH;
+      init();
+    }
+    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    {
+      druid_spell_t::travel( t, travel_result, 0 );
+
+      // FIXME: Is a is_hit check necessary here?
+      base_td = total_dot_dmg / dot -> num_ticks;
+    }
+    virtual double travel_time()
+    {
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    }
+    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+  };
+
+  double total_dot_dmg = dmg * p -> dbc.spell( 99001 ) -> effect1().percent();
+
+  if ( ! p -> active_tier12_2pc_melee ) p -> active_tier12_2pc_melee = new fiery_claws_t( p );
+
+  dot_t* dot = p -> active_tier12_2pc_melee -> dot;
+
+  if ( dot -> ticking )
+  {
+    total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
+  }
+
+  if( ( p -> dbc.spell( 99002 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  {
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Fiery Claws due to Max Fiery Claws Duration.", p -> name() );
+    p -> procs_munched_tier12_2pc_melee -> occur();
+    return;
+  }
+
+  if ( p -> active_tier12_2pc_melee -> travel_event )
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Fiery Claws due to Aura Delay.", p -> name() );
+    p -> procs_munched_tier12_2pc_melee -> occur();
+  }
+
+  p -> active_tier12_2pc_melee -> direct_dmg = total_dot_dmg;
+  p -> active_tier12_2pc_melee -> result = RESULT_HIT;
+  p -> active_tier12_2pc_melee -> schedule_travel( s -> target );
+
+  if ( p -> active_tier12_2pc_melee -> travel_event && dot -> ticking )
+  {
+    if ( dot -> tick_event -> occurs() < p -> active_tier12_2pc_melee -> travel_event -> occurs() )
+    {
+      // Fiery Claws will tick before SPELL_AURA_APPLIED occurs, which means that the current Fiery Claws will
+      // both tick -and- get rolled into the next Ignite.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Fiery Claws.", p -> name() );
+      p -> procs_rolled_tier12_2pc_melee -> occur();
+    }
+  }
+}
 
 // ==========================================================================
 // Druid Cat Attack
@@ -1477,6 +1561,13 @@ struct mangle_cat_t : public druid_cat_attack_t
       p -> buffs_t11_4pc_melee -> trigger();
     }
   }
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_cat_attack_t::travel( t, travel_result, travel_dmg );
+    trigger_tier12_2pc_melee( this, direct_dmg );
+  }
 };
 
 // Pounce ===================================================================
@@ -1759,6 +1850,13 @@ struct shred_t : public druid_cat_attack_t
       }
       trigger_infected_wounds( this );
     }
+  }
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_cat_attack_t::travel( t, travel_result, travel_dmg );
+    trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -2165,6 +2263,13 @@ struct mangle_bear_t : public druid_bear_attack_t
       trigger_infected_wounds( this );
     }
   }
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_bear_attack_t::travel( t, travel_result, travel_dmg );
+    trigger_tier12_2pc_melee( this, direct_dmg );
+  }
 };
 
 // Maul ====================================================================
@@ -2194,6 +2299,13 @@ struct maul_t : public druid_bear_attack_t
       // trigger_omen_of_clarity( this ); //FIX ME is this still true?
       trigger_infected_wounds( this );
     }
+  }
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_bear_attack_t::travel( t, travel_result, travel_dmg );
+    trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -4665,16 +4777,18 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_combo_points_wasted    = get_proc( "combo_points_wasted"    );
-  procs_empowered_touch        = get_proc( "empowered_touch"        );
-  procs_fury_swipes            = get_proc( "fury_swipes"            );
-  procs_parry_haste            = get_proc( "parry_haste"            );
-  procs_primal_fury            = get_proc( "primal_fury"            );
-  procs_revitalize             = get_proc( "revitalize"             );
-  procs_unaligned_eclipse_gain = get_proc( "unaligned_eclipse_gain" );
-  procs_wrong_eclipse_wrath    = get_proc( "wrong_eclipse_wrath"    );
-  procs_wrong_eclipse_starfire = get_proc( "wrong_eclipse_starfire" );
-  procs_burning_treant         = get_proc( "burning_treant"         );
+  procs_combo_points_wasted      = get_proc( "combo_points_wasted"    );
+  procs_empowered_touch          = get_proc( "empowered_touch"        );
+  procs_fury_swipes              = get_proc( "fury_swipes"            );
+  procs_parry_haste              = get_proc( "parry_haste"            );
+  procs_primal_fury              = get_proc( "primal_fury"            );
+  procs_revitalize               = get_proc( "revitalize"             );
+  procs_unaligned_eclipse_gain   = get_proc( "unaligned_eclipse_gain" );
+  procs_wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"    );
+  procs_wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
+  procs_burning_treant           = get_proc( "burning_treant"         );
+  procs_munched_tier12_2pc_melee = get_proc( "munched_fiery_claws"    );
+  procs_rolled_tier12_2pc_melee  = get_proc( "rolled_fiery_claws"     );
 }
 
 // druid_t::init_uptimes ====================================================
