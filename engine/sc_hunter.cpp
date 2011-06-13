@@ -2044,10 +2044,6 @@ struct flaming_arrow_t : public hunter_attack_t
     proc = true;
     normalize_weapon_speed=true;
   }
-  virtual void execute()
-  {
-    hunter_attack_t::execute();
-  }
 };
 
 
