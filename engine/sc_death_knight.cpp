@@ -2052,8 +2052,6 @@ struct flaming_torment_t : public death_knight_spell_t
   flaming_torment_t( death_knight_t* player ) : 
     death_knight_spell_t( "Flaming Torment", player, RESOURCE_NONE, SCHOOL_FIRE )
   {
-    death_knight_t* p = player -> cast_death_knight();
-
     background       = true;
     may_miss         = false;    
     proc             = true;      
