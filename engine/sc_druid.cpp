@@ -4941,24 +4941,31 @@ void druid_t::init_actions()
       if ( race == RACE_TROLL )
         action_list_str += "/berserking";
       action_list_str += "/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<4&buff.solar_eclipse.up&eclipse<15)";
-      if ( primary_tree() == TREE_BALANCE )
+      if ( primary_tree() == TREE_BALANCE && ! dbc.ptr )
         action_list_str += "/starsurge,if=buff.t11_4pc_caster.up";
-      action_list_str += "/starfire,if=buff.t11_4pc_caster.up&buff.lunar_eclipse.up";
-      action_list_str += "/wrath,if=buff.t11_4pc_caster.up";
+      if ( ! dbc.ptr )
+      {
+        action_list_str += "/starfire,if=buff.t11_4pc_caster.up&buff.lunar_eclipse.up";
+        action_list_str += "/wrath,if=buff.t11_4pc_caster.up";
+      }
       action_list_str += "/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3";
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       if ( talents.typhoon -> rank() )
         action_list_str += "/typhoon,moving=1";
       if ( talents.starfall -> rank() )
-        action_list_str += "/starfall,if=buff.lunar_eclipse.up&buff.t11_4pc_caster.down";
+      {
+        action_list_str += "/starfall,if=buff.lunar_eclipse.up";
+        if ( ! dbc.ptr )
+          action_list_str += "&buff.t11_4pc_caster.down";
+      }
       if ( talents.sunfire -> rank() )
       {
         action_list_str += "/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0";
-        if ( set_bonus.tier11_4pc_caster() )
+        if ( set_bonus.tier11_4pc_caster() && ! dbc.ptr )
           action_list_str += "&buff.t11_4pc_caster.down";
       }
       action_list_str += "/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))";
-      if ( set_bonus.tier11_4pc_caster() )
+      if ( set_bonus.tier11_4pc_caster() && ! dbc.ptr )
         action_list_str += "&buff.t11_4pc_caster.down";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
@@ -4966,11 +4973,20 @@ void druid_t::init_actions()
       {
         if ( set_bonus.tier12_4pc_caster() )
         {
+          // This has been suggested as superior, will need to test once we have a complete Tier 12 profile
+          // starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
           action_list_str += "/starsurge,if=!((eclipse<=-84&eclipse_dir=-1)|(eclipse>=75&eclipse_dir=1))";
         }
         else
         {
+          if ( dbc.ptr )
+          {
+            action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
+          }
+          else
+          {
           action_list_str += "/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))";
+          }
         }
       }
       action_list_str += "/innervate,if=mana_pct<50";
@@ -4998,6 +5014,8 @@ void druid_t::init_actions()
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
+      if ( dbc.ptr )
+        action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
     }
