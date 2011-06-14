@@ -1541,12 +1541,6 @@ struct mangle_cat_t : public druid_cat_attack_t
 
     adds_combo_points = 1; // Not in the DBC
     base_multiplier  *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
-    // FIXME: DBC Data is behind
-    if ( p -> ptr )
-    {
-      base_dd_min = base_dd_max = 302;
-      weapon_multiplier = 5.40;
-    }
   }
 
   virtual void execute()
@@ -1618,10 +1612,9 @@ struct rake_t : public druid_cat_attack_t
     tick_power_mod      = ( p -> ptr ) ? 0.147 : 0.378 / 3.0;
     num_ticks          += p -> talents.endless_carnage -> rank();
     base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
-    // FIXME: DBC Data is behind
     if ( p -> ptr )
     {
-      base_dd_min = base_dd_max = base_td = 56.0;
+      base_dd_min = base_dd_max = base_td;
     }
   }
 };
@@ -1785,7 +1778,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     parse_options( NULL, options_str );
 
-    buff_value            = ( p -> ptr ) ? 0.80 : effect2().percent();
+    buff_value            = effect2().percent();
     buff_value           += p -> glyphs.savage_roar -> base_value() / 100.0;
     harmful               = false;
     requires_combo_points = true;
@@ -1809,7 +1802,7 @@ struct savage_roar_t : public druid_cat_attack_t
 
 struct shred_t : public druid_cat_attack_t
 {
-  int extend_rip;
+  int extend_rip; 
 
   shred_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( "shred", 5221, p ),
@@ -1823,13 +1816,6 @@ struct shred_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     requires_position  = POSITION_BACK;
-
-        // FIXME: DBC Data is behind
-    if ( p -> ptr )
-    {
-      base_dd_min = base_dd_max = 302;
-      weapon_multiplier = 5.40;
-    }
   }
 
   virtual void execute()
@@ -3717,10 +3703,6 @@ struct starfire_t : public druid_spell_t
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
-
-    // FIXME: DBC Data is behind
-    if ( p -> ptr )
-      base_multiplier *= 1.23;
   }
 
   virtual void execute()
@@ -4275,10 +4257,6 @@ struct wrath_t : public druid_spell_t
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
-    
-    // FIXME: DBC Data is behind
-    if ( p -> ptr )
-      base_multiplier *= 1.23;
   }
 
   virtual double execute_time() SC_CONST

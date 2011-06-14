@@ -4231,7 +4231,7 @@ void death_knight_t::init_base()
 
   if ( primary_tree() == TREE_UNHOLY )
   {
-    str_mult += ( ptr ) ? 0.20 : spells.unholy_might -> effect1().percent();
+    str_mult += spells.unholy_might -> effect1().percent();
   }
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
