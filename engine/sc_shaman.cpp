@@ -78,6 +78,7 @@ struct shaman_t : public player_t
   cooldown_t* cooldowns_lava_burst;
   cooldown_t* cooldowns_shock;
   cooldown_t* cooldowns_strike;
+  cooldown_t* cooldowns_t12_2pc_caster;
   cooldown_t* cooldowns_windfury_weapon;
 
   // Dots
@@ -200,12 +201,13 @@ struct shaman_t : public player_t
 
     // Cooldowns
     cooldowns_elemental_mastery    = get_cooldown( "elemental_mastery"    );
+    cooldowns_fire_elemental_totem = get_cooldown( "fire_elemental_totem" );
     cooldowns_flametongue_weapon   = get_cooldown( "flametongue_weapon"   );
     cooldowns_lava_burst           = get_cooldown( "lava_burst"           );
     cooldowns_shock                = get_cooldown( "shock"                );
     cooldowns_strike               = get_cooldown( "strike"               );
+    cooldowns_t12_2pc_caster       = get_cooldown( "t12_2pc_caster"       );
     cooldowns_windfury_weapon      = get_cooldown( "windfury_weapon"      );
-    cooldowns_fire_elemental_totem = get_cooldown( "fire_elemental_totem" );
 
     // Dots
     dot_flame_shock = get_dot( "flame_shock" );
@@ -1786,8 +1788,12 @@ void shaman_spell_t::execute()
     if ( school == SCHOOL_FIRE )
       p -> buffs_unleash_flame -> expire();
       
-    if ( p -> ptr && p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    if ( p -> ptr && p -> cooldowns_t12_2pc_caster -> remains() == 0 && 
+         p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    {
       p -> cooldowns_fire_elemental_totem -> reset();
+      p -> cooldowns_t12_2pc_caster -> start( 105.0 );
+    }
   }
 }
 
