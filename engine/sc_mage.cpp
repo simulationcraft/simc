@@ -820,6 +820,25 @@ static void consume_brain_freeze( spell_t* s )
   }
 }
 
+// trigger_brain_freeze ==============================================
+
+static void trigger_brain_freeze( spell_t* s )
+{
+  mage_t* p = s -> player -> cast_mage();
+  double chance = 0.0;
+
+  if ( ! p -> talents.brain_freeze -> rank() ) return;
+
+  chance = p -> talents.brain_freeze -> proc_chance();
+
+  if ( p -> set_bonus.tier12_4pc_caster() )
+  {
+    chance += p -> sets-> set( SET_T12_4PC_CASTER ) -> s_effects[ 1 ] -> percent();
+  }
+
+  p -> buffs_brain_freeze -> trigger( 1, -1.0, chance );
+}
+
 // trigger_hot_streak =======================================================
 
 static void trigger_hot_streak( mage_spell_t* s )
@@ -845,6 +864,11 @@ static void trigger_hot_streak( mage_spell_t* s )
     // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
     double hot_streak_chance = -2.73 * s -> hot_streak_crit() + 0.95;
+
+    if ( p -> set_bonus.tier12_4pc_caster() )
+    {
+      hot_streak_chance += 0.3; // From testing on the PTR and also the consensus of the EJ thread.
+    }
 
     if( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
     {
@@ -1061,7 +1085,14 @@ double mage_spell_t::cost() SC_CONST
 
   if ( p -> buffs_arcane_power -> check() )
   {
-    c *= 1.0 + p -> buffs_arcane_power -> effect2().percent();
+    double m = 1.0 + p -> buffs_arcane_power -> effect2().percent();
+
+    if ( p -> set_bonus.tier12_4pc_caster() )
+    {
+      m += p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
+    }
+
+    c *= m;
   }
 
   return c;
@@ -1113,7 +1144,7 @@ void mage_spell_t::execute()
 
   if ( may_brain_freeze )
   {
-    p -> buffs_brain_freeze -> trigger();
+    trigger_brain_freeze( this );
   }
 
   if ( result_is_hit() )
@@ -2202,7 +2233,7 @@ struct frostfire_orb_t : public mage_spell_t
     // Trigger Brain Freeze
     mage_t* p = player -> cast_mage();
     if ( p -> talents.frostfire_orb -> rank() == 2 )
-      p -> buffs_brain_freeze -> trigger();
+      trigger_brain_freeze( this );
   }
 
   virtual void last_tick()

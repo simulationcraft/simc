@@ -3238,7 +3238,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
                      + ( p -> glyphs.obliterate ? 0.2 : 0 );
 
-    if ( p -> set_bonus.tier12_4pc_caster() )
+    if ( p -> set_bonus.tier12_4pc_melee() )
     {
       flaming_torment = new flaming_torment_t( player );
 
@@ -3312,7 +3312,7 @@ struct obliterate_t : public death_knight_attack_t
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
                      + ( p -> glyphs.obliterate ? 0.2 : 0 );
 
-    if ( p -> set_bonus.tier12_4pc_caster() )
+    if ( p -> set_bonus.tier12_4pc_melee() )
     {
       flaming_torment = new flaming_torment_t( player );
 
@@ -3761,7 +3761,7 @@ struct scourge_strike_t : public death_knight_attack_t
       weapon_multiplier = 0;
       base_multiplier  *= 1.0 + p -> glyphs.scourge_strike * 0.3;
 
-      if ( p -> set_bonus.tier12_4pc_caster() )
+      if ( p -> set_bonus.tier12_4pc_melee() )
       {
         flaming_torment = new flaming_torment_t( player );
 
@@ -3812,7 +3812,7 @@ struct scourge_strike_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1
                        + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
 
-    if ( p -> set_bonus.tier12_4pc_caster() )
+    if ( p -> set_bonus.tier12_4pc_melee() )
     {
       flaming_torment = new flaming_torment_t( player );
 
