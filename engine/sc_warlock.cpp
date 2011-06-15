@@ -208,6 +208,7 @@ struct warlock_t : public player_t
   buff_t* buffs_searing_pain_soulburn;
   buff_t* buffs_tier10_4pc_caster;
   buff_t* buffs_tier11_4pc_caster;
+  buff_t* buffs_tier12_4pc_caster;
 
   // Cooldowns
   cooldown_t* cooldowns_metamorphosis;
@@ -325,6 +326,8 @@ struct warlock_t : public player_t
 
   // Spells
   spell_t* spells_burning_embers;
+
+  spell_data_t* tier12_4pc_caster;
 
   struct glyphs_t
   {
@@ -1097,6 +1100,17 @@ struct warlock_spell_t : public spell_t
         p -> cooldowns_fiery_imp -> start();
       }
     }
+  }
+
+  // trigger_tier12_4pc_caster =====================================
+
+  static void trigger_tier12_4pc_caster( spell_t* s )
+  {
+    warlock_t* p = s -> player -> cast_warlock();
+
+    if ( ! p -> dbc.ptr || ! p -> set_bonus.tier12_4pc_caster() ) return;
+
+    p -> buffs_tier12_4pc_caster -> trigger( 1, p -> tier12_4pc_caster -> effect1().percent() );
   }
 };
 
@@ -2160,6 +2174,8 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
+
+    trigger_tier12_4pc_caster( this );
   }
   
   virtual void player_buff()
@@ -2551,6 +2567,12 @@ struct drain_soul_t : public warlock_spell_t
     may_crit     = false;
   }
 
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    trigger_tier12_4pc_caster( this );
+  }
+
   virtual void tick()
   {
     warlock_spell_t::tick();
@@ -2890,6 +2912,8 @@ struct incinerate_t : public warlock_spell_t
       p -> buffs_backdraft -> decrement();
     }
     trigger_impending_doom( this );
+
+    trigger_tier12_4pc_caster( this );
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -3002,6 +3026,8 @@ struct soul_fire_t : public warlock_spell_t
       p -> buffs_empowered_imp -> expire();
     else if ( p -> buffs_soulburn -> check() )
       p -> buffs_soulburn -> expire();
+
+    trigger_tier12_4pc_caster( this );
   }
 
   virtual double execute_time() SC_CONST
@@ -3947,14 +3973,19 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
   // Shadow
   shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) * 0.01 );
-
-  // FIXME - Temporary override until we have new DBC data.
   shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) * 0.01 );
 
   if ( buffs_improved_soul_fire -> up() )
   {
     fire_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 
     shadow_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 
+  }
+
+  if ( buffs_tier12_4pc_caster -> up() )
+  {
+    double v = buffs_tier12_4pc_caster -> value();
+    fire_multiplier *= 1.0 + v;
+    shadow_multiplier *= 1.0 + v;
   }
 
   if ( school == SCHOOL_FIRE )
@@ -4184,7 +4215,7 @@ void warlock_t::init_spells()
 
   // Mastery
   mastery_spells.fiery_apocalypse     = new mastery_t( this, "fiery_apocalypse", "Fiery Apocalypse", TREE_DESTRUCTION );
-  mastery_spells.potent_afflictions   = new mastery_t(this, "potent_afflictions", "Potent Afflictions", TREE_AFFLICTION );
+  mastery_spells.potent_afflictions   = new mastery_t( this, "potent_afflictions", "Potent Afflictions", TREE_AFFLICTION );
   mastery_spells.master_demonologist  = new mastery_t( this, "master_demonologist", "Master Demonologist", TREE_DEMONOLOGY );
 
   // Constants
@@ -4208,6 +4239,8 @@ void warlock_t::init_spells()
   // Major
   glyphs.life_tap             = find_glyph( "Glyph of Life Tap" );
   glyphs.shadow_bolt          = find_glyph( "Glyph of Shadow Bolt" );
+
+  tier12_4pc_caster           = spell_data_t::find( sets -> set( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "Apocalypse", dbc.ptr );
 }
 
 // warlock_t::init_base =====================================================
@@ -4272,7 +4305,7 @@ void warlock_t::init_buffs()
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
   buffs_tier10_4pc_caster     = new buff_t( this, sets -> set ( SET_T10_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier10_4pc_caster", sets -> set ( SET_T10_4PC_CASTER ) -> proc_chance() );
   buffs_tier11_4pc_caster     = new buff_t( this, sets -> set ( SET_T11_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier11_4pc_caster", sets -> set ( SET_T11_4PC_CASTER ) -> proc_chance() );
-
+  buffs_tier12_4pc_caster     = new buff_t( this, sets -> set ( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier12_4pc_caster", sets -> set ( SET_T12_4PC_CASTER ) -> proc_chance() );
 }
 
 // warlock_t::init_gains ====================================================
