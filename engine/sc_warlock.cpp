@@ -2264,6 +2264,7 @@ struct chaos_bolt_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     may_resist = false;
+    may_miss = false;
 
     warlock_t* p = player -> cast_warlock();
     base_execute_time += p -> talent_bane -> effect1().seconds();
@@ -3505,6 +3506,8 @@ struct hand_of_guldan_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_hand_of_guldan -> rank() );
+
+    may_miss = false;
 
     parse_options( NULL, options_str );
 
