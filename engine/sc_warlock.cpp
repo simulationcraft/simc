@@ -4499,7 +4499,6 @@ void warlock_t::init_actions()
       }
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
       if ( level >= 50) action_list_str += "/summon_doomguard";
-      action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
         action_list_str += "/soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight";
