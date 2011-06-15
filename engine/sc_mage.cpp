@@ -1337,15 +1337,28 @@ struct arcane_blast_t : public mage_spell_t
       return 0;
 
     double c = spell_t::cost();
+    double delta_cost = c;
+
+    if ( p -> buffs_arcane_power -> check() )
+    {
+      double m = 1.0 + p -> buffs_arcane_power -> effect2().percent();
+
+      if ( p -> set_bonus.tier12_4pc_caster() )
+      {
+        m += p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
+      }
+
+      delta_cost *= m;
+      delta_cost = delta_cost - c;
+    }
 
     if ( p -> buffs_arcane_blast -> check() )
     {
-      c += c * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
+      c *= p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
     }
-    if ( p -> buffs_arcane_power -> check() )
-    {
-      c *= 1.0 + p -> buffs_arcane_power -> effect2().percent();
-    }
+
+    c += delta_cost;
+
     return c;
   }
 
