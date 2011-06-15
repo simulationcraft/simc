@@ -2649,6 +2649,8 @@ void player_t::arise()
 
   init_resources( true );
 
+  readying = 0;
+
   schedule_ready();
 }
 

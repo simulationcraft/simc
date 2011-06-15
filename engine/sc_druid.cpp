@@ -609,7 +609,6 @@ struct burning_treant_pet_t : public pet_t
     {
       snapshot_crit = 0.00; // Rough guess
     }
-    reset();
     sleeping = 0;
   }
 
@@ -656,12 +655,6 @@ struct burning_treant_pet_t : public pet_t
     if ( name == "fireseed" ) return new fireseed_t( this );
 
     return pet_t::create_action( name, options_str );
-  }
-
-  virtual void halt()
-  {
-    pet_t::halt();
-    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };
 

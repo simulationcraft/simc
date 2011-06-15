@@ -744,7 +744,6 @@ struct tier12_mirror_image_pet_t : public pet_t
     {
       snapshot_crit = 0.00; // Rough guess
     }
-    reset();
     sleeping = 0;
   }
 
@@ -785,12 +784,6 @@ struct tier12_mirror_image_pet_t : public pet_t
     if ( name == "fireball" ) return new fireball_t( this );
 
     return pet_t::create_action( name, options_str );
-  }
-
-  virtual void halt()
-  {
-    pet_t::halt();
-    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
   }
 };
 
