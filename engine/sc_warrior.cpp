@@ -121,6 +121,7 @@ struct warrior_t : public player_t
   buff_t* buffs_wrecking_crew;
   buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier11_4pc_melee;
+  buff_t* buffs_tier12_2pc_melee;
 
   // Cooldowns
   cooldown_t* cooldowns_colossus_smash;
@@ -143,7 +144,6 @@ struct warrior_t : public player_t
   gain_t* gains_melee_off_hand;
   gain_t* gains_shield_specialization;
   gain_t* gains_sudden_death;
-  gain_t* gains_tier12_2pc_melee;
 
   // Glyphs
   struct glyphs_t
@@ -190,6 +190,7 @@ struct warrior_t : public player_t
   proc_t* procs_parry_haste;
   proc_t* procs_strikes_of_opportunity;
   proc_t* procs_sudden_death;
+  proc_t* procs_fiery_attack;
 
   // Random Number Generation
   rng_t* rng_blood_frenzy;
@@ -198,6 +199,7 @@ struct warrior_t : public player_t
   rng_t* rng_strikes_of_opportunity;
   rng_t* rng_sudden_death;
   rng_t* rng_wrecking_crew;
+  rng_t* rng_fiery_attack;
 
   // Spec Passives
   struct spec_t
@@ -280,6 +282,8 @@ struct warrior_t : public player_t
   // Up-Times
   uptime_t* uptimes_rage_cap;
 
+  action_t* fiery_attack;
+
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
       player_t( sim, WARRIOR, name, r )
   {
@@ -305,6 +309,7 @@ struct warrior_t : public player_t
 
     instant_flurry_haste = 1;
     initial_rage = 0;
+    fiery_attack = NULL;
 
     create_talents();
     create_glyphs();
@@ -745,6 +750,29 @@ static void trigger_flurry( attack_t* a, int stacks )
   }
 }
 
+// trigger_tier12_4pc_melee ========================================
+
+static void trigger_tier12_4pc_melee( attack_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+
+  if ( ! p -> dbc.ptr ) return;
+
+  if ( ! p -> set_bonus.tier12_4pc_melee() ) return;
+
+  if ( ! a -> weapon ) return;
+  if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
+  if ( a -> proc ) return;
+
+  assert( p -> fiery_attack );
+
+  if ( p -> rng_fiery_attack -> roll( p -> sets->set( SET_T12_4PC_MELEE ) -> proc_chance() ) )
+  {
+    p -> procs_fiery_attack -> occur();
+    p -> fiery_attack -> execute();
+  }  
+}
+
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
@@ -905,7 +933,8 @@ void warrior_attack_t::player_buff()
 
   // --- Enrages ---
 
-  player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
+  if ( school == SCHOOL_PHYSICAL )
+    player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
 
   if ( school == SCHOOL_PHYSICAL )
     player_multiplier *= 1.0 + p -> buffs_enrage -> value();
@@ -915,7 +944,8 @@ void warrior_attack_t::player_buff()
 
   // --- Passive Talents ---
 
-  player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
+  if ( school == SCHOOL_PHYSICAL )
+    player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
 
   if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
   {
@@ -1608,6 +1638,8 @@ struct mortal_strike_t : public warrior_attack_t
 
       if ( p -> talents.lambs_to_the_slaughter -> rank() && p -> dots_rend -> ticking )
         p -> dots_rend -> action -> refresh_duration();
+
+      trigger_tier12_4pc_melee( this );
     }
   }
 
@@ -1623,6 +1655,20 @@ struct mortal_strike_t : public warrior_attack_t
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
                              + additive_multipliers;
+  }
+};
+
+// Fiery Attack Attack =========================================================
+
+struct fiery_attack_t : public warrior_attack_t
+{
+  fiery_attack_t( warrior_t* player ) :
+      warrior_attack_t( "fiery_attack", 99237, player )
+  {
+    background = true;
+    repeating = false;
+    proc = true;
+    normalize_weapon_speed=true;
   }
 };
 
@@ -1782,6 +1828,8 @@ struct raging_blow_t : public warrior_attack_t
       }
     }
     p -> buffs_tier11_4pc_melee -> trigger();
+
+    trigger_tier12_4pc_melee( this );
   }
 
   virtual bool ready()
@@ -2370,9 +2418,10 @@ void warrior_spell_t::parse_options( option_t* options, const std::string& optio
 struct battle_shout_t : public warrior_spell_t
 {
   double rage_gain;
+  double burning_rage_value;
 
   battle_shout_t( warrior_t* p, const std::string& options_str ) :
-      warrior_spell_t( "battle_shout", "Battle Shout", p )
+      warrior_spell_t( "battle_shout", "Battle Shout", p ), burning_rage_value( 0.0 )
   {
     parse_options( NULL, options_str );
 
@@ -2382,6 +2431,13 @@ struct battle_shout_t : public warrior_spell_t
 
     rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown -> duration += p -> talents.booming_voice -> effect1().seconds();
+
+    if ( p -> dbc.ptr )
+    {
+      uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
+      spell_data_t* s = spell_data_t::find( id, "Burning Rage", p -> dbc.ptr );
+      burning_rage_value = s -> effect1().percent();
+    }
   }
   
   virtual void execute()
@@ -2397,6 +2453,8 @@ struct battle_shout_t : public warrior_spell_t
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
+
+    p -> buffs_tier12_2pc_melee -> trigger( 1, burning_rage_value );
   }
 };
 
@@ -2981,6 +3039,11 @@ void warrior_t::init_base()
   }
 
   base_gcd = 1.5;
+
+  if ( dbc.ptr )
+  {
+    fiery_attack = new fiery_attack_t( this );
+  }
 }
 
 // warrior_t::init_scaling ==================================================
@@ -3006,6 +3069,8 @@ void warrior_t::init_scaling()
 
 void warrior_t::init_buffs()
 {
+  double duration = 12.0;
+
   player_t::init_buffs();
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
@@ -3042,6 +3107,15 @@ void warrior_t::init_buffs()
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
   buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
   buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0,   0, set_bonus.tier11_4pc_melee() );
+
+  switch ( talents.booming_voice -> rank() )
+  {
+    case 1 : duration = 9.0; break;
+    case 2 : duration = 6.0; break;
+    default: duration = 12.0; break;
+  }
+  buffs_tier12_2pc_melee          = new buff_t( this, "tier12_2pc_melee",          1, duration,   0, set_bonus.tier12_2pc_melee() );
+
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
 }
 
@@ -3062,7 +3136,6 @@ void warrior_t::init_gains()
   gains_melee_off_hand         = get_gain( "melee_off_hand"        );
   gains_shield_specialization  = get_gain( "shield_specialization" );
   gains_sudden_death           = get_gain( "sudden_death"          );
-  gains_tier12_2pc_melee       = get_gain( "tier12_2pc_melee"      );
 }
 
 // warrior_t::init_procs ====================================================
@@ -3076,6 +3149,7 @@ void warrior_t::init_procs()
   procs_parry_haste             = get_proc( "parry_haste"            );
   procs_strikes_of_opportunity  = get_proc( "strikes_of_opportunity" );
   procs_sudden_death            = get_proc( "sudden_death"           );
+  procs_fiery_attack            = get_proc( "fiery_attack"           );
 }
 
 // warrior_t::init_uptimes ==================================================
@@ -3099,6 +3173,7 @@ void warrior_t::init_rng()
   rng_strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng_sudden_death              = get_rng( "sudden_death"              );
   rng_wrecking_crew             = get_rng( "wrecking_crew"             );
+  rng_fiery_attack              = get_rng( "fiery_attack"              );
 }
 
 // warrior_t::init_actions ==================================================
@@ -3366,6 +3441,11 @@ double warrior_t::composite_player_multiplier( const school_type school ) SC_CON
   {
     m *= 1.0 + buffs_berserker_stance -> effect1().percent();
   }
+
+  if ( school == SCHOOL_PHYSICAL && buffs_tier12_2pc_melee -> up() )
+  {
+    m *= 1.0 + buffs_tier12_2pc_melee -> value();
+  }
   
   return m;
 }
@@ -3433,9 +3513,6 @@ void warrior_t::regen( double periodicity )
   {
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
-
-  if ( ptr && set_bonus.tier12_2pc_melee() && sim -> auras.battle_shout -> check() )
-    resource_gain( RESOURCE_RAGE, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
 
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                               resource_max    [ RESOURCE_RAGE] );
