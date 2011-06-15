@@ -865,6 +865,8 @@ static void trigger_hot_streak( mage_spell_t* s )
 
     double hot_streak_chance = -2.73 * s -> hot_streak_crit() + 0.95;
 
+    if ( hot_streak_chance < 0.0 ) hot_streak_chance = 0.0;
+
     if ( p -> set_bonus.tier12_4pc_caster() )
     {
       hot_streak_chance += 0.3; // From testing on the PTR and also the consensus of the EJ thread.
@@ -2570,6 +2572,13 @@ struct pyroblast_t : public mage_spell_t
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
+  }
+
+  virtual double hot_streak_crit()
+  {
+    // When calculating Hot-Streak proc chance, do not include Pyroblast glyph
+    mage_t* p = player -> cast_mage();
+    return base_crit + player_crit - p -> glyphs.pyroblast -> effect1().percent();
   }
 
   virtual void execute()
