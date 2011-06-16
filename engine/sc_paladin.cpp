@@ -672,8 +672,8 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   {
     if ( dot -> tick_event -> occurs() < p -> active_flames_of_the_faithful_proc -> travel_event -> occurs() )
     {
-      // Fiery Claws will tick before SPELL_AURA_APPLIED occurs, which means that the current Fiery Claws will
-      // both tick -and- get rolled into the next Ignite.
+      // Flames of the Faithful will tick before SPELL_AURA_APPLIED occurs, which means that the current Flames of the Faithful will
+      // both tick -and- get rolled into the next Flames of the Faithful.
       if ( sim -> log ) log_t::output( sim, "Player %s rolls Flames of the Faithful.", p -> name() );
       p -> procs_rolled_tier12_2pc_melee -> occur();
     }

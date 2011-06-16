@@ -1162,7 +1162,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     if ( dot -> tick_event -> occurs() < p -> active_tier12_2pc_melee -> travel_event -> occurs() )
     {
       // Fiery Claws will tick before SPELL_AURA_APPLIED occurs, which means that the current Fiery Claws will
-      // both tick -and- get rolled into the next Ignite.
+      // both tick -and- get rolled into the next Fiery Claws.
       if ( sim -> log ) log_t::output( sim, "Player %s rolls Fiery Claws.", p -> name() );
       p -> procs_rolled_tier12_2pc_melee -> occur();
     }
