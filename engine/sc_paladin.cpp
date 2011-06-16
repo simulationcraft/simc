@@ -97,6 +97,8 @@ struct paladin_t : public player_t
 
   // Procs
   proc_t* procs_parry_haste;
+  proc_t* procs_munched_tier12_2pc_melee;
+  proc_t* procs_rolled_tier12_2pc_melee;
 
   // Spells
   struct spells_t
@@ -216,12 +218,13 @@ struct paladin_t : public player_t
 
     active_seal = SEAL_NONE;
 
-    active_seals_of_command_proc      = 0;
-    active_seal_of_justice_proc       = 0;
-    active_seal_of_insight_proc       = 0;
-    active_seal_of_righteousness_proc = 0;
-    active_seal_of_truth_proc         = 0;
-    active_seal_of_truth_dot          = 0;
+    active_seals_of_command_proc       = 0;
+    active_seal_of_justice_proc        = 0;
+    active_seal_of_insight_proc        = 0;
+    active_seal_of_righteousness_proc  = 0;
+    active_seal_of_truth_proc          = 0;
+    active_seal_of_truth_dot           = 0;
+    active_flames_of_the_faithful_proc = 0;
 
     ret_pvp_gloves = 0;
 
@@ -262,18 +265,6 @@ struct paladin_t : public player_t
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
-
-// trigger_flames_of_the_faithful ===========================================
-
-static void trigger_flames_of_the_faithful( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-  if ( p -> ptr && p -> set_bonus.tier12_2pc_melee() )
-  {
-    p -> active_flames_of_the_faithful_proc -> base_dd_max = p -> active_flames_of_the_faithful_proc -> base_dd_min = a -> direct_dmg;
-    p -> active_flames_of_the_faithful_proc -> execute();
-  }
-}
 
 // trigger_hand_of_light ====================================================
 
@@ -584,6 +575,111 @@ struct auto_attack_t : public paladin_attack_t
   }
 };
 
+// trigger_tier12_2pc_melee ===========================================================
+
+static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
+{
+  if ( s -> school != SCHOOL_PHYSICAL ) return;
+
+  paladin_t* p = s -> player -> cast_paladin();
+  sim_t* sim = s -> sim;
+
+  if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
+
+  if ( ! p -> dbc.ptr ) return;
+
+  struct flames_of_the_faithful_t : public paladin_attack_t
+  {
+    flames_of_the_faithful_t( paladin_t* player ) :
+      paladin_attack_t( "flames_of_the_faithful", 99092, player )
+    {
+      background    = true;
+      proc          = true;
+      may_resist    = true;
+      tick_may_crit = false;
+      hasted_ticks  = false;
+      dot_behavior  = DOT_REFRESH;
+      if ( player -> bugs )
+      {
+        num_ticks++;
+      }
+      init();
+
+      double a = base_td_multiplier;
+      double b = base_multiplier;
+    }
+    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    {
+      paladin_attack_t::travel( t, travel_result, 0 );
+
+      int nticks = dot -> num_ticks;
+      if ( t -> bugs && ( nticks > 1 ) )
+      {
+        nticks--;
+      }
+      base_td = total_dot_dmg / nticks;
+    }
+    virtual double travel_time()
+    {
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    }
+    virtual void target_debuff( player_t* t, int dmg_type )
+    {
+      target_multiplier            = 1.0;
+      target_hit                   = 0;
+      target_crit                  = 0;
+      target_attack_power          = 0;
+      target_spell_power           = 0;
+      target_penetration           = 0;
+      target_dd_adder              = 0;
+      if ( sim -> debug )
+        log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    }    
+    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+  };
+
+  double total_dot_dmg = dmg * p -> sets -> set( SET_T12_2PC_MELEE ) -> s_effects[ 0 ] -> percent();
+
+  if ( ! p -> active_flames_of_the_faithful_proc ) p -> active_flames_of_the_faithful_proc = new flames_of_the_faithful_t( p );
+
+  dot_t* dot = p -> active_flames_of_the_faithful_proc -> dot;
+
+  if ( dot -> ticking )
+  {
+    total_dot_dmg += p -> active_flames_of_the_faithful_proc -> base_td * dot -> ticks();
+  }
+
+  if( ( p -> dbc.spell( 99092 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  {
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Flames of the Faithful due to Max Duration.", p -> name() );
+    p -> procs_munched_tier12_2pc_melee -> occur();
+    return;
+  }
+
+  if ( p -> active_flames_of_the_faithful_proc -> travel_event )
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Flames of the Faithful due to Aura Delay.", p -> name() );
+    p -> procs_munched_tier12_2pc_melee -> occur();
+  }
+
+  p -> active_flames_of_the_faithful_proc -> direct_dmg = total_dot_dmg;
+  p -> active_flames_of_the_faithful_proc -> result = RESULT_HIT;
+  p -> active_flames_of_the_faithful_proc -> schedule_travel( s -> target );
+
+  if ( p -> active_flames_of_the_faithful_proc -> travel_event && dot -> ticking )
+  {
+    if ( dot -> tick_event -> occurs() < p -> active_flames_of_the_faithful_proc -> travel_event -> occurs() )
+    {
+      // Fiery Claws will tick before SPELL_AURA_APPLIED occurs, which means that the current Fiery Claws will
+      // both tick -and- get rolled into the next Ignite.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Flames of the Faithful.", p -> name() );
+      p -> procs_rolled_tier12_2pc_melee -> occur();
+    }
+  }
+}
+
 // Ancient Fury =============================================================
 
 struct ancient_fury_t : public paladin_attack_t
@@ -683,10 +779,16 @@ struct crusader_strike_t : public paladin_attack_t
       p -> resource_gain( RESOURCE_HOLY_POWER, p -> buffs_zealotry -> up() ? 3 : 1,
                           p -> gains_hp_crusader_strike );
 
-      trigger_flames_of_the_faithful( this );
+//      trigger_flames_of_the_faithful( this );
       trigger_grand_crusader( this );
       trigger_hand_of_light( this );
     }
+  }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    paladin_attack_t::travel( t, travel_result, travel_dmg );
+    trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
   virtual void update_ready()
@@ -2139,7 +2241,9 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_parry_haste = get_proc( "parry_haste" );
+  procs_parry_haste              = get_proc( "parry_haste"                    );
+  procs_munched_tier12_2pc_melee = get_proc( "munched_flames_of_the_faithful" );
+  procs_rolled_tier12_2pc_melee  = get_proc( "rolled_flames_of_the_faithful"  );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -2258,7 +2362,6 @@ void paladin_t::init_actions()
     return;
   }
 
-  active_flames_of_the_faithful_proc = new flames_of_the_faithful_proc_t( this );
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
   active_seals_of_command_proc       = new seals_of_command_proc_t      ( this );
   active_seal_of_justice_proc        = new seal_of_justice_proc_t       ( this );

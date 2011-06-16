@@ -363,7 +363,7 @@ struct mage_spell_t : public spell_t
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual double total_crit() SC_CONST;
-  virtual double hot_streak_crit() { return base_crit + player_crit; }
+  virtual double hot_streak_crit() { return player_crit; }
 };
 
 // ==========================================================================
@@ -1800,13 +1800,6 @@ struct fireball_t : public mage_spell_t
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
   }
 
-  virtual double hot_streak_crit()
-  {
-    // When calculating Hot-Streak proc chance, do not include Fireball glyph
-    mage_t* p = player -> cast_mage();
-    return base_crit + player_crit - p -> glyphs.fireball -> effect1().percent();
-  }
-
   virtual double cost() SC_CONST
   {
     mage_t* p = player -> cast_mage();
@@ -2565,13 +2558,6 @@ struct pyroblast_t : public mage_spell_t
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
-  }
-
-  virtual double hot_streak_crit()
-  {
-    // When calculating Hot-Streak proc chance, do not include Pyroblast glyph
-    mage_t* p = player -> cast_mage();
-    return base_crit + player_crit - p -> glyphs.pyroblast -> effect1().percent();
   }
 
   virtual void execute()

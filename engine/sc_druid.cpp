@@ -16,7 +16,7 @@ struct druid_t : public player_t
   action_t* active_fury_swipes;
   heal_t*   active_living_seed;
   action_t* active_t10_4pc_caster_dot;
-  spell_t*  active_tier12_2pc_melee;
+  attack_t* active_tier12_2pc_melee;
 
   // Auto-attacks
   attack_t* cat_melee_attack;
@@ -1088,10 +1088,10 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   if ( ! p -> dbc.ptr ) return;
 
-  struct fiery_claws_t : public druid_spell_t
+  struct fiery_claws_t : public druid_cat_attack_t
   {
     fiery_claws_t( druid_t* player ) :
-      druid_spell_t( "fiery_claws", 99002, player )
+      druid_cat_attack_t( "fiery_claws", 99002, player )
     {
       background    = true;
       proc          = true;
@@ -1103,7 +1103,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     }
     virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
     {
-      druid_spell_t::travel( t, travel_result, 0 );
+      druid_cat_attack_t::travel( t, travel_result, 0 );
 
       // FIXME: Is a is_hit check necessary here?
       base_td = total_dot_dmg / dot -> num_ticks;
@@ -1112,6 +1112,19 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
+    virtual void target_debuff( player_t* t, int dmg_type )
+    {
+      target_multiplier            = 1.0;
+      target_hit                   = 0;
+      target_crit                  = 0;
+      target_attack_power          = 0;
+      target_spell_power           = 0;
+      target_penetration           = 0;
+      target_dd_adder              = 0;
+      if ( sim -> debug )
+        log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    }   
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
 
