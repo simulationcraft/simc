@@ -18,6 +18,7 @@ actions+=/auto_attack
 actions+=/stealth
 actions+=/kick
 actions+=/berserking
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
 actions+=/pool_energy,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
 actions+=/pool_energy,for_next=1

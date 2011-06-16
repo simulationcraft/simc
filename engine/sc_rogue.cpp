@@ -118,6 +118,7 @@ struct rogue_t : public player_t
   action_t* active_wound_poison;
   action_t* active_venomous_wound;
   action_t* active_main_gauche;
+  action_t* active_tier12_2pc_melee;
 
   // Buffs
   buff_t* buffs_bandits_guile;
@@ -142,6 +143,11 @@ struct rogue_t : public player_t
   new_buff_t* buffs_shadowstep;
   new_buff_t* buffs_slice_and_dice;
   new_buff_t* buffs_vendetta;
+
+
+  stat_buff_t* buffs_tier12_4pc_crit;
+  stat_buff_t* buffs_tier12_4pc_haste;
+  stat_buff_t* buffs_tier12_4pc_mastery;
 
   // Cooldowns
   cooldown_t* cooldowns_honor_among_thieves;
@@ -185,6 +191,8 @@ struct rogue_t : public player_t
   proc_t* procs_main_gauche;
   proc_t* procs_venomous_wounds;
   proc_t* procs_tier10_4pc;
+  proc_t* procs_munched_tier12_2pc_melee;
+  proc_t* procs_rolled_tier12_2pc_melee;
 
   // Up-Times
   uptime_t* uptimes_bandits_guile[ 3 ];
@@ -316,6 +324,8 @@ struct rogue_t : public player_t
   std::string tricks_of_the_trade_target_str;
   player_t*   tricks_of_the_trade_target;
 
+  int last_tier12_4pc;
+
   rogue_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -325,11 +335,14 @@ struct rogue_t : public player_t
     tree_type[ ROGUE_SUBTLETY      ] = TREE_SUBTLETY;
 
     // Active
-    active_deadly_poison  = 0;
-    active_instant_poison = 0;
-    active_wound_poison   = 0;
-    active_venomous_wound = 0;
-    active_main_gauche    = 0;
+    active_deadly_poison    = 0;
+    active_instant_poison   = 0;
+    active_wound_poison     = 0;
+    active_venomous_wound   = 0;
+    active_main_gauche      = 0;
+    active_tier12_2pc_melee = 0;
+
+    last_tier12_4pc = -1;
 
     combo_points = new combo_points_t( this );
     virtual_hat_callback = 0;
@@ -869,6 +882,167 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
   }
 }
 
+// trigger_tier12_2pc_melee ===========================================================
+
+static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
+{
+  if ( s -> school != SCHOOL_PHYSICAL ) return;
+
+  rogue_t* p = s -> player -> cast_rogue();
+  sim_t* sim = s -> sim;
+
+  if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
+
+  if ( ! p -> dbc.ptr ) return;
+
+  struct burning_wounds_t : public rogue_attack_t
+  {
+    burning_wounds_t( rogue_t* player ) :
+      rogue_attack_t( "burning_wounds", 99173, player )
+    {
+      background    = true;
+      proc          = true;
+      may_resist    = true;
+      tick_may_crit = false;
+      hasted_ticks  = false;
+      dot_behavior  = DOT_REFRESH;
+      init();
+    }
+    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    {
+      rogue_attack_t::travel( t, travel_result, 0 );
+
+      base_td = total_dot_dmg / dot -> num_ticks;
+    }
+    virtual double travel_time()
+    {
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    }
+    virtual void target_debuff( player_t* t, int dmg_type )
+    {
+      target_multiplier            = 1.0;
+      target_hit                   = 0;
+      target_crit                  = 0;
+      target_attack_power          = 0;
+      target_spell_power           = 0;
+      target_penetration           = 0;
+      target_dd_adder              = 0;
+      if ( sim -> debug )
+        log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    }   
+    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+  };
+
+  double total_dot_dmg = dmg * p -> dbc.spell( 99173 ) -> effect1().percent();
+
+  if ( ! p -> active_tier12_2pc_melee ) p -> active_tier12_2pc_melee = new burning_wounds_t( p );
+
+  dot_t* dot = p -> active_tier12_2pc_melee -> dot;
+
+  if ( dot -> ticking )
+  {
+    total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
+  }
+
+  if( ( p -> dbc.spell( 99173 )  -> duration() + sim -> aura_delay ) < dot -> remains() )
+  {
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Burning Wounds due to Max Duration.", p -> name() );
+    p -> procs_munched_tier12_2pc_melee -> occur();
+    return;
+  }
+
+  if ( p -> active_tier12_2pc_melee -> travel_event )
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Burning Wounds due to Aura Delay.", p -> name() );
+    p -> procs_munched_tier12_2pc_melee -> occur();
+  }
+
+  p -> active_tier12_2pc_melee -> direct_dmg = total_dot_dmg;
+  p -> active_tier12_2pc_melee -> result = RESULT_HIT;
+  p -> active_tier12_2pc_melee -> schedule_travel( s -> target );
+
+  if ( p -> active_tier12_2pc_melee -> travel_event && dot -> ticking )
+  {
+    if ( dot -> tick_event -> occurs() < p -> active_tier12_2pc_melee -> travel_event -> occurs() )
+    {
+      // Burning Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Burning Wounds will
+      // both tick -and- get rolled into the next Ignite.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Burning Wounds.", p -> name() );
+      p -> procs_rolled_tier12_2pc_melee -> occur();
+    }
+  }
+}
+
+// trigger_tier12_4pc_melee ================================================
+
+static void trigger_tier12_4pc_melee( attack_t* s )
+{
+  rogue_t* p = s -> player -> cast_rogue();
+  sim_t* sim = s -> sim;
+  double mult;
+  double chance;
+  double value = 0.0;
+
+  if ( ! p -> set_bonus.tier12_4pc_melee() ) return;
+
+  if ( ! p -> dbc.ptr ) return;
+
+  chance = sim -> real();
+  mult = p -> sets -> set( SET_T12_4PC_MELEE ) -> s_effects[ 0 ] -> percent();
+
+  if ( p -> last_tier12_4pc < 0 )
+  {
+    if ( chance < 0.3333 )
+    {
+      p -> last_tier12_4pc = 0;
+    }
+    else if ( chance < 0.6667 )
+    {
+      p -> last_tier12_4pc = 1;
+    }
+    else
+    {
+      p -> last_tier12_4pc = 2;
+    }
+  }
+  else
+  {
+    if ( chance < 0.5 )
+    {
+      p -> last_tier12_4pc--;
+      if ( p -> last_tier12_4pc < 0 )
+        p -> last_tier12_4pc = 2;
+    }
+    else
+    {
+      p -> last_tier12_4pc++;
+      if ( p -> last_tier12_4pc > 2 )
+        p -> last_tier12_4pc = 0;
+    }
+  }
+
+  switch ( p -> last_tier12_4pc )
+  {
+  case 0 :
+    value = p -> stats.haste_rating * mult;
+    p -> buffs_tier12_4pc_haste   -> trigger( 1, value );
+    break;
+  case 1:
+    value = p -> stats.crit_rating * mult;
+    p -> buffs_tier12_4pc_crit    -> trigger( 1, value );
+    break;
+  case 2:
+    value = p -> stats.mastery_rating * mult;
+    p -> buffs_tier12_4pc_mastery -> trigger( 1, value );
+    break;
+  default:
+    assert( 0 );
+    break;
+  }
+}
+
 // apply_poison_debuff ======================================================
 
 static void apply_poison_debuff( rogue_t* p )
@@ -1051,6 +1225,11 @@ void rogue_attack_t::execute()
 
       trigger_apply_poisons( this );
       trigger_tricks_of_the_trade( this );
+
+      if ( may_crit && ( result == RESULT_CRIT ) )
+      {
+        trigger_tier12_2pc_melee( this, direct_dmg );
+      }
     }
 
     trigger_tier10_4pc( this ); // FIX-ME: Does it require the finishing move to hit before it can proc?
@@ -2498,6 +2677,8 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
       p -> tricks_of_the_trade_target = tricks_target;
     }
+
+    trigger_tier12_4pc_melee( this );
   }
 
   virtual bool ready()
@@ -3187,6 +3368,9 @@ void rogue_t::init_actions()
       action_list_str += "/arcane_torrent";
     }
 
+    /* Putting this here for now but there is likely a better place to put it */
+    action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+
     if ( primary_tree() == TREE_ASSASSINATION )
     {
       action_list_str += "/garrote";
@@ -3497,15 +3681,17 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_deadly_poison         = get_proc( "deadly_poisons"        );
-  procs_honor_among_thieves   = get_proc( "honor_among_thieves"   );
-  procs_main_gauche           = get_proc( "main_gauche"           );
-  procs_ruthlessness          = get_proc( "ruthlessness"          );
-  procs_seal_fate             = get_proc( "seal_fate"             );
-  procs_serrated_blades       = get_proc( "serrated_blades"       );
-  procs_sinister_strike_glyph = get_proc( "sinister_strike_glyph" );
-  procs_venomous_wounds       = get_proc( "venomous_wounds"       );
-  procs_tier10_4pc            = get_proc( "tier10_4pc"            );
+  procs_deadly_poison            = get_proc( "deadly_poisons"        );
+  procs_honor_among_thieves      = get_proc( "honor_among_thieves"   );
+  procs_main_gauche              = get_proc( "main_gauche"           );
+  procs_ruthlessness             = get_proc( "ruthlessness"          );
+  procs_seal_fate                = get_proc( "seal_fate"             );
+  procs_serrated_blades          = get_proc( "serrated_blades"       );
+  procs_sinister_strike_glyph    = get_proc( "sinister_strike_glyph" );
+  procs_venomous_wounds          = get_proc( "venomous_wounds"       );
+  procs_tier10_4pc               = get_proc( "tier10_4pc"            );
+  procs_munched_tier12_2pc_melee = get_proc( "munched_burning_wounds" );
+  procs_rolled_tier12_2pc_melee  = get_proc( "rolled_burning_wounds" );
 }
 
 // rogue_t::init_uptimes =====================================================
@@ -3580,6 +3766,10 @@ void rogue_t::init_buffs()
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
+
+  buffs_tier12_4pc_haste   = new stat_buff_t( this, "Future on Fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
+  buffs_tier12_4pc_crit    = new stat_buff_t( this, "Fiery Devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
+  buffs_tier12_4pc_mastery = new stat_buff_t( this, "Master of Flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
 
   buffs_blade_flurry       = new new_buff_t( this, "blade_flurry",   spec_blade_flurry -> spell_id() );
   buffs_cold_blood         = new new_buff_t( this, "cold_blood",     talents.cold_blood -> spell_id() );
@@ -3725,6 +3915,7 @@ void rogue_t::reset()
   _expirations.reset();
   tricks_of_the_trade_target = 0;
   combo_points -> clear();
+  last_tier12_4pc = -1;
 }
 
 // rogue_t::clear_debuffs ==================================================

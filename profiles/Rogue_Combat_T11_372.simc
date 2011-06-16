@@ -17,6 +17,7 @@ actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30
 actions+=/auto_attack
 actions+=/kick
 actions+=/berserking
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down

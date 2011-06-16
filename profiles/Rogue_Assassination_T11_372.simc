@@ -18,6 +18,7 @@ actions+=/auto_attack
 actions+=/stealth
 actions+=/kick
 actions+=/berserking
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
 actions+=/garrote
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/rupture,if=!ticking&time<6
