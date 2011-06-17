@@ -2243,9 +2243,6 @@ struct vampiric_touch_t : public priest_spell_t
     priest_spell_t( "vampiric_touch", player, "Vampiric Touch" )
   {
     parse_options( NULL, options_str );
-
-    priest_t* p = player -> cast_priest();
-
     may_crit   = false;
   }
 

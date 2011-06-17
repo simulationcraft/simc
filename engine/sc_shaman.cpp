@@ -2391,8 +2391,6 @@ struct shamanistic_rage_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    shaman_t* p = player -> cast_shaman();
-
     if ( ! shaman_spell_t::ready() )
       return false;
 
@@ -3566,9 +3564,7 @@ struct maelstrom_weapon_t : public buff_t
 
   virtual bool trigger( int, double, double chance )
   {
-    bool      can_increase = current_stack <  max_stack;
     bool            result = false;
-    shaman_t*            p = player -> cast_shaman();
 
     result = buff_t::trigger( 1, -1, chance );
 

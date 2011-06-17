@@ -5248,18 +5248,6 @@ int druid_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_caster = ( strstr( s, "cover"     ) ||
-                     strstr( s, "mantle"    ) ||
-                     strstr( s, "vestment"  ) ||
-                     strstr( s, "trousers"  ) ||
-                     strstr( s, "gloves"    ) );
-
-  bool is_melee = ( strstr( s, "headguard"    ) ||
-                    strstr( s, "shoulderpads" ) ||
-                    strstr( s, "raiment"      ) ||
-                    strstr( s, "legguards"    ) ||
-                    strstr( s, "handgrips"    ) );
-
   if ( strstr( s, "stormriders" ) )
   {
     bool is_caster = ( strstr( s, "cover"         ) ||

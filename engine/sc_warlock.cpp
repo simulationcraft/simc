@@ -1132,13 +1132,6 @@ struct warlock_pet_melee_t : public attack_t
 
     base_multiplier *= p -> damage_modifier;
   }
-
-  virtual void player_buff()
-  {
-    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-    warlock_t* o = p -> owner -> cast_warlock();
-    attack_t::player_buff();
-  }
 };
 
 // ==========================================================================

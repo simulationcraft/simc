@@ -551,8 +551,6 @@ struct hunter_pet_t : public pet_t
 
   virtual double composite_attack_power_multiplier() SC_CONST
   {
-    hunter_t* o = owner -> cast_hunter();
-
     double mult = player_t::composite_attack_power_multiplier();
 
     mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
@@ -933,7 +931,6 @@ struct hunter_pet_attack_t : public attack_t
   virtual void player_buff()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
 
     attack_t::player_buff();
 

@@ -5044,18 +5044,6 @@ int death_knight_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_melee = ( strstr( s, "helmet"         ) ||
-                    strstr( s, "shoulderplates" ) ||
-                    strstr( s, "battleplate"    ) ||
-                    strstr( s, "legplates"      ) ||
-                    strstr( s, "gauntlets"      ) );
-
-  bool is_tank = ( strstr( s, "faceguard"  ) ||
-                   strstr( s, "pauldrons"  ) ||
-                   strstr( s, "chestguard" ) ||
-                   strstr( s, "legguards"  ) ||
-                   strstr( s, "handguards" ) );
-
   if ( strstr( s, "magma_plated" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
