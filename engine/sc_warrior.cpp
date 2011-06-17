@@ -1764,9 +1764,6 @@ struct raging_blow_attack_t : public warrior_attack_t
   raging_blow_attack_t( warrior_t* p, const char* name ) :
       warrior_attack_t( name, 96103, p )
   {
-    // FIX-ME: Hotfix nerf. Remove once client updated.
-    weapon_multiplier = 1.0;
-
     may_miss = may_dodge = may_parry = false;
     background = true;
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect1().percent();

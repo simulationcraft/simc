@@ -3016,8 +3016,6 @@ void druid_spell_t::player_buff()
     if ( p -> primary_tree() == TREE_BALANCE )
     {
       double m = p -> spells.moonfury -> effect1().percent();
-      // FIX-ME: Hotfix nerf to Moonfury. Remove once client is updated
-      m = 0.10;
       additive_multiplier += m;
     }
 
@@ -3457,8 +3455,6 @@ struct insect_swarm_t : public druid_spell_t
     if ( result_is_hit() )
     {
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
-      // FIXIT: Did build 14040 remove this?
-      //if ( p -> ptr ) trigger_eclipse_gain_delay( this, -8 );
     }
   }
 };

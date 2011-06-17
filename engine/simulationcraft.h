@@ -3673,7 +3673,7 @@ struct action_t : public spell_id_t
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;
-  cooldown_t* cooldown; // FIXME!! rename to just "cooldown" after migration complete
+  cooldown_t* cooldown;
   dot_t* dot;
   stats_t* stats;
   event_t* execute_event;
