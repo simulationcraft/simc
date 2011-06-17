@@ -1478,8 +1478,7 @@ struct death_knight_attack_t : public attack_t
     may_glance = false;
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      m_dd_additive += ( p -> ptr ) ? util_t::talent_rank( p -> talents.might_of_the_frozen_wastes -> rank(), 3, 0.03, 0.07, 0.10 ) : 
-                                      p -> talents.might_of_the_frozen_wastes -> effect3().percent(); // FIXME - DBC is behind patch notes
+      m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
   }
 
   virtual void   reset();
