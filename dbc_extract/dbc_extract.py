@@ -13,8 +13,8 @@ parser.add_option("-t", "--type", dest = "type",
                   default = "spell", action = "store", type = "choice",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
-                              'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix', 
-                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties' ]), 
+                              'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
+                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [85]", 
                   default = 85, action = "store", type = "int")
@@ -32,7 +32,7 @@ parser.add_option("--suffix", dest = "suffix",
                   default = r'', action = "store", type = "string")
 parser.add_option("--min-ilvl", dest = "min_ilevel",
                   help    = "Minimum inclusive ilevel for item-related extraction",
-                  default = 272, action = "store", type = "int" )
+                  default = 318, action = "store", type = "int" )
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
                   default = 410, action = "store", type = "int" )
@@ -119,6 +119,13 @@ elif options.type == 'random_suffix':
         sys.exit(1)
     ids = g.filter()
     
+    print g.generate(ids)
+elif options.type == 'random_suffix_groups':
+    g = dbc.generator.RandomSuffixGroupGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
     print g.generate(ids)
 elif options.type == 'item':
     g = dbc.generator.ItemDataGenerator(options)

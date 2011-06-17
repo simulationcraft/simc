@@ -1129,6 +1129,10 @@ struct spell_data_t {
   unsigned     _max_stack;          // Maximum stack size for spell
   unsigned     _proc_chance;        // Spell proc chance in percent
   unsigned     _proc_charges;       // Per proc charge amount
+  // SpellEquippedItems.dbc
+  unsigned     _equipped_class;
+  unsigned     _equipped_invtype_mask;
+  unsigned     _equipped_subclass_mask;
   // SpellScaling.dbc
   int          _cast_min;           // Minimum casting time in milliseconds
   int          _cast_max;           // Maximum casting time in milliseconds

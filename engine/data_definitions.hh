@@ -29,8 +29,14 @@ struct random_suffix_data_t {
   unsigned    enchant_alloc[5];
 };
 
+struct random_suffix_group_t {
+  unsigned    id;
+  unsigned    suffix_id[48];
+};
+
 struct item_enchantment_data_t {
   unsigned    id;
+  int         slot;
   const char* name;
   unsigned    id_gem;
   unsigned    ench_type[3];          // item_enchantment
@@ -46,6 +52,8 @@ struct item_data_t {
   unsigned flags_2;
   int      level;                 // Ilevel
   int      req_level;
+  int      req_skill;
+  int      req_skill_level;
   int      quality;
   int      inventory_type;
   int      item_class;
@@ -54,8 +62,8 @@ struct item_data_t {
   double   delay;
   double   dmg_range;
   double   item_modifier;
-  int      race_mask;
   int      class_mask;
+  int      race_mask;
   int      stat_type[10];         // item_mod_type
   int      stat_val[10];
   int      id_spell[5];
@@ -65,6 +73,8 @@ struct item_data_t {
   int      socket_color[3];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;
+  int      id_set;
+  int      id_suffix_group;
 };
 
 struct item_scale_data_t {

@@ -39,9 +39,9 @@ _DIFF_DATA = {
         'Spell.dbc' : [
             ( 'unk_14002', _ADD_FIELD, 'flags_8' ),
         ],
-	'SpellEffect.dbc' : [
-	    ( 'unk_14040', _ADD_FIELD, 'index' ),
-	],
+        'SpellEffect.dbc' : [
+            ( 'unk_14040', _ADD_FIELD, 'index' ),
+        ],
     },
 }
 
@@ -59,6 +59,9 @@ _DBC_FIELDS = {
           'id_movie', 'faction',    'ofs_name',   'ofs_f_name', 'ofs_n_name', 'unk_17',
           'unk_19',   'expansion',  'unk_21',     'unk_22',     'unk_23',     'unk_24'
     ],
+    'GameTables.dbc' : [
+          'id', 'ofs_data_file', 'f1', 'f3'
+    ],
     'GemProperties.dbc' : [
           ( 'id', '%5u' ), ( 'id_enchant', '%5u' ), 'unk_3', 'unk_4', ( 'color', '%3u' ), 'unk_6'
     ],
@@ -66,7 +69,7 @@ _DBC_FIELDS = {
           'id',      ( 'id_spell', '%5u' ),  'flags',      'unk_3'
     ],
     'Item.db2' : [
-          'id',      ( 'classs', '%2d' ), ( 'subclass', '%2d' ), ( 'unk_3', '%d' ), 'material',
+          'id',      ( 'classs', '%2d' ), ( 'subclass', '%2d' ), ( 'unk_3', '%d' ), ( 'material', '%d' ),
           'id_display', 'type_inv',   'sheath'
     ],
     'ItemArmorQuality.dbc' : [
@@ -137,7 +140,7 @@ _DBC_FIELDS = {
     'Item-sparse.db2': [
           ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),         'buy_price',
             'sell_price',           ( 'inv_type', '%2u' ),    ( 'race_mask', '%#.8x' ), ( 'class_mask', '%#.8x' ),    ( 'ilevel', '%4u' ),
-          ( 'req_level', '%3d' ),     'req_skill',              'req_skill_rank',         'req_spell',                  'req_honor_rank',
+          ( 'req_level', '%3d' ),   ( 'req_skill', '%4u' ),   ( 'req_skill_rank', '%4u' ), 'req_spell',                  'req_honor_rank',
             'req_city_rank',          'req_rep_faction',        'req_rep_rank',           'max_count',                  'stackable',
             'container_slots', 
           ( 'stat_type_1', '%3d' ), ( 'stat_type_2', '%3d' ), ( 'stat_type_3', '%3d' ), ( 'stat_type_4', '%3d' ),     ( 'stat_type_5', '%3d' ),
@@ -158,7 +161,7 @@ _DBC_FIELDS = {
           ( 'bonding', '%2d' ),
             'ofs_name',               'ofs_name_2',             'ofs_name_3',             'ofs_name_4',                 'ofs_desc',
             'page_text',              'id_lang',                'page_mat',               'start_quest',                'id_lock',
-            'material',               'sheath',                 'rand_prop',              'rand_suffix',              ( 'item_set', '%4u' ),
+            'material',               'sheath',                 'rand_prop',            ( 'rand_suffix', '%4u' ),     ( 'item_set', '%4u' ),
             'max_durability',         'area',                   'map',                    'bag_family',                 'totem_category',
           ( 'socket_color_1', '%3d' ), ( 'socket_color_2', '%3d' ), ( 'socket_color_3', '%3d' ),
           ( 'socket_cont_1', '%3d' ),  ( 'socket_cont_2', '%3d' ),  ( 'socket_cont_3', '%3d' ),
@@ -213,7 +216,7 @@ _DBC_FIELDS = {
           'id',          'field'
     ],
     'SkillRaceClassInfo.dbc' : [
-          'id',          'id_skill',      'mask_race',       'mask_class',       'flags',
+          ( 'id', '%4u' ),          'id_skill',      ( 'mask_race', '%#.8x' ),   ('mask_class', '%#.8x' ),       ( 'flags', '%#.8x' ),
           'req_level',   'id_skill_tier', 'id_skill_cost',   'unk'
     ],
     'Spell.dbc' : [
@@ -222,7 +225,7 @@ _DBC_FIELDS = {
         ( 'id_cast_time', '%5u'),  ( 'id_duration', '%5u' ),  ( 'type_power', '%2d' ),     ( 'id_range', '%5u' ),       ( 'prj_speed', '%4.1f' ),
            'unk_15',                 'unk_16',                ( 'id_icon', '%5u' ),        ( 'id_active_icon', '%5u' ), ( 'ofs_name', '%5u' ),
         ( 'ofs_rank', '%5u' ),     ( 'ofs_desc', '%5u' ),     ( 'ofs_tool_tip', '%5u' ),   ( 'mask_school', '%#.2x' ),    'id_rune_cost',
-        ( 'id_missile', '%5u' ),   ( 'id_desc_var', '%5u' ),  ( 'id_difficulty', '%5u' ),  ( 'extra_coeff', '%5.7f' ),                  ( 'id_scaling', '%5u' ), 
+        ( 'id_missile', '%5u' ),   ( 'id_desc_var', '%5u' ),  ( 'id_difficulty', '%5u' ),  ( 'extra_coeff', '%5.7f' ),  ( 'id_scaling', '%5u' ), 
         ( 'id_aura_opt', '%5u' ),  ( 'id_aura_rest', '%5u' ), ( 'id_cast_req', '%5u' ),    ( 'id_categories', '%5u' ),  ( 'id_class_opts', '%5u' ),
         ( 'id_cooldowns', '%5u' ),   'unk_36',                ( 'id_equip_items', '%5u' ), ( 'id_interrupts', '%5u' ),  ( 'id_levels', '%5u' ),
         ( 'id_power', '%5u' ),     ( 'id_reagents', '%5u' ),  ( 'id_shapeshift', '%5u' ),  ( 'id_tgt_rest', '%5u' ),    ( 'id_totems', '%5u' ),
@@ -261,12 +264,15 @@ _DBC_FIELDS = {
           ( 'class_mask_3', '%#.8x' ),       ( 'trigger_spell', '%5d' ),     'implicit_target_1',        'implicit_target_2',     ( 'id_spell', '%5u' ),
         ( 'index', '%u' )
     ],
+    'SpellEquippedItems.dbc' : [
+        'id', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
+    ],
     'SpellItemEnchantment.dbc' : [
           ( 'id', '%4u' ), 'charges', 
           ( 'type_1', '%3u' ), ( 'type_2', '%3u' ), ( 'type_3', '%3u' ), 
           ( 'amount_1', '%4d' ), ( 'amount_2', '%4d' ), ( 'amount_3', '%4d' ), 'amount_4', 'amount_5', 'amount_6', 
           ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
-          'ofs_desc', 'id_aura', 'slot', ( 'id_gem', '%5u' ), 'enchantment_condition', 
+          'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%5u' ), 'enchantment_condition', 
           'req_skill', 'req_skill_value', 'unk_1', 'unk_2'
     ],
     'SpellLevels.dbc' : [
@@ -397,13 +403,13 @@ class Item_sparse(DBCRecord):
     def __init__(self, dbc_parser, record):
         DBCRecord.__init__(self, dbc_parser, record)
 
-        self.name     = ''
+        self.name     = 0
 
     def field(self, *args):
         f = DBCRecord.field(self, *args)
 
         if 'name' in args:
-            f[args.index('name')] = '%-55s' % ('"%s"' % self.name.replace('"', '\\"'))
+            f[args.index('name')] = '%-55s' % (self.name and ('"%s"' % self.name.replace('"', '\\"'))) or ('%s' % self.name)
 
         return f
 
@@ -443,7 +449,7 @@ class ItemDisplayInfo(DBCRecord):
 
         if 'icon' in args:
             if self.icon != "":
-                f[args.index('icon')] = '%-40s' % ('"%s"' % self.icon.replace('"', '\\"'))
+                f[args.index('icon')] = '%-40s' % ('"%s"' % self.icon.replace('"', '\\"').lower())
             else:
                 f[args.index('icon')] = '%-40s' % '0'
 
@@ -472,7 +478,10 @@ class Spell(DBCRecord):
         DBCRecord.__init__(self, dbc_parser, record)
 
         self._effects = [ None, None, None ]
-        self.name     = ''
+        self.name     = 0
+        self.desc     = 0
+        self.tt       = 0
+        self.rank     = 0
 
     def add_effect(self, spell_effect):
         self._effects[spell_effect.index] = spell_effect
@@ -484,14 +493,14 @@ class Spell(DBCRecord):
         # attributeerror if something else is being accessed
         if 'effect_' in name:
             return SpellEffect.default()
-        
+            
         raise AttributeError
 
     def field(self, *args):
         f = DBCRecord.field(self, *args)
 
         if 'name' in args:
-            f[args.index('name')] = '%-36s' % ('"%s"' % self.name)
+            f[args.index('name')] = '%-36s' % ((self.name and '"%s"' or '%s') % self.name)
            
         for field_id in [ 'desc', 'tt', 'rank' ]:
             if field_id in args:
@@ -512,23 +521,15 @@ class Spell(DBCRecord):
         # Find DBCStrings available for the spell
         if self.ofs_name != 0:
             self.name = self._dbc_parser.get_string_block(self.ofs_name)
-        else:
-            self.name = 0
 
         if self.ofs_rank != 0:
             self.rank = self._dbc_parser.get_string_block(self.ofs_rank)
-        else:
-            self.rank = 0
 
         if self.ofs_desc != 0:
             self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
-        else:
-            self.desc = 0
 
         if self.ofs_tool_tip != 0:
             self.tt = self._dbc_parser.get_string_block(self.ofs_tool_tip)
-        else:
-            self.tt = 0
 
         return self
 
@@ -603,24 +604,25 @@ class SpellPower(DBCRecord):
         return f
 
 class TalentTab(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.name     = 0
+        self.desc     = 0
+        self.internal_name = 0
+
     def parse(self):
         DBCRecord.parse(self)
 
         # Find DBCStrings available for the spell
         if self.ofs_name != 0:
             self.name = self._dbc_parser.get_string_block(self.ofs_name)
-        else:
-            self.name = ''
 
         if self.ofs_internal_name != 0:
             self.internal_name = self._dbc_parser.get_string_block(self.ofs_internal_name)
-        else:
-            self.internal_name = ''
 
         if self.ofs_desc != 0:
             self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
-        else:
-            self.desc = ''
     
     def __str__(self):
         s = 'name="%s" internal_name="%s" ' % (self.name, self.internal_name)
@@ -633,18 +635,20 @@ class TalentTab(DBCRecord):
         return s
 
 class ItemRandomSuffix(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.name_sfx = 0
+        self.name_int = 0
+
     def parse(self):
         DBCRecord.parse(self)
 
         if self.ofs_name_sfx != 0:
             self.name_sfx = self._dbc_parser.get_string_block(self.ofs_name_sfx)
-        else:
-            self.name_sfx = ''
 
         if self.ofs_name_int != 0:
             self.name_int = self._dbc_parser.get_string_block(self.ofs_name_int)
-        else:
-            self.name_int = ''
 
     def __str__(self):
         s = ''
@@ -663,7 +667,7 @@ class ItemRandomSuffix(DBCRecord):
         f = DBCRecord.field(self, *args)
 
         if 'suffix' in args:
-            f[args.index('suffix')] = '%-22s' % ('"%s"' % self.name_sfx)
+            f[args.index('suffix')] = '%-22s' % ((self.name_sfx and '"%s"' or '%s') % self.name_sfx)
 
         return f
 
@@ -720,19 +724,22 @@ class SkillLine(DBCRecord):
         return s
 
 class SpellItemEnchantment(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.desc = 0
+
     def parse(self):
         DBCRecord.parse(self)
 
         if self.ofs_desc != 0:
             self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
-        else:
-            self.desc = ''
     
     def field(self, *args):
         f = DBCRecord.field(self, *args)
 
         if 'desc' in args:
-            f[args.index('desc')] = '%-25s' % ('"%s"' % self.desc)
+            f[args.index('desc')] = '%-25s' % ((self.desc and '"%s"' or '%s') % self.desc)
 
         return f
 
@@ -764,13 +771,16 @@ class ItemClass(DBCRecord):
         return s
 
 class SpellDescriptionVariables(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.var = 0
+    
     def parse(self):
         DBCRecord.parse(self)
 
         if self.ofs_var != 0:
             self.var = self._dbc_parser.get_string_block(self.ofs_var)
-        else:
-            self.var = ''
 
     def field(self, *args):
         f = DBCRecord.field(self, *args)
