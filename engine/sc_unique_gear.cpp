@@ -127,7 +127,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
   discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
                              const school_type school, double amount, double scaling,
-                             double pc, double cd, bool no_crit, bool no_buffs, int rng_type=RNG_DEFAULT ) :
+                             double pc, double cd, bool no_crit, bool no_buffs, bool no_debuffs, int rng_type=RNG_DEFAULT ) :
                              action_callback_t( p -> sim, p ),
     name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
@@ -135,10 +135,8 @@ struct discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      bool no_buffs;
-
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s ), no_buffs( nb )
+      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -146,27 +144,16 @@ struct discharge_proc_callback_t : public action_callback_t
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         background  = true;
+        no_buffs = nb;
+        no_debuffs = nd;
         init();
-      }
-
-      virtual void player_buff()
-      {
-        spell_t::player_buff();
-        if ( no_buffs )
-        {
-          player_multiplier              = 1.0;
-          player_dd_multiplier           = 1.0;
-          player_td_multiplier           = 1.0;
-        }
       }
     };
 
     struct discharge_attack_t : public attack_t
     {
-      bool no_buffs;
-
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb ) :
-        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s ), no_buffs( nb )
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
+        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -175,18 +162,9 @@ struct discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         may_dodge = may_parry = may_glance = false;
         background  = true;
+        no_buffs = nb;
+        no_debuffs = nd;
         init();
-      }
-  
-      virtual void player_buff()
-      {
-        attack_t::player_buff();
-        if ( no_buffs )
-        {
-          player_multiplier              = 1.0;
-          player_dd_multiplier           = 1.0;
-          player_td_multiplier           = 1.0;
-        }
       }
     };
 
@@ -195,11 +173,11 @@ struct discharge_proc_callback_t : public action_callback_t
 
     if( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_crit, no_buffs );
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_crit, no_buffs, no_debuffs );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school, no_crit, no_buffs );
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school, no_crit, no_buffs, no_debuffs );
     }
 
     proc = p -> get_proc( name_str.c_str() );
@@ -258,7 +236,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
 
   chance_discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
                              const school_type school, double amount, double scaling,
-                             double pc, double cd, bool no_crit, bool no_buffs, int rng_type=RNG_DEFAULT ) :
+                             double pc, double cd, bool no_crit, bool no_buffs, bool no_debuffs, int rng_type=RNG_DEFAULT ) :
     action_callback_t( p -> sim, p ),
     name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
@@ -266,10 +244,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      bool no_buffs;
-
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s ), no_buffs( nb )
+      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -277,27 +253,16 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         background  = true;
+        no_buffs = nb;
+        no_debuffs = nd;
         init();
-      }
-
-      virtual void player_buff()
-      {
-        spell_t::player_buff();
-        if ( no_buffs )
-        {
-          player_multiplier              = 1.0;
-          player_dd_multiplier           = 1.0;
-          player_td_multiplier           = 1.0;
-        }
       }
     };
 
     struct discharge_attack_t : public attack_t
     {
-      bool no_buffs;
-
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb ) :
-        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s ), no_buffs( nb )
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
+        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -306,18 +271,9 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         may_dodge = may_parry = may_glance = false;
         background  = true;
+        no_buffs = nb;
+        no_debuffs = nd;
         init();
-      }
-
-      virtual void player_buff()
-      {
-        attack_t::player_buff();
-        if ( no_buffs )
-        {
-          player_multiplier              = 1.0;
-          player_dd_multiplier           = 1.0;
-          player_td_multiplier           = 1.0;
-        }
       }
     };
 
@@ -326,11 +282,11 @@ struct chance_discharge_proc_callback_t : public action_callback_t
 
     if( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_crit, no_buffs );
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_crit, no_buffs, no_debuffs );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school, no_crit, no_buffs );
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school, no_crit, no_buffs, no_debuffs );
     }
 
     proc = p -> get_proc( name_str.c_str() );
@@ -391,7 +347,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   stat_discharge_proc_callback_t( const std::string& n, player_t* p,
                                   int stat, int max_stacks, double stat_amount,
                                   const school_type school, double discharge_amount, double discharge_scaling,
-                                  double proc_chance, double duration, double cooldown, bool no_crits, bool no_buffs ) :
+                                  double proc_chance, double duration, double cooldown, bool no_crits, bool no_buffs, bool no_debuffs ) :
     action_callback_t( p -> sim, p ), name_str( n )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
@@ -401,10 +357,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      bool no_buffs;
-
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s ), no_buffs( nb )
+      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb, bool nd ) :
+        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -412,18 +366,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crits;
         background  = true;
+        no_buffs = nb;
+        no_debuffs = nd;
         init();
-      }
-
-      virtual void player_buff()
-      {
-        spell_t::player_buff();
-        if ( no_buffs )
-        {
-          player_multiplier              = 1.0;
-          player_dd_multiplier           = 1.0;
-          player_td_multiplier           = 1.0;
-        }
       }
     };
 
@@ -431,8 +376,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       bool no_buffs;
 
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb ) :
-        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s ), no_buffs( nb )
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb, bool nd ) :
+        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = 0;
         base_dd_min = amount;
@@ -441,28 +386,19 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crits;
         may_dodge = may_parry = may_glance = false;
         background  = true;
+        no_buffs = nb;
+        no_debuffs = nd;
         init();
-      }
-
-      virtual void player_buff()
-      {
-        attack_t::player_buff();
-        if ( no_buffs )
-        {
-          player_multiplier              = 1.0;
-          player_dd_multiplier           = 1.0;
-          player_td_multiplier           = 1.0;
-        }
       }
     };
 
     if ( discharge_amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school, no_crits, no_buffs );
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school, no_crits, no_buffs, no_debuffs );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -discharge_amount, discharge_scaling, school, no_crits, no_buffs );
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -discharge_amount, discharge_scaling, school, no_crits, no_buffs, no_debuffs );
     }
   }
 
@@ -1358,6 +1294,77 @@ static void register_unheeded_warning( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new uhw_callback_t( p, new uhw_buff_t( p ) ) );
 };
 
+// register_dragonwrath_tarecgosas_rest ===================================================
+
+static void register_dragonwrath_tarecgosas_rest( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct dragonwrath_tarecgosas_rest_callback_t : public discharge_proc_callback_t
+  {
+    rng_t* rng;
+
+    dragonwrath_tarecgosas_rest_callback_t( player_t* p, double pc ) :
+      discharge_proc_callback_t( "dragonwrath_tarecgosas_rest", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, 0.0, true, true, true ), rng( 0 )
+    {
+      rng = p -> get_rng( "dragonwrath_tarecgosas_rest" );
+    }
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      double dmg;
+
+      if ( a -> tick_dmg > 0 ) 
+        dmg = a -> tick_dmg;
+      else
+        dmg = a -> direct_dmg;
+
+      discharge_action -> base_dd_min = dmg;
+      discharge_action -> base_dd_max = dmg;
+      
+      discharge_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  double chance = 0.0;
+
+  // FIXME: Need the proper chances here
+  switch ( p -> type )
+  {
+  case DRUID:
+  case MAGE:
+  case PRIEST:
+  case SHAMAN:
+  case WARLOCK:
+    switch ( p -> primary_tree() )
+    {
+    case TREE_BALANCE:      chance = 0.01; break;
+    case TREE_ARCANE:       chance = 0.01; break;
+    case TREE_FIRE:         chance = 0.01; break;
+    case TREE_FROST:        chance = 0.01; break;
+    case TREE_SHADOW:       chance = 0.01; break;
+    case TREE_ELEMENTAL:    chance = 0.01; break;
+    case TREE_AFFLICTION:   chance = 0.01; break;
+    case TREE_DEMONOLOGY:   chance = 0.01; break;
+    case TREE_DESTRUCTION:  chance = 0.01; break;
+    default:
+      // Get a real spec...
+      break;
+    }
+    break;
+  default:
+    // Seriously?
+    break;
+  }
+
+  action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
+
+  p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1411,6 +1418,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar"           ) ) register_tiny_abom                         ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "unheeded_warning"                    ) ) register_unheeded_warning                  ( &item );
+    if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
   }
 }
 
@@ -1528,10 +1536,11 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
                                                            double             cooldown,
                                                            bool               no_crits,
                                                            bool               no_buffs,
+                                                           bool               no_debuffs,
                                                            int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown, 
-                                                         no_crits, no_buffs, rng_type );
+                                                         no_crits, no_buffs, no_debuffs, rng_type );
 
   if ( type == PROC_DAMAGE )
   {
@@ -1583,10 +1592,11 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
                                                                   double             cooldown,
                                                                   bool               no_crits,
                                                                   bool               no_buffs,
+                                                                  bool               no_debuffs,
                                                                   int                rng_type )
 {
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown, 
-                                                                no_crits, no_buffs, rng_type );
+                                                                no_crits, no_buffs, no_debuffs, rng_type );
 
   if ( type == PROC_DAMAGE )
   {
@@ -1641,10 +1651,11 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( int             
                                                                 double             duration,
                                                                 double             cooldown,
                                                                 bool               no_crits,
-                                                                bool               no_buffs )
+                                                                bool               no_buffs,
+                                                                bool               no_debuffs )
 {
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance, 
-                                                              duration, cooldown, no_crits, no_buffs );
+                                                              duration, cooldown, no_crits, no_buffs, no_debuffs );
 
   if ( type == PROC_DAMAGE )
   {
@@ -1714,7 +1725,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
 
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                   e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                  e.proc_chance, e.cooldown, e.no_crit, e.no_player_benefits );
+                                  e.proc_chance, e.cooldown, e.no_crit, e.no_player_benefits, e.no_debuffs );
 }
 
 // ==========================================================================
@@ -1728,7 +1739,7 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( item_t& i,
 
   return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                         e.proc_chance, e.cooldown, e.no_crit, e.no_player_benefits );
+                                         e.proc_chance, e.cooldown, e.no_crit, e.no_player_benefits, e.no_debuffs );
 }
 
 // ==========================================================================
@@ -1743,7 +1754,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
   return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.max_stacks, e.stat, e.stat_amount,
                                        e.school, e.discharge_amount, e.discharge_scaling,
-                                       e.proc_chance, e.duration, e.cooldown, e.no_crit, e.no_player_benefits );
+                                       e.proc_chance, e.duration, e.cooldown, e.no_crit, e.no_player_benefits, e.no_debuffs );
 }
 
 // ==========================================================================

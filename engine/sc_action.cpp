@@ -44,6 +44,8 @@ void action_t::_init_action_t()
   tick_may_crit                  = false;
   tick_zero                      = false;
   hasted_ticks                   = false;
+  no_buffs                       = false;
+  no_debuffs                     = false;
   dot_behavior                   = DOT_CLIP;
   ability_lag                    = 0.0;
   ability_lag_stddev             = 0.0;
@@ -564,44 +566,47 @@ void action_t::player_buff()
   player_spell_power_multiplier  = 1.0;
   player_attack_power_multiplier = 1.0;
 
-  player_t* p = player;
-
-  if ( school == SCHOOL_BLEED )
+  if ( ! no_buffs )
   {
-    // Not applicable
-  }
+    player_t* p = player;
 
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    if ( p -> debuffs.demoralizing_roar    -> up() ||
-         p -> debuffs.demoralizing_shout   -> up() ||
-         p -> debuffs.demoralizing_screech -> up() ||
-         p -> debuffs.scarlet_fever        -> up() ||
-         p -> debuffs.vindication          -> up() )
+    if ( school == SCHOOL_BLEED )
     {
-      player_multiplier *= 0.90;
+      // Not applicable
     }
-  }
 
-  else if ( school != SCHOOL_PHYSICAL )
-  {
-    player_penetration = p -> composite_spell_penetration();
-  }
+    if ( school == SCHOOL_PHYSICAL )
+    {
+      if ( p -> debuffs.demoralizing_roar    -> up() ||
+           p -> debuffs.demoralizing_shout   -> up() ||
+           p -> debuffs.demoralizing_screech -> up() ||
+           p -> debuffs.scarlet_fever        -> up() ||
+           p -> debuffs.vindication          -> up() )
+      {
+        player_multiplier *= 0.90;
+      }
+    }
 
-  player_multiplier    = p -> composite_player_multiplier   ( school );
-  player_dd_multiplier = p -> composite_player_dd_multiplier( school );
-  player_td_multiplier = p -> composite_player_td_multiplier( school );
+    else if ( school != SCHOOL_PHYSICAL )
+    {
+      player_penetration = p -> composite_spell_penetration();
+    }
 
-  if ( base_attack_power_multiplier > 0 )
-  {
-    player_attack_power            = p -> composite_attack_power();
-    player_attack_power_multiplier = p -> composite_attack_power_multiplier();
-  }
+    player_multiplier    = p -> composite_player_multiplier   ( school );
+    player_dd_multiplier = p -> composite_player_dd_multiplier( school );
+    player_td_multiplier = p -> composite_player_td_multiplier( school );
 
-  if ( base_spell_power_multiplier > 0 )
-  {
-    player_spell_power            = p -> composite_spell_power( school );
-    player_spell_power_multiplier = p -> composite_spell_power_multiplier();
+    if ( base_attack_power_multiplier > 0 )
+    {
+      player_attack_power            = p -> composite_attack_power();
+      player_attack_power_multiplier = p -> composite_attack_power_multiplier();
+    }
+
+    if ( base_spell_power_multiplier > 0 )
+    {
+      player_spell_power            = p -> composite_spell_power( school );
+      player_spell_power_multiplier = p -> composite_spell_power_multiplier();
+    }
   }
 
   player_haste = haste();
@@ -623,61 +628,64 @@ void action_t::target_debuff( player_t* t, int dmg_type )
   target_penetration           = 0;
   target_dd_adder              = 0;
 
-
-  if ( school == SCHOOL_PHYSICAL ||
-       school == SCHOOL_BLEED    )
+  if ( ! no_debuffs )
   {
-    if ( t -> debuffs.savage_combat -> up() )
+    if ( school == SCHOOL_PHYSICAL ||
+         school == SCHOOL_BLEED    )
     {
-      target_multiplier *= 1.04;
+      if ( t -> debuffs.savage_combat -> up() )
+      {
+        target_multiplier *= 1.04;
+      }
+      else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() || t -> debuffs.ravage -> value() )
+      {
+        target_multiplier *= 1.0 + std::max(
+                                   std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
+                                             t -> debuffs.brittle_bones         -> value() ),
+                                             t -> debuffs.ravage                -> value() * 0.01 );
+
+      }
     }
-    else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() || t -> debuffs.ravage -> value() )
+    else
     {
-      target_multiplier *= 1.0 + std::max(
-                                 std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
-                                           t -> debuffs.brittle_bones         -> value() ),
-                                           t -> debuffs.ravage                -> value() * 0.01 );
+      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
+                                   std::max( t -> debuffs.earth_and_moon     -> value(),
+                                   std::max( t -> debuffs.ebon_plaguebringer -> value(),
+                                             t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
 
+      if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 88;
     }
-  }
-  else
-  {
-    target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
-                                 std::max( t -> debuffs.earth_and_moon     -> value(),
-                                 std::max( t -> debuffs.ebon_plaguebringer -> value(),
-                                           t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
 
-    if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 88;
-  }
-
-  if ( school == SCHOOL_BLEED )
-  {
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
+    if ( school == SCHOOL_BLEED )
     {
-      target_multiplier *= 1.30;
+      if ( t -> debuffs.mangle -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
+      {
+        target_multiplier *= 1.30;
+      }
+      else if ( t -> debuffs.blood_frenzy_bleed -> value() )
+      {
+        target_multiplier *= 1.0 + t -> debuffs.blood_frenzy_bleed -> value() * 0.01;
+      }
     }
-    else if ( t -> debuffs.blood_frenzy_bleed -> value() )
+
+    if ( base_attack_power_multiplier > 0 )
     {
-      target_multiplier *= 1.0 + t -> debuffs.blood_frenzy_bleed -> value() * 0.01;
+      bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
+                      player -> position == POSITION_RANGED_BACK );
+
+      if ( ranged )
+      {
+        target_attack_power += t -> debuffs.hunters_mark -> value();
+      }
     }
-  }
-
-  if ( base_attack_power_multiplier > 0 )
-  {
-    bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
-                    player -> position == POSITION_RANGED_BACK );
-
-    if ( ranged )
+    if ( base_spell_power_multiplier > 0 )
     {
-      target_attack_power += t -> debuffs.hunters_mark -> value();
+      // no spell power based debuffs at this time
     }
-  }
-  if ( base_spell_power_multiplier > 0 )
-  {
-    // no spell power based debuffs at this time
-  }
 
-  if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= t -> debuffs.vulnerable -> value();
+    if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= t -> debuffs.vulnerable -> value();
+
+  }
 
   if ( sim -> debug )
     log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
