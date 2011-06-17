@@ -604,9 +604,6 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
         num_ticks++;
       }
       init();
-
-      double a = base_td_multiplier;
-      double b = base_multiplier;
     }
     virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
     {
