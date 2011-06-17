@@ -41,11 +41,9 @@ struct shaman_t : public player_t
   buff_t* buffs_elemental_focus;
   buff_t* buffs_elemental_mastery;
   buff_t* buffs_elemental_mastery_insta;
-  buff_t* buffs_elemental_rage;
   buff_t* buffs_flurry;
   buff_t* buffs_lava_surge;
   buff_t* buffs_lightning_shield;
-  buff_t* buffs_maelstrom_power;
   buff_t* buffs_maelstrom_weapon;
   buff_t* buffs_natures_swiftness;
   buff_t* buffs_searing_flames;
@@ -235,7 +233,6 @@ struct shaman_t : public player_t
   virtual void      init_actions();
   virtual void      moving();
   virtual void      clear_debuffs();
-  virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
@@ -1352,9 +1349,6 @@ void shaman_attack_t::player_buff()
   
   if ( p -> ptr && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
-
-  if ( p -> buffs_elemental_rage -> up() )
-    player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
 }
 
 
@@ -1764,9 +1758,6 @@ void shaman_spell_t::player_buff()
     
   player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   
-  if ( p -> buffs_elemental_rage -> up() )
-    player_multiplier *= 1.0 + p -> buffs_elemental_rage -> base_value();
-
   // Apply Tier12 4 piece enhancement bonus as multiplicative for now
   if ( p -> ptr && ! is_totem && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
@@ -3654,18 +3645,6 @@ struct unleash_elements_buff_t : public buff_t
   }
 };
 
-struct maelstrom_power_t : public buff_t
-{
-  maelstrom_power_t( player_t*   p,
-                     uint32_t    id,
-                     const char* n ) :
-    buff_t( p, id, n, 1.0, false )
-  {
-    // Proc chance is in the base spell, 70832
-    default_chance = p -> dbc.spell( 70832 ) -> effect1().percent();
-  }
-};
-
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -4206,18 +4185,6 @@ double shaman_t::composite_spell_hit() SC_CONST
     ( spirit() - attribute_base[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
-}
-
-// shaman_t::composite_attack_power_multiplier ==========================================
-
-double shaman_t::composite_attack_power_multiplier() SC_CONST
-{
-  double multiplier = player_t::composite_attack_power_multiplier();
-
-  if ( buffs_maelstrom_power -> up() )
-    multiplier *= 1.0 + buffs_maelstrom_power -> base_value();
-
-  return multiplier;
 }
 
 // shaman_t::composite_attack_crit ==========================================
