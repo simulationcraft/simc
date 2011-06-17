@@ -126,7 +126,6 @@ struct death_knight_t : public player_t
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_shadow_infusion;
   buff_t* buffs_sudden_doom;
-  buff_t* buffs_tier10_4pc_melee;
   buff_t* buffs_tier11_4pc_melee;
   buff_t* buffs_unholy_presence;
 
@@ -896,8 +895,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       aoe                 = 2;
       base_add_multiplier = 0.75;
       trigger_gcd         = 0;
-      base_multiplier    *= 1 + o -> set_bonus.tier10_2pc_melee() * 0.07
-                            + o -> glyphs.heart_strike          * 0.30;
+      base_multiplier    *= 1 + o -> glyphs.heart_strike          * 0.30;
       if ( ! p -> ptr )
         base_multiplier    *= 0.50; // DRW penalty
 
@@ -1610,9 +1608,6 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
   {
     log_rune_status( p );
   }
-
-  if ( count_runes( p ) == 0 )
-    p -> buffs_tier10_4pc_melee -> trigger( 1, 0.03 );
 }
 
 // Group Runes ==============================================================
@@ -1884,8 +1879,6 @@ void death_knight_attack_t::player_buff()
   // Add in all m_dd_additive
   player_multiplier *= 1.0 + m_dd_additive;
 
-  player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
-
   if ( p -> primary_tree() == TREE_FROST && school == SCHOOL_FROST )
   {
     player_multiplier *= 1.0 + p -> spells.frozen_heart -> effect1().coeff() * 0.01 * p -> composite_mastery();
@@ -2005,8 +1998,6 @@ void death_knight_spell_t::player_buff()
   death_knight_t* p = player -> cast_death_knight();
 
   spell_t::player_buff();
-
-  player_multiplier *= 1.0 + p -> buffs_tier10_4pc_melee -> value();
 
   if ( p -> primary_tree() == TREE_FROST && school == SCHOOL_FROST )
   {
@@ -2937,8 +2928,7 @@ struct heart_strike_t : public death_knight_attack_t
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
-    base_multiplier *= 1 + p -> set_bonus.tier10_2pc_melee() * 0.07
-                       + p -> glyphs.heart_strike            * 0.30;
+    base_multiplier *= 1 + p -> glyphs.heart_strike            * 0.30;
 
     aoe = 2;
     base_add_multiplier *= 0.75;
@@ -3234,7 +3224,6 @@ struct obliterate_offhand_t : public death_knight_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
 
     // These both stack additive with MOTFW
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
@@ -3307,8 +3296,6 @@ struct obliterate_t : public death_knight_attack_t
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> primary_tree() == TREE_BLOOD )
       convert_runes = 1.0;
-
-    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.10;
 
     // These both stack additive with MOTFW
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
@@ -3812,8 +3799,7 @@ struct scourge_strike_t : public death_knight_attack_t
     scourge_strike_shadow = new scourge_strike_shadow_t( player );
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
-    base_multiplier *= 1.0 + p -> set_bonus.tier10_2pc_melee() * 0.1
-                       + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
+    base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
 
     if ( p -> set_bonus.tier12_4pc_melee() )
     {
@@ -4754,7 +4740,6 @@ void death_knight_t::init_buffs()
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
   buffs_sudden_doom         = new buff_t( this, "sudden_doom",                                        1,  10.0,  0.0, 1.0 );
-  buffs_tier10_4pc_melee    = new buff_t( this, "tier10_4pc_melee",                                   1,  15.0,  0.0, set_bonus.tier10_4pc_melee() );
   buffs_tier11_4pc_melee    = new buff_t( this, "tier11_4pc_melee",                                   3,  30.0,  0.0, set_bonus.tier11_4pc_melee() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
 
@@ -5071,11 +5056,6 @@ int death_knight_t::decode_set( item_t& item )
                    strstr( s, "legguards"  ) ||
                    strstr( s, "handguards" ) );
 
-  if ( strstr( s, "scourgelord" ) )
-  {
-    if ( is_melee ) return SET_T10_MELEE;
-    if ( is_tank  ) return SET_T10_TANK;
-  }
   if ( strstr( s, "magma_plated" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
@@ -5092,6 +5072,24 @@ int death_knight_t::decode_set( item_t& item )
 
     if ( is_melee ) return SET_T11_MELEE;
     if ( is_tank  ) return SET_T11_TANK;
+  }
+
+  if ( strstr( s, "elementium_deathplate" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "breastplate"   ) ||
+                      strstr( s, "greaves"       ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T12_MELEE;
+    if ( is_tank  ) return SET_T12_TANK;
   }
 
   return SET_NONE;

@@ -52,8 +52,6 @@
 //   * sword_and_board                  = 46953 = add_flat_mod_spell_crit_chance (7)
 //   * thunderstruck                    = 87096 = add_percent_mod_generic
 //   * war_acacdemy                     = 84572 = add_percent_mod_generic
-//   * warrior_t10_melee_2pc_bonus      = 70854 = mod_damage_done% (0x1)
-//   * warrior_t10_melee_4pc_bonus      = 70847 = mod_damage_done% (0x7f)
 //   * warrior_tier11_dps_2pc_bonus     = 90293 = add_percent_mod_generic
 //   * warrior_tier11_dps_4pc_bonus     = 90294 = mod_melee_attack_power%
 //   * twohanded_weapon_specialization  = 12712 = mod_damage_done% (0x1)
@@ -119,7 +117,6 @@ struct warrior_t : public player_t
   buff_t* buffs_thunderstruck;
   buff_t* buffs_victory_rush;
   buff_t* buffs_wrecking_crew;
-  buff_t* buffs_tier10_2pc_melee;
   buff_t* buffs_tier11_4pc_melee;
   buff_t* buffs_tier12_2pc_melee;
 
@@ -472,43 +469,38 @@ static void trigger_deep_wounds( action_t* a )
     struct deep_wounds_t : public warrior_attack_t
     {
       deep_wounds_t( warrior_t* p ) :
-	warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
+        warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
       {
-	background = true;
-	trigger_gcd = 0;
-	weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
-	may_crit = false;
-	base_tick_time = 1.0;
-	num_ticks = 6;
-	tick_may_crit = false;
-	hasted_ticks  = false;
-	dot_behavior  = DOT_REFRESH;
-	id = 12834;
-	init(); // required since construction occurs after player_t::init()
+        background = true;
+        trigger_gcd = 0;
+        weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
+        may_crit = false;
+        base_tick_time = 1.0;
+        num_ticks = 6;
+        tick_may_crit = false;
+        hasted_ticks  = false;
+        dot_behavior  = DOT_REFRESH;
+        id = 12834;
+        init(); // required since construction occurs after player_t::init()
       }
       virtual void target_debuff( player_t* t, int dmg_type )
       {
-	warrior_attack_t::target_debuff( t, dmg_type );
-	// Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
-	if ( t -> debuffs.blood_frenzy_bleed  -> check() ||
-	     t -> debuffs.savage_combat       -> check() )
-	  target_multiplier /= 1.04;
+        warrior_attack_t::target_debuff( t, dmg_type );
+        // Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
+        if ( t -> debuffs.blood_frenzy_bleed  -> check() ||
+            t -> debuffs.savage_combat       -> check() )
+        target_multiplier /= 1.04;
       }
       virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
       virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
       virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
       {
-	warrior_attack_t::travel( t, travel_result, 0 );
-	if ( result_is_hit( travel_result ) )
-	{
-	  base_td = deep_wounds_dmg / dot -> num_ticks;
-	  trigger_blood_frenzy( this );
-	}
-      }
-      virtual void tick()
-      {
-	warrior_attack_t::tick();
-	player -> cast_warrior() -> buffs_tier10_2pc_melee -> trigger();
+        warrior_attack_t::travel( t, travel_result, 0 );
+        if ( result_is_hit( travel_result ) )
+        {
+          base_td = deep_wounds_dmg / dot -> num_ticks;
+          trigger_blood_frenzy( this );
+        }
       }
     };
 
@@ -969,12 +961,6 @@ void warrior_attack_t::player_buff()
     player_crit += 0.10;
 
   // --- Set Bonuses ---
-
-  if ( p -> set_bonus.tier10_4pc_melee() )
-    player_multiplier *= 1.05;
-
-  if ( school == SCHOOL_PHYSICAL && p -> set_bonus.tier10_2pc_melee() )
-    player_multiplier *= 1.05;
 
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
@@ -1891,7 +1877,6 @@ struct rend_dot_t : public warrior_attack_t
 
     warrior_t* p = player -> cast_warrior();
 
-    p -> buffs_tier10_2pc_melee -> trigger();
     p -> buffs_taste_for_blood -> trigger();
   }
 };
@@ -3118,7 +3103,6 @@ void warrior_t::init_buffs()
   buffs_thunderstruck             = new buff_t( this, "thunderstruck",             3, 20.0,   0, talents.thunderstruck -> proc_chance() );
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
-  buffs_tier10_2pc_melee          = new buff_t( this, "tier10_2pc_melee",          1, 10.0,   0, set_bonus.tier10_2pc_melee() * 0.02 );
   buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0,   0, set_bonus.tier11_4pc_melee() );
 
   switch ( talents.booming_voice -> rank() )
@@ -3642,23 +3626,6 @@ int warrior_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_melee = ( strstr( s, "helmet"         ) ||
-                    strstr( s, "shoulderplates" ) ||
-                    strstr( s, "battleplate"    ) ||
-                    strstr( s, "legplates"      ) ||
-                    strstr( s, "gauntlets"      ) );
-
-  bool is_tank = ( strstr( s, "greathelm"   ) ||
-                   strstr( s, "pauldrons"   ) ||
-                   strstr( s, "breastplate" ) ||
-                   strstr( s, "legguards"   ) ||
-                   strstr( s, "handguards"  ) );
-
-  if ( strstr( s, "ymirjar" ) )
-  {
-    if ( is_melee ) return SET_T10_MELEE;
-    if ( is_tank  ) return SET_T10_TANK;
-  }
   if ( strstr( s, "earthen" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
@@ -3675,6 +3642,24 @@ int warrior_t::decode_set( item_t& item )
 
     if ( is_melee ) return SET_T11_MELEE;
     if ( is_tank  ) return SET_T11_TANK;
+  }
+
+  if ( strstr( s, "_of_the_molten_giant" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T12_MELEE;
+    if ( is_tank  ) return SET_T12_TANK;
   }
 
   return SET_NONE;

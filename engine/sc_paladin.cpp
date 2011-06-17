@@ -399,9 +399,6 @@ struct paladin_attack_t : public attack_t
 
     base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
 
-    if ( p() -> set_bonus.tier10_2pc_melee() )
-      base_multiplier *= 1.05;
-
     if ( p() -> talents.judgements_of_the_pure -> rank() )
       jotp_haste = 1.0 / ( 1.0 + p() -> buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
   }
@@ -1041,8 +1038,6 @@ struct seal_of_insight_proc_t : public paladin_attack_t
     proc        = true;
     trigger_gcd = 0;
 
-    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee();
-
     base_attack_power_multiplier = 0.15;
     base_spell_power_multiplier  = 0.15;
 
@@ -1070,8 +1065,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
     may_block = false;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
-    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee()
-                           + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
+    base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
     direct_power_mod             = 1.0;
@@ -1116,8 +1110,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     may_block  = false;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
-    base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent()
-                       + 0.10 * p -> set_bonus.tier10_4pc_melee();
+    base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
     direct_power_mod             = 1.0;
@@ -1145,8 +1138,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
 
     aoe              = ( int ) p -> talents.seals_of_command -> mod_additive( P_TARGET );
     base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
-    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() +
-                               0.10 * p -> set_bonus.tier10_4pc_melee() );
+    base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() );
 
     direct_power_mod             = 1.0;
     base_attack_power_multiplier = 0.011;
@@ -1169,8 +1161,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     may_crit   = false;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
-    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee()
-                           + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
+    base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
     base_dd_min = base_dd_max    = 1.0;
@@ -1204,10 +1195,8 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     base_attack_power_multiplier = extra_coeff();
     tick_power_mod               = 1.0;
 
-    // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() +
-                               p -> talents.inquiry_of_faith -> mod_additive( P_TICK_DAMAGE ) +
-                               0.10 * p -> set_bonus.tier10_4pc_melee() );
+                               p -> talents.inquiry_of_faith -> mod_additive( P_TICK_DAMAGE ) );
   }
 
   virtual void player_buff()
@@ -1247,9 +1236,7 @@ struct seal_of_truth_proc_t : public paladin_attack_t
     if ( p -> bugs )
       weapon_multiplier = 0.15; // files say 9% but in-game testing says 15%
 
-    // For some reason, SotP is multiplicative with 4T10 for the procs but additive for the DoT
     base_multiplier *= 1.0 + p -> talents.seals_of_the_pure -> effect1().percent();
-    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee();
   }
   virtual void player_buff()
   {
@@ -1271,8 +1258,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
     trigger_seal = 1;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
-    base_multiplier *= 1.0 + 0.10 * p -> set_bonus.tier10_4pc_melee()
-                       + p -> talents.wrath_of_the_lightbringer -> effect1().percent()
+    base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent()
                        + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
 
@@ -1499,9 +1485,6 @@ struct paladin_spell_t : public spell_t
   void initialize_()
   {
     base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
-
-    if ( p() -> set_bonus.tier10_2pc_melee() )
-      base_multiplier *= 1.05;
 
     if ( p() -> talents.judgements_of_the_pure -> rank() )
       jotp_haste = 1.0 / ( 1.0 + p() -> buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
@@ -2300,24 +2283,6 @@ int paladin_t::decode_set( item_t& item )
     ret_pvp_gloves = 1;
   }
 
-  bool is_melee = ( strstr( s, "helm"           ) ||
-                    strstr( s, "shoulderplates" ) ||
-                    strstr( s, "battleplate"    ) ||
-                    strstr( s, "chestpiece"     ) ||
-                    strstr( s, "legplates"      ) ||
-                    strstr( s, "gauntlets"      ) );
-
-  bool is_tank = ( strstr( s, "faceguard"      ) ||
-                   strstr( s, "shoulderguards" ) ||
-                   strstr( s, "breastplate"    ) ||
-                   strstr( s, "legguards"      ) ||
-                   strstr( s, "handguards"     ) );
-
-  if ( strstr( s, "lightsworn" ) )
-  {
-    if ( is_melee  ) return SET_T10_MELEE;
-    if ( is_tank   ) return SET_T10_TANK;
-  }
   if ( strstr( s, "reinforced_sapphirium" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
@@ -2334,6 +2299,24 @@ int paladin_t::decode_set( item_t& item )
 
     if ( is_melee  ) return SET_T11_MELEE;
     if ( is_tank   ) return SET_T11_TANK;
+  }
+
+  if ( strstr( s, "immolation" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee  ) return SET_T12_MELEE;
+    if ( is_tank   ) return SET_T12_TANK;
   }
 
   return SET_NONE;

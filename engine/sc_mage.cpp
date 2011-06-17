@@ -42,8 +42,6 @@ struct mage_t : public player_t
   buff_t* buffs_mage_armor;
   buff_t* buffs_missile_barrage;
   buff_t* buffs_molten_armor;
-  buff_t* buffs_tier10_2pc;
-  buff_t* buffs_tier10_4pc;
 
   // Cooldowns
   cooldown_t* cooldowns_deep_freeze;
@@ -809,7 +807,6 @@ static void consume_brain_freeze( spell_t* s )
   if ( p -> buffs_brain_freeze -> check() )
   {
     p -> buffs_brain_freeze -> expire();
-    p -> buffs_tier10_2pc -> trigger();
   }
 }
 
@@ -1103,10 +1100,6 @@ double mage_spell_t::haste() SC_CONST
   {
     h *= 1.0 / ( 1.0 + p -> buffs_icy_veins -> effect1().percent() );
   }
-  if ( p -> buffs_tier10_2pc -> up() )
-  {
-    h *= 1.0 / 1.12;
-  }
   return h;
 }
 
@@ -1217,10 +1210,6 @@ void mage_spell_t::player_buff()
     {
       player_multiplier *= 1.0 + p -> talents.molten_fury -> effect1().percent();
     }
-  }
-  if ( p -> buffs_tier10_4pc -> up() )
-  {
-    player_multiplier *= 1.18;
   }
   if ( p -> buffs_invocation -> up() )
   {
@@ -1499,7 +1488,6 @@ struct arcane_missiles_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::last_tick();
     p -> buffs_arcane_blast -> expire();
-    p -> buffs_tier10_2pc -> trigger();
   }
 
   virtual void tick()
@@ -2450,7 +2438,6 @@ struct mirror_image_t : public mage_spell_t
     consume_resource();
     update_ready();
     p -> summon_pet( "mirror_image_3" );
-    p -> buffs_tier10_4pc -> trigger();
   }
 
   virtual double gcd() SC_CONST
@@ -2593,7 +2580,6 @@ struct pyroblast_hs_t : public mage_spell_t
     if ( p -> buffs_hot_streak -> up() )
     {
       p -> buffs_hot_streak -> expire();
-      p -> buffs_tier10_2pc -> trigger();
     }
     mage_spell_t::execute();
     if( result_is_hit() )
@@ -3146,8 +3132,6 @@ void mage_t::init_buffs()
   buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
-  buffs_tier10_2pc           = new buff_t( this, "tier10_2pc",           1,  5.0, 0, set_bonus.tier10_2pc_caster() );
-  buffs_tier10_4pc           = new buff_t( this, "tier10_4pc",           1, 30.0, 0, set_bonus.tier10_4pc_caster() );
 }
 
 // mage_t::init_gains =======================================================
@@ -3757,8 +3741,8 @@ int mage_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "bloodmage"   ) ) return SET_T10_CASTER;
   if ( strstr( s, "firelord"    ) ) return SET_T11_CASTER;
+  if ( strstr( s, "firehawk"    ) ) return SET_T12_CASTER;
 
   return SET_NONE;
 }

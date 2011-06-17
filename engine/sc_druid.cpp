@@ -15,7 +15,6 @@ struct druid_t : public player_t
   heal_t*   active_efflorescence;
   action_t* active_fury_swipes;
   heal_t*   active_living_seed;
-  action_t* active_t10_4pc_caster_dot;
   attack_t* active_tier12_2pc_melee;
 
   // Auto-attacks
@@ -49,7 +48,6 @@ struct druid_t : public player_t
   buff_t* buffs_stampede_cat;
   buff_t* buffs_stealthed;
   buff_t* buffs_survival_instincts;
-  buff_t* buffs_t10_2pc_caster;
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_t11_4pc_melee;
   buff_t* buffs_wild_mushroom;
@@ -265,7 +263,6 @@ struct druid_t : public player_t
     active_efflorescence      = 0;
     active_fury_swipes        = NULL;
     active_living_seed        = 0;
-    active_t10_4pc_caster_dot = 0;
     active_tier12_2pc_melee   = 0;
 
     eclipse_bar_value     = 0;
@@ -944,9 +941,7 @@ static void trigger_omen_of_clarity( action_t* a )
 
   if ( a -> proc ) return;
 
-  if ( p -> buffs_omen_of_clarity -> trigger() )
-    p -> buffs_t10_2pc_caster -> trigger( 1, 0.15 );
-
+  p -> buffs_omen_of_clarity -> trigger();
 }
 
 // trigger_primal_fury (Bear) ===============================================
@@ -1007,54 +1002,6 @@ static void trigger_revitalize( druid_heal_t* a )
                         p -> resource_max[ RESOURCE_MANA ] * p -> talents.revitalize -> effect1().percent(), 
                         p -> gains_revitalize );
   }
-}
-
-// trigger_t10_4pc_caster ===================================================
-
-static void trigger_t10_4pc_caster( player_t* player, double direct_dmg, int school )
-{
-  druid_t* p = player -> cast_druid();
-
-  if ( ! p -> set_bonus.tier10_4pc_caster() ) return;
-
-  struct t10_4pc_caster_dot_t : public druid_spell_t
-  {
-    t10_4pc_caster_dot_t( player_t* player ) :
-      druid_spell_t( "tier10_4pc_balance", player, SCHOOL_NATURE, TREE_BALANCE )
-    {
-      may_miss        = false;
-      may_resist      = false;
-      background      = true;
-      proc            = true;
-      trigger_gcd     = 0;
-      base_cost       = 0;
-      base_multiplier = 1.0;
-      tick_power_mod  = 0;
-      base_tick_time  = 2.0;
-      num_ticks       = 2;
-      hasted_ticks    = false;
-      id              = 71023;
-      init();
-    }
-    void player_buff() {}
-    void target_debuff( player_t* t, int dmg_type ) {}
-  };
-
-  if ( ! p -> active_t10_4pc_caster_dot ) p -> active_t10_4pc_caster_dot = new t10_4pc_caster_dot_t( p );
-
-  double dmg = direct_dmg * 0.07;
-
-  dot_t* dot = p -> active_t10_4pc_caster_dot -> dot;
-
-  if ( dot -> ticking )
-  {
-    dmg +=  p -> active_t10_4pc_caster_dot -> base_td * dot -> ticks();
-
-    p -> active_t10_4pc_caster_dot -> cancel();
-  }
-
-  p -> active_t10_4pc_caster_dot -> base_td = dmg / p -> active_t10_4pc_caster_dot -> num_ticks;
-  p -> active_t10_4pc_caster_dot -> execute();
 }
 
 // trigger_burning_treant ============================================
@@ -1722,9 +1669,6 @@ struct rip_t : public druid_cat_attack_t
     requires_combo_points = true;
     may_crit   = false;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
-
-    if ( p -> set_bonus.tier10_2pc_melee() )
-      base_cost -= 10;
   }
 
   virtual void execute()
@@ -3010,8 +2954,6 @@ void druid_spell_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> talents.balance_of_power -> effect1().percent();
 
-    player_multiplier *= 1.0 + p -> buffs_t10_2pc_caster -> value();
-
     // Moonfury is actually additive with other player_multipliers, like glyphs, etc.
     if ( p -> primary_tree() == TREE_BALANCE )
     {
@@ -3719,10 +3661,6 @@ struct starfire_t : public druid_spell_t
     {
       trigger_earth_and_moon( this );
 
-      if ( result == RESULT_CRIT )
-      {
-        trigger_t10_4pc_caster( player, direct_dmg, school );
-      }
       if ( p -> glyphs.starfire -> enabled() )
       {
         if ( p -> dots_moonfire -> ticking )
@@ -4297,10 +4235,6 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::travel( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
-      if ( travel_result == RESULT_CRIT )
-      {
-        trigger_t10_4pc_caster( player, travel_dmg, SCHOOL_NATURE );
-      }
       trigger_earth_and_moon( this );
 
       if ( p -> eclipse_bar_direction <= 0 )
@@ -4663,7 +4597,6 @@ void druid_t::init_buffs()
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell(1).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
-  buffs_t10_2pc_caster     = new buff_t( this, "t10_2pc_caster"    , 1,   6.0,     0, set_bonus.tier10_2pc_caster() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
@@ -5326,12 +5259,6 @@ int druid_t::decode_set( item_t& item )
                     strstr( s, "raiment"      ) ||
                     strstr( s, "legguards"    ) ||
                     strstr( s, "handgrips"    ) );
-
-  if ( strstr( s, "lasherweave" ) )
-  {
-    if ( is_caster ) return SET_T10_CASTER;
-    if ( is_melee  ) return SET_T10_MELEE;
-  }
 
   if ( strstr( s, "stormriders" ) )
   {

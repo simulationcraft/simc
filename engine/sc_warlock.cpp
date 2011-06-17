@@ -206,7 +206,6 @@ struct warlock_t : public player_t
   buff_t* buffs_demon_soul_voidwalker;
   buff_t* buffs_bane_of_havoc;
   buff_t* buffs_searing_pain_soulburn;
-  buff_t* buffs_tier10_4pc_caster;
   buff_t* buffs_tier11_4pc_caster;
   buff_t* buffs_tier12_4pc_caster;
 
@@ -1139,11 +1138,6 @@ struct warlock_pet_melee_t : public attack_t
     warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
     warlock_t* o = p -> owner -> cast_warlock();
     attack_t::player_buff();
-
-    if ( o -> buffs_tier10_4pc_caster -> up() )
-    {
-      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect1().percent();
-    }
   }
 };
 
@@ -1186,11 +1180,6 @@ struct warlock_pet_attack_t : public attack_t
     if ( o -> buffs_hand_of_guldan -> up() )
     {
       player_crit += 0.10;
-    }
-
-    if ( o -> buffs_tier10_4pc_caster -> up() )
-    {
-      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect1().percent();
     }
   }
 };
@@ -1258,11 +1247,6 @@ struct warlock_pet_spell_t : public spell_t
     if ( o -> buffs_hand_of_guldan -> up() )
     {
       player_crit += 0.10;
-    }
-
-    if ( o -> buffs_tier10_4pc_caster -> up() )
-    {
-      player_multiplier *= 1.0 + o -> buffs_tier10_4pc_caster -> effect1().percent();
     }
   }
 };
@@ -2122,8 +2106,6 @@ struct shadow_bolt_t : public warlock_spell_t
     base_execute_time += p -> talent_bane -> effect1().seconds();
     base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
-
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual double execute_time() SC_CONST
@@ -2424,7 +2406,6 @@ struct corruption_t : public warlock_spell_t
 
     may_crit   = false;
     base_crit += p -> talent_everlasting_affliction -> effect2().percent();
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void player_buff()
@@ -2670,10 +2651,6 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick();
-    if ( p -> set_bonus.tier10_4pc_caster() && tick_dmg > 0 )
-    {
-      p -> buffs_tier10_4pc_caster -> trigger();
-    }
     if ( tick_dmg > 0 )
     {
       p -> buffs_tier11_4pc_caster -> trigger( 2 );
@@ -2762,10 +2739,6 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t::tick();
     warlock_t* p = player -> cast_warlock();
     p -> buffs_molten_core -> trigger( 3 );
-    if ( tick_dmg > 0 )
-    {
-      p -> buffs_tier10_4pc_caster -> trigger();
-    }
     if ( tick_dmg > 0 )
     {
       p -> buffs_tier11_4pc_caster -> trigger( 2 );
@@ -2885,7 +2858,6 @@ struct incinerate_t : public warlock_spell_t
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent());
     base_execute_time += p -> talent_emberstorm -> effect3().seconds();
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void execute()
@@ -3008,7 +2980,6 @@ struct soul_fire_t : public warlock_spell_t
 
     warlock_t* p = player -> cast_warlock();
     base_execute_time += p -> talent_emberstorm -> effect1().seconds();
-    base_crit += p -> sets -> set ( SET_T10_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
   }
 
   virtual void execute()
@@ -3948,11 +3919,6 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
   player_multiplier *= 1.0 + ( talent_demonic_pact -> effect3().percent() );
 
-  if ( buffs_tier10_4pc_caster -> up() )
-  {
-    player_multiplier *= ( 1.0 + buffs_tier10_4pc_caster -> effect1().percent() );
-  }
-
   if ( ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) && buffs_demon_soul_felguard -> up() )
   {
     player_multiplier *= 1.0 + buffs_demon_soul_felguard -> effect2().percent();
@@ -4299,7 +4265,6 @@ void warlock_t::init_buffs()
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
   buffs_searing_pain_soulburn = new buff_t( this, 79440, "searing_pain_soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
-  buffs_tier10_4pc_caster     = new buff_t( this, sets -> set ( SET_T10_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier10_4pc_caster", sets -> set ( SET_T10_4PC_CASTER ) -> proc_chance() );
   buffs_tier11_4pc_caster     = new buff_t( this, sets -> set ( SET_T11_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier11_4pc_caster", sets -> set ( SET_T11_4PC_CASTER ) -> proc_chance() );
   buffs_tier12_4pc_caster     = new buff_t( this, sets -> set ( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier12_4pc_caster", sets -> set ( SET_T12_4PC_CASTER ) -> proc_chance() );
 }
@@ -4651,8 +4616,8 @@ int warlock_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "dark_coven"   ) ) return SET_T10_CASTER;
   if ( strstr( s, "shadowflame"  ) ) return SET_T11_CASTER;
+  if ( strstr( s, "balespiders"  ) ) return SET_T12_CASTER;
 
   return SET_NONE;
 }

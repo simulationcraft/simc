@@ -179,7 +179,6 @@ struct rogue_t : public player_t
   gain_t* gains_recuperate;
   gain_t* gains_relentless_strikes;
   gain_t* gains_venomous_vim;
-  gain_t* gains_tier10_2pc;
 
   // Procs
   proc_t* procs_deadly_poison;
@@ -190,7 +189,6 @@ struct rogue_t : public player_t
   proc_t* procs_sinister_strike_glyph;
   proc_t* procs_main_gauche;
   proc_t* procs_venomous_wounds;
-  proc_t* procs_tier10_4pc;
   proc_t* procs_munched_tier12_2pc_melee;
   proc_t* procs_rolled_tier12_2pc_melee;
 
@@ -217,7 +215,6 @@ struct rogue_t : public player_t
   rng_t* rng_sinister_strike_glyph;
   rng_t* rng_venomous_wounds;
   rng_t* rng_wound_poison;
-  rng_t* rng_tier10_4pc;
   rng_t* rng_hat_interval;
 
   // Spec passives
@@ -742,25 +739,6 @@ static void trigger_seal_fate( rogue_attack_t* a )
   }
 }
 
-// trigger_tier10_4pc =======================================================
-
-static void trigger_tier10_4pc( rogue_attack_t* a )
-{
-  rogue_t* p = a -> player -> cast_rogue();
-
-  if ( ! p -> set_bonus.tier10_4pc_melee() )
-    return;
-
-  if ( ! a -> requires_combo_points )
-    return;
-
-  if ( p -> rng_tier10_4pc -> roll( 0.13 ) )
-  {
-    p -> procs_tier10_4pc -> occur();
-    p -> combo_points -> add( 3, "tier10_4pc" );
-  }
-}
-
 // trigger_main_gauche ======================================================
 
 static void trigger_main_gauche( rogue_attack_t* a )
@@ -1231,8 +1209,6 @@ void rogue_attack_t::execute()
         trigger_tier12_2pc_melee( this, direct_dmg );
       }
     }
-
-    trigger_tier10_4pc( this ); // FIX-ME: Does it require the finishing move to hit before it can proc?
 
     // Prevent non-critting abilities (Rupture, Garrote, Shiv; maybe something else) from eating Cold Blood
     if ( may_crit ) 
@@ -2632,9 +2608,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     };
     parse_options( options, options_str );
 
-    if ( p -> set_bonus.tier10_2pc_melee() ) 
-      base_cost = 0;
-
     if ( p -> glyphs.tricks_of_the_trade -> ok() )
       base_cost = 0;
 
@@ -2664,9 +2637,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
       log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     consume_resource();
-
-    if ( p -> set_bonus.tier10_2pc_melee() )
-      p -> resource_gain( RESOURCE_ENERGY, 15, p -> gains_tier10_2pc );
 
     update_ready();
 
@@ -3672,7 +3642,6 @@ void rogue_t::init_gains()
   gains_recuperate         = get_gain( "recuperate"         );
   gains_relentless_strikes = get_gain( "relentless_strikes" );
   gains_venomous_vim       = get_gain( "venomous_vim"       );
-  gains_tier10_2pc         = get_gain( "tier10_2pc"         );
 }
 
 // rogue_t::init_procs =======================================================
@@ -3689,7 +3658,6 @@ void rogue_t::init_procs()
   procs_serrated_blades          = get_proc( "serrated_blades"       );
   procs_sinister_strike_glyph    = get_proc( "sinister_strike_glyph" );
   procs_venomous_wounds          = get_proc( "venomous_wounds"       );
-  procs_tier10_4pc               = get_proc( "tier10_4pc"            );
   procs_munched_tier12_2pc_melee = get_proc( "munched_burning_wounds" );
   procs_rolled_tier12_2pc_melee  = get_proc( "rolled_burning_wounds" );
 }
@@ -3731,7 +3699,6 @@ void rogue_t::init_rng()
   rng_sinister_strike_glyph = get_rng( "sinister_strike_glyph" );
   rng_venomous_wounds       = get_rng( "venomous_wounds"       );
   rng_wound_poison          = get_rng( "wound_poison"          );
-  rng_tier10_4pc            = get_rng( "tier10_4pc"            );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
   // also useful for frequent checks with low probability of proc and timed effect
@@ -4071,8 +4038,8 @@ int rogue_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "shadowblade"  ) ) return SET_T10_MELEE;
   if ( strstr( s, "wind_dancers" ) ) return SET_T11_MELEE;
+  if ( strstr( s, "dark_phoenix" ) ) return SET_T12_MELEE;
 
   return SET_NONE;
 }

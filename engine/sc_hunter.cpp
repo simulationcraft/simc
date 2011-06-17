@@ -38,8 +38,6 @@ struct hunter_t : public player_t
   buff_t* buffs_rapid_fire;
   buff_t* buffs_sniper_training;
   buff_t* buffs_trueshot_aura;
-  buff_t* buffs_tier10_2pc;
-  buff_t* buffs_tier10_4pc;
   buff_t* buffs_tier12_4pc;
 
   // Cooldowns
@@ -562,9 +560,6 @@ struct hunter_pet_t : public pet_t
     if ( buffs_call_of_the_wild -> up() )
       mult *= 1.0 + buffs_call_of_the_wild -> effect1().percent();
 
-    if ( o -> buffs_tier10_4pc -> up() )
-      mult *= 1.2;
-
     return mult;
   }
 
@@ -952,10 +947,6 @@ struct hunter_pet_attack_t : public attack_t
     {
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy -> rank() * 0.08;
     }
-    if ( o -> buffs_tier10_2pc -> up() )
-    {
-      player_multiplier *= 1.15;
-    }
   }
 };
 
@@ -1235,10 +1226,6 @@ struct hunter_pet_spell_t : public spell_t
     if ( p -> talents.feeding_frenzy -> rank() && ( target -> health_percentage() < 35 ) )
     {
       player_multiplier *= 1.0 + p -> talents.feeding_frenzy -> rank() * 0.08;
-    }
-    if ( o -> buffs_tier10_2pc -> up() )
-    {
-      player_multiplier *= 1.15;
     }
   }
 };
@@ -1741,9 +1728,6 @@ void hunter_attack_t::player_buff()
 
   if ( p -> buffs_culling_the_herd -> up() )
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
-
-  if ( p -> buffs_tier10_2pc -> up() )
-    player_multiplier *= 1.15;
 }
 
 // Ranged Attack ===========================================================
@@ -1782,7 +1766,6 @@ struct ranged_t : public hunter_attack_t
     if ( result_is_hit() )
     {
       hunter_t* p = player -> cast_hunter();
-      p -> buffs_tier10_2pc -> trigger();
       p -> buffs_tier12_4pc -> trigger();
       if ( result == RESULT_CRIT ) 
         trigger_go_for_the_throat( this );
@@ -2482,18 +2465,6 @@ struct serpent_sting_t : public hunter_attack_t
   {
     hunter_attack_t::last_tick();
     target -> debuffs.poisoned -> decrement();
-  }
-
-  virtual void tick()
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    hunter_attack_t::tick();
-
-    if ( tick_dmg > 0 )
-    {
-      p -> buffs_tier10_4pc-> trigger();
-    }
   }
 };
 
@@ -3545,8 +3516,6 @@ void hunter_t::init_buffs()
   buffs_rapid_fire -> cooldown -> duration = 0;
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
-  buffs_tier10_2pc                  = new buff_t( this, "tier10_2pc",                  1, 10.0,  0.0, ( set_bonus.tier10_2pc_melee() ? 0.05 : 0 ) );
-  buffs_tier10_4pc                  = new buff_t( this, "tier10_4pc",                  1, 10.0,  0.0, ( set_bonus.tier10_4pc_melee() ? 0.05 : 0 ) );
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() ); 
 
   // Own TSA for Glyph of TSA
@@ -3844,10 +3813,6 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
 {
   double mult = player_t::composite_attack_power_multiplier();
 
-  if ( buffs_tier10_4pc -> up() )
-  {
-    mult *= 1.20;
-  }
   if ( buffs_call_of_the_wild -> up() )
   {
     mult *= 1.0 + buffs_call_of_the_wild -> effect1().percent();
@@ -4145,8 +4110,8 @@ int hunter_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "ahnkahar_blood_hunter" ) ) return SET_T10_MELEE;
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
+  if ( strstr( s, "flamewalkers"          ) ) return SET_T12_MELEE;
 
   return SET_NONE;
 }

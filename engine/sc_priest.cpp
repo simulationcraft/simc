@@ -1216,8 +1216,6 @@ struct devouring_plague_t : public priest_spell_t
     base_cost        *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
 
-    base_crit        += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
-
     if ( p -> talents.improved_devouring_plague -> rank() )
     {
       burst_spell = new devouring_plague_burst_t( p );
@@ -1662,7 +1660,6 @@ struct mind_flay_t : public priest_spell_t
     channeled    = true;
     hasted_ticks = false;
 
-    base_tick_time += p -> sets -> set( SET_T10_4PC_CASTER ) -> mod_additive( P_TICK_TIME );
     base_crit      += p -> sets -> set( SET_T11_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
 
@@ -2150,8 +2147,6 @@ struct shadow_word_pain_t : public priest_spell_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
-    base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
-
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }
 
@@ -2252,8 +2247,6 @@ struct vampiric_touch_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     may_crit   = false;
-
-    base_crit += p -> sets -> set( SET_T10_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
 
   virtual void execute()
@@ -4969,16 +4962,6 @@ int priest_t::decode_set( item_t& item )
   bool is_caster = false;
   bool is_healer = false;
 
-  if ( strstr( s, "crimson_acolyte" ) )
-  {
-    is_caster = ( strstr( s, "cowl"      ) ||
-                  strstr( s, "mantle"    ) ||
-                  strstr( s, "raiments"  ) ||
-                  strstr( s, "handwraps" ) ||
-                  strstr( s, "pants"     ) );
-    if ( is_caster ) return SET_T10_CASTER;
-  }
-
   if ( strstr( s, "mercurial" ) )
   {
     is_caster = ( strstr( s, "hood"          ) ||
@@ -4994,6 +4977,23 @@ int priest_t::decode_set( item_t& item )
                   strstr( s, "handwraps"     ) ||
                   strstr( s, "legwraps"      ) );
     if ( is_healer ) return SET_T11_HEAL;
+  }
+
+  if ( strstr( s, "_of_the_cleansing_flame" ) )
+  {
+    is_caster = ( strstr( s, "hood"          ) ||
+                  strstr( s, "shoulderwraps" ) ||
+                  strstr( s, "vestment"      ) ||
+                  strstr( s, "gloves"        ) ||
+                  strstr( s, "leggings"      ) );
+    if ( is_caster ) return SET_T12_CASTER;
+
+    is_healer = ( strstr( s, "cowl"          ) ||
+                  strstr( s, "mantle"        ) ||
+                  strstr( s, "robes"         ) ||
+                  strstr( s, "handwraps"     ) ||
+                  strstr( s, "legwraps"      ) );
+    if ( is_healer ) return SET_T12_HEAL;
   }
 
   return SET_NONE;

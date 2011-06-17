@@ -1972,8 +1972,6 @@ struct chain_lightning_t : public shaman_spell_t
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
     
-    // Note, T10 elem 2PC bonus differs from the norm, the reduction is a positive number in spell data
-    p -> cooldowns_elemental_mastery -> ready -= p -> sets -> set( SET_T10_2PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / 1000.0;
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
 
     if ( result_is_hit() )
@@ -2201,13 +2199,6 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
         overload -> execute();
-
-      if ( p -> set_bonus.tier10_4pc_caster() && p -> dot_flame_shock -> ticking )
-      {
-        double extra_ticks = p -> sets -> set( SET_T10_4PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / p -> dot_flame_shock -> action -> base_tick_time;
-        extra_ticks *= 1.0 / p -> dot_flame_shock -> action -> player_haste;
-        p -> dot_flame_shock -> action -> extend_duration( int( floor( extra_ticks + 0.5 ) ) );
-      }
     }
   }
 };
@@ -2257,8 +2248,6 @@ struct lightning_bolt_t : public shaman_spell_t
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
 
-    // Note, T10 elem 2PC bonus differs from the norm, the reduction is a positive number in spell data
-    p -> cooldowns_elemental_mastery -> ready -= p -> sets -> set( SET_T10_2PC_CASTER ) -> base_value( E_APPLY_AURA, A_DUMMY ) / 1000.0;
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
   }
   
@@ -2376,18 +2365,14 @@ struct shamans_swiftness_t : public shaman_spell_t
 
 struct shamanistic_rage_t : public shaman_spell_t
 {
-  bool tier10_2pc;
-
   shamanistic_rage_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "shamanistic_rage", "Shamanistic Rage", player ),
-    tier10_2pc( false )
+    shaman_spell_t( "shamanistic_rage", "Shamanistic Rage", player )
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_shamanistic_rage -> rank() );
 
     option_t options[] =
     {
-      { "tier10_2pc_melee", OPT_BOOL, &tier10_2pc },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2402,9 +2387,6 @@ struct shamanistic_rage_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     p -> buffs_shamanistic_rage -> trigger();
-    
-    if ( p -> set_bonus.tier10_2pc_melee() )
-      p -> buffs_elemental_rage -> trigger();
   }
 
   virtual bool ready()
@@ -2413,9 +2395,6 @@ struct shamanistic_rage_t : public shaman_spell_t
 
     if ( ! shaman_spell_t::ready() )
       return false;
-
-    if ( tier10_2pc )
-      return p -> set_bonus.tier10_2pc_melee() != 0;
 
     return( player -> resource_current[ RESOURCE_MANA ] < ( 0.10 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
@@ -3593,9 +3572,6 @@ struct maelstrom_weapon_t : public buff_t
 
     result = buff_t::trigger( 1, -1, chance );
 
-    if ( result && p -> set_bonus.tier10_4pc_melee() && ( can_increase && current_stack == max_stack ) )
-      p -> buffs_maelstrom_power -> trigger();
-    
     return result;
   }
 };
@@ -3938,8 +3914,6 @@ void shaman_t::init_buffs()
 
   buffs_elemental_devastation   = new elemental_devastation_t( this, talent_elemental_devastation -> spell_id(),               "elemental_devastation" );
   buffs_elemental_focus         = new buff_t                 ( this, talent_elemental_focus -> effect_trigger_spell( 1 ),      "elemental_focus"       );
-  // Enhancement T10 2Piece Bonus
-  buffs_elemental_rage          = new buff_t                 ( this, 70829,                                                    "elemental_rage"        );
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
   buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
   // Note the chance override, as the spell itself does not have a proc chance
@@ -3948,8 +3922,6 @@ void shaman_t::init_buffs()
   // TBD how this is handled for reals
   buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true );
   buffs_lightning_shield        = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),         "lightning_shield"      );
-  // Enhancement T10 4Piece Bonus
-  buffs_maelstrom_power         = new maelstrom_power_t      ( this, 70831,                                                    "maelstrom_power"       );
   buffs_maelstrom_weapon        = new maelstrom_weapon_t     ( this, talent_maelstrom_weapon -> effect_trigger_spell( 1 ),     "maelstrom_weapon"      );  
   buffs_natures_swiftness       = new buff_t                 ( this, talent_natures_swiftness -> spell_id(),                   "natures_swiftness"     );
   buffs_searing_flames          = new searing_flames_buff_t  ( this, talent_searing_flames -> spell_id(),                      "searing_flames"        );
@@ -4074,12 +4046,7 @@ void shaman_t::init_actions()
         action_list_str += "/berserking";
       }
 
-      if ( set_bonus.tier10_4pc_melee() )
-      {
-        action_list_str += "/fire_elemental_totem,if=buff.maelstrom_power.react,time_to_die>=125";
-        action_list_str += "/fire_elemental_totem,time_to_die<=124";
-      }
-      else if ( level <= 80 )
+      if ( level <= 80 )
         action_list_str += "/fire_elemental_totem";
         
       action_list_str += "/searing_totem";
@@ -4093,18 +4060,11 @@ void shaman_t::init_actions()
       action_list_str += "/earth_elemental_totem";
       action_list_str += "/fire_nova";
       action_list_str +=  ",if=target.adds>1";
-      if ( set_bonus.tier10_2pc_melee() )
-      {
-        if ( talent_shamanistic_rage -> rank() ) action_list_str += "/shamanistic_rage,tier10_2pc_melee=1";
-      }
       action_list_str += "/spiritwalkers_grace,moving=1";
-      if ( ! set_bonus.tier10_4pc_melee() )
-      {
-        if ( caster_mainhand )
-          action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
-        else
-          action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react";
-      }
+      if ( caster_mainhand )
+        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
+      else
+        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react";
       
       if ( caster_mainhand )
         action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.5";
@@ -4167,7 +4127,7 @@ void shaman_t::init_actions()
       action_list_str += "/searing_totem";
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/chain_lightning,if=target.adds>2";
-      if ( ! ( set_bonus.tier10_2pc_caster() || set_bonus.tier11_4pc_caster() || level > 80 ) )
+      if ( ! ( set_bonus.tier11_4pc_caster() || level > 80 ) )
         action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
       action_list_str += "/lightning_bolt";
       if ( primary_tree() == TREE_ELEMENTAL ) action_list_str += "/thunderstorm";
@@ -4367,23 +4327,6 @@ int shaman_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  bool is_caster = ( strstr( s, "helm"     ) ||
-                     strstr( s, "shoulderpads" ) ||
-                     strstr( s, "hauberk"      ) ||
-                   ( strstr( s, "kilt"         ) && !strstr( s, "warkilt" ) ) ||
-                     strstr( s, "gloves"       ) );
-
-  bool is_melee = ( strstr( s, "faceguard"      ) ||
-                    strstr( s, "shoulderguards" ) ||
-                    strstr( s, "chestguard"     ) ||
-                    strstr( s, "warkilt"        ) ||
-                    strstr( s, "grips"          ) );
-
-  if ( strstr( s, "frost_witch" ) )
-  {
-    if ( is_caster ) return SET_T10_CASTER;
-    if ( is_melee  ) return SET_T10_MELEE;
-  }
   if ( strstr( s, "raging_elements" ) )
   {
     bool is_caster = ( strstr( s, "headpiece"     ) ||
@@ -4400,6 +4343,24 @@ int shaman_t::decode_set( item_t& item )
 
     if ( is_caster ) return SET_T11_CASTER;
     if ( is_melee  ) return SET_T11_MELEE;
+  }
+
+  if ( strstr( s, "erupting_volcanic" ) )
+  {
+    bool is_caster = ( strstr( s, "headpiece"     ) ||
+                       strstr( s, "shoulderwraps" ) ||
+                       strstr( s, "hauberk"       ) ||
+                       strstr( s, "kilt"          ) ||
+                       strstr( s, "gloves"        ) );
+
+    bool is_melee = ( strstr( s, "helmet"         ) ||
+                      strstr( s, "spaulders"      ) ||
+                      strstr( s, "cuirass"        ) ||
+                      strstr( s, "legguards"      ) ||
+                      strstr( s, "grips"          ) );
+
+    if ( is_caster ) return SET_T12_CASTER;
+    if ( is_melee  ) return SET_T12_MELEE;
   }
 
   return SET_NONE;
