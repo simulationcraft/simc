@@ -2345,7 +2345,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 
 #define TIER_BONUSES_SIZE (6)
-#define TIER_BONUSES_MAX_TIER (14)
+#define TIER_BONUSES_MAX_TIER (3)
+
+#define TIER_BONUSES_TIER_BASE (11)
 
 // Tier item set bonuses for class, wow build 14007
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
@@ -2353,93 +2355,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
-    {
-          0,
-    },
   },
   // Tier bonuses for Warrior
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21838, // Battlegear of Might - 5 Piece Bonus (Battlegear of Might)
-      23561, // Battlegear of Might - 8 Piece Bonus (Enhanced Sunder Armor)
-      23562, // Battlegear of Might - 3 Piece Bonus (Block Value 60)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21890, // Battlegear of Wrath - 5 Piece Bonus (Warrior's Wrath)
-      23548, // Battlegear of Wrath - 8 Piece Bonus (Parry)
-      23563, // Battlegear of Wrath - 3 Piece Bonus (Enhanced Battle Shout)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28842, // Dreadnaught's Battlegear - 6 Piece Bonus (Increased Hit Chance)
-      28843, // Dreadnaught's Battlegear - 4 Piece Bonus ( Increased Spell Hit Chance)
-      28844, // Dreadnaught's Battlegear - 2 Piece Bonus (Revenge)
-      28845, // Dreadnaught's Battlegear - 8 Piece Bonus (Cheat Death)
-          0,
-    },
-    // Tier 4 bonuses (4 spells)
-    {
-      37514, // Warbringer Armor - 2 Piece Bonus (Blade Turning)
-      37516, // Warbringer Armor - 4 Piece Bonus (Revenge Bonus)
-      37518, // Warbringer Battlegear - 2 Piece Bonus (Whirlwind Discount)
-      37519, // Warbringer Battlegear - 4 Piece Bonus (Rage Bonus)
-          0,
-    },
-    // Tier 5 bonuses (4 spells)
-    {
-      37522, // Destroyer Armor - 2 Piece Bonus (Shield Block Block Value)
-      37525, // Destroyer Armor - 4 Piece Bonus (Battle Rush)
-      37528, // Destroyer Battlegear - 2 Piece Bonus (Overpower Bonus)
-      37535, // Destroyer Battlegear - 4 Piece Bonus (Bloodthirst and Mortal Strike Discount)
-          0,
-    },
-    // Tier 6 bonuses (4 spells)
-    {
-      38398, // Onslaught Battlegear - 2 Piece Bonus (Increased Execute Damage)
-      38399, // Onslaught Battlegear - 4 Piece Bonus (Improved Mortal Strike and Bloodthirst)
-      38407, // Onslaught Armor - 4 Piece Bonus (Improved Shield Slam)
-      38408, // Onslaught Armor - 2 Piece Bonus (Improved Commanding Shout)
-          0,
-    },
-    // Tier 7 bonuses (4 spells)
-    {
-      60173, // Dreadnaught Plate - 2 Piece Bonus (Shield Slam Damage Up)
-      60174, // Dreadnaught Battlegear - 2 Piece Bonus (Slam Damage Up)
-      60175, // Dreadnaught Plate - 4 Piece Bonus (Shield Wall Duration)
-      60176, // Dreadnaught Battlegear - 4 Piece Bonus (Bleed Cost Reduction)
-          0,
-    },
-    // Tier 8 bonuses (4 spells)
-    {
-      64933, // Siegebreaker Plate - 2 Piece Bonus (Item - Warrior T8 Protection 2P Bonus)
-      64936, // Siegebreaker Plate - 4 Piece Bonus (Item - Warrior T8 Protection 4P Bonus)
-      64938, // Siegebreaker Battlegear - 2 Piece Bonus (Item - Warrior T8 Melee 2P Bonus)
-      64939, // Siegebreaker Battlegear - 4 Piece Bonus (Item - Warrior T8 Melee 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (4 spells)
-    {
-      67234, // Hellscream's Battlegear - 2 Piece Bonus (Item - Warrior T9 Melee 2P Bonus (Berserker Stance and Battle Stance))
-      67268, // Hellscream's Battlegear - 4 Piece Bonus (Item - Warrior T9 Melee 4P Bonus (Heroic Strike and Slam))
-      67269, // Hellscream's Plate - 2 Piece Bonus (Item - Warrior T9 Tank 2P Bonus (Taunt))
-      67273, // Hellscream's Plate - 4 Piece Bonus (Item - Warrior T9 Tank 4P Bonus (Shield Block))
-          0,
-    },
-    // Tier 10 bonuses (4 spells)
-    {
-      70843, // Ymirjar Lord's Plate - 2 Piece Bonus (Item - Warrior T10 Protection 2P Bonus)
-      70844, // Ymirjar Lord's Plate - 4 Piece Bonus (Item - Warrior T10 Protection 4P Bonus)
-      70847, // Ymirjar Lord's Battlegear - 4 Piece Bonus (Item - Warrior T10 Melee 4P Bonus)
-      70854, // Ymirjar Lord's Battlegear - 2 Piece Bonus (Item - Warrior T10 Melee 2P Bonus)
-          0,
-    },
     // Tier 11 bonuses (4 spells)
     {
       90293, // Earthen Warplate - 2 Piece Bonus (Item - Warrior T11 DPS 2P Bonus)
@@ -2457,87 +2375,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Paladin
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21747, // Lawbringer Armor - 8 Piece Bonus (Lawbringer)
-      23564, // Lawbringer Armor - 3 Piece Bonus (Improved Judgement of Light)
-      41784, // Lawbringer Armor - 5 Piece Bonus (Increased Critical 14)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      23565, // Judgement Armor - 3 Piece Bonus (Increased Aura Radii)
-      23591, // Judgement Armor - 8 Piece Bonus (Judgement)
-      41782, // Judgement Armor - 5 Piece Bonus (Increase Spell Dam 47)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28774, // Redemption Armor - 4 Piece Bonus (Lay Hands)
-      28775, // Redemption Armor - 2 Piece Bonus (Judgement of Light)
-      28787, // Redemption Armor - 8 Piece Bonus (Cleanse)
-      28789, // Redemption Armor - 6 Piece Bonus (Holy Power)
-          0,
-    },
-    // Tier 4 bonuses (4 spells)
-    {
-      37184, // Justicar Armor - 2 Piece Bonus (Increased Right./Truth)
-      37185, // Justicar Armor - 4 Piece Bonus (Increased Shield of the Righteous)
-      37186, // Justicar Battlegear - 2 Piece Bonus (Increased Crusader Strike)
-      37187, // Justicar Battlegear - 4 Piece Bonus (Increased Judgement of Command)
-          0,
-    },
-    // Tier 5 bonuses (4 spells)
-    {
-      37190, // Crystalforge Armor - 2 Piece Bonus (Increased Retribution Aura)
-      37191, // Crystalforge Armor - 4 Piece Bonus (Holy Shield Block Value)
-      37194, // Crystalforge Battlegear - 2 Piece Bonus (Reduced Judgement Cost)
-      37195, // Crystalforge Battlegear - 4 Piece Bonus (Judgement Group Heal)
-          0,
-    },
-    // Tier 6 bonuses (4 spells)
-    {
-      38421, // Lightbringer Armor - 2 Piece Bonus (Improved Spiritual Attunement)
-      38422, // Lightbringer Armor - 4 Piece Bonus (Improved Consecration)
-      38424, // Lightbringer Battlegear - 4 Piece Bonus (Improved Hammer of Wrath)
-      38427, // Lightbringer Battlegear - 2 Piece Bonus (Mana Regen Proc)
-          0,
-    },
-    // Tier 7 bonuses (4 spells)
-    {
-      60149, // Redemption Plate - 2 Piece Bonus (Hammer of Righteousness Boost)
-      60150, // Redemption Plate - 4 Piece Bonus (Divine Protection Duration)
-      60152, // Redemption Battlegear - 2 Piece Bonus (Divine Storm Damage)
-      60153, // Redemption Battlegear - 4 Piece Bonus (Judgment Cooldown Reduction)
-          0,
-    },
-    // Tier 8 bonuses (4 spells)
-    {
-      64878, // Aegis Battlegear - 2 Piece Bonus (Item - Paladin T8 Retribution 2P Bonus)
-      64879, // Aegis Battlegear - 4 Piece Bonus (Item - Paladin T8 Retribution 4P Bonus)
-      64881, // Aegis Plate - 2 Piece Bonus (Item - Paladin T8 Protection 2P Bonus)
-      64882, // Aegis Plate - 4 Piece Bonus (Item - Paladin T8 Protection 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (4 spells)
-    {
-      67186, // Turalyon's Plate - 2 Piece Bonus (Item - Paladin T9 Tank 2P Bonus)
-      67187, // Turalyon's Plate - 4 Piece Bonus (Item - Paladin T9 Tank 4P Bonus)
-      67188, // Turalyon's Battlegear - 2 Piece Bonus (Item - Paladin T9 Retribution 2P Bonus (Righteous Vengeance))
-      67189, // Turalyon's Battlegear - 4 Piece Bonus (Item - Paladin T9 Retribution 4P Bonus (Judgement))
-          0,
-    },
-    // Tier 10 bonuses (4 spells)
-    {
-      70758, // Lightsworn Plate - 2 Piece Bonus (Item - Paladin T10 Protection 2P Bonus)
-      70761, // Lightsworn Plate - 4 Piece Bonus (Item - Paladin T10 Protection 4P Bonus)
-      70762, // Lightsworn Battlegear - 4 Piece Bonus (Item - Paladin T10 Retribution 4P Bonus)
-      70765, // Lightsworn Battlegear - 2 Piece Bonus (Item - Paladin T10 Retribution 2P Bonus)
-          0,
-    },
     // Tier 11 bonuses (6 spells)
     {
       90298, // Reinforced Sapphirium Battleplate - 2 Piece Bonus (Item - Paladin T11 Retribution 2P Bonus)
@@ -2556,73 +2393,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Hunter
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21926, // Giantstalker Armor - 5 Piece Bonus (Nature's Ally)
-      23560, // Giantstalker Armor - 3 Piece Bonus (Improved Mend Pet)
-      23566, // Giantstalker Armor - 8 Piece Bonus (Improved Volley and Multishot)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21928, // Dragonstalker Armor - 5 Piece Bonus (Nature's Ally)
-      23559, // Dragonstalker Armor - 3 Piece Bonus (Improved Aspect of the Hawk)
-      23578, // Dragonstalker Armor - 8 Piece Bonus (Expose Weakness)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28751, // Cryptstalker Armor - 8 Piece Bonus (Multi-Shot)
-      28752, // Cryptstalker Armor - 6 Piece Bonus (Adrenaline Rush)
-      28755, // Cryptstalker Armor - 2 Piece Bonus (Rapid Fire)
-      28756, // Cryptstalker Armor - 4 Piece Bonus (Stalker's Ally)
-          0,
-    },
-    // Tier 4 bonuses (2 spells)
-    {
-      37484, // Demon Stalker Armor - 2 Piece Bonus (Improved Feign Death)
-      37485, // Demon Stalker Armor - 4 Piece Bonus (Improved Multi-Shot)
-          0,
-    },
-    // Tier 5 bonuses (2 spells)
-    {
-      37381, // Rift Stalker Armor - 2 Piece Bonus (Pet Healing)
-      37505, // Rift Stalker Armor - 4 Piece Bonus (Improved Steady Shot)
-          0,
-    },
-    // Tier 6 bonuses (2 spells)
-    {
-      38390, // Gronnstalker's Armor - 2 Piece Bonus (Improved Aspect of the Viper)
-      38392, // Gronnstalker's Armor - 4 Piece Bonus (Improved Steady Shot)
-          0,
-    },
-    // Tier 7 bonuses (2 spells)
-    {
-      60143, // Cryptstalker Battlegear - 2 Piece Bonus (Kill Command Pet Boost)
-      60144, // Cryptstalker Battlegear - 4 Piece Bonus (Viper Attack Speed)
-          0,
-    },
-    // Tier 8 bonuses (2 spells)
-    {
-      64854, // Scourgestalker Battlegear - 2 Piece Bonus (Item - Hunter T8 2P Bonus)
-      64860, // Scourgestalker Battlegear - 4 Piece Bonus (Item - Hunter T8 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (2 spells)
-    {
-      67150, // Windrunner's Pursuit - 2 Piece Bonus (Item - Hunter T9 2P Bonus)
-      67151, // Windrunner's Pursuit - 4 Piece Bonus (Item - Hunter T9 4P Bonus (Steady Shot))
-          0,
-    },
-    // Tier 10 bonuses (2 spells)
-    {
-      70727, // Ahn'Kahar Blood Hunter's Battlegear - 2 Piece Bonus (Item - Hunter T10 2P Bonus)
-      70730, // Ahn'Kahar Blood Hunter's Battlegear - 4 Piece Bonus (Item - Hunter T10 4P Bonus)
-          0,
-    },
     // Tier 11 bonuses (2 spells)
     {
       89923, // Lightning-Charged Battlegear - 2 Piece Bonus (Item - Hunter T11 2P Bonus)
@@ -2638,73 +2408,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Rogue
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21874, // Nightslayer Armor - 3 Piece Bonus (Improved Vanish)
-      21975, // Nightslayer Armor - 5 Piece Bonus (Vigor)
-      23582, // Nightslayer Armor - 8 Piece Bonus (Clean Escape)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21881, // Bloodfang Armor - 3 Piece Bonus (Improved Poisons)
-      23558, // Bloodfang Armor - 5 Piece Bonus (Improved Feint)
-      23581, // Bloodfang Armor - 8 Piece Bonus (Bloodfang)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28811, // Bonescythe Armor - 6 Piece Bonus (Reduced Threat)
-      28812, // Bonescythe Armor - 4 Piece Bonus (Head Rush)
-      28814, // Bonescythe Armor - 8 Piece Bonus (Revealed Flaw)
-      28816, // Bonescythe Armor - 2 Piece Bonus (Invigorate)
-          0,
-    },
-    // Tier 4 bonuses (2 spells)
-    {
-      37167, // Netherblade - 2 Piece Bonus (Increased Slice and Dice Duration)
-      37168, // Netherblade - 4 Piece Bonus (Finisher Combo)
-          0,
-    },
-    // Tier 5 bonuses (2 spells)
-    {
-      37169, // Deathmantle - 2 Piece Bonus (Eviscerate and Envenom Bonus Damage)
-      37170, // Deathmantle - 4 Piece Bonus (Free Finisher Chance)
-          0,
-    },
-    // Tier 6 bonuses (2 spells)
-    {
-      38388, // Slayer's Armor - 2 Piece Bonus (Increased Slice and Dice Haste)
-      38389, // Slayer's Armor - 4 Piece Bonus (Improved Backstab and Sinister Strike)
-          0,
-    },
-    // Tier 7 bonuses (2 spells)
-    {
-      60162, // Bonescythe Battlegear - 2 Piece Bonus (Increase Rupture Damage)
-      60163, // Bonescythe Battlegear - 4 Piece Bonus (Cheaper Combo Moves)
-          0,
-    },
-    // Tier 8 bonuses (2 spells)
-    {
-      64914, // Terrorblade Battlegear - 2 Piece Bonus (Item - Rogue T8 2P Bonus)
-      64915, // Terrorblade Battlegear - 4 Piece Bonus (Item - Rogue T8 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (2 spells)
-    {
-      67209, // VanCleef's Battlegear - 2 Piece Bonus (Item - Rogue T9 2P Bonus (Rupture))
-      67211, // VanCleef's Battlegear - 4 Piece Bonus (Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate))
-          0,
-    },
-    // Tier 10 bonuses (2 spells)
-    {
-      70803, // Shadowblade's Battlegear - 4 Piece Bonus (Item - Rogue T10 4P Bonus)
-      70805, // Shadowblade's Battlegear - 2 Piece Bonus (Item - Rogue T10 2P Bonus)
-          0,
-    },
     // Tier 11 bonuses (2 spells)
     {
       90460, // Wind Dancer's Regalia - 2 Piece Bonus (Item - Rogue T11 2P Bonus)
@@ -2720,72 +2423,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Priest
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21092, // Vestments of Prophecy - 5 Piece Bonus (Increased Critical Holy)
-      21973, // Vestments of Prophecy - 3 Piece Bonus (Prophecy Flash Heal Bonus)
-      23550, // Vestments of Prophecy - 8 Piece Bonus (Increased Prayer of Healing Criticals)
-          0,
-    },
-    // Tier 2 bonuses (2 spells)
-    {
-      21853, // Vestments of Transcendence - 5 Piece Bonus (Reactive Fade)
-      22010, // Vestments of Transcendence - 8 Piece Bonus (Greater Heal Renew)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28802, // Vestments of Faith - 8 Piece Bonus (Epiphany)
-      28807, // Vestments of Faith - 2 Piece Bonus (Renew)
-      28808, // Vestments of Faith - 6 Piece Bonus (Reduced Threat)
-      28809, // Vestments of Faith - 4 Piece Bonus (Greater Heal)
-          0,
-    },
-    // Tier 4 bonuses (2 spells)
-    {
-      37570, // Incarnate Regalia - 2 Piece Bonus (Improved Shadowfiend)
-      37571, // Incarnate Regalia - 4 Piece Bonus (Improved Mind Flay and Smite)
-          0,
-    },
-    // Tier 5 bonuses (2 spells)
-    {
-      37600, // Avatar Regalia - 2 Piece Bonus (Offensive Discount)
-      37603, // Avatar Regalia - 4 Piece Bonus (Shadow Word Pain Damage)
-          0,
-    },
-    // Tier 6 bonuses (2 spells)
-    {
-      38412, // Absolution Regalia - 4 Piece Bonus (Improved Mind Blast)
-      38413, // Absolution Regalia - 2 Piece Bonus (Increased Shadow Word: Pain Duration)
-          0,
-    },
-    // Tier 7 bonuses (2 spells)
-    {
-      60156, // Garb of Faith - 2 Piece Bonus (Mind Blast Cost Reduction)
-      60157, // Garb of Faith - 4 Piece Bonus (Shadow Word Death Crit)
-          0,
-    },
-    // Tier 8 bonuses (2 spells)
-    {
-      64906, // Sanctification Garb - 2 Piece Bonus (Item - Priest T8 Shadow 2P Bonus)
-      64908, // Sanctification Garb - 4 Piece Bonus (Item - Priest T8 Shadow 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (2 spells)
-    {
-      67193, // Zabra's Regalia - 2 Piece Bonus (Item - Priest T9 Shadow 2P Bonus (Vampiric Touch))
-      67198, // Zabra's Regalia - 4 Piece Bonus (Item - Priest T9 Shadow 4P Bonus (Mind Flay))
-          0,
-    },
-    // Tier 10 bonuses (2 spells)
-    {
-      70800, // Crimson Acolyte's Regalia - 2 Piece Bonus (Item - Priest T10 Shadow 2P Bonus)
-      70801, // Crimson Acolyte's Regalia - 4 Piece Bonus (Item - Priest T10 Shadow 4P Bonus)
-          0,
-    },
     // Tier 11 bonuses (4 spells)
     {
       89910, // Mercurial Vestments - 2 Piece Bonus (Item - Priest T11 Healer 2P Bonus)
@@ -2803,59 +2440,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Death Knight
   {
-    {
-          0,
-    },
-    {
-          0,
-    },
-    {
-          0,
-    },
-    {
-          0,
-    },
-    {
-          0,
-    },
-    {
-          0,
-    },
-    {
-          0,
-    },
-    // Tier 7 bonuses (4 spells)
-    {
-      60130, // Scourgeborne Plate - 2 Piece Bonus (Increased Plague Strike Crit)
-      60132, // Scourgeborne Battlegear - 4 Piece Bonus (Oblit/Scourge Strike Runic Power Up)
-      60133, // Scourgeborne Plate - 4 Piece Bonus (Icebound Duration Increase)
-      60134, // Scourgeborne Battlegear - 2 Piece Bonus (Scourge/Oblit Crit Up)
-          0,
-    },
-    // Tier 8 bonuses (4 spells)
-    {
-      64735, // Darkruned Battlegear - 2 Piece Bonus (Item - Death Knight T8 Melee 2P Bonus)
-      64736, // Darkruned Battlegear - 4 Piece Bonus (Item - Death Knight T8 Melee 4P Bonus)
-      64744, // Darkruned Plate - 2 Piece Bonus (Item - Death Knight T8 Tank 2P Bonus)
-      64745, // Darkruned Plate - 4 Piece Bonus (Item - Death Knight T8 Tank 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (4 spells)
-    {
-      67115, // Thassarian's Battlegear - 2 Piece Bonus (Item - Death Knight T9 Melee 2P Bonus)
-      67118, // Thassarian's Battlegear - 4 Piece Bonus (Item - Death Knight T9 Melee 4P Bonus)
-      67119, // Thassarian's Plate - 2 Piece Bonus (Item - Death Knight T9 Tank 2P Bonus)
-      67120, // Thassarian's Plate - 4 Piece Bonus (Item - Death Knight T9 Tank 4P Bonus)
-          0,
-    },
-    // Tier 10 bonuses (4 spells)
-    {
-      70650, // Scourgelord's Plate - 2 Piece Bonus (Item - Death Knight T10 Tank 2P Bonus)
-      70652, // Scourgelord's Plate - 4 Piece Bonus (Item - Death Knight T10 Tank 4P Bonus)
-      70655, // Scourgelord's Battlegear - 2 Piece Bonus (Item - Death Knight T10 Melee 2P Bonus)
-      70656, // Scourgelord's Battlegear - 4 Piece Bonus (Item - Death Knight T10 Melee 4P Bonus)
-          0,
-    },
     // Tier 11 bonuses (4 spells)
     {
       90454, // Magma Plated Battlearmor - 2 Piece Bonus (Item - Death Knight T11 Blood 2P Bonus)
@@ -2873,87 +2457,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Shaman
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21895, // The Earthfury - 3 Piece Bonus (Increased Totem Radius)
-      23572, // The Earthfury - 5 Piece Bonus (Mana Surge)
-      23573, // The Earthfury - 8 Piece Bonus (Chain Healing Wave)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21899, // The Ten Storms - 3 Piece Bonus (Improved Chain Heal)
-      23551, // The Ten Storms - 8 Piece Bonus (Lightning Shield)
-      23570, // The Ten Storms - 5 Piece Bonus (Increased Critical Spell)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28818, // The Earthshatterer - 2 Piece Bonus (Totemic Energy)
-      28821, // The Earthshatterer - 8 Piece Bonus (Lightning Shield)
-      28823, // The Earthshatterer - 6 Piece Bonus (Totemic Power)
-      29171, // The Earthshatterer - 4 Piece Bonus (Strong Current)
-          0,
-    },
-    // Tier 4 bonuses (4 spells)
-    {
-      37212, // Cyclone Regalia - 2 Piece Bonus (Improved Flametongue Weapon)
-      37213, // Cyclone Regalia - 4 Piece Bonus (Mana Cost Reduction)
-      37223, // Cyclone Harness - 2 Piece Bonus (Improved Strength of Earth)
-      37224, // Cyclone Harness - 4 Piece Bonus (Improved Storm Strike)
-          0,
-    },
-    // Tier 5 bonuses (4 spells)
-    {
-      37228, // Cataclysm Regalia - 2 Piece Bonus (Healing Surge Discount)
-      37237, // Cataclysm Regalia - 4 Piece Bonus (Lightning Bolt Discount)
-      37239, // Cataclysm Harness - 2 Piece Bonus (Fast Healing Surge)
-      37241, // Cataclysm Harness - 4 Piece Bonus (Improved Flurry)
-          0,
-    },
-    // Tier 6 bonuses (4 spells)
-    {
-      38429, // Skyshatter Harness - 2 Piece Bonus (Shock Discount)
-      38432, // Skyshatter Harness - 4 Piece Bonus (Stormstrike AP Buff)
-      38436, // Skyshatter Regalia - 4 Piece Bonus (Improved Lightning Bolt)
-      38443, // Skyshatter Regalia - 2 Piece Bonus (Totemic Mastery)
-          0,
-    },
-    // Tier 7 bonuses (4 spells)
-    {
-      60164, // Earthshatter Garb - 2 Piece Bonus (Lightning Bolt Crit Mana Back)
-      60165, // Earthshatter Garb - 4 Piece Bonus (Lava Burst Bonus Crit Damage)
-      60168, // Earthshatter Battlegear - 2 Piece Bonus (Lightning Shield Boost)
-      60169, // Earthshatter Battlegear - 4 Piece Bonus (Flurry Haste Speedup)
-          0,
-    },
-    // Tier 8 bonuses (4 spells)
-    {
-      64916, // Worldbreaker Battlegear - 2 Piece Bonus (Item - Shaman T8 Enhancement 2P Bonus)
-      64917, // Worldbreaker Battlegear - 4 Piece Bonus (Item - Shaman T8 Enhancement 4P Bonus)
-      64925, // Worldbreaker Garb - 2 Piece Bonus (Item - Shaman T8 Elemental 2P Bonus)
-      64928, // Worldbreaker Garb - 4 Piece Bonus (Item - Shaman T8 Elemental 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (4 spells)
-    {
-      67220, // Thrall's Battlegear - 2 Piece Bonus (Item - Shaman T9 Enhancement 2P Bonus (Static Shock))
-      67221, // Thrall's Battlegear - 4 Piece Bonus (Item - Shaman T9 Enhancment 4P Bonus (Stormstrike))
-      67227, // Thrall's Regalia - 2 Piece Bonus (Item - Shaman T9 Elemental 2P Bonus (Flame Shock))
-      67228, // Thrall's Regalia - 4 Piece Bonus (Item - Shaman T9 Elemental 4P Bonus (Lava Burst))
-          0,
-    },
-    // Tier 10 bonuses (4 spells)
-    {
-      70811, // Frost Witch's Regalia - 2 Piece Bonus (Item - Shaman T10 Elemental 2P Bonus)
-      70817, // Frost Witch's Regalia - 4 Piece Bonus (Item - Shaman T10 Elemental 4P Bonus)
-      70830, // Frost Witch's Battlegear - 2 Piece Bonus (Item - Shaman T10 Enhancement 2P Bonus)
-      70832, // Frost Witch's Battlegear - 4 Piece Bonus (Item - Shaman T10 Enhancement 4P Bonus)
-          0,
-    },
     // Tier 11 bonuses (6 spells)
     {
       90494, // Vestments of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Restoration 2P Bonus)
@@ -2972,73 +2475,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Mage
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      23545, // Arcanist Regalia - 8 Piece Bonus (Subtlety)
-      41656, // Arcanist Regalia - 5 Piece Bonus (Increased Spell Penetration 38)
-      41657, // Arcanist Regalia - 3 Piece Bonus (Increase Spell Dam 18)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21879, // Netherwind Regalia - 3 Piece Bonus (Friendly Nukes)
-      22007, // Netherwind Regalia - 8 Piece Bonus (Netherwind Focus)
-      23549, // Netherwind Regalia - 5 Piece Bonus (Increased Area)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28761, // Frostfire Regalia - 8 Piece Bonus (Not There)
-      28763, // Frostfire Regalia - 2 Piece Bonus (Evocation)
-      28764, // Frostfire Regalia - 4 Piece Bonus (Adaptive Warding)
-      28771, // Frostfire Regalia - 6 Piece Bonus (Elemental Vulnerability)
-          0,
-    },
-    // Tier 4 bonuses (2 spells)
-    {
-      37438, // Aldor Regalia - 2 Piece Bonus (Pushback Resistance)
-      37439, // Aldor Regalia - 4 Piece Bonus (Cooldown Reduction)
-          0,
-    },
-    // Tier 5 bonuses (2 spells)
-    {
-      37441, // Tirisfal Regalia - 2 Piece Bonus (Improved Arcane Blast)
-      37443, // Tirisfal Regalia - 4 Piece Bonus (Crit Bonus Damage)
-          0,
-    },
-    // Tier 6 bonuses (2 spells)
-    {
-      38396, // Tempest Regalia - 2 Piece Bonus (Improved Evocation)
-      38397, // Tempest Regalia - 4 Piece Bonus (Improved Fireball, Frostbolt, and Arcane Missiles)
-          0,
-    },
-    // Tier 7 bonuses (2 spells)
-    {
-      60146, // Frostfire Garb - 4 Piece Bonus (Crit Strike Damage Percent)
-      61062, // Frostfire Garb - 2 Piece Bonus (Improved Mana Gems)
-          0,
-    },
-    // Tier 8 bonuses (2 spells)
-    {
-      64867, // Kirin Tor Garb - 2 Piece Bonus (Item - Mage T8 2P Bonus)
-      64869, // Kirin Tor Garb - 4 Piece Bonus (Item - Mage T8 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (2 spells)
-    {
-      67164, // Sunstrider's Regalia - 2 Piece Bonus (Item - Mage T9 2P Bonus)
-      67185, // Sunstrider's Regalia - 4 Piece Bonus (Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast))
-          0,
-    },
-    // Tier 10 bonuses (2 spells)
-    {
-      70748, // Bloodmage's Regalia - 4 Piece Bonus (Item - Mage T10 4P Bonus)
-      70752, // Bloodmage's Regalia - 2 Piece Bonus (Item - Mage T10 2P Bonus)
-          0,
-    },
     // Tier 11 bonuses (2 spells)
     {
       90290, // Firelord's Vestments - 2 Piece Bonus (Item - Mage T11 2P Bonus)
@@ -3054,73 +2490,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Warlock
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      21741, // Felheart Raiment - 5 Piece Bonus (Demonic Ally)
-      23553, // Felheart Raiment - 8 Piece Bonus (Shadow Cost Reduction)
-      23554, // Felheart Raiment - 3 Piece Bonus (Improved Drain Life)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21922, // Nemesis Raiment - 5 Piece Bonus (Demonic Ally)
-      23555, // Nemesis Raiment - 8 Piece Bonus (Decreased Destruction Threat)
-      32449, // Nemesis Raiment - 3 Piece Bonus (Increase Spell Dam 23)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28746, // Plagueheart Raiment - 6 Piece Bonus (Plagueheart)
-      28829, // Plagueheart Raiment - 4 Piece Bonus (Corruption)
-      28830, // Plagueheart Raiment - 8 Piece Bonus (Life Tap)
-      28831, // Plagueheart Raiment - 2 Piece Bonus (Vampirism)
-          0,
-    },
-    // Tier 4 bonuses (3 spells)
-    {
-      37377, // Voidheart Raiment - 2 Piece Bonus (Shadowflame)
-      37380, // Voidheart Raiment - 4 Piece Bonus (Improved Corruption and Immolate)
-      39437, // Voidheart Raiment - 2 Piece Bonus (Shadowflame Hellfire and RoF)
-          0,
-    },
-    // Tier 5 bonuses (1 spells)
-    {
-      61992, // Corruptor Raiment - 4 Piece Bonus (Improved Corruption and Immolate (Updated))
-          0,
-    },
-    // Tier 6 bonuses (2 spells)
-    {
-      38393, // Malefic Raiment - 4 Piece Bonus (Improved Shadow Bolt and Incinerate)
-      38394, // Malefic Raiment - 2 Piece Bonus (Dot Heals)
-          0,
-    },
-    // Tier 7 bonuses (2 spells)
-    {
-      60170, // Plagueheart Garb - 2 Piece Bonus (Corruption Triggers Crit)
-      60172, // Plagueheart Garb - 4 Piece Bonus (Life Tap Bonus Spirit)
-          0,
-    },
-    // Tier 8 bonuses (2 spells)
-    {
-      64931, // Deathbringer Garb - 2 Piece Bonus (Item - Warlock T8 2P Bonus)
-      64932, // Deathbringer Garb - 4 Piece Bonus (Item - Warlock T8 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (2 spells)
-    {
-      67230, // Kel'Thuzad's Regalia - 2 Piece Bonus (Item - Warlock T9 2P Bonus)
-      67231, // Kel'Thuzad's Regalia - 4 Piece Bonus (Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction))
-          0,
-    },
-    // Tier 10 bonuses (2 spells)
-    {
-      70839, // Dark Coven's Regalia - 2 Piece Bonus (Item - Warlock T10 2P Bonus)
-      70841, // Dark Coven's Regalia - 4 Piece Bonus (Item - Warlock T10 4P Bonus)
-          0,
-    },
     // Tier 11 bonuses (2 spells)
     {
       89934, // Shadowflame Regalia - 2 Piece Bonus (Item - Warlock T11 2P Bonus)
@@ -3138,94 +2507,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
-    {
-          0,
-    },
   },
   // Tier bonuses for Druid
   {
-    {
-          0,
-    },
-    // Tier 1 bonuses (3 spells)
-    {
-      23556, // Cenarion Raiment - 8 Piece Bonus (Increased Tranquility and Hurricane Effect)
-      23557, // Cenarion Raiment - 3 Piece Bonus (Improved Thorns Damage)
-      39507, // Cenarion Raiment - 5 Piece Bonus (Increased Critical Spell)
-          0,
-    },
-    // Tier 2 bonuses (3 spells)
-    {
-      21871, // Stormrage Raiment - 8 Piece Bonus (Increased Rejuvenation Duration)
-      21872, // Stormrage Raiment - 5 Piece Bonus (Faster Regrowth Cast)
-      21894, // Stormrage Raiment - 3 Piece Bonus (Meditation)
-          0,
-    },
-    // Tier 3 bonuses (4 spells)
-    {
-      28716, // Dreamwalker Raiment - 2 Piece Bonus (Rejuvenation)
-      28719, // Dreamwalker Raiment - 8 Piece Bonus (Healing Touch)
-      28743, // Dreamwalker Raiment - 4 Piece Bonus (Dreamwalker)
-      28744, // Dreamwalker Raiment - 6 Piece Bonus (Regrowth)
-          0,
-    },
-    // Tier 4 bonuses (6 spells)
-    {
-      37295, // Malorne Regalia - 2 Piece Bonus (Mana Restore)
-      37297, // Malorne Regalia - 4 Piece Bonus (Improved Innervate)
-      37298, // Malorne Harness - 4 Piece Bonus (Bear Armor)
-      37299, // Malorne Harness - 4 Piece Bonus (Cat Agility)
-      37306, // Malorne Harness - 2 Piece Bonus (Bear Rage)
-      37311, // Malorne Harness - 2 Piece Bonus (Cat Energy)
-    },
-    // Tier 5 bonuses (4 spells)
-    {
-      37315, // Nordrassil Harness - 2 Piece Bonus (Feral Regrowth Bonus)
-      37324, // Nordrassil Regalia - 2 Piece Bonus (Moonkin Regrowth Bonus)
-      37327, // Nordrassil Regalia - 4 Piece Bonus (Starfire Bonus)
-      37333, // Nordrassil Harness - 4 Piece Bonus (Increased Shred and Lacerate)
-          0,
-    },
-    // Tier 6 bonuses (4 spells)
-    {
-      38414, // Thunderheart Regalia - 2 Piece Bonus (Increased Moonfire Duration)
-      38415, // Thunderheart Regalia - 4 Piece Bonus (Starfire Crit)
-      38416, // Thunderheart Harness - 4 Piece Bonus (Improved Rip and Ferocious Bite)
-      38447, // Thunderheart Harness - 2 Piece Bonus (Improved Mangle)
-          0,
-    },
-    // Tier 7 bonuses (4 spells)
-    {
-      60138, // Dreamwalker Garb - 2 Piece Bonus (Insect Swarm Damage)
-      60139, // Dreamwalker Garb - 4 Piece Bonus (Wrath/Starfire Crit)
-      60141, // Dreamwalker Battlegear - 2 Piece Bonus (Rip Duration/Lacerate Damage)
-      60142, // Dreamwalker Battlegear - 4 Piece Bonus (Barkskin Duration Increase)
-          0,
-    },
-    // Tier 8 bonuses (4 spells)
-    {
-      64752, // Nightsong Battlegear - 2 Piece Bonus (Item - Druid T8 Feral 2P Bonus)
-      64754, // Nightsong Battlegear - 4 Piece Bonus (Item - Druid T8 Feral 4P Bonus)
-      64818, // Nightsong Garb - 2 Piece Bonus (Item - Druid T8 Balance 2P Bonus)
-      64824, // Nightsong Garb - 4 Piece Bonus (Item - Druid T8 Balance 4P Bonus)
-          0,
-    },
-    // Tier 9 bonuses (4 spells)
-    {
-      67121, // Runetotem's Battlegear - 2 Piece Bonus (Item - Druid T9 Feral 2P Bonus)
-      67123, // Runetotem's Battlegear - 4 Piece Bonus (Item - Druid T9 Feral 4P Bonus)
-      67125, // Runetotem's Regalia - 2 Piece Bonus (Item - Druid T9 Balance 2P Bonus (Moonfire))
-      67126, // Runetotem's Regalia - 4 Piece Bonus (Item - Druid T9 Balance 4P Bonus (Starfire))
-          0,
-    },
-    // Tier 10 bonuses (4 spells)
-    {
-      70718, // Lasherweave Regalia - 2 Piece Bonus (Item - Druid T10 Balance 2P Bonus)
-      70723, // Lasherweave Regalia - 4 Piece Bonus (Item - Druid T10 Balance 4P Bonus)
-      70724, // Lasherweave Battlegear - 2 Piece Bonus (Item - Druid T10 Feral 2P Bonus)
-      70726, // Lasherweave Battlegear - 4 Piece Bonus (Item - Druid T10 Feral 4P Bonus)
-          0,
-    },
     // Tier 11 bonuses (6 spells)
     {
       90157, // Stormrider's Vestments - 2 Piece Bonus (Item - Druid T11 Restoration 2P Bonus)
