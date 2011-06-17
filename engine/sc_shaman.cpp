@@ -1234,6 +1234,12 @@ struct unleash_wind_t : public shaman_attack_t
   {
     background           = true;
     proc                 = true;
+
+    // FIX-ME: PTR DBC Data is behind the patch notes. Remove once it catches up
+    if ( player -> dbc.ptr )
+    {
+      weapon_multiplier = 1.75;
+    }
     
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = 0.0;
@@ -1271,6 +1277,12 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_dodge            = false;
     may_parry            = false;
     weapon               = w;
+
+    // FIX-ME: Patch notes are ahead of the latest PTR DBC. Remove once they sync up
+    if ( p -> dbc.ptr )
+    {
+      weapon_multiplier = 2.25;
+    }
     
     weapon_multiplier   *= 1.0 + p -> talent_focused_strikes -> mod_additive( P_GENERIC );
     base_multiplier     *= 1.0 +
