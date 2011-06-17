@@ -24,8 +24,8 @@ actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&mi
 actions+=/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react
 actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+2.5
 actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react
-actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
 actions+=/archangel,if=buff.dark_evangelism.stack>=5&dot.vampiric_touch.remains>5&dot.devouring_plague.remains>5
+actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
 actions+=/shadow_word_death,health_percentage<=25
 actions+=/shadow_fiend
 actions+=/mind_blast

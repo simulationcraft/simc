@@ -4525,6 +4525,7 @@ void priest_t::init_actions()
       }
 
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
+      if ( dbc.ptr )                                     action_list_str += "&!set_bonus.tier12_4pc_caster";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
@@ -4534,14 +4535,21 @@ void priest_t::init_actions()
                                                          action_list_str += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
       if ( talents.vampiric_touch -> rank() )            action_list_str += "|dot.vampiric_touch.remains<cast_time+2.5";
       if ( talents.vampiric_touch -> rank() )            action_list_str += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
-
-                                                         action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
+                                                         
       if ( talents.archangel -> ok() )
       {
                                                          action_list_str += "/archangel,if=buff.dark_evangelism.stack>=5";
         if ( talents.vampiric_touch -> rank() )          action_list_str += "&dot.vampiric_touch.remains>5";
                                                          action_list_str += "&dot.devouring_plague.remains>5";
       }
+
+      if ( dbc.ptr )
+      {
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
+                                                         action_list_str += "&set_bonus.tier12_4pc_caster";
+      }
+                    
+                                                         action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
       if ( level >= 66 )                                 action_list_str += "/shadow_fiend";
