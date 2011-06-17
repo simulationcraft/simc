@@ -1105,7 +1105,6 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     {
       druid_cat_attack_t::travel( t, travel_result, 0 );
 
-      // FIXME: Is a is_hit check necessary here?
       base_td = total_dot_dmg / dot -> num_ticks;
     }
     virtual double travel_time()
@@ -1422,8 +1421,8 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.feral_aggression -> mod_additive( P_GENERIC );
-    // FIXME: DBC data is behind latest notes
-    max_excess_energy     = ( p -> ptr ) ? 35 : effect2().base_value();
+
+    max_excess_energy     = effect2().base_value();
     requires_combo_points = true;
   }
 
@@ -1577,7 +1576,7 @@ struct pounce_bleed_t : public druid_cat_attack_t
   {
     background     = true;
     stats          = player -> get_stats( "pounce", this );
-    tick_power_mod = 0; // FIXME: Does pounce scale?
+    tick_power_mod = 0.03; 
   }
 };
 
@@ -2181,7 +2180,7 @@ struct lacerate_t : public druid_bear_attack_t
     parse_options( NULL, options_str );
 
     direct_power_mod     = ( p -> ptr ) ? 0.0552 : 0.0766;
-    tick_power_mod       = ( p -> ptr ) ? 0.0185 : 0.0256;
+    tick_power_mod       = ( p -> ptr ) ? 0.00369 : 0.00512;
     dot_behavior         = DOT_REFRESH;
     base_crit           += p -> glyphs.lacerate -> mod_additive( P_CRIT );
     mangle_bear_cooldown = p -> get_cooldown( "mangle_bear" );
@@ -2325,7 +2324,8 @@ struct pulverize_t : public druid_bear_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    base_dd_adder = 450.0 * p -> buffs_lacerate -> stack();
+
+    base_dd_adder = ( effect_average( 3 ) * effect_base_value( 1 ) / 100.0 ) * p -> buffs_lacerate -> stack();
 
     druid_bear_attack_t::execute();
 
@@ -2394,8 +2394,8 @@ struct thrash_t : public druid_bear_attack_t
     check_min_level( 81 );
 
     aoe               = -1;
-    direct_power_mod  = ( p -> ptr ) ? 0.0982 : 0.128;
-    tick_power_mod    = ( p -> ptr ) ? 0.0167 : 0.0217;
+    direct_power_mod  = ( p -> ptr ) ? 0.0982 : 0.192;
+    tick_power_mod    = ( p -> ptr ) ? 0.0167 : 0.0326;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
@@ -3381,17 +3381,18 @@ struct innervate_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    // 20% over 10s base
-    double gain = 0.20;
+    double gain;
 
     if ( innervate_target == player )
     {
+      gain = 0.20;
       gain += p -> talents.dreamstate -> effect1().percent();
     }
     else
     {
       // Either Dreamstate increases innervate OR you get glyph of innervate
-      p -> buffs_glyph_of_innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * gain / 20.0 );
+      gain = p -> dbc.ptr ? 0.05 : 0.20;
+      p -> buffs_glyph_of_innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * 0.1 / 10.0 );
     }
     innervate_target -> buffs.innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * gain / 10.0 );
   }
@@ -3570,7 +3571,7 @@ struct moonfire_t : public druid_spell_t
         trigger_eclipse_gain_delay( this, 8 );
         
       // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
+      p -> buffs_lunar_shower -> trigger( p -> dbc.ptr ? 1 : ( p -> is_moving() ? 3 : 1 ) );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
       
     }
@@ -4047,7 +4048,7 @@ struct sunfire_t : public druid_spell_t
         trigger_eclipse_gain_delay( this, -8 );
         
       // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( p -> is_moving() ? 3 : 1 );
+      p -> buffs_lunar_shower -> trigger( p -> dbc.ptr ? 1 : ( p -> is_moving() ? 3 : 1 ) );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
 
     }
@@ -4223,6 +4224,9 @@ struct wild_mushroom_detonate_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
     p -> buffs_wild_mushroom -> expire();
+
+    if ( p -> dbc.ptr && result_is_hit() )
+      trigger_earth_and_moon( this );
   }
 
   virtual void player_buff()
@@ -4658,7 +4662,7 @@ void druid_t::init_buffs()
   // These have either incorrect or no values in the DBC or don't really exist
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
-  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  dbc.ptr ? 15.0 : 8.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell(1).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );

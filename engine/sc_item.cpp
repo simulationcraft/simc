@@ -879,6 +879,14 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.cost_reduction = true;
       effect.no_refresh = true;
     }
+    else if ( t.name == "nocrit" )
+    {
+      effect.no_crit = true;
+    }
+    else if ( t.name == "nobuffs" )
+    {
+      effect.no_player_benefits = true;
+    }
     else if ( t.name == "norefresh" )
     {
       effect.no_refresh = true;

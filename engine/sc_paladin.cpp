@@ -363,27 +363,28 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 struct paladin_attack_t : public attack_t
 {
   bool trigger_seal;
+  bool trigger_seal_of_righteousness;
   bool spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
   double jotp_haste;
   bool trigger_dp;
 
   paladin_attack_t( const char* n, paladin_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true, bool use2hspec=true )
     : attack_t( n, p, RESOURCE_MANA, s, t, special ),
-      trigger_seal( false ), spell_haste( false ),  jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ),  jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, id, p, TREE_NONE, special ),
-      trigger_seal( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, sname, p, TREE_NONE, special ),
-      trigger_seal( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
@@ -426,43 +427,42 @@ struct paladin_attack_t : public attack_t
     attack_t::execute();
     if ( result_is_hit() )
     {
-
-      if ( trigger_seal )
+      paladin_t* pa = player -> cast_paladin();
+      if ( trigger_seal || ( trigger_seal_of_righteousness && ( pa -> active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )
       {
-        paladin_t* p = player -> cast_paladin();
-        switch ( p -> active_seal )
+        switch ( pa -> active_seal )
         {
         case SEAL_OF_JUSTICE:
-          p -> active_seal_of_justice_proc       -> execute();
+          pa -> active_seal_of_justice_proc       -> execute();
           break;
         case SEAL_OF_INSIGHT:
-          p -> active_seal_of_insight_proc       -> execute();
+          pa -> active_seal_of_insight_proc       -> execute();
           break;
         case SEAL_OF_RIGHTEOUSNESS:
-          p -> active_seal_of_righteousness_proc -> execute();
+          pa -> active_seal_of_righteousness_proc -> execute();
           break;
         case SEAL_OF_TRUTH:
-          if ( p -> buffs_censure -> stack() >= 1 ) p -> active_seal_of_truth_proc -> execute();
+          if ( pa -> buffs_censure -> stack() >= 1 ) pa -> active_seal_of_truth_proc -> execute();
           break;
         default:
           ;
         }
 
-        if ( p -> active_seal != SEAL_OF_INSIGHT && p -> talents.seals_of_command->rank() )
+        if ( pa -> active_seal != SEAL_OF_INSIGHT && pa -> talents.seals_of_command->rank() )
         {
-          p -> active_seals_of_command_proc -> execute();
+          pa -> active_seals_of_command_proc -> execute();
         }
 
         // TODO: does the censure stacking up happen before or after the SoT proc?
-        if ( p -> active_seal == SEAL_OF_TRUTH )
+        if ( pa -> active_seal == SEAL_OF_TRUTH )
         {
-          p -> active_seal_of_truth_dot -> execute();
+          pa -> active_seal_of_truth_dot -> execute();
         }
 
         // It seems like it's the seal-triggering attacks that stack up ancient power
-        if ( ! p -> guardian_of_ancient_kings -> sleeping )
+        if ( ! pa -> guardian_of_ancient_kings -> sleeping )
         {
-          p -> buffs_ancient_power -> trigger();
+          pa -> buffs_ancient_power -> trigger();
         }
       }
       if ( trigger_dp )
@@ -818,6 +818,7 @@ struct divine_storm_t : public paladin_attack_t
     spell_haste       = true;
     trigger_dp        = true;
     trigger_seal      = false;
+    trigger_seal_of_righteousness = p -> dbc.ptr;
     base_cooldown     = cooldown -> duration;
   }
 
@@ -907,6 +908,8 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
     : paladin_attack_t( "hammer_of_the_righteous", "Hammer of the Righteous", p, false ), proc( 0 )
   {
     check_talent( p -> talents.hammer_of_the_righteous -> rank() );
+
+    trigger_seal_of_righteousness = p -> dbc.ptr;
 
     parse_options( NULL, options_str );
 
@@ -1136,7 +1139,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     paladin_attack_t( "seal_of_righteousness", p, SCHOOL_HOLY )
   {
     background  = true;
-    may_crit    = false;
+    may_crit    = p -> dbc.ptr;
     proc        = true;
     trigger_gcd = 0;
 
@@ -1364,10 +1367,13 @@ struct judgement_t : public paladin_attack_t
       p -> buffs_divine_purpose -> trigger();
       p -> buffs_judgements_of_the_pure -> trigger();
       p -> buffs_sacred_duty-> trigger();
+
+      if ( ! p -> dbc.ptr ) p -> buffs_judgements_of_the_wise -> trigger();
     }
 
     p -> buffs_judgements_of_the_bold -> trigger();
-    p -> buffs_judgements_of_the_wise -> trigger();
+
+    if ( p -> dbc.ptr ) p -> buffs_judgements_of_the_wise -> trigger();
 
     if ( p -> talents.communion -> rank() ) p -> trigger_replenishment();
 
@@ -2672,7 +2678,7 @@ int paladin_t::primary_role() SC_CONST
 double paladin_t::composite_attack_expertise() SC_CONST
 {
   double m = player_t::composite_attack_expertise();
-  if ( active_seal == SEAL_OF_TRUTH && glyphs.seal_of_truth -> ok() )
+  if ( ( ( active_seal == SEAL_OF_TRUTH ) || ( dbc.ptr && ( active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )&& glyphs.seal_of_truth -> ok() )
   {
     m += glyphs.seal_of_truth -> mod_additive( P_EFFECT_2 ) / 100.0;
   }
