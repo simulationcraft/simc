@@ -20,6 +20,7 @@ actions+=/counterspell
 actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/use_item,name=rune_of_zeth
 actions+=/mana_gem,if=mana_deficit>12500
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30
 actions+=/frostfire_orb,if=target.time_to_die>=12
@@ -47,7 +48,8 @@ hands=firehawk_gloves,heroic=1,type=cloth,ilevel=391,quality=epic,stats=932armor
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=146hit_173haste_236int_384sta,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=183hit_150mastery_256int_384sta,enchant=40int
 trinket1=rune_of_zeth,ilevel=391,quality=epic,stats=433crit,reforge=crit_mastery,use=1441int_15dur_60cd
-trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int
+trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
+#trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int
 back=rippling_flamewrath_cloak,heroic=1,ilevel=391,quality=epic,stats=745armor_150hit_183haste_256int_384sta,enchant=lightweave_embroidery
 main_hand=firethorn_mindslicer,heroic=1,ilevel=391,quality=epic,stats=2636sp_150crit_100hit_197int_296sta,enchant=power_torrent,weapon=sword_1.60speed_348min_648max
 off_hand=tome_of_grim_binding,heroic=1,ilevel=391,quality=epic,stats=162hit_176crit_256int_384sta,reforge=crit_mastery,enchant=40int
