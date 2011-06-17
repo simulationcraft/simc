@@ -233,6 +233,7 @@ struct paladin_t : public player_t
     create_options();
   }
 
+  virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -2147,6 +2148,15 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// paladin_t::init_defense =============================================
+
+void paladin_t::init_defense()
+{
+  player_t::init_defense();
+
+  initial_parry_rating_per_strength = dbc.ptr ? 0.27 : 0.25;
 }
 
 // paladin_t::init_base =====================================================

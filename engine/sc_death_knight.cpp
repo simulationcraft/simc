@@ -333,6 +333,7 @@ struct death_knight_t : public player_t
   virtual void      init_actions();
   virtual void      init_enchant();
   virtual void      init_rng();
+  virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
@@ -4221,6 +4222,15 @@ void death_knight_t::init_rng()
   rng_blood_caked_blade          = get_rng( "blood_caked_blade"          );
   rng_might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
   rng_threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
+}
+
+// death_knight_t::init_defense =============================================
+
+void death_knight_t::init_defense()
+{
+  player_t::init_defense();
+
+  initial_parry_rating_per_strength = dbc.ptr ? 0.27 : 0.25;
 }
 
 // death_knight_t::init_base ================================================

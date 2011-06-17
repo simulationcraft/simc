@@ -336,6 +336,7 @@ player_t::player_t( sim_t*             s,
   base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
   armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
   dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
+  parry_rating_per_strength( 0 ), initial_parry_rating_per_strength( 0 ),
   diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
   armor_coeff( 0 ),
   half_resistance_rating( 0 ),
@@ -1037,7 +1038,10 @@ void player_t::init_defense()
   initial_block             = base_block       + initial_stats.block_rating / rating.block;
 
   if ( type != ENEMY && type != ENEMY_ADD )
+  {
     initial_dodge_per_agility = dbc.dodge_scaling( type, level );
+    initial_parry_rating_per_strength = 0.0;
+  }
 
   if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
 }
@@ -1845,6 +1849,8 @@ double player_t::composite_tank_parry() SC_CONST
 {
   double p = parry;
 
+  p += strength() * parry_rating_per_strength / rating.parry;
+
   return p;
 }
 
@@ -1901,6 +1907,8 @@ double player_t::diminished_parry() SC_CONST
   // Only contributions from gear are subject to diminishing returns;
 
   double p = stats.parry_rating / rating.parry;
+
+  p += parry_rating_per_strength * stats.attribute[ ATTR_STRENGTH ] * composite_attribute_multiplier( ATTR_STRENGTH ) / rating.parry;
 
   if ( p == 0 ) return 0;
 
@@ -2314,6 +2322,79 @@ double player_t::spirit() SC_CONST
   return a;
 }
 
+/*
+// player_t::haste_rating() ======================================================
+
+double player_t::haste_rating() SC_CONST
+{
+  double a = stats.haste_rating;
+
+  return a;
+}
+
+
+// player_t::crit_rating() ======================================================
+
+double player_t::crit_rating() SC_CONST
+{
+  double a = stats.crit_rating;
+
+  return a;
+}
+
+
+// player_t::mastery_rating() ======================================================
+
+double player_t::mastery_rating() SC_CONST
+{
+  double a = stats.mastery_rating;
+
+  return a;
+}
+
+
+// player_t::hit_rating() ======================================================
+
+double player_t::hit_rating() SC_CONST
+{
+  double a = stats.hit_rating;
+
+  return a;
+}
+
+
+// player_t::expertise_rating() ======================================================
+
+double player_t::expertise_rating() SC_CONST
+{
+  double a = stats.expertise_rating;
+
+  return a;
+}
+
+
+// player_t::dodge_rating() ======================================================
+
+double player_t::dodge_rating() SC_CONST
+{
+  double a = stats.dodge_rating;
+  
+  return a;
+}
+
+
+// player_t::parry_rating() ======================================================
+
+double player_t::parry_rating() SC_CONST
+{
+  double a = stats.parry_rating;
+
+  a += strength() * parry_rating_per_strength;
+
+  return a;
+}
+*/
+
 // player_t::combat_begin ==================================================
 
 void player_t::combat_begin( sim_t* sim )
@@ -2489,8 +2570,9 @@ void player_t::reset()
   attack_power_per_agility  = initial_attack_power_per_agility;
   attack_crit_per_agility   = initial_attack_crit_per_agility;
 
-  armor_multiplier  = initial_armor_multiplier;
-  dodge_per_agility = initial_dodge_per_agility;
+  armor_multiplier          = initial_armor_multiplier;
+  dodge_per_agility         = initial_dodge_per_agility;
+  parry_rating_per_strength = initial_parry_rating_per_strength;
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {

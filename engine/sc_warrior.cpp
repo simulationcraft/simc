@@ -319,6 +319,7 @@ struct warrior_t : public player_t
   // Character Definition
   virtual void      init_talents();
   virtual void      init_spells();
+  virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
@@ -3000,6 +3001,15 @@ void warrior_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+}
+
+// warrior_t::init_defense ==================================================
+
+void warrior_t::init_defense()
+{
+  player_t::init_defense();
+
+  initial_parry_rating_per_strength = dbc.ptr ? 0.27 : 0.25;
 }
 
 // warrior_t::init_base =====================================================
