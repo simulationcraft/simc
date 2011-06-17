@@ -416,9 +416,9 @@ enum slot_type   // these enum values match armory settings
   SLOT_MAX       = 19
 };
 
-// Tiers 10..14
+// Tiers 11..14
 #ifndef N_TIER
-#define N_TIER 5
+#define N_TIER 4
 #endif
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
@@ -429,10 +429,6 @@ enum slot_type   // these enum values match armory settings
 enum set_type
 {
   SET_NONE = 0,
-  SET_T10_CASTER, SET_T10_2PC_CASTER, SET_T10_4PC_CASTER,
-  SET_T10_MELEE,  SET_T10_2PC_MELEE,  SET_T10_4PC_MELEE,
-  SET_T10_TANK,   SET_T10_2PC_TANK,   SET_T10_4PC_TANK,
-  SET_T10_HEAL,   SET_T10_2PC_HEAL,   SET_T10_4PC_HEAL,
   SET_T11_CASTER, SET_T11_2PC_CASTER, SET_T11_4PC_CASTER,
   SET_T11_MELEE,  SET_T11_2PC_MELEE,  SET_T11_4PC_MELEE,
   SET_T11_TANK,   SET_T11_2PC_TANK,   SET_T11_4PC_TANK,
@@ -2817,8 +2813,6 @@ struct item_database_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier10_2pc_caster() SC_CONST; int tier10_2pc_melee() SC_CONST; int tier10_2pc_tank() SC_CONST; int tier10_2pc_heal() SC_CONST;
-  int tier10_4pc_caster() SC_CONST; int tier10_4pc_melee() SC_CONST; int tier10_4pc_tank() SC_CONST; int tier10_4pc_heal() SC_CONST;
   int tier11_2pc_caster() SC_CONST; int tier11_2pc_melee() SC_CONST; int tier11_2pc_tank() SC_CONST; int tier11_2pc_heal() SC_CONST;
   int tier11_4pc_caster() SC_CONST; int tier11_4pc_melee() SC_CONST; int tier11_4pc_tank() SC_CONST; int tier11_4pc_heal() SC_CONST;
   int tier12_2pc_caster() SC_CONST; int tier12_2pc_melee() SC_CONST; int tier12_2pc_tank() SC_CONST; int tier12_2pc_heal() SC_CONST;

@@ -2982,7 +2982,6 @@ void warrior_t::init_spells()
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = 
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {     0,     0, 70854, 70847, 70843, 70844,     0,     0 }, // Tier10
     {     0,     0, 90293, 90295, 90296, 90297,     0,     0 }, // Tier11
     {     0,     0, 99234, 99238, 99239, 99242,     0,     0 }, // Tier12
     {     0,     0,     0,     0,     0,     0,     0,     0 },

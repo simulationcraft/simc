@@ -4420,7 +4420,6 @@ void priest_t::init_spells()
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 70800, 70801,     0,     0,     0,     0,     0,     0 }, // Tier10
     { 89915, 89922,     0,     0,     0,     0,     0,     0 }, // Tier11
     { 99154, 99157,     0,     0,     0,     0, 99134, 99135 }, // Tier12
     {     0,     0,     0,     0,     0,     0,     0,     0 },

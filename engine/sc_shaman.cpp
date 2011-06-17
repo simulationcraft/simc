@@ -3783,7 +3783,6 @@ void shaman_t::init_spells()
   // New set bonus system
   uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 70811, 70817, 70830, 70832,     0,     0,     0,     0 }, // Tier10
     { 90503, 90505, 90501, 90502,     0,     0,     0,     0 }, // Tier11
     { 99204, 99206, 99209, 99213,     0,     0, 99190, 99195 }, // Tier12
     {     0,     0,     0,     0,     0,     0,     0,     0 },

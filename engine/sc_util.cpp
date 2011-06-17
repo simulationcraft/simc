@@ -964,12 +964,6 @@ const char* util_t::set_bonus_string( set_type type )
 {
   switch ( type )
   {
-  case SET_T10_2PC_CASTER: return "tier10_2pc_caster";
-  case SET_T10_4PC_CASTER: return "tier10_4pc_caster";
-  case SET_T10_2PC_MELEE:  return "tier10_2pc_melee";
-  case SET_T10_4PC_MELEE:  return "tier10_4pc_melee";
-  case SET_T10_2PC_TANK:   return "tier10_2pc_tank";
-  case SET_T10_4PC_TANK:   return "tier10_4pc_tank";
   case SET_T11_2PC_CASTER: return "tier11_2pc_caster";
   case SET_T11_4PC_CASTER: return "tier11_4pc_caster";
   case SET_T11_2PC_MELEE:  return "tier11_2pc_melee";

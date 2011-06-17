@@ -11,8 +11,6 @@ set_bonus_t::set_bonus_t()
 {
   memset( ( void* ) this, 0x00, sizeof( set_bonus_t ) );
 
-  count[ SET_T10_2PC_CASTER ] = count[ SET_T10_2PC_MELEE ] = count[ SET_T10_2PC_TANK ] = count[ SET_T10_2PC_HEAL ] = -1;
-  count[ SET_T10_4PC_CASTER ] = count[ SET_T10_4PC_MELEE ] = count[ SET_T10_4PC_TANK ] = count[ SET_T10_4PC_HEAL ] = -1;
   count[ SET_T11_2PC_CASTER ] = count[ SET_T11_2PC_MELEE ] = count[ SET_T11_2PC_TANK ] = count[ SET_T11_2PC_HEAL ] = -1;
   count[ SET_T11_4PC_CASTER ] = count[ SET_T11_4PC_MELEE ] = count[ SET_T11_4PC_TANK ] = count[ SET_T11_4PC_HEAL ] = -1;
   count[ SET_T12_2PC_CASTER ] = count[ SET_T12_2PC_MELEE ] = count[ SET_T12_2PC_TANK ] = count[ SET_T12_2PC_HEAL ] = -1;
@@ -22,24 +20,6 @@ set_bonus_t::set_bonus_t()
   count[ SET_T14_2PC_CASTER ] = count[ SET_T14_2PC_MELEE ] = count[ SET_T14_2PC_TANK ] = count[ SET_T14_2PC_HEAL ] = -1;
   count[ SET_T14_4PC_CASTER ] = count[ SET_T14_4PC_MELEE ] = count[ SET_T14_4PC_TANK ] = count[ SET_T14_4PC_HEAL ] = -1;
 }
-
-// set_bonus_t::tier10 =======================================================
-
-int set_bonus_t::tier10_2pc_caster() SC_CONST { return ( count[ SET_T10_2PC_CASTER ] > 0 || ( count[ SET_T10_2PC_CASTER ] < 0 && count[ SET_T10_CASTER ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_4pc_caster() SC_CONST { return ( count[ SET_T10_4PC_CASTER ] > 0 || ( count[ SET_T10_4PC_CASTER ] < 0 && count[ SET_T10_CASTER ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_2pc_melee() SC_CONST { return ( count[ SET_T10_2PC_MELEE ] > 0 || ( count[ SET_T10_2PC_MELEE ] < 0 && count[ SET_T10_MELEE ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_4pc_melee() SC_CONST { return ( count[ SET_T10_4PC_MELEE ] > 0 || ( count[ SET_T10_4PC_MELEE ] < 0 && count[ SET_T10_MELEE ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_2pc_tank() SC_CONST { return ( count[ SET_T10_2PC_TANK ] > 0 || ( count[ SET_T10_2PC_TANK ] < 0 && count[ SET_T10_TANK ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_4pc_tank() SC_CONST { return ( count[ SET_T10_4PC_TANK ] > 0 || ( count[ SET_T10_4PC_TANK ] < 0 && count[ SET_T10_TANK ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_2pc_heal() SC_CONST { return ( count[ SET_T10_2PC_HEAL ] > 0 || ( count[ SET_T10_2PC_HEAL ] < 0 && count[ SET_T10_HEAL ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier10_4pc_heal() SC_CONST { return ( count[ SET_T10_4PC_HEAL ] > 0 || ( count[ SET_T10_4PC_HEAL ] < 0 && count[ SET_T10_HEAL ] >= 4 ) ) ? 1 : 0; }
 
 // set_bonus_t::tier11 =======================================================
 

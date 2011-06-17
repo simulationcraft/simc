@@ -3072,7 +3072,6 @@ void mage_t::init_spells()
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 70752, 70748,     0,     0,     0,     0,     0,     0 }, // Tier10
     { 90290, 90291,     0,     0,     0,     0,     0,     0 }, // Tier11
     { 99061, 99064,     0,     0,     0,     0,     0,     0 }, // Tier12
     {     0,     0,     0,     0,     0,     0,     0,     0 },

@@ -5515,15 +5515,6 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
       profile_str += term;
     }
 
-    if ( set_bonus.tier10_2pc_caster() ) profile_str += "# tier10_2pc_caster=1" + term;
-    if ( set_bonus.tier10_4pc_caster() ) profile_str += "# tier10_4pc_caster=1" + term;
-    if ( set_bonus.tier10_2pc_melee()  ) profile_str += "# tier10_2pc_melee=1" + term;
-    if ( set_bonus.tier10_4pc_melee()  ) profile_str += "# tier10_4pc_melee=1" + term;
-    if ( set_bonus.tier10_2pc_tank()   ) profile_str += "# tier10_2pc_tank=1" + term;
-    if ( set_bonus.tier10_4pc_tank()   ) profile_str += "# tier10_4pc_tank=1" + term;
-    if ( set_bonus.tier10_2pc_heal()   ) profile_str += "# tier10_2pc_heal=1" + term;
-    if ( set_bonus.tier10_4pc_heal()   ) profile_str += "# tier10_4pc_heal=1" + term;
-
     if ( set_bonus.tier11_2pc_caster() ) profile_str += "# tier11_2pc_caster=1" + term;
     if ( set_bonus.tier11_4pc_caster() ) profile_str += "# tier11_4pc_caster=1" + term;
     if ( set_bonus.tier11_2pc_melee()  ) profile_str += "# tier11_2pc_melee=1" + term;
@@ -5683,14 +5674,6 @@ void player_t::create_options()
     { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str    ) },
     { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str    ) },
     // Set Bonus
-    { "tier10_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_CASTER ]  ) },
-    { "tier10_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_CASTER ]  ) },
-    { "tier10_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_MELEE ]   ) },
-    { "tier10_4pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_MELEE ]   ) },
-    { "tier10_2pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_TANK ]    ) },
-    { "tier10_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_TANK ]    ) },
-    { "tier10_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_2PC_HEAL ]    ) },
-    { "tier10_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T10_4PC_HEAL ]    ) },
     { "tier11_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_CASTER ]  ) },
     { "tier11_4pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T11_4PC_CASTER ]  ) },
     { "tier11_2pc_melee",                     OPT_BOOL,     &( set_bonus.count[ SET_T11_2PC_MELEE ]   ) },
