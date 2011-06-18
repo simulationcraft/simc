@@ -1,5 +1,7 @@
 #!simc
 
+ptr=0
+
 chardev=133579 talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000030000000000000000000 save=Warrior_Arms_T11_372_NoCharge.simc name=Warrior_Arms_T11_372_NoCharge
 
 chardev=133579 save=Warrior_Arms_T11_372.simc name=Warrior_Arms_T11_372
@@ -7,3 +9,45 @@ chardev=133579 save=Warrior_Arms_T11_372.simc name=Warrior_Arms_T11_372
 chardev=36557 save=Warrior_Fury_1h_T11_372.simc name=Warrior_Fury_1h_T11_372
 
 chardev=36611 save=Warrior_Fury_2h_T11_372.simc name=Warrior_Fury_2h_T11_372
+
+
+ptr=1
+
+warrior=Warrior_Arms_T12H
+level=85
+race=worgen
+role=attack
+use_pre_potion=1
+professions=jewelcrafting=525/blacksmithing=525
+talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000030000000000000000000
+glyphs=rapid_charge/resonating_power/sweeping_strikes/berserker_rage/battle/command/overpower/slam/mortal_strike
+#gear here
+actions=
+save=Warrior_Arms_T12H.simc
+
+
+warrior=Warrior_Fury_1h_T12H
+level=85
+race=worgen
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022320120000000000000000000
+glyphs=death_wish/cleaving/heroic_throw/battle/berserker_rage/bloody_healing/slam/raging_blow/bloodthirst
+#gear here
+actions=
+save=Warrior_Fury_1h_T12H
+
+
+warrior=Warrior_Fury_2h_T12H
+level=85
+race=worgen
+role=attack
+use_pre_potion=1
+talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022321020000000000000000000
+glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
+#gear here
+actions=
+save=Warrior_Fury_1h_T12H
+
+ptr=0
