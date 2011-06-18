@@ -1,5 +1,7 @@
 #!simc
 
+ptr=0
+
 chardev=34113 name=Hunter_BM_T11_372 save=Hunter_BM_T11_372.simc
 
 chardev=116024 name=Hunter_MM_T11_372_Arcane save=Hunter_MM_T11_372_Arcane.simc
@@ -15,3 +17,106 @@ chardev=36177 name=Hunter_SV_T11_359 save=Hunter_SV_T11_359.simc
 chardev=36158 name=Hunter_MM_T11_359 save=Hunter_MM_T11_359.simc
 
 chardev=66004 name=Hunter_MM_T11_359_Arcane save=Hunter_MM_T11_359_Arcane.simc
+
+ptr=1
+
+# Normal Modes
+
+hunter=Hunter_BM_T12N
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-2330230311320112121230200000000000000003000000000000000000
+glyphs=bestial_wrath/kill_command/arcane_shot/kill_shot
+#gear here
+save=Hunter_BM_T12N.simc
+
+
+hunter=Hunter_MM_T12N
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-0320020000000000000230232003212023122103000000000000000000
+glyphs=steady_shot/rapid_fire/aimed_shot
+#gear here
+save=Hunter_MM_T12N.simc
+
+
+hunter=Hunter_MM_T12N_Arcane
+origin="http://chardev.org/?profile=66004"
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-0320020000000000000230232003212023122103000000000000000000
+glyphs=steady_shot/rapid_fire/arcane_shot
+#gear here
+save=Hunter_MM_T12N_Arcane.simc
+
+
+hunter=Hunter_SV_T12N
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-0010000000000000000230202000000000000003223003023022121311
+glyphs=explosive_shot/kill_shot/arcane_shot
+#gear here
+save=Hunter_SV_T12N.simc
+
+# Heroic Modes
+
+hunter=Hunter_BM_T12H
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-2330230311320112121230200000000000000003000000000000000000
+glyphs=bestial_wrath/kill_command/arcane_shot/kill_shot
+#gear here
+save=Hunter_BM_T12H.simc
+
+
+hunter=Hunter_MM_T12H
+level=85
+race=troll
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-0230020000000000000230232003212023122103000000000000000000
+glyphs=steady_shot/aimed_shot/rapid_fire
+#gear here
+save=Hunter_MM_T12H.simc
+
+
+hunter=Hunter_MM_T12H_Arcane
+level=85
+race=troll
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-0230020000000000000230232003212023122103000000000000000000
+glyphs=steady_shot/arcane_shot/rapid_fire
+#gear here
+save=Hunter_MM_T12H_Arcane.simc
+
+
+hunter=Hunter_SV_T12H
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#hunter-0010000000000000000230202000000000000003223003023022121311
+glyphs=arcane_shot/explosive_shot/kill_shot
+#gear here
+save=Hunter_SV_T12H.simc
+
+ptr=0
