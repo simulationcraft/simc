@@ -29,8 +29,23 @@ use_pre_potion=1
 professions=jewelcrafting=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000030000000000000000000
 glyphs=rapid_charge/resonating_power/sweeping_strikes/berserker_rage/battle/command/overpower/slam/mortal_strike
-#gear here
-actions=
+head=helmet_of_the_molten_giant,id=71599,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery,reforge=haste_crit
+neck=stoneheart_choker,id=71586,reforge=exp_mastery
+shoulders=pauldrons_of_roaring_flame,id=71612,gems=40str,enchant=50str_25crit,reforge=dodge_crit
+chest=battleplate_of_the_molten_giant,id=71600,gems=20str_20crit_20str_20crit_20str,enchant=20all,reforge=hit_mastery
+waist=cinch_of_the_flaming_ember,id=71399,gems=40str_67str
+legs=legplates_of_the_molten_giant,id=71602,gems=40str_40str_20str,enchant=190ap_55crit
+feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=35mastery,reforge=haste_mastery
+wrists=gigantiform_bracers,id=71584,gems=67str,enchant=50str,reforge=mastery_crit
+hands=gauntlets_of_the_molten_giant,id=71601,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
+finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=haste_crit
+finger2=serrated_brimstone_signet,id=71588,reforge=haste_mastery
+trinket1=apparatus_of_khazgoroth,id=69113
+trinket2=vessel_of_acceleration,id=69167
+back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit
+main_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant=landslide
+ranged=giantslicer,id=71593
+
 save=Warrior_Arms_T12H.simc
 
 
@@ -42,8 +57,23 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022320120000000000000000000
 glyphs=death_wish/cleaving/heroic_throw/battle/berserker_rage/bloody_healing/slam/raging_blow/bloodthirst
-#gear here
-actions=
+head=helmet_of_the_molten_giant,id=71599,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery,reforge=mastery_crit
+neck=stoneheart_choker,id=71586,reforge=exp_hit
+shoulders=pauldrons_of_roaring_flame,id=71612,gems=40str,enchant=50str_25crit,reforge=dodge_crit
+chest=battleplate_of_the_molten_giant,id=71600,gems=20str_20crit_20str_20crit_20str,enchant=20all
+waist=cinch_of_the_flaming_ember,id=71399,gems=40str_67str
+legs=legplates_of_the_molten_giant,id=71602,gems=40str_40str_20str,enchant=190ap_55crit
+feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=35mastery,reforge=haste_hit
+wrists=gigantiform_bracers,id=71584,gems=67str,enchant=50str,reforge=mastery_crit
+hands=gauntlets_of_the_molten_giant,id=71601,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
+finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=haste_crit
+finger2=serrated_brimstone_signet,id=71588,reforge=haste_hit
+trinket1=apparatus_of_khazgoroth,id=69113
+trinket2=vessel_of_acceleration,id=69167
+back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit
+main_hand=obsidium_cleaver,id=71562,gems=40str_40str_20str,enchant=landslide,reforge=mastery_crit
+off_hand=obsidium_cleaver,id=71562,gems=40str_40str_20str,enchant=landslide,reforge=mastery_crit
+ranged=giantslicer,id=71593
 save=Warrior_Fury_1h_T12H.simc
 
 
@@ -54,8 +84,23 @@ role=attack
 use_pre_potion=1
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022321020000000000000000000
 glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
-#gear here
-actions=
+head=helmet_of_the_molten_giant,id=71599,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery,reforge=haste_crit
+neck=stoneheart_choker,id=71586,reforge=exp_hit
+shoulders=pauldrons_of_roaring_flame,id=71612,gems=40str,enchant=50str_25crit,reforge=dodge_crit
+chest=battleplate_of_the_molten_giant,id=71600,gems=20str_20crit_20str_20crit_20str,enchant=20all
+waist=cinch_of_the_flaming_ember,id=71399,gems=40str_67str
+legs=legplates_of_the_molten_giant,id=71602,gems=40str_40str_20str,enchant=190ap_55crit
+feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=35mastery,reforge=haste_hit
+wrists=gigantiform_bracers,id=71584,gems=67str,enchant=50str,reforge=mastery_crit
+hands=gauntlets_of_the_molten_giant,id=71601,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
+finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=haste_crit
+finger2=serrated_brimstone_signet,id=71588,reforge=haste_hit
+trinket1=apparatus_of_khazgoroth,id=69113
+trinket2=vessel_of_acceleration,id=69167
+back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit
+main_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant=landslide,reforge=mastery_hit
+off_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant=landslide,reforge=mastery_hit
+ranged=giantslicer,id=71593
 save=Warrior_Fury_2h_T12H.simc
 
 ptr=0

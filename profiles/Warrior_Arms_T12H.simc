@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_Arms_T12H
-origin="Warrior_CharDevSync.simc"
+origin="input=Warrior_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -9,4 +9,65 @@ use_pre_potion=1
 professions=jewelcrafting=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000030000000000000000000
 glyphs=rapid_charge/resonating_power/sweeping_strikes/berserker_rage/battle/command/overpower/slam/mortal_strike
+actions=flask,type=titanic_strength
+actions+=/food,type=beer_basted_crocolisk
+actions+=/snapshot_stats
+actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
+actions+=/auto_attack
+actions+=/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)
+actions+=/stance,choose=battle,if=(dot.rend.remains=0|((buff.overpower.up|buff.taste_for_blood.up)&cooldown.mortal_strike.remains>1)&rage<=75)
+actions+=/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)
+actions+=/berserker_rage,if=!buff.deadly_calm.up&rage<70
+actions+=/deadly_calm,if=rage<30&((target.health_pct>20&target.time_to_die>130)|(target.health_pct<=20&buff.recklessness.up))
+actions+=/sweeping_strikes,if=target.adds>0
+actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up
+actions+=/cleave,if=target.adds>0
+actions+=/inner_rage,if=!buff.deadly_calm.up&rage>80&cooldown.deadly_calm.remains>15
+actions+=/heroic_strike,if=((rage>=85&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&((rage>=50&target.health_pct>=20)|(rage>=75&target.health_pct<20))))
+actions+=/overpower,if=buff.taste_for_blood.remains<=1.5
+actions+=/mortal_strike,if=target.health_pct>20|rage>=30
+actions+=/execute,if=buff.battle_trance.up
+actions+=/rend,if=!ticking
+actions+=/colossus_smash,if=buff.colossus_smash.remains<0.5
+actions+=/execute,if=(buff.deadly_calm.up|buff.recklessness.up)
+actions+=/mortal_strike
+actions+=/overpower
+actions+=/execute
+actions+=/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|buff.deadly_calm.up|buff.colossus_smash.up))|(cooldown.mortal_strike.remains>=1.2&buff.colossus_smash.remains>0.5&rage>=35)
+actions+=/battle_shout,if=rage<20
+head=helmet_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_281haste_266mastery,reforge=haste_crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
+neck=stoneheart_choker,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_154exp_181crit,reforge=exp_mastery
+shoulders=pauldrons_of_roaring_flame,heroic=1,type=plate,ilevel=397,quality=epic,stats=2871armor_255str_542sta_361dodge_163hit,reforge=dodge_crit,gems=40str,enchant=50str_25crit
+chest=battleplate_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_297crit_263hit,reforge=hit_mastery,gems=20str_20crit_20str_20crit_20str,enchant=20all
+waist=cinch_of_the_flaming_ember,heroic=1,type=plate,ilevel=391,quality=epic,stats=2116armor_322str_513sta_153hit_260crit,gems=40str_67str
+legs=legplates_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3292armor_420str_689sta_316exp_251crit,gems=40str_40str_20str,enchant=190ap_55crit
+feet=arachnaflame_treads,heroic=1,type=plate,ilevel=391,quality=epic,stats=2586armor_322str_513sta_228crit_208haste,reforge=haste_mastery,gems=40str_10str,enchant=35mastery
+wrists=gigantiform_bracers,heroic=1,type=plate,ilevel=391,quality=epic,stats=1646armor_256str_384sta_130hit_195mastery,reforge=mastery_crit,gems=67str,enchant=50str
+hands=gauntlets_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_209hit_227mastery,reforge=mastery_crit,gems=20str_20crit_67str_10str,enchant=50str
+finger1=alysrazors_band,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_171exp_124haste,reforge=haste_crit,gems=40str_10str
+finger2=serrated_brimstone_signet,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_176crit_162haste,reforge=haste_mastery
+trinket1=apparatus_of_khazgoroth,heroic=1,ilevel=391,quality=epic,stats=433str
+trinket2=vessel_of_acceleration,heroic=1,ilevel=397,quality=epic,stats=458str,equip=onattackhit_87crit_5stack_20dur
+back=bladed_flamewrath_cover,heroic=1,ilevel=391,quality=epic,stats=745armor_256str_384sta_195haste_130exp,reforge=exp_crit,enchant=65crit
+main_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=446str_730sta_333crit_262mastery,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2700min_4050max
+ranged=giantslicer,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_92exp_99hit,weapon=thrown_2.10speed_1410min_2116max
 # Gear Summary
+# gear_strength=6248
+# gear_agility=20
+# gear_stamina=7035
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=190
+# gear_expertise_rating=750
+# gear_hit_rating=912
+# gear_crit_rating=2456
+# gear_haste_rating=662
+# gear_mastery_rating=1165
+# gear_armor=22426
+# gear_dodge_rating=217
+# meta_gem=reverberating_shadowspirit
+# tier12_2pc_melee=1
+# tier12_4pc_melee=1
+# trinket1=apparatus_of_khazgoroth,heroic=1
+# main_hand=sulfuras_the_extinguished_hand,heroic=1,weapon=mace2h_3.80speed_2700min_4050max,enchant=landslide
+# ranged=giantslicer,heroic=1,weapon=thrown_2.10speed_1410min_2116max
