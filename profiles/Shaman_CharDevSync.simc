@@ -11,9 +11,9 @@ ptr=1
 
 # Tier 11
 
-Shaman_Elemental_T11_372.simc name=Shaman_Elemental_T11H actions= save=Shaman_Elemental_T11H.simc
+chardev=14385 name=Shaman_Elemental_T11H save=Shaman_Elemental_T11H.simc
 
-Shaman_Enh_T11_372.simc name=Shaman_Enh_T11H.simc actions= save=Shaman_Enh_T11H.simc
+chardev=39863 name=Shaman_Enh_T11H.simc save=Shaman_Enh_T11H.simc
 
 # Tier 12
 

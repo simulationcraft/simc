@@ -47,7 +47,7 @@ wrists=chimaeron_armguards,heroic=1,type=mail,ilevel=372,quality=epic,stats=1115
 hands=grips_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1593armor_266agi_429sta_191crit_171hit,reforge=crit_exp,gems=40agi,enchant=50mastery
 finger1=mistral_circle_of_the_zephyr,heroic=1,ilevel=372,quality=epic,stats=321sta_214agi_143haste_143mastery,reforge=haste_hit,enchant=40agi,suffix=136
 finger2=lightning_conductor_band,heroic=1,ilevel=372,quality=epic,stats=215agi_322sta_143crit_143hit,reforge=crit_mastery,enchant=40agi
-trinket1=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_-5000nature_1ppm
+trinket1=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321agi,equip=onattackhit_-7000nature_1ppm_nocrit_nobuffs
 trinket2=fluid_death,ilevel=359,quality=epic,stats=321hit,equip=onattackhit_38agi_10stack_15dur
 back=cloak_of_biting_chill,heroic=1,ilevel=372,quality=epic,stats=673armor_215agi_322sta_143crit_143mastery,reforge=crit_hit,enchant=65crit
 main_hand=crulkorak_the_lightnings_arc,heroic=1,ilevel=372,quality=epic,stats=165agi_248sta_110crit_110haste,reforge=haste_exp,enchant=landslide,weapon=axe_2.60speed_949min_1764max

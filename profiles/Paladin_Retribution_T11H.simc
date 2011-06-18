@@ -44,7 +44,7 @@ hands=reinforced_sapphirium_gauntlets,heroic=1,type=plate,ilevel=372,quality=epi
 finger1=dargonaxs_signet,heroic=1,ilevel=379,quality=epic,stats=229str_344sta_113crit_153mastery,reforge=crit_exp,gems=40str
 finger2=ring_of_rivalry,heroic=1,ilevel=372,quality=epic,stats=215str_322sta_143haste_143exp,reforge=haste_hit
 trinket1=crushing_weight,heroic=1,ilevel=372,quality=epic,stats=363str,equip=onattackhit_2178haste_10%_15dur_75cd
-trinket2=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321str,equip=onattackhit_-5000nature_1ppm
+trinket2=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321str,equip=onattackhit_-7000nature_1ppm_nocrit_nobuffs
 back=glittering_epidermis,heroic=1,ilevel=372,quality=epic,stats=673armor_215str_322sta_143crit_143haste,reforge=haste_mastery,enchant=65crit
 main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,heroic=1,ilevel=372,quality=epic,stats=385str_578sta_257crit_257hit,reforge=crit_mastery,enchant=landslide,weapon=sword2h_3.80speed_2138min_3208max
 ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=107str_161sta_72crit_72exp,reforge=exp_mastery,gems=40str

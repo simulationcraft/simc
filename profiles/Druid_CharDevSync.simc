@@ -34,6 +34,18 @@ glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/starsurge
 save=Druid_Balance_T12H.simc
 
 
+druid=Druid_Balance_T12H_DTR
+level=85
+race=troll
+role=spell
+use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
+glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/starsurge/insect_swarm/moonfire
+#gear here
+save=Druid_Balance_T12H_DTR.simc
+
+
 druid=Druid_Feral_T12H
 level=85
 race=worgen

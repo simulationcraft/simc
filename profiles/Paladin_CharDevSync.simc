@@ -8,9 +8,9 @@ chardev=47301 save=Paladin_Retribution_T11_372.simc name=Paladin_Retribution_T11
 
 ptr=1
 
-Paladin_Retribution_T11_359.simc name=Paladin_Retribution_T11N actions= save=Paladin_Retribution_T11N.simc
+chardev=35780 name=Paladin_Retribution_T11N save=Paladin_Retribution_T11N.simc
 
-Paladin_Retribution_T11_372.simc name=Paladin_Retribution_T11H actions= save=Paladin_Retribution_T11H.simc
+chardev=47301 name=Paladin_Retribution_T11H save=Paladin_Retribution_T11H.simc
 
 paladin=Paladin_Retribution_T12H
 level=85

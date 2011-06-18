@@ -12,6 +12,7 @@ talents=http://www.wowhead.com/talent#bcGoZfuRrRkbkMdo0o
 role=dps
 glyphs=penance/smite/shadow_word_pain/divine_accuracy
 name=Priest_Holy_Smite_AA_T11_372
+actions=
 save=Priest_Holy_Smite_AA_T11_372.simc
 
 # Holy Smite Twisted Faith
@@ -33,16 +34,40 @@ save=Priest_Disc_Smite_T11_372.simc
 
 ptr=1
 
-Priest_Shadow_T11_359.simc name=Priest_Shadow_T11N actions= save=Priest_Shadow_T11N.simc
+# Tier 11
 
-Priest_Shadow_T11_372.simc name=Priest_Shadow_T11H actions= save=Priest_Shadow_T11H.simc
+chardev=19782 name=Priest_Shadow_T11N actions= save=Priest_Shadow_T11N.simc
 
-Priest_Holy_Smite_AA_T11_372.simc name=Priest_Holy_Smite_AA_T11H actions= save=Priest_Holy_Smite_AA_T11H.simc
+chardev=18129 name=Priest_Shadow_T11H actions= save=Priest_Shadow_T11H.simc
 
-Priest_Holy_Smite_TF_T11_372.simc name=Priest_Holy_Smite_TF_T11H actions= save=Priest_Holy_Smite_TF_T11H.simc
 
-Priest_Disc_Smite_T11_372.simc name=Priest_Disc_Smite_T11H actions= save=Priest_Disc_Smite_T11H.simc
+chardev=18129
+talents=http://www.wowhead.com/talent#bcGoZfuRrRkbkMdo0o
+role=dps
+glyphs=penance/smite/shadow_word_pain/divine_accuracy
+name=Priest_Holy_Smite_AA_T11H
+actions= 
+save=Priest_Holy_Smite_AA_T11H.simc
 
+
+chardev=18129
+talents=http://www.wowhead.com/talent#bcZfuRrRkbkMdoRb0b
+role=dps
+glyphs=penance/smite/shadow_word_pain/divine_accuracy
+name=Priest_Holy_Smite_TF_T11H 
+actions= 
+save=Priest_Holy_Smite_TF_T11H.simc
+
+
+chardev=18129
+talents=http://www.wowhead.com/talent#bcGszRsbcRMo0hZhb0b
+role=dps
+glyphs=penance/smite/shadow_word_pain/divine_accuracy
+name=Priest_Disc_Smite_T11H 
+actions= 
+save=Priest_Disc_Smite_T11H.simc
+
+# Tier 12
 
 priest=Priest_Shadow_T12H_DTR
 level=85
