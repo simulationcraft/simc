@@ -47,7 +47,7 @@ hands=erupting_volcanic_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=hit_haste,enchant=40int
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
-trinket2=fiery_quintessence,heroic=1,ilevel=391,quality=epic,stats=433spi,reforge=spi_mastery,use=1297int_25dur_90cd
+trinket2=fiery_quintessence,heroic=1,ilevel=391,quality=epic,stats=433spi,reforge=spi_haste,use=1297int_25dur_90cd
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,reforge=hit_mastery,enchant=lightweave_embroidery
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
 off_hand=ward_of_the_red_widow,heroic=1,ilevel=391,quality=epic,stats=12421armor_236int_384sta_173spi_146haste,gems=40int_10int,enchant=40int
@@ -61,8 +61,8 @@ ranged=singed_plume_of_aviana,heroic=1,ilevel=391,quality=epic,stats=145int_217s
 # gear_spell_power=2783
 # gear_hit_rating=288
 # gear_crit_rating=448
-# gear_haste_rating=2720
-# gear_mastery_rating=1576
+# gear_haste_rating=2893
+# gear_mastery_rating=1403
 # gear_armor=28883
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
