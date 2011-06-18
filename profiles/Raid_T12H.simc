@@ -28,8 +28,6 @@ Paladin_Retribution_T12H.simc
 
 Priest_Shadow_T12H.simc
 Priest_Shadow_T12H_DTR.simc
-Priest_Holy_Smite_AA_T12H.simc
-Priest_Disc_Smite_T12H.simc
 
 Rogue_Assassination_T12H.simc
 Rogue_Combat_T12H.simc
@@ -37,7 +35,7 @@ Rogue_Subtlety_T12H.simc
 
 Shaman_Elemental_T12H.simc
 Shaman_Elemental_T12H_DTR.simc
-Shaman_Enh_T12H.simc
+Shaman_Enhancement_T12H.simc
 
 Warlock_AffDrain_T12H.simc
 Warlock_Affliction_T12H.simc
