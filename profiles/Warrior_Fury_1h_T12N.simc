@@ -31,7 +31,7 @@ actions+=/raging_blow
 actions+=/battle_shout,if=rage<70
 head=helmet_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2943armor_348str_611sta_245haste_233mastery,reforge=mastery_crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
 neck=stoneheart_choker,ilevel=378,quality=epic,stats=227str_341sta_137exp_160crit,reforge=exp_hit
-shoulders=pauldrons_of_roaring_flame,type=plate,ilevel=384,quality=epic,stats=2764armor_223str_480sta_320dodge_142hit,reforge=dodge_crit,gems=40str,enchant=50str_25crit
+shoulders=pauldrons_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2716armor_282str_454sta_197crit_185haste,reforge=haste_hit,gems=40str,enchant=50str_25crit
 chest=battleplate_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=3622armor_368str_611sta_261crit_232hit,gems=20str_20crit_20str_20crit_20str,enchant=20all
 waist=cinch_of_the_flaming_ember,type=plate,ilevel=378,quality=epic,stats=2037armor_282str_454sta_133hit_230crit,gems=40str_67str
 legs=legplates_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=3169armor_368str_611sta_280exp_218crit,gems=40str_40str_20str,enchant=190ap_55crit
@@ -47,19 +47,18 @@ main_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123master
 off_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,gems=40str_40str_20str,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
 ranged=giantslicer,ilevel=378,quality=epic,stats=128str_192sta_81exp_88hit,weapon=thrown_2.10speed_1250min_1875max
 # Gear Summary
-# gear_strength=5739
+# gear_strength=5798
 # gear_agility=20
-# gear_stamina=6159
+# gear_stamina=6133
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=663
-# gear_hit_rating=1339
-# gear_crit_rating=2027
-# gear_haste_rating=593
+# gear_hit_rating=1271
+# gear_crit_rating=2096
+# gear_haste_rating=704
 # gear_mastery_rating=583
-# gear_armor=21568
-# gear_dodge_rating=192
+# gear_armor=21520
 # meta_gem=reverberating_shadowspirit
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
