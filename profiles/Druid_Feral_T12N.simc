@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Feral_T12N
-origin="input=Druid_CharDevSync.simc"
+origin="Druid_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -43,7 +43,7 @@ neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_1
 shoulders=obsidian_arborweave_spaulders,type=leather,ilevel=378,quality=epic,stats=1365armor_282agi_454sta_157crit_216mastery,gems=40agi,enchant=50agi_25mastery
 chest=breastplate_of_the_incendiary_soul,type=leather,ilevel=378,quality=epic,stats=1820armor_368agi_611sta_231haste_267mastery,gems=40agi_40agi_20agi,enchant=20all
 waist=riplimbs_lost_collar,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_216crit_157exp,reforge=crit_mastery,gems=40agi_67agi
-legs=obsidian_arborweave_legguards,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_199hit_277mastery,reforge=hit_crit,gems=40agi_40agi,enchant=190ap_55crit
+legs=obsidian_arborweave_legguards,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_166hit_310mastery,reforge=hit_crit,gems=40agi_40agi,enchant=190ap_55crit
 feet=sandals_of_leaping_coals,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_230mastery_133crit,gems=40agi_10agi,enchant=35mastery
 wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_mastery,gems=67agi,enchant=50agi
 hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,reforge=haste_mastery,gems=40agi_67agi,enchant=65mastery
@@ -62,10 +62,10 @@ ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=250
-# gear_hit_rating=362
-# gear_crit_rating=1716
+# gear_hit_rating=342
+# gear_crit_rating=1703
 # gear_haste_rating=718
-# gear_mastery_rating=2331
+# gear_mastery_rating=2364
 # gear_armor=11158
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
