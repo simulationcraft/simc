@@ -4031,7 +4031,7 @@ void report_t::print_html( sim_t* sim )
     util_t::fprintf( file,
                      "\t\t<style type=\"text/css\" media=\"all\">\n"
                      "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
-                     "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: #333;color: #FFF;text-align: center; }\n"
+                     "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: #261307;color: #FFF;text-align: center; }\n"
                      "\t\t\tp {margin: 1em 0 1em 0; }\n"
                      "\t\t\th1, h2, h3, h4, h5, h6 {width: auto;color: #FDD017;margin-top: 1em;margin-bottom: 0.5em; }\n"
                      "\t\t\th1, h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
