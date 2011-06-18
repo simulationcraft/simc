@@ -1215,9 +1215,9 @@ bool item_t::download_slot( item_t& item,
   for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
     if ( item.sim -> item_db_sources[ i ] == "wowhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, true );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, ! item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "mmoc" )
       success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 );
     else if ( item.sim -> item_db_sources[ i ] == "armory" )
@@ -1232,9 +1232,9 @@ bool item_t::download_slot( item_t& item,
     if ( item.sim -> item_db_sources[ i ] == "local" )
       success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
     else if ( item.sim -> item_db_sources[ i ] == "wowhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, true );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, ! item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "mmoc" )
       success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
     else if ( item.sim -> item_db_sources[ i ] == "armory" )
