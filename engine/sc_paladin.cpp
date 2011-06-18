@@ -225,6 +225,8 @@ struct paladin_t : public player_t
     active_seal_of_truth_proc          = 0;
     active_seal_of_truth_dot           = 0;
     active_flames_of_the_faithful_proc = 0;
+    active_hand_of_light_proc          = 0;
+    ancient_fury_explosion             = 0;
 
     ret_pvp_gloves = 0;
 
@@ -346,7 +348,8 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   virtual void dismiss()
   {
     pet_t::dismiss();
-    owner -> cast_paladin() -> ancient_fury_explosion -> execute();
+    if ( owner -> cast_paladin() -> ancient_fury_explosion )
+      owner -> cast_paladin() -> ancient_fury_explosion -> execute();
   }
 
   virtual void schedule_ready( double delta_time=0, bool waiting=false )
