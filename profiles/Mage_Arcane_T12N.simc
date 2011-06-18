@@ -37,43 +37,24 @@ actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 actions+=/restart_sequence,name=conserve
-
 head=firehawk_hood,heroic=0,type=cloth,ilevel=378,quality=epic,stats=1130armor_228haste_253mastery_348int_611sta,reforge=haste_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
-
 neck=flowform_choker,heroic=0,ilevel=378,quality=epic,stats=143haste_115mastery_227int_341sta,gems=40int_10int
-
 shoulders=mantle_of_closed_doors,heroic=0,type=cloth,ilevel=378,quality=epic,stats=1043armor_211crit_167mastery_282int_454sta,reforge=crit_hit,gems=20haste_20int_10int,enchant=50int_25haste
-
 shirt=captain_sanders_shirt,ilevel=1
-
-cchest=robes_of_smouldering_devastation,heroic=0,type=cloth,ilevel=378,quality=epic,stats=1391armor_218haste_280mastery_368int_611sta,reforge=mastery_hit,gems=40int_20hit_20int_20int,enchant=20all
-
+chest=robes_of_smouldering_devastation,heroic=0,type=cloth,ilevel=378,quality=epic,stats=1391armor_218haste_280mastery_368int_611sta,reforge=mastery_hit,gems=40int_20hit_20int_20int,enchant=20all
 waist=majordomos_chain_of_office,heroic=0,type=cloth,ilevel=384,quality=epic,stats=808armor_214haste_182mastery_300int_480sta,gems=40int_40int_10int
-
 legs=firehawk_leggings,heroic=0,type=cloth,ilevel=378,quality=epic,stats=1217armor_267crit_237mastery_368int_611sta,reforge=crit_hit,gems=40int_40int_20int,enchant=95int_80sta
-
 feet=boots_of_the_black_flame,heroic=0,type=cloth,ilevel=378,quality=epic,stats=956armor_197hit_187crit_282int_454sta,reforge=crit_haste,gems=40int_10int,enchant=50hit
-
 wrists=emberflame_bracers,heroic=0,type=cloth,ilevel=378,quality=epic,stats=608armor_148hit_154mastery_227int_341sta,enchant=50int
-
 hands=fingers_of_incineration,heroic=0,type=cloth,ilevel=384,quality=epic,stats=898armor_215crit_188haste_300int_480sta,reforge=crit_hit,gems=40int_10int,enchant=65mastery
-
 finger1=crystal_prison_band,ilevel=378,quality=epic,stats=133crit_162mastery_227int_341sta,enchant=40int
-
 finger2=crystalline_brimstone_ring,heroic=0,ilevel=378,quality=epic,stats=162hit_133mastery_227int_341sta,enchant=40int
-
 trinket1=variable_pulse_lightning_capacitor,heroic=0,ilevel=384,quality=epic,stats=458int
-
 trinket2=shard_of_woe,heroic=0,ilevel=379,quality=epic,use=1935haste_10dur_60cd
-
 back=rippling_flamewrath_cloak,heroic=0,ilevel=378,quality=epic,stats=695armor_133hit_162haste_227int_341sta,enchant=lightweave_embroidery
-
 main_hand=volcanospike,heroic=0,ilevel=378,quality=epic,stats=2333sp_105hit_123haste_175int_262sta,enchant=power_torrent,weapon=sword_1.60speed_348min_648max
-
 off_hand=molten_scream,heroic=0,ilevel=378,quality=epic,stats=144hit_156crit_227int_341sta,reforge=crit_mastery,enchant=40int
-
 ranged=trail_of_embers,ilevel=378,quality=epic,stats=79hit_89haste_128int_192sta
-
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

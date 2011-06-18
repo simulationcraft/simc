@@ -9,6 +9,4 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
 glyphs=the_ascetic_crusader/hammer_of_wrath/templars_verdict/exorcism/seal_of_truth
-trinket2=darkmoon_card_hurricane,ilevel=359,quality=epic,stats=321str,equip=onattackhit_-7000nature_1ppm_nocrit_nobuffs
 # Gear Summary
-# gear_strength=321

@@ -12,6 +12,17 @@ chardev=36366 save=Rogue_Subtlety_T11_359.simc name=Rogue_Subtlety_T11_359
 
 ptr=1
 
+
+Rogue_Assassination_T11_372.simc name=Rogue_Assassination_T11H actions= save=Rogue_Assassination_T11H.simc
+
+Rogue_Combat_T11_372.simc name=Rogue_Combat_T11H actions= save=Rogue_Combat_T11H.simc
+
+Rogue_Subtlety_T11_372.simc name=Rogue_Subtlety_T11H actions= save=Rogue_Subtlety_T11H.simc
+
+Rogue_Subtlety_T11_359.simc name=Rogue_Subtlety_T11N actions= save=Rogue_Subtlety_T11N.simc
+
+
+
 rogue=Rogue_Assassination_T12H
 level=85
 race=troll

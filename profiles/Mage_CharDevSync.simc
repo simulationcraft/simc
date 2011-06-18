@@ -17,6 +17,19 @@ chardev=87885 save=Mage_Frost_T11_372.simc name=Mage_Frost_T11_372
 
 ptr=1
 
+Mage_Arcane_T11_359.simc name=Mage_Arcane_T11N.simc actions= save=Mage_Arcane_T11N.simc
+
+Mage_Arcane_T11_372.simc name=Mage_Arcane_T11H.simc actions= save=Mage_Arcane_T11H.simc
+
+Mage_Fire_Frostfire_T11_372.simc name=Mage_Fire_Frostfire_T11H.simc actions= save=Mage_Fire_Frostfire_T11H.simc
+
+Mage_Fire_T11_372.simc name=Mage_Fire_T11H.simc actions= save=Mage_Fire_T11H.simc
+
+Mage_Frost_Frostfire_T11_372.simc name=Mage_Frost_Frostfire_T11H.simc actions= save=Mage_Frost_Frostfire_T11H.simc
+
+Mage_Frost_T11_372.simc name=Mage_Frost_T11H.simc actions= save=Mage_Frost_T11H.simc
+
+
 mage=Mage_Arcane_T12H
 level=85
 race=gnome

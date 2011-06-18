@@ -1,6 +1,6 @@
 #!./simc 
 
-warlock=Warlock_Destruction_T12H
+warlock=Warlock_Destruction_T12N
 origin="Warlock_CharDevSync.simc"
 level=85
 race=orc

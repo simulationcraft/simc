@@ -1,6 +1,6 @@
 #!./simc 
 
-warlock=Warlock_AffDrain_T11_359_PTR
+warlock=Warlock_AffDrain_T11N
 origin="http://chardev.org/?profile=36735"
 level=85
 race=orc

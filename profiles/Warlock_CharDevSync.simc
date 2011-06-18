@@ -22,21 +22,73 @@ chardev=36761 name=Warlock_Destruction_T11_372 save=Warlock_Destruction_T11_372.
 ptr=1
 
 
-Warlock_AffDrain_T11_359.simc name=Warlock_AffDrain_T11_359_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_AffDrain_T11_359_PTR.simc
+Warlock_AffDrain_T11_359.simc name=Warlock_AffDrain_T11N glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt actions= save=Warlock_AffDrain_T11N.simc
 
-Warlock_Affliction_T11_359.simc name=Warlock_Affliction_T11_359_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_Affliction_T11_359_PTR.simc
+Warlock_Affliction_T11_359.simc name=Warlock_Affliction_T11N glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt actions= save=Warlock_Affliction_T11N.simc
 
-Warlock_Demonology_T11_359.simc name=Warlock_Demonology_T11_359_PTR save=Warlock_Demonology_T11_359_PTR.simc
+Warlock_Demonology_T11_359.simc name=Warlock_Demonology_T11N actions= save=Warlock_Demonology_T11N.simc
 
-Warlock_Destruction_T11_359.simc name=Warlock_Destruction_T11_359_PTR save=Warlock_Destruction_T11_359_PTR.simc
+Warlock_Destruction_T11_359.simc name=Warlock_Destruction_T11N actions= save=Warlock_Destruction_T11N.simc
 
-Warlock_AffDrain_T11_372.simc name=Warlock_AffDrain_T11_372_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_AffDrain_T11_372_PTR.simc
+Warlock_AffDrain_T11_372.simc name=Warlock_AffDrain_T11H glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt actions= save=Warlock_AffDrain_T11H.simc
 
-Warlock_Affliction_T11_372.simc name=Warlock_Affliction_T11_372_PTR glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt save=Warlock_Affliction_T11_372_PTR.simc
+Warlock_Affliction_T11_372.simc name=Warlock_Affliction_T11H glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt actions= save=Warlock_Affliction_T11H.simc
 
-Warlock_Demonology_T11_372.simc name=Warlock_Demonology_T11_372_PTR save=Warlock_Demonology_T11_372_PTR.simc
+Warlock_Demonology_T11_372.simc name=Warlock_Demonology_T11H actions= save=Warlock_Demonology_T11H.simc
 
-Warlock_Destruction_T11_372.simc name=Warlock_Destruction_T11_372_PTR save=Warlock_Destruction_T11_372_PTR.simc
+Warlock_Destruction_T11_372.simc name=Warlock_Destruction_T11H actions= save=Warlock_Destruction_T11H.simc
+
+
+warlock=Warlock_AffDrain_T12N
+level=85
+race=orc
+role=spell
+use_pre_potion=1
+professions=enchanting=525/inscription=525
+talents=http://www.wowhead.com/talent#warlock-22312210301332032123002000000000000000300000000000000000
+glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt
+#gear here
+actions=
+save=Warlock_AffDrain_T12N.simc
+
+
+warlock=Warlock_Affliction_T12N
+level=85
+race=orc
+role=spell
+use_pre_potion=1
+professions=enchanting=525/inscription=525
+talents=http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
+glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt
+#gear here
+actions=
+save=Warlock_Affliction_T12N.simc
+
+
+warlock=Warlock_Demonology_T12N
+level=85
+race=orc
+role=spell
+use_pre_potion=1
+professions=enchanting=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113320200000000000000
+glyphs=life_tap/shadow_bolt/immolate/lash_of_pain/metamorphosis
+#gear here
+actions=
+save=Warlock_Demonology_T12N.simc
+
+
+warlock=Warlock_Destruction_T12N
+level=85
+race=orc
+role=spell
+use_pre_potion=1
+professions=enchanting=525/inscription=525
+talents=http://www.wowhead.com/talent#warlock-00300000000000000023002000000000000003320202312201312211
+glyphs=life_tap/immolate/imp/conflagrate
+#gear here
+actions=
+save=Warlock_Destruction_T12N.simc
 
 
 warlock=Warlock_AffDrain_T12H
@@ -79,7 +131,6 @@ save=Warlock_Demonology_T12H.simc
 
 
 warlock=Warlock_Destruction_T12H
-origin="http://chardev.org/?profile=36761"
 level=85
 race=orc
 role=spell

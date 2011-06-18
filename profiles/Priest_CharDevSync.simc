@@ -33,6 +33,16 @@ save=Priest_Disc_Smite_T11_372.simc
 
 ptr=1
 
+Priest_Shadow_T11_359.simc name=Priest_Shadow_T11N actions= save=Priest_Shadow_T11N.simc
+
+Priest_Shadow_T11_372.simc name=Priest_Shadow_T11H actions= save=Priest_Shadow_T11H.simc
+
+Priest_Holy_Smite_AA_T11_372.simc name=Priest_Holy_Smite_AA_T11H actions= save=Priest_Holy_Smite_AA_T11H.simc
+
+Priest_Holy_Smite_TF_T11_372.simc name=Priest_Holy_Smite_TF_T11H actions= save=Priest_Holy_Smite_TF_T11H.simc
+
+Priest_Disc_Smite_T11_372.simc name=Priest_Disc_Smite_T11H actions= save=Priest_Disc_Smite_T11H.simc
+
 
 priest=Priest_Shadow_T12H_DTR
 level=85
