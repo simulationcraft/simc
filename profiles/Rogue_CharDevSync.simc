@@ -1,5 +1,7 @@
 #!simc
 
+ptr=0
+
 chardev=36311 save=Rogue_Assassination_T11_372.simc name=Rogue_Assassination_T11_372
 
 chardev=55921 save=Rogue_Combat_T11_372.simc name=Rogue_Combat_T11_372
@@ -7,3 +9,46 @@ chardev=55921 save=Rogue_Combat_T11_372.simc name=Rogue_Combat_T11_372
 chardev=36352 save=Rogue_Subtlety_T11_372.simc name=Rogue_Subtlety_T11_372
 
 chardev=36366 save=Rogue_Subtlety_T11_359.simc name=Rogue_Subtlety_T11_359
+
+ptr=1
+
+rogue=Rogue_Assassination_T12H
+level=85
+race=troll
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#rogue-033323011302211032100200000000000000002030030000000000000
+glyphs=expose_armor/mutilate/backstab/rupture
+#gear here
+actions=
+save=Rogue_Assassination_T12H.simc
+
+
+rogue=Rogue_Combat_T12H
+level=85
+race=troll
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#rogue-023020000000000000023322303100300123210030000000000000000
+glyphs=expose_armor/slice_and_dice/sinister_strike/adrenaline_rush
+#gear here
+actions=
+save=Rogue_Combat_T12H.simc
+
+
+rogue=Rogue_Subtlety_T12H
+level=85
+race=troll
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000331032321310012321
+glyphs=expose_armor/backstab/shadow_dance/slice_and_dice
+#gear here
+actions=
+save=Rogue_Subtlety_T12H.simc
+
+
+ptr=0
