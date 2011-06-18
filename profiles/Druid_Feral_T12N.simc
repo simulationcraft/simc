@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Feral_T12N
-origin="Druid_CharDevSync.simc"
+origin="input=Druid_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -47,7 +47,7 @@ legs=obsidian_arborweave_legguards,type=leather,ilevel=378,quality=epic,stats=15
 feet=sandals_of_leaping_coals,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_230mastery_133crit,gems=40agi_10agi,enchant=35mastery
 wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_mastery,gems=67agi,enchant=50agi
 hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,reforge=haste_mastery,gems=40agi_67agi,enchant=65mastery
-finger1=splintered_brimstone_seal,ilevel=378,quality=epic,stats=227agi_341sta_158mastery_140crit
+finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,gems=40agi_10agi
 finger2=widows_kiss,ilevel=378,quality=epic,stats=227agi_341sta_167haste_126mastery
 trinket1=matrix_restabilizer,ilevel=384,quality=epic,stats=406agi
 trinket2=the_hungerer,ilevel=378,quality=epic,stats=383agi,equip=onattackhit_1532haste_100%_15dur_60cd
@@ -56,16 +56,16 @@ main_hand=fandrals_flamescythe,ilevel=378,quality=epic,stats=408agi_611sta_276cr
 ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_81mastery,gems=40agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=5795
-# gear_stamina=6196
+# gear_agility=5854
+# gear_stamina=6239
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=250
 # gear_hit_rating=342
-# gear_crit_rating=1703
-# gear_haste_rating=718
-# gear_mastery_rating=2364
+# gear_crit_rating=1563
+# gear_haste_rating=899
+# gear_mastery_rating=2340
 # gear_armor=11158
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1

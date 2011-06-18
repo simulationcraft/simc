@@ -38,7 +38,7 @@ feet=arachnaflame_treads,heroic=1,type=plate,ilevel=391,quality=epic,stats=2586a
 wrists=gigantiform_bracers,heroic=1,type=plate,ilevel=391,quality=epic,stats=1646armor_256str_384sta_130hit_195mastery,reforge=mastery_crit,gems=67str,enchant=50str
 hands=gauntlets_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_209hit_227mastery,reforge=mastery_crit,gems=20str_20crit_67str_10str,enchant=50str
 finger1=alysrazors_band,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_171exp_124haste,reforge=haste_crit,gems=40str_10str
-finger2=serrated_brimstone_signet,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_176crit_162haste,reforge=haste_hit
+finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,heroic=1,ilevel=391,quality=epic,stats=433str
 trinket2=vessel_of_acceleration,heroic=1,ilevel=397,quality=epic,stats=458str,equip=onattackhit_87crit_5stack_20dur
 back=bladed_flamewrath_cover,heroic=1,ilevel=391,quality=epic,stats=745armor_256str_384sta_195haste_130exp,reforge=exp_crit,enchant=65crit
@@ -46,16 +46,16 @@ main_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=
 off_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=446str_730sta_333crit_262mastery,reforge=mastery_hit,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2700min_4050max
 ranged=giantslicer,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_92exp_99hit,weapon=thrown_2.10speed_1410min_2116max
 # Gear Summary
-# gear_strength=6794
+# gear_strength=6824
 # gear_agility=20
 # gear_stamina=7765
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=750
-# gear_hit_rating=1433
-# gear_crit_rating=2789
-# gear_haste_rating=662
+# gear_hit_rating=1479
+# gear_crit_rating=2808
+# gear_haste_rating=564
 # gear_mastery_rating=906
 # gear_armor=22426
 # gear_dodge_rating=217

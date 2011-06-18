@@ -38,7 +38,7 @@ feet=arachnaflame_treads,id=71029,gems=40str_10str,enchant=35mastery,reforge=has
 wrists=gigantiform_bracers,id=71261,gems=67str,enchant=50str,reforge=mastery_crit
 hands=gauntlets_of_the_molten_giant,id=71069,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
 finger1=alysrazors_band,id=70738,gems=40str_10str,reforge=haste_crit
-finger2=serrated_brimstone_signet,id=71208,reforge=haste_mastery
+finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str,reforge=hit_mastery
 trinket1=apparatus_of_khazgoroth,id=68972
 trinket2=vessel_of_acceleration,id=68995
 back=bladed_flamewrath_cover,id=71227,enchant=65crit,reforge=exp_crit
@@ -65,7 +65,7 @@ feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=35mastery,reforge=has
 wrists=gigantiform_bracers,id=71584,gems=67str,enchant=50str,reforge=mastery_crit
 hands=gauntlets_of_the_molten_giant,id=71601,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
 finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=haste_crit
-finger2=serrated_brimstone_signet,id=71588,reforge=haste_mastery
+finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str,reforge=hit_mastery
 trinket1=apparatus_of_khazgoroth,id=69113
 trinket2=vessel_of_acceleration,id=69167
 back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit
@@ -92,7 +92,7 @@ feet=arachnaflame_treads,id=71029,gems=40str_10str,enchant=35mastery,reforge=has
 wrists=gigantiform_bracers,id=71261,gems=67str,enchant=50str,reforge=mastery_crit
 hands=gauntlets_of_the_molten_giant,id=71069,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
 finger1=alysrazors_band,id=70738,gems=40str_10str,reforge=haste_crit
-finger2=serrated_brimstone_signet,id=71208,reforge=haste_hit
+finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,id=68972
 trinket2=vessel_of_acceleration,id=68995
 back=bladed_flamewrath_cover,id=71227,enchant=65crit,reforge=exp_crit
@@ -120,7 +120,7 @@ feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=35mastery,reforge=has
 wrists=gigantiform_bracers,id=71584,gems=67str,enchant=50str,reforge=mastery_crit
 hands=gauntlets_of_the_molten_giant,id=71601,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
 finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=haste_crit
-finger2=serrated_brimstone_signet,id=71588,reforge=haste_hit
+finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,id=69113
 trinket2=vessel_of_acceleration,id=69167
 back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit
@@ -147,7 +147,7 @@ feet=arachnaflame_treads,id=71029,gems=40str_10str,enchant=35mastery,reforge=has
 wrists=gigantiform_bracers,id=71261,gems=67str,enchant=50str,reforge=mastery_crit
 hands=gauntlets_of_the_molten_giant,id=71069,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
 finger1=alysrazors_band,id=70738,gems=40str_10str,reforge=haste_crit
-finger2=serrated_brimstone_signet,id=71208,reforge=haste_hit
+finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,id=68972
 trinket2=vessel_of_acceleration,id=68995
 back=bladed_flamewrath_cover,id=71227,enchant=65crit,reforge=exp_crit
@@ -173,7 +173,7 @@ feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=35mastery,reforge=has
 wrists=gigantiform_bracers,id=71584,gems=67str,enchant=50str,reforge=mastery_crit
 hands=gauntlets_of_the_molten_giant,id=71601,gems=20str_20crit_67str_10str,enchant=50str,reforge=mastery_crit
 finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=haste_crit
-finger2=serrated_brimstone_signet,id=71588,reforge=haste_hit
+finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,id=69113
 trinket2=vessel_of_acceleration,id=69167
 back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit

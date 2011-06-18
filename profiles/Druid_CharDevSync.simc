@@ -89,7 +89,7 @@ legs=obsidian_arborweave_legguards,id=71099,gems=40agi_40agi,enchant=190ap_55cri
 feet=sandals_of_leaping_coals,id=71313,gems=40agi_10agi,enchant=35mastery
 wrists=flamebinder_bracers,id=71130,gems=67agi,enchant=50agi,reforge=exp_mastery
 hands=obsidian_arborweave_grips,id=71097,gems=40agi_67agi,enchant=65mastery,reforge=haste_mastery
-finger1=splintered_brimstone_seal,id=71209
+finger1=viridian_signet_of_the_avengers,id=71216,gems=40agi_10agi
 finger2=widows_kiss,id=71032
 trinket1=matrix_restabilizer,id=68994
 trinket2=the_hungerer,id=68927

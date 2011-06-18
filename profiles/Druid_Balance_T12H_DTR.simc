@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Balance_T12H_DTR
-origin="Druid_CharDevSync.simc"
+origin="input=Druid_CharDevSync.simc"
 level=85
 race=troll
 role=spell
