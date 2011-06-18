@@ -46,6 +46,7 @@ struct priest_t : public player_t
 
   // Set Bonus
   buff_t* buffs_indulgence_of_the_penitent;
+  buff_t* buffs_divine_fire;
 
   // Talents
 
@@ -178,6 +179,7 @@ struct priest_t : public player_t
   gain_t* gains_masochism;
   gain_t* gains_rapture;
   gain_t* gains_hymn_of_hope;
+  gain_t* gains_divine_fire;
 
   // Uptimes
   uptime_t* uptimes_mind_spike[ 4 ];
@@ -2703,6 +2705,8 @@ struct _heal_t : public priest_heal_t
     if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
 
+    p -> buffs_divine_fire -> trigger();
+
     // Trigger Chakra
     if ( p -> buffs_chakra_pre -> up() )
     {
@@ -2763,6 +2767,8 @@ struct flash_heal_t : public priest_heal_t
       p -> buffs_surge_of_light -> expire();
     else if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
+
+    p -> buffs_divine_fire -> trigger();
 
     p -> buffs_serendipity -> trigger();
 
@@ -2962,6 +2968,8 @@ struct greater_heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     p -> buffs_serendipity -> expire();
+
+    p -> buffs_divine_fire -> trigger();
 
     if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
@@ -3343,6 +3351,8 @@ struct prayer_of_mending_t : public priest_heal_t
     priest_heal_t::execute();
 
     priest_t* p = player -> cast_priest();
+
+    p -> buffs_divine_fire -> trigger();
 
     // Chakra
     if ( p -> buffs_chakra_pre -> up() )
@@ -3931,6 +3941,53 @@ struct divine_hymn_t : public priest_heal_t
   }
 };
 
+// Tier 12 Healer 2pc Bonus
+
+// Implementation not 100% correct. When the buff expires and is reapplied between 2 events, the event is doubled, which then doubles the mana gain.
+
+// Event
+struct tier12_heal_2pc_event_t : public event_t
+{
+  buff_t* buff;
+
+  tier12_heal_2pc_event_t ( player_t* player,buff_t* b ) :
+    event_t( player -> sim, player ), buff( 0 )
+  {
+    buff = b;
+    name = "tier12_heal_2pc";
+    sim -> add_event( this, 5.0 );
+  }
+
+  virtual void execute()
+  {
+
+    if ( buff -> check() )
+    {
+      priest_t* p = player -> cast_priest();
+      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * 0.02, p -> gains_divine_fire );
+      new ( sim ) tier12_heal_2pc_event_t( player, buff );
+    }
+  }
+};
+
+// Buff
+
+struct tier12_heal_2pc_buff_t : public buff_t
+{
+  tier12_heal_2pc_buff_t( player_t* p, const uint32_t id, const std::string& n, double c ) :
+    buff_t ( p, id, n, c )
+  {
+
+  }
+
+  virtual void start( int stacks, double value )
+  {
+    new ( sim ) tier12_heal_2pc_event_t( player, this );
+    buff_t::start( stacks, value );
+
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -4204,6 +4261,7 @@ void priest_t::init_gains()
   gains_masochism                 = get_gain( "masochism" );
   gains_rapture                   = get_gain( "rapture" );
   gains_hymn_of_hope              = get_gain( "hymn_of_hope" );
+  gains_divine_fire               = get_gain( "divine_fire" );
 }
 
 // priest_t::init_procs ======================================================
@@ -4470,6 +4528,7 @@ void priest_t::init_buffs()
 
   // Set Bonus
   buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
+  buffs_divine_fire = new tier12_heal_2pc_buff_t( this, 99132, "divine_fire", set_bonus.tier12_2pc_heal() );
 }
 
 // priest_t::init_actions =====================================================
