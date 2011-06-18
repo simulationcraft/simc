@@ -9,6 +9,12 @@ chardev=39882 name=Shaman_Enh_T11_372_Caster save=Shaman_Enh_T11_372_Caster.simc
 # Ensure PTR for now
 ptr=1
 
+# Tier 11
+
+Shaman_Elemental_T11_372.simc name=Shaman_Elemental_T11H actions= save=Shaman_Elemental_T11H.simc
+
+Shaman_Enh_T11_372.simc name=Shaman_Enh_T11H.simc actions= save=Shaman_Enh_T11H.simc
+
 # Tier 12
 
 shaman=Shaman_Enhancement_T12H
