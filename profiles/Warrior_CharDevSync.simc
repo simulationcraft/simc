@@ -13,6 +13,14 @@ chardev=36611 save=Warrior_Fury_2h_T11_372.simc name=Warrior_Fury_2h_T11_372
 
 ptr=1
 
+
+Warrior_Arms_T11_372.simc name=Warrior_Arms_T11H actions= save=Warrior_Arms_T11H.simc
+
+Warrior_Fury_1h_T11_372.simc name=Warrior_Fury_1h_T11H actions= save=Warrior_Fury_1h_T11H.simc
+
+Warrior_Fury_2h_T11_372.simc name=Warrior_Fury_2h_T11H actions= save=Warrior_Fury_2h_T11H.simc
+
+
 warrior=Warrior_Arms_T12H
 level=85
 race=worgen
@@ -36,7 +44,7 @@ talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111
 glyphs=death_wish/cleaving/heroic_throw/battle/berserker_rage/bloody_healing/slam/raging_blow/bloodthirst
 #gear here
 actions=
-save=Warrior_Fury_1h_T12H
+save=Warrior_Fury_1h_T12H.simc
 
 
 warrior=Warrior_Fury_2h_T12H
@@ -48,6 +56,6 @@ talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111
 glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
 #gear here
 actions=
-save=Warrior_Fury_1h_T12H
+save=Warrior_Fury_2h_T12H.simc
 
 ptr=0

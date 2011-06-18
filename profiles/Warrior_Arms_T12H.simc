@@ -1,0 +1,12 @@
+#!./simc 
+
+warrior=Warrior_Arms_T12H
+origin="Warrior_CharDevSync.simc"
+level=85
+race=worgen
+role=attack
+use_pre_potion=1
+professions=jewelcrafting=525/blacksmithing=525
+talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000030000000000000000000
+glyphs=rapid_charge/resonating_power/sweeping_strikes/berserker_rage/battle/command/overpower/slam/mortal_strike
+# Gear Summary

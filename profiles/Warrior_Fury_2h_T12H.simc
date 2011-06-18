@@ -1,0 +1,11 @@
+#!./simc 
+
+warrior=Warrior_Fury_2h_T12H
+origin="Warrior_CharDevSync.simc"
+level=85
+race=worgen
+role=attack
+use_pre_potion=1
+talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022321020000000000000000000
+glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
+# Gear Summary
