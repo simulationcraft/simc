@@ -2508,7 +2508,7 @@ struct scaling_t
   int    debug_scale_factors;
   std::string scale_only_str;
   int    current_scaling_stat, num_scaling_stats, remaining_scaling_stats;
-  double    scale_haste_iterations;
+  double    scale_haste_iterations, scale_expertise_iterations, scale_crit_iterations, scale_hit_iterations, scale_mastery_iterations;
   std::string scale_over;
 
   // Gear delta for determining scale factors

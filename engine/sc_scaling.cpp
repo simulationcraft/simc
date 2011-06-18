@@ -95,6 +95,10 @@ scaling_t::scaling_t( sim_t* s ) :
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
   scale_haste_iterations( 1.0 ),
+  scale_expertise_iterations( 1.0 ),
+  scale_crit_iterations( 1.0 ),
+  scale_hit_iterations( 1.0 ),
+  scale_mastery_iterations( 1.0 ),
   scale_over( "" )
 {
   create_options();
@@ -241,6 +245,10 @@ void scaling_t::analyze_stats()
     delta_sim -> scaling -> scale_stat = i;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     if ( i == STAT_HASTE_RATING && ( scale_haste_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_haste_iterations );
+    if ( i == STAT_EXPERTISE_RATING && ( scale_expertise_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_expertise_iterations );
+    if ( i == STAT_CRIT_RATING && ( scale_crit_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_crit_iterations );
+    if ( i == STAT_HIT_RATING && ( scale_hit_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_hit_iterations );
+    if ( i == STAT_MASTERY_RATING && ( scale_mastery_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_mastery_iterations );
     delta_sim -> execute();
 
     if ( center )
@@ -248,6 +256,10 @@ void scaling_t::analyze_stats()
       ref_sim -> scaling -> scale_stat = i;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
       if ( i == STAT_HASTE_RATING && ( scale_haste_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_haste_iterations );
+      if ( i == STAT_EXPERTISE_RATING && ( scale_expertise_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_expertise_iterations );
+      if ( i == STAT_CRIT_RATING && ( scale_crit_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_crit_iterations );
+      if ( i == STAT_HIT_RATING && ( scale_hit_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_hit_iterations );
+      if ( i == STAT_MASTERY_RATING && ( scale_mastery_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_mastery_iterations );
       ref_sim -> execute();
     }
 
@@ -484,6 +496,10 @@ void scaling_t::create_options()
     { "scale_offhand_weapon_speed",     OPT_FLT,    &( stats.weapon_offhand_speed           ) },
     { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
     { "scale_haste_iterations",         OPT_FLT,    &( scale_haste_iterations               ) }, // multiplies #iterations for haste scale factor calculation
+    { "scale_expertise_iterations",     OPT_FLT,    &( scale_expertise_iterations           ) },
+    { "scale_crit_iterations",          OPT_FLT,    &( scale_crit_iterations                ) },
+    { "scale_hit_iterations",           OPT_FLT,    &( scale_hit_iterations                 ) },
+    { "scale_mastery_iterations",       OPT_FLT,    &( scale_mastery_iterations             ) },
     { "scale_over",                     OPT_STRING, &( scale_over                           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
