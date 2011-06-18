@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Frost_T12_391
-origin="http://chardev.org/?profile=87885"
+origin="Mage_Frost_T12_391.simc"
 level=85
 race=troll
 role=spell
@@ -35,25 +35,24 @@ actions+=/mage_armor,if=(mana_pct*12)<target.time_to_die
 actions+=/frostbolt
 actions+=/ice_lance,moving=1
 actions+=/fire_blast,moving=1
-head=firehawk_hood,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_262haste_288mastery_400int_689sta,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+head=firehawk_hood,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_262haste_288mastery_400int_689sta,reforge=haste_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=163haste_133mastery_256int_384sta,gems=40int_10int
-shoulders=firehawk_mantle,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1118armor_227crit_209haste_322int_513sta,reforge=crit_mastery,gems=20haste_20int_10int,enchant=50int_25haste
+shoulders=firehawk_mantle,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1118armor_227crit_209haste_322int_513sta,reforge=crit_hit,gems=20mastery_20int_10int,enchant=50int_25haste
 shirt=captain_sanders_shirt,ilevel=1
-chest=firehawk_robes,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1491armor_254hit_310haste_420int_689sta,gems=20mastery_20int_20hit_20int_20int,enchant=20all
-waist=embereye_belt,heroic=1,type=cloth,ilevel=391,quality=epic,stats=839armor_235crit_197haste_322int_513sta,reforge=crit_hit,gems=20hit_20int_10int
-legs=firehawk_leggings,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1304armor_301crit_271mastery_420int_689sta,reforge=crit_haste,gems=40int_40int_20int,enchant=95int_80sta
-feet=emberskip_sandals,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1025armor_235crit_197haste_322int_513sta,reforge=crit_hit,gems=20haste_20int_10crit,enchant=50hit
+chest=robes_of_smouldering_devastation,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1491armor_251haste_316mastery_420int_689sta,reforge=haste_hit,gems=40int_20hit_20int_20int,enchant=20all
+waist=majordomos_chain_of_office,heroic=1,type=cloth,ilevel=397,quality=epic,stats=865armor_243haste_206mastery_341int_542sta,gems=40int_40int_10int
+legs=firehawk_leggings,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1304armor_301crit_271mastery_420int_689sta,reforge=crit_hit,gems=40int_40int_20int,enchant=95int_80sta
+feet=coalwalker_sandals,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1025armor_235crit_197haste_322int_513sta,reforge=crit_hit,gems=40int,enchant=50hit
 wrists=emberflame_bracers,heroic=1,type=cloth,ilevel=391,quality=epic,stats=652armor_166hit_173mastery_256int_384sta,enchant=50int
 hands=firehawk_gloves,heroic=1,type=cloth,ilevel=391,quality=epic,stats=932armor_180hit_244haste_322int_513sta,gems=20hit_20int_10int,enchant=65mastery
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=146hit_173haste_236int_384sta,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=183hit_150mastery_256int_384sta,enchant=40int
 trinket1=rune_of_zeth,ilevel=391,quality=epic,stats=433crit,reforge=crit_mastery,use=1441int_15dur_60cd
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
-#trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int
 back=rippling_flamewrath_cloak,heroic=1,ilevel=391,quality=epic,stats=745armor_150hit_183haste_256int_384sta,enchant=lightweave_embroidery
-main_hand=firethorn_mindslicer,heroic=1,ilevel=391,quality=epic,stats=2636sp_150crit_100hit_197int_296sta,enchant=power_torrent,weapon=sword_1.60speed_348min_648max
-off_hand=tome_of_grim_binding,heroic=1,ilevel=391,quality=epic,stats=162hit_176crit_256int_384sta,reforge=crit_mastery,enchant=40int
-ranged=glowing_ember_wand,ilevel=391,quality=epic,stats=89hit_101haste_145int_217sta
+main_hand=volcanospike,heroic=1,ilevel=391,quality=epic,stats=2636sp_119hit_139haste_197int_296sta,enchant=power_torrent,weapon=sword_1.60speed_348min_648max
+off_hand=molten_scream,heroic=1,ilevel=391,quality=epic,stats=162hit_176crit_256int_384sta,reforge=crit_mastery,enchant=40int
+ranged=stinger_of_the_flaming_scorpion,ilevel=391,quality=epic,stats=102crit_87mastery_145int_217sta,reforge=mastery_hit
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
@@ -67,7 +66,7 @@ ranged=glowing_ember_wand,ilevel=391,quality=epic,stats=89hit_101haste_145int_21
 # gear_mastery_rating=938
 # gear_armor=8479
 # meta_gem=burning_shadowspirit
-tier12_2pc_caster=1
-tier12_4pc_caster=1
-# back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
-# main_hand=stormwake_the_tempests_reach_of_the_wildfire,heroic=1,weapon=sword_1.60speed_73min_137max,enchant=power_torrent
+# tier12_2pc_caster=1
+# tier12_4pc_caster=1
+# back=rippling_flamewrath_cloak,heroic=1,enchant=lightweave_embroidery
+# main_hand=volcanospike,heroic=1,weapon=sword_1.60speed_348min_648max,enchant=power_torrent
