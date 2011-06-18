@@ -1801,7 +1801,13 @@ bool sim_t::time_to_think( double proc_time )
 {
   if ( proc_time == 0 ) return false;
   if ( proc_time < 0 ) return true;
-  return current_time - proc_time > reaction_time;
+  return current_time - proc_time > total_reaction_time();
+}
+
+double sim_t::total_reaction_time()
+{
+
+  return reaction_time;
 }
 
 // sim_t::roll ==============================================================

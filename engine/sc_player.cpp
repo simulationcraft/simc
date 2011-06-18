@@ -1455,10 +1455,11 @@ void player_t::init_uptimes()
 
 void player_t::init_rng()
 {
-  rngs.lag_channel = get_rng( "lag_channel" );
-  rngs.lag_gcd     = get_rng( "lag_gcd"     );
-  rngs.lag_queue   = get_rng( "lag_queue"   );
-  rngs.lag_ability = get_rng( "lag_ability" );
+  rngs.lag_channel  = get_rng( "lag_channel"  );
+  rngs.lag_gcd      = get_rng( "lag_gcd"      );
+  rngs.lag_queue    = get_rng( "lag_queue"    );
+  rngs.lag_ability  = get_rng( "lag_ability"  );
+  rngs.lag_reaction = get_rng( "lag_reaction" );
 }
 
 // player_t::init_stats ====================================================

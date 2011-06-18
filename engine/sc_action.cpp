@@ -1745,7 +1745,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate()
       {
         if ( action -> dot -> miss_time == -1 ||
-             action -> sim -> current_time >= action -> dot -> miss_time + action -> sim -> reaction_time )
+             action -> sim -> current_time >= action -> dot -> miss_time + action -> sim -> total_reaction_time() )
         {
           result_num = 1;
         }

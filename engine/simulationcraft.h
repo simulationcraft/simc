@@ -2469,6 +2469,7 @@ struct sim_t
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
   bool      time_to_think( double proc_time );
+  double    total_reaction_time ();
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -3216,6 +3217,7 @@ struct player_t
     rng_t* lag_gcd;
     rng_t* lag_queue;
     rng_t* lag_ability;
+    rng_t* lag_reaction;
     void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };
