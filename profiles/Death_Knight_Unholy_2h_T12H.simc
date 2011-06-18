@@ -1,0 +1,12 @@
+#!./simc 
+
+deathknight=Death_Knight_Unholy_2h_T12H
+origin="Death_Knight_CharDevSync.simc"
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000001000000000000000000013300321230231021231
+glyphs=blood_boil/pestilence/antimagic_shell/horn_of_winter/blood_tap/death_gate/scourge_strike/raise_dead/death_coil
+# Gear Summary

@@ -1,5 +1,7 @@
 #!./simc 
 
+ptr=0
+
 chardev=111753 save=Death_Knight_Frost_1h_T11_372.simc name=Death_Knight_Frost_1h_T11_372
 
 chardev=143058 save=Death_Knight_Frost_2h_T11_372.simc name=Death_Knight_Frost_2h_T11_372
@@ -7,3 +9,53 @@ chardev=143058 save=Death_Knight_Frost_2h_T11_372.simc name=Death_Knight_Frost_2
 chardev=34574 save=Death_Knight_Unholy_1h_T11_372.simc name=Death_Knight_Unholy_1h_T11_372
 
 chardev=144973 save=Death_Knight_Unholy_2h_T11_372.simc name=Death_Knight_Unholy_2h_T11_372
+
+
+ptr=1
+
+deathknight=Death_Knight_Frost_1h_T12H
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000003033001223311201230103000000000000000000
+glyphs=pestilence/hungering_cold/antimagic_shell/path_of_frost/horn_of_winter/blood_tap/obliterate/frost_strike/howling_blast
+#gear here
+save=Death_Knight_Frost_1h_T12H.simc
+
+deathknight=Death_Knight_Frost_2h_T12H
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000003203002223311201203103000000000000000000
+glyphs=horn_of_winter/frost_strike/howling_blast/obliterate
+#gear here
+save=Death_Knight_Frost_2h_T12H.simc
+
+deathknight=Death_Knight_Unholy_1h_T12H
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000000030000000000000000003310321230031021231
+glyphs=horn_of_winter/raise_dead/death_and_decay/death_coil
+#gear here
+save=Death_Knight_Unholy_1h_T12H.simc
+
+
+deathknight=Death_Knight_Unholy_2h_T12H
+level=85
+race=orc
+role=attack
+use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#deathknight-203200000000000000001000000000000000000013300321230231021231
+glyphs=blood_boil/pestilence/antimagic_shell/horn_of_winter/blood_tap/death_gate/scourge_strike/raise_dead/death_coil
+#gear here
+save=Death_Knight_Unholy_2h_T12H.simc
+
+ptr=0
