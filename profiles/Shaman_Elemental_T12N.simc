@@ -40,7 +40,7 @@ neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mas
 shoulders=erupting_volcanic_shoulderwraps,type=mail,ilevel=378,quality=epic,stats=1952armor_282int_454sta_189haste_195spi,gems=40int_10int,enchant=50int_25haste
 chest=erupting_volcanic_hauberk,type=mail,ilevel=378,quality=epic,stats=2603armor_368int_611sta_259haste_245mastery,gems=40int_20int_20haste_20int,enchant=20all
 waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,reforge=crit_mastery,gems=20int_20spi_10int
-legs=erupting_volcanic_kilt,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420int_689sta_315haste_249mastery,enchant=95int_55spi
+legs=erupting_volcanic_kilt,type=mail,ilevel=378,quality=epic,stats=2278armor_368int_611sta_279haste_217mastery,enchant=95int_55spi
 feet=footwraps_of_quenched_fire,type=mail,ilevel=378,quality=epic,stats=1790armor_282int_454sta_197spi_187haste,gems=40int_10int,enchant=50mastery
 wrists=lava_line_wristbands,type=mail,ilevel=378,quality=epic,stats=1139armor_227int_341sta_158spi_140haste,reforge=spi_mastery
 hands=erupting_volcanic_gloves,type=mail,ilevel=378,quality=epic,stats=1627armor_282int_454sta_199crit_183haste,reforge=crit_mastery,gems=40int
@@ -55,15 +55,15 @@ ranged=singed_plume_of_aviana,ilevel=378,quality=epic,stats=128int_192sta_93spi_
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=6340
-# gear_intellect=5243
+# gear_stamina=6262
+# gear_intellect=5191
 # gear_spirit=1474
 # gear_spell_power=2467
 # gear_hit_rating=266
 # gear_crit_rating=280
-# gear_haste_rating=2717
-# gear_mastery_rating=1128
-# gear_armor=28016
+# gear_haste_rating=2681
+# gear_mastery_rating=1096
+# gear_armor=27909
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1

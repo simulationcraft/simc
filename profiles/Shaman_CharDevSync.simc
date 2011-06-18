@@ -114,7 +114,7 @@ chest=erupting_volcanic_hauberk,id=71291,gems=40int_20int_20haste_20int,enchant=
 wrists=lava_line_wristbands,id=71009,reforge=spi_mastery
 hands=erupting_volcanic_gloves,id=71292,gems=40int,reforge=crit_mastery
 waist=firemend_cinch,id=71254,gems=20int_20spi_10int,reforge=crit_mastery
-legs=erupting_volcanic_kilt,id=71555.gems=40int_40int,enchant=95int_55spi
+legs=erupting_volcanic_kilt,id=71294.gems=40int_40int,enchant=95int_55spi
 feet=footwraps_of_quenched_fire,id=69950,gems=40int_10int,enchant=50mastery
 finger1=infernal_signet_of_the_avengers,id=71217,gems=40int_10int,enchant=40int,reforge=hit_mastery
 finger2=crystalline_brimstone_ring,id=71210,enchant=40int,reforge=hit_haste
