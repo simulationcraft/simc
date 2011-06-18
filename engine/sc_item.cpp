@@ -324,8 +324,8 @@ bool item_t::init()
 
   if ( ! decode_quality() ) return false;
 
-  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), ptr(), id_str );
-  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), ptr(), id_str );
+  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), player -> dbc.ptr, id_str );
+  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), player -> dbc.ptr, id_str );
 
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
@@ -722,7 +722,7 @@ bool item_t::decode_enchant()
   }
 
   std::string use_str;
-  if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), ptr() ) )
+  if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     use.name_str = encoded_enchant_str;
@@ -730,7 +730,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), ptr() ) )
+  if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     enchant.name_str = encoded_enchant_str;
@@ -772,7 +772,7 @@ bool item_t::decode_addon()
   }
 
   std::string use_str;
-  if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), ptr() ) )
+  if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     use.name_str = encoded_addon_str;
@@ -780,7 +780,7 @@ bool item_t::decode_addon()
   }
 
   std::string equip_str;
-  if( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), ptr() ) )
+  if( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     addon.name_str = encoded_addon_str;
