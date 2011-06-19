@@ -1,6 +1,6 @@
 #!./simc 
 
-shaman=Shaman_Elemental_T12N
+shaman=Shaman_Elemental_T12N_T11H4P
 origin="Shaman_CharDevSync.simc"
 level=85
 race=troll
@@ -37,13 +37,13 @@ actions+=/lightning_bolt
 actions+=/thunderstorm
 head=crown_of_flame,type=mail,ilevel=384,quality=epic,stats=2160armor_371int_646sta_280spi_226haste,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,gems=40int_10int
-shoulders=erupting_volcanic_shoulderwraps,type=mail,ilevel=378,quality=epic,stats=1952armor_282int_454sta_189haste_195spi,gems=40int_10int,enchant=50int_25haste
-chest=erupting_volcanic_hauberk,type=mail,ilevel=378,quality=epic,stats=2603armor_368int_611sta_259haste_245mastery,gems=40int_20int_20haste_20int,enchant=20all
-waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,reforge=crit_mastery,gems=20int_20spi_10int
-legs=erupting_volcanic_kilt,type=mail,ilevel=378,quality=epic,stats=2278armor_368int_611sta_279haste_217mastery,gems=40int_40int,enchant=95int_55spi
+shoulders=shoulderwraps_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1911armor_266int_429sta_191crit_171mastery,reforge=crit_haste,gems=40int,enchant=50int_25haste
+chest=hauberk_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2548armor_345int_578sta_257haste_217crit,reforge=crit_mastery,gems=40int_40int,enchant=20all
+waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,reforge=crit_mastery,gems=40int
+legs=kilt_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2230armor_345int_578sta_257haste_217spi,gems=40int_40int,enchant=95int_55spi
 feet=footwraps_of_quenched_fire,type=mail,ilevel=378,quality=epic,stats=1790armor_282int_454sta_197spi_187haste,gems=40int_10int,enchant=50mastery
 wrists=lava_line_wristbands,type=mail,ilevel=378,quality=epic,stats=1139armor_227int_341sta_158spi_140haste,reforge=spi_mastery
-hands=erupting_volcanic_gloves,type=mail,ilevel=378,quality=epic,stats=1627armor_282int_454sta_199crit_183haste,reforge=crit_mastery,gems=40int
+hands=gloves_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1593armor_266int_429sta_191crit_171haste,reforge=crit_mastery,gems=40int
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=227int_341sta_162hit_133mastery,reforge=hit_haste,enchant=40int
 trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_42mastery_10stack_10dur
@@ -55,17 +55,17 @@ ranged=singed_plume_of_aviana,ilevel=378,quality=epic,stats=128int_192sta_93spi_
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=6262
-# gear_intellect=5271
-# gear_spirit=1474
+# gear_stamina=6146
+# gear_intellect=5193
+# gear_spirit=1476
 # gear_spell_power=2467
 # gear_hit_rating=266
-# gear_crit_rating=280
-# gear_haste_rating=2681
-# gear_mastery_rating=1096
-# gear_armor=27909
+# gear_crit_rating=521
+# gear_haste_rating=2512
+# gear_mastery_rating=888
+# gear_armor=27731
 # meta_gem=burning_shadowspirit
-# tier12_2pc_caster=1
-# tier12_4pc_caster=1
+# tier11_2pc_caster=1
+# tier11_4pc_caster=1
 # back=rippling_flamewrath_drape,enchant=lightweave_embroidery
 # main_hand=kogun_hammer_of_the_firelord,weapon=mace_2.10speed_428min_797max,enchant=power_torrent
