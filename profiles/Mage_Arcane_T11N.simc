@@ -1,6 +1,6 @@
 #!./simc 
 
-mage=Mage_Arcane_T11N.simc
+mage=Mage_Arcane_T11N
 origin="http://chardev.org/?profile=34631"
 level=85
 race=gnome

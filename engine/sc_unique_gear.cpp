@@ -1359,6 +1359,12 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     break;
   }
 
+  // Allow for override
+  if ( p -> dtr_proc_chance >= 0.0 )
+  {
+    chance = p -> dtr_proc_chance;
+  }
+
   action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
 
   p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );

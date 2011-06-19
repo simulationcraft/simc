@@ -2869,6 +2869,7 @@ struct player_t
   double      vengeance_damage, vengeance_value, vengeance_max; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
   int         active_pets;
   int         big_hitbox;
+  double      dtr_proc_chance;
 
   // Data access
   dbc_t       dbc;

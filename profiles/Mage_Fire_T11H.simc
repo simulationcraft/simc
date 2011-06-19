@@ -1,6 +1,6 @@
 #!./simc 
 
-mage=Mage_Fire_T11H.simc
+mage=Mage_Fire_T11H
 origin="http://chardev.org/?profile=88793"
 level=85
 race=troll

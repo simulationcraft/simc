@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Arcane_T12H
-origin="./Mage_CharDevSync.simc"
+origin="Mage_CharDevSync.simc"
 level=85
 race=gnome
 role=spell

@@ -136,6 +136,10 @@ struct mage_t : public player_t
   proc_t* procs_mana_gem;
   proc_t* procs_early_frost;
   proc_t* procs_tier12_mirror_image;
+  proc_t* procs_test_for_crit_hotstreak;
+  proc_t* procs_crit_for_hotstreak;
+  proc_t* procs_hotstreak;
+  proc_t* procs_improved_hotstreak;
 
   // Random Number Generation
   rng_t* rng_arcane_missiles;
@@ -844,6 +848,8 @@ static void trigger_hot_streak( mage_spell_t* s )
 
   int result = s -> result;
 
+  p -> procs_test_for_crit_hotstreak -> occur();
+
   if ( sim -> smooth_rng )
   {
     // Decouple Hot Streak proc from actual crit to reduce wild swings during RNG smoothing.
@@ -851,6 +857,7 @@ static void trigger_hot_streak( mage_spell_t* s )
   }
   if ( result == RESULT_CRIT )
   {
+    p -> procs_crit_for_hotstreak -> occur();
     // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
     double hot_streak_chance = -2.73 * s -> hot_streak_crit() + 0.95;
@@ -864,6 +871,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 
     if( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
     {
+      p -> procs_hotstreak -> occur();
       p -> buffs_hot_streak_crits -> expire();
     }
     else if( p -> talents.improved_hot_streak -> rank() )
@@ -876,7 +884,10 @@ static void trigger_hot_streak( mage_spell_t* s )
 
         hot_streak_chance = p -> talents.improved_hot_streak -> effect1().percent();
 
-        p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance );
+        if ( p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
+        {
+          p -> procs_improved_hotstreak -> occur();
+        }
       }
     }
   }
@@ -3153,12 +3164,16 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_deferred_ignite     = get_proc( "deferred_ignite"     );
-  procs_munched_ignite      = get_proc( "munched_ignite"      );
-  procs_rolled_ignite       = get_proc( "rolled_ignite"       );
-  procs_mana_gem            = get_proc( "mana_gem"            );
-  procs_early_frost         = get_proc( "early_frost"         );
-  procs_tier12_mirror_image = get_proc( "tier12_mirror_image" );
+  procs_deferred_ignite         = get_proc( "deferred_ignite"               );
+  procs_munched_ignite          = get_proc( "munched_ignite"                );
+  procs_rolled_ignite           = get_proc( "rolled_ignite"                 );
+  procs_mana_gem                = get_proc( "mana_gem"                      );
+  procs_early_frost             = get_proc( "early_frost"                   );
+  procs_tier12_mirror_image     = get_proc( "tier12_mirror_image"           );
+  procs_test_for_crit_hotstreak = get_proc( "procs_test_for_crit_hotstreak" );
+  procs_crit_for_hotstreak      = get_proc( "crit_test_hotstreak"           );
+  procs_hotstreak               = get_proc( "normal_hotstreak"              );
+  procs_improved_hotstreak      = get_proc( "improved_hotstreak"            );
 }
 
 // mage_t::init_uptimes =====================================================
