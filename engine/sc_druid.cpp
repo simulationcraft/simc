@@ -1669,6 +1669,8 @@ struct rip_t : public druid_cat_attack_t
     requires_combo_points = true;
     may_crit   = false;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
+
+    dot_behavior          = DOT_REFRESH; // Tested on PTR server.
   }
 
   virtual void execute()
