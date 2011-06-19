@@ -234,8 +234,7 @@ finger2=crystalline_brimstone_ring,id=71574,enchant=40int
 trinket1=variable_pulse_lightning_capacitor,id=69110
 trinket2=shard_of_woe,id=60233
 back=rippling_flamewrath_drape,id=71389,enchant=lightweave_embroidery
-main_hand=volcanospike,id=71422,enchant=power_torrent
-off_hand=molten_scream,id=71462,reforge=crit_mastery,enchant=40int
+main_hand=dragonwrath_tarecgosas_rest,id=71086,enchant=power_torrent,gems=40int_40int_40int_30int
 ranged=trail_of_embers,id=71575
 actions=
 save=Mage_Arcane_T12H_DTR.simc
@@ -265,8 +264,7 @@ finger2=crystalline_brimstone_ring,id=71574,reforge=mastery_crit,enchant=40int
 trinket1=rune_of_zeth,id=69185
 trinket2=necromantic_focus,id=69139
 back=rippling_flamewrath_drape,id=71389,enchant=lightweave_embroidery
-main_hand=firethorn_mindslicer,id=71784,enchant=power_torrent
-off_hand=molten_scream,id=71462,reforge=crit_haste,enchant=40int
+main_hand=dragonwrath_tarecgosas_rest,id=71086,enchant=power_torrent,gems=40int_40int_40int_30int
 ranged=stinger_of_the_flaming_scorpion,id=71473,reforge=mastery_haste
 actions=
 save=Mage_Fire_T12H_DTR.simc
@@ -295,8 +293,7 @@ finger2=crystalline_brimstone_ring,id=71574,enchant=40int
 trinket1=rune_of_zeth,id=69185,reforge=crit_mastery
 trinket2=necromantic_focus,id=69139
 back=rippling_flamewrath_drape,id=71389,enchant=lightweave_embroidery
-main_hand=volcanospike,id=71422,enchant=power_torrent
-off_hand=molten_scream,id=71462,reforge=crit_mastery,enchant=40int
+main_hand=dragonwrath_tarecgosas_rest,id=71086,enchant=power_torrent,gems=40int_40int_40int_30int
 ranged=stinger_of_the_flaming_scorpion,id=71473,reforge=mastery_hit
 actions=
 save=Mage_Frost_T12H_DTR.simc

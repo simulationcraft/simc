@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Arcane_T12H_DTR
-origin="Mage_CharDevSync.simc"
+origin="./Mage_CharDevSync.simc"
 level=85
 race=gnome
 role=spell
@@ -52,23 +52,22 @@ finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 trinket1=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
 trinket2=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
-main_hand=volcanospike,heroic=1,ilevel=391,quality=epic,stats=197int_296sta_119hit_139haste_2636sp,enchant=power_torrent,weapon=sword_1.60speed_348min_648max
-off_hand=molten_scream,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_176crit_162hit,reforge=crit_mastery,enchant=40int
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7094
-# gear_intellect=5891
+# gear_stamina=7193
+# gear_intellect=6007
 # gear_spirit=21
-# gear_spell_power=2636
-# gear_hit_rating=1732
-# gear_crit_rating=752
-# gear_haste_rating=1971
-# gear_mastery_rating=1622
+# gear_spell_power=2973
+# gear_hit_rating=1817
+# gear_crit_rating=646
+# gear_haste_rating=2084
+# gear_mastery_rating=1552
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # trinket2=shard_of_woe,heroic=1
 # back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
-# main_hand=volcanospike,heroic=1,weapon=sword_1.60speed_348min_648max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent

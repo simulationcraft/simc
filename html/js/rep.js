@@ -113,4 +113,7 @@ jQuery(document).ready(function($) {
 		target = $(anchor).children('h2:first');
 		open_anchor(target);
 	});
+
+	$('table.sortable').tablesorter();
+
 });

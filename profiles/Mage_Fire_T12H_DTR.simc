@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Fire_T12H_DTR
-origin="Mage_CharDevSync.simc"
+origin="./Mage_CharDevSync.simc"
 level=85
 race=troll
 role=spell
@@ -46,23 +46,22 @@ finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,use=1441int_15dur_60cd
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
-main_hand=firethorn_mindslicer,heroic=1,ilevel=391,quality=epic,stats=197int_296sta_100hit_150crit_2636sp,enchant=power_torrent,weapon=sword_1.70speed_370min_688max
-off_hand=molten_scream,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_176crit_162hit,reforge=crit_haste,enchant=40int
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
 ranged=stinger_of_the_flaming_scorpion,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_102crit_87mastery,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7094
-# gear_intellect=5846
+# gear_stamina=7193
+# gear_intellect=5962
 # gear_spirit=21
-# gear_spell_power=2636
-# gear_hit_rating=1741
-# gear_crit_rating=2210
-# gear_haste_rating=1822
+# gear_spell_power=2973
+# gear_hit_rating=1845
+# gear_crit_rating=1954
+# gear_haste_rating=2004
 # gear_mastery_rating=748
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
-# main_hand=firethorn_mindslicer,heroic=1,weapon=sword_1.70speed_370min_688max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
