@@ -3170,7 +3170,7 @@ void mage_t::init_procs()
   procs_mana_gem                = get_proc( "mana_gem"                      );
   procs_early_frost             = get_proc( "early_frost"                   );
   procs_tier12_mirror_image     = get_proc( "tier12_mirror_image"           );
-  procs_test_for_crit_hotstreak = get_proc( "procs_test_for_crit_hotstreak" );
+  procs_test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak"       );
   procs_crit_for_hotstreak      = get_proc( "crit_test_hotstreak"           );
   procs_hotstreak               = get_proc( "normal_hotstreak"              );
   procs_improved_hotstreak      = get_proc( "improved_hotstreak"            );
