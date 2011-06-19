@@ -2245,6 +2245,7 @@ struct sim_t
   std::vector<player_t*> actor_list;
   std::string main_target_str;
   int         big_hitbox;
+  double      dtr_proc_chance;
 
   // Data access
   dbc_t       dbc;

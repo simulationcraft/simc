@@ -1338,6 +1338,11 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
   double chance = 0.01;
 
+  if ( p -> sim-> dtr_proc_chance >= 0.0 )
+  {
+    chance = p -> sim-> dtr_proc_chance;
+  }
+
   // FIXME: Need the proper chances here
   switch ( p -> type )
   {

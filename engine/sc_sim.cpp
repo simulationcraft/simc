@@ -571,7 +571,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   default_region_str( "us" ),
   save_prefix_str( "save_" ), save_suffix_str( "" ),
   input_is_utf8( false ), main_target_str( "" ),
-  big_hitbox( 1 ),
+  big_hitbox( 1 ), dtr_proc_chance( -1.0 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -2105,6 +2105,7 @@ void sim_t::create_options()
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
     { "main_target",                      OPT_STRING, &( main_target_str                          ) },
     { "big_hitbox",                       OPT_BOOL,   &( big_hitbox                               ) },
+    { "default_dtr_proc_chance",          OPT_FLT,    &( dtr_proc_chance                          ) },
     // Character Creation
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
     { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },
