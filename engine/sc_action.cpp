@@ -91,8 +91,8 @@ void action_t::_init_action_t()
   base_attack_power_multiplier   = 0.0;
   player_spell_power_multiplier  = 1.0;
   player_attack_power_multiplier = 1.0;
-  crit_multiplier           = 1.0;
-  crit_bonus_multiplier     = 1.0;
+  crit_multiplier                = 1.0;
+  crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
   player_dd_adder                = 0.0;
   target_dd_adder                = 0.0;
@@ -100,6 +100,9 @@ void action_t::_init_action_t()
   resource_consumed              = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
+  snapshot_crit                  = 0.0;
+  snapshot_haste                 = 1.0;
+  snapshot_mastery               = 0.0;
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
@@ -693,6 +696,15 @@ void action_t::target_debuff( player_t* t, int dmg_type )
                    name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
 }
 
+// action_t::snapshot
+
+void action_t::snapshot()
+{
+  snapshot_crit    = total_crit();
+  snapshot_haste   = haste();
+  snapshot_mastery = player -> composite_mastery();
+}
+
 // action_t::result_is_hit ==================================================
 
 bool action_t::result_is_hit( int r ) SC_CONST
@@ -1261,6 +1273,8 @@ void action_t::schedule_tick()
 void action_t::schedule_travel( player_t* t )
 {
   time_to_travel = travel_time();
+
+  snapshot();
 
   if ( time_to_travel == 0 )
   {

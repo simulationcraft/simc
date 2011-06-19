@@ -3671,6 +3671,7 @@ struct action_t : public spell_id_t
   double player_haste;
   double resource_consumed;
   double direct_dmg, tick_dmg;
+  double snapshot_crit, snapshot_haste, snapshot_mastery;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
@@ -3728,6 +3729,7 @@ struct action_t : public spell_id_t
   virtual void   player_buff();
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, int dmg_type );
+  virtual void   snapshot();
   virtual void   calculate_result() { assert( 0 ); }
   virtual bool   result_is_hit ( int r=RESULT_UNKNOWN ) SC_CONST;
   virtual bool   result_is_miss( int r=RESULT_UNKNOWN ) SC_CONST;
