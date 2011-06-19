@@ -130,6 +130,7 @@ void action_t::_init_action_t()
   wait_on_ready                  = -1;
   interrupt                      = 0;
   round_base_dmg                 = true;
+  class_flag1                    = false;
   if_expr_str.clear();
   if_expr                        = NULL;
   interrupt_if_expr_str.clear();
@@ -596,9 +597,9 @@ void action_t::player_buff()
       player_penetration = p -> composite_spell_penetration();
     }
 
-    player_multiplier    = p -> composite_player_multiplier   ( school );
-    player_dd_multiplier = p -> composite_player_dd_multiplier( school );
-    player_td_multiplier = p -> composite_player_td_multiplier( school );
+    player_multiplier    = p -> composite_player_multiplier   ( school, this );
+    player_dd_multiplier = p -> composite_player_dd_multiplier( school, this );
+    player_td_multiplier = p -> composite_player_td_multiplier( school, this );
 
     if ( base_attack_power_multiplier > 0 )
     {

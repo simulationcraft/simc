@@ -3304,9 +3304,9 @@ struct player_t
 
   virtual double matching_gear_multiplier( const attribute_type attr ) SC_CONST { return 0.0; }
 
-  virtual double composite_player_multiplier   ( const school_type school ) SC_CONST;
-  virtual double composite_player_dd_multiplier( const school_type school ) SC_CONST { return 1.0; }
-  virtual double composite_player_td_multiplier( const school_type school ) SC_CONST;
+  virtual double composite_player_multiplier   ( const school_type school, action_t* a = NULL ) SC_CONST;
+  virtual double composite_player_dd_multiplier( const school_type school, action_t* a = NULL ) SC_CONST { return 1.0; }
+  virtual double composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
 
   virtual double composite_player_heal_multiplier   ( const school_type school ) SC_CONST;
   virtual double composite_player_dh_multiplier( const school_type school ) SC_CONST { return 1.0; }
@@ -3692,6 +3692,7 @@ struct action_t : public spell_id_t
   double min_health_percentage, max_health_percentage;
   int moving, vulnerable, invulnerable, wait_on_ready, interrupt;
   bool round_base_dmg;
+  bool class_flag1;
   std::string if_expr_str;
   action_expr_t* if_expr;
   std::string interrupt_if_expr_str;

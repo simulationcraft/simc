@@ -375,8 +375,8 @@ struct priest_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_haste() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
-  virtual double    composite_player_td_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
+  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    composite_player_heal_multiplier( const school_type school ) SC_CONST;
   virtual double    composite_movement_speed() SC_CONST;
 
@@ -4078,9 +4078,9 @@ double priest_t::composite_spell_haste() SC_CONST
 
 // priest_t::composite_player_multiplier =========================================
 
-double priest_t::composite_player_multiplier( const school_type school ) SC_CONST
+double priest_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school, a );
 
   if ( spell_id_t::is_school( school, SCHOOL_SHADOW ) )
   {
@@ -4104,9 +4104,9 @@ double priest_t::composite_player_multiplier( const school_type school ) SC_CONS
   return m;
 }
 
-double priest_t::composite_player_td_multiplier( const school_type school ) SC_CONST
+double priest_t::composite_player_td_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double player_multiplier = player_t::composite_player_td_multiplier( school );
+  double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
   if ( school == SCHOOL_SHADOW )
   {

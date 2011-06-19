@@ -349,7 +349,7 @@ struct death_knight_t : public player_t
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_tank_parry() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      regen( double periodicity );
   virtual void      reset();
@@ -1084,9 +1084,9 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST
   {
-    double m = player_t::composite_player_multiplier( school );
+    double m = player_t::composite_player_multiplier( school, a );
     return m;
   }
 
@@ -3823,7 +3823,7 @@ struct scourge_strike_t : public death_knight_attack_t
       // don't want to double dip; in particular, 3% damage from ret
       // paladins, arcane mages, and beastmaster hunters do not affect
       // scourge_strike_shadow.
-      double modified_dd = direct_dmg / player -> player_t::composite_player_multiplier( SCHOOL_SHADOW );
+      double modified_dd = direct_dmg / player -> player_t::composite_player_multiplier( SCHOOL_SHADOW, this );
       scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = modified_dd;
       scourge_strike_shadow -> execute();
     }
@@ -4952,9 +4952,9 @@ double death_knight_t::composite_tank_parry() SC_CONST
 
 // death_knight_t::composite_player_multiplier ==============================
 
-double death_knight_t::composite_player_multiplier( const school_type school ) SC_CONST
+double death_knight_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school, a );
   // Factor flat multipliers here so they effect procs, grenades, etc.
   m *= 1.0 + buffs_frost_presence -> value();
   m *= 1.0 + buffs_bone_shield -> value();

@@ -330,7 +330,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_mastery() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit_block() SC_CONST;
@@ -3424,9 +3424,9 @@ double warrior_t::composite_mastery() SC_CONST
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( const school_type school ) SC_CONST
+double warrior_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school, a );
 
   // Stances affect all damage done
   if ( active_stance == STANCE_BATTLE && buffs_battle_stance -> up() )

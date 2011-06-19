@@ -2108,7 +2108,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // player_t::composite_player_multiplier ================================
 
-double player_t::composite_player_multiplier( const school_type school ) SC_CONST
+double player_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
   double m = 1.0;
 
@@ -2136,6 +2136,12 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
       {
         m *= 1.03;
       }
+
+    if ( a != NULL && a -> class_flag1 )
+    {
+
+    }
+
   }
 
   if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
@@ -2148,7 +2154,7 @@ double player_t::composite_player_multiplier( const school_type school ) SC_CONS
 
 // player_t::composite_player_td_multiplier ==============================
 
-double player_t::composite_player_td_multiplier( const school_type school ) SC_CONST
+double player_t::composite_player_td_multiplier( const school_type school, action_t* a ) SC_CONST
 {
   double m = 1.0;
 
@@ -5026,7 +5032,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct multiplier_expr_t : public action_expr_t
     {
       multiplier_expr_t( action_t* a ) : action_expr_t( a, "multiplier", TOK_NUM ) {}
-      virtual int evaluate() { player_t* p = action -> player; result_num = p -> composite_player_multiplier( action -> school ); return TOK_NUM; }
+      virtual int evaluate() { player_t* p = action -> player; result_num = p -> composite_player_multiplier( action -> school, action ); return TOK_NUM; }
     };
     return new multiplier_expr_t( a );
   }

@@ -317,7 +317,7 @@ struct druid_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
@@ -5107,9 +5107,9 @@ double druid_t::composite_attack_crit() SC_CONST
 
 // druid_t::composite_player_multiplier =======================================
 
-double druid_t::composite_player_multiplier( const school_type school ) SC_CONST
+double druid_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school, a );
 
   if ( primary_tree() == TREE_BALANCE )
   {

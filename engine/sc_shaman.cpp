@@ -238,7 +238,7 @@ struct shaman_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -432,7 +432,7 @@ struct spirit_wolf_pet_t : public pet_t
     return attack_power_multiplier;
   }
   
-  virtual double composite_player_multiplier( const school_type ) SC_CONST
+  virtual double composite_player_multiplier( const school_type, action_t* a ) SC_CONST
   {
     return 1.0;
   }
@@ -579,7 +579,7 @@ struct earth_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
   
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
     double m = 1.0;
     
@@ -837,7 +837,7 @@ struct fire_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
   
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
     double m = 1.0;
     
@@ -4218,9 +4218,9 @@ double shaman_t::composite_spell_power( const school_type school ) SC_CONST
 
 // shaman_t::composite_player_multiplier ====================================
 
-double shaman_t::composite_player_multiplier( const school_type school ) SC_CONST
+double shaman_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school, a );
   
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );

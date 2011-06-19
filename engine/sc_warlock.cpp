@@ -417,8 +417,8 @@ struct warlock_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
-  virtual double    composite_player_td_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
+  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
 
   // Event Tracking
@@ -774,9 +774,9 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
 
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
-    double m = player_t::composite_player_multiplier( school );
+    double m = player_t::composite_player_multiplier( school, a );
 
     warlock_t* o = owner -> cast_warlock();
 
@@ -1736,11 +1736,11 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   }
 
 
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
     //FIXME: This is all untested, but seems to match what people are reporting in forums
 
-    double m = player_t::composite_player_multiplier( school );
+    double m = player_t::composite_player_multiplier( school, a );
 
     warlock_t* o = owner -> cast_warlock();
 
@@ -3900,9 +3900,9 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
 
 // warlock_t::composite_player_multiplier ===================================
 
-double warlock_t::composite_player_multiplier( const school_type school ) SC_CONST
+double warlock_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double player_multiplier = player_t::composite_player_multiplier( school );
+  double player_multiplier = player_t::composite_player_multiplier( school, a );
 
   if ( buffs_metamorphosis -> up() )
   {
@@ -3960,9 +3960,9 @@ double warlock_t::composite_player_multiplier( const school_type school ) SC_CON
 
 // warlock_t::composite_player_td_multiplier ================================
 
-double warlock_t::composite_player_td_multiplier( const school_type school ) SC_CONST
+double warlock_t::composite_player_td_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double player_multiplier = player_t::composite_player_td_multiplier( school );
+  double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
   if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME )
   {

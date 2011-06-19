@@ -246,6 +246,7 @@ struct paladin_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    composite_attack_expertise() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
@@ -395,10 +396,14 @@ struct paladin_attack_t : public attack_t
   void initialize_( bool use2hspec )
   {
     may_crit = true;
+
+    class_flag1 = ! use2hspec;
+/*
     if ( use2hspec && p() -> primary_tree() == TREE_RETRIBUTION && p() -> main_hand_weapon.group() == WEAPON_2H )
     {
       base_multiplier *= 1.0 + p() -> passives.two_handed_weapon_spec->base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
     }
+*/
 
     base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
 
@@ -1184,7 +1189,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 struct seal_of_truth_dot_t : public paladin_attack_t
 {
   seal_of_truth_dot_t( paladin_t* p )
-    : paladin_attack_t( "censure", 31803, p, false/*TODO: check 2hspec*/ )
+    : paladin_attack_t( "censure", 31803, p, false )
   {
     background       = true;
     proc             = true;
@@ -2678,6 +2683,19 @@ double paladin_t::composite_attribute_multiplier( int attr ) SC_CONST
   if ( attr == ATTR_STRENGTH && buffs_ancient_power -> check() )
   {
     m *= 1.0 + 0.01 * buffs_ancient_power -> stack();
+  }
+  return m;
+}
+
+// paladin_t::composite_player_multiplier =================================
+
+double paladin_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school, a );
+
+  if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( primary_tree() == TREE_RETRIBUTION ) && ( main_hand_weapon.group() == WEAPON_2H ) )
+  {
+    m *= 1.0 + passives.two_handed_weapon_spec -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   }
   return m;
 }

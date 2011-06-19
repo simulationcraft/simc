@@ -233,7 +233,7 @@ struct hunter_t : public player_t
   virtual double    composite_attack_power() SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school ) SC_CONST;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -633,9 +633,9 @@ struct hunter_pet_t : public pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 
-  virtual double composite_player_multiplier( const school_type school ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
-    double m = pet_t::composite_player_multiplier( school );
+    double m = pet_t::composite_player_multiplier( school, a );
     hunter_t*     o = owner -> cast_hunter();
     if ( o -> passive_spells.master_of_beasts -> ok() )
     {
@@ -3831,9 +3831,9 @@ double hunter_t::composite_attack_haste() SC_CONST
 
 // hunter_t::composite_player_multiplier ====================================
 
-double hunter_t::composite_player_multiplier( const school_type school ) SC_CONST
+double hunter_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school, a );
   if (school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE )
   {
     m *= 1.0 + passive_spells.essence_of_the_viper -> base_value( E_APPLY_AURA, A_DUMMY ) * composite_mastery();
