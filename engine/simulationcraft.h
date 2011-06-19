@@ -2871,6 +2871,7 @@ struct player_t
   int         active_pets;
   int         big_hitbox;
   double      dtr_proc_chance;
+  double      dtr_base_proc_chance;
 
   // Data access
   dbc_t       dbc;

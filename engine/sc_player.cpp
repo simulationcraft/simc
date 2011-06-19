@@ -294,7 +294,7 @@ player_t::player_t( sim_t*             s,
   potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
   pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-  active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dbc( s -> dbc ),
+  active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ), dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
   base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
@@ -5755,6 +5755,7 @@ void player_t::create_options()
     { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]        ) },
     // Misc
     { "dtr_proc_chance",                      OPT_FLT,    &( dtr_proc_chance                          ) },
+    { "dtr_base_proc_chance",                 OPT_FLT,    &( dtr_base_proc_chance                     ) },
     { "big_hitbox",                           OPT_BOOL,   &( big_hitbox                               ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                              ) },
