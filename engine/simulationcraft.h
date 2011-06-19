@@ -3643,7 +3643,7 @@ struct action_t : public spell_id_t
   school_type school;
   int resource, tree, result, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence;
-  bool direct_tick, repeating, harmful, proc, auto_cast, initialized;
+  bool direct_tick, repeating, harmful, proc, may_trigger_dtr, auto_cast, initialized;
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;

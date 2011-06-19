@@ -129,7 +129,7 @@ struct discharge_proc_callback_t : public action_callback_t
                              const school_type school, double amount, double scaling,
                              double pc, double cd, bool no_crit, bool no_buffs, bool no_debuffs, int rng_type=RNG_DEFAULT ) :
                              action_callback_t( p -> sim, p ),
-    name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
+    name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ), cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
@@ -141,6 +141,7 @@ struct discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
+        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         background  = true;
@@ -158,6 +159,7 @@ struct discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
+        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         may_dodge = may_parry = may_glance = false;
@@ -250,6 +252,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
+        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         background  = true;
@@ -267,6 +270,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
+        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         may_dodge = may_parry = may_glance = false;
@@ -363,6 +367,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
+        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crits;
         background  = true;
@@ -382,6 +387,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
+        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crits;
         may_dodge = may_parry = may_glance = false;
@@ -1316,6 +1322,8 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     {
       double dmg;
 
+      if ( ! a -> may_trigger_dtr ) return;
+
       if ( a -> tick_dmg > 0 ) 
         dmg = a -> tick_dmg;
       else
@@ -1323,7 +1331,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
       discharge_action -> base_dd_min = dmg;
       discharge_action -> base_dd_max = dmg;
-      
+
       discharge_proc_callback_t::trigger( a, call_data );
     }
   };
@@ -1367,8 +1375,8 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
   action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
 
-  p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> register_tick_damage_callback( SCHOOL_SPELL_MASK, cb );
+  p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb );
 }
 
 // ==========================================================================

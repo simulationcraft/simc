@@ -3771,6 +3771,8 @@ proc_t* player_t::get_proc( const std::string& name )
   p -> next = *tail;
   *tail = p;
 
+  p -> player = this;
+
   return p;
 }
 
@@ -3802,6 +3804,8 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
     stats -> next = *tail;
     *tail = stats;
   }
+
+  stats -> player = this;
 
   return stats;
 }
