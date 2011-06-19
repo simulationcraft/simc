@@ -4204,7 +4204,7 @@ struct proc_t
   double last_proc;
   proc_t* next;
   proc_t( sim_t* s, const std::string& n ) :
-    sim(s), name_str(n), count(0), frequency(0), interval_sum(0), interval_count(0), last_proc(0) {}
+    sim(s), player( 0 ), name_str(n), count(0), frequency(0), interval_sum(0), interval_count(0), last_proc(0), next( 0 ) {}
   void occur()
   {
     count++;
