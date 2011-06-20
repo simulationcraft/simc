@@ -218,6 +218,7 @@ void buff_t::init()
   if( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
+    stack_react_time.resize( max_stack + 1 );
     aura_str.resize( max_stack + 1 );
 
     char *buffer = new char[ name_str.size() + 16 ];
@@ -359,6 +360,7 @@ void buff_t::_init_buff_t()
   if( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
+    stack_react_time.resize( max_stack + 1 );
     aura_str.resize( max_stack + 1 );
 
     char *buffer = new char[ name_str.size() + 16 ];
@@ -386,7 +388,7 @@ bool buff_t::may_react( int stack )
 
   if ( occur <= 0 ) return true;
 
-  return sim -> time_to_think( occur );
+  return stack_react_time[ stack ];
 }
 
 // buff_t::stack_react ======================================================
@@ -397,7 +399,7 @@ int buff_t::stack_react()
 
   for( int i=1; i <= current_stack; i++ )
   {
-    if ( ! sim -> time_to_think( stack_occurrence[ i ] ) ) break;
+    if ( stack_react_time[ i ] > sim -> current_time ) break;
     stack++;
   }
 
@@ -668,6 +670,8 @@ void buff_t::bump( int    stacks,
     for( int i=before_stack+1; i <= current_stack; i++ )
     {
       stack_occurrence[ i ] = sim -> current_time;
+      stack_react_time[ i ] = sim -> current_time + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
+
     }
   }
 
@@ -724,6 +728,7 @@ void buff_t::predict()
   for( int i=0; i <= current_stack; i++ )
   {
     stack_occurrence[ i ] = -1;
+    stack_react_time[ i ] = -1;
   }
 }
 

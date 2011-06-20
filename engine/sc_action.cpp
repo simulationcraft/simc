@@ -141,6 +141,7 @@ void action_t::_init_action_t()
   marker                         = 0;
   target_str                     = "";
   label_str                      = "";
+  last_reaction_time             = 0.0;
 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -1415,9 +1416,10 @@ void action_t::update_ready()
   {
     if( result_is_miss() )
     {
+      last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
-                       player -> name(), sim -> reaction_time, name(), dot -> name() );
+                       player -> name(), last_reaction_time, name(), dot -> name() );
 
       dot -> miss_time = sim -> current_time;
     }
@@ -1761,7 +1763,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate()
       {
         if ( action -> dot -> miss_time == -1 ||
-             action -> sim -> current_time >= action -> dot -> miss_time + action -> sim -> total_reaction_time() )
+             action -> sim -> current_time >= (action -> dot -> miss_time + action -> last_reaction_time ) )
         {
           result_num = 1;
         }

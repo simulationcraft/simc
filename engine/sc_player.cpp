@@ -3167,6 +3167,14 @@ double player_t::time_to_die() SC_CONST
   }
 }
 
+// player_t::total_reaction_time ============================================
+
+double player_t::total_reaction_time() SC_CONST
+{
+
+  return rngs.lag_reaction -> exgauss( 1.0, 0.04, 1.0);
+}
+
 // player_t::stat_gain ======================================================
 
 void player_t::stat_gain( int       stat,

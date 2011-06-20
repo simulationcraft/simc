@@ -108,6 +108,23 @@ double rng_t::gauss( double mean,
   return result;
 }
 
+// rng_t::exgauss ===========================================================
+
+double rng_t::exgauss( double mean, double stddev, double nu )
+{
+  double x = 0;
+  do
+  {
+    x = real();
+  }
+  while ( x <= 0 ); // avoid ln( 0 )
+
+  double result =  ( gauss( mean - nu, stddev ) - log ( x / nu ) );
+  if ( result < 0 ) result = 0;
+
+  return result;
+}
+
 // rng_t::seed ==============================================================
 
 void rng_t::seed( uint32_t start )

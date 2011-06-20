@@ -1936,7 +1936,7 @@ struct buff_t : public spell_id_t
   player_t* source;
   std::string name_str;
   std::vector<std::string> aura_str;
-  std::vector<double> stack_occurrence;
+  std::vector<double> stack_occurrence,stack_react_time;
   int current_stack, max_stack;
   double current_value, react, buff_duration, buff_cooldown, default_chance;
   double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, uptime_sum;
@@ -3347,6 +3347,7 @@ struct player_t
 
   virtual double health_percentage() SC_CONST;
   virtual double time_to_die() SC_CONST;
+  virtual double total_reaction_time() SC_CONST;
 
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
   virtual void stat_loss( int stat, double amount, action_t* a=0 );
@@ -3704,6 +3705,7 @@ struct action_t : public spell_id_t
   std::string signature_str;
   std::string target_str;
   std::string label_str;
+  double last_reaction_time;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const active_spell_t& s, int t=TREE_NONE, bool special=false );
@@ -4306,6 +4308,7 @@ struct rng_t
   virtual int    roll( double chance );
   virtual double range( double min, double max );
   virtual double gauss( double mean, double stddev );
+  virtual double exgauss( double mean, double stddev, double nu );
   virtual void   seed( uint32_t start );
   virtual void   report( FILE* );
 
