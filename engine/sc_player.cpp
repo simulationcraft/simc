@@ -2457,6 +2457,7 @@ void player_t::combat_begin()
   if ( primary_resource() == RESOURCE_MANA )
   {
     get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
+    get_gain( "initial_mana" ) -> type = RESOURCE_MANA;
   }
 
   if ( primary_role() == ROLE_TANK && !is_enemy() && !is_add() )
