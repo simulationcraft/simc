@@ -1,0 +1,76 @@
+#!./simc 
+
+druid=Druid_Balance_T12N
+origin="input=Druid_CharDevSync.simc"
+level=85
+race=troll
+role=spell
+use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
+glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/wrath/insect_swarm/moonfire
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/mark_of_the_wild
+actions+=/moonkin_form
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)
+actions+=/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3
+actions+=/berserking
+actions+=/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<4&buff.solar_eclipse.up&eclipse<15)
+actions+=/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/typhoon,moving=1
+actions+=/starfall,if=buff.lunar_eclipse.up
+actions+=/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0
+actions+=/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))&!dot.sunfire.remains>0
+actions+=/starsurge,if=!((eclipse<=-84&eclipse_dir=-1)|(eclipse>=75&eclipse_dir=1))
+actions+=/innervate,if=mana_pct<50
+actions+=/treants,time>=5
+actions+=/starfire,if=eclipse_dir=1&eclipse<75
+actions+=/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-84
+actions+=/wrath,if=eclipse_dir=-1&eclipse>=-84
+actions+=/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=75
+actions+=/starfire,if=eclipse_dir=1
+actions+=/wrath,if=eclipse_dir=-1
+actions+=/starfire
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1
+actions+=/sunfire,moving=1
+head=obsidian_arborweave_cover,type=leather,ilevel=378,quality=epic,stats=1439armor_265mastery_611sta_348int_213haste,reforge=mastery_spirit,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit
+neck=flowform_choker,ilevel=378,quality=epic,stats=341sta_227int_143haste_115mastery,reforge=mastery_spi,gems=67int_10int
+shoulders=obsidian_arborweave_shoulderwraps,type=leather,ilevel=378,quality=epic,stats=454sta_282int_203crit_172mastery,reforge=crit_spi,gems=40int_10int,enchant=50int_25haste
+chest=obsidian_arborweave_vestments,type=leather,ilevel=378,quality=epic,stats=1820armor_368int_235haste_266mastery_611sta,gems=67int_67int,enchant=20all
+waist=firescar_sash,type=leather,ilevel=378,quality=epic,stats=1024armor_282int_208crit_172haste_454sta,reforge=crit_spi,gems=20int_20spi_10int
+legs=firecat_leggings,type=leather,ilevel=378,quality=epic,stats=1550armor_259haste_368int_237spi_611sta,gems=20int_20spi_20int_20spi_20int,enchant=95int_55spi
+feet=ethereal_footfalls,type=leather,ilevel=378,quality=epic,stats=454sta_302int_202spi_202haste,enchant=35mastery
+wrists=glowing_wing_bracers,type=leather,ilevel=378,quality=epic,stats=342sta_227int_154spirit_148haste,enchant=50int
+hands=obsidian_arborweave_gloves,type=leather,ilevel=378,quality=epic,stats=454sta_282int_177spi_205haste,gems=20int_20haste_10int,enchant=50haste
+finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
+finger2=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=341sta_227int_162hit_133mastery,reforge=mastery_spi
+trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int_420mastery,equip=onspelltickdamage_42mastery_10stack_10dur
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
+main_hand=chelleys_sterilized_scalpel,ilevel=378,quality=epic,stats=262sta_175int_118crit_113mastery_2333sp,reforge=crit_spi,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max
+off_hand=flamewrought_abalone_shell,ilevel=378,quality=epic,stats=341sta_227int_137spirit_160haste,enchant=40int
+ranged=soulflame_vial,ilevel=378,quality=epic,stats=192sta_128int_79haste_89mastery,gems=40int
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=6154
+# gear_intellect=5120
+# gear_spirit=1577
+# gear_spell_power=2333
+# gear_hit_rating=162
+# gear_crit_rating=353
+# gear_haste_rating=2355
+# gear_mastery_rating=1774
+# gear_armor=6532
+# meta_gem=burning_shadowspirit
+# tier12_2pc_caster=1
+# tier12_4pc_caster=1
+# back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
+# main_hand=chelleys_sterilized_scalpel,weapon=dagger_1.80speed_82min_154max,enchant=power_torrent

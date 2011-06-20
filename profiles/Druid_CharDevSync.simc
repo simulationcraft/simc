@@ -21,6 +21,32 @@ chardev=35492 save=Druid_Feral_T11H.simc name=Druid_Feral_T11H
 
 chardev=35430 save=Druid_Feral_T11H_hitcap.simc name=Druid_Feral_T11H_hitcap
 
+druid=Druid_Balance_T12N
+level=85
+race=troll
+role=spell
+use_pre_potion=1
+professions=tailoring=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
+glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/wrath/insect_swarm/moonfire
+head=obsidian_arborweave_cover,heroic=0,type=leather,ilevel=378,quality=epic,stats=1439armor_265mastery_611sta_348int_213haste,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit,reforge=mastery_spirit
+neck=flowform_choker,heroic=0,ilevel=378,quality=epic,stats=341sta_227int_143haste_115mastery,gems=67int_10int,reforge=mastery_spi
+shoulders=obsidian_arborweave_shoulderwraps,heroic=0,type=leather,ilevel=378,quality=epic,stats=454sta_282int_203crit_172mastery,reforge=crit_spi,gems=40int_10int,enchant=50int_25haste
+chest=obsidian_arborweave_vestments,heroic=0,type=leather,ilevel=378,quality=epic,stats=1820armor_368int_235haste_266mastery_611sta,gems=67int_67int,enchant=20all
+waist=firescar_sash,heroic=0,type=leather,ilevel=378,quality=epic,stats=1024armor_282int_208crit_172haste_454sta,reforge=crit_spi,gems=20int_20spi_10int
+legs=firecat_leggings,heroic=0,type=leather,ilevel=378,quality=epic,stats=1550armor_259haste_368int_237spi_611sta,gems=20int_20spi_20int_20spi_20int,enchant=95int_55spi
+feet=ethereal_footfalls,heroic=0,type=leather,ilevel=378,quality=epic,stats=454sta_302int_202spi_202haste,enchant=35mastery
+wrists=glowing_wing_bracers,heroic=0,type=leather,ilevel=378,quality=epic,stats=342sta_227int_154spirit_148haste,enchant=50int
+hands=obsidian_arborweave_gloves,heroic=0,type=leather,ilevel=378,quality=epic,stats=454sta_282int_177spi_205haste,gems=20int_20haste_10int,enchant=50haste
+finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
+finger2=crystalline_brimstone_ring,heroic=0,ilevel=378,quality=epic,stats=341sta_227int_162hit_133mastery,reforge=mastery_spi
+trinket1=necromantic_focus,heroic=0,ilevel=378,quality=epic,stats=383int_420mastery
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
+main_hand=chelleys_sterilized_scalpel,heroic=0,ilevel=378,quality=epic,stats=262sta_175int_118crit_113mastery_2333sp,reforge=crit_spi,enchant=power_torrent,weapon=dagger_1.80speed_82min_154max
+off_hand=flamewrought_abalone_shell,heroic=0,ilevel=378,quality=epic,stats=341sta_227int_137spirit_160haste,enchant=40int
+ranged=soulflame_vial,ilevel=378,quality=epic,stats=192sta_128int_79haste_89mastery,gems=40int
+save=Druid_Balance_T12N.simc
 
 druid=Druid_Balance_T12H
 level=85
@@ -29,7 +55,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
-glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/starsurge/insect_swarm/moonfire
+glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/wrath/insect_swarm/moonfire
 #gear here
 save=Druid_Balance_T12H.simc
 
@@ -41,7 +67,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
-glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/starsurge/insect_swarm/moonfire
+glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/wrath/insect_swarm/moonfire
 #gear here
 save=Druid_Balance_T12H_DTR.simc
 
