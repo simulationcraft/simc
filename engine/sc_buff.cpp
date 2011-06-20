@@ -388,7 +388,7 @@ bool buff_t::may_react( int stack )
 
   if ( occur <= 0 ) return true;
 
-  return stack_react_time[ stack ];
+  return stack_react_time[ stack ] > sim -> current_time;
 }
 
 // buff_t::stack_react ======================================================
