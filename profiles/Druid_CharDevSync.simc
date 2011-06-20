@@ -72,6 +72,7 @@ main_hand=fandrals_flamescythe,id=71466,enchant=130agi,reforge=mastery_haste
 ranged=covenant_of_the_flame,id=71567,gems=40agi
 save=Druid_Feral_T12H.simc
 
+
 druid=Druid_Feral_T12N
 level=85
 race=worgen
@@ -81,20 +82,20 @@ professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#druid-000000000000000000002320322312011221202301020301000000000000000
 glyphs=rip/shred/berserk
 head=obsidian_arborweave_headpiece,id=71098,gems=agile_shadowspirit_40agi_30agi,enchant=60agi_35haste,reforge=hit_haste
-neck=choker_of_the_vanquished_lord,id=71354,reforge=mastery_crit
+neck=choker_of_the_vanquished_lord,id=71354
 shoulders=obsidian_arborweave_spaulders,id=71101,gems=40agi,enchant=50agi_25mastery,reforge=mastery_haste
-chest=breastplate_of_the_incendiary_soul,id=71314,gems=40agi_40agi_20agi,enchant=20all,reforge=mastery_crit
-waist=riplimbs_lost_collar,id=71640,gems=40agi_67agi,reforge=exp_haste
-legs=obsidian_arborweave_legguards,id=71099,gems=40agi_40agi,enchant=190ap_55crit,reforge=hit_haste
-feet=sandals_of_leaping_coals,id=71313,gems=40agi_10agi,enchant=35mastery,reforge=mastery_haste
-wrists=flamebinder_bracers,id=71130,gems=67agi,enchant=50agi,reforge=exp_haste
-hands=obsidian_arborweave_grips,id=71097,gems=40agi_67agi,enchant=65mastery
+chest=obsidian_arborweave_raiment,id=71100,gems=67agi_67agi_20agi,enchant=20all,reforge=exp_haste
+waist=flamebinding_girdle,id=71131,gems=40agi_40agi,reforge=hit_crit
+legs=cinderweb_leggings,id=71031,gems=67agi_20agi_20mastery_20agi,enchant=190ap_55crit
+feet=treads_of_the_craft,id=69951,gems=40agi_10agi,enchant=35mastery,reforge=mastery_crit
+wrists=flamebinder_bracers,id=71130,gems=40agi,enchant=50agi,reforge=exp_haste
+hands=obsidian_arborweave_grips,id=71097,gems=40agi_40agi,enchant=65mastery,reforge=haste_mastery
 finger1=viridian_signet_of_the_avengers,id=71216,gems=40agi_10agi,reforge=mastery_crit
-finger2=widows_kiss,id=71032,reforge=mastery_crit
+finger2=splintered_brimstone_seal,id=71209,reforge=mastery_haste
 trinket1=matrix_restabilizer,id=68994
-trinket2=the_hungerer,id=68927
+trinket2=unheeded_warning,id=59520
 back=dreadfire_drape,id=70992,gems=40agi_40agi_20agi,enchant=65crit,reforge=hit_haste
-main_hand=fandrals_flamescythe,id=69897,enchant=130agi,reforge=mastery_haste
+main_hand=ranseur_of_hatred,id=71361,enchant=130agi
 ranged=covenant_of_the_flame,id=71146,gems=40agi,reforge=mastery_haste
 save=Druid_Feral_T12N.simc
 

@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Feral_T12N
-origin="input=Druid_CharDevSync.simc"
+origin="Druid_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -39,36 +39,37 @@ actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health
 actions+=/ravage,if=buff.stampede_cat.up&!buff.omen_of_clarity.react&buff.tigers_fury.up
 actions+=/shred
 head=obsidian_arborweave_headpiece,type=leather,ilevel=378,quality=epic,stats=1478armor_348agi_611sta_213crit_265hit,reforge=hit_haste,gems=agile_shadowspirit_40agi_30agi,enchant=60agi_35haste
-neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_162haste_156mastery,reforge=mastery_crit
+neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_162haste_156mastery
 shoulders=obsidian_arborweave_spaulders,type=leather,ilevel=378,quality=epic,stats=1365armor_282agi_454sta_157crit_216mastery,reforge=mastery_haste,gems=40agi,enchant=50agi_25mastery
-chest=breastplate_of_the_incendiary_soul,type=leather,ilevel=378,quality=epic,stats=1820armor_368agi_611sta_231haste_267mastery,reforge=mastery_crit,gems=40agi_40agi_20agi,enchant=20all
-waist=riplimbs_lost_collar,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_216crit_157exp,reforge=exp_haste,gems=40agi_67agi
-legs=obsidian_arborweave_legguards,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_166hit_310mastery,reforge=hit_haste,gems=40agi_40agi,enchant=190ap_55crit
-feet=sandals_of_leaping_coals,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_230mastery_133crit,reforge=mastery_haste,gems=40agi_10agi,enchant=35mastery
-wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_haste,gems=67agi,enchant=50agi
-hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,gems=40agi_67agi,enchant=65mastery
+chest=obsidian_arborweave_raiment,type=leather,ilevel=378,quality=epic,stats=1820armor_368agi_611sta_221exp_275crit,reforge=exp_haste,gems=67agi_67agi_20agi,enchant=20all
+waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_211haste_167hit,reforge=hit_crit,gems=40agi_40agi
+legs=cinderweb_leggings,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_284mastery_212haste,gems=67agi_20agi_20mastery_20agi,enchant=190ap_55crit
+feet=treads_of_the_craft,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_197haste_187mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=35mastery
+wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_haste,gems=40agi,enchant=50agi
+hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,reforge=haste_mastery,gems=40agi_40agi,enchant=65mastery
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi
-finger2=widows_kiss,ilevel=378,quality=epic,stats=227agi_341sta_167haste_126mastery,reforge=mastery_crit
+finger2=splintered_brimstone_seal,ilevel=378,quality=epic,stats=227agi_341sta_158mastery_140crit,reforge=mastery_haste
 trinket1=matrix_restabilizer,ilevel=384,quality=epic,stats=406agi
-trinket2=the_hungerer,ilevel=378,quality=epic,stats=383agi,equip=onattackhit_1532haste_100%_15dur_60cd
+trinket2=unheeded_warning,ilevel=359,quality=epic,stats=321agi
 back=dreadfire_drape,ilevel=378,quality=epic,stats=695armor_212agi_341sta_95mastery_138hit,reforge=hit_haste,gems=40agi_40agi_20agi,enchant=65crit
-main_hand=fandrals_flamescythe,ilevel=378,quality=epic,stats=408agi_611sta_276crit_265mastery,reforge=mastery_haste,enchant=130agi,weapon=staff_2.40speed_1428min_2143max
+main_hand=ranseur_of_hatred,ilevel=378,quality=epic,stats=408agi_611sta_284crit_252haste,enchant=130agi,weapon=polearm_3.60speed_2142min_3214max
 ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_81mastery,reforge=mastery_haste,gems=40agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=5854
+# gear_agility=5792
 # gear_stamina=6239
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=188
-# gear_hit_rating=342
-# gear_crit_rating=1799
-# gear_haste_rating=1647
-# gear_mastery_rating=1418
+# gear_expertise_rating=226
+# gear_hit_rating=343
+# gear_crit_rating=1795
+# gear_haste_rating=1864
+# gear_mastery_rating=1230
 # gear_armor=11158
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
 # trinket1=matrix_restabilizer
-# main_hand=fandrals_flamescythe,weapon=staff_2.40speed_1428min_2143max
+# trinket2=unheeded_warning
+# main_hand=ranseur_of_hatred,weapon=polearm_3.60speed_2142min_3214max
