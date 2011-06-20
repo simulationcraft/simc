@@ -216,6 +216,8 @@ struct discharge_proc_callback_t : public action_callback_t
           return;
       }
     }
+    else
+      return;
 
     cooldown -> start();
 
