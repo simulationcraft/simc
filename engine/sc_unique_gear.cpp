@@ -1389,13 +1389,11 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     case TREE_DEMONOLOGY:   chance *= 1.089; break;
     case TREE_DESTRUCTION:  chance *= 1.066; break;
     default:
-      chance = 0.0;
       // Get a real spec...
       break;
     }
     break;
   default:
-    chance = 0.0;
     // Seriously?
     break;
   }
