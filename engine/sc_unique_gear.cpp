@@ -138,6 +138,8 @@ struct discharge_proc_callback_t : public action_callback_t
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
         spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
+        discharge_proc = true;
+        item_proc = true;
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
@@ -156,6 +158,8 @@ struct discharge_proc_callback_t : public action_callback_t
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
         attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
+        discharge_proc = true;
+        item_proc = true;
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
@@ -195,6 +199,10 @@ struct discharge_proc_callback_t : public action_callback_t
     if ( cooldown -> remains() > 0 )
       return;
 
+    if ( ! allow_self_procs && ( a == discharge_action ) ) return;
+
+    if ( a -> discharge_proc ) return;
+
     if ( proc_chance )
     {
       if ( proc_chance < 0 )
@@ -218,6 +226,7 @@ struct discharge_proc_callback_t : public action_callback_t
     else
     {
       stacks = 0;
+      if ( sim -> debug ) log_t::output( sim, "%s procs %s", a -> name(), discharge_action -> name() );
       discharge_action -> execute();
       proc -> occur();
     }
@@ -249,6 +258,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
         spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
+        discharge_proc = true;
+        item_proc = true;
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
@@ -267,6 +278,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
         attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
+        discharge_proc = true;
+        item_proc = true;
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
@@ -306,6 +319,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     /* Always adds a stack if not on cooldown. The proc chance is the chance to discharge */
     if ( cooldown -> remains() > 0 )
       return;
+
+    if ( ! allow_self_procs && ( a == discharge_action ) ) return;
 
     cooldown -> start();
 
@@ -364,6 +379,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb, bool nd ) :
         spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
+        discharge_proc = true;
+        item_proc = true;
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
@@ -384,6 +401,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb, bool nd ) :
         attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
+        discharge_proc = true;
+        item_proc = true;
         trigger_gcd = 0;
         base_dd_min = amount;
         base_dd_max = amount;
@@ -418,6 +437,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   {
     if ( buff -> trigger( a ) )
     {
+      if ( ! allow_self_procs && ( a == discharge_action ) ) return;
       discharge_action -> execute();
     }
   }

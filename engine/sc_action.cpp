@@ -30,7 +30,9 @@ void action_t::_init_action_t()
   repeating                      = false;
   harmful                        = true;
   proc                           = false;
+  item_proc                      = false;
   may_trigger_dtr                = true;
+  discharge_proc                 = false;
   auto_cast                      = false;
   initialized                    = false;
   may_hit                        = true;

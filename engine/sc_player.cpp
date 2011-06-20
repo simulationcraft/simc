@@ -2140,12 +2140,6 @@ double player_t::composite_player_multiplier( const school_type school, action_t
       {
         m *= 1.03;
       }
-
-    if ( a != NULL && a -> class_flag1 )
-    {
-
-    }
-
   }
 
   if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )

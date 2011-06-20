@@ -398,12 +398,6 @@ struct paladin_attack_t : public attack_t
     may_crit = true;
 
     class_flag1 = ! use2hspec;
-/*
-    if ( use2hspec && p() -> primary_tree() == TREE_RETRIBUTION && p() -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      base_multiplier *= 1.0 + p() -> passives.two_handed_weapon_spec->base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-    }
-*/
 
     base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
 
@@ -596,8 +590,10 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   struct flames_of_the_faithful_t : public paladin_attack_t
   {
+    bool use_bug;
+
     flames_of_the_faithful_t( paladin_t* player ) :
-      paladin_attack_t( "flames_of_the_faithful", 99092, player )
+      paladin_attack_t( "flames_of_the_faithful", 99092, player ), use_bug( false )
     {
       background    = true;
       proc          = true;
@@ -605,20 +601,23 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       tick_may_crit = false;
       hasted_ticks  = false;
       dot_behavior  = DOT_REFRESH;
-      if ( player -> bugs )
-      {
-        num_ticks++;
-      }
       init();
     }
     virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
     {
+      if ( use_bug )
+      {
+        num_ticks++;
+      }
+
       paladin_attack_t::travel( t, travel_result, 0 );
 
       int nticks = dot -> num_ticks;
-      if ( t -> bugs && ( nticks > 1 ) )
+      if ( use_bug )
       {
+        num_ticks--;
         nticks--;
+        use_bug = false;
       }
       base_td = total_dot_dmg / nticks;
     }
@@ -651,6 +650,13 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   if ( dot -> ticking )
   {
     total_dot_dmg += p -> active_flames_of_the_faithful_proc -> base_td * dot -> ticks();
+  }
+  else
+  {
+    if ( p -> bugs )
+    {
+      ( ( flames_of_the_faithful_t* )( p -> active_flames_of_the_faithful_proc ) )-> use_bug = true;
+    }
   }
 
   if( ( p -> dbc.spell( 99092 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
@@ -782,7 +788,6 @@ struct crusader_strike_t : public paladin_attack_t
       p -> resource_gain( RESOURCE_HOLY_POWER, p -> buffs_zealotry -> up() ? 3 : 1,
                           p -> gains_hp_crusader_strike );
 
-//      trigger_flames_of_the_faithful( this );
       trigger_grand_crusader( this );
       trigger_hand_of_light( this );
     }
@@ -852,24 +857,6 @@ struct divine_storm_t : public paladin_attack_t
                                       p -> gains_hp_divine_storm );
           }*/
     }
-  }
-};
-
-// Flames of the Faithful (T12 2pc) proc ===================================
-
-struct flames_of_the_faithful_proc_t : public attack_t
-{
-  flames_of_the_faithful_proc_t( paladin_t* p )
-    : attack_t( "flames_of_the_faithful", 99092, p, TREE_RETRIBUTION, true )
-  {
-    may_crit    = false;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
-    proc        = true;
-    background  = true;
-
-    base_multiplier = 0.01 * p -> sets -> set(SET_T12_2PC_MELEE) -> base_value( E_APPLY_AURA, A_DUMMY );
   }
 };
 
@@ -1197,7 +1184,12 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     spell_haste      = true;
     tick_may_crit    = true;
     may_crit         = false;
+    may_dodge        = false;
+    may_parry        = false;
+    may_block        = false;
+    may_glance       = false;
     dot_behavior     = DOT_REFRESH;
+
 
     base_spell_power_multiplier  = tick_power_mod;
     base_attack_power_multiplier = extra_coeff();

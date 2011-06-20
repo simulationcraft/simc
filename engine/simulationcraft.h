@@ -3647,7 +3647,7 @@ struct action_t : public spell_id_t
   school_type school;
   int resource, tree, result, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence;
-  bool direct_tick, repeating, harmful, proc, may_trigger_dtr, auto_cast, initialized;
+  bool direct_tick, repeating, harmful, proc, item_proc, may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
@@ -4008,7 +4008,11 @@ struct action_callback_t
   sim_t* sim;
   player_t* listener;
   bool active;
-  action_callback_t( sim_t* s, player_t* l ) : sim( s ), listener( l ), active( true )
+  bool allow_self_procs;
+  bool allow_item_procs;
+  bool allow_procs;
+
+  action_callback_t( sim_t* s, player_t* l, bool ap=false, bool aip=false, bool asp=false ) : sim( s ), listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
   {
     if ( l )
     {
@@ -4023,11 +4027,17 @@ struct action_callback_t
   static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
   {
     if ( ! a -> player -> in_combat ) return;
+
     size_t size = v.size();
     for ( size_t i=0; i < size; i++ )
     {
       action_callback_t* cb = v[ i ];
-      if ( cb -> active ) cb -> trigger( a, call_data );
+      if ( cb -> active )
+      {
+        if ( ! cb -> allow_item_procs && a -> item_proc ) return;
+        if ( ! cb -> allow_procs && a -> proc ) return;
+        cb -> trigger( a, call_data );
+      }
     }
   }
   static void reset( std::vector<action_callback_t*>& v )
