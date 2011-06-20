@@ -179,6 +179,30 @@ void heal_t::execute()
   if ( harmful ) player -> in_combat = true;
 
   if ( repeating && ! proc ) schedule_execute();
+
+
+  // Add options found in spell_t::execute()
+  if ( player -> last_foreground_action == this )
+      player -> debuffs.casting -> expire();
+
+    if ( harmful && callbacks )
+    {
+      if ( result != RESULT_NONE )
+      {
+        if ( direct_tick )
+        {
+          action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+        }
+        else
+        {
+          action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+        }
+      }
+      if ( ! background ) // OnSpellCast
+      {
+        action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+      }
+    }
 }
 
 // heal_t::travel ============================================================
@@ -604,6 +628,29 @@ void absorb_t::execute()
   if ( ! dual ) stats -> add_execute( time_to_execute );
 
   if ( repeating && ! proc ) schedule_execute();
+
+  // Add options found in spell_t::execute()
+    if ( player -> last_foreground_action == this )
+        player -> debuffs.casting -> expire();
+
+      if ( harmful && callbacks )
+      {
+        if ( result != RESULT_NONE )
+        {
+          if ( direct_tick )
+          {
+            action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+          }
+          else
+          {
+            action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+          }
+        }
+        if ( ! background ) // OnSpellCast
+        {
+          action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+        }
+      }
 }
 
 // absorb_t::travel ============================================================
