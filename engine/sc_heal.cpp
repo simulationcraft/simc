@@ -29,6 +29,7 @@ void heal_t::_init_heal_t()
   weapon_multiplier = 0.0;
   may_crit          = true;
   tick_may_crit     = true;
+  may_trigger_dtr   = false;
 
   stats -> type = STATS_HEAL;
 
@@ -487,6 +488,7 @@ void absorb_t::_init_absorb_t()
   target = player;
   target_str = "";
   total_heal = total_actual = 0;
+  may_trigger_dtr   = false;
 
   weapon_multiplier = 0.0;
 
