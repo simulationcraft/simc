@@ -2850,17 +2850,7 @@ static void print_html_player_statistics( FILE* file, sim_t* sim, player_t* p )
 static void print_html_player_resources( FILE* file, sim_t* sim, player_t* p )
 {
 // Resources Section
-  char buffer[ 1024 ];
 
-  std::string gains_str                           = "";
-
-  if ( ! p -> gains_chart.empty() )
-  {
-
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Gains Chart\" />\n", p -> gains_chart.c_str() );
-
-    gains_str = buffer;
-  }
 
 util_t::fprintf( file,
 
@@ -2931,11 +2921,10 @@ util_t::fprintf( file,
                  "\t\t\t\t\t\t\t\t<th>Resource Gains</th>\n"
                  "\t\t\t\t\t\t\t\t<th>Type</th>\n"
                  "\t\t\t\t\t\t\t\t<th>Count</th>\n"
-                 "\t\t\t\t\t\t\t\t<th>%s</th>\n"
+                 "\t\t\t\t\t\t\t\t<th>Total</th>\n"
                  "\t\t\t\t\t\t\t\t<th>Average</th>\n"
                  "\t\t\t\t\t\t\t\t<th>Overflow</th>\n"
-                 "\t\t\t\t\t\t\t</tr>\n",
-                 util_t::resource_type_string( p -> primary_resource() ) );
+                 "\t\t\t\t\t\t\t</tr>\n" );
 i = 1;
 for ( gain_t* g = p -> gain_list; g; g = g -> next )
 {
@@ -3007,10 +2996,35 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
 util_t::fprintf( file,
                  "\t\t\t\t\t\t</table>\n" );
 
-util_t::fprintf( file,
+char buffer[ 1024 ];
+std::string gains_str                     = "";
+for ( i = 0; i < RESOURCE_MAX; i++ )
+{
+  gains_str                     = "";
+  double total_gain=0;
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  {
+    if ( g -> actual <= 0 ) continue;
+    if ( g -> type != i ) continue;
+    total_gain += g -> actual;
+  }
+
+  if ( total_gain > 0 )
+  {
+    chart_t::gains              ( p -> gains_chart, p, (resource_type) i );
+    if ( ! p -> gains_chart.empty() )
+      {
+
+      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Gains Chart\" />\n", p -> gains_chart.c_str() );
+
+      gains_str = buffer;
+      }
+    util_t::fprintf( file,
                  "\t\t\t\t\t\t%s\n",
                  gains_str.c_str() );
 
+  }
+}
 util_t::fprintf( file,
                  "\t\t\t\t\t</div>\n"
                  "\t\t\t\t</div>\n" );

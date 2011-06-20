@@ -78,6 +78,8 @@ static const char* resource_color( int type )
   case RESOURCE_ENERGY:   return class_text_color( ROGUE );
   case RESOURCE_FOCUS:    return class_text_color( ROGUE );
   case RESOURCE_RUNIC:    return class_color( DEATH_KNIGHT );
+  case RESOURCE_HOLY_POWER:    return class_color( PALADIN );
+  case RESOURCE_NONE:     return "000000";
   default: assert( 0 );
   }
   return 0;
@@ -897,7 +899,7 @@ struct compare_gain
 };
 
 const char* chart_t::gains( std::string& s,
-                            player_t* p )
+                            player_t* p, resource_type type )
 {
   std::vector<gain_t*> gains_list;
 
@@ -905,6 +907,7 @@ const char* chart_t::gains( std::string& s,
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
     if ( g -> actual <= 0 ) continue;
+    if ( g -> type != type ) continue;
     total_gain += g -> actual;
     gains_list.push_back( g );
   }
@@ -936,7 +939,7 @@ const char* chart_t::gains( std::string& s,
   s += "chds=0,100";
   s += "&amp;";
   s += "chco=";
-  s += resource_color( p -> primary_resource() );
+  s += resource_color( type );
   s += "&amp;";
   s += "chl=";
   for ( int i=0; i < num_gains; i++ )

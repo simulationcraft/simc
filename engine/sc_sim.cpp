@@ -1444,7 +1444,6 @@ void sim_t::analyze()
     {
       chart_t::action_dpet        ( pet -> action_dpet_chart,               pet );
       chart_t::action_dmg         ( pet -> action_dmg_chart,                pet );
-      chart_t::gains              ( pet -> gains_chart,                     pet );
       chart_t::timeline_resource  ( pet -> timeline_resource_chart,         pet );
       chart_t::timeline_health    ( pet -> timeline_resource_health_chart,  pet );
       chart_t::timeline_dps       ( pet -> timeline_dps_chart,              pet );
@@ -1456,7 +1455,6 @@ void sim_t::analyze()
 
     chart_t::action_dpet        ( p -> action_dpet_chart,               p );
     chart_t::action_dmg         ( p -> action_dmg_chart,                p );
-    chart_t::gains              ( p -> gains_chart,                     p );
     chart_t::timeline_resource  ( p -> timeline_resource_chart,         p );
     chart_t::timeline_health    ( p -> timeline_resource_health_chart,  p );
     chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );

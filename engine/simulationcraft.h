@@ -4270,7 +4270,7 @@ struct chart_t
   static const char* raid_timeline    ( std::string& s, sim_t* );
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* action_dmg       ( std::string& s, player_t* );
-  static const char* gains            ( std::string& s, player_t* );
+  static const char* gains            ( std::string& s, player_t*, resource_type );
   static const char* timeline_resource( std::string& s, player_t* );
   static const char* timeline_health  ( std::string& s, player_t* );
   static const char* timeline_dps     ( std::string& s, player_t* );
