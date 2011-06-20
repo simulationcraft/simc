@@ -294,7 +294,9 @@ player_t::player_t( sim_t*             s,
   potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
   pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-  active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ), dbc( s -> dbc ),
+  active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
+  reaction_mean( 1.0 ), reaction_stddev( 0.0 ), reaction_nu( 1.0 ),
+  dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
   base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
@@ -445,6 +447,8 @@ player_t::player_t( sim_t*             s,
     talent_tab_points[ i ] = 0;
     tree_type[ i ] = TREE_NONE;
   }
+
+  if ( reaction_stddev == 0 ) reaction_stddev =   reaction_mean * 0.25;
 }
 
 // player_t::~player_t =====================================================
@@ -3172,7 +3176,7 @@ double player_t::time_to_die() SC_CONST
 double player_t::total_reaction_time() SC_CONST
 {
 
-  return rngs.lag_reaction -> exgauss( 1.0, 0.04, 1.0);
+  return rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
 }
 
 // player_t::stat_gain ======================================================
@@ -5781,6 +5785,9 @@ void player_t::create_options()
     { "player_resist_frost",                  OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ]        ) },
     { "player_resist_fire",                   OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ]        ) },
     { "player_resist_nature",                 OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ]        ) },
+    { "reaction_time_mean",                   OPT_FLT,    &( reaction_mean                            ) },
+    { "reaction_time_stddev",                 OPT_FLT,    &( reaction_stddev                          ) },
+    { "reaction_time_nu",                     OPT_FLT,    &( reaction_nu                              ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

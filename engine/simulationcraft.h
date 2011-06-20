@@ -2872,6 +2872,7 @@ struct player_t
   int         big_hitbox;
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
+  double      reaction_mean,reaction_stddev,reaction_nu;
 
   // Data access
   dbc_t       dbc;
