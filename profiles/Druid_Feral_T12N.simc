@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Feral_T12N
-origin="Druid_CharDevSync.simc"
+origin="input=Druid_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -46,7 +46,7 @@ waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_2
 legs=cinderweb_leggings,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_284mastery_212haste,gems=67agi_20agi_20mastery_20agi,enchant=190ap_55crit
 feet=treads_of_the_craft,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_197haste_187mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=35mastery
 wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_haste,gems=40agi,enchant=50agi
-hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,reforge=haste_mastery,gems=40agi_40agi,enchant=65mastery
+hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,gems=40agi_40agi,enchant=65mastery
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi
 finger2=splintered_brimstone_seal,ilevel=378,quality=epic,stats=227agi_341sta_158mastery_140crit,reforge=mastery_haste
 trinket1=matrix_restabilizer,ilevel=384,quality=epic,stats=406agi
@@ -64,8 +64,8 @@ ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_
 # gear_expertise_rating=226
 # gear_hit_rating=343
 # gear_crit_rating=1795
-# gear_haste_rating=1864
-# gear_mastery_rating=1230
+# gear_haste_rating=1946
+# gear_mastery_rating=1148
 # gear_armor=11158
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
