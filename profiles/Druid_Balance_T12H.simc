@@ -26,13 +26,13 @@ actions+=/typhoon,moving=1
 actions+=/starfall,if=buff.lunar_eclipse.up
 actions+=/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0
 actions+=/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))&!dot.sunfire.remains>0
-actions+=/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
+actions+=/starsurge,if=!((eclipse<=-84&eclipse_dir=-1)|(eclipse>=75&eclipse_dir=1))
 actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
-actions+=/starfire,if=eclipse_dir=1&eclipse<80
-actions+=/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-87
-actions+=/wrath,if=eclipse_dir=-1&eclipse>=-87
-actions+=/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=80
+actions+=/starfire,if=eclipse_dir=1&eclipse<75
+actions+=/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-84
+actions+=/wrath,if=eclipse_dir=-1&eclipse>=-84
+actions+=/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=75
 actions+=/starfire,if=eclipse_dir=1
 actions+=/wrath,if=eclipse_dir=-1
 actions+=/starfire
@@ -40,4 +40,37 @@ actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
+head=obsidian_arborweave_cover,heroic=1,type=leather,ilevel=391,quality=epic,stats=1566armor_400int_689sta_246haste_301mastery,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit
+neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=67int_10int
+shoulders=obsidian_arborweave_shoulderwraps,heroic=1,type=leather,ilevel=391,quality=epic,stats=1446armor_322int_513sta_231crit_195mastery,reforge=crit_spi,gems=40int_10int,enchant=50int_25haste
+chest=obsidian_arborweave_vestment,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420int_689sta_269haste_301mastery,gems=67int_67int,enchant=20all
+waist=majordomos_chain_of_office,heroic=1,type=cloth,ilevel=397,quality=epic,stats=865armor_341int_542sta_206mastery_243haste,gems=40int_10int
+legs=firecat_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420int_689sta_269spi_295haste,gems=20int_20spi_20int_20spi_20int,enchant=95int_55spi
+feet=phoenixdown_treads,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322int_513sta_241spi_185mastery,reforge=spi_haste,gems=20int_20haste_10int,enchant=35mastery
+wrists=glowing_wing_bracers,heroic=1,type=leather,ilevel=391,quality=epic,stats=843armor_256int_384sta_173spi_166haste,enchant=50int
+hands=obsidian_arborweave_gloves,heroic=1,type=leather,ilevel=391,quality=epic,stats=1205armor_322int_513sta_231haste_202spi,gems=20int_20haste_10int,enchant=50haste
+finger1=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=mastery_haste
+finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit
+trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
+main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
+off_hand=goblet_of_anger,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_154spi_181haste,enchant=40int
+ranged=soulflame_vial,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_101mastery_89haste,gems=40int
 # Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=7001
+# gear_intellect=5739
+# gear_spirit=1302
+# gear_spell_power=2783
+# gear_hit_rating=479
+# gear_crit_rating=174
+# gear_haste_rating=2776
+# gear_mastery_rating=1740
+# gear_armor=11610
+# meta_gem=burning_shadowspirit
+# tier12_2pc_caster=1
+# tier12_4pc_caster=1
+# back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
+# main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
