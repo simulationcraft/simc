@@ -16,7 +16,7 @@ OS         = UNIX
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
-CXX        = g++
+CXX        = llvm-g++-4.2
 CPP_FLAGS  = -Wall -Woverloaded-virtual -Wno-unused-parameter -Wswitch -D_stricmp=strcasecmp
 LINK_FLAGS = 
 LINK_LIBS  = -lpthread

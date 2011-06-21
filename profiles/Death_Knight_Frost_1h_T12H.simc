@@ -1,5 +1,5 @@
 #!./simc 
-ptr=1
+
 deathknight=Death_Knight_Frost_1h_T12H
 origin="Death_Knight_CharDevSync.simc"
 level=85
@@ -39,21 +39,38 @@ actions+=/howling_blast
 actions+=/blood_tap
 actions+=/empower_rune_weapon
 actions+=/horn_of_winter
-head=elementium_deathplate_helmet,id=71478,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery,reforge=hit_mastery
-neck=stoneheart_choker,id=71586,reforge=exp_haste
-shoulders=elementium_deathplate_pauldrons,id=71480,gems=40str,enchant=50str_25crit
-chest=breastplate_of_shifting_visions,id=71469,gems=40str_20str_20hit_20str,enchant=20all
-waist=cinch_of_the_flaming_ember,id=71399,gems=40str_67str,reforge=crit_haste
-legs=elementium_deathplate_greaves,id=71479,gems=40str_40str,enchant=190ap_55crit,reforge=exp_mastery
-feet=arachnaflame_treads,id=71404,gems=40str_10str,enchant=50haste,reforge=crit_mastery
-wrists=earthcrack_bracers,id=71418,gems=67str,enchant=50str,reforge=crit_mastery
-hands=elementium_deathplate_gauntlets,id=71477,gems=40str_67str_10str,enchant=50str,reforge=hit_haste
-finger1=alysrazors_band,id=71433,gems=40str_10str,reforge=exp_mastery
-finger2=serrated_brimstone_signet,id=71588,reforge=crit_mastery
+head=elementium_deathplate_helmet,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_311haste_239hit,reforge=hit_exp,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
+neck=necklace_of_fetishes,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_188crit_142hit,reforge=hit_haste
+shoulders=elementium_deathplate_pauldrons,heroic=1,type=plate,ilevel=391,quality=epic,stats=2822armor_322str_513sta_238haste_191mastery,gems=40str,enchant=50str_25crit
+chest=breastplate_of_shifting_visions,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_301mastery_266haste,gems=40str_20str_20hit_20str,enchant=20all
+waist=cinch_of_the_flaming_ember,heroic=1,type=plate,ilevel=391,quality=epic,stats=2116armor_322str_513sta_153hit_260crit,reforge=hit_haste,gems=40str_67str
+legs=elementium_deathplate_greaves,heroic=1,type=plate,ilevel=391,quality=epic,stats=3292armor_420str_689sta_322exp_236haste,reforge=exp_mastery,gems=40str_40str,enchant=190ap_55crit
+feet=arachnaflame_treads,heroic=1,type=plate,ilevel=391,quality=epic,stats=2586armor_322str_513sta_228crit_208haste,reforge=crit_mastery,gems=40str_10str,enchant=50haste
+wrists=earthcrack_bracers,heroic=1,type=plate,ilevel=391,quality=epic,stats=1646armor_256str_384sta_158haste_178crit,reforge=crit_mastery,gems=67str,enchant=50str
+hands=elementium_deathplate_gauntlets,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_238hit_191mastery,reforge=hit_haste,gems=40str_67str_10str,enchant=50str
+finger1=alysrazors_band,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_171exp_124haste,reforge=exp_mastery,gems=40str_10str
+finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,reforge=hit_haste
 trinket1=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_haste,equip=onattackhit_2178str_10%_20dur_100cd
-trinket2=vessel_of_acceleration,id=69167
-back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_mastery
-main_hand=obsidium_cleaver,id=71562,enchant=rune_of_razorice,reforge=hit_haste
-off_hand=obsidium_cleaver,id=71562,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
-ranged=relic_of_the_elemental_lords,id=71587,gems=40str,reforge=crit_mastery
+trinket2=vessel_of_acceleration,heroic=1,ilevel=397,quality=epic,stats=458str,equip=onattackhit_87crit_5stack_20dur
+back=bladed_flamewrath_cover,heroic=1,ilevel=391,quality=epic,stats=745armor_256str_384sta_195haste_130exp,reforge=exp_mastery,enchant=65crit
+main_hand=obsidium_cleaver,heroic=1,ilevel=391,quality=epic,stats=197str_296sta_139mastery_119hit,reforge=hit_haste,enchant=rune_of_razorice,weapon=axe_2.60speed_1133min_2105max
+off_hand=obsidium_cleaver,heroic=1,ilevel=391,quality=epic,stats=197str_296sta_139mastery_119hit,reforge=hit_haste,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_1133min_2105max
+ranged=relic_of_the_elemental_lords,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_94crit_98haste,reforge=crit_mastery,gems=40str
 # Gear Summary
+# gear_strength=5770
+# gear_agility=20
+# gear_stamina=6868
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=190
+# gear_expertise_rating=688
+# gear_hit_rating=695
+# gear_crit_rating=1089
+# gear_haste_rating=2379
+# gear_mastery_rating=1443
+# gear_armor=22377
+# meta_gem=reverberating_shadowspirit
+# tier12_2pc_melee=1
+# tier12_4pc_melee=1
+# main_hand=obsidium_cleaver,heroic=1,weapon=axe_2.60speed_1133min_2105max,enchant=rune_of_razorice
+# off_hand=obsidium_cleaver,heroic=1,weapon=axe_2.60speed_1133min_2105max,enchant=rune_of_the_fallen_crusader
