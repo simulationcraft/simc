@@ -1,8 +1,8 @@
 #include "data_definitions.hh"
 
-#define PTR_ITEM_SIZE (4455)
+#define PTR_ITEM_SIZE (4456)
 
-// 4455 items, ilevel 318-410, wow build level 14313
+// 4456 items, ilevel 318-410, wow build level 14316
 static struct item_data_t __ptr_item_data[] = {
   {    38, "Recruit's Shirt"                                      , "inv_shirt_05"                          , 0x00000000, 0x00002000,    1,   0,    0,    0,  1,  4,  4,  0,  0,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   {    45, "Squire's Shirt"                                       , "inv_shirt_01"                          , 0x00000000, 0x00002000,    1,   0,    0,    0,  1,  4,  4,  0,  0,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
@@ -4132,6 +4132,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 71264, "Bracers of Forked Lightning"                          , "inv_bracer_raidshaman_i_01"            , 0x00001000, 0x00002000,  378,  85,    0,    0,  4,  9,  4,  3,  2,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   3,   7,  32,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  227,  341,  165,  129,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71265, "Emberflame Bracers"                                   , "inv_bracer_robe_raidwarlock_j_01"      , 0x00001000, 0x00002000,  378,  85,    0,    0,  4,  9,  4,  1,  2,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  31,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  227,  341,  148,  154,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71266, "Firesoul Wristguards"                                 , "inv_bracer_robe_raidpriest_j_01"       , 0x00001000, 0x00002000,  378,  85,    0,    0,  4,  9,  4,  1,  2,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {  227,  341,  158,  140,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
+  { 71267, "Mantle of Desire"                                     , "inv_cape_firelands_fireset_d_01"       , 0x00010000, 0x00000000,  365,   1,    0,    0,  4, 16,  4,  1,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,  36,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  201,  301,  134,  134,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71271, "Handwraps of the Cleansing Flame"                     , "inv_gauntlets_robe_raidpriest_j_01"    , 0x00001000, 0x00002000,  378,  85,    0,    0,  4, 10,  4,  1,  1,     0, 0.000000,    0.000, 0x00000010, 0x7fffffff, {   5,   7,   6,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {  282,  454,  206,  172,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   8,   0,   0 },    0,  4143, 1009,    0 },
   { 71272, "Cowl of the Cleansing Flame"                          , "inv_helmet_robe_raidpriest_j_01"       , 0x00001000, 0x00002000,  378,  85,    0,    0,  4,  1,  4,  1,  1,     0, 0.000000,    0.000, 0x00000010, 0x7fffffff, {   5,   7,   6,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  348,  611,  255,  229,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   1,   2,   0 },    0,  4150, 1009,    0 },
   { 71273, "Legwraps of the Cleansing Flame"                      , "inv_pants_robe_raidpriest_j_01"        , 0x00001000, 0x00002000,  378,  85,    0,    0,  4,  7,  4,  1,  1,     0, 0.200000,    0.000, 0x00000010, 0x7fffffff, {   5,   7,   6,  32,  -1,  -1,  -1,  -1,  -1,  -1 }, {  368,  611,  291,  198,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   2,   4,   0 },    0,  4144, 1009,    0 },
@@ -4465,7 +4466,7 @@ static struct item_data_t __ptr_item_data[] = {
 
 #define PTR_RAND_PROP_POINTS_SIZE (410)
 
-// Random property points for item levels 1-410, wow build 14313
+// Random property points for item levels 1-410, wow build 14316
 static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
   {   1, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
   {   2, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
@@ -4882,7 +4883,7 @@ static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
 
 #define PTR_RAND_SUFFIX_SIZE (261)
 
-// Random "cataclysm" item suffixes, wow build 14313
+// Random "cataclysm" item suffixes, wow build 14316
 static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
   {    5, "of the Monkey"       , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {    6, "of the Eagle"        , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -5150,7 +5151,7 @@ static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
 
 #define PTR_SPELL_ITEM_ENCH_SIZE (3014)
 
-// Item enchantment data, wow build 14313
+// Item enchantment data, wow build 14316
 static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {    1,  9, "Rockbiter 3"            ,     0, {   6,   0,   0 }, {    6,    0,    0 }, {     0,     0,     0 } },
   {    2,  9, "Frostbrand"             ,     0, {   1,   0,   0 }, {    0,    0,    0 }, {  8034,     0,     0 } },
@@ -8169,7 +8170,7 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {    0,  0, 0                        ,     0, {   0,   0,   0 }, {    0,    0,    0 }, {     0,     0,     0 } },
 };
 
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-410, wow build 14313
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   {    1, {    0.900000,    0.950000,    1.000000,    1.100000,    1.370000,    1.370000,    1.370000 } },
   {    2, {    0.900000,    0.950000,    1.000000,    1.100000,    1.370000,    1.370000,    1.370000 } },
@@ -8584,7 +8585,7 @@ static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-410, wow build 14313
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   {    1, {        28.0,        57.0,        91.0,       153.0,       199.0,       199.0,       199.0 } },
   {    2, {        57.0,        86.0,       119.0,       181.0,       234.0,       234.0,       234.0 } },
@@ -8999,7 +9000,7 @@ static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-410, wow build 14313
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-410, wow build 14316
 static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
   {    1, {    82.915703,   126.601997,   206.376007,   310.082001 } },
   {    2, {    97.447304,   148.789001,   242.544998,   364.425995 } },
@@ -9415,7 +9416,7 @@ static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
 };
 
 
-// Inventory type based armor multipliers, wow build 14313
+// Inventory type based armor multipliers, wow build 14316
 static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
   {   1, {    0.130000,    0.130000,    0.130000,    0.130000 } },
   {   2, {    0.000000,    0.000000,    0.000000,    0.000000 } },
@@ -9444,7 +9445,7 @@ static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
 };
 
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   {    1, {    0.761456,    0.780158,    1.269090,    3.899070,    6.957370,    6.957370,    6.957370 } },
   {    2, {    0.991986,    1.016350,    1.653310,    4.443200,    7.401560,    7.401560,    7.401560 } },
@@ -9859,7 +9860,7 @@ static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   {    1, {    0.380728,    0.390079,    0.634547,    1.949538,    3.478684,    3.478684,    3.478684 } },
   {    2, {    0.495993,    0.508175,    0.826655,    2.221599,    3.700778,    3.700778,    3.700778 } },
@@ -10274,7 +10275,7 @@ static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageRanged.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageRanged.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamageranged_data[] = {
   {    1, {    0.989892,    1.014210,    1.649820,    5.068800,    9.044580,    9.044580,    9.044580 } },
   {    2, {    1.289580,    1.321260,    2.149300,    5.776160,    9.622030,    9.622030,    9.622030 } },
@@ -10689,7 +10690,7 @@ static struct item_scale_data_t __ptr_itemdamageranged_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageThrown.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageThrown.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamagethrown_data[] = {
   {    1, {    0.990000,    1.014000,    1.650000,    5.069000,    9.045000,    9.045000,    9.045000 } },
   {    2, {    1.290000,    1.321000,    2.149000,    5.776000,    9.622000,    9.622000,    9.622000 } },
@@ -11104,7 +11105,7 @@ static struct item_scale_data_t __ptr_itemdamagethrown_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageWand.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageWand.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamagewand_data[] = {
   {    1, {    1.177165,    2.256540,    2.911347,    5.354722,    9.678668,    9.678668,    9.678668 } },
   {    2, {    1.327749,    2.545198,    3.283769,    5.772976,   10.560000,   10.560000,   10.560000 } },
@@ -11519,7 +11520,7 @@ static struct item_scale_data_t __ptr_itemdamagewand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   {    1, {    0.989892,    1.014205,    1.649821,    5.068797,    9.044580,    9.044580,    9.044580 } },
   {    2, {    1.289582,    1.321256,    2.149303,    5.776158,    9.622025,    9.622025,    9.622025 } },
@@ -11934,7 +11935,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-410, wow build 14313
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-410, wow build 14316
 static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   {    1, {    0.380728,    0.390079,    0.634547,    1.949538,    3.478684,    3.478684,    3.478684 } },
   {    2, {    0.495993,    0.508175,    0.826655,    2.221599,    3.700778,    3.700778,    3.700778 } },
@@ -12350,7 +12351,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
 };
 
 
-// Gem properties, wow build 14313
+// Gem properties, wow build 14316
 static struct gem_property_data_t __ptr_gem_property_data[] = {
   {     2,  2686,   2 },
   {     3,  2687,   8 },
