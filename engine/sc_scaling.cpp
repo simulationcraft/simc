@@ -368,7 +368,7 @@ void scaling_t::analyze_lag()
     player_t* delta_p = delta_sim -> find_player( p -> name() );
 
     // Calculate DPS difference per millisecond of lag
-    double divisor = ( ( delta_sim -> queue_lag - ref_sim -> queue_lag ) * 1000 );
+    double divisor = ( ( delta_sim -> gcd_lag - ref_sim -> gcd_lag ) * 1000 );
 
     double delta_score = scale_over_function( delta_sim, delta_p );
     double   ref_score = scale_over_function(   ref_sim,   ref_p );
