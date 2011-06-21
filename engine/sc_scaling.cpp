@@ -356,9 +356,8 @@ void scaling_t::analyze_lag()
   }
 
   delta_sim = new sim_t( sim );
-  delta_sim ->   queue_lag += 0.100;
   delta_sim ->     gcd_lag += 0.100;
-  delta_sim -> channel_lag += 0.100;
+  delta_sim -> channel_lag += 0.200;
   delta_sim -> scaling -> scale_stat = STAT_MAX;
   delta_sim -> execute();
 
