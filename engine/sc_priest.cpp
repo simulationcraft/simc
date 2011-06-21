@@ -164,6 +164,7 @@ struct priest_t : public player_t
   cooldown_t*       cooldowns_rapture;
   cooldown_t*       cooldowns_inner_focus;
   cooldown_t*       cooldowns_penance;
+  cooldown_t*       cooldowns_cauterizing_flames;
 
   // DoTs
   dot_t*            dots_shadow_word_pain;
@@ -192,6 +193,7 @@ struct priest_t : public player_t
   // Procs
   proc_t* procs_shadowy_apparation;
   proc_t* procs_surge_of_light;
+  proc_t* procs_cauterizing_flames;
 
   // Special
   std::queue<spell_t* > shadowy_apparition_free_list;
@@ -203,6 +205,7 @@ struct priest_t : public player_t
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
+  rng_t* rng_cauterizing_flames;
 
   // Options
   std::string power_infusion_target_str;
@@ -342,6 +345,8 @@ struct priest_t : public player_t
     cooldowns_rapture -> duration = 12.0;
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
     cooldowns_penance                    = get_cooldown( "penance" );
+    cooldowns_cauterizing_flames         = get_cooldown( "cauterizing_flames" );
+    cooldowns_cauterizing_flames -> duration = 5.1;
 
     create_talents();
     create_glyphs();
@@ -752,6 +757,14 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
+    if ( p -> rng_cauterizing_flames -> roll( p -> sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
+      if ( ! p -> cooldowns_cauterizing_flames -> remains() ) // Assuming you can only have 1 Cauterizing Flame
+      {
+        p -> procs_cauterizing_flames -> occur();
+        p -> cooldowns_cauterizing_flames -> start();
+        p -> summon_pet( "cauterizing_flames", 5 );
+      }
+
     if ( execute_time() > 0 && p -> buffs_borrowed_time -> up() )
       p -> buffs_borrowed_time -> expire();
   }
@@ -1069,6 +1082,44 @@ struct shadow_fiend_pet_t : public pet_t
   }
 };
 
+
+// ==========================================================================
+// Pet Cauterizing Flames
+// ==========================================================================
+
+struct cauterizing_flames_pet_t : public pet_t
+{
+
+
+  struct cauterizing_flames_heal_t : public heal_t
+  {
+    cauterizing_flames_heal_t( player_t* player ) :
+      heal_t( "cauterizing_flames_heal", player, 99152 )
+    {
+      may_miss = false;
+      cooldown -> duration = 5;
+    }
+
+  };
+
+
+  cauterizing_flames_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "cauterizing_flames" )
+  {
+
+    action_list_str             = "/snapshot_stats/cauterizing_flames_heal";
+  }
+
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "cauterizing_flames_heal" ) return new cauterizing_flames_heal_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+};
 
 // ==========================================================================
 // Priest Spell Increments
@@ -4219,6 +4270,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
   if ( p ) return p;
 
   if ( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this );
+  if ( pet_name == "cauterizing_flames" ) return new cauterizing_flames_pet_t( sim, this );
 
   return 0;
 }
@@ -4228,6 +4280,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 void priest_t::create_pets()
 {
   create_pet( "shadow_fiend" );
+  create_pet( "cauterizing_flames" );
 }
 
 // priest_t::init_base =======================================================
@@ -4272,6 +4325,7 @@ void priest_t::init_procs()
 
   procs_shadowy_apparation   = get_proc( "shadowy_apparation_proc" );
   procs_surge_of_light       = get_proc( "surge_of_light" );
+  procs_cauterizing_flames   = get_proc( "cauterizing_flames" );
 }
 
 // priest_t::init_scaling ====================================================
@@ -4339,6 +4393,7 @@ void priest_t::init_rng()
   player_t::init_rng();
 
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
+  rng_cauterizing_flames = get_rng( "rng_cauterizing_flames" );
 }
 
 // priest_t::init_talents
