@@ -1412,6 +1412,64 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb );
 }
 
+// register_blazing_power ======================================================
+
+static void register_blazing_power( item_t* item )
+{
+    player_t* p = item -> player;
+
+    item -> unique = true;
+
+    struct blazing_power_heal_t : public heal_t
+    {
+      bool heroic;
+
+      blazing_power_heal_t( player_t* p, bool h ) :
+        heal_t( "blazing_power", p, h ? 97136 : 96966 ), heroic( h )
+      {
+        trigger_gcd = 0;
+        background  = true;
+        may_miss = false;
+        may_crit = true;
+        base_crit = 0.05; // FIXME: needs confirmation
+        init();
+      }
+      virtual void player_buff() {}
+    };
+
+    struct blazing_power_callback_t : public action_callback_t
+    {
+      heal_t* heal;
+      proc_t* proc;
+      rng_t* rng;
+
+      blazing_power_callback_t( player_t* p, heal_t* s ) :
+        action_callback_t( p -> sim, p ), heal( s )
+      {
+        proc = p -> get_proc( "blazing_power" );
+        rng  = p -> get_rng ( "blazing_power" );
+      }
+
+      virtual void trigger( action_t* a, void* call_data )
+      {
+        if (   a -> aoe      ||
+               a -> proc     ||
+               a -> dual     ||
+               ! a -> harmful   )
+          return;
+
+        if ( rng -> roll( 0.10 ) )
+        {
+          heal -> execute();
+          proc -> occur();
+        }
+      }
+    };
+
+  // FIXME: Observe if it procs of non-direct healing spells
+  p -> register_direct_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1466,6 +1524,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "unheeded_warning"                    ) ) register_unheeded_warning                  ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
+    if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
   }
 }
 
