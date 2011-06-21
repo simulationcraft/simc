@@ -614,10 +614,10 @@ static void trigger_strikes_of_opportunity( attack_t* a )
     struct opportunity_strike_t : public warrior_attack_t
     {
       opportunity_strike_t( warrior_t* p ) :
-	warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
+        warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
       {
-	background = true;
-	init();
+        background = true;
+        init();
       }
     };
 
@@ -679,7 +679,7 @@ static void trigger_enrage( attack_t* a )
     enrage_value *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
   }
 
-  p -> buffs_enrage -> trigger( 1, enrage_value);
+  p -> buffs_enrage -> trigger( 1, enrage_value );
 }
 
 // trigger_flurry ===========================================================
@@ -720,7 +720,8 @@ static void trigger_flurry( attack_t* a, int stacks )
   if( p -> main_hand_attack )
   {
     event_t* mhe = p -> main_hand_attack -> execute_event;
-    if ( mhe ) {
+    if ( mhe )
+    {
       double delta;
       if ( mhe -> reschedule_time )
         delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
@@ -732,7 +733,8 @@ static void trigger_flurry( attack_t* a, int stacks )
   if( p -> off_hand_attack )
   {
     event_t* ohe = p -> off_hand_attack -> execute_event;
-    if ( ohe ) {
+    if ( ohe )
+    {
       double delta;
       if ( ohe -> reschedule_time )
         delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
@@ -943,7 +945,7 @@ void warrior_attack_t::player_buff()
   if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
   {
      if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
-         p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
+          p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
     {
       player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effect1().percent();
     }
@@ -959,8 +961,6 @@ void warrior_attack_t::player_buff()
 
   if ( p -> buffs_hold_the_line -> up() )
     player_crit += 0.10;
-
-  // --- Set Bonuses ---
 
   if ( sim -> debug )
     log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
@@ -1076,7 +1076,7 @@ struct auto_attack_t : public warrior_attack_t
   int sync_weapons;
 
   auto_attack_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "auto_attack", p ), sync_weapons( 0 )
+    warrior_attack_t( "auto_attack", p ), sync_weapons( 0 )
   {
     option_t options[] =
     {
@@ -1127,7 +1127,7 @@ struct auto_attack_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( warrior_t* p, const char* name ) :
-      warrior_attack_t( name, 50622, p, TREE_ARMS, false )
+    warrior_attack_t( name, 50622, p, TREE_ARMS, false )
   {
     background  = true;
     direct_tick = true;
@@ -1194,7 +1194,7 @@ struct bladestorm_t : public warrior_attack_t
     }
   }
 
-  // Bladestorm not modified by haste effects
+  // Bladestorm is not modified by haste effects
   virtual double haste() SC_CONST { return 1.0; }
 };
 
@@ -1203,7 +1203,7 @@ struct bladestorm_t : public warrior_attack_t
 struct bloodthirst_t : public warrior_attack_t
 {
   bloodthirst_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "bloodthirst", "Bloodthirst", p )
+    warrior_attack_t( "bloodthirst", "Bloodthirst", p )
   {
     check_spec( TREE_FURY );
 
@@ -1243,8 +1243,8 @@ struct charge_t : public warrior_attack_t
   int use_in_combat;
 
   charge_t( warrior_t* p, const std::string& options_str ) :
-      warrior_attack_t( "charge",  "Charge", p ),
-      use_in_combat( 0 ) // For now it's not usable in combat by default because we can't modell the distance/movement.
+    warrior_attack_t( "charge",  "Charge", p ),
+    use_in_combat( 0 ) // For now it's not usable in combat by default because we can't modell the distance/movement.
   {
     option_t options[] =
     {
@@ -1256,7 +1256,7 @@ struct charge_t : public warrior_attack_t
     cooldown -> duration += p -> talents.juggernaut -> effect3().seconds();
     cooldown -> duration += p -> glyphs.rapid_charge -> effect1().seconds();
 
-    stancemask  = STANCE_BATTLE;
+    stancemask = STANCE_BATTLE;
 
     if ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() )
       stancemask  = STANCE_BERSERKER | STANCE_BATTLE | STANCE_DEFENSE;
@@ -1919,6 +1919,7 @@ struct revenge_t : public warrior_attack_t
 
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effect2().percent()
                             + p -> glyphs.revenge -> effect1().percent();
+    direct_power_mod = extra_coeff();
     stancemask = STANCE_DEFENSE;
 
     if ( p -> talents.improved_revenge -> rank() )
