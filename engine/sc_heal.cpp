@@ -637,20 +637,9 @@ void absorb_t::execute()
 
       if ( harmful && callbacks )
       {
-        if ( result != RESULT_NONE )
-        {
-          if ( direct_tick )
-          {
-            action_callback_t::trigger( player -> tick_callbacks[ result ], this );
-          }
-          else
-          {
-            action_callback_t::trigger( player -> heal_callbacks[ result ], this );
-          }
-        }
         if ( ! background ) // OnSpellCast
         {
-          action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
+          action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
         }
       }
 }

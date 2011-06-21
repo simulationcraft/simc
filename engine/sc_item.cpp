@@ -901,6 +901,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_DAMAGE;
       effect.trigger_mask = SCHOOL_ALL_MASK;
     }
+    else if ( t.full == "onheal" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_HEAL;
+      effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
     else if ( t.full == "ontickdamage" )
     {
       effect.trigger_str  = t.full;
@@ -1096,25 +1102,25 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.full == "onhealcast" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL;
+      effect.trigger_type = PROC_HEAL_SPELL;
       effect.trigger_mask = RESULT_NONE_MASK;
     }
     else if ( t.full == "onhealhit" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL;
+      effect.trigger_type = PROC_HEAL_SPELL;
       effect.trigger_mask = RESULT_HIT_MASK;
     }
     else if ( t.full == "onhealdirectcrit" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL;
+      effect.trigger_type = PROC_HEAL_SPELL;
       effect.trigger_mask = RESULT_CRIT_MASK;
     }
     else if ( t.full == "onhealmiss" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL;
+      effect.trigger_type = PROC_HEAL_SPELL;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
     else if ( t.full == "onattack" )
