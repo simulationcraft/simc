@@ -1561,10 +1561,6 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
   {
     player -> register_direct_damage_callback( mask, cb );
   }
-  else if ( type == PROC_TICK )
-  {
-    player -> register_tick_callback( mask, cb );
-  }
   else if ( type == PROC_ATTACK )
   {
     player -> register_attack_callback( mask, cb );
@@ -1572,6 +1568,18 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
   else if ( type == PROC_SPELL )
   {
     player -> register_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_TICK )
+  {
+    player -> register_tick_callback( mask, cb );
+  }
+  else if ( type == PROC_HARMFUL_SPELL )
+  {
+    player -> register_harmful_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HEAL )
+  {
+    player -> register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -1621,6 +1629,14 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( int             
   else if ( type == PROC_SPELL )
   {
     player -> register_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HARMFUL_SPELL )
+  {
+    player -> register_harmful_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HEAL )
+  {
+    player -> register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -1678,6 +1694,14 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
     player -> register_spell_callback( mask, cb );
     player -> register_tick_callback( mask, cb );
   }
+  else if ( type == PROC_HARMFUL_SPELL )
+  {
+    player -> register_harmful_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HEAL )
+  {
+    player -> register_heal_callback( mask, cb );
+  }
 
   return cb;
 }
@@ -1734,6 +1758,14 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
     player -> register_spell_callback( mask, cb );
     player -> register_tick_callback( mask, cb );
   }
+  else if ( type == PROC_HARMFUL_SPELL )
+  {
+    player -> register_harmful_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HEAL )
+  {
+    player -> register_heal_callback( mask, cb );
+  }
 
   return cb;
 }
@@ -1787,6 +1819,14 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( int             
   else if ( type == PROC_SPELL )
   {
     player -> register_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HARMFUL_SPELL )
+  {
+    player -> register_harmful_spell_callback( mask, cb );
+  }
+  else if ( type == PROC_HEAL )
+  {
+    player -> register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -1949,6 +1989,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "vessel_of_acceleration"              ) e = ( heroic ? "OnAttackHit_87Crit_5Stack_20Dur" : "OnAttackHit_77Crit_5Stack_20Dur" );
   else if ( name == "witching_hourglass"                  ) e = ( heroic ? "OnSpellCast_1710Haste_10%_15Dur_75Cd" : "OnSpellCast_918Haste_10%_15Dur_75Cd" );
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellHit_132SP_5%_10Dur";
+  else if ( name == "fall_of_mortality"                   ) e = ( heroic ? "OnHealCast_2178Spi_15Dur_75Cd" : "OnHealCast_1926Spi_15Dur_75Cd" );
 
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
@@ -2064,6 +2105,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "vengeance_of_the_forsaken"  ) e = ( heroic ? "OnAttackHit_250AP_5Stack_20Dur_120Cd" : "OnAttackHit_215AP_5Stack_20Dur_120Cd" );
   else if ( name == "victors_call"               ) e = ( heroic ? "OnAttackHit_250AP_5Stack_20Dur_120Cd" : "OnAttackHit_215AP_5Stack_20Dur_120Cd" );
   else if ( name == "nevermelting_ice_crystal"   ) e = "OnSpellCrit_184Crit_5Stack_20Dur_180Cd_reverse";
+
 
   // Engineering Tinkers
   else if ( name == "pyrorocket"                   ) e = "1165Fire_45Cd";  // temporary for backwards compatibility

@@ -1069,6 +1069,54 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_SPELL;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
+    else if ( t.full == "onharmfulspellcast" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HARMFUL_SPELL;
+      effect.trigger_mask = RESULT_NONE_MASK;
+    }
+    else if ( t.full == "onharmfulspellhit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HARMFUL_SPELL;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
+    else if ( t.full == "onharmfulspelldirectcrit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HARMFUL_SPELL;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onharmfulspellmiss" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HARMFUL_SPELL;
+      effect.trigger_mask = RESULT_MISS_MASK;
+    }
+    else if ( t.full == "onhealcast" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HEAL;
+      effect.trigger_mask = RESULT_NONE_MASK;
+    }
+    else if ( t.full == "onhealhit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HEAL;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
+    else if ( t.full == "onhealdirectcrit" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HEAL;
+      effect.trigger_mask = RESULT_CRIT_MASK;
+    }
+    else if ( t.full == "onhealmiss" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_HEAL;
+      effect.trigger_mask = RESULT_MISS_MASK;
+    }
     else if ( t.full == "onattack" )
     {
       effect.trigger_str = t.full;

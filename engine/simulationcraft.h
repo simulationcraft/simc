@@ -298,6 +298,8 @@ enum proc_type
   PROC_SPELL,
   PROC_TICK,
   PROC_SPELL_AND_TICK,
+  PROC_HEAL,
+  PROC_HARMFUL_SPELL,
   PROC_MAX
 };
 
@@ -3000,6 +3002,7 @@ struct player_t
   std::vector<action_callback_t*> all_callbacks;
   std::vector<action_callback_t*> attack_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*>  spell_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*>  heal_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*>   tick_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*> direct_damage_callbacks[ SCHOOL_MAX ];
   std::vector<action_callback_t*>   tick_damage_callbacks[ SCHOOL_MAX ];
@@ -3372,6 +3375,8 @@ struct player_t
   virtual void register_attack_callback       ( int64_t result_mask, action_callback_t* );
   virtual void register_spell_callback        ( int64_t result_mask, action_callback_t* );
   virtual void register_tick_callback         ( int64_t result_mask, action_callback_t* );
+  virtual void register_heal_callback         ( int64_t result_mask, action_callback_t* );
+  virtual void register_harmful_spell_callback( int64_t result_mask, action_callback_t* );
   virtual void register_tick_damage_callback  ( int64_t result_mask, action_callback_t* );
   virtual void register_direct_damage_callback( int64_t result_mask, action_callback_t* );
   virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );

@@ -196,12 +196,12 @@ void heal_t::execute()
         }
         else
         {
-          action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+          action_callback_t::trigger( player -> heal_callbacks[ result ], this );
         }
       }
       if ( ! background ) // OnSpellCast
       {
-        action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+        action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
       }
     }
 }
@@ -645,12 +645,12 @@ void absorb_t::execute()
           }
           else
           {
-            action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+            action_callback_t::trigger( player -> heal_callbacks[ result ], this );
           }
         }
         if ( ! background ) // OnSpellCast
         {
-          action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+          action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
         }
       }
 }

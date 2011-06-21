@@ -3532,6 +3532,7 @@ void player_t::register_spell_callback( int64_t mask,
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       spell_callbacks[ i ].push_back( cb );
+      heal_callbacks[ i ].push_back( cb );
     }
   }
 }
@@ -3549,6 +3550,35 @@ void player_t::register_tick_callback( int64_t mask,
     }
   }
 }
+
+// player_t::register_heal_callback ========================================
+
+void player_t::register_heal_callback( int64_t mask,
+                                        action_callback_t* cb )
+{
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      heal_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_harmful_spell_callback ========================================
+
+void player_t::register_harmful_spell_callback( int64_t mask,
+                                        action_callback_t* cb )
+{
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      spell_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
 
 // player_t::register_tick_damage_callback ==================================
 
