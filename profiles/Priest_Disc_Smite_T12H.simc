@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_Disc_Smite_T12H
-origin="priest_chardevsync.simc"
+origin="Priest_CharDevSync.simc"
 level=85
 race=troll
 role=spell

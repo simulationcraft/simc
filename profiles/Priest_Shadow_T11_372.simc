@@ -18,7 +18,7 @@ actions+=/vampiric_embrace
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
-actions+=/mind_blast,if=buff.shadow_orb.stack>=1
+actions+=/mind_blast,if=buff.shadow_orb.react>=1
 actions+=/berserking
 actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react
 actions+=/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react

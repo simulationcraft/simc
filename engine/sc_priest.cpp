@@ -4638,7 +4638,7 @@ void priest_t::init_actions()
                                                          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       }
 
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
       if ( dbc.ptr )                                     action_list_str += "&!set_bonus.tier12_4pc_caster";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
@@ -4659,7 +4659,7 @@ void priest_t::init_actions()
 
       if ( dbc.ptr )
       {
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.stack>=1";
+                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
                                                          action_list_str += "&set_bonus.tier12_4pc_caster";
       }
                     
