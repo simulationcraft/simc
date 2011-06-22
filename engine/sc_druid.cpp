@@ -833,6 +833,7 @@ static void trigger_empowered_touch( heal_t* a )
     if ( p -> dots_lifebloom -> ticking )
     {
       p -> dots_lifebloom -> action -> refresh_duration();
+      if ( p -> buffs_lifebloom -> check() ) p -> buffs_lifebloom -> refresh();
       p -> procs_empowered_touch -> occur();
     }
   }
@@ -4608,7 +4609,7 @@ void druid_t::init_buffs()
   buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
   buffs_enrage             = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
   buffs_lacerate           = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
-  buffs_lifebloom          = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0, true );
+  buffs_lifebloom          = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0 );
   buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
   buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );

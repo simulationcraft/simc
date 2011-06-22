@@ -1431,6 +1431,7 @@ static void register_blazing_power( item_t* item )
         background  = true;
         may_miss = false;
         may_crit = true;
+        callbacks = false;
         base_crit = 0.05; // FIXME: needs confirmation
         init();
       }
