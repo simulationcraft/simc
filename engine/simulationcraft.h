@@ -3257,6 +3257,9 @@ struct player_t
   virtual void init_resources( bool force = false );
   virtual void init_consumables();
   virtual void init_professions();
+  virtual void init_use_item_actions( const std::string& append = std::string() );
+  virtual void init_use_profession_actions( const std::string& append = std::string() );
+  virtual void init_use_racial_actions( const std::string& append = std::string() );
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();

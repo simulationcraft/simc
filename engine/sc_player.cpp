@@ -1231,6 +1231,74 @@ struct execute_pet_action_t : public action_t
   }
 };
 
+
+// player_t::init_use_item_actions ==================================================
+
+void player_t::init_use_item_actions( const std::string& append )
+{
+    int num_items = ( int ) items.size();
+    for ( int i=0; i < num_items; i++ )
+    {
+      if ( items[ i ].use.active() )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ i ].name();
+        if ( ! append.empty() )
+        {
+          action_list_str += append;
+        }
+      }
+    }
+}
+
+// player_t::init_use_profession_actions ==================================================
+
+void player_t::init_use_profession_actions( const std::string& append )
+{
+    // Lifeblood
+    if ( profession[ PROF_HERBALISM ] >= 450 )
+    {
+      action_list_str += "/lifeblood";
+    }
+    else
+    {
+      return;
+    }
+    if ( ! append.empty() )
+    {
+      action_list_str += append;
+    }
+}
+
+
+
+// player_t::init_use_racial_actions ==================================================
+
+void player_t::init_use_racial_actions( const std::string& append )
+{
+    if ( race == RACE_ORC )
+    {
+      action_list_str += "/blood_fury";
+    }
+    else if ( race == RACE_TROLL )
+    {
+      action_list_str += "/berserking";
+    }
+    else if ( race == RACE_BLOOD_ELF )
+    {
+      action_list_str += "/arcane_torrent";
+    }
+    else
+    {
+      return;
+    }
+    if ( ! append.empty() )
+    {
+      action_list_str += append;
+    }
+}
+
+
 // player_t::init_actions ==================================================
 
 void player_t::init_actions()

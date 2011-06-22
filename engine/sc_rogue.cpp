@@ -3311,38 +3311,17 @@ void rogue_t::init_actions()
 
     action_list_str += "/kick";
 
-    int num_items = ( int ) items.size();
-    for ( int i=0; i < num_items; i++ )
-    {
-      if ( items[ i ].use.active() )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[ i ].name();
-      }
-    }
-
-    // Lifeblood
-    if ( profession[ PROF_HERBALISM ] >= 450 )
-      action_list_str += "/lifeblood";
-
-    if ( race == RACE_ORC )
-    {
-      action_list_str += "/blood_fury";
-    }
-    else if ( race == RACE_TROLL )
-    {
-      action_list_str += "/berserking";
-    }
-    else if ( race == RACE_BLOOD_ELF )
-    {
-      action_list_str += "/arcane_torrent";
-    }
-
-    /* Putting this here for now but there is likely a better place to put it */
-    action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
-
     if ( primary_tree() == TREE_ASSASSINATION )
     {
+      init_use_item_actions();
+
+      init_use_profession_actions();
+
+      init_use_racial_actions();
+ 
+      /* Putting this here for now but there is likely a better place to put it */
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+
       action_list_str += "/garrote";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
       if ( ! talents.cut_to_the_chase -> rank() )
@@ -3369,6 +3348,15 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
+      init_use_item_actions();
+
+      init_use_profession_actions();
+
+      init_use_racial_actions();
+ 
+      /* Putting this here for now but there is likely a better place to put it */
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+
       // TODO: Add Blade Flurry
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
@@ -3386,6 +3374,9 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_SUBTLETY )
     {
+      /* Putting this here for now but there is likely a better place to put it */
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+
       // XXX Tweaks might still be needed; Recuperate and Rupture can drop off, and maintaining their uptime 100% seems impossible (but not required too)
 
       if ( talents.shadow_dance -> rank() )
@@ -3393,6 +3384,13 @@ void rogue_t::init_actions()
         action_list_str += "/pool_energy,for_next=1";
         action_list_str += "/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down";
       }
+
+      init_use_item_actions( ",if=buff.shadow_dance.up" );
+
+      init_use_profession_actions( ",if=buff.shadow_dance.up" );
+
+      init_use_racial_actions( ",if=buff.shadow_dance.up" );
+
       action_list_str += "/pool_energy,for_next=1";
       action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
       
@@ -3417,12 +3415,19 @@ void rogue_t::init_actions()
       // if ( talents.hemorrhage -> rank() )
 
       action_list_str += "/backstab,if=combo_points<3&energy>60";
-      action_list_str += "/backstab,if=cooldown.honor_among_thieves.remains>1.75";
-      //preventing energy capping if HaT procs don't align right, or if we're running rogue solo without any HaT donors
-      action_list_str += "/backstab,if=combo_points<5&energy>80&cooldown.honor_among_thieves.remains=0";
+
+      action_list_str += "/backstab,if=combo_points<4&energy>40&energy<75";
+      action_list_str += "/backstab,if=combo_points<5&energy>80";
     }
     else
     {
+      init_use_item_actions();
+
+      init_use_racial_actions();
+ 
+      /* Putting this here for now but there is likely a better place to put it */
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+
       action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
       action_list_str += "/slice_and_dice,if=combo_points>=3&buff.slice_and_dice.remains<2";
       action_list_str += "/sinister_strike,if=combo_points<5";

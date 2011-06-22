@@ -330,6 +330,7 @@ struct death_knight_t : public player_t
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_actions();
+  virtual void      init_use_racial_actions( const std::string& append = std::string() );
   virtual void      init_enchant();
   virtual void      init_rng();
   virtual void      init_defense();
@@ -4358,6 +4359,18 @@ void death_knight_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
+void death_knight_t::init_use_racial_actions( const std::string& append )
+{
+  if ( race == RACE_DWARF )
+  {
+    if ( talents.bladed_armor -> rank() > 0 ) action_list_str += "/stoneform" + append;
+  }
+  else
+  {
+    player_t::init_use_racial_actions( append );
+  }
+}
+
 // death_knight_t::init_actions =============================================
 
 void death_knight_t::init_actions()
@@ -4390,32 +4403,20 @@ void death_knight_t::init_actions()
     action_list_str += "/snapshot_stats";
     int num_items = ( int ) items.size();
     bool has_hor = false;
+
+    init_use_item_actions( ",time>=10" );
+
+    init_use_profession_actions();
+
+    init_use_racial_actions( ",time>=10" );
+
     for ( int i=0; i < num_items; i++ )
     {
-      if ( items[ i ].use.active() )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[ i ].name();
-        action_list_str += ",time>=10";
-      }
       // check for Heart of Rage
       if ( strstr( items[ i ].name(), "heart_of_rage" ) )
       {
         has_hor = true;
       }
-    }
-    // Lifeblood
-    if ( profession[ PROF_HERBALISM ] >= 450 )
-      action_list_str += "/lifeblood";
-
-    // Use slightly into the fight, when debuffs are up
-    switch ( race )
-    {
-    case RACE_DWARF:     if ( talents.bladed_armor -> rank() > 0 ) action_list_str += "/stoneform,time>=10"; break;
-    case RACE_ORC:       action_list_str += "/blood_fury,time>=10";     break;
-    case RACE_TROLL:     action_list_str += "/berserking,time>=10";     break;
-    case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent,time>=10"; break;
-    default: break;
     }
 
     switch ( primary_tree() )

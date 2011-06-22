@@ -22,7 +22,6 @@ chardev=36352 name=Rogue_Subtlety_T11H save=Rogue_Subtlety_T11H.simc
 chardev=36366 name=Rogue_Subtlety_T11N save=Rogue_Subtlety_T11N.simc
 
 
-
 rogue=Rogue_Assassination_T12H
 level=85
 race=troll
@@ -54,8 +53,8 @@ level=85
 race=troll
 role=attack
 use_pre_potion=1
-professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000331032321310012321
+professions=engineering=525/jewelcrafting=525
+talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000332031321310012321
 glyphs=expose_armor/backstab/shadow_dance/slice_and_dice
 #gear here
 actions=
