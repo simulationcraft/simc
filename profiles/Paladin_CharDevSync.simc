@@ -2,15 +2,15 @@
 
 ptr=0
 
-#chardev=35780 save=Paladin_Retribution_T11_359.simc name=Paladin_Retribution_T11_359
+chardev=35780 save=Paladin_Retribution_T11_359.simc name=Paladin_Retribution_T11_359
 
-#chardev=47301 save=Paladin_Retribution_T11_372.simc name=Paladin_Retribution_T11_372
+#hardev=47301 save=Paladin_Retribution_T11_372.simc name=Paladin_Retribution_T11_372
 
 ptr=1
 
-#chardev=35780 name=Paladin_Retribution_T11N save=Paladin_Retribution_T11N.simc
+chardev=35780 name=Paladin_Retribution_T11N save=Paladin_Retribution_T11N.simc
 
-#chardev=47301 name=Paladin_Retribution_T11H save=Paladin_Retribution_T11H.simc
+chardev=47301 name=Paladin_Retribution_T11H save=Paladin_Retribution_T11H.simc
 
 
 paladin=Paladin_Retribution_T12H
@@ -21,14 +21,12 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
 glyphs=the_ascetic_crusader/hammer_of_wrath/templars_verdict/exorcism/seal_of_truth
-#head=greathelm_of_the_voracious_maw,id=71430,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery
 head=immolation_helmet,id=71514,reforge=hit_mastery,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
 neck=stoneheart_choker,id=71586,reforge=exp_mastery
 #neck=necklace_of_fetishes,id=71446,reforge=crit_mastery
 shoulders=immolation_pauldrons,id=71516,reforge=haste_mastery,gems=40str,enchant=50str_25crit
 back=bladed_flamewrath_cover,id=71391,reforge=haste_mastery,enchant=65crit
 chest=breastplate_of_shifting_visions,id=71469,reforge=haste_crit,gems=67str_20str_20hit_20str,enchant=20all
-#chest=immolation_battleplate,id=71512,reforge=haste_mastery,gems=67str_20str_20hit_20str,enchant=20all
 wrists=gigantiform_bracers,id=71584,reforge=hit_crit,gems=40str,enchant=50str
 hands=immolation_gauntlets,id=71513,gems=40str_40str,enchant=50str
 waist=cinch_of_the_flaming_ember,id=71399,reforge=crit_mastery,gems=20str_20hit_67str_10str
@@ -38,11 +36,10 @@ finger1=obsidian_signet_of_the_avengers,id=71215,reforge=crit_mastery,gems=40str
 finger2=alysrazors_band,id=71433,reforge=haste_mastery,gems=40str_10str
 main_hand=sulfuras_the_extinguished_hand,id=70723,reforge=crit_hit,gems=40str_40str_20str,enchant=landslide
 ranged=relic_of_the_elemental_lords,id=71587,reforge=haste_mastery,gems=40str
-trinket1=apparatus_of_khazgoroth,id=69113
-trinket2=essence_of_the_eternal_flame,id=69200
-#trinket1=crushing_weight,id=65118
-#trinket2=darkmoon_card_hurricane,id=62049
+trinket1=vessel_of_acceleration,id=69167
+trinket2=apparatus_of_khazgoroth,id=69113
 save=Paladin_Retribution_T12H.simc
+
 
 
 paladin=Paladin_Retribution_T12N
@@ -67,10 +64,8 @@ finger1=obsidian_signet_of_the_avengers,id=71215,reforge=crit_mastery,gems=40str
 finger2=alysrazors_band,id=70738,reforge=haste_mastery,gems=40str_10str
 main_hand=sulfuras_the_extinguished_hand,id=71352,reforge=crit_hit,gems=40str_40str_20str,enchant=landslide
 ranged=relic_of_the_elemental_lords,id=71147,reforge=haste_mastery,gems=40str
-trinket1=apparatus_of_khazgoroth,id=68972
-#trinket2=essence_of_the_eternal_flame,id=69002
-#trinket1=crushing_weight,id=65118
-trinket2=darkmoon_card_hurricane,id=62049
+trinket1=vessel_of_acceleration,id=68995
+trinket2=apparatus_of_khazgoroth,id=68972
 save=Paladin_Retribution_T12N.simc
 
 
