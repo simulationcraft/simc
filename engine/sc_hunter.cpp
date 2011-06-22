@@ -4107,7 +4107,7 @@ int hunter_t::decode_set( item_t& item )
   const char* s = item.name();
 
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
-  if ( strstr( s, "flamewalkers"          ) ) return SET_T12_MELEE;
+  if ( strstr( s, "flamewakers"          ) ) return SET_T12_MELEE;
 
   return SET_NONE;
 }
