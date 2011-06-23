@@ -479,11 +479,11 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
 struct army_ghoul_pet_t : public pet_t
 {
-  double snapshot_crit, snapshot_haste, snapshot_hit, snapshot_strength;
+  double snapshot_crit, snapshot_haste, snapshot_speed, snapshot_hit, snapshot_strength;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "army_of_the_dead_ghoul_8" ),
-    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
+    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_speed( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 156; // FIXME: Needs further testing
@@ -588,6 +588,7 @@ struct army_ghoul_pet_t : public pet_t
     // Pets don't seem to inherit their master's crit at the moment.
     snapshot_crit     = o -> composite_pet_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
+    snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
     snapshot_strength = o -> strength();
     o -> active_army_ghoul = this;
@@ -608,6 +609,11 @@ struct army_ghoul_pet_t : public pet_t
   virtual double composite_attack_expertise() SC_CONST
   {
     return ( ( 100.0 * snapshot_hit ) * 26.0 / 8.0 ) / 100.0; // Hit gains equal to expertise
+  }
+
+  virtual double composite_attack_speed() SC_CONST
+  {
+    return snapshot_speed;
   }
 
   virtual double composite_attack_haste() SC_CONST
@@ -1034,7 +1040,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot;
+  double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot, speed_snapshot;
   spell_t*  drw_blood_boil;
   spell_t*  drw_blood_plague;
   spell_t*  drw_death_coil;
@@ -1050,7 +1056,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     pet_t( sim, owner, "dancing_rune_weapon", true ),
     dots_drw_blood_plague( 0 ), dots_drw_frost_fever( 0 ),
     snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
-    haste_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
+    haste_snapshot( 1.0 ), speed_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
     drw_death_coil( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
     drw_heart_strike( 0 ), drw_icy_touch( 0 ), drw_pestilence( 0 ),
     drw_plague_strike( 0 ), drw_melee( 0 )
@@ -1083,6 +1089,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
   virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
+  virtual double composite_attack_speed() SC_CONST       { return speed_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
   virtual double composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST
@@ -1099,6 +1106,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     snapshot_spell_crit  = o -> composite_spell_crit();
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
+    speed_snapshot       = o -> composite_attack_speed();
     attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     drw_melee -> schedule_execute();
   }
@@ -1166,7 +1174,8 @@ struct gargoyle_pet_t : public pet_t
     pet_t::summon( duration );
     // Haste etc. are taken at the time of summoning
     death_knight_t* o = owner -> cast_death_knight();
-    haste_snapshot = o -> composite_attack_haste();
+    haste_snapshot = o -> composite_attack_speed();
+
     power_snapshot = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     gargoyle_strike -> schedule_execute(); // Kick-off repeating attack
   }
@@ -1178,11 +1187,11 @@ struct gargoyle_pet_t : public pet_t
 
 struct ghoul_pet_t : public pet_t
 {
-  double snapshot_crit, snapshot_haste, snapshot_hit, snapshot_strength;
+  double snapshot_crit, snapshot_haste, snapshot_speed, snapshot_hit, snapshot_strength;
 
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "ghoul" ),
-    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
+    snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_speed( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 506; // FIXME: Needs further testing
@@ -1339,6 +1348,7 @@ struct ghoul_pet_t : public pet_t
     // Pets don't seem to inherit their master's crit at the moment.
     snapshot_crit     = o -> composite_pet_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
+    snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
     snapshot_strength = o -> strength();
     o -> active_ghoul = this;
@@ -1395,6 +1405,23 @@ struct ghoul_pet_t : public pet_t
     else
     {
       return snapshot_haste;
+    }
+  }
+
+  virtual double composite_attack_speed() SC_CONST
+  {
+    // Ghouls receive 100% of their master's haste.
+    // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
+    death_knight_t* o = owner -> cast_death_knight();
+
+    // Perma Ghouls are updated constantly
+    if ( o -> primary_tree() == TREE_UNHOLY )
+    {
+      return o -> composite_attack_speed();
+    }
+    else
+    {
+      return snapshot_speed;
     }
   }
 

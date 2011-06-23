@@ -1196,6 +1196,7 @@ struct bladestorm_t : public warrior_attack_t
 
   // Bladestorm is not modified by haste effects
   virtual double haste() SC_CONST { return 1.0; }
+  virtual double swing_haste() SC_CONST { return 1.0; }
 };
 
 // Bloodthirst ==============================================================
@@ -2175,6 +2176,7 @@ struct slam_t : public warrior_attack_t
   }
 
   virtual double haste() SC_CONST { return 1.0; }
+  virtual double swing_haste() SC_CONST { return 1.0; }
 
   virtual double cost() SC_CONST
   {

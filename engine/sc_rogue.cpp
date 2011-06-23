@@ -398,6 +398,7 @@ struct rogue_t : public player_t
   virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double    composite_attack_speed() SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
@@ -1390,24 +1391,6 @@ struct melee_t : public rogue_attack_t
       base_hit -= 0.19;
   }
 
-  virtual double haste() SC_CONST
-  {
-    rogue_t* p = player -> cast_rogue();
-
-    double h = rogue_attack_t::haste();
-
-    if ( p -> talents.lightning_reflexes -> rank() )
-      h *= 1.0 / ( 1.0 + p -> talents.lightning_reflexes -> effect2().percent() );
-
-    if ( p -> buffs_slice_and_dice -> up() ) 
-      h *= 1.0 / ( 1.0 + p -> buffs_slice_and_dice -> value() );
-
-    if ( p -> buffs_adrenaline_rush -> up() )
-      h *= 1.0 / ( 1.0 + p -> buffs_adrenaline_rush -> value() );
-
-    return h;
-  }
-
   virtual double execute_time() SC_CONST
   {
     double t = rogue_attack_t::execute_time();
@@ -2138,6 +2121,7 @@ struct killing_spree_t : public rogue_attack_t
 
   // Killing Spree not modified by haste effects
   virtual double haste() SC_CONST { return 1.0; }
+  virtual double swing_haste() SC_CONST { return 1.0; }
 };
 
 // Mutilate =================================================================
@@ -3232,6 +3216,24 @@ double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
     m *= 1.0 + spec_sinister_calling -> base_value( E_APPLY_AURA, A_MOD_TOTAL_STAT_PERCENTAGE );
   
   return m;
+}
+
+// rogue_t::composite_attack_speed ==================================
+
+double rogue_t::composite_attack_speed() SC_CONST
+{
+  double h = player_t::composite_attack_speed();
+
+  if ( talents.lightning_reflexes -> rank() )
+    h *= 1.0 / ( 1.0 + talents.lightning_reflexes -> effect2().percent() );
+
+  if ( buffs_slice_and_dice -> up() ) 
+    h *= 1.0 / ( 1.0 + buffs_slice_and_dice -> value() );
+
+  if ( buffs_adrenaline_rush -> up() )
+    h *= 1.0 / ( 1.0 + buffs_adrenaline_rush -> value() );
+
+  return h;
 }
 
 // rogue_t::matching_gear_multiplier ==================================

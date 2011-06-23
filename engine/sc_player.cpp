@@ -1767,11 +1767,6 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 1.0 );
     }
 
-    if ( buffs.berserking -> up() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
-
     if ( buffs.unholy_frenzy -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.20 );
@@ -1787,6 +1782,28 @@ double player_t::composite_attack_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 0.01 );
     }
   }
+
+  return h;
+}
+
+// player_t::composite_attack_speed ========================================
+
+double player_t::composite_attack_speed() SC_CONST
+{
+  double h = composite_attack_haste();
+
+  if ( type != PLAYER_GUARDIAN )
+  {
+    if ( buffs.berserking -> up() )
+    {
+      h *= 1.0 / ( 1.0 + 0.20 );
+    }
+  }
+
+  if ( ! is_enemy() && ! is_add() )
+    h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
+                       std::max( sim -> auras.windfury_totem      -> value(),
+                                 sim -> auras.improved_icy_talons -> value() ) ) );
 
   return h;
 }
@@ -5186,6 +5203,15 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { result_num = action -> player -> composite_attack_haste(); return TOK_NUM; }
     };
     return new attack_haste_expr_t( a );
+  }
+  if ( name_str == "attack_speed" )
+  {
+    struct attack_speed_expr_t : public action_expr_t
+    {
+      attack_speed_expr_t( action_t* a ) : action_expr_t( a, "attack_speed", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> composite_attack_speed(); return TOK_NUM; }
+    };
+    return new attack_speed_expr_t( a );
   }
   if ( name_str == "spell_haste" )
   {

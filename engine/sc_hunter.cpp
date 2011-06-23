@@ -583,9 +583,6 @@ struct hunter_pet_t : public pet_t
     if ( o -> buffs.bloodlust -> up() )
       h *= 1.30;
 
-    if ( o -> buffs.berserking -> up() )
-      h *= 1.20;
-
     h *= 1.0 + o -> buffs_rapid_fire -> value();
 
     return h;

@@ -3282,6 +3282,7 @@ struct player_t
   virtual double energy_regen_per_second() SC_CONST;
   virtual double focus_regen_per_second() SC_CONST;
   virtual double composite_attack_haste() SC_CONST;
+  virtual double composite_attack_speed() SC_CONST;
   virtual double composite_attack_power() SC_CONST;
   virtual double composite_attack_crit() SC_CONST;
   virtual double composite_attack_expertise() SC_CONST { return attack_expertise; }
@@ -3735,6 +3736,7 @@ struct action_t : public spell_id_t
 
 
   virtual double cost() SC_CONST;
+  virtual double total_haste() SC_CONST  { return haste();           }
   virtual double haste() SC_CONST        { return 1.0;               }
   virtual double gcd() SC_CONST;
   virtual double execute_time() SC_CONST { return base_execute_time; }
@@ -3825,6 +3827,7 @@ struct attack_t : public action_t
 
   // Attack Overrides
   virtual double haste() SC_CONST;
+  virtual double total_haste() SC_CONST  { return swing_haste();           }
   virtual double swing_haste() SC_CONST;
   virtual double execute_time() SC_CONST;
   virtual void   player_buff();

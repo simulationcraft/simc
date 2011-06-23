@@ -617,7 +617,7 @@ void action_t::player_buff()
     }
   }
 
-  player_haste = haste();
+  player_haste = total_haste();
 
   if ( sim -> debug )
     log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
@@ -1380,7 +1380,7 @@ void action_t::extend_duration_seconds( double extra_seconds )
 
   // Switch to new haste values and calculate resulting ticks
   // ONLY updates haste, modifiers/spellpower are left untouched.
-  player_haste = haste();
+  player_haste = total_haste();
   target_debuff( target, DMG_OVER_TIME );
   dot -> action = this;
   dot -> added_seconds += extra_seconds;
