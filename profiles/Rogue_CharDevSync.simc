@@ -21,6 +21,7 @@ chardev=36352 name=Rogue_Subtlety_T11H save=Rogue_Subtlety_T11H.simc
 
 chardev=36366 name=Rogue_Subtlety_T11N save=Rogue_Subtlety_T11N.simc
 
+ptr=1
 
 rogue=Rogue_Assassination_T12H
 level=85
@@ -30,7 +31,23 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-033323011302211032100200000000000000002030030000000000000
 glyphs=expose_armor/mutilate/backstab/rupture
-#gear here
+head=foo,id=71539,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+neck=foo,id=71610,
+shoulders=foo,id=71541,gems=67agi_10agi,enchant=50agi_25mastery
+chest=foo,id=71537,gems=67agi_20agi_20hit_20agi,enchant=20all
+waist=foo,id=71394,gems=67agi_40agi
+legs=foo,id=71540,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
+feet=foo,id=71467,gems=40agi_10agi,enchant=35agi
+wrists=foo,id=71569,enchant=50agi
+hands=foo,id=71538,gems=40agi_10haste,enchant=20agi
+finger1=foo,id=71216,gems=40agi_10agi
+finger2=foo,id=71566
+trinket1=foo,id=69150
+trinket2=foo,id=69112
+back=foo,id=71415,gems=40agi_40agi_20agi,enchant=22agi
+main_hand=foo,id=71441,enchant=landslide
+off_hand=foo,id=71778,enchant=landslide
+ranged=foo,id=71611,enchant=gnomish_xray
 actions=
 save=Rogue_Assassination_T12H.simc
 
@@ -43,7 +60,23 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023020000000000000023322303100300123210030000000000000000
 glyphs=expose_armor/slice_and_dice/sinister_strike/adrenaline_rush
-#gear here
+head=foo,id=71539,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+neck=foo,id=71610,
+shoulders=foo,id=71541,gems=67agi_10agi,enchant=50agi_25mastery
+chest=foo,id=71537,gems=67agi_20agi_20hit_20agi,enchant=20all
+waist=foo,id=71394,gems=67agi_40agi
+legs=foo,id=71540,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
+feet=foo,id=71467,gems=40agi_10agi,enchant=35agi
+wrists=foo,id=71569,enchant=50agi
+hands=foo,id=71538,gems=40agi_10haste,enchant=20agi
+finger1=foo,id=71216,gems=40agi_10agi
+finger2=foo,id=71566
+trinket1=foo,id=69150
+trinket2=foo,id=69112
+back=foo,id=71415,gems=40agi_40agi_20agi,enchant=22agi
+main_hand=foo,id=71441,enchant=landslide
+off_hand=foo,id=71778,enchant=landslide
+ranged=foo,id=71611,enchant=gnomish_xray
 actions=
 save=Rogue_Combat_T12H.simc
 
@@ -56,7 +89,23 @@ use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000332031321310012321
 glyphs=expose_armor/backstab/shadow_dance/slice_and_dice
-#gear here
+head=foo,id=71539,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
+neck=foo,id=71610,
+shoulders=foo,id=71541,gems=67agi_10agi,enchant=50agi_25mastery
+chest=foo,id=71537,gems=67agi_20agi_20hit_20agi,enchant=20all
+waist=foo,id=71394,gems=67agi_40agi
+legs=foo,id=71540,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
+feet=foo,id=71467,gems=40agi_10agi,enchant=35agi
+wrists=foo,id=71569,enchant=50agi
+hands=foo,id=71538,gems=40agi_10haste,enchant=20agi
+finger1=foo,id=71216,gems=40agi_10agi
+finger2=foo,id=71566
+trinket1=foo,id=69150
+trinket2=foo,id=69112
+back=foo,id=71415,gems=40agi_40agi_20agi,enchant=22agi
+main_hand=foo,id=71441,enchant=landslide
+off_hand=foo,id=71778,enchant=landslide
+ranged=foo,id=71611,enchant=gnomish_xray
 actions=
 save=Rogue_Subtlety_T12H.simc
 
