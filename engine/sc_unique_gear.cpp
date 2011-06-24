@@ -2064,7 +2064,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
 
   // Variable Stack Discharge Procs
-  else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnHarmfulSpellCrit_1269.5Nature_15%_10Stack_2.5Cd_chance" : "OnHarmfulSpellCrit_1125.5Nature_15%_10Stack_2.5Cd_chance" );
+  else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_1269.5Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_1125.5Nature_15%_10Stack_2.5Cd_chance" );
 
   // Some Normal/Heroic items have same name
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
