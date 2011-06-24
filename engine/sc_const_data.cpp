@@ -608,6 +608,7 @@ unsigned dbc_t::set_bonus_spell_size() SC_CONST
 
 const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) SC_CONST
 {
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
   return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
 #else
