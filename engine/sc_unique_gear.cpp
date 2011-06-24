@@ -878,10 +878,16 @@ static void register_matrix_restabilizer( item_t* item )
   {
     bool heroic;
     stat_type max_stat;
+    proc_t* proc_matrix_restabilizer_haste;
+    proc_t* proc_matrix_restabilizer_crit;
+    proc_t* proc_matrix_restabilizer_mastery;
 
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
       stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, heroic ? 1730 : 1532, 0.15, 30.0, 105.0 ), heroic( h )
     {
+      proc_matrix_restabilizer_haste   = p -> get_proc( "matrix_restabilizer_haste"   );
+      proc_matrix_restabilizer_crit    = p -> get_proc( "matrix_restabilizer_crit"    );
+      proc_matrix_restabilizer_mastery = p -> get_proc( "matrix_restabilizer_mastery" );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -903,15 +909,35 @@ static void register_matrix_restabilizer( item_t* item )
       }
       else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
       {
-        max_stat = STAT_HASTE_RATING;
+        max_stat = STAT_HASTE_RATING;        
       }
       else
       {
-        max_stat = STAT_MASTERY_RATING;
+        max_stat = STAT_MASTERY_RATING;       
       }
 
       buff -> stat = max_stat;
+
       stat_proc_callback_t::trigger( a, call_data );
+
+      if ( buff -> check() )
+      {
+        switch ( max_stat )
+        {
+        case STAT_HASTE_RATING:
+          proc_matrix_restabilizer_haste -> occur();
+          break;
+        case STAT_CRIT_RATING:
+          proc_matrix_restabilizer_crit -> occur();
+          break;
+        case STAT_MASTERY_RATING:
+          proc_matrix_restabilizer_mastery -> occur();
+          break;
+        default:
+          assert( 0 );
+          break;
+        }
+      }
     }
   };
 
