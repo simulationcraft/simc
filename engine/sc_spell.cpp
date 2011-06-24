@@ -220,14 +220,7 @@ void spell_t::execute()
   {
     if ( result != RESULT_NONE )
     {
-      if ( direct_tick )
-      {
-        action_callback_t::trigger( player -> tick_callbacks[ result ], this );
-      }
-      else
-      {
-        action_callback_t::trigger( player -> spell_callbacks[ result ], this );
-      }
+      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
