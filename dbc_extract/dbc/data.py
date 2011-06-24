@@ -208,9 +208,9 @@ _DBC_FIELDS = {
           'spell_icon', 'alternate_verb', 'can_link'
     ],
     'SkillLineAbility.dbc' : [
-          'id',          'id_skill',     'id_spell',        'mask_race',        'mask_class',
+          'id',          ( 'id_skill', '%4u' ),   'id_spell',        'mask_race',        'mask_class',
           'n_mask_race', 'n_mask_class', 'req_skill_value', 'id_spell_forward', 'learn_on_get_skill',
-          'max_value',   'min_value',    'unk_12',          'unk_13'
+          'max_value',   ( 'min_value', '%3u' ),   'unk_12',          'unk_13'
     ],
     'SkillLineAbilitySortedSpell.dbc' : [
           'id',          'field'

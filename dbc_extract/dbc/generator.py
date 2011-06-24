@@ -319,6 +319,7 @@ class ItemDataGenerator(DataGenerator):
         50370, 50368, 50367, 50369, 50373, 50372,   # Wotlk head enchants that have faction requirements
         62367, 68719, 62368, 68763, 68718, 62366,   # Obsolete Cataclysm head enchants 
         68721, 62369, 62422, 68722,                 #
+        43097,                                      #
     ]
     
     _item_name_blacklist = [
@@ -394,6 +395,7 @@ class ItemDataGenerator(DataGenerator):
             # files handle the various head- and shoulder enchants as class 12 (quest items?)
             if ( classdata.classs != 3 or data.ilevel < 81 or data.gem_props == 0 ) and \
                ( classdata.classs != 0 or classdata.subclass != 6 or data.ilevel < 80 ) and \
+               ( classdata.classs != 7 or classdata.subclass != 3 or data.ilevel < 80 ) and \
                ( classdata.classs != 16 ) and \
                ( classdata.classs != 12 or data.ilevel < 80 ) and \
                ( data.inv_type != 19 ) and \
@@ -448,11 +450,11 @@ class ItemDataGenerator(DataGenerator):
                 sys.stderr.write('Item id %d not found\n' % id) 
                 continue
 
-            # Aand, hack classs 12 (quest item) to be 0, 6 so we get item enchants 
-            # clumped in the same category, sigh ..
-            if item2.classs == 12:
-                item2.classs = 6
-                item2.subclass = 0
+            # Aand, hack classs 12 (quest item) and tradegood/devices (7, 3) to be 0, 6 
+            # so we get item enchants clumped in the same category, sigh ..
+            if item2.classs == 12 or ( item2.classs == 7 and item2.subclass == 3 ):
+                item2.classs = 0
+                item2.subclass = 6
 
             fields = item.field('id', 'name')
             fields += item_display.field('icon')
@@ -874,7 +876,7 @@ class SpellDataGenerator(DataGenerator):
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 'TalentTab',
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
-            'SpellEquippedItems' ]
+            'Item', 'SpellEquippedItems' ]
 
         DataGenerator.__init__(self, options)
 
@@ -1127,18 +1129,70 @@ class SpellDataGenerator(DataGenerator):
                         if enchant_item_spell > 0:
                             break
                 # Skip pre-wotlk enchants
-                elif effect.type == 53 and self._spelllevels_db[spell.id_levels].base_level < 60:
+                elif effect.type == 53 and ( self._spelllevels_db[spell.id_levels].base_level >= 60 or ability_data.min_value > 375 ):
                     enchant_item_spell = spell.id
                 
                 if enchant_item_spell > 0:
                     break
 
             if enchant_item_spell > 0:
-                enchant_spell = self._spell_db[enchant_item_spell]
-                #sys.stderr.write("Getting enchant spell id %d (%s)... " % (enchant_item_spell, enchant_spell.name))
                 filter_list = { }
                 lst = self.generate_spell_filter_list(enchant_item_spell, 0, 0, 0, filter_list)
-                #sys.stderr.write("%s\n" % lst)
+                if not lst:
+                    continue
+                    
+                for k, v in lst.iteritems():
+                    if ids.get(k):
+                        ids[k]['mask_class'] |= v['mask_class']
+                        ids[k]['mask_race'] |= v['mask_race']
+                    else:
+                        ids[k] = { 
+                            'mask_class': v['mask_class'], 
+                            'mask_race' : v['mask_race'], 
+                            'effect_list': v['effect_list'],
+                            'skill_id': ((ability_data.req_skill_value > 0 ) and ability_id) or 0
+                        }
+
+        # Rest of the Item enchants relevant to us, such as Shoulder / Head enchants
+        for item_id, data in self._item_sparse_db.iteritems():
+            blacklist_item = False
+            
+            classdata = self._item_db[item_id]
+            if item_id in ItemDataGenerator._item_blacklist:
+                continue
+                
+            for pat in ItemDataGenerator._item_name_blacklist:
+                if data.name and re.search(pat, data.name):
+                    blacklist_item = True
+            
+            if blacklist_item:
+                continue
+            
+            # Quest items, Permanent Item enchants
+            if ( classdata.classs != 0 or classdata.subclass != 6 or data.ilevel < 80 ) and \
+               ( classdata.classs != 12 or data.ilevel < 80 ):
+                continue
+            
+            # Grab various permanent item enchants from item class 12
+            enchant_spell_id = 0
+            if classdata.classs == 12:
+                for i in xrange(1, 6):
+                    spell_id = getattr(data, 'id_spell_%d' % i)
+                    if spell_id > 0:
+                        spell = self._spell_db[spell_id]
+                        for effect in spell._effects:
+                            if not effect or effect.type != 53:
+                                continue
+                            
+                            enchant_spell_id = spell_id
+                            break
+                    
+                    if enchant_spell_id > 0:
+                        break
+            
+            if enchant_spell_id > 0:
+                filter_list = { }
+                lst = self.generate_spell_filter_list(enchant_spell_id, 0, 0, 0, filter_list)
                 if not lst:
                     continue
                     
@@ -1148,8 +1202,7 @@ class SpellDataGenerator(DataGenerator):
                         ids[k]['mask_race'] |= v['mask_race']
                     else:
                         ids[k] = { 'mask_class': v['mask_class'], 'mask_race' : v['mask_race'], 'effect_list': v['effect_list'] }
-
-    
+        
         # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
         # their bonuses to the spell list
         for itemset_id, itemset_data in self._itemset_db.iteritems():
@@ -1338,7 +1391,11 @@ class SpellDataGenerator(DataGenerator):
             )
             
             fields += self._spellequippeditems_db[spell.id_equip_items].field('item_class', 'mask_inv_type', 'mask_sub_class')
-
+            if id and ids[id].get('skill_id'):
+                fields += self._skilllineability_db[ids[id]['skill_id']].field('id_skill', 'min_value')
+            else:
+                fields += self._skilllineability_db[0].field('id_skill', 'min_value')
+            
             if spell.id_scaling:
                 fields += self._spellscaling_db[spell.id_scaling].field('cast_min', 'cast_max', 'cast_div')
                 fields += self._spellscaling_db[spell.id_scaling].field('c_scaling', 'c_scaling_threshold')

@@ -1134,6 +1134,9 @@ struct spell_data_t {
   unsigned     _equipped_class;
   unsigned     _equipped_invtype_mask;
   unsigned     _equipped_subclass_mask;
+  // SkillLineAbility.dbc
+  unsigned     _req_skill;
+  unsigned     _req_skill_rank;
   // SpellScaling.dbc
   int          _cast_min;           // Minimum casting time in milliseconds
   int          _cast_max;           // Maximum casting time in milliseconds
