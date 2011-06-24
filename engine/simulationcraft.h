@@ -1350,6 +1350,9 @@ struct dbc_t
   static void        create_spelleffect_data_index( bool ptr = false );
   static void        create_talent_data_index( bool ptr = false );
 
+  static const item_data_t* items( bool ptr = false );
+  static size_t             n_items( bool ptr = false );
+  
   // Index access
   spell_data_t** spell_data_index() SC_CONST;
   unsigned spell_data_index_size() SC_CONST;
@@ -1394,7 +1397,7 @@ struct dbc_t
   const spelleffect_data_t*      effect( unsigned effect_id ) SC_CONST;
   const talent_data_t*           talent( unsigned talent_id ) SC_CONST;
   const item_data_t*             item( unsigned item_id ) SC_CONST;
-
+  
   const random_suffix_data_t&    random_suffix( unsigned suffix_id ) SC_CONST;
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) SC_CONST;
   const gem_property_data_t&     gem_property( unsigned gem_id ) SC_CONST;
@@ -1568,6 +1571,9 @@ struct util_t
   static int         talent_tree               ( int tree, player_type ptype );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
+  static const char* weapon_class_string       ( int _class );
+  static const char* weapon_subclass_string    ( int subclass );
+  static const char* set_item_type_string      ( int item_set );
 
   static int parse_attribute_type              ( const std::string& name );
   static int parse_dmg_type                    ( const std::string& name );
@@ -1600,12 +1606,13 @@ struct util_t
   static unsigned pet_mask( int type );
   static unsigned pet_id( int type );
   static player_type pet_class_type( int type );
-
+  
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
   static int translate_class_str( std::string& s );
   static race_type translate_race_id( int rid );
   static stat_type translate_item_mod( int stat_mod );
+  static slot_type translate_invtype( int inv_type );
   static weapon_type translate_weapon_subclass( item_subclass_weapon weapon_subclass );
   static bool socket_gem_match( int socket, int gem );
 
@@ -2815,8 +2822,11 @@ struct item_database_t
 
   static int      random_suffix_type( const item_t& item );
   static uint32_t armor_value(        const item_t& item, unsigned item_id );
+  static uint32_t armor_value(        const item_data_t*, const dbc_t& );
   static uint32_t weapon_dmg_min(     const item_t& item, unsigned item_id );
+  static uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
   static uint32_t weapon_dmg_max(     const item_t& item, unsigned item_id );
+  static uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
 };
 
 // Set Bonus =================================================================

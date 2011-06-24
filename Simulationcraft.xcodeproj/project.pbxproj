@@ -92,6 +92,8 @@
 		6E6C54D41396A64100407A6A /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
 		6E6C54D51396A64800407A6A /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
 		6E6C54D61396A64C00407A6A /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
+		6E7FC13113A13DCD00D7D64E /* simcpaperdoll.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FC13013A13DCD00D7D64E /* simcpaperdoll.cc */; };
+		6E7FC13313A13EA000D7D64E /* simcpaperdoll.h in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FC12F13A125A400D7D64E /* simcpaperdoll.h */; };
 		6EC618ED139677F0006B7A89 /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B4139677F0006B7A89 /* sc_action.cpp */; };
 		6EC618EE139677F0006B7A89 /* sc_armory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B5139677F0006B7A89 /* sc_armory.cpp */; };
 		6EC618EF139677F0006B7A89 /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B6139677F0006B7A89 /* sc_attack.cpp */; };
@@ -155,7 +157,6 @@
 		6EF04CAC139F7D53009AA411 /* Death_Knight_Frost_1h_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C49139F7D1A009AA411 /* Death_Knight_Frost_1h_T11_372.simc */; };
 		6EF04CAD139F7D53009AA411 /* Death_Knight_Frost_2h_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C4A139F7D1A009AA411 /* Death_Knight_Frost_2h_T11_372.simc */; };
 		6EF04CAE139F7D53009AA411 /* Death_Knight_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C4B139F7D1A009AA411 /* Death_Knight_T11_372.simc */; };
-		6EF04CAF139F7D53009AA411 /* Death_Knight_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C4C139F7D1A009AA411 /* Death_Knight_T11_372_PTR.simc */; };
 		6EF04CB0139F7D53009AA411 /* Death_Knight_Unholy_1h_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C4D139F7D1A009AA411 /* Death_Knight_Unholy_1h_T11_372.simc */; };
 		6EF04CB1139F7D53009AA411 /* Death_Knight_Unholy_2h_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C4E139F7D1A009AA411 /* Death_Knight_Unholy_2h_T11_372.simc */; };
 		6EF04CB2139F7D53009AA411 /* Druid_Balance_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C4F139F7D1A009AA411 /* Druid_Balance_T11_359.simc */; };
@@ -164,7 +165,6 @@
 		6EF04CB5139F7D53009AA411 /* Druid_Feral_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C52139F7D1A009AA411 /* Druid_Feral_T11_372.simc */; };
 		6EF04CB6139F7D53009AA411 /* Druid_Feral_T11_372_hitcap.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C53139F7D1A009AA411 /* Druid_Feral_T11_372_hitcap.simc */; };
 		6EF04CB7139F7D53009AA411 /* Druid_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C54139F7D1A009AA411 /* Druid_T11_372.simc */; };
-		6EF04CB8139F7D53009AA411 /* Druid_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C55139F7D1A009AA411 /* Druid_T11_372_PTR.simc */; };
 		6EF04CB9139F7D53009AA411 /* generate_profiles.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C56139F7D1A009AA411 /* generate_profiles.simc */; };
 		6EF04CBA139F7D53009AA411 /* HelterSkelter.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C57139F7D1A009AA411 /* HelterSkelter.simc */; };
 		6EF04CBB139F7D53009AA411 /* Hunter_BM_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C58139F7D1A009AA411 /* Hunter_BM_T11_359.simc */; };
@@ -178,7 +178,6 @@
 		6EF04CC3139F7D53009AA411 /* Hunter_SV_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C60139F7D1A009AA411 /* Hunter_SV_T11_372.simc */; };
 		6EF04CC4139F7D53009AA411 /* Hunter_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C61139F7D1A009AA411 /* Hunter_T11_359.simc */; };
 		6EF04CC5139F7D53009AA411 /* Hunter_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C62139F7D1A009AA411 /* Hunter_T11_372.simc */; };
-		6EF04CC6139F7D53009AA411 /* Hunter_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C63139F7D1A009AA411 /* Hunter_T11_372_PTR.simc */; };
 		6EF04CC7139F7D53009AA411 /* Mage_Arcane_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C64139F7D1A009AA411 /* Mage_Arcane_T11_359.simc */; };
 		6EF04CC8139F7D53009AA411 /* Mage_Arcane_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C65139F7D1A009AA411 /* Mage_Arcane_T11_372.simc */; };
 		6EF04CC9139F7D53009AA411 /* Mage_CharDevSync.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C66139F7D1A009AA411 /* Mage_CharDevSync.simc */; };
@@ -188,13 +187,11 @@
 		6EF04CCD139F7D53009AA411 /* Mage_Frost_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C6A139F7D1A009AA411 /* Mage_Frost_T11_372.simc */; };
 		6EF04CCE139F7D53009AA411 /* Mage_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C6B139F7D1A009AA411 /* Mage_T11_359.simc */; };
 		6EF04CCF139F7D53009AA411 /* Mage_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C6C139F7D1A009AA411 /* Mage_T11_372.simc */; };
-		6EF04CD0139F7D53009AA411 /* Mage_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C6D139F7D1A009AA411 /* Mage_T11_372_PTR.simc */; };
 		6EF04CD1139F7D53009AA411 /* Paladin_CharDevSync.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C6E139F7D1A009AA411 /* Paladin_CharDevSync.simc */; };
 		6EF04CD2139F7D53009AA411 /* Paladin_Retribution_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C6F139F7D1A009AA411 /* Paladin_Retribution_T11_359.simc */; };
 		6EF04CD3139F7D53009AA411 /* Paladin_Retribution_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C70139F7D1A009AA411 /* Paladin_Retribution_T11_372.simc */; };
 		6EF04CD4139F7D53009AA411 /* Paladin_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C71139F7D1A009AA411 /* Paladin_T11_359.simc */; };
 		6EF04CD5139F7D53009AA411 /* Paladin_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C72139F7D1A009AA411 /* Paladin_T11_372.simc */; };
-		6EF04CD6139F7D53009AA411 /* Paladin_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C73139F7D1A009AA411 /* Paladin_T11_372_PTR.simc */; };
 		6EF04CD7139F7D53009AA411 /* Priest_CharDevSync.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C74139F7D1A009AA411 /* Priest_CharDevSync.simc */; };
 		6EF04CD8139F7D53009AA411 /* Priest_Disc_Smite_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C75139F7D1A009AA411 /* Priest_Disc_Smite_T11_372.simc */; };
 		6EF04CD9139F7D53009AA411 /* Priest_Holy_Smite_AA_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C76139F7D1A009AA411 /* Priest_Holy_Smite_AA_T11_372.simc */; };
@@ -203,7 +200,6 @@
 		6EF04CDC139F7D54009AA411 /* Priest_Shadow_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C79139F7D1A009AA411 /* Priest_Shadow_T11_372.simc */; };
 		6EF04CDD139F7D54009AA411 /* Priest_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C7A139F7D1A009AA411 /* Priest_T11_359.simc */; };
 		6EF04CDE139F7D54009AA411 /* Priest_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C7B139F7D1A009AA411 /* Priest_T11_372.simc */; };
-		6EF04CDF139F7D54009AA411 /* Priest_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C7C139F7D1A009AA411 /* Priest_T11_372_PTR.simc */; };
 		6EF04CE0139F7D54009AA411 /* Raid_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C7D139F7D1A009AA411 /* Raid_T11_359.simc */; };
 		6EF04CE1139F7D54009AA411 /* Raid_T11_359_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C7E139F7D1A009AA411 /* Raid_T11_359_PTR.simc */; };
 		6EF04CE2139F7D54009AA411 /* Raid_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C7F139F7D1A009AA411 /* Raid_T11_372.simc */; };
@@ -214,40 +210,27 @@
 		6EF04CE7139F7D54009AA411 /* Rogue_Subtlety_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C84139F7D1A009AA411 /* Rogue_Subtlety_T11_359.simc */; };
 		6EF04CE8139F7D54009AA411 /* Rogue_Subtlety_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C85139F7D1A009AA411 /* Rogue_Subtlety_T11_372.simc */; };
 		6EF04CE9139F7D54009AA411 /* Rogue_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C86139F7D1A009AA411 /* Rogue_T11_372.simc */; };
-		6EF04CEA139F7D54009AA411 /* Rogue_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C87139F7D1A009AA411 /* Rogue_T11_372_PTR.simc */; };
 		6EF04CEB139F7D54009AA411 /* Shaman_CharDevSync.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C88139F7D1A009AA411 /* Shaman_CharDevSync.simc */; };
 		6EF04CEC139F7D54009AA411 /* Shaman_Elemental_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C89139F7D1A009AA411 /* Shaman_Elemental_T11_372.simc */; };
 		6EF04CED139F7D54009AA411 /* Shaman_Enh_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C8A139F7D1A009AA411 /* Shaman_Enh_T11_372.simc */; };
 		6EF04CEE139F7D54009AA411 /* Shaman_Enh_T11_372_Caster.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C8B139F7D1A009AA411 /* Shaman_Enh_T11_372_Caster.simc */; };
 		6EF04CEF139F7D54009AA411 /* Shaman_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C8C139F7D1A009AA411 /* Shaman_T11_372.simc */; };
-		6EF04CF0139F7D54009AA411 /* Shaman_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C8D139F7D1A009AA411 /* Shaman_T11_372_PTR.simc */; };
 		6EF04CF1139F7D54009AA411 /* Warlock_AffDrain_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C8E139F7D1A009AA411 /* Warlock_AffDrain_T11_359.simc */; };
-		6EF04CF2139F7D54009AA411 /* Warlock_AffDrain_T11_359_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C8F139F7D1A009AA411 /* Warlock_AffDrain_T11_359_PTR.simc */; };
 		6EF04CF3139F7D54009AA411 /* Warlock_AffDrain_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C90139F7D1A009AA411 /* Warlock_AffDrain_T11_372.simc */; };
-		6EF04CF4139F7D54009AA411 /* Warlock_AffDrain_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C91139F7D1A009AA411 /* Warlock_AffDrain_T11_372_PTR.simc */; };
 		6EF04CF5139F7D54009AA411 /* Warlock_Affliction_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C92139F7D1A009AA411 /* Warlock_Affliction_T11_359.simc */; };
-		6EF04CF6139F7D54009AA411 /* Warlock_Affliction_T11_359_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C93139F7D1A009AA411 /* Warlock_Affliction_T11_359_PTR.simc */; };
 		6EF04CF7139F7D54009AA411 /* Warlock_Affliction_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C94139F7D1A009AA411 /* Warlock_Affliction_T11_372.simc */; };
-		6EF04CF8139F7D54009AA411 /* Warlock_Affliction_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C95139F7D1A009AA411 /* Warlock_Affliction_T11_372_PTR.simc */; };
 		6EF04CF9139F7D54009AA411 /* Warlock_CharDevSync.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C96139F7D1A009AA411 /* Warlock_CharDevSync.simc */; };
-		6EF04CFA139F7D54009AA411 /* Warlock_CharDevSyncPTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C97139F7D1A009AA411 /* Warlock_CharDevSyncPTR.simc */; };
 		6EF04CFB139F7D54009AA411 /* Warlock_Demonology_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C98139F7D1A009AA411 /* Warlock_Demonology_T11_359.simc */; };
-		6EF04CFC139F7D54009AA411 /* Warlock_Demonology_T11_359_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C99139F7D1A009AA411 /* Warlock_Demonology_T11_359_PTR.simc */; };
 		6EF04CFD139F7D54009AA411 /* Warlock_Demonology_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C9A139F7D1A009AA411 /* Warlock_Demonology_T11_372.simc */; };
-		6EF04CFE139F7D54009AA411 /* Warlock_Demonology_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C9B139F7D1A009AA411 /* Warlock_Demonology_T11_372_PTR.simc */; };
 		6EF04CFF139F7D54009AA411 /* Warlock_Destruction_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C9C139F7D1A009AA411 /* Warlock_Destruction_T11_359.simc */; };
-		6EF04D00139F7D55009AA411 /* Warlock_Destruction_T11_359_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C9D139F7D1A009AA411 /* Warlock_Destruction_T11_359_PTR.simc */; };
 		6EF04D01139F7D55009AA411 /* Warlock_Destruction_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C9E139F7D1A009AA411 /* Warlock_Destruction_T11_372.simc */; };
-		6EF04D02139F7D55009AA411 /* Warlock_Destruction_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04C9F139F7D1A009AA411 /* Warlock_Destruction_T11_372_PTR.simc */; };
 		6EF04D03139F7D55009AA411 /* Warlock_T11_359.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA0139F7D1A009AA411 /* Warlock_T11_359.simc */; };
 		6EF04D04139F7D55009AA411 /* Warlock_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA1139F7D1A009AA411 /* Warlock_T11_372.simc */; };
-		6EF04D05139F7D55009AA411 /* Warlock_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA2139F7D1A009AA411 /* Warlock_T11_372_PTR.simc */; };
 		6EF04D06139F7D55009AA411 /* Warrior_Arms_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA3139F7D1A009AA411 /* Warrior_Arms_T11_372.simc */; };
 		6EF04D07139F7D55009AA411 /* Warrior_CharDevSync.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA4139F7D1A009AA411 /* Warrior_CharDevSync.simc */; };
 		6EF04D08139F7D55009AA411 /* Warrior_Fury_1h_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA5139F7D1A009AA411 /* Warrior_Fury_1h_T11_372.simc */; };
 		6EF04D09139F7D55009AA411 /* Warrior_Fury_2h_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA6139F7D1A009AA411 /* Warrior_Fury_2h_T11_372.simc */; };
 		6EF04D0A139F7D55009AA411 /* Warrior_T11_372.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA7139F7D1A009AA411 /* Warrior_T11_372.simc */; };
-		6EF04D0B139F7D55009AA411 /* Warrior_T11_372_PTR.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EF04CA8139F7D1A009AA411 /* Warrior_T11_372_PTR.simc */; };
 		6EF04D1F139FAF0E009AA411 /* simulationcraftqt.h in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192F1396789B006B7A89 /* simulationcraftqt.h */; };
 /* End PBXBuildFile section */
 
@@ -255,7 +238,7 @@
 		6EF04D17139FA8F1009AA411 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*simulationcraftqt.h";
+			filePatterns = "*simulationcraftqt.h *simcpaperdoll.h";
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
@@ -294,7 +277,6 @@
 				6EF04CAC139F7D53009AA411 /* Death_Knight_Frost_1h_T11_372.simc in CopyFiles */,
 				6EF04CAD139F7D53009AA411 /* Death_Knight_Frost_2h_T11_372.simc in CopyFiles */,
 				6EF04CAE139F7D53009AA411 /* Death_Knight_T11_372.simc in CopyFiles */,
-				6EF04CAF139F7D53009AA411 /* Death_Knight_T11_372_PTR.simc in CopyFiles */,
 				6EF04CB0139F7D53009AA411 /* Death_Knight_Unholy_1h_T11_372.simc in CopyFiles */,
 				6EF04CB1139F7D53009AA411 /* Death_Knight_Unholy_2h_T11_372.simc in CopyFiles */,
 				6EF04CB2139F7D53009AA411 /* Druid_Balance_T11_359.simc in CopyFiles */,
@@ -303,7 +285,6 @@
 				6EF04CB5139F7D53009AA411 /* Druid_Feral_T11_372.simc in CopyFiles */,
 				6EF04CB6139F7D53009AA411 /* Druid_Feral_T11_372_hitcap.simc in CopyFiles */,
 				6EF04CB7139F7D53009AA411 /* Druid_T11_372.simc in CopyFiles */,
-				6EF04CB8139F7D53009AA411 /* Druid_T11_372_PTR.simc in CopyFiles */,
 				6EF04CB9139F7D53009AA411 /* generate_profiles.simc in CopyFiles */,
 				6EF04CBA139F7D53009AA411 /* HelterSkelter.simc in CopyFiles */,
 				6EF04CBB139F7D53009AA411 /* Hunter_BM_T11_359.simc in CopyFiles */,
@@ -317,7 +298,6 @@
 				6EF04CC3139F7D53009AA411 /* Hunter_SV_T11_372.simc in CopyFiles */,
 				6EF04CC4139F7D53009AA411 /* Hunter_T11_359.simc in CopyFiles */,
 				6EF04CC5139F7D53009AA411 /* Hunter_T11_372.simc in CopyFiles */,
-				6EF04CC6139F7D53009AA411 /* Hunter_T11_372_PTR.simc in CopyFiles */,
 				6EF04CC7139F7D53009AA411 /* Mage_Arcane_T11_359.simc in CopyFiles */,
 				6EF04CC8139F7D53009AA411 /* Mage_Arcane_T11_372.simc in CopyFiles */,
 				6EF04CC9139F7D53009AA411 /* Mage_CharDevSync.simc in CopyFiles */,
@@ -327,13 +307,11 @@
 				6EF04CCD139F7D53009AA411 /* Mage_Frost_T11_372.simc in CopyFiles */,
 				6EF04CCE139F7D53009AA411 /* Mage_T11_359.simc in CopyFiles */,
 				6EF04CCF139F7D53009AA411 /* Mage_T11_372.simc in CopyFiles */,
-				6EF04CD0139F7D53009AA411 /* Mage_T11_372_PTR.simc in CopyFiles */,
 				6EF04CD1139F7D53009AA411 /* Paladin_CharDevSync.simc in CopyFiles */,
 				6EF04CD2139F7D53009AA411 /* Paladin_Retribution_T11_359.simc in CopyFiles */,
 				6EF04CD3139F7D53009AA411 /* Paladin_Retribution_T11_372.simc in CopyFiles */,
 				6EF04CD4139F7D53009AA411 /* Paladin_T11_359.simc in CopyFiles */,
 				6EF04CD5139F7D53009AA411 /* Paladin_T11_372.simc in CopyFiles */,
-				6EF04CD6139F7D53009AA411 /* Paladin_T11_372_PTR.simc in CopyFiles */,
 				6EF04CD7139F7D53009AA411 /* Priest_CharDevSync.simc in CopyFiles */,
 				6EF04CD8139F7D53009AA411 /* Priest_Disc_Smite_T11_372.simc in CopyFiles */,
 				6EF04CD9139F7D53009AA411 /* Priest_Holy_Smite_AA_T11_372.simc in CopyFiles */,
@@ -342,7 +320,6 @@
 				6EF04CDC139F7D54009AA411 /* Priest_Shadow_T11_372.simc in CopyFiles */,
 				6EF04CDD139F7D54009AA411 /* Priest_T11_359.simc in CopyFiles */,
 				6EF04CDE139F7D54009AA411 /* Priest_T11_372.simc in CopyFiles */,
-				6EF04CDF139F7D54009AA411 /* Priest_T11_372_PTR.simc in CopyFiles */,
 				6EF04CE0139F7D54009AA411 /* Raid_T11_359.simc in CopyFiles */,
 				6EF04CE1139F7D54009AA411 /* Raid_T11_359_PTR.simc in CopyFiles */,
 				6EF04CE2139F7D54009AA411 /* Raid_T11_372.simc in CopyFiles */,
@@ -353,40 +330,27 @@
 				6EF04CE7139F7D54009AA411 /* Rogue_Subtlety_T11_359.simc in CopyFiles */,
 				6EF04CE8139F7D54009AA411 /* Rogue_Subtlety_T11_372.simc in CopyFiles */,
 				6EF04CE9139F7D54009AA411 /* Rogue_T11_372.simc in CopyFiles */,
-				6EF04CEA139F7D54009AA411 /* Rogue_T11_372_PTR.simc in CopyFiles */,
 				6EF04CEB139F7D54009AA411 /* Shaman_CharDevSync.simc in CopyFiles */,
 				6EF04CEC139F7D54009AA411 /* Shaman_Elemental_T11_372.simc in CopyFiles */,
 				6EF04CED139F7D54009AA411 /* Shaman_Enh_T11_372.simc in CopyFiles */,
 				6EF04CEE139F7D54009AA411 /* Shaman_Enh_T11_372_Caster.simc in CopyFiles */,
 				6EF04CEF139F7D54009AA411 /* Shaman_T11_372.simc in CopyFiles */,
-				6EF04CF0139F7D54009AA411 /* Shaman_T11_372_PTR.simc in CopyFiles */,
 				6EF04CF1139F7D54009AA411 /* Warlock_AffDrain_T11_359.simc in CopyFiles */,
-				6EF04CF2139F7D54009AA411 /* Warlock_AffDrain_T11_359_PTR.simc in CopyFiles */,
 				6EF04CF3139F7D54009AA411 /* Warlock_AffDrain_T11_372.simc in CopyFiles */,
-				6EF04CF4139F7D54009AA411 /* Warlock_AffDrain_T11_372_PTR.simc in CopyFiles */,
 				6EF04CF5139F7D54009AA411 /* Warlock_Affliction_T11_359.simc in CopyFiles */,
-				6EF04CF6139F7D54009AA411 /* Warlock_Affliction_T11_359_PTR.simc in CopyFiles */,
 				6EF04CF7139F7D54009AA411 /* Warlock_Affliction_T11_372.simc in CopyFiles */,
-				6EF04CF8139F7D54009AA411 /* Warlock_Affliction_T11_372_PTR.simc in CopyFiles */,
 				6EF04CF9139F7D54009AA411 /* Warlock_CharDevSync.simc in CopyFiles */,
-				6EF04CFA139F7D54009AA411 /* Warlock_CharDevSyncPTR.simc in CopyFiles */,
 				6EF04CFB139F7D54009AA411 /* Warlock_Demonology_T11_359.simc in CopyFiles */,
-				6EF04CFC139F7D54009AA411 /* Warlock_Demonology_T11_359_PTR.simc in CopyFiles */,
 				6EF04CFD139F7D54009AA411 /* Warlock_Demonology_T11_372.simc in CopyFiles */,
-				6EF04CFE139F7D54009AA411 /* Warlock_Demonology_T11_372_PTR.simc in CopyFiles */,
 				6EF04CFF139F7D54009AA411 /* Warlock_Destruction_T11_359.simc in CopyFiles */,
-				6EF04D00139F7D55009AA411 /* Warlock_Destruction_T11_359_PTR.simc in CopyFiles */,
 				6EF04D01139F7D55009AA411 /* Warlock_Destruction_T11_372.simc in CopyFiles */,
-				6EF04D02139F7D55009AA411 /* Warlock_Destruction_T11_372_PTR.simc in CopyFiles */,
 				6EF04D03139F7D55009AA411 /* Warlock_T11_359.simc in CopyFiles */,
 				6EF04D04139F7D55009AA411 /* Warlock_T11_372.simc in CopyFiles */,
-				6EF04D05139F7D55009AA411 /* Warlock_T11_372_PTR.simc in CopyFiles */,
 				6EF04D06139F7D55009AA411 /* Warrior_Arms_T11_372.simc in CopyFiles */,
 				6EF04D07139F7D55009AA411 /* Warrior_CharDevSync.simc in CopyFiles */,
 				6EF04D08139F7D55009AA411 /* Warrior_Fury_1h_T11_372.simc in CopyFiles */,
 				6EF04D09139F7D55009AA411 /* Warrior_Fury_2h_T11_372.simc in CopyFiles */,
 				6EF04D0A139F7D55009AA411 /* Warrior_T11_372.simc in CopyFiles */,
-				6EF04D0B139F7D55009AA411 /* Warrior_T11_372_PTR.simc in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +368,21 @@
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
 		6E6C54D31396A63000407A6A /* Legend.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Legend.html; sourceTree = "<group>"; };
+		6E7FC12F13A125A400D7D64E /* simcpaperdoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simcpaperdoll.h; path = qt/simcpaperdoll.h; sourceTree = "<group>"; };
+		6E7FC13013A13DCD00D7D64E /* simcpaperdoll.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = simcpaperdoll.cc; path = qt/simcpaperdoll.cc; sourceTree = "<group>"; };
+		6E7FC13613A3B98400D7D64E /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		6E7FC13813A3B98400D7D64E /* align.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = align.py; sourceTree = "<group>"; };
+		6E7FC13913A3B98400D7D64E /* constants.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = constants.py; sourceTree = "<group>"; };
+		6E7FC13B13A3B98400D7D64E /* data.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = data.py; sourceTree = "<group>"; };
+		6E7FC13D13A3B98400D7D64E /* db.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = db.py; sourceTree = "<group>"; };
+		6E7FC13F13A3B98400D7D64E /* generator.py */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = text.script.python; path = generator.py; sourceTree = "<group>"; tabWidth = 4; };
+		6E7FC14113A3B98400D7D64E /* generator2.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = generator2.py; sourceTree = "<group>"; };
+		6E7FC14213A3B98400D7D64E /* parser.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = parser.py; sourceTree = "<group>"; };
+		6E7FC14413A3B98400D7D64E /* patch.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = patch.py; sourceTree = "<group>"; };
+		6E7FC14613A3B98400D7D64E /* dbc_extract.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = dbc_extract.py; path = dbc_extract/dbc_extract.py; sourceTree = "<group>"; };
+		6E7FC14713A3B98400D7D64E /* generate.bat */ = {isa = PBXFileReference; lastKnownFileType = text; name = generate.bat; path = dbc_extract/generate.bat; sourceTree = "<group>"; };
+		6E7FC14813A3B98400D7D64E /* generate.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = generate.sh; path = dbc_extract/generate.sh; sourceTree = "<group>"; };
+		6E7FC14913A3B98400D7D64E /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = dbc_extract/README; sourceTree = "<group>"; };
 		6EC618AB13967766006B7A89 /* simc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = simc; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EC618B4139677F0006B7A89 /* sc_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_action.cpp; path = engine/sc_action.cpp; sourceTree = "<group>"; };
 		6EC618B5139677F0006B7A89 /* sc_armory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_armory.cpp; path = engine/sc_armory.cpp; sourceTree = "<group>"; };
@@ -490,7 +469,6 @@
 		6EF04C49139F7D1A009AA411 /* Death_Knight_Frost_1h_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_Frost_1h_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C4A139F7D1A009AA411 /* Death_Knight_Frost_2h_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_Frost_2h_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C4B139F7D1A009AA411 /* Death_Knight_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C4C139F7D1A009AA411 /* Death_Knight_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C4D139F7D1A009AA411 /* Death_Knight_Unholy_1h_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_Unholy_1h_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C4E139F7D1A009AA411 /* Death_Knight_Unholy_2h_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_Unholy_2h_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C4F139F7D1A009AA411 /* Druid_Balance_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Balance_T11_359.simc; sourceTree = "<group>"; };
@@ -499,7 +477,6 @@
 		6EF04C52139F7D1A009AA411 /* Druid_Feral_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Feral_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C53139F7D1A009AA411 /* Druid_Feral_T11_372_hitcap.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Feral_T11_372_hitcap.simc; sourceTree = "<group>"; };
 		6EF04C54139F7D1A009AA411 /* Druid_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C55139F7D1A009AA411 /* Druid_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C56139F7D1A009AA411 /* generate_profiles.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_profiles.simc; sourceTree = "<group>"; };
 		6EF04C57139F7D1A009AA411 /* HelterSkelter.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = HelterSkelter.simc; sourceTree = "<group>"; };
 		6EF04C58139F7D1A009AA411 /* Hunter_BM_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Hunter_BM_T11_359.simc; sourceTree = "<group>"; };
@@ -513,7 +490,6 @@
 		6EF04C60139F7D1A009AA411 /* Hunter_SV_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Hunter_SV_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C61139F7D1A009AA411 /* Hunter_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Hunter_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C62139F7D1A009AA411 /* Hunter_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Hunter_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C63139F7D1A009AA411 /* Hunter_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Hunter_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C64139F7D1A009AA411 /* Mage_Arcane_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_Arcane_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C65139F7D1A009AA411 /* Mage_Arcane_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_Arcane_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C66139F7D1A009AA411 /* Mage_CharDevSync.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_CharDevSync.simc; sourceTree = "<group>"; };
@@ -523,13 +499,11 @@
 		6EF04C6A139F7D1A009AA411 /* Mage_Frost_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_Frost_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C6B139F7D1A009AA411 /* Mage_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C6C139F7D1A009AA411 /* Mage_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C6D139F7D1A009AA411 /* Mage_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mage_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C6E139F7D1A009AA411 /* Paladin_CharDevSync.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_CharDevSync.simc; sourceTree = "<group>"; };
 		6EF04C6F139F7D1A009AA411 /* Paladin_Retribution_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_Retribution_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C70139F7D1A009AA411 /* Paladin_Retribution_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_Retribution_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C71139F7D1A009AA411 /* Paladin_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C72139F7D1A009AA411 /* Paladin_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C73139F7D1A009AA411 /* Paladin_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C74139F7D1A009AA411 /* Priest_CharDevSync.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_CharDevSync.simc; sourceTree = "<group>"; };
 		6EF04C75139F7D1A009AA411 /* Priest_Disc_Smite_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_Disc_Smite_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C76139F7D1A009AA411 /* Priest_Holy_Smite_AA_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_Holy_Smite_AA_T11_372.simc; sourceTree = "<group>"; };
@@ -538,7 +512,6 @@
 		6EF04C79139F7D1A009AA411 /* Priest_Shadow_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_Shadow_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C7A139F7D1A009AA411 /* Priest_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C7B139F7D1A009AA411 /* Priest_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C7C139F7D1A009AA411 /* Priest_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Priest_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C7D139F7D1A009AA411 /* Raid_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Raid_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C7E139F7D1A009AA411 /* Raid_T11_359_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Raid_T11_359_PTR.simc; sourceTree = "<group>"; };
 		6EF04C7F139F7D1A009AA411 /* Raid_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Raid_T11_372.simc; sourceTree = "<group>"; };
@@ -549,40 +522,27 @@
 		6EF04C84139F7D1A009AA411 /* Rogue_Subtlety_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rogue_Subtlety_T11_359.simc; sourceTree = "<group>"; };
 		6EF04C85139F7D1A009AA411 /* Rogue_Subtlety_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rogue_Subtlety_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C86139F7D1A009AA411 /* Rogue_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rogue_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C87139F7D1A009AA411 /* Rogue_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rogue_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C88139F7D1A009AA411 /* Shaman_CharDevSync.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shaman_CharDevSync.simc; sourceTree = "<group>"; };
 		6EF04C89139F7D1A009AA411 /* Shaman_Elemental_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shaman_Elemental_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C8A139F7D1A009AA411 /* Shaman_Enh_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shaman_Enh_T11_372.simc; sourceTree = "<group>"; };
 		6EF04C8B139F7D1A009AA411 /* Shaman_Enh_T11_372_Caster.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shaman_Enh_T11_372_Caster.simc; sourceTree = "<group>"; };
 		6EF04C8C139F7D1A009AA411 /* Shaman_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shaman_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C8D139F7D1A009AA411 /* Shaman_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Shaman_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C8E139F7D1A009AA411 /* Warlock_AffDrain_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_AffDrain_T11_359.simc; sourceTree = "<group>"; };
-		6EF04C8F139F7D1A009AA411 /* Warlock_AffDrain_T11_359_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_AffDrain_T11_359_PTR.simc; sourceTree = "<group>"; };
 		6EF04C90139F7D1A009AA411 /* Warlock_AffDrain_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_AffDrain_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C91139F7D1A009AA411 /* Warlock_AffDrain_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_AffDrain_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C92139F7D1A009AA411 /* Warlock_Affliction_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Affliction_T11_359.simc; sourceTree = "<group>"; };
-		6EF04C93139F7D1A009AA411 /* Warlock_Affliction_T11_359_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Affliction_T11_359_PTR.simc; sourceTree = "<group>"; };
 		6EF04C94139F7D1A009AA411 /* Warlock_Affliction_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Affliction_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C95139F7D1A009AA411 /* Warlock_Affliction_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Affliction_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C96139F7D1A009AA411 /* Warlock_CharDevSync.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_CharDevSync.simc; sourceTree = "<group>"; };
-		6EF04C97139F7D1A009AA411 /* Warlock_CharDevSyncPTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_CharDevSyncPTR.simc; sourceTree = "<group>"; };
 		6EF04C98139F7D1A009AA411 /* Warlock_Demonology_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Demonology_T11_359.simc; sourceTree = "<group>"; };
-		6EF04C99139F7D1A009AA411 /* Warlock_Demonology_T11_359_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Demonology_T11_359_PTR.simc; sourceTree = "<group>"; };
 		6EF04C9A139F7D1A009AA411 /* Warlock_Demonology_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Demonology_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C9B139F7D1A009AA411 /* Warlock_Demonology_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Demonology_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04C9C139F7D1A009AA411 /* Warlock_Destruction_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Destruction_T11_359.simc; sourceTree = "<group>"; };
-		6EF04C9D139F7D1A009AA411 /* Warlock_Destruction_T11_359_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Destruction_T11_359_PTR.simc; sourceTree = "<group>"; };
 		6EF04C9E139F7D1A009AA411 /* Warlock_Destruction_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Destruction_T11_372.simc; sourceTree = "<group>"; };
-		6EF04C9F139F7D1A009AA411 /* Warlock_Destruction_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Destruction_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04CA0139F7D1A009AA411 /* Warlock_T11_359.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_T11_359.simc; sourceTree = "<group>"; };
 		6EF04CA1139F7D1A009AA411 /* Warlock_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_T11_372.simc; sourceTree = "<group>"; };
-		6EF04CA2139F7D1A009AA411 /* Warlock_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_T11_372_PTR.simc; sourceTree = "<group>"; };
 		6EF04CA3139F7D1A009AA411 /* Warrior_Arms_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Arms_T11_372.simc; sourceTree = "<group>"; };
 		6EF04CA4139F7D1A009AA411 /* Warrior_CharDevSync.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_CharDevSync.simc; sourceTree = "<group>"; };
 		6EF04CA5139F7D1A009AA411 /* Warrior_Fury_1h_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_1h_T11_372.simc; sourceTree = "<group>"; };
 		6EF04CA6139F7D1A009AA411 /* Warrior_Fury_2h_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_2h_T11_372.simc; sourceTree = "<group>"; };
 		6EF04CA7139F7D1A009AA411 /* Warrior_T11_372.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_T11_372.simc; sourceTree = "<group>"; };
-		6EF04CA8139F7D1A009AA411 /* Warrior_T11_372_PTR.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_T11_372_PTR.simc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -627,6 +587,35 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		6E7FC13513A3B98400D7D64E /* dbc */ = {
+			isa = PBXGroup;
+			children = (
+				6E7FC13613A3B98400D7D64E /* __init__.py */,
+				6E7FC13813A3B98400D7D64E /* align.py */,
+				6E7FC13913A3B98400D7D64E /* constants.py */,
+				6E7FC13B13A3B98400D7D64E /* data.py */,
+				6E7FC13D13A3B98400D7D64E /* db.py */,
+				6E7FC13F13A3B98400D7D64E /* generator.py */,
+				6E7FC14113A3B98400D7D64E /* generator2.py */,
+				6E7FC14213A3B98400D7D64E /* parser.py */,
+				6E7FC14413A3B98400D7D64E /* patch.py */,
+			);
+			name = dbc;
+			path = dbc_extract/dbc;
+			sourceTree = "<group>";
+		};
+		6E7FC14A13A3B98D00D7D64E /* DBC Extractor */ = {
+			isa = PBXGroup;
+			children = (
+				6E7FC13513A3B98400D7D64E /* dbc */,
+				6E7FC14613A3B98400D7D64E /* dbc_extract.py */,
+				6E7FC14713A3B98400D7D64E /* generate.bat */,
+				6E7FC14813A3B98400D7D64E /* generate.sh */,
+				6E7FC14913A3B98400D7D64E /* README */,
+			);
+			name = "DBC Extractor";
+			sourceTree = "<group>";
+		};
 		6EC618981396770F006B7A89 = {
 			isa = PBXGroup;
 			children = (
@@ -649,6 +638,7 @@
 		6EC618B213967777006B7A89 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6E7FC14A13A3B98D00D7D64E /* DBC Extractor */,
 				6EC619381396799F006B7A89 /* Client Data */,
 				6EC6192813967816006B7A89 /* GUI */,
 				6EC6192713967805006B7A89 /* Command Line */,
@@ -748,6 +738,8 @@
 				6EC6192F1396789B006B7A89 /* simulationcraftqt.h */,
 				6EC6192B13967883006B7A89 /* main.cpp */,
 				6EC6192C13967883006B7A89 /* sc_window.cpp */,
+				6E7FC12F13A125A400D7D64E /* simcpaperdoll.h */,
+				6E7FC13013A13DCD00D7D64E /* simcpaperdoll.cc */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -790,7 +782,6 @@
 				6EF04C49139F7D1A009AA411 /* Death_Knight_Frost_1h_T11_372.simc */,
 				6EF04C4A139F7D1A009AA411 /* Death_Knight_Frost_2h_T11_372.simc */,
 				6EF04C4B139F7D1A009AA411 /* Death_Knight_T11_372.simc */,
-				6EF04C4C139F7D1A009AA411 /* Death_Knight_T11_372_PTR.simc */,
 				6EF04C4D139F7D1A009AA411 /* Death_Knight_Unholy_1h_T11_372.simc */,
 				6EF04C4E139F7D1A009AA411 /* Death_Knight_Unholy_2h_T11_372.simc */,
 				6EF04C4F139F7D1A009AA411 /* Druid_Balance_T11_359.simc */,
@@ -799,7 +790,6 @@
 				6EF04C52139F7D1A009AA411 /* Druid_Feral_T11_372.simc */,
 				6EF04C53139F7D1A009AA411 /* Druid_Feral_T11_372_hitcap.simc */,
 				6EF04C54139F7D1A009AA411 /* Druid_T11_372.simc */,
-				6EF04C55139F7D1A009AA411 /* Druid_T11_372_PTR.simc */,
 				6EF04C56139F7D1A009AA411 /* generate_profiles.simc */,
 				6EF04C57139F7D1A009AA411 /* HelterSkelter.simc */,
 				6EF04C58139F7D1A009AA411 /* Hunter_BM_T11_359.simc */,
@@ -813,7 +803,6 @@
 				6EF04C60139F7D1A009AA411 /* Hunter_SV_T11_372.simc */,
 				6EF04C61139F7D1A009AA411 /* Hunter_T11_359.simc */,
 				6EF04C62139F7D1A009AA411 /* Hunter_T11_372.simc */,
-				6EF04C63139F7D1A009AA411 /* Hunter_T11_372_PTR.simc */,
 				6EF04C64139F7D1A009AA411 /* Mage_Arcane_T11_359.simc */,
 				6EF04C65139F7D1A009AA411 /* Mage_Arcane_T11_372.simc */,
 				6EF04C66139F7D1A009AA411 /* Mage_CharDevSync.simc */,
@@ -823,13 +812,11 @@
 				6EF04C6A139F7D1A009AA411 /* Mage_Frost_T11_372.simc */,
 				6EF04C6B139F7D1A009AA411 /* Mage_T11_359.simc */,
 				6EF04C6C139F7D1A009AA411 /* Mage_T11_372.simc */,
-				6EF04C6D139F7D1A009AA411 /* Mage_T11_372_PTR.simc */,
 				6EF04C6E139F7D1A009AA411 /* Paladin_CharDevSync.simc */,
 				6EF04C6F139F7D1A009AA411 /* Paladin_Retribution_T11_359.simc */,
 				6EF04C70139F7D1A009AA411 /* Paladin_Retribution_T11_372.simc */,
 				6EF04C71139F7D1A009AA411 /* Paladin_T11_359.simc */,
 				6EF04C72139F7D1A009AA411 /* Paladin_T11_372.simc */,
-				6EF04C73139F7D1A009AA411 /* Paladin_T11_372_PTR.simc */,
 				6EF04C74139F7D1A009AA411 /* Priest_CharDevSync.simc */,
 				6EF04C75139F7D1A009AA411 /* Priest_Disc_Smite_T11_372.simc */,
 				6EF04C76139F7D1A009AA411 /* Priest_Holy_Smite_AA_T11_372.simc */,
@@ -838,7 +825,6 @@
 				6EF04C79139F7D1A009AA411 /* Priest_Shadow_T11_372.simc */,
 				6EF04C7A139F7D1A009AA411 /* Priest_T11_359.simc */,
 				6EF04C7B139F7D1A009AA411 /* Priest_T11_372.simc */,
-				6EF04C7C139F7D1A009AA411 /* Priest_T11_372_PTR.simc */,
 				6EF04C7D139F7D1A009AA411 /* Raid_T11_359.simc */,
 				6EF04C7E139F7D1A009AA411 /* Raid_T11_359_PTR.simc */,
 				6EF04C7F139F7D1A009AA411 /* Raid_T11_372.simc */,
@@ -849,40 +835,27 @@
 				6EF04C84139F7D1A009AA411 /* Rogue_Subtlety_T11_359.simc */,
 				6EF04C85139F7D1A009AA411 /* Rogue_Subtlety_T11_372.simc */,
 				6EF04C86139F7D1A009AA411 /* Rogue_T11_372.simc */,
-				6EF04C87139F7D1A009AA411 /* Rogue_T11_372_PTR.simc */,
 				6EF04C88139F7D1A009AA411 /* Shaman_CharDevSync.simc */,
 				6EF04C89139F7D1A009AA411 /* Shaman_Elemental_T11_372.simc */,
 				6EF04C8A139F7D1A009AA411 /* Shaman_Enh_T11_372.simc */,
 				6EF04C8B139F7D1A009AA411 /* Shaman_Enh_T11_372_Caster.simc */,
 				6EF04C8C139F7D1A009AA411 /* Shaman_T11_372.simc */,
-				6EF04C8D139F7D1A009AA411 /* Shaman_T11_372_PTR.simc */,
 				6EF04C8E139F7D1A009AA411 /* Warlock_AffDrain_T11_359.simc */,
-				6EF04C8F139F7D1A009AA411 /* Warlock_AffDrain_T11_359_PTR.simc */,
 				6EF04C90139F7D1A009AA411 /* Warlock_AffDrain_T11_372.simc */,
-				6EF04C91139F7D1A009AA411 /* Warlock_AffDrain_T11_372_PTR.simc */,
 				6EF04C92139F7D1A009AA411 /* Warlock_Affliction_T11_359.simc */,
-				6EF04C93139F7D1A009AA411 /* Warlock_Affliction_T11_359_PTR.simc */,
 				6EF04C94139F7D1A009AA411 /* Warlock_Affliction_T11_372.simc */,
-				6EF04C95139F7D1A009AA411 /* Warlock_Affliction_T11_372_PTR.simc */,
 				6EF04C96139F7D1A009AA411 /* Warlock_CharDevSync.simc */,
-				6EF04C97139F7D1A009AA411 /* Warlock_CharDevSyncPTR.simc */,
 				6EF04C98139F7D1A009AA411 /* Warlock_Demonology_T11_359.simc */,
-				6EF04C99139F7D1A009AA411 /* Warlock_Demonology_T11_359_PTR.simc */,
 				6EF04C9A139F7D1A009AA411 /* Warlock_Demonology_T11_372.simc */,
-				6EF04C9B139F7D1A009AA411 /* Warlock_Demonology_T11_372_PTR.simc */,
 				6EF04C9C139F7D1A009AA411 /* Warlock_Destruction_T11_359.simc */,
-				6EF04C9D139F7D1A009AA411 /* Warlock_Destruction_T11_359_PTR.simc */,
 				6EF04C9E139F7D1A009AA411 /* Warlock_Destruction_T11_372.simc */,
-				6EF04C9F139F7D1A009AA411 /* Warlock_Destruction_T11_372_PTR.simc */,
 				6EF04CA0139F7D1A009AA411 /* Warlock_T11_359.simc */,
 				6EF04CA1139F7D1A009AA411 /* Warlock_T11_372.simc */,
-				6EF04CA2139F7D1A009AA411 /* Warlock_T11_372_PTR.simc */,
 				6EF04CA3139F7D1A009AA411 /* Warrior_Arms_T11_372.simc */,
 				6EF04CA4139F7D1A009AA411 /* Warrior_CharDevSync.simc */,
 				6EF04CA5139F7D1A009AA411 /* Warrior_Fury_1h_T11_372.simc */,
 				6EF04CA6139F7D1A009AA411 /* Warrior_Fury_2h_T11_372.simc */,
 				6EF04CA7139F7D1A009AA411 /* Warrior_T11_372.simc */,
-				6EF04CA8139F7D1A009AA411 /* Warrior_T11_372_PTR.simc */,
 			);
 			path = profiles;
 			sourceTree = "<group>";
@@ -1015,6 +988,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6EF04D1F139FAF0E009AA411 /* simulationcraftqt.h in Sources */,
+				6E7FC13313A13EA000D7D64E /* simcpaperdoll.h in Sources */,
 				6E392F6D1396A0AC00649B6A /* sc_action.cpp in Sources */,
 				6E392F6E1396A0AC00649B6A /* sc_armory.cpp in Sources */,
 				6E392F6F1396A0AC00649B6A /* sc_attack.cpp in Sources */,
@@ -1074,6 +1048,7 @@
 				6E392F6C1396A09F00649B6A /* sc_warrior.cpp in Sources */,
 				6E392F621396A09700649B6A /* sc_window.cpp in Sources */,
 				6E392F611396A09700649B6A /* main.cpp in Sources */,
+				6E7FC13113A13DCD00D7D64E /* simcpaperdoll.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

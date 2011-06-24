@@ -19,6 +19,9 @@
 #define TAB_LOG       6
 #define TAB_RESULTS   7
 #define TAB_SITE      8
+#ifdef SC_PAPERDOLL
+#define TAB_PAPERDOLL 9
+#endif
 
 #define TAB_BATTLE_NET 0
 #define TAB_CHAR_DEV   1
@@ -98,6 +101,9 @@ public:
     QTabWidget* importTab;
     QTabWidget* resultsTab;
     QTabWidget *createCustomProfileDock;
+#if SC_PAPERDOLL
+    QTabWidget* paperdollTab;
+#endif
     QComboBox* versionChoice;
     QComboBox* latencyChoice;
     QComboBox* iterationsChoice;
@@ -196,6 +202,9 @@ public:
     void createResultsTab();
     void createSiteTab();
     void createToolTips();
+#ifdef SC_PAPERDOLL
+    void createPaperdoll();
+#endif
     void createItemDataSourceSelector( QFormLayout* );
     void updateVisibleWebView( SimulationCraftWebView* );
 

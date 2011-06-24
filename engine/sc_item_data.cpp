@@ -411,6 +411,48 @@ int item_database_t::random_suffix_type( const item_t& item )
   return f;
 }
 
+uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc )
+{
+  if ( ! item || item -> quality > 5 )
+    return 0;
+  
+  // Shield have separate armor table, bypass normal calculation
+  if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
+    return ( uint32_t ) floor( dbc.item_armor_shield( item -> level ).values[ item -> quality ] + 0.5 );
+  
+  // Only Cloth, Leather, Mail and Plate armor has innate armor values
+  if ( item -> item_subclass != ITEM_SUBCLASS_ARMOR_MISC && item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
+    return 0;
+  
+  double m_invtype = 0, m_quality = 0, total_armor = 0;
+  
+  switch ( item -> inventory_type )
+  {
+    case INVTYPE_HEAD:
+    case INVTYPE_SHOULDERS:
+    case INVTYPE_CHEST:
+    case INVTYPE_WAIST:
+    case INVTYPE_LEGS:
+    case INVTYPE_FEET:
+    case INVTYPE_WRISTS:
+    case INVTYPE_HANDS:
+    case INVTYPE_CLOAK:
+    case INVTYPE_ROBE:
+    {
+      total_armor = dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
+      m_quality   = dbc.item_armor_quality( item -> level ).values[ item -> quality ];
+      if ( item -> inventory_type == INVTYPE_ROBE )
+        m_invtype = dbc.item_armor_inv_type( INVTYPE_CHEST ).armor_type[ item -> item_subclass - 1 ];
+      else
+        m_invtype = dbc.item_armor_inv_type( item -> inventory_type ).armor_type[ item -> item_subclass - 1 ];
+      break;
+    }
+    default: return 0;
+  }
+  
+  return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
+}
+
 // item_database_t::armor_value ===========================================
 
 uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
@@ -464,6 +506,20 @@ uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *
                              ( 1 - item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
+}
+
+uint32_t item_database_t::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc )
+{
+  return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
+                            dbc.item( item -> id ) -> delay / 1000.0 *
+                            ( 1 - dbc.item( item -> id ) -> dmg_range / 2 ) );
+}
+
+uint32_t item_database_t::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc )
+{
+  return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
+                            dbc.item( item -> id ) -> delay / 1000.0 *
+                            ( 1 + dbc.item( item -> id ) -> dmg_range / 2 ) + 0.5 );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )

@@ -4,6 +4,9 @@
 // ==========================================================================
 
 #include "simulationcraftqt.h"
+#ifdef SC_PAPERDOLL
+#include "simcpaperdoll.h"
+#endif
 #include <QtWebKit>
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>
@@ -444,6 +447,9 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   createSiteTab();
   createCmdLine();
   createToolTips();
+#ifdef SC_PAPERDOLL
+  createPaperdoll();
+#endif
 
   connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
   
@@ -935,6 +941,26 @@ void SimulationCraftWindow::createToolTips()
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 }
+
+#ifdef SC_PAPERDOLL
+void SimulationCraftWindow::createPaperdoll()
+{
+  QWidget* paperdollTab = new QWidget( this );
+  QHBoxLayout* paperdollMainLayout = new QHBoxLayout();
+  paperdollMainLayout -> setAlignment( Qt::AlignLeft | Qt::AlignTop );
+  paperdollTab -> setLayout( paperdollMainLayout );
+
+  PaperdollProfile* profile = new PaperdollProfile();
+  Paperdoll* paperdoll = new Paperdoll( profile, paperdollTab );
+  ItemSelectionWidget* items = new ItemSelectionWidget( profile, paperdollTab );
+  
+  paperdollMainLayout -> addWidget( items );
+  paperdollMainLayout -> addWidget( paperdoll );
+  
+  
+  mainTab -> addTab( paperdollTab, "Paperdoll" );
+}
+#endif
 
 void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
 {
@@ -1606,6 +1632,10 @@ void SimulationCraftWindow::mainTabChanged( int index )
     mainButton->setText( sim ? "Cancel!" : "Simulate!" );
     updateVisibleWebView( siteView );
     break;
+#ifdef SC_PAPERDOLL
+    case TAB_PAPERDOLL:
+      break;
+#endif
   default: assert(0);
   }
   if( visibleWebView ) 
