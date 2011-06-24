@@ -876,7 +876,7 @@ class SpellDataGenerator(DataGenerator):
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 'TalentTab',
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
-            'Item', 'SpellEquippedItems' ]
+            'Item', 'SpellEquippedItems', 'SpellIcon' ]
 
         DataGenerator.__init__(self, options)
 
@@ -1417,6 +1417,10 @@ class SpellDataGenerator(DataGenerator):
             fields += spell.field('desc', 'tt')
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('var')
+            else:
+                fields += [ '0' ]
+            if spell.id_icon and self._spellicon_db.get(spell.id_icon):
+                fields += self._spellicon_db[spell.id_icon].field('name')
             else:
                 fields += [ '0' ]
             # Pad struct with empty pointers for direct access to spell effect data

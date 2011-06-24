@@ -1151,6 +1151,8 @@ struct spell_data_t {
   const char * _tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
   const char * _desc_vars;          // Spell description variable stringblock, if present
+  // SpellIcon.dbc
+  const char * _icon;
 
   // Pointers for runtime linking
   spelleffect_data_t* _effect1;

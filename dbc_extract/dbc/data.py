@@ -267,6 +267,9 @@ _DBC_FIELDS = {
     'SpellEquippedItems.dbc' : [
         'id', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
     ],
+    'SpellIcon.dbc' : [
+        'id', 'ofs_name'
+    ],
     'SpellItemEnchantment.dbc' : [
           ( 'id', '%4u' ), 'charges', 
           ( 'type_1', '%3u' ), ( 'type_2', '%3u' ), ( 'type_3', '%3u' ), 
@@ -470,6 +473,39 @@ class ItemDisplayInfo(DBCRecord):
         s = DBCRecord.__str__(self)
         if self.ofs_icon != 0:
             s += 'icon=\"%s\" ' % self.icon
+
+        return s
+
+class SpellIcon(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.name     = 0
+
+    def field(self, *args):
+        f = DBCRecord.field(self, *args)
+
+        if 'name' in args:
+            if self.name:
+                f[args.index('name')] = '%s' % ('"%s"' % self.name.replace('"', '\\"').lower()[self.name.rfind('\\') + 1:])
+            else:
+                f[args.index('name')] = '0'
+
+        return f
+
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_name != 0:
+            self.name = self._dbc_parser.get_string_block(self.ofs_name)
+
+        return self
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        if self.ofs_name:
+            s += 'name=\"%s\" ' % self.name
 
         return s
 
