@@ -968,6 +968,11 @@ static void trigger_tier12_4pc_melee( attack_t* s )
 
   if ( ! p -> dbc.ptr ) return;
 
+  if ( p -> buffs_tier12_4pc_haste   -> check() ||
+       p -> buffs_tier12_4pc_crit    -> check() ||
+       p -> buffs_tier12_4pc_mastery -> check() )
+    return;
+
   chance = sim -> real();
   mult = p -> sets -> set( SET_T12_4PC_MELEE ) -> s_effects[ 0 ] -> percent();
 
@@ -3740,9 +3745,9 @@ void rogue_t::init_buffs()
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
-  buffs_tier12_4pc_haste   = new stat_buff_t( this, "Future on Fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
-  buffs_tier12_4pc_crit    = new stat_buff_t( this, "Fiery Devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
-  buffs_tier12_4pc_mastery = new stat_buff_t( this, "Master of Flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
+  buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
+  buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
+  buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
 
   buffs_blade_flurry       = new new_buff_t( this, "blade_flurry",   spec_blade_flurry -> spell_id() );
   buffs_cold_blood         = new new_buff_t( this, "cold_blood",     talents.cold_blood -> spell_id() );
