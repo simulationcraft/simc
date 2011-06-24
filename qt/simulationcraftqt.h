@@ -101,7 +101,7 @@ public:
     QTabWidget* importTab;
     QTabWidget* resultsTab;
     QTabWidget *createCustomProfileDock;
-#if SC_PAPERDOLL
+#ifdef SC_PAPERDOLL
     QTabWidget* paperdollTab;
 #endif
     QComboBox* versionChoice;
