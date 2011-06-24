@@ -92,6 +92,40 @@
 		6E6C54D41396A64100407A6A /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
 		6E6C54D51396A64800407A6A /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
 		6E6C54D61396A64C00407A6A /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
+		6E7C23F713B5368D00D85057 /* ABILITY_SEAL.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23D513B5367800D85057 /* ABILITY_SEAL.PNG */; };
+		6E7C23F813B5368D00D85057 /* alliance.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23D613B5367800D85057 /* alliance.png */; };
+		6E7C23F913B5368D00D85057 /* class_deathknight.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23D713B5367800D85057 /* class_deathknight.png */; };
+		6E7C23FA13B5368E00D85057 /* class_druid.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23D813B5367800D85057 /* class_druid.png */; };
+		6E7C23FB13B5368E00D85057 /* class_hunter.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23D913B5367800D85057 /* class_hunter.png */; };
+		6E7C23FC13B5368E00D85057 /* class_mage.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23DA13B5367800D85057 /* class_mage.png */; };
+		6E7C23FD13B5368E00D85057 /* class_paladin.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23DB13B5367800D85057 /* class_paladin.png */; };
+		6E7C23FE13B5368E00D85057 /* class_priest.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23DC13B5367800D85057 /* class_priest.png */; };
+		6E7C23FF13B5368E00D85057 /* class_rogue.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23DD13B5367800D85057 /* class_rogue.png */; };
+		6E7C240013B5368E00D85057 /* class_shaman.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23DE13B5367800D85057 /* class_shaman.png */; };
+		6E7C240113B5368E00D85057 /* class_warlock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23DF13B5367800D85057 /* class_warlock.png */; };
+		6E7C240213B5368E00D85057 /* class_warrior.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E013B5367800D85057 /* class_warrior.png */; };
+		6E7C240313B5368E00D85057 /* horde.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E113B5367800D85057 /* horde.png */; };
+		6E7C240413B5368E00D85057 /* race_blood_elf.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E213B5367800D85057 /* race_blood_elf.png */; };
+		6E7C240513B5368E00D85057 /* race_draenei.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E313B5367800D85057 /* race_draenei.png */; };
+		6E7C240613B5368E00D85057 /* race_dwarf.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E413B5367800D85057 /* race_dwarf.png */; };
+		6E7C240713B5368E00D85057 /* race_gnome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E513B5367800D85057 /* race_gnome.png */; };
+		6E7C240813B5368E00D85057 /* race_goblin.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E613B5367800D85057 /* race_goblin.png */; };
+		6E7C240913B5368E00D85057 /* race_human.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E713B5367800D85057 /* race_human.png */; };
+		6E7C240A13B5368E00D85057 /* race_night_elf.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E813B5367800D85057 /* race_night_elf.png */; };
+		6E7C240B13B5368E00D85057 /* race_orc.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23E913B5367800D85057 /* race_orc.png */; };
+		6E7C240C13B5368E00D85057 /* race_tauren.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23EA13B5367800D85057 /* race_tauren.png */; };
+		6E7C240D13B5368E00D85057 /* race_troll.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23EB13B5367800D85057 /* race_troll.png */; };
+		6E7C240E13B5368E00D85057 /* race_undead.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23EC13B5367800D85057 /* race_undead.png */; };
+		6E7C240F13B5368E00D85057 /* race_worgen.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23ED13B5367800D85057 /* race_worgen.png */; };
+		6E7C241013B5368E00D85057 /* socket_0.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23EE13B5367800D85057 /* socket_0.PNG */; };
+		6E7C241113B5368E00D85057 /* socket_1.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23EF13B5367800D85057 /* socket_1.PNG */; };
+		6E7C241213B5368E00D85057 /* socket_2.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23F013B5367800D85057 /* socket_2.PNG */; };
+		6E7C241313B5368E00D85057 /* socket_4.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23F113B5367800D85057 /* socket_4.PNG */; };
+		6E7C241413B5368E00D85057 /* socket_8.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23F213B5367800D85057 /* socket_8.PNG */; };
+		6E7C241513B5368E00D85057 /* socket_14.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23F313B5367800D85057 /* socket_14.png */; };
+		6E7C241613B5368E00D85057 /* socket_16.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23F413B5367800D85057 /* socket_16.PNG */; };
+		6E7C241713B5368E00D85057 /* socket_32.PNG in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C23F513B5367800D85057 /* socket_32.PNG */; };
+		6E7C241A13B5384900D85057 /* border.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E7C241913B5383300D85057 /* border.png */; };
 		6E7FC13113A13DCD00D7D64E /* simcpaperdoll.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FC13013A13DCD00D7D64E /* simcpaperdoll.cc */; };
 		6E7FC13313A13EA000D7D64E /* simcpaperdoll.h in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FC12F13A125A400D7D64E /* simcpaperdoll.h */; };
 		6EC618ED139677F0006B7A89 /* sc_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B4139677F0006B7A89 /* sc_action.cpp */; };
@@ -368,6 +402,41 @@
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
 		6E6C54D31396A63000407A6A /* Legend.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Legend.html; sourceTree = "<group>"; };
+		6E7C23D513B5367800D85057 /* ABILITY_SEAL.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ABILITY_SEAL.PNG; path = qt/icons/ABILITY_SEAL.PNG; sourceTree = "<group>"; };
+		6E7C23D613B5367800D85057 /* alliance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = alliance.png; path = qt/icons/alliance.png; sourceTree = "<group>"; };
+		6E7C23D713B5367800D85057 /* class_deathknight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_deathknight.png; path = qt/icons/class_deathknight.png; sourceTree = "<group>"; };
+		6E7C23D813B5367800D85057 /* class_druid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_druid.png; path = qt/icons/class_druid.png; sourceTree = "<group>"; };
+		6E7C23D913B5367800D85057 /* class_hunter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_hunter.png; path = qt/icons/class_hunter.png; sourceTree = "<group>"; };
+		6E7C23DA13B5367800D85057 /* class_mage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_mage.png; path = qt/icons/class_mage.png; sourceTree = "<group>"; };
+		6E7C23DB13B5367800D85057 /* class_paladin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_paladin.png; path = qt/icons/class_paladin.png; sourceTree = "<group>"; };
+		6E7C23DC13B5367800D85057 /* class_priest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_priest.png; path = qt/icons/class_priest.png; sourceTree = "<group>"; };
+		6E7C23DD13B5367800D85057 /* class_rogue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_rogue.png; path = qt/icons/class_rogue.png; sourceTree = "<group>"; };
+		6E7C23DE13B5367800D85057 /* class_shaman.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_shaman.png; path = qt/icons/class_shaman.png; sourceTree = "<group>"; };
+		6E7C23DF13B5367800D85057 /* class_warlock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_warlock.png; path = qt/icons/class_warlock.png; sourceTree = "<group>"; };
+		6E7C23E013B5367800D85057 /* class_warrior.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_warrior.png; path = qt/icons/class_warrior.png; sourceTree = "<group>"; };
+		6E7C23E113B5367800D85057 /* horde.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = horde.png; path = qt/icons/horde.png; sourceTree = "<group>"; };
+		6E7C23E213B5367800D85057 /* race_blood_elf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_blood_elf.png; path = qt/icons/race_blood_elf.png; sourceTree = "<group>"; };
+		6E7C23E313B5367800D85057 /* race_draenei.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_draenei.png; path = qt/icons/race_draenei.png; sourceTree = "<group>"; };
+		6E7C23E413B5367800D85057 /* race_dwarf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_dwarf.png; path = qt/icons/race_dwarf.png; sourceTree = "<group>"; };
+		6E7C23E513B5367800D85057 /* race_gnome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_gnome.png; path = qt/icons/race_gnome.png; sourceTree = "<group>"; };
+		6E7C23E613B5367800D85057 /* race_goblin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_goblin.png; path = qt/icons/race_goblin.png; sourceTree = "<group>"; };
+		6E7C23E713B5367800D85057 /* race_human.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_human.png; path = qt/icons/race_human.png; sourceTree = "<group>"; };
+		6E7C23E813B5367800D85057 /* race_night_elf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_night_elf.png; path = qt/icons/race_night_elf.png; sourceTree = "<group>"; };
+		6E7C23E913B5367800D85057 /* race_orc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_orc.png; path = qt/icons/race_orc.png; sourceTree = "<group>"; };
+		6E7C23EA13B5367800D85057 /* race_tauren.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_tauren.png; path = qt/icons/race_tauren.png; sourceTree = "<group>"; };
+		6E7C23EB13B5367800D85057 /* race_troll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_troll.png; path = qt/icons/race_troll.png; sourceTree = "<group>"; };
+		6E7C23EC13B5367800D85057 /* race_undead.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_undead.png; path = qt/icons/race_undead.png; sourceTree = "<group>"; };
+		6E7C23ED13B5367800D85057 /* race_worgen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = race_worgen.png; path = qt/icons/race_worgen.png; sourceTree = "<group>"; };
+		6E7C23EE13B5367800D85057 /* socket_0.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_0.PNG; path = qt/icons/socket_0.PNG; sourceTree = "<group>"; };
+		6E7C23EF13B5367800D85057 /* socket_1.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_1.PNG; path = qt/icons/socket_1.PNG; sourceTree = "<group>"; };
+		6E7C23F013B5367800D85057 /* socket_2.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_2.PNG; path = qt/icons/socket_2.PNG; sourceTree = "<group>"; };
+		6E7C23F113B5367800D85057 /* socket_4.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_4.PNG; path = qt/icons/socket_4.PNG; sourceTree = "<group>"; };
+		6E7C23F213B5367800D85057 /* socket_8.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_8.PNG; path = qt/icons/socket_8.PNG; sourceTree = "<group>"; };
+		6E7C23F313B5367800D85057 /* socket_14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_14.png; path = qt/icons/socket_14.png; sourceTree = "<group>"; };
+		6E7C23F413B5367800D85057 /* socket_16.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_16.PNG; path = qt/icons/socket_16.PNG; sourceTree = "<group>"; };
+		6E7C23F513B5367800D85057 /* socket_32.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = socket_32.PNG; path = qt/icons/socket_32.PNG; sourceTree = "<group>"; };
+		6E7C241913B5383300D85057 /* border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = border.png; path = qt/icons/border.png; sourceTree = "<group>"; };
+		6E7C241B13B544E700D85057 /* selection_border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = selection_border.png; path = qt/icons/selection_border.png; sourceTree = "<group>"; };
 		6E7FC12F13A125A400D7D64E /* simcpaperdoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simcpaperdoll.h; path = qt/simcpaperdoll.h; sourceTree = "<group>"; };
 		6E7FC13013A13DCD00D7D64E /* simcpaperdoll.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = simcpaperdoll.cc; path = qt/simcpaperdoll.cc; sourceTree = "<group>"; };
 		6E7FC13613A3B98400D7D64E /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
@@ -578,6 +647,7 @@
 		6E392F5213969F6400649B6A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6E7C23D413B5361700D85057 /* Icons */,
 				6EF04C46139F7D1A009AA411 /* profiles */,
 				6E6C54D31396A63000407A6A /* Legend.html */,
 				6E6C54D21396A62600407A6A /* Welcome.html */,
@@ -585,6 +655,48 @@
 				6E392F5313969FCC00649B6A /* Simcraft2.icns */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		6E7C23D413B5361700D85057 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				6E7C241B13B544E700D85057 /* selection_border.png */,
+				6E7C241913B5383300D85057 /* border.png */,
+				6E7C23D513B5367800D85057 /* ABILITY_SEAL.PNG */,
+				6E7C23D613B5367800D85057 /* alliance.png */,
+				6E7C23D713B5367800D85057 /* class_deathknight.png */,
+				6E7C23D813B5367800D85057 /* class_druid.png */,
+				6E7C23D913B5367800D85057 /* class_hunter.png */,
+				6E7C23DA13B5367800D85057 /* class_mage.png */,
+				6E7C23DB13B5367800D85057 /* class_paladin.png */,
+				6E7C23DC13B5367800D85057 /* class_priest.png */,
+				6E7C23DD13B5367800D85057 /* class_rogue.png */,
+				6E7C23DE13B5367800D85057 /* class_shaman.png */,
+				6E7C23DF13B5367800D85057 /* class_warlock.png */,
+				6E7C23E013B5367800D85057 /* class_warrior.png */,
+				6E7C23E113B5367800D85057 /* horde.png */,
+				6E7C23E213B5367800D85057 /* race_blood_elf.png */,
+				6E7C23E313B5367800D85057 /* race_draenei.png */,
+				6E7C23E413B5367800D85057 /* race_dwarf.png */,
+				6E7C23E513B5367800D85057 /* race_gnome.png */,
+				6E7C23E613B5367800D85057 /* race_goblin.png */,
+				6E7C23E713B5367800D85057 /* race_human.png */,
+				6E7C23E813B5367800D85057 /* race_night_elf.png */,
+				6E7C23E913B5367800D85057 /* race_orc.png */,
+				6E7C23EA13B5367800D85057 /* race_tauren.png */,
+				6E7C23EB13B5367800D85057 /* race_troll.png */,
+				6E7C23EC13B5367800D85057 /* race_undead.png */,
+				6E7C23ED13B5367800D85057 /* race_worgen.png */,
+				6E7C23EE13B5367800D85057 /* socket_0.PNG */,
+				6E7C23EF13B5367800D85057 /* socket_1.PNG */,
+				6E7C23F013B5367800D85057 /* socket_2.PNG */,
+				6E7C23F113B5367800D85057 /* socket_4.PNG */,
+				6E7C23F213B5367800D85057 /* socket_8.PNG */,
+				6E7C23F313B5367800D85057 /* socket_14.png */,
+				6E7C23F413B5367800D85057 /* socket_16.PNG */,
+				6E7C23F513B5367800D85057 /* socket_32.PNG */,
+			);
+			name = Icons;
 			sourceTree = "<group>";
 		};
 		6E7FC13513A3B98400D7D64E /* dbc */ = {
@@ -928,6 +1040,40 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E7C241A13B5384900D85057 /* border.png in Resources */,
+				6E7C23F713B5368D00D85057 /* ABILITY_SEAL.PNG in Resources */,
+				6E7C23F813B5368D00D85057 /* alliance.png in Resources */,
+				6E7C23F913B5368D00D85057 /* class_deathknight.png in Resources */,
+				6E7C23FA13B5368E00D85057 /* class_druid.png in Resources */,
+				6E7C23FB13B5368E00D85057 /* class_hunter.png in Resources */,
+				6E7C23FC13B5368E00D85057 /* class_mage.png in Resources */,
+				6E7C23FD13B5368E00D85057 /* class_paladin.png in Resources */,
+				6E7C23FE13B5368E00D85057 /* class_priest.png in Resources */,
+				6E7C23FF13B5368E00D85057 /* class_rogue.png in Resources */,
+				6E7C240013B5368E00D85057 /* class_shaman.png in Resources */,
+				6E7C240113B5368E00D85057 /* class_warlock.png in Resources */,
+				6E7C240213B5368E00D85057 /* class_warrior.png in Resources */,
+				6E7C240313B5368E00D85057 /* horde.png in Resources */,
+				6E7C240413B5368E00D85057 /* race_blood_elf.png in Resources */,
+				6E7C240513B5368E00D85057 /* race_draenei.png in Resources */,
+				6E7C240613B5368E00D85057 /* race_dwarf.png in Resources */,
+				6E7C240713B5368E00D85057 /* race_gnome.png in Resources */,
+				6E7C240813B5368E00D85057 /* race_goblin.png in Resources */,
+				6E7C240913B5368E00D85057 /* race_human.png in Resources */,
+				6E7C240A13B5368E00D85057 /* race_night_elf.png in Resources */,
+				6E7C240B13B5368E00D85057 /* race_orc.png in Resources */,
+				6E7C240C13B5368E00D85057 /* race_tauren.png in Resources */,
+				6E7C240D13B5368E00D85057 /* race_troll.png in Resources */,
+				6E7C240E13B5368E00D85057 /* race_undead.png in Resources */,
+				6E7C240F13B5368E00D85057 /* race_worgen.png in Resources */,
+				6E7C241013B5368E00D85057 /* socket_0.PNG in Resources */,
+				6E7C241113B5368E00D85057 /* socket_1.PNG in Resources */,
+				6E7C241213B5368E00D85057 /* socket_2.PNG in Resources */,
+				6E7C241313B5368E00D85057 /* socket_4.PNG in Resources */,
+				6E7C241413B5368E00D85057 /* socket_8.PNG in Resources */,
+				6E7C241513B5368E00D85057 /* socket_14.png in Resources */,
+				6E7C241613B5368E00D85057 /* socket_16.PNG in Resources */,
+				6E7C241713B5368E00D85057 /* socket_32.PNG in Resources */,
 				6E6C54D61396A64C00407A6A /* Welcome.png in Resources */,
 				6E6C54D51396A64800407A6A /* Welcome.html in Resources */,
 				6E6C54D41396A64100407A6A /* Legend.html in Resources */,

@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QPixmapCache>
+#include <QCoreApplication>
 
 #include <algorithm>
 
@@ -24,16 +25,36 @@ PaperdollPixmap::get( const QString& icon_str, bool border, QSize size )
   return icon;
 }
 
+QString 
+PaperdollPixmap::resourcePath( void )
+{
+  if ( PaperdollPixmap::rpath.isEmpty() )
+  {
+#ifdef Q_WS_MAC
+    PaperdollPixmap::rpath = QString( "%1/../Resources/" ).arg( QCoreApplication::instance() -> applicationDirPath() );
+#else
+    PaperdollPixmap::rpath = QString( "%1/qt/icons/" ).arg( QCoreApplication::instance() -> applicationDirPath() );
+#endif
+  }
+  
+  return PaperdollPixmap::rpath;
+}
+
 PaperdollPixmap::PaperdollPixmap() : QPixmap() { }
 
 PaperdollPixmap::PaperdollPixmap( const QString& icon, bool draw_border, QSize s ) :
   QPixmap( s )
 {
-  QImage icon_image( QString( QDir::homePath() + "/WoWAssets/fixed/" + icon ), 0 );
-  QImage border( QString( QDir::homePath() + "/WoWAssets/border" ) );
+  QImage icon_image( QString( resourcePath() + icon ), 0 );
+  if ( icon_image.isNull() )
+  {
+    icon_image = QImage( QString( QDir::homePath() + "/WoWAssets/Icons/" + icon ) );
+  }
+
+  QImage border( resourcePath() + "border" );
 
   if ( icon_image.isNull() )
-    icon_image = QImage( QString( QDir::homePath() + "/WoWAssets/fixed/ABILITY_SEAL" ), 0 );
+    icon_image = QImage( QString( resourcePath() + "ABILITY_SEAL" ), 0 );
   
   QSize d = ( draw_border ? border.size() : size() ) - icon_image.size();
   d /= 2;
@@ -47,10 +68,15 @@ PaperdollPixmap::PaperdollPixmap( const QString& icon, bool draw_border, QSize s
   if ( draw_border ) paint.drawImage( 0, 0, border );
 }
 
-PaperdollProfile::PaperdollProfile() : QObject(), m_currentSlot( SLOT_NONE )
+PaperdollProfile::PaperdollProfile() :
+  QObject(), 
+  m_currentSlot( SLOT_NONE ), m_class( PLAYER_NONE ), m_race( RACE_NONE )
 { 
   for ( int i = 0; i < SLOT_MAX; i++ )
+  {
     m_slotItem[ i ] = 0;
+    m_slotEnchant[ i ] = EnchantData();
+  }
 }
 
 void
@@ -70,14 +96,46 @@ PaperdollProfile::setSelectedItem( const QModelIndex& index )
   emit itemChanged( m_currentSlot, m_slotItem[ m_currentSlot ] );
 }
 
+void 
+PaperdollProfile::setSelectedEnchant( int idx )
+{
+  if ( QComboBox* sender = qobject_cast< QComboBox* >( QObject::sender() ) )
+    m_slotEnchant[ m_currentSlot ] = sender -> model() -> index ( idx, 0 ).data( Qt::UserRole ).value< EnchantData >();
+  
+  emit enchantChanged( m_currentSlot, m_slotEnchant[ m_currentSlot ] );
+}
+
+void
+PaperdollProfile::setClass( int player_class )
+{
+  assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
+  m_class = ( player_type ) player_class;
+  
+  emit classChanged( m_class );
+  // We need to invalidate items here possibly, 
+  // if class changes to an item that cannot use the item
+}
+
+void
+PaperdollProfile::setRace( int player_race )
+{
+  assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
+  m_race = ( race_type ) player_race;
+  
+  emit raceChanged( m_race );
+}
 
 ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* parent ) :
   QSortFilterProxyModel( parent ), 
   m_profile( profile ), 
   m_matchArmor( true ), m_minIlevel( 359 ), m_maxIlevel( 410 ),
-  m_class( 0 ), m_race( 0 ), m_searchText()
+  m_searchText()
 {
-  setDynamicSortFilter( true );
+  QObject::connect( profile, SIGNAL( classChanged( player_type ) ),
+                    this,    SLOT( setClass( player_type ) ) );
+
+  QObject::connect( profile, SIGNAL( raceChanged( race_type ) ),
+                    this,    SLOT( setRace( race_type ) ) );
 }
 
 void 
@@ -97,17 +155,15 @@ ItemFilterProxyModel::setMaxIlevel( int newValue )
 }
 
 void 
-ItemFilterProxyModel::SetClass( quint32 newValue )
+ItemFilterProxyModel::setClass( player_type newValue )
 {
-  m_class = newValue;
   invalidate();
   sort( 0 );
 }
 
 void 
-ItemFilterProxyModel::SetRace( quint32 newValue )
+ItemFilterProxyModel::setRace( race_type newValue )
 {
-  m_race = newValue;
   invalidate();
   sort( 0 );
 }
@@ -142,7 +198,7 @@ ItemFilterProxyModel::SearchTextChanged( const QString& newValue )
 }
 
 void
-ItemFilterProxyModel::SetMatchArmor( int newValue )
+ItemFilterProxyModel::setMatchArmor( int newValue )
 {
   m_matchArmor = newValue;
   invalidate();
@@ -169,6 +225,8 @@ ItemFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& source
   // Grab the pointer from userdata, and filter through it
   const QModelIndex& idx  = sourceModel() -> index( sourceRow, 0, sourceParent );
   const item_data_t* item = reinterpret_cast< const item_data_t* >( idx.data( Qt::UserRole ).value< void* >() );
+  player_type player_class = m_profile -> currentClass();
+  race_type player_race = m_profile -> currentRace();
   
   if ( m_profile -> currentSlot() == SLOT_NONE )
     return false;
@@ -176,8 +234,8 @@ ItemFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& source
   bool state = ( filterByName( item ) && itemFitsSlot( item ) && itemFitsClass( item ) &&
                 itemUsedByClass( item ) && 
                 item -> level >= m_minIlevel && item -> level <= m_maxIlevel &&
-                ( ! m_class || ( item -> class_mask & util_t::class_id_mask( m_class ) ) ) &&
-                ( ! m_race  || ( item -> race_mask &  util_t::race_mask( m_race ) ) ) );
+                ( item -> class_mask & util_t::class_id_mask( player_class ) ) &&
+                ( item -> race_mask &  util_t::race_mask( player_race ) ) );
   
   return state;
 }
@@ -234,62 +292,64 @@ ItemFilterProxyModel::itemFitsSlot( const item_data_t* item, bool dual_wield ) c
 bool
 ItemFilterProxyModel::itemFitsClass( const item_data_t* item ) const
 {
+  player_type player_class = m_profile -> currentClass();
+  
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
     switch ( item -> item_subclass )
     {
       case ITEM_SUBCLASS_WEAPON_AXE:
-        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
-               m_class == PALADIN      || m_class == ROGUE   ||
-               m_class == SHAMAN       || m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
+               player_class == PALADIN      || player_class == ROGUE   ||
+               player_class == SHAMAN       || player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_AXE2:
-        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
-               m_class == PALADIN      || m_class == SHAMAN  || 
-               m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
+               player_class == PALADIN      || player_class == SHAMAN  || 
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_BOW:
       case ITEM_SUBCLASS_WEAPON_GUN:
       case ITEM_SUBCLASS_WEAPON_THROWN:
       case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-        return m_class == HUNTER       || m_class == ROGUE   ||
-               m_class == WARRIOR;
+        return player_class == HUNTER       || player_class == ROGUE   ||
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_MACE:
-        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
-               m_class == PALADIN      || m_class == PRIEST  || 
-               m_class == ROGUE        || m_class == SHAMAN  || 
-               m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == DRUID   || 
+               player_class == PALADIN      || player_class == PRIEST  || 
+               player_class == ROGUE        || player_class == SHAMAN  || 
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_MACE2:
-        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
-               m_class == PALADIN      || m_class == SHAMAN  || 
-               m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == DRUID   || 
+               player_class == PALADIN      || player_class == SHAMAN  || 
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_POLEARM:
-        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
-               m_class == HUNTER       || m_class == PALADIN || 
-               m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == DRUID   || 
+               player_class == HUNTER       || player_class == PALADIN || 
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_SWORD:
-        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
-               m_class == MAGE         || m_class == PALADIN || 
-               m_class == ROGUE        || m_class == WARLOCK || 
-               m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
+               player_class == MAGE         || player_class == PALADIN || 
+               player_class == ROGUE        || player_class == WARLOCK || 
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_SWORD2:
-        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
-               m_class == PALADIN      || m_class == WARRIOR;
+        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
+               player_class == PALADIN      || player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_STAFF:
-        return m_class == DRUID        || m_class == HUNTER  ||
-               m_class == MAGE         || m_class == PRIEST  ||
-               m_class == SHAMAN       || m_class == WARLOCK ||
-               m_class == WARRIOR;
+        return player_class == DRUID        || player_class == HUNTER  ||
+               player_class == MAGE         || player_class == PRIEST  ||
+               player_class == SHAMAN       || player_class == WARLOCK ||
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_FIST:
-        return m_class == DRUID        || m_class == HUNTER  ||
-               m_class == ROGUE        || m_class == SHAMAN  || 
-               m_class == WARRIOR;
+        return player_class == DRUID        || player_class == HUNTER  ||
+               player_class == ROGUE        || player_class == SHAMAN  || 
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_DAGGER:
-        return m_class == DRUID        || m_class == HUNTER  ||
-               m_class == MAGE         || m_class == PRIEST  || 
-               m_class == ROGUE        || m_class == SHAMAN  ||
-               m_class == WARLOCK      || m_class == WARRIOR;
+        return player_class == DRUID        || player_class == HUNTER  ||
+               player_class == MAGE         || player_class == PRIEST  || 
+               player_class == ROGUE        || player_class == SHAMAN  ||
+               player_class == WARLOCK      || player_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_WAND:
-        return m_class == MAGE         || m_class == PRIEST  ||
-               m_class == WARLOCK;
+        return player_class == MAGE         || player_class == PRIEST  ||
+               player_class == WARLOCK;
         
     }
   }
@@ -303,37 +363,38 @@ ItemFilterProxyModel::itemFitsClass( const item_data_t* item ) const
         if ( ! m_matchArmor || item -> inventory_type == INVTYPE_CLOAK )
           return true;
         else
-          return m_class == MAGE         || m_class == PRIEST  ||
-                 m_class == WARLOCK;
+          return player_class == MAGE         || player_class == PRIEST  ||
+                 player_class == WARLOCK;
       case ITEM_SUBCLASS_ARMOR_LEATHER:
         if ( ! m_matchArmor )
-          return m_class == DEATH_KNIGHT || m_class == DRUID   ||
-                 m_class == HUNTER       || m_class == PALADIN ||
-                 m_class == ROGUE        || m_class == SHAMAN  ||
-                 m_class == WARRIOR;
+          return player_class == DEATH_KNIGHT || player_class == DRUID   ||
+                 player_class == HUNTER       || player_class == PALADIN ||
+                 player_class == ROGUE        || player_class == SHAMAN  ||
+                 player_class == WARRIOR;
         else
-          return m_class == DRUID        || m_class == ROGUE;
+          return player_class == DRUID        || player_class == ROGUE;
       case ITEM_SUBCLASS_ARMOR_MAIL:
         if ( ! m_matchArmor )
-          return m_class == DEATH_KNIGHT || m_class == HUNTER  || 
-                 m_class == PALADIN      || m_class == SHAMAN  ||
-                 m_class == WARRIOR;
+          return player_class == DEATH_KNIGHT || player_class == HUNTER  || 
+                 player_class == PALADIN      || player_class == SHAMAN  ||
+                 player_class == WARRIOR;
         else
-          return m_class == HUNTER       || m_class == SHAMAN;
+          return player_class == HUNTER       || player_class == SHAMAN;
       case ITEM_SUBCLASS_ARMOR_PLATE:
-          return m_class == DEATH_KNIGHT || m_class == PALADIN ||
-                 m_class == WARRIOR;
+          return player_class == DEATH_KNIGHT || player_class == PALADIN ||
+                 player_class == WARRIOR;
       case ITEM_SUBCLASS_ARMOR_SHIELD:
-        return m_class == PALADIN      || m_class == SHAMAN  ||
-               m_class == WARRIOR;
+        return player_class == PALADIN        || player_class == SHAMAN  ||
+               player_class == WARRIOR;
       case ITEM_SUBCLASS_ARMOR_LIBRAM:
-        return m_class == PALADIN;
+        return player_class == PALADIN;
       case ITEM_SUBCLASS_ARMOR_IDOL:
-        return m_class == DRUID;
+        return player_class == DRUID;
       case ITEM_SUBCLASS_ARMOR_TOTEM:
-        return m_class == SHAMAN;
+        return player_class == SHAMAN;
       case ITEM_SUBCLASS_ARMOR_SIGIL:
-        return m_class == DEATH_KNIGHT || m_class == SHAMAN || m_class == PALADIN || m_class == DRUID;
+        return player_class == DEATH_KNIGHT   || player_class == SHAMAN || 
+               player_class == PALADIN        || player_class == DRUID;
     }
   }
 
@@ -343,7 +404,9 @@ ItemFilterProxyModel::itemFitsClass( const item_data_t* item ) const
 int
 ItemFilterProxyModel::primaryStat( void ) const
 {
-  switch ( m_class )
+  player_type player_class = m_profile -> currentClass();
+
+  switch ( player_class )
   {
     case WARRIOR:
     case DEATH_KNIGHT:
@@ -355,18 +418,20 @@ ItemFilterProxyModel::primaryStat( void ) const
     case ROGUE:
     case HUNTER:
       return ITEM_MOD_AGILITY;
+    default:
+      return -0xFF;
   }
-  
-  return -0xFF;
 }
 
 bool 
 ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
 {
-  bool primary_stat_found = ( m_class == DRUID || m_class == SHAMAN || m_class == PALADIN );
+  player_type player_class = m_profile -> currentClass();
+  bool primary_stat_found = ( player_class == DRUID || player_class == SHAMAN || player_class == PALADIN );
 
   if ( item -> inventory_type == INVTYPE_TRINKET ) return true;
-  
+  if ( item -> id_suffix_group > 0 ) return true;
+
   for ( int i = 0; i < 10; i++ )
   {
     if ( item -> stat_type[ i ] == primaryStat() )
@@ -629,6 +694,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemSetupEnchantBoxLayout = new QHBoxLayout();
   m_itemSetupEnchantView      = new QComboBox( m_itemSetup );
   m_itemSetupEnchantModel     = new EnchantDataModel( profile );
+  m_itemSetupEnchantProxy     = new EnchantFilterProxyModel( profile );
   
   // Search widget setup
   
@@ -637,7 +703,6 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemSearchView -> setItemDelegate( m_itemSearchDelegate );
 
   m_itemSearchProxy -> setSourceModel( m_itemSearchModel );
-  m_itemSearchProxy -> SetClass( SHAMAN );
   
   QObject::connect( m_itemSearchInput, SIGNAL( textChanged( const QString& ) ),
                     m_itemSearchProxy, SLOT( SearchTextChanged( const QString& ) ) );
@@ -692,7 +757,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   QObject::connect( m_itemFilterMaxIlevel,      SIGNAL( valueChanged( int ) ),
                     m_itemSearchProxy,          SLOT( setMaxIlevel( int ) ) );
   QObject::connect( m_itemFilterMatchArmor,     SIGNAL( stateChanged( int ) ),
-                    m_itemSearchProxy,          SLOT( SetMatchArmor( int ) ) );
+                    m_itemSearchProxy,          SLOT( setMatchArmor( int ) ) );
 
   m_itemFilter -> setLayout( m_itemFilterLayout );
   
@@ -706,10 +771,22 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemSetupEnchantBoxLayout -> addWidget( m_itemSetupEnchantView );
   m_itemSetupEnchantBoxLayout -> setAlignment( Qt::AlignCenter | Qt::AlignTop );
   
-  m_itemSetupEnchantView -> setModel( m_itemSetupEnchantModel );
+  m_itemSetupEnchantView -> setModel( m_itemSetupEnchantProxy );
+  m_itemSetupEnchantView -> setEditable( false );
+  
+  m_itemSetupEnchantProxy -> setSourceModel( m_itemSetupEnchantModel );
   
   m_itemSetupLayout -> addWidget( m_itemSetupEnchantBox );
 
+  QObject::connect( profile,                 SIGNAL( slotChanged( slot_type ) ),
+                    m_itemSetupEnchantView,  SLOT( update() ) );
+  
+  QObject::connect( profile,                 SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
+                    m_itemSetupEnchantView,  SLOT( update() ) );
+
+  QObject::connect( m_itemSetupEnchantProxy, SIGNAL( enchantSelected( int ) ),
+                    m_itemSetupEnchantView,  SLOT( setCurrentIndex( int ) ) );
+  
   // Add to main tab
   
   addTab( m_itemSearch, "Search" );
@@ -723,6 +800,9 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   
   QObject::connect( profile,           SIGNAL( slotChanged( slot_type ) ),
                     m_itemSearchProxy, SLOT( setSlot( slot_type ) ) );  
+
+  QObject::connect( m_itemSetupEnchantView, SIGNAL( currentIndexChanged( int ) ),
+                   profile,           SLOT( setSelectedEnchant( int ) ) );
 }
 
 QSize
@@ -737,7 +817,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
   QAbstractListModel( parent ), m_profile( profile )
 {
   dbc_t dbc( false );
-
+  
   const item_data_t* item = dbc_t::items( dbc.ptr );
 
   while ( item -> id != 0 )
@@ -805,11 +885,90 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
     const EnchantData& data =  m_enchants[ index.row() ];
     if ( data.item_enchant )
       return QVariant( PaperdollPixmap::get( data.item_enchant -> icon, true ).scaled( 16, 16 ) );
+    else
+      return QVariant( PaperdollPixmap::get( data.enchant -> _icon, true ).scaled( 16, 16 ) );
     
     return QVariant( QVariant::Invalid );
   }
   
   return QVariant( QVariant::Invalid );
+}
+
+EnchantFilterProxyModel::EnchantFilterProxyModel( PaperdollProfile* profile, QWidget* parent ) :
+  QSortFilterProxyModel( parent ), m_profile( profile )
+{
+  QObject::connect( profile, SIGNAL( slotChanged( slot_type ) ),
+                    this,    SLOT( setSlot( slot_type ) ) );  
+
+  QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
+                    this,    SLOT( setSlotItem( slot_type, const item_data_t* ) ) );
+}
+
+void 
+EnchantFilterProxyModel::setSlot( slot_type t )
+{
+  invalidate();
+  sort( 0 );
+
+  EnchantData currentEnchant = m_profile -> slotEnchant( t );
+
+  if ( ! currentEnchant.enchant )
+    return;
+  
+  for ( int i = 0; i < rowCount(); i++ )
+  {
+    const QModelIndex& idx = index( i, 0 );
+    EnchantData e = idx.data( Qt::UserRole ).value< EnchantData >();
+    if ( currentEnchant == e )
+    {
+      emit enchantSelected( idx.row() );
+      break;
+    }
+  }
+}
+
+void 
+EnchantFilterProxyModel::setSlotItem( slot_type, const item_data_t* )
+{
+  invalidate();
+  sort( 0 );
+}
+
+bool
+EnchantFilterProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
+{
+  const EnchantData e_left  = left.data( Qt::UserRole ).value< EnchantData >(),
+                    e_right = right.data( Qt::UserRole ).value< EnchantData >();
+  
+  return QString::compare( e_left.item_enchant ? e_left.item_enchant -> name : e_left.enchant -> name_cstr(),
+                           e_right.item_enchant ? e_right.item_enchant -> name : e_right.enchant -> name_cstr() ) < 0;
+}
+
+bool
+EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
+{
+  const QModelIndex& idx  = sourceModel() -> index( sourceRow, 0, sourceParent );
+  const EnchantData&   ed = idx.data( Qt::UserRole ).value< EnchantData >();
+
+  // Slot based filtering then.
+  slot_type          slot = m_profile -> currentSlot();
+  const item_data_t* item = m_profile -> slotItem( slot );
+  
+  if ( slot == SLOT_NONE || ! item ) 
+    return false;
+  
+  if ( item -> item_class != ed.enchant -> _equipped_class ) 
+    return false;
+  
+  if ( ed.enchant -> _equipped_invtype_mask && 
+       ! ( ( 1 << item -> inventory_type ) & ed.enchant -> _equipped_invtype_mask ) ) 
+    return false;
+  
+  if ( ed.enchant -> _equipped_subclass_mask && 
+       ! ( ( 1 << item -> item_subclass ) & ed.enchant -> _equipped_subclass_mask ) ) 
+    return false;
+
+  return true;
 }
 
 QString
@@ -887,7 +1046,7 @@ PaperdollSlotButton::paintEvent( QPaintEvent* event )
 
   // Selection border
   if ( isChecked() )
-    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "UI-Quickslot-Depress" ) );
+    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border" ) );
   
   paint.end();
 }
@@ -899,10 +1058,151 @@ PaperdollSlotButton::setSlotItem( slot_type t, const item_data_t* )
     update();
 }
 
+PaperdollClassButton::PaperdollClassButton( PaperdollProfile* profile, player_type t, QWidget* parent ) :
+  QAbstractButton( parent ), m_profile( profile ), m_type( t )
+{
+  setCheckable( true );
+  setAutoExclusive( true );
+
+  m_icon = PaperdollPixmap::get( QString( "class_%1" ).arg( util_t::player_type_string( t ) ), true );
+}
+
+QSize 
+PaperdollClassButton::sizeHint() const
+{
+  return QSize( 32, 32 );
+}
+
+void
+PaperdollClassButton::paintEvent( QPaintEvent* event )
+{
+  QPainter paint;
+  
+  paint.begin( this );
+  
+  paint.drawPixmap( event -> rect(), m_icon.scaled( 32, 32 ) );
+  
+  // Selection border
+  if ( isChecked() )
+    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( 32, 32 ) );
+  
+  paint.end();
+}
+
+PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_type t, QWidget* parent ) :
+QAbstractButton( parent ), m_profile( profile ), m_type( t )
+{
+  setCheckable( true );
+  setAutoExclusive( true );
+  
+  m_icon = PaperdollPixmap::get( QString( "race_%1" ).arg( util_t::race_type_string( t ) ), true );
+}
+
+QSize 
+PaperdollRaceButton::sizeHint() const
+{
+  return QSize( 32, 32 );
+}
+
+void
+PaperdollRaceButton::paintEvent( QPaintEvent* event )
+{
+  QPainter paint;
+  
+  paint.begin( this );
+  
+  paint.drawPixmap( event -> rect(), m_icon.scaled( 32, 32 ) );
+  
+  // Selection border
+  if ( isChecked() )
+    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( 32, 32 ) );
+  
+  paint.end();
+}
+
+PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
+  QGroupBox( "Select character class", parent ), m_profile( profile )
+{
+  PaperdollClassButton* tmp;
+  
+  m_classButtonGroupLayout = new QHBoxLayout();
+  m_classButtonGroupLayout -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
+  m_classButtonGroupLayout -> setSpacing( 2 );
+  m_classButtonGroupLayout -> setContentsMargins( 1, 1, 1, 1 );
+  
+  m_classButtonGroup = new QButtonGroup();
+  
+  for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
+  {
+    tmp = m_classButtons[ i ] = new PaperdollClassButton( profile, i, this );
+    
+    m_classButtonGroup -> addButton( tmp, i );
+    m_classButtonGroupLayout -> addWidget( tmp );
+  }
+  
+  QObject::connect( m_classButtonGroup, SIGNAL( buttonClicked( int ) ),
+                    profile,            SLOT( setClass( int ) ) );
+  
+  setLayout( m_classButtonGroupLayout );
+  setCheckable( false );
+  setFlat( true );
+  setAlignment( Qt::AlignHCenter );
+}
+
+PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
+QGroupBox( "Select character race", parent ), m_profile( profile )
+{
+  PaperdollRaceButton* tmp;
+  race_type races[2][6] = {
+    { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, },
+    { RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN, }
+  };
+  const char* faction_str[2] = { 
+    "alliance", 
+    "horde" 
+  };
+  
+  m_factionLayout = new QVBoxLayout();
+  m_factionLayout -> setSpacing( 2 );
+  m_factionLayout -> setContentsMargins( 1, 1, 1, 1 );
+  
+  m_raceButtonGroup = new QButtonGroup();
+  for ( int faction = 0; faction < 2; faction++ )
+  {
+    m_raceButtonGroupLayout[ faction ] = new QHBoxLayout();
+    m_raceButtonGroupLayout[ faction ] -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
+    m_raceButtonGroupLayout[ faction ] -> setSpacing( 2 );
+    m_raceButtonGroupLayout[ faction ] -> setContentsMargins( 0, 0, 0, 0 );
+    m_factionLayout -> addLayout( m_raceButtonGroupLayout[ faction ] );
+    
+    m_factionLabel[ faction ] = new QLabel( this );
+    m_factionLabel[ faction ] -> setPixmap( PaperdollPixmap::get( QString( "%1" ).arg( faction_str[ faction ] ), true ).scaled( 32, 32 ) );
+    m_raceButtonGroupLayout[ faction ] -> addWidget( m_factionLabel[ faction ] );
+    
+    for ( int race = 0; race < 6; race++ )
+    {
+      tmp = m_raceButtons[ races[ faction ][ race ] - RACE_NIGHT_ELF ] = new PaperdollRaceButton( profile, races[ faction ][ race ], this );
+      m_raceButtonGroup -> addButton( tmp, races[ faction ][ race ] );
+      m_raceButtonGroupLayout[ faction ] -> addWidget( tmp );
+    }
+  }
+  
+  setLayout( m_factionLayout );
+  setCheckable( false );
+  setFlat( true );
+  setAlignment( Qt::AlignHCenter );
+
+  QObject::connect( m_raceButtonGroup, SIGNAL( buttonClicked( int ) ),
+                    profile,           SLOT( setRace( int ) ) );
+  
+}
+
 Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   QWidget( parent ), m_profile( profile )
 {
   m_layout = new QGridLayout();
+  m_layout -> setSpacing( 2 );
+  m_layout -> setContentsMargins( 3, 3, 3, 3 );
   m_layout -> setColumnMinimumWidth( 1, 96 );
   m_layout -> setColumnMinimumWidth( 2, 96 );
   m_layout -> setColumnMinimumWidth( 3, 96 );
@@ -929,6 +1229,11 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_slotWidgets[ SLOT_OFF_HAND ]  = new PaperdollSlotButton( SLOT_OFF_HAND,  profile, this );
   m_slotWidgets[ SLOT_RANGED ]    = new PaperdollSlotButton( SLOT_RANGED,    profile, this );
   
+  m_baseSelectorLayout = new QVBoxLayout();
+  
+  m_classGroup = new PaperdollClassButtonGroup( profile, this );
+  m_raceGroup = new PaperdollRaceButtonGroup( profile, this );
+  
   m_layout -> addWidget( m_slotWidgets[ SLOT_HEAD ],      0, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_NECK ],      1, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_SHOULDERS ], 2, 0, Qt::AlignLeft | Qt::AlignTop );
@@ -951,6 +1256,11 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_layout -> addWidget( m_slotWidgets[ SLOT_TRINKET_1 ], 6, 4, Qt::AlignRight | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_TRINKET_2 ], 7, 4, Qt::AlignRight | Qt::AlignTop );
 
+  m_layout -> addLayout( m_baseSelectorLayout, 0, 1, 2, 3 );
+
+  m_baseSelectorLayout -> addWidget( m_classGroup, Qt::AlignLeft | Qt::AlignTop );
+  m_baseSelectorLayout -> addWidget( m_raceGroup, Qt::AlignLeft | Qt::AlignTop );
+  
   setLayout( m_layout );
 }
 
@@ -959,3 +1269,5 @@ Paperdoll::sizeHint() const
 {
   return QSize( 400, 616 );
 }
+
+QString PaperdollPixmap::rpath = "";
