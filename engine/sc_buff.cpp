@@ -1046,6 +1046,7 @@ void stat_buff_t::expire()
     player -> stat_loss( stat, current_value );
     buff_t::expire();
   }
+  amount = 0;
 }
 
 
@@ -1138,6 +1139,7 @@ void cost_reduction_buff_t::expire()
     player -> cost_reduction_loss( school, current_value );
     buff_t::expire();
   }
+  amount = 0;
 }
 
 // cost_reduction_buff_t::refresh ==========================================================
