@@ -1087,7 +1087,7 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_HARMFUL_SPELL;
       effect.trigger_mask = RESULT_HIT_MASK;
     }
-    else if ( t.full == "onharmfulspelldirectcrit" )
+    else if ( t.full == "onharmfulspellcrit" )
     {
       effect.trigger_str = t.full;
       effect.trigger_type = PROC_HARMFUL_SPELL;
