@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Frost_T12H
-origin="./Mage_CharDevSync.simc"
+origin="profiles/Mage_CharDevSync.simc"
 level=85
 race=troll
 role=spell
@@ -55,15 +55,15 @@ ranged=stinger_of_the_flaming_scorpion,heroic=1,ilevel=391,quality=epic,stats=14
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7065
-# gear_intellect=5827
+# gear_stamina=7094
+# gear_intellect=6304
 # gear_spirit=21
 # gear_spell_power=2636
-# gear_hit_rating=1738
-# gear_crit_rating=962
-# gear_haste_rating=1885
-# gear_mastery_rating=1918
-# gear_armor=9343
+# gear_hit_rating=1739
+# gear_crit_rating=918
+# gear_haste_rating=1835
+# gear_mastery_rating=1608
+# gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
