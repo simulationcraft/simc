@@ -45,7 +45,7 @@ wrists=wristwraps_of_arrogant_doom,heroic=1,type=cloth,ilevel=391,quality=epic,s
 hands=fingers_of_incineration,heroic=1,type=cloth,ilevel=397,quality=epic,stats=961armor_341int_542sta_243crit_214haste,reforge=crit_hit,gems=40int_10int,enchant=50haste
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=mastery_haste,enchant=40int
-trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,reforge=crit_haste,use=1441int_15dur_60cd
+trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,reforge=crit_hit,use=1441int_15dur_60cd
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=50int
 main_hand=shoravon_greatstaff_of_annihilation,heroic=1,ilevel=397,quality=epic,stats=466int_730sta_357mastery_249crit_2786sp,reforge=mastery_haste,enchant=power_torrent,weapon=staff_2.90speed_764min_1146max
@@ -57,9 +57,9 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # gear_intellect=5979
 # gear_spirit=20
 # gear_spell_power=2786
-# gear_hit_rating=1583
+# gear_hit_rating=1756
 # gear_crit_rating=1225
-# gear_haste_rating=2812
+# gear_haste_rating=2639
 # gear_mastery_rating=845
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
