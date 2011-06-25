@@ -459,12 +459,18 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     bool heroic;
     buff_t* apparatus_of_khazgoroth;
     stat_buff_t* blessing_of_khazgoroth;
+    proc_t* proc_apparatus_of_khazgoroth_haste;
+    proc_t* proc_apparatus_of_khazgoroth_crit;
+    proc_t* proc_apparatus_of_khazgoroth_mastery;
 
     apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
       apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 30.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
       blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, ( heroic ? 1725 : 1530 ), 1, 15.0, 120.0 );
+      proc_apparatus_of_khazgoroth_haste   = p -> get_proc( "apparatus_of_khazgoroth_haste"   );
+      proc_apparatus_of_khazgoroth_crit    = p -> get_proc( "apparatus_of_khazgoroth_crit"    );
+      proc_apparatus_of_khazgoroth_mastery = p -> get_proc( "apparatus_of_khazgoroth_mastery" );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -485,9 +491,19 @@ static void register_apparatus_of_khazgoroth( item_t* item )
                a -> player -> stats.mastery_rating > a -> player -> stats.crit_rating )
           {
             if ( a -> player -> stats.mastery_rating > a -> player -> stats.haste_rating )
+            {
               blessing_of_khazgoroth -> stat = STAT_MASTERY_RATING;
+              proc_apparatus_of_khazgoroth_mastery -> occur();
+            }
             else
+            {
               blessing_of_khazgoroth -> stat = STAT_HASTE_RATING;
+              proc_apparatus_of_khazgoroth_haste -> occur();
+            }
+          }
+          else
+          {
+            proc_apparatus_of_khazgoroth_crit -> occur();
           }
           apparatus_of_khazgoroth -> expire();
           blessing_of_khazgoroth -> trigger();
