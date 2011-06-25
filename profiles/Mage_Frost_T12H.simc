@@ -18,7 +18,6 @@ actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
-actions+=/use_item,name=rune_of_zeth
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
 actions+=/mana_gem,if=mana_deficit>12500
@@ -35,24 +34,24 @@ actions+=/mage_armor,if=(mana_pct*12)<target.time_to_die
 actions+=/frostbolt
 actions+=/ice_lance,moving=1
 actions+=/fire_blast,moving=1
-head=firehawk_hood,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_400int_689sta_288mastery_262haste,reforge=haste_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+head=firehawk_hood,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_400int_689sta_288mastery_262haste,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=40int_10int
 shoulders=firehawk_mantle,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1118armor_322int_513sta_227crit_209haste,reforge=crit_hit,gems=20mastery_20int_10int,enchant=50int_25haste
 shirt=captain_sanders_shirt,ilevel=1
-chest=robes_of_smoldering_devastation,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1491armor_420int_689sta_316mastery_251haste,reforge=haste_hit,gems=40int_20hit_20int_20int,enchant=20all
+chest=firehawk_robes,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1491armor_420int_689sta_254hit_310haste,reforge=haste_crit,gems=20crit_20int_20hit_20int_20int,enchant=20all
 waist=majordomos_chain_of_office,heroic=1,type=cloth,ilevel=397,quality=epic,stats=865armor_341int_542sta_206mastery_243haste,gems=40int_40int_10int
 legs=firehawk_leggings,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1304armor_420int_689sta_301crit_271mastery,reforge=crit_hit,gems=40int_40int_20int,enchant=95int_80sta
-feet=coalwalker_sandals,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1025armor_322int_513sta_235crit_197haste,reforge=crit_hit,gems=40int,enchant=50hit
+feet=coalwalker_sandals,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1025armor_322int_513sta_235crit_197haste,reforge=crit_hit,gems=40int,enchant=50mastery
 wrists=emberflame_bracers,heroic=1,type=cloth,ilevel=391,quality=epic,stats=652armor_256int_384sta_166hit_173mastery,enchant=50int
-hands=firehawk_gloves,heroic=1,type=cloth,ilevel=391,quality=epic,stats=932armor_322int_513sta_180hit_244haste,gems=20hit_20int_10int,enchant=65mastery
+hands=fingers_of_incineration,heroic=1,type=cloth,ilevel=397,quality=epic,stats=961armor_341int_542sta_243crit_214haste,reforge=haste_hit,gems=40int_10int,enchant=65mastery
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,enchant=40int
-trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,reforge=crit_mastery,use=1441int_15dur_60cd
+trinket1=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
 main_hand=volcanospike,heroic=1,ilevel=391,quality=epic,stats=197int_296sta_119hit_139haste_2636sp,enchant=power_torrent,weapon=sword_1.60speed_348min_648max
-off_hand=molten_scream,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_176crit_162hit,reforge=crit_mastery,enchant=40int
-ranged=stinger_of_the_flaming_scorpion,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_102crit_87mastery,reforge=mastery_hit
+off_hand=molten_scream,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_176crit_162hit,enchant=40int
+ranged=stinger_of_the_flaming_scorpion,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_102crit_87mastery,reforge=crit_hit
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
