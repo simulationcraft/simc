@@ -4194,7 +4194,7 @@ void warlock_t::init_spells()
   glyphs.life_tap             = find_glyph( "Glyph of Life Tap" );
   glyphs.shadow_bolt          = find_glyph( "Glyph of Shadow Bolt" );
 
-  tier12_4pc_caster           = spell_data_t::find( sets -> set( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "Apocalypse", dbc.ptr );
+  tier12_4pc_caster           = spell_data_t::find( 99232, "Apocalypse", dbc.ptr );
 }
 
 // warlock_t::init_base =====================================================
