@@ -42,7 +42,7 @@ finger2=widows_kiss,heroic=1,ilevel=391,quality=epic,stats=256agi_384sta_188hast
 trinket1=matrix_restabilizer,heroic=1,ilevel=397,quality=epic,stats=458agi
 trinket2=the_hungerer,heroic=1,ilevel=391,quality=epic,stats=433agi,equip=onattackhit_1730haste_100%_15dur_60cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=mastery_exp,gems=40agi_40agi_20agi,enchant=65crit
-main_hand=gatecrasher,heroic=1,ilevel=391,quality=epic,stats=197agi_296sta_135crit_125exp,enchant=landslide,weapon=axe_2.60speed_1133min_2105max
+main_hand=gatecrasher,heroic=1,ilevel=391,quality=epic,stats=197agi_296sta_135crit_125exp,reforge=crit_haste,enchant=landslide,weapon=axe_2.60speed_1133min_2105max
 off_hand=alysras_razor,heroic=1,ilevel=391,quality=epic,stats=177agi_296sta_128haste_113exp,gems=20agi_20haste_10agi,enchant=landslide,weapon=dagger_1.40speed_610min_1134max
 ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_230sta_108crit_92haste,reforge=crit_mastery,enchant=gnomish_xray,weapon=bow_3.00speed_1865min_3464max
 # Gear Summary
@@ -54,8 +54,8 @@ ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_23
 # gear_attack_power=190
 # gear_expertise_rating=776
 # gear_hit_rating=1129
-# gear_crit_rating=655
-# gear_haste_rating=2285
+# gear_crit_rating=601
+# gear_haste_rating=2339
 # gear_mastery_rating=1152
 # gear_armor=11829
 # meta_gem=agile_shadowspirit
