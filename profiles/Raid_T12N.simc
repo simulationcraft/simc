@@ -3,22 +3,21 @@
 optimal_raid=1
 ptr=1
 
+#Death_Knight_T12N.simc
+
 Druid_T12N.simc
 
-#Hunter_MM_T12N.simc
-#Hunter_SV_T12N.simc
-#Hunter_BM_T12N.simc
+#Hunter_T12N.simc
 
-Mage_Arcane_T12N.simc
-Mage_Fire_T12N.simc
-Mage_Frost_T12N.simc
+Mage_T12N.simc
 
-Paladin_Retribution_T12N.simc
+Paladin_T12N.simc
 
-Priest_Shadow_T12N.simc
-Priest_Shadow_T12N_DTR.simc
+Priest_T12N.simc
 
 Rogue_T12N.simc
+
+Shaman_T12N.simc
 
 Warlock_T12N.simc
 
