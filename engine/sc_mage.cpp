@@ -3448,7 +3448,7 @@ void mage_t::init_actions()
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
       if ( talents.brain_freeze -> rank() )
       {
-        action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
+        action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
       }
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";

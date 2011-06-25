@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Frost_T12N
-origin="profiles/Mage_CharDevSync.simc"
+origin="./Mage_CharDevSync.simc"
 level=85
 race=troll
 role=spell
@@ -28,7 +28,7 @@ actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/deep_freeze
-actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
 actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
 actions+=/mage_armor,if=(mana_pct*12)<target.time_to_die
