@@ -39,6 +39,8 @@ struct item_enchantment_data_t {
   int         slot;
   const char* name;
   unsigned    id_gem;
+  unsigned    req_skill;
+  unsigned    req_skill_value;
   unsigned    ench_type[3];          // item_enchantment
   int         ench_amount[3];
   unsigned    ench_prop[3];

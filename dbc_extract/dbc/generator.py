@@ -1103,7 +1103,7 @@ class SpellDataGenerator(DataGenerator):
             if not spell.id:
                 continue
 
-            enchant_item_spell = 0
+            enchant_spell_id = 0
             for effect in spell._effects:
                 # Grab Enchant Items and Create Items (create item will be filtered further )
                 if not effect or (effect.type != 53 and effect.type != 24):
@@ -1123,21 +1123,25 @@ class SpellDataGenerator(DataGenerator):
                             if not enchant_effect or enchant_effect.type != 53:
                                 continue
 
-                            enchant_item_spell = id_spell
+                            enchant_spell_id = id_spell
                             break
 
-                        if enchant_item_spell > 0:
+                        if enchant_spell_id > 0:
                             break
                 # Skip pre-wotlk enchants
-                elif effect.type == 53 and ( self._spelllevels_db[spell.id_levels].base_level >= 60 or ability_data.min_value > 375 ):
-                    enchant_item_spell = spell.id
+                elif effect.type == 53:
+                    spell_item_ench = self._spellitemenchantment_db[effect.misc_value]
+                    if (spell_item_ench.req_skill == 0 and self._spelllevels_db[spell.id_levels].base_level < 60) or \
+                       (spell_item_ench.req_skill > 0 and spell_item_ench.req_skill_value <= 375):
+                        continue
+                    enchant_spell_id = spell.id
                 
-                if enchant_item_spell > 0:
+                if enchant_spell_id > 0:
                     break
 
-            if enchant_item_spell > 0:
+            if enchant_spell_id > 0:
                 filter_list = { }
-                lst = self.generate_spell_filter_list(enchant_item_spell, 0, 0, 0, filter_list)
+                lst = self.generate_spell_filter_list(enchant_spell_id, 0, 0, 0, filter_list)
                 if not lst:
                     continue
                     
@@ -1150,7 +1154,6 @@ class SpellDataGenerator(DataGenerator):
                             'mask_class': v['mask_class'], 
                             'mask_race' : v['mask_race'], 
                             'effect_list': v['effect_list'],
-                            'skill_id': ((ability_data.req_skill_value > 0 ) and ability_id) or 0
                         }
 
         # Rest of the Item enchants relevant to us, such as Shoulder / Head enchants
@@ -1391,10 +1394,6 @@ class SpellDataGenerator(DataGenerator):
             )
             
             fields += self._spellequippeditems_db[spell.id_equip_items].field('item_class', 'mask_inv_type', 'mask_sub_class')
-            if id and ids[id].get('skill_id'):
-                fields += self._skilllineability_db[ids[id]['skill_id']].field('id_skill', 'min_value')
-            else:
-                fields += self._skilllineability_db[0].field('id_skill', 'min_value')
             
             if spell.id_scaling:
                 fields += self._spellscaling_db[spell.id_scaling].field('cast_min', 'cast_max', 'cast_div')
@@ -2504,7 +2503,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         for i in ids + [ 0 ]:
             ench_data = self._spellitemenchantment_db[i]
 
-            fields = ench_data.field('id', 'slot', 'desc', 'id_gem')
+            fields = ench_data.field('id', 'slot', 'desc', 'id_gem', 'req_skill', 'req_skill_value')
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]

@@ -253,6 +253,9 @@ _DBC_FIELDS = {
     'SpellDescriptionVariables.dbc' : [
         'id', 'ofs_var'
     ],
+    'SpellDifficulty.dbc' : [
+        'id', 'id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4'
+    ],
     'SpellDuration.dbc'  : [
         'id', ( 'duration_1', '%9d' ), 'duration_2', 'duration_3'
     ],
@@ -276,7 +279,7 @@ _DBC_FIELDS = {
           ( 'amount_1', '%4d' ), ( 'amount_2', '%4d' ), ( 'amount_3', '%4d' ), 'amount_4', 'amount_5', 'amount_6', 
           ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
           'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%5u' ), 'enchantment_condition', 
-          'req_skill', 'req_skill_value', 'unk_1', 'unk_2'
+          ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'unk_1', 'unk_2'
     ],
     'SpellLevels.dbc' : [
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
@@ -300,6 +303,9 @@ _DBC_FIELDS = {
         ( 'e1_average', '%13.10f' ), ( 'e2_average', '%13.10f' ), ( 'e3_average', '%13.10f' ), ( 'e1_delta', '%13.10f' ), ( 'e2_delta', '%13.10f' ),
         ( 'e3_delta', '%13.10f' ),   ( 'e1_bcp', '%13.10f' ),     ( 'e2_bcp', '%13.10f' ),     ( 'e3_bcp', '%13.10f' ),    ( 'c_scaling', '%13.10f' ),
           ( 'c_scaling_threshold', '%2u' )
+    ],
+    'SpellTargetRestrictions.dbc' : [
+          'id', 'max_affected_targets', 'max_target_level', 'target_type', 'targets'
     ],
     'Talent.dbc' : [
         ( 'id', '%5u' ),          'talent_tab',         ( 'row', '%2u' ),         ( 'col', '%2u' ),       ( 'id_rank_1', '%5u' ),
